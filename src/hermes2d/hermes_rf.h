@@ -55,18 +55,26 @@ public:
     inline bool teModeCheck(TEMode teMode) { return (teMode == TEMode_0 || teMode == TEMode_1 || teMode == TEMode_2); }
 
     inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_RF_MagneticField ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldRealX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldImagX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldRealY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityRealX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityImagX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityRealY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityImagY ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricField ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVector ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVectorReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVectorImag ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_PowerLosses ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_EnergyDensity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permittivity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permeability ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Conductivity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Current_density_real ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Current_density_imag); }
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_CurrentDensityReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_CurrentDensityImag); }
 
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
@@ -101,11 +109,19 @@ public:
     double current_density_real;
     double current_density_imag;
 
-    double potential_real;
-    double potential_imag;
-
     double electric_field_real;
     double electric_field_imag;
+
+    double magnetic_field_realX;
+    double magnetic_field_imagX;
+    double magnetic_field_realY;
+    double magnetic_field_imagY;
+    double flux_density_realX;
+    double flux_density_imagX;
+    double flux_density_realY;
+    double flux_density_imagY;
+    double poynting_vector_real;
+    double poynting_vector_imag;
 
     LocalPointValueRF(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
@@ -151,11 +167,13 @@ class SceneEdgeRFMarker : public SceneBoundary
 public:
     Value value_real;
     Value value_imag;
+    TEMode mode;
+    Value power;
+    Value phase;
     Value height;
- //   Value power;
-//    Value phase;
 
     SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
+    SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, TEMode mode, Value power, Value phase, Value height);
     SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value height);
 
     QString script();
@@ -193,12 +211,14 @@ protected:
     bool save();
 
 private:
-    QLabel *lblValueUnit;
+    QLabel *lblValueUnitReal;
+    QLabel *lblValueUnitImag;
     QComboBox *cmbType;
     QComboBox *cmbMode;
     ValueLineEdit *txtValueReal;
     ValueLineEdit *txtValueImag;
     ValueLineEdit *txtHeight;
+
 
 private slots:
     void doTypeChanged(int index);

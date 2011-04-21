@@ -156,15 +156,24 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_RF_ElectricFieldReal, "rf_electric_field_real");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_ElectricFieldImag, "rf_electric_field_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticField, "rf_magnetic_field");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldReal, "rf_magnetic_field_real");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldImag, "rf_magnetic_field_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldRealX, "rf_magnetic_field_real_X");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldImagX, "rf_magnetic_field_imag_X");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldRealY, "rf_magnetic_field_real_Y");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldImagY, "rf_magnetic_field_imag_Y");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensity, "rf_magnetic_flux_density");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityRealX, "rf_magnetic_flux_density_real_X");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityImagX, "rf_magnetic_flux_density_imag_X");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityRealY, "rf_magnetic_flux_density_real_Y");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityImagY, "rf_magnetic_flux_density_imag_Y");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVector, "rf_poynting_vector");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVectorReal, "rf_poynting_vector_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVectorImag, "rf_poynting_vector_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_PowerLosses, "rf_power_losses");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_EnergyDensity, "rf_energy_density");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permittivity, "rf_permittivity");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permeability, "rf_permeability");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Conductivity, "rf_conductivity");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_Current_density_real, "rf_current_density_real");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_Current_density_imag, "rf_current_density_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_CurrentDensityReal, "rf_current_density_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_CurrentDensityImag, "rf_current_density_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Pressure, "acoustic_pressure");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_PressureReal, "acoustic_pressure_real");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_PressureImag, "acoustic_pressure_imag");
@@ -210,8 +219,8 @@ void initLists()
 
     //TEMODE
     teModeList.insert(TEMode_0, "TE Mode 0");
-    teModeList.insert(TEMode_1, "TE Mode 1");
-    teModeList.insert(TEMode_2, "TE Mode 2");
+    teModeList.insert(TEMode_1, "TE Mode 01");
+    teModeList.insert(TEMode_2, "TE Mode 02");
 
     // SCENEVIEW_POSTPROCESSOR_SHOW
     sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");
@@ -375,23 +384,41 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Electric field - imag");
     case PhysicFieldVariable_RF_MagneticField:
         return QObject::tr("Magnetic field");
-    case PhysicFieldVariable_RF_MagneticFieldReal:
-        return QObject::tr("Magnetic field - real");
-    case PhysicFieldVariable_RF_MagneticFieldImag:
-        return QObject::tr("Magnetic field - imag");
+    case PhysicFieldVariable_RF_MagneticFieldRealX:
+        return QObject::tr("Magnetic field X - real");
+    case PhysicFieldVariable_RF_MagneticFieldImagX:
+        return QObject::tr("Magnetic field X - imag");
+    case PhysicFieldVariable_RF_MagneticFieldRealY:
+        return QObject::tr("Magnetic field Y - real");
+    case PhysicFieldVariable_RF_MagneticFieldImagY:
+        return QObject::tr("Magnetic field Y - imag");
+    case PhysicFieldVariable_RF_MagneticFluxDensity:
+        return QObject::tr("Flux density");
+    case PhysicFieldVariable_RF_MagneticFluxDensityRealX:
+        return QObject::tr("Flux density X - real");
+    case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
+        return QObject::tr("Flux density X - imag");
+    case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
+        return QObject::tr("Flux density Y - real");
+    case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
+        return QObject::tr("Flux density Y - imag");
+    case PhysicFieldVariable_RF_PoyntingVector:
+        return QObject::tr("Poynting vector");
+    case PhysicFieldVariable_RF_PoyntingVectorReal:
+        return QObject::tr("Poynting vector - real");
+    case PhysicFieldVariable_RF_PoyntingVectorImag:
+        return QObject::tr("Poynting vector - imag");
     case PhysicFieldVariable_RF_PowerLosses:
         return QObject::tr("Power losses");
-    case PhysicFieldVariable_RF_EnergyDensity:
-        return QObject::tr("Energy density");
     case PhysicFieldVariable_RF_Permittivity:
         return QObject::tr("Permittivity");
     case PhysicFieldVariable_RF_Permeability:
         return QObject::tr("Permeability");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("Conductivity");
-    case PhysicFieldVariable_RF_Current_density_real:
+    case PhysicFieldVariable_RF_CurrentDensityReal:
         return QObject::tr("Current density - real");
-    case PhysicFieldVariable_RF_Current_density_imag:
+    case PhysicFieldVariable_RF_CurrentDensityImag:
         return QObject::tr("Current density - imag");
     case PhysicFieldVariable_Acoustic_Pressure:
         return QObject::tr("Acoustic pressure");
@@ -553,23 +580,41 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("E_im");
     case PhysicFieldVariable_RF_MagneticField:
         return QObject::tr("H");
-    case PhysicFieldVariable_RF_MagneticFieldReal:
-        return QObject::tr("H_re");
-    case PhysicFieldVariable_RF_MagneticFieldImag:
-        return QObject::tr("H_im");
+    case PhysicFieldVariable_RF_MagneticFieldRealX:
+        return QObject::tr("Hx_re");
+    case PhysicFieldVariable_RF_MagneticFieldImagX:
+        return QObject::tr("Hx_im");
+    case PhysicFieldVariable_RF_MagneticFieldRealY:
+        return QObject::tr("Hy_re");
+    case PhysicFieldVariable_RF_MagneticFieldImagY:
+        return QObject::tr("Hy_im");
+    case PhysicFieldVariable_RF_MagneticFluxDensity:
+        return QObject::tr("B");
+    case PhysicFieldVariable_RF_MagneticFluxDensityRealX:
+        return QObject::tr("Bx_re");
+    case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
+        return QObject::tr("Bx_im");
+    case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
+        return QObject::tr("By_re");
+    case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
+        return QObject::tr("By_im");
+    case PhysicFieldVariable_RF_PoyntingVector:
+        return QObject::tr("N");
+    case PhysicFieldVariable_RF_PoyntingVectorReal:
+        return QObject::tr("N_re");
+    case PhysicFieldVariable_RF_PoyntingVectorImag:
+        return QObject::tr("N_im");
     case PhysicFieldVariable_RF_PowerLosses:
         return QObject::tr("pj");
-    case PhysicFieldVariable_RF_EnergyDensity:
-        return QObject::tr("w");
     case PhysicFieldVariable_RF_Permittivity:
         return QObject::tr("epsr");
     case PhysicFieldVariable_RF_Permeability:
         return QObject::tr("mur");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("g");
-    case PhysicFieldVariable_RF_Current_density_real:
+    case PhysicFieldVariable_RF_CurrentDensityReal:
         return QObject::tr("J_re");
-    case PhysicFieldVariable_RF_Current_density_imag:
+    case PhysicFieldVariable_RF_CurrentDensityImag:
         return QObject::tr("J_im");
     case PhysicFieldVariable_Acoustic_Pressure:
         return QObject::tr("p");
@@ -724,13 +769,31 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("V/m");
     case PhysicFieldVariable_RF_MagneticField:
         return QObject::tr("A/m");
-    case PhysicFieldVariable_RF_MagneticFieldReal:
+    case PhysicFieldVariable_RF_MagneticFieldRealX:
         return QObject::tr("A/m");
-    case PhysicFieldVariable_RF_MagneticFieldImag:
+    case PhysicFieldVariable_RF_MagneticFieldImagX:
         return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_MagneticFieldRealY:
+        return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_MagneticFieldImagY:
+        return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_MagneticFluxDensity:
+        return QObject::tr("T");
+    case PhysicFieldVariable_RF_MagneticFluxDensityRealX:
+        return QObject::tr("T");
+    case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
+        return QObject::tr("T");
+    case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
+        return QObject::tr("T");
+    case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
+        return QObject::tr("T");
+    case PhysicFieldVariable_RF_PoyntingVector:
+        return QObject::tr("W/m2");
+    case PhysicFieldVariable_RF_PoyntingVectorReal:
+        return QObject::tr("W/m2");
+    case PhysicFieldVariable_RF_PoyntingVectorImag:
+        return QObject::tr("W/m2");
     case PhysicFieldVariable_RF_PowerLosses:
-        return QObject::tr("W/m3");
-    case PhysicFieldVariable_RF_EnergyDensity:
         return QObject::tr("J/m3");
     case PhysicFieldVariable_RF_Permittivity:
         return QObject::tr("F/m");
@@ -738,9 +801,9 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("H/m");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("S/m");
-    case PhysicFieldVariable_RF_Current_density_real:
+    case PhysicFieldVariable_RF_CurrentDensityReal:
         return QObject::tr("A/m2");
-    case PhysicFieldVariable_RF_Current_density_imag:
+    case PhysicFieldVariable_RF_CurrentDensityImag:
         return QObject::tr("A/m2");
 
     case PhysicFieldVariable_Acoustic_Pressure:
@@ -976,10 +1039,10 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     cmbPhysicField->addItem(physicFieldString(PhysicField_Heat), PhysicField_Heat);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Elasticity), PhysicField_Elasticity);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Acoustic), PhysicField_Acoustic);
-#ifdef BETA
+//odebrat #ifdef BETA
     cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
     cmbPhysicField->addItem(physicFieldString(PhysicField_RF), PhysicField_RF);
-#endif
+//#endif
 
     // default physic field
     cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Util::config()->defaultPhysicField));
