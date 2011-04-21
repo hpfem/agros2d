@@ -55,14 +55,14 @@ public:
     inline bool teModeCheck(TEMode teMode) { return (teMode == TEMode_0 || teMode == TEMode_1 || teMode == TEMode_2); }
 
     inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_RF_MagneticField ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldRealX ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldImagX ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldRealY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldXReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldXImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldXReal ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityRealX ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityImagX ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityRealY ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityImagY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityXReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityXImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityYReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityYImag ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricField ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldImag ||
@@ -162,7 +162,7 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeRFMarker : public SceneBoundary
+class SceneBoundaryRF : public SceneBoundary
 {
 public:
     Value value_real;
@@ -172,16 +172,16 @@ public:
     Value phase;
     Value height;
 
-    SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
-    SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, TEMode mode, Value power, Value phase, Value height);
-    SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value height);
+    SceneBoundaryRF(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
+    SceneBoundaryRF(const QString &name, PhysicFieldBC type, TEMode mode, Value power, Value phase, Value height);
+    SceneBoundaryRF(const QString &name, PhysicFieldBC type, Value height);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelRFMarker : public SceneMaterial
+class SceneMaterialRF : public SceneMaterial
 {
 public:
     Value permittivity;
@@ -190,19 +190,19 @@ public:
     Value current_density_real;
     Value current_density_imag;
 
-    SceneLabelRFMarker(const QString &name, Value permittivity, Value permeability, Value conductivity, Value current_density_real, Value current_density_imag);
+    SceneMaterialRF(const QString &name, Value permittivity, Value permeability, Value conductivity, Value current_density_real, Value current_density_imag);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeRFMarker : public SceneBoundaryDialog
+class SceneBoundaryRFDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    DSceneEdgeRFMarker(SceneEdgeRFMarker *edgeRFMarker, QWidget *parent);
+    SceneBoundaryRFDialog(SceneBoundaryRF *edgeRFMarker, QWidget *parent);
 
 protected:
     void createContent();
@@ -224,12 +224,12 @@ private slots:
     void doTypeChanged(int index);
 };
 
-class DSceneLabelRFMarker : public SceneMaterialDialog
+class SceneMaterialRFDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    DSceneLabelRFMarker(QWidget *parent, SceneLabelRFMarker *labelRFMarker);
+    SceneMaterialRFDialog(QWidget *parent, SceneMaterialRF *labelRFMarker);
 
 protected:
     void createContent();

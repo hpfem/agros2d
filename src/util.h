@@ -431,15 +431,15 @@ enum PhysicFieldVariable
     PhysicFieldVariable_RF_ElectricFieldReal,
     PhysicFieldVariable_RF_ElectricFieldImag,
     PhysicFieldVariable_RF_MagneticField,
-    PhysicFieldVariable_RF_MagneticFieldRealX,
-    PhysicFieldVariable_RF_MagneticFieldImagX,
-    PhysicFieldVariable_RF_MagneticFieldRealY,
-    PhysicFieldVariable_RF_MagneticFieldImagY,
+    PhysicFieldVariable_RF_MagneticFieldXReal,
+    PhysicFieldVariable_RF_MagneticFieldXImag,
+    PhysicFieldVariable_RF_MagneticFieldYReal,
+    PhysicFieldVariable_RF_MagneticFieldYImag,
     PhysicFieldVariable_RF_MagneticFluxDensity,
-    PhysicFieldVariable_RF_MagneticFluxDensityRealX,
-    PhysicFieldVariable_RF_MagneticFluxDensityImagX,
-    PhysicFieldVariable_RF_MagneticFluxDensityRealY,
-    PhysicFieldVariable_RF_MagneticFluxDensityImagY,
+    PhysicFieldVariable_RF_MagneticFluxDensityXReal,
+    PhysicFieldVariable_RF_MagneticFluxDensityXImag,
+    PhysicFieldVariable_RF_MagneticFluxDensityYReal,
+    PhysicFieldVariable_RF_MagneticFluxDensityYImag,
     PhysicFieldVariable_RF_PoyntingVector,
     PhysicFieldVariable_RF_PoyntingVectorReal,
     PhysicFieldVariable_RF_PoyntingVectorImag,
@@ -553,15 +553,15 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_ElectricFieldReal:
     case PhysicFieldVariable_RF_ElectricFieldImag:
     case PhysicFieldVariable_RF_MagneticField:
-    case PhysicFieldVariable_RF_MagneticFieldRealX:
-    case PhysicFieldVariable_RF_MagneticFieldImagX:
-    case PhysicFieldVariable_RF_MagneticFieldRealY:
-    case PhysicFieldVariable_RF_MagneticFieldImagY:
+    case PhysicFieldVariable_RF_MagneticFieldXReal:
+    case PhysicFieldVariable_RF_MagneticFieldXImag:
+    case PhysicFieldVariable_RF_MagneticFieldYReal:
+    case PhysicFieldVariable_RF_MagneticFieldYImag:
     case PhysicFieldVariable_RF_MagneticFluxDensity:
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealX:
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
+    case PhysicFieldVariable_RF_MagneticFluxDensityXReal:
+    case PhysicFieldVariable_RF_MagneticFluxDensityXImag:
+    case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
+    case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
     case PhysicFieldVariable_RF_PoyntingVector:
     case PhysicFieldVariable_RF_PoyntingVectorReal:
     case PhysicFieldVariable_RF_PoyntingVectorImag:

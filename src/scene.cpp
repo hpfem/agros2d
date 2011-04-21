@@ -1384,8 +1384,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // markers ***************************************************************************************************************
 
     // edge marker
-    QDomNode eleBoundarys = eleProblem.toElement().elementsByTagName("edges").at(0);
-    n = eleBoundarys.firstChild();
+    QDomNode eleBoundaries = eleProblem.toElement().elementsByTagName("edges").at(0);
+    n = eleBoundaries.firstChild();
     while(!n.isNull())
     {
         element = n.toElement();

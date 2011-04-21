@@ -21,67 +21,268 @@
 #include "scene.h"
 #include "gui.h"
 
+class WeakFormRFHarmonic : public WeakFormAgros
+{
+public:
+    WeakFormRFHarmonic() : WeakFormAgros(2) { }
+
+    void registerForms()
+    {
+        // boundary conditions
+        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        {
+            SceneBoundaryRF *boundary = dynamic_cast<SceneBoundaryRF *>(Util::scene()->edges[i]->boundary);
+
+            if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
+            {
+                // magnetic field
+                if (boundary->type == PhysicFieldBC_RF_MagneticField)
+                {
+                    if (fabs(boundary->value_real.number) > EPS_ZERO)
+                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        boundary->value_real.number,
+                                                                                                        HERMES_PLANAR));
+                    if (fabs(boundary->value_imag.number) > EPS_ZERO)
+                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(1,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        boundary->value_imag.number,
+                                                                                                        HERMES_PLANAR));
+                }
+
+                // port
+                if (boundary->type == PhysicFieldBC_RF_Port)
+                {
+                    if (fabs(boundary->power.number) > EPS_ZERO)
+                    {
+                        int mode = 0;
+                        switch (boundary->mode)
+                        {
+                        case TEMode_0:
+                            mode = 1;
+                            break;
+                        case TEMode_1:
+                            mode = 2;
+                            break;
+                        case TEMode_2:
+                            mode = 3;
+                            break;
+                        }
+
+                        add_vector_form_surf(new CustomVectorFormSurfPort(0,
+                                                                          QString::number(i + 1).toStdString(),
+                                                                          boundary->power.number * sin(boundary->phase.number / 180.0 * M_PI),
+                                                                          boundary->height.number,
+                                                                          mode));
+                        add_vector_form_surf(new CustomVectorFormSurfPort(1,
+                                                                          QString::number(i + 1).toStdString(),
+                                                                          - boundary->power.number * cos(boundary->phase.number / 180.0 * M_PI),
+                                                                          boundary->height.number,
+                                                                          mode));
+                    }
+                }
+
+                // matched boundary
+                if (boundary->type == PhysicFieldBC_RF_MatchedBoundary)
+                {
+                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(0, 1,
+                                                                                 QString::number(i + 1).toStdString(),
+                                                                                 boundary->height.number));
+                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
+                                                                                 QString::number(i + 1).toStdString(),
+                                                                                 boundary->height.number));
+                }
+            }
+        }
+
+        // materials
+        for (int i = 0; i<Util::scene()->labels.count(); i++)
+        {
+            SceneMaterialRF *material = dynamic_cast<SceneMaterialRF *>(Util::scene()->labels[i]->material);
+
+            if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
+            {
+                // real part
+                add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostatics(0, 0,
+                                                                                                         QString::number(i).toStdString(),
+                                                                                                         1.0 / (material->permeability.number * MU0),
+                                                                                                         HERMES_NONSYM,
+                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType),
+                                                                                                         (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
+
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * (material->permittivity.number * EPS0),
+                                                                                          HERMES_NONSYM,
+                                                                                          HERMES_PLANAR));
+
+                // imag part
+                add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostatics(1, 1,
+                                                                                                         QString::number(i).toStdString(),
+                                                                                                         1.0 / (material->permeability.number * MU0),
+                                                                                                         HERMES_NONSYM,
+                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType),
+                                                                                                         (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
+
+
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 1,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * (material->permittivity.number * EPS0),
+                                                                                          HERMES_NONSYM,
+                                                                                          HERMES_PLANAR));
+
+                // lossy environment
+                if (fabs(material->conductivity.number) > EPS_ZERO)
+                {
+                    add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 1,
+                                                                                              QString::number(i).toStdString(),
+                                                                                              - 2 * M_PI * Util::scene()->problemInfo()->frequency * material->conductivity.number,
+                                                                                              HERMES_NONSYM,
+                                                                                              HERMES_PLANAR));
+
+                    add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 0,
+                                                                                              QString::number(i).toStdString(),
+                                                                                              2 * M_PI * Util::scene()->problemInfo()->frequency * material->conductivity.number,
+                                                                                              HERMES_NONSYM,
+                                                                                              HERMES_PLANAR));
+                }
+
+                // external current density
+                if (fabs(material->current_density_imag.number) > EPS_ZERO)
+                    add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
+                                                                                                   QString::number(i).toStdString(),
+                                                                                                   - 2 * M_PI * Util::scene()->problemInfo()->frequency * material->current_density_imag.number,
+                                                                                                   HERMES_PLANAR));
+
+                if (fabs(material->current_density_real.number) > EPS_ZERO)
+                    add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(1,
+                                                                                                   QString::number(i).toStdString(),
+                                                                                                   2 * M_PI * Util::scene()->problemInfo()->frequency * material->current_density_real.number,
+                                                                                                   HERMES_PLANAR));
+            }
+        }
+    }
+
+    class CustomVectorFormSurfPort : public WeakForm::VectorFormSurf
+    {
+    public:
+        CustomVectorFormSurfPort(int i, scalar power, scalar height, int mode)
+            : WeakForm::VectorFormSurf(i), power(power), height(height), mode(mode) { }
+        CustomVectorFormSurfPort(int i, std::string area, scalar power, scalar height, int mode)
+            : WeakForm::VectorFormSurf(i, area), power(power), height(height), mode(mode) { }
+
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
+                             Geom<double> *e, ExtData<scalar> *ext) const {
+            SceneMaterialRF *material = dynamic_cast<SceneMaterialRF *>(Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterialMarker(e->elem_marker)]->material);
+
+            double mu = material->permeability.number * MU0;
+            double eps = material->permittivity.number * EPS0;
+
+            SceneEdge *edge = Util::scene()->edges[Util::scene()->sceneSolution()->agrosBoundaryMarker(e->edge_marker)];
+
+            double beta = 0.0;
+            double length = sqrt(sqr(edge->nodeEnd->point.x - edge->nodeStart->point.x) +
+                                 sqr(edge->nodeEnd->point.y - edge->nodeStart->point.y));
+
+            switch (mode)
+            {
+            case 1:
+            {
+                if (height == 0)
+                    beta = sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * mu * eps;
+                else
+                    beta = sqrt(sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * mu * eps - sqr(mode * M_PI / height));
+            }
+
+                break;
+            case 2:
+            {
+                // beta = sqrt(sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+            }
+                break;
+            case 3:
+            {
+                // beta = sqrt(sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+            }
+                break;
+            default:
+                break;
+            }
+
+            scalar result = 0.0;
+            for (int i = 0; i < n; i++)
+            {
+                scalar lengthPoint = sqrt(sqr(e->x[i] - edge->nodeStart->point.x) +
+                                          sqr(e->y[i] - edge->nodeStart->point.y));
+
+                result += wt[i] * sin((lengthPoint * M_PI) / length) * v->val[i];
+            }
+
+            return 2.0 * power * beta * result;
+        }
+
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
+                        ExtData<Ord> *ext) const {
+            return int_v<Ord>(n, wt, v);
+        }
+
+        // This is to make the form usable in rk_time_step().
+        virtual WeakForm::VectorFormSurf* clone() {
+            return new CustomVectorFormSurfPort(*this);
+        }
+
+    private:
+        int mode;
+        scalar power, height;
+    };
+
+    class CustomMatrixFormSurfMatchedBoundary : public WeakForm::MatrixFormSurf
+    {
+    public:
+        CustomMatrixFormSurfMatchedBoundary(int i, int j, scalar height)
+            : WeakForm::MatrixFormSurf(i, j), height(height) { }
+        CustomMatrixFormSurfMatchedBoundary(int i, int j, std::string area, scalar height)
+            : WeakForm::MatrixFormSurf(i, j, area), height(height) { }
+
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                             Geom<double> *e, ExtData<scalar> *ext) const {
+
+            SceneMaterialRF *material = dynamic_cast<SceneMaterialRF *>(Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterialMarker(e->elem_marker)]->material);
+
+            double mu = material->permeability.number * MU0;
+            double eps = material->permittivity.number * EPS0;
+            int mode = 1;
+
+            if (height == 0)
+            {
+                double beta = sqrt(sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * mu * eps);
+                double Z = ((2 * M_PI * Util::scene()->problemInfo()->frequency) * mu ) / beta;
+
+                return height * Z * int_u_v<double, scalar>(n, wt, u, v);
+            }
+            else
+            {
+                double beta = sqrt(sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * mu * eps - sqr(mode * M_PI / height));
+                return height * beta * int_u_v<double, scalar>(n, wt, u, v);
+            }
+        }
+
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u,
+                        Func<Ord> *v, Geom<Ord> *e, ExtData<Ord> *ext) const {
+            return int_u_v<Ord, Ord>(n, wt, u, v);
+        }
+
+        // This is to make the form usable in rk_time_step().
+        virtual WeakForm::MatrixFormSurf* clone() {
+            return new CustomMatrixFormSurfMatchedBoundary(*this);
+        }
+
+    private:
+        scalar height;
+    };
+};
+
 /*
-template<typename Real, typename Scalar>
-Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (!(rfEdge[e->edge_marker].type == PhysicFieldBC_RF_MatchedBoundary ||
-          rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port))
-        return 0.0;
-
-    double mu = rfLabel[e->elem_marker].permeability * MU0;
-    double eps = rfLabel[e->elem_marker].permittivity * EPS0;
-    int mode = 1;
-
-    double beta = 0.0;
-    double Z = 0.0;
-    double height = rfEdge[e->edge_marker].height;
-
-    if(!rfEdge[e->edge_marker].height == 0)
-    {
-        beta = sqrt(sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * mu * eps - sqr(mode * M_PI / height));
-
-        return beta * int_u_v<Real, Scalar>(n, wt, u, v);
-    }
-    else
-    {
-        beta = sqrt(sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * mu * eps);
-        Z = ((2 * M_PI * Util::scene()->problemInfo()->frequency) * mu ) / beta;
-
-        return Z * int_u_v<Real, Scalar>(n, wt, u, v);
-    }
-}
-
-template<typename Real, typename Scalar>
-Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (!(rfEdge[e->edge_marker].type == PhysicFieldBC_RF_MatchedBoundary ||
-          rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port))
-        return 0.0;
-
-    double mu = rfLabel[e->elem_marker].permeability * MU0;
-    double eps = rfLabel[e->elem_marker].permittivity * EPS0;
-    int mode = 1;
-
-    double beta = 0.0;
-    double Z = 0.0;
-    double height = rfEdge[e->edge_marker].height;
-
-    if(!rfEdge[e->edge_marker].height == 0)
-    {
-        beta = sqrt(sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * mu * eps - sqr(mode * M_PI / height));
-
-        return beta * int_u_v<Real, Scalar>(n, wt, u, v);
-    }
-    else
-    {
-        beta = sqrt(sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * mu * eps);
-        Z = ((2 * M_PI * Util::scene()->problemInfo()->frequency) * mu ) / beta;
-
-        return Z * int_u_v<Real, Scalar>(n, wt, u, v);
-    }
-}
-
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
@@ -217,128 +418,6 @@ Scalar rf_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
     return result;
 }
 
-template<typename Real, typename Scalar>
-Scalar rf_matrix_form_real_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return - int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-                + sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-    {
-        Scalar result_1 = 0;
-        Scalar result_2 = 0;
-        for (int i = 0; i < n; i++)
-        {
-            result_1 += wt[i] * (u->dx[i] * v->val[i]) / e->x[i];
-            result_2 += wt[i] * (u->val[i] * v->val[i]) / (e->x[i] * e->x[i]);
-        }
-
-        return  - 2 * M_PI * (result_1 + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) - result_2)
-                + sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-    }
-}
-
-
-
-template<typename Real, typename Scalar>
-Scalar rf_matrix_form_real_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return + 2 * M_PI * Util::scene()->problemInfo()->frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-        //return 0.0;
-        return + 2 * M_PI * Util::scene()->problemInfo()->frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-}
-
-template<typename Real, typename Scalar>
-Scalar rf_matrix_form_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return - 2 * M_PI * Util::scene()->problemInfo()->frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-        //return 0.0;
-        return - 2 * M_PI * Util::scene()->problemInfo()->frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-}
-
-template<typename Real, typename Scalar>
-Scalar rf_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return - int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-                + sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-    {
-        Scalar result_1 = 0;
-        Scalar result_2 = 0;
-        for (int i = 0; i < n; i++)
-        {
-            result_1 += wt[i] * (u->dx[i] * v->val[i]) / e->x[i];
-            result_2 += wt[i] * (u->val[i] * v->val[i]) / (e->x[i] * e->x[i]);
-        }
-
-        return - 2 * M_PI * (result_1 + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) - result_2)
-                + sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-    }
-}
-
-template<typename Real, typename Scalar>
-Scalar rf_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    Scalar result = 0 ;
-    int u = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * (rfLabel[e->elem_marker].current_density_imag * v->val[i]);
-
-    return - 2 * M_PI * Util::scene()->problemInfo()->frequency * (rfLabel[e->elem_marker].permeability * MU0) * result;
-}
-
-template<typename Real, typename Scalar>
-Scalar rf_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    Scalar result = 0 ;
-    int u = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * (rfLabel[e->elem_marker].current_density_real * v->val[i]);
-
-
-    return 2 * M_PI * Util::scene()->problemInfo()->frequency * (rfLabel[e->elem_marker].permeability * MU0) * result;
-}
-
-
-void callbackRFWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
-{
-    if (slnArray.size() == 1)
-    {
-        wf->add_matrix_form(0, 0, callback(rf_matrix_form_real_real));
-        if (analysisType == AnalysisType_Transient)
-            wf->add_vector_form(0, callback(rf_vector_form_real), HERMES_ANY, slnArray.at(0));
-        else
-            wf->add_vector_form(0, callback(rf_vector_form_real));
-        wf->add_vector_form_surf(0, callback(rf_vector_form_surf_real));
-    }
-    else
-    {
-        wf->add_matrix_form(0, 0, callback(rf_matrix_form_real_real));
-        wf->add_matrix_form(0, 1, callback(rf_matrix_form_real_imag));
-        wf->add_matrix_form(1, 0, callback(rf_matrix_form_imag_real));
-        wf->add_matrix_form(1, 1, callback(rf_matrix_form_imag_imag));
-        wf->add_vector_form(0, callback(rf_vector_form_real));
-        wf->add_vector_form(1, callback(rf_vector_form_imag));
-        wf->add_matrix_form_surf(0, 1, callback(rf_matrix_form_surf_imag_real));
-        wf->add_matrix_form_surf(1, 0, callback(rf_matrix_form_surf_real_imag));
-        wf->add_vector_form_surf(0, callback(rf_vector_form_surf_real));
-        wf->add_vector_form_surf(1, callback(rf_vector_form_surf_imag));
-    }
-}
-
 */
 
 // *******************************************************************************************************
@@ -379,23 +458,23 @@ void HermesRF::readBoundaryFromDomElement(QDomElement *element)
         break;
     case PhysicFieldBC_RF_ElectricField:
     case PhysicFieldBC_RF_MagneticField:
-        Util::scene()->addBoundary(new SceneEdgeRFMarker(element->attribute("name"),
-                                                           type,
-                                                           Value(element->attribute("value_real", "0")),
-                                                           Value(element->attribute("value_imag", "0"))));
+        Util::scene()->addBoundary(new SceneBoundaryRF(element->attribute("name"),
+                                                       type,
+                                                       Value(element->attribute("value_real", "0")),
+                                                       Value(element->attribute("value_imag", "0"))));
         break;
     case PhysicFieldBC_RF_Port:
-        Util::scene()->addBoundary(new SceneEdgeRFMarker(element->attribute("name"),
-                                                           type,
-                                                           mode,
-                                                           Value(element->attribute("power", "0")),
-                                                           Value(element->attribute("phase", "0")),
-                                                           Value(element->attribute("height", "0"))));
+        Util::scene()->addBoundary(new SceneBoundaryRF(element->attribute("name"),
+                                                       type,
+                                                       mode,
+                                                       Value(element->attribute("power", "0")),
+                                                       Value(element->attribute("phase", "0")),
+                                                       Value(element->attribute("height", "0"))));
         break;
     case PhysicFieldBC_RF_MatchedBoundary:
-        Util::scene()->addBoundary(new SceneEdgeRFMarker(element->attribute("name"),
-                                                           type,
-                                                           Value(element->attribute("height", "0"))));
+        Util::scene()->addBoundary(new SceneBoundaryRF(element->attribute("name"),
+                                                       type,
+                                                       Value(element->attribute("height", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -405,7 +484,7 @@ void HermesRF::readBoundaryFromDomElement(QDomElement *element)
 
 void HermesRF::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
 {
-    SceneEdgeRFMarker *edgeRFMarker = dynamic_cast<SceneEdgeRFMarker *>(marker);
+    SceneBoundaryRF *edgeRFMarker = dynamic_cast<SceneBoundaryRF *>(marker);
 
     element->setAttribute("type", physicFieldBCToStringKey(edgeRFMarker->type));
 
@@ -433,17 +512,17 @@ void HermesRF::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *ma
 
 void HermesRF::readMaterialFromDomElement(QDomElement *element)
 {
-    Util::scene()->addMaterial(new SceneLabelRFMarker(element->attribute("name"),
-                                                         Value(element->attribute("permittivity", "1")),
-                                                         Value(element->attribute("permeability", "1")),
-                                                         Value(element->attribute("conductivity", "0")),
-                                                         Value(element->attribute("current_density_real", "0")),
-                                                         Value(element->attribute("current_density_imag", "0"))));
+    Util::scene()->addMaterial(new SceneMaterialRF(element->attribute("name"),
+                                                   Value(element->attribute("permittivity", "1")),
+                                                   Value(element->attribute("permeability", "1")),
+                                                   Value(element->attribute("conductivity", "0")),
+                                                   Value(element->attribute("current_density_real", "0")),
+                                                   Value(element->attribute("current_density_imag", "0"))));
 }
 
 void HermesRF::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
 {
-    SceneLabelRFMarker *labelRFMarker = dynamic_cast<SceneLabelRFMarker *>(marker);
+    SceneMaterialRF *labelRFMarker = dynamic_cast<SceneMaterialRF *>(marker);
 
     element->setAttribute("permittivity", labelRFMarker->permittivity.text);
     element->setAttribute("permeability", labelRFMarker->permeability.text);
@@ -490,10 +569,10 @@ QStringList HermesRF::volumeIntegralValueHeader()
 
 SceneBoundary *HermesRF::newBoundary()
 {
-    return new SceneEdgeRFMarker(tr("new boundary"),
-                                 PhysicFieldBC_RF_ElectricField,
-                                 Value("0"),
-                                 Value("0"));
+    return new SceneBoundaryRF(tr("new boundary"),
+                               PhysicFieldBC_RF_ElectricField,
+                               Value("0"),
+                               Value("0"));
 }
 
 SceneBoundary *HermesRF::newBoundary(PyObject *self, PyObject *args)
@@ -508,21 +587,21 @@ SceneBoundary *HermesRF::newBoundary(PyObject *self, PyObject *args)
 
         if (physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_ElectricField ||
                 physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_MagneticField)
-            return new SceneEdgeRFMarker(name,
-                                         physicFieldBCFromStringKey(type),
-                                         Value(QString::number(value1)),
-                                         Value(QString::number(value2)));
+            return new SceneBoundaryRF(name,
+                                       physicFieldBCFromStringKey(type),
+                                       Value(QString::number(value1)),
+                                       Value(QString::number(value2)));
         if (physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_Port)
-            return new SceneEdgeRFMarker(name,
-                                         physicFieldBCFromStringKey(type),
-                                         teModeFromStringKey(mode),
-                                         Value(QString::number(value1)),
-                                         Value(QString::number(value2)),
-                                         Value(QString::number(height)));
+            return new SceneBoundaryRF(name,
+                                       physicFieldBCFromStringKey(type),
+                                       teModeFromStringKey(mode),
+                                       Value(QString::number(value1)),
+                                       Value(QString::number(value2)),
+                                       Value(QString::number(height)));
         if (physicFieldBCFromStringKey(type) == (PhysicFieldBC_RF_MatchedBoundary))
-            return new SceneEdgeRFMarker(name,
-                                         physicFieldBCFromStringKey(type),
-                                         Value(QString::number(height)));
+            return new SceneBoundaryRF(name,
+                                       physicFieldBCFromStringKey(type),
+                                       Value(QString::number(height)));
 
     }
 
@@ -536,7 +615,7 @@ SceneBoundary *HermesRF::modifyBoundary(PyObject *self, PyObject *args)
     char *name, *type, *mode;
     if (PyArg_ParseTuple(args, "sssdd|d", &name, &type, &mode, &value1, &value2, &height))
     {
-        if (SceneEdgeRFMarker *marker = dynamic_cast<SceneEdgeRFMarker *>(Util::scene()->getBoundary(name)))
+        if (SceneBoundaryRF *marker = dynamic_cast<SceneBoundaryRF *>(Util::scene()->getBoundary(name)))
         {
             if (physicFieldBCFromStringKey(type))
             {
@@ -575,12 +654,12 @@ SceneBoundary *HermesRF::modifyBoundary(PyObject *self, PyObject *args)
 
 SceneMaterial *HermesRF::newMaterial()
 {
-    return new SceneLabelRFMarker(tr("new material"),
-                                  Value("1"),
-                                  Value("1"),
-                                  Value("0"),
-                                  Value("0"),
-                                  Value("0"));
+    return new SceneMaterialRF(tr("new material"),
+                               Value("1"),
+                               Value("1"),
+                               Value("0"),
+                               Value("0"),
+                               Value("0"));
 }
 
 SceneMaterial *HermesRF::newMaterial(PyObject *self, PyObject *args)
@@ -592,12 +671,12 @@ SceneMaterial *HermesRF::newMaterial(PyObject *self, PyObject *args)
         // check name
         if (Util::scene()->getMaterial(name)) return NULL;
 
-        return new SceneLabelRFMarker(name,
-                                      Value(QString::number(permittivity)),
-                                      Value(QString::number(permeability)),
-                                      Value(QString::number(conductivity)),
-                                      Value(QString::number(current_density_real)),
-                                      Value(QString::number(current_density_imag)));
+        return new SceneMaterialRF(name,
+                                   Value(QString::number(permittivity)),
+                                   Value(QString::number(permeability)),
+                                   Value(QString::number(conductivity)),
+                                   Value(QString::number(current_density_real)),
+                                   Value(QString::number(current_density_imag)));
     }
 
     return NULL;
@@ -609,7 +688,7 @@ SceneMaterial *HermesRF::modifyMaterial(PyObject *self, PyObject *args)
     char *name;
     if (PyArg_ParseTuple(args, "sddddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
     {
-        if (SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(Util::scene()->getMaterial(name)))
+        if (SceneMaterialRF *marker = dynamic_cast<SceneMaterialRF *>(Util::scene()->getMaterial(name)))
         {
             marker->permittivity = Value(QString::number(permittivity));
             marker->permeability = Value(QString::number(permeability));
@@ -634,15 +713,15 @@ void HermesRF::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_ElectricFieldReal), PhysicFieldVariable_RF_ElectricFieldReal);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_ElectricFieldImag), PhysicFieldVariable_RF_ElectricFieldImag);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticField), PhysicFieldVariable_RF_MagneticField);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFieldRealX), PhysicFieldVariable_RF_MagneticFieldRealX);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFieldImagX), PhysicFieldVariable_RF_MagneticFieldImagX);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFieldRealY), PhysicFieldVariable_RF_MagneticFieldRealY);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFieldImagY), PhysicFieldVariable_RF_MagneticFieldImagY);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFieldXReal), PhysicFieldVariable_RF_MagneticFieldXReal);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFieldXImag), PhysicFieldVariable_RF_MagneticFieldXImag);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFieldXReal), PhysicFieldVariable_RF_MagneticFieldXReal);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFieldYImag), PhysicFieldVariable_RF_MagneticFieldYImag);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensity), PhysicFieldVariable_RF_MagneticFluxDensity);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensityRealX), PhysicFieldVariable_RF_MagneticFluxDensityRealX);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensityImagX), PhysicFieldVariable_RF_MagneticFluxDensityImagX);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensityRealY), PhysicFieldVariable_RF_MagneticFluxDensityRealY);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensityImagY), PhysicFieldVariable_RF_MagneticFluxDensityImagY);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensityXReal), PhysicFieldVariable_RF_MagneticFluxDensityXReal);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensityXImag), PhysicFieldVariable_RF_MagneticFluxDensityXImag);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensityYReal), PhysicFieldVariable_RF_MagneticFluxDensityYReal);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensityYImag), PhysicFieldVariable_RF_MagneticFluxDensityYImag);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_PoyntingVector), PhysicFieldVariable_RF_PoyntingVector);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_PoyntingVectorReal), PhysicFieldVariable_RF_PoyntingVectorReal);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_PoyntingVectorImag), PhysicFieldVariable_RF_PoyntingVectorImag);
@@ -657,7 +736,7 @@ void HermesRF::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 void HermesRF::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 {
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_ElectricFieldReal), PhysicFieldVariable_RF_ElectricFieldReal);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFieldRealX), PhysicFieldVariable_RF_MagneticFieldRealX);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFieldXReal), PhysicFieldVariable_RF_MagneticFieldXReal);
 }
 
 
@@ -670,59 +749,59 @@ void HermesRF::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPoin
     rfNode->setText(0, tr("RF field"));
     rfNode->setExpanded(true);
 
-        // material
-        addTreeWidgetItemValue(rfNode, tr("Permittivity:"), QString("%1").arg(localPointValueRF->permittivity, 0, 'f', 2), "");
-        addTreeWidgetItemValue(rfNode, tr("Permeability:"), QString("%1").arg(localPointValueRF->permeability, 0, 'f', 2), "");
-        addTreeWidgetItemValue(rfNode, tr("Conductivity:"), QString("%1").arg(localPointValueRF->conductivity, 0, 'f', 2), "");
+    // material
+    addTreeWidgetItemValue(rfNode, tr("Permittivity:"), QString("%1").arg(localPointValueRF->permittivity, 0, 'f', 2), "");
+    addTreeWidgetItemValue(rfNode, tr("Permeability:"), QString("%1").arg(localPointValueRF->permeability, 0, 'f', 2), "");
+    addTreeWidgetItemValue(rfNode, tr("Conductivity:"), QString("%1").arg(localPointValueRF->conductivity, 0, 'f', 2), "");
 
-        // Electric Field
-        QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(rfNode);
-        itemElectricField->setText(0, tr("Electric field"));
-        itemElectricField->setExpanded(true);
+    // Electric Field
+    QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(rfNode);
+    itemElectricField->setText(0, tr("Electric field"));
+    itemElectricField->setExpanded(true);
 
-        addTreeWidgetItemValue(itemElectricField, tr("real:"), QString("%1").arg(localPointValueRF->electric_field_real, 0, 'e', 3), "V/m");
-        addTreeWidgetItemValue(itemElectricField, tr("imag:"), QString("%1").arg(localPointValueRF->electric_field_imag, 0, 'e', 3), "V/m");
-        addTreeWidgetItemValue(itemElectricField, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->electric_field_real) + sqr(localPointValueRF->electric_field_imag)), 0, 'e', 3), "V/m");
+    addTreeWidgetItemValue(itemElectricField, tr("real:"), QString("%1").arg(localPointValueRF->electric_field_real, 0, 'e', 3), "V/m");
+    addTreeWidgetItemValue(itemElectricField, tr("imag:"), QString("%1").arg(localPointValueRF->electric_field_imag, 0, 'e', 3), "V/m");
+    addTreeWidgetItemValue(itemElectricField, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->electric_field_real) + sqr(localPointValueRF->electric_field_imag)), 0, 'e', 3), "V/m");
 
-        // Magnetic Field
-        QTreeWidgetItem *itemMagneticField = new QTreeWidgetItem(rfNode);
-        itemMagneticField->setText(0, tr("Magnetic field"));
-        itemMagneticField->setExpanded(true);
+    // Magnetic Field
+    QTreeWidgetItem *itemMagneticField = new QTreeWidgetItem(rfNode);
+    itemMagneticField->setText(0, tr("Magnetic field"));
+    itemMagneticField->setExpanded(true);
 
-        addTreeWidgetItemValue(itemMagneticField, tr("real X:"), QString("%1").arg(localPointValueRF->magnetic_field_realX, 0, 'e', 3), "A/m");
-        addTreeWidgetItemValue(itemMagneticField, tr("imag X:"), QString("%1").arg(localPointValueRF->magnetic_field_imagX, 0, 'e', 3), "A/m");
-        addTreeWidgetItemValue(itemMagneticField, tr("real Y:"), QString("%1").arg(localPointValueRF->magnetic_field_realY, 0, 'e', 3), "A/m");
-        addTreeWidgetItemValue(itemMagneticField, tr("imag Y:"), QString("%1").arg(localPointValueRF->magnetic_field_imagY, 0, 'e', 3), "A/m");
-        addTreeWidgetItemValue(itemMagneticField, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->magnetic_field_realX) + sqr(localPointValueRF->magnetic_field_imagX) + sqr(localPointValueRF->magnetic_field_realY) + sqr(localPointValueRF->magnetic_field_imagY)), 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticField, tr("real X:"), QString("%1").arg(localPointValueRF->magnetic_field_realX, 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticField, tr("imag X:"), QString("%1").arg(localPointValueRF->magnetic_field_imagX, 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticField, tr("real Y:"), QString("%1").arg(localPointValueRF->magnetic_field_realY, 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticField, tr("imag Y:"), QString("%1").arg(localPointValueRF->magnetic_field_imagY, 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticField, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->magnetic_field_realX) + sqr(localPointValueRF->magnetic_field_imagX) + sqr(localPointValueRF->magnetic_field_realY) + sqr(localPointValueRF->magnetic_field_imagY)), 0, 'e', 3), "A/m");
 
-        // Magnetic Flux Density
-        QTreeWidgetItem *itemFluxDensity = new QTreeWidgetItem(rfNode);
-        itemFluxDensity->setText(0, tr("Magnetic flux density"));
-        itemFluxDensity->setExpanded(true);
+    // Magnetic Flux Density
+    QTreeWidgetItem *itemFluxDensity = new QTreeWidgetItem(rfNode);
+    itemFluxDensity->setText(0, tr("Magnetic flux density"));
+    itemFluxDensity->setExpanded(true);
 
-        addTreeWidgetItemValue(itemFluxDensity, tr("real X:"), QString("%1").arg(localPointValueRF->flux_density_realX, 0, 'e', 3), "T");
-        addTreeWidgetItemValue(itemFluxDensity, tr("imag X:"), QString("%1").arg(localPointValueRF->flux_density_imagX, 0, 'e', 3), "T");
-        addTreeWidgetItemValue(itemFluxDensity, tr("real Y:"), QString("%1").arg(localPointValueRF->flux_density_realY, 0, 'e', 3), "T");
-        addTreeWidgetItemValue(itemFluxDensity, tr("imag Y:"), QString("%1").arg(localPointValueRF->flux_density_imagY, 0, 'e', 3), "T");
-        addTreeWidgetItemValue(itemFluxDensity, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->flux_density_realX) + sqr(localPointValueRF->flux_density_imagX) + sqr(localPointValueRF->flux_density_realY) + sqr(localPointValueRF->flux_density_imagY)), 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensity, tr("real X:"), QString("%1").arg(localPointValueRF->flux_density_realX, 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensity, tr("imag X:"), QString("%1").arg(localPointValueRF->flux_density_imagX, 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensity, tr("real Y:"), QString("%1").arg(localPointValueRF->flux_density_realY, 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensity, tr("imag Y:"), QString("%1").arg(localPointValueRF->flux_density_imagY, 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensity, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->flux_density_realX) + sqr(localPointValueRF->flux_density_imagX) + sqr(localPointValueRF->flux_density_realY) + sqr(localPointValueRF->flux_density_imagY)), 0, 'e', 3), "T");
 
-        // Poynting vector
-        QTreeWidgetItem *itemPoyntingVector = new QTreeWidgetItem(rfNode);
-        itemPoyntingVector->setText(0, tr("Poynting vector"));
-        itemPoyntingVector->setExpanded(true);
+    // Poynting vector
+    QTreeWidgetItem *itemPoyntingVector = new QTreeWidgetItem(rfNode);
+    itemPoyntingVector->setText(0, tr("Poynting vector"));
+    itemPoyntingVector->setExpanded(true);
 
-        addTreeWidgetItemValue(itemPoyntingVector, tr("real:"), QString("%1").arg(localPointValueRF->poynting_vector_real, 0, 'e', 3), "W/m2");
-        addTreeWidgetItemValue(itemPoyntingVector, tr("imag:"), QString("%1").arg(localPointValueRF->poynting_vector_imag, 0, 'e', 3), "W/m2");
-        addTreeWidgetItemValue(itemPoyntingVector, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->poynting_vector_real) + sqr(localPointValueRF->poynting_vector_imag)), 0, 'e', 3), "W/m2");
+    addTreeWidgetItemValue(itemPoyntingVector, tr("real:"), QString("%1").arg(localPointValueRF->poynting_vector_real, 0, 'e', 3), "W/m2");
+    addTreeWidgetItemValue(itemPoyntingVector, tr("imag:"), QString("%1").arg(localPointValueRF->poynting_vector_imag, 0, 'e', 3), "W/m2");
+    addTreeWidgetItemValue(itemPoyntingVector, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->poynting_vector_real) + sqr(localPointValueRF->poynting_vector_imag)), 0, 'e', 3), "W/m2");
 
-        // Current Density
-        QTreeWidgetItem *itemCurrentDensity = new QTreeWidgetItem(rfNode);
-        itemCurrentDensity->setText(0, tr("Current density"));
-        itemCurrentDensity->setExpanded(true);
+    // Current Density
+    QTreeWidgetItem *itemCurrentDensity = new QTreeWidgetItem(rfNode);
+    itemCurrentDensity->setText(0, tr("Current density"));
+    itemCurrentDensity->setExpanded(true);
 
-        addTreeWidgetItemValue(itemCurrentDensity, tr("real:"), QString("%1").arg(localPointValueRF->current_density_real, 0, 'f', 2), "A/m2");
-        addTreeWidgetItemValue(itemCurrentDensity, tr("imag:"), QString("%1").arg(localPointValueRF->current_density_imag, 0, 'f', 2), "A/m2");
-        addTreeWidgetItemValue(itemCurrentDensity, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->current_density_real) + sqr(localPointValueRF->current_density_imag)), 0, 'f', 2), "A/m2");
+    addTreeWidgetItemValue(itemCurrentDensity, tr("real:"), QString("%1").arg(localPointValueRF->current_density_real, 0, 'f', 2), "A/m2");
+    addTreeWidgetItemValue(itemCurrentDensity, tr("imag:"), QString("%1").arg(localPointValueRF->current_density_imag, 0, 'f', 2), "A/m2");
+    addTreeWidgetItemValue(itemCurrentDensity, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->current_density_real) + sqr(localPointValueRF->current_density_imag)), 0, 'f', 2), "A/m2");
 }
 
 void HermesRF::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
@@ -759,108 +838,55 @@ ViewScalarFilter *HermesRF::viewScalarFilter(PhysicFieldVariable physicFieldVari
 
 QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
 {
-    // edge markers
-    /*
-    BCTypes bcTypesReal, bcTypesImag;
-    BCValues bcValuesReal, bcValuesImag;
+    // boundaries
+    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
+    {
+        SceneBoundaryRF *boundary = dynamic_cast<SceneBoundaryRF *>(Util::scene()->boundaries[i]);
 
-    rfEdge = new RFEdge[Util::scene()->edges.count()+1];
-    rfEdge[0].type = PhysicFieldBC_None;
-    rfEdge[0].value_real = 0.0;
-    rfEdge[0].value_imag = 0.0;
-    rfEdge[0].power = 0.0;
-    rfEdge[0].phase = 0.0;
+        // evaluate script
+        if (!boundary->value_real.evaluate()) return QList<SolutionArray *>();
+        if (!boundary->value_imag.evaluate()) return QList<SolutionArray *>();
+        if (!boundary->power.evaluate()) return QList<SolutionArray *>();
+        if (!boundary->phase.evaluate()) return QList<SolutionArray *>();
+        if (!boundary->height.evaluate()) return QList<SolutionArray *>();
+    }
+
+    // materials
+    for (int i = 1; i<Util::scene()->materials.count(); i++)
+    {
+        SceneMaterialRF *material = dynamic_cast<SceneMaterialRF *>(Util::scene()->materials[i]);
+
+        // evaluate script
+        if (!material->permeability.evaluate()) return QList<SolutionArray *>();
+        if (!material->permittivity.evaluate()) return QList<SolutionArray *>();
+        if (!material->conductivity.evaluate()) return QList<SolutionArray *>();
+        if (!material->current_density_real.evaluate()) return QList<SolutionArray *>();
+        if (!material->current_density_imag.evaluate()) return QList<SolutionArray *>();
+    }
+
+    // boundary conditions
+    EssentialBCs bc1;
+    EssentialBCs bc2;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        if (Util::scene()->boundaries.indexOf(Util::scene()->edges[i]->marker) == 0)
+        SceneBoundaryRF *boundary = dynamic_cast<SceneBoundaryRF *>(Util::scene()->edges[i]->boundary);
+
+        if (boundary)
         {
-            rfEdge[i+1].type = PhysicFieldBC_None;
-            rfEdge[i+1].value_real = 0.0;
-            rfEdge[i+1].value_imag = 0.0;
-        }
-        else
-        {
-            SceneEdgeRFMarker *edgeRFMarker = dynamic_cast<SceneEdgeRFMarker *>(Util::scene()->edges[i]->marker);
-
-            // evaluate script
-            if (!edgeRFMarker->value_real.evaluate()) return QList<SolutionArray *>();
-            if (!edgeRFMarker->value_imag.evaluate()) return QList<SolutionArray *>();
-
-            rfEdge[i+1].type = edgeRFMarker->type;
-            rfEdge[i+1].mode = edgeRFMarker->mode;
-            rfEdge[i+1].value_real = edgeRFMarker->value_real.number;
-            rfEdge[i+1].value_imag = edgeRFMarker->value_imag.number;
-            rfEdge[i+1].power = edgeRFMarker->power.number;
-            rfEdge[i+1].phase = edgeRFMarker->phase.number;
-            rfEdge[i+1].height = edgeRFMarker->height.number;
-            rfEdge[i+1].start = Util::scene()->edges[i]->nodeStart->point;
-            rfEdge[i+1].end = Util::scene()->edges[i]->nodeEnd->point;
-            rfEdge[i+1].angle = Util::scene()->edges[i]->angle;
-
-            switch (edgeRFMarker->type)
+            if (boundary->type == PhysicFieldBC_RF_ElectricField)
             {
-            case PhysicFieldBC_None:
-                bcTypesReal.add_bc_none(i+1);
-                bcTypesImag.add_bc_none(i+1);
-                break;
-            case PhysicFieldBC_RF_ElectricField:
-                bcTypesReal.add_bc_dirichlet(i+1);
-                bcTypesImag.add_bc_dirichlet(i+1);
-                bcValuesReal.add_const(i+1, edgeRFMarker->value_real.number);
-                bcValuesImag.add_const(i+1, edgeRFMarker->value_imag.number);
-                break;
-            case PhysicFieldBC_RF_MagneticField:
-                bcTypesReal.add_bc_neumann(i+1);
-                bcTypesImag.add_bc_neumann(i+1);
-                break;
-            case PhysicFieldBC_RF_MatchedBoundary:
-                bcTypesReal.add_bc_newton(i+1);
-                bcTypesImag.add_bc_newton(i+1);
-                break;
-            case PhysicFieldBC_RF_Port:
-                bcTypesReal.add_bc_newton(i+1);
-                bcTypesImag.add_bc_newton(i+1);
-                break;
+                bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value_real.number));
+                bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value_imag.number));
             }
         }
     }
+    Hermes::vector<EssentialBCs> bcs(bc1, bc2);
 
-    // label markers
-    rfLabel = new RFLabel[Util::scene()->labels.count()];
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
-    {
-        if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->marker) == 0)
-        {
-        }
-        else
-        {
-            SceneLabelRFMarker *labelRFMarker = dynamic_cast<SceneLabelRFMarker *>(Util::scene()->labels[i]->marker);
+    WeakFormRFHarmonic wf;
 
-            // evaluate script
-            if (!labelRFMarker->permittivity.evaluate()) return QList<SolutionArray *>();
-            if (!labelRFMarker->permeability.evaluate()) return QList<SolutionArray *>();
-            if (!labelRFMarker->conductivity.evaluate()) return QList<SolutionArray *>();
-            if (!labelRFMarker->current_density_real.evaluate()) return QList<SolutionArray *>();
-            if (!labelRFMarker->current_density_imag.evaluate()) return QList<SolutionArray *>();
-
-            rfLabel[i].permittivity = labelRFMarker->permittivity.number;
-            rfLabel[i].permeability = labelRFMarker->permeability.number;
-            rfLabel[i].conductivity = labelRFMarker->conductivity.number;
-            rfLabel[i].current_density_real = labelRFMarker->current_density_real.number;
-            rfLabel[i].current_density_imag = labelRFMarker->current_density_imag.number;
-        }
-    }
-
-    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                 Hermes::vector<BCTypes *>(&bcTypesReal, &bcTypesImag),
-                                                                 Hermes::vector<BCValues *>(&bcValuesReal, &bcValuesImag),
-                                                                 callbackRFWeakForm);
-
-    delete [] rfEdge;
-    delete [] rfLabel;
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
 
     return solutionArrayList;
-    */
 }
 
 // ****************************************************************************************************************
@@ -891,7 +917,7 @@ LocalPointValueRF::LocalPointValueRF(const Point &point) : LocalPointValue(point
         // value real
         PointValue valueReal = PointValue(value, derivative, material);
 
-        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(valueReal.marker);
+        SceneMaterialRF *marker = dynamic_cast<SceneMaterialRF *>(valueReal.marker);
         // solution
         if (marker != NULL)
         {
@@ -962,47 +988,47 @@ double LocalPointValueRF::variableValue(PhysicFieldVariable physicFieldVariable,
         return sqrt(sqr(magnetic_field_realX) + sqr(magnetic_field_imagX) + sqr(magnetic_field_realY) + sqr(magnetic_field_imagY));
     }
         break;
-    case PhysicFieldVariable_RF_MagneticFieldRealX:
+    case PhysicFieldVariable_RF_MagneticFieldXReal:
     {
         return magnetic_field_realX;
     }
         break;
-    case PhysicFieldVariable_RF_MagneticFieldImagX:
+    case PhysicFieldVariable_RF_MagneticFieldXImag:
     {
         return magnetic_field_imagX;
     }
         break;
-    case PhysicFieldVariable_RF_MagneticFieldRealY:
+    case PhysicFieldVariable_RF_MagneticFieldYReal:
     {
         return magnetic_field_realY;
     }
         break;
-    case PhysicFieldVariable_RF_MagneticFieldImagY:
+    case PhysicFieldVariable_RF_MagneticFieldYImag:
     {
         return magnetic_field_imagY;
     }
-            break;
+        break;
     case PhysicFieldVariable_RF_MagneticFluxDensity:
     {
         return sqrt(sqr(flux_density_realX) + sqr(flux_density_imagX) + sqr(flux_density_realY) + sqr(flux_density_imagY));
     }
         break;
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealX:
+    case PhysicFieldVariable_RF_MagneticFluxDensityXReal:
     {
         return flux_density_realX;
     }
         break;
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
+    case PhysicFieldVariable_RF_MagneticFluxDensityXImag:
     {
         return flux_density_imagX;
     }
         break;
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
+    case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
     {
         return flux_density_realY;
     }
         break;
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
+    case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
     {
         return flux_density_imagY;
     }
@@ -1133,7 +1159,7 @@ QStringList VolumeIntegralValueRF::variables()
 
 void ViewScalarFilterRF::calculateVariable(int i)
 {
-    SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(material);
+    SceneMaterialRF *marker = dynamic_cast<SceneMaterialRF *>(material);
 
     switch (m_physicFieldVariable)
     {
@@ -1174,150 +1200,150 @@ void ViewScalarFilterRF::calculateVariable(int i)
     }
         break;
     case PhysicFieldVariable_RF_MagneticField:
-        {
-            double mu = marker->permeability.number * MU0;
-            double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
-
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            {
-                node->values[0][0][i] = sqrt(sqr(-(1/(w*mu)) * dudy2[i]) + sqr((1/(w*mu)) * dudy1[i]) + sqr((1/(w*mu)) * dudx2[i]) + sqr(-(1/(w*mu)) * dudx1[i]));
-            }
-            else
-            {
-                node->values[0][0][i] = sqrt(sqr(-(1/(w*mu)) * dudy2[i]) + sqr((1/(w*mu)) * dudy1[i]) + sqr((1/(w*mu)) * dudx2[i]) + sqr(-(1/(w*mu)) * dudx1[i])) * x[i];
-            }
-        }
-        break;
-    case PhysicFieldVariable_RF_MagneticFieldRealX:
     {
-            double mu = marker->permeability.number * MU0;
-            double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
+        double mu = marker->permeability.number * MU0;
+        double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
 
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            {
-                node->values[0][0][i] = -(1/(w*mu)) * dudy2[i];
-            }
-            else
-            {
-                node->values[0][0][i] = -(1/(w*mu)) * dudy2[i] * x[i];
-            }
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = sqrt(sqr(-(1/(w*mu)) * dudy2[i]) + sqr((1/(w*mu)) * dudy1[i]) + sqr((1/(w*mu)) * dudx2[i]) + sqr(-(1/(w*mu)) * dudx1[i]));
         }
+        else
+        {
+            node->values[0][0][i] = sqrt(sqr(-(1/(w*mu)) * dudy2[i]) + sqr((1/(w*mu)) * dudy1[i]) + sqr((1/(w*mu)) * dudx2[i]) + sqr(-(1/(w*mu)) * dudx1[i])) * x[i];
+        }
+    }
+        break;
+    case PhysicFieldVariable_RF_MagneticFieldXReal:
+    {
+        double mu = marker->permeability.number * MU0;
+        double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
+
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = -(1/(w*mu)) * dudy2[i];
+        }
+        else
+        {
+            node->values[0][0][i] = -(1/(w*mu)) * dudy2[i] * x[i];
+        }
+    }
 
         break;
-    case PhysicFieldVariable_RF_MagneticFieldImagX:
-        {
-            double mu = marker->permeability.number * MU0;
-            double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
+    case PhysicFieldVariable_RF_MagneticFieldXImag:
+    {
+        double mu = marker->permeability.number * MU0;
+        double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
 
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            {
-                node->values[0][0][i] = (1/(w*mu)) * dudy1[i];
-            }
-            else
-            {
-                node->values[0][0][i] = (1/(w*mu)) * dudy1[i] * x[i];
-            }
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = (1/(w*mu)) * dudy1[i];
         }
+        else
+        {
+            node->values[0][0][i] = (1/(w*mu)) * dudy1[i] * x[i];
+        }
+    }
         break;
-    case PhysicFieldVariable_RF_MagneticFieldRealY:
-        {
-            double mu = marker->permeability.number * MU0;
-            double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
+    case PhysicFieldVariable_RF_MagneticFieldYReal:
+    {
+        double mu = marker->permeability.number * MU0;
+        double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
 
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            {
-                node->values[0][0][i] = (1/(w*mu)) * dudx2[i];
-            }
-            else
-            {
-                node->values[0][0][i] = (1/(w*mu)) * dudx2[i] * x[i];
-            }
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = (1/(w*mu)) * dudx2[i];
         }
+        else
+        {
+            node->values[0][0][i] = (1/(w*mu)) * dudx2[i] * x[i];
+        }
+    }
         break;
-    case PhysicFieldVariable_RF_MagneticFieldImagY:
-        {
-            double mu = marker->permeability.number * MU0;
-            double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
+    case PhysicFieldVariable_RF_MagneticFieldYImag:
+    {
+        double mu = marker->permeability.number * MU0;
+        double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
 
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            {
-                node->values[0][0][i] = -(1/(w*mu)) * dudx1[i];
-            }
-            else
-            {
-                node->values[0][0][i] = -(1/(w*mu)) * dudx1[i] * x[i];
-            }
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = -(1/(w*mu)) * dudx1[i];
         }
+        else
+        {
+            node->values[0][0][i] = -(1/(w*mu)) * dudx1[i] * x[i];
+        }
+    }
         break;
     case PhysicFieldVariable_RF_MagneticFluxDensity:
-        {
-            double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
+    {
+        double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
 
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            {
-                node->values[0][0][i] = sqrt(sqr(-(1/(w)) * dudy2[i]) + sqr((1/(w)) * dudy1[i]) + sqr((1/(w)) * dudx2[i]) + sqr(-(1/(w)) * dudx1[i]));
-            }
-            else
-            {
-                node->values[0][0][i] = sqrt(sqr(-(1/(w)) * dudy2[i]) + sqr((1/(w)) * dudy1[i]) + sqr((1/(w)) * dudx2[i]) + sqr(-(1/(w)) * dudx1[i]));
-            }
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = sqrt(sqr(-(1/(w)) * dudy2[i]) + sqr((1/(w)) * dudy1[i]) + sqr((1/(w)) * dudx2[i]) + sqr(-(1/(w)) * dudx1[i]));
         }
+        else
+        {
+            node->values[0][0][i] = sqrt(sqr(-(1/(w)) * dudy2[i]) + sqr((1/(w)) * dudy1[i]) + sqr((1/(w)) * dudx2[i]) + sqr(-(1/(w)) * dudx1[i]));
+        }
+    }
         break;
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealX:
-        {
-            double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
+    case PhysicFieldVariable_RF_MagneticFluxDensityXReal:
+    {
+        double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
 
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            {
-                node->values[0][0][i] = -(1/(w)) * dudy2[i];
-            }
-            else
-            {
-                node->values[0][0][i] = -(1/(w)) * dudy2[i] * x[i];
-            }
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = -(1/(w)) * dudy2[i];
         }
+        else
+        {
+            node->values[0][0][i] = -(1/(w)) * dudy2[i] * x[i];
+        }
+    }
         break;
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
-        {
-            double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
+    case PhysicFieldVariable_RF_MagneticFluxDensityXImag:
+    {
+        double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
 
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            {
-                node->values[0][0][i] = (1/(w)) * dudy1[i];
-            }
-            else
-            {
-                node->values[0][0][i] = (1/(w)) * dudy1[i] * x[i];
-            }
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = (1/(w)) * dudy1[i];
         }
+        else
+        {
+            node->values[0][0][i] = (1/(w)) * dudy1[i] * x[i];
+        }
+    }
         break;
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
-        {
-            double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
+    case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
+    {
+        double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
 
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            {
-                node->values[0][0][i] = (1/(w)) * dudx2[i];
-            }
-            else
-            {
-                node->values[0][0][i] = (1/(w)) * dudx2[i] * x[i];
-            }
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = (1/(w)) * dudx2[i];
         }
+        else
+        {
+            node->values[0][0][i] = (1/(w)) * dudx2[i] * x[i];
+        }
+    }
         break;
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
-        {
-            double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
+    case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
+    {
+        double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
 
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            {
-                node->values[0][0][i] = -(1/(w)) * dudx1[i];
-            }
-            else
-            {
-                node->values[0][0][i] = -(1/(w)) * dudx1[i] * x[i];
-            }
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = -(1/(w)) * dudx1[i];
         }
+        else
+        {
+            node->values[0][0][i] = -(1/(w)) * dudx1[i] * x[i];
+        }
+    }
         break;
     case PhysicFieldVariable_RF_PoyntingVector:
     {
@@ -1351,7 +1377,7 @@ void ViewScalarFilterRF::calculateVariable(int i)
         break;
     case PhysicFieldVariable_RF_PoyntingVectorImag:
     {
-        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(material);
+        SceneMaterialRF *marker = dynamic_cast<SceneMaterialRF *>(material);
 
         double mu = marker->permeability.number * MU0;
         double w = 2 * M_PI * Util::scene()->problemInfo()->frequency;
@@ -1412,14 +1438,14 @@ void ViewScalarFilterRF::calculateVariable(int i)
 
 // *************************************************************************************************************************************
 
-SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag)
+SceneBoundaryRF::SceneBoundaryRF(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag)
     : SceneBoundary(name, type)
 {
     this->value_real = value_real;
     this->value_imag = value_imag;
 }
 
-SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, TEMode mode, Value power, Value phase, Value height)
+SceneBoundaryRF::SceneBoundaryRF(const QString &name, PhysicFieldBC type, TEMode mode, Value power, Value phase, Value height)
     : SceneBoundary(name, type)
 {
     this->power = power;
@@ -1428,12 +1454,12 @@ SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, TE
     this->height = height;
 }
 
-SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value height) : SceneBoundary(name, type)
+SceneBoundaryRF::SceneBoundaryRF(const QString &name, PhysicFieldBC type, Value height) : SceneBoundary(name, type)
 {
     this->height = height;
 }
 
-QString SceneEdgeRFMarker::script()
+QString SceneBoundaryRF::script()
 {
     if (type == PhysicFieldBC_RF_ElectricField ||
             type == PhysicFieldBC_RF_MagneticField)
@@ -1462,7 +1488,7 @@ QString SceneEdgeRFMarker::script()
 
 }
 
-QMap<QString, QString> SceneEdgeRFMarker::data()
+QMap<QString, QString> SceneBoundaryRF::data()
 {
     QMap<QString, QString> out;
     switch (type)
@@ -1486,15 +1512,15 @@ QMap<QString, QString> SceneEdgeRFMarker::data()
     return QMap<QString, QString>(out);
 }
 
-int SceneEdgeRFMarker::showDialog(QWidget *parent)
+int SceneBoundaryRF::showDialog(QWidget *parent)
 {
-    DSceneEdgeRFMarker *dialog = new DSceneEdgeRFMarker(this, parent);
+    SceneBoundaryRFDialog *dialog = new SceneBoundaryRFDialog(this, parent);
     return dialog->exec();
 }
 
 // *************************************************************************************************************************************
 
-SceneLabelRFMarker::SceneLabelRFMarker(const QString &name, Value permittivity,Value permeability, Value conductivity, Value current_density_real, Value current_density_imag)
+SceneMaterialRF::SceneMaterialRF(const QString &name, Value permittivity,Value permeability, Value conductivity, Value current_density_real, Value current_density_imag)
     : SceneMaterial(name)
 {
     this->permittivity = permittivity;
@@ -1504,7 +1530,7 @@ SceneLabelRFMarker::SceneLabelRFMarker(const QString &name, Value permittivity,V
     this->current_density_imag = current_density_imag;
 }
 
-QString SceneLabelRFMarker::script()
+QString SceneMaterialRF::script()
 {
     return QString("addmaterial(\"%1\", %2, %3, %4)").
             arg(name).
@@ -1515,7 +1541,7 @@ QString SceneLabelRFMarker::script()
             arg(current_density_imag.text);
 }
 
-QMap<QString, QString> SceneLabelRFMarker::data()
+QMap<QString, QString> SceneMaterialRF::data()
 {
     QMap<QString, QString> out;
     out["Permittivity (-)"] = permittivity.text;
@@ -1526,15 +1552,15 @@ QMap<QString, QString> SceneLabelRFMarker::data()
     return QMap<QString, QString>(out);
 }
 
-int SceneLabelRFMarker::showDialog(QWidget *parent)
+int SceneMaterialRF::showDialog(QWidget *parent)
 {
-    DSceneLabelRFMarker *dialog = new DSceneLabelRFMarker(parent, this);
+    SceneMaterialRFDialog *dialog = new SceneMaterialRFDialog(parent, this);
     return dialog->exec();
 }
 
 // *************************************************************************************************************************************
 
-DSceneEdgeRFMarker::DSceneEdgeRFMarker(SceneEdgeRFMarker *edgeRFMarker, QWidget *parent) : SceneBoundaryDialog(parent)
+SceneBoundaryRFDialog::SceneBoundaryRFDialog(SceneBoundaryRF *edgeRFMarker, QWidget *parent) : SceneBoundaryDialog(parent)
 {
     m_boundary = edgeRFMarker;
 
@@ -1544,7 +1570,7 @@ DSceneEdgeRFMarker::DSceneEdgeRFMarker(SceneEdgeRFMarker *edgeRFMarker, QWidget 
     setSize();
 }
 
-void DSceneEdgeRFMarker::createContent()
+void SceneBoundaryRFDialog::createContent()
 {
     lblValueUnitReal = new QLabel("");
     lblValueUnitImag = new QLabel("");
@@ -1581,18 +1607,18 @@ void DSceneEdgeRFMarker::createContent()
     layout->addWidget(cmbType, 4, 2);
     layout->addWidget(lblValueUnitReal, 10, 0);
     layout->addLayout(layoutPhysicField, 10, 2);
-    layout->addWidget(new QLabel(tr("TE mode:")), 12, 0);
+    layout->addWidget(new QLabel(tr("Mode:")), 12, 0);
     layout->addWidget(cmbMode, 12, 2);
     layout->addWidget(createLabel(tr("<i>h</i> (m)"),
                                   tr("Height:")), 13, 0);
     layout->addWidget(txtHeight, 13, 2);
 }
 
-void DSceneEdgeRFMarker::load()
+void SceneBoundaryRFDialog::load()
 {
     SceneBoundaryDialog::load();
 
-    SceneEdgeRFMarker *edgeRFMarker = dynamic_cast<SceneEdgeRFMarker *>(m_boundary);
+    SceneBoundaryRF *edgeRFMarker = dynamic_cast<SceneBoundaryRF *>(m_boundary);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeRFMarker->type));
 
@@ -1619,10 +1645,11 @@ void DSceneEdgeRFMarker::load()
     }
 }
 
-bool DSceneEdgeRFMarker::save() {
+bool SceneBoundaryRFDialog::save()
+{
     if (!SceneBoundaryDialog::save()) return false;;
 
-    SceneEdgeRFMarker *edgeRFMarker = dynamic_cast<SceneEdgeRFMarker *>(m_boundary);
+    SceneBoundaryRF *edgeRFMarker = dynamic_cast<SceneBoundaryRF *>(m_boundary);
 
     edgeRFMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
     edgeRFMarker->mode = (TEMode) cmbMode->itemData(cmbMode->currentIndex()).toInt();
@@ -1680,7 +1707,7 @@ bool DSceneEdgeRFMarker::save() {
     return true;
 }
 
-void DSceneEdgeRFMarker::doTypeChanged(int index)
+void SceneBoundaryRFDialog::doTypeChanged(int index)
 {
     txtValueReal->setEnabled(false);
     txtValueImag->setEnabled(false);
@@ -1692,43 +1719,43 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
     case PhysicFieldBC_RF_ElectricField:
     {
         txtValueReal->setEnabled(true);
-            lblValueUnitReal->setText(tr(""));
-            lblValueUnitReal->setToolTip(cmbType->itemText(index));
+        lblValueUnitReal->setText(tr("<i>E</i><sub>%1</sub>").arg(Util::scene()->problemInfo()->labelZ().toLower()));
+        lblValueUnitReal->setToolTip(cmbType->itemText(index));
         txtValueImag->setEnabled(true);
-            lblValueUnitImag->setText(tr(" + j "));
-            lblValueUnitImag->setToolTip(cmbType->itemText(index));
+        lblValueUnitImag->setText(tr(" + j "));
+        lblValueUnitImag->setToolTip(cmbType->itemText(index));
     }
         break;
 
     case PhysicFieldBC_RF_MagneticField:
     {
         txtValueReal->setEnabled(true);
-           lblValueUnitReal->setText(tr(""));
-           lblValueUnitReal->setToolTip(cmbType->itemText(index));
+        lblValueUnitReal->setText(tr("<i>H</i><sub>n</sub>"));
+        lblValueUnitReal->setToolTip(cmbType->itemText(index));
         txtValueImag->setEnabled(true);
-            lblValueUnitImag->setText(tr(" + j "));
-            lblValueUnitImag->setToolTip(cmbType->itemText(index));
+        lblValueUnitImag->setText(tr(" + j "));
+        lblValueUnitImag->setToolTip(cmbType->itemText(index));
     }
         break;
 
     case PhysicFieldBC_RF_MatchedBoundary:
     {
         txtHeight->setEnabled(true);
-        lblValueUnitReal->setText(tr(""));
-        lblValueUnitImag->setText(tr(""));
+        lblValueUnitReal->setText("-");
+        lblValueUnitImag->setText("");
     }
         break;
 
     case PhysicFieldBC_RF_Port:
     {
         txtValueReal->setEnabled(true);
-            lblValueUnitReal->setText(tr("Power (W):"));
-            lblValueUnitReal->setToolTip(cmbType->itemText(index));
+        lblValueUnitReal->setText(tr("<i>P</i> (W):"));
+        lblValueUnitReal->setToolTip(tr("Power"));
         txtValueImag->setEnabled(true);
-            lblValueUnitImag->setText(tr("Phase (°):"));
-            lblValueUnitImag->setToolTip(cmbType->itemText(index));
+        lblValueUnitImag->setText(tr("<i>%1</i> (°):").arg(QString::fromUtf8("φ")));
+        lblValueUnitImag->setToolTip(tr("Phase"));
         txtHeight->setEnabled(true);
-        cmbMode->setEnabled(true);       
+        cmbMode->setEnabled(true);
     }
         break;
     }
@@ -1737,7 +1764,7 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-DSceneLabelRFMarker::DSceneLabelRFMarker(QWidget *parent, SceneLabelRFMarker *labelRFMarker) : SceneMaterialDialog(parent)
+SceneMaterialRFDialog::SceneMaterialRFDialog(QWidget *parent, SceneMaterialRF *labelRFMarker) : SceneMaterialDialog(parent)
 {
     m_material = labelRFMarker;
 
@@ -1747,7 +1774,7 @@ DSceneLabelRFMarker::DSceneLabelRFMarker(QWidget *parent, SceneLabelRFMarker *la
     setSize();
 }
 
-void DSceneLabelRFMarker::createContent()
+void SceneMaterialRFDialog::createContent()
 {
     txtPermittivity = new ValueLineEdit(this);
     txtPermeability = new ValueLineEdit(this);
@@ -1781,11 +1808,11 @@ void DSceneLabelRFMarker::createContent()
     layout->addLayout(layoutCurrentDensity, 13, 2);
 }
 
-void DSceneLabelRFMarker::load()
+void SceneMaterialRFDialog::load()
 {
     SceneMaterialDialog::load();
 
-    SceneLabelRFMarker *labelRFMarker = dynamic_cast<SceneLabelRFMarker *>(m_material);
+    SceneMaterialRF *labelRFMarker = dynamic_cast<SceneMaterialRF *>(m_material);
 
     txtPermittivity->setValue(labelRFMarker->permittivity);
     txtPermeability->setValue(labelRFMarker->permeability);
@@ -1794,10 +1821,10 @@ void DSceneLabelRFMarker::load()
     txtCurrentDensityImag->setValue(labelRFMarker->current_density_imag);
 }
 
-bool DSceneLabelRFMarker::save() {
+bool SceneMaterialRFDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
-    SceneLabelRFMarker *labelRFMarker = dynamic_cast<SceneLabelRFMarker *>(m_material);
+    SceneMaterialRF *labelRFMarker = dynamic_cast<SceneMaterialRF *>(m_material);
 
     if (txtPermittivity->evaluate())
         labelRFMarker->permittivity  = txtPermittivity->value();

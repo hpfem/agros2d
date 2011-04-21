@@ -69,9 +69,8 @@ create_image(template, r"\curl \left( \frac{1}{\mu}\, \left( \curl \vecfaz{A} - 
 create_image(template, r"A = A_0", dir + "magnetic/magnetic_vector_potential.png")
 create_image(template, r"K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0", dir + "magnetic/magnetic_surface_current_density.png")
 
-
 # rf
-create_image(template, r"\curl \left( \frac{1}{\mu}\, \curl \vecfaz{E} \right) - \mj \omega \left( \sigma + \mj \omega \varepsilon \mu) \vecfaz{E} = \mj \omega \vecfaz{J}_\mathrm{ext}", dir + "rf/rf_harmonic.png")
+create_image(template, r"\curl \left( \frac{1}{\mu}\, \curl \vecfaz{E} \right) - \mj \omega \left( \sigma + \mj \omega \varepsilon) \vecfaz{E} = \mj \omega \vecfaz{J}_\mathrm{ext}", dir + "rf/rf_harmonic.png")
 
 # acoustic
 create_image(template, r"-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) - \frac{\omega^2}{\rho  c^2} \cdot p = 0", dir + "acoustic/acoustic_harmonic.png")

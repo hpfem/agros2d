@@ -71,6 +71,81 @@ namespace WeakFormsMaxwell {
         int order_increase;
     };
 
+    class DefaultLinearMagnetostaticsRemanence : public WeakForm::VectorFormVol
+    {
+    public:
+        DefaultLinearMagnetostaticsRemanence(int i, double perm, double rem, double rem_ang, GeomType gt = HERMES_PLANAR)
+            : WeakForm::VectorFormVol(i), perm(perm), rem(rem), rem_ang(rem_ang), gt(gt) { }
+
+        DefaultLinearMagnetostaticsRemanence(int i, std::string area, double perm, double rem, double rem_ang, GeomType gt = HERMES_PLANAR)
+            : WeakForm::VectorFormVol(i, area), perm(perm), rem(rem), rem_ang(rem_ang), gt(gt) { }
+
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
+                             Geom<double> *e, ExtData<scalar> *ext) const {
+            scalar result = 0;
+            for (int i = 0; i < n; i++)
+                result += wt[i] * (- sin(rem_ang / 180.0 * M_PI) * v->dx[i]
+                                              + cos(rem_ang / 180.0 * M_PI) * v->dy[i]);
+
+            return (gt == HERMES_PLANAR ? rem/perm : -rem/perm) * result;
+        }
+
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
+                        Geom<Ord> *e, ExtData<Ord> *ext) const {
+            Ord result = 0;
+            for (int i = 0; i < n; i++)
+                result += wt[i] * (v->dx[i] + v->dy[i]);
+
+            return result;
+        }
+
+        // This is to make the form usable in rk_time_step().
+        virtual WeakForm::VectorFormVol* clone() {
+            return new DefaultLinearMagnetostaticsRemanence(*this);
+        }
+
+    private:
+        double perm, rem, rem_ang;
+        GeomType gt;
+    };
+
+    class DefaultLinearMagnetostaticsVelocity : public WeakForm::MatrixFormVol
+    {
+    public:
+        DefaultLinearMagnetostaticsVelocity(int i, int j, double gamma, double vel_x, double vel_y, double vel_ang = 0.0)
+            : WeakForm::MatrixFormVol(i, j), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang) { }
+
+        DefaultLinearMagnetostaticsVelocity(int i, int j, std::string area, double gamma, double vel_x, double vel_y, double vel_ang = 0.0)
+            : WeakForm::MatrixFormVol(i, j, HERMES_NONSYM, area), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang) { }
+
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                             Geom<double> *e, ExtData<scalar> *ext) const {
+            scalar result = 0;
+            for (int i = 0; i < n; i++)
+                result += wt[i] * u->val[i] * ((vel_x - e->y[i] * vel_ang) * v->dx[i] +
+                                               (vel_y + e->x[i] * vel_ang) * v->dy[i]);
+
+            return -gamma * result;
+        }
+
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
+                        Geom<Ord> *e, ExtData<Ord> *ext) const {
+            Ord result = 0;
+            for (int i = 0; i < n; i++)
+                result += wt[i] * u->val[i] * (v->dx[i] + v->dy[i]);
+
+            return result;
+        }
+
+        // This is to make the form usable in rk_time_step().
+        virtual WeakForm::MatrixFormVol* clone() {
+            return new DefaultLinearMagnetostaticsVelocity(*this);
+        }
+
+    private:
+        double gamma, vel_x, vel_y, vel_ang;
+    };
+
     /* Default volumetric matrix form \int_{area} coeff_spline(u_ext[0]) \curl u \curl v d\bfx
        spline_coeff... nonconstant parameter given by cubic spline
     */

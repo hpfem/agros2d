@@ -22,19 +22,10 @@
 #include "scene.h"
 #include "gui.h"
 
-template<typename Real, typename Scalar>
-Scalar int_u_dvdx_over_x_check(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * ((e->x[i] > 0) ? u->val[i] * v->dx[i] / e->x[i] : 0.0);
-    return result;
-}
-
-class WeakFormMagnetics : public WeakFormAgros
+class WeakFormRF : public WeakFormAgros
 {
 public:
-    WeakFormMagnetics(int neq) : WeakFormAgros(neq) { }
+    WeakFormRF(int neq) : WeakFormAgros(neq) { }
 
     void registerForms()
     {
@@ -70,24 +61,24 @@ public:
             if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
                 // steady state and transient analysis
-                add_matrix_form(new DefaultLinearMagnetostatics(0, 0,
-                                                                QString::number(i).toStdString(),
-                                                                1.0 / (material->permeability.number * MU0),
-                                                                HERMES_NONSYM,
-                                                                convertProblemType(Util::scene()->problemInfo()->problemType),
-                                                                (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
+                add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostatics(0, 0,
+                                                                                                         QString::number(i).toStdString(),
+                                                                                                         1.0 / (material->permeability.number * MU0),
+                                                                                                         HERMES_NONSYM,
+                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType),
+                                                                                                         (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
 
                 // velocity
                 if ((fabs(material->conductivity.number) > EPS_ZERO) &&
                         ((fabs(material->velocity_x.number) > EPS_ZERO) ||
                          (fabs(material->velocity_y.number) > EPS_ZERO) ||
                          (fabs(material->velocity_angular.number) > EPS_ZERO)))
-                    add_matrix_form(new DefaultLinearMagnetostaticsVelocity(0, 0,
-                                                                            QString::number(i).toStdString(),
-                                                                            material->conductivity.number,
-                                                                            material->velocity_x.number,
-                                                                            material->velocity_y.number,
-                                                                            material->velocity_angular.number));
+                    add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostaticsVelocity(0, 0,
+                                                                                                                     QString::number(i).toStdString(),
+                                                                                                                     material->conductivity.number,
+                                                                                                                     material->velocity_x.number,
+                                                                                                                     material->velocity_y.number,
+                                                                                                                     material->velocity_angular.number));
 
                 // external current density
                 if (fabs(material->current_density_real.number) > EPS_ZERO)
@@ -98,22 +89,22 @@ public:
 
                 // remanence
                 if (fabs(material->remanence.number) > EPS_ZERO)
-                    add_vector_form(new DefaultLinearMagnetostaticsRemanence(0,
-                                                                             QString::number(i).toStdString(),
-                                                                             material->permeability.number * MU0,
-                                                                             material->remanence.number,
-                                                                             material->remanence_angle.number,
-                                                                             convertProblemType(Util::scene()->problemInfo()->problemType)));
+                    add_vector_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostaticsRemanence(0,
+                                                                                                                      QString::number(i).toStdString(),
+                                                                                                                      material->permeability.number * MU0,
+                                                                                                                      material->remanence.number,
+                                                                                                                      material->remanence_angle.number,
+                                                                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                 // harmonic analysis
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
                 {
-                    add_matrix_form(new DefaultLinearMagnetostatics(1, 1,
-                                                                    QString::number(i).toStdString(),
-                                                                    1.0 / (material->permeability.number * MU0),
-                                                                    HERMES_NONSYM,
-                                                                    convertProblemType(Util::scene()->problemInfo()->problemType),
-                                                                    (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 5)));
+                    add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostatics(1, 1,
+                                                                                                             QString::number(i).toStdString(),
+                                                                                                             1.0 / (material->permeability.number * MU0),
+                                                                                                             HERMES_NONSYM,
+                                                                                                             convertProblemType(Util::scene()->problemInfo()->problemType),
+                                                                                                             (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 5)));
 
                     if (fabs(material->conductivity.number) > EPS_ZERO)
                     {
@@ -162,317 +153,8 @@ public:
             }
         }
     }
-
-    class DefaultLinearMagnetostatics : public WeakForm::MatrixFormVol
-    {
-    public:
-        // The optional order_increase takes into account the axisymmetric part.
-        DefaultLinearMagnetostatics(int i, int j, scalar nu = 1.0, SymFlag sym = HERMES_SYM, GeomType gt = HERMES_PLANAR, int order_increase = 3)
-            : WeakForm::MatrixFormVol(i, j, sym), nu(nu), gt(gt), order_increase(order_increase) { }
-
-        DefaultLinearMagnetostatics(int i, int j, std::string area, scalar nu = 1.0, SymFlag sym = HERMES_SYM, GeomType gt = HERMES_PLANAR, int order_increase = 3)
-            : WeakForm::MatrixFormVol(i, j, sym, area), nu(nu), gt(gt), order_increase(order_increase) { }
-
-        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u,
-                             Func<double> *v, Geom<double> *e, ExtData<scalar> *ext) const {
-            scalar planar_part = int_grad_u_grad_v<double, scalar>(n, wt, u, v);
-            scalar axisym_part = 0;
-            if (gt == HERMES_AXISYM_X)
-                axisym_part = int_u_dvdy_over_y<double, scalar>(n, wt, u, v, e);
-            else if (gt == HERMES_AXISYM_Y)
-                axisym_part = int_u_dvdx_over_x_check<double, scalar>(n, wt, u, v, e);
-
-            return nu * (planar_part + axisym_part);
-        }
-
-        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
-                        Geom<Ord> *e, ExtData<Ord> *ext) const {
-            Ord planar_part = int_grad_u_grad_v<Ord, Ord>(n, wt, u, v);
-
-            // This increase is for the axisymmetric part. We are not letting the
-            // Ord class do it since it would automatically choose the highest order
-            // due to the nonpolynomial 1/r term.
-            return planar_part * Ord(order_increase);
-        }
-
-        // This is to make the form usable in rk_time_step().
-        virtual WeakForm::MatrixFormVol* clone() {
-            return new DefaultLinearMagnetostatics(*this);
-        }
-
-    private:
-        scalar nu;
-        GeomType gt;
-        int order_increase;
-    };
-
-    class DefaultLinearMagnetostaticsRemanence : public WeakForm::VectorFormVol
-    {
-    public:
-        DefaultLinearMagnetostaticsRemanence(int i, double perm, double rem, double rem_ang, GeomType gt = HERMES_PLANAR)
-            : WeakForm::VectorFormVol(i), perm(perm), rem(rem), rem_ang(rem_ang), gt(gt) { }
-
-        DefaultLinearMagnetostaticsRemanence(int i, std::string area, double perm, double rem, double rem_ang, GeomType gt = HERMES_PLANAR)
-            : WeakForm::VectorFormVol(i, area), perm(perm), rem(rem), rem_ang(rem_ang), gt(gt) { }
-
-        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
-                             Geom<double> *e, ExtData<scalar> *ext) const {
-            scalar result = 0;
-            for (int i = 0; i < n; i++)
-                result += wt[i] * (- sin(rem_ang / 180.0 * M_PI) * v->dx[i]
-                                              + cos(rem_ang / 180.0 * M_PI) * v->dy[i]);
-
-            return (gt == HERMES_PLANAR ? rem/perm : -rem/perm) * result;
-        }
-
-        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
-                        Geom<Ord> *e, ExtData<Ord> *ext) const {
-            Ord result = 0;
-            for (int i = 0; i < n; i++)
-                result += wt[i] * (v->dx[i] + v->dy[i]);
-
-            return result;
-        }
-
-        // This is to make the form usable in rk_time_step().
-        virtual WeakForm::VectorFormVol* clone() {
-            return new DefaultLinearMagnetostaticsRemanence(*this);
-        }
-
-    private:
-        double perm, rem, rem_ang;
-        GeomType gt;
-    };
-
-    class DefaultLinearMagnetostaticsVelocity : public WeakForm::MatrixFormVol
-    {
-    public:
-        DefaultLinearMagnetostaticsVelocity(int i, int j, double gamma, double vel_x, double vel_y, double vel_ang = 0.0)
-            : WeakForm::MatrixFormVol(i, j), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang) { }
-
-        DefaultLinearMagnetostaticsVelocity(int i, int j, std::string area, double gamma, double vel_x, double vel_y, double vel_ang = 0.0)
-            : WeakForm::MatrixFormVol(i, j, HERMES_NONSYM, area), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang) { }
-
-        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
-                             Geom<double> *e, ExtData<scalar> *ext) const {
-            scalar result = 0;
-            for (int i = 0; i < n; i++)
-                result += wt[i] * u->val[i] * ((vel_x - e->y[i] * vel_ang) * v->dx[i] +
-                                               (vel_y + e->x[i] * vel_ang) * v->dy[i]);
-
-            return -gamma * result;
-        }
-
-        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
-                        Geom<Ord> *e, ExtData<Ord> *ext) const {
-            Ord result = 0;
-            for (int i = 0; i < n; i++)
-                result += wt[i] * u->val[i] * (v->dx[i] + v->dy[i]);
-
-            return result;
-        }
-
-        // This is to make the form usable in rk_time_step().
-        virtual WeakForm::MatrixFormVol* clone() {
-            return new DefaultLinearMagnetostaticsVelocity(*this);
-        }
-
-    private:
-        double gamma, vel_x, vel_y, vel_ang;
-    };    
 };
 
-/*
-template<typename Real, typename Scalar>
-Scalar magnetic_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    double K = 0.0;
-
-    if (magneticEdge[e->edge_marker].type == PhysicFieldBC_Magnetic_SurfaceCurrent)
-        K = magneticEdge[e->edge_marker].value_real;
-
-    if (isPlanar)
-        return K * int_v<Real, Scalar>(n, wt, v);
-    else
-        return K * int_v<Real, Scalar>(n, wt, v);
-}
-
-template<typename Real, typename Scalar>
-Scalar magnetic_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    double K = 0.0;
-
-    if (magneticEdge[e->edge_marker].type == PhysicFieldBC_Magnetic_SurfaceCurrent)
-        K = magneticEdge[e->edge_marker].value_imag;
-
-    if (isPlanar)
-        return K * int_v<Real, Scalar>(n, wt, v);
-    else
-        return K * int_v<Real, Scalar>(n, wt, v);
-}
-
-template<typename Real, typename Scalar>
-Scalar magnetic_matrix_form_real_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    Scalar result = 0.0;
-    if (isPlanar)
-        for (int i = 0; i < n; i++)
-        {
-            result += 1.0 / (magneticLabel[e->elem_marker].permeability * MU0)
-                    * wt[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i])
-                    - magneticLabel[e->elem_marker].conductivity * (wt[i] * u->val[i] *
-                                                                    ((magneticLabel[e->elem_marker].velocity_x - e->y[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dx[i] +
-                                                                     (magneticLabel[e->elem_marker].velocity_y + e->x[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dy[i]))
-
-                    + ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * wt[i] * (u->val[i] * v->val[i]) / timeStep : 0.0);
-        }
-    else
-        for (int i = 0; i < n; i++)
-        {
-            result += 1.0 / (magneticLabel[e->elem_marker].permeability * MU0)
-                    * (wt[i] * (e->x[i] > 0.0 ? ((v->dx[i] * u->val[i]) / e->x[i]) : 0.0) + wt[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]))
-                    - magneticLabel[e->elem_marker].conductivity * (wt[i] * u->val[i] *
-                                                                    ((magneticLabel[e->elem_marker].velocity_x - e->y[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dx[i] +
-                                                                     (magneticLabel[e->elem_marker].velocity_y + e->x[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dy[i]))
-
-            + ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * wt[i] * (u->val[i] * v->val[i]) / timeStep : 0.0);
-        }
-
-    return result;
-}
-
-template<typename Real, typename Scalar>
-Scalar magnetic_matrix_form_real_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    Scalar result = 0.0;
-    if (isPlanar)
-        for (int i = 0; i < n; i++)
-        {
-            result += - 2 * M_PI * frequency * magneticLabel[e->elem_marker].conductivity * wt[i] * (u->val[i] * v->val[i]);
-        }
-    else
-        for (int i = 0; i < n; i++)
-        {
-            result += - 2 * M_PI * frequency * magneticLabel[e->elem_marker].conductivity * wt[i] * (u->val[i] * v->val[i]);
-        }
-
-    return result;
-}
-
-template<typename Real, typename Scalar>
-Scalar magnetic_matrix_form_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    Scalar result = 0.0;
-    if (isPlanar)
-        for (int i = 0; i < n; i++)
-        {
-            result += 2 * M_PI * frequency * magneticLabel[e->elem_marker].conductivity * wt[i] * (u->val[i] * v->val[i]);
-        }
-    else
-        for (int i = 0; i < n; i++)
-        {
-            result += 2 * M_PI * frequency * magneticLabel[e->elem_marker].conductivity * wt[i] * (u->val[i] * v->val[i]);
-        }
-
-    return result;
-}
-
-template<typename Real, typename Scalar>
-Scalar magnetic_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    Scalar result = 0.0;
-    if (isPlanar)
-        for (int i = 0; i < n; i++)
-        {
-            result += 1.0 / (magneticLabel[e->elem_marker].permeability * MU0)
-                    * wt[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i])
-                    - magneticLabel[e->elem_marker].conductivity * (wt[i] * u->val[i] *
-                                                                    ((magneticLabel[e->elem_marker].velocity_x - e->y[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dx[i] +
-                                                                     (magneticLabel[e->elem_marker].velocity_y + e->x[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dy[i]));
-        }
-    else
-        for (int i = 0; i < n; i++)
-        {
-            result += 1.0 / (magneticLabel[e->elem_marker].permeability * MU0)
-                    * (wt[i] * (e->x[i] > 0.0 ? ((v->dx[i] * u->val[i]) / e->x[i]) : 0.0) + wt[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]))
-                    - magneticLabel[e->elem_marker].conductivity * (wt[i] * u->val[i] *
-                                                                    ((magneticLabel[e->elem_marker].velocity_x - e->y[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dx[i] +
-                                                                     (magneticLabel[e->elem_marker].velocity_y + e->x[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dy[i]));
-        }
-
-    return result;
-}
-
-template<typename Real, typename Scalar>
-Scalar magnetic_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    Scalar result = 0.0;
-    if (isPlanar)
-        for (int i = 0; i < n; i++)
-        {
-            result += wt[i] * magneticLabel[e->elem_marker].current_density_real * (v->val[i])
-                    + wt[i] * magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability * MU0)
-                    * (- sin(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dx[i]
-                       + cos(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dy[i])
-
-            + ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * wt[i] * (ext->fn[0]->val[i] * v->val[i]) / timeStep : 0.0);
-        }
-    else
-        for (int i = 0; i < n; i++)
-        {
-            result += wt[i] * magneticLabel[e->elem_marker].current_density_real  * (v->val[i])
-                    - wt[i] * magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability * MU0)
-                    * (- sin(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dx[i]
-                       + cos(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dy[i])
-
-            + ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * wt[i] * (ext->fn[0]->val[i] * v->val[i]) / timeStep : 0.0);
-        }
-
-    return result;
-}
-
-template<typename Real, typename Scalar>
-Scalar magnetic_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    Scalar result = 0.0;
-    if (isPlanar)
-        for (int i = 0; i < n; i++)
-        {
-            result += magneticLabel[e->elem_marker].current_density_imag * wt[i] * (v->val[i]);
-        }
-    else
-        for (int i = 0; i < n; i++)
-        {
-            result += magneticLabel[e->elem_marker].current_density_imag * wt[i] * (v->val[i]);
-        }
-
-    return result;
-}
-
-void callbackMagneticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
-{
-    if (slnArray.size() == 1)
-    {
-        wf->add_matrix_form(0, 0, callback(magnetic_matrix_form_real_real));
-        if (analysisType == AnalysisType_Transient)
-            wf->add_vector_form(0, callback(magnetic_vector_form_real), HERMES_ANY, slnArray.at(0));
-        else
-            wf->add_vector_form(0, callback(magnetic_vector_form_real));
-        wf->add_vector_form_surf(0, callback(magnetic_vector_form_surf_real));
-    }
-    else
-    {
-        wf->add_matrix_form(0, 0, callback(magnetic_matrix_form_real_real));
-        wf->add_matrix_form(0, 1, callback(magnetic_matrix_form_real_imag));
-        wf->add_matrix_form(1, 0, callback(magnetic_matrix_form_imag_real));
-        wf->add_matrix_form(1, 1, callback(magnetic_matrix_form_imag_imag));
-        wf->add_vector_form(0, callback(magnetic_vector_form_real));
-        wf->add_vector_form(1, callback(magnetic_vector_form_imag));
-        wf->add_vector_form_surf(0, callback(magnetic_vector_form_surf_real));
-        wf->add_vector_form_surf(1, callback(magnetic_vector_form_surf_imag));
-    }
-}
-*/
 // *******************************************************************************************************
 
 int HermesMagnetic::numberOfSolution() const
@@ -1191,7 +873,7 @@ QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolv
     }
     Hermes::vector<EssentialBCs> bcs(bc1, bc2);
 
-    WeakFormMagnetics wf(numberOfSolution());
+    WeakFormRF wf(numberOfSolution());
 
     QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
 

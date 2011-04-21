@@ -62,11 +62,11 @@ public:
 
                 if (boundary->type == PhysicFieldBC_Acoustic_MatchedBoundary)
                 {
-                    add_matrix_form_surf(new MatchedBoundaryMatrixFormSurf(0, 1,
+                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(0, 1,
                                                                            QString::number(i + 1).toStdString(),
                                                                            - 2 * M_PI * Util::scene()->problemInfo()->frequency,
                                                                            convertProblemType(Util::scene()->problemInfo()->problemType)));
-                    add_matrix_form_surf(new MatchedBoundaryMatrixFormSurf(1, 0,
+                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
                                                                            QString::number(i + 1).toStdString(),
                                                                            2 * M_PI * Util::scene()->problemInfo()->frequency,
                                                                            convertProblemType(Util::scene()->problemInfo()->problemType)));
@@ -108,12 +108,12 @@ public:
         }
     }
 
-    class MatchedBoundaryMatrixFormSurf : public WeakForm::MatrixFormSurf
+    class CustomMatrixFormSurfMatchedBoundary : public WeakForm::MatrixFormSurf
     {
     public:
-        MatchedBoundaryMatrixFormSurf(int i, int j, scalar coeff, GeomType gt = HERMES_PLANAR)
+        CustomMatrixFormSurfMatchedBoundary(int i, int j, scalar coeff, GeomType gt = HERMES_PLANAR)
             : WeakForm::MatrixFormSurf(i, j), coeff(coeff), gt(gt) { }
-        MatchedBoundaryMatrixFormSurf(int i, int j, std::string area, scalar coeff, GeomType gt = HERMES_PLANAR)
+        CustomMatrixFormSurfMatchedBoundary(int i, int j, std::string area, scalar coeff, GeomType gt = HERMES_PLANAR)
             : WeakForm::MatrixFormSurf(i, j, area), coeff(coeff), gt(gt) { }
 
         virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
@@ -138,7 +138,7 @@ public:
 
         // This is to make the form usable in rk_time_step().
         virtual WeakForm::MatrixFormSurf* clone() {
-            return new MatchedBoundaryMatrixFormSurf(*this);
+            return new CustomMatrixFormSurfMatchedBoundary(*this);
         }
 
     private:

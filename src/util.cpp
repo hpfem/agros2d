@@ -156,15 +156,15 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_RF_ElectricFieldReal, "rf_electric_field_real");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_ElectricFieldImag, "rf_electric_field_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticField, "rf_magnetic_field");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldRealX, "rf_magnetic_field_real_X");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldImagX, "rf_magnetic_field_imag_X");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldRealY, "rf_magnetic_field_real_Y");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldImagY, "rf_magnetic_field_imag_Y");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldXReal, "rf_magnetic_field_x_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldXImag, "rf_magnetic_field_x_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldYReal, "rf_magnetic_field_y_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldYImag, "rf_magnetic_field_y_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensity, "rf_magnetic_flux_density");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityRealX, "rf_magnetic_flux_density_real_X");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityImagX, "rf_magnetic_flux_density_imag_X");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityRealY, "rf_magnetic_flux_density_real_Y");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityImagY, "rf_magnetic_flux_density_imag_Y");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityXReal, "rf_magnetic_flux_density_x_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityXImag, "rf_magnetic_flux_density_x_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityYReal, "rf_magnetic_flux_density_y_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityYImag, "rf_magnetic_flux_density_y_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVector, "rf_poynting_vector");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVectorReal, "rf_poynting_vector_real");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVectorImag, "rf_poynting_vector_imag");
@@ -384,24 +384,24 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Electric field - imag");
     case PhysicFieldVariable_RF_MagneticField:
         return QObject::tr("Magnetic field");
-    case PhysicFieldVariable_RF_MagneticFieldRealX:
-        return QObject::tr("Magnetic field X - real");
-    case PhysicFieldVariable_RF_MagneticFieldImagX:
-        return QObject::tr("Magnetic field X - imag");
-    case PhysicFieldVariable_RF_MagneticFieldRealY:
-        return QObject::tr("Magnetic field Y - real");
-    case PhysicFieldVariable_RF_MagneticFieldImagY:
-        return QObject::tr("Magnetic field Y - imag");
+    case PhysicFieldVariable_RF_MagneticFieldXReal:
+        return QObject::tr("Magnetic field %1 - real").arg(Util::scene()->problemInfo()->labelX());
+    case PhysicFieldVariable_RF_MagneticFieldXImag:
+        return QObject::tr("Magnetic field %1 - imag").arg(Util::scene()->problemInfo()->labelX());
+    case PhysicFieldVariable_RF_MagneticFieldYReal:
+        return QObject::tr("Magnetic field %1 - real").arg(Util::scene()->problemInfo()->labelY());
+    case PhysicFieldVariable_RF_MagneticFieldYImag:
+        return QObject::tr("Magnetic field %1 - imag").arg(Util::scene()->problemInfo()->labelY());
     case PhysicFieldVariable_RF_MagneticFluxDensity:
         return QObject::tr("Flux density");
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealX:
-        return QObject::tr("Flux density X - real");
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
-        return QObject::tr("Flux density X - imag");
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
-        return QObject::tr("Flux density Y - real");
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
-        return QObject::tr("Flux density Y - imag");
+    case PhysicFieldVariable_RF_MagneticFluxDensityXReal:
+        return QObject::tr("Flux density %1 - real").arg(Util::scene()->problemInfo()->labelX());
+    case PhysicFieldVariable_RF_MagneticFluxDensityXImag:
+        return QObject::tr("Flux density %1 - imag").arg(Util::scene()->problemInfo()->labelX());
+    case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
+        return QObject::tr("Flux density %1 - real").arg(Util::scene()->problemInfo()->labelY());
+    case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
+        return QObject::tr("Flux density %1 - imag").arg(Util::scene()->problemInfo()->labelY());
     case PhysicFieldVariable_RF_PoyntingVector:
         return QObject::tr("Poynting vector");
     case PhysicFieldVariable_RF_PoyntingVectorReal:
@@ -580,24 +580,24 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("E_im");
     case PhysicFieldVariable_RF_MagneticField:
         return QObject::tr("H");
-    case PhysicFieldVariable_RF_MagneticFieldRealX:
-        return QObject::tr("Hx_re");
-    case PhysicFieldVariable_RF_MagneticFieldImagX:
-        return QObject::tr("Hx_im");
-    case PhysicFieldVariable_RF_MagneticFieldRealY:
-        return QObject::tr("Hy_re");
-    case PhysicFieldVariable_RF_MagneticFieldImagY:
-        return QObject::tr("Hy_im");
+    case PhysicFieldVariable_RF_MagneticFieldXReal:
+        return QObject::tr("H%1re").arg(Util::scene()->problemInfo()->labelX().toLower());
+    case PhysicFieldVariable_RF_MagneticFieldXImag:
+        return QObject::tr("H%1im").arg(Util::scene()->problemInfo()->labelX().toLower());
+    case PhysicFieldVariable_RF_MagneticFieldYReal:
+        return QObject::tr("H%1re").arg(Util::scene()->problemInfo()->labelY().toLower());
+    case PhysicFieldVariable_RF_MagneticFieldYImag:
+        return QObject::tr("H%1im").arg(Util::scene()->problemInfo()->labelY().toLower());
     case PhysicFieldVariable_RF_MagneticFluxDensity:
         return QObject::tr("B");
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealX:
-        return QObject::tr("Bx_re");
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
-        return QObject::tr("Bx_im");
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
-        return QObject::tr("By_re");
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
-        return QObject::tr("By_im");
+    case PhysicFieldVariable_RF_MagneticFluxDensityXReal:
+        return QObject::tr("B%1re").arg(Util::scene()->problemInfo()->labelX().toLower());
+    case PhysicFieldVariable_RF_MagneticFluxDensityXImag:
+        return QObject::tr("B%1im").arg(Util::scene()->problemInfo()->labelX().toLower());
+    case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
+        return QObject::tr("B%1re").arg(Util::scene()->problemInfo()->labelY().toLower());
+    case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
+        return QObject::tr("B%1im").arg(Util::scene()->problemInfo()->labelY().toLower());
     case PhysicFieldVariable_RF_PoyntingVector:
         return QObject::tr("N");
     case PhysicFieldVariable_RF_PoyntingVectorReal:
@@ -769,23 +769,23 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("V/m");
     case PhysicFieldVariable_RF_MagneticField:
         return QObject::tr("A/m");
-    case PhysicFieldVariable_RF_MagneticFieldRealX:
+    case PhysicFieldVariable_RF_MagneticFieldXReal:
         return QObject::tr("A/m");
-    case PhysicFieldVariable_RF_MagneticFieldImagX:
+    case PhysicFieldVariable_RF_MagneticFieldXImag:
         return QObject::tr("A/m");
-    case PhysicFieldVariable_RF_MagneticFieldRealY:
+    case PhysicFieldVariable_RF_MagneticFieldYReal:
         return QObject::tr("A/m");
-    case PhysicFieldVariable_RF_MagneticFieldImagY:
+    case PhysicFieldVariable_RF_MagneticFieldYImag:
         return QObject::tr("A/m");
     case PhysicFieldVariable_RF_MagneticFluxDensity:
         return QObject::tr("T");
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealX:
+    case PhysicFieldVariable_RF_MagneticFluxDensityXReal:
         return QObject::tr("T");
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
+    case PhysicFieldVariable_RF_MagneticFluxDensityXImag:
         return QObject::tr("T");
-    case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
+    case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
         return QObject::tr("T");
-    case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
+    case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
         return QObject::tr("T");
     case PhysicFieldVariable_RF_PoyntingVector:
         return QObject::tr("W/m2");
