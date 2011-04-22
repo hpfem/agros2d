@@ -83,7 +83,8 @@ public:
                 }
 
                 // matched boundary
-                if (boundary->type == PhysicFieldBC_RF_MatchedBoundary)
+                if ((boundary->type == PhysicFieldBC_RF_MatchedBoundary) ||
+                        (boundary->type == PhysicFieldBC_RF_Port))
                 {
                     add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(0, 1,
                                                                                  QString::number(i + 1).toStdString(),
@@ -105,21 +106,21 @@ public:
                 // real part
                 add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostatics(0, 0,
                                                                                                          QString::number(i).toStdString(),
-                                                                                                         1.0 / (material->permeability.number * MU0),
+                                                                                                         - 1.0 / (material->permeability.number * MU0),
                                                                                                          HERMES_NONSYM,
                                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType),
                                                                                                          (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
 
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
                                                                                           QString::number(i).toStdString(),
-                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * (material->permittivity.number * EPS0),
+                                                                                          sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * (material->permittivity.number * EPS0),
                                                                                           HERMES_NONSYM,
                                                                                           HERMES_PLANAR));
 
                 // imag part
                 add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostatics(1, 1,
                                                                                                          QString::number(i).toStdString(),
-                                                                                                         1.0 / (material->permeability.number * MU0),
+                                                                                                         - 1.0 / (material->permeability.number * MU0),
                                                                                                          HERMES_NONSYM,
                                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType),
                                                                                                          (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
@@ -127,7 +128,7 @@ public:
 
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 1,
                                                                                           QString::number(i).toStdString(),
-                                                                                          sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * (material->permittivity.number * EPS0),
+                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) * (material->permittivity.number * EPS0),
                                                                                           HERMES_NONSYM,
                                                                                           HERMES_PLANAR));
 
