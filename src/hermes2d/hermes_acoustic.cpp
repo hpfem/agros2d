@@ -334,26 +334,24 @@ private:
     };    
 };
 
-class PressureBC : public EssentialBoundaryCondition
+class CustomAcousticPressureBC : public EssentialBoundaryCondition
 {
 public:
     /// Constructors.
-    PressureBC(std::string marker) : EssentialBoundaryCondition(Hermes::vector<std::string>())
+    CustomAcousticPressureBC(std::string marker, SceneBoundaryAcoustic *boundary) : EssentialBoundaryCondition(marker)
     {
-        edge_marker = Util::scene()->sceneSolution()->agrosBoundaryMarker(QString::fromStdString(marker).toInt());
-        markers.push_back(marker);
+        m_boundary = boundary;
     }
 
     /// Function reporting the type of the essential boundary condition.
     inline EssentialBCValueType get_value_type() const { return EssentialBoundaryCondition::BC_FUNCTION; }
     virtual scalar value(double x, double y, double n_x, double n_y, double t_x, double t_y) const
     {
-        SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->boundaries[edge_marker]);
-        return boundary->value_real.number;
+        return m_boundary->value_real.number;
     }
 
 private:
-    int edge_marker;
+    SceneBoundaryAcoustic *m_boundary;
 };
 
 // ****************************************************************************************************
@@ -871,7 +869,7 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
                 }
                 else
                 {
-                    bc1.add_boundary_condition(new PressureBC(QString::number(i+1).toStdString()));
+                    bc1.add_boundary_condition(new CustomAcousticPressureBC(QString::number(i+1).toStdString(), boundary));
                     bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), 0.0));
                 }
             }

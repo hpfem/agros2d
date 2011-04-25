@@ -256,6 +256,17 @@ void ValueTimeDialog::createControls()
     txtLineEdit = new QLineEdit(this);
     connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(checkExpression()));
 
+    txtTimeTotal = new ValueLineEdit();
+    txtTimeTotal->setValue(Util::scene()->problemInfo()->timeTotal);
+
+    cmbPresets = new QComboBox();
+    cmbPresets->addItem(tr("choose preset..."));
+    cmbPresets->addItem(tr("constant"), "1.0");
+    cmbPresets->addItem(tr("step"), QString("1.0*(time<%1)"));
+    cmbPresets->addItem(tr("sine wave"), QString("1.0*sin(2*pi*1.0/%1*time)"));
+    cmbPresets->addItem(tr("exp. step"), "1.0*(exp(-10/%1*time) - exp(-20/%1*time))");
+    connect(cmbPresets, SIGNAL(currentIndexChanged(int)), this, SLOT(presetsChanged(int)));
+
     // chart
     QwtText text("");
 
@@ -288,10 +299,17 @@ void ValueTimeDialog::createControls()
     connect(picker, SIGNAL(moved(const QPoint &)), SLOT(crossMoved(const QPoint &)));
 
     QGridLayout *controlsLayout = new QGridLayout();
-    controlsLayout->addWidget(chart, 0, 0, 1, 2);
+    controlsLayout->addWidget(chart, 0, 0, 1, 4);
     controlsLayout->addWidget(new QLabel(tr("Function:")), 1, 0);
     controlsLayout->addWidget(txtLineEdit, 1, 1);
-    controlsLayout->addWidget(lblInfoError, 2, 1);
+    controlsLayout->setColumnStretch(1, 1);
+    controlsLayout->addWidget(cmbPresets, 1, 2, 1, 2);
+    controlsLayout->addWidget(new QLabel(tr("Total time:")), 2, 2);
+    controlsLayout->addWidget(txtTimeTotal, 2, 3);
+    controlsLayout->addWidget(new QLabel(tr("Error:")), 2, 0);
+    controlsLayout->addWidget(lblInfoError, 2, 1, 3, 1, Qt::AlignTop);
+    controlsLayout->addWidget(new QLabel(""), 2, 1);
+    controlsLayout->addWidget(new QLabel(""), 3, 1);
 
     // dialog buttons
     btnOk = new QPushButton(tr("Ok"));
@@ -299,12 +317,12 @@ void ValueTimeDialog::createControls()
     connect(btnOk, SIGNAL(clicked()), this, SLOT(doAccept()));
     btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doReject()));
-    btnPlot = new QPushButton(tr("Plot"));
-    connect(btnPlot, SIGNAL(clicked()), this, SLOT(plotFunction()));
+    // btnPlot = new QPushButton(tr("Plot"));
+    // connect(btnPlot, SIGNAL(clicked()), this, SLOT(plotFunction()));
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addStretch();
-    layoutButtons->addWidget(btnPlot);
+    // layoutButtons->addWidget(btnPlot);
     layoutButtons->addWidget(btnOk);
     layoutButtons->addWidget(btnClose);
 
@@ -324,6 +342,22 @@ void ValueTimeDialog::crossMoved(const QPoint &pos)
     info.sprintf("x=%g, y=%g", chart->invTransform(QwtPlot::xBottom, pos.x()), chart->invTransform(QwtPlot::yLeft, pos.y()));
 }
 
+void ValueTimeDialog::presetsChanged(int index)
+{
+    if (cmbPresets->currentIndex() > 0)
+    {
+        if (txtTimeTotal->value().evaluate())
+        {
+            QString preset = cmbPresets->itemData(cmbPresets->currentIndex()).toString().arg(txtTimeTotal->value().number / 2.0);
+
+            txtLineEdit->setText(preset);
+            cmbPresets->setCurrentIndex(0);
+
+            plotFunction();
+        }
+    }
+}
+
 void ValueTimeDialog::checkExpression()
 {
     logMessage("ValueTimeDialog::checkExpression()");
@@ -335,7 +369,9 @@ void ValueTimeDialog::checkExpression()
     ExpressionResult expressionResult;
     expressionResult = runPythonExpression(txtLineEdit->text());
     lblInfoError->setText(expressionResult.error.trimmed());
-    if (!expressionResult.error.isEmpty())
+    if (expressionResult.error.isEmpty())
+        plotFunction();
+    else
         txtLineEdit->setFocus();
 }
 
@@ -349,8 +385,7 @@ void ValueTimeDialog::plotFunction()
     double *xval = new double[count];
     double *yval = new double[count];
 
-    Util::scene()->problemInfo()->timeTotal.evaluate();
-    double totalTime = Util::scene()->problemInfo()->timeTotal.number;
+    double totalTime = txtTimeTotal->value().number;
 
     // time step
     double dt = totalTime / (count + 1);

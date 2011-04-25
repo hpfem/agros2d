@@ -111,6 +111,8 @@ private:
 
     QLabel *lblInfoError;
     QLineEdit *txtLineEdit;
+    ValueLineEdit *txtTimeTotal;
+    QComboBox *cmbPresets;
 
     void createControls();
 
@@ -118,9 +120,10 @@ private slots:
     void doAccept();
     void doReject();
 
-        void checkExpression();
+    void checkExpression();
     void plotFunction();
     void crossMoved(const QPoint &pos);
+    void presetsChanged(int index);
 };
 
 #endif // TIMEFUNCTION_H
