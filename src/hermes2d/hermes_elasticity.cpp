@@ -122,23 +122,30 @@ public:
                              Geom<double> *e, ExtData<scalar> *ext) const {
             scalar result = 0.0;
             if (gt == HERMES_PLANAR)
-            {
                 for (int i = 0; i < n; i++)
                     result += wt[i] * v->dx[i];
-            }
             else if (gt == HERMES_AXISYM_X)
-                result = 0.0;
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * e->x[i] * v->dy[i];
             else
-                result = 0.0;
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * v->dx[i];
 
-            return (3 * lambda + 2 * mu) * alpha * (temp - temp_ref) * result;
+            return (3*lambda + 2*mu) * alpha * (temp - temp_ref) * result;
         }
 
         virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
                         Geom<Ord> *e, ExtData<Ord> *ext) const {
             Ord result = 0;
-            for (int i = 0; i < n; i++)
-                result += wt[i] * v->dx[i];
+            if (gt == HERMES_PLANAR)
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * v->dx[i];
+            else if (gt == HERMES_AXISYM_X)
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * e->x[i] * v->dy[i];
+            else
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * v->dx[i];
 
             return result;
         }
@@ -166,23 +173,30 @@ public:
                              Geom<double> *e, ExtData<scalar> *ext) const {
             scalar result = 0.0;
             if (gt == HERMES_PLANAR)
-            {
                 for (int i = 0; i < n; i++)
                     result += wt[i] * v->dy[i];
-            }
             else if (gt == HERMES_AXISYM_X)
-                result = 0.0;
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * v->dx[i];
             else
-                result = 0.0;
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * e->x[i] * v->dy[i];
 
-            return (3 * lambda + 2 * mu) * alpha * (temp - temp_ref) * result;
+            return (3*lambda + 2*mu) * alpha * (temp - temp_ref) * result;
         }
 
         virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
                         Geom<Ord> *e, ExtData<Ord> *ext) const {
             Ord result = 0;
-            for (int i = 0; i < n; i++)
-                result += wt[i] * v->dy[i];
+            if (gt == HERMES_PLANAR)
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * v->dy[i];
+            else if (gt == HERMES_AXISYM_X)
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * v->dx[i];
+            else
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * e->x[i] * v->dy[i];
 
             return result;
         }
@@ -815,17 +829,17 @@ LocalPointValueElasticity::LocalPointValueElasticity(const Point &point) : Local
     {
         if (material)
         {
-            SceneMaterialElasticity *material = dynamic_cast<SceneMaterialElasticity *>(material);
+            SceneMaterialElasticity *marker = dynamic_cast<SceneMaterialElasticity *>(material);
 
-            young_modulus = material->young_modulus.number;
-            poisson_ratio = material->poisson_ratio.number;
+            young_modulus = marker->young_modulus.number;
+            poisson_ratio = marker->poisson_ratio.number;
 
-            forceX = material->forceX.number;
-            forceY = material->forceY.number;
+            forceX = marker->forceX.number;
+            forceY = marker->forceY.number;
 
-            alpha = material->alpha.number;
-            temp = material->temp.number;
-            temp_ref = material->temp_ref.number;
+            alpha = marker->alpha.number;
+            temp = marker->temp.number;
+            temp_ref = marker->temp_ref.number;
 
             Solution *sln_x = Util::scene()->sceneSolution()->sln(0);
             Solution *sln_y = Util::scene()->sceneSolution()->sln(1);

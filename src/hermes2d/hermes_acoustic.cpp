@@ -22,8 +22,6 @@
 #include "scene.h"
 #include "gui.h"
 
-const double PRESSURE_MIN_AIR = 20e-6;
-
 class WeakFormAcousticsHarmonic : public WeakFormAgros
 {
 public:

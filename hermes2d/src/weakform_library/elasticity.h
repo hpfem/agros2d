@@ -35,7 +35,7 @@ public:
   DefaultLinearXX(unsigned int i, unsigned int j, double lambda, double mu, GeomType gt = HERMES_PLANAR)
     : WeakForm::MatrixFormVol(i, j, HERMES_SYM), lambda(lambda), mu(mu), gt(gt) { }
   DefaultLinearXX(unsigned int i, unsigned int j, std::string area, double lambda, double mu, GeomType gt = HERMES_PLANAR)
-    : WeakForm::MatrixFormVol(i, j, HERMES_SYM, area), lambda(lambda), mu(mu), gt(gt) { }
+    : WeakForm::MatrixFormVol(i, j, HERMES_NONSYM, area), lambda(lambda), mu(mu), gt(gt) { }
 
   template<typename Real, typename Scalar>
   Scalar matrix_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *u,
@@ -44,18 +44,29 @@ public:
         return (lambda + 2*mu) * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
                 mu * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
     else if (gt == HERMES_AXISYM_X)
-      return 0.0;
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * (e->x[i] * lambda * (u->dx[i] * v->dx[i] +
+                                         u->val[i]/e->x[i] * v->dx[i] +
+                                         u->dx[i] * v->val[i]/e->x[i] +
+                                         1/sqr(e->x[i]) * u->val[i] * v->val[i]) +
+                               e->x[i] * mu * (2 * u->dx[i] * v->dx[i] +
+                                         2 * 1/sqr(e->x[i]) * u->val[i] * v->val[i] +
+                                         u->dy[i] * v->dy[i]));
+        return result;
+    }
     else
     {
       Scalar result = 0;
       for (int i = 0; i < n; i++)
-        result += wt[i] * (e->x[i] * lambda * (u->dx[i] * v->dx[i] +
-                                               u->val[i]/e->x[i] * v->dx[i] +
-                                               u->dx[i] * v->val[i]/e->x[i] +
-                                               1/sqr(e->x[i]) * u->val[i] * v->val[i]) +
-                           e->x[i] * mu * (2 * u->dx[i] * v->dx[i] +
-                                           2 * 1/sqr(e->x[i]) * u->val[i] * v->val[i] +
-                                           u->dy[i] * v->dy[i]));
+          result += wt[i] * (e->x[i] * lambda * (u->dx[i] * v->dx[i] +
+                                       u->val[i]/e->x[i] * v->dx[i] +
+                                       u->dx[i] * v->val[i]/e->x[i] +
+                                       1/sqr(e->x[i]) * u->val[i] * v->val[i]) +
+                             e->x[i] * mu * (2 * u->dx[i] * v->dx[i] +
+                                       2 * 1/sqr(e->x[i]) * u->val[i] * v->val[i] +
+                                       u->dy[i] * v->dy[i]));
       return result;
     }
   }
@@ -95,14 +106,21 @@ public:
         return lambda * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
                 mu * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
     else if (gt == HERMES_AXISYM_X)
-      return 0.0;
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+        result += wt[i] * (e->y[i] * lambda * (u->dx[i] * v->dy[i] +
+                           u->dx[i] * v->val[i]/e->y[i]) +
+                           e->y[i] * mu * u->dy[i] * v->dx[i]);
+        return result;
+    }
     else
     {
       Scalar result = 0;
       for (int i = 0; i < n; i++)
-        result += wt[i] * (lambda * (u->dy[i] * v->dx[i] +
-                                     u->dy[i] * v->val[i]/e->x[i]) +
-                           e->x[i] * mu * u->dx[i] * v->dy[i]);
+          result += wt[i] * (e->x[i] * lambda * (u->dy[i] * v->dx[i] +
+                             u->dy[i] * v->val[i]/e->x[i]) +
+                             e->x[i] * mu * u->dx[i] * v->dy[i]);
       return result;
     }
   }
@@ -133,23 +151,30 @@ public:
   DefaultLinearYY(unsigned int i, unsigned int j, double lambda, double mu, GeomType gt = HERMES_PLANAR)
     : WeakForm::MatrixFormVol(i, j, HERMES_SYM), lambda(lambda), mu(mu), gt(gt) { }
   DefaultLinearYY(unsigned int i, unsigned int j, std::string area, double lambda, double mu, GeomType gt = HERMES_PLANAR)
-    : WeakForm::MatrixFormVol(i, j, HERMES_SYM, area), lambda(lambda), mu(mu), gt(gt) { }
+    : WeakForm::MatrixFormVol(i, j, HERMES_NONSYM, area), lambda(lambda), mu(mu), gt(gt) { }
 
   template<typename Real, typename Scalar>
   Scalar matrix_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *u,
                      Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext) const {
     if (gt == HERMES_PLANAR)
-      return mu * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
-          lambda * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
+        return  mu * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
+                (lambda + 2*mu) * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
     else if (gt == HERMES_AXISYM_X)
-      return 0.0;
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+        result += wt[i] * (e->y[i] * lambda * (u->dx[i] * v->dx[i]) +
+                           e->y[i] * mu * (u->dy[i] * v->dy[i] +
+                           2 * u->dx[i] * v->dx[i]));
+        return result;
+    }
     else
     {
       Scalar result = 0;
       for (int i = 0; i < n; i++)
-        result += wt[i] * (lambda * (u->dx[i] * v->dy[i] +
-                                     u->val[i]/e->x[i] * v->dy[i]) +
-                           e->x[i] * mu * u->dy[i] * v->dx[i]);
+          result += wt[i] * (e->x[i] * lambda * (u->dy[i] * v->dy[i]) +
+                             e->x[i] * mu * (u->dx[i] * v->dx[i] +
+                             2 * u->dy[i] * v->dy[i]));
       return result;
     }
   }

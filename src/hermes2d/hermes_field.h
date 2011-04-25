@@ -180,7 +180,7 @@ private:
     double linearityNonlinearTolerance;
     int linearityNonlinearSteps;
 
-    ProgressItemSolve *m_progressItemSolve;
+    MatrixSolverType matrixSolver;
 
     // error
     bool isError;
@@ -190,6 +190,7 @@ private:
 
     // weak form
     WeakFormAgros *m_wf;
+    ProgressItemSolve *m_progressItemSolve;
 
     SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
 

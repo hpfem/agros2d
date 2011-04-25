@@ -245,7 +245,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutLeft->addLayout(layoutTable);
     // layoutLeft->addWidget(grpAdaptivity);
     layoutLeft->addStretch();
-    layoutLeft->addWidget(grpLinearity);
+    // layoutLeft->addWidget(grpLinearity);
     layoutLeft->addWidget(grpMesh);
 
     // right
@@ -254,6 +254,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutRight->addWidget(grpTransientAnalysis);
     // layoutRight->addWidget(grpMesh);
     layoutRight->addWidget(grpAdaptivity);
+    layoutRight->addWidget(grpLinearity);
     layoutRight->addStretch();
 
     // both
