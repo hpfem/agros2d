@@ -28,7 +28,7 @@ static QHash<PhysicField, QString> physicFieldList;
 static QHash<PhysicFieldVariable, QString> physicFieldVariableList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<PhysicFieldBC, QString> physicFieldBCList;
-static QHash<TEMode, QString> teModeList;
+static QHash<Mode, QString> modeList;
 static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
@@ -51,8 +51,8 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QString physicFieldBCToStringKey(PhysicFieldBC physicFieldBC) { return physicFieldBCList[physicFieldBC]; }
 PhysicFieldBC physicFieldBCFromStringKey(const QString &physicFieldBC) { return physicFieldBCList.key(physicFieldBC); }
 
-QString teModeToStringKey(TEMode teMode) { return teModeList[teMode]; }
-TEMode teModeFromStringKey(const QString &teMode) { return teModeList.key(teMode); }
+QString modeToStringKey(Mode mode) { return modeList[mode]; }
+Mode modeFromStringKey(const QString &mode) { return modeList.key(mode); }
 
 QString sceneViewPostprocessorShowToStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList[sceneViewPostprocessorShow]; }
 SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString &sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList.key(sceneViewPostprocessorShow); }
@@ -170,8 +170,8 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityYReal, "rf_magnetic_flux_density_y_real");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityYImag, "rf_magnetic_flux_density_y_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVector, "rf_poynting_vector");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVectorReal, "rf_poynting_vector_real");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVectorImag, "rf_poynting_vector_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVectorX, "rf_poynting_vector_x");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVectorY, "rf_poynting_vector_y");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_PowerLosses, "rf_power_losses");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permittivity, "rf_permittivity");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permeability, "rf_permeability");
@@ -213,7 +213,7 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_Flow_Outlet, "flow_outlet");
     physicFieldBCList.insert(PhysicFieldBC_Flow_Wall, "flow_wall");
     physicFieldBCList.insert(PhysicFieldBC_RF_ElectricField, "rf_electric_field");
-    physicFieldBCList.insert(PhysicFieldBC_RF_MagneticField, "rf_magnetic_field");
+    physicFieldBCList.insert(PhysicFieldBC_RF_SurfaceCurrent, "rf_surface_current");
     physicFieldBCList.insert(PhysicFieldBC_RF_MatchedBoundary, "rf_matched_boundary");
     physicFieldBCList.insert(PhysicFieldBC_RF_Port, "rf_port");
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_Pressure, "acoustic_pressure");
@@ -222,9 +222,9 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_MatchedBoundary, "acoustic_matched_boundary");
 
     // TEMODE
-    teModeList.insert(TEMode_0, "TE Mode 0");
-    teModeList.insert(TEMode_1, "TE Mode 01");
-    teModeList.insert(TEMode_2, "TE Mode 02");
+    modeList.insert(Mode_0, "mode_0");
+    modeList.insert(Mode_01, "mode_01");
+    modeList.insert(Mode_02, "mode_02");
 
     // SCENEVIEW_POSTPROCESSOR_SHOW
     sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");
@@ -414,10 +414,10 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Flux density %1 - imag").arg(Util::scene()->problemInfo()->labelY());
     case PhysicFieldVariable_RF_PoyntingVector:
         return QObject::tr("Poynting vector");
-    case PhysicFieldVariable_RF_PoyntingVectorReal:
-        return QObject::tr("Poynting vector - real");
-    case PhysicFieldVariable_RF_PoyntingVectorImag:
-        return QObject::tr("Poynting vector - imag");
+    case PhysicFieldVariable_RF_PoyntingVectorX:
+        return QObject::tr("Poynting vector %1").arg(Util::scene()->problemInfo()->labelX());
+    case PhysicFieldVariable_RF_PoyntingVectorY:
+        return QObject::tr("Poynting vector %1").arg(Util::scene()->problemInfo()->labelY());
     case PhysicFieldVariable_RF_PowerLosses:
         return QObject::tr("Power losses");
     case PhysicFieldVariable_RF_Permittivity:
@@ -610,10 +610,10 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("B%1im").arg(Util::scene()->problemInfo()->labelY().toLower());
     case PhysicFieldVariable_RF_PoyntingVector:
         return QObject::tr("N");
-    case PhysicFieldVariable_RF_PoyntingVectorReal:
-        return QObject::tr("N_re");
-    case PhysicFieldVariable_RF_PoyntingVectorImag:
-        return QObject::tr("N_im");
+    case PhysicFieldVariable_RF_PoyntingVectorX:
+        return QObject::tr("N%1").arg(Util::scene()->problemInfo()->labelX().toLower());
+    case PhysicFieldVariable_RF_PoyntingVectorY:
+        return QObject::tr("N%1").arg(Util::scene()->problemInfo()->labelY().toLower());
     case PhysicFieldVariable_RF_PowerLosses:
         return QObject::tr("pj");
     case PhysicFieldVariable_RF_Permittivity:
@@ -799,9 +799,9 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("T");
     case PhysicFieldVariable_RF_PoyntingVector:
         return QObject::tr("W/m2");
-    case PhysicFieldVariable_RF_PoyntingVectorReal:
+    case PhysicFieldVariable_RF_PoyntingVectorX:
         return QObject::tr("W/m2");
-    case PhysicFieldVariable_RF_PoyntingVectorImag:
+    case PhysicFieldVariable_RF_PoyntingVectorY:
         return QObject::tr("W/m2");
     case PhysicFieldVariable_RF_PowerLosses:
         return QObject::tr("J/m3");
@@ -886,17 +886,17 @@ QString analysisTypeString(AnalysisType analysisType)
     }
 }
 
-QString teModeString(TEMode teMode)
+QString teModeString(Mode teMode)
 {
     logMessage("TEModeString()");
 
      switch (teMode)
      {
-     case TEMode_0:
+     case Mode_0:
      return QObject::tr("TE Mode 0");
-     case TEMode_1:
+     case Mode_01:
      return QObject::tr("TE Mode 01");
-     case TEMode_2:
+     case Mode_02:
      return QObject::tr("TE Mode 02");
      default:
          std::cerr << "TE mode '" + QString::number(teMode).toStdString() + "' is not implemented. TEModeString(TEMode teMode)" << endl;
@@ -947,8 +947,8 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Pressure");
     case PhysicFieldBC_RF_ElectricField:
         return QObject::tr("Electric field");
-    case PhysicFieldBC_RF_MagneticField:
-        return QObject::tr("Magnetic field");
+    case PhysicFieldBC_RF_SurfaceCurrent:
+        return QObject::tr("Surface current");
     case PhysicFieldBC_RF_MatchedBoundary:
         return QObject::tr("Matched boundary");
     case PhysicFieldBC_RF_Port:

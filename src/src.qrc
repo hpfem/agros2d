@@ -101,6 +101,9 @@
         <file>images/equations/elasticity/elasticity_free.png</file>     
         <file>images/equations/elasticity/elasticity_fixed.png</file>             
         <file>images/equations/rf/rf_harmonic.png</file>
+        <file>images/equations/rf/rf_surface_current.png</file>
+        <file>images/equations/rf/rf_electric_field.png</file>
+        <file>images/equations/rf/rf_matched_boundary.png</file>
         <file>images/equations/acoustic/acoustic_harmonic.png</file>
         <file>images/equations/acoustic/acoustic_transient.png</file>
         <file>images/equations/acoustic/acoustic_pressure.png</file>

@@ -50,10 +50,10 @@ public:
     QStringList volumeIntegralValueHeader();
 
     inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_RF_ElectricField ||
-                                                                          physicFieldBC == PhysicFieldBC_RF_MagneticField ||
+                                                                          physicFieldBC == PhysicFieldBC_RF_SurfaceCurrent ||
                                                                           physicFieldBC == PhysicFieldBC_RF_MatchedBoundary ||
                                                                           physicFieldBC == PhysicFieldBC_RF_Port); }
-    inline bool teModeCheck(TEMode teMode) { return (teMode == TEMode_0 || teMode == TEMode_1 || teMode == TEMode_2); }
+    inline bool teModeCheck(Mode teMode) { return (teMode == Mode_0 || teMode == Mode_01 || teMode == Mode_02); }
 
     inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_RF_MagneticField ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldXReal ||
@@ -68,8 +68,8 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldImag ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_PoyntingVector ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVectorReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVectorImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVectorX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVectorY ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_PowerLosses ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permittivity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permeability ||
@@ -113,16 +113,11 @@ public:
     double electric_field_real;
     double electric_field_imag;
 
-    double magnetic_field_realX;
-    double magnetic_field_imagX;
-    double magnetic_field_realY;
-    double magnetic_field_imagY;
-    double flux_density_realX;
-    double flux_density_imagX;
-    double flux_density_realY;
-    double flux_density_imagY;
-    double poynting_vector_real;
-    double poynting_vector_imag;
+    Point magnetic_field_real;
+    Point magnetic_field_imag;
+    Point flux_density_real;
+    Point flux_density_imag;
+    Point poynting_vector;
 
     LocalPointValueRF(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
@@ -168,14 +163,13 @@ class SceneBoundaryRF : public SceneBoundary
 public:
     Value value_real;
     Value value_imag;
-    TEMode mode;
+    Mode mode;
     Value power;
     Value phase;
-    Value height;
 
     SceneBoundaryRF(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
-    SceneBoundaryRF(const QString &name, PhysicFieldBC type, TEMode mode, Value power, Value phase, Value height);
-    SceneBoundaryRF(const QString &name, PhysicFieldBC type, Value height);
+    SceneBoundaryRF(const QString &name, PhysicFieldBC type, Mode mode, Value power, Value phase);
+    SceneBoundaryRF(const QString &name, PhysicFieldBC type);
 
     QString script();
     QMap<QString, QString> data();
@@ -218,8 +212,6 @@ private:
     QComboBox *cmbMode;
     ValueLineEdit *txtValueReal;
     ValueLineEdit *txtValueImag;
-    ValueLineEdit *txtHeight;
-
 
 private slots:
     void doTypeChanged(int index);

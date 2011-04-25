@@ -450,8 +450,8 @@ enum PhysicFieldVariable
     PhysicFieldVariable_RF_MagneticFluxDensityYReal,
     PhysicFieldVariable_RF_MagneticFluxDensityYImag,
     PhysicFieldVariable_RF_PoyntingVector,
-    PhysicFieldVariable_RF_PoyntingVectorReal,
-    PhysicFieldVariable_RF_PoyntingVectorImag,
+    PhysicFieldVariable_RF_PoyntingVectorX,
+    PhysicFieldVariable_RF_PoyntingVectorY,
     PhysicFieldVariable_RF_PowerLosses,
     PhysicFieldVariable_RF_Permittivity,
     PhysicFieldVariable_RF_Permeability,
@@ -490,7 +490,7 @@ enum PhysicFieldBC
     PhysicFieldBC_Flow_Outlet,
     PhysicFieldBC_Flow_Wall,
     PhysicFieldBC_RF_ElectricField,
-    PhysicFieldBC_RF_MagneticField,
+    PhysicFieldBC_RF_SurfaceCurrent,
     PhysicFieldBC_RF_MatchedBoundary,
     PhysicFieldBC_RF_Port,
     PhysicFieldBC_Acoustic_Pressure,
@@ -499,11 +499,11 @@ enum PhysicFieldBC
     PhysicFieldBC_Acoustic_MatchedBoundary
 };
 
-enum TEMode
+enum Mode
 {
-    TEMode_0,
-    TEMode_1,
-    TEMode_2
+    Mode_0,
+    Mode_01,
+    Mode_02
 };
 
 inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
@@ -572,8 +572,8 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
     case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
     case PhysicFieldVariable_RF_PoyntingVector:
-    case PhysicFieldVariable_RF_PoyntingVectorReal:
-    case PhysicFieldVariable_RF_PoyntingVectorImag:
+    case PhysicFieldVariable_RF_PoyntingVectorX:
+    case PhysicFieldVariable_RF_PoyntingVectorY:
     case PhysicFieldVariable_RF_PowerLosses:
     case PhysicFieldVariable_RF_Permittivity:
     case PhysicFieldVariable_RF_Permeability:
@@ -656,7 +656,7 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
 QString physicFieldString(PhysicField physicField);
 QString analysisTypeString(AnalysisType analysisType);
 QString physicFieldBCString(PhysicFieldBC physicFieldBC);
-QString teModeString(TEMode teMode);
+QString teModeString(Mode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
@@ -704,8 +704,8 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QString physicFieldBCToStringKey(PhysicFieldBC physicFieldBC);
 PhysicFieldBC physicFieldBCFromStringKey(const QString &physicFieldBC);
 
-QString teModeToStringKey(TEMode teMode);
-TEMode teModeFromStringKey(const QString &teMode);
+QString modeToStringKey(Mode teMode);
+Mode modeFromStringKey(const QString &teMode);
 
 QString sceneViewPostprocessorShowToStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow);
 SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString &sceneViewPostprocessorShow);

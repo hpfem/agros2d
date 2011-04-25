@@ -71,6 +71,9 @@ create_image(template, r"K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K
 
 # rf
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \curl \vecfaz{E} \right) - \mj \omega \left( \sigma + \mj \omega \varepsilon) \vecfaz{E} = \mj \omega \vecfaz{J}_\mathrm{ext}", dir + "rf/rf_harmonic.png")
+create_image(template, r"J_{t} = - \frac{1}{\omega \mu} \frac{\partial E}{\partial n_0} = J_0", dir + "rf/rf_surface_current.png")
+create_image(template, r"E = E_0", dir + "rf/rf_electric_field.png")
+create_image(template, r" - \frac{1}{\omega \mu} \frac{\partial E}{\partial n_0} = \sqrt{\frac{\varepsilon - \mj \sigma / \omega}{\mu}} E", dir + "rf/rf_matched_boundary.png")
 
 # acoustic
 create_image(template, r"-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) - \frac{\omega^2}{\rho  c^2} \cdot p = 0", dir + "acoustic/acoustic_harmonic.png")
