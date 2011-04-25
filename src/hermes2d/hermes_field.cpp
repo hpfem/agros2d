@@ -335,7 +335,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                                                     &err_est_rel) * 100;
 
                     // emit signal
-                    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4): %1%").
+                    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4): %1% s").
                                                      arg(error, 0, 'f', 3).
                                                      arg(i + 1).
                                                      arg(maxAdaptivitySteps).

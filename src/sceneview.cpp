@@ -604,79 +604,75 @@ void SceneView::paintGrid()
 
     glDisable(GL_DEPTH_TEST);
 
-    int step = (((int) ((cornerMax - cornerMin).x / Util::config()->gridStep) + 1) / 5);
-    if (step > 0.0)
+    // heavy line
+    int heavyLine = 5;
+
+    glLineWidth(1.0);
+    glEnable(GL_LINE_STIPPLE);
+    glLineStipple(1, 0x1C47);
+    glBegin(GL_LINES);
+
+    if ((((cornerMax.x-cornerMin.x)/Util::config()->gridStep + (cornerMin.y-cornerMax.y)/Util::config()->gridStep) < 200) &&
+            ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
     {
-        glColor3d(Util::config()->colorGrid.redF(),
-                  Util::config()->colorGrid.greenF(),
-                  Util::config()->colorGrid.blueF());
-        glLineWidth(1.0);
-        glEnable(GL_LINE_STIPPLE);
-        glLineStipple(1, 0x1C47);
-        glBegin(GL_LINES);
-
-        if ((((cornerMax.x-cornerMin.x)/Util::config()->gridStep + (cornerMin.y-cornerMax.y)/Util::config()->gridStep) < 200) &&
-                ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
+        // vertical lines
+        for (int i = 0; i<cornerMax.x/Util::config()->gridStep; i++)
         {
-            // vertical lines
-            for (int i = 0; i<cornerMax.x/Util::config()->gridStep; i++)
-            {
-                if ((step > 0) && i % step == 0)
-                    glColor3d(Util::config()->colorCross.redF(),
-                              Util::config()->colorCross.greenF(),
-                              Util::config()->colorCross.blueF());
-                else
-                    glColor3d(Util::config()->colorGrid.redF(),
-                              Util::config()->colorGrid.greenF(),
-                              Util::config()->colorGrid.blueF());
-                glVertex2d(i*Util::config()->gridStep, cornerMin.y);
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y);
-            }
-            for (int i = 0; i>cornerMin.x/Util::config()->gridStep; i--)
-            {
-                if ((step > 0) && i % step == 0)
-                    glColor3d(Util::config()->colorCross.redF(),
-                              Util::config()->colorCross.greenF(),
-                              Util::config()->colorCross.blueF());
-                else
-                    glColor3d(Util::config()->colorGrid.redF(),
-                              Util::config()->colorGrid.greenF(),
-                              Util::config()->colorGrid.blueF());
-                glVertex2d(i*Util::config()->gridStep, cornerMin.y);
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y);
-            }
-
-            // horizontal lines
-            for (int i = 0; i<cornerMin.y/Util::config()->gridStep; i++)
-            {
-                if ((step > 0) && i % step == 0)
-                    glColor3d(Util::config()->colorCross.redF(),
-                              Util::config()->colorCross.greenF(),
-                              Util::config()->colorCross.blueF());
-                else
-                    glColor3d(Util::config()->colorGrid.redF(),
-                              Util::config()->colorGrid.greenF(),
-                              Util::config()->colorGrid.blueF());
-                glVertex2d(cornerMin.x, i*Util::config()->gridStep);
-                glVertex2d(cornerMax.x, i*Util::config()->gridStep);
-            }
-            for (int i = 0; i>cornerMax.y/Util::config()->gridStep; i--)
-            {
-                if ((step > 0) && i % step == 0)
-                    glColor3d(Util::config()->colorCross.redF(),
-                              Util::config()->colorCross.greenF(),
-                              Util::config()->colorCross.blueF());
-                else
-                    glColor3d(Util::config()->colorGrid.redF(),
-                              Util::config()->colorGrid.greenF(),
-                              Util::config()->colorGrid.blueF());
-                glVertex2d(cornerMin.x, i*Util::config()->gridStep);
-                glVertex2d(cornerMax.x, i*Util::config()->gridStep);
-            }
+            if (i % heavyLine == 0)
+                glColor3d(Util::config()->colorCross.redF(),
+                          Util::config()->colorCross.greenF(),
+                          Util::config()->colorCross.blueF());
+            else
+                glColor3d(Util::config()->colorGrid.redF(),
+                          Util::config()->colorGrid.greenF(),
+                          Util::config()->colorGrid.blueF());
+            glVertex2d(i*Util::config()->gridStep, cornerMin.y);
+            glVertex2d(i*Util::config()->gridStep, cornerMax.y);
         }
-        glEnd();
-        glDisable(GL_LINE_STIPPLE);
+        for (int i = 0; i>cornerMin.x/Util::config()->gridStep; i--)
+        {
+            if (i % heavyLine == 0)
+                glColor3d(Util::config()->colorCross.redF(),
+                          Util::config()->colorCross.greenF(),
+                          Util::config()->colorCross.blueF());
+            else
+                glColor3d(Util::config()->colorGrid.redF(),
+                          Util::config()->colorGrid.greenF(),
+                          Util::config()->colorGrid.blueF());
+            glVertex2d(i*Util::config()->gridStep, cornerMin.y);
+            glVertex2d(i*Util::config()->gridStep, cornerMax.y);
+        }
+
+        // horizontal lines
+        for (int i = 0; i<cornerMin.y/Util::config()->gridStep; i++)
+        {
+            if (i % heavyLine == 0)
+                glColor3d(Util::config()->colorCross.redF(),
+                          Util::config()->colorCross.greenF(),
+                          Util::config()->colorCross.blueF());
+            else
+                glColor3d(Util::config()->colorGrid.redF(),
+                          Util::config()->colorGrid.greenF(),
+                          Util::config()->colorGrid.blueF());
+            glVertex2d(cornerMin.x, i*Util::config()->gridStep);
+            glVertex2d(cornerMax.x, i*Util::config()->gridStep);
+        }
+        for (int i = 0; i>cornerMax.y/Util::config()->gridStep; i--)
+        {
+            if (i % heavyLine == 0)
+                glColor3d(Util::config()->colorCross.redF(),
+                          Util::config()->colorCross.greenF(),
+                          Util::config()->colorCross.blueF());
+            else
+                glColor3d(Util::config()->colorGrid.redF(),
+                          Util::config()->colorGrid.greenF(),
+                          Util::config()->colorGrid.blueF());
+            glVertex2d(cornerMin.x, i*Util::config()->gridStep);
+            glVertex2d(cornerMax.x, i*Util::config()->gridStep);
+        }
     }
+    glEnd();
+    glDisable(GL_LINE_STIPPLE);
 
     if (m_scene->problemInfo()->problemType == ProblemType_Axisymmetric)
     {
