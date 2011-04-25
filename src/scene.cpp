@@ -68,7 +68,7 @@ void ProblemInfo::clear()
     adaptivityType = AdaptivityType_None;
     adaptivitySteps = 0;
     adaptivityTolerance = 1.0;
-    maxDOFs = MAX_DOFS;
+    adaptivityMaxDOFs = MAX_DOFS;
 
     // harmonic
     frequency = 0.0;
@@ -80,6 +80,11 @@ void ProblemInfo::clear()
 
     // matrix solver
     matrixSolver = SOLVER_UMFPACK;
+
+    // linearity
+    linearityType = LinearityType_Linear;
+    linearityNonlinearTolerance = 1e-3;
+    linearityNonlinearSteps = 10;
 }
 
 DxfFilter::DxfFilter(Scene *scene)
@@ -1354,7 +1359,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
     m_problemInfo->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
     m_problemInfo->adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
-    m_problemInfo->maxDOFs = eleProblem.toElement().attribute("maxdofs", QString::number(MAX_DOFS)).toInt();
+    m_problemInfo->adaptivityMaxDOFs = eleProblem.toElement().attribute("maxdofs", QString::number(MAX_DOFS)).toInt();
 
     // harmonic
     m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();
@@ -1363,6 +1368,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->timeStep.text = eleProblem.toElement().attribute("timestep", "1");
     m_problemInfo->timeTotal.text = eleProblem.toElement().attribute("timetotal", "1");
     m_problemInfo->initialCondition.text = eleProblem.toElement().attribute("initialcondition", "0");
+
+    // linearity
+    m_problemInfo->linearityType = linearityTypeFromStringKey(eleProblem.toElement().attribute("linearity",
+                                                                                               linearityTypeToStringKey(LinearityType_Linear)));
+    m_problemInfo->linearityNonlinearSteps = eleProblem.toElement().attribute("linearitysteps", "10").toInt();
+    m_problemInfo->linearityNonlinearTolerance = eleProblem.toElement().attribute("linearitytolerance", "1e-3").toDouble();
 
     // matrix solver
     m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblem.toElement().attribute("matrix_solver",
@@ -1556,13 +1567,17 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("adaptivitytype", adaptivityTypeToStringKey(m_problemInfo->adaptivityType));
     eleProblem.setAttribute("adaptivitysteps", m_problemInfo->adaptivitySteps);
     eleProblem.setAttribute("adaptivitytolerance", m_problemInfo->adaptivityTolerance);
-    eleProblem.setAttribute("maxdofs", m_problemInfo->maxDOFs);
+    eleProblem.setAttribute("maxdofs", m_problemInfo->adaptivityMaxDOFs);
     // harmonic magnetic
     eleProblem.setAttribute("frequency", m_problemInfo->frequency);
     // transient
     eleProblem.setAttribute("timestep", m_problemInfo->timeStep.text);
     eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text);
     eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text);
+    // linearity
+    eleProblem.setAttribute("linearity", linearityTypeToStringKey(m_problemInfo->linearityType));
+    eleProblem.setAttribute("linearitysteps", m_problemInfo->linearityNonlinearSteps);
+    eleProblem.setAttribute("linearitytolerance", m_problemInfo->linearityNonlinearTolerance);
 
     // matrix solver
     eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(m_problemInfo->matrixSolver));

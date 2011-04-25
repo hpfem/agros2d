@@ -67,6 +67,7 @@ public:
     virtual bool hasSteadyState() const = 0;
     virtual bool hasHarmonic() const = 0;
     virtual bool hasTransient() const = 0;
+    virtual bool hasNonlinearity() const = 0;
 
     virtual void readBoundaryFromDomElement(QDomElement *element) = 0;
     virtual void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker) = 0;
@@ -154,6 +155,53 @@ GeomType convertProblemType(ProblemType problemType);
 QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                                          Hermes::vector<EssentialBCs> bcs,
                                          WeakFormAgros *wf);
+
+// solve
+class SolutionAgros
+{
+public:
+    SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros *wf);
+
+    QList<SolutionArray *> solveSolutioArray(Hermes::vector<EssentialBCs> bcs);
+private:
+    int polynomialOrder;
+    AdaptivityType adaptivityType;
+    int adaptivitySteps;
+    double adaptivityTolerance;
+    int adaptivityMaxDOFs;
+    int numberOfSolution;
+    double timeTotal;
+    double timeStep;
+    double initialCondition;
+
+    AnalysisType analysisType;
+
+    LinearityType linearityType;
+    double linearityNonlinearTolerance;
+    int linearityNonlinearSteps;
+
+    ProgressItemSolve *m_progressItemSolve;
+
+    // error
+    bool isError;
+
+    // mesh file
+    Mesh *mesh;
+
+    // weak form
+    WeakFormAgros *m_wf;
+
+    SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
+
+    bool solveLinear(DiscreteProblem *dp,
+                     Hermes::vector<Space *> space,
+                     Hermes::vector<Solution *> solution,
+                     Solver *solver, SparseMatrix *matrix, Vector *rhs, bool rhsOnly);
+
+    bool solve(Hermes::vector<Space *> space,
+               Hermes::vector<Solution *> solution,
+               Solver *solver, SparseMatrix *matrix, Vector *rhs, bool rhsOnly);
+};
 
 // custom forms **************************************************************************************************************************
 

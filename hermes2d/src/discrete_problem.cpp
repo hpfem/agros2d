@@ -4506,8 +4506,8 @@ bool Hermes2D::solve_picard(WeakForm* wf, Space* space, Solution* sln_prev_iter,
     if(solver->solve()) Solution::vector_to_solution(solver->get_solution(), space, &sln_new);
     else error ("Matrix solver failed.\n");
 
-    double rel_error = calc_abs_error(sln_prev_iter, &sln_new, HERMES_H1_NORM)
-                       / calc_norm(&sln_new, HERMES_H1_NORM) * 100;
+    double rel_error = Hermes2D::calc_abs_error(sln_prev_iter, &sln_new, HERMES_H1_NORM)
+                       / Hermes2D::calc_norm(&sln_new, HERMES_H1_NORM) * 100;
     if (verbose) info("---- Picard iter %d, ndof %d, rel. error %g%%",
       iter_count+1, space->get_num_dofs(), rel_error);
 

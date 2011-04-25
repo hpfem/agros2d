@@ -33,6 +33,7 @@ public:
     inline bool hasSteadyState() const { return true; }
     inline bool hasHarmonic() const { return false; }
     inline bool hasTransient() const { return false; }
+    inline bool hasNonlinearity() const { return false; }
 
     void readBoundaryFromDomElement(QDomElement *element);
     void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);

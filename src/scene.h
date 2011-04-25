@@ -57,9 +57,14 @@ public:
     AdaptivityType adaptivityType;
     int adaptivitySteps;
     double adaptivityTolerance; // percent
-    int maxDOFs;
+    int adaptivityMaxDOFs;
     QString scriptStartup;
     QString description;
+
+    // linearity
+    LinearityType linearityType;
+    double linearityNonlinearTolerance; // percent
+    int linearityNonlinearSteps;
 
     // harmonic
     double frequency;
@@ -85,6 +90,8 @@ public:
     }
 
     void clear();
+
+    inline bool isLinear() const { return (linearityType == LinearityType_Linear); }
 
     inline void setHermes(HermesField *hermes)
     {

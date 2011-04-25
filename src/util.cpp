@@ -32,6 +32,7 @@ static QHash<TEMode, QString> teModeList;
 static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
+static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MatrixSolverType, QString> matrixSolverTypeList;
 
 
@@ -58,6 +59,9 @@ SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+
+QString linearityTypeToStringKey(LinearityType linearityType) { return linearityTypeList[linearityType]; }
+LinearityType linearityTypeFromStringKey(const QString &linearityType) { return linearityTypeList.key(linearityType); }
 
 QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
 MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
@@ -217,7 +221,7 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_Impedance, "acoustic_impedance");
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_MatchedBoundary, "acoustic_matched_boundary");
 
-    //TEMODE
+    // TEMODE
     teModeList.insert(TEMode_0, "TE Mode 0");
     teModeList.insert(TEMode_1, "TE Mode 01");
     teModeList.insert(TEMode_2, "TE Mode 02");
@@ -243,6 +247,12 @@ void initLists()
     matrixSolverTypeList.insert(SOLVER_SUPERLU, "superlu");
     matrixSolverTypeList.insert(SOLVER_AMESOS, "trilinos_amesos");
     matrixSolverTypeList.insert(SOLVER_AZTECOO, "trilinos_aztecoo");
+
+    // LinearityType
+    linearityTypeList.insert(LinearityType_Undefined, "");
+    linearityTypeList.insert(LinearityType_Linear, "linear");
+    linearityTypeList.insert(LinearityType_Picard, "picard");
+    linearityTypeList.insert(LinearityType_Newton, "newton");
 }
 
 QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
@@ -999,6 +1009,24 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
         return QObject::tr("hp-adaptivity");
     default:
         std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
+        throw;
+    }
+}
+
+QString linearityTypeString(LinearityType linearityType)
+{
+    logMessage("linearityTypeString()");
+
+    switch (linearityType)
+    {
+    case LinearityType_Linear:
+        return QObject::tr("Linear");
+    case LinearityType_Picard:
+        return QObject::tr("Picard’s method");
+    case LinearityType_Newton:
+        return QObject::tr("Newton’s method");
+    default:
+        std::cerr << "Linearity type '" + QString::number(linearityType).toStdString() + "' is not implemented. linearityTypeString(LinearityType linearityType)" << endl;
         throw;
     }
 }

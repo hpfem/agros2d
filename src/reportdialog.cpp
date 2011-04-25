@@ -376,7 +376,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
             destination.replace("[ProblemInformation.AdaptivityType]", "<table><tr><td>" + tr("Adaptivity type:") + "</td><td>" + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType) + "</td></tr>", Qt::CaseSensitive);
             destination.replace("[ProblemInformation.AdaptivitySteps]", "<tr><td>" + tr("Adaptivity steps:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivitySteps) + "</td></tr>", Qt::CaseSensitive);
             destination.replace("[ProblemInformation.AdaptivityTolerance]", "<tr><td>" + tr("Adaptivity tolerance:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityTolerance) + "</td></tr></table>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.MaxDOFs]", "<tr><td>" + tr("Maximum DOFs:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->maxDOFs) + "</td></tr></table>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.MaxDOFs]", "<tr><td>" + tr("Maximum DOFs:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityMaxDOFs) + "</td></tr></table>", Qt::CaseSensitive);
         }
         else
         {

@@ -340,6 +340,14 @@ enum AdaptivityType
     AdaptivityType_HP = 0
 };
 
+enum LinearityType
+{
+    LinearityType_Undefined,
+    LinearityType_Linear,
+    LinearityType_Picard,
+    LinearityType_Newton
+};
+
 enum PhysicFieldVariableComp
 {
     PhysicFieldVariableComp_Undefined,
@@ -651,6 +659,7 @@ QString teModeString(TEMode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
+QString linearityTypeString(LinearityType linearityType);
 QString matrixSolverTypeString(MatrixSolverType matrixSolverType);
 
 inline QString errorNormString(ProjNormType projNormType)
@@ -702,6 +711,9 @@ SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
+
+QString linearityTypeToStringKey(LinearityType linearityType);
+LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
 QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType);
 MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
