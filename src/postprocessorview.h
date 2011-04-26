@@ -84,9 +84,7 @@ private:
     QComboBox *cmbPalette;
     QCheckBox *chkPaletteFilter;
     QSpinBox *txtPaletteSteps;
-    QCheckBox *chkScalarFieldRangeLog;
-    QLineEdit *txtScalarFieldRangeBase;
-    QSpinBox *txtScalarDecimalPlace;
+    QComboBox *cmbLinearizerQuality;
 
     // vector field
     QCheckBox *chkVectorProportional;
@@ -123,7 +121,6 @@ private slots:
     void doScalarFieldRangeMinChanged();
     void doScalarFieldRangeMaxChanged();
     void doPaletteFilter(int state);
-    void doScalarFieldLog(int state);
 };
 
 #endif // SCENEVIEWDIALOG_H

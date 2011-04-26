@@ -114,6 +114,12 @@ void ConfigDialog::load()
     // label
     chkShowLabel->setChecked(Util::config()->showLabel);
 
+    // scalar field
+    chkScalarFieldRangeLog->setChecked(Util::config()->scalarRangeLog);
+    doScalarFieldLog(chkScalarFieldRangeLog->checkState());
+    txtScalarFieldRangeBase->setText(QString::number(Util::config()->scalarRangeBase));
+    txtScalarDecimalPlace->setValue(Util::config()->scalarDecimalPlace);
+
     // 3d
     chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
     txtView3DAngle->setValue(Util::config()->scalarView3DAngle);
@@ -219,6 +225,11 @@ void ConfigDialog::save()
 
     // label
     Util::config()->showLabel = chkShowLabel->isChecked();
+
+    // scalar view
+    Util::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
+    Util::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
+    Util::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
 
     // 3d
     Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
@@ -466,6 +477,25 @@ QWidget *ConfigDialog::createViewWidget()
     QWidget *widgetGeneral = new QWidget(this);
     widgetGeneral->setLayout(layoutGeneral);
 
+    // scalar view log scale
+    chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
+    txtScalarFieldRangeBase = new QLineEdit("10");
+    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
+
+    txtScalarDecimalPlace = new QSpinBox(this);
+    txtScalarDecimalPlace->setMinimum(1);
+    txtScalarDecimalPlace->setMaximum(10);
+
+    QGridLayout *layoutScalarField = new QGridLayout();
+    layoutScalarField->addWidget(new QLabel(tr("Base:")), 0, 0);
+    layoutScalarField->addWidget(txtScalarFieldRangeBase, 0, 1);
+    layoutScalarField->addWidget(chkScalarFieldRangeLog, 0, 2);
+    layoutScalarField->addWidget(new QLabel(tr("Decimal places:")), 1, 0);
+    layoutScalarField->addWidget(txtScalarDecimalPlace, 1, 1);
+
+    QGroupBox *grpScalarField = new QGroupBox(tr("Scalar view"));
+    grpScalarField->setLayout(layoutScalarField);
+
     // layout 3d
     chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
     txtView3DAngle = new QDoubleSpinBox(this);
@@ -506,6 +536,7 @@ QWidget *ConfigDialog::createViewWidget()
 
     // layout postprocessor
     QVBoxLayout *layoutPostprocessor = new QVBoxLayout();
+    layoutPostprocessor->addWidget(grpScalarField);
     layoutPostprocessor->addWidget(grp3D);
     layoutPostprocessor->addWidget(grpDeformShape);
     layoutPostprocessor->addStretch();
@@ -745,6 +776,13 @@ void ConfigDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetIte
     logMessage("ConfigDialog::doCurrentItemChanged()");
 
     pages->setCurrentIndex(lstView->row(current));
+}
+
+void ConfigDialog::doScalarFieldLog(int state)
+{
+    logMessage("PostprocessorView::doScalarFieldLog()");
+
+    txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
 }
 
 void ConfigDialog::doAccept()

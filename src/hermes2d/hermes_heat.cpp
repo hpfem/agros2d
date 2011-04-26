@@ -105,41 +105,6 @@ public:
     }
 };
 
-/*
-template<typename Real, typename Scalar>
-Scalar heat_matrix_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return heatLabel[e->elem_marker].thermal_conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-                + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
-    else
-        return heatLabel[e->elem_marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
-                + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep : 0.0);
-}
-
-template<typename Real, typename Scalar>
-Scalar heat_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return heatLabel[e->elem_marker].volume_heat * int_v<Real, Scalar>(n, wt, v)
-                + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
-    else
-        return heatLabel[e->elem_marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e)
-                + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
-}
-
-void callbackHeatWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
-{
-    wf->add_matrix_form(0, 0, callback(heat_matrix_form));
-    if (analysisType == AnalysisType_Transient)
-        wf->add_vector_form(0, callback(heat_vector_form), HERMES_ANY, slnArray.at(0));
-    else
-        wf->add_vector_form(0, callback(heat_vector_form));
-    wf->add_matrix_form_surf(0, 0, callback(heat_matrix_form_surf));
-    wf->add_vector_form_surf(0, callback(heat_vector_form_surf));
-}
-*/
-
 // *******************************************************************************************************
 
 void HermesHeat::readBoundaryFromDomElement(QDomElement *element)

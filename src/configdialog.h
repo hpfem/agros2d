@@ -37,6 +37,7 @@ public:
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void doScalarFieldLog(int state);
     void doClearCommandHistory();
     void doSceneFont();
     void doAdvancedDefault();
@@ -127,6 +128,11 @@ private:
 
     // label
     QCheckBox *chkShowLabel;
+
+    // scalar view
+    QCheckBox *chkScalarFieldRangeLog;
+    QLineEdit *txtScalarFieldRangeBase;
+    QSpinBox *txtScalarDecimalPlace;
 
     // 3d
     QCheckBox *chkView3DLighting;

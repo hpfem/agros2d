@@ -734,6 +734,8 @@ const QColor COLORHIGHLIGHTED = QColor::fromRgb(250, 150, 0);
 const QColor COLORSELECTED = QColor::fromRgb(150, 0, 0);
 
 // posprocessor
+const double LINEARIZER_QUALITY = 0.0006;
+
 const int CONTOURSCOUNT = 15;
 
 const PaletteType PALETTETYPE = Palette_Jet;

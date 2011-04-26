@@ -521,7 +521,7 @@ void ChartDialog::plotTime()
     for (int i = 0; i<Util::scene()->sceneSolution()->timeStepCount(); i++)
     {
         // change time level
-        Util::scene()->sceneSolution()->setTimeStep(i);
+        Util::scene()->sceneSolution()->setTimeStep(i, false);
 
         Point point(txtPointX->value().number, txtPointY->value().number);
         LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);

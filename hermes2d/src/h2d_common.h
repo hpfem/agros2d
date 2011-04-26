@@ -43,7 +43,7 @@ const int H2D_ORDER_MASK = (1 << H2D_ORDER_BITS) - 1;
 
 /* Uncomment this line to disable internal mesh compatibility
    tests in Traverse:begin(). */
-//#define H2D_DISABLE_MULTIMESH_TESTS
+#define H2D_DISABLE_MULTIMESH_TESTS
 
 class MeshFunction;
 class Solution;

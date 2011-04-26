@@ -60,11 +60,14 @@ protected:
 public:
     ProgressItem();
 
+    void init();
+    virtual void setSteps() = 0;
+
     inline QString name() { return m_name; }
     inline int steps() { return m_steps; }
     inline bool isCanceled() { return m_isCanceled; }
     inline void emitMessage(const QString &msg, bool isError, int position = 0) { emit message(msg, isError, position); }
-    virtual bool run() = 0;
+    virtual bool run(bool quiet = false) = 0;
 
 signals:
     void message(const QString &message, bool isError, int position);
@@ -87,7 +90,9 @@ private slots:
 public:
     ProgressItemMesh();
 
-    bool run();
+    void setSteps();
+
+    bool run(bool quiet);
 };
 
 class ProgressItemSolve : public ProgressItem
@@ -97,7 +102,9 @@ class ProgressItemSolve : public ProgressItem
 public:
     ProgressItemSolve();
 
-    bool run();
+    void setSteps();
+
+    bool run(bool quiet = false);
     inline void addAdaptivityError(double error, int dof) { m_adaptivityError.append(error); m_adaptivityDOF.append(dof); emit changed(); }
     inline QList<double> adaptivityError() { return m_adaptivityError; }
     inline QList<int> adaptivityDOF() { return m_adaptivityDOF; }
@@ -115,7 +122,6 @@ class ProgressItemProcessView : public ProgressItem
 {
     Q_OBJECT
 private:
-    // SceneView *m_sceneView;
 
 private slots:
     void process();
@@ -123,7 +129,9 @@ private slots:
 public:
     ProgressItemProcessView();
 
-    bool run();
+    void setSteps();
+
+    bool run(bool quiet = false);
 };
 
 class ProgressDialog : public QDialog
@@ -136,6 +144,7 @@ public:
 
     void appendProgressItem(ProgressItem *progressItem);
     bool run(bool showViewProgress = true);
+    void clear();
 
 signals:
     void cancelProgressItem();
@@ -178,7 +187,6 @@ private:
     QWidget *createControlsConvergenceErrorDOFChart();
 
     void createControls();
-    void clear();
     int progressSteps();
     int currentProgressStep();
     void saveProgressLog();

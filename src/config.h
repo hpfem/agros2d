@@ -70,6 +70,9 @@ public:
     // label
     bool showLabel;
 
+    // linearizer quality
+    double linearizerQuality;
+
     // contour
     int contoursCount;
 

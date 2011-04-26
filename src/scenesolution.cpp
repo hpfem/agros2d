@@ -28,6 +28,11 @@ SceneSolution::SceneSolution()
 {
     logMessage("SceneSolution::SceneSolution()");
 
+    m_progressDialog = new ProgressDialog();
+    m_progressItemMesh = new ProgressItemMesh();
+    m_progressItemSolve = new ProgressItemSolve();
+    m_progressItemProcessView = new ProgressItemProcessView();
+
     m_timeStep = -1;
     m_isSolving = false;
 
@@ -36,6 +41,14 @@ SceneSolution::SceneSolution()
     m_slnScalarView = NULL;
     m_slnVectorXView = NULL;
     m_slnVectorYView = NULL;   
+}
+
+SceneSolution::~SceneSolution()
+{
+    delete m_progressDialog;
+    delete m_progressItemMesh;
+    delete m_progressItemSolve;
+    delete m_progressItemProcessView;
 }
 
 void SceneSolution::clear()
@@ -92,6 +105,8 @@ void SceneSolution::clear()
         delete m_slnVectorYView;
         m_slnVectorYView = NULL;
     }
+
+    m_progressDialog->clear();
 }
 
 void SceneSolution::solve(SolverMode solverMode)
@@ -110,15 +125,15 @@ void SceneSolution::solve(SolverMode solverMode)
     if (result.isError())
         result.showDialog();
 
-    ProgressDialog progressDialog;
-    progressDialog.appendProgressItem(new ProgressItemMesh());
+    m_progressDialog->clear();
+    m_progressDialog->appendProgressItem(m_progressItemMesh);
     if (solverMode == SolverMode_MeshAndSolve)
     {
-        progressDialog.appendProgressItem(new ProgressItemSolve());
-        progressDialog.appendProgressItem(new ProgressItemProcessView());
+        m_progressDialog->appendProgressItem(m_progressItemSolve);
+        m_progressDialog->appendProgressItem(m_progressItemProcessView);
     }
 
-    if (progressDialog.run())
+    if (m_progressDialog->run())
     {
         Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStepCount() - 1);
         emit meshed();
@@ -429,7 +444,7 @@ void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
     }
     
     m_slnContourView = slnScalarView;
-    m_linContourView.process_solution(m_slnContourView);
+    m_linContourView.process_solution(m_slnContourView, H2D_FN_VAL_0, Util::config()->linearizerQuality);
 
     // deformed shape
     if (Util::config()->deformContour)
@@ -447,7 +462,7 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
     }
     
     m_slnScalarView = slnScalarView;
-    m_linScalarView.process_solution(m_slnScalarView, H2D_FN_VAL_0);
+    m_linScalarView.process_solution(m_slnScalarView, H2D_FN_VAL_0, Util::config()->linearizerQuality);
 
     // deformed shape
     if (Util::config()->deformScalar)
@@ -477,6 +492,21 @@ void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScala
     // deformed shape
     if (Util::config()->deformVector)
         Util::scene()->problemInfo()->hermes()->deformShape(m_vecVectorView.get_vertices(), m_vecVectorView.get_num_vertices());
+}
+
+void SceneSolution::processView(bool showViewProgress)
+{
+    if (showViewProgress)
+    {
+        m_progressDialog->clear();
+        m_progressDialog->appendProgressItem(m_progressItemProcessView);
+        m_progressDialog->run(showViewProgress);
+    }
+    else
+    {
+        m_progressItemProcessView->setSteps();
+        m_progressItemProcessView->run(true);
+    }
 }
 
 void SceneSolution::processSolutionMesh()
@@ -520,7 +550,6 @@ void SceneSolution::processRangeScalar()
     {
         ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().scalarPhysicFieldVariable,
                                                                                                       sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
-        // qDebug() << "void SceneSolution::processRangeScalar()";
 
         setSlnScalarView(viewScalarFilter);
         emit processedRangeScalar();

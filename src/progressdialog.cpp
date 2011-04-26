@@ -156,11 +156,15 @@ ProgressItem::ProgressItem()
     logMessage("ProgressItem::ProgressItem()");
 
     m_name = "";
+
+    connect(this, SIGNAL(message(QString, bool, int)), this, SLOT(showMessage(QString, bool, int)));
+}
+
+void ProgressItem::init()
+{
     m_steps = 0;
     m_isError = false;
     m_isCanceled = false;
-
-    connect(this, SIGNAL(message(QString, bool, int)), this, SLOT(showMessage(QString, bool, int)));
 }
 
 void ProgressItem::showMessage(const QString &msg, bool isError, int position)
@@ -177,14 +181,20 @@ ProgressItemMesh::ProgressItemMesh() : ProgressItem()
     logMessage("ProgressItemMesh::ProgressItemMesh()");
 
     m_name = tr("Mesh");
+}
+
+void ProgressItemMesh::setSteps()
+{
     m_steps = 4;
 }
 
-bool ProgressItemMesh::run()
+bool ProgressItemMesh::run(bool quiet)
 {
     logMessage("ProgressItemMesh::run()");
 
+    if (quiet) blockSignals(true);
     QFile::remove(tempProblemFileName() + ".mesh");
+    if (quiet) blockSignals(false);
 
     // create triangle files
     if (writeToTriangle())
@@ -743,6 +753,10 @@ ProgressItemSolve::ProgressItemSolve() : ProgressItem()
     logMessage("ProgressItemSolve::ProgressItemSolve()");
 
     m_name = tr("Solver");
+}
+
+void ProgressItemSolve::setSteps()
+{
     m_steps = 1;
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
@@ -753,11 +767,13 @@ ProgressItemSolve::ProgressItemSolve() : ProgressItem()
     }
 }
 
-bool ProgressItemSolve::run()
+bool ProgressItemSolve::run(bool quiet)
 {
     logMessage("ProgressItemSolve::()");
 
+    if (quiet) blockSignals(true);
     solve();
+    if (quiet) blockSignals(false);
 
     return !m_isError;
 }
@@ -806,7 +822,10 @@ ProgressItemProcessView::ProgressItemProcessView() : ProgressItem()
     logMessage("ProgressItemProcessView::ProgressItemProcessView()");
 
     m_name = tr("View");
+}
 
+void ProgressItemProcessView::setSteps()
+{
     m_steps = 0;
     if (sceneView()->sceneViewSettings().showContours == 1)
         m_steps += 1;
@@ -818,11 +837,13 @@ ProgressItemProcessView::ProgressItemProcessView() : ProgressItem()
         m_steps += 1;
 }
 
-bool ProgressItemProcessView::run()
+bool ProgressItemProcessView::run(bool quiet)
 {
     logMessage("ProgressItemProcessView::run()");
 
+    if (quiet) blockSignals(true);
     process();
+    if (quiet) blockSignals(false);
 
     return !m_isError;
 }
@@ -899,8 +920,8 @@ void ProgressDialog::clear()
     logMessage("ProgressDialog::clear()");
 
     // delete progress items
-    for (int i = 0; i < m_progressItem.count(); i++)
-        delete m_progressItem.at(i);
+    // for (int i = 0; i < m_progressItem.count(); i++)
+    //    delete m_progressItem.at(i);
     m_progressItem.clear();
 
     m_currentProgressItem = NULL;
@@ -922,13 +943,6 @@ void ProgressDialog::createControls()
     tabType->addTab(controlsConvergenceDOFChart, icon(""), tr("Adapt. DOFs"));
     tabType->addTab(controlsConvergenceErrorDOFChart, icon(""), tr("Adapt. conv."));
     connect(tabType, SIGNAL(currentChanged(int)), this, SLOT(resetControls(int)));
-
-    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
-    {
-       controlsConvergenceErrorChart->setEnabled(false);
-       controlsConvergenceDOFChart->setEnabled(false);
-       controlsConvergenceErrorDOFChart->setEnabled(false);
-    }
 
     btnCancel = new QPushButton(tr("Cance&l"));
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancel()));
@@ -1155,6 +1169,10 @@ void ProgressDialog::appendProgressItem(ProgressItem *progressItem)
 {
     logMessage("ProgressDialog::appendProgressItem()");
 
+    progressItem->init();
+    progressItem->setSteps();
+    progressItem->disconnect();
+
     m_progressItem.append(progressItem);
     connect(progressItem, SIGNAL(changed()), this, SLOT(itemChanged()));
     connect(progressItem, SIGNAL(message(QString, bool, int)), this, SLOT(showMessage(QString, bool, int)));
@@ -1164,6 +1182,13 @@ void ProgressDialog::appendProgressItem(ProgressItem *progressItem)
 bool ProgressDialog::run(bool showViewProgress)
 {
     logMessage("ProgressDialog::run()");
+
+    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
+    {
+       controlsConvergenceErrorChart->setEnabled(false);
+       controlsConvergenceDOFChart->setEnabled(false);
+       controlsConvergenceErrorDOFChart->setEnabled(false);
+    }
 
     m_showViewProgress = showViewProgress;
     QTimer::singleShot(0, this, SLOT(start()));
@@ -1179,7 +1204,7 @@ void ProgressDialog::start()
 
     progressBar->setRange(0, progressSteps());
     progressBar->setValue(0);
-    QApplication::processEvents();
+    // QApplication::processEvents();
 
     for (int i = 0; i < m_progressItem.count(); i++)
     {
@@ -1241,7 +1266,7 @@ void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
         progressBar->setValue(currentProgressStep() + position);
 
     // update
-    QApplication::processEvents();
+    if (position % 3 == 0) QApplication::processEvents();
     lstMessage->update();
 }
 

@@ -107,6 +107,9 @@ void Config::load()
     // label
     showLabel = settings.value("SceneViewSettings/ShowLabel", true).toBool();
 
+    // linearizer quality
+    linearizerQuality = settings.value("SceneViewSettings/LinearizerQuality", LINEARIZER_QUALITY).toDouble();
+
     // countour
     contoursCount = settings.value("SceneViewSettings/ContoursCount", CONTOURSCOUNT).toInt();
 
@@ -211,6 +214,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/ShowGrid", showGrid);
     settings.setValue("SceneViewSettings/GridStep", gridStep);
 
+    // scene font
     settings.setValue("SceneViewSettings/SceneFont", sceneFont);
 
     // rulers
@@ -223,6 +227,9 @@ void Config::save()
 
     // label
     settings.setValue("SceneViewSettings/ShowLabel", showLabel);
+
+    // linearizer quality
+    settings.setValue("SceneViewSettings/LinearizerQuality", linearizerQuality);
 
     // countour
     settings.setValue("SceneViewSettings/ContoursCount", contoursCount);

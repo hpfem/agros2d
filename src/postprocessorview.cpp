@@ -91,10 +91,7 @@ void PostprocessorView::loadAdvanced()
     chkPaletteFilter->setChecked(Util::config()->paletteFilter);
     doPaletteFilter(chkPaletteFilter->checkState());
     txtPaletteSteps->setValue(Util::config()->paletteSteps);
-    chkScalarFieldRangeLog->setChecked(Util::config()->scalarRangeLog);
-    doScalarFieldLog(chkScalarFieldRangeLog->checkState());
-    txtScalarFieldRangeBase->setText(QString::number(Util::config()->scalarRangeBase));
-    txtScalarDecimalPlace->setValue(Util::config()->scalarDecimalPlace);
+    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(Util::config()->linearizerQuality));
 
     // vector field
     chkVectorProportional->setChecked(Util::config()->vectorProportional);
@@ -149,9 +146,7 @@ void PostprocessorView::saveAdvanced()
     Util::config()->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
     Util::config()->paletteFilter = chkPaletteFilter->isChecked();
     Util::config()->paletteSteps = txtPaletteSteps->value();
-    Util::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
-    Util::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
-    Util::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
+    Util::config()->linearizerQuality = cmbLinearizerQuality->itemData(cmbLinearizerQuality->currentIndex()).toDouble();
 
     // vector field
     Util::config()->vectorProportional = chkVectorProportional->isChecked();
@@ -362,21 +357,22 @@ QWidget *PostprocessorView::controlsAdvanced()
     cmbPalette->addItem(tr("B/W ascending"), Palette_BWAsc);
     cmbPalette->addItem(tr("B/W descending"), Palette_BWDesc);
 
+    cmbLinearizerQuality = new QComboBox();
+    cmbLinearizerQuality->addItem(tr("Extremely coarse"), 0.01);
+    cmbLinearizerQuality->addItem(tr("Extra coarse"), 0.007);
+    cmbLinearizerQuality->addItem(tr("Coarser"), 0.003);
+    cmbLinearizerQuality->addItem(tr("Coarse"), 0.001);
+    cmbLinearizerQuality->addItem(tr("Normal"), LINEARIZER_QUALITY);
+    cmbLinearizerQuality->addItem(tr("Fine"), 0.0001);
+    cmbLinearizerQuality->addItem(tr("Finer"), 0.0006);
+    cmbLinearizerQuality->addItem(tr("Extra fine"), 0.00001);
+
     chkPaletteFilter = new QCheckBox(tr("Filter"));
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
 
     txtPaletteSteps = new QSpinBox(this);
     txtPaletteSteps->setMinimum(5);
     txtPaletteSteps->setMaximum(100);
-
-    // log scale
-    chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
-    txtScalarFieldRangeBase = new QLineEdit("10");
-    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
-
-    txtScalarDecimalPlace = new QSpinBox(this);
-    txtScalarDecimalPlace->setMinimum(1);
-    txtScalarDecimalPlace->setMaximum(10);
 
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->setColumnMinimumWidth(0, minWidth);
@@ -386,12 +382,8 @@ QWidget *PostprocessorView::controlsAdvanced()
     layoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 0);
     layoutScalarField->addWidget(txtPaletteSteps, 1, 1);
     layoutScalarField->addWidget(chkPaletteFilter, 1, 2);
-    layoutScalarField->addWidget(new QLabel(tr("Base:")), 2, 0);
-    layoutScalarField->addWidget(txtScalarFieldRangeBase, 2, 1);
-    layoutScalarField->addWidget(chkScalarFieldRangeLog, 2, 2);
-
-    layoutScalarField->addWidget(new QLabel(tr("Decimal places:")), 3, 0);
-    layoutScalarField->addWidget(txtScalarDecimalPlace, 3, 1);
+    layoutScalarField->addWidget(new QLabel(tr("Quality:")), 2, 0);
+    layoutScalarField->addWidget(cmbLinearizerQuality, 2, 1, 1, 2);
 
     QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
     grpScalarView->setLayout(layoutScalarField);
@@ -507,13 +499,6 @@ void PostprocessorView::doPaletteFilter(int state)
     txtPaletteSteps->setEnabled(!chkPaletteFilter->isChecked());
 }
 
-void PostprocessorView::doScalarFieldLog(int state)
-{
-    logMessage("PostprocessorView::doScalarFieldLog()");
-
-    txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
-}
-
 void PostprocessorView::setControls()
 {
     logMessage("PostprocessorView::setControls()");
@@ -583,7 +568,7 @@ void PostprocessorView::doApply()
 
     // time step
     QApplication::processEvents();
-    Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex());
+    Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
 
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
@@ -612,9 +597,7 @@ void PostprocessorView::doDefault()
     cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) PALETTETYPE));
     chkPaletteFilter->setChecked(PALETTEFILTER);
     txtPaletteSteps->setValue(PALETTESTEPS);
-    chkScalarFieldRangeLog->setChecked(SCALARRANGELOG);
-    txtScalarFieldRangeBase->setText(QString::number(SCALARRANGEBASE));
-    txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
+    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(LINEARIZER_QUALITY));
 
     // vector view
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);

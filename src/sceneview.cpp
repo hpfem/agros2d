@@ -3627,17 +3627,10 @@ void SceneView::timeStepChanged(bool showViewProgress)
 
     if (!Util::scene()->sceneSolution()->isSolving())
     {
-        if (showViewProgress)
-        {
-            ProgressDialog progressDialog;
-            progressDialog.appendProgressItem(new ProgressItemProcessView());
-            progressDialog.run();
-        }
-        else
-        {
-            ProgressItemProcessView progressItemProcessView;
-            progressItemProcessView.run();
-        }
+        QTime time;
+        time.start();
+
+        Util::scene()->sceneSolution()->processView(showViewProgress);
     }
 
     clearGLLists();

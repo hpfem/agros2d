@@ -22,10 +22,10 @@
 #include "scene.h"
 #include "gui.h"
 
-class WeakFormRF : public WeakFormAgros
+class WeakFormMagnetic : public WeakFormAgros
 {
 public:
-    WeakFormRF(int neq) : WeakFormAgros(neq) { }
+    WeakFormMagnetic(int neq) : WeakFormAgros(neq) { }
 
     void registerForms()
     {
@@ -873,7 +873,7 @@ QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolv
     }
     Hermes::vector<EssentialBCs> bcs(bc1, bc2);
 
-    WeakFormRF wf(numberOfSolution());
+    WeakFormMagnetic wf(numberOfSolution());
 
     QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
 

@@ -30,12 +30,18 @@ class ViewScalarFilter;
 
 struct SolutionArray;
 
+class ProgressDialog;
+class ProgressItemMesh;
+class ProgressItemSolve;
+class ProgressItemProcessView;
+
 class SceneSolution : public QObject
 {
     Q_OBJECT
 
 public:
     SceneSolution();
+    ~SceneSolution();
 
     void clear();
     void loadMeshInitial(QDomElement *element);
@@ -101,10 +107,14 @@ public:
     int findTriangleInVectorizer(const Vectorizer &vecVectorView, const Point &point) const;
 
     // process
+    void processView(bool showViewProgress);
     void processSolutionMesh();
     void processRangeContour();
     void processRangeScalar();
     void processRangeVector();
+
+    // progress dialog
+    inline ProgressDialog *progressDialog() { return m_progressDialog; }
 
 signals:
     void timeStepChanged(bool showViewProgress = true);
@@ -146,6 +156,12 @@ private:
     // agros internal markers
     std::map<int, int> conversion_table_labels;
     std::map<int, int> conversion_table_boundaries;
+
+    // progress dialog
+    ProgressDialog *m_progressDialog;
+    ProgressItemMesh *m_progressItemMesh;
+    ProgressItemSolve *m_progressItemSolve;
+    ProgressItemProcessView *m_progressItemProcessView;
 };
 
 #endif // SCENESOLUTION_H
