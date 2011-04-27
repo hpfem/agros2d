@@ -188,6 +188,8 @@ SolutionAgros::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros
 
 QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<EssentialBCs> bcs)
 {
+    QTime time;
+
     // solution agros array
     QList<SolutionArray *> solutionArrayList;
 
@@ -303,7 +305,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
             if (adaptivityType == AdaptivityType_None)
             {
                 if (analysisType != AnalysisType_Transient)
-                    solve(space, solution, solver, matrix, rhs, false);
+                    solve(space, solution, solver, matrix, rhs);
             }
             else
             {
@@ -311,7 +313,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                 Hermes::vector<Space *> spaceReference = *Space::construct_refined_spaces(space);
 
                 // assemble reference problem.
-                solve(spaceReference, solution, solver, matrix, rhs, false);
+                solve(spaceReference, solution, solver, matrix, rhs);
 
                 // copy solution
                 for (int j = 0; j < numberOfSolution; j++)
@@ -399,6 +401,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                 matrix = create_matrix(matrixSolver);
                 rhs = create_vector(matrixSolver);
                 solver = create_linear_solver(matrixSolver, matrix, rhs);
+                // solver->set_factorization_scheme(HERMES_REUSE_FACTORIZATION_COMPLETELY);
 
                 dpTran = new DiscreteProblem(m_wf, space, true);
             }
@@ -420,10 +423,10 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                 // transient
                 if ((timesteps > 1) && (linearityType == LinearityType_Linear))
                     isError = !solveLinear(dpTran, space, solution,
-                                           solver, matrix, rhs, (n > 0));
+                                           solver, matrix, rhs);
                 if ((timesteps > 1) && (linearityType != LinearityType_Linear))
                     isError = !solve(space, solution,
-                                     solver, matrix, rhs, (n > 0));
+                                     solver, matrix, rhs);
 
                 // output
                 for (int i = 0; i < numberOfSolution; i++)
@@ -432,7 +435,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                 }
 
                 if (analysisType == AnalysisType_Transient)
-                    m_progressItemSolve->emitMessage(QObject::tr("Transient time step (%1/%2): %3").
+                    m_progressItemSolve->emitMessage(QObject::tr("Transient time step (%1/%2): %3 s").
                                                      arg(n+1).
                                                      arg(timesteps).
                                                      arg(actualTime, 0, 'e', 2), false, n+2);
@@ -479,9 +482,12 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
 bool SolutionAgros::solveLinear(DiscreteProblem *dp,
                                 Hermes::vector<Space *> space,
                                 Hermes::vector<Solution *> solution,
-                                Solver *solver, SparseMatrix *matrix, Vector *rhs, bool rhsOnly)
+                                Solver *solver, SparseMatrix *matrix, Vector *rhs)
 {
-    dp->assemble(matrix, rhs, rhsOnly);
+    // QTime time;
+    // time.start();
+    dp->assemble(matrix, rhs);
+    // qDebug() << "assemble: " << time.elapsed();
 
     if(solver->solve())
     {
@@ -497,14 +503,14 @@ bool SolutionAgros::solveLinear(DiscreteProblem *dp,
 
 bool SolutionAgros::solve(Hermes::vector<Space *> space,
                           Hermes::vector<Solution *> solution,
-                          Solver *solver, SparseMatrix *matrix, Vector *rhs, bool rhsOnly)
+                          Solver *solver, SparseMatrix *matrix, Vector *rhs)
 {
     bool isError = false;
     if (linearityType == LinearityType_Linear)
     {
         DiscreteProblem dpLin(m_wf, space, true);
         isError = !solveLinear(&dpLin, space, solution,
-                               solver, matrix, rhs, rhsOnly);
+                               solver, matrix, rhs);
 
         return !isError;
     }

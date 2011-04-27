@@ -39,12 +39,12 @@ public:
                 // surface current
                 if (boundary->type == PhysicFieldBC_RF_SurfaceCurrent)
                 {
-                    if (fabs(boundary->value_real.number) > EPS_ZERO)
+                    if (fabs(boundary->value_imag.number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
                                                                                                         - 2 * M_PI * Util::scene()->problemInfo()->frequency * boundary->value_imag.number,
-                                                                                                        HERMES_PLANAR));
-                    if (fabs(boundary->value_imag.number) > EPS_ZERO)
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+                    if (fabs(boundary->value_real.number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(1,
                                                                                                         QString::number(i + 1).toStdString(),
                                                                                                         2 * M_PI * Util::scene()->problemInfo()->frequency * boundary->value_real.number,
@@ -1156,7 +1156,7 @@ void ViewScalarFilterRF::calculateVariable(int i)
         }
         else
         {
-            node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i])) * x[i];
+            node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i]));
         }
     }
         break;
@@ -1180,7 +1180,7 @@ void ViewScalarFilterRF::calculateVariable(int i)
         }
         else
         {
-            node->values[0][0][i] = - value2[i] * x[i];
+            node->values[0][0][i] = - value2[i];
         }
     }
         break;

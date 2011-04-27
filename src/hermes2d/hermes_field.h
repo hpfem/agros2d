@@ -197,11 +197,11 @@ private:
     bool solveLinear(DiscreteProblem *dp,
                      Hermes::vector<Space *> space,
                      Hermes::vector<Solution *> solution,
-                     Solver *solver, SparseMatrix *matrix, Vector *rhs, bool rhsOnly);
+                     Solver *solver, SparseMatrix *matrix, Vector *rhs);
 
     bool solve(Hermes::vector<Space *> space,
                Hermes::vector<Solution *> solution,
-               Solver *solver, SparseMatrix *matrix, Vector *rhs, bool rhsOnly);
+               Solver *solver, SparseMatrix *matrix, Vector *rhs);
 };
 
 // custom forms **************************************************************************************************************************

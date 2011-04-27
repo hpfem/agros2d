@@ -193,8 +193,17 @@ bool ProgressItemMesh::run(bool quiet)
     logMessage("ProgressItemMesh::run()");
 
     if (quiet) blockSignals(true);
-    QFile::remove(tempProblemFileName() + ".mesh");
+    mesh();
     if (quiet) blockSignals(false);
+
+    return !m_isError;
+}
+
+void ProgressItemMesh::mesh()
+{
+    logMessage("ProgressItemMesh::run()");
+
+    QFile::remove(tempProblemFileName() + ".mesh");
 
     // create triangle files
     if (writeToTriangle())
@@ -222,7 +231,8 @@ bool ProgressItemMesh::run(bool quiet)
             emit message(tr("Could not start Triangle"), true, 0);
             processTriangle.kill();
 
-            return !m_isError;
+            m_isError = true;
+            return;
         }
 
         // copy triangle files
@@ -238,8 +248,10 @@ bool ProgressItemMesh::run(bool quiet)
 
         while (!processTriangle.waitForFinished()) {}
     }
-
-    return !m_isError;
+    else
+    {
+        m_isError = true;
+    }
 }
 
 void ProgressItemMesh::meshTriangleCreated(int exitCode)
@@ -264,10 +276,10 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             }
 
             //  remove triangle temp files
-            QFile::remove(tempProblemFileName() + ".poly");
-            QFile::remove(tempProblemFileName() + ".node");
-            QFile::remove(tempProblemFileName() + ".edge");
-            QFile::remove(tempProblemFileName() + ".ele");
+            // QFile::remove(tempProblemFileName() + ".poly");
+            // QFile::remove(tempProblemFileName() + ".node");
+            // QFile::remove(tempProblemFileName() + ".edge");
+            // QFile::remove(tempProblemFileName() + ".ele");
             QFile::remove(tempProblemFileName() + ".triangle.out");
             QFile::remove(tempProblemFileName() + ".triangle.err");
             emit message(tr("Mesh files were deleted"), false, 4);
@@ -287,6 +299,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
                             emit message(tr("Boundary edge does not have a boundary marker"), true, 0);
 
                             delete mesh;
+                            m_isError = true;
                             return;
                         }
                     }
@@ -299,11 +312,13 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
         }
         else
         {
+            m_isError = true;
             QFile::remove(Util::scene()->problemInfo()->fileName + ".mesh");
         }
     }
     else
     {
+        m_isError = true;
         QString errorMessage = readFileContent(Util::scene()->problemInfo()->fileName + ".triangle.out");
         emit message(errorMessage, true, 0);
     }
@@ -592,14 +607,19 @@ bool ProgressItemMesh::triangleToHermes2D()
     {
         if (edgeList[i].marker != 0)
         {
+            int marker = 0;
             if (Util::scene()->edges[edgeList[i].marker-1]->boundary->type != PhysicFieldBC_None)
-            {
-                countEdges++;
-                outEdges += QString("  { %1, %2, %3 },\n").
-                        arg(edgeList[i].node_1).
-                        arg(edgeList[i].node_2).
-                        arg(abs(edgeList[i].marker));
-            }
+                // boundary marker
+                marker = edgeList[i].marker;
+            else
+                // inner edge marker (minus markers are ignored)
+                marker = - (edgeList[i].marker-1);
+
+            countEdges++;
+            outEdges += QString("  { %1, %2, %3 },\n").
+                    arg(edgeList[i].node_1).
+                    arg(edgeList[i].node_2).
+                    arg(marker);
         }
     }
     outEdges.truncate(outEdges.length()-2);
@@ -1080,8 +1100,8 @@ QWidget *ProgressDialog::createControlsConvergenceErrorDOFChart()
     logMessage("ProgressDialog::createControlsConvergenceErrorDOFChart()");
 
     chartErrorDOF = new Chart(this);
-//    chartErrorDOF->setAxisScaleEngine(0, new QwtLog10ScaleEngine);
-//    chartErrorDOF->setAxisScaleEngine(2, new QwtLog10ScaleEngine);
+    //    chartErrorDOF->setAxisScaleEngine(0, new QwtLog10ScaleEngine);
+    //    chartErrorDOF->setAxisScaleEngine(2, new QwtLog10ScaleEngine);
 
     // curves
     curveErrorDOF = new QwtPlotCurve();
@@ -1185,9 +1205,9 @@ bool ProgressDialog::run(bool showViewProgress)
 
     if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
     {
-       controlsConvergenceErrorChart->setEnabled(false);
-       controlsConvergenceDOFChart->setEnabled(false);
-       controlsConvergenceErrorDOFChart->setEnabled(false);
+        controlsConvergenceErrorChart->setEnabled(false);
+        controlsConvergenceDOFChart->setEnabled(false);
+        controlsConvergenceErrorDOFChart->setEnabled(false);
     }
 
     m_showViewProgress = showViewProgress;
@@ -1266,7 +1286,7 @@ void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
         progressBar->setValue(currentProgressStep() + position);
 
     // update
-    if (position % 3 == 0) QApplication::processEvents();
+    if (position % 2 == 0) QApplication::processEvents();
     lstMessage->update();
 }
 

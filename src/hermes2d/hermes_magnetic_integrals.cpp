@@ -388,13 +388,15 @@ QStringList LocalPointValueMagnetic::variables()
 
 SurfaceIntegralValueMagnetic::SurfaceIntegralValueMagnetic() : SurfaceIntegralValue()
 {
-    forceMaxwellX = 0;
-    forceMaxwellY = 0;
+    forceMaxwellX = 0.0;
+    forceMaxwellY = 0.0;
+    torque = 0.0;
 
     calculate();
 
     forceMaxwellX /= 2.0;
     forceMaxwellY /= 2.0;
+    torque /= 2.0;
 }
 
 void SurfaceIntegralValueMagnetic::calculateVariables(int i)
@@ -411,12 +413,15 @@ void SurfaceIntegralValueMagnetic::calculateVariables(int i)
             double Bx = - dudy[i];
             double By =   dudx[i];
 
-            forceMaxwellX -= pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
-                    (Bx * (nx * Bx + ny * By) - 0.5 * nx * (sqr(Bx) + sqr(By)));
+            double dfX = pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
+                                (Bx * (nx * Bx + ny * By) - 0.5 * nx * (sqr(Bx) + sqr(By)));
+            double dfY = pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
+                                (By * (nx * Bx + ny * By) - 0.5 * ny * (sqr(Bx) + sqr(By)));
 
-            forceMaxwellY -= pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
-                    (By * (nx * Bx + ny * By)
-                     - 0.5 * ny * (sqr(Bx) + sqr(By)));
+            forceMaxwellX -= dfX;
+            forceMaxwellY -= dfY;
+
+            torque -= x[i] * dfY - y[i] * dfX;
         }
         else
         {

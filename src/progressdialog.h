@@ -92,7 +92,9 @@ public:
 
     void setSteps();
 
-    bool run(bool quiet);
+    bool run(bool quiet = false);
+
+    void mesh();
 };
 
 class ProgressItemSolve : public ProgressItem
@@ -105,6 +107,7 @@ public:
     void setSteps();
 
     bool run(bool quiet = false);
+
     inline void addAdaptivityError(double error, int dof) { m_adaptivityError.append(error); m_adaptivityDOF.append(dof); emit changed(); }
     inline QList<double> adaptivityError() { return m_adaptivityError; }
     inline QList<int> adaptivityDOF() { return m_adaptivityDOF; }

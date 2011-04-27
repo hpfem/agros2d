@@ -32,6 +32,7 @@ protected:
     Element *e;
 
     double *x;
+    double *y;
     double *value;
     double *dudx, *dudy;
     double3 *pt;

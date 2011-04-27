@@ -57,21 +57,17 @@ void SurfaceIntegralValue::calculate()
                     bool integrate = false;
                     boundary = false;
 
-                    if (e->en[edge]->bnd && Util::scene()->sceneSolution()->agrosBoundaryMarker(e->en[edge]->marker) - 1 == i)
+                    if (e->en[edge]->marker != 0)
                     {
-                        // boundary
-                        integrate = true;
-                        boundary = true;
-                    }
-                    else
-                    {
-                        // inner edge
-                        Node *node1 = mesh->get_node(e->en[edge]->p1);
-                        Node *node2 = mesh->get_node(e->en[edge]->p2);
-
-                        if ((sceneEdge->distance(Point(node1->x, node1->y)) < EPS_ZERO) &&
-                            (sceneEdge->distance(Point(node2->x, node2->y)) < EPS_ZERO))
+                        if (e->en[edge]->bnd == 1 && Util::scene()->sceneSolution()->agrosBoundaryMarker(e->en[edge]->marker) - 1 == i)
                         {
+                            // boundary
+                            integrate = true;
+                            boundary = true;
+                        }
+                        else if (- Util::scene()->sceneSolution()->agrosBoundaryMarker(e->en[edge]->marker) == i)
+                        {
+                            // inner page
                             integrate = true;
                         }
                     }
@@ -96,6 +92,7 @@ void SurfaceIntegralValue::calculate()
                         sln->get_dx_dy_values(dudx, dudy);
                         // x - coordinate
                         x = ru->get_phys_x(eo);
+                        y = ru->get_phys_y(eo);
 
                         material = Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterialMarker(e->marker)]->material;
 

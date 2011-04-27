@@ -696,6 +696,9 @@ void HermesMagnetic::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceInt
 
     addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelX(), QString("%1").arg(surfaceIntegralValueMagnetic->forceMaxwellX, 0, 'e', 3), "N");
     addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelY(), QString("%1").arg(surfaceIntegralValueMagnetic->forceMaxwellY, 0, 'e', 3), "N");
+
+    // torque
+    addTreeWidgetItemValue(magneticNode, tr("Torque:"), QString("%1").arg(surfaceIntegralValueMagnetic->torque, 0, 'e', 3), tr("Nm"));
 }
 
 void HermesMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)

@@ -145,6 +145,7 @@ protected:
 public:
     double forceMaxwellX;
     double forceMaxwellY;
+    double torque;
 
     SurfaceIntegralValueMagnetic();
     QStringList variables();
