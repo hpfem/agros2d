@@ -39,6 +39,9 @@ void Config::load()
 
     QSettings settings;
 
+    // experimental features
+    showExperimentalFeatures = settings.value("SceneViewSettings/ExperimentalFeatures", false).toBool();
+
     // general
     guiStyle = settings.value("General/GUIStyle").toString();
     language = settings.value("General/Language", QLocale::system().name()).toString();
@@ -50,7 +53,10 @@ void Config::load()
     enabledApplicationLog = settings.value("General/EnabledApplicationLog", true).toBool();
     enabledProgressLog = settings.value("General/EnabledProgressLog", true).toBool();
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
-    saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
+    if (showExperimentalFeatures)
+        saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
+    else
+        saveProblemWithSolution = false;
 
     // zoom
     zoomToMouse = settings.value("Geometry/ZoomToMouse", true).toBool();
@@ -121,7 +127,6 @@ void Config::load()
     scalarRangeBase = settings.value("SceneViewSettings/ScalarRangeBase", SCALARRANGEBASE).toDouble();
     scalarDecimalPlace = settings.value("SceneViewSettings/ScalarDecimalPlace", SCALARDECIMALPLACE).toDouble();
 
-
     // vector view
     vectorProportional = settings.value("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL).toBool();
     vectorColor = settings.value("SceneViewSettings/VectorColor", VECTORCOLOR).toBool();
@@ -165,6 +170,9 @@ void Config::save()
 
     QSettings settings;
 
+    // experimental features
+    settings.setValue("SceneViewSettings/ExperimentalFeatures", showExperimentalFeatures);
+
     // general
     settings.setValue("General/GUIStyle", guiStyle);
     settings.setValue("General/Language", language);
@@ -175,7 +183,10 @@ void Config::save()
     settings.setValue("General/EnabledApplicationLog", enabledApplicationLog);
     settings.setValue("General/EnabledProgressLog", enabledProgressLog);
     settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
-    settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
+    if (showExperimentalFeatures)
+        settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
+    else
+        saveProblemWithSolution = false;
 
     // zoom
     settings.setValue("General/ZoomToMouse", zoomToMouse);

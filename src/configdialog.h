@@ -72,9 +72,7 @@ private:
     QCheckBox *chkLineEditValueShowResult;
 
     // save with solution
-#ifdef BETA
     QCheckBox *chkSaveWithSolution;
-#endif
 
     // check version
     QCheckBox *chkCheckVersion;
@@ -159,6 +157,7 @@ private:
 
     QLineEdit *txtArgumentTriangle;
     QLineEdit *txtArgumentFFmpeg;
+    QCheckBox *chkExperimentalFeatures;
 
     // global script
     ScriptEditor *txtGlobalScript;

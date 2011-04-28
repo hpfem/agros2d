@@ -127,14 +127,6 @@ void SceneInfoView::createTreeView()
     materialsNode->setText(0, tr("Materials"));
     materialsNode->setExpanded(true);
 
-    // functions
-    #ifdef BETA
-    functionsNode = new QTreeWidgetItem(trvWidget);
-    functionsNode->setText(0, tr("Functions"));
-    functionsNode->setIcon(0, icon("scenefunction"));
-    functionsNode->setExpanded(true);
-    #endif
-
     // geometry
     geometryNode = new QTreeWidgetItem(trvWidget);
     // geometryNode->setIcon(0, icon("geometry"));
@@ -370,16 +362,6 @@ void SceneInfoView::clearNodes()
         materialsNode->removeChild(item);
         delete item;
     }
-
-    #ifdef BETA
-    // functions
-    while (functionsNode->childCount() > 0)
-    {
-        QTreeWidgetItem *item = functionsNode->child(0);
-        functionsNode->removeChild(item);
-        delete item;
-    }
-    #endif
 
     // geometry
     while (nodesNode->childCount() > 0)

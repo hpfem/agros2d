@@ -32,7 +32,7 @@ public:
     inline int numberOfSolution() const { return 2; }
     inline bool hasSteadyState() const { return false; }
     inline bool hasHarmonic() const { return true; }
-    inline bool hasTransient() const { return true; }
+    inline bool hasTransient() const { return Util::config()->showExperimentalFeatures; }
     inline bool hasNonlinearity() const { return false; }
 
     void readBoundaryFromDomElement(QDomElement *element);

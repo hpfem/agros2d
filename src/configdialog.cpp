@@ -84,9 +84,8 @@ void ConfigDialog::load()
     chkDeleteHermes2DMeshFile->setChecked(Util::config()->deleteHermes2DMeshFile);
 
     // save problem with solution
-#ifdef BETA
-    chkSaveWithSolution->setChecked(Util::config()->saveProblemWithSolution);
-#endif
+    if (Util::config()->showExperimentalFeatures)
+        chkSaveWithSolution->setChecked(Util::config()->saveProblemWithSolution);
 
     // colors
     colorBackground->setColor(Util::config()->colorBackground);
@@ -143,6 +142,9 @@ void ConfigDialog::load()
     txtArgumentTriangle->setText(Util::config()->commandTriangle);
     txtArgumentFFmpeg->setText(Util::config()->commandFFmpeg);
 
+    // experimental features
+    chkExperimentalFeatures->setChecked(Util::config()->showExperimentalFeatures);
+
     // global script
     txtGlobalScript->setPlainText(Util::config()->globalScript);
 }
@@ -196,9 +198,8 @@ void ConfigDialog::save()
     Util::config()->deleteHermes2DMeshFile = chkDeleteHermes2DMeshFile->isChecked();
 
     // save problem with solution
-#ifdef BETA
-    Util::config()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
-#endif
+    if (Util::config()->showExperimentalFeatures)
+        Util::config()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
 
     // color
     Util::config()->colorBackground = colorBackground->color();
@@ -253,6 +254,9 @@ void ConfigDialog::save()
     // command argument
     Util::config()->commandTriangle = txtArgumentTriangle->text();
     Util::config()->commandFFmpeg = txtArgumentFFmpeg->text();
+
+    // experimental features
+    Util::config()->showExperimentalFeatures = chkExperimentalFeatures->isChecked();
 
     // global script
     Util::config()->globalScript = txtGlobalScript->toPlainText();
@@ -560,17 +564,15 @@ QWidget *ConfigDialog::createSolverWidget()
     // solver
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
-#ifdef BETA
-    chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
-#endif
+    if (Util::config()->showExperimentalFeatures)
+        chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
     chkShowConvergenceChart = new QCheckBox(tr("Show convergence chart after solving"));
 
     QVBoxLayout *layoutSolver = new QVBoxLayout();
     layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
     layoutSolver->addWidget(chkDeleteHermes2DMeshFile);
-#ifdef BETA
-    layoutSolver->addWidget(chkSaveWithSolution);
-#endif
+    if (Util::config()->showExperimentalFeatures)
+        layoutSolver->addWidget(chkSaveWithSolution);
     layoutSolver->addWidget(chkShowConvergenceChart);
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
@@ -728,12 +730,15 @@ QWidget *ConfigDialog::createAdvancedWidget()
     // commands
     txtArgumentTriangle = new QLineEdit("");
     txtArgumentFFmpeg = new QLineEdit("");
+    chkExperimentalFeatures = new QCheckBox(tr("Enable experimental features"));
+    chkExperimentalFeatures->setToolTip(tr("Warning: Agros2D should be unstable!"));
 
     QGridLayout *layoutArgument = new QGridLayout();
     layoutArgument->addWidget(new QLabel(tr("Triangle")), 0, 0);
     layoutArgument->addWidget(txtArgumentTriangle, 1, 0);
     layoutArgument->addWidget(new QLabel(tr("FFmpeg")), 2, 0);
     layoutArgument->addWidget(txtArgumentFFmpeg, 3, 0);
+    layoutArgument->addWidget(chkExperimentalFeatures, 4, 0);
 
     QGroupBox *grpArgument = new QGroupBox(tr("Commands"));
     grpArgument->setLayout(layoutArgument);
@@ -827,6 +832,9 @@ void ConfigDialog::doAdvancedDefault()
     // command argument
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
     txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
+
+    // experimental features
+    chkExperimentalFeatures->setChecked(false);
 }
 
 void ConfigDialog::doColorsDefault()

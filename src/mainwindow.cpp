@@ -163,14 +163,9 @@ void MainWindow::createActions()
     actDocumentSave->setStatusTip(tr("Save the file to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
 
-#ifdef BETA
     actDocumentSaveWithSolution = new QAction(icon(""), tr("Save with solution"), this);
     actDocumentSaveWithSolution->setStatusTip(tr("Save the file to disk with solution"));
     connect(actDocumentSaveWithSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveWithSolution()));
-#else
-    QSettings settings;
-    settings.setValue("Solver/SaveProblemWithSolution", false);
-#endif
 
     actDocumentSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
@@ -336,9 +331,8 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actDocumentOpen);
     mnuFile->addAction(actDocumentSave);
-#ifdef BETA
-    mnuFile->addAction(actDocumentSaveWithSolution);
-#endif
+    if (Util::config()->showExperimentalFeatures)
+        mnuFile->addAction(actDocumentSaveWithSolution);
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuRecentFiles);
@@ -1116,9 +1110,9 @@ void MainWindow::doInvalidated()
 {
     logMessage("MainWindow::doInvalidated()");
 
-#ifdef BETA
-    actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
-#endif
+    if (Util::config()->showExperimentalFeatures)
+        actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
+
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient));
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());

@@ -1067,10 +1067,11 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     cmbPhysicField->addItem(physicFieldString(PhysicField_Heat), PhysicField_Heat);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Elasticity), PhysicField_Elasticity);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Acoustic), PhysicField_Acoustic);
-//odebrat #ifdef BETA
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_RF), PhysicField_RF);
-//#endif
+    if (Util::config()->showExperimentalFeatures)
+    {
+        cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
+        cmbPhysicField->addItem(physicFieldString(PhysicField_RF), PhysicField_RF);
+    }
 
     // default physic field
     cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Util::config()->defaultPhysicField));

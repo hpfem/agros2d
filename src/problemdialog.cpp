@@ -239,6 +239,7 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     QGroupBox *grpLinearity = new QGroupBox(tr("Linearity"));
     grpLinearity->setLayout(layoutLinearity);
+    grpLinearity->setVisible(Util::config()->showExperimentalFeatures);
 
     // left
     QVBoxLayout *layoutLeft = new QVBoxLayout();
