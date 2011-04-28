@@ -1,12 +1,12 @@
 <document>
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="RF_waveguide_R100" date="2011-04-13" polynomialorder="4" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="16000000000" matrix_solver="umfpack" type="rf" timetotal="1.0">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="RF_waveguide_R100" date="2011-04-13" polynomialorder="5" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="16000000000" matrix_solver="umfpack" type="rf" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
                 <edge value_imag="0" type="rf_electric_field" id="1" name="Perfect electric conductor" value_real="0"/>
                 <edge type="rf_matched_boundary" id="2" name="Matched boundary"/>
-                <edge value_imag="1" type="rf_surface_current" id="3" name="Surface current" value_real="1"/>
+                <edge value_imag="0" type="rf_electric_field" id="3" name="Surface current" value_real="1"/>
             </edges>
             <labels>
                 <label current_density_real="0" conductivity="0" id="1" name="Air" current_density_imag="0" permeability="1" permittivity="1"/>

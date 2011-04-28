@@ -43,7 +43,7 @@ public:
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
                                                                                                         - 2 * M_PI * Util::scene()->problemInfo()->frequency * boundary->value_imag.number,
-                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+                                                                                                        HERMES_PLANAR));
                     if (fabs(boundary->value_real.number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(1,
                                                                                                         QString::number(i + 1).toStdString(),
@@ -87,11 +87,11 @@ public:
                 {
                     add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(0, 1,
                                                                                  QString::number(i + 1).toStdString(),
-                                                                                 - 1.0,
+                                                                                 1.0,
                                                                                  2 * M_PI * Util::scene()->problemInfo()->frequency));
                     add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
                                                                                  QString::number(i + 1).toStdString(),
-                                                                                 1.0,
+                                                                                 - 1.0,
                                                                                  2 * M_PI * Util::scene()->problemInfo()->frequency));
                 }
             }
