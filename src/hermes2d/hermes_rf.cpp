@@ -1354,11 +1354,11 @@ void ViewScalarFilterRF::calculateVariable(int i)
 
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            node->values[0][0][i] = 0.5 * ((value2[i] * 1/(w*mu) * dudx1[i]) - (value1[i] * 1/(w*mu) * dudx2[i]));
+            node->values[0][0][i] = - 0.5 * ((value2[i] * 1/(w*mu) * dudx1[i]) - (value1[i] * 1/(w*mu) * dudx2[i]));
         }
         else
         {
-            node->values[0][0][i] = 0.5 * ((value2[i] * 1/(w*mu) * dudx1[i]) - (value1[i] * 1/(w*mu) * dudx2[i]));
+            node->values[0][0][i] = - 0.5 * ((value2[i] * 1/(w*mu) * dudx1[i]) - (value1[i] * 1/(w*mu) * dudx2[i]));
         }
     }
         break;
@@ -1375,7 +1375,8 @@ void ViewScalarFilterRF::calculateVariable(int i)
         }
         else
         {
-            node->values[0][0][i] = 0.5 * ((value2[i] * 1/(w*mu) * dudx1[i]) - (value1[i] * 1/(w*mu) * dudx2[i]));
+            //node->values[0][0][i] = 0.5 * ((value2[i] * 1/(w*mu) * dudx1[i]) - (value1[i] * 1/(w*mu) * dudx2[i]));
+            node->values[0][0][i] = 0.5 * ((value2[i] * 1/(w*mu) * dudy1[i]) - (value1[i] * 1/(w*mu) * dudy2[i]));
         }
     }
         break;
