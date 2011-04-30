@@ -1,6 +1,8 @@
-agros2d (1.9-ubuntu34) maverick; urgency=low
+agros2d (1.9-ubuntu35) maverick; urgency=low
 
   * reworked postprocessor settings  
+  * new hermes version
+  * timedep functions
 
  -- Pavel Karban <pkarban@gmail.com>  Wen, 5 Mar 2011 12:40:00 +0200
 

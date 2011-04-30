@@ -114,7 +114,10 @@ SceneMaterialNone::SceneMaterialNone() : SceneMaterial("none")
 
 SceneBoundaryDialog::SceneBoundaryDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("DSceneBoundary::DSceneBoundary()");
+    logMessage("SceneBoundaryDialog::SceneBoundaryDialog()");
+
+    setWindowIcon(icon("scene-edgemarker"));
+    setWindowTitle(tr("Boundary condition"));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
@@ -124,7 +127,7 @@ SceneBoundaryDialog::SceneBoundaryDialog(QWidget *parent) : QDialog(parent)
 
 void SceneBoundaryDialog::createDialog()
 {
-    logMessage("DSceneBoundary::createDialog()");
+    logMessage("SceneBoundaryDialog::createDialog()");
 
     // dialog buttons
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -149,14 +152,14 @@ void SceneBoundaryDialog::createDialog()
 
 void SceneBoundaryDialog::load()
 {
-    logMessage("DSceneBoundary::load()");
+    logMessage("SceneBoundaryDialog::load()");
 
     txtName->setText(m_boundary->name);
 }
 
 bool SceneBoundaryDialog::save()
 {
-    logMessage("DSceneBoundary::save()");
+    logMessage("SceneBoundaryDialog::save()");
 
     // find name duplicities
     foreach (SceneBoundary *boundary, Util::scene()->boundaries)
@@ -176,17 +179,14 @@ bool SceneBoundaryDialog::save()
 
 void SceneBoundaryDialog::setSize()
 {
-    logMessage("DSceneBoundary::setSize()");
-
-    setWindowIcon(icon("scene-edgemarker"));
-    setWindowTitle(tr("Boundary condition"));
+    logMessage("SceneBoundaryDialog::setSize()");
 
     setMinimumSize(sizeHint());
 }
 
 void SceneBoundaryDialog::doAccept()
 {
-    logMessage("DSceneBoundary::doAccept()");
+    logMessage("SceneBoundaryDialog::doAccept()");
 
     if (save())
         accept();    
@@ -194,14 +194,14 @@ void SceneBoundaryDialog::doAccept()
 
 void SceneBoundaryDialog::doReject()
 {
-    logMessage("DSceneBoundary::doReject()");
+    logMessage("SceneBoundaryDialog::doReject()");
 
     reject();
 }
 
 void SceneBoundaryDialog::evaluated(bool isError)
 {
-    logMessage("DSceneBoundary::evaluated()");
+    logMessage("SceneBoundaryDialog::evaluated()");
 
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
@@ -228,6 +228,9 @@ void SceneBoundaryDialog::readEquation(QLabel *lblEquation, PhysicFieldBC type)
 SceneMaterialDialog::SceneMaterialDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("DSceneMaterial::DSceneMaterial()");
+
+    setWindowIcon(icon("scene-labelmarker"));
+    setWindowTitle(tr("Material"));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
@@ -270,9 +273,6 @@ void SceneMaterialDialog::createDialog()
 void SceneMaterialDialog::setSize()
 {
     logMessage("DSceneMaterial::setSize()");
-
-    setWindowIcon(icon("scene-labelmarker"));
-    setWindowTitle(tr("Material"));
 
     setMinimumSize(sizeHint());
 }
@@ -332,7 +332,7 @@ SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(
 {
     logMessage("SceneBoundarySelectDialog::SceneBoundarySelectDialog()");
 
-    setWindowTitle(tr("Edge marker"));
+    setWindowTitle(tr("Boundary condition"));
     setWindowIcon(icon("scene-edge"));
     setModal(true);
 
@@ -404,7 +404,7 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
 {
     logMessage("SceneMaterialSelectDialog::SceneMaterialSelectDialog()");
 
-    setWindowTitle(tr("Label marker"));
+    setWindowTitle(tr("Material"));
     setWindowIcon(icon("scene-label"));
     setModal(true);
 

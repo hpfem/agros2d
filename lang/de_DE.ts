@@ -247,24 +247,24 @@
 <context>
     <name>CheckVersion</name>
     <message>
-        <location filename="../src/util.cpp" line="1563"/>
-        <location filename="../src/util.cpp" line="1578"/>
-        <location filename="../src/util.cpp" line="1582"/>
+        <location filename="../src/util.cpp" line="1564"/>
+        <location filename="../src/util.cpp" line="1579"/>
+        <location filename="../src/util.cpp" line="1583"/>
         <source>New version</source>
         <translation>Neue Version</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1563"/>
+        <location filename="../src/util.cpp" line="1564"/>
         <source>File is corrupted or network is disconnected.</source>
         <translation>Die Datei ist beschädigt oder das Netz ist nicht verbunden.</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1570"/>
+        <location filename="../src/util.cpp" line="1571"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
         <translation>&lt;b&gt;Neue Version ist zugänglich.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Verwendet Version: %1&lt;br/&gt;Neue Version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1582"/>
+        <location filename="../src/util.cpp" line="1583"/>
         <source>You are using actual version.</source>
         <translation>Sie benutzen aktuelle Version.</translation>
     </message>
@@ -281,170 +281,170 @@
         <translation type="obsolete">Die Breite und die Höhe der Grenze von der Anzahl geteilt.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="161"/>
+        <location filename="../src/configdialog.cpp" line="163"/>
         <source>Language change</source>
         <translation>Wechsel der Sprache</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="162"/>
+        <location filename="../src/configdialog.cpp" line="164"/>
         <source>Interface language has been changed. You must restart the application.</source>
         <translation>Die Sprache wurde gewechselt. Sie müssen die Applikation durchstarten.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="294"/>
+        <location filename="../src/configdialog.cpp" line="298"/>
         <source>Main</source>
         <translation>Haupt</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="299"/>
+        <location filename="../src/configdialog.cpp" line="303"/>
         <source>View</source>
         <translation>Darstellung</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="304"/>
-        <location filename="../src/configdialog.cpp" line="576"/>
+        <location filename="../src/configdialog.cpp" line="308"/>
+        <location filename="../src/configdialog.cpp" line="578"/>
         <source>Solver</source>
         <translation>Rechengerät</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="309"/>
-        <location filename="../src/configdialog.cpp" line="657"/>
+        <location filename="../src/configdialog.cpp" line="313"/>
+        <location filename="../src/configdialog.cpp" line="659"/>
         <source>Colors</source>
         <translation>Farben</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="314"/>
+        <location filename="../src/configdialog.cpp" line="318"/>
         <source>Python</source>
         <translation>Python</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="319"/>
+        <location filename="../src/configdialog.cpp" line="323"/>
         <source>Advanced</source>
         <translation>Fortgeschrittene</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="366"/>
+        <location filename="../src/configdialog.cpp" line="370"/>
         <source>UI:</source>
         <translation>AO:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="368"/>
+        <location filename="../src/configdialog.cpp" line="372"/>
         <source>Language:</source>
         <translation>Sprache:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="370"/>
+        <location filename="../src/configdialog.cpp" line="374"/>
         <source>Default physic field:</source>
         <translation>Anfängliches physikalisches Feld:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="373"/>
-        <location filename="../src/configdialog.cpp" line="548"/>
+        <location filename="../src/configdialog.cpp" line="377"/>
+        <location filename="../src/configdialog.cpp" line="552"/>
         <source>General</source>
         <translation>Allgemain</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="378"/>
+        <location filename="../src/configdialog.cpp" line="382"/>
         <source>Clear command history</source>
         <translation>Historie der Weisungen löschen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="381"/>
+        <location filename="../src/configdialog.cpp" line="385"/>
         <source>Show value result in line edit input</source>
         <translation>Ergebnis an Textfelder anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="382"/>
+        <location filename="../src/configdialog.cpp" line="386"/>
         <source>Check new version during startup.</source>
         <translation>Neue Version beim Start der Applikation kontrollieren.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="383"/>
+        <location filename="../src/configdialog.cpp" line="387"/>
         <source>Enabled application log</source>
         <translation>Aufzeichnung der Applikation bewilligen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="384"/>
+        <location filename="../src/configdialog.cpp" line="388"/>
         <source>Enabled progress log</source>
         <translation>Aufzeichnung des Verlaufes der Lösung bewilligen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="397"/>
+        <location filename="../src/configdialog.cpp" line="401"/>
         <source>Other</source>
         <translation>Andere</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="424"/>
+        <location filename="../src/configdialog.cpp" line="428"/>
         <source>Node size:</source>
         <translation>Größe der Knoten:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="426"/>
+        <location filename="../src/configdialog.cpp" line="430"/>
         <source>Edge width:</source>
         <translation>Breite der Kante:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="428"/>
+        <location filename="../src/configdialog.cpp" line="432"/>
         <source>Label size:</source>
         <translation>Größe der Gebietzeichen:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="431"/>
+        <location filename="../src/configdialog.cpp" line="435"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="437"/>
+        <location filename="../src/configdialog.cpp" line="441"/>
         <source>Show grid</source>
         <translation>Raster anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="438"/>
+        <location filename="../src/configdialog.cpp" line="442"/>
         <source>Show rulers</source>
         <translation>Lineal anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="439"/>
+        <location filename="../src/configdialog.cpp" line="443"/>
         <source>Snap to grid</source>
         <translation>Ins Raster fangen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="440"/>
+        <location filename="../src/configdialog.cpp" line="444"/>
         <source>Show axes</source>
         <translation>Achsen anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="441"/>
+        <location filename="../src/configdialog.cpp" line="445"/>
         <source>Show label</source>
         <translation>Gebietzeichen zeigen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="442"/>
+        <location filename="../src/configdialog.cpp" line="446"/>
         <source>Zoom to mouse pointer</source>
         <translation>Größerung zur Position des Kurzors der Maus</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="445"/>
+        <location filename="../src/configdialog.cpp" line="449"/>
         <source>Grid step:</source>
         <translation>Schritt des Rasters:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="454"/>
+        <location filename="../src/configdialog.cpp" line="458"/>
         <source>Grid</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="460"/>
+        <location filename="../src/configdialog.cpp" line="464"/>
         <source>Set font</source>
         <translation>Schrift einstellen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="467"/>
+        <location filename="../src/configdialog.cpp" line="471"/>
         <source>Scene font</source>
         <translation>Schrift in der Szene</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="493"/>
+        <location filename="../src/configdialog.cpp" line="497"/>
         <source>Decimal places:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -481,7 +481,7 @@
         <translation type="obsolete">Filter</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="481"/>
+        <location filename="../src/configdialog.cpp" line="485"/>
         <source>Log. scale</source>
         <translation type="unfinished">Log. Skala</translation>
     </message>
@@ -494,7 +494,7 @@
         <translation type="obsolete">Anzahl der Schritte:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="490"/>
+        <location filename="../src/configdialog.cpp" line="494"/>
         <source>Base:</source>
         <translation type="unfinished">Grund des Logarithmus:</translation>
     </message>
@@ -503,7 +503,7 @@
         <translation type="obsolete">Anzahl der Dezimalstellen:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="496"/>
+        <location filename="../src/configdialog.cpp" line="500"/>
         <source>Scalar view</source>
         <translation type="unfinished">Skalare Darstellung</translation>
     </message>
@@ -512,7 +512,7 @@
         <translation type="obsolete">Anzahl der Konturen:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="526"/>
+        <location filename="../src/configdialog.cpp" line="530"/>
         <source>Contours</source>
         <translation>Konturen</translation>
     </message>
@@ -525,7 +525,7 @@
         <translation type="obsolete">Farbe (sch/w)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="634"/>
+        <location filename="../src/configdialog.cpp" line="636"/>
         <source>Vectors:</source>
         <translation>Anzahl der Vektoren:</translation>
     </message>
@@ -538,42 +538,42 @@
         <translation type="obsolete">Vektordarstellung</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="500"/>
+        <location filename="../src/configdialog.cpp" line="504"/>
         <source>Ligthing</source>
         <translation>Anleuchtung</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="506"/>
+        <location filename="../src/configdialog.cpp" line="510"/>
         <source>Gradient background</source>
         <translation>Gradientenhintergrund</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="514"/>
+        <location filename="../src/configdialog.cpp" line="518"/>
         <source>Angle:</source>
         <translation>Winkel:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="517"/>
+        <location filename="../src/configdialog.cpp" line="521"/>
         <source>Height:</source>
         <translation type="unfinished">Höhe:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="521"/>
+        <location filename="../src/configdialog.cpp" line="525"/>
         <source>3D</source>
         <translation>3D</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="525"/>
+        <location filename="../src/configdialog.cpp" line="529"/>
         <source>Scalar field</source>
         <translation>Skalarfeld</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="527"/>
+        <location filename="../src/configdialog.cpp" line="531"/>
         <source>Vector field</source>
         <translation>Vektorfeld</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="534"/>
+        <location filename="../src/configdialog.cpp" line="538"/>
         <source>Deform shape</source>
         <translation>Form der Deformation</translation>
     </message>
@@ -590,123 +590,133 @@
         <translation type="obsolete">Zehnerpotenz des Polynoms</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="549"/>
+        <location filename="../src/configdialog.cpp" line="553"/>
         <source>Postprocessor</source>
         <translation>Postprozessor</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="561"/>
+        <location filename="../src/configdialog.cpp" line="565"/>
         <source>Delete files with initial mesh (Triangle)</source>
         <translation>Dateien mit Anfangsraster löschen (Triangle)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="562"/>
+        <location filename="../src/configdialog.cpp" line="566"/>
         <source>Delete files with solution mesh (Hermes2D)</source>
         <translation>Dateien mit Rechenraster löschen (Hermes2D)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="564"/>
+        <location filename="../src/configdialog.cpp" line="568"/>
         <source>Save problem with solution</source>
         <translation>Problem mit der Lösung speichern</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="566"/>
+        <location filename="../src/configdialog.cpp" line="569"/>
         <source>Show convergence chart after solving</source>
         <translation>Graph der Konvergenz nach der Lösung darstellen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="583"/>
+        <location filename="../src/configdialog.cpp" line="585"/>
         <source>Curvilinear elements</source>
         <translation>Krummlinge Elemente</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="586"/>
+        <location filename="../src/configdialog.cpp" line="588"/>
         <source>Angle segments count:</source>
         <translation>Anzahl der Segmente der Winkel:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="590"/>
+        <location filename="../src/configdialog.cpp" line="592"/>
         <source>Mesh</source>
         <translation>Netz</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="627"/>
+        <location filename="../src/configdialog.cpp" line="629"/>
         <source>Background:</source>
         <translation>Hintergrund:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="628"/>
+        <location filename="../src/configdialog.cpp" line="630"/>
         <source>Grid:</source>
         <translation>Raster:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="629"/>
+        <location filename="../src/configdialog.cpp" line="631"/>
         <source>Cross:</source>
         <translation>Kreuz:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="630"/>
+        <location filename="../src/configdialog.cpp" line="632"/>
         <source>Nodes:</source>
         <translation>Knoten:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="631"/>
+        <location filename="../src/configdialog.cpp" line="633"/>
         <source>Edges:</source>
         <translation>Kanten:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="632"/>
+        <location filename="../src/configdialog.cpp" line="634"/>
         <source>Labels:</source>
         <translation>Zeichen der Gebiete:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="633"/>
+        <location filename="../src/configdialog.cpp" line="635"/>
         <source>Contours:</source>
         <translation>Konturen:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="635"/>
+        <location filename="../src/configdialog.cpp" line="637"/>
         <source>Initial mesh:</source>
         <translation>Anfangsnetz:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="636"/>
+        <location filename="../src/configdialog.cpp" line="638"/>
         <source>Solution mesh:</source>
         <translation>Gelöstes Netz:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="637"/>
+        <location filename="../src/configdialog.cpp" line="639"/>
         <source>Highlighted elements:</source>
         <translation>Ausgezeichnete Elemente:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="638"/>
+        <location filename="../src/configdialog.cpp" line="640"/>
         <source>Selected elements:</source>
         <translation>Ausgewählte Elemente:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="654"/>
-        <location filename="../src/configdialog.cpp" line="742"/>
+        <location filename="../src/configdialog.cpp" line="656"/>
+        <location filename="../src/configdialog.cpp" line="747"/>
         <source>Default</source>
         <translation>Anfänglich</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="677"/>
+        <location filename="../src/configdialog.cpp" line="679"/>
         <source>Isotropic refinement</source>
         <translation>Isotropisch Verfeinerung</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="678"/>
+        <location filename="../src/configdialog.cpp" line="680"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;true&lt;/b&gt;&lt;/td&gt;&lt;td&gt;isotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;false&lt;/b&gt;&lt;/td&gt;&lt;td&gt;anisotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;angestrichen&lt;/b&gt;&lt;/td&gt;&lt;td&gt;isotropische Verfeinerung&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;nicht angestrichen&lt;/b&gt;&lt;/td&gt;&lt;td&gt;anisotropische Verfeinerung&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="690"/>
+        <location filename="../src/configdialog.cpp" line="692"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Elemente verfeinern, wenn der Fehler nicht kleiner ist als die&lt;br/&gt;quadratische Abweichung von der &lt;b&gt;Schwelle&lt;/b&gt;, die mit dem Gesamtfehler multipliziert ist.&lt;br/&gt;Wenn mehr Elemente den gleichen Fehler haben,&lt;br/&gt;sind alle verfeinert für Erhaltung der Symetrie des Netzes.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Alle elemente verfeinern,&lt;br/&gt;die den Fehler größer haben als &lt;b&gt;die Schwelle&lt;/b&gt;&lt;br/&gt;die mit dem Maximalfehler auf dem Element multipliziert ist.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Alle Elemente mit dem Fehler,&lt;br/&gt;der größer als &lt;b&gt;die Schwelle&lt;/b&gt; ist, verfeinern.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="812"/>
+        <location filename="../src/configdialog.cpp" line="733"/>
+        <source>Enable experimental features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/configdialog.cpp" line="734"/>
+        <source>Warning: Agros2D should be unstable!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/configdialog.cpp" line="817"/>
         <source>Command history was cleared successfully.</source>
         <translation>Historie der Anweisungen wurde erfolgreich gelöscht.</translation>
     </message>
@@ -715,107 +725,107 @@
         <translation type="obsolete">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;angestrichen&lt;/b&gt;&lt;/td&gt;&lt;td&gt;isotropische Verfeinerung&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;nicht angestrichen&lt;/b&gt;&lt;/td&gt;&lt;td&gt;anisotropische Verfeinerung&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="683"/>
+        <location filename="../src/configdialog.cpp" line="685"/>
         <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences&lt;br/&gt;the selection of candidates in hp-adaptivity</source>
         <translation>&lt;b&gt;&lt;/b&gt;Ausgangswert ist 1.0, dieser Parameter beeinflußt&lt;br/&gt;Auswahl der Kandidaten der hp-Adaptivität</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="685"/>
+        <location filename="../src/configdialog.cpp" line="687"/>
         <source>&lt;b&gt;&lt;/b&gt;quantitative parameter of the adapt(...) function&lt;br/&gt;with different meanings for various adaptive strategies</source>
         <translation>&lt;b&gt;&lt;/b&gt;quantitativer Parameter der adaptiven(...) Funktion&lt;br/&gt;mit verschiedenen Bedeutungen für verschiedene adaptive Strategien</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="687"/>
+        <location filename="../src/configdialog.cpp" line="689"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="688"/>
+        <location filename="../src/configdialog.cpp" line="690"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="689"/>
+        <location filename="../src/configdialog.cpp" line="691"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="696"/>
+        <location filename="../src/configdialog.cpp" line="698"/>
         <source>arbitrary level hang. nodes</source>
         <translation>beliebige Ebene der hängenden Knoten</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="697"/>
+        <location filename="../src/configdialog.cpp" line="699"/>
         <source>at most one-level hang. nodes</source>
         <translation>höchstens eine Ebene der hängenden Knoten</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="698"/>
+        <location filename="../src/configdialog.cpp" line="700"/>
         <source>at most two-level hang. nodes</source>
         <translation>höchstens zwei Ebenen der hängenden Knoten</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="699"/>
+        <location filename="../src/configdialog.cpp" line="701"/>
         <source>at most three-level hang. nodes</source>
         <translation>höchstens drei Ebenen der hängenden Knoten</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="700"/>
+        <location filename="../src/configdialog.cpp" line="702"/>
         <source>at most four-level hang. nodes</source>
         <translation>höchstens vier Ebenen der hängenden Knoten</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="701"/>
+        <location filename="../src/configdialog.cpp" line="703"/>
         <source>at most five-level hang. nodes</source>
         <translation>höchstens fünf Ebenen der hängenden Knoten</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="711"/>
+        <location filename="../src/configdialog.cpp" line="713"/>
         <source>Conv. exp.:</source>
         <translation>Konv. Exp.:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="714"/>
+        <location filename="../src/configdialog.cpp" line="716"/>
         <source>Strategy:</source>
         <translation>Strategie:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="717"/>
+        <location filename="../src/configdialog.cpp" line="719"/>
         <source>Threshold:</source>
         <translation>Schwelle:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="720"/>
+        <location filename="../src/configdialog.cpp" line="722"/>
         <source>Mesh regularity:</source>
         <translation>Regelmäßigkeit des Netzes:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="722"/>
+        <location filename="../src/configdialog.cpp" line="724"/>
         <source>Norm:</source>
         <translation>Norm:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="725"/>
+        <location filename="../src/configdialog.cpp" line="727"/>
         <source>Adaptivity</source>
         <translation>Adaptivität</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="733"/>
+        <location filename="../src/configdialog.cpp" line="737"/>
         <source>Triangle</source>
         <translation>Triangle</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="735"/>
+        <location filename="../src/configdialog.cpp" line="739"/>
         <source>FFmpeg</source>
         <translation>FFmpeg</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="738"/>
+        <location filename="../src/configdialog.cpp" line="743"/>
         <source>Commands</source>
         <translation>Anweisungen</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="812"/>
+        <location filename="../src/configdialog.cpp" line="817"/>
         <source>Information</source>
         <translation>Information</translation>
     </message>
@@ -2585,370 +2595,370 @@
         <translation>Datei auf den Disk speichern</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="167"/>
+        <location filename="../src/mainwindow.cpp" line="166"/>
         <source>Save with solution</source>
         <translation>Mit der Lösung speichern</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="168"/>
+        <location filename="../src/mainwindow.cpp" line="167"/>
         <source>Save the file to disk with solution</source>
         <translation>Datei auf den Disk mit der Lösung speichern</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="175"/>
+        <location filename="../src/mainwindow.cpp" line="170"/>
         <source>Save &amp;As...</source>
         <translation>Speichern &amp;wie...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="177"/>
+        <location filename="../src/mainwindow.cpp" line="172"/>
         <source>Save the file under a new name</source>
         <translation>Datei mit einem neuen Namen speichern</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="180"/>
+        <location filename="../src/mainwindow.cpp" line="175"/>
         <source>&amp;Close</source>
         <translation>S&amp;chließen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="182"/>
+        <location filename="../src/mainwindow.cpp" line="177"/>
         <source>Close the file</source>
         <translation>Die Datei schließen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="185"/>
+        <location filename="../src/mainwindow.cpp" line="180"/>
         <source>Import DXF...</source>
         <translation>Import DXF...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="186"/>
+        <location filename="../src/mainwindow.cpp" line="181"/>
         <source>Import AutoCAD DXF</source>
         <translation>Import AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="189"/>
+        <location filename="../src/mainwindow.cpp" line="184"/>
         <source>Export DXF...</source>
         <translation>Export DXF...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="190"/>
+        <location filename="../src/mainwindow.cpp" line="185"/>
         <source>Export AutoCAD DXF</source>
         <translation>Export AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="193"/>
+        <location filename="../src/mainwindow.cpp" line="188"/>
         <source>Export mesh file...</source>
         <translation>Export des Netzes...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="194"/>
+        <location filename="../src/mainwindow.cpp" line="189"/>
         <source>Export Hermes2D mesh file</source>
         <translation>Datei mit dem Netz für Hermes2D exportieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="197"/>
+        <location filename="../src/mainwindow.cpp" line="192"/>
         <source>Export VTK scalar...</source>
         <translation>Export VTK Skalar...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="198"/>
+        <location filename="../src/mainwindow.cpp" line="193"/>
         <source>Export scalar view as VTK file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="201"/>
+        <location filename="../src/mainwindow.cpp" line="196"/>
         <source>Export VTK order...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="202"/>
+        <location filename="../src/mainwindow.cpp" line="197"/>
         <source>Export order view as VTK file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="205"/>
+        <location filename="../src/mainwindow.cpp" line="200"/>
         <source>Export image...</source>
         <translation>Export des Bildes...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="206"/>
-        <location filename="../src/mainwindow.cpp" line="935"/>
+        <location filename="../src/mainwindow.cpp" line="201"/>
+        <location filename="../src/mainwindow.cpp" line="929"/>
         <source>Export image to file</source>
         <translation>Export des Bildes in die Datei</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="209"/>
+        <location filename="../src/mainwindow.cpp" line="204"/>
         <source>Create &amp;video...</source>
         <translation>Video &amp;anfertigen...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="210"/>
+        <location filename="../src/mainwindow.cpp" line="205"/>
         <source>Create video</source>
         <translation>Video anfertigen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="213"/>
+        <location filename="../src/mainwindow.cpp" line="208"/>
         <source>Load background...</source>
         <translation>Einlesung des Hintergrundes...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="214"/>
+        <location filename="../src/mainwindow.cpp" line="209"/>
         <source>Load background image</source>
         <translation>Bild des Hintergrundes einlessen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="217"/>
+        <location filename="../src/mainwindow.cpp" line="212"/>
         <source>E&amp;xit</source>
         <translation>&amp;Beenden</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="218"/>
+        <location filename="../src/mainwindow.cpp" line="213"/>
         <source>Ctrl+Q</source>
         <translation>Strg+Q</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="219"/>
+        <location filename="../src/mainwindow.cpp" line="214"/>
         <source>Exit the application</source>
         <translation>Applikation beenden</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="226"/>
+        <location filename="../src/mainwindow.cpp" line="221"/>
         <source>&amp;Undo</source>
         <translation>&amp;Zurück</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="228"/>
+        <location filename="../src/mainwindow.cpp" line="223"/>
         <source>Undo operation</source>
         <translation>Letzte Operation zurücknehmen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="232"/>
+        <location filename="../src/mainwindow.cpp" line="227"/>
         <source>&amp;Redo</source>
         <translation>Noch&amp;mals</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="234"/>
+        <location filename="../src/mainwindow.cpp" line="229"/>
         <source>Redo operation</source>
         <translation>Operation nochmals durchführen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="236"/>
+        <location filename="../src/mainwindow.cpp" line="231"/>
         <source>Copy</source>
         <translation>Kopieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="238"/>
+        <location filename="../src/mainwindow.cpp" line="233"/>
         <source>Copy image to clipboard.</source>
         <translation>Bild ins Clipboard kopieren.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="241"/>
-        <location filename="../src/mainwindow.cpp" line="444"/>
+        <location filename="../src/mainwindow.cpp" line="236"/>
+        <location filename="../src/mainwindow.cpp" line="438"/>
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="242"/>
+        <location filename="../src/mainwindow.cpp" line="237"/>
         <source>Show help</source>
         <translation>Hilfe zeigen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="246"/>
+        <location filename="../src/mainwindow.cpp" line="241"/>
         <source>&amp;Shortcuts</source>
         <translation>&amp;Tastenabkürzungen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="247"/>
+        <location filename="../src/mainwindow.cpp" line="242"/>
         <source>Shortcuts</source>
         <translation>Tastenabkürzungen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="250"/>
+        <location filename="../src/mainwindow.cpp" line="245"/>
         <source>&amp;Online help</source>
         <translation>&amp;Online Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="251"/>
+        <location filename="../src/mainwindow.cpp" line="246"/>
         <source>Online help</source>
         <translation>Online Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="254"/>
-        <location filename="../src/mainwindow.cpp" line="255"/>
+        <location filename="../src/mainwindow.cpp" line="249"/>
+        <location filename="../src/mainwindow.cpp" line="250"/>
         <source>Check version</source>
         <translation>Version kontrollieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="258"/>
+        <location filename="../src/mainwindow.cpp" line="253"/>
         <source>About &amp;Agros2D</source>
         <translation>Über &amp;Agros2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="259"/>
+        <location filename="../src/mainwindow.cpp" line="254"/>
         <source>Show the application&apos;s About box</source>
         <translation>Informationen über Agros2D zeigen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="263"/>
+        <location filename="../src/mainwindow.cpp" line="258"/>
         <source>About &amp;Qt</source>
         <translation>Über &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="264"/>
+        <location filename="../src/mainwindow.cpp" line="259"/>
         <source>Show the Qt library&apos;s About box</source>
         <translation>Informationen über Qt zeigen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="268"/>
+        <location filename="../src/mainwindow.cpp" line="263"/>
         <source>&amp;Options</source>
         <translation>&amp;Möglichkeiten</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="269"/>
+        <location filename="../src/mainwindow.cpp" line="264"/>
         <source>Options</source>
         <translation>Möglichkeiten</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="273"/>
+        <location filename="../src/mainwindow.cpp" line="268"/>
         <source>&amp;Mesh area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="274"/>
+        <location filename="../src/mainwindow.cpp" line="269"/>
         <source>Mesh area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="277"/>
+        <location filename="../src/mainwindow.cpp" line="272"/>
         <source>&amp;Solve problem</source>
         <translation>&amp;Problem lösen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="278"/>
+        <location filename="../src/mainwindow.cpp" line="273"/>
         <source>Alt+S</source>
         <translation>Alt+S</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="279"/>
+        <location filename="../src/mainwindow.cpp" line="274"/>
         <source>Solve problem</source>
         <translation>Problem lösen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="282"/>
+        <location filename="../src/mainwindow.cpp" line="277"/>
         <source>&amp;Chart</source>
         <translation>&amp;Graph</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="283"/>
+        <location filename="../src/mainwindow.cpp" line="278"/>
         <source>Chart</source>
         <translation>Graph</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="286"/>
+        <location filename="../src/mainwindow.cpp" line="281"/>
         <source>Fullscreen mode</source>
         <translation>Ganzer Bildschirm</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="287"/>
+        <location filename="../src/mainwindow.cpp" line="282"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="293"/>
+        <location filename="../src/mainwindow.cpp" line="288"/>
         <source>Script &amp;editor</source>
         <translation>&amp;Editor der Skripte</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="294"/>
+        <location filename="../src/mainwindow.cpp" line="289"/>
         <source>Script editor</source>
         <translation>Editor der Skripte</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="298"/>
+        <location filename="../src/mainwindow.cpp" line="293"/>
         <source>Run &amp;script...</source>
         <translation>&amp;Skript anlassen...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="299"/>
+        <location filename="../src/mainwindow.cpp" line="294"/>
         <source>Run script...</source>
         <translation>Skript anlassen...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="302"/>
+        <location filename="../src/mainwindow.cpp" line="297"/>
         <source>Run &amp;command...</source>
         <translation>&amp;Anweissen...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="303"/>
+        <location filename="../src/mainwindow.cpp" line="298"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="304"/>
+        <location filename="../src/mainwindow.cpp" line="299"/>
         <source>Run command...</source>
         <translation>Anweissen...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="307"/>
+        <location filename="../src/mainwindow.cpp" line="302"/>
         <source>&amp;Report...</source>
         <translation>&amp;Bericht...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="308"/>
+        <location filename="../src/mainwindow.cpp" line="303"/>
         <source>Problem html report</source>
         <translation>HTML Bericht</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="311"/>
+        <location filename="../src/mainwindow.cpp" line="306"/>
         <source>Progress &amp;log</source>
         <translation>Aufzeichnung des &amp;Ablaufes der Lösung</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="312"/>
+        <location filename="../src/mainwindow.cpp" line="307"/>
         <source>Show progress log</source>
         <translation>Ablauf der Lösung darstellen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="315"/>
+        <location filename="../src/mainwindow.cpp" line="310"/>
         <source>Application &amp;log</source>
         <translation>Auf&amp;zeichnung der Applikation</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="316"/>
+        <location filename="../src/mainwindow.cpp" line="311"/>
         <source>Show application log</source>
         <translation>Aufzeichnung der Applikation darstellen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="324"/>
+        <location filename="../src/mainwindow.cpp" line="319"/>
         <source>&amp;Recent files</source>
         <translation>&amp;Letzte Dateien</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="325"/>
+        <location filename="../src/mainwindow.cpp" line="320"/>
         <source>Import/Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="335"/>
+        <location filename="../src/mainwindow.cpp" line="330"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="356"/>
+        <location filename="../src/mainwindow.cpp" line="350"/>
         <source>E&amp;dit</source>
         <translation>&amp;Editieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="368"/>
+        <location filename="../src/mainwindow.cpp" line="362"/>
         <source>Projection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="373"/>
+        <location filename="../src/mainwindow.cpp" line="367"/>
         <source>Panels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="382"/>
+        <location filename="../src/mainwindow.cpp" line="376"/>
         <source>&amp;View</source>
         <translation>Dar&amp;stellung</translation>
     </message>
@@ -2957,217 +2967,217 @@
         <translation type="obsolete">&amp;Zeigen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="398"/>
+        <location filename="../src/mainwindow.cpp" line="392"/>
         <source>&amp;Problem</source>
         <translation>&amp;Problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="404"/>
+        <location filename="../src/mainwindow.cpp" line="398"/>
         <source>&amp;Add</source>
         <translation>Zu&amp;geben</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="427"/>
+        <location filename="../src/mainwindow.cpp" line="421"/>
         <source>&amp;Tools</source>
         <translation>&amp;Instrumente</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="463"/>
+        <location filename="../src/mainwindow.cpp" line="457"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="469"/>
+        <location filename="../src/mainwindow.cpp" line="463"/>
         <source>Edit</source>
         <translation>Editieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="479"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>View</source>
         <translation>Darstellung</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="486"/>
+        <location filename="../src/mainwindow.cpp" line="480"/>
         <source>Problem</source>
         <translation>Problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="503"/>
+        <location filename="../src/mainwindow.cpp" line="497"/>
         <source>Tools</source>
         <translation>Instrumente</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="510"/>
+        <location filename="../src/mainwindow.cpp" line="504"/>
         <source>Transient</source>
         <translation>Einschwingvorgang</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="512"/>
+        <location filename="../src/mainwindow.cpp" line="506"/>
         <source>Time step:</source>
         <translation>Zeitschritt:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="518"/>
+        <location filename="../src/mainwindow.cpp" line="512"/>
         <source>Workspace</source>
         <translation>Arbeitsfläche</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="543"/>
+        <location filename="../src/mainwindow.cpp" line="537"/>
         <source>Ready</source>
         <translation>Vorbereitet</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="604"/>
+        <location filename="../src/mainwindow.cpp" line="598"/>
         <source>Position: [%1; %2]</source>
         <translation>Position: [%1; %2]</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="618"/>
+        <location filename="../src/mainwindow.cpp" line="612"/>
         <source>Mode: Add node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="621"/>
+        <location filename="../src/mainwindow.cpp" line="615"/>
         <source>Mode: Add edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="624"/>
+        <location filename="../src/mainwindow.cpp" line="618"/>
         <source>Mode: Add label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="632"/>
+        <location filename="../src/mainwindow.cpp" line="626"/>
         <source>Mode: Pan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="635"/>
+        <location filename="../src/mainwindow.cpp" line="629"/>
         <source>Mode: Rotate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="642"/>
+        <location filename="../src/mainwindow.cpp" line="636"/>
         <source>Mode: Move node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="645"/>
+        <location filename="../src/mainwindow.cpp" line="639"/>
         <source>Mode: Move edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="648"/>
+        <location filename="../src/mainwindow.cpp" line="642"/>
         <source>Mode: Move label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="747"/>
+        <location filename="../src/mainwindow.cpp" line="741"/>
         <source>Open file</source>
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="747"/>
+        <location filename="../src/mainwindow.cpp" line="741"/>
         <source>Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)</source>
         <translation>Agros2D Dateien (*.a2d *.py);;Agros2D Datendateien (*.a2d);;Python skripte (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="785"/>
-        <location filename="../src/mainwindow.cpp" line="789"/>
-        <location filename="../src/mainwindow.cpp" line="1073"/>
+        <location filename="../src/mainwindow.cpp" line="779"/>
+        <location filename="../src/mainwindow.cpp" line="783"/>
+        <location filename="../src/mainwindow.cpp" line="1067"/>
         <source>File open</source>
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="785"/>
+        <location filename="../src/mainwindow.cpp" line="779"/>
         <source>Unknown suffix.</source>
         <translation>Unbekanntes Suffix.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="789"/>
+        <location filename="../src/mainwindow.cpp" line="783"/>
         <source>File &apos;%1&apos; is not found.</source>
         <translation>Die Datei &apos;%1&apos; war nich gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="849"/>
+        <location filename="../src/mainwindow.cpp" line="843"/>
         <source>Save file</source>
         <translation>Daten speichern</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="849"/>
+        <location filename="../src/mainwindow.cpp" line="843"/>
         <source>Agros2D files (*.a2d)</source>
         <translation>Agros2D Dateien (*.a2d)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="899"/>
+        <location filename="../src/mainwindow.cpp" line="893"/>
         <source>Import file</source>
         <translation>Datei importieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="899"/>
-        <location filename="../src/mainwindow.cpp" line="917"/>
+        <location filename="../src/mainwindow.cpp" line="893"/>
+        <location filename="../src/mainwindow.cpp" line="911"/>
         <source>DXF files (*.dxf)</source>
         <translation>DXF Dateien (*.dxf)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="917"/>
+        <location filename="../src/mainwindow.cpp" line="911"/>
         <source>Export file</source>
         <translation>Datei exportieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="935"/>
+        <location filename="../src/mainwindow.cpp" line="929"/>
         <source>PNG files (*.png)</source>
         <translation>PNG Dateien (*.png)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1049"/>
+        <location filename="../src/mainwindow.cpp" line="1043"/>
         <source>Open File</source>
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1049"/>
+        <location filename="../src/mainwindow.cpp" line="1043"/>
         <source>Python script (*.py)</source>
         <translation>Python Skript (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1073"/>
+        <location filename="../src/mainwindow.cpp" line="1067"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Die Datei &apos;%1&apos; existiert nicht.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1127"/>
+        <location filename="../src/mainwindow.cpp" line="1121"/>
         <source>Problem Type: %1</source>
         <translation>Problemtyp: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1128"/>
+        <location filename="../src/mainwindow.cpp" line="1122"/>
         <source>Physic Field: %1</source>
         <translation>Physikalisches Feld: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1129"/>
+        <location filename="../src/mainwindow.cpp" line="1123"/>
         <source>Analysis type: %1</source>
         <translation>Analyse-Typ: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1196"/>
+        <location filename="../src/mainwindow.cpp" line="1190"/>
         <source>Export mesh file</source>
         <translation>Datei des Netzes exportieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1196"/>
+        <location filename="../src/mainwindow.cpp" line="1190"/>
         <source>Mesh files (*.mesh)</source>
         <translation>Dateien des Netzes (*.mesh)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1241"/>
-        <location filename="../src/mainwindow.cpp" line="1272"/>
+        <location filename="../src/mainwindow.cpp" line="1235"/>
+        <location filename="../src/mainwindow.cpp" line="1266"/>
         <source>Export vtk file</source>
         <translation>VTK Dateien exportieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1241"/>
-        <location filename="../src/mainwindow.cpp" line="1272"/>
+        <location filename="../src/mainwindow.cpp" line="1235"/>
+        <location filename="../src/mainwindow.cpp" line="1266"/>
         <source>VTK files (*.vtk)</source>
         <translation>VTK Dateien (*.vtk)</translation>
     </message>
@@ -3499,7 +3509,7 @@
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="269"/>
+        <location filename="../src/problemdialog.cpp" line="270"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
@@ -3624,61 +3634,61 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="276"/>
+        <location filename="../src/problemdialog.cpp" line="277"/>
         <source>Equation:</source>
         <translation>Gleichung:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="399"/>
+        <location filename="../src/problemdialog.cpp" line="400"/>
         <source>Change physical field type</source>
         <translation>Änderung des Types des physikalischen Feldes</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="399"/>
+        <location filename="../src/problemdialog.cpp" line="400"/>
         <source>Are you sure change physical field type?</source>
         <translation>Sind Sie sicher, dass Sie den Typ des physikalischen Feldes ändern wollen?</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="399"/>
+        <location filename="../src/problemdialog.cpp" line="400"/>
         <source>&amp;Yes</source>
         <translation>&amp;Ja</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="399"/>
+        <location filename="../src/problemdialog.cpp" line="400"/>
         <source>&amp;No</source>
         <translation>&amp;Nein</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="429"/>
-        <location filename="../src/problemdialog.cpp" line="438"/>
-        <location filename="../src/problemdialog.cpp" line="444"/>
-        <location filename="../src/problemdialog.cpp" line="450"/>
-        <location filename="../src/problemdialog.cpp" line="455"/>
+        <location filename="../src/problemdialog.cpp" line="430"/>
+        <location filename="../src/problemdialog.cpp" line="439"/>
+        <location filename="../src/problemdialog.cpp" line="445"/>
+        <location filename="../src/problemdialog.cpp" line="451"/>
+        <location filename="../src/problemdialog.cpp" line="456"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="429"/>
+        <location filename="../src/problemdialog.cpp" line="430"/>
         <source>Frequency cannot be negative.</source>
         <translation>Die Frequenz kann nicht negativ sein.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="438"/>
+        <location filename="../src/problemdialog.cpp" line="439"/>
         <source>Time step must be positive.</source>
         <translation>Der Zeitschritt muss positiv sein.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="444"/>
+        <location filename="../src/problemdialog.cpp" line="445"/>
         <source>Total time must be positive.</source>
         <translation>Die Gesamtzeit muss positiv sein.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="450"/>
+        <location filename="../src/problemdialog.cpp" line="451"/>
         <source>Time step is greater then total time.</source>
         <translation>Der Zeitschritt ist länger als die Gesamtzeit.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="455"/>
+        <location filename="../src/problemdialog.cpp" line="456"/>
         <source>Maximum DOFS must be greater then zero.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3691,87 +3701,87 @@
         <translation>Verlauf...</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="961"/>
+        <location filename="../src/progressdialog.cpp" line="964"/>
         <source>Progress</source>
         <translation>Verlauf</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="962"/>
+        <location filename="../src/progressdialog.cpp" line="965"/>
         <source>Adapt. error</source>
         <translation>Adapt. Fehler</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="963"/>
+        <location filename="../src/progressdialog.cpp" line="966"/>
         <source>Adapt. DOFs</source>
         <translation>Adapt. FGe</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="964"/>
+        <location filename="../src/progressdialog.cpp" line="967"/>
         <source>Adapt. conv.</source>
         <translation>Adapt. Konver.</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="967"/>
+        <location filename="../src/progressdialog.cpp" line="970"/>
         <source>Cance&amp;l</source>
         <translation>&amp;Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="971"/>
+        <location filename="../src/progressdialog.cpp" line="974"/>
         <source>&amp;Close</source>
         <translation>S&amp;chließen</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="975"/>
+        <location filename="../src/progressdialog.cpp" line="978"/>
         <source>&amp;Save image</source>
         <translation>&amp;Bild speichern</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="979"/>
+        <location filename="../src/progressdialog.cpp" line="982"/>
         <source>Save data</source>
         <translation>Daten speichern</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1028"/>
-        <location filename="../src/progressdialog.cpp" line="1077"/>
+        <location filename="../src/progressdialog.cpp" line="1031"/>
+        <location filename="../src/progressdialog.cpp" line="1080"/>
         <source>current error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1037"/>
-        <location filename="../src/progressdialog.cpp" line="1121"/>
+        <location filename="../src/progressdialog.cpp" line="1040"/>
+        <location filename="../src/progressdialog.cpp" line="1124"/>
         <source>max. error</source>
         <translation>max. Fehler</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1041"/>
-        <location filename="../src/progressdialog.cpp" line="1125"/>
+        <location filename="../src/progressdialog.cpp" line="1044"/>
+        <location filename="../src/progressdialog.cpp" line="1128"/>
         <source>Error (%)</source>
         <translation>Fehler (%)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1045"/>
-        <location filename="../src/progressdialog.cpp" line="1085"/>
+        <location filename="../src/progressdialog.cpp" line="1048"/>
+        <location filename="../src/progressdialog.cpp" line="1088"/>
         <source>Steps (-)</source>
         <translation>Anzahl der Schritte (-)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1081"/>
-        <location filename="../src/progressdialog.cpp" line="1129"/>
+        <location filename="../src/progressdialog.cpp" line="1084"/>
+        <location filename="../src/progressdialog.cpp" line="1132"/>
         <source>DOFs (-)</source>
         <translation>FGe (-)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1112"/>
+        <location filename="../src/progressdialog.cpp" line="1115"/>
         <source>conv. chart</source>
         <translation>Konverg. Graph</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1473"/>
+        <location filename="../src/progressdialog.cpp" line="1479"/>
         <source>Export data to file</source>
         <translation>Export Daten in Datei</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1473"/>
+        <location filename="../src/progressdialog.cpp" line="1479"/>
         <source>CSV files (*.csv)</source>
         <translation>CSV Dateien (*.csv)</translation>
     </message>
@@ -4025,7 +4035,7 @@
         <translation type="obsolete">Zeitschritt: %1/%2</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="465"/>
+        <location filename="../src/problemdialog.cpp" line="466"/>
         <location filename="../src/value.cpp" line="48"/>
         <source>Error</source>
         <translation>Fehler</translation>
@@ -4058,7 +4068,7 @@
         <location filename="../src/scripteditorcommandpython.cpp" line="714"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="764"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="814"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="924"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="929"/>
         <source>Problem is not solved.</source>
         <translation>Das Problem ist nicht gelöst.</translation>
     </message>
@@ -4207,12 +4217,12 @@
         <translation>Die Veränderliche des physikalischen Feldes ist eine skalare Veränderliche.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="927"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="932"/>
         <source>Solved problem is not transient.</source>
         <translation>Das gelöste Problem ist nicht der Einschwingvorgang.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="930"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="935"/>
         <source>Time step must be between 0 and %1.</source>
         <translation>Der Zeitschritt muss zwischen 0 und &apos;%1&apos; sein.</translation>
     </message>
@@ -5905,27 +5915,27 @@
 <context>
     <name>SceneBoundaryDialog</name>
     <message>
-        <location filename="../src/scenemarker.cpp" line="121"/>
+        <location filename="../src/scenemarker.cpp" line="124"/>
         <source>Equation:</source>
         <translation type="unfinished">Gleichung:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="134"/>
+        <location filename="../src/scenemarker.cpp" line="137"/>
         <source>Name:</source>
         <translation type="unfinished">Name:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="169"/>
+        <location filename="../src/scenemarker.cpp" line="172"/>
         <source>Boundary marker</source>
         <translation type="unfinished">Randbedingung Marker</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="169"/>
+        <location filename="../src/scenemarker.cpp" line="172"/>
         <source>Boundary marker name already exists.</source>
         <translation type="unfinished">Den Namen der Randbedingung existiert schon.</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="182"/>
+        <location filename="../src/scenemarker.cpp" line="120"/>
         <source>Boundary condition</source>
         <translation type="unfinished">Randbedingung</translation>
     </message>
@@ -6111,9 +6121,13 @@
 <context>
     <name>SceneBoundarySelectDialog</name>
     <message>
-        <location filename="../src/scenemarker.cpp" line="335"/>
         <source>Edge marker</source>
-        <translation type="unfinished">Name der Kante</translation>
+        <translation type="obsolete">Name der Kante</translation>
+    </message>
+    <message>
+        <location filename="../src/scenemarker.cpp" line="335"/>
+        <source>Boundary condition</source>
+        <translation type="unfinished">Randbedingung</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="373"/>
@@ -6237,98 +6251,93 @@
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="133"/>
-        <source>Functions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/sceneinfoview.cpp" line="141"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="146"/>
+        <location filename="../src/sceneinfoview.cpp" line="138"/>
         <source>Nodes</source>
         <translation>Knoten</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="151"/>
+        <location filename="../src/sceneinfoview.cpp" line="143"/>
         <source>Edges</source>
         <translation>Kanten</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="156"/>
+        <location filename="../src/sceneinfoview.cpp" line="148"/>
         <source>Labels</source>
         <translation>Zeichen der Gebiete</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="187"/>
+        <location filename="../src/sceneinfoview.cpp" line="179"/>
         <source>Name: </source>
         <translation>Name:</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="190"/>
+        <location filename="../src/sceneinfoview.cpp" line="182"/>
         <source>Type: </source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="193"/>
+        <location filename="../src/sceneinfoview.cpp" line="185"/>
         <source>Field: </source>
         <translation>Feld:</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="196"/>
+        <location filename="../src/sceneinfoview.cpp" line="188"/>
         <source>Analysis: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="199"/>
+        <location filename="../src/sceneinfoview.cpp" line="191"/>
         <source>Solver: </source>
         <translation>Rechengerät:</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="205"/>
+        <location filename="../src/sceneinfoview.cpp" line="197"/>
         <source>Initial mesh</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="209"/>
-        <location filename="../src/sceneinfoview.cpp" line="221"/>
+        <location filename="../src/sceneinfoview.cpp" line="201"/>
+        <location filename="../src/sceneinfoview.cpp" line="213"/>
         <source>Nodes: </source>
         <translation>Knoten:</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="212"/>
-        <location filename="../src/sceneinfoview.cpp" line="224"/>
+        <location filename="../src/sceneinfoview.cpp" line="204"/>
+        <location filename="../src/sceneinfoview.cpp" line="216"/>
         <source>Elements: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="217"/>
+        <location filename="../src/sceneinfoview.cpp" line="209"/>
         <source>Solved mesh</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="229"/>
+        <location filename="../src/sceneinfoview.cpp" line="221"/>
         <source>Adaptivity</source>
         <translation>Adaptivität</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="233"/>
+        <location filename="../src/sceneinfoview.cpp" line="225"/>
         <source>Error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="236"/>
+        <location filename="../src/sceneinfoview.cpp" line="228"/>
         <source>Steps: </source>
         <translation>Anzahl der Schritte:</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="242"/>
+        <location filename="../src/sceneinfoview.cpp" line="234"/>
         <source>DOFs: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="247"/>
+        <location filename="../src/sceneinfoview.cpp" line="239"/>
         <source>Time elapsed: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -6428,17 +6437,17 @@
 <context>
     <name>SceneMaterialDialog</name>
     <message>
-        <location filename="../src/scenemarker.cpp" line="234"/>
+        <location filename="../src/scenemarker.cpp" line="237"/>
         <source>Equation:</source>
         <translation type="unfinished">Gleichung:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="248"/>
+        <location filename="../src/scenemarker.cpp" line="251"/>
         <source>Name:</source>
         <translation type="unfinished">Name:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="275"/>
+        <location filename="../src/scenemarker.cpp" line="233"/>
         <source>Material</source>
         <translation type="unfinished">Material</translation>
     </message>
@@ -6745,9 +6754,13 @@
 <context>
     <name>SceneMaterialSelectDialog</name>
     <message>
-        <location filename="../src/scenemarker.cpp" line="407"/>
         <source>Label marker</source>
-        <translation type="unfinished">Zeichnen des Gebietes</translation>
+        <translation type="obsolete">Zeichnen des Gebietes</translation>
+    </message>
+    <message>
+        <location filename="../src/scenemarker.cpp" line="407"/>
+        <source>Material</source>
+        <translation type="unfinished">Material</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="445"/>
@@ -7576,7 +7589,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/value.cpp" line="263"/>
-        <source>choose preset...</source>
+        <source>select a preset...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

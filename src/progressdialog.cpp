@@ -1206,6 +1206,9 @@ bool ProgressDialog::run(bool showViewProgress)
 {
     logMessage("ProgressDialog::run()");
 
+    // current widget
+    tabType->setCurrentWidget(controlsProgress);
+
     if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
     {
         controlsConvergenceErrorChart->setEnabled(false);

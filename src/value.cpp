@@ -260,7 +260,7 @@ void ValueTimeDialog::createControls()
     txtTimeTotal->setValue(Util::scene()->problemInfo()->timeTotal);
 
     cmbPresets = new QComboBox();
-    cmbPresets->addItem(tr("choose preset..."));
+    cmbPresets->addItem(tr("select a preset..."));
     cmbPresets->addItem(tr("constant"), "1.0");
     cmbPresets->addItem(tr("step"), QString("1.0*(time<%1)"));
     cmbPresets->addItem(tr("sine wave"), QString("1.0*sin(2*pi*1.0/%1*time)"));

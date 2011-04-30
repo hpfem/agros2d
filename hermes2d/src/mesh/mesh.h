@@ -377,6 +377,7 @@ protected:
     std::map<std::string, int>* conversion_table_inverse;
     friend class Space;
     friend class Mesh;
+    friend class SceneSolution;
   };
 
   class ElementMarkersConversion : public MarkersConversion
