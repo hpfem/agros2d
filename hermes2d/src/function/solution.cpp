@@ -30,12 +30,12 @@ MeshFunction::MeshFunction()
 }
 
 MeshFunction::MeshFunction(Mesh *mesh) :
-	ScalarFunction()
+        ScalarFunction()
 {
-	this->mesh = mesh;
-	this->refmap = new RefMap;
-	// FIXME - this was in H3D: MEM_CHECK(this->refmap);
-	this->element = NULL;		// this comes with Transformable
+        this->mesh = mesh;
+        this->refmap = new RefMap;
+        // FIXME - this was in H3D: MEM_CHECK(this->refmap);
+        this->element = NULL;		// this comes with Transformable
 }
 
 MeshFunction::~MeshFunction()
@@ -482,7 +482,7 @@ void Solution::set_coeff_vector(Space* space, PrecalcShapeset* pss, scalar* coef
     error("Provided 'space' and 'pss' must have the same shapesets.");
 
   free();
- 
+
   space_type = space->get_type();
 
   num_components = pss->get_num_components();
@@ -1469,7 +1469,7 @@ scalar Solution::get_pt_value(double x, double y, int item)
   }
 
   warn("Point (%g, %g) does not lie in any element.", x, y);
-  return NAN;
+  return 0;
 }
 
 
@@ -1496,7 +1496,7 @@ unsigned int ExactSolutionScalar::get_dimension() const
 {
   return 1;
 }
- 
+
 ExactSolutionVector::ExactSolutionVector(Mesh* mesh) : ExactSolution(mesh)
 {
   num_components = 2;

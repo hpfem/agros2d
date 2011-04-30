@@ -509,6 +509,7 @@ bool SolutionAgros::solve(Hermes::vector<Space *> space,
     if (linearityType == LinearityType_Linear)
     {
         DiscreteProblem dpLin(m_wf, space, true);
+
         isError = !solveLinear(&dpLin, space, solution,
                                solver, matrix, rhs);
 

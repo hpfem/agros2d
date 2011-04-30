@@ -923,6 +923,9 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
 
     setMinimumSize(520, 360);
     setMaximumSize(minimumSize());
+
+    QSettings settings;
+    restoreGeometry(settings.value("ProgressDialog/Geometry", saveGeometry()).toByteArray());
 }
 
 ProgressDialog::~ProgressDialog()
@@ -1427,6 +1430,9 @@ void ProgressDialog::cancel()
 void ProgressDialog::close()
 {
     logMessage("ProgressDialog::close()");
+
+    QSettings settings;
+    settings.setValue("ProgressDialog/Geometry", saveGeometry());
 
     cancel();
     accept();

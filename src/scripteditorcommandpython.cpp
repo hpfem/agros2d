@@ -817,7 +817,7 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
 }
 
 // showscalar(type = { "none", "scalar", "scalar3d", "order" }, variable, component, rangemin, rangemax)
-void pythonShowScalar(char *type, char *variable, char *component, int rangemin, int rangemax)
+void pythonShowScalar(char *type, char *variable, char *component, double rangemin, double rangemax)
 {
     logMessage("pythonShowScalar()");
 
@@ -832,7 +832,7 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
     sceneView()->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
     if (sceneView()->sceneViewSettings().scalarPhysicFieldVariable == PhysicFieldVariable_Undefined)
         throw invalid_argument(QObject::tr("Physic field variable '%1' is not implemented.").arg(QString(variable)).toStdString());
-    if (Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView()->sceneViewSettings().scalarPhysicFieldVariable))
+    if (!Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView()->sceneViewSettings().scalarPhysicFieldVariable))
         throw invalid_argument(QObject::tr("Physic field variable '%1' cannot be used with this field.").arg(QString(variable)).toStdString());
 
     // variable component
@@ -844,7 +844,7 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
         throw invalid_argument(QObject::tr("Physic field variable is scalar variable.").toStdString());
 
     // range
-    if (rangemin != INT_MIN)
+    if (rangemin != -123456)
     {
         sceneView()->sceneViewSettings().scalarRangeAuto = false;
         sceneView()->sceneViewSettings().scalarRangeMin = rangemin;
@@ -853,10 +853,11 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
     {
         sceneView()->sceneViewSettings().scalarRangeAuto = true;
     }
-    if (rangemax != INT_MIN)
+    if (rangemax != -123456)
         sceneView()->sceneViewSettings().scalarRangeMax = rangemax;
 
-    sceneView()->doInvalidated();
+    // sceneView()->doInvalidated();
+    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
 }
 
 // showgrid(show = {True, False})
@@ -901,7 +902,9 @@ void pythonShowContours(bool show)
     logMessage("pythonShowContours()");
 
     sceneView()->sceneViewSettings().showContours = show;
-    sceneView()->doInvalidated();
+
+    // sceneView()->doInvalidated();
+    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
 }
 
 // showvectors(show = {True, False})
@@ -910,7 +913,9 @@ void pythonShowVectors(bool show)
     logMessage("pythonShowVectors()");
 
     sceneView()->sceneViewSettings().showVectors = show;
-    sceneView()->doInvalidated();
+
+    // sceneView()->doInvalidated();
+    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
 }
 
 // settimestep(level)

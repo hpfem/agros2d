@@ -271,7 +271,7 @@ SurfaceIntegralValue *HermesMagnetic::surfaceIntegralValue()
 QStringList HermesMagnetic::surfaceIntegralValueHeader()
 {
     QStringList headers;
-    headers << "l" << "S" << "Fx" << "Fy";
+    headers << "l" << "S" << "Fx" << "Fy" << "T";
     return QStringList(headers);
 }
 

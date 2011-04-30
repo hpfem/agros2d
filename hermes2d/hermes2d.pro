@@ -11,6 +11,7 @@ INCLUDEPATH += src \
         ../hermes_common
 
 SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
+            ../hermes_common/compat/c99_functions.cpp \
             ../hermes_common/callstack.cpp \
             ../hermes_common/common.cpp \
             ../hermes_common/common_time_period.cpp \
@@ -142,6 +143,7 @@ linux-g++ {
     DEFINES += WITH_MUMPS
     DEFINES += WITH_SUPERLU
     DEFINES += HAVE_FMEMOPEN
+    DEFINES += HAVE_LOG2
 
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/superlu
@@ -159,6 +161,7 @@ win32-msvc2008 {
     DEFINES += IMPLEMENT_C99
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
+    DEFINES += "M_LN2=0.69314718055994530942"
 
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include

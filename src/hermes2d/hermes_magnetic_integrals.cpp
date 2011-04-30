@@ -442,7 +442,8 @@ QStringList SurfaceIntegralValueMagnetic::variables()
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
            QString("%1").arg(surface, 0, 'e', 5) <<
            QString("%1").arg(forceMaxwellX, 0, 'e', 5) <<
-           QString("%1").arg(forceMaxwellY, 0, 'e', 5);
+           QString("%1").arg(forceMaxwellY, 0, 'e', 5) <<
+           QString("%1").arg(torque, 0, 'e', 5);
     return QStringList(row);
 }
 
