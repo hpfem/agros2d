@@ -1230,7 +1230,6 @@ void ProgressDialog::start()
 
     progressBar->setRange(0, progressSteps());
     progressBar->setValue(0);
-    // QApplication::processEvents();
 
     for (int i = 0; i < m_progressItem.count(); i++)
     {
@@ -1292,7 +1291,7 @@ void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
         progressBar->setValue(currentProgressStep() + position);
 
     // update
-    if (position % 2 == 0) QApplication::processEvents();
+    if (position % 1 == 0) QApplication::processEvents();
     lstMessage->update();
 }
 

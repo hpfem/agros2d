@@ -1000,7 +1000,7 @@ void MainWindow::doOptions()
     ConfigDialog configDialog(this);
     if (configDialog.exec())
     {
-        sceneView->timeStepChanged(true);
+        sceneView->timeStepChanged(false);
         sceneView->doInvalidated();
     }
 

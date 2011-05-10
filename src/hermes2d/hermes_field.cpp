@@ -142,7 +142,8 @@ void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
     if (refineTowardsEdge)
         for (int i = 0; i < Util::scene()->edges.count(); i++)
             if (Util::scene()->edges[i]->refineTowardsEdge > 0)
-                mesh->refine_towards_boundary(QString::number(i + 1).toStdString(), Util::scene()->edges[i]->refineTowardsEdge);
+                mesh->refine_towards_boundary(QString::number(((Util::scene()->edges[i]->boundary->type != PhysicFieldBC_None) ? i + 1 : -i)).toStdString(),
+                                              Util::scene()->edges[i]->refineTowardsEdge);
 }
 
 // return geom type
