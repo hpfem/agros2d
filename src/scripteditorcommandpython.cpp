@@ -934,7 +934,7 @@ void pythonSetTimeStep(int timestep)
     if ((timestep < 0) || (timestep > Util::scene()->sceneSolution()->timeStepCount()))
         throw out_of_range(QObject::tr("Time step must be between 0 and %1.").arg(Util::scene()->sceneSolution()->timeStepCount()).toStdString());
 
-    Util::scene()->sceneSolution()->setTimeStep(timestep);
+    Util::scene()->sceneSolution()->setTimeStep(timestep, false);
 }
 
 // timestepcount()

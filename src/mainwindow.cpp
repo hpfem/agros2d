@@ -586,11 +586,17 @@ void MainWindow::createViews()
 
     terminalView = new TerminalView(this);
     terminalView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    terminalView->setVisible(false);
     addDockWidget(Qt::BottomDockWidgetArea, terminalView);
 
     tooltipView = new TooltipView(this);
     tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
+
+    tabifyDockWidget(localPointValueView, surfaceIntegralValueView);
+    tabifyDockWidget(surfaceIntegralValueView, volumeIntegralValueView);
+
+    tabifyDockWidget(sceneInfoView, postprocessorView);
 }
 
 void MainWindow::doSceneMouseMoved(const QPointF &position)
