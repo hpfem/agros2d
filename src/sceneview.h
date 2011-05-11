@@ -163,6 +163,7 @@ signals:
     void mousePressed();
     void mousePressed(const Point &point);
     void sceneModeChanged(SceneMode sceneMode);
+    void postprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
     void mouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
 protected:

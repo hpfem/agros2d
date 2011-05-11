@@ -261,10 +261,10 @@ void SceneView::createActions()
     actPostprocessorModeVolumeIntegral->setCheckable(true);
 
     actPostprocessorModeGroup = new QActionGroup(this);
-    connect(actPostprocessorModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doPostprocessorModeGroup(QAction*)));
     actPostprocessorModeGroup->addAction(actPostprocessorModeLocalPointValue);
     actPostprocessorModeGroup->addAction(actPostprocessorModeSurfaceIntegral);
     actPostprocessorModeGroup->addAction(actPostprocessorModeVolumeIntegral);
+    connect(actPostprocessorModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doPostprocessorModeGroup(QAction*)));
 
     // object properties
     actSceneObjectProperties = new QAction(icon("scene-properties"), tr("Object properties"), this);
@@ -3677,6 +3677,13 @@ void SceneView::doShowGroup(QAction *action)
 void SceneView::doPostprocessorModeGroup(QAction *action)
 {
     logMessage("SceneView::doPostprocessorModeGroup()");
+
+    if (actPostprocessorModeLocalPointValue->isChecked())
+        emit postprocessorModeGroupChanged(SceneModePostprocessor_LocalValue);
+    if (actPostprocessorModeSurfaceIntegral->isChecked())
+        emit postprocessorModeGroupChanged(SceneModePostprocessor_SurfaceIntegral);
+    if (actPostprocessorModeVolumeIntegral->isChecked())
+        emit postprocessorModeGroupChanged(SceneModePostprocessor_VolumeIntegral);
 
     m_scene->selectNone();
     updateGL();

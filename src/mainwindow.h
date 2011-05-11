@@ -93,6 +93,8 @@ private slots:
     void doCheckVersion();
     void doAbout();
     void doInvalidated();
+    void doSceneModeChanged(SceneMode sceneMode);
+    void doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
 
     void doTimeStepChanged(int index);
 

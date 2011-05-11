@@ -68,9 +68,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneView, SIGNAL(mousePressed()), volumeIntegralValueView, SLOT(doShowVolumeIntegral()));
     connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
     connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
+    connect(sceneView, SIGNAL(sceneModeChanged(SceneMode)), this, SLOT(doSceneModeChanged(SceneMode)));
     connect(sceneView, SIGNAL(sceneModeChanged(SceneMode)), tooltipView, SLOT(loadTooltip(SceneMode)));
     connect(postprocessorView, SIGNAL(apply()), sceneView, SLOT(doInvalidated()));
     connect(postprocessorView, SIGNAL(apply()), this, SLOT(doInvalidated()));
+    connect(sceneView, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
 
     sceneView->doDefaultValues();
 
@@ -593,10 +595,14 @@ void MainWindow::createViews()
     tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
 
+    // tabify dock together
     tabifyDockWidget(localPointValueView, surfaceIntegralValueView);
     tabifyDockWidget(surfaceIntegralValueView, volumeIntegralValueView);
 
     tabifyDockWidget(sceneInfoView, postprocessorView);
+
+    // raise scene info view
+    sceneInfoView->raise();
 }
 
 void MainWindow::doSceneMouseMoved(const QPointF &position)
@@ -992,6 +998,9 @@ void MainWindow::doSolve()
         // show local point values
         Point point = Point(0, 0);
         localPointValueView->doShowPoint(point);
+
+        // raise postprocessor
+        postprocessorView->raise();
     }
 
     doInvalidated();
@@ -1138,6 +1147,26 @@ void MainWindow::doInvalidated()
 
     //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
     //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
+}
+
+void MainWindow::doSceneModeChanged(SceneMode sceneMode)
+{
+    // raise dock
+    if (sceneMode == SceneMode_Postprocessor)
+        postprocessorView->raise();
+    else
+        sceneInfoView->raise();
+}
+
+void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
+{
+    // raise dock
+    if (sceneModePostprocessor == SceneModePostprocessor_LocalValue)
+        localPointValueView->raise();
+    if (sceneModePostprocessor == SceneModePostprocessor_SurfaceIntegral)
+        surfaceIntegralValueView->raise();
+    if (sceneModePostprocessor == SceneModePostprocessor_VolumeIntegral)
+        volumeIntegralValueView->raise();
 }
 
 void MainWindow::doHelp()

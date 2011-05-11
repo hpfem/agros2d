@@ -614,9 +614,9 @@ enum MouseSceneMode
 
 enum SceneModePostprocessor
 {
-    SceneMode_LocalValue,
-    SceneMode_SurfaceIntegral,
-    SceneMode_VolumeIntegral
+    SceneModePostprocessor_LocalValue,
+    SceneModePostprocessor_SurfaceIntegral,
+    SceneModePostprocessor_VolumeIntegral
 };
 
 enum PaletteType
