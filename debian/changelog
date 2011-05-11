@@ -1,4 +1,4 @@
-agros2d (1.9-ubuntu39) natty; urgency=low
+agros2d (1.9-ubuntu42) maverick; urgency=low
 
   * reworked postprocessor settings  
   * new hermes version

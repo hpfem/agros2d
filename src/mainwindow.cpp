@@ -35,6 +35,7 @@
 #include "videodialog.h"
 #include "logdialog.h"
 #include "problemdialog.h"
+#include "progressdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -970,6 +971,8 @@ void MainWindow::doCreateMesh()
         sceneView->actSceneModeLabel->trigger();
         sceneView->sceneViewSettings().showInitialMesh = true;
         sceneView->doInvalidated();
+
+        Util::scene()->sceneSolution()->progressDialog()->close();
     }
 
     doInvalidated();

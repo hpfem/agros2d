@@ -572,3 +572,8 @@ void SceneSolution::processRangeVector()
         emit processedRangeVector();
     }
 }
+
+ProgressDialog *SceneSolution::progressDialog()
+{
+    return m_progressDialog;
+}

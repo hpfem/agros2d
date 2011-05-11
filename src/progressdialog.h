@@ -194,11 +194,13 @@ private:
     int currentProgressStep();
     void saveProgressLog();
 
+public slots:
+    void close();
+
 private slots:
     void finished();
     void start();
     void cancel();
-    void close();
     void resetControls(int currentTab);
     void saveImage();
     void saveData();

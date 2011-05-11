@@ -114,7 +114,7 @@ public:
     void processRangeVector();
 
     // progress dialog
-    inline ProgressDialog *progressDialog() { return m_progressDialog; }
+    ProgressDialog *progressDialog();
 
 signals:
     void timeStepChanged(bool showViewProgress = true);
