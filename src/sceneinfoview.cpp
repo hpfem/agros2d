@@ -186,6 +186,9 @@ void SceneInfoView::doInvalidated()
     // analysis
     QTreeWidgetItem *itemAnalysisType = new QTreeWidgetItem(problemInfoGeneralNode);
     itemAnalysisType->setText(0, tr("Analysis: ") + analysisTypeString(Util::scene()->problemInfo()->analysisType));
+    // adaptivity
+    QTreeWidgetItem *itemAdaptivity = new QTreeWidgetItem(problemInfoGeneralNode);
+    itemAdaptivity->setText(0, tr("Adaptivity: ") + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType));
     // solver
     QTreeWidgetItem *itemSolverMatrixSolver = new QTreeWidgetItem(problemInfoGeneralNode);
     itemSolverMatrixSolver->setText(0, tr("Solver: ") + matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver));
