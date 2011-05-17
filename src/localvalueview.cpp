@@ -49,7 +49,7 @@ PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
 
     if (sln)
     {
-        int index = Util::scene()->sceneSolution()->findTriangleInMesh(Util::scene()->sceneSolution()->meshInitial(), point);
+        int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), point);
         if (index != -1)
         {
             if ((Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) &&

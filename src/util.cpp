@@ -32,12 +32,15 @@ static QHash<Mode, QString> modeList;
 static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
+static QHash<MeshType, QString> meshTypeList;
 static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MatrixSolverType, QString> matrixSolverTypeList;
 
-
 QString analysisTypeToStringKey(AnalysisType analysisType) { return analysisTypeList[analysisType]; }
 AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return analysisTypeList.key(analysisType); }
+
+QString meshTypeToStringKey(MeshType meshType) { return meshTypeList[meshType]; }
+MeshType meshTypeFromStringKey(const QString &meshType) { return meshTypeList.key(meshType); }
 
 QString physicFieldToStringKey(PhysicField physicField) { return physicFieldList[physicField]; }
 PhysicField physicFieldFromStringKey(const QString &physicField) { return physicFieldList.key(physicField); }
@@ -70,10 +73,16 @@ void initLists()
 {
     logMessage("initLists()");
 
+    // Analysis Type
     analysisTypeList.insert(AnalysisType_Undefined, "");
     analysisTypeList.insert(AnalysisType_SteadyState, "steadystate");
     analysisTypeList.insert(AnalysisType_Transient, "transient");
     analysisTypeList.insert(AnalysisType_Harmonic, "harmonic");
+
+    // Mesh Type
+    meshTypeList.insert(MeshType_Triangle, "triangle");
+    meshTypeList.insert(MeshType_QuadDivision, "quad_division");
+    meshTypeList.insert(MeshType_QuadSplit, "quad_split");
 
     // PHYSICFIELD
     physicFieldList.insert(PhysicField_Undefined, "");
@@ -1009,6 +1018,24 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
         return QObject::tr("hp-adaptivity");
     default:
         std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
+        throw;
+    }
+}
+
+QString meshTypeString(MeshType meshType)
+{
+    logMessage("meshTypeString()");
+
+    switch (meshType)
+    {
+    case MeshType_Triangle:
+        return QObject::tr("Triangle");
+    case MeshType_QuadDivision:
+        return QObject::tr("Quad division");
+    case MeshType_QuadSplit:
+        return QObject::tr("Quad split");
+    default:
+        std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
         throw;
     }
 }

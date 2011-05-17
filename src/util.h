@@ -349,6 +349,13 @@ enum LinearityType
     LinearityType_Newton
 };
 
+enum MeshType
+{
+    MeshType_Triangle,
+    MeshType_QuadDivision,
+    MeshType_QuadSplit
+};
+
 enum PhysicFieldVariableComp
 {
     PhysicFieldVariableComp_Undefined,
@@ -660,6 +667,7 @@ QString teModeString(Mode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
+QString meshTypeString(MeshType meshType);
 QString linearityTypeString(LinearityType linearityType);
 QString matrixSolverTypeString(MatrixSolverType matrixSolverType);
 
@@ -694,6 +702,9 @@ inline ProblemType problemTypeFromStringKey(const QString &problemType) { if (pr
 
 QString analysisTypeToStringKey(AnalysisType analysisType);
 AnalysisType analysisTypeFromStringKey(const QString &analysisType);
+
+QString meshTypeToStringKey(MeshType meshType);
+MeshType meshTypeFromStringKey(const QString &meshType);
 
 QString physicFieldVariableToStringKey(PhysicFieldVariable physicFieldVariable);
 PhysicFieldVariable physicFieldVariableFromStringKey(const QString &physicFieldVariable);
@@ -762,7 +773,7 @@ const int ADAPTIVITY_MESHREGULARITY = -1;
 const ProjNormType ADAPTIVITY_PROJNORMTYPE = HERMES_H1_NORM;
 
 // command argument
-const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I \"%2\"";
+const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
 const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
 
 // max dofs

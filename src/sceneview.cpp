@@ -2836,7 +2836,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 // select volume integral area
                 if (actPostprocessorModeVolumeIntegral->isChecked())
                 {
-                    int index = m_scene->sceneSolution()->findTriangleInMesh(m_scene->sceneSolution()->meshInitial(), p);
+                    int index = m_scene->sceneSolution()->findElementInMesh(m_scene->sceneSolution()->meshInitial(), p);
                     if (index != -1)
                     {
                         //  find label marker
@@ -4000,7 +4000,6 @@ void SceneView::paintPostprocessorSelectedVolume()
               0.5);
 
     // triangles
-    glBegin(GL_TRIANGLES);
     for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
         Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
@@ -4008,13 +4007,23 @@ void SceneView::paintPostprocessorSelectedVolume()
         {
             if (element->is_triangle())
             {
+                glBegin(GL_TRIANGLES);
                 glVertex2d(element->vn[0]->x, element->vn[0]->y);
                 glVertex2d(element->vn[1]->x, element->vn[1]->y);
                 glVertex2d(element->vn[2]->x, element->vn[2]->y);
+                glEnd();
+            }
+            else
+            {
+                glBegin(GL_QUADS);
+                glVertex2d(element->vn[0]->x, element->vn[0]->y);
+                glVertex2d(element->vn[1]->x, element->vn[1]->y);
+                glVertex2d(element->vn[2]->x, element->vn[2]->y);
+                glVertex2d(element->vn[3]->x, element->vn[3]->y);
+                glEnd();
             }
         }
     }
-    glEnd();
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);

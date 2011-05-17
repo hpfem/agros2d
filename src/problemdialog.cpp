@@ -113,12 +113,6 @@ QWidget *ProblemDialog::createControlsGeneral()
     dtmDate = new QDateTimeEdit();
     dtmDate->setDisplayFormat("dd.MM.yyyy");
     dtmDate->setCalendarPopup(true);
-    txtNumberOfRefinements = new QSpinBox(this);
-    txtNumberOfRefinements->setMinimum(0);
-    txtNumberOfRefinements->setMaximum(5);
-    txtPolynomialOrder = new QSpinBox(this);
-    txtPolynomialOrder->setMinimum(1);
-    txtPolynomialOrder->setMaximum(10);
     cmbAdaptivityType = new QComboBox();
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(1);
@@ -129,6 +123,15 @@ QWidget *ProblemDialog::createControlsGeneral()
     txtMaxDOFs->setMaximum(1e9);
     txtMaxDOFs->setSingleStep(1e2);
     cmbMatrixSolver = new QComboBox();
+
+    // mesh
+    txtNumberOfRefinements = new QSpinBox(this);
+    txtNumberOfRefinements->setMinimum(0);
+    txtNumberOfRefinements->setMaximum(5);
+    txtPolynomialOrder = new QSpinBox(this);
+    txtPolynomialOrder->setMinimum(1);
+    txtPolynomialOrder->setMaximum(10);
+    cmbMeshType = new QComboBox();
 
     // harmonic
     txtFrequency = new SLineEditDouble();
@@ -206,10 +209,12 @@ QWidget *ProblemDialog::createControlsGeneral()
     QGridLayout *layoutMesh = new QGridLayout();
     layoutMesh->setColumnMinimumWidth(0, minWidth);
     layoutMesh->setColumnStretch(1, 1);
-    layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 0, 0);
-    layoutMesh->addWidget(txtNumberOfRefinements, 0, 1);
-    layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 1, 0);
-    layoutMesh->addWidget(txtPolynomialOrder, 1, 1);
+    layoutMesh->addWidget(new QLabel(tr("Mesh type:")), 0, 0);
+    layoutMesh->addWidget(cmbMeshType, 0, 1);
+    layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 1, 0);
+    layoutMesh->addWidget(txtNumberOfRefinements, 1, 1);
+    layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 2, 0);
+    layoutMesh->addWidget(txtPolynomialOrder, 2, 1);
 
     QGroupBox *grpMesh = new QGroupBox(tr("Mesh parameters"));
     grpMesh->setLayout(layoutMesh);
@@ -336,6 +341,13 @@ void ProblemDialog::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_P), AdaptivityType_P);
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
 
+    cmbMeshType->addItem(meshTypeString(MeshType_Triangle), MeshType_Triangle);
+    if (Util::config()->showExperimentalFeatures)
+    {
+        cmbMeshType->addItem(meshTypeString(MeshType_QuadDivision), MeshType_QuadDivision);
+        cmbMeshType->addItem(meshTypeString(MeshType_QuadSplit), MeshType_QuadSplit);
+    }
+
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_UMFPACK), SOLVER_UMFPACK);
 #ifdef WITH_MUMPS
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_MUMPS), SOLVER_MUMPS);
@@ -354,12 +366,14 @@ void ProblemDialog::load()
     txtName->setText(m_problemInfo->name);
     cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_problemInfo->problemType));
     dtmDate->setDate(m_problemInfo->date);
-    txtNumberOfRefinements->setValue(m_problemInfo->numberOfRefinements);
-    txtPolynomialOrder->setValue(m_problemInfo->polynomialOrder);
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_problemInfo->adaptivityType));
     txtAdaptivitySteps->setValue(m_problemInfo->adaptivitySteps);
     txtAdaptivityTolerance->setValue(m_problemInfo->adaptivityTolerance);
     txtMaxDOFs->setValue(m_problemInfo->adaptivityMaxDOFs);
+    //mesh
+    txtNumberOfRefinements->setValue(m_problemInfo->numberOfRefinements);
+    txtPolynomialOrder->setValue(m_problemInfo->polynomialOrder);
+    cmbMeshType->setCurrentIndex(cmbMeshType->findData(m_problemInfo->meshType));
     // harmonic magnetic
     txtFrequency->setValue(m_problemInfo->frequency);
     // transient
@@ -474,6 +488,7 @@ bool ProblemDialog::save()
     m_problemInfo->date = dtmDate->date();
     m_problemInfo->numberOfRefinements = txtNumberOfRefinements->value();
     m_problemInfo->polynomialOrder = txtPolynomialOrder->value();
+    m_problemInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();
     m_problemInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
     m_problemInfo->adaptivitySteps = txtAdaptivitySteps->value();
     m_problemInfo->adaptivityTolerance = txtAdaptivityTolerance->value();

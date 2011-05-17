@@ -65,6 +65,7 @@ void ProblemInfo::clear()
     description = "";
     numberOfRefinements = 1;
     polynomialOrder = 2;
+    meshType = MeshType_Triangle;
     adaptivityType = AdaptivityType_None;
     adaptivitySteps = 0;
     adaptivityTolerance = 1.0;
@@ -1355,6 +1356,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->numberOfRefinements = eleProblem.toElement().attribute("numberofrefinements").toInt();
     // polynomial order
     m_problemInfo->polynomialOrder = eleProblem.toElement().attribute("polynomialorder").toInt();
+    // mesh type
+    m_problemInfo->meshType = meshTypeFromStringKey(eleProblem.toElement().attribute("meshtype",
+                                                                                     meshTypeToStringKey(MeshType_Triangle)));
     // adaptivity
     m_problemInfo->adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
     m_problemInfo->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
@@ -1563,6 +1567,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("numberofrefinements", m_problemInfo->numberOfRefinements);
     // polynomial order
     eleProblem.setAttribute("polynomialorder", m_problemInfo->polynomialOrder);
+    // mesh type
+    eleProblem.setAttribute("meshtype", meshTypeToStringKey(m_problemInfo->meshType));
     // adaptivity
     eleProblem.setAttribute("adaptivitytype", adaptivityTypeToStringKey(m_problemInfo->adaptivityType));
     eleProblem.setAttribute("adaptivitysteps", m_problemInfo->adaptivitySteps);

@@ -55,13 +55,16 @@ private:
     QComboBox *cmbProblemType;
     QComboBox *cmbPhysicField;
     QDateTimeEdit *dtmDate;
-    QSpinBox *txtNumberOfRefinements;
-    QSpinBox *txtPolynomialOrder;
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     SLineEditDouble *txtAdaptivityTolerance;
     QSpinBox *txtMaxDOFs;
     QComboBox *cmbMatrixSolver;
+
+    // mesh
+    QComboBox *cmbMeshType;
+    QSpinBox *txtNumberOfRefinements;
+    QSpinBox *txtPolynomialOrder;
 
     // linearity
     QComboBox *cmbLinearityType;

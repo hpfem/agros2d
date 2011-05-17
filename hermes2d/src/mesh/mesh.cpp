@@ -34,7 +34,6 @@ void Node::ref_element(Element* e)
   ref++;
 }
 
-
 void Node::unref_element(HashTable* ht, Element* e)
 {
   if (type == HERMES_TYPE_VERTEX)
@@ -50,7 +49,6 @@ void Node::unref_element(HashTable* ht, Element* e)
     if (!--ref) ht->remove_edge_node(id);
   }
 }
-
 
 void Element::ref_all_nodes()
 {
@@ -79,7 +77,6 @@ Element* Element::get_neighbor(int ie) const
   return NULL;
 }
 
-
 double Element::get_area() const
 {
   double ax, ay, bx, by;
@@ -97,7 +94,6 @@ double Element::get_area() const
 
   return area + 0.5*(ax*by - ay*bx);
 }
-
 
 double Element::get_diameter() const
 {
@@ -121,7 +117,6 @@ double Element::get_diameter() const
   return sqrt(max);
 }
 
-
 //// mesh //////////////////////////////////////////////////////////////////////////////////////////
 
 unsigned g_mesh_seq = 0;
@@ -132,14 +127,12 @@ Mesh::Mesh() : HashTable()
   seq = g_mesh_seq++;
 }
 
-
 Element* Mesh::get_element(int id) const
 {
   if (id < 0 || id >= elements.get_size())
     error("Invalid element ID %d, current range: [0; %d]", id, elements.get_size());
   return &(elements[id]);
 }
-
 
 int Mesh::get_edge_sons(Element* e, int edge, int& son1, int& son2)
 {
@@ -166,7 +159,6 @@ int Mesh::get_edge_sons(Element* e, int edge, int& son1, int& son2)
   son2 = e->next_vert(edge);
   return 2;
 }
-
 
 //// low-level refinement //////////////////////////////////////////////////////////////////////////
 
@@ -458,8 +450,8 @@ Node* get_vertex_node(Node* v1, Node* v2)
   newnode->type = HERMES_TYPE_VERTEX;
   newnode->ref = 0;
   newnode->bnd = 0;
-  newnode->p1 = NULL;
-  newnode->p2 = NULL;
+  newnode->p1 = -9999;
+  newnode->p2 = -9999;
   newnode->x = (v1->x + v2->x) * 0.5;
   newnode->y = (v1->y + v2->y) * 0.5;
 
@@ -473,8 +465,8 @@ Node* get_edge_node()
   newnode->type = HERMES_TYPE_EDGE;
   newnode->ref = 0;
   newnode->bnd = 0;
-  newnode->p1 = NULL;
-  newnode->p2 = NULL;
+  newnode->p1 = -9999;
+  newnode->p2 = -9999;
   newnode->marker = 0;
   newnode->elem[0] = newnode->elem[1] = NULL;
 
@@ -722,7 +714,7 @@ void refine_element(Mesh* mesh, Element* e, int refinement)
 {
   if (e->is_triangle()) {
     if (refinement == 3) {
-      if (mesh != NULL) mesh->refine_triangle_to_quads(e);
+      if (mesh != NULL) mesh->refine_triangle_to_quads(mesh, e);
     }
     else {
       if (mesh != NULL) refine_triangle_to_triangles(mesh, e);
@@ -754,7 +746,6 @@ void Mesh::refine_all_elements(int refinement, bool mark_as_initial)
 
 static int rtb_marker;
 static bool rtb_aniso;
-static bool rtb_tria_to_quad;
 static char* rtb_vert;
 
 void Mesh::refine_by_criterion(int (*criterion)(Element*), int depth)
@@ -763,7 +754,8 @@ void Mesh::refine_by_criterion(int (*criterion)(Element*), int depth)
   elements.set_append_only(true);
   for (int r, i = 0; i < depth; i++) {
     for_all_active_elements(e, this) {
-      if ((r = criterion(e)) >= 0) refine_element_id(e->id, r);
+      if ((r = criterion(e)) >= 0)
+        refine_element_id(e->id, r);
     }
   }
   elements.set_append_only(false);
@@ -796,7 +788,7 @@ static int rtb_criterion(Element* e)
 
   if (i >= e->nvert) return -1;
   // triangle should be split into 3 quads
-  if (e->is_triangle() && rtb_tria_to_quad) return 3;
+//  if (e->is_triangle() && rtb_tria_to_quad) return 3;
   // triangle should be split into 4 triangles or quad should
   // be split into 4 quads
   if (e->is_triangle() || !rtb_aniso) return 0;
@@ -815,22 +807,47 @@ static int rtb_criterion(Element* e)
 
   return 0;
 }
+void Mesh::refine_towards_boundary(Hermes::vector<std::string> markers, int depth, bool aniso, bool mark_as_initial)
+{
+  rtb_aniso = aniso;
 
-void Mesh::refine_towards_boundary(std::string marker, int depth, bool aniso, bool tria_to_quad, bool mark_as_initial)
+  // refinement: refine all elements to quad elements.
+  for (int i = 0; i < depth; i++)
+  {
+    int size = get_max_node_id()+1;
+    rtb_vert = new char[size];
+    memset(rtb_vert, 0, sizeof(char) * size);
+
+    Element* e;
+    for_all_active_elements(e, this)
+      for (unsigned int j = 0; j < e->nvert; j++) {
+        bool marker_matched = false;
+        for(unsigned int marker_i = 0; marker_i < markers.size(); marker_i++)
+          if (e->en[j]->marker == this->boundary_markers_conversion.get_internal_marker(markers[marker_i]))
+            marker_matched = true;
+        if(marker_matched)
+          rtb_vert[e->vn[j]->id] = rtb_vert[e->vn[e->next_vert(j)]->id] = 1;
+        }
+
+    refine_by_criterion(rtb_criterion, 1);
+    delete [] rtb_vert;
+  }
+
+  if(mark_as_initial)
+    ninitial = this->get_max_element_id();
+}
+
+void Mesh::refine_towards_boundary(std::string marker, int depth, bool aniso, bool mark_as_initial)
 {
   if(marker == HERMES_ANY)
     for(std::map<int, std::string>::iterator it = this->boundary_markers_conversion.conversion_table->begin(); it != this->boundary_markers_conversion.conversion_table->end(); it++)
-      refine_towards_boundary(it->second, depth, aniso, tria_to_quad, mark_as_initial);
+      refine_towards_boundary(it->second, depth, aniso, mark_as_initial);
 
   else {
     rtb_marker = this->boundary_markers_conversion.get_internal_marker(marker);
-    rtb_aniso  = aniso;
-    rtb_tria_to_quad = tria_to_quad;
+    rtb_aniso = aniso;
 
     // refinement: refine all elements to quad elements.
-    if (rtb_tria_to_quad)  
-      this->convert_triangles_to_quads();
-
     for (int i = 0; i < depth; i++)
     {
       int size = get_max_node_id()+1;
@@ -1239,6 +1256,8 @@ void Mesh::copy_converted(Mesh* mesh)
 {
   free();
   HashTable::copy(mesh);
+  this->boundary_markers_conversion = mesh->boundary_markers_conversion;
+
   // clear reference for all nodes
   for(int i = 0; i < nodes.get_size(); i++)
   {
@@ -1346,6 +1365,7 @@ void Mesh::convert_triangles_to_quads()
   loader_mesh_tmp_for_convert.load(mesh_file_tmp, &mesh_tmp_for_convert);
   remove(mesh_file_tmp);
   copy(&mesh_tmp_for_convert);
+ 
 }
 
 ////convert a quad element into two triangle elements///////
@@ -1405,16 +1425,11 @@ void Mesh::convert_to_base()
   copy(&mesh_tmp_for_convert);
 }
 
-void Mesh::refine_triangle_to_quads(Element* e)
+void Mesh::refine_triangle_to_quads(Mesh* mesh, Element* e, Element** sons_out)
 {
   // remember the markers of the edge nodes
   int bnd[3] = { e->en[0]->bnd,    e->en[1]->bnd,    e->en[2]->bnd    };
   int mrk[3] = { e->en[0]->marker, e->en[1]->marker, e->en[2]->marker };
-
-  // deactivate this element and unregister from its nodes
-  e->active = false;
-  nactive--;
-  e->unref_all_nodes(this);
 
   // obtain three mid-edge and one gravity vertex nodes
   Node* x0 = this->get_vertex_node(e->vn[0]->id, e->vn[1]->id);
@@ -1422,8 +1437,8 @@ void Mesh::refine_triangle_to_quads(Element* e)
   Node* x2 = this->get_vertex_node(e->vn[2]->id, e->vn[0]->id);
   Node* mid = this->get_vertex_node(x0->id, e->vn[1]->id);
 
-  mid->x = (nodes[x0->id].x + nodes[x1->id].x + nodes[x2->id].x)/3;
-  mid->y = (nodes[x0->id].y + nodes[x1->id].y + nodes[x2->id].y)/3;
+  mid->x = (x0->x + x1->x + x2->x)/3;
+  mid->y = (x0->y + x1->y + x2->y)/3;
 
   // check if element e is a internal element.
   bool e_inter = true;
@@ -1431,6 +1446,23 @@ void Mesh::refine_triangle_to_quads(Element* e)
   {  
     if (bnd[n] == 1)
       e_inter = false;
+  }
+
+  CurvMap* cm[4];
+  memset(cm, 0, sizeof(cm));
+
+  // adjust mid-edge and gravity coordinates if this is a curved element
+  if (e->is_curved())
+  {
+    if (!e_inter)
+    {
+      double2 pt[4] = { { 0.0,-1.0 }, { 0.0, 0.0 },{ -1.0, 0.0 }, { -0.33333333, -0.33333333 } };
+      e->cm->get_mid_edge_points(e, pt, 4);
+      x0->x = pt[0][0]; x0->y = pt[0][1];
+      x1->x = pt[1][0]; x1->y = pt[1][1];
+      x2->x = pt[2][0]; x2->y = pt[2][1];
+      mid->x = pt[3][0]; mid->y = pt[3][1];
+    }
   }
 
   // get the boundary edge angle.
@@ -1508,25 +1540,8 @@ void Mesh::refine_triangle_to_quads(Element* e)
     }
   }
 
-  // adjust mid-edge and gravity coordinates if this is a curved element
-  if (e->is_curved())
-  {
-    if (!e_inter)
-    {
-      double2 pt[4] = { { 0.0,-1.0 }, { 0.0, 0.0 },{ -1.0, 0.0 }, { -0.33333333, -0.33333333 } };
-      e->cm->get_mid_edge_points(e, pt, 4);
-      x0->x = pt[0][0]; x0->y = pt[0][1];
-      x1->x = pt[1][0]; x1->y = pt[1][1];
-      x2->x = pt[2][0]; x2->y = pt[2][1];
-      mid->x = pt[3][0]; mid->y = pt[3][1];
-    }
-  }
-
   double angle2 = 0.0;
   int idx = 0;
-  CurvMap* cm[3];
-  memset(cm, 0, sizeof(cm));
-
   // create CurvMaps for sons if this is a curved element
   if ((e->is_curved()) && (!e_inter))
   {
@@ -1695,42 +1710,44 @@ void Mesh::refine_triangle_to_quads(Element* e)
   }
 
   // create the four sons
-  Element* sons[4];
-  sons[0] = create_quad(this, e->marker, e->vn[0], x0, mid, x2, cm[0]);
-  sons[1] = create_quad(this, e->marker, x0, e->vn[1], x1, mid, cm[1]);
-  sons[2] = create_quad(this, e->marker, x1, e->vn[2], x2, mid, cm[2]);
-  sons[3] = NULL;
+  Element* sons[3];
+  sons[0] = create_quad(mesh, e->marker, e->vn[0], x0, mid, x2, cm[0]);
+  sons[1] = create_quad(mesh, e->marker, x0, e->vn[1], x1, mid, cm[1]);
+  sons[2] = create_quad(mesh, e->marker, x1, e->vn[2], x2, mid, cm[2]);
 
   // update coefficients of curved reference mapping
   for (int i = 0; i < 3; i++)
-  {
     if (sons[i]->is_curved())
-    {
       sons[i]->cm->update_refmap_coeffs(sons[i]);
+
+  // deactivate this element and unregister from its nodes
+  e->active = 0;
+  if (mesh != NULL) {
+    mesh->nactive += 2;
+    e->unref_all_nodes(mesh);
     }
-  }
-  nactive += 3;
   // now the original edge nodes may no longer exist...
+
   // set correct boundary status and markers for the new nodes
   sons[0]->en[0]->bnd = bnd[0];  sons[0]->en[0]->marker = mrk[0];
   sons[0]->en[3]->bnd = bnd[2];  sons[0]->en[3]->marker = mrk[2];
-  sons[0]->vn[1]->bnd = bnd[0];
-
   sons[1]->en[0]->bnd = bnd[0];  sons[1]->en[0]->marker = mrk[0];
   sons[1]->en[1]->bnd = bnd[1];  sons[1]->en[1]->marker = mrk[1];
-  sons[1]->vn[2]->bnd = bnd[1];
-
   sons[2]->en[0]->bnd = bnd[1];  sons[2]->en[0]->marker = mrk[1];
   sons[2]->en[1]->bnd = bnd[2];  sons[2]->en[1]->marker = mrk[2];
-  sons[2]->vn[2]->bnd = bnd[2];
 
   //set pointers to parent element for sons
-  for(int i = 0; i < 4; i++)
-	  if(sons[i] != NULL)
-		  sons[i]->parent = e;
+  for(int i = 0; i < 3; i++) {
+    if(sons[i] != NULL) sons[i]->parent = e;
+  }
 
   // copy son pointers (could not have been done earlier because of the union)
-  memcpy(e->sons, sons, 4 * sizeof(Element*));
+  memcpy(e->sons, sons, 3 * sizeof(Element*));
+
+  // If sons_out != NULL, copy son pointers there.
+  if (sons_out != NULL) {
+    for(int i = 0; i < 3; i++) sons_out[i] = sons[i];
+  }
 }
 
 void Mesh::refine_element_to_quads_id(int id)
@@ -1740,7 +1757,7 @@ void Mesh::refine_element_to_quads_id(int id)
   if (!e->active) error("Attempt to refine element #%d which has been refined already.", e->id);
 
   if (e->is_triangle())
-    refine_triangle_to_quads(e);
+    refine_triangle_to_quads(this, e);
   else
     refine_quad_to_quads(e);
 

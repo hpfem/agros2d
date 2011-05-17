@@ -485,10 +485,10 @@ bool SolutionAgros::solveLinear(DiscreteProblem *dp,
                                 Hermes::vector<Solution *> solution,
                                 Solver *solver, SparseMatrix *matrix, Vector *rhs)
 {
-    // QTime time;
-    // time.start();
+    QTime time;
+    time.start();
     dp->assemble(matrix, rhs);
-    // qDebug() << "assemble: " << time.elapsed();
+    qDebug() << "assemble: " << time.elapsed();
 
     if(solver->solve())
     {

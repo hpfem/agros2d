@@ -248,7 +248,8 @@ public:
   /// boundary marked by 'marker'. Elements touching both by an edge or
   /// by a vertex are refined. 'aniso' allows or disables anisotropic
   /// splits of quads.
-  void refine_towards_boundary(std::string marker, int depth, bool aniso = true, bool tria_to_quad = false, bool mark_as_initial = false);
+  void refine_towards_boundary(Hermes::vector<std::string> markers, int depth, bool aniso = true, bool mark_as_initial = false);
+  void refine_towards_boundary(std::string marker, int depth, bool aniso = true, bool mark_as_initial = false);
 
   /// Regularizes the mesh by refining elements with hanging nodes of
   /// degree more than 'n'. As a result, n-irregular mesh is obtained.
@@ -300,7 +301,7 @@ public:
   void convert_to_base();
 
   void refine_element_to_quads_id(int id);
-  void refine_triangle_to_quads(Element* e);
+  void refine_triangle_to_quads(Mesh* mesh, Element* e, Element** elems_out = NULL);
 
   void refine_element_to_triangles_id(int id);
   void refine_quad_to_triangles(Element* e);
@@ -413,6 +414,7 @@ protected:
   friend class HdivSpace;
   friend class DiscreteProblem;
   friend class KellyTypeAdapt;
+  friend class SceneSolution;
 
 public:
   ElementMarkersConversion &get_element_markers_conversion() { return element_markers_conversion; };

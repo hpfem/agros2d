@@ -54,6 +54,7 @@ public:
     ProblemType problemType;
     int numberOfRefinements;
     int polynomialOrder;
+    MeshType meshType;
     AdaptivityType adaptivityType;
     int adaptivitySteps;
     double adaptivityTolerance; // percent

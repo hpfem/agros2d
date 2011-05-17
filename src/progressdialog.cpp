@@ -23,42 +23,6 @@
 #include "scene.h"
 #include "sceneview.h"
 
-struct TriangleEdge
-{
-    TriangleEdge()
-    {
-        this->node_1 = -1;
-        this->node_2 = -1;
-        this->marker = -1;
-    }
-
-    TriangleEdge(int node_1, int node_2, int marker)
-    {
-        this->node_1 = node_1;
-        this->node_2 = node_2;
-        this->marker = marker;
-    }
-
-    int node_1, node_2, marker;
-};
-
-/*
-struct NodeTriangle
-{
-    NodeTriangle(int n, double x, double y, int marker)
-    {
-        this->n = n;
-        this->x = x;
-        this->y = n;
-        this->marker = marker;
-    }
-
-    int n;
-    double x, y;
-    int marker;
-};
-*/
-
 SolutionArray::SolutionArray()
 {
     logMessage("SolutionArray::SolutionArray()");
@@ -280,6 +244,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             // QFile::remove(tempProblemFileName() + ".node");
             // QFile::remove(tempProblemFileName() + ".edge");
             // QFile::remove(tempProblemFileName() + ".ele");
+            // QFile::remove(tempProblemFileName() + ".neigh");
             QFile::remove(tempProblemFileName() + ".triangle.out");
             QFile::remove(tempProblemFileName() + ".triangle.err");
             emit message(tr("Mesh files were deleted"), false, 4);
@@ -288,20 +253,19 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
 
             // check that all boundary edges have a marker assigned
+
             for (int i = 0; i < mesh->get_max_node_id(); i++)
             {
                 if (Node *node = mesh->get_node(i))
                 {
-                    if (node->used)
+                    if (node->used == 1 && node->type == 1 && node->ref < 2 && node->marker == 0)
                     {
-                        if (node->ref < 2 && node->marker == 0)
-                        {
-                            emit message(tr("Boundary edge does not have a boundary marker"), true, 0);
+                        qDebug() << "p1: " << node->p1 << "p2: " << node->p2;
+                        emit message(tr("Boundary edge does not have a boundary marker"), true, 0);
 
-                            delete mesh;
-                            m_isError = true;
-                            return;
-                        }
+                        delete mesh;
+                        m_isError = true;
+                        return;
                     }
                 }
             }
@@ -572,40 +536,186 @@ bool ProgressItemMesh::triangleToHermes2D()
     }
     QTextStream inEle(&fileEle);
 
+    QFile fileNeigh(tempProblemFileName() + ".neigh");
+    if (!fileNeigh.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        emit message(tr("Could not read Triangle neigh file"), true, 0);
+        return false;
+    }
+    QTextStream inNeigh(&fileNeigh);
+
     // triangle nodes
     sscanf(inNode.readLine().toStdString().c_str(), "%i", &k);
-    Point *nodeList = new Point[k];
+    QList<Point> nodeList;
     for (int i = 0; i<k; i++)
     {
         int marker;
         double x, y;
 
         sscanf(inNode.readLine().toStdString().c_str(), "%i   %lf %lf %i", &n, &x, &y, &marker);
-        nodeList[i] = Point(x, y);
+        nodeList.append(Point(x, y));
     }
-    int nodeCount = k;
 
     // triangle edges
     sscanf(inEdge.readLine().toStdString().c_str(), "%i", &k);
-
-    TriangleEdge *edgeList = new TriangleEdge[k];
+    QList<MeshEdge> edgeList;
     for (int i = 0; i<k; i++)
     {
         int node_1, node_2, marker;
 
         sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node_1, &node_2, &marker);
-        edgeList[i] = TriangleEdge(node_1, node_2, marker);
+        edgeList.append(MeshEdge(node_1, node_2, marker));
     }
-    int edgeCount = k;
+    int edgeCountLinear = edgeList.count();
+
+    // triangle elements
+    sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
+    QList<MeshElement> elementList;
+    for (int i = 0; i < k; i++)
+    {
+        int node_1, node_2, node_3, node_4, node_5, node_6, marker;
+
+        sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i	%i	%i	%i",
+               &n, &node_1, &node_2, &node_3, &node_4, &node_5, &node_6, &marker);
+
+        if (Util::scene()->problemInfo()->meshType == MeshType_Triangle || Util::scene()->problemInfo()->meshType == MeshType_QuadSplit)
+        {
+            elementList.append(MeshElement(node_1, node_2, node_3, marker));
+        }
+
+        if (Util::scene()->problemInfo()->meshType == MeshType_QuadDivision)
+        {
+            nodeList.append(Point((nodeList[node_1].x + nodeList[node_2].x + nodeList[node_3].x) / 3.0,
+                                  (nodeList[node_1].y + nodeList[node_2].y + nodeList[node_3].y) / 3.0));
+            elementList.append(MeshElement(node_5, node_1, node_6, nodeList.count() - 1, marker));
+            elementList.append(MeshElement(node_6, node_2, node_4, nodeList.count() - 1, marker));
+            elementList.append(MeshElement(node_4, node_3, node_5, nodeList.count() - 1, marker));
+        }
+
+        if (elementList[i].marker == 0)
+        {
+            emit message(tr("Some areas have no label marker"), true, 0);
+            return false;
+        }
+    }
+    if (elementList.count() < 1)
+    {
+        emit message(tr("Invalid number of label markers"), true, 0);
+        return false;
+    }
+
+    // triangle neigh
+    sscanf(inNeigh.readLine().toStdString().c_str(), "%i", &k);
+    for (int i = 0; i < k; i++)
+    {
+        int ele_1, ele_2, ele_3;
+
+        sscanf(inNeigh.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &ele_1, &ele_2, &ele_3);
+        elementList[i].neigh_1 = ele_1;
+        elementList[i].neigh_2 = ele_2;
+        elementList[i].neigh_3 = ele_3;
+    }
+
+    // heterogeneous mesh
+    // element division
+    if (Util::scene()->problemInfo()->meshType == MeshType_QuadDivision)
+    {
+        for (int i = 0; i < edgeCountLinear; i++)
+        {
+            if (edgeList[i].marker != 0)
+            {
+                for (int j = 0; j < elementList.count() / 3; j++)
+                {
+                    if (edgeList[i].node_1 == elementList[3*j + 0].node_2 && edgeList[i].node_2 == elementList[3*j + 1].node_2)
+                    {
+                        edgeList.append(MeshEdge(edgeList[i].node_1, elementList[3*j + 1].node_1, edgeList[i].marker));
+                        edgeList[i].node_1 = elementList[3*j + 1].node_1;
+                    }
+                    if (edgeList[i].node_1 == elementList[3*j + 1].node_2 && edgeList[i].node_2 == elementList[3*j + 2].node_2)
+                    {
+                        // qDebug() << edgeList[i].node_1 << edgeList[i].node_2 << " : " << elementList[3*j + 2].node_1;
+                        edgeList.append(MeshEdge(edgeList[i].node_1, elementList[3*j + 2].node_1, edgeList[i].marker));
+                        edgeList[i].node_1 = elementList[3*j + 2].node_1;
+                    }
+                    if (edgeList[i].node_1 == elementList[3*j + 2].node_2 && edgeList[i].node_2 == elementList[3*j + 0].node_2)
+                    {
+                        // qDebug() << edgeList[i].node_1 << edgeList[i].node_2 << " : " << elementList[3*j + 0].node_1;
+                        edgeList.append(MeshEdge(edgeList[i].node_1, elementList[3*j + 0].node_1, edgeList[i].marker));
+                        edgeList[i].node_1 = elementList[3*j + 0].node_1;
+                    }
+                }
+            }
+        }
+    }
+
+    if (Util::scene()->problemInfo()->meshType == MeshType_QuadSplit)
+    {
+        for (int i = 0; i < elementList.count(); i++)
+        {
+            // opposite to the first corner 3 of triangle
+            int element = elementList[i].neigh_3;
+
+            if (element != -1
+                    && elementList[i].isActive
+                    && elementList[element].isActive
+                    && elementList[i].marker == elementList[element].marker)
+            {
+                int node_1 = elementList[i].node_1;
+                int node_2 = elementList[i].node_2;
+                int node_3 = elementList[i].node_3;
+                int node_4 = -1;
+                if (elementList[i].node_1 == elementList[element].node_1 && elementList[i].node_2 == elementList[element].node_3)
+                    node_4 = elementList[element].node_2;
+                if (elementList[i].node_1 == elementList[element].node_2 && elementList[i].node_2 == elementList[element].node_1)
+                    node_4 = elementList[element].node_3;
+                if (elementList[i].node_1 == elementList[element].node_3 && elementList[i].node_2 == elementList[element].node_2)
+                    node_4 = elementList[element].node_1;
+
+                // check quad
+                if ((!same_line(nodeList[node_1].x, nodeList[node_1].y, nodeList[node_2].x, nodeList[node_2].y, nodeList[node_3].x, nodeList[node_3].y)) &&
+                        (!same_line(nodeList[node_1].x, nodeList[node_1].y, nodeList[node_2].x, nodeList[node_2].y, nodeList[node_4].x, nodeList[node_4].y)) &&
+                        (!same_line(nodeList[node_1].x, nodeList[node_1].y, nodeList[node_3].x, nodeList[node_3].y, nodeList[node_4].x, nodeList[node_4].y)) &&
+                        (!same_line(nodeList[node_2].x, nodeList[node_2].y, nodeList[node_3].x, nodeList[node_3].y, nodeList[node_4].x, nodeList[node_4].y)) &&
+                        (is_convex(nodeList[node_3].x - nodeList[node_4].x, nodeList[node_3].y - nodeList[node_4].y, nodeList[node_1].x - nodeList[node_4].x, nodeList[node_1].y - nodeList[node_4].y)) &&
+                        (is_convex(nodeList[node_4].x - nodeList[node_1].x, nodeList[node_4].y - nodeList[node_1].y, nodeList[node_2].x - nodeList[node_1].x, nodeList[node_2].y - nodeList[node_1].y)) &&
+                        (is_convex(nodeList[node_2].x - nodeList[node_4].x, nodeList[node_2].y - nodeList[node_4].y, nodeList[node_3].x - nodeList[node_4].x, nodeList[node_3].y - nodeList[node_4].y)) &&
+                        (is_convex(nodeList[node_2].x - nodeList[node_1].x, nodeList[node_2].y - nodeList[node_1].y, nodeList[node_3].x - nodeList[node_1].x, nodeList[node_3].y - nodeList[node_1].y)))
+                {
+                    elementList[i].isActive = false;
+                    elementList[i].node_1 = node_1;
+                    elementList[i].node_2 = node_4;
+                    elementList[i].node_3 = node_2;
+                    elementList[i].node_4 = node_3;
+
+                    elementList[element].isActive = false;
+                    elementList[element].isUsed = false;
+
+                    for (int i = 0; i < edgeList.count(); i++)
+                    {
+                        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_1) && (edgeList[i].node_2 == node_4)))
+                            edgeList[i].isActive = false;
+                        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_4) && (edgeList[i].node_2 == node_2)))
+                            edgeList[i].isActive = false;
+                        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_2) && (edgeList[i].node_2 == node_3)))
+                            edgeList[i].isActive = false;
+                        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_3) && (edgeList[i].node_2 == node_1)))
+                            edgeList[i].isActive = false;
+                        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_1) && (edgeList[i].node_2 == node_2)))
+                            edgeList[i].isActive = false;
+                    }
+                }
+            }
+        }
+    }
 
     // edges
     QString outEdges;
     outEdges += "boundaries =\n";
     outEdges += "{\n";
     int countEdges = 0;
-    for (int i = 0; i<edgeCount; i++)
+    for (int i = 0; i < edgeList.count(); i++)
     {
-        if (edgeList[i].marker != 0)
+        if (edgeList[i].isUsed && edgeList[i].marker != 0)
         {
             int marker = 0;
             if (Util::scene()->edges[edgeList[i].marker-1]->boundary->type != PhysicFieldBC_None)
@@ -638,7 +748,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     {
         outCurves += "curves =\n";
         outCurves += "{\n";
-        for (int i = 0; i<edgeCount; i++)
+        for (int i = 0; i<edgeList.count(); i++)
         {
             if (edgeList[i].marker != 0)
             {
@@ -673,7 +783,7 @@ bool ProgressItemMesh::triangleToHermes2D()
         outCurves += "\n}\n\n";
 
         // move nodes (arcs)
-        for (int i = 0; i<edgeCount; i++)
+        for (int i = 0; i<edgeList.count(); i++)
         {
             if (edgeList[i].marker != 0)
             {
@@ -702,7 +812,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     QString outNodes;
     outNodes += "vertices =\n";
     outNodes += "{\n";
-    for (int i = 0; i<nodeCount; i++)
+    for (int i = 0; i<nodeList.count(); i++)
     {
         outNodes += QString("  { %1,  %2 },\n").
                 arg(nodeList[i].x, 0, 'f', 10).
@@ -715,34 +825,32 @@ bool ProgressItemMesh::triangleToHermes2D()
     QString outElements;
     outElements += "elements =\n";
     outElements += "{\n";
-    sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
-    int countElements = 0;
-    for (int i = 0; i<k; i++)
-    {
-        int node_1, node_2, node_3, marker;
-
-        countElements++;
-        sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i", &n, &node_1, &node_2, &node_3, &marker);
-        if (marker == 0)
+    for (int i = 0; i < elementList.count(); i++)
+    {        
+        if (elementList[i].isUsed)
         {
-            emit message(tr("Some areas have no label marker"), true, 0);
-            return false;
+            // element returns zero region number for areas without marker, markers must start from 1
+            if (elementList[i].isTriangle())
+            {
+                outElements += QString("  { %1, %2, %3, %4 },\n").
+                        arg(elementList[i].node_1).
+                        arg(elementList[i].node_2).
+                        arg(elementList[i].node_3).
+                        arg(abs(elementList[i].marker) - 1);
+            }
+            else
+            {
+                outElements += QString("  { %1, %2, %3, %4, %5 },\n").
+                        arg(elementList[i].node_1).
+                        arg(elementList[i].node_2).
+                        arg(elementList[i].node_3).
+                        arg(elementList[i].node_4).
+                        arg(abs(elementList[i].marker) - 1);
+            }
         }
-        // triangle returns zero region number for areas without marker, markers must start from 1
-        marker--;
-        outElements += QString("  { %1, %2, %3, %4 },\n").
-                arg(node_1).
-                arg(node_2).
-                arg(node_3).
-                arg(abs(marker));
     }
     outElements.truncate(outElements.length()-2);
     outElements += "\n}\n\n";
-    if (countElements < 1)
-    {
-        emit message(tr("Invalid number of label markers"), true, 0);
-        return false;
-    }
 
     outMesh << outNodes;
     outMesh << outElements;
@@ -750,20 +858,31 @@ bool ProgressItemMesh::triangleToHermes2D()
     if (countCurves > 0)
         outMesh << outCurves;
 
+    nodeList.clear();
+    edgeList.clear();
+    elementList.clear();
+
     fileNode.close();
     fileEdge.close();
     fileEle.close();
+    fileNeigh.close();
 
     fileMesh.waitForBytesWritten(0);
     fileMesh.close();
-
-    delete [] nodeList;
-    delete [] edgeList;
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 
     return true;
+}
+
+int ProgressItemMesh::findEdge(QList<MeshEdge> edgeList, int node_1, int node_2)
+{
+    for (int i = 0; i < edgeList.count(); i++)
+        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_1) && (edgeList[i].node_2 == node_2)))
+            return i;
+
+    return -1;
 }
 
 // *********************************************************************************************

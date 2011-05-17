@@ -169,7 +169,7 @@ void SceneSolution::loadMeshInitial(QDomElement *element)
     content.append(text.nodeValue());
     writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
 
-    Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
+    Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");    
     // refineMesh(mesh, true, true);
 
     setMeshInitial(mesh);
@@ -288,7 +288,7 @@ int SceneSolution::adaptiveSteps()
     return (isSolved()) ? m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveSteps : 0.0;
 }
 
-int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &point) const
+int SceneSolution::findElementInVectorizer(const Vectorizer &vec, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInVectorizer()");
 
@@ -297,61 +297,73 @@ int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &
 
     for (int i = 0; i < vec.get_num_triangles(); i++)
     {
-        bool inTriangle = true;
+        bool inElement = true;
 
-        int k;
-        double z;
+        // triangle element
         for (int l = 0; l < 3; l++)
         {
-            k = l + 1;
+            int k = l + 1;
             if (k == 3)
                 k = 0;
 
-            z = (vecVert[vecTris[i][k]][0] - vecVert[vecTris[i][l]][0]) * (point.y - vecVert[vecTris[i][l]][1]) -
-                (vecVert[vecTris[i][k]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
+            double z = (vecVert[vecTris[i][k]][0] - vecVert[vecTris[i][l]][0]) * (point.y - vecVert[vecTris[i][l]][1]) -
+                    (vecVert[vecTris[i][k]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
 
             if (z < 0)
             {
-                inTriangle = false;
+                inElement = false;
                 break;
             }
         }
 
-        if (inTriangle)
+        if (inElement)
             return i;
     }
 
     return -1;
 }
 
-int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point) const
+#define sign(x) (( x > 0 ) - ( x < 0 ))
+
+int SceneSolution::findElementInMesh(Mesh *mesh, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInMesh()");
 
     for (int i = 0; i < mesh->get_num_active_elements(); i++)
     {
-        bool inTriangle = true;
-        
+        bool inElement = false;
         Element *element = mesh->get_element_fast(i);
         
-        int k;
-        double z;
-        for (int l = 0; l < 3; l++)
+        if (element->is_triangle())
         {
-            k = l + 1;
-            if (k == 3)
-                k = 0;
-            
-            z = (element->vn[k]->x - element->vn[l]->x) * (point.y - element->vn[l]->y) - (element->vn[k]->y - element->vn[l]->y) * (point.x - element->vn[l]->x);
-            
-            if (z < 0)
+            // triangle element
+            for (int l = 0; l < 3; l++)
             {
-                inTriangle = false;
-                break;
+                int k = l + 1;
+                if (k == 3)
+                    k = 0;
+
+                double z = (element->vn[k]->x - element->vn[l]->x) * (point.y - element->vn[l]->y)
+                        - (element->vn[k]->y - element->vn[l]->y) * (point.x - element->vn[l]->x);
+
+                if (z < 0)
+                {
+                    inElement = true;
+                    break;
+                }
             }
         }
-        
-        if (inTriangle)
+        else
+        {
+            double a = (element->vn[0]->x - point.x) * (element->vn[1]->y - point.y) - (element->vn[1]->x - point.x) * (element->vn[0]->y - point.y);
+            double b = (element->vn[1]->x - point.x) * (element->vn[2]->y - point.y) - (element->vn[2]->x - point.x) * (element->vn[1]->y - point.y);
+            double c = (element->vn[2]->x - point.x) * (element->vn[3]->y - point.y) - (element->vn[3]->x - point.x) * (element->vn[2]->y - point.y);
+            double d = (element->vn[3]->x - point.x) * (element->vn[0]->y - point.y) - (element->vn[0]->x - point.x) * (element->vn[3]->y - point.y);
+
+            inElement = (sign(a) == sign(b) && sign(b) == sign(c) && sign(c) == sign(d));
+        }
+
+        if (inElement)
             return i;
     }
     
@@ -532,10 +544,10 @@ void SceneSolution::processRangeContour()
         ViewScalarFilter *viewScalarFilter;
         if (isPhysicFieldVariableScalar(sceneView()->sceneViewSettings().contourPhysicFieldVariable))
             viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
-                                                                                                          PhysicFieldVariableComp_Scalar);
+                                                                                        PhysicFieldVariableComp_Scalar);
         else
             viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
-                                                                                                          PhysicFieldVariableComp_Magnitude);
+                                                                                        PhysicFieldVariableComp_Magnitude);
 
         setSlnContourView(viewScalarFilter);
         emit processedRangeContour();

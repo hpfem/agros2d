@@ -103,8 +103,8 @@ public:
     int adaptiveSteps();
     inline void setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
 
-    int findTriangleInMesh(Mesh *mesh, const Point &point) const;
-    int findTriangleInVectorizer(const Vectorizer &vecVectorView, const Point &point) const;
+    int findElementInMesh(Mesh *mesh, const Point &point) const;
+    int findElementInVectorizer(const Vectorizer &vecVectorView, const Point &point) const;
 
     // process
     void processView(bool showViewProgress);
