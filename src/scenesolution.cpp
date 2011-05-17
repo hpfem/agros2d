@@ -331,36 +331,18 @@ int SceneSolution::findElementInMesh(Mesh *mesh, const Point &point) const
 
     for (int i = 0; i < mesh->get_num_active_elements(); i++)
     {
-        bool inElement = false;
         Element *element = mesh->get_element_fast(i);
-        
-        if (element->is_triangle())
-        {
-            // triangle element
-            for (int l = 0; l < 3; l++)
-            {
-                int k = l + 1;
-                if (k == 3)
-                    k = 0;
 
-                double z = (element->vn[k]->x - element->vn[l]->x) * (point.y - element->vn[l]->y)
-                        - (element->vn[k]->y - element->vn[l]->y) * (point.x - element->vn[l]->x);
+        bool inElement = false;
+        int j;
+        int npol = (element->is_triangle()) ? 3 : 4;
 
-                if (z < 0)
-                {
-                    inElement = true;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            double a = (element->vn[0]->x - point.x) * (element->vn[1]->y - point.y) - (element->vn[1]->x - point.x) * (element->vn[0]->y - point.y);
-            double b = (element->vn[1]->x - point.x) * (element->vn[2]->y - point.y) - (element->vn[2]->x - point.x) * (element->vn[1]->y - point.y);
-            double c = (element->vn[2]->x - point.x) * (element->vn[3]->y - point.y) - (element->vn[3]->x - point.x) * (element->vn[2]->y - point.y);
-            double d = (element->vn[3]->x - point.x) * (element->vn[0]->y - point.y) - (element->vn[0]->x - point.x) * (element->vn[3]->y - point.y);
-
-            inElement = (sign(a) == sign(b) && sign(b) == sign(c) && sign(c) == sign(d));
+        for (int i = 0, j = npol-1; i < npol; j = i++) {
+            if ((((element->vn[i]->y <= point.y) && (point.y < element->vn[j]->y)) ||
+                 ((element->vn[j]->y <= point.y) && (point.y < element->vn[i]->y))) &&
+                    (point.x < (element->vn[j]->x - element->vn[i]->x) * (point.y - element->vn[i]->y)
+                     / (element->vn[j]->y - element->vn[i]->y) + element->vn[i]->x))
+                inElement = !inElement;
         }
 
         if (inElement)

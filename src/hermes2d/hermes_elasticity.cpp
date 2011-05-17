@@ -129,7 +129,7 @@ public:
                     result += wt[i] * e->x[i] * v->dy[i];
             else
                 for (int i = 0; i < n; i++)
-                    result += wt[i] * v->dx[i];
+                    result += wt[i] * (e->x[i] * v->dx[i] + v->val[i]);
 
             return (3*lambda + 2*mu) * alpha * (temp - temp_ref) * result;
         }
@@ -145,7 +145,7 @@ public:
                     result += wt[i] * e->x[i] * v->dy[i];
             else
                 for (int i = 0; i < n; i++)
-                    result += wt[i] * v->dx[i];
+                    result += wt[i] * (e->x[i] * v->dx[i] + v->val[i]);
 
             return result;
         }
@@ -177,7 +177,7 @@ public:
                     result += wt[i] * v->dy[i];
             else if (gt == HERMES_AXISYM_X)
                 for (int i = 0; i < n; i++)
-                    result += wt[i] * v->dx[i];
+                    result += wt[i] * (e->x[i] * v->dx[i] + v->val[i]);
             else
                 for (int i = 0; i < n; i++)
                     result += wt[i] * e->x[i] * v->dy[i];
@@ -193,7 +193,7 @@ public:
                     result += wt[i] * v->dy[i];
             else if (gt == HERMES_AXISYM_X)
                 for (int i = 0; i < n; i++)
-                    result += wt[i] * v->dx[i];
+                    result += wt[i] * (e->x[i] * v->dx[i] + v->val[i]);
             else
                 for (int i = 0; i < n; i++)
                     result += wt[i] * e->x[i] * v->dy[i];
@@ -719,6 +719,7 @@ LocalPointValueElasticity::LocalPointValueElasticity(const Point &point) : Local
             if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
                 stress_z = D * (poisson_ratio * (strain_x - eps_th) + poisson_ratio * (strain_y - eps_th) + (1 - poisson_ratio) * (strain_z)) - young_modulus/1e6;
             else
+                // stress_z = D * (poisson_ratio * (strain_x - eps_th) + poisson_ratio * (strain_y - eps_th) + (1 - poisson_ratio) * (strain_z));
                 stress_z = D * (poisson_ratio * (strain_x - eps_th) + poisson_ratio * (strain_y - eps_th) + (1 - poisson_ratio) * (strain_z));
 
             stress_xy = D * (1 - 2 * poisson_ratio) / 2 * (value_x.derivative.y + value_y.derivative.x);
