@@ -561,10 +561,11 @@ bool ProgressItemMesh::triangleToHermes2D()
     QList<MeshEdge> edgeList;
     for (int i = 0; i<k; i++)
     {
-        int node_1, node_2, marker;
+        int node[2];
+        int marker;
 
-        sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node_1, &node_2, &marker);
-        edgeList.append(MeshEdge(node_1, node_2, marker));
+        sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node[0], &node[1], &marker);
+        edgeList.append(MeshEdge(node[0], node[1], marker));
     }
     int edgeCountLinear = edgeList.count();
 
@@ -573,23 +574,28 @@ bool ProgressItemMesh::triangleToHermes2D()
     QList<MeshElement> elementList;
     for (int i = 0; i < k; i++)
     {
-        int node_1, node_2, node_3, node_4, node_5, node_6, marker;
+        int node[6];
+        int marker;
 
         sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i	%i	%i	%i",
-               &n, &node_1, &node_2, &node_3, &node_4, &node_5, &node_6, &marker);
+               &n, &node[0], &node[1], &node[2], &node[3], &node[4], &node[5], &marker);
 
-        if (Util::scene()->problemInfo()->meshType == MeshType_Triangle || Util::scene()->problemInfo()->meshType == MeshType_QuadSplit)
+        if (Util::scene()->problemInfo()->meshType == MeshType_Triangle ||
+                Util::scene()->problemInfo()->meshType == MeshType_QuadJoin ||
+                Util::scene()->problemInfo()->meshType == MeshType_QuadRoughDivision)
         {
-            elementList.append(MeshElement(node_1, node_2, node_3, marker));
+            elementList.append(MeshElement(node[0], node[1], node[2], marker));
         }
 
-        if (Util::scene()->problemInfo()->meshType == MeshType_QuadDivision)
+        if (Util::scene()->problemInfo()->meshType == MeshType_QuadFineDivision)
         {
-            nodeList.append(Point((nodeList[node_1].x + nodeList[node_2].x + nodeList[node_3].x) / 3.0,
-                                  (nodeList[node_1].y + nodeList[node_2].y + nodeList[node_3].y) / 3.0));
-            elementList.append(MeshElement(node_5, node_1, node_6, nodeList.count() - 1, marker));
-            elementList.append(MeshElement(node_6, node_2, node_4, nodeList.count() - 1, marker));
-            elementList.append(MeshElement(node_4, node_3, node_5, nodeList.count() - 1, marker));
+            // add additional node
+            nodeList.append(Point((nodeList[node[0]].x + nodeList[node[1]].x + nodeList[node[2]].x) / 3.0,
+                                  (nodeList[node[0]].y + nodeList[node[1]].y + nodeList[node[2]].y) / 3.0));
+            // add three quad elements
+            elementList.append(MeshElement(node[4], node[0], node[5], nodeList.count() - 1, marker));
+            elementList.append(MeshElement(node[5], node[1], node[3], nodeList.count() - 1, marker));
+            elementList.append(MeshElement(node[3], node[2], node[4], nodeList.count() - 1, marker));
         }
 
         if (elementList[i].marker == 0)
@@ -598,6 +604,8 @@ bool ProgressItemMesh::triangleToHermes2D()
             return false;
         }
     }
+    int elementCountLinear = elementList.count();
+
     if (elementList.count() < 1)
     {
         emit message(tr("Invalid number of label markers"), true, 0);
@@ -611,14 +619,14 @@ bool ProgressItemMesh::triangleToHermes2D()
         int ele_1, ele_2, ele_3;
 
         sscanf(inNeigh.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &ele_1, &ele_2, &ele_3);
-        elementList[i].neigh_1 = ele_1;
-        elementList[i].neigh_2 = ele_2;
-        elementList[i].neigh_3 = ele_3;
+        elementList[i].neigh[0] = ele_1;
+        elementList[i].neigh[1] = ele_2;
+        elementList[i].neigh[2] = ele_3;
     }
 
     // heterogeneous mesh
     // element division
-    if (Util::scene()->problemInfo()->meshType == MeshType_QuadDivision)
+    if (Util::scene()->problemInfo()->meshType == MeshType_QuadFineDivision)
     {
         for (int i = 0; i < edgeCountLinear; i++)
         {
@@ -626,84 +634,111 @@ bool ProgressItemMesh::triangleToHermes2D()
             {
                 for (int j = 0; j < elementList.count() / 3; j++)
                 {
-                    if (edgeList[i].node_1 == elementList[3*j + 0].node_2 && edgeList[i].node_2 == elementList[3*j + 1].node_2)
+                    for (int k = 0; k < 3; k++)
                     {
-                        edgeList.append(MeshEdge(edgeList[i].node_1, elementList[3*j + 1].node_1, edgeList[i].marker));
-                        edgeList[i].node_1 = elementList[3*j + 1].node_1;
-                    }
-                    if (edgeList[i].node_1 == elementList[3*j + 1].node_2 && edgeList[i].node_2 == elementList[3*j + 2].node_2)
-                    {
-                        // qDebug() << edgeList[i].node_1 << edgeList[i].node_2 << " : " << elementList[3*j + 2].node_1;
-                        edgeList.append(MeshEdge(edgeList[i].node_1, elementList[3*j + 2].node_1, edgeList[i].marker));
-                        edgeList[i].node_1 = elementList[3*j + 2].node_1;
-                    }
-                    if (edgeList[i].node_1 == elementList[3*j + 2].node_2 && edgeList[i].node_2 == elementList[3*j + 0].node_2)
-                    {
-                        // qDebug() << edgeList[i].node_1 << edgeList[i].node_2 << " : " << elementList[3*j + 0].node_1;
-                        edgeList.append(MeshEdge(edgeList[i].node_1, elementList[3*j + 0].node_1, edgeList[i].marker));
-                        edgeList[i].node_1 = elementList[3*j + 0].node_1;
+                        if (edgeList[i].node[0] == elementList[3*j + k].node[1] && edgeList[i].node[1] == elementList[3*j + (k + 1) % 3].node[1])
+                        {
+                            edgeList.append(MeshEdge(edgeList[i].node[0], elementList[3*j + (k + 1) % 3].node[0], edgeList[i].marker));
+                            edgeList[i].node[0] = elementList[3*j + (k + 1) % 3].node[0];
+                        }
                     }
                 }
             }
         }
     }
 
-    if (Util::scene()->problemInfo()->meshType == MeshType_QuadSplit)
+    if (Util::scene()->problemInfo()->meshType == MeshType_QuadRoughDivision)
     {
-        for (int i = 0; i < elementList.count(); i++)
+        for (int i = 0; i < elementCountLinear; i++)
         {
-            // opposite to the first corner 3 of triangle
-            int element = elementList[i].neigh_3;
-
-            if (element != -1
-                    && elementList[i].isActive
-                    && elementList[element].isActive
-                    && elementList[i].marker == elementList[element].marker)
+            // check same material
+            if (elementList[i].isActive &&
+                    (elementList[i].neigh[0] != -1) &&
+                    (elementList[i].neigh[1] != -1) &&
+                    (elementList[i].neigh[2] != -1) &&
+                    elementList[elementList[i].neigh[0]].isActive &&
+                    elementList[elementList[i].neigh[1]].isActive &&
+                    elementList[elementList[i].neigh[2]].isActive &&
+                    (elementList[i].marker == elementList[elementList[i].neigh[0]].marker) &&
+                    (elementList[i].marker == elementList[elementList[i].neigh[1]].marker) &&
+                    (elementList[i].marker == elementList[elementList[i].neigh[2]].marker))
             {
-                int node_1 = elementList[i].node_1;
-                int node_2 = elementList[i].node_2;
-                int node_3 = elementList[i].node_3;
-                int node_4 = -1;
-                if (elementList[i].node_1 == elementList[element].node_1 && elementList[i].node_2 == elementList[element].node_3)
-                    node_4 = elementList[element].node_2;
-                if (elementList[i].node_1 == elementList[element].node_2 && elementList[i].node_2 == elementList[element].node_1)
-                    node_4 = elementList[element].node_3;
-                if (elementList[i].node_1 == elementList[element].node_3 && elementList[i].node_2 == elementList[element].node_2)
-                    node_4 = elementList[element].node_1;
+                // add additional node
+                nodeList.append(Point((nodeList[elementList[i].node[0]].x + nodeList[elementList[i].node[1]].x + nodeList[elementList[i].node[2]].x) / 3.0,
+                                      (nodeList[elementList[i].node[0]].y + nodeList[elementList[i].node[1]].y + nodeList[elementList[i].node[2]].y) / 3.0));
 
-                // check quad
-                if ((!same_line(nodeList[node_1].x, nodeList[node_1].y, nodeList[node_2].x, nodeList[node_2].y, nodeList[node_3].x, nodeList[node_3].y)) &&
-                        (!same_line(nodeList[node_1].x, nodeList[node_1].y, nodeList[node_2].x, nodeList[node_2].y, nodeList[node_4].x, nodeList[node_4].y)) &&
-                        (!same_line(nodeList[node_1].x, nodeList[node_1].y, nodeList[node_3].x, nodeList[node_3].y, nodeList[node_4].x, nodeList[node_4].y)) &&
-                        (!same_line(nodeList[node_2].x, nodeList[node_2].y, nodeList[node_3].x, nodeList[node_3].y, nodeList[node_4].x, nodeList[node_4].y)) &&
-                        (is_convex(nodeList[node_3].x - nodeList[node_4].x, nodeList[node_3].y - nodeList[node_4].y, nodeList[node_1].x - nodeList[node_4].x, nodeList[node_1].y - nodeList[node_4].y)) &&
-                        (is_convex(nodeList[node_4].x - nodeList[node_1].x, nodeList[node_4].y - nodeList[node_1].y, nodeList[node_2].x - nodeList[node_1].x, nodeList[node_2].y - nodeList[node_1].y)) &&
-                        (is_convex(nodeList[node_2].x - nodeList[node_4].x, nodeList[node_2].y - nodeList[node_4].y, nodeList[node_3].x - nodeList[node_4].x, nodeList[node_3].y - nodeList[node_4].y)) &&
-                        (is_convex(nodeList[node_2].x - nodeList[node_1].x, nodeList[node_2].y - nodeList[node_1].y, nodeList[node_3].x - nodeList[node_1].x, nodeList[node_3].y - nodeList[node_1].y)))
+                // add three quad elements
+                for (int nd = 0; nd < 3; nd++)
+                    for (int neigh = 0; neigh < 3; neigh++)
+                        for (int neigh_nd = 0; neigh_nd < 3; neigh_nd++)
+                            if ((elementList[i].node[(nd + 0) % 3] == elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 1) % 3]) &&
+                                    (elementList[i].node[(nd + 1) % 3] == elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 0) % 3]))
+                                elementList.append(MeshElement(elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 1) % 3],
+                                                               elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 2) % 3],
+                                                               elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 0) % 3],
+                                                               nodeList.count() - 1, elementList[i].marker));
+
+                elementList[i].isUsed = false;
+                elementList[i].isActive = false;
+                for (int k = 0; k < 3; k++)
                 {
-                    elementList[i].isActive = false;
-                    elementList[i].node_1 = node_1;
-                    elementList[i].node_2 = node_4;
-                    elementList[i].node_3 = node_2;
-                    elementList[i].node_4 = node_3;
-
-                    elementList[element].isActive = false;
-                    elementList[element].isUsed = false;
-
-                    for (int i = 0; i < edgeList.count(); i++)
-                    {
-                        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_1) && (edgeList[i].node_2 == node_4)))
-                            edgeList[i].isActive = false;
-                        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_4) && (edgeList[i].node_2 == node_2)))
-                            edgeList[i].isActive = false;
-                        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_2) && (edgeList[i].node_2 == node_3)))
-                            edgeList[i].isActive = false;
-                        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_3) && (edgeList[i].node_2 == node_1)))
-                            edgeList[i].isActive = false;
-                        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_1) && (edgeList[i].node_2 == node_2)))
-                            edgeList[i].isActive = false;
-                    }
+                    elementList[elementList[i].neigh[k]].isUsed = false;
+                    elementList[elementList[i].neigh[k]].isActive = false;
                 }
+            }
+        }
+    }
+
+    if (Util::scene()->problemInfo()->meshType == MeshType_QuadJoin)
+    {
+        for (int i = 0; i < elementCountLinear; i++)
+        {
+            // check same material
+            if (elementList[i].isActive)
+            {
+                // add quad elements
+                for (int nd = 0; nd < 3; nd++)
+                    for (int neigh = 0; neigh < 3; neigh++)
+                        for (int neigh_nd = 0; neigh_nd < 3; neigh_nd++)
+                            if (elementList[i].isActive &&
+                                    elementList[i].neigh[neigh] != -1 &&
+                                    elementList[elementList[i].neigh[neigh]].isActive &&
+                                    elementList[i].marker == elementList[elementList[i].neigh[neigh]].marker)
+                                if ((elementList[i].node[(nd + 0) % 3] == elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 1) % 3]) &&
+                                        (elementList[i].node[(nd + 1) % 3] == elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 0) % 3]))
+                                {
+                                    int tmp_node[3];
+                                    for (int k = 0; k < 3; k++)
+                                        tmp_node[k] = elementList[i].node[k];
+
+                                    Point quad_check[4];
+                                    quad_check[0] = nodeList[tmp_node[(nd + 1) % 3]];
+                                    quad_check[1] = nodeList[tmp_node[(nd + 2) % 3]];
+                                    quad_check[2] = nodeList[tmp_node[(nd + 0) % 3]];
+                                    quad_check[3] = nodeList[elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 2) % 3]];
+
+                                    if ((!same_line(quad_check[0].x, quad_check[0].y, quad_check[1].x, quad_check[1].y, quad_check[2].x, quad_check[2].y)) &&
+                                            (!same_line(quad_check[0].x, quad_check[0].y, quad_check[1].x, quad_check[1].y, quad_check[3].x, quad_check[3].y)) &&
+                                            (!same_line(quad_check[0].x, quad_check[0].y, quad_check[2].x, quad_check[2].y, quad_check[3].x, quad_check[3].y)) &&
+                                            (!same_line(quad_check[1].x, quad_check[1].y, quad_check[2].x, quad_check[2].y, quad_check[3].x, quad_check[3].y)) &&
+                                            is_convex(quad_check[1].x - quad_check[0].x, quad_check[1].y - quad_check[0].y, quad_check[2].x - quad_check[0].x, quad_check[2].y - quad_check[0].y) &&
+                                            is_convex(quad_check[2].x - quad_check[0].x, quad_check[2].y - quad_check[0].y, quad_check[3].x - quad_check[0].x, quad_check[3].y - quad_check[0].y) &&
+                                            is_convex(quad_check[2].x - quad_check[1].x, quad_check[2].y - quad_check[1].y, quad_check[3].x - quad_check[1].x, quad_check[3].y - quad_check[1].y) &&
+                                            is_convex(quad_check[3].x - quad_check[1].x, quad_check[3].y - quad_check[1].y, quad_check[0].x - quad_check[1].x, quad_check[0].y - quad_check[1].y))
+                                    {
+                                        elementList[i].node[0] = tmp_node[(nd + 1) % 3];
+                                        elementList[i].node[1] = tmp_node[(nd + 2) % 3];
+                                        elementList[i].node[2] = tmp_node[(nd + 0) % 3];
+                                        elementList[i].node[3] = elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 2) % 3];
+
+                                        elementList[i].isActive = false;
+
+                                        elementList[elementList[i].neigh[neigh]].isUsed = false;
+                                        elementList[elementList[i].neigh[neigh]].isActive = false;
+
+                                        break;
+                                    }
+                                }
             }
         }
     }
@@ -727,8 +762,8 @@ bool ProgressItemMesh::triangleToHermes2D()
 
             countEdges++;
             outEdges += QString("  { %1, %2, %3 },\n").
-                    arg(edgeList[i].node_1).
-                    arg(edgeList[i].node_2).
+                    arg(edgeList[i].node[0]).
+                    arg(edgeList[i].node[1]).
                     arg(marker);
         }
     }
@@ -763,18 +798,18 @@ bool ProgressItemMesh::triangleToHermes2D()
                     double chord = 2 * Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(theta / 2.0);
 
                     // length of short chord
-                    double chordShort = (nodeList[edgeList[i].node_2] - nodeList[edgeList[i].node_1]).magnitude();
+                    double chordShort = (nodeList[edgeList[i].node[1]] - nodeList[edgeList[i].node[0]]).magnitude();
 
                     // direction
                     Point center = Util::scene()->edges[edgeList[i].marker-1]->center();
-                    int direction = (((nodeList[edgeList[i].node_1].x-center.x)*(nodeList[edgeList[i].node_2].y-center.y) -
-                                      (nodeList[edgeList[i].node_1].y-center.y)*(nodeList[edgeList[i].node_2].x-center.x)) > 0) ? 1 : -1;
+                    int direction = (((nodeList[edgeList[i].node[0]].x-center.x)*(nodeList[edgeList[i].node[1]].y-center.y) -
+                                      (nodeList[edgeList[i].node[0]].y-center.y)*(nodeList[edgeList[i].node[1]].x-center.x)) > 0) ? 1 : -1;
 
                     double angle = direction * theta * chordShort / chord;
 
                     outCurves += QString("  { %1, %2, %3 },\n").
-                            arg(edgeList[i].node_1).
-                            arg(edgeList[i].node_2).
+                            arg(edgeList[i].node[0]).
+                            arg(edgeList[i].node[1]).
                             arg(rad2deg(angle));
                 }
             }
@@ -792,17 +827,17 @@ bool ProgressItemMesh::triangleToHermes2D()
                 {
                     // angle
                     Point center = Util::scene()->edges[edgeList[i].marker-1]->center();
-                    double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node_1].y,
-                                               center.x - nodeList[edgeList[i].node_1].x) - M_PI;
+                    double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node[0]].y,
+                                               center.x - nodeList[edgeList[i].node[0]].x) - M_PI;
 
-                    double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node_2].y,
-                                               center.x - nodeList[edgeList[i].node_2].x) - M_PI;
+                    double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node[1]].y,
+                                               center.x - nodeList[edgeList[i].node[1]].x) - M_PI;
 
-                    nodeList[edgeList[i].node_1].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle1);
-                    nodeList[edgeList[i].node_1].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle1);
+                    nodeList[edgeList[i].node[0]].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle1);
+                    nodeList[edgeList[i].node[0]].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle1);
 
-                    nodeList[edgeList[i].node_2].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle2);
-                    nodeList[edgeList[i].node_2].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle2);
+                    nodeList[edgeList[i].node[1]].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle2);
+                    nodeList[edgeList[i].node[1]].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle2);
                 }
             }
         }
@@ -833,18 +868,18 @@ bool ProgressItemMesh::triangleToHermes2D()
             if (elementList[i].isTriangle())
             {
                 outElements += QString("  { %1, %2, %3, %4 },\n").
-                        arg(elementList[i].node_1).
-                        arg(elementList[i].node_2).
-                        arg(elementList[i].node_3).
+                        arg(elementList[i].node[0]).
+                        arg(elementList[i].node[1]).
+                        arg(elementList[i].node[2]).
                         arg(abs(elementList[i].marker) - 1);
             }
             else
             {
                 outElements += QString("  { %1, %2, %3, %4, %5 },\n").
-                        arg(elementList[i].node_1).
-                        arg(elementList[i].node_2).
-                        arg(elementList[i].node_3).
-                        arg(elementList[i].node_4).
+                        arg(elementList[i].node[0]).
+                        arg(elementList[i].node[1]).
+                        arg(elementList[i].node[2]).
+                        arg(elementList[i].node[3]).
                         arg(abs(elementList[i].marker) - 1);
             }
         }
@@ -874,15 +909,6 @@ bool ProgressItemMesh::triangleToHermes2D()
     setlocale(LC_NUMERIC, plocale);
 
     return true;
-}
-
-int ProgressItemMesh::findEdge(QList<MeshEdge> edgeList, int node_1, int node_2)
-{
-    for (int i = 0; i < edgeList.count(); i++)
-        if (edgeList[i].isActive && ((edgeList[i].node_1 == node_1) && (edgeList[i].node_2 == node_2)))
-            return i;
-
-    return -1;
 }
 
 // *********************************************************************************************

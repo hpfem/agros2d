@@ -101,8 +101,8 @@ private:
     {
         MeshEdge()
         {
-            this->node_1 = -1;
-            this->node_2 = -1;
+            this->node[0] = -1;
+            this->node[1] = -1;
             this->marker = -1;
 
             this->isActive = true;
@@ -111,15 +111,15 @@ private:
 
         MeshEdge(int node_1, int node_2, int marker)
         {
-            this->node_1 = node_1;
-            this->node_2 = node_2;
+            this->node[0] = node_1;
+            this->node[1] = node_2;
             this->marker = marker;
 
             this->isActive = true;
             this->isUsed = true;
         }
 
-        int node_1, node_2, marker;
+        int node[2], marker;
         bool isActive, isUsed;
     };
 
@@ -127,10 +127,10 @@ private:
     {
         MeshElement()
         {
-            this->node_1 = -1;
-            this->node_2 = -1;
-            this->node_3 = -1;
-            this->node_4 = -1;
+            this->node[0] = -1;
+            this->node[1] = -1;
+            this->node[2] = -1;
+            this->node[3] = -1;
             this->marker = -1;
 
             this->isActive = true;
@@ -139,10 +139,10 @@ private:
 
         MeshElement(int node_1, int node_2, int node_3, int marker)
         {
-            this->node_1 = node_1;
-            this->node_2 = node_2;
-            this->node_3 = node_3;
-            this->node_4 = -1;
+            this->node[0] = node_1;
+            this->node[1] = node_2;
+            this->node[2] = node_3;
+            this->node[3] = -1;
             this->marker = marker;
 
             this->isActive = true;
@@ -151,22 +151,22 @@ private:
 
         MeshElement(int node_1, int node_2, int node_3, int node_4, int marker)
         {
-            this->node_1 = node_1;
-            this->node_2 = node_2;
-            this->node_3 = node_3;
-            this->node_4 = node_4;
+            this->node[0] = node_1;
+            this->node[1] = node_2;
+            this->node[2] = node_3;
+            this->node[3] = node_4;
             this->marker = marker;
 
             this->isActive = true;
             this->isUsed = true;
         }
 
-        inline bool isTriangle() const { return (node_4 == -1); }
+        inline bool isTriangle() const { return (node[3] == -1); }
 
-        int node_1, node_2, node_3, node_4, marker;
+        int node[4], marker;
         bool isActive, isUsed;
 
-        int neigh_1, neigh_2, neigh_3;
+        int neigh[3];
     };
 
     /*
@@ -185,7 +185,6 @@ private:
         int marker;
     };
     */
-    int findEdge(QList<MeshEdge> edgeList, int node_1, int node_2);
 };
 
 class ProgressItemSolve : public ProgressItem

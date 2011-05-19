@@ -344,8 +344,9 @@ void ProblemDialog::fillComboBox()
     cmbMeshType->addItem(meshTypeString(MeshType_Triangle), MeshType_Triangle);
     if (Util::config()->showExperimentalFeatures)
     {
-        cmbMeshType->addItem(meshTypeString(MeshType_QuadDivision), MeshType_QuadDivision);
-        cmbMeshType->addItem(meshTypeString(MeshType_QuadSplit), MeshType_QuadSplit);
+        cmbMeshType->addItem(meshTypeString(MeshType_QuadFineDivision), MeshType_QuadFineDivision);
+        cmbMeshType->addItem(meshTypeString(MeshType_QuadRoughDivision), MeshType_QuadRoughDivision);
+        cmbMeshType->addItem(meshTypeString(MeshType_QuadJoin), MeshType_QuadJoin);
     }
 
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_UMFPACK), SOLVER_UMFPACK);

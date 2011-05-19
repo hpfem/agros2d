@@ -352,8 +352,9 @@ enum LinearityType
 enum MeshType
 {
     MeshType_Triangle,
-    MeshType_QuadDivision,
-    MeshType_QuadSplit
+    MeshType_QuadFineDivision,
+    MeshType_QuadRoughDivision,
+    MeshType_QuadJoin
 };
 
 enum PhysicFieldVariableComp
@@ -773,7 +774,7 @@ const int ADAPTIVITY_MESHREGULARITY = -1;
 const ProjNormType ADAPTIVITY_PROJNORMTYPE = HERMES_H1_NORM;
 
 // command argument
-const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
+const QString COMMANDS_TRIANGLE = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
 const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
 
 // max dofs

@@ -158,6 +158,9 @@ void Config::load()
 
     // command argument
     commandTriangle = settings.value("Commands/Triangle", COMMANDS_TRIANGLE).toString();
+    // add quadratic elements (added points on the middle of edge used by rough triangle division)
+    if (!commandTriangle.contains("-o2"))
+        commandTriangle = COMMANDS_TRIANGLE;
     commandFFmpeg = settings.value("Commands/FFmpeg", COMMANDS_FFMPEG).toString();
 
     // global script

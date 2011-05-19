@@ -81,8 +81,9 @@ void initLists()
 
     // Mesh Type
     meshTypeList.insert(MeshType_Triangle, "triangle");
-    meshTypeList.insert(MeshType_QuadDivision, "quad_division");
-    meshTypeList.insert(MeshType_QuadSplit, "quad_split");
+    meshTypeList.insert(MeshType_QuadFineDivision, "quad_fine_division");
+    meshTypeList.insert(MeshType_QuadRoughDivision, "quad_rough_division");
+    meshTypeList.insert(MeshType_QuadJoin, "quad_join");
 
     // PHYSICFIELD
     physicFieldList.insert(PhysicField_Undefined, "");
@@ -1030,10 +1031,12 @@ QString meshTypeString(MeshType meshType)
     {
     case MeshType_Triangle:
         return QObject::tr("Triangle");
-    case MeshType_QuadDivision:
-        return QObject::tr("Quad division");
-    case MeshType_QuadSplit:
-        return QObject::tr("Quad split");
+    case MeshType_QuadFineDivision:
+        return QObject::tr("Quad fine div.");
+    case MeshType_QuadRoughDivision:
+        return QObject::tr("Quad rough div.");
+    case MeshType_QuadJoin:
+        return QObject::tr("Quad join");
     default:
         std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
         throw;
