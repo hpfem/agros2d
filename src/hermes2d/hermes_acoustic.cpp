@@ -451,7 +451,7 @@ SurfaceIntegralValue *HermesAcoustic::surfaceIntegralValue()
 QStringList HermesAcoustic::surfaceIntegralValueHeader()
 {
     QStringList headers;
-    headers << "l" << "S";
+    headers << "l" << "S" << "p_real" << "p_imag";
     return QStringList(headers);
 }
 
@@ -463,7 +463,7 @@ VolumeIntegralValue *HermesAcoustic::volumeIntegralValue()
 QStringList HermesAcoustic::volumeIntegralValueHeader()
 {
     QStringList headers;
-    headers << "V" << "S";
+    headers << "V" << "S" << "p_real" << "p_imag";
     return QStringList(headers);
 }
 
@@ -670,6 +670,15 @@ void HermesAcoustic::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceInt
     QTreeWidgetItem *magneticNode = new QTreeWidgetItem(trvWidget);
     magneticNode->setText(0, tr("Acoustic field"));
     magneticNode->setExpanded(true);
+
+    // pressure
+    QTreeWidgetItem *itemPressure = new QTreeWidgetItem(magneticNode);
+    itemPressure->setText(0, tr("Pressure"));
+    itemPressure->setExpanded(true);
+
+    addTreeWidgetItemValue(itemPressure, tr("real:"), QString("%1").arg(surfaceIntegralValueAcoustic->pressureReal, 0, 'e', 3), "N");
+    addTreeWidgetItemValue(itemPressure, tr("imag:"), QString("%1").arg(surfaceIntegralValueAcoustic->pressureImag, 0, 'e', 3), "N");
+    addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(surfaceIntegralValueAcoustic->pressureReal) + sqr(surfaceIntegralValueAcoustic->pressureImag)), 0, 'e', 3), "N");
 }
 
 void HermesAcoustic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)
@@ -680,6 +689,15 @@ void HermesAcoustic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
     QTreeWidgetItem *magneticNode = new QTreeWidgetItem(trvWidget);
     magneticNode->setText(0, tr("Acoustic field"));
     magneticNode->setExpanded(true);
+
+    // pressure
+    QTreeWidgetItem *itemPressure = new QTreeWidgetItem(magneticNode);
+    itemPressure->setText(0, tr("Pressure"));
+    itemPressure->setExpanded(true);
+
+    addTreeWidgetItemValue(itemPressure, tr("real:"), QString("%1").arg(volumeIntegralValueAcoustic->pressureReal, 0, 'e', 3), "N");
+    addTreeWidgetItemValue(itemPressure, tr("imag:"), QString("%1").arg(volumeIntegralValueAcoustic->pressureImag, 0, 'e', 3), "N");
+    addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueAcoustic->pressureReal) + sqr(volumeIntegralValueAcoustic->pressureImag)), 0, 'e', 3), "N");
 }
 
 ViewScalarFilter *HermesAcoustic::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
@@ -880,7 +898,7 @@ double LocalPointValueAcoustic::variableValue(PhysicFieldVariable physicFieldVar
 QStringList LocalPointValueAcoustic::variables()
 {
     QStringList row;
-    row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
+    row << QString("%1").arg(point.x, 0, 'e', 5) <<
            QString("%1").arg(point.y, 0, 'e', 5) <<
            QString("%1").arg(pressure_real, 0, 'e', 5) <<
            QString("%1").arg(pressure_imag, 0, 'e', 5) <<
@@ -898,19 +916,37 @@ QStringList LocalPointValueAcoustic::variables()
 
 SurfaceIntegralValueAcoustic::SurfaceIntegralValueAcoustic() : SurfaceIntegralValue()
 {
+    pressureReal = 0.0;
+    pressureImag = 0.0;
+
     calculate();
+
+    pressureReal /= 2.0;
+    pressureImag /= 2.0;
 }
 
 void SurfaceIntegralValueAcoustic::calculateVariables(int i)
 {
     SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
+
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        pressureReal += pt[i][2] * tan[i][2] * value1[i];
+    else
+        pressureReal += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * value1[i];
+
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        pressureImag += pt[i][2] * tan[i][2] * value2[i];
+    else
+        pressureImag += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * value2[i];
 }
 
 QStringList SurfaceIntegralValueAcoustic::variables()
 {
     QStringList row;
-    row <<  QString("%1").arg(length, 0, 'e', 5) <<
-           QString("%1").arg(surface, 0, 'e', 5);
+    row << QString("%1").arg(length, 0, 'e', 5) <<
+           QString("%1").arg(surface, 0, 'e', 5) <<
+           QString("%1").arg(pressureReal, 0, 'e', 5) <<
+           QString("%1").arg(pressureImag, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -919,12 +955,37 @@ QStringList SurfaceIntegralValueAcoustic::variables()
 
 VolumeIntegralValueAcoustic::VolumeIntegralValueAcoustic() : VolumeIntegralValue()
 {
+    pressureReal = 0.0;
+    pressureImag = 0.0;
+
     calculate();
 }
 
 void VolumeIntegralValueAcoustic::calculateVariables(int i)
 {
     SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
+
+    result = 0.0;
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+    {
+        h1_integrate_expression(value1[i]);
+    }
+    else
+    {
+        h1_integrate_expression(2 * M_PI * x[i] * value1[i]);
+    }
+    pressureReal += result;
+
+    result = 0.0;
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+    {
+        h1_integrate_expression(value2[i]);
+    }
+    else
+    {
+        h1_integrate_expression(2 * M_PI * x[i] * value2[i]);
+    }
+    pressureImag += result;
 }
 
 void VolumeIntegralValueAcoustic::initSolutions()
@@ -937,7 +998,9 @@ QStringList VolumeIntegralValueAcoustic::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-           QString("%1").arg(crossSection, 0, 'e', 5);
+           QString("%1").arg(crossSection, 0, 'e', 5) <<
+           QString("%1").arg(pressureReal, 0, 'e', 5) <<
+           QString("%1").arg(pressureImag, 0, 'e', 5);
     return QStringList(row);
 }
 

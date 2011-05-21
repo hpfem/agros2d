@@ -269,6 +269,7 @@ void MainWindow::createActions()
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
     actCreateMesh = new QAction(icon("scene-mesh"), tr("&Mesh area"), this);
+    actCreateMesh->setShortcut(QKeySequence(tr("Alt+W")));
     actCreateMesh->setStatusTip(tr("Mesh area"));
     connect(actCreateMesh, SIGNAL(triggered()), this, SLOT(doCreateMesh()));
 

@@ -40,11 +40,14 @@ void SurfaceIntegralValue::calculate()
         return;
 
     Quad2D *quad = &g_quad_2d_std;
-    Solution *sln = Util::scene()->sceneSolution()->sln();
+    Solution *sln1 = Util::scene()->sceneSolution()->sln();
+    Solution *sln2;
+    if (sln2)
+        sln2 = Util::scene()->sceneSolution()->sln(1);
 
-    sln->set_quad_2d(quad);
+    sln1->set_quad_2d(quad);
 
-    Mesh* mesh = sln->get_mesh();
+    Mesh* mesh = sln1->get_mesh();
     for (int i = 0; i<Util::scene()->edges.length(); i++)
     {
         SceneEdge *sceneEdge = Util::scene()->edges[i];
@@ -77,19 +80,34 @@ void SurfaceIntegralValue::calculate()
                     {
                         update_limit_table(e->get_mode());
 
-                        sln->set_active_element(e);
-                        RefMap* ru = sln->get_refmap();
+                        sln1->set_active_element(e);
+                        if (sln2)
+                            sln2->set_active_element(e);
+
+                        RefMap* ru = sln1->get_refmap();
 
                         Quad2D* quad2d = ru->get_quad_2d();
                         int eo = quad2d->get_edge_points(edge);
-                        sln->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
+                        sln1->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
                         pt = quad2d->get_points(eo);
                         tan = ru->get_tangent(edge);
 
+                        // solution 1
                         // value
-                        value = sln->get_fn_values();
+                        value1 = sln1->get_fn_values();
                         // derivative
-                        sln->get_dx_dy_values(dudx, dudy);
+                        sln1->get_dx_dy_values(dudx1, dudy1);
+
+                        // solution 2
+                        if (sln2)
+                        {
+                            sln2->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
+                            // value
+                            value2 = sln2->get_fn_values();
+                            // derivative
+                            sln2->get_dx_dy_values(dudx2, dudy2);
+                        }
+
                         // x - coordinate
                         x = ru->get_phys_x(eo);
                         y = ru->get_phys_y(eo);

@@ -684,19 +684,19 @@ void SurfaceIntegralValueHeat::calculateVariables(int i)
         SceneMaterialHeat *marker = dynamic_cast<SceneMaterialHeat *>(material);
 
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            averageTemperature += pt[i][2] * tan[i][2] * value[i];
+            averageTemperature += pt[i][2] * tan[i][2] * value1[i];
         else
-            averageTemperature += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * value[i];
+            averageTemperature += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * value1[i];
 
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            temperatureDifference += pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
+            temperatureDifference += pt[i][2] * tan[i][2] * (tan[i][0] * dudx1[i] + tan[i][1] * dudy1[i]);
         else
-            temperatureDifference += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
+            temperatureDifference += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * (tan[i][0] * dudx1[i] + tan[i][1] * dudy1[i]);
 
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            heatFlux -= pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+            heatFlux -= pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
         else
-            heatFlux -= 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+            heatFlux -= 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
     }
 }
 

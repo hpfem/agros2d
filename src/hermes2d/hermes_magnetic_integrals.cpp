@@ -410,8 +410,8 @@ void SurfaceIntegralValueMagnetic::calculateVariables(int i)
 
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            double Bx = - dudy[i];
-            double By =   dudx[i];
+            double Bx = - dudy1[i];
+            double By =   dudx1[i];
 
             double dfX = pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
                                 (Bx * (nx * Bx + ny * By) - 0.5 * nx * (sqr(Bx) + sqr(By)));
@@ -425,8 +425,8 @@ void SurfaceIntegralValueMagnetic::calculateVariables(int i)
         }
         else
         {
-            double Bx = - dudy[i];
-            double By =  (dudx[i] + ((x[i] > 0) ? value[i] / x[i] : 0.0));
+            double Bx = - dudy1[i];
+            double By =  (dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0));
 
             forceMaxwellX  = 0.0;
 

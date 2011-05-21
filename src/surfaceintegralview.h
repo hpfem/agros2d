@@ -33,8 +33,8 @@ protected:
 
     double *x;
     double *y;
-    double *value;
-    double *dudx, *dudy;
+    double *value1, *value2;
+    double *dudx1, *dudy1, *dudx2, *dudy2;
     double3 *pt;
     double3 *tan;
 

@@ -110,6 +110,9 @@ protected:
     void calculateVariables(int i);
 
 public:
+    double pressureReal;
+    double pressureImag;
+
     SurfaceIntegralValueAcoustic();
     QStringList variables();
 };
@@ -121,6 +124,9 @@ protected:
     void initSolutions();
 
 public:
+    double pressureReal;
+    double pressureImag;
+
     VolumeIntegralValueAcoustic();
     QStringList variables();
 };

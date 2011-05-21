@@ -36,16 +36,18 @@ solve()
 
 # point value
 point = pointresult(0.259371, 0.876998)
-testP = test("Acoustic pressure", point["p"], 0.49271)
-testP_real = test("Acoustic pressure - real", point["p_real"], 0.395866)
-testP_imag = test("Acoustic pressure - imag", point["p_imag"], 0.293348)
+testp = test("Acoustic pressure", point["p"], 0.49271)
+testp_real = test("Acoustic pressure - real", point["p_real"], 0.395866)
+testp_imag = test("Acoustic pressure - imag", point["p_imag"], 0.293348)
 testI = test("Acoustic pressure", point["Lp"], 84.820922)
 # volume integral
-# volume = volumeintegral(0, 1, 2)
-# testEnergy = test("Energy", volume["We"], 1.799349e-8)
+volume = volumeintegral(0)
+testPv_real = test("Pressure - real", volume["p_real"], -0.030632)
+testPv_imag = test("Pressure - imag", volume["p_imag"], -0.010975)
 
 # surface integral
-# surface = surfaceintegral(1, 12)
-# testQ = test("Electric charge", surface["Q"], -1.291778e-9)
+surface = surfaceintegral(0)
+testPs_real = test("Pressure - real", surface["p_real"], 0.196756)
+testPs_imag = test("Pressure - imag", surface["p_imag"], -0.324708)
 
-print("Test: Acoustic - axisymmetric: " + str(testP and testP_real and testP_imag and testI))
+print("Test: Acoustic - axisymmetric: " + str(testp and testp_real and testp_imag and testI and testPv_real and testPv_imag and testPs_real and testPs_imag))

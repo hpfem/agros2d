@@ -31,18 +31,20 @@ addlabel(0.0314514, 0.0411749, 0, 0, "none")
 zoombestfit()
 solve()
 
-# point value
+# point valueqtcreator 2.2 ppa
 point = pointresult(-0.084614, 0.053416)
-testP = test("Acoustic pressure", point["p"], 0.003064)
-testP_real = test("Acoustic pressure - real", point["p_real"], 0.002322)
-testP_imag = test("Acoustic pressure - imag", point["p_imag"], 0.001999)
+testp = test("Acoustic pressure", point["p"], 0.003064)
+testp_real = test("Acoustic pressure - real", point["p_real"], 0.002322)
+testp_imag = test("Acoustic pressure - imag", point["p_imag"], 0.001999)
 testI = test("Acoustic pressure", point["Lp"], 40.695085)
 # volume integral
-# volume = volumeintegral(0, 1, 2)
-# testEnergy = test("Energy", volume["We"], 1.799349e-8)
+volume = volumeintegral(0)
+testPv_real = test("Pressure - real", volume["p_real"], -1.915211e-5)
+testPv_imag = test("Pressure - imag", volume["p_imag"], -1.918928e-5)
 
-# surface integral
-# surface = surfaceintegral(1, 12)
-# testQ = test("Electric charge", surface["Q"], -1.291778e-9)
+# surface integral 
+surface = surfaceintegral(7)
+testPs_real = test("Pressure - real", surface["p_real"], 3.079084e-4)
+testPs_imag = test("Pressure - imag", surface["p_imag"], 4.437581e-5)
 
-print("Test: Acoustic - planar: " + str(testP and testP_real and testP_imag and testI))
+print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag and testI and testPv_real and testPv_imag and testPs_real and testPs_imag))

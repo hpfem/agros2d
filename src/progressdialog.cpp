@@ -726,6 +726,21 @@ bool ProgressItemMesh::triangleToHermes2D()
                                             is_convex(quad_check[2].x - quad_check[1].x, quad_check[2].y - quad_check[1].y, quad_check[3].x - quad_check[1].x, quad_check[3].y - quad_check[1].y) &&
                                             is_convex(quad_check[3].x - quad_check[1].x, quad_check[3].y - quad_check[1].y, quad_check[0].x - quad_check[1].x, quad_check[0].y - quad_check[1].y))
                                     {
+                                        // regularity check
+                                        bool regular = true;
+                                        for (int k = 0; k < 4; k++)
+                                        {
+                                            double length_1 = (quad_check[k] - quad_check[(k + 1) % 4]).magnitude();
+                                            double length_2 = (quad_check[(k + 1) % 4] - quad_check[(k + 2) % 4]).magnitude();
+                                            double length_together = (quad_check[k] - quad_check[(k + 2) % 4]).magnitude();
+
+                                            if ((length_1 + length_2) / length_together < 1.03)
+                                                regular = false;
+                                        }
+
+                                        if (!regular)
+                                            break;
+
                                         elementList[i].node[0] = tmp_node[(nd + 1) % 3];
                                         elementList[i].node[1] = tmp_node[(nd + 2) % 3];
                                         elementList[i].node[2] = tmp_node[(nd + 0) % 3];

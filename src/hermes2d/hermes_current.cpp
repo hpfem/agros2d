@@ -471,9 +471,9 @@ void SurfaceIntegralValueCurrent::calculateVariables(int i)
     {
         SceneMaterialCurrent *marker = dynamic_cast<SceneMaterialCurrent *>(material);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            current -= pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+            current -= pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
         else
-            current -= 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+            current -= 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
     }
 }
 

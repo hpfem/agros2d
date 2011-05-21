@@ -494,9 +494,9 @@ void SurfaceIntegralValueElectrostatic::calculateVariables(int i)
         SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
 
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+            surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
         else
-            surfaceCharge += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+            surfaceCharge += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
     }
 }
 
