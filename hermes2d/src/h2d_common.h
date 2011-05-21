@@ -39,7 +39,7 @@ const int H2D_ORDER_MASK = (1 << H2D_ORDER_BITS) - 1;
 // Enabling second derivatives in weak forms. Turned off by default. Second
 // derivatives are employed, among others, by stabilization methods for
 // transport equations. For usage see the example linear-convection-diffusion.
-#define H2D_SECOND_DERIVATIVES_ENABLED
+// #define H2D_SECOND_DERIVATIVES_ENABLED
 
 /* Uncomment this line to disable internal mesh compatibility
    tests in Traverse:begin(). */

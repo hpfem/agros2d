@@ -285,6 +285,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
 
         m_wf->set_current_time(actualTime);
         m_wf->solution = solution;
+        m_wf->delete_all();
         m_wf->registerForms();
 
         // emit message
@@ -419,6 +420,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                 Util::scene()->problemInfo()->hermes()->updateTimeFunctions(actualTime);
 
                 m_wf->set_current_time(actualTime);
+                m_wf->delete_all();
                 m_wf->registerForms();
 
                 // transient
@@ -485,10 +487,10 @@ bool SolutionAgros::solveLinear(DiscreteProblem *dp,
                                 Hermes::vector<Solution *> solution,
                                 Solver *solver, SparseMatrix *matrix, Vector *rhs)
 {
-    QTime time;
-    time.start();
+    // QTime time;
+    // time.start();
     dp->assemble(matrix, rhs);
-    qDebug() << "assemble: " << time.elapsed();
+    // qDebug() << "assemble: " << time.elapsed();
 
     if(solver->solve())
     {

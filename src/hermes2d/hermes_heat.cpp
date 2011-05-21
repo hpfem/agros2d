@@ -30,9 +30,6 @@ public:
 
     void registerForms()
     {
-        // delete all forms
-        delete_all();
-
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
