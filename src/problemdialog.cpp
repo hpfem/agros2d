@@ -342,12 +342,9 @@ void ProblemDialog::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
 
     cmbMeshType->addItem(meshTypeString(MeshType_Triangle), MeshType_Triangle);
-    if (Util::config()->showExperimentalFeatures)
-    {
-        cmbMeshType->addItem(meshTypeString(MeshType_QuadFineDivision), MeshType_QuadFineDivision);
-        cmbMeshType->addItem(meshTypeString(MeshType_QuadRoughDivision), MeshType_QuadRoughDivision);
-        cmbMeshType->addItem(meshTypeString(MeshType_QuadJoin), MeshType_QuadJoin);
-    }
+    cmbMeshType->addItem(meshTypeString(MeshType_QuadFineDivision), MeshType_QuadFineDivision);
+    cmbMeshType->addItem(meshTypeString(MeshType_QuadRoughDivision), MeshType_QuadRoughDivision);
+    cmbMeshType->addItem(meshTypeString(MeshType_QuadJoin), MeshType_QuadJoin);
 
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_UMFPACK), SOLVER_UMFPACK);
 #ifdef WITH_MUMPS

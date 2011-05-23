@@ -5,11 +5,11 @@ QT += opengl \
 
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=9
-DEFINES += VERSION_SUB=1
-DEFINES += VERSION_GIT=812
+DEFINES += VERSION_SUB=2
+DEFINES += VERSION_GIT=823
 DEFINES += VERSION_YEAR=2011
 DEFINES += VERSION_MONTH=5
-DEFINES += VERSION_DAY=10
+DEFINES += VERSION_DAY=23
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -135,12 +135,12 @@ OTHER_FILES += python/agros2d.pyx \
     functions.py \
     version.xml
 linux-g++ {
-    DEFINES += WITH_MUMPS
-    DEFINES += WITH_SUPERLU
+    # DEFINES += WITH_MUMPS
+    # DEFINES += WITH_SUPERLU
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
-    INCLUDEPATH += /usr/include/superlu
+    # INCLUDEPATH += /usr/include/superlu
     INCLUDEPATH += /usr/include/qwt-qt4
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
@@ -148,8 +148,8 @@ linux-g++ {
     LIBS += -L../hermes2d/lib
     LIBS += -lhermes2d
     LIBS += -lumfpack
-    LIBS += -ldmumps_seq
-    LIBS += -lsuperlu
+    # LIBS += -ldmumps_seq
+    # LIBS += -lsuperlu
     LIBS += -lamd
     LIBS += -lblas
     LIBS += -lpthread
