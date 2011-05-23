@@ -140,18 +140,18 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
 HEADERS = += ../hermes_common/src/compat.h
 
 linux-g++ {
-    DEFINES += WITH_MUMPS
-    DEFINES += WITH_SUPERLU
+    # DEFINES += WITH_MUMPS
+    # DEFINES += WITH_SUPERLU
     DEFINES += HAVE_FMEMOPEN
     DEFINES += HAVE_LOG2
 
     INCLUDEPATH += /usr/include/suitesparse
-    INCLUDEPATH += /usr/include/superlu
+    # INCLUDEPATH += /usr/include/superlu
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += /usr/include/python2.7
     LIBS += -lumfpack
-    LIBS += -ldmumps_seq
-    LIBS += -lsuperlu
+    # LIBS += -ldmumps_seq
+    # LIBS += -lsuperlu
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
 }
