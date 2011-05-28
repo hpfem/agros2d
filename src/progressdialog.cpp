@@ -245,15 +245,14 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             // QFile::remove(tempProblemFileName() + ".edge");
             // QFile::remove(tempProblemFileName() + ".ele");
             // QFile::remove(tempProblemFileName() + ".neigh");
-            QFile::remove(tempProblemFileName() + ".triangle.out");
-            QFile::remove(tempProblemFileName() + ".triangle.err");
+            // QFile::remove(tempProblemFileName() + ".triangle.out");
+            // QFile::remove(tempProblemFileName() + ".triangle.err");
             emit message(tr("Mesh files were deleted"), false, 4);
 
             // load mesh
             Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
 
             // check that all boundary edges have a marker assigned
-
             for (int i = 0; i < mesh->get_max_node_id(); i++)
             {
                 if (Node *node = mesh->get_node(i))
@@ -572,6 +571,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     // triangle elements
     sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
     QList<MeshElement> elementList;
+    QSet<int> markersCheck;
     for (int i = 0; i < k; i++)
     {
         int node[6];
@@ -603,13 +603,35 @@ bool ProgressItemMesh::triangleToHermes2D()
             emit message(tr("Some areas have no label marker"), true, 0);
             return false;
         }
+
+        markersCheck.insert(marker);
     }
     int elementCountLinear = elementList.count();
 
+    // no label marker
     if (elementList.count() < 1)
     {
         emit message(tr("Invalid number of label markers"), true, 0);
         return false;
+    }
+
+    // check for multiple label markers
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
+        if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) > 0)
+        {
+            qDebug() << "label: " << i;
+            qDebug() << "material: " << Util::scene()->materials.indexOf(Util::scene()->labels[i]->material);
+
+            if (!markersCheck.contains(i + 1))
+            {
+                qDebug() << Util::scene()->labels[i]->material->name;
+
+                emit message(tr("Label marker '%1' is not present in mesh file (multiple label markers in one area).").
+                             arg(i), true, 0);
+                return false;
+            }
+        }
     }
 
     // triangle neigh
