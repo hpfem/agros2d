@@ -558,6 +558,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     // triangle edges
     sscanf(inEdge.readLine().toStdString().c_str(), "%i", &k);
     QList<MeshEdge> edgeList;
+    QSet<int> edgeMarkersCheck;
     for (int i = 0; i<k; i++)
     {
         int node[2];
@@ -568,10 +569,32 @@ bool ProgressItemMesh::triangleToHermes2D()
     }
     int edgeCountLinear = edgeList.count();
 
+    // check for multiple edge markers
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        if (Util::scene()->boundaries.indexOf(Util::scene()->edges[i]->boundary) > 0)
+        {
+            if (!edgeMarkersCheck.contains(i))
+            {
+                // emit message(tr("Edge marker '%1' is not present in mesh file.").
+                //              arg(i), true, 0);
+                // return false;
+            }
+        }
+    }
+    edgeMarkersCheck.clear();
+
+    // no edge marker
+    if (edgeCountLinear < 1)
+    {
+        emit message(tr("Invalid number of edge markers"), true, 0);
+        return false;
+    }
+
     // triangle elements
     sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
     QList<MeshElement> elementList;
-    QSet<int> markersCheck;
+    QSet<int> labelMarkersCheck;
     for (int i = 0; i < k; i++)
     {
         int node[6];
@@ -604,34 +627,30 @@ bool ProgressItemMesh::triangleToHermes2D()
             return false;
         }
 
-        markersCheck.insert(marker);
+        labelMarkersCheck.insert(marker);
     }
     int elementCountLinear = elementList.count();
-
-    // no label marker
-    if (elementList.count() < 1)
-    {
-        emit message(tr("Invalid number of label markers"), true, 0);
-        return false;
-    }
 
     // check for multiple label markers
     for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
         if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) > 0)
         {
-            qDebug() << "label: " << i;
-            qDebug() << "material: " << Util::scene()->materials.indexOf(Util::scene()->labels[i]->material);
-
-            if (!markersCheck.contains(i + 1))
+            if (!labelMarkersCheck.contains(i + 1))
             {
-                qDebug() << Util::scene()->labels[i]->material->name;
-
                 emit message(tr("Label marker '%1' is not present in mesh file (multiple label markers in one area).").
                              arg(i), true, 0);
                 return false;
             }
         }
+    }
+    labelMarkersCheck.clear();
+
+    // no label marker
+    if (elementList.count() < 1)
+    {
+        emit message(tr("Invalid number of label markers"), true, 0);
+        return false;
     }
 
     // triangle neigh
@@ -806,12 +825,6 @@ bool ProgressItemMesh::triangleToHermes2D()
     }
     outEdges.truncate(outEdges.length()-2);
     outEdges += "\n}\n\n";
-
-    if (countEdges < 1)
-    {
-        emit message(tr("Invalid number of edge markers"), true, 0);
-        return false;
-    }
 
     // curves
     QString outCurves;
@@ -1617,6 +1630,10 @@ void ProgressDialog::close()
 
     QSettings settings;
     settings.setValue("ProgressDialog/Geometry", saveGeometry());
+
+    // save progress messages
+    if (Util::config()->enabledProgressLog)
+        saveProgressLog();
 
     cancel();
     accept();
