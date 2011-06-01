@@ -81,6 +81,8 @@ void OGProjection::project_global(Hermes::vector<Space *> spaces, Hermes::vector
   }
 
   project_internal(spaces, proj_wf, target_vec, matrix_solver);
+
+  delete proj_wf;
 }
 
 void OGProjection::project_global(Hermes::vector<Space *> spaces, Hermes::vector<Solution*> source_sols,
@@ -164,17 +166,14 @@ void OGProjection::project_global(Hermes::vector<Space *> spaces,
   if (n != n_biforms)
     error("Mismatched numbers of projected functions and projection forms in project_global().");
 
-  // This is needed since spaces may have their DOFs enumerated only locally
-  // when they come here.
-  int ndof = Space::assign_dofs(spaces);
-
   // Define projection weak form.
   WeakForm* proj_wf = new WeakForm(n);
   for (unsigned int i = 0; i < n; i++) {
     proj_wf->add_matrix_form(mfvol[i]);
-    // FIXME
-    // proj_wf->add_vector_form(i, proj_liforms[i].first, proj_liforms[i].second, HERMES_ANY, source_meshfns[i]);
+    proj_wf->add_vector_form(vfvol[i]);
   }
 
   project_internal(spaces, proj_wf, target_vec, matrix_solver);
+
+  delete proj_wf;
 }

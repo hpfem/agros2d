@@ -117,7 +117,8 @@ Adapt::~Adapt()
   // free error_form
   for (int i = 0; i < this->num; i++)
     for (int j = 0; j < this->num; j++)
-      delete error_form[i][j];
+        if (error_form[i][j] != NULL)
+          delete error_form[i][j];
 }
 
 //// adapt /////////////////////////////////////////////////////////////////////////////////////////
