@@ -1483,7 +1483,10 @@ void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
     lblMessage->setText(message);
 
     if (position > 0)
+    {
         progressBar->setValue(currentProgressStep() + position);
+        Indicator::setProgress((double) position / progressSteps());
+    }
 
     // update
     if (position % 1 == 0) QApplication::processEvents();

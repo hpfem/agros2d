@@ -17,6 +17,10 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#ifdef WITH_UNITY
+#include <unity.h>
+#endif
+
 #include "util.h"
 #include "scene.h"
 #include "scripteditordialog.h"
@@ -900,18 +904,18 @@ QString teModeString(Mode teMode)
 {
     logMessage("TEModeString()");
 
-     switch (teMode)
-     {
-     case Mode_0:
-     return QObject::tr("TE Mode 0");
-     case Mode_01:
-     return QObject::tr("TE Mode 01");
-     case Mode_02:
-     return QObject::tr("TE Mode 02");
-     default:
-         std::cerr << "TE mode '" + QString::number(teMode).toStdString() + "' is not implemented. TEModeString(TEMode teMode)" << endl;
-         throw;
-     }
+    switch (teMode)
+    {
+    case Mode_0:
+        return QObject::tr("TE Mode 0");
+    case Mode_01:
+        return QObject::tr("TE Mode 01");
+    case Mode_02:
+        return QObject::tr("TE Mode 02");
+    default:
+        std::cerr << "TE mode '" + QString::number(teMode).toStdString() + "' is not implemented. TEModeString(TEMode teMode)" << endl;
+        throw;
+    }
 }
 
 

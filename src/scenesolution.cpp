@@ -120,6 +120,9 @@ void SceneSolution::solve(SolverMode solverMode)
 
     m_isSolving = true;
 
+    // open indicator progress
+    Indicator::openProgress();
+
     // save problem
     ErrorResult result = Util::scene()->writeToFile(tempProblemFileName() + ".a2d");
     if (result.isError())
@@ -153,6 +156,9 @@ void SceneSolution::solve(SolverMode solverMode)
         QFile::remove(Util::scene()->problemInfo()->fileName);
         Util::scene()->problemInfo()->fileName = "";
     }
+
+    // close indicator progress
+    Indicator::closeProgress();
 
     m_isSolving = false;
 }

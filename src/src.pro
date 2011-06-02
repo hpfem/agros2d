@@ -82,7 +82,9 @@ SOURCES += util.cpp \
     postprocessorview.cpp \
     style/stylehelper.cpp \
     style/styleanimator.cpp \
-    style/manhattanstyle.cpp
+    style/manhattanstyle.cpp \
+    indicators/indicators.cpp \
+    indicators/indicator_unity.cpp
 HEADERS += util.h \
     value.h \
     scene.h \
@@ -127,7 +129,9 @@ HEADERS += util.h \
     postprocessorview.h \
     style/stylehelper.h \
     style/styleanimator.h \
-    style/manhattanstyle.h
+    style/manhattanstyle.h \
+    indicators/indicators.h \
+    indicators/indicator_unity.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common
@@ -137,25 +141,44 @@ OTHER_FILES += python/agros2d.pyx \
 linux-g++ {
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
+    DEFINES += WITH_UNITY
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
-    # INCLUDEPATH += /usr/include/superlu
-    INCLUDEPATH += /usr/include/qwt-qt4
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
     INCLUDEPATH += ../hermes2d/src
     LIBS += -L../hermes2d/lib
     LIBS += -lhermes2d
     LIBS += -lumfpack
-    # LIBS += -ldmumps_seq
-    # LIBS += -lsuperlu
     LIBS += -lamd
     LIBS += -lblas
     LIBS += -lpthread
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
+    # qwt
+    INCLUDEPATH += /usr/include/qwt-qt4
     LIBS += -lqwt-qt4
+
+    # mumps
+    contains(DEFINES, WITH_MUMPS) {
+        LIBS += -ldmumps_seq
+    }
+    # superlu
+    contains(DEFINES, WITH_SUPERLU) {
+        INCLUDEPATH += /usr/include/superlu
+        LIBS += -lsuperlu
+    }
+
+    # unity
+    contains(DEFINES, WITH_UNITY) {
+        INCLUDEPATH += /usr/include/unity/unity
+        INCLUDEPATH += /usr/include/glib-2.0
+        INCLUDEPATH += /usr/lib/x86_64-linux-gnu/glib-2.0/include
+        INCLUDEPATH += /usr/include/dee-1.0
+        INCLUDEPATH += /usr/include/libdbusmenu-0.4
+        LIBS += -lunity
+    }
 }
 
 macx-g++ {
