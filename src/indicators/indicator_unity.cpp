@@ -43,13 +43,13 @@ bool isRunning()
 
 void openProgress()
 {
-    qDebug() << "unity open";
+    // qDebug() << "unity open";
     unity_launcher_entry_set_progress_visible(entry, true);
 }
 
 void closeProgress()
 {
-    qDebug() << "unity close";
+    // qDebug() << "unity close";
     unity_launcher_entry_set_progress_visible(entry, false);
 }
 

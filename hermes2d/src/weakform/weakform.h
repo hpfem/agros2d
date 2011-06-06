@@ -294,9 +294,17 @@ public:
   /// Deletes all volumetric and surface forms.
   void delete_all()
   {
+    for (int i = 0; i < mfvol.size(); i++)
+      delete mfvol[i];
     mfvol.clear();
+    for (int i = 0; i < mfsurf.size(); i++)
+      delete mfsurf[i];
     mfsurf.clear();
+    for (int i = 0; i < vfvol.size(); i++)
+      delete vfvol[i];
     vfvol.clear();
+    for (int i = 0; i < vfsurf.size(); i++)
+      delete vfsurf[i];
     vfsurf.clear();
   };
 

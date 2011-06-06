@@ -1116,7 +1116,7 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
     QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
     QFile::remove(tempProblemDir() + "/adaptivity_conv.png");
 
-    setMinimumSize(520, 360);
+    setMinimumSize(550, 360);
     setMaximumSize(minimumSize());
 
     QSettings settings;

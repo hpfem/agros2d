@@ -125,8 +125,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         QString fileName = args[i];
         open(fileName);
     }
-
-    qDebug() << Indicator::isRunning();
 }
 
 MainWindow::~MainWindow()

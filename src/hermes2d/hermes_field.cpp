@@ -251,6 +251,8 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
             projNormType.push_back(Util::config()->projNormType);
             // add refinement selector
             selector.push_back(select);
+            // reference solution
+            solutionReference.push_back(new Solution());
         }
     }
 
@@ -315,14 +317,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                 Hermes::vector<Space *> spaceReference = *Space::construct_refined_spaces(space);
 
                 // assemble reference problem.
-                solve(spaceReference, solution, solver, matrix, rhs);
-
-                // copy solution
-                for (int j = 0; j < numberOfSolution; j++)
-                {
-                    solutionReference.push_back(new Solution());
-                    solutionReference.at(j)->copy(solution.at(j));
-                }
+                solve(spaceReference, solutionReference, solver, matrix, rhs);
 
                 if (!isError)
                 {
@@ -333,17 +328,16 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                     Adapt adaptivity(space, projNormType);
 
                     // Calculate error estimate for each solution component and the total error estimate.
-                    Hermes::vector<double> err_est_rel;
                     error = adaptivity.calc_err_est(solution,
-                                                    solutionReference,
-                                                    &err_est_rel) * 100;
+                                                    solutionReference) * 100;
 
                     // emit signal
-                    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4): %1%").
+                    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
                                                      arg(error, 0, 'f', 3).
                                                      arg(i + 1).
                                                      arg(maxAdaptivitySteps).
-                                                     arg(Space::get_num_dofs(space)), false, 1);
+                                                     arg(Space::get_num_dofs(space)).
+                                                     arg(Space::get_num_dofs(spaceReference)), false, 1);
                     // add error to the list
                     m_progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(space));
 
@@ -371,11 +365,6 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                     delete spaceReference.at(i);
                 }
                 spaceReference.clear();
-
-                // delete reference solution
-                for (int i = 0; i < solutionReference.size(); i++)
-                    delete solutionReference.at(i);
-                solutionReference.clear();
             }
 
             // clean up.
@@ -383,6 +372,11 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
             delete matrix;
             delete rhs;
         }
+
+        // delete reference solution
+        for (int i = 0; i < solutionReference.size(); i++)
+            delete solutionReference.at(i);
+        solutionReference.clear();
 
         // delete selector
         if (select) delete select;
