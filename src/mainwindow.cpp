@@ -460,13 +460,25 @@ void MainWindow::createToolBars()
 {
     logMessage("MainWindow::createToolBars()");
 
+#ifdef Q_WS_MAC
+    int iconHeight = 24;
+#endif
+
     tlbFile = addToolBar(tr("File"));
+#ifdef Q_WS_MAC
+    tlbFile->setFixedHeight(iconHeight);
+    tlbFile->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbFile->setObjectName("File");
     tlbFile->addAction(actDocumentNew);
     tlbFile->addAction(actDocumentOpen);
     tlbFile->addAction(actDocumentSave);
 
     tlbEdit = addToolBar(tr("Edit"));
+#ifdef Q_WS_MAC
+    tlbEdit->setFixedHeight(iconHeight);
+    tlbEdit->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbEdit->setObjectName("Edit");
     tlbEdit->addAction(actUndo);
     tlbEdit->addAction(actRedo);
@@ -477,6 +489,10 @@ void MainWindow::createToolBars()
     tlbEdit->addAction(Util::scene()->actDeleteSelected);
 
     tlbView = addToolBar(tr("View"));
+#ifdef Q_WS_MAC
+    tlbView->setFixedHeight(iconHeight);
+    tlbView->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbView->setObjectName("View");
     tlbView->addAction(sceneView->actSceneZoomBestFit);
     tlbView->addAction(sceneView->actSceneZoomRegion);
@@ -484,6 +500,10 @@ void MainWindow::createToolBars()
     tlbView->addAction(sceneView->actSceneZoomOut);
 
     tlbProblem = addToolBar(tr("Problem"));
+#ifdef Q_WS_MAC
+    tlbProblem->setFixedHeight(iconHeight);
+    tlbProblem->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbProblem->setObjectName("Problem");
     tlbProblem->addAction(sceneView->actSceneModeNode);
     tlbProblem->addAction(sceneView->actSceneModeEdge);
@@ -501,6 +521,10 @@ void MainWindow::createToolBars()
     tlbProblem->addAction(actSolve);
 
     tlbTools = addToolBar(tr("Tools"));
+#ifdef Q_WS_MAC
+    tlbTools->setFixedHeight(iconHeight);
+    tlbTools->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actChart);
     tlbTools->addAction(actScriptEditor);
@@ -508,6 +532,10 @@ void MainWindow::createToolBars()
     tlbTools->addAction(Util::scene()->actProblemProperties);
 
     tlbTransient = addToolBar(tr("Transient"));
+#ifdef Q_WS_MAC
+    tlbTransient->setFixedHeight(iconHeight);
+    tlbTransient->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbTransient->setObjectName("Transient");
     tlbTransient->addWidget(new QLabel(tr("Time step:") + " "));
     cmbTimeStep = new QComboBox(this);
@@ -515,11 +543,14 @@ void MainWindow::createToolBars()
     connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
     tlbTransient->addWidget(cmbTimeStep);
 
+#ifndef Q_WS_MAC
     tlbWorkspace = addToolBar(tr("Workspace"));
+    tlbWorkspace->setFixedHeight(iconHeight);
     tlbWorkspace->setObjectName("Workspace");
     tlbWorkspace->addAction(sceneView->actSceneShowGrid);
     tlbWorkspace->addAction(sceneView->actSceneSnapToGrid);
     tlbWorkspace->addAction(sceneView->actSceneShowRulers);
+#endif
 }
 
 void MainWindow::createStatusBar()
@@ -637,7 +668,7 @@ void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
             break;
         }
     }
-        break;
+    break;
     case MouseSceneMode_Pan:
         lblMouseMode->setText(tr("Mode: Pan"));
         break;
@@ -661,7 +692,7 @@ void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
             break;
         }
     }
-        break;
+    break;
     default:
         break;
     }
