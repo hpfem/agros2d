@@ -328,7 +328,7 @@ bool H2DReader::load_stream(std::istream &is, Mesh *mesh,
 
       // This is extremely important, as in DG, it is assumed that negative boundary markers are reserved
       // for the inner edges.
-      if (marker > 0)
+      if (atoi(bnd_marker.c_str()) > 0)
       {
         mesh->nodes[v1].bnd = 1;
         mesh->nodes[v2].bnd = 1;

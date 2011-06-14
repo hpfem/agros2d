@@ -176,7 +176,7 @@ public:
 
         virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
                              Geom<double> *e, ExtData<scalar> *ext) const {            
-            SceneMaterialRF *material = dynamic_cast<SceneMaterialRF *>(Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterialMarker(e->elem_marker)]->material);
+            SceneMaterialRF *material = dynamic_cast<SceneMaterialRF *>(Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->elem_marker).c_str())]->material);
 
             double mu = material->permeability.number * MU0;
             double eps = material->permittivity.number * EPS0;
@@ -222,7 +222,7 @@ public:
         virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
                              Geom<double> *e, ExtData<scalar> *ext) const {
 
-            SceneMaterialRF *material = dynamic_cast<SceneMaterialRF *>(Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterialMarker(e->elem_marker)]->material);
+            SceneMaterialRF *material = dynamic_cast<SceneMaterialRF *>(Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->elem_marker).c_str())]->material);
 
             double mu = material->permeability.number * MU0;
             double eps = material->permittivity.number * EPS0;

@@ -54,7 +54,7 @@ void VolumeIntegralValue::calculate()
 
             for_all_active_elements(e, mesh)
             {
-                if (Util::scene()->sceneSolution()->agrosMaterialMarker(e->marker) == i)
+                if (mesh->get_element_markers_conversion().get_user_marker(e->marker) == QString::number(i).toStdString())
                 {
                     update_limit_table(e->get_mode());
 

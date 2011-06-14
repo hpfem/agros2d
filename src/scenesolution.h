@@ -56,10 +56,6 @@ public:
     inline Mesh *meshInitial() { return m_meshInitial; }
     void setMeshInitial(Mesh *meshInitial);
 
-    // get marker
-    inline int agrosMaterialMarker(int marker) { return conversion_table_labels[marker]; }
-    inline int agrosBoundaryMarker(int marker) { return conversion_table_boundaries[marker]; }
-
     // solution
     Solution *sln(int i = -1);
     void setSolutionArrayList(QList<SolutionArray *> solutionArrayList);
@@ -152,10 +148,6 @@ private:
     Vectorizer m_vecVectorView; // vectorizer for vector view
 
     Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
-
-    // agros internal markers
-    std::map<int, int> conversion_table_labels;
-    std::map<int, int> conversion_table_boundaries;
 
     // progress dialog
     ProgressDialog *m_progressDialog;

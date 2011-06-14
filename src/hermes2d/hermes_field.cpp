@@ -702,7 +702,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
     y = refmap->get_phys_y(order);
     Element *e = refmap->get_active_element();
 
-    material = Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterialMarker(e->marker)]->material;
+    material = Util::scene()->labels[atoi(mesh->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
 
     for (int i = 0; i < np; i++)
     {

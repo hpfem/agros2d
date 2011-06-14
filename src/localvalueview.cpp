@@ -64,7 +64,7 @@ PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
 
             // find marker
             Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
-            tmpMaterial = Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterialMarker(e->marker)]->material;
+            tmpMaterial = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
         }
     }
 
