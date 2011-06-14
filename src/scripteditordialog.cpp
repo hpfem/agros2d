@@ -489,13 +489,25 @@ void ScriptEditorDialog::createControls()
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
 
+#ifdef Q_WS_MAC
+    int iconHeight = 24;
+#endif
+
     QToolBar *tlbFile = addToolBar(tr("File"));
+#ifdef Q_WS_MAC
+    tlbFile->setFixedHeight(iconHeight);
+    tlbFile->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbFile->setObjectName("File");
     tlbFile->addAction(actFileNew);
     tlbFile->addAction(actFileOpen);
     tlbFile->addAction(actFileSave);
 
     QToolBar *tlbEdit = addToolBar(tr("Edit"));
+#ifdef Q_WS_MAC
+    tlbEdit->setFixedHeight(iconHeight);
+    tlbEdit->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbEdit->setObjectName("Edit");
     tlbEdit->addAction(actUndo);
     tlbEdit->addAction(actRedo);
@@ -505,6 +517,10 @@ void ScriptEditorDialog::createControls()
     tlbEdit->addAction(actPaste);
 
     QToolBar *tlbTools = addToolBar(tr("Tools"));
+#ifdef Q_WS_MAC
+    tlbTools->setFixedHeight(iconHeight);
+    tlbTools->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actRunPython);
     tlbTools->addSeparator();
@@ -521,6 +537,10 @@ void ScriptEditorDialog::createControls()
     connect(filBrowser, SIGNAL(directoryChanged(QString)), txtPath, SLOT(setText(QString)));
 
     QToolBar *tlbPath = addToolBar(tr("Path"));
+#ifdef Q_WS_MAC
+    tlbPath->setFixedHeight(iconHeight);
+    tlbPath->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbPath->setObjectName("Path");
     tlbPath->addWidget(new QLabel(tr("Path: "), this));
     tlbPath->addWidget(txtPath);

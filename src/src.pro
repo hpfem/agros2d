@@ -184,17 +184,17 @@ linux-g++ {
 macx-g++ {
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
-    INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.6
-    INCLUDEPATH += ../qwt-5.2.0/src
-    INCLUDEPATH += hermes2d/src
+    INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
+    INCLUDEPATH += ../../qwt-5.2.1/src
+    INCLUDEPATH += ../hermes2d/src
+    LIBS += -L../hermes2d/lib
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
-    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/config
-    LIBS += -L../hermes2d/src
-    LIBS += -L../../qwt-5.2.0/lib
-    LIBS += -lpthread
+    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config
+    LIBS += -L../../qwt-5.2.1/lib
     LIBS += -lhermes2d
-    LIBS += -lpython2.6
+    LIBS += -lpthread
+    LIBS += -lpython2.7
     LIBS += -lqwt
     LIBS += -lumfpack
     LIBS += -lamd
