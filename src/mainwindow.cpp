@@ -543,7 +543,6 @@ void MainWindow::createToolBars()
 
 #ifndef Q_WS_MAC
     tlbWorkspace = addToolBar(tr("Workspace"));
-    tlbWorkspace->setFixedHeight(iconHeight);
     tlbWorkspace->setObjectName("Workspace");
     tlbWorkspace->addAction(sceneView->actSceneShowGrid);
     tlbWorkspace->addAction(sceneView->actSceneSnapToGrid);
