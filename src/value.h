@@ -68,6 +68,7 @@ signals:
     void evaluated(bool isError);
 
 protected:
+    virtual QSize sizeHint() const;
     void focusInEvent(QFocusEvent *event);
 
 private:
@@ -81,7 +82,11 @@ private:
 
     QLineEdit *txtLineEdit;
     QLabel *lblValue;
+#ifdef Q_WS_MAC
+    QToolButton *btnEdit;
+#else
     QPushButton *btnEdit;
+#endif
 
     void setLabel(const QString &text, QColor color, bool isVisible);
 };

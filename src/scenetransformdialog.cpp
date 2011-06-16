@@ -31,30 +31,8 @@ SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
-    setMinimumSize(420, 220);
+    setMinimumSize(sizeHint());
     setMaximumSize(minimumSize());
-}
-
-SceneTransformDialog::~SceneTransformDialog()
-{
-    logMessage("SceneTransformDialog::~SceneTransformDialog()");
-
-    delete txtTranslateX;
-    delete txtTranslateY;
-
-    delete txtRotateBasePointX;
-    delete txtRotateBasePointY;
-    delete txtRotateAngle;
-
-    delete txtScaleBasePointX;
-    delete txtScaleBasePointY;
-    delete txtScaleFactor;
-
-    delete widTranslate;
-    delete widRotate;
-    delete widScale;
-
-    delete tabWidget;
 }
 
 void SceneTransformDialog::createControls()
@@ -116,7 +94,7 @@ void SceneTransformDialog::createControls()
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
     // tab widget
-    tabWidget = new QTabWidget(this);
+    tabWidget = new QTabWidget();
     tabWidget->addTab(widTranslate, icon(""), tr("Translate"));
     tabWidget->addTab(widRotate, icon(""), tr("Rotate"));
     tabWidget->addTab(widScale, icon(""), tr("Scale"));

@@ -80,7 +80,13 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep) : QWidget(parent)
     lblValue = new QLabel(this);
 
     // timedep value
-    btnEdit = new QPushButton(icon("three-dots"), "", this);
+#ifdef Q_WS_MAC
+    btnEdit = new QToolButton();
+    btnEdit->setIcon(icon("three-dots"));
+    btnEdit->setMaximumHeight(txtLineEdit->height() - 4);
+#else
+    btnEdit = new QPushButton(icon("three-dots"), "");
+#endif
     connect(btnEdit, SIGNAL(clicked()), this, SLOT(doOpenValueTimeDialog()));
 
     QHBoxLayout *layout = new QHBoxLayout();
@@ -189,6 +195,11 @@ void ValueLineEdit::setLabel(const QString &text, QColor color, bool isVisible)
     palette.setColor(QPalette::WindowText, color);
     lblValue->setPalette(palette);
     lblValue->setVisible(isVisible);
+}
+
+QSize ValueLineEdit::sizeHint() const
+{
+    return QSize(100, 10);
 }
 
 void ValueLineEdit::focusInEvent(QFocusEvent *event)

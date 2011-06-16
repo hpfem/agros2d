@@ -583,9 +583,10 @@ void MainWindow::createScene()
 {
     logMessage("MainWindow::createScene()");
 
-    QHBoxLayout *layout = new QHBoxLayout;
-
     sceneView = new SceneView(this);
+
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->setMargin(5);
     layout->addWidget(sceneView);
 
     QWidget *widget = new QWidget;
