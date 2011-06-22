@@ -1110,11 +1110,6 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
     setWindowTitle(tr("Progress..."));
 
     createControls();
-    clear();
-
-    QFile::remove(tempProblemDir() + "/adaptivity_error.png");
-    QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
-    QFile::remove(tempProblemDir() + "/adaptivity_conv.png");
 
     setMinimumSize(550, 360);
     setMaximumSize(minimumSize());
@@ -1129,20 +1124,23 @@ ProgressDialog::~ProgressDialog()
 
     if (Util::config()->enabledProgressLog)
         saveProgressLog();
-
-    clear();
 }
 
 void ProgressDialog::clear()
 {
     logMessage("ProgressDialog::clear()");
 
-    // delete progress items
-    // for (int i = 0; i < m_progressItem.count(); i++)
-    //    delete m_progressItem.at(i);
+    // progress items
     m_progressItem.clear();
-
     m_currentProgressItem = NULL;
+
+    // convergence charts
+    curveError->setData(0);
+    curveErrorMax->setData(0);
+    curveDOF->setData(0);
+    curveErrorDOF->setData(0);
+    curveErrorDOFMax->setData(0);
+
     m_showViewProgress = true;
 }
 
@@ -1434,7 +1432,6 @@ void ProgressDialog::start()
         {
             // error
             finished();
-
             clear();
             return;
         }
@@ -1453,7 +1450,6 @@ void ProgressDialog::start()
         btnCancel->setEnabled(false);
         btnSaveImage->setEnabled(false);
         btnSaveData->setEnabled(false);
-        // tabType->setCurrentWidget(controlsConvergenceChart);
     }
 }
 
@@ -1595,7 +1591,11 @@ void ProgressDialog::itemChanged()
         }
         fileErrDOF.close();
 
-        // save image
+        // save images
+        QFile::remove(tempProblemDir() + "/adaptivity_error.png");
+        QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
+        QFile::remove(tempProblemDir() + "/adaptivity_conv.png");
+
         chartError->saveImage(tempProblemDir() + "/adaptivity_error.png");
         chartDOF->saveImage(tempProblemDir() + "/adaptivity_dof.png");
         chartErrorDOF->saveImage(tempProblemDir() + "/adaptivity_conv.png");
