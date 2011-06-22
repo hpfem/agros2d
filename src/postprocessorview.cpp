@@ -509,6 +509,8 @@ void PostprocessorView::setControls()
     // disable controls
     advanced->setEnabled(isSolved);
 
+    chkShowGeometry->setEnabled(true);
+
     chkShowInitialMesh->setEnabled(isMeshed);
     chkShowSolutionMesh->setEnabled(isSolved && (cmbScalarFieldVariable->count() > 0));
     chkShowContours->setEnabled(isSolved);
@@ -537,6 +539,18 @@ void PostprocessorView::setControls()
 
         chkScalarFieldRangeAuto->setEnabled(true);
         doScalarFieldRangeAuto(-1);
+    }
+
+    if (isSolved && (radPostprocessorScalarField3D->isChecked() ||
+                     radPostprocessorScalarField3DSolid->isChecked() ||
+                     radPostprocessorModel->isChecked()))
+    {
+        chkShowGeometry->setChecked(true);
+        chkShowGeometry->setEnabled(false);
+        chkShowInitialMesh->setEnabled(false);
+        chkShowSolutionMesh->setEnabled(false);
+        chkShowContours->setEnabled(false);
+        chkShowVectors->setEnabled(false);
     }
 }
 
