@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<module>
+    <general>
+        <name>Electrostatics</name>
+        <description>Electrostatics is the branch of science that deals with the phenomena and properties of stationary or slow-moving (without acceleration) electric charges.</description>
+        <properties steadystate="1" harmonic="0" transient="0" />    
+    </general>
+
+    <variables>
+        <variable id="electrostatic_potential" name="Scalar potential" shortname="V" unit="V" scalar="1">
+            <steadystate planar_scalar="value" axi_scalar="value" />
+            <harmonic />
+            <transient />
+        </variable>
+        <variable id="electrostatic_electric_field" name="Electric field" shortname="E" unit="V/m" scalar="0">
+            <steadystate planar_comp_x="- dx" planar_comp_y="- dy" axi_comp_r="- dx" axi_comp_z="- dy" />
+            <harmonic />
+            <transient />
+        </variable>
+        <variable id="electrostatic_displacement" name="Displacement" shortname="D" unit="C/m2" scalar="0">
+            <steadystate planar_comp_x="- permittivity * dx" planar_comp_y="- permittivity * dy" axi_comp_r="- permittivity * dx" axi_comp_z="- permittivity * dy" />
+            <harmonic />
+            <transient />
+        </variable>
+        <variable id="electrostatic_energy_density" name="Energy density" shortname="we" unit="J/m3" scalar="1">
+            <steadystate planar_scalar="0.5 * permittivity * (dx * dx + dy * dy)" axi_scalar="0.5 * permittivity * (dx * dx + dy * dy)" />
+            <harmonic />
+            <transient />
+        </variable>
+        <variable id="electrostatic_permittivity" name="Permittivity" shortname="eps" unit="-" scalar="1">
+            <steadystate planar_scalar="permittivity" axi_scalar="permittivity" />
+            <harmonic />
+            <transient />
+        </variable>
+    </variables>
+
+    <scalarvariable>
+        <steadystate default="electrostatic_potential">
+            <item id="electrostatic_potential" />
+            <item id="electrostatic_electric_field" />
+            <item id="electrostatic_displacement" />
+            <item id="electrostatic_energy_density" />
+            <item id="electrostatic_permittivity" />
+        </steadystate>
+        <harmonic/>
+        <transient/>
+    </scalarvariable>
+
+    <vectorvariable>
+        <steadystate default="electrostatic_electric_field">
+            <item id="electrostatic_electric_field" />
+            <item id="electrostatic_displacement" />
+        </steadystate>
+        <harmonic/>
+        <transient/>
+    </vectorvariable>
+</module>

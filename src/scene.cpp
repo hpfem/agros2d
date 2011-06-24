@@ -36,9 +36,9 @@
 #include "scenebasicselectdialog.h"
 #include "progressdialog.h"
 
-#include "hermes2d/hermes_field.h"
-
 #include "scripteditordialog.h"
+
+#include "hermes2d/hermes_field.h"
 
 PhysicField ProblemInfo::physicField()
 {
@@ -52,6 +52,7 @@ void ProblemInfo::clear()
 
     // hermes object
     if (m_hermes) delete m_hermes;
+    if (module) delete module;
 
     // read default field (Util::config() is not set)
     QSettings settings;
@@ -90,6 +91,17 @@ void ProblemInfo::clear()
     linearityType = LinearityType_Linear;
     linearityNonlinearTolerance = 1e-3;
     linearityNonlinearSteps = 10;
+}
+
+void ProblemInfo::setHermes(HermesField *hermes)
+{
+    if (!module)
+        module = new Hermes::Module::AgrosModule();
+
+    module->read((datadir() + "/modules/electrostatics.xml").toStdString());
+
+    if (m_hermes) delete m_hermes;
+    m_hermes = hermes;
 }
 
 DxfFilter::DxfFilter(Scene *scene)
