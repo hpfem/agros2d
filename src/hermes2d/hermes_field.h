@@ -57,6 +57,105 @@ public:
     Hermes::vector<Solution *> solution;
 };
 
+namespace Hermes
+{
+namespace Module
+{
+
+struct PhysicFieldVariable
+{
+    struct Form
+    {
+        Form() : planar_scalar(""), planar_comp_x(""), planar_comp_y(""),
+            axi_scalar(""), axi_comp_r(""), axi_comp_z("") {}
+
+        Form(QDomElement *element);
+
+        std::string planar_scalar;
+        std::string planar_comp_x;
+        std::string planar_comp_y;
+
+        std::string axi_scalar;
+        std::string axi_comp_r;
+        std::string axi_comp_z;
+
+        void read(QDomElement *element);
+    };
+
+    PhysicFieldVariable() : id(""), name(""), shortname(""), unit(""),
+        steadystate(Form()), harmonic(Form()), transient(Form()) {}
+
+    PhysicFieldVariable(QDomElement *element);
+
+    std::string id;
+    std::string name;
+    std::string shortname;
+    std::string unit;
+
+    bool is_scalar;
+
+    Form steadystate;
+    Form harmonic;
+    Form transient;
+
+    void read(QDomElement *element);
+};
+
+struct Module
+{
+    std::string name;
+    std::string description;
+
+    bool has_steady_state;
+    bool has_harmonic;
+    bool has_transient;
+
+    Hermes::vector<PhysicFieldVariable> variables;
+
+    Hermes::vector<PhysicFieldVariable *> scalar_variables_steadystate;
+    Hermes::vector<PhysicFieldVariable *> scalar_variables_harmonic;
+    Hermes::vector<PhysicFieldVariable *> scalar_variables_transient;
+
+    Hermes::vector<PhysicFieldVariable *> vector_variables_steadystate;
+    Hermes::vector<PhysicFieldVariable *> vector_variables_harmonic;
+    Hermes::vector<PhysicFieldVariable *> vector_variables_transient;
+
+    PhysicFieldVariable *default_scalar_variable;
+    inline PhysicFieldVariableComp default_scalar_variable_comp()
+    {
+        return default_scalar_variable->is_scalar ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
+    }
+    PhysicFieldVariable *default_vector_variable;
+
+    Module() : name(""), description(""),
+        has_steady_state(false), has_harmonic(false), has_transient(false),
+        variables(Hermes::vector<PhysicFieldVariable>()),
+        scalar_variables_steadystate(Hermes::vector<PhysicFieldVariable *>()),
+        scalar_variables_harmonic(Hermes::vector<PhysicFieldVariable *>()),
+        scalar_variables_transient(Hermes::vector<PhysicFieldVariable *>()),
+        vector_variables_steadystate(Hermes::vector<PhysicFieldVariable *>()),
+        vector_variables_harmonic(Hermes::vector<PhysicFieldVariable *>()),
+        vector_variables_transient(Hermes::vector<PhysicFieldVariable *>()) {}
+
+    void read(std::string file_name);
+
+    PhysicFieldVariable *get_variable(std::string id);
+};
+
+struct AgrosModule : public Module
+{
+    AgrosModule() : Module() {}
+
+    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
+    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
+
+private:
+    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<PhysicFieldVariable *> list);
+};
+
+}
+}
+
 struct HermesField : public QObject
 {
     Q_OBJECT

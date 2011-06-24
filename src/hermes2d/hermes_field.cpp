@@ -63,6 +63,195 @@ HermesField *hermesFieldFactory(PhysicField physicField)
     }
 }
 
+// ***********************************************************************************************
+
+Hermes::Module::PhysicFieldVariable::Form::Form(QDomElement *element)
+{
+    read(element);
+}
+
+void Hermes::Module::PhysicFieldVariable::Form::read(QDomElement *element)
+{
+    planar_scalar = element->attribute("planar_scalar").toStdString();
+    planar_comp_x = element->attribute("planar_comp_x").toStdString();
+    planar_comp_y = element->attribute("planar_comp_y").toStdString();
+
+    axi_scalar = element->attribute("axi_scalar").toStdString();
+    axi_comp_r = element->attribute("axi_comp_r").toStdString();
+    axi_comp_z = element->attribute("axi_comp_z").toStdString();
+}
+
+// ***********************************************************************************************
+
+Hermes::Module::PhysicFieldVariable::PhysicFieldVariable(QDomElement *element)
+{
+    read(element);
+}
+
+void Hermes::Module::PhysicFieldVariable::read(QDomElement *element)
+{
+    id = element->attribute("id").toStdString();
+    name = element->attribute("name").toStdString();
+    shortname = element->attribute("shortname").toStdString();
+    unit = element->attribute("unit").toStdString();
+
+    is_scalar = element->attribute("scalar").toInt();
+
+    steadystate = Form(&element->elementsByTagName("steadystate").at(0).toElement());
+    harmonic = Form(&element->elementsByTagName("harmonic").at(0).toElement());
+    transient = Form(&element->elementsByTagName("transient").at(0).toElement());
+}
+
+// ***********************************************************************************************
+
+void Hermes::Module::Module::read(std::string file_name)
+{
+    // TODO: rewrite xml reader
+    QDomDocument doc;
+    QFile file(QString::fromStdString(file_name));
+    if (!file.open(QIODevice::ReadOnly))
+        return;
+
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    if (!doc.setContent(&file)) {
+        file.close();
+        return;
+    }
+    file.close();
+
+    QDomNode n;
+
+    // main document
+    QDomElement eleDoc = doc.documentElement();
+
+    // problems
+    QDomNode eleGeneral = eleDoc.elementsByTagName("general").at(0);
+
+    name = eleGeneral.toElement().elementsByTagName("name").at(0).toElement().text().toStdString();
+    description = eleGeneral.toElement().elementsByTagName("description").at(0).toElement().text().toStdString();
+
+    has_steady_state = eleGeneral.toElement().elementsByTagName("has_steady_state").at(0).toElement().text().toInt();
+    has_harmonic = eleGeneral.toElement().elementsByTagName("has_harmonic").at(0).toElement().text().toInt();
+    has_transient = eleGeneral.toElement().elementsByTagName("has_transient").at(0).toElement().text().toInt();
+
+    QDomNode eleVariables = eleDoc.toElement().elementsByTagName("variables").at(0);
+    n = eleVariables.firstChild();
+    while(!n.isNull())
+    {
+        variables.push_back(PhysicFieldVariable(&n.toElement()));
+
+        n = n.nextSibling();
+    }
+
+    QDomNode eleScalarVariables = eleDoc.toElement().elementsByTagName("scalarvariable").at(0);
+    default_scalar_variable = get_variable(eleScalarVariables.toElement().attribute("default").toStdString());
+
+    n = eleScalarVariables.toElement().elementsByTagName("steadystate").at(0).firstChild();
+    while(!n.isNull())
+    {
+        PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
+        if (variable)
+            scalar_variables_steadystate.push_back(variable);
+
+        n = n.nextSibling();
+    }
+    n = eleScalarVariables.toElement().elementsByTagName("harmonic").at(0).firstChild();
+    while(!n.isNull())
+    {
+        PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
+        if (variable)
+            scalar_variables_harmonic.push_back(variable);
+
+        n = n.nextSibling();
+    }
+    n = eleScalarVariables.toElement().elementsByTagName("transient").at(0).firstChild();
+    while(!n.isNull())
+    {
+        PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
+        if (variable)
+            scalar_variables_transient.push_back(variable);
+
+        n = n.nextSibling();
+    }
+
+    QDomNode eleVectorVariables = eleDoc.toElement().elementsByTagName("vectorvariable").at(0);
+    n = eleVectorVariables.toElement().elementsByTagName("steadystate").at(0).firstChild();
+    default_vector_variable = get_variable(eleVectorVariables.toElement().attribute("default").toStdString());
+
+    while(!n.isNull())
+    {
+        PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
+        if (variable)
+            vector_variables_steadystate.push_back(variable);
+
+        n = n.nextSibling();
+    }
+    n = eleVectorVariables.toElement().elementsByTagName("harmonic").at(0).firstChild();
+    while(!n.isNull())
+    {
+        PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
+        if (variable)
+            vector_variables_harmonic.push_back(variable);
+
+        n = n.nextSibling();
+    }
+    n = eleVectorVariables.toElement().elementsByTagName("transient").at(0).firstChild();
+    while(!n.isNull())
+    {
+        PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
+        if (variable)
+            vector_variables_transient.push_back(variable);
+
+        n = n.nextSibling();
+    }
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+}
+
+Hermes::Module::PhysicFieldVariable* Hermes::Module::Module::get_variable(std::string id)
+{
+    for(Hermes::vector<PhysicFieldVariable>::iterator it = variables.begin(); it < variables.end(); ++it )
+    {
+        if (((PhysicFieldVariable) *it).id == id)
+            return &*it;
+    }
+    return NULL;
+}
+
+// ***********************************************************************************************
+
+void Hermes::Module::AgrosModule::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
+{
+    // TODO: add harmonic and transient
+    fillComboBox(cmbFieldVariable, scalar_variables_steadystate);
+    // fillComboBox(cmbFieldVariable, scalarVariablesHarmonic);
+    // fillComboBox(cmbFieldVariable, scalarVariablesTransient);
+}
+
+void Hermes::Module::AgrosModule::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
+{
+    // TODO: add harmonic and transient
+    fillComboBox(cmbFieldVariable, vector_variables_steadystate);
+    // fillComboBox(cmbFieldVariable, vectorVariablesHarmonic);
+    // fillComboBox(cmbFieldVariable, vectorVariablesTransient);
+}
+
+void Hermes::Module::AgrosModule::fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<PhysicFieldVariable *> list)
+{
+    for(Hermes::vector<PhysicFieldVariable *>::iterator it = list.begin(); it < list.end(); ++it )
+    {
+        PhysicFieldVariable *variable = ((PhysicFieldVariable *) *it);
+        cmbFieldVariable->addItem(QString::fromStdString(variable->name),
+                                  QString::fromStdString(variable->id));
+    }
+}
+
+// ***********************************************************************************************
+
 void readMeshDirtyFix()
 {
     // fix precalulating matrices for mapping of curved elements
@@ -717,3 +906,4 @@ void ViewScalarFilter::precalculate(int order, int mask)
     nodes->add(node, order);
     cur_node = node;
 }
+

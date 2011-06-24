@@ -44,6 +44,14 @@ class ScriptEngineRemote;
 class ProblemDialog;
 class SceneTransformDialog;
 
+namespace Hermes
+{
+    namespace Module
+    {
+        struct AgrosModule;
+    }
+}
+
 class ProblemInfo
 {
 public:
@@ -78,9 +86,13 @@ public:
     // matrix solver
     MatrixSolverType matrixSolver;
 
+    // module
+    Hermes::Module::AgrosModule *module;
+
     ProblemInfo()
     {
         m_hermes = NULL;
+        module = NULL;
         clear();
     }
 
@@ -93,11 +105,7 @@ public:
 
     inline bool isLinear() const { return (linearityType == LinearityType_Linear); }
 
-    inline void setHermes(HermesField *hermes)
-    {
-        if (m_hermes) delete m_hermes;
-        m_hermes = hermes;
-    }
+    void setHermes(HermesField *hermes);
     inline HermesField *hermes() const { return m_hermes; }
 
     inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
