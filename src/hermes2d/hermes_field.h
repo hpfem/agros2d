@@ -110,20 +110,27 @@ struct Module
     bool has_harmonic;
     bool has_transient;
 
+    // all physical variables
     Hermes::vector<PhysicFieldVariable> variables;
 
+    // scalar variables
     Hermes::vector<PhysicFieldVariable *> scalar_variables_steadystate;
     Hermes::vector<PhysicFieldVariable *> scalar_variables_harmonic;
     Hermes::vector<PhysicFieldVariable *> scalar_variables_transient;
 
+    // vector variables
     Hermes::vector<PhysicFieldVariable *> vector_variables_steadystate;
     Hermes::vector<PhysicFieldVariable *> vector_variables_harmonic;
     Hermes::vector<PhysicFieldVariable *> vector_variables_transient;
 
+    // default variables
     PhysicFieldVariable *default_scalar_variable;
     inline PhysicFieldVariableComp default_scalar_variable_comp()
     {
-        return default_scalar_variable->is_scalar ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
+        if (default_scalar_variable)
+            return default_scalar_variable->is_scalar ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
+        else
+            return PhysicFieldVariableComp_Undefined;
     }
     PhysicFieldVariable *default_vector_variable;
 
@@ -135,10 +142,12 @@ struct Module
         scalar_variables_transient(Hermes::vector<PhysicFieldVariable *>()),
         vector_variables_steadystate(Hermes::vector<PhysicFieldVariable *>()),
         vector_variables_harmonic(Hermes::vector<PhysicFieldVariable *>()),
-        vector_variables_transient(Hermes::vector<PhysicFieldVariable *>()) {}
+        vector_variables_transient(Hermes::vector<PhysicFieldVariable *>()),
+        default_scalar_variable(NULL), default_vector_variable(NULL) {}
 
     void read(std::string file_name);
 
+    // get variable by name
     PhysicFieldVariable *get_variable(std::string id);
 };
 
@@ -183,7 +192,7 @@ public:
     virtual QStringList volumeIntegralValueHeader() = 0;
 
     virtual bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) = 0;
-    virtual bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) = 0;
+    virtual bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) = 0;
 
     virtual SceneBoundary *newBoundary() = 0;
     virtual SceneBoundary *newBoundary(PyObject *self, PyObject *args) = 0;
@@ -195,10 +204,10 @@ public:
     virtual QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
     inline virtual void updateTimeFunctions(double time) { }
 
-    virtual PhysicFieldVariable contourPhysicFieldVariable() = 0;
-    virtual PhysicFieldVariable scalarPhysicFieldVariable() = 0;
+    virtual PhysicFieldVariableDeprecated contourPhysicFieldVariable() = 0;
+    virtual PhysicFieldVariableDeprecated scalarPhysicFieldVariable() = 0;
     virtual PhysicFieldVariableComp scalarPhysicFieldVariableComp() = 0;
-    virtual PhysicFieldVariable vectorPhysicFieldVariable() = 0;
+    virtual PhysicFieldVariableDeprecated vectorPhysicFieldVariable() = 0;
 
     virtual void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable) = 0;
     virtual void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable) = 0;
@@ -207,7 +216,8 @@ public:
     virtual void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue) = 0;
     virtual void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue) = 0;
 
-    virtual ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
+    virtual ViewScalarFilter *viewScalarFilter(Hermes::Module::PhysicFieldVariable *physicFieldVariable,
+                                               PhysicFieldVariableComp physicFieldVariableComp) = 0;
 
     virtual inline void deformShape(double3* linVert, int count) {}
     virtual inline void deformShape(double4* linVert, int count) {}
@@ -218,12 +228,14 @@ HermesField *hermesFieldFactory(PhysicField physicField);
 class ViewScalarFilter : public Filter
 {
 public:
-    ViewScalarFilter(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
+                     Hermes::Module::PhysicFieldVariable *physicFieldVariable,
+                     PhysicFieldVariableComp physicFieldVariableComp);
 
     double get_pt_value(double x, double y, int item = H2D_FN_VAL);
 
 protected:
-    PhysicFieldVariable m_physicFieldVariable;
+    Hermes::Module::PhysicFieldVariable *m_physicFieldVariable;
     PhysicFieldVariableComp m_physicFieldVariableComp;
 
     Node* node;

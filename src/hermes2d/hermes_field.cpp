@@ -19,15 +19,15 @@
 
 #include "hermes_field.h"
 
-#include "hermes_general.h"
+// #include "hermes_general.h"
 #include "hermes_electrostatic.h"
-#include "hermes_magnetic.h"
-#include "hermes_heat.h"
-#include "hermes_current.h"
-#include "hermes_elasticity.h"
+// #include "hermes_magnetic.h"
+// #include "hermes_heat.h"
+// #include "hermes_current.h"
+// #include "hermes_elasticity.h"
 // #include "hermes_flow.h"
-#include "hermes_rf.h"
-#include "hermes_acoustic.h"
+// #include "hermes_rf.h"
+// #include "hermes_acoustic.h"
 #include "progressdialog.h"
 
 #include "mesh/h2d_reader.h"
@@ -36,26 +36,28 @@ double actualTime;
 
 HermesField *hermesFieldFactory(PhysicField physicField)
 {
+    return new HermesElectrostatic();
+
     switch (physicField)
     {
     case PhysicField_General:
-        return new HermesGeneral();
+        // return new HermesGeneral();
     case PhysicField_Electrostatic:
-        return new HermesElectrostatic();
+        // return new HermesElectrostatic();
     case PhysicField_Magnetic:
-        return new HermesMagnetic();
+        // return new HermesMagnetic();
     case PhysicField_Heat:
-        return new HermesHeat();
+        // return new HermesHeat();
     case PhysicField_Current:
-        return new HermesCurrent();
+        // return new HermesCurrent();
     case PhysicField_Elasticity:
-        return new HermesElasticity();
+        // return new HermesElasticity();
     case PhysicField_Flow:
         // return new HermesFlow();
     case PhysicField_RF:
-        return new HermesRF();
+        // return new HermesRF();
     case PhysicField_Acoustic:
-        return new HermesAcoustic();
+        // return new HermesAcoustic();
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. hermesObjectFactory()" << endl;
         throw;
@@ -846,7 +848,9 @@ SolutionArray *SolutionAgros::solutionArray(Solution *sln, Space *space, double 
 
 // *********************************************************************************************************************************************
 
-ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
+                                   Hermes::Module::PhysicFieldVariable *physicFieldVariable,
+                                   PhysicFieldVariableComp physicFieldVariableComp)
     : Filter(sln)
 {
     m_physicFieldVariable = physicFieldVariable;

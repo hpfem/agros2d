@@ -83,13 +83,26 @@ void SceneViewSettings::defaultValues()
     showVectors = false;
     showSolutionMesh = false;
 
-    contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
+    if (Util::scene()->problemInfo()->module)
+    {
+        contourPhysicFieldVariable = Util::scene()->problemInfo()->module->default_scalar_variable;
 
-    scalarPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable();
-    scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
-    scalarRangeAuto = true;
+        scalarPhysicFieldVariable = Util::scene()->problemInfo()->module->default_scalar_variable;
+        scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module->default_scalar_variable_comp();
+        scalarRangeAuto = true;
 
-    vectorPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable();
+        vectorPhysicFieldVariable = Util::scene()->problemInfo()->module->default_vector_variable;
+    }
+    else
+    {
+        contourPhysicFieldVariable = NULL;
+
+        scalarPhysicFieldVariable = NULL;
+        scalarPhysicFieldVariableComp = PhysicFieldVariableComp_Undefined;
+        scalarRangeAuto = true;
+
+        vectorPhysicFieldVariable = NULL;
+    }
 }
 
 // *******************************************************************************************************
@@ -1280,8 +1293,8 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
 
     // variable
     QString str = QString("%1 (%2)").
-            arg(physicFieldVariableShortcutString(m_sceneViewSettings.scalarPhysicFieldVariable)).
-            arg(physicFieldVariableUnitsString(m_sceneViewSettings.scalarPhysicFieldVariable));
+            arg(QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable ? m_sceneViewSettings.scalarPhysicFieldVariable->shortname : "")).
+            arg(QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable ? m_sceneViewSettings.scalarPhysicFieldVariable->unit : ""));
 
     renderText(scaleLeft + scaleSize.x / 2.0 - fontMetrics().width(str) / 2.0,
                scaleBorder.y + scaleSize.y - 20.0,
@@ -2273,7 +2286,7 @@ void SceneView::paintSceneModeLabel()
         case SceneViewPostprocessorShow_ScalarView:
         case SceneViewPostprocessorShow_ScalarView3D:
         case SceneViewPostprocessorShow_ScalarView3DSolid:
-            text = physicFieldVariableString(m_sceneViewSettings.scalarPhysicFieldVariable);
+            text = QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable ? m_sceneViewSettings.scalarPhysicFieldVariable->name : "");
             if (m_sceneViewSettings.scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar)
                 text += " - " + physicFieldVariableCompString(m_sceneViewSettings.scalarPhysicFieldVariableComp);
             break;
@@ -4288,7 +4301,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
         m_scene->sceneSolution()->processRangeVector();
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
         m_sceneViewSettings.showVectors = true;
-        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->hermes()->vectorPhysicFieldVariable();
+        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module->default_vector_variable;
         updateGL();
         ErrorResult resultVectorView = saveImageToFile(path + "/vectorview.png", w, h);
         if (resultVectorView.isError())
@@ -4311,9 +4324,9 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
         // scalar field
         m_scene->sceneSolution()->processRangeScalar();
         m_sceneViewSettings.scalarRangeAuto = true;
-        m_sceneViewSettings.scalarPhysicFieldVariable = m_scene->problemInfo()->hermes()->scalarPhysicFieldVariable();
-        m_sceneViewSettings.scalarPhysicFieldVariableComp = m_scene->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
-        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->hermes()->vectorPhysicFieldVariable();
+        m_sceneViewSettings.scalarPhysicFieldVariable = m_scene->problemInfo()->module->default_scalar_variable;
+        m_sceneViewSettings.scalarPhysicFieldVariableComp = m_scene->problemInfo()->module->default_scalar_variable_comp();
+        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module->default_vector_variable;
 
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_ScalarView;
         updateGL();

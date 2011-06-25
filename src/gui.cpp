@@ -58,7 +58,7 @@ void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     logMessage("fillComboBoxScalarVariable()");
 
     // store variable
-    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
 
     // clear combo
     cmbFieldVariable->clear();
@@ -76,7 +76,7 @@ void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     logMessage("fillComboBoxVectorVariable()");
 
     // store variable
-    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
 
     // clear combo
     cmbFieldVariable->clear();

@@ -162,13 +162,13 @@ int HermesMagnetic::numberOfSolution() const
     return (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic) ? 2 : 1;
 }
 
-PhysicFieldVariable HermesMagnetic::contourPhysicFieldVariable()
+PhysicFieldVariableDeprecated HermesMagnetic::contourPhysicFieldVariable()
 {
     return (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic) ?
                 PhysicFieldVariable_Magnetic_VectorPotential : PhysicFieldVariable_Magnetic_VectorPotentialReal;
 }
 
-PhysicFieldVariable HermesMagnetic::scalarPhysicFieldVariable()
+PhysicFieldVariableDeprecated HermesMagnetic::scalarPhysicFieldVariable()
 {
     return (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic) ?
                 PhysicFieldVariable_Magnetic_FluxDensity : PhysicFieldVariable_Magnetic_FluxDensityReal;
@@ -180,7 +180,7 @@ PhysicFieldVariableComp HermesMagnetic::scalarPhysicFieldVariableComp()
                 PhysicFieldVariableComp_Magnitude : PhysicFieldVariableComp_Magnitude;
 }
 
-PhysicFieldVariable HermesMagnetic::vectorPhysicFieldVariable()
+PhysicFieldVariableDeprecated HermesMagnetic::vectorPhysicFieldVariable()
 {
     return (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic) ?
                 PhysicFieldVariable_Magnetic_FluxDensityReal : PhysicFieldVariable_Magnetic_FluxDensityReal;
@@ -781,7 +781,7 @@ void HermesMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
     }
 }
 
-ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
 

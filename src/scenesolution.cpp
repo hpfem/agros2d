@@ -512,7 +512,7 @@ void SceneSolution::processRangeContour()
     if (isSolved())
     {
         ViewScalarFilter *viewScalarFilter;
-        if (isPhysicFieldVariableScalar(sceneView()->sceneViewSettings().contourPhysicFieldVariable))
+        if (sceneView()->sceneViewSettings().contourPhysicFieldVariable->is_scalar)
             viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
                                                                                         PhysicFieldVariableComp_Scalar);
         else

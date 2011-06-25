@@ -53,7 +53,7 @@ public:
                                                                           physicFieldBC == PhysicFieldBC_Acoustic_NormalAcceleration ||
                                                                           physicFieldBC == PhysicFieldBC_Acoustic_Impedance ||
                                                                           physicFieldBC == PhysicFieldBC_Acoustic_MatchedBoundary); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Acoustic_PressureReal ||
+    inline bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Acoustic_PressureReal ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Acoustic_Pressure ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Acoustic_PressureReal ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Acoustic_PressureImag ||
@@ -73,10 +73,10 @@ public:
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
     virtual void updateTimeFunctions(double time);
 
-    PhysicFieldVariable contourPhysicFieldVariable();
-    PhysicFieldVariable scalarPhysicFieldVariable();
+    PhysicFieldVariableDeprecated contourPhysicFieldVariable();
+    PhysicFieldVariableDeprecated scalarPhysicFieldVariable();
     PhysicFieldVariableComp scalarPhysicFieldVariableComp();
-    PhysicFieldVariable vectorPhysicFieldVariable();
+    PhysicFieldVariableDeprecated vectorPhysicFieldVariable();
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
@@ -85,7 +85,7 @@ public:
     void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
     void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
 
-    ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    ViewScalarFilter *viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
 class LocalPointValueAcoustic : public LocalPointValue
@@ -100,7 +100,7 @@ public:
     Point localAccelaration;
 
     LocalPointValueAcoustic(const Point &point);
-    double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
 
@@ -134,7 +134,7 @@ public:
 class ViewScalarFilterAcoustic : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *> sln, PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
 
 protected:

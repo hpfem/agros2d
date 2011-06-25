@@ -51,7 +51,7 @@ public:
 
     inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Electrostatic_Potential ||
                                                                           physicFieldBC == PhysicFieldBC_Electrostatic_SurfaceCharge); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Electrostatic_Potential ||
+    inline bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Electrostatic_Potential ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Electrostatic_ElectricField ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Electrostatic_Displacement ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Electrostatic_EnergyDensity ||
@@ -66,10 +66,10 @@ public:
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
-    inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_Potential; }
-    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_Potential; } // PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL
+    inline PhysicFieldVariableDeprecated contourPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_Potential; }
+    inline PhysicFieldVariableDeprecated scalarPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_Potential; } // PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL
     inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
-    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_ElectricField; }
+    inline PhysicFieldVariableDeprecated vectorPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_ElectricField; }
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     {
@@ -90,7 +90,8 @@ public:
     void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
     void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
 
-    ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    ViewScalarFilter *viewScalarFilter(Hermes::Module::PhysicFieldVariable *physicFieldVariable,
+                                       PhysicFieldVariableComp physicFieldVariableComp);
 };
 
 class LocalPointValueElectrostatic : public LocalPointValue
@@ -104,7 +105,7 @@ public:
     double we;
 
     LocalPointValueElectrostatic(const Point &point);
-    double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
 
@@ -138,7 +139,9 @@ public:
 class ViewScalarFilterElectrostatic : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln,
+                                  Hermes::Module::PhysicFieldVariable *physicFieldVariable,
+                                  PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
 
 protected:
