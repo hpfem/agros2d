@@ -221,7 +221,7 @@ LocalPointValueMagnetic::LocalPointValueMagnetic(const Point &point) : LocalPoin
     }
 }
 
-double LocalPointValueMagnetic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+double LocalPointValueMagnetic::variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariable)
     {

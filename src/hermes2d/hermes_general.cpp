@@ -285,7 +285,7 @@ void HermesGeneral::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegr
     VolumeIntegralValueGeneral *volumeIntegralValueGeneral = dynamic_cast<VolumeIntegralValueGeneral *>(volumeIntegralValue);
 }
 
-ViewScalarFilter *HermesGeneral::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+ViewScalarFilter *HermesGeneral::viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
 
@@ -364,7 +364,7 @@ LocalPointValueGeneral::LocalPointValueGeneral(const Point &point) : LocalPointV
     }
 }
 
-double LocalPointValueGeneral::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+double LocalPointValueGeneral::variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariable)
     {

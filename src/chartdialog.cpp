@@ -378,7 +378,7 @@ void ChartDialog::plotGeometry()
     doChartLine();
 
     // variable
-    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
     if (physicFieldVariable == PhysicFieldVariable_Undefined) return;
     PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
     if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
@@ -485,7 +485,7 @@ void ChartDialog::plotTime()
     doChartLine();
 
     // variable
-    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
     if (physicFieldVariable == PhysicFieldVariable_Undefined) return;
     PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
     if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
@@ -568,7 +568,7 @@ void ChartDialog::doFieldVariable(int index)
 {
     logMessage("ChartDialog::doFieldVariable()");
 
-    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(index).toInt();
+    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbFieldVariable->itemData(index).toInt();
 
     cmbFieldVariableComp->clear();
     if (isPhysicFieldVariableScalar(physicFieldVariable))

@@ -1358,7 +1358,7 @@ void MainWindow::doExportVTKScalar()
             QFile::remove(fileName);
 
         Util::scene()->sceneSolution()->linScalarView().save_data_vtk(fileName.toStdString().c_str(),
-                                                                      physicFieldVariableToStringKey(sceneView->sceneViewSettings().scalarPhysicFieldVariable).toStdString().c_str(),
+                                                                      sceneView->sceneViewSettings().scalarPhysicFieldVariable->id.c_str(),
                                                                       true);
 
         if (!fileName.isEmpty())

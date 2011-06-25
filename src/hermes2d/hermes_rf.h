@@ -55,7 +55,7 @@ public:
                                                                           physicFieldBC == PhysicFieldBC_RF_Port); }
     inline bool teModeCheck(Mode teMode) { return (teMode == Mode_0 || teMode == Mode_01 || teMode == Mode_02); }
 
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_RF_MagneticField ||
+    inline bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_RF_MagneticField ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldXReal ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldXImag ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldXReal ||
@@ -86,10 +86,10 @@ public:
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
-    PhysicFieldVariable contourPhysicFieldVariable();
-    PhysicFieldVariable scalarPhysicFieldVariable();
+    PhysicFieldVariableDeprecated contourPhysicFieldVariable();
+    PhysicFieldVariableDeprecated scalarPhysicFieldVariable();
     PhysicFieldVariableComp scalarPhysicFieldVariableComp();
-    PhysicFieldVariable vectorPhysicFieldVariable();
+    PhysicFieldVariableDeprecated vectorPhysicFieldVariable();
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
@@ -98,7 +98,7 @@ public:
     void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
     void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
 
-    ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    ViewScalarFilter *viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
 class LocalPointValueRF : public LocalPointValue
@@ -120,7 +120,7 @@ public:
     Point poynting_vector;
 
     LocalPointValueRF(const Point &point);
-    double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
 
@@ -151,7 +151,7 @@ public:
 class ViewScalarFilterRF : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterRF(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterRF(Hermes::vector<MeshFunction *> sln, PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
 
 protected:

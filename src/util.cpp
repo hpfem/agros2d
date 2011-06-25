@@ -29,7 +29,7 @@
 bool verbose = false;
 
 static QHash<PhysicField, QString> physicFieldList;
-static QHash<PhysicFieldVariable, QString> physicFieldVariableList;
+static QHash<PhysicFieldVariableDeprecated, QString> physicFieldVariableList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<PhysicFieldBC, QString> physicFieldBCList;
 static QHash<Mode, QString> modeList;
@@ -49,8 +49,8 @@ MeshType meshTypeFromStringKey(const QString &meshType) { return meshTypeList.ke
 QString physicFieldToStringKey(PhysicField physicField) { return physicFieldList[physicField]; }
 PhysicField physicFieldFromStringKey(const QString &physicField) { return physicFieldList.key(physicField); }
 
-QString physicFieldVariableToStringKey(PhysicFieldVariable physicFieldVariable) { return physicFieldVariableList[physicFieldVariable]; }
-PhysicFieldVariable physicFieldVariableFromStringKey(const QString &physicFieldVariable) { return physicFieldVariableList.key(physicFieldVariable); }
+QString physicFieldVariableToStringKey(PhysicFieldVariableDeprecated physicFieldVariable) { return physicFieldVariableList[physicFieldVariable]; }
+PhysicFieldVariableDeprecated physicFieldVariableFromStringKey(const QString &physicFieldVariable) { return physicFieldVariableList.key(physicFieldVariable); }
 
 QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp) { return physicFieldVariableCompList[physicFieldVariableComp]; }
 PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp) { return physicFieldVariableCompList.key(physicFieldVariableComp); }
@@ -269,7 +269,7 @@ void initLists()
     linearityTypeList.insert(LinearityType_Newton, "newton");
 }
 
-QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
+QString physicFieldVariableString(PhysicFieldVariableDeprecated physicFieldVariable)
 {
     logMessage("physicFieldVariableString()");
 
@@ -465,7 +465,7 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
     }
 }
 
-QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable)
+QString physicFieldVariableShortcutString(PhysicFieldVariableDeprecated physicFieldVariable)
 {
     logMessage("physicFieldVariableShortcutString()");
 
@@ -662,7 +662,7 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
     }
 }
 
-QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
+QString physicFieldVariableUnitsString(PhysicFieldVariableDeprecated physicFieldVariable)
 {
     logMessage("physicFieldVariableUnitsString()");
 

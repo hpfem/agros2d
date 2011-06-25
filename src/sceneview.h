@@ -36,6 +36,14 @@ class LocalPointValue;
 class SurfaceIntegralValue;
 class VolumeIntegralValue;
 
+namespace Hermes
+{
+    namespace Module
+    {
+        struct PhysicFieldVariable;
+    }
+}
+
 // scene view
 SceneView *sceneView();
 
@@ -51,17 +59,17 @@ struct SceneViewSettings
     bool showSolutionMesh;
 
     // contour
-    PhysicFieldVariable contourPhysicFieldVariable;
+    Hermes::Module::PhysicFieldVariable *contourPhysicFieldVariable;
 
     // scalar view
-    PhysicFieldVariable scalarPhysicFieldVariable;
+    Hermes::Module::PhysicFieldVariable *scalarPhysicFieldVariable;
     PhysicFieldVariableComp scalarPhysicFieldVariableComp;
     bool scalarRangeAuto;
     double scalarRangeMin;
     double scalarRangeMax;
 
     // vector view
-    PhysicFieldVariable vectorPhysicFieldVariable;
+    Hermes::Module::PhysicFieldVariable *vectorPhysicFieldVariable;
 
     SceneViewSettings();
 

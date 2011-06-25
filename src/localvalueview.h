@@ -61,7 +61,7 @@ public:
 
     LocalPointValue(const Point &point);
 
-    virtual double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
+    virtual double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
     virtual QStringList variables() = 0;
 };
 

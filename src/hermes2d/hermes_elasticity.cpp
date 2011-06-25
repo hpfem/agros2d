@@ -542,7 +542,7 @@ void HermesElasticity::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInt
 
 }
 
-ViewScalarFilter *HermesElasticity::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+ViewScalarFilter *HermesElasticity::viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
     Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
@@ -731,7 +731,7 @@ LocalPointValueElasticity::LocalPointValueElasticity(const Point &point) : Local
     }
 }
 
-double LocalPointValueElasticity::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+double LocalPointValueElasticity::variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariable)
     {

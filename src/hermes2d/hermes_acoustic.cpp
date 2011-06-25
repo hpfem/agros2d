@@ -338,12 +338,12 @@ private:
 
 // ****************************************************************************************************
 
-PhysicFieldVariable HermesAcoustic::contourPhysicFieldVariable()
+PhysicFieldVariableDeprecated HermesAcoustic::contourPhysicFieldVariable()
 {
     return PhysicFieldVariable_Acoustic_PressureReal;
 }
 
-PhysicFieldVariable HermesAcoustic::scalarPhysicFieldVariable()
+PhysicFieldVariableDeprecated HermesAcoustic::scalarPhysicFieldVariable()
 {
     return PhysicFieldVariable_Acoustic_PressureReal;
 }
@@ -353,7 +353,7 @@ PhysicFieldVariableComp HermesAcoustic::scalarPhysicFieldVariableComp()
     return PhysicFieldVariableComp_Scalar;
 }
 
-PhysicFieldVariable HermesAcoustic::vectorPhysicFieldVariable()
+PhysicFieldVariableDeprecated HermesAcoustic::vectorPhysicFieldVariable()
 {
     return PhysicFieldVariable_Acoustic_LocalAcceleration;
 }
@@ -700,7 +700,7 @@ void HermesAcoustic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
     addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueAcoustic->pressureReal) + sqr(volumeIntegralValueAcoustic->pressureImag)), 0, 'e', 3), "N");
 }
 
-ViewScalarFilter *HermesAcoustic::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+ViewScalarFilter *HermesAcoustic::viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
     Solution *sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
@@ -846,7 +846,7 @@ LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPoin
     }
 }
 
-double LocalPointValueAcoustic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+double LocalPointValueAcoustic::variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariable)
     {

@@ -295,7 +295,7 @@ void HermesCurrent::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegr
     addTreeWidgetItemValue(currentNode, tr("Power Losses:"), QString("%1").arg(volumeIntegralValueCurrent->powerLosses, 0, 'e', 3), tr("W"));
 }
 
-ViewScalarFilter *HermesCurrent::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+ViewScalarFilter *HermesCurrent::viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
     return new ViewScalarFilterCurrent(sln1,
@@ -378,7 +378,7 @@ LocalPointValueCurrent::LocalPointValueCurrent(const Point &point) : LocalPointV
     }
 }
 
-double LocalPointValueCurrent::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+double LocalPointValueCurrent::variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariable)
     {

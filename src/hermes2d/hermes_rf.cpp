@@ -391,12 +391,12 @@ int HermesRF::numberOfSolution() const
     return (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic) ? 2 : 1;
 }
 
-PhysicFieldVariable HermesRF::contourPhysicFieldVariable()
+PhysicFieldVariableDeprecated HermesRF::contourPhysicFieldVariable()
 {
     return PhysicFieldVariable_RF_ElectricFieldReal;
 }
 
-PhysicFieldVariable HermesRF::scalarPhysicFieldVariable()
+PhysicFieldVariableDeprecated HermesRF::scalarPhysicFieldVariable()
 {
     return PhysicFieldVariable_RF_ElectricFieldReal;
 }
@@ -406,7 +406,7 @@ PhysicFieldVariableComp HermesRF::scalarPhysicFieldVariableComp()
     return PhysicFieldVariableComp_Magnitude;
 }
 
-PhysicFieldVariable HermesRF::vectorPhysicFieldVariable()
+PhysicFieldVariableDeprecated HermesRF::vectorPhysicFieldVariable()
 {
     return PhysicFieldVariable_RF_ElectricFieldReal;
 }
@@ -807,7 +807,7 @@ void HermesRF::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralVal
     magneticNode->setExpanded(true);
 }
 
-ViewScalarFilter *HermesRF::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+ViewScalarFilter *HermesRF::viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
 
@@ -944,7 +944,7 @@ LocalPointValueRF::LocalPointValueRF(const Point &point) : LocalPointValue(point
     }
 }
 
-double LocalPointValueRF::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+double LocalPointValueRF::variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariable)
     {

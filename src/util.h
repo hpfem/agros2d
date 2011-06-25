@@ -382,7 +382,7 @@ enum PhysicField
     PhysicField_Acoustic
 };
 
-enum PhysicFieldVariable
+enum PhysicFieldVariableDeprecated
 {
     PhysicFieldVariable_Undefined,
     PhysicFieldVariable_None,
@@ -516,7 +516,7 @@ enum Mode
     Mode_02
 };
 
-inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
+inline bool isPhysicFieldVariableScalar(PhysicFieldVariableDeprecated physicFieldVariable)
 {
     switch (physicFieldVariable)
     {
@@ -676,9 +676,9 @@ enum SceneViewPostprocessorShow
 };
 
 // captions
-QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable);
-QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable);
-QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable);
+QString physicFieldVariableString(PhysicFieldVariableDeprecated physicFieldVariable);
+QString physicFieldVariableUnitsString(PhysicFieldVariableDeprecated physicFieldVariable);
+QString physicFieldVariableShortcutString(PhysicFieldVariableDeprecated physicFieldVariable);
 QString physicFieldString(PhysicField physicField);
 QString analysisTypeString(AnalysisType analysisType);
 QString physicFieldBCString(PhysicFieldBC physicFieldBC);
@@ -725,8 +725,8 @@ AnalysisType analysisTypeFromStringKey(const QString &analysisType);
 QString meshTypeToStringKey(MeshType meshType);
 MeshType meshTypeFromStringKey(const QString &meshType);
 
-QString physicFieldVariableToStringKey(PhysicFieldVariable physicFieldVariable);
-PhysicFieldVariable physicFieldVariableFromStringKey(const QString &physicFieldVariable);
+QString physicFieldVariableToStringKey(PhysicFieldVariableDeprecated physicFieldVariable);
+PhysicFieldVariableDeprecated physicFieldVariableFromStringKey(const QString &physicFieldVariable);
 
 QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp);
 PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp);

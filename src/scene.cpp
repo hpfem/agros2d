@@ -1128,18 +1128,18 @@ void Scene::doProblemProperties()
         Util::scene()->problemInfo()->hermes()->fillComboBoxVectorVariable(cmbVectorFieldVariable);
 
         // determines whether the selected field exists
-        if (cmbScalarFieldVariable->findData(sceneView()->sceneViewSettings().contourPhysicFieldVariable) == -1)
-            sceneView()->sceneViewSettings().contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
+        if (cmbScalarFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().contourPhysicFieldVariable->id)) == -1)
+            sceneView()->sceneViewSettings().contourPhysicFieldVariable = Util::scene()->problemInfo()->module->default_scalar_variable;
 
-        if (cmbScalarFieldVariable->findData(sceneView()->sceneViewSettings().scalarPhysicFieldVariable) == -1)
+        if (cmbScalarFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().scalarPhysicFieldVariable->id)) == -1)
         {
-            sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable();
-            sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
+            sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->problemInfo()->module->default_scalar_variable;
+            sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module->default_scalar_variable_comp();
             sceneView()->sceneViewSettings().scalarRangeAuto = true;
         }
 
-        if (cmbVectorFieldVariable->findData(sceneView()->sceneViewSettings().vectorPhysicFieldVariable) == -1)
-            sceneView()->sceneViewSettings().vectorPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable();
+        if (cmbVectorFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().vectorPhysicFieldVariable->id)) == -1)
+            sceneView()->sceneViewSettings().vectorPhysicFieldVariable = Util::scene()->problemInfo()->module->default_vector_variable;
 
         delete cmbScalarFieldVariable;
         delete cmbVectorFieldVariable;
