@@ -562,17 +562,17 @@ QString ReportDialog::replaceTemplates(const QString &source)
         destination.remove("[Figure.Order]", Qt::CaseSensitive);
 
     if (chkFigureScalarView->isChecked())
-        destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", tr("ScalarView: ") + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable())), Qt::CaseSensitive);
+        destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", tr("ScalarView: ") + QString::fromStdString(Util::scene()->problemInfo()->module->view_default_scalar_variable->name)), Qt::CaseSensitive);
     else
         destination.remove("[Figure.ScalarView]", Qt::CaseSensitive);
 
     if (chkFigureContourView->isChecked())
-        destination.replace("[Figure.ContourView]", htmlFigure("contourview.png", tr("ContourView: ") + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable())), Qt::CaseSensitive);
+        destination.replace("[Figure.ContourView]", htmlFigure("contourview.png", tr("ContourView: ") + QString::fromStdString(Util::scene()->problemInfo()->module->view_default_scalar_variable->name)), Qt::CaseSensitive);
     else
         destination.remove("[Figure.ContourView]", Qt::CaseSensitive);
 
     if (chkFigureVectorView->isChecked())
-        destination.replace("[Figure.VectorView]", htmlFigure("vectorview.png", tr("VectorView: ") + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable())), Qt::CaseSensitive);
+        destination.replace("[Figure.VectorView]", htmlFigure("vectorview.png", tr("VectorView: ") + QString::fromStdString(Util::scene()->problemInfo()->module->view_default_vector_variable->name)), Qt::CaseSensitive);
     else
         destination.remove("[Figure.VectorView]", Qt::CaseSensitive);
 

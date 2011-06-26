@@ -23,53 +23,102 @@
 #include "scenemarker.h"
 #include "hermes2d.h"
 
-LocalPointValue::LocalPointValue(const Point &point)
+LocalPointValue::LocalPointValue(const Point &point) : point(point)
 {
     logMessage("LocalPointValue::LocalPointValue()");
+}
+
+void LocalPointValue::calculate()
+{
+    values.clear();
 
     this->point = point;
     if (Util::scene()->sceneSolution()->isSolved() &&
             Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         Util::scene()->problemInfo()->hermes()->updateTimeFunctions(Util::scene()->sceneSolution()->time());
 
-    PointValue val = pointValue(Util::scene()->sceneSolution()->sln(), point);
-
-    value = val.value;
-    derivative = val.derivative;
-    material = val.marker;
-}
-
-PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
-{
-    logMessage("LocalPointValue::pointValue()");
-
-    double tmpValue;
-    Point tmpDerivative;
-    SceneMaterial *tmpMaterial = NULL;
+    Solution *sln = Util::scene()->sceneSolution()->sln();
 
     if (sln)
     {
         int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), point);
         if (index != -1)
         {
+            double value;
             if ((Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) &&
                     Util::scene()->sceneSolution()->timeStep() == 0)
                 // const solution at first time step
-                tmpValue = Util::scene()->problemInfo()->initialCondition.number;
-            else                
-                tmpValue = sln->get_pt_value(point.x, point.y, H2D_FN_VAL_0);
+                value = Util::scene()->problemInfo()->initialCondition.number;
+            else
+                value = sln->get_pt_value(point.x, point.y, H2D_FN_VAL_0);
 
-            tmpDerivative.x =  sln->get_pt_value(point.x, point.y, H2D_FN_DX_0);
-            tmpDerivative.y =  sln->get_pt_value(point.x, point.y, H2D_FN_DY_0);
+            Point derivative;
+            derivative.x = sln->get_pt_value(point.x, point.y, H2D_FN_DX_0);
+            derivative.y = sln->get_pt_value(point.x, point.y, H2D_FN_DY_0);
 
             // find marker
             Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
-            tmpMaterial = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+            SceneMaterial *tmpMaterial = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+
+            // parser variables
+            mu::Parser parser;
+
+            parser.DefineConst("EPS0", EPS0);
+            parser.DefineConst("MU0", MU0);
+
+            double px, py;
+            double pvalue, pdx, pdy;
+
+            parser.DefineVar("x", &px);
+            parser.DefineVar("y", &py);
+            parser.DefineVar("value", &pvalue);
+            parser.DefineVar("dx", &pdx);
+            parser.DefineVar("dy", &pdy);
+
+            // set variables
+            px = point.x;
+            py = point.y;
+            pvalue = value;
+            pdx = derivative.x;
+            pdy = derivative.y;
+
+            prepareParser(tmpMaterial, &parser);
+
+            // parse expression
+            for (Hermes::vector<Hermes::Module::PhysicFieldVariable *>::iterator it = Util::scene()->problemInfo()->module->local_variables.begin();
+                 it < Util::scene()->problemInfo()->module->local_variables.end(); ++it )
+            {
+                try
+                {
+                    PointValue pointValue;
+                    if (((Hermes::Module::PhysicFieldVariable *) *it)->is_scalar)
+                    {
+                        parser.SetExpr(((Hermes::Module::PhysicFieldVariable *) *it)->expression.scalar);
+                        pointValue.scalar = parser.Eval();
+                    }
+                    else
+                    {
+                        parser.SetExpr(((Hermes::Module::PhysicFieldVariable *) *it)->expression.comp_x);
+                        pointValue.vector.x = parser.Eval();
+                        parser.SetExpr(((Hermes::Module::PhysicFieldVariable *) *it)->expression.comp_y);
+                        pointValue.vector.y = parser.Eval();
+                    }
+                    values[((Hermes::Module::PhysicFieldVariable *) *it)] = pointValue;
+
+                }
+                catch (mu::Parser::exception_type &e)
+                {
+                    std::cout << e.GetMsg() << endl;
+                }
+            }
         }
     }
-
-    return PointValue(tmpValue, tmpDerivative, tmpMaterial);
 }
+
+void LocalPointValue::prepareParser(SceneMaterial *material, mu::Parser *parser)
+{
+}
+
 
 // *************************************************************************************************************************************
 
@@ -209,13 +258,40 @@ void LocalPointValueView::doShowPoint()
     addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo()->labelX() + ":", QString("%1").arg(point.x, 0, 'f', 5), tr("m"));
     addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo()->labelY() + ":", QString("%1").arg(point.y, 0, 'f', 5), tr("m"));
 
-    trvWidget->insertTopLevelItem(0, pointNode);
-
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (Util::scene()->problemInfo()->module)
     {
-        LocalPointValue *value = Util::scene()->problemInfo()->hermes()->localPointValue(point);
-        Util::scene()->problemInfo()->hermes()->showLocalValue(trvWidget, value);
-        delete value;
+        if (Util::scene()->sceneSolution()->isSolved())
+        {
+            QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
+            fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module->name));
+            fieldNode->setExpanded(true);
+
+            trvWidget->insertTopLevelItem(0, pointNode);
+
+            LocalPointValue *value = Util::scene()->problemInfo()->hermes()->localPointValue(point);
+
+            for (std::map<Hermes::Module::PhysicFieldVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
+            {
+                if (it->first->is_scalar)
+                {
+                    // scalar variable
+                    addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second.scalar, 0, 'e', 3), QString::fromStdString(it->first->unit));
+                }
+                else
+                {
+                    // vector variable
+                    QTreeWidgetItem *itemVector = new QTreeWidgetItem(fieldNode);
+                    itemVector->setText(0, QString::fromStdString(it->first->name));
+                    itemVector->setExpanded(true);
+
+                    addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(it->second.vector.x, 0, 'e', 3), QString::fromStdString(it->first->unit));
+                    addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(it->second.vector.y, 0, 'e', 3), QString::fromStdString(it->first->unit));
+                    addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + ": ", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3), QString::fromStdString(it->first->unit));
+                }
+            }
+
+            delete value;
+        }
     }
 
     trvWidget->resizeColumnToContents(2);

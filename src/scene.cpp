@@ -96,7 +96,8 @@ void ProblemInfo::clear()
 void ProblemInfo::setHermes(HermesField *hermes)
 {
     if (!module)
-        module = new Hermes::Module::AgrosModule();
+        module = new Hermes::Module::ModuleAgros(Util::scene()->problemInfo()->problemType,
+                                                 Util::scene()->problemInfo()->analysisType);
 
     module->read((datadir() + "/modules/electrostatics.xml").toStdString());
 
@@ -1123,23 +1124,26 @@ void Scene::doProblemProperties()
     {
         // FIXME - add QList of variables
         QComboBox *cmbScalarFieldVariable = new QComboBox();
-        Util::scene()->problemInfo()->hermes()->fillComboBoxScalarVariable(cmbScalarFieldVariable);
+        Util::scene()->problemInfo()->module->fillComboBoxScalarVariable(cmbScalarFieldVariable);
         QComboBox *cmbVectorFieldVariable = new QComboBox();
-        Util::scene()->problemInfo()->hermes()->fillComboBoxVectorVariable(cmbVectorFieldVariable);
+        Util::scene()->problemInfo()->module->fillComboBoxVectorVariable(cmbVectorFieldVariable);
 
         // determines whether the selected field exists
-        if (cmbScalarFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().contourPhysicFieldVariable->id)) == -1)
-            sceneView()->sceneViewSettings().contourPhysicFieldVariable = Util::scene()->problemInfo()->module->default_scalar_variable;
+        if (!sceneView()->sceneViewSettings().contourPhysicFieldVariable)
+            // if (cmbScalarFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().contourPhysicFieldVariable->id)) == -1)
+            sceneView()->sceneViewSettings().contourPhysicFieldVariable = Util::scene()->problemInfo()->module->view_default_scalar_variable;
 
-        if (cmbScalarFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().scalarPhysicFieldVariable->id)) == -1)
+        if (!sceneView()->sceneViewSettings().scalarPhysicFieldVariable)
+            // if (cmbScalarFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().scalarPhysicFieldVariable->id)) == -1)
         {
-            sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->problemInfo()->module->default_scalar_variable;
-            sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module->default_scalar_variable_comp();
+            sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->problemInfo()->module->view_default_scalar_variable;
+            sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module->view_default_scalar_variable_comp();
             sceneView()->sceneViewSettings().scalarRangeAuto = true;
         }
 
-        if (cmbVectorFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().vectorPhysicFieldVariable->id)) == -1)
-            sceneView()->sceneViewSettings().vectorPhysicFieldVariable = Util::scene()->problemInfo()->module->default_vector_variable;
+        if (!sceneView()->sceneViewSettings().vectorPhysicFieldVariable)
+            // if (cmbVectorFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().vectorPhysicFieldVariable->id)) == -1)
+            sceneView()->sceneViewSettings().vectorPhysicFieldVariable = Util::scene()->problemInfo()->module->view_default_vector_variable;
 
         delete cmbScalarFieldVariable;
         delete cmbVectorFieldVariable;

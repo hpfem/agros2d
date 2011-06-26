@@ -369,6 +369,9 @@ void ChartDialog::plotGeometry()
 {
     logMessage("ChartDialog::plotGeometry()");
 
+    if (!Util::scene()->problemInfo()->module)
+        return;
+
     if (!txtStartX->evaluate()) return;
     if (!txtStartY->evaluate()) return;
     if (!txtEndX->evaluate()) return;
@@ -378,8 +381,10 @@ void ChartDialog::plotGeometry()
     doChartLine();
 
     // variable
-    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
-    if (physicFieldVariable == PhysicFieldVariable_Undefined) return;
+    Hermes::Module::PhysicFieldVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    if (!physicFieldVariable)
+        return;
+
     PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
     if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
 
@@ -391,8 +396,8 @@ void ChartDialog::plotGeometry()
     QwtText text("");
     text.setFont(QFont("Helvetica", 10, QFont::Normal));
     text.setText(QString("%1 (%2)").
-                 arg(physicFieldVariableString(physicFieldVariable)).
-                 arg(physicFieldVariableUnitsString(physicFieldVariable)));
+                 arg(QString::fromStdString(physicFieldVariable->name)).
+                 arg(QString::fromStdString(physicFieldVariable->unit)));
     chart->setAxisTitle(QwtPlot::yLeft, text);
 
     // table
@@ -446,7 +451,8 @@ void ChartDialog::plotGeometry()
         if (radAxisY->isChecked()) xval[i] = points.at(i).y;
 
         // y value
-        yval[i] = localPointValue->variableValue(physicFieldVariable, physicFieldVariableComp);
+        // FIXME
+        yval[i] = localPointValue->variableValue(PhysicFieldVariable_Electrostatic_Potential, physicFieldVariableComp);
 
         // table
         row.clear();
@@ -479,14 +485,19 @@ void ChartDialog::plotTime()
 {
     logMessage("ChartDialog::plotTime()");
 
+    if (!Util::scene()->problemInfo()->module)
+        return;
+
     if (!txtPointX->evaluate()) return;
     if (!txtPointY->evaluate()) return;
 
     doChartLine();
 
     // variable
-    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
-    if (physicFieldVariable == PhysicFieldVariable_Undefined) return;
+    Hermes::Module::PhysicFieldVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    if (!physicFieldVariable)
+        return;
+
     PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
     if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
 
@@ -501,8 +512,8 @@ void ChartDialog::plotTime()
     QwtText text("");
     text.setFont(QFont("Helvetica", 10, QFont::Normal));
     text.setText(QString("%1 (%2)").
-                 arg(physicFieldVariableString(physicFieldVariable)).
-                 arg(physicFieldVariableUnitsString(physicFieldVariable)));
+                 arg(QString::fromStdString(physicFieldVariable->name)).
+                 arg(QString::fromStdString(physicFieldVariable->unit)));
     chart->setAxisTitle(QwtPlot::yLeft, text);
 
     // table
@@ -530,7 +541,8 @@ void ChartDialog::plotTime()
         xval[i] = Util::scene()->sceneSolution()->time();
 
         // y value
-        yval[i] = localPointValue->variableValue(physicFieldVariable, physicFieldVariableComp);
+        // FIXME
+        yval[i] = localPointValue->variableValue(PhysicFieldVariable_Electrostatic_Potential, physicFieldVariableComp);
 
         // table
         row.clear();
@@ -568,10 +580,15 @@ void ChartDialog::doFieldVariable(int index)
 {
     logMessage("ChartDialog::doFieldVariable()");
 
-    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbFieldVariable->itemData(index).toInt();
+    if (!Util::scene()->problemInfo()->module)
+        return;
+
+    Hermes::Module::PhysicFieldVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    if (!physicFieldVariable)
+        return;
 
     cmbFieldVariableComp->clear();
-    if (isPhysicFieldVariableScalar(physicFieldVariable))
+    if (physicFieldVariable->is_scalar)
     {
         cmbFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
     }

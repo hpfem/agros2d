@@ -26,41 +26,50 @@ class ValueLineEdit;
 class SceneMaterial;
 class Solution;
 
+namespace Hermes
+{
+    namespace Module
+    {
+        struct PhysicFieldVariable;
+    }
+}
+
 struct PointValue
 {
     PointValue()
     {
-        this->value = 0.0;
-        this->derivative = Point();
-        this->marker = NULL;
+        this->scalar = 0.0;
+        this->vector = Point();
+        this->material = NULL;
     }
 
-    PointValue(double value, Point derivative, SceneMaterial *marker)
+    PointValue(double scalar, Point vector, SceneMaterial *material)
     {
-        this->value = value;
-        this->derivative = derivative;
-        this->marker = marker;
+        this->scalar = scalar;
+        this->vector = vector;
+        this->material = material;
     }
 
-    double value;
-    Point derivative;
-    SceneMaterial *marker;
+    double scalar;
+    Point vector;
+    SceneMaterial *material;
 };
 
 class LocalPointValue
 {
 protected:
-    double value;
-    Point derivative;
-    SceneMaterial *material;
-
-    PointValue pointValue(Solution *sln, const Point &point);
+    virtual void prepareParser(SceneMaterial *material, mu::Parser *parser) = 0;
 
 public:
+    // point
     Point point;
+
+    // variables
+    std::map<Hermes::Module::PhysicFieldVariable *, PointValue> values;
 
     LocalPointValue(const Point &point);
 
+    void calculate();
     virtual double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
     virtual QStringList variables() = 0;
 };

@@ -66,27 +66,6 @@ public:
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
-    inline PhysicFieldVariableDeprecated contourPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_Potential; }
-    inline PhysicFieldVariableDeprecated scalarPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_Potential; } // PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
-    inline PhysicFieldVariableDeprecated vectorPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_ElectricField; }
-
-    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_Potential), PhysicFieldVariable_Electrostatic_Potential);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_ElectricField), PhysicFieldVariable_Electrostatic_ElectricField);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_Displacement), PhysicFieldVariable_Electrostatic_Displacement);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_EnergyDensity), PhysicFieldVariable_Electrostatic_EnergyDensity);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_Permittivity), PhysicFieldVariable_Electrostatic_Permittivity);
-    }
-
-    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_ElectricField), PhysicFieldVariable_Electrostatic_ElectricField);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_Displacement), PhysicFieldVariable_Electrostatic_Displacement);
-    }
-
-    void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
     void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
     void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
 
@@ -105,8 +84,12 @@ public:
     double we;
 
     LocalPointValueElectrostatic(const Point &point);
+
     double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
+
+protected:
+    void prepareParser(SceneMaterial *material, mu::Parser *parser);
 };
 
 class SurfaceIntegralValueElectrostatic : public SurfaceIntegralValue
@@ -140,12 +123,13 @@ class ViewScalarFilterElectrostatic : public ViewScalarFilter
 {
 public:
     ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln,
-                                  Hermes::Module::PhysicFieldVariable *physicFieldVariable,
-                                  PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
+                                  std::string expression);
 
 protected:
-    void calculateVariable(int i);
+    double pepsr;
+    double prho;
+
+    void prepareParser(SceneMaterial *material);
 };
 
 class SceneBoundaryElectrostatic : public SceneBoundary

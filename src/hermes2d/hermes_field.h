@@ -59,51 +59,64 @@ public:
 
 namespace Hermes
 {
+
+inline std::string analysis_type_tostring(AnalysisType analysisType)
+{
+    if (analysisType == AnalysisType_SteadyState)
+        return "steadystate";
+    else if (analysisType == AnalysisType_Harmonic)
+        return "harmonic";
+    else if (analysisType == AnalysisType_Transient)
+        return "transient";
+}
+
 namespace Module
 {
 
 struct PhysicFieldVariable
 {
-    struct Form
+    struct Expression
     {
-        Form() : planar_scalar(""), planar_comp_x(""), planar_comp_y(""),
-            axi_scalar(""), axi_comp_r(""), axi_comp_z("") {}
+        Expression() : scalar(""), comp_x(""), comp_y("") {}
 
-        Form(QDomElement *element);
+        Expression(QDomElement *element, ProblemType problem_type);
 
-        std::string planar_scalar;
-        std::string planar_comp_x;
-        std::string planar_comp_y;
+        // expressions
+        std::string scalar;
+        std::string comp_x;
+        std::string comp_y;
 
-        std::string axi_scalar;
-        std::string axi_comp_r;
-        std::string axi_comp_z;
-
-        void read(QDomElement *element);
+        void read(QDomElement *element, ProblemType problem_type);
     };
 
     PhysicFieldVariable() : id(""), name(""), shortname(""), unit(""),
-        steadystate(Form()), harmonic(Form()), transient(Form()) {}
+        expression(Expression()) {}
 
-    PhysicFieldVariable(QDomElement *element);
+    PhysicFieldVariable(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
 
+    // id
     std::string id;
+    // name
     std::string name;
+    // short name
     std::string shortname;
+    // unit
     std::string unit;
 
+    // is scalar variable
     bool is_scalar;
 
-    Form steadystate;
-    Form harmonic;
-    Form transient;
+    // expressions
+    Expression expression;
 
-    void read(QDomElement *element);
+    void read(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
 };
 
 struct Module
 {
+    // name
     std::string name;
+    // description
     std::string description;
 
     bool has_steady_state;
@@ -113,47 +126,57 @@ struct Module
     // all physical variables
     Hermes::vector<PhysicFieldVariable> variables;
 
-    // scalar variables
-    Hermes::vector<PhysicFieldVariable *> scalar_variables_steadystate;
-    Hermes::vector<PhysicFieldVariable *> scalar_variables_harmonic;
-    Hermes::vector<PhysicFieldVariable *> scalar_variables_transient;
-
-    // vector variables
-    Hermes::vector<PhysicFieldVariable *> vector_variables_steadystate;
-    Hermes::vector<PhysicFieldVariable *> vector_variables_harmonic;
-    Hermes::vector<PhysicFieldVariable *> vector_variables_transient;
+    // view
+    // scalar and vector variables
+    Hermes::vector<PhysicFieldVariable *> view_scalar_variables;
+    Hermes::vector<PhysicFieldVariable *> view_vector_variables;
 
     // default variables
-    PhysicFieldVariable *default_scalar_variable;
-    inline PhysicFieldVariableComp default_scalar_variable_comp()
+    PhysicFieldVariable *view_default_scalar_variable;
+    inline PhysicFieldVariableComp view_default_scalar_variable_comp()
     {
-        if (default_scalar_variable)
-            return default_scalar_variable->is_scalar ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
+        if (view_default_scalar_variable)
+            return view_default_scalar_variable->is_scalar ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
         else
             return PhysicFieldVariableComp_Undefined;
     }
-    PhysicFieldVariable *default_vector_variable;
+    PhysicFieldVariable *view_default_vector_variable;
 
-    Module() : name(""), description(""),
-        has_steady_state(false), has_harmonic(false), has_transient(false),
-        variables(Hermes::vector<PhysicFieldVariable>()),
-        scalar_variables_steadystate(Hermes::vector<PhysicFieldVariable *>()),
-        scalar_variables_harmonic(Hermes::vector<PhysicFieldVariable *>()),
-        scalar_variables_transient(Hermes::vector<PhysicFieldVariable *>()),
-        vector_variables_steadystate(Hermes::vector<PhysicFieldVariable *>()),
-        vector_variables_harmonic(Hermes::vector<PhysicFieldVariable *>()),
-        vector_variables_transient(Hermes::vector<PhysicFieldVariable *>()),
-        default_scalar_variable(NULL), default_vector_variable(NULL) {}
+    // local variables
+    Hermes::vector<PhysicFieldVariable *> local_variables;
 
+    // surface integrals
+    Hermes::vector<PhysicFieldVariable *> surface_variables;
+
+    // volume integrals
+    Hermes::vector<PhysicFieldVariable *> volume_variables;
+
+    // default contructor
+    Module(ProblemType problemType, AnalysisType analysisType);
+
+    // read form xml
     void read(std::string file_name);
+    // clear
+    void clear();
+
+    inline ProblemType get_problem_type() { return m_problemType; }
+    inline AnalysisType get_analysis_type() { return m_analysisType; }
 
     // get variable by name
     PhysicFieldVariable *get_variable(std::string id);
+
+    // get expression
+    static std::string get_expression(PhysicFieldVariable *physicFieldVariable,
+                                      PhysicFieldVariableComp physicFieldVariableComp);
+
+private:
+    ProblemType m_problemType;
+    AnalysisType m_analysisType;
 };
 
-struct AgrosModule : public Module
+struct ModuleAgros : public Module
 {
-    AgrosModule() : Module() {}
+    ModuleAgros(ProblemType problemType, AnalysisType analysisType) : Module(problemType, analysisType) {}
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
@@ -204,15 +227,6 @@ public:
     virtual QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
     inline virtual void updateTimeFunctions(double time) { }
 
-    virtual PhysicFieldVariableDeprecated contourPhysicFieldVariable() = 0;
-    virtual PhysicFieldVariableDeprecated scalarPhysicFieldVariable() = 0;
-    virtual PhysicFieldVariableComp scalarPhysicFieldVariableComp() = 0;
-    virtual PhysicFieldVariableDeprecated vectorPhysicFieldVariable() = 0;
-
-    virtual void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable) = 0;
-    virtual void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable) = 0;
-
-    virtual void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue) = 0;
     virtual void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue) = 0;
     virtual void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue) = 0;
 
@@ -229,25 +243,21 @@ class ViewScalarFilter : public Filter
 {
 public:
     ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
-                     Hermes::Module::PhysicFieldVariable *physicFieldVariable,
-                     PhysicFieldVariableComp physicFieldVariableComp);
+                     std::string expression);
 
     double get_pt_value(double x, double y, int item = H2D_FN_VAL);
 
 protected:
-    Hermes::Module::PhysicFieldVariable *m_physicFieldVariable;
-    PhysicFieldVariableComp m_physicFieldVariableComp;
-
     Node* node;
 
-    double *dudx1, *dudy1, *dudx2, *dudy2, *dudx3, *dudy3;
-    double *value1, *value2, *value3;
-    double *x, *y;
+    // parser variables
+    mu::Parser parser;
 
-    SceneMaterial *material;
+    double px, py;
+    double pvalue, pdx, pdy;
 
     void precalculate(int order, int mask);
-    virtual void calculateVariable(int i) = 0;
+    virtual void prepareParser(SceneMaterial *material) = 0;
 };
 
 // mesh fix

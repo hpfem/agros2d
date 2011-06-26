@@ -37,7 +37,16 @@ CONFIG += warn_off
 OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
-SOURCES += util.cpp \
+SOURCES += muparser/muParserBase.cpp \
+    muparser/muParserBytecode.cpp \
+    muparser/muParserCallback.cpp \
+    muparser/muParser.cpp \
+    muparser/muParserDLL.cpp \
+    muparser/muParserError.cpp \
+    muparser/muParserInt.cpp \
+    muparser/muParserTest.cpp \
+    muparser/muParserTokenReader.cpp \
+    util.cpp \
     value.cpp \
     scene.cpp \
     gui.cpp \

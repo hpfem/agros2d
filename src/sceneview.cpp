@@ -85,13 +85,13 @@ void SceneViewSettings::defaultValues()
 
     if (Util::scene()->problemInfo()->module)
     {
-        contourPhysicFieldVariable = Util::scene()->problemInfo()->module->default_scalar_variable;
+        contourPhysicFieldVariable = Util::scene()->problemInfo()->module->view_default_scalar_variable;
 
-        scalarPhysicFieldVariable = Util::scene()->problemInfo()->module->default_scalar_variable;
-        scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module->default_scalar_variable_comp();
+        scalarPhysicFieldVariable = Util::scene()->problemInfo()->module->view_default_scalar_variable;
+        scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module->view_default_scalar_variable_comp();
         scalarRangeAuto = true;
 
-        vectorPhysicFieldVariable = Util::scene()->problemInfo()->module->default_vector_variable;
+        vectorPhysicFieldVariable = Util::scene()->problemInfo()->module->view_default_vector_variable;
     }
     else
     {
@@ -4301,7 +4301,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
         m_scene->sceneSolution()->processRangeVector();
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
         m_sceneViewSettings.showVectors = true;
-        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module->default_vector_variable;
+        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module->view_default_vector_variable;
         updateGL();
         ErrorResult resultVectorView = saveImageToFile(path + "/vectorview.png", w, h);
         if (resultVectorView.isError())
@@ -4324,9 +4324,9 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
         // scalar field
         m_scene->sceneSolution()->processRangeScalar();
         m_sceneViewSettings.scalarRangeAuto = true;
-        m_sceneViewSettings.scalarPhysicFieldVariable = m_scene->problemInfo()->module->default_scalar_variable;
-        m_sceneViewSettings.scalarPhysicFieldVariableComp = m_scene->problemInfo()->module->default_scalar_variable_comp();
-        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module->default_vector_variable;
+        m_sceneViewSettings.scalarPhysicFieldVariable = m_scene->problemInfo()->module->view_default_scalar_variable;
+        m_sceneViewSettings.scalarPhysicFieldVariableComp = m_scene->problemInfo()->module->view_default_scalar_variable_comp();
+        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module->view_default_vector_variable;
 
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_ScalarView;
         updateGL();

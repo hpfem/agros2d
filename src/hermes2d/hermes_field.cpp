@@ -67,30 +67,35 @@ HermesField *hermesFieldFactory(PhysicField physicField)
 
 // ***********************************************************************************************
 
-Hermes::Module::PhysicFieldVariable::Form::Form(QDomElement *element)
+Hermes::Module::PhysicFieldVariable::Expression::Expression(QDomElement *element, ProblemType problemType)
 {
-    read(element);
+    read(element, problemType);
 }
 
-void Hermes::Module::PhysicFieldVariable::Form::read(QDomElement *element)
+void Hermes::Module::PhysicFieldVariable::Expression::read(QDomElement *element, ProblemType problemType)
 {
-    planar_scalar = element->attribute("planar_scalar").toStdString();
-    planar_comp_x = element->attribute("planar_comp_x").toStdString();
-    planar_comp_y = element->attribute("planar_comp_y").toStdString();
-
-    axi_scalar = element->attribute("axi_scalar").toStdString();
-    axi_comp_r = element->attribute("axi_comp_r").toStdString();
-    axi_comp_z = element->attribute("axi_comp_z").toStdString();
+    if (problemType == ProblemType_Planar)
+    {
+        scalar = element->attribute("planar_scalar").toStdString();
+        comp_x = element->attribute("planar_comp_x").toStdString();
+        comp_y = element->attribute("planar_comp_y").toStdString();
+    }
+    else
+    {
+        scalar = element->attribute("axi_scalar").toStdString();
+        comp_x = element->attribute("axi_comp_r").toStdString();
+        comp_y = element->attribute("axi_comp_z").toStdString();
+    }
 }
 
 // ***********************************************************************************************
 
-Hermes::Module::PhysicFieldVariable::PhysicFieldVariable(QDomElement *element)
+Hermes::Module::PhysicFieldVariable::PhysicFieldVariable(QDomElement *element, ProblemType problemType, AnalysisType analysisType)
 {
-    read(element);
+    read(element, problemType, analysisType);
 }
 
-void Hermes::Module::PhysicFieldVariable::read(QDomElement *element)
+void Hermes::Module::PhysicFieldVariable::read(QDomElement *element, ProblemType problemType, AnalysisType analysisType)
 {
     id = element->attribute("id").toStdString();
     name = element->attribute("name").toStdString();
@@ -99,16 +104,25 @@ void Hermes::Module::PhysicFieldVariable::read(QDomElement *element)
 
     is_scalar = element->attribute("scalar").toInt();
 
-    steadystate = Form(&element->elementsByTagName("steadystate").at(0).toElement());
-    harmonic = Form(&element->elementsByTagName("harmonic").at(0).toElement());
-    transient = Form(&element->elementsByTagName("transient").at(0).toElement());
+    expression = Expression(&element->elementsByTagName(QString::fromStdString(analysis_type_tostring(analysisType))).at(0).toElement(),
+                            problemType);
 }
 
 // ***********************************************************************************************
 
+Hermes::Module::Module::Module(ProblemType problemType, AnalysisType analysisType)
+{
+    m_problemType = problemType;
+    m_analysisType = analysisType;
+
+    clear();
+}
+
 void Hermes::Module::Module::read(std::string file_name)
 {
-    // TODO: rewrite xml reader
+    clear();
+
+    // FIXME: rewrite xml reader
     QDomDocument doc;
     QFile file(QString::fromStdString(file_name));
     if (!file.open(QIODevice::ReadOnly))
@@ -143,69 +157,72 @@ void Hermes::Module::Module::read(std::string file_name)
     n = eleVariables.firstChild();
     while(!n.isNull())
     {
-        variables.push_back(PhysicFieldVariable(&n.toElement()));
+        variables.push_back(PhysicFieldVariable(&n.toElement(), m_problemType, m_analysisType));
 
         n = n.nextSibling();
     }
 
-    QDomNode eleScalarVariables = eleDoc.toElement().elementsByTagName("scalarvariable").at(0);
-    default_scalar_variable = get_variable(eleScalarVariables.toElement().attribute("default").toStdString());
+    // read view
+    QDomNode eleView = eleDoc.toElement().elementsByTagName("view").at(0);
+    // scalar variables
+    QDomNode eleViewScalarVariables = eleView.toElement().elementsByTagName("scalarvariable").at(0);
+    view_default_scalar_variable = get_variable(eleViewScalarVariables.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).toElement().attribute("default").toStdString());
 
-    n = eleScalarVariables.toElement().elementsByTagName("steadystate").at(0).firstChild();
+    n = eleViewScalarVariables.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).firstChild();
     while(!n.isNull())
     {
         PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
         if (variable)
-            scalar_variables_steadystate.push_back(variable);
+            view_scalar_variables.push_back(variable);
 
         n = n.nextSibling();
     }
-    n = eleScalarVariables.toElement().elementsByTagName("harmonic").at(0).firstChild();
-    while(!n.isNull())
-    {
-        PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
-        if (variable)
-            scalar_variables_harmonic.push_back(variable);
+    // vector variables
+    QDomNode eleViewVectorVariables = eleView.toElement().elementsByTagName("vectorvariable").at(0);
+    view_default_vector_variable = get_variable(eleViewVectorVariables.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).toElement().attribute("default").toStdString());
 
-        n = n.nextSibling();
-    }
-    n = eleScalarVariables.toElement().elementsByTagName("transient").at(0).firstChild();
+    n = eleViewVectorVariables.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).firstChild();
     while(!n.isNull())
     {
         PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
         if (variable)
-            scalar_variables_transient.push_back(variable);
+            view_vector_variables.push_back(variable);
 
         n = n.nextSibling();
     }
 
-    QDomNode eleVectorVariables = eleDoc.toElement().elementsByTagName("vectorvariable").at(0);
-    n = eleVectorVariables.toElement().elementsByTagName("steadystate").at(0).firstChild();
-    default_vector_variable = get_variable(eleVectorVariables.toElement().attribute("default").toStdString());
-
+    // local variables
+    QDomNode eleLocalVariable = eleDoc.toElement().elementsByTagName("localvariable").at(0);
+    n = eleLocalVariable.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).firstChild();
     while(!n.isNull())
     {
         PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
         if (variable)
-            vector_variables_steadystate.push_back(variable);
-
-        n = n.nextSibling();
-    }
-    n = eleVectorVariables.toElement().elementsByTagName("harmonic").at(0).firstChild();
-    while(!n.isNull())
-    {
-        PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
-        if (variable)
-            vector_variables_harmonic.push_back(variable);
+            local_variables.push_back(variable);
 
         n = n.nextSibling();
     }
-    n = eleVectorVariables.toElement().elementsByTagName("transient").at(0).firstChild();
+
+    // surface integral
+    QDomNode eleSurfaceIntegral = eleDoc.toElement().elementsByTagName("surfaceintegral").at(0);
+    n = eleSurfaceIntegral.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).firstChild();
     while(!n.isNull())
     {
         PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
         if (variable)
-            vector_variables_transient.push_back(variable);
+            surface_variables.push_back(variable);
+
+        n = n.nextSibling();
+    }
+
+    // volume integral
+    QDomNode eleVolumeIntegral = eleDoc.toElement().elementsByTagName("volumeintegral").at(0);
+    n = eleVolumeIntegral.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).firstChild();
+    while(!n.isNull())
+    {
+        PhysicFieldVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
+        if (variable)
+            volume_variables.push_back(variable);
 
         n = n.nextSibling();
     }
@@ -214,9 +231,40 @@ void Hermes::Module::Module::read(std::string file_name)
     setlocale(LC_NUMERIC, plocale);
 }
 
+void Hermes::Module::Module::clear()
+{
+    // name
+    name = "";
+    // description
+    description = "";
+
+    has_steady_state = false;
+    has_harmonic = false;
+    has_transient = false;
+
+    // clear
+    variables.clear();
+
+    // scalar and vector variables
+    view_scalar_variables.clear();
+    view_vector_variables.clear();
+    // default variables
+    view_default_scalar_variable = NULL;
+    view_default_vector_variable = NULL;
+
+    // local variables
+    local_variables.clear();
+
+    // surface integrals
+    surface_variables.clear();
+
+    // volume integrals
+    volume_variables.clear();
+}
+
 Hermes::Module::PhysicFieldVariable* Hermes::Module::Module::get_variable(std::string id)
 {
-    for(Hermes::vector<PhysicFieldVariable>::iterator it = variables.begin(); it < variables.end(); ++it )
+    for (Hermes::vector<PhysicFieldVariable>::iterator it = variables.begin(); it < variables.end(); ++it)
     {
         if (((PhysicFieldVariable) *it).id == id)
             return &*it;
@@ -224,25 +272,38 @@ Hermes::Module::PhysicFieldVariable* Hermes::Module::Module::get_variable(std::s
     return NULL;
 }
 
+
+std::string Hermes::Module::Module::get_expression(Hermes::Module::PhysicFieldVariable *physicFieldVariable,
+                                                   PhysicFieldVariableComp physicFieldVariableComp)
+{
+    switch (physicFieldVariableComp)
+    {
+    case PhysicFieldVariableComp_Scalar:
+        return physicFieldVariable->expression.scalar;
+    case PhysicFieldVariableComp_X:
+        return physicFieldVariable->expression.comp_x;
+    case PhysicFieldVariableComp_Y:
+        return physicFieldVariable->expression.comp_y;
+    case PhysicFieldVariableComp_Magnitude:
+        return "sqrt((" + physicFieldVariable->expression.comp_x + ") * (" + physicFieldVariable->expression.comp_x + ") + (" + physicFieldVariable->expression.comp_y + ") * (" + physicFieldVariable->expression.comp_y + "))";
+    default:
+        error("Unknown type.");
+    }
+}
+
 // ***********************************************************************************************
 
-void Hermes::Module::AgrosModule::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
+void Hermes::Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 {
-    // TODO: add harmonic and transient
-    fillComboBox(cmbFieldVariable, scalar_variables_steadystate);
-    // fillComboBox(cmbFieldVariable, scalarVariablesHarmonic);
-    // fillComboBox(cmbFieldVariable, scalarVariablesTransient);
+    fillComboBox(cmbFieldVariable, view_scalar_variables);
 }
 
-void Hermes::Module::AgrosModule::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
+void Hermes::Module::ModuleAgros::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 {
-    // TODO: add harmonic and transient
-    fillComboBox(cmbFieldVariable, vector_variables_steadystate);
-    // fillComboBox(cmbFieldVariable, vectorVariablesHarmonic);
-    // fillComboBox(cmbFieldVariable, vectorVariablesTransient);
+    fillComboBox(cmbFieldVariable, view_vector_variables);
 }
 
-void Hermes::Module::AgrosModule::fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<PhysicFieldVariable *> list)
+void Hermes::Module::ModuleAgros::fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<PhysicFieldVariable *> list)
 {
     for(Hermes::vector<PhysicFieldVariable *>::iterator it = list.begin(); it < list.end(); ++it )
     {
@@ -362,7 +423,7 @@ SolutionAgros::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros
     adaptivityType = Util::scene()->problemInfo()->adaptivityType;
     adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
     adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
-    adaptivityMaxDOFs = Util::config()->maxDofs;
+    adaptivityMaxDOFs = Util::scene()->problemInfo()->adaptivityMaxDOFs;
     numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
     timeTotal = Util::scene()->problemInfo()->timeTotal.number;
     timeStep = Util::scene()->problemInfo()->timeStep.number;
@@ -849,12 +910,20 @@ SolutionArray *SolutionAgros::solutionArray(Solution *sln, Space *space, double 
 // *********************************************************************************************************************************************
 
 ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
-                                   Hermes::Module::PhysicFieldVariable *physicFieldVariable,
-                                   PhysicFieldVariableComp physicFieldVariableComp)
+                                   std::string expression)
     : Filter(sln)
 {
-    m_physicFieldVariable = physicFieldVariable;
-    m_physicFieldVariableComp = physicFieldVariableComp;
+    parser.SetExpr(expression);
+    // qDebug() << "expression: " << QString::fromStdString(expression);
+
+    parser.DefineConst("EPS0", EPS0);
+    parser.DefineConst("MU0", MU0);
+
+    parser.DefineVar("x", &px);
+    parser.DefineVar("y", &py);
+    parser.DefineVar("value", &pvalue);
+    parser.DefineVar("dx", &pdx);
+    parser.DefineVar("dy", &pdy);
 }
 
 double ViewScalarFilter::get_pt_value(double x, double y, int item)
@@ -868,6 +937,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
     int np = quad->get_num_points(order);
     node = new_node(H2D_FN_DEFAULT, np);
 
+    double *value1, *dudx1, *dudy1;
     if (sln[0])
     {
         sln[0]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
@@ -875,6 +945,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
         value1 = sln[0]->get_fn_values();
     }
 
+    double *value2, *dudx2, *dudy2;
     if (num >= 2 && sln[1])
     {
         sln[1]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
@@ -882,6 +953,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
         value2 = sln[1]->get_fn_values();
     }
 
+    double *value3, *dudx3, *dudy3;
     if (num >= 3 && sln[2])
     {
         sln[2]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
@@ -891,15 +963,31 @@ void ViewScalarFilter::precalculate(int order, int mask)
 
     update_refmap();
 
-    x = refmap->get_phys_x(order);
-    y = refmap->get_phys_y(order);
+    double *x = refmap->get_phys_x(order);
+    double *y = refmap->get_phys_y(order);
     Element *e = refmap->get_active_element();
 
-    material = Util::scene()->labels[atoi(mesh->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+    SceneMaterial *material = Util::scene()->labels[atoi(mesh->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+
+    prepareParser(material);
 
     for (int i = 0; i < np; i++)
     {
-        calculateVariable(i);
+        px = x[i];
+        py = y[i];
+        pvalue = value1[i];
+        pdx = dudx1[i];
+        pdy = dudy1[i];
+
+        // parse expression
+        try
+        {
+            node->values[0][0][i] = parser.Eval();
+        }
+        catch (mu::Parser::exception_type &e)
+        {
+            std::cout << e.GetMsg() << endl;
+        }
     }
 
     if (nodes->present(order))
@@ -910,4 +998,3 @@ void ViewScalarFilter::precalculate(int order, int mask)
     nodes->add(node, order);
     cur_node = node;
 }
-
