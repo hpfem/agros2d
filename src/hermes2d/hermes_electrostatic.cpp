@@ -246,46 +246,6 @@ SceneMaterial *HermesElectrostatic::modifyMaterial(PyObject *self, PyObject *arg
     return NULL;
 }
 
-void HermesElectrostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
-{
-    LocalPointValueElectrostatic *localPointValueElectrostatic = dynamic_cast<LocalPointValueElectrostatic *>(localPointValue);
-
-    // electrostatic
-    QTreeWidgetItem *electrostaticNode = new QTreeWidgetItem(trvWidget);
-    electrostaticNode->setText(0, tr("Electrostatic field"));
-    electrostaticNode->setExpanded(true);
-
-    // Permittivity
-    addTreeWidgetItemValue(electrostaticNode, tr("Permittivity:"), QString("%1").arg(localPointValueElectrostatic->permittivity, 0, 'f', 2), tr(""));
-
-    // Charge Density
-    addTreeWidgetItemValue(electrostaticNode, tr("Charge density:"), QString("%1").arg(localPointValueElectrostatic->charge_density, 0, 'e', 3), "C/m3");
-
-    // Energy density
-    addTreeWidgetItemValue(electrostaticNode, tr("Energy density:"), QString("%1").arg(localPointValueElectrostatic->we, 0, 'e', 3), "J/m3");
-
-    // Potential
-    addTreeWidgetItemValue(electrostaticNode, tr("Potential:"), QString("%1").arg(localPointValueElectrostatic->potential, 0, 'e', 3), "V");
-
-    // Electric Field
-    QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(electrostaticNode);
-    itemElectricField->setText(0, tr("Electric field"));
-    itemElectricField->setExpanded(true);
-
-    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->E.x, 0, 'e', 3), "V/m");
-    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->E.y, 0, 'e', 3), "V/m");
-    addTreeWidgetItemValue(itemElectricField, "E:", QString("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'e', 3), "V/m");
-
-    // Electric Displacement
-    QTreeWidgetItem *itemElectricDisplacement = new QTreeWidgetItem(electrostaticNode);
-    itemElectricDisplacement->setText(0, tr("Electric displacement"));
-    itemElectricDisplacement->setExpanded(true);
-
-    addTreeWidgetItemValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
-    addTreeWidgetItemValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
-    addTreeWidgetItemValue(itemElectricDisplacement, "D:", QString("%1").arg(localPointValueElectrostatic->D.magnitude(), 0, 'e', 3), "C/m2");
-}
-
 void HermesElectrostatic::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
 {
     SurfaceIntegralValueElectrostatic *surfaceIntegralValueElectrostatic = dynamic_cast<SurfaceIntegralValueElectrostatic *>(surfaceIntegralValue);
@@ -315,8 +275,8 @@ ViewScalarFilter *HermesElectrostatic::viewScalarFilter(Hermes::Module::PhysicFi
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
     return new ViewScalarFilterElectrostatic(sln1,
-                                             physicFieldVariable,
-                                             physicFieldVariableComp);
+                                             Hermes::Module::Module::get_expression(physicFieldVariable,
+                                                                                    physicFieldVariableComp));
 }
 
 // *******************************************************************************************************************************
@@ -368,37 +328,16 @@ QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressIte
 // ****************************************************************************************************************
 
 LocalPointValueElectrostatic::LocalPointValueElectrostatic(const Point &point) : LocalPointValue(point)
+{      
+    calculate();
+}
+
+void LocalPointValueElectrostatic::prepareParser(SceneMaterial *material, mu::Parser *parser)
 {
-    charge_density = 0;
-    permittivity = 0;
+    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
 
-    potential = 0;
-    E = Point();
-    D = Point();
-    we = 0;
-
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        if (material)
-        {
-            // potential
-            potential = value;
-
-            // electric field
-            E = derivative * (-1);
-
-            SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
-
-            charge_density = marker->charge_density.number;
-            permittivity = marker->permittivity.number;
-
-            // electric displacement
-            D = E * (marker->permittivity.number * EPS0);
-
-            // energy density
-            we = 0.5 * E.magnitude() * D.magnitude();
-        }
-    }
+    parser->DefineVar("epsr", &marker->permittivity.number);
+    parser->DefineVar("rho", &marker->charge_density.number);
 }
 
 double LocalPointValueElectrostatic::variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
@@ -552,79 +491,20 @@ QStringList VolumeIntegralValueElectrostatic::variables()
 
 // *************************************************************************************************************************************
 
-void ViewScalarFilterElectrostatic::calculateVariable(int i)
+ViewScalarFilterElectrostatic::ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln,
+                                                             std::string expression) :
+    ViewScalarFilter(sln, expression)
+{
+    parser.DefineVar("epsr", &pepsr);
+    parser.DefineVar("rho", &prho);
+}
+
+void ViewScalarFilterElectrostatic::prepareParser(SceneMaterial *material)
 {
     SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
 
-    node->values[0][0][i] = value1[i];
-    /*
-    switch (m_physicFieldVariable)
-    {
-    case PhysicFieldVariable_Electrostatic_Potential:
-    {
-        node->values[0][0][i] = value1[i];
-    }
-        break;
-    case PhysicFieldVariable_Electrostatic_ElectricField:
-    {
-        switch (m_physicFieldVariableComp)
-        {
-        case PhysicFieldVariableComp_X:
-        {
-            node->values[0][0][i] = - dudx1[i];
-        }
-            break;
-        case PhysicFieldVariableComp_Y:
-        {
-            node->values[0][0][i] = - dudy1[i];
-        }
-            break;
-        case PhysicFieldVariableComp_Magnitude:
-        {
-            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
-        }
-            break;
-        }
-    }
-        break;
-    case PhysicFieldVariable_Electrostatic_Displacement:
-    {
-        switch (m_physicFieldVariableComp)
-        {
-        case PhysicFieldVariableComp_X:
-        {
-            node->values[0][0][i] = - EPS0 * marker->permittivity.number * dudx1[i];
-        }
-            break;
-        case PhysicFieldVariableComp_Y:
-        {
-            node->values[0][0][i] = - EPS0 * marker->permittivity.number * dudy1[i];
-        }
-            break;
-        case PhysicFieldVariableComp_Magnitude:
-        {
-            node->values[0][0][i] = EPS0 * marker->permittivity.number * sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
-        }
-            break;
-        }
-    }
-        break;
-    case PhysicFieldVariable_Electrostatic_EnergyDensity:
-    {
-        node->values[0][0][i] = 0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i]));
-    }
-        break;
-    case PhysicFieldVariable_Electrostatic_Permittivity:
-    {
-        node->values[0][0][i] = marker->permittivity.number;
-    }
-        break;
-    default:
-        cerr << "Physical field variable '" + m_physicFieldVariable->id + "' is not implemented. ViewScalarFilterElectrostatic::calculateVariable()" << endl;
-        throw;
-        break;
-    }
-    */
+    pepsr = marker->permittivity.number;
+    prho = marker->charge_density.number;
 }
 
 // *************************************************************************************************************************************

@@ -48,7 +48,7 @@ namespace Hermes
 {
     namespace Module
     {
-        struct AgrosModule;
+        struct ModuleAgros;
     }
 }
 
@@ -87,7 +87,7 @@ public:
     MatrixSolverType matrixSolver;
 
     // module
-    Hermes::Module::AgrosModule *module;
+    Hermes::Module::ModuleAgros *module;
 
     ProblemInfo()
     {

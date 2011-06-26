@@ -27,6 +27,8 @@
 
 #include <Python.h>
 
+#include "muparser/muParser.h"
+
 #include <typeinfo>
 #include <iostream>
 #include <cmath>

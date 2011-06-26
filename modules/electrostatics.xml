@@ -18,40 +18,61 @@
             <transient />
         </variable>
         <variable id="electrostatic_displacement" name="Displacement" shortname="D" unit="C/m2" scalar="0">
-            <steadystate planar_comp_x="- permittivity * dx" planar_comp_y="- permittivity * dy" axi_comp_r="- permittivity * dx" axi_comp_z="- permittivity * dy" />
+            <steadystate planar_comp_x="- epsr * EPS0 *  * dx" planar_comp_y="- epsr * EPS0 * dy" axi_comp_r="- epsr * EPS0 * dx" axi_comp_z="- epsr * EPS0 * dy" />
             <harmonic />
             <transient />
         </variable>
         <variable id="electrostatic_energy_density" name="Energy density" shortname="we" unit="J/m3" scalar="1">
-            <steadystate planar_scalar="0.5 * permittivity * (dx * dx + dy * dy)" axi_scalar="0.5 * permittivity * (dx * dx + dy * dy)" />
+            <steadystate planar_scalar="0.5 * epsr * EPS0 * (dx * dx + dy * dy)" axi_scalar="0.5 * epsr * EPS0 * (dx * dx + dy * dy)" />
             <harmonic />
             <transient />
         </variable>
         <variable id="electrostatic_permittivity" name="Permittivity" shortname="eps" unit="-" scalar="1">
-            <steadystate planar_scalar="permittivity" axi_scalar="permittivity" />
+            <steadystate planar_scalar="epsr" axi_scalar="epsr" />
             <harmonic />
             <transient />
         </variable>
+        <variable id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" scalar="1">
+            <steadystate planar_scalar="rho" axi_scalar="rho" />
+            <harmonic />
+            <transient />
+        </variable>      
     </variables>
 
-    <scalarvariable>
-        <steadystate default="electrostatic_potential">
+    <view>
+        <scalarvariable>
+            <steadystate default="electrostatic_potential">
+                <item id="electrostatic_potential" />
+                <item id="electrostatic_electric_field" />
+                <item id="electrostatic_displacement" />
+                <item id="electrostatic_energy_density" />
+                <item id="electrostatic_permittivity" />
+                <item id="electrostatic_charge_density" />
+            </steadystate>
+            <harmonic/>
+            <transient/>
+        </scalarvariable>
+
+        <vectorvariable>
+            <steadystate default="electrostatic_electric_field">
+                <item id="electrostatic_electric_field" />
+                <item id="electrostatic_displacement" />
+            </steadystate>
+            <harmonic/>
+            <transient/>
+        </vectorvariable>
+    </view>
+    
+    <localvariable>
+        <steadystate>
             <item id="electrostatic_potential" />
             <item id="electrostatic_electric_field" />
             <item id="electrostatic_displacement" />
             <item id="electrostatic_energy_density" />
             <item id="electrostatic_permittivity" />
+            <item id="electrostatic_charge_density" />            
         </steadystate>
         <harmonic/>
         <transient/>
-    </scalarvariable>
-
-    <vectorvariable>
-        <steadystate default="electrostatic_electric_field">
-            <item id="electrostatic_electric_field" />
-            <item id="electrostatic_displacement" />
-        </steadystate>
-        <harmonic/>
-        <transient/>
-    </vectorvariable>
+    </localvariable>    
 </module>

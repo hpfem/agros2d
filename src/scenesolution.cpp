@@ -441,10 +441,10 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
     }
     
     m_slnScalarView = slnScalarView;
-    // QTime time;
-    // time.start();
+    QTime time;
+    time.start();
     m_linScalarView.process_solution(m_slnScalarView, H2D_FN_VAL_0, Util::config()->linearizerQuality);
-    // qDebug() << "linScalarView.process_solution: " << time.elapsed();
+    qDebug() << "linScalarView.process_solution: " << time.elapsed();
 
     // deformed shape
     if (Util::config()->deformScalar)

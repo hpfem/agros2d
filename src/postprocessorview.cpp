@@ -594,18 +594,24 @@ void PostprocessorView::doScalarFieldVariable(int index)
     logMessage("PostprocessorView::doScalarFieldVariable()");
 
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
-    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbScalarFieldVariable->itemData(index).toInt();
+    if (Util::scene()->problemInfo()->module)
+    {
+        Hermes::Module::PhysicFieldVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbScalarFieldVariable->itemData(index).toString().toStdString());
 
-    cmbScalarFieldVariableComp->clear();
-    if (isPhysicFieldVariableScalar(physicFieldVariable))
-    {
-        cmbScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
-    }
-    else
-    {
-        cmbScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-        cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
-        cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
+        if (physicFieldVariable)
+        {
+            cmbScalarFieldVariableComp->clear();
+            if (physicFieldVariable->is_scalar)
+            {
+                cmbScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
+            }
+            else
+            {
+                cmbScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
+                cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
+                cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
+            }
+        }
     }
 
     if (cmbScalarFieldVariableComp->currentIndex() == -1)

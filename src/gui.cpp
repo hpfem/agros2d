@@ -58,11 +58,10 @@ void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     logMessage("fillComboBoxScalarVariable()");
 
     // store variable
-    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
 
     // clear combo
     cmbFieldVariable->clear();
-    // Util::scene()->problemInfo()->hermes()->fillComboBoxScalarVariable(cmbFieldVariable);
     if (Util::scene()->problemInfo()->module)
         Util::scene()->problemInfo()->module->fillComboBoxScalarVariable(cmbFieldVariable);
 
@@ -76,11 +75,10 @@ void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     logMessage("fillComboBoxVectorVariable()");
 
     // store variable
-    PhysicFieldVariableDeprecated physicFieldVariable = (PhysicFieldVariableDeprecated) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
 
     // clear combo
     cmbFieldVariable->clear();
-    // Util::scene()->problemInfo()->hermes()->fillComboBoxVectorVariable(cmbFieldVariable);
     if (Util::scene()->problemInfo()->module)
         Util::scene()->problemInfo()->module->fillComboBoxVectorVariable(cmbFieldVariable);
 
