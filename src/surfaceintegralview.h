@@ -26,6 +26,14 @@ struct Element;
 
 class SceneMaterial;
 
+namespace Hermes
+{
+    namespace Module
+    {
+        struct Integral;
+    }
+}
+
 class SurfaceIntegralValue
 {
 protected:
@@ -43,11 +51,15 @@ protected:
     SceneMaterial *material;
 
     void calculate();
-    virtual void calculateVariables(int i) = 0;
+    virtual void initSolutions() = 0;
+    virtual void prepareParser(SceneMaterial *material) = 0;
 
 public:
-    double length;
-    double surface;
+    // variables
+    std::map<Hermes::Module::Integral *, double> values;
+
+    // parser
+    Hermes::vector<mu::Parser *> parser;
 
     SurfaceIntegralValue();
 

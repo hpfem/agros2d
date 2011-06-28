@@ -26,10 +26,7 @@
 
 SurfaceIntegralValue::SurfaceIntegralValue()
 {
-    logMessage("SurfaceIntegralValue::SurfaceIntegralValue()");
-
-    length = 0.0;
-    surface = 0.0;    
+    logMessage("SurfaceIntegralValue::SurfaceIntegralValue()");  
 }
 
 void SurfaceIntegralValue::calculate()
@@ -38,6 +35,31 @@ void SurfaceIntegralValue::calculate()
 
     if (!Util::scene()->sceneSolution()->isSolved())
         return;
+
+    double px, py;
+    double pvalue, pdx, pdy;
+
+    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module->surface_integral.begin();
+         it < Util::scene()->problemInfo()->module->surface_integral.end(); ++it )
+    {
+        mu::Parser *pars = new mu::Parser();
+
+        pars->SetExpr(((Hermes::Module::Integral *) *it)->expression.scalar);
+
+        pars->DefineConst("EPS0", EPS0);
+        pars->DefineConst("MU0", MU0);
+        pars->DefineConst("PI", M_PI);
+
+        pars->DefineVar("x", &px);
+        pars->DefineVar("y", &py);
+        pars->DefineVar("value", &pvalue);
+        pars->DefineVar("dx", &pdx);
+        pars->DefineVar("dy", &pdy);
+
+        parser.push_back(pars);
+
+        values[*it] = 0.0;
+    }
 
     Quad2D *quad = &g_quad_2d_std;
     Solution *sln1 = Util::scene()->sceneSolution()->sln();
@@ -116,6 +138,7 @@ void SurfaceIntegralValue::calculate()
 
                         for (int i = 0; i < quad2d->get_num_points(eo); i++)
                         {
+                            /*
                             // length
                             if (boundary)
                                 length += pt[i][2] * tan[i][2] / 2.0;
@@ -140,6 +163,7 @@ void SurfaceIntegralValue::calculate()
 
                             // other integrals
                             calculateVariables(i);
+                            */
                         }
                     }
                 }
@@ -230,23 +254,26 @@ void SurfaceIntegralValueView::doShowSurfaceIntegral()
 {
     logMessage("SurfaceIntegralValueView::doShowSurfaceIntegral()");
 
-    SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo()->hermes()->surfaceIntegralValue();
     trvWidget->clear();
 
-    // point
-    QTreeWidgetItem *pointGeometry = new QTreeWidgetItem(trvWidget);
-    pointGeometry->setText(0, tr("Geometry"));
-    pointGeometry->setExpanded(true);
+    if (Util::scene()->problemInfo()->module)
+    {
+        if (Util::scene()->sceneSolution()->isSolved())
+        {
+            SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo()->hermes()->surfaceIntegralValue();
 
-    addTreeWidgetItemValue(pointGeometry, tr("Length:"), tr("%1").arg(surfaceIntegralValue->length, 0, 'e', 3), tr("m"));
-    addTreeWidgetItemValue(pointGeometry, tr("Surface:"), tr("%1").arg(surfaceIntegralValue->surface, 0, 'e', 3), tr("m2"));
+            QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
+            fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module->name));
+            fieldNode->setExpanded(true);
 
-    trvWidget->insertTopLevelItem(0, pointGeometry);
+            for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue->values.begin(); it != surfaceIntegralValue->values.end(); ++it)
+            {
+                addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second, 0, 'e', 3), QString::fromStdString(it->first->unit));
+            }
 
-    if (Util::scene()->sceneSolution()->isSolved())
-        Util::scene()->problemInfo()->hermes()->showSurfaceIntegralValue(trvWidget, surfaceIntegralValue);
-
-    delete surfaceIntegralValue;
+            delete surfaceIntegralValue;
+        }
+    }
 
     trvWidget->resizeColumnToContents(2);
 }

@@ -246,31 +246,7 @@ SceneMaterial *HermesElectrostatic::modifyMaterial(PyObject *self, PyObject *arg
     return NULL;
 }
 
-void HermesElectrostatic::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
-{
-    SurfaceIntegralValueElectrostatic *surfaceIntegralValueElectrostatic = dynamic_cast<SurfaceIntegralValueElectrostatic *>(surfaceIntegralValue);
-
-    // electrostatic
-    QTreeWidgetItem *electrostaticNode = new QTreeWidgetItem(trvWidget);
-    electrostaticNode->setText(0, tr("Electrostatic Field"));
-    electrostaticNode->setExpanded(true);
-
-    addTreeWidgetItemValue(electrostaticNode, tr("Charge:"), QString("%1").arg(surfaceIntegralValueElectrostatic->surfaceCharge, 0, 'e', 3), tr("C"));
-}
-
-void HermesElectrostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)
-{
-    VolumeIntegralValueElectrostatic *volumeIntegralValueElectrostatic = dynamic_cast<VolumeIntegralValueElectrostatic *>(volumeIntegralValue);
-
-    // electrostatic
-    QTreeWidgetItem *electrostaticNode = new QTreeWidgetItem(trvWidget);
-    electrostaticNode->setText(0, tr("Electrostatic field"));
-    electrostaticNode->setExpanded(true);
-
-    addTreeWidgetItemValue(electrostaticNode, tr("Energy:"), QString("%1").arg(volumeIntegralValueElectrostatic->energy, 0, 'e', 3), tr("J"));
-}
-
-ViewScalarFilter *HermesElectrostatic::viewScalarFilter(Hermes::Module::PhysicFieldVariable *physicFieldVariable,
+ViewScalarFilter *HermesElectrostatic::viewScalarFilter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                         PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
@@ -420,44 +396,60 @@ QStringList LocalPointValueElectrostatic::variables()
 
 SurfaceIntegralValueElectrostatic::SurfaceIntegralValueElectrostatic() : SurfaceIntegralValue()
 {
-    surfaceCharge = 0.0;
-
     calculate();
-
-    surfaceCharge /= 2.0;
 }
 
-void SurfaceIntegralValueElectrostatic::calculateVariables(int i)
+void SurfaceIntegralValueElectrostatic::initSolutions()
 {
-    if (boundary)
-    {
-        SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
+    // sln1 = Util::scene()->sceneSolution()->sln(0);
+    // sln2 = NULL;
 
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
-        else
-            surfaceCharge += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
+    for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it )
+    {
+        ((mu::Parser *) *it)->DefineVar("epsr", &pepsr);
+        ((mu::Parser *) *it)->DefineVar("rho", &prho);
     }
 }
 
+void SurfaceIntegralValueElectrostatic::prepareParser(SceneMaterial *material)
+{
+    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
+
+    pepsr = marker->permittivity.number;
+    prho = marker->charge_density.number;
+}
+
+/*
+if (boundary)
+{
+    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
+
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
+    else
+        surfaceCharge += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
+}
+*/
+
 QStringList SurfaceIntegralValueElectrostatic::variables()
 {
+    /*
     QStringList row;
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
            QString("%1").arg(surface, 0, 'e', 5) <<
            QString("%1").arg(surfaceCharge, 0, 'e', 5);
     return QStringList(row);
+    */
 }
 
 // ****************************************************************************************************************
 
 VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic() : VolumeIntegralValue()
 {
-    energy = 0;
-
     calculate();
 }
 
+/*
 void VolumeIntegralValueElectrostatic::calculateVariables(int i)
 {
     SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
@@ -473,20 +465,37 @@ void VolumeIntegralValueElectrostatic::calculateVariables(int i)
     }
     energy += result;
 }
+*/
 
 void VolumeIntegralValueElectrostatic::initSolutions()
 {
     sln1 = Util::scene()->sceneSolution()->sln(0);
     sln2 = NULL;
+
+    for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it )
+    {
+        ((mu::Parser *) *it)->DefineVar("epsr", &pepsr);
+        ((mu::Parser *) *it)->DefineVar("rho", &prho);
+    }
+}
+
+void VolumeIntegralValueElectrostatic::prepareParser(SceneMaterial *material)
+{
+    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
+
+    pepsr = marker->permittivity.number;
+    prho = marker->charge_density.number;
 }
 
 QStringList VolumeIntegralValueElectrostatic::variables()
 {
+    /*
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
            QString("%1").arg(crossSection, 0, 'e', 5) <<
            QString("%1").arg(energy, 0, 'e', 5);
     return QStringList(row);
+    */
 }
 
 // *************************************************************************************************************************************

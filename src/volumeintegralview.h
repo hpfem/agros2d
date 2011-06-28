@@ -29,32 +29,30 @@ class Solution;
 
 class SceneMaterial;
 
+namespace Hermes
+{
+    namespace Module
+    {
+        struct Integral;
+    }
+}
+
 class VolumeIntegralValue
 {
 protected:
-    Element *e;
-
-    double *x, *y;
-    double *value1, *value2;
-    double *dudx1, *dudy1, *dudx2, *dudy2;
-
-    Quad2D *quad;
-    RefMap *ru;
-    int o;
-    double result;
-
     Solution *sln1;
     Solution *sln2;
 
-    SceneMaterial *material;
-
     void calculate();
-    virtual void calculateVariables(int i) = 0;
     virtual void initSolutions() = 0;
+    virtual void prepareParser(SceneMaterial *material) = 0;
 
 public:
-    double volume;
-    double crossSection;
+    // variables
+    std::map<Hermes::Module::Integral *, double> values;
+
+    // parser
+    Hermes::vector<mu::Parser *> parser;
 
     VolumeIntegralValue();
 

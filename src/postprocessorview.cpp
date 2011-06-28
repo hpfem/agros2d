@@ -596,7 +596,7 @@ void PostprocessorView::doScalarFieldVariable(int index)
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
     if (Util::scene()->problemInfo()->module)
     {
-        Hermes::Module::PhysicFieldVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbScalarFieldVariable->itemData(index).toString().toStdString());
+        Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbScalarFieldVariable->itemData(index).toString().toStdString());
 
         if (physicFieldVariable)
         {

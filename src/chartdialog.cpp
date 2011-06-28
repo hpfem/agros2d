@@ -381,7 +381,7 @@ void ChartDialog::plotGeometry()
     doChartLine();
 
     // variable
-    Hermes::Module::PhysicFieldVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
     if (!physicFieldVariable)
         return;
 
@@ -494,7 +494,7 @@ void ChartDialog::plotTime()
     doChartLine();
 
     // variable
-    Hermes::Module::PhysicFieldVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
     if (!physicFieldVariable)
         return;
 
@@ -583,7 +583,7 @@ void ChartDialog::doFieldVariable(int index)
     if (!Util::scene()->problemInfo()->module)
         return;
 
-    Hermes::Module::PhysicFieldVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
     if (!physicFieldVariable)
         return;
 

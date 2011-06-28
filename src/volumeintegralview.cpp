@@ -26,9 +26,6 @@
 VolumeIntegralValue::VolumeIntegralValue()
 {
     logMessage("VolumeIntegralValue::VolumeIntegralValue()");
-
-    crossSection = 0;
-    volume = 0;
 }
 
 void VolumeIntegralValue::calculate()
@@ -38,19 +35,50 @@ void VolumeIntegralValue::calculate()
     if (!Util::scene()->sceneSolution()->isSolved())
         return;
 
-    quad = &g_quad_2d_std;
+    double px, py;
+    double pvalue, pdx, pdy;
+
+    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module->volume_integral.begin();
+         it < Util::scene()->problemInfo()->module->volume_integral.end(); ++it )
+    {
+        mu::Parser *pars = new mu::Parser();
+
+        pars->SetExpr(((Hermes::Module::Integral *) *it)->expression.scalar);
+
+        pars->DefineConst("EPS0", EPS0);
+        pars->DefineConst("MU0", MU0);
+        pars->DefineConst("PI", M_PI);
+
+        pars->DefineVar("x", &px);
+        pars->DefineVar("y", &py);
+        pars->DefineVar("value", &pvalue);
+        pars->DefineVar("dx", &pdx);
+        pars->DefineVar("dy", &pdy);
+
+        parser.push_back(pars);
+
+        values[*it] = 0.0;
+    }
 
     initSolutions();
+
+    Quad2D *quad = &g_quad_2d_std;
 
     sln1->set_quad_2d(quad);
 
     Mesh *mesh = sln1->get_mesh();
+    Element *e;
+
+    double result;
+
+    SceneMaterial *material;
 
     for (int i = 0; i<Util::scene()->labels.length(); i++)
     {
         if (Util::scene()->labels[i]->isSelected)
         {
             material = Util::scene()->labels[i]->material;
+            prepareParser(material);
 
             for_all_active_elements(e, mesh)
             {
@@ -62,8 +90,9 @@ void VolumeIntegralValue::calculate()
                     if (sln2)
                         sln2->set_active_element(e);
 
-                    ru = sln1->get_refmap();
+                    RefMap *ru = sln1->get_refmap();
 
+                    int o;
                     if (!sln2)
                         o = sln1->get_fn_order() + ru->get_inv_ref_order();
                     else
@@ -72,16 +101,18 @@ void VolumeIntegralValue::calculate()
                     limit_order(o);
 
                     // solution 1
+                    double *value1, *dudx1, *dudy1;
                     sln1->set_quad_order(o, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
                     // value
                     value1 = sln1->get_fn_values();
                     // derivative
                     sln1->get_dx_dy_values(dudx1, dudy1);
                     // coordinates
-                    x = ru->get_phys_x(o);
-                    y = ru->get_phys_y(o);
+                    double *x = ru->get_phys_x(o);
+                    double *y = ru->get_phys_y(o);
 
                     // solution 2
+                    double *value2, *dudx2, *dudy2;
                     if (sln2)
                     {
                         sln2->set_quad_order(o, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
@@ -93,29 +124,55 @@ void VolumeIntegralValue::calculate()
 
                     update_limit_table(e->get_mode());
 
-                    // cross section
-                    result = 0.0;
-                    h1_integrate_expression(1);
-                    crossSection += result;
-
-                    // volume
-                    result = 0.0;
-                    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                    // parse expression
+                    int n = 0;
+                    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module->volume_integral.begin();
+                         it < Util::scene()->problemInfo()->module->volume_integral.end(); ++it )
                     {
-                        h1_integrate_expression(1);
-                    }
-                    else
-                    {
-                        h1_integrate_expression(2 * M_PI * x[i]);
-                    }
-                    volume += result;
+                        double result = 0.0;
 
-                    // other integrals
-                    calculateVariables(i);
+                        try
+                        {
+                            double3* pt = quad->get_points(o);
+                            int np = quad->get_num_points(o);
+
+                            for (int i = 0; i < np; i++)
+                            {
+                                px = x[i];
+                                py = y[i];
+                                pvalue = value1[i];
+                                pdx = dudx1[i];
+                                pdy = dudy1[i];
+
+                                if (ru->is_jacobian_const())
+                                {
+                                    result += pt[i][2] * ru->get_const_jacobian() * parser[n]->Eval();
+                                }
+                                else
+                                {
+                                    double* jac = ru->get_jacobian(o);
+                                    result += pt[i][2] * jac[i] * parser[n]->Eval();
+                                }
+                            }
+
+                            values[*it] += result;
+                        }
+                        catch (mu::Parser::exception_type &e)
+                        {
+                            std::cout << e.GetMsg() << endl;
+                        }
+
+                        n++;
+                    }
                 }
             }
         }
     }
+
+    // delete parser
+    for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
+        delete *it;
+    parser.clear();
 }
 
 VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(tr("Volume Integral"), parent)
@@ -200,24 +257,26 @@ void VolumeIntegralValueView::doShowVolumeIntegral()
 {
     logMessage("VolumeIntegralValue::doShowVolumeIntegral()");
 
-    VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo()->hermes()->volumeIntegralValue();
-
     trvWidget->clear();
 
-    // point
-    QTreeWidgetItem *pointGeometry = new QTreeWidgetItem(trvWidget);
-    pointGeometry->setText(0, tr("Geometry"));
-    pointGeometry->setExpanded(true);
+    if (Util::scene()->problemInfo()->module)
+    {
+        if (Util::scene()->sceneSolution()->isSolved())
+        {
+            VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo()->hermes()->volumeIntegralValue();
 
-    addTreeWidgetItemValue(pointGeometry, tr("Volume:"), tr("%1").arg(volumeIntegralValue->volume, 0, 'e', 3), tr("m3"));
-    addTreeWidgetItemValue(pointGeometry, tr("Cross section:"), tr("%1").arg(volumeIntegralValue->crossSection, 0, 'e', 3), tr("m2"));
+            QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
+            fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module->name));
+            fieldNode->setExpanded(true);
 
-    trvWidget->insertTopLevelItem(0, pointGeometry);
+            for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue->values.begin(); it != volumeIntegralValue->values.end(); ++it)
+            {
+                addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second, 0, 'e', 3), QString::fromStdString(it->first->unit));
+            }
 
-    if (Util::scene()->sceneSolution()->isSolved())
-        Util::scene()->problemInfo()->hermes()->showVolumeIntegralValue(trvWidget, volumeIntegralValue);
-
-    delete volumeIntegralValue;
+            delete volumeIntegralValue;
+        }
+    }
 
     trvWidget->resizeColumnToContents(2);
 }

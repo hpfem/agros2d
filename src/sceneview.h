@@ -40,7 +40,7 @@ namespace Hermes
 {
     namespace Module
     {
-        struct PhysicFieldVariable;
+        struct LocalVariable;
     }
 }
 
@@ -59,17 +59,17 @@ struct SceneViewSettings
     bool showSolutionMesh;
 
     // contour
-    Hermes::Module::PhysicFieldVariable *contourPhysicFieldVariable;
+    Hermes::Module::LocalVariable *contourPhysicFieldVariable;
 
     // scalar view
-    Hermes::Module::PhysicFieldVariable *scalarPhysicFieldVariable;
+    Hermes::Module::LocalVariable *scalarPhysicFieldVariable;
     PhysicFieldVariableComp scalarPhysicFieldVariableComp;
     bool scalarRangeAuto;
     double scalarRangeMin;
     double scalarRangeMax;
 
     // vector view
-    Hermes::Module::PhysicFieldVariable *vectorPhysicFieldVariable;
+    Hermes::Module::LocalVariable *vectorPhysicFieldVariable;
 
     SceneViewSettings();
 
