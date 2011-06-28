@@ -66,10 +66,7 @@ public:
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
-    void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
-    void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
-
-    ViewScalarFilter *viewScalarFilter(Hermes::Module::PhysicFieldVariable *physicFieldVariable,
+    ViewScalarFilter *viewScalarFilter(Hermes::Module::LocalVariable *physicFieldVariable,
                                        PhysicFieldVariableComp physicFieldVariableComp);
 };
 
@@ -95,11 +92,13 @@ protected:
 class SurfaceIntegralValueElectrostatic : public SurfaceIntegralValue
 {
 protected:
-    void calculateVariables(int i);
+    double pepsr;
+    double prho;
+
+    void initSolutions();
+    void prepareParser(SceneMaterial *material);
 
 public:
-    double surfaceCharge;
-
     SurfaceIntegralValueElectrostatic();
 
     QStringList variables();
@@ -108,12 +107,13 @@ public:
 class VolumeIntegralValueElectrostatic : public VolumeIntegralValue
 {
 protected:
-    void calculateVariables(int i);
+    double pepsr;
+    double prho;
+
     void initSolutions();
+    void prepareParser(SceneMaterial *material);
 
 public:
-    double energy;
-
     VolumeIntegralValueElectrostatic();
 
     QStringList variables();

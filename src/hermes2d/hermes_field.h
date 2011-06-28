@@ -73,7 +73,7 @@ inline std::string analysis_type_tostring(AnalysisType analysisType)
 namespace Module
 {
 
-struct PhysicFieldVariable
+struct LocalVariable
 {
     struct Expression
     {
@@ -89,10 +89,10 @@ struct PhysicFieldVariable
         void read(QDomElement *element, ProblemType problem_type);
     };
 
-    PhysicFieldVariable() : id(""), name(""), shortname(""), unit(""),
+    LocalVariable() : id(""), name(""), shortname(""), unit(""),
         expression(Expression()) {}
 
-    PhysicFieldVariable(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
+    LocalVariable(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
 
     // id
     std::string id;
@@ -112,6 +112,40 @@ struct PhysicFieldVariable
     void read(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
 };
 
+struct Integral
+{
+    struct Expression
+    {
+        Expression() : scalar("") {}
+
+        Expression(QDomElement *element, ProblemType problem_type);
+
+        // expressions
+        std::string scalar;
+
+        void read(QDomElement *element, ProblemType problem_type);        
+    };
+
+    Integral() : id(""), name(""), shortname(""), unit(""),
+        expression(Expression()) {}
+
+    Integral(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
+
+    // id
+    std::string id;
+    // name
+    std::string name;
+    // short name
+    std::string shortname;
+    // unit
+    std::string unit;
+
+    // expressions
+    Expression expression;
+
+    void read(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
+};
+
 struct Module
 {
     // name
@@ -124,15 +158,15 @@ struct Module
     bool has_transient;
 
     // all physical variables
-    Hermes::vector<PhysicFieldVariable> variables;
+    Hermes::vector<LocalVariable *> variables;
 
     // view
     // scalar and vector variables
-    Hermes::vector<PhysicFieldVariable *> view_scalar_variables;
-    Hermes::vector<PhysicFieldVariable *> view_vector_variables;
+    Hermes::vector<LocalVariable *> view_scalar_variables;
+    Hermes::vector<LocalVariable *> view_vector_variables;
 
     // default variables
-    PhysicFieldVariable *view_default_scalar_variable;
+    LocalVariable *view_default_scalar_variable;
     inline PhysicFieldVariableComp view_default_scalar_variable_comp()
     {
         if (view_default_scalar_variable)
@@ -140,19 +174,20 @@ struct Module
         else
             return PhysicFieldVariableComp_Undefined;
     }
-    PhysicFieldVariable *view_default_vector_variable;
+    LocalVariable *view_default_vector_variable;
 
-    // local variables
-    Hermes::vector<PhysicFieldVariable *> local_variables;
+    // local point variables
+    Hermes::vector<LocalVariable *> local_point;
 
     // surface integrals
-    Hermes::vector<PhysicFieldVariable *> surface_variables;
+    Hermes::vector<Integral *> surface_integral;
 
     // volume integrals
-    Hermes::vector<PhysicFieldVariable *> volume_variables;
+    Hermes::vector<Integral *> volume_integral;
 
     // default contructor
     Module(ProblemType problemType, AnalysisType analysisType);
+    ~Module();
 
     // read form xml
     void read(std::string file_name);
@@ -163,10 +198,10 @@ struct Module
     inline AnalysisType get_analysis_type() { return m_analysisType; }
 
     // get variable by name
-    PhysicFieldVariable *get_variable(std::string id);
+    LocalVariable *get_variable(std::string id);
 
     // get expression
-    static std::string get_expression(PhysicFieldVariable *physicFieldVariable,
+    static std::string get_expression(LocalVariable *physicFieldVariable,
                                       PhysicFieldVariableComp physicFieldVariableComp);
 
 private:
@@ -182,7 +217,7 @@ struct ModuleAgros : public Module
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
 
 private:
-    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<PhysicFieldVariable *> list);
+    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<LocalVariable *> list);
 };
 
 }
@@ -227,10 +262,7 @@ public:
     virtual QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
     inline virtual void updateTimeFunctions(double time) { }
 
-    virtual void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue) = 0;
-    virtual void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue) = 0;
-
-    virtual ViewScalarFilter *viewScalarFilter(Hermes::Module::PhysicFieldVariable *physicFieldVariable,
+    virtual ViewScalarFilter *viewScalarFilter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                PhysicFieldVariableComp physicFieldVariableComp) = 0;
 
     virtual inline void deformShape(double3* linVert, int count) {}

@@ -30,7 +30,7 @@ namespace Hermes
 {
     namespace Module
     {
-        struct PhysicFieldVariable;
+        struct LocalVariable;
     }
 }
 
@@ -65,7 +65,7 @@ public:
     Point point;
 
     // variables
-    std::map<Hermes::Module::PhysicFieldVariable *, PointValue> values;
+    std::map<Hermes::Module::LocalVariable *, PointValue> values;
 
     LocalPointValue(const Point &point);
 

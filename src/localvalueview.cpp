@@ -65,6 +65,7 @@ void LocalPointValue::calculate()
 
             parser.DefineConst("EPS0", EPS0);
             parser.DefineConst("MU0", MU0);
+            parser.DefineConst("PI", M_PI);
 
             double px, py;
             double pvalue, pdx, pdy;
@@ -85,25 +86,25 @@ void LocalPointValue::calculate()
             prepareParser(tmpMaterial, &parser);
 
             // parse expression
-            for (Hermes::vector<Hermes::Module::PhysicFieldVariable *>::iterator it = Util::scene()->problemInfo()->module->local_variables.begin();
-                 it < Util::scene()->problemInfo()->module->local_variables.end(); ++it )
+            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module->local_point.begin();
+                 it < Util::scene()->problemInfo()->module->local_point.end(); ++it )
             {
                 try
                 {
                     PointValue pointValue;
-                    if (((Hermes::Module::PhysicFieldVariable *) *it)->is_scalar)
+                    if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
                     {
-                        parser.SetExpr(((Hermes::Module::PhysicFieldVariable *) *it)->expression.scalar);
+                        parser.SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.scalar);
                         pointValue.scalar = parser.Eval();
                     }
                     else
                     {
-                        parser.SetExpr(((Hermes::Module::PhysicFieldVariable *) *it)->expression.comp_x);
+                        parser.SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_x);
                         pointValue.vector.x = parser.Eval();
-                        parser.SetExpr(((Hermes::Module::PhysicFieldVariable *) *it)->expression.comp_y);
+                        parser.SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_y);
                         pointValue.vector.y = parser.Eval();
                     }
-                    values[((Hermes::Module::PhysicFieldVariable *) *it)] = pointValue;
+                    values[*it] = pointValue;
 
                 }
                 catch (mu::Parser::exception_type &e)
@@ -270,7 +271,7 @@ void LocalPointValueView::doShowPoint()
 
             LocalPointValue *value = Util::scene()->problemInfo()->hermes()->localPointValue(point);
 
-            for (std::map<Hermes::Module::PhysicFieldVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
+            for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
             {
                 if (it->first->is_scalar)
                 {
