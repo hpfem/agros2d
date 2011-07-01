@@ -17,45 +17,35 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef ELECTROSTATIC_H
-#define ELECTROSTATIC_H
+#ifndef ELECTROSTATICS_H
+#define ELECTROSTATICS_H
 
 #include "util.h"
 #include "hermes_field.h"
 
-struct HermesElectrostatic : public HermesField
+struct ModuleElectrostatics : public Hermes::Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    PhysicField physicField() const { return PhysicField_Electrostatic; }
+    ModuleElectrostatics(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    inline int numberOfSolution() const { return 1; }
-    inline bool hasSteadyState() const { return true; }
-    inline bool hasHarmonic() const { return false; }
-    inline bool hasTransient() const { return false; }
-    inline bool hasNonlinearity() const { return false; }
+    inline int number_of_solution() const { return 1; }
+    bool has_nonlinearity() const { return false; }
 
+    LocalPointValue *local_point_value(const Point &point);
+    SurfaceIntegralValue *surface_integral_value();
+    VolumeIntegralValue *volume_integral_value();
+
+    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                         PhysicFieldVariableComp physicFieldVariableComp);
+
+    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+
+    // rewrite
     void readBoundaryFromDomElement(QDomElement *element);
     void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
     void readMaterialFromDomElement(QDomElement *element);
     void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
-    LocalPointValue *localPointValue(const Point &point);
-    QStringList localPointValueHeader();
-
-    SurfaceIntegralValue *surfaceIntegralValue();
-    QStringList surfaceIntegralValueHeader();
-
-    VolumeIntegralValue *volumeIntegralValue();
-    QStringList volumeIntegralValueHeader();
-
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Electrostatic_Potential ||
-                                                                          physicFieldBC == PhysicFieldBC_Electrostatic_SurfaceCharge); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Electrostatic_Potential ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Electrostatic_ElectricField ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Electrostatic_Displacement ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Electrostatic_EnergyDensity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Electrostatic_Permittivity); }
 
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
@@ -63,74 +53,45 @@ public:
     SceneMaterial *newMaterial();
     SceneMaterial *newMaterial(PyObject *self, PyObject *args);
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
-
-    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-
-    ViewScalarFilter *viewScalarFilter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                       PhysicFieldVariableComp physicFieldVariableComp);
 };
 
-class LocalPointValueElectrostatic : public LocalPointValue
+// *******************************************************************************************
+
+class ParserElectrostatics : public Parser
 {
 public:
-    double charge_density;
-    double permittivity;
-    double potential;
-    Point E;
-    Point D;
-    double we;
-
-    LocalPointValueElectrostatic(const Point &point);
-
-    double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-    QStringList variables();
-
-protected:
-    void prepareParser(SceneMaterial *material, mu::Parser *parser);
-};
-
-class SurfaceIntegralValueElectrostatic : public SurfaceIntegralValue
-{
-protected:
     double pepsr;
     double prho;
 
-    void initSolutions();
-    void prepareParser(SceneMaterial *material);
-
-public:
-    SurfaceIntegralValueElectrostatic();
-
-    QStringList variables();
+    void setParserVariables(SceneMaterial *material);
 };
 
-class VolumeIntegralValueElectrostatic : public VolumeIntegralValue
-{
-protected:
-    double pepsr;
-    double prho;
-
-    void initSolutions();
-    void prepareParser(SceneMaterial *material);
-
-public:
-    VolumeIntegralValueElectrostatic();
-
-    QStringList variables();
-};
-
-class ViewScalarFilterElectrostatic : public ViewScalarFilter
+class LocalPointValueElectrostatics : public LocalPointValue
 {
 public:
-    ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln,
-                                  std::string expression);
-
-protected:
-    double pepsr;
-    double prho;
-
-    void prepareParser(SceneMaterial *material);
+    LocalPointValueElectrostatics(const Point &point);
 };
+
+class SurfaceIntegralValueElectrostatics : public SurfaceIntegralValue
+{
+public:
+    SurfaceIntegralValueElectrostatics();
+};
+
+class VolumeIntegralValueElectrostatics : public VolumeIntegralValue
+{
+public:
+    VolumeIntegralValueElectrostatics();
+};
+
+class ViewScalarFilterElectrostatics : public ViewScalarFilter
+{
+public:
+    ViewScalarFilterElectrostatics(Hermes::vector<MeshFunction *> sln,
+                                   std::string expression);
+};
+
+// *******************************************************************************************
 
 class SceneBoundaryElectrostatic : public SceneBoundary
 {
@@ -195,4 +156,4 @@ private:
     ValueLineEdit *txtChargeDensity;
 };
 
-#endif // ELECTROSTATIC_H
+#endif // ELECTROSTATICS_H

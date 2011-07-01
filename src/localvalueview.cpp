@@ -25,7 +25,17 @@
 
 LocalPointValue::LocalPointValue(const Point &point) : point(point)
 {
-    logMessage("LocalPointValue::LocalPointValue()");
+}
+
+LocalPointValue::~LocalPointValue()
+{
+    delete parser;
+}
+
+void LocalPointValue::initParser()
+{
+    // parser variables
+    parser->parser.push_back(Util::scene()->problemInfo()->module()->get_parser());
 }
 
 void LocalPointValue::calculate()
@@ -35,74 +45,78 @@ void LocalPointValue::calculate()
     this->point = point;
     if (Util::scene()->sceneSolution()->isSolved() &&
             Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-        Util::scene()->problemInfo()->hermes()->updateTimeFunctions(Util::scene()->sceneSolution()->time());
+        Util::scene()->problemInfo()->module()->updateTimeFunctions(Util::scene()->sceneSolution()->time());
 
-    Solution *sln = Util::scene()->sceneSolution()->sln();
-
-    if (sln)
+    if (Util::scene()->sceneSolution()->isSolved())
     {
         int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), point);
         if (index != -1)
         {
-            double value;
-            if ((Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) &&
-                    Util::scene()->sceneSolution()->timeStep() == 0)
-                // const solution at first time step
-                value = Util::scene()->problemInfo()->initialCondition.number;
-            else
-                value = sln->get_pt_value(point.x, point.y, H2D_FN_VAL_0);
-
-            Point derivative;
-            derivative.x = sln->get_pt_value(point.x, point.y, H2D_FN_DX_0);
-            derivative.y = sln->get_pt_value(point.x, point.y, H2D_FN_DY_0);
-
             // find marker
             Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
             SceneMaterial *tmpMaterial = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
 
-            // parser variables
-            mu::Parser parser;
-
-            parser.DefineConst("EPS0", EPS0);
-            parser.DefineConst("MU0", MU0);
-            parser.DefineConst("PI", M_PI);
-
-            double px, py;
-            double pvalue, pdx, pdy;
-
-            parser.DefineVar("x", &px);
-            parser.DefineVar("y", &py);
-            parser.DefineVar("value", &pvalue);
-            parser.DefineVar("dx", &pdx);
-            parser.DefineVar("dy", &pdy);
-
             // set variables
-            px = point.x;
-            py = point.y;
-            pvalue = value;
-            pdx = derivative.x;
-            pdy = derivative.y;
+            double px = point.x;
+            double py = point.y;
+            parser->parser[0]->DefineVar("x", &px);
+            parser->parser[0]->DefineVar("y", &py);
 
-            prepareParser(tmpMaterial, &parser);
+            double *pvalue = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
+            double *pdx = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
+            double *pdy = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
+            std::vector<Solution *> sln(Util::scene()->problemInfo()->module()->number_of_solution());
+
+            for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+            {
+                // solution
+                sln[k] = Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->module()->number_of_solution()));
+
+                double value;
+                if ((Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) &&
+                        Util::scene()->sceneSolution()->timeStep() == 0)
+                    // const solution at first time step
+                    value = Util::scene()->problemInfo()->initialCondition.number;
+                else
+                    value = sln[k]->get_pt_value(point.x, point.y, H2D_FN_VAL_0);
+
+                Point derivative;
+                derivative.x = sln[k]->get_pt_value(point.x, point.y, H2D_FN_DX_0);
+                derivative.y = sln[k]->get_pt_value(point.x, point.y, H2D_FN_DY_0);
+
+                // set variables
+                pvalue[k] = value;
+                pdx[k] = derivative.x;
+                pdy[k] = derivative.y;
+
+                std::stringstream number;
+                number << (k+1);
+
+                parser->parser[0]->DefineVar("value" + number.str(), &pvalue[k]);
+                parser->parser[0]->DefineVar("dx" + number.str(), &pdx[k]);
+                parser->parser[0]->DefineVar("dy" + number.str(), &pdy[k]);
+            }
+
+            parser->setParserVariables(tmpMaterial);
 
             // parse expression
-            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module->local_point.begin();
-                 it < Util::scene()->problemInfo()->module->local_point.end(); ++it )
+            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module()->local_point.begin();
+                 it < Util::scene()->problemInfo()->module()->local_point.end(); ++it )
             {
                 try
                 {
                     PointValue pointValue;
                     if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
                     {
-                        parser.SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.scalar);
-                        pointValue.scalar = parser.Eval();
+                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.scalar);
+                        pointValue.scalar = parser->parser[0]->Eval();
                     }
                     else
                     {
-                        parser.SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_x);
-                        pointValue.vector.x = parser.Eval();
-                        parser.SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_y);
-                        pointValue.vector.y = parser.Eval();
+                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_x);
+                        pointValue.vector.x = parser->parser[0]->Eval();
+                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_y);
+                        pointValue.vector.y = parser->parser[0]->Eval();
                     }
                     values[*it] = pointValue;
 
@@ -112,14 +126,13 @@ void LocalPointValue::calculate()
                     std::cout << e.GetMsg() << endl;
                 }
             }
+
+            delete [] pvalue;
+            delete [] pdx;
+            delete [] pdy;
         }
     }
 }
-
-void LocalPointValue::prepareParser(SceneMaterial *material, mu::Parser *parser)
-{
-}
-
 
 // *************************************************************************************************************************************
 
@@ -128,7 +141,7 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
     logMessage("LocalPointValueView::LocalPointValueView()");
 
     QSettings settings;
-    
+
     setMinimumWidth(280);
     setObjectName("LocalPointValueView");
 
@@ -163,8 +176,8 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
     layout->setContentsMargins(0, 0, 0, 7);
 
     QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);    
-    
+    widget->setLayout(layout);
+
     setWidget(widget);
 }
 
@@ -259,40 +272,37 @@ void LocalPointValueView::doShowPoint()
     addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo()->labelX() + ":", QString("%1").arg(point.x, 0, 'f', 5), tr("m"));
     addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo()->labelY() + ":", QString("%1").arg(point.y, 0, 'f', 5), tr("m"));
 
-    if (Util::scene()->problemInfo()->module)
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        if (Util::scene()->sceneSolution()->isSolved())
+        QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
+        fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module()->name));
+        fieldNode->setExpanded(true);
+
+        trvWidget->insertTopLevelItem(0, pointNode);
+
+        LocalPointValue *value = Util::scene()->problemInfo()->module()->local_point_value(point);
+
+        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
         {
-            QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
-            fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module->name));
-            fieldNode->setExpanded(true);
-
-            trvWidget->insertTopLevelItem(0, pointNode);
-
-            LocalPointValue *value = Util::scene()->problemInfo()->hermes()->localPointValue(point);
-
-            for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
+            if (it->first->is_scalar)
             {
-                if (it->first->is_scalar)
-                {
-                    // scalar variable
-                    addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second.scalar, 0, 'e', 3), QString::fromStdString(it->first->unit));
-                }
-                else
-                {
-                    // vector variable
-                    QTreeWidgetItem *itemVector = new QTreeWidgetItem(fieldNode);
-                    itemVector->setText(0, QString::fromStdString(it->first->name));
-                    itemVector->setExpanded(true);
-
-                    addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(it->second.vector.x, 0, 'e', 3), QString::fromStdString(it->first->unit));
-                    addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(it->second.vector.y, 0, 'e', 3), QString::fromStdString(it->first->unit));
-                    addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + ": ", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3), QString::fromStdString(it->first->unit));
-                }
+                // scalar variable
+                addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second.scalar, 0, 'e', 3), QString::fromStdString(it->first->unit));
             }
+            else
+            {
+                // vector variable
+                QTreeWidgetItem *itemVector = new QTreeWidgetItem(fieldNode);
+                itemVector->setText(0, QString::fromStdString(it->first->name));
+                itemVector->setExpanded(true);
 
-            delete value;
+                addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(it->second.vector.x, 0, 'e', 3), QString::fromStdString(it->first->unit));
+                addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(it->second.vector.y, 0, 'e', 3), QString::fromStdString(it->first->unit));
+                addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + ": ", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3), QString::fromStdString(it->first->unit));
+            }
         }
+
+        delete value;
     }
 
     trvWidget->resizeColumnToContents(2);

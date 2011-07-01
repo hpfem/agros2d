@@ -23,38 +23,30 @@
 #include "util.h"
 #include "hermes_field.h"
 
-struct HermesHeat : public HermesField
+struct ModuleHeatTransfer : public Hermes::Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    PhysicField physicField() const { return PhysicField_Heat; }
+    ModuleHeatTransfer(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    inline int numberOfSolution() const { return 1; }
-    inline bool hasSteadyState() const { return true; }
-    inline bool hasHarmonic() const { return false; }
-    inline bool hasTransient() const { return true; }
-    inline bool hasNonlinearity() const { return false; }
+    inline int number_of_solution() const { return 1; }
+    bool has_nonlinearity() const { return false; }
 
+    LocalPointValue *local_point_value(const Point &point);
+    SurfaceIntegralValue *surface_integral_value();
+    VolumeIntegralValue *volume_integral_value();
+
+    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                         PhysicFieldVariableComp physicFieldVariableComp);
+
+    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+    void updateTimeFunctions(double time);
+
+    // rewrite
     void readBoundaryFromDomElement(QDomElement *element);
     void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
     void readMaterialFromDomElement(QDomElement *element);
     void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
-    LocalPointValue *localPointValue(const Point &point);
-    QStringList localPointValueHeader();
-
-    SurfaceIntegralValue *surfaceIntegralValue();
-    QStringList surfaceIntegralValueHeader();
-
-    VolumeIntegralValue *volumeIntegralValue();
-    QStringList volumeIntegralValueHeader();
-
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Heat_Temperature ||
-                                                                          physicFieldBC == PhysicFieldBC_Heat_Flux); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Heat_Temperature ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Heat_TemperatureGradient ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Heat_Flux ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Heat_Conductivity); }
 
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
@@ -62,95 +54,49 @@ public:
     SceneMaterial *newMaterial();
     SceneMaterial *newMaterial(PyObject *self, PyObject *args);
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
-
-    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-    virtual void updateTimeFunctions(double time);
-
-    inline PhysicFieldVariableDeprecated contourPhysicFieldVariable() { return PhysicFieldVariable_Heat_Temperature; }
-    inline PhysicFieldVariableDeprecated scalarPhysicFieldVariable() { return PhysicFieldVariable_Heat_Temperature; }
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
-    inline PhysicFieldVariableDeprecated vectorPhysicFieldVariable() { return PhysicFieldVariable_Heat_Flux; }
-
-    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_Temperature), PhysicFieldVariable_Heat_Temperature);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_TemperatureGradient), PhysicFieldVariable_Heat_TemperatureGradient);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_Flux), PhysicFieldVariable_Heat_Flux);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_Conductivity), PhysicFieldVariable_Heat_Conductivity);
-    }
-
-    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_TemperatureGradient), PhysicFieldVariable_Heat_TemperatureGradient);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_Flux), PhysicFieldVariable_Heat_Flux);
-    }
-
-    void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
-    void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
-    void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
-
-    ViewScalarFilter *viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
-class LocalPointValueHeat : public LocalPointValue
+class ParserHeatTransfer : public Parser
 {
 public:
-    double volume_heat;
-    double thermal_conductivity;
-    double temperature;
-    Point F;
-    Point G;
+    double plambda;
+    double prho;
+    double pcp;
+    double pq;
 
-    LocalPointValueHeat(const Point &point);
-    double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-    QStringList variables();
+    void setParserVariables(SceneMaterial *material);
 };
 
-class SurfaceIntegralValueHeat : public SurfaceIntegralValue
-{
-protected:
-    void calculateVariables(int i);
+// *******************************************************************************************
 
-public:
-    double averageTemperature;
-    double temperatureDifference;
-    double heatFlux;
-
-    SurfaceIntegralValueHeat();
-
-    QStringList variables();
-};
-
-class VolumeIntegralValueHeat : public VolumeIntegralValue
-{
-protected:
-    void calculateVariables(int i);
-    void initSolutions();
-
-public:
-    double averageTemperature;
-    double averageTemperatureGradientX;
-    double averageTemperatureGradientY;
-    double averageTemperatureGradient;
-    double averageHeatFluxX;
-    double averageHeatFluxY;
-    double averageHeatFlux;
-
-    VolumeIntegralValueHeat();
-    QStringList variables();
-};
-
-class ViewScalarFilterHeat : public ViewScalarFilter
+class LocalPointValueHeatTransfer : public LocalPointValue
 {
 public:
-    ViewScalarFilterHeat(Hermes::vector<MeshFunction *> sln, PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
-
-protected:
-    void calculateVariable(int i);
+    LocalPointValueHeatTransfer(const Point &point);
 };
 
-class SceneBoundaryHeat : public SceneBoundary
+class SurfaceIntegralValueHeatTransfer : public SurfaceIntegralValue
+{
+public:
+    SurfaceIntegralValueHeatTransfer();
+};
+
+class VolumeIntegralValueHeatTransfer : public VolumeIntegralValue
+{
+public:
+    VolumeIntegralValueHeatTransfer();
+};
+
+class ViewScalarFilterHeatTransfer : public ViewScalarFilter
+{
+public:
+    ViewScalarFilterHeatTransfer(Hermes::vector<MeshFunction *> sln,
+                                 std::string expression);
+};
+
+// *******************************************************************************************
+
+class SceneBoundaryHeatTransfer : public SceneBoundary
 {
 public:
     Value temperature;
@@ -158,15 +104,15 @@ public:
     Value h;
     Value externalTemperature;
 
-    SceneBoundaryHeat(const QString &name, PhysicFieldBC type, Value temperature);
-    SceneBoundaryHeat(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature);
+    SceneBoundaryHeatTransfer(const QString &name, PhysicFieldBC type, Value temperature);
+    SceneBoundaryHeatTransfer(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneMaterialHeat : public SceneMaterial
+class SceneMaterialHeatTransfer : public SceneMaterial
 {
 public:
     Value thermal_conductivity;
@@ -174,19 +120,19 @@ public:
     Value density;
     Value specific_heat;
 
-    SceneMaterialHeat(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
+    SceneMaterialHeatTransfer(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneBoundaryHeatDialog : public SceneBoundaryDialog
+class SceneBoundaryHeatTransferDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    SceneBoundaryHeatDialog(SceneBoundaryHeat *boundary, QWidget *parent);
+    SceneBoundaryHeatTransferDialog(SceneBoundaryHeatTransfer *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -205,12 +151,12 @@ private slots:
     void doTypeChanged(int index);
 };
 
-class SceneMaterialHeatDialog : public SceneMaterialDialog
+class SceneMaterialHeatTransferDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    SceneMaterialHeatDialog(SceneMaterialHeat *material, QWidget *parent);
+    SceneMaterialHeatTransferDialog(SceneMaterialHeatTransfer *material, QWidget *parent);
 
 protected:
     void createContent();

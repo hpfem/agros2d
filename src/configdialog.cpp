@@ -154,7 +154,7 @@ void ConfigDialog::save()
     Util::config()->language = cmbLanguage->currentText();
 
     // default physic field
-    Util::config()->defaultPhysicField = (PhysicField) cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toInt();
+    Util::config()->defaultPhysicField = cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toString();
 
     // collaboration server
     QString collaborationServerUrl = txtCollaborationServerURL->text();

@@ -135,10 +135,19 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
     if (Util::scene()->problemInfo()->problemType == ProblemType_Undefined)
         throw invalid_argument(QObject::tr("Problem type '%1' is not implemented.").arg(QString(type)).toStdString());
 
+    // analysis type
+    Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Undefined)
+        throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
+
     // physicfield
-    PhysicField physicField = physicFieldFromStringKey(QString(physicfield));
-    if (physicField != PhysicField_Undefined)
-        Util::scene()->problemInfo()->setHermes(hermesFieldFactory(physicField));
+    QString field = physicfield;
+    if (field != "")
+    {
+        Util::scene()->problemInfo()->setModule(moduleFactory(field.toStdString(),
+                                                              problemTypeFromStringKey(QString(type)),
+                                                              analysisTypeFromStringKey(QString(analysistype))));
+    }
     else
         throw invalid_argument(QObject::tr("Physic field '%1' is not implemented.").arg(QString(physicfield)).toStdString());
 
@@ -172,23 +181,13 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
         throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
 
     // frequency
-    if (Util::scene()->problemInfo()->hermes()->hasHarmonic())
+    if (Util::scene()->problemInfo()->module()->has_harmonic)
     {
         if (frequency >= 0)
             Util::scene()->problemInfo()->frequency = frequency;
         else
             throw invalid_argument(QObject::tr("The frequency can not be used for this problem.").toStdString());
     }
-
-    // analysis type
-    Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Undefined)
-        throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
-
-    // analysis type
-    Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Undefined)
-        throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
 
     // transient timestep
     if (timestep > 0)
@@ -337,7 +336,7 @@ static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
 {
     logMessage("pythonAddBoundary()");
 
-    SceneBoundary *marker = Util::scene()->problemInfo()->hermes()->newBoundary(self, args);
+    SceneBoundary *marker = Util::scene()->problemInfo()->module()->newBoundary(self, args);
     if (marker)
     {
         Util::scene()->addBoundary(marker);
@@ -355,7 +354,7 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyBoundary()");
 
-    if (Util::scene()->problemInfo()->hermes()->modifyBoundary(self,args))
+    if (Util::scene()->problemInfo()->module()->modifyBoundary(self,args))
         Py_RETURN_NONE;
     else
         return NULL;
@@ -366,7 +365,7 @@ static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
 {
     logMessage("pythonAddMaterial()");
 
-    SceneMaterial *marker = Util::scene()->problemInfo()->hermes()->newMaterial(self, args);
+    SceneMaterial *marker = Util::scene()->problemInfo()->module()->newMaterial(self, args);
     if (marker)
     {
         Util::scene()->addMaterial(marker);
@@ -384,7 +383,7 @@ static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyMaterial()");
 
-    if (Util::scene()->problemInfo()->hermes()->modifyMaterial(self, args))
+    if (Util::scene()->problemInfo()->module()->modifyMaterial(self, args))
         Py_RETURN_NONE;
     else
         return NULL;
@@ -695,10 +694,11 @@ static PyObject *pythonPointResult(PyObject *self, PyObject *args)
         if (PyArg_ParseTuple(args, "dd", &x, &y))
         {
             Point point(x, y);
-            LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
+            LocalPointValue *localPointValue = Util::scene()->problemInfo()->module()->local_point_value(point);
 
-            QStringList headers = Util::scene()->problemInfo()->hermes()->localPointValueHeader();
-            QStringList variables = localPointValue->variables();
+            // FIXME
+            QStringList headers; // = Util::scene()->problemInfo()->module()->localPointValueHeader();
+            QStringList variables; // = localPointValue->variables();
 
             PyObject *dict = PyDict_New();
             for (int i = 0; i < variables.length(); i++)
@@ -745,10 +745,11 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
                 }
             }
 
-            SurfaceIntegralValue *surfaceIntegral = Util::scene()->problemInfo()->hermes()->surfaceIntegralValue();
+            SurfaceIntegralValue *surfaceIntegral = Util::scene()->problemInfo()->module()->surface_integral_value();
 
-            QStringList headers = Util::scene()->problemInfo()->hermes()->surfaceIntegralValueHeader();
-            QStringList variables = surfaceIntegral->variables();
+            // FIXME
+            QStringList headers;// = Util::scene()->problemInfo()->module()->surfaceIntegralValueHeader();
+            QStringList variables;// = surfaceIntegral->variables();
 
             PyObject *dict = PyDict_New();
             for (int i = 0; i < variables.length(); i++)
@@ -795,10 +796,11 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
                 }
             }
 
-            VolumeIntegralValue *volumeIntegral = Util::scene()->problemInfo()->hermes()->volumeIntegralValue();
+            VolumeIntegralValue *volumeIntegral = Util::scene()->problemInfo()->module()->volume_integral_value();
 
-            QStringList headers = Util::scene()->problemInfo()->hermes()->volumeIntegralValueHeader();
-            QStringList variables = volumeIntegral->variables();
+            // FIXME
+            QStringList headers;// = Util::scene()->problemInfo()->module()->volumeIntegralValueHeader();
+            QStringList variables;// = volumeIntegral->variables();
 
             PyObject *dict = PyDict_New();
             for (int i = 0; i < variables.length(); i++)
@@ -834,7 +836,7 @@ void pythonShowScalar(char *type, char *variable, char *component, double rangem
     sceneView()->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
     if (sceneView()->sceneViewSettings().scalarPhysicFieldVariable == PhysicFieldVariable_Undefined)
         throw invalid_argument(QObject::tr("Physic field variable '%1' is not implemented.").arg(QString(variable)).toStdString());
-    if (!Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView()->sceneViewSettings().scalarPhysicFieldVariable))
+    if (!Util::scene()->problemInfo()->module()->physicFieldVariableCheck(sceneView()->sceneViewSettings().scalarPhysicFieldVariable))
         throw invalid_argument(QObject::tr("Physic field variable '%1' cannot be used with this field.").arg(QString(variable)).toStdString());
     */
 

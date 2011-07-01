@@ -60,8 +60,7 @@ void PostprocessorView::loadBasic()
     chkShowSolutionMesh->setChecked(m_sceneView->sceneViewSettings().showSolutionMesh);
 
     // scalar field
-    if (m_sceneView->sceneViewSettings().scalarPhysicFieldVariable)
-        cmbScalarFieldVariable->setCurrentIndex(cmbScalarFieldVariable->findData(QString::fromStdString(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable->id)));
+    cmbScalarFieldVariable->setCurrentIndex(cmbScalarFieldVariable->findData(QString::fromStdString(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable)));
     doScalarFieldVariable(cmbScalarFieldVariable->currentIndex());
     cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp));
     if (cmbScalarFieldVariableComp->currentIndex() == -1)
@@ -72,8 +71,7 @@ void PostprocessorView::loadBasic()
     txtScalarFieldRangeMax->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMax));
 
     // vector field
-    if (m_sceneView->sceneViewSettings().vectorPhysicFieldVariable)
-        cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(QString::fromStdString(m_sceneView->sceneViewSettings().vectorPhysicFieldVariable->id)));
+    cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(QString::fromStdString(m_sceneView->sceneViewSettings().vectorPhysicFieldVariable)));
 
     // transient view
     cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
@@ -141,16 +139,14 @@ void PostprocessorView::saveBasic()
     m_sceneView->sceneViewSettings().showSolutionMesh = chkShowSolutionMesh->isChecked();
 
     // scalar field
-    m_sceneView->sceneViewSettings().scalarPhysicFieldVariable =
-            Util::scene()->problemInfo()->module->get_variable(cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString().toStdString());
+    m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString().toStdString();
     m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
     m_sceneView->sceneViewSettings().scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
     m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
     m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
 
     // vector field
-    m_sceneView->sceneViewSettings().vectorPhysicFieldVariable =
-            Util::scene()->problemInfo()->module->get_variable(cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toString().toStdString());
+    m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toString().toStdString();
 }
 
 void PostprocessorView::saveAdvanced()
@@ -594,23 +590,23 @@ void PostprocessorView::doScalarFieldVariable(int index)
     logMessage("PostprocessorView::doScalarFieldVariable()");
 
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
-    if (Util::scene()->problemInfo()->module)
-    {
-        Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbScalarFieldVariable->itemData(index).toString().toStdString());
 
-        if (physicFieldVariable)
+    Hermes::Module::LocalVariable *physicFieldVariable = NULL;
+    if (cmbScalarFieldVariable->currentIndex() != -1)
+        physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(cmbScalarFieldVariable->itemData(index).toString().toStdString());
+
+    if (physicFieldVariable)
+    {
+        cmbScalarFieldVariableComp->clear();
+        if (physicFieldVariable->is_scalar)
         {
-            cmbScalarFieldVariableComp->clear();
-            if (physicFieldVariable->is_scalar)
-            {
-                cmbScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
-            }
-            else
-            {
-                cmbScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-                cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
-                cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
-            }
+            cmbScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
+        }
+        else
+        {
+            cmbScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
+            cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
+            cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
         }
     }
 

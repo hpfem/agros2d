@@ -369,9 +369,6 @@ void ChartDialog::plotGeometry()
 {
     logMessage("ChartDialog::plotGeometry()");
 
-    if (!Util::scene()->problemInfo()->module)
-        return;
-
     if (!txtStartX->evaluate()) return;
     if (!txtStartY->evaluate()) return;
     if (!txtEndX->evaluate()) return;
@@ -381,7 +378,7 @@ void ChartDialog::plotGeometry()
     doChartLine();
 
     // variable
-    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
     if (!physicFieldVariable)
         return;
 
@@ -403,7 +400,8 @@ void ChartDialog::plotGeometry()
     // table
     trvTable->clear();
     trvTable->setRowCount(count);
-    QStringList headers = Util::scene()->problemInfo()->hermes()->localPointValueHeader();
+    // FIXME
+    QStringList headers; // = Util::scene()->problemInfo()->module()->localPointValueHeader();
     trvTable->setColumnCount(headers.count());
     trvTable->setHorizontalHeaderLabels(headers);
 
@@ -425,7 +423,7 @@ void ChartDialog::plotGeometry()
     QStringList row;
     for (int i = 0; i < points.length(); i++)
     {
-        LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(points.at(i));
+        LocalPointValue *localPointValue = Util::scene()->problemInfo()->module()->local_point_value(points.at(i));
 
         // x value
         if (radAxisLength->isChecked())
@@ -452,11 +450,12 @@ void ChartDialog::plotGeometry()
 
         // y value
         // FIXME
-        yval[i] = localPointValue->variableValue(PhysicFieldVariable_Electrostatic_Potential, physicFieldVariableComp);
+        // yval[i] = localPointValue->variableValue(PhysicFieldVariable_Electrostatic_Potential, physicFieldVariableComp);
 
         // table
         row.clear();
-        row << localPointValue->variables();
+        // FIXME
+        // row << localPointValue->variables();
 
         for (int j = 0; j<row.count(); j++)
             trvTable->setItem(chkAxisPointsReverse->isChecked() ? points.length() - 1 - i : i, j, new QTableWidgetItem(row.at(j)));
@@ -485,16 +484,13 @@ void ChartDialog::plotTime()
 {
     logMessage("ChartDialog::plotTime()");
 
-    if (!Util::scene()->problemInfo()->module)
-        return;
-
     if (!txtPointX->evaluate()) return;
     if (!txtPointY->evaluate()) return;
 
     doChartLine();
 
     // variable
-    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
     if (!physicFieldVariable)
         return;
 
@@ -519,7 +515,8 @@ void ChartDialog::plotTime()
     // table
     trvTable->clear();
     trvTable->setRowCount(count);
-    QStringList headers = Util::scene()->problemInfo()->hermes()->localPointValueHeader();
+    // FIXME
+    QStringList headers; // = Util::scene()->problemInfo()->module()->localPointValueHeader();
     trvTable->setColumnCount(headers.count());
     trvTable->setHorizontalHeaderLabels(headers);
 
@@ -535,18 +532,19 @@ void ChartDialog::plotTime()
         Util::scene()->sceneSolution()->setTimeStep(i, false);
 
         Point point(txtPointX->value().number, txtPointY->value().number);
-        LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
+        LocalPointValue *localPointValue = Util::scene()->problemInfo()->module()->local_point_value(point);
 
         // x value
         xval[i] = Util::scene()->sceneSolution()->time();
 
         // y value
         // FIXME
-        yval[i] = localPointValue->variableValue(PhysicFieldVariable_Electrostatic_Potential, physicFieldVariableComp);
+        // yval[i] = localPointValue->variableValue(PhysicFieldVariable_Electrostatic_Potential, physicFieldVariableComp);
 
         // table
         row.clear();
-        row << localPointValue->variables();
+        // FIXME
+        // row << localPointValue->variables();
 
         for (int j = 0; j<row.count(); j++)
             trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));
@@ -580,10 +578,7 @@ void ChartDialog::doFieldVariable(int index)
 {
     logMessage("ChartDialog::doFieldVariable()");
 
-    if (!Util::scene()->problemInfo()->module)
-        return;
-
-    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
     if (!physicFieldVariable)
         return;
 

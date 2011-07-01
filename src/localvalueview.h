@@ -26,6 +26,8 @@ class ValueLineEdit;
 class SceneMaterial;
 class Solution;
 
+class Parser;
+
 namespace Hermes
 {
     namespace Module
@@ -57,10 +59,9 @@ struct PointValue
 
 class LocalPointValue
 {
-protected:
-    virtual void prepareParser(SceneMaterial *material, mu::Parser *parser) = 0;
-
 public:
+    Parser *parser;
+
     // point
     Point point;
 
@@ -68,10 +69,10 @@ public:
     std::map<Hermes::Module::LocalVariable *, PointValue> values;
 
     LocalPointValue(const Point &point);
+    ~LocalPointValue();
 
+    void initParser();
     void calculate();
-    virtual double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
-    virtual QStringList variables() = 0;
 };
 
 class LocalPointValueView : public QDockWidget

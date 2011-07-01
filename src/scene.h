@@ -58,7 +58,6 @@ public:
     QString name;
     QDate date;
     QString fileName;
-    PhysicField physicField();
     ProblemType problemType;
     int numberOfRefinements;
     int polynomialOrder;
@@ -86,34 +85,31 @@ public:
     // matrix solver
     MatrixSolverType matrixSolver;
 
-    // module
-    Hermes::Module::ModuleAgros *module;
-
     ProblemInfo()
     {
-        m_hermes = NULL;
-        module = NULL;
+        m_module = NULL;
         clear();
     }
 
     ~ProblemInfo()
     {
-        if (m_hermes) delete m_hermes;
+        if (m_module) delete m_module;
     }
 
     void clear();
 
     inline bool isLinear() const { return (linearityType == LinearityType_Linear); }
 
-    void setHermes(HermesField *hermes);
-    inline HermesField *hermes() const { return m_hermes; }
+    void setModule(Hermes::Module::ModuleAgros *module);
+    inline Hermes::Module::ModuleAgros *module() const { return m_module; }
 
     inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
     inline QString labelY() { return ((problemType == ProblemType_Planar) ? "Y" : "Z");  }
     inline QString labelZ() { return ((problemType == ProblemType_Planar) ? "Z" : "a");  }
 
 private:
-    HermesField *m_hermes;
+    // module
+    Hermes::Module::ModuleAgros *m_module;
 };
 
 class DxfFilter : public DL_CreationAdapter

@@ -64,12 +64,9 @@ void SceneSolution::clear()
     // m_vecVectorView.free();
 
     // solution array
-    if (!m_solutionArrayList.isEmpty())
-    {
-        for (int i = 0; i < m_solutionArrayList.count(); i++)
-            delete m_solutionArrayList.at(i);
-        m_solutionArrayList.clear();
-    }
+    for (int i = 0; i < m_solutionArrayList.size(); i++)
+        delete m_solutionArrayList.at(i);
+    m_solutionArrayList.clear();
 
     // mesh
     if (m_meshInitial)
@@ -199,7 +196,7 @@ void SceneSolution::loadSolution(QDomElement *element)
 {
     logMessage("SceneSolution::loadSolution()");
 
-    QList<SolutionArray *> solutionArrayList;
+    Hermes::vector<SolutionArray *> solutionArrayList;
 
     // constant solution cannot be saved
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
@@ -214,7 +211,7 @@ void SceneSolution::loadSolution(QDomElement *element)
         solutionArray->adaptiveSteps = 0.0;
         solutionArray->time = 0.0;
 
-        solutionArrayList.append(solutionArray);
+        solutionArrayList.push_back(solutionArray);
     }
 
     QDomNode n = element->firstChild();
@@ -224,12 +221,12 @@ void SceneSolution::loadSolution(QDomElement *element)
         solutionArray->load(&n.toElement());
 
         // add to the array
-        solutionArrayList.append(solutionArray);
+        solutionArrayList.push_back(solutionArray);
 
         n = n.nextSibling();
     }
 
-    if (!solutionArrayList.isEmpty())
+    if (solutionArrayList.size() > 0)
         setSolutionArrayList(solutionArrayList);
 }
 
@@ -256,14 +253,14 @@ Solution *SceneSolution::sln(int i)
     logMessage("SceneSolution::sln()");
 
     int currentTimeStep = i;
-    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->problemInfo()->hermes()->numberOfSolution())
+    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->problemInfo()->module()->number_of_solution())
     {
         // default
         if (currentTimeStep == -1)
-            currentTimeStep = m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution();
+            currentTimeStep = m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution();
 
-        if (m_solutionArrayList.value(currentTimeStep)->sln)
-            return m_solutionArrayList.value(currentTimeStep)->sln;
+        if (m_solutionArrayList.at(currentTimeStep)->sln)
+            return m_solutionArrayList.at(currentTimeStep)->sln;
     }
     return NULL;
 }
@@ -273,7 +270,7 @@ Orderizer *SceneSolution::ordView()
     logMessage("SceneSolution::ordView()");
 
     if (isSolved())
-        return m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->order;
+        return m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->order;
     else
         return NULL;
 }
@@ -282,14 +279,14 @@ double SceneSolution::adaptiveError()
 {
     logMessage("SceneSolution::adaptiveError()");
 
-    return (isSolved()) ? m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveError : 100.0;
+    return (isSolved()) ? m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->adaptiveError : 100.0;
 }
 
 int SceneSolution::adaptiveSteps()
 {
     logMessage("SceneSolution::adaptiveSteps()");
 
-    return (isSolved()) ? m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveSteps : 0.0;
+    return (isSolved()) ? m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->adaptiveSteps : 0.0;
 }
 
 int SceneSolution::findElementInVectorizer(const Vectorizer &vec, const Point &point) const
@@ -366,16 +363,13 @@ void SceneSolution::setMeshInitial(Mesh *meshInitial)
     m_meshInitial = meshInitial;
 }
 
-void SceneSolution::setSolutionArrayList(QList<SolutionArray *> solutionArrayList)
+void SceneSolution::setSolutionArrayList(Hermes::vector<SolutionArray *> solutionArrayList)
 {
     logMessage("SceneSolution::setSolutionArrayList()");
 
-    if (!m_solutionArrayList.isEmpty())
-    {
-        for (int i = 0; i < m_solutionArrayList.count(); i++)
-            delete m_solutionArrayList.at(i);
-        m_solutionArrayList.clear();
-    }
+    for (int i = 0; i < m_solutionArrayList.size(); i++)
+        delete m_solutionArrayList.at(i);
+    m_solutionArrayList.clear();
 
     m_solutionArrayList = solutionArrayList;
 
@@ -397,7 +391,7 @@ int SceneSolution::timeStepCount() const
 {
     logMessage("SceneSolution::timeStepCount()");
 
-    return (!m_solutionArrayList.isEmpty()) ? m_solutionArrayList.count() / Util::scene()->problemInfo()->hermes()->numberOfSolution() : 0;
+    return (m_solutionArrayList.size() > 0) ? m_solutionArrayList.size() / Util::scene()->problemInfo()->module()->number_of_solution() : 0;
 }
 
 double SceneSolution::time() const
@@ -406,8 +400,8 @@ double SceneSolution::time() const
 
     if (isSolved())
     {
-        if (m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->sln)
-            return m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->time;
+        if (m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->sln)
+            return m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->time;
     }
     return 0.0;
 }
@@ -427,7 +421,7 @@ void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
 
     // deformed shape
     if (Util::config()->deformContour)
-        Util::scene()->problemInfo()->hermes()->deformShape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
+        Util::scene()->problemInfo()->module()->deform_shape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
 }
 
 void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
@@ -441,14 +435,14 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
     }
     
     m_slnScalarView = slnScalarView;
-    QTime time;
-    time.start();
+    // QTime time;
+    // time.start();
     m_linScalarView.process_solution(m_slnScalarView, H2D_FN_VAL_0, Util::config()->linearizerQuality);
-    qDebug() << "linScalarView.process_solution: " << time.elapsed();
+    // qDebug() << "linScalarView.process_solution: " << time.elapsed();
 
     // deformed shape
     if (Util::config()->deformScalar)
-        Util::scene()->problemInfo()->hermes()->deformShape(m_linScalarView.get_vertices(), m_linScalarView.get_num_vertices());
+        Util::scene()->problemInfo()->module()->deform_shape(m_linScalarView.get_vertices(), m_linScalarView.get_num_vertices());
 }
 
 void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScalarFilter *slnVectorYView)
@@ -473,7 +467,7 @@ void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScala
 
     // deformed shape
     if (Util::config()->deformVector)
-        Util::scene()->problemInfo()->hermes()->deformShape(m_vecVectorView.get_vertices(), m_vecVectorView.get_num_vertices());
+        Util::scene()->problemInfo()->module()->deform_shape(m_vecVectorView.get_vertices(), m_vecVectorView.get_num_vertices());
 }
 
 void SceneSolution::processView(bool showViewProgress)
@@ -509,15 +503,15 @@ void SceneSolution::processRangeContour()
 {
     logMessage("SceneSolution::processRangeContour()");
 
-    if (isSolved())
+    if (isSolved() && sceneView()->sceneViewSettings().contourPhysicFieldVariable != "")
     {
         ViewScalarFilter *viewScalarFilter;
-        if (sceneView()->sceneViewSettings().contourPhysicFieldVariable->is_scalar)
-            viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
-                                                                                        PhysicFieldVariableComp_Scalar);
+        if (Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable)->is_scalar)
+            viewScalarFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable),
+                                                                                          PhysicFieldVariableComp_Scalar);
         else
-            viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
-                                                                                        PhysicFieldVariableComp_Magnitude);
+            viewScalarFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable),
+                                                                                          PhysicFieldVariableComp_Magnitude);
 
         setSlnContourView(viewScalarFilter);
         emit processedRangeContour();
@@ -528,10 +522,10 @@ void SceneSolution::processRangeScalar()
 {
     logMessage("SceneSolution::processRangeScalar()");
 
-    if (isSolved())
+    if (isSolved() && sceneView()->sceneViewSettings().scalarPhysicFieldVariable != "")
     {
-        ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().scalarPhysicFieldVariable,
-                                                                                                      sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
+        ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().scalarPhysicFieldVariable),
+                                                                                                        sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
 
         setSlnScalarView(viewScalarFilter);
         emit processedRangeScalar();
@@ -542,13 +536,13 @@ void SceneSolution::processRangeVector()
 {
     logMessage("SceneSolution::processRangeVector()");
 
-    if (isSolved())
+    if (isSolved() && sceneView()->sceneViewSettings().vectorPhysicFieldVariable != "")
     {
-        ViewScalarFilter *viewVectorXFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().vectorPhysicFieldVariable,
-                                                                                                       PhysicFieldVariableComp_X);
+        ViewScalarFilter *viewVectorXFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().vectorPhysicFieldVariable),
+                                                                                                         PhysicFieldVariableComp_X);
 
-        ViewScalarFilter *viewVectorYFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().vectorPhysicFieldVariable,
-                                                                                                       PhysicFieldVariableComp_Y);
+        ViewScalarFilter *viewVectorYFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().vectorPhysicFieldVariable),
+                                                                                                         PhysicFieldVariableComp_Y);
 
         setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
         emit processedRangeVector();

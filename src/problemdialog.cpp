@@ -353,7 +353,7 @@ void ProblemDialog::load()
     logMessage("ProblemDialog::load()");
 
     // main
-    if (!m_isNewProblem) cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_problemInfo->physicField()));
+    if (!m_isNewProblem) cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(QString::fromStdString(m_problemInfo->module()->id)));
     txtName->setText(m_problemInfo->name);
     cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_problemInfo->problemType));
     dtmDate->setDate(m_problemInfo->date);
@@ -390,12 +390,13 @@ void ProblemDialog::load()
     doTransientChanged();
 }
 
-bool ProblemDialog::save()
+    bool ProblemDialog::save()
 {
     logMessage("ProblemDialog::save()");
 
     // physical field type
-    if (Util::scene()->problemInfo()->physicField() != ((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()))
+    if (Util::scene()->problemInfo()->module()->id !=
+            cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString())
     {
         if (!this->m_isNewProblem)
         {
@@ -409,7 +410,9 @@ bool ProblemDialog::save()
         if (Util::scene()->sceneSolution()->isSolved())
             Util::scene()->doClearSolution();
 
-        m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
+        m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
+                                               (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
+                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt()));
 
         for (int i = 1; i < Util::scene()->boundaries.count(); i++)
         {
@@ -423,7 +426,9 @@ bool ProblemDialog::save()
     }
     else
     {
-        m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
+        m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
+                                               (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
+                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt()));
     }
 
     // check values
@@ -517,14 +522,17 @@ void ProblemDialog::doPhysicFieldChanged(int index)
 {
     logMessage("ProblemDialog::doPhysicFieldChanged()");
 
-    HermesField *hermesField = hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt());
-
     // analysis type
     AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
+    ProblemType problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
+
+    Hermes::Module::ModuleAgros *module = moduleFactory("electrostatics", ProblemType_Planar, AnalysisType_SteadyState);
+
+    // analysis type
     cmbAnalysisType->clear();
-    if (hermesField->hasSteadyState()) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_SteadyState), AnalysisType_SteadyState);
-    if (hermesField->hasHarmonic()) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Harmonic), AnalysisType_Harmonic);
-    if (hermesField->hasTransient()) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Transient), AnalysisType_Transient);
+    if (module->has_steady_state) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_SteadyState), AnalysisType_SteadyState);
+    if (module->has_harmonic) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Harmonic), AnalysisType_Harmonic);
+    if (module->has_transient) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Transient), AnalysisType_Transient);
     cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(analysisType));
     if (cmbAnalysisType->currentIndex() == -1) cmbAnalysisType->setCurrentIndex(0);
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
@@ -532,14 +540,14 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     // nonlinearity
     cmbLinearityType->clear();
     cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
-    if (hermesField->hasNonlinearity())
+    if (module->has_nonlinearity())
     {
         cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
         cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
     }
     doLinearityTypeChanged(cmbLinearityType->currentIndex());
 
-    delete hermesField;
+    delete module;
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 }
@@ -588,6 +596,6 @@ void ProblemDialog::doShowEquation()
 {
     readPixmap(lblEquationPixmap,
                QString(":/images/equations/%1/%1_%2.png")
-               .arg(physicFieldToStringKey((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()))
+               .arg(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString())
                .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
 }

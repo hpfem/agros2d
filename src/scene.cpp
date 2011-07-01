@@ -40,9 +40,25 @@
 
 #include "hermes2d/hermes_field.h"
 
-PhysicField ProblemInfo::physicField()
+/*
+    PhysicField_Undefined,
+    PhysicField_General,
+    PhysicField_Electrostatic = 2,
+    PhysicField_Magnetic,
+    PhysicField_Current = 4,
+    PhysicField_Heat,
+    PhysicField_Elasticity,
+    PhysicField_Flow,
+    PhysicField_RF,
+    PhysicField_Acoustic
+*/
+QString convertProblemTypeFromOldVersion(const QString &id)
 {
-    return (m_hermes) ? m_hermes->physicField() : PhysicField_Undefined;
+    if (id == "electrostatic" || id == "2") return "electrostatics";
+    if (id == "magnetic" || id == "3") return "magnetics";
+    if (id == "heat" || id == "4") return "heattransfer";
+
+    return id;
 }
 
 void ProblemInfo::clear()
@@ -51,18 +67,12 @@ void ProblemInfo::clear()
     analysisType = AnalysisType_SteadyState;
 
     // hermes object
-    if (m_hermes) delete m_hermes;
-    if (module) delete module;
+    if (m_module) delete m_module;
 
     // read default field (Util::config() is not set)
     QSettings settings;
-    PhysicField defaultPhysicField = (PhysicField) settings.value("General/DefaultPhysicField", PhysicField_Electrostatic).toInt();
-    if (defaultPhysicField == PhysicField_Undefined)
-    {
-        defaultPhysicField = PhysicField_Electrostatic;
-        settings.setValue("General/DefaultPhysicField", defaultPhysicField);
-    }
-    m_hermes = hermesFieldFactory(defaultPhysicField);
+    QString defaultPhysicField = convertProblemTypeFromOldVersion(settings.value("General/DefaultPhysicField", "electrostatics").toString());
+    m_module = moduleFactory(defaultPhysicField.toStdString(), problemType, analysisType);
 
     name = QObject::tr("unnamed");
     date = QDate::currentDate();
@@ -93,16 +103,10 @@ void ProblemInfo::clear()
     linearityNonlinearSteps = 10;
 }
 
-void ProblemInfo::setHermes(HermesField *hermes)
+void ProblemInfo::setModule(Hermes::Module::ModuleAgros *module)
 {
-    if (!module)
-        module = new Hermes::Module::ModuleAgros(Util::scene()->problemInfo()->problemType,
-                                                 Util::scene()->problemInfo()->analysisType);
-
-    module->read((datadir() + "/modules/electrostatics.xml").toStdString());
-
-    if (m_hermes) delete m_hermes;
-    m_hermes = hermes;
+    if (m_module) delete m_module;
+    m_module = module;
 }
 
 DxfFilter::DxfFilter(Scene *scene)
@@ -546,7 +550,7 @@ void Scene::replaceBoundary(SceneBoundary *boundary)
     QString name = boundary->name;
 
     // add new marker
-    SceneBoundary *markerNew = Util::scene()->problemInfo()->hermes()->newBoundary();
+    SceneBoundary *markerNew = Util::scene()->problemInfo()->module()->newBoundary();
     Util::scene()->addBoundary(markerNew);
 
     // set edges to the new marker
@@ -636,7 +640,7 @@ void Scene::replaceMaterial(SceneMaterial *material)
     QString name = material->name;
 
     // add new marker
-    SceneMaterial *markerNew = Util::scene()->problemInfo()->hermes()->newMaterial();
+    SceneMaterial *markerNew = Util::scene()->problemInfo()->module()->newMaterial();
     Util::scene()->addMaterial(markerNew);
 
     // set labels to the new marker
@@ -1079,7 +1083,7 @@ void Scene::doNewBoundary()
 {
     logMessage("Scene::doNewBoundary()");
 
-    SceneBoundary *marker = Util::scene()->problemInfo()->hermes()->newBoundary();
+    SceneBoundary *marker = Util::scene()->problemInfo()->module()->newBoundary();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addBoundary(marker);
@@ -1091,7 +1095,7 @@ void Scene::doNewMaterial()
 {
     logMessage("Scene::doNewMaterial()");
 
-    SceneMaterial *marker = Util::scene()->problemInfo()->hermes()->newMaterial();
+    SceneMaterial *marker = Util::scene()->problemInfo()->module()->newMaterial();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addMaterial(marker);
@@ -1119,38 +1123,55 @@ void Scene::doProblemProperties()
 {
     logMessage("Scene::doProblemProperties()");
 
+    QString scalar = "";
+    QString vector = "";
+    PhysicFieldVariableComp scalarComp = PhysicFieldVariableComp_Undefined;
+
+    // previous value
+
+    scalar = QString::fromStdString(sceneView()->sceneViewSettings().scalarPhysicFieldVariable);
+    scalarComp = sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp;
+    vector = QString::fromStdString(sceneView()->sceneViewSettings().vectorPhysicFieldVariable);
+
     ProblemDialog problemDialog(m_problemInfo, false, QApplication::activeWindow());
-    if (problemDialog.showDialog() == QDialog::Accepted)
+    // if (problemDialog.showDialog() == QDialog::Accepted)
+
+    problemDialog.showDialog();
+
+    // contour
+    sceneView()->sceneViewSettings().contourPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
+
+    // scalar view
+    // determines whether the selected field exists
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module()->view_scalar_variables.begin();
+         it < Util::scene()->problemInfo()->module()->view_scalar_variables.end(); ++it )
     {
-        // FIXME - add QList of variables
-        QComboBox *cmbScalarFieldVariable = new QComboBox();
-        Util::scene()->problemInfo()->module->fillComboBoxScalarVariable(cmbScalarFieldVariable);
-        QComboBox *cmbVectorFieldVariable = new QComboBox();
-        Util::scene()->problemInfo()->module->fillComboBoxVectorVariable(cmbVectorFieldVariable);
-
-        // determines whether the selected field exists
-        if (!sceneView()->sceneViewSettings().contourPhysicFieldVariable)
-            // if (cmbScalarFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().contourPhysicFieldVariable->id)) == -1)
-            sceneView()->sceneViewSettings().contourPhysicFieldVariable = Util::scene()->problemInfo()->module->view_default_scalar_variable;
-
-        if (!sceneView()->sceneViewSettings().scalarPhysicFieldVariable)
-            // if (cmbScalarFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().scalarPhysicFieldVariable->id)) == -1)
+        Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
+        if (variable->id == scalar.toStdString())
         {
-            sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->problemInfo()->module->view_default_scalar_variable;
-            sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module->view_default_scalar_variable_comp();
-            sceneView()->sceneViewSettings().scalarRangeAuto = true;
+            sceneView()->sceneViewSettings().scalarPhysicFieldVariable = variable->id;
+            sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = scalarComp;
         }
-
-        if (!sceneView()->sceneViewSettings().vectorPhysicFieldVariable)
-            // if (cmbVectorFieldVariable->findData(QString::fromStdString(sceneView()->sceneViewSettings().vectorPhysicFieldVariable->id)) == -1)
-            sceneView()->sceneViewSettings().vectorPhysicFieldVariable = Util::scene()->problemInfo()->module->view_default_vector_variable;
-
-        delete cmbScalarFieldVariable;
-        delete cmbVectorFieldVariable;
-
-
-        emit invalidated();
     }
+    if (sceneView()->sceneViewSettings().scalarPhysicFieldVariable == "")
+    {
+        sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
+        sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module()->view_default_scalar_variable_comp();
+        sceneView()->sceneViewSettings().scalarRangeAuto = true;
+    }
+
+    // vector view
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module()->view_vector_variables.begin();
+         it < Util::scene()->problemInfo()->module()->view_vector_variables.end(); ++it )
+    {
+        Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
+        if (variable->id == vector.toStdString())
+            sceneView()->sceneViewSettings().vectorPhysicFieldVariable = variable->id;
+    }
+    if (sceneView()->sceneViewSettings().vectorPhysicFieldVariable == "")
+        sceneView()->sceneViewSettings().vectorPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_vector_variable->id;
+
+    emit invalidated();
 }
 
 void Scene::writeToDxf(const QString &fileName)
@@ -1378,7 +1399,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype",
                                                                                              analysisTypeToStringKey(AnalysisType_SteadyState)));
     // physic field
-    m_problemInfo->setHermes(hermesFieldFactory(physicFieldFromStringKey(eleProblem.toElement().attribute("type"))));
+    m_problemInfo->setModule(moduleFactory(convertProblemTypeFromOldVersion(eleProblem.toElement().attribute("type")).toStdString(),
+                                           problemTypeFromStringKey(eleProblem.toElement().attribute("problemtype")),
+                                           analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(AnalysisType_SteadyState)))));
     // number of refinements
     m_problemInfo->numberOfRefinements = eleProblem.toElement().attribute("numberofrefinements").toInt();
     // polynomial order
@@ -1440,7 +1463,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         else
         {
             // read marker
-            m_problemInfo->hermes()->readBoundaryFromDomElement(&element.toElement());
+            m_problemInfo->module()->readBoundaryFromDomElement(&element.toElement());
         }
 
         n = n.nextSibling();
@@ -1462,7 +1485,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         else
         {
             // read marker
-            m_problemInfo->hermes()->readMaterialFromDomElement(&element.toElement());
+            m_problemInfo->module()->readMaterialFromDomElement(&element.toElement());
         }
 
         n = n.nextSibling();
@@ -1590,7 +1613,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // analysis type
     eleProblem.setAttribute("analysistype", analysisTypeToStringKey(m_problemInfo->analysisType));
     // type
-    eleProblem.setAttribute("type", physicFieldToStringKey(m_problemInfo->physicField()));
+    eleProblem.setAttribute("type", QString::fromStdString(m_problemInfo->module()->id));
     // number of refinements
     eleProblem.setAttribute("numberofrefinements", m_problemInfo->numberOfRefinements);
     // polynomial order
@@ -1697,7 +1720,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         if (i > 0)
         {
             // write marker
-            m_problemInfo->hermes()->writeBoundaryToDomElement(&eleBoundary, boundaries[i]);
+            m_problemInfo->module()->writeBoundaryToDomElement(&eleBoundary, boundaries[i]);
         }
 
         eleBoundarys.appendChild(eleBoundary);
@@ -1716,7 +1739,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         if (i > 0)
         {
             // write marker
-            m_problemInfo->hermes()->writeMaterialToDomElement(&eleMaterial, materials[i]);
+            m_problemInfo->module()->writeMaterialToDomElement(&eleMaterial, materials[i]);
         }
 
         eleMaterials.appendChild(eleMaterial);

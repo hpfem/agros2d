@@ -99,7 +99,7 @@ QString createPythonFromModel()
     str += QString("newdocument(\"%1\", \"%2\", \"%3\", %4, %5, \"%6\", %7, %8, %9, \"%10\", %11, %12, %13)").
            arg(Util::scene()->problemInfo()->name).
            arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
-           arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField())).
+           arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id)).
            arg(Util::scene()->problemInfo()->numberOfRefinements).
            arg(Util::scene()->problemInfo()->polynomialOrder).
            arg(adaptivityTypeToStringKey(Util::scene()->problemInfo()->adaptivityType)).

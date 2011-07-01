@@ -22,7 +22,7 @@
 // #include "hermes_general.h"
 #include "hermes_electrostatic.h"
 // #include "hermes_magnetic.h"
-// #include "hermes_heat.h"
+#include "hermes_heat.h"
 // #include "hermes_current.h"
 // #include "hermes_elasticity.h"
 // #include "hermes_flow.h"
@@ -32,37 +32,48 @@
 
 #include "mesh/h2d_reader.h"
 
+#include <dirent.h>
+
 double actualTime;
 
-HermesField *hermesFieldFactory(PhysicField physicField)
+Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type)
 {
-    return new HermesElectrostatic();
+    Hermes::Module::ModuleAgros *module = NULL;
 
-    switch (physicField)
+    if (id == "electrostatics")
+        module = new ModuleElectrostatics(problem_type, analysis_type);
+    if (id == "heattransfer")
+        module = new ModuleHeatTransfer(problem_type, analysis_type);
+
+    if (module)
+        module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());
+    else
+        std::cout << "Module doesn't exists." << std::endl;
+
+    return module;
+}
+
+std::map<std::string, std::string> availableModules()
+{
+    static std::map<std::string, std::string> modules;
+
+    // read modules
+    if (modules.size() == 0)
     {
-    case PhysicField_General:
-        // return new HermesGeneral();
-    case PhysicField_Electrostatic:
-        // return new HermesElectrostatic();
-    case PhysicField_Magnetic:
-        // return new HermesMagnetic();
-    case PhysicField_Heat:
-        // return new HermesHeat();
-    case PhysicField_Current:
-        // return new HermesCurrent();
-    case PhysicField_Elasticity:
-        // return new HermesElasticity();
-    case PhysicField_Flow:
-        // return new HermesFlow();
-    case PhysicField_RF:
-        // return new HermesRF();
-    case PhysicField_Acoustic:
-        // return new HermesAcoustic();
-    default:
-        std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. hermesObjectFactory()" << endl;
-        throw;
-        break;
+        // modules["electrostatics"] = "Electrostatics";
+        DIR *dp;
+        if ((dp = opendir((datadir() + "/modules").toStdString().c_str())) == NULL)
+            error("Modules dir '%s' doesn't exists", (datadir() + "/modules").toStdString().c_str());
+
+        struct dirent *dirp;
+        while ((dirp = readdir(dp)) != NULL)
+        {
+            std::cout << dirp->d_name << std::cout;
+        }
+        closedir(dp);
     }
+
+    return modules;
 }
 
 // ***********************************************************************************************
@@ -188,12 +199,24 @@ void Hermes::Module::Module::read(std::string file_name)
     // problems
     QDomNode eleGeneral = eleDoc.elementsByTagName("general").at(0);
 
-    name = eleGeneral.toElement().elementsByTagName("name").at(0).toElement().text().toStdString();
+    id = eleGeneral.toElement().attribute("id").toStdString();
+    name = eleGeneral.toElement().attribute("name").toStdString();
     description = eleGeneral.toElement().elementsByTagName("description").at(0).toElement().text().toStdString();
 
-    has_steady_state = eleGeneral.toElement().elementsByTagName("has_steady_state").at(0).toElement().text().toInt();
-    has_harmonic = eleGeneral.toElement().elementsByTagName("has_harmonic").at(0).toElement().text().toInt();
-    has_transient = eleGeneral.toElement().elementsByTagName("has_transient").at(0).toElement().text().toInt();
+    QDomNode eleProperties = eleGeneral.toElement().elementsByTagName("properties").at(0);
+    has_steady_state = eleProperties.toElement().attribute("steadystate").toInt();
+    has_harmonic = eleProperties.toElement().attribute("harmonic").toInt();
+    has_transient = eleProperties.toElement().attribute("transient").toInt();
+
+    // constants
+    QDomNode eleConstants = eleDoc.toElement().elementsByTagName("constants").at(0);
+    n = eleConstants.firstChild();
+    while(!n.isNull())
+    {
+        constants[n.toElement().attribute("id").toStdString()] = n.toElement().attribute("value").toDouble();
+
+        n = n.nextSibling();
+    }
 
     QDomNode eleVariables = eleDoc.toElement().elementsByTagName("localvariable").at(0);
     n = eleVariables.firstChild();
@@ -247,7 +270,7 @@ void Hermes::Module::Module::read(std::string file_name)
 
     // surface integral
     QDomNode eleSurfaceIntegral = eleDoc.toElement().elementsByTagName("surfaceintegral").at(0);
-    n = eleSurfaceIntegral.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).firstChild();
+    n = eleSurfaceIntegral.firstChild();
     while(!n.isNull())
     {
         surface_integral.push_back(new Integral(&n.toElement(), m_problemType, m_analysisType));
@@ -271,6 +294,8 @@ void Hermes::Module::Module::read(std::string file_name)
 
 void Hermes::Module::Module::clear()
 {
+    // id
+    id = "";
     // name
     name = "";
     // description
@@ -280,7 +305,10 @@ void Hermes::Module::Module::clear()
     has_harmonic = false;
     has_transient = false;
 
-    // clear
+    // constants
+    constants.clear();
+
+    // variables
     for (Hermes::vector<LocalVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
         delete *it;
     variables.clear();
@@ -299,8 +327,6 @@ void Hermes::Module::Module::clear()
     surface_integral.clear();
 
     // volume integrals
-    for (Hermes::vector<Integral *>::iterator it = volume_integral.begin(); it < volume_integral.end(); ++it)
-        delete *it;
     volume_integral.clear();
 }
 
@@ -314,12 +340,25 @@ Hermes::Module::LocalVariable* Hermes::Module::Module::get_variable(std::string 
     return NULL;
 }
 
+mu::Parser *Hermes::Module::Module::get_parser()
+{
+    mu::Parser *parser = new mu::Parser();
+
+    parser->DefineConst("PI", M_PI);
+
+    for (std::map<std::string, double>::iterator it = constants.begin(); it != constants.end(); ++it)
+        parser->DefineConst(it->first, it->second);
+
+    return parser;
+}
 
 std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable *physicFieldVariable,
                                                    PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariableComp)
     {
+    // case PhysicFieldVariableComp_Undefined:
+    //    return "";
     case PhysicFieldVariableComp_Scalar:
         return physicFieldVariable->expression.scalar;
     case PhysicFieldVariableComp_X:
@@ -446,13 +485,13 @@ GeomType convertProblemType(ProblemType problemType)
     return (problemType == ProblemType_Planar ? HERMES_PLANAR : HERMES_AXISYM_Y);
 }
 
-QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                         Hermes::vector<EssentialBCs> bcs,
-                                         WeakFormAgros *wf)
+Hermes::vector<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
+                                                  Hermes::vector<EssentialBCs> bcs,
+                                                  WeakFormAgros *wf)
 {
     SolutionAgros solutionAgros(progressItemSolve, wf);
 
-    QList<SolutionArray *> solutionArrayList = solutionAgros.solveSolutioArray(bcs);
+    Hermes::vector<SolutionArray *> solutionArrayList = solutionAgros.solveSolutioArray(bcs);
     return solutionArrayList;
 }
 
@@ -466,7 +505,7 @@ SolutionAgros::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros
     adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
     adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
     adaptivityMaxDOFs = Util::scene()->problemInfo()->adaptivityMaxDOFs;
-    numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
+    numberOfSolution = Util::scene()->problemInfo()->module()->number_of_solution();
     timeTotal = Util::scene()->problemInfo()->timeTotal.number;
     timeStep = Util::scene()->problemInfo()->timeStep.number;
     initialCondition = Util::scene()->problemInfo()->initialCondition.number;
@@ -481,12 +520,12 @@ SolutionAgros::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros
     m_wf = wf;
 }
 
-QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<EssentialBCs> bcs)
+Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<EssentialBCs> bcs)
 {
     QTime time;
 
     // solution agros array
-    QList<SolutionArray *> solutionArrayList;
+    Hermes::vector<SolutionArray *> solutionArrayList;
 
     // load the mesh file
     mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
@@ -564,7 +603,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
             {
                 // constant initial solution
                 solution.at(i)->set_const(mesh, initialCondition);
-                solutionArrayList.append(solutionArray(solution.at(i)));
+                solutionArrayList.push_back(solutionArray(solution.at(i)));
             }
 
             // nonlinear
@@ -577,7 +616,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
         actualTime = 0.0;
 
         // update time function
-        Util::scene()->problemInfo()->hermes()->updateTimeFunctions(actualTime);
+        Util::scene()->problemInfo()->module()->updateTimeFunctions(actualTime);
 
         m_wf->set_current_time(actualTime);
         m_wf->solution = solution;
@@ -705,7 +744,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                 // update essential bc values
                 Space::update_essential_bc_values(space, actualTime);
                 // update timedep values
-                Util::scene()->problemInfo()->hermes()->updateTimeFunctions(actualTime);
+                Util::scene()->problemInfo()->module()->updateTimeFunctions(actualTime);
 
                 m_wf->set_current_time(actualTime);
                 m_wf->delete_all();
@@ -722,7 +761,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
                 // output
                 for (int i = 0; i < numberOfSolution; i++)
                 {
-                    solutionArrayList.append(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
+                    solutionArrayList.push_back(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
                 }
 
                 if (analysisType == AnalysisType_Transient)
@@ -763,7 +802,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<Essential
 
     if (isError)
     {
-        for (int i = 0; i < solutionArrayList.count(); i++)
+        for (int i = 0; i < solutionArrayList.size(); i++)
             delete solutionArrayList.at(i);
         solutionArrayList.clear();
     }
@@ -951,22 +990,54 @@ SolutionArray *SolutionAgros::solutionArray(Solution *sln, Space *space, double 
 
 // *********************************************************************************************************************************************
 
-ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
-                                   std::string expression)
+Parser::~Parser()
+{
+    // delete parser
+    for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
+        delete *it;
+    parser.clear();
+}
+
+// *********************************************************************************************************************************************
+
+ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln)
     : Filter(sln)
 {
-    parser.SetExpr(expression);
-    // qDebug() << "expression: " << QString::fromStdString(expression);
+}
 
-    parser.DefineConst("EPS0", EPS0);
-    parser.DefineConst("MU0", MU0);
-    parser.DefineConst("PI", M_PI);
+ViewScalarFilter::~ViewScalarFilter()
+{
+    delete parser;
 
-    parser.DefineVar("x", &px);
-    parser.DefineVar("y", &py);
-    parser.DefineVar("value", &pvalue);
-    parser.DefineVar("dx", &pdx);
-    parser.DefineVar("dy", &pdy);
+    delete [] pvalue;
+    delete [] pdx;
+    delete [] pdy;
+}
+
+void ViewScalarFilter::initParser(std::string expression)
+{
+    mu::Parser *pars = Util::scene()->problemInfo()->module()->get_parser();
+
+    pars->SetExpr(expression);
+
+    pars->DefineVar("x", &px);
+    pars->DefineVar("y", &py);
+
+    pvalue = new double[num];
+    pdx = new double[num];
+    pdy = new double[num];
+
+    for (int k = 0; k < num; k++)
+    {
+        std::stringstream number;
+        number << (k+1);
+
+        pars->DefineVar("value" + number.str(), &pvalue[k]);
+        pars->DefineVar("dx" + number.str(), &pdx[k]);
+        pars->DefineVar("dy" + number.str(), &pdy[k]);
+    }
+
+    parser->parser.push_back(pars);
 }
 
 double ViewScalarFilter::get_pt_value(double x, double y, int item)
@@ -980,28 +1051,15 @@ void ViewScalarFilter::precalculate(int order, int mask)
     int np = quad->get_num_points(order);
     node = new_node(H2D_FN_DEFAULT, np);
 
-    double *value1, *dudx1, *dudy1;
-    if (sln[0])
-    {
-        sln[0]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
-        sln[0]->get_dx_dy_values(dudx1, dudy1);
-        value1 = sln[0]->get_fn_values();
-    }
+    double **value = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double **dudx = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double **dudy = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
 
-    double *value2, *dudx2, *dudy2;
-    if (num >= 2 && sln[1])
+    for (int k = 0; k < num; k++)
     {
-        sln[1]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
-        sln[1]->get_dx_dy_values(dudx2, dudy2);
-        value2 = sln[1]->get_fn_values();
-    }
-
-    double *value3, *dudx3, *dudy3;
-    if (num >= 3 && sln[2])
-    {
-        sln[2]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
-        sln[2]->get_dx_dy_values(dudx3, dudy3);
-        value3 = sln[2]->get_fn_values();
+        sln[k]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
+        sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
+        value[k] = sln[k]->get_fn_values();
     }
 
     update_refmap();
@@ -1011,27 +1069,34 @@ void ViewScalarFilter::precalculate(int order, int mask)
     Element *e = refmap->get_active_element();
 
     SceneMaterial *material = Util::scene()->labels[atoi(mesh->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
-
-    prepareParser(material);
+    parser->setParserVariables(material);
 
     for (int i = 0; i < np; i++)
     {
         px = x[i];
         py = y[i];
-        pvalue = value1[i];
-        pdx = dudx1[i];
-        pdy = dudy1[i];
+
+        for (int k = 0; k < num; k++)
+        {
+            pvalue[k] = value[k][i];
+            pdx[k] = dudx[k][i];
+            pdy[k] = dudy[k][i];
+        }
 
         // parse expression
         try
         {
-            node->values[0][0][i] = parser.Eval();
+            node->values[0][0][i] = parser->parser[0]->Eval();
         }
         catch (mu::Parser::exception_type &e)
         {
             std::cout << e.GetMsg() << endl;
         }
     }
+
+    delete [] value;
+    delete [] dudx;
+    delete [] dudy;
 
     if (nodes->present(order))
     {

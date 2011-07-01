@@ -58,8 +58,8 @@ public:
 
     // solution
     Solution *sln(int i = -1);
-    void setSolutionArrayList(QList<SolutionArray *> solutionArrayList);
-    inline QList<SolutionArray *> solutionArrayList() { return m_solutionArrayList; }
+    void setSolutionArrayList(Hermes::vector<SolutionArray *> solutionArrayList);
+    inline Hermes::vector<SolutionArray *> solutionArrayList() { return m_solutionArrayList; }
 
     // time
     void setTimeStep(int timeStep, bool showViewProgress = true);
@@ -127,7 +127,7 @@ private:
     bool m_isSolving;
 
     // general solution array
-    QList<SolutionArray *> m_solutionArrayList;
+    Hermes::vector<SolutionArray *> m_solutionArrayList;
     int m_timeStep;
 
     // mesh

@@ -370,20 +370,6 @@ enum PhysicFieldVariableComp
     PhysicFieldVariableComp_Y
 };
 
-enum PhysicField
-{
-    PhysicField_Undefined,
-    PhysicField_General,
-    PhysicField_Electrostatic,
-    PhysicField_Magnetic,
-    PhysicField_Current,
-    PhysicField_Heat,
-    PhysicField_Elasticity,
-    PhysicField_Flow,
-    PhysicField_RF,
-    PhysicField_Acoustic
-};
-
 enum PhysicFieldVariableDeprecated
 {
     PhysicFieldVariable_Undefined,
@@ -392,11 +378,6 @@ enum PhysicFieldVariableDeprecated
     PhysicFieldVariable_Variable,
     PhysicFieldVariable_General_Gradient,
     PhysicFieldVariable_General_Constant,
-    PhysicFieldVariable_Electrostatic_Potential,
-    PhysicFieldVariable_Electrostatic_ElectricField,
-    PhysicFieldVariable_Electrostatic_Displacement,
-    PhysicFieldVariable_Electrostatic_EnergyDensity,
-    PhysicFieldVariable_Electrostatic_Permittivity,
     PhysicFieldVariable_Magnetic_VectorPotential,
     PhysicFieldVariable_Magnetic_VectorPotentialReal,
     PhysicFieldVariable_Magnetic_VectorPotentialImag,
@@ -524,10 +505,6 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariableDeprecated physicFiel
     {
     case PhysicFieldVariable_Variable:
     case PhysicFieldVariable_General_Constant:
-
-    case PhysicFieldVariable_Electrostatic_Potential:
-    case PhysicFieldVariable_Electrostatic_EnergyDensity:
-    case PhysicFieldVariable_Electrostatic_Permittivity:
 
     case PhysicFieldVariable_Magnetic_VectorPotential:
     case PhysicFieldVariable_Magnetic_VectorPotentialReal:
@@ -678,10 +655,6 @@ enum SceneViewPostprocessorShow
 };
 
 // captions
-QString physicFieldVariableString(PhysicFieldVariableDeprecated physicFieldVariable);
-QString physicFieldVariableUnitsString(PhysicFieldVariableDeprecated physicFieldVariable);
-QString physicFieldVariableShortcutString(PhysicFieldVariableDeprecated physicFieldVariable);
-QString physicFieldString(PhysicField physicField);
 QString analysisTypeString(AnalysisType analysisType);
 QString physicFieldBCString(PhysicFieldBC physicFieldBC);
 QString teModeString(Mode teMode);
@@ -715,9 +688,6 @@ inline QString errorNormString(ProjNormType projNormType)
 // keys
 void initLists();
 
-QString physicFieldToStringKey(PhysicField physicField);
-PhysicField physicFieldFromStringKey(const QString &physicField);
-
 inline QString problemTypeToStringKey(ProblemType problemType) { return ((problemType == ProblemType_Planar) ? "planar" : "axisymmetric"); }
 inline ProblemType problemTypeFromStringKey(const QString &problemType) { if (problemType == "planar") return ProblemType_Planar; else if (problemType == "axisymmetric") return ProblemType_Axisymmetric; else return ProblemType_Undefined; }
 
@@ -726,9 +696,6 @@ AnalysisType analysisTypeFromStringKey(const QString &analysisType);
 
 QString meshTypeToStringKey(MeshType meshType);
 MeshType meshTypeFromStringKey(const QString &meshType);
-
-QString physicFieldVariableToStringKey(PhysicFieldVariableDeprecated physicFieldVariable);
-PhysicFieldVariableDeprecated physicFieldVariableFromStringKey(const QString &physicFieldVariable);
 
 QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp);
 PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp);

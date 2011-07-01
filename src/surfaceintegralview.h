@@ -25,6 +25,7 @@
 struct Element;
 
 class SceneMaterial;
+class Parser;
 
 namespace Hermes
 {
@@ -37,33 +38,18 @@ namespace Hermes
 class SurfaceIntegralValue
 {
 protected:
-    Element *e;
+    // parser
+    Parser *parser;
 
-    double *x;
-    double *y;
-    double *value1, *value2;
-    double *dudx1, *dudy1, *dudx2, *dudy2;
-    double3 *pt;
-    double3 *tan;
-
-    bool boundary;
-
-    SceneMaterial *material;
-
+    void initParser();
     void calculate();
-    virtual void initSolutions() = 0;
-    virtual void prepareParser(SceneMaterial *material) = 0;
 
 public:
     // variables
     std::map<Hermes::Module::Integral *, double> values;
 
-    // parser
-    Hermes::vector<mu::Parser *> parser;
-
     SurfaceIntegralValue();
-
-    virtual QStringList variables() = 0;
+    ~SurfaceIntegralValue();
 };
 
 class SurfaceIntegralValueView : public QDockWidget

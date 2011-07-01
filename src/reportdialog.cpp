@@ -366,7 +366,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
         destination.replace("[ProblemInformation.Date]", "<tr><td>" + tr("Date:") + "</td><td>" + Util::scene()->problemInfo()->date.toString("dd.MM.yyyy") + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[ProblemInformation.FileName]", "<tr><td>" + tr("Filename:") + "</td><td>" + QFileInfo(Util::scene()->problemInfo()->fileName).fileName() + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[ProblemInformation.ProblemType]", "<tr><td>" + tr("Problem type:") + "</td><td>" + problemTypeString(Util::scene()->problemInfo()->problemType) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.PhysicField]", "<tr><td>" + tr("Physic field:") + "</td><td>" + physicFieldString(Util::scene()->problemInfo()->physicField()) + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.PhysicField]", "<tr><td>" + tr("Physic field:") + "</td><td>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[ProblemInformation.AnalysisType]", "<tr><td>" + tr("Analysis type:") + "</td><td>" + analysisTypeString(Util::scene()->problemInfo()->analysisType) + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[ProblemInformation.NumberOfRefinements]", "<tr><td>" + tr("Number of refinements:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->numberOfRefinements) + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[ProblemInformation.PolynomialOrder]", "<tr><td>" + tr("Polynomial order:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->polynomialOrder) + "</td></tr></table>", Qt::CaseSensitive);
@@ -390,7 +390,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
             }
         }
 
-        if ((Util::scene()->problemInfo()->hermes()->hasHarmonic() || Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) && chkProblemInformation->isChecked())
+        if ((Util::scene()->problemInfo()->module()->has_harmonic || Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) && chkProblemInformation->isChecked())
         {
             destination.replace("[ProblemInformation.Frequency]", "<table><tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->frequency) + "</td></tr>", Qt::CaseSensitive);
             destination.replace("[ProblemInformation.TimeStep]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeStep.number) + "</td></tr>", Qt::CaseSensitive);
@@ -562,17 +562,17 @@ QString ReportDialog::replaceTemplates(const QString &source)
         destination.remove("[Figure.Order]", Qt::CaseSensitive);
 
     if (chkFigureScalarView->isChecked())
-        destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", tr("ScalarView: ") + QString::fromStdString(Util::scene()->problemInfo()->module->view_default_scalar_variable->name)), Qt::CaseSensitive);
+        destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", tr("ScalarView: ") + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_scalar_variable->name)), Qt::CaseSensitive);
     else
         destination.remove("[Figure.ScalarView]", Qt::CaseSensitive);
 
     if (chkFigureContourView->isChecked())
-        destination.replace("[Figure.ContourView]", htmlFigure("contourview.png", tr("ContourView: ") + QString::fromStdString(Util::scene()->problemInfo()->module->view_default_scalar_variable->name)), Qt::CaseSensitive);
+        destination.replace("[Figure.ContourView]", htmlFigure("contourview.png", tr("ContourView: ") + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_scalar_variable->name)), Qt::CaseSensitive);
     else
         destination.remove("[Figure.ContourView]", Qt::CaseSensitive);
 
     if (chkFigureVectorView->isChecked())
-        destination.replace("[Figure.VectorView]", htmlFigure("vectorview.png", tr("VectorView: ") + QString::fromStdString(Util::scene()->problemInfo()->module->view_default_vector_variable->name)), Qt::CaseSensitive);
+        destination.replace("[Figure.VectorView]", htmlFigure("vectorview.png", tr("VectorView: ") + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_vector_variable->name)), Qt::CaseSensitive);
     else
         destination.remove("[Figure.VectorView]", Qt::CaseSensitive);
 
