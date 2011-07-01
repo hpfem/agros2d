@@ -33,7 +33,7 @@ public:
     // general
     QString guiStyle;
     QString language;
-    PhysicField defaultPhysicField;
+    QString defaultPhysicField;
 
     bool checkVersion;
     bool showConvergenceChart;

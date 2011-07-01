@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<module>
+    <general id ="heattransfer" name="Heat transfer">
+        <description>Heat transfer is a discipline of thermal engineering that concerns the exchange of thermal energy from one physical system to another. Heat transfer is classified into various mechanisms, such as heat conduction, convection and thermal radiation.</description>
+        <properties steadystate="1" harmonic="0" transient="1" />    
+    </general>
+    
+    <constants />
+        
+    <localvariable>
+        <item id="heat_temperature" name="Temperature" shortname="T" unit="K" scalar="1">
+            <steadystate planar_scalar="value1" axi_scalar="value1" />
+            <harmonic />
+            <transient planar_scalar="value1" axi_scalar="value1" />
+        </item>
+        <item id="heat_heat_flux" name="Heat flux" shortname="F" unit="W/m2" scalar="0">
+            <steadystate planar_comp_x="- lambda * dx1" planar_comp_y="- lambda * dy1" axi_comp_r="- lambda * dx1" axi_comp_z="- lambda * dy1" />
+            <harmonic />
+            <transient planar_comp_x="- lambda * dx1" planar_comp_y="- lambda * dy1" axi_comp_r="- lambda * dx1" axi_comp_z="- lambda * dy1" />
+        </item>
+        <item id="heat_temperature_gradient" name="Temperature gradient" shortname="G" unit="K/m" scalar="0">
+            <steadystate planar_comp_x="- dx1" planar_comp_y="- dy1" axi_comp_r="- dx1" axi_comp_z="- dy1" />
+            <harmonic />
+            <transient planar_comp_x="- dx1" planar_comp_y="- dy1" axi_comp_r="- dx1" axi_comp_z="- dy1" />
+        </item>
+        <item id="heat_conductivity" name="Thermal conductivity" shortname="eps" unit="-" scalar="1">
+            <steadystate planar_scalar="lambda" axi_scalar="lambda" />
+            <harmonic />
+            <transient planar_scalar="lambda" axi_scalar="lambda" />
+        </item>
+    </localvariable>
+
+    <view>
+        <scalarvariable>
+            <steadystate default="heat_temperature">
+                <item id="heat_temperature" />
+                <item id="heat_heat_flux" />
+                <item id="heat_temperature_gradient" />
+                <item id="heat_conductivity" />
+            </steadystate>
+            <harmonic/>
+            <transient default="heat_temperature">
+                <item id="heat_temperature" />
+                <item id="heat_heat_flux" />
+                <item id="heat_temperature_gradient" />
+                <item id="heat_conductivity" />
+            </transient>
+        </scalarvariable>
+
+        <vectorvariable>
+            <steadystate default="heat_heat_flux">
+                <item id="heat_temperature_gradient" />
+                <item id="heat_heat_flux" />
+            </steadystate>
+            <harmonic/>
+            <transient default="heat_heat_flux">
+                <item id="heat_temperature_gradient" />
+                <item id="heat_heat_flux" />
+            </transient>
+        </vectorvariable>
+    </view>
+    
+    <pointvalue>
+        <steadystate>
+            <item id="heat_temperature" />
+            <item id="heat_heat_flux" />
+            <item id="heat_temperature_gradient" />
+            <item id="heat_conductivity" />           
+        </steadystate>
+        <harmonic/>
+        <transient>
+            <item id="heat_temperature" />
+            <item id="heat_heat_flux" />
+            <item id="heat_temperature_gradient" />
+            <item id="heat_conductivity" />           
+        </transient>        
+    </pointvalue>  
+    
+    <volumeintegral>
+        <item id="volume" name="Volume" shortname="V" unit="m3">
+            <steadystate planar="1.0" axi="2.0 * PI * x" />
+            <harmonic/>
+            <transient planar="1.0" axi="2.0 * PI * x" />
+        </item>        
+        <item id="surface" name="Cross section" shortname="S" unit="m2">
+            <steadystate planar="1.0" axi="1.0" />
+            <harmonic/>
+            <transient planar="1.0" axi="1.0" />
+        </item>
+        <item id="heat_temperature" name="Temperature" shortname="T" unit="T.m3">
+            <steadystate planar="value1" axi="2.0 * PI * x * value1" />
+            <harmonic/>
+            <transient planar="value1" axi="2.0 * PI * x * value1" />
+        </item>
+    </volumeintegral>    
+    
+    <surfaceintegral>
+        <item id="length" name="Length" shortname="l" unit="m">
+            <steadystate planar="1.0" axi="1.0" />
+            <harmonic/>
+            <transient planar="1.0" axi="1.0" />
+        </item>        
+        <item id="surface" name="Surface" shortname="S" unit="m2">
+            <steadystate planar="1.0" axi="2.0 * PI * x" />
+            <harmonic/>
+            <transient planar="1.0" axi="2.0 * PI * x" />
+        </item>
+        <item id="heat_temperature" name="Temperature" shortname="T" unit="T.m2">
+            <steadystate planar="value1" axi="2.0 * PI * x * value1" />
+            <harmonic/>
+            <transient planar="value1" axi="2.0 * PI * x * value1" />
+        </item>
+        <item id="heat_heat_flux" name="Heat flux" shortname="f" unit="W">
+            <steadystate planar="- lambda * (tany * dx1 - tanx * dy1)" axi="- 2.0 * PI * x * lambda * (tany * dx1 - tanx * dy1)" />
+            <harmonic/>
+            <transient planar="- lambda * (tany * dx1 - tanx * dy1)" axi="- 2.0 * PI * x * lambda * (tany * dx1 - tanx * dy1)" />
+        </item>
+    </surfaceintegral> 
+</module>

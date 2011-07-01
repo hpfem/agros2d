@@ -59,17 +59,17 @@ struct SceneViewSettings
     bool showSolutionMesh;
 
     // contour
-    Hermes::Module::LocalVariable *contourPhysicFieldVariable;
+    std::string contourPhysicFieldVariable;
 
     // scalar view
-    Hermes::Module::LocalVariable *scalarPhysicFieldVariable;
+    std::string scalarPhysicFieldVariable;
     PhysicFieldVariableComp scalarPhysicFieldVariableComp;
     bool scalarRangeAuto;
     double scalarRangeMin;
     double scalarRangeMax;
 
     // vector view
-    Hermes::Module::LocalVariable *vectorPhysicFieldVariable;
+    std::string vectorPhysicFieldVariable;
 
     SceneViewSettings();
 

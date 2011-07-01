@@ -1203,8 +1203,8 @@ void MainWindow::doInvalidated()
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
     fillComboBoxTimeStep(cmbTimeStep);
 
+    lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)));
     lblProblemType->setText(tr("Problem Type: %1").arg(problemTypeString(Util::scene()->problemInfo()->problemType)));
-    lblPhysicField->setText(tr("Physic Field: %1").arg(physicFieldString(Util::scene()->problemInfo()->physicField())));
     lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)));
 
     actExportVTKScalar->setEnabled(Util::scene()->sceneSolution()->isSolved());
@@ -1358,7 +1358,7 @@ void MainWindow::doExportVTKScalar()
             QFile::remove(fileName);
 
         Util::scene()->sceneSolution()->linScalarView().save_data_vtk(fileName.toStdString().c_str(),
-                                                                      sceneView->sceneViewSettings().scalarPhysicFieldVariable->id.c_str(),
+                                                                      sceneView->sceneViewSettings().scalarPhysicFieldVariable.c_str(),
                                                                       true);
 
         if (!fileName.isEmpty())

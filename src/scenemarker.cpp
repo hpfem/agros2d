@@ -35,7 +35,7 @@ QString SceneBoundary::html()
     logMessage("SceneBoundary::html()");
 
     QString out;
-    out += "<h4>" + physicFieldString(Util::scene()->problemInfo()->physicField()) + "</h4>";
+    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
     out += "<table>";
     QMap<QString, QString> data = this->data();
     for (int j = 0; j < data.keys().length(); j++)
@@ -79,7 +79,7 @@ QString SceneMaterial::html()
     logMessage("SceneMaterial::html()");
 
     QString out;
-    out += "<h4>" + physicFieldString(Util::scene()->problemInfo()->physicField()) + "</h4>";
+    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
     out += "<table>";
     QMap<QString, QString> data = this->data();
     for (int j = 0; j < data.keys().length(); j++)
@@ -209,7 +209,7 @@ void SceneBoundaryDialog::evaluated(bool isError)
 void SceneBoundaryDialog::readEquation(QLabel *lblEquation, PhysicFieldBC type)
 {
     QString fileName = QString(":/images/equations/%1/%2_%3.png")
-            .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField()))
+            .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name))
             .arg(physicFieldBCToStringKey(type))
             .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
 
@@ -219,7 +219,7 @@ void SceneBoundaryDialog::readEquation(QLabel *lblEquation, PhysicFieldBC type)
     else
         // general form
         readPixmap(lblEquation, QString(":/images/equations/%1/%2.png")
-                   .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField()))
+                   .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
                    .arg(physicFieldBCToStringKey(type)));
 }
 
@@ -256,7 +256,7 @@ void SceneMaterialDialog::createDialog()
     layout->addWidget(lblEquationImage, 1, 2);
     readPixmap(lblEquationImage,
                QString(":/images/equations/%1/%1_%2.png")
-               .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField()))
+               .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
                .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)));
 
     // content

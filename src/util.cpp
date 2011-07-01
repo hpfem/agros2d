@@ -28,8 +28,6 @@
 
 bool verbose = false;
 
-static QHash<PhysicField, QString> physicFieldList;
-static QHash<PhysicFieldVariableDeprecated, QString> physicFieldVariableList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<PhysicFieldBC, QString> physicFieldBCList;
 static QHash<Mode, QString> modeList;
@@ -45,12 +43,6 @@ AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return ana
 
 QString meshTypeToStringKey(MeshType meshType) { return meshTypeList[meshType]; }
 MeshType meshTypeFromStringKey(const QString &meshType) { return meshTypeList.key(meshType); }
-
-QString physicFieldToStringKey(PhysicField physicField) { return physicFieldList[physicField]; }
-PhysicField physicFieldFromStringKey(const QString &physicField) { return physicFieldList.key(physicField); }
-
-QString physicFieldVariableToStringKey(PhysicFieldVariableDeprecated physicFieldVariable) { return physicFieldVariableList[physicFieldVariable]; }
-PhysicFieldVariableDeprecated physicFieldVariableFromStringKey(const QString &physicFieldVariable) { return physicFieldVariableList.key(physicFieldVariable); }
 
 QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp) { return physicFieldVariableCompList[physicFieldVariableComp]; }
 PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp) { return physicFieldVariableCompList.key(physicFieldVariableComp); }
@@ -89,30 +81,10 @@ void initLists()
     meshTypeList.insert(MeshType_QuadRoughDivision, "quad_rough_division");
     meshTypeList.insert(MeshType_QuadJoin, "quad_join");
 
-    // PHYSICFIELD
-    physicFieldList.insert(PhysicField_Undefined, "");
-    physicFieldList.insert(PhysicField_General, "general");
-    physicFieldList.insert(PhysicField_Electrostatic, "electrostatic");
-    physicFieldList.insert(PhysicField_Current, "current");
-    physicFieldList.insert(PhysicField_Heat, "heat");
-    physicFieldList.insert(PhysicField_Elasticity, "elasticity");
-    physicFieldList.insert(PhysicField_Magnetic, "magnetic");
-    physicFieldList.insert(PhysicField_Flow, "flow");
-    physicFieldList.insert(PhysicField_RF, "rf");
-    physicFieldList.insert(PhysicField_Acoustic, "acoustic");
-
-    // PHYSICFIELDVARIABLE
-    physicFieldVariableList.insert(PhysicFieldVariable_Undefined, "");
-
+    /*
     physicFieldVariableList.insert(PhysicFieldVariable_Variable, "general_variable");
     physicFieldVariableList.insert(PhysicFieldVariable_General_Gradient, "general_gradient");
     physicFieldVariableList.insert(PhysicFieldVariable_General_Constant, "general_constant");
-
-    physicFieldVariableList.insert(PhysicFieldVariable_Electrostatic_Potential, "electrostatic_potential");
-    physicFieldVariableList.insert(PhysicFieldVariable_Electrostatic_ElectricField, "electrostatic_electric_field");
-    physicFieldVariableList.insert(PhysicFieldVariable_Electrostatic_Displacement, "electrostatic_displacement");
-    physicFieldVariableList.insert(PhysicFieldVariable_Electrostatic_EnergyDensity, "electrostatic_energy_density");
-    physicFieldVariableList.insert(PhysicFieldVariable_Electrostatic_Permittivity, "electrostatic_permittivity");
 
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_VectorPotentialReal, "magnetic_vector_potential_real");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_VectorPotentialImag, "magnetic_vector_potential_imag");
@@ -199,6 +171,7 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_LocalAcceleration, "acoustic_local_acceleration");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Density, "acoustic_density");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Speed, "acoustic_speed");
+    */
 
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
@@ -269,6 +242,7 @@ void initLists()
     linearityTypeList.insert(LinearityType_Newton, "newton");
 }
 
+/*
 QString physicFieldVariableString(PhysicFieldVariableDeprecated physicFieldVariable)
 {
     logMessage("physicFieldVariableString()");
@@ -281,17 +255,6 @@ QString physicFieldVariableString(PhysicFieldVariableDeprecated physicFieldVaria
         return QObject::tr("Gradient");
     case PhysicFieldVariable_General_Constant:
         return QObject::tr("Constant");
-
-    case PhysicFieldVariable_Electrostatic_Potential:
-        return QObject::tr("Scalar potential");
-    case PhysicFieldVariable_Electrostatic_ElectricField:
-        return QObject::tr("Electric field");
-    case PhysicFieldVariable_Electrostatic_Displacement:
-        return QObject::tr("Displacement");
-    case PhysicFieldVariable_Electrostatic_EnergyDensity:
-        return QObject::tr("Energy density");
-    case PhysicFieldVariable_Electrostatic_Permittivity:
-        return QObject::tr("Permittivity");
 
     case PhysicFieldVariable_Magnetic_VectorPotentialReal:
         return QObject::tr("Vector potential - real");
@@ -464,7 +427,8 @@ QString physicFieldVariableString(PhysicFieldVariableDeprecated physicFieldVaria
         throw;
     }
 }
-
+*/
+/*
 QString physicFieldVariableShortcutString(PhysicFieldVariableDeprecated physicFieldVariable)
 {
     logMessage("physicFieldVariableShortcutString()");
@@ -477,18 +441,6 @@ QString physicFieldVariableShortcutString(PhysicFieldVariableDeprecated physicFi
         return QObject::tr("G");
     case PhysicFieldVariable_General_Constant:
         return QObject::tr("C");
-
-    case PhysicFieldVariable_Electrostatic_Potential:
-        return QObject::tr("V");
-    case PhysicFieldVariable_Electrostatic_ElectricField:
-        return QObject::tr("E");
-    case PhysicFieldVariable_Electrostatic_Displacement:
-        return QObject::tr("D");
-    case PhysicFieldVariable_Electrostatic_EnergyDensity:
-        return QObject::tr("we");
-    case PhysicFieldVariable_Electrostatic_Permittivity:
-        return QObject::tr("epsr");
-
     case PhysicFieldVariable_Magnetic_VectorPotentialReal:
         return QObject::tr("Are");
     case PhysicFieldVariable_Magnetic_VectorPotentialImag:
@@ -661,7 +613,8 @@ QString physicFieldVariableShortcutString(PhysicFieldVariableDeprecated physicFi
         throw;
     }
 }
-
+*/
+/*
 QString physicFieldVariableUnitsString(PhysicFieldVariableDeprecated physicFieldVariable)
 {
     logMessage("physicFieldVariableUnitsString()");
@@ -672,16 +625,6 @@ QString physicFieldVariableUnitsString(PhysicFieldVariableDeprecated physicField
         return QObject::tr("");
     case PhysicFieldVariable_General_Gradient:
         return QObject::tr("");
-    case PhysicFieldVariable_Electrostatic_Potential:
-        return QObject::tr("V");
-    case PhysicFieldVariable_Electrostatic_ElectricField:
-        return QObject::tr("V/m");
-    case PhysicFieldVariable_Electrostatic_Displacement:
-        return QObject::tr("C/m2");
-    case PhysicFieldVariable_Electrostatic_EnergyDensity:
-        return QObject::tr("J/m3");
-    case PhysicFieldVariable_Electrostatic_Permittivity:
-        return QObject::tr("-");
     case PhysicFieldVariable_Magnetic_VectorPotentialReal:
         return QObject::tr("Wb/m");
     case PhysicFieldVariable_Magnetic_VectorPotentialImag:
@@ -851,36 +794,7 @@ QString physicFieldVariableUnitsString(PhysicFieldVariableDeprecated physicField
         throw;
     }
 }
-
-QString physicFieldString(PhysicField physicField)
-{
-    logMessage("physicFieldString()");
-
-    switch (physicField)
-    {
-    case PhysicField_General:
-        return QObject::tr("General");
-    case PhysicField_Electrostatic:
-        return QObject::tr("Electrostatic field");
-    case PhysicField_Magnetic:
-        return QObject::tr("Magnetic field");
-    case PhysicField_Current:
-        return QObject::tr("Current field");
-    case PhysicField_Heat:
-        return QObject::tr("Heat transfer");
-    case PhysicField_Elasticity:
-        return QObject::tr("Structural mechanics");
-    case PhysicField_Flow:
-        return QObject::tr("Incompressible flow");
-    case PhysicField_RF:
-        return QObject::tr("TE Waves");
-    case PhysicField_Acoustic:
-        return QObject::tr("Acoustics");
-    default:
-        std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
-        throw;
-    }
-}
+*/
 
 QString analysisTypeString(AnalysisType analysisType)
 {
@@ -1094,18 +1008,13 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     logMessage("fillComboBoxPhysicField()");
 
     cmbPhysicField->clear();
-    cmbPhysicField->addItem(physicFieldString(PhysicField_General), PhysicField_General);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Electrostatic), PhysicField_Electrostatic);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Magnetic), PhysicField_Magnetic);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Current), PhysicField_Current);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Heat), PhysicField_Heat);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Elasticity), PhysicField_Elasticity);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Acoustic), PhysicField_Acoustic);
-    if (Util::config()->showExperimentalFeatures)
-    {
-        cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
-        cmbPhysicField->addItem(physicFieldString(PhysicField_RF), PhysicField_RF);
-    }
+    std::map<std::string, std::string> modules = availableModules();
+    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
+        cmbPhysicField->addItem(QString::fromStdString(it->second), QString::fromStdString(it->first));
+
+
+    // FIXME - experimental features
+    // if (Util::config()->showExperimentalFeatures)
 
     // default physic field
     cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Util::config()->defaultPhysicField));

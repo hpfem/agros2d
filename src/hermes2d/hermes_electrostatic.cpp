@@ -67,9 +67,145 @@ public:
     }
 };
 
+// ****************************************************************************************************************
+
+void ParserElectrostatics::setParserVariables(SceneMaterial *material)
+{
+    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
+
+    pepsr = marker->permittivity.number;
+    prho = marker->charge_density.number;
+}
+
+// ****************************************************************************************************************
+
+LocalPointValueElectrostatics::LocalPointValueElectrostatics(const Point &point) : LocalPointValue(point)
+{
+    parser = new ParserElectrostatics();
+    initParser();
+
+    parser->parser[0]->DefineVar("epsr", &static_cast<ParserElectrostatics *>(parser)->pepsr);
+    parser->parser[0]->DefineVar("rho", &static_cast<ParserElectrostatics *>(parser)->prho);
+
+    calculate();
+}
+
+// ****************************************************************************************************************
+
+SurfaceIntegralValueElectrostatics::SurfaceIntegralValueElectrostatics() : SurfaceIntegralValue()
+{
+    parser = new ParserElectrostatics();
+    initParser();
+
+    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
+    {
+        ((mu::Parser *) *it)->DefineVar("epsr", &static_cast<ParserElectrostatics *>(parser)->pepsr);
+        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserElectrostatics *>(parser)->prho);
+    }
+
+    calculate();
+}
+
+// ****************************************************************************************************************
+
+VolumeIntegralValueElectrostatics::VolumeIntegralValueElectrostatics() : VolumeIntegralValue()
+{
+    parser = new ParserElectrostatics();
+    initParser();
+
+    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
+    {
+        ((mu::Parser *) *it)->DefineVar("epsr", &static_cast<ParserElectrostatics *>(parser)->pepsr);
+        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserElectrostatics *>(parser)->prho);
+    }
+
+    sln.push_back(Util::scene()->sceneSolution()->sln(0));
+
+    calculate();
+}
+
+// *************************************************************************************************************************************
+
+ViewScalarFilterElectrostatics::ViewScalarFilterElectrostatics(Hermes::vector<MeshFunction *> sln,
+                                                             std::string expression) :
+    ViewScalarFilter(sln)
+{
+    parser = new ParserElectrostatics();
+    initParser(expression);
+
+    parser->parser[0]->DefineVar("epsr", &static_cast<ParserElectrostatics *>(parser)->pepsr);
+    parser->parser[0]->DefineVar("rho", &static_cast<ParserElectrostatics *>(parser)->prho);
+}
+
 // **************************************************************************************************************************
 
-void HermesElectrostatic::readBoundaryFromDomElement(QDomElement *element)
+LocalPointValue *ModuleElectrostatics::local_point_value(const Point &point)
+{
+    return new LocalPointValueElectrostatics(point);
+}
+
+SurfaceIntegralValue *ModuleElectrostatics::surface_integral_value()
+{
+    return new SurfaceIntegralValueElectrostatics();
+}
+
+VolumeIntegralValue *ModuleElectrostatics::volume_integral_value()
+{
+    return new VolumeIntegralValueElectrostatics();
+}
+
+ViewScalarFilter *ModuleElectrostatics::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                                           PhysicFieldVariableComp physicFieldVariableComp)
+{
+    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
+    return new ViewScalarFilterElectrostatics(sln1, get_expression(physicFieldVariable, physicFieldVariableComp));
+}
+
+Hermes::vector<SolutionArray *> ModuleElectrostatics::solve(ProgressItemSolve *progressItemSolve)
+{
+    // boundaries
+    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
+    {
+        SceneBoundaryElectrostatic *boundary = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->boundaries[i]);
+
+        // evaluate script
+        if (!boundary->value.evaluate()) return Hermes::vector<SolutionArray *>();
+    }
+
+    // materials
+    for (int i = 1; i<Util::scene()->materials.count(); i++)
+    {
+        SceneMaterialElectrostatic *material = dynamic_cast<SceneMaterialElectrostatic *>(Util::scene()->materials[i]);
+
+        // evaluate script
+        if (!material->charge_density.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!material->permittivity.evaluate()) return Hermes::vector<SolutionArray *>();
+    }
+
+    // boundary conditions
+    EssentialBCs bcs;
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        SceneBoundaryElectrostatic *boundary = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->edges[i]->boundary);
+
+        if (boundary)
+        {
+            if (boundary->type == PhysicFieldBC_Electrostatic_Potential)
+                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value.number));
+        }
+    }
+
+    WeakFormElectrostatics wf;
+
+    Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
+
+    return solutionArrayList;
+}
+
+// **************************************************************************************************************************
+// rewrite
+
+void ModuleElectrostatics::readBoundaryFromDomElement(QDomElement *element)
 {
     PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
     switch (type)
@@ -87,7 +223,7 @@ void HermesElectrostatic::readBoundaryFromDomElement(QDomElement *element)
     }
 }
 
-void HermesElectrostatic::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
+void ModuleElectrostatics::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
 {
     SceneBoundaryElectrostatic *material = dynamic_cast<SceneBoundaryElectrostatic *>(marker);
 
@@ -95,14 +231,14 @@ void HermesElectrostatic::writeBoundaryToDomElement(QDomElement *element, SceneB
     element->setAttribute("value", material->value.text);
 }
 
-void HermesElectrostatic::readMaterialFromDomElement(QDomElement *element)
+void ModuleElectrostatics::readMaterialFromDomElement(QDomElement *element)
 {
     Util::scene()->addMaterial(new SceneMaterialElectrostatic(element->attribute("name"),
                                                               Value(element->attribute("charge_density", "0")),
                                                               Value(element->attribute("permittivity", "1"))));
 }
 
-void HermesElectrostatic::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
+void ModuleElectrostatics::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
 {
     SceneMaterialElectrostatic *material = dynamic_cast<SceneMaterialElectrostatic *>(marker);
 
@@ -110,50 +246,14 @@ void HermesElectrostatic::writeMaterialToDomElement(QDomElement *element, SceneM
     element->setAttribute("permittivity", material->permittivity.text);
 }
 
-LocalPointValue *HermesElectrostatic::localPointValue(const Point &point)
-{
-    return new LocalPointValueElectrostatic(point);
-}
-
-QStringList HermesElectrostatic::localPointValueHeader()
-{
-    QStringList headers;
-    headers << "X" << "Y" << "V" << "Ex" << "Ey" << "E" << "Dx" << "Dy" << "D" << "we" << "epsr";
-    return QStringList(headers);
-}
-
-SurfaceIntegralValue *HermesElectrostatic::surfaceIntegralValue()
-{
-    return new SurfaceIntegralValueElectrostatic();
-}
-
-QStringList HermesElectrostatic::surfaceIntegralValueHeader()
-{
-    QStringList headers;
-    headers << "l" << "S" << "Q";
-    return QStringList(headers);
-}
-
-VolumeIntegralValue *HermesElectrostatic::volumeIntegralValue()
-{
-    return new VolumeIntegralValueElectrostatic();
-}
-
-QStringList HermesElectrostatic::volumeIntegralValueHeader()
-{
-    QStringList headers;
-    headers << "V" << "S" << "We";
-    return QStringList(headers);
-}
-
-SceneBoundary *HermesElectrostatic::newBoundary()
+SceneBoundary *ModuleElectrostatics::newBoundary()
 {
     return new SceneBoundaryElectrostatic(tr("new boundary"),
                                           PhysicFieldBC_Electrostatic_Potential,
                                           Value("0"));
 }
 
-SceneBoundary *HermesElectrostatic::newBoundary(PyObject *self, PyObject *args)
+SceneBoundary *ModuleElectrostatics::newBoundary(PyObject *self, PyObject *args)
 {
     double value;
     char *name, *type;
@@ -170,7 +270,7 @@ SceneBoundary *HermesElectrostatic::newBoundary(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneBoundary *HermesElectrostatic::modifyBoundary(PyObject *self, PyObject *args)
+SceneBoundary *ModuleElectrostatics::modifyBoundary(PyObject *self, PyObject *args)
 {
     double value;
     char *name, *type;
@@ -200,14 +300,14 @@ SceneBoundary *HermesElectrostatic::modifyBoundary(PyObject *self, PyObject *arg
     return NULL;
 }
 
-SceneMaterial *HermesElectrostatic::newMaterial()
+SceneMaterial *ModuleElectrostatics::newMaterial()
 {
     return new SceneMaterialElectrostatic(tr("new material"),
                                           Value("0"),
                                           Value("1"));
 }
 
-SceneMaterial *HermesElectrostatic::newMaterial(PyObject *self, PyObject *args)
+SceneMaterial *ModuleElectrostatics::newMaterial(PyObject *self, PyObject *args)
 {
     double charge_density, permittivity;
     char *name;
@@ -224,7 +324,7 @@ SceneMaterial *HermesElectrostatic::newMaterial(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneMaterial *HermesElectrostatic::modifyMaterial(PyObject *self, PyObject *args)
+SceneMaterial *ModuleElectrostatics::modifyMaterial(PyObject *self, PyObject *args)
 {
     double charge_density, permittivity;
     char *name;
@@ -244,276 +344,6 @@ SceneMaterial *HermesElectrostatic::modifyMaterial(PyObject *self, PyObject *arg
     }
 
     return NULL;
-}
-
-ViewScalarFilter *HermesElectrostatic::viewScalarFilter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                        PhysicFieldVariableComp physicFieldVariableComp)
-{
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
-    return new ViewScalarFilterElectrostatic(sln1,
-                                             Hermes::Module::Module::get_expression(physicFieldVariable,
-                                                                                    physicFieldVariableComp));
-}
-
-// *******************************************************************************************************************************
-
-QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressItemSolve)
-{
-    // boundaries
-    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-    {
-        SceneBoundaryElectrostatic *boundary = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->boundaries[i]);
-
-        // evaluate script
-        if (!boundary->value.evaluate()) return QList<SolutionArray *>();
-    }
-
-    // materials
-    for (int i = 1; i<Util::scene()->materials.count(); i++)
-    {
-        SceneMaterialElectrostatic *material = dynamic_cast<SceneMaterialElectrostatic *>(Util::scene()->materials[i]);
-
-        // evaluate script
-        if (!material->charge_density.evaluate()) return QList<SolutionArray *>();
-        if (!material->permittivity.evaluate()) return QList<SolutionArray *>();
-    }
-
-    // boundary conditions
-    EssentialBCs bcs;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        SceneBoundaryElectrostatic *boundary = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->edges[i]->boundary);
-
-        if (boundary)
-        {
-            if (boundary->type == PhysicFieldBC_Electrostatic_Potential)
-                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value.number));
-        }
-    }
-
-    WeakFormElectrostatics wf;
-
-    // QTime time;
-    // time.start();
-    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
-    // qDebug() << "solveSolutioArray: " << time.elapsed();
-
-    return solutionArrayList;
-}
-
-// ****************************************************************************************************************
-
-LocalPointValueElectrostatic::LocalPointValueElectrostatic(const Point &point) : LocalPointValue(point)
-{      
-    calculate();
-}
-
-void LocalPointValueElectrostatic::prepareParser(SceneMaterial *material, mu::Parser *parser)
-{
-    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
-
-    parser->DefineVar("epsr", &marker->permittivity.number);
-    parser->DefineVar("rho", &marker->charge_density.number);
-}
-
-double LocalPointValueElectrostatic::variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
-{
-    switch (physicFieldVariable)
-    {
-    case PhysicFieldVariable_Electrostatic_Potential:
-    {
-        return potential;
-    }
-        break;
-    case PhysicFieldVariable_Electrostatic_ElectricField:
-    {
-        switch (physicFieldVariableComp)
-        {
-        case PhysicFieldVariableComp_X:
-            return E.x;
-            break;
-        case PhysicFieldVariableComp_Y:
-            return E.y;
-            break;
-        case PhysicFieldVariableComp_Magnitude:
-            return E.magnitude();
-            break;
-        }
-    }
-        break;
-    case PhysicFieldVariable_Electrostatic_Displacement:
-    {
-        switch (physicFieldVariableComp)
-        {
-        case PhysicFieldVariableComp_X:
-            return D.x;
-            break;
-        case PhysicFieldVariableComp_Y:
-            return D.y;
-            break;
-        case PhysicFieldVariableComp_Magnitude:
-            return D.magnitude();
-            break;
-        }
-    }
-        break;
-    case PhysicFieldVariable_Electrostatic_EnergyDensity:
-    {
-        return we;
-    }
-        break;
-    case PhysicFieldVariable_Electrostatic_Permittivity:
-    {
-        return permittivity;
-    }
-        break;
-    default:
-        cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueElectrostatic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
-        throw;
-        break;
-    }
-}
-
-QStringList LocalPointValueElectrostatic::variables()
-{
-    QStringList row;
-    row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
-           QString("%1").arg(point.y, 0, 'e', 5) <<
-           QString("%1").arg(potential, 0, 'e', 5) <<
-           QString("%1").arg(E.x, 0, 'e', 5) <<
-           QString("%1").arg(E.y, 0, 'e', 5) <<
-           QString("%1").arg(E.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(D.x, 0, 'e', 5) <<
-           QString("%1").arg(D.y, 0, 'e', 5) <<
-           QString("%1").arg(D.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(we, 0, 'e', 5) <<
-           QString("%1").arg(permittivity, 0, 'f', 3);
-
-    return QStringList(row);
-}
-
-// ****************************************************************************************************************
-
-SurfaceIntegralValueElectrostatic::SurfaceIntegralValueElectrostatic() : SurfaceIntegralValue()
-{
-    calculate();
-}
-
-void SurfaceIntegralValueElectrostatic::initSolutions()
-{
-    // sln1 = Util::scene()->sceneSolution()->sln(0);
-    // sln2 = NULL;
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("epsr", &pepsr);
-        ((mu::Parser *) *it)->DefineVar("rho", &prho);
-    }
-}
-
-void SurfaceIntegralValueElectrostatic::prepareParser(SceneMaterial *material)
-{
-    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
-
-    pepsr = marker->permittivity.number;
-    prho = marker->charge_density.number;
-}
-
-/*
-if (boundary)
-{
-    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
-
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-        surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
-    else
-        surfaceCharge += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx1[i] - tan[i][0] * dudy1[i]);
-}
-*/
-
-QStringList SurfaceIntegralValueElectrostatic::variables()
-{
-    /*
-    QStringList row;
-    row <<  QString("%1").arg(length, 0, 'e', 5) <<
-           QString("%1").arg(surface, 0, 'e', 5) <<
-           QString("%1").arg(surfaceCharge, 0, 'e', 5);
-    return QStringList(row);
-    */
-}
-
-// ****************************************************************************************************************
-
-VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic() : VolumeIntegralValue()
-{
-    calculate();
-}
-
-/*
-void VolumeIntegralValueElectrostatic::calculateVariables(int i)
-{
-    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
-
-    result = 0.0;
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-    {
-        h1_integrate_expression(0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
-    }
-    else
-    {
-        h1_integrate_expression(2 * M_PI * x[i] * 0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
-    }
-    energy += result;
-}
-*/
-
-void VolumeIntegralValueElectrostatic::initSolutions()
-{
-    sln1 = Util::scene()->sceneSolution()->sln(0);
-    sln2 = NULL;
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("epsr", &pepsr);
-        ((mu::Parser *) *it)->DefineVar("rho", &prho);
-    }
-}
-
-void VolumeIntegralValueElectrostatic::prepareParser(SceneMaterial *material)
-{
-    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
-
-    pepsr = marker->permittivity.number;
-    prho = marker->charge_density.number;
-}
-
-QStringList VolumeIntegralValueElectrostatic::variables()
-{
-    /*
-    QStringList row;
-    row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-           QString("%1").arg(crossSection, 0, 'e', 5) <<
-           QString("%1").arg(energy, 0, 'e', 5);
-    return QStringList(row);
-    */
-}
-
-// *************************************************************************************************************************************
-
-ViewScalarFilterElectrostatic::ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln,
-                                                             std::string expression) :
-    ViewScalarFilter(sln, expression)
-{
-    parser.DefineVar("epsr", &pepsr);
-    parser.DefineVar("rho", &prho);
-}
-
-void ViewScalarFilterElectrostatic::prepareParser(SceneMaterial *material)
-{
-    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
-
-    pepsr = marker->permittivity.number;
-    prho = marker->charge_density.number;
 }
 
 // *************************************************************************************************************************************

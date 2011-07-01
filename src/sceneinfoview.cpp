@@ -182,7 +182,7 @@ void SceneInfoView::doInvalidated()
     itemProblemType->setText(0, tr("Type: ") + problemTypeString(Util::scene()->problemInfo()->problemType));
     // physic field
     QTreeWidgetItem *itemPhysicField = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemPhysicField->setText(0, tr("Field: ") + physicFieldString(Util::scene()->problemInfo()->physicField()));
+    itemPhysicField->setText(0, tr("Field: ") + QString::fromStdString(Util::scene()->problemInfo()->module()->name));
     // analysis
     QTreeWidgetItem *itemAnalysisType = new QTreeWidgetItem(problemInfoGeneralNode);
     itemAnalysisType->setText(0, tr("Analysis: ") + analysisTypeString(Util::scene()->problemInfo()->analysisType));

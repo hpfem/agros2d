@@ -25,7 +25,26 @@
 
 VolumeIntegralValue::VolumeIntegralValue()
 {
-    logMessage("VolumeIntegralValue::VolumeIntegralValue()");
+}
+
+VolumeIntegralValue::~VolumeIntegralValue()
+{
+    delete parser;
+}
+
+void VolumeIntegralValue::initParser()
+{
+    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module()->volume_integral.begin();
+         it < Util::scene()->problemInfo()->module()->volume_integral.end(); ++it )
+    {
+        mu::Parser *pars = Util::scene()->problemInfo()->module()->get_parser();
+
+        pars->SetExpr(((Hermes::Module::Integral *) *it)->expression.scalar);
+
+        parser->parser.push_back(pars);
+
+        values[*it] = 0.0;
+    }
 }
 
 void VolumeIntegralValue::calculate()
@@ -35,50 +54,45 @@ void VolumeIntegralValue::calculate()
     if (!Util::scene()->sceneSolution()->isSolved())
         return;
 
-    double px, py;
-    double pvalue, pdx, pdy;
+    double px;
+    double py;
+    double *pvalue = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double *pdx = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double *pdy = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
 
-    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module->volume_integral.begin();
-         it < Util::scene()->problemInfo()->module->volume_integral.end(); ++it )
+    double **value = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double **dudx = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double **dudy = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+
+    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
     {
-        mu::Parser *pars = new mu::Parser();
+        ((mu::Parser *) *it)->DefineVar("x", &px);
+        ((mu::Parser *) *it)->DefineVar("y", &py);
 
-        pars->SetExpr(((Hermes::Module::Integral *) *it)->expression.scalar);
+        for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+        {
+            std::stringstream number;
+            number << (k+1);
 
-        pars->DefineConst("EPS0", EPS0);
-        pars->DefineConst("MU0", MU0);
-        pars->DefineConst("PI", M_PI);
-
-        pars->DefineVar("x", &px);
-        pars->DefineVar("y", &py);
-        pars->DefineVar("value", &pvalue);
-        pars->DefineVar("dx", &pdx);
-        pars->DefineVar("dy", &pdy);
-
-        parser.push_back(pars);
-
-        values[*it] = 0.0;
+            ((mu::Parser *) *it)->DefineVar("value" + number.str(), &pvalue[k]);
+            ((mu::Parser *) *it)->DefineVar("dx" + number.str(), &pdx[k]);
+            ((mu::Parser *) *it)->DefineVar("dy" + number.str(), &pdy[k]);
+        }
     }
-
-    initSolutions();
 
     Quad2D *quad = &g_quad_2d_std;
 
-    sln1->set_quad_2d(quad);
+    sln[0]->set_quad_2d(quad);
 
-    Mesh *mesh = sln1->get_mesh();
+    Mesh *mesh = sln[0]->get_mesh();
     Element *e;
-
-    double result;
-
-    SceneMaterial *material;
 
     for (int i = 0; i<Util::scene()->labels.length(); i++)
     {
         if (Util::scene()->labels[i]->isSelected)
         {
-            material = Util::scene()->labels[i]->material;
-            prepareParser(material);
+            SceneMaterial *material = Util::scene()->labels[i]->material;
+            parser->setParserVariables(material);
 
             for_all_active_elements(e, mesh)
             {
@@ -86,48 +100,37 @@ void VolumeIntegralValue::calculate()
                 {
                     update_limit_table(e->get_mode());
 
-                    sln1->set_active_element(e);
-                    if (sln2)
-                        sln2->set_active_element(e);
+                    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+                        sln[k]->set_active_element(e);
 
-                    RefMap *ru = sln1->get_refmap();
+                    RefMap *ru = sln[0]->get_refmap();
 
-                    int o;
-                    if (!sln2)
-                        o = sln1->get_fn_order() + ru->get_inv_ref_order();
-                    else
-                        o = sln1->get_fn_order() + sln2->get_fn_order() + ru->get_inv_ref_order();
+                    int o = 0;
+                    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+                        o += sln[k]->get_fn_order();
+                    o += ru->get_inv_ref_order();
 
-                    limit_order(o);
-
-                    // solution 1
-                    double *value1, *dudx1, *dudy1;
-                    sln1->set_quad_order(o, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
-                    // value
-                    value1 = sln1->get_fn_values();
-                    // derivative
-                    sln1->get_dx_dy_values(dudx1, dudy1);
                     // coordinates
                     double *x = ru->get_phys_x(o);
                     double *y = ru->get_phys_y(o);
 
-                    // solution 2
-                    double *value2, *dudx2, *dudy2;
-                    if (sln2)
-                    {
-                        sln2->set_quad_order(o, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
-                        // value
-                        value2 = sln2->get_fn_values();
-                        // derivative
-                        sln2->get_dx_dy_values(dudx2, dudy2);
-                    }
+                    limit_order(o);
 
+                    // solution
+                    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+                    {
+                        sln[k]->set_quad_order(o, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
+                        // value
+                        value[k] = sln[k]->get_fn_values();
+                        // derivative
+                        sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
+                    }
                     update_limit_table(e->get_mode());
 
                     // parse expression
                     int n = 0;
-                    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module->volume_integral.begin();
-                         it < Util::scene()->problemInfo()->module->volume_integral.end(); ++it )
+                    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module()->volume_integral.begin();
+                         it < Util::scene()->problemInfo()->module()->volume_integral.end(); ++it )
                     {
                         double result = 0.0;
 
@@ -140,18 +143,22 @@ void VolumeIntegralValue::calculate()
                             {
                                 px = x[i];
                                 py = y[i];
-                                pvalue = value1[i];
-                                pdx = dudx1[i];
-                                pdy = dudy1[i];
+
+                                for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+                                {
+                                    pvalue[k] = value[k][i];
+                                    pdx[k] = dudx[k][i];
+                                    pdy[k] = dudy[k][i];
+                                }
 
                                 if (ru->is_jacobian_const())
                                 {
-                                    result += pt[i][2] * ru->get_const_jacobian() * parser[n]->Eval();
+                                    result += pt[i][2] * ru->get_const_jacobian() * parser->parser[n]->Eval();
                                 }
                                 else
                                 {
                                     double* jac = ru->get_jacobian(o);
-                                    result += pt[i][2] * jac[i] * parser[n]->Eval();
+                                    result += pt[i][2] * jac[i] * parser->parser[n]->Eval();
                                 }
                             }
 
@@ -169,10 +176,13 @@ void VolumeIntegralValue::calculate()
         }
     }
 
-    // delete parser
-    for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
-        delete *it;
-    parser.clear();
+    delete [] pvalue;
+    delete [] pdx;
+    delete [] pdy;
+
+    delete [] value;
+    delete [] dudx;
+    delete [] dudy;
 }
 
 VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(tr("Volume Integral"), parent)
@@ -259,23 +269,20 @@ void VolumeIntegralValueView::doShowVolumeIntegral()
 
     trvWidget->clear();
 
-    if (Util::scene()->problemInfo()->module)
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        if (Util::scene()->sceneSolution()->isSolved())
+        VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo()->module()->volume_integral_value();
+
+        QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
+        fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module()->name));
+        fieldNode->setExpanded(true);
+
+        for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue->values.begin(); it != volumeIntegralValue->values.end(); ++it)
         {
-            VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo()->hermes()->volumeIntegralValue();
-
-            QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
-            fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module->name));
-            fieldNode->setExpanded(true);
-
-            for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue->values.begin(); it != volumeIntegralValue->values.end(); ++it)
-            {
-                addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second, 0, 'e', 3), QString::fromStdString(it->first->unit));
-            }
-
-            delete volumeIntegralValue;
+            addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second, 0, 'e', 3), QString::fromStdString(it->first->unit));
         }
+
+        delete volumeIntegralValue;
     }
 
     trvWidget->resizeColumnToContents(2);

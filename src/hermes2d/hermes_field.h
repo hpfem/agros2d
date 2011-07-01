@@ -148,6 +148,8 @@ struct Integral
 
 struct Module
 {
+    // id
+    std::string id;
     // name
     std::string name;
     // description
@@ -156,6 +158,9 @@ struct Module
     bool has_steady_state;
     bool has_harmonic;
     bool has_transient;
+
+    // constants
+    std::map<std::string, double> constants;
 
     // all physical variables
     Hermes::vector<LocalVariable *> variables;
@@ -197,60 +202,51 @@ struct Module
     inline ProblemType get_problem_type() { return m_problemType; }
     inline AnalysisType get_analysis_type() { return m_analysisType; }
 
-    // get variable by name
+    // variable by name
     LocalVariable *get_variable(std::string id);
 
-    // get expression
-    static std::string get_expression(LocalVariable *physicFieldVariable,
-                                      PhysicFieldVariableComp physicFieldVariableComp);
+    // parser
+    mu::Parser *get_parser();
+
+    // expression
+    std::string get_expression(LocalVariable *physicFieldVariable,
+                               PhysicFieldVariableComp physicFieldVariableComp);
+
+
+    virtual int number_of_solution() const = 0;
+    virtual bool has_nonlinearity() const = 0;
+
+    virtual Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
+    inline virtual void updateTimeFunctions(double time) {}
+
+    virtual LocalPointValue *local_point_value(const Point &point) = 0;
+    virtual SurfaceIntegralValue *surface_integral_value() = 0;
+    virtual VolumeIntegralValue *volume_integral_value() = 0;
+
+    virtual ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                                 PhysicFieldVariableComp physicFieldVariableComp) = 0;
+
+    virtual inline void deform_shape(double3* linVert, int count) {}
+    virtual inline void deform_shape(double4* linVert, int count) {}
 
 private:
     ProblemType m_problemType;
     AnalysisType m_analysisType;
 };
 
-struct ModuleAgros : public Module
+struct ModuleAgros : public QObject, public Module
 {
+    Q_OBJECT
+public:
     ModuleAgros(ProblemType problemType, AnalysisType analysisType) : Module(problemType, analysisType) {}
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
 
-private:
-    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<LocalVariable *> list);
-};
-
-}
-}
-
-struct HermesField : public QObject
-{
-    Q_OBJECT
-public:
-    virtual PhysicField physicField() const { return PhysicField_Undefined; }
-
-    virtual int numberOfSolution() const = 0;
-    virtual bool hasSteadyState() const = 0;
-    virtual bool hasHarmonic() const = 0;
-    virtual bool hasTransient() const = 0;
-    virtual bool hasNonlinearity() const = 0;
-
     virtual void readBoundaryFromDomElement(QDomElement *element) = 0;
     virtual void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker) = 0;
     virtual void readMaterialFromDomElement(QDomElement *element) = 0;
     virtual void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker) = 0;
-
-    virtual LocalPointValue *localPointValue(const Point &point) = 0;
-    virtual QStringList localPointValueHeader() = 0;
-
-    virtual SurfaceIntegralValue *surfaceIntegralValue() = 0;
-    virtual QStringList surfaceIntegralValueHeader() = 0;
-
-    virtual VolumeIntegralValue *volumeIntegralValue() = 0;
-    virtual QStringList volumeIntegralValueHeader() = 0;
-
-    virtual bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) = 0;
-    virtual bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) = 0;
 
     virtual SceneBoundary *newBoundary() = 0;
     virtual SceneBoundary *newBoundary(PyObject *self, PyObject *args) = 0;
@@ -259,37 +255,51 @@ public:
     virtual SceneMaterial *newMaterial(PyObject *self, PyObject *args) = 0;
     virtual SceneMaterial *modifyMaterial(PyObject *self, PyObject *args) = 0;
 
-    virtual QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
-    inline virtual void updateTimeFunctions(double time) { }
-
-    virtual ViewScalarFilter *viewScalarFilter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                               PhysicFieldVariableComp physicFieldVariableComp) = 0;
-
-    virtual inline void deformShape(double3* linVert, int count) {}
-    virtual inline void deformShape(double4* linVert, int count) {}
+private:
+    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<LocalVariable *> list);
 };
 
-HermesField *hermesFieldFactory(PhysicField physicField);
+}
+}
+
+// module factory
+Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type);
+
+// available modules
+std::map<std::string, std::string> availableModules();
+
+class Parser
+{
+public:
+    // parser
+    Hermes::vector<mu::Parser *> parser;
+
+    ~Parser();
+
+    virtual void setParserVariables(SceneMaterial *material) = 0;
+};
 
 class ViewScalarFilter : public Filter
 {
-public:
-    ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
-                     std::string expression);
+public:  
+    ViewScalarFilter(Hermes::vector<MeshFunction *> sln);
+    ~ViewScalarFilter();
 
     double get_pt_value(double x, double y, int item = H2D_FN_VAL);
 
 protected:
     Node* node;
 
-    // parser variables
-    mu::Parser parser;
+    double px;
+    double py;
+    double *pvalue;
+    double *pdx;
+    double *pdy;
 
-    double px, py;
-    double pvalue, pdx, pdy;
+    Parser *parser;
 
+    void initParser(std::string expression);
     void precalculate(int order, int mask);
-    virtual void prepareParser(SceneMaterial *material) = 0;
 };
 
 // mesh fix
@@ -305,9 +315,9 @@ void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge);
 GeomType convertProblemType(ProblemType problemType);
 
 // solve
-QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                         Hermes::vector<EssentialBCs> bcs,
-                                         WeakFormAgros *wf);
+Hermes::vector<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
+                                                  Hermes::vector<EssentialBCs> bcs,
+                                                  WeakFormAgros *wf);
 
 // solve
 class SolutionAgros
@@ -315,7 +325,7 @@ class SolutionAgros
 public:
     SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros *wf);
 
-    QList<SolutionArray *> solveSolutioArray(Hermes::vector<EssentialBCs> bcs);
+    Hermes::vector<SolutionArray *> solveSolutioArray(Hermes::vector<EssentialBCs> bcs);
 private:
     int polynomialOrder;
     AdaptivityType adaptivityType;

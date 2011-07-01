@@ -26,7 +26,26 @@
 
 SurfaceIntegralValue::SurfaceIntegralValue()
 {
-    logMessage("SurfaceIntegralValue::SurfaceIntegralValue()");  
+}
+
+SurfaceIntegralValue::~SurfaceIntegralValue()
+{
+    delete parser;
+}
+
+void SurfaceIntegralValue::initParser()
+{
+    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module()->surface_integral.begin();
+         it < Util::scene()->problemInfo()->module()->surface_integral.end(); ++it )
+    {
+        mu::Parser *pars = Util::scene()->problemInfo()->module()->get_parser();
+
+        pars->SetExpr(((Hermes::Module::Integral *) *it)->expression.scalar);
+
+        parser->parser.push_back(pars);
+
+        values[*it] = 0.0;
+    }
 }
 
 void SurfaceIntegralValue::calculate()
@@ -36,40 +55,50 @@ void SurfaceIntegralValue::calculate()
     if (!Util::scene()->sceneSolution()->isSolved())
         return;
 
-    double px, py;
-    double pvalue, pdx, pdy;
+    double px;
+    double py;
+    double ptanx;
+    double ptany;
+    double *pvalue = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double *pdx = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double *pdy = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
 
-    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module->surface_integral.begin();
-         it < Util::scene()->problemInfo()->module->surface_integral.end(); ++it )
+    double **value = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double **dudx = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double **dudy = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+
+    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
     {
-        mu::Parser *pars = new mu::Parser();
+        ((mu::Parser *) *it)->DefineVar("x", &px);
+        ((mu::Parser *) *it)->DefineVar("y", &py);
+        ((mu::Parser *) *it)->DefineVar("tanx", &ptanx);
+        ((mu::Parser *) *it)->DefineVar("tany", &ptany);
 
-        pars->SetExpr(((Hermes::Module::Integral *) *it)->expression.scalar);
+        for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+        {
+            std::stringstream number;
+            number << (k+1);
 
-        pars->DefineConst("EPS0", EPS0);
-        pars->DefineConst("MU0", MU0);
-        pars->DefineConst("PI", M_PI);
-
-        pars->DefineVar("x", &px);
-        pars->DefineVar("y", &py);
-        pars->DefineVar("value", &pvalue);
-        pars->DefineVar("dx", &pdx);
-        pars->DefineVar("dy", &pdy);
-
-        parser.push_back(pars);
-
-        values[*it] = 0.0;
+            ((mu::Parser *) *it)->DefineVar("value" + number.str(), &pvalue[k]);
+            ((mu::Parser *) *it)->DefineVar("dx" + number.str(), &pdx[k]);
+            ((mu::Parser *) *it)->DefineVar("dy" + number.str(), &pdy[k]);
+        }
     }
 
+    Hermes::vector<Solution *>sln;
+
+    Element *e;
+
     Quad2D *quad = &g_quad_2d_std;
-    Solution *sln1 = Util::scene()->sceneSolution()->sln();
-    Solution *sln2;
-    if (sln2)
-        sln2 = Util::scene()->sceneSolution()->sln(1);
 
-    sln1->set_quad_2d(quad);
+    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+    {
+        sln.push_back(Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->module()->number_of_solution())));
 
-    Mesh* mesh = sln1->get_mesh();
+        sln[k]->set_quad_2d(quad);
+    }
+
+    Mesh* mesh = sln[0]->get_mesh();
     for (int i = 0; i<Util::scene()->edges.length(); i++)
     {
         SceneEdge *sceneEdge = Util::scene()->edges[i];
@@ -80,7 +109,7 @@ void SurfaceIntegralValue::calculate()
                 for (unsigned edge = 0; edge < e->nvert; edge++)
                 {
                     bool integrate = false;
-                    boundary = false;
+                    bool boundary = false;
 
                     if (e->en[edge]->marker != 0)
                     {
@@ -102,74 +131,80 @@ void SurfaceIntegralValue::calculate()
                     {
                         update_limit_table(e->get_mode());
 
-                        sln1->set_active_element(e);
-                        if (sln2)
-                            sln2->set_active_element(e);
+                        for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+                            sln[k]->set_active_element(e);
 
-                        RefMap* ru = sln1->get_refmap();
+                        RefMap* ru = sln[0]->get_refmap();
 
                         Quad2D* quad2d = ru->get_quad_2d();
                         int eo = quad2d->get_edge_points(edge);
-                        sln1->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
-                        pt = quad2d->get_points(eo);
-                        tan = ru->get_tangent(edge);
+                        double3 *pt = quad2d->get_points(eo);
+                        double3 *tan = ru->get_tangent(edge);
 
-                        // solution 1
-                        // value
-                        value1 = sln1->get_fn_values();
-                        // derivative
-                        sln1->get_dx_dy_values(dudx1, dudy1);
-
-                        // solution 2
-                        if (sln2)
+                        for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
                         {
-                            sln2->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
+                            sln[k]->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
                             // value
-                            value2 = sln2->get_fn_values();
+                            value[k] = sln[k]->get_fn_values();
                             // derivative
-                            sln2->get_dx_dy_values(dudx2, dudy2);
+                            sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
                         }
 
                         // x - coordinate
-                        x = ru->get_phys_x(eo);
-                        y = ru->get_phys_y(eo);
+                        double *x = ru->get_phys_x(eo);
+                        double *y = ru->get_phys_y(eo);
 
-                        material = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+                        SceneMaterial *material = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+                        parser->setParserVariables(material);
 
-                        for (int i = 0; i < quad2d->get_num_points(eo); i++)
+                        // parse expression
+                        int n = 0;
+                        for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module()->surface_integral.begin();
+                             it < Util::scene()->problemInfo()->module()->surface_integral.end(); ++it )
                         {
-                            /*
-                            // length
-                            if (boundary)
-                                length += pt[i][2] * tan[i][2] / 2.0;
-                            else
-                                length += pt[i][2] * tan[i][2] / 4.0;
+                            double result = 0.0;
 
-                            // surface
-                            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                            try
                             {
-                                if (boundary)
-                                    surface += pt[i][2] * tan[i][2] / 2.0;
-                                else
-                                    surface += pt[i][2] * tan[i][2] / 4.0;
+                                for (int i = 0; i < quad2d->get_num_points(eo); i++)
+                                {
+                                    px = x[i];
+                                    py = y[i];
+                                    ptanx = tan[i][0];
+                                    ptany = tan[i][1];
+
+                                    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+                                    {
+                                        pvalue[k] = value[k][i];
+                                        pdx[k] = dudx[k][i];
+                                        pdy[k] = dudy[k][i];
+                                    }
+
+                                    result += pt[i][2] * tan[i][2] * 0.5 * (boundary ? 1.0 : 0.5) * parser->parser[n]->Eval();
+                                }
+
+                                values[*it] += result;
                             }
-                            else
+                            catch (mu::Parser::exception_type &e)
                             {
-                                if (boundary)
-                                    surface += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] / 2.0;
-                                else
-                                    surface += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] / 4.0;
+                                std::cout << e.GetMsg() << endl;
                             }
 
-                            // other integrals
-                            calculateVariables(i);
-                            */
+                            n++;
                         }
                     }
                 }
             }
         }
     }
+
+    delete [] pvalue;
+    delete [] pdx;
+    delete [] pdy;
+
+    delete [] value;
+    delete [] dudx;
+    delete [] dudy;
 }
 
 SurfaceIntegralValueView::SurfaceIntegralValueView(QWidget *parent): QDockWidget(tr("Surface Integral"), parent)
@@ -256,23 +291,20 @@ void SurfaceIntegralValueView::doShowSurfaceIntegral()
 
     trvWidget->clear();
 
-    if (Util::scene()->problemInfo()->module)
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        if (Util::scene()->sceneSolution()->isSolved())
+        SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo()->module()->surface_integral_value();
+
+        QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
+        fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module()->name));
+        fieldNode->setExpanded(true);
+
+        for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue->values.begin(); it != surfaceIntegralValue->values.end(); ++it)
         {
-            SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo()->hermes()->surfaceIntegralValue();
-
-            QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
-            fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module->name));
-            fieldNode->setExpanded(true);
-
-            for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue->values.begin(); it != surfaceIntegralValue->values.end(); ++it)
-            {
-                addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second, 0, 'e', 3), QString::fromStdString(it->first->unit));
-            }
-
-            delete surfaceIntegralValue;
+            addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second, 0, 'e', 3), QString::fromStdString(it->first->unit));
         }
+
+        delete surfaceIntegralValue;
     }
 
     trvWidget->resizeColumnToContents(2);
