@@ -21,59 +21,11 @@
 #define LOCALVALUE_H
 
 #include "util.h"
+#include "hermes2d/localpoint.h"
 
 class ValueLineEdit;
 class SceneMaterial;
 class Solution;
-
-class Parser;
-
-namespace Hermes
-{
-    namespace Module
-    {
-        struct LocalVariable;
-    }
-}
-
-struct PointValue
-{
-    PointValue()
-    {
-        this->scalar = 0.0;
-        this->vector = Point();
-        this->material = NULL;
-    }
-
-    PointValue(double scalar, Point vector, SceneMaterial *material)
-    {
-        this->scalar = scalar;
-        this->vector = vector;
-        this->material = material;
-    }
-
-    double scalar;
-    Point vector;
-    SceneMaterial *material;
-};
-
-class LocalPointValue
-{
-public:
-    Parser *parser;
-
-    // point
-    Point point;
-
-    // variables
-    std::map<Hermes::Module::LocalVariable *, PointValue> values;
-
-    LocalPointValue(const Point &point);
-    ~LocalPointValue();
-
-    void initParser();
-    void calculate();
-};
 
 class LocalPointValueView : public QDockWidget
 {

@@ -17,37 +17,37 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef SURFACEINTEGRALVIEW_H
-#define SURFACEINTEGRALVIEW_H
+#ifndef SURFACEINTEGRAL_H
+#define SURFACEINTEGRAL_H
 
 #include "util.h"
-#include "hermes2d.h"
 
-struct Element;
+class SceneMaterial;
+class Parser;
 
-class SurfaceIntegralValueView : public QDockWidget
+namespace Hermes
 {
-    Q_OBJECT
+    namespace Module
+    {
+        struct Integral;
+    }
+}
 
-public slots:
-    void doShowSurfaceIntegral();
+class SurfaceIntegralValue
+{
+protected:
+    // parser
+    Parser *parser;
+
+    void initParser();
+    void calculate();
 
 public:
-    SurfaceIntegralValueView(QWidget *parent = 0);
-    ~SurfaceIntegralValueView();
+    // variables
+    std::map<Hermes::Module::Integral *, double> values;
 
-private slots:
-    void doCopyValue();
-    void doContextMenu(const QPoint &pos);
-
-private:
-    QTreeWidget *trvWidget;
-
-    QAction *actCopy;
-    QMenu *mnuInfo;
-
-    void createActions();
-    void createMenu();
+    SurfaceIntegralValue();
+    ~SurfaceIntegralValue();
 };
 
-#endif // SURFACEINTEGRALVIEW_H
+#endif // SURFACEINTEGRAL_H

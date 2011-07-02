@@ -38,6 +38,10 @@
 #include "progressdialog.h"
 #include "collaboration.h"
 
+#include "localvalueview.h"
+#include "volumeintegralview.h"
+#include "surfaceintegralview.h"
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     logMessage("MainWindow::MainWindow()");

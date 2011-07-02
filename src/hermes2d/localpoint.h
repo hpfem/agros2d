@@ -17,37 +17,61 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef SURFACEINTEGRALVIEW_H
-#define SURFACEINTEGRALVIEW_H
+#ifndef LOCALPOINT_H
+#define LOCALPOINT_H
 
 #include "util.h"
 #include "hermes2d.h"
 
-struct Element;
+class Parser;
 
-class SurfaceIntegralValueView : public QDockWidget
+class SceneMaterial;
+
+namespace Hermes
 {
-    Q_OBJECT
+    namespace Module
+    {
+        struct LocalVariable;
+    }
+}
 
-public slots:
-    void doShowSurfaceIntegral();
+struct PointValue
+{
+    PointValue()
+    {
+        this->scalar = 0.0;
+        this->vector = Point();
+        this->material = NULL;
+    }
 
-public:
-    SurfaceIntegralValueView(QWidget *parent = 0);
-    ~SurfaceIntegralValueView();
+    PointValue(double scalar, Point vector, SceneMaterial *material)
+    {
+        this->scalar = scalar;
+        this->vector = vector;
+        this->material = material;
+    }
 
-private slots:
-    void doCopyValue();
-    void doContextMenu(const QPoint &pos);
-
-private:
-    QTreeWidget *trvWidget;
-
-    QAction *actCopy;
-    QMenu *mnuInfo;
-
-    void createActions();
-    void createMenu();
+    double scalar;
+    Point vector;
+    SceneMaterial *material;
 };
 
-#endif // SURFACEINTEGRALVIEW_H
+class LocalPointValue
+{
+public:
+    Parser *parser;
+
+    // point
+    Point point;
+
+    // variables
+    std::map<Hermes::Module::LocalVariable *, PointValue> values;
+
+    LocalPointValue(const Point &point);
+    ~LocalPointValue();
+
+    void initParser();
+    void calculate();
+};
+
+#endif // LOCALPOINT_H
