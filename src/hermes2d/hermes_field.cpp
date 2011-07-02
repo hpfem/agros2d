@@ -355,7 +355,12 @@ mu::Parser *Hermes::Module::Module::get_parser()
 {
     mu::Parser *parser = new mu::Parser();
 
+    // pi
     parser->DefineConst("PI", M_PI);
+
+    // frequency
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+        parser->DefineConst("f", Util::scene()->problemInfo()->frequency);
 
     for (std::map<std::string, double>::iterator it = constants.begin(); it != constants.end(); ++it)
         parser->DefineConst(it->first, it->second);

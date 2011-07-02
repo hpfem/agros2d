@@ -389,6 +389,7 @@ VolumeIntegralValueAcoustic::VolumeIntegralValueAcoustic() : VolumeIntegralValue
     }
 
     sln.push_back(Util::scene()->sceneSolution()->sln(0));
+    sln.push_back(Util::scene()->sceneSolution()->sln(1));
 
     calculate();
 }

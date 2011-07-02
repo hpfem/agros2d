@@ -104,14 +104,14 @@ void LocalPointValueView::doShowPoint()
 
     htmlBody += "<tr>"
             "<td><b>Point</b></td>"
-            "<td>" + Util::scene()->problemInfo()->labelX().toLower() + "</td>"
-            "<td align=\"right\"><i>" + QString("%1").arg(point.x, 0, 'e', 3) + "</i></td>"
+            "<td><i>" + Util::scene()->problemInfo()->labelX().toLower() + "</i></td>"
+            "<td align=\"right\">" + QString("%1").arg(point.x, 0, 'e', 3) + "</td>"
             "<td>&nbsp;</td>"
             "</tr>";
     htmlBody += "<tr>"
             "<td>&nbsp;</td>"
-            "<td>" + Util::scene()->problemInfo()->labelY().toLower() + "</td>"
-            "<td align=\"right\"><i>" + QString("%1").arg(point.y, 0, 'e', 3) + "</i></td>"
+            "<td><i>" + Util::scene()->problemInfo()->labelY().toLower() + "</i></td>"
+            "<td align=\"right\">" + QString("%1").arg(point.y, 0, 'e', 3) + "</td>"
             "<td>&nbsp;</td>"
             "</tr>";
     htmlBody += "<tr>"
