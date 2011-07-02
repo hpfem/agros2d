@@ -23,7 +23,7 @@
 #include "hermes_electrostatic.h"
 // #include "hermes_magnetic.h"
 #include "hermes_heat.h"
-// #include "hermes_current.h"
+#include "hermes_current.h"
 // #include "hermes_elasticity.h"
 // #include "hermes_flow.h"
 // #include "hermes_rf.h"
@@ -42,6 +42,8 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
 
     if (id == "electrostatic")
         module = new ModuleElectrostatic(problem_type, analysis_type);
+    if (id == "current")
+        module = new ModuleCurrent(problem_type, analysis_type);
     if (id == "heat")
         module = new ModuleHeat(problem_type, analysis_type);
     if (id == "acoustic")
