@@ -63,9 +63,6 @@ SOURCES += muparser/muParserBase.cpp \
     #hermes2d/hermes_flow.cpp \
     #hermes2d/hermes_rf.cpp \
     hermes2d/hermes_acoustic.cpp \
-    localvalueview.cpp \
-    surfaceintegralview.cpp \
-    volumeintegralview.cpp \
     main.cpp \
     scripteditordialog.cpp \
     scripteditorcommandpython.cpp \
@@ -101,7 +98,8 @@ SOURCES += muparser/muParserBase.cpp \
     collaboration.cpp \
     hermes2d/localpoint.cpp \
     hermes2d/volumeintegral.cpp \
-    hermes2d/surfaceintegral.cpp
+    hermes2d/surfaceintegral.cpp \
+    resultsview.cpp
 HEADERS += util.h \
     value.h \
     scene.h \
@@ -119,9 +117,6 @@ HEADERS += util.h \
     #hermes2d/hermes_flow.h \
     #hermes2d/hermes_rf.h \
     hermes2d/hermes_acoustic.h \
-    localvalueview.h \
-    surfaceintegralview.h \
-    volumeintegralview.h \
     mainwindow.h \
     scripteditordialog.h \
     scripteditorcommandpython.h \
@@ -155,7 +150,8 @@ HEADERS += util.h \
     collaboration.h \
     hermes2d/localpoint.h \
     hermes2d/volumeintegral.h \
-    hermes2d/surfaceintegral.h
+    hermes2d/surfaceintegral.h \
+    resultsview.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common

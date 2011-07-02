@@ -341,7 +341,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
     QString destination = source;
 
     // stylesheet
-    destination.replace("[StyleSheet]", "./style.css", Qt::CaseSensitive);
+    destination.replace("[StyleSheet]", "./defaults.css", Qt::CaseSensitive);
 
     // problem name
     destination.replace("[Report.Label]", "<h1>" + Util::scene()->problemInfo()->name + "</h1>", Qt::CaseSensitive);

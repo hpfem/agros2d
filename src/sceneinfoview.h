@@ -44,13 +44,13 @@ private:
     SceneView *m_sceneView;
 
     QTreeWidget *trvWidget;
+    QTextEdit *txtView;
 
-    QTreeWidgetItem *problemNode;
-    QTreeWidgetItem *problemInfoGeneralNode;
-    QTreeWidgetItem *problemInfoSolverNode;
+    QSplitter *splitter;
+
     QTreeWidgetItem *boundaryConditionsNode;
-
     QTreeWidgetItem *materialsNode;
+
     QTreeWidgetItem *geometryNode;
     QTreeWidgetItem *nodesNode;
     QTreeWidgetItem *edgesNode;
@@ -67,6 +67,8 @@ private:
     void createToolBar();
 
     void clearNodes();
+
+    void showInfo();
 
 private slots:
     void doContextMenu(const QPoint &pos);

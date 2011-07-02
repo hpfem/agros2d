@@ -17,18 +17,18 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "localvalueview.h"
+#include "resultsview.h"
 #include "scene.h"
 #include "gui.h"
 #include "scenemarker.h"
 #include "hermes2d.h"
 
-LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local Values"), parent)
+ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), parent)
 {
-    logMessage("LocalPointValueView::LocalPointValueView()");
+    logMessage("ResultsView::ResultsView()");
 
     setMinimumWidth(280);
-    setObjectName("LocalPointValueView");
+    setObjectName("ResultsView");
 
     createActions();
 
@@ -36,7 +36,7 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
     txtView->setReadOnly(true);
     txtView->setMinimumSize(160, 160);
 
-    QPushButton *btnPoint = new QPushButton();
+    btnPoint = new QPushButton();
     btnPoint->setText(actPoint->text());
     btnPoint->setIcon(actPoint->icon());
     btnPoint->setMaximumSize(btnPoint->sizeHint());
@@ -54,80 +54,145 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
     setWidget(widget);
 }
 
-void LocalPointValueView::createActions()
+void ResultsView::createActions()
 {
-    logMessage("LocalPointValueView::createActions()");
+    logMessage("ResultsView::createActions()");
 
     // point
     actPoint = new QAction(icon("scene-node"), tr("Local point value"), this);
     connect(actPoint, SIGNAL(triggered()), this, SLOT(doPoint()));
 }
 
-void LocalPointValueView::doPoint()
+void ResultsView::doPoint()
 {
-    logMessage("LocalPointValueView::doPoint()");
+    logMessage("ResultsView::doPoint()");
 
-    LocalPointValueDialog localPointValueDialog(point);
+    LocalPointValueDialog localPointValueDialog(m_point);
     if (localPointValueDialog.exec() == QDialog::Accepted)
     {
         doShowPoint(localPointValueDialog.point());
     }
 }
 
-void LocalPointValueView::doShowPoint(const Point &point)
+void ResultsView::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
 {
-    logMessage("LocalPointValueView::doShowPoint()");
+    m_sceneModePostprocessor = sceneModePostprocessor;
+    txtView->clear();
+
+    btnPoint->setEnabled(m_sceneModePostprocessor == SceneModePostprocessor_LocalValue);
+}
+
+void ResultsView::doShowResults()
+{
+    btnPoint->setEnabled(m_sceneModePostprocessor == SceneModePostprocessor_LocalValue);
+
+    if (m_sceneModePostprocessor == SceneModePostprocessor_LocalValue)
+        doShowPoint();
+    if (m_sceneModePostprocessor == SceneModePostprocessor_SurfaceIntegral)
+        doShowSurfaceIntegral();
+    if (m_sceneModePostprocessor == SceneModePostprocessor_VolumeIntegral)
+        doShowVolumeIntegral();
+}
+
+void ResultsView::doShowPoint(const Point &point)
+{
+    logMessage("ResultsView::doShowPoint()");
 
     // store point
-    this->point = point;
+    this->m_point = point;
     doShowPoint();
 }
 
-void LocalPointValueView::doShowPoint()
+void ResultsView::doShowVolumeIntegral()
 {
-    logMessage("LocalPointValueView::doShowPoint()");
+    logMessage("ResultsView::doShowVolumeIntegral()");
 
-    // TODO: replace by template
-    QString htmlHeader = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-            "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en-US\">"
-            "<head>"
-            "<meta http-equiv=\"content-type\" content=\"application/xhtml+xml; charset=UTF-8\" />"
-            "<title>Local point</title>"
-            "</head>"
-            "<body style=\"font-size: 14px;\">"
+    // template
+    QString content = readFileContent(datadir() + "/doc/report/dock.html");
+
+    QString html = "<h4>" + tr("Volume integral") + "</h4>"
             "<table width=\"100%\">";
 
-    QString htmlFooter = "</table>"
-            "</body>";
+    VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo()->module()->volume_integral_value();
+    for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue->values.begin(); it != volumeIntegralValue->values.end(); ++it)
+    {
+        html += "<tr>"
+                "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
+                "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
+                "<td align=\"right\">" + QString("%1").arg(it->second, 0, 'e', 3) + "</td>"
+                "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                "</tr>";
+    }
 
-    QString htmlBody;
+    html += "</table>";
 
-    htmlBody += "<tr>"
+    content.replace("[Body]", html);
+    txtView->setText(content);
+}
+
+void ResultsView::doShowSurfaceIntegral()
+{
+    logMessage("ResultsView::doShowSurfaceIntegral()");
+
+    // template
+    QString content = readFileContent(datadir() + "/doc/report/dock.html");
+
+    QString html = "<h4>" + tr("Surface integral") + "</h4>"
+            "<table width=\"100%\">";
+
+    SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo()->module()->surface_integral_value();
+    for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue->values.begin(); it != surfaceIntegralValue->values.end(); ++it)
+    {
+        html += "<tr>"
+                "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
+                "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
+                "<td align=\"right\">" + QString("%1").arg(it->second, 0, 'e', 3) + "</td>"
+                "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                "</tr>";
+    }
+
+    html += "</table>";
+
+    content.replace("[Body]", html);
+    txtView->setText(content);
+}
+
+void ResultsView::doShowPoint()
+{
+    logMessage("ResultsView::doShowPoint()");
+
+    // template
+    QString content = readFileContent(datadir() + "/doc/report/dock.html");
+
+    QString html = "<h4>" + tr("Local point values") + "</h4>"
+            "<table width=\"100%\">";
+
+    html += "<tr>"
             "<td><b>Point</b></td>"
             "<td><i>" + Util::scene()->problemInfo()->labelX().toLower() + "</i></td>"
-            "<td align=\"right\">" + QString("%1").arg(point.x, 0, 'e', 3) + "</td>"
+            "<td align=\"right\">" + QString("%1").arg(m_point.x, 0, 'e', 3) + "</td>"
             "<td>&nbsp;</td>"
             "</tr>";
-    htmlBody += "<tr>"
+    html += "<tr>"
             "<td>&nbsp;</td>"
             "<td><i>" + Util::scene()->problemInfo()->labelY().toLower() + "</i></td>"
-            "<td align=\"right\">" + QString("%1").arg(point.y, 0, 'e', 3) + "</td>"
+            "<td align=\"right\">" + QString("%1").arg(m_point.y, 0, 'e', 3) + "</td>"
             "<td>&nbsp;</td>"
             "</tr>";
-    htmlBody += "<tr>"
+    html += "<tr>"
             "<td>&nbsp;</td>"
             "<td>&nbsp;</td>"
             "<td>&nbsp;</td>"
             "<td>&nbsp;</td>"
             "</tr>";
 
-    LocalPointValue *value = Util::scene()->problemInfo()->module()->local_point_value(point);
+    LocalPointValue *value = Util::scene()->problemInfo()->module()->local_point_value(m_point);
     for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
     {
         if (it->first->is_scalar)
         {
             // scalar variable
-            htmlBody += "<tr>"
+            html += "<tr>"
                     "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
                     "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
                     "<td align=\"right\">" + QString("%1").arg(it->second.scalar, 0, 'e', 3) + "</td>"
@@ -137,19 +202,19 @@ void LocalPointValueView::doShowPoint()
         else
         {
             // vector variable
-            htmlBody += "<tr>"
+            html += "<tr>"
                     "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
                     "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
                     "<td align=\"right\">" + QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3) + "</td>"
                     "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
                     "</tr>";
-            htmlBody += "<tr>"
+            html += "<tr>"
                     "<td>&nbsp;</td>"
                     "<td><i>" + QString::fromStdString(it->first->shortname) + "</i><sub>" + Util::scene()->problemInfo()->labelX().toLower() + "</sub></td>"
                     "<td align=\"right\">" + QString("%1").arg(it->second.vector.x, 0, 'e', 3) + "</td>"
                     "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
                     "</tr>";
-            htmlBody += "<tr>"
+            html += "<tr>"
                     "<td>&nbsp;</td>"
                     "<td><i>" + QString::fromStdString(it->first->shortname) + "</i><sub>" + Util::scene()->problemInfo()->labelY().toLower() + "</sub></td>"
                     "<td align=\"right\">" + QString("%1").arg(it->second.vector.y, 0, 'e', 3) + "</td>"
@@ -158,7 +223,10 @@ void LocalPointValueView::doShowPoint()
         }
     }
 
-    txtView->setText(htmlHeader + htmlBody + htmlFooter);
+    html += "</table>";
+
+    content.replace("[Body]", html);
+    txtView->setText(content);
 }
 
 LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDialog(parent)
