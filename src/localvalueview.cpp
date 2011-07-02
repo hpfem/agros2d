@@ -45,7 +45,7 @@ void LocalPointValue::calculate()
     this->point = point;
     if (Util::scene()->sceneSolution()->isSolved() &&
             Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-        Util::scene()->problemInfo()->module()->updateTimeFunctions(Util::scene()->sceneSolution()->time());
+        Util::scene()->problemInfo()->module()->update_time_functions(Util::scene()->sceneSolution()->time());
 
     if (Util::scene()->sceneSolution()->isSolved())
     {

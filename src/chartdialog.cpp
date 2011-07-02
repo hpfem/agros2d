@@ -397,13 +397,14 @@ void ChartDialog::plotGeometry()
                  arg(QString::fromStdString(physicFieldVariable->unit)));
     chart->setAxisTitle(QwtPlot::yLeft, text);
 
+    // headers
+    QStringList head = headers();
+
     // table
     trvTable->clear();
-    trvTable->setRowCount(count);
-    // FIXME
-    QStringList headers; // = Util::scene()->problemInfo()->module()->localPointValueHeader();
-    trvTable->setColumnCount(headers.count());
-    trvTable->setHorizontalHeaderLabels(headers);
+    trvTable->setRowCount(count);    
+    trvTable->setColumnCount(head.count());
+    trvTable->setHorizontalHeaderLabels(head);
 
     // chart
     if (radAxisLength->isChecked()) text.setText(tr("Length (m)"));
@@ -420,7 +421,6 @@ void ChartDialog::plotGeometry()
     QList<Point> points = chartLine.getPoints();
 
     // calculate values
-    QStringList row;
     for (int i = 0; i < points.length(); i++)
     {
         LocalPointValue *localPointValue = Util::scene()->problemInfo()->module()->local_point_value(points.at(i));
@@ -448,17 +448,8 @@ void ChartDialog::plotGeometry()
         if (radAxisX->isChecked()) xval[i] = points.at(i).x;
         if (radAxisY->isChecked()) xval[i] = points.at(i).y;
 
-        // y value
-        // FIXME
-        // yval[i] = localPointValue->variableValue(PhysicFieldVariable_Electrostatic_Potential, physicFieldVariableComp);
-
-        // table
-        row.clear();
-        // FIXME
-        // row << localPointValue->variables();
-
-        for (int j = 0; j<row.count(); j++)
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? points.length() - 1 - i : i, j, new QTableWidgetItem(row.at(j)));
+        addValue(localPointValue, yval, i, points.length(),
+                 physicFieldVariableComp, physicFieldVariable);
 
         delete localPointValue;
     }
@@ -512,13 +503,14 @@ void ChartDialog::plotTime()
                  arg(QString::fromStdString(physicFieldVariable->unit)));
     chart->setAxisTitle(QwtPlot::yLeft, text);
 
+    // headers
+    QStringList head = headers();
+
     // table
     trvTable->clear();
-    trvTable->setRowCount(count);
-    // FIXME
-    QStringList headers; // = Util::scene()->problemInfo()->module()->localPointValueHeader();
-    trvTable->setColumnCount(headers.count());
-    trvTable->setHorizontalHeaderLabels(headers);
+    trvTable->setRowCount(count);    
+    trvTable->setColumnCount(head.count());
+    trvTable->setHorizontalHeaderLabels(head);
 
     // chart
     text.setText(tr("Time (s)"));
@@ -534,17 +526,8 @@ void ChartDialog::plotTime()
         Point point(txtPointX->value().number, txtPointY->value().number);
         LocalPointValue *localPointValue = Util::scene()->problemInfo()->module()->local_point_value(point);
 
-        // x value
-        xval[i] = Util::scene()->sceneSolution()->time();
-
-        // y value
-        // FIXME
-        // yval[i] = localPointValue->variableValue(PhysicFieldVariable_Electrostatic_Potential, physicFieldVariableComp);
-
-        // table
-        row.clear();
-        // FIXME
-        // row << localPointValue->variables();
+        addValue(localPointValue, yval, i, Util::scene()->sceneSolution()->timeStepCount(),
+                 physicFieldVariableComp, physicFieldVariable);
 
         for (int j = 0; j<row.count(); j++)
             trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));
@@ -559,6 +542,94 @@ void ChartDialog::plotTime()
 
     // restore previous timestep
     Util::scene()->sceneSolution()->setTimeStep(timeStep);
+}
+
+QStringList ChartDialog::headers()
+{
+    QStringList head;
+
+    head << "x" << "y" << "t";
+
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module()->local_point.begin();
+         it != Util::scene()->problemInfo()->module()->local_point.end(); ++it)
+        if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
+        {
+            // scalar variable
+            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname));
+        }
+        else
+        {
+            // vector variable
+            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::scene()->problemInfo()->labelX().toLower());
+            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::scene()->problemInfo()->labelY().toLower());
+            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname));
+        }
+
+    return head;
+}
+
+void ChartDialog::addValue(LocalPointValue *localPointValue, double *yval, int i, int N,
+                           PhysicFieldVariableComp physicFieldVariableComp,
+                           Hermes::Module::LocalVariable *physicFieldVariable)
+{
+    // coordinates
+    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 0,
+                      new QTableWidgetItem(QString("%1").arg(localPointValue->point.x, 0, 'e', 3)));
+    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 1,
+                      new QTableWidgetItem(QString("%1").arg(localPointValue->point.y, 0, 'e', 3)));
+    // time
+    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 2,
+                      new QTableWidgetItem(QString("%1").arg(Util::scene()->sceneSolution()->time(), 0, 'e', 3)));
+
+    // counter
+    int n = 3;
+
+    // local variables
+    // FIXME - wrong order!!!
+    for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = localPointValue->values.begin(); it != localPointValue->values.end(); ++it)
+    {
+        // chart
+        if (it->first->id == physicFieldVariable->id)
+        {
+            if (physicFieldVariable->is_scalar)
+            {
+                // scalar variable
+                yval[i] = it->second.scalar;
+            }
+            else
+            {
+                // vector variable
+                if (physicFieldVariableComp == PhysicFieldVariableComp_X)
+                    yval[i] = it->second.vector.x;
+                else if (physicFieldVariableComp == PhysicFieldVariableComp_Y)
+                    yval[i] = it->second.vector.y;
+                else
+                    yval[i] = it->second.vector.magnitude();
+            }
+        }
+
+        // table
+        if (it->first->is_scalar)
+        {
+            // scalar variable
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
+                              new QTableWidgetItem(QString("%1").arg(it->second.scalar, 0, 'e', 3)));
+            n++;
+        }
+        else
+        {
+            // vector variable
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
+                              new QTableWidgetItem(QString("%1").arg(it->second.vector.x, 0, 'e', 3)));
+            n++;
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
+                              new QTableWidgetItem(QString("%1").arg(it->second.vector.y, 0, 'e', 3)));
+            n++;
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
+                              new QTableWidgetItem(QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3)));
+            n++;
+        }
+    }
 }
 
 void ChartDialog::doPlot()

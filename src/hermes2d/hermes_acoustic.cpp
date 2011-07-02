@@ -336,387 +336,111 @@ private:
     SceneBoundaryAcoustic *m_boundary;
 };
 
-// ****************************************************************************************************
+// ****************************************************************************************************************
 
-PhysicFieldVariableDeprecated HermesAcoustic::contourPhysicFieldVariable()
+void ParserAcoustic::setParserVariables(SceneMaterial *material)
 {
-    return PhysicFieldVariable_Acoustic_PressureReal;
+    SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
+
+    prho = marker->density.number;
+    pv = marker->speed.number;
 }
 
-PhysicFieldVariableDeprecated HermesAcoustic::scalarPhysicFieldVariable()
+// ****************************************************************************************************************
+
+LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPointValue(point)
 {
-    return PhysicFieldVariable_Acoustic_PressureReal;
+    parser = new ParserAcoustic();
+    initParser();
+
+    parser->parser[0]->DefineVar("rho", &static_cast<ParserAcoustic *>(parser)->prho);
+    parser->parser[0]->DefineVar("v", &static_cast<ParserAcoustic *>(parser)->pv);
+
+    calculate();
 }
 
-PhysicFieldVariableComp HermesAcoustic::scalarPhysicFieldVariableComp()
-{
-    return PhysicFieldVariableComp_Scalar;
-}
+// ****************************************************************************************************************
 
-PhysicFieldVariableDeprecated HermesAcoustic::vectorPhysicFieldVariable()
+SurfaceIntegralValueAcoustic::SurfaceIntegralValueAcoustic() : SurfaceIntegralValue()
 {
-    return PhysicFieldVariable_Acoustic_LocalAcceleration;
-}
+    parser = new ParserAcoustic();
+    initParser();
 
-
-void HermesAcoustic::readBoundaryFromDomElement(QDomElement *element)
-{
-    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
-    switch (type)
+    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
     {
-    case PhysicFieldBC_None:
-    case PhysicFieldBC_Acoustic_Pressure:
-        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
-                                                             type,
-                                                             Value(element->attribute("pressure", "0"))));
-        break;
-    case PhysicFieldBC_Acoustic_NormalAcceleration:
-        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
-                                                             type,
-                                                             Value(element->attribute("acceleration", "0"))));
-        break;
-    case PhysicFieldBC_Acoustic_Impedance:
-        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
-                                                             type,
-                                                             Value(element->attribute("impedance", "0"))));
-        break;
-    case PhysicFieldBC_Acoustic_MatchedBoundary:
-        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
-                                                             type));
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-        break;
-    }
-}
-
-void HermesAcoustic::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
-{
-    SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(marker);
-
-    element->setAttribute("type", physicFieldBCToStringKey(boundary->type));
-
-    switch (boundary->type)
-    {
-    case PhysicFieldBC_Acoustic_Pressure:
-        element->setAttribute("pressure", boundary->value_real.text);
-        break;
-    case PhysicFieldBC_Acoustic_NormalAcceleration:
-        element->setAttribute("acceleration", boundary->value_real.text);
-        break;
-    case PhysicFieldBC_Acoustic_Impedance:
-        element->setAttribute("impedance", boundary->value_real.text);
-        break;
-    case PhysicFieldBC_Acoustic_MatchedBoundary:
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-        break;
+        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserAcoustic *>(parser)->prho);
+        ((mu::Parser *) *it)->DefineVar("v", &static_cast<ParserAcoustic *>(parser)->pv);
     }
 
+    calculate();
 }
 
-void HermesAcoustic::readMaterialFromDomElement(QDomElement *element)
+// ****************************************************************************************************************
+
+VolumeIntegralValueAcoustic::VolumeIntegralValueAcoustic() : VolumeIntegralValue()
 {
-    Util::scene()->addMaterial(new SceneMaterialAcoustic(element->attribute("name"),
-                                                         Value(element->attribute("density", "1.25")),
-                                                         Value(element->attribute("speed", "343"))));
+    parser = new ParserAcoustic();
+    initParser();
+
+    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
+    {
+        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserAcoustic *>(parser)->prho);
+        ((mu::Parser *) *it)->DefineVar("v", &static_cast<ParserAcoustic *>(parser)->pv);
+    }
+
+    sln.push_back(Util::scene()->sceneSolution()->sln(0));
+
+    calculate();
 }
 
-void HermesAcoustic::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
+// *************************************************************************************************************************************
+
+ViewScalarFilterAcoustic::ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *> sln,
+                                                             std::string expression) :
+    ViewScalarFilter(sln)
 {
-    SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(marker);
+    parser = new ParserAcoustic();
+    initParser(expression);
 
-    element->setAttribute("density", material->density.text);
-    element->setAttribute("speed", material->speed.text);
+    parser->parser[0]->DefineVar("rho", &static_cast<ParserAcoustic *>(parser)->prho);
+    parser->parser[0]->DefineVar("v", &static_cast<ParserAcoustic *>(parser)->pv);
 }
 
-LocalPointValue *HermesAcoustic::localPointValue(const Point &point)
+// **************************************************************************************************************************
+
+LocalPointValue *ModuleAcoustic::local_point_value(const Point &point)
 {
     return new LocalPointValueAcoustic(point);
 }
 
-QStringList HermesAcoustic::localPointValueHeader()
-{
-    QStringList headers;
-    headers << "X" << "Y" << "p_real" << "p_imag" << "p" << "Lp" << "rho" << "c";
-    return QStringList(headers);
-}
-
-SurfaceIntegralValue *HermesAcoustic::surfaceIntegralValue()
+SurfaceIntegralValue *ModuleAcoustic::surface_integral_value()
 {
     return new SurfaceIntegralValueAcoustic();
 }
 
-QStringList HermesAcoustic::surfaceIntegralValueHeader()
-{
-    QStringList headers;
-    headers << "l" << "S" << "p_real" << "p_imag";
-    return QStringList(headers);
-}
-
-VolumeIntegralValue *HermesAcoustic::volumeIntegralValue()
+VolumeIntegralValue *ModuleAcoustic::volume_integral_value()
 {
     return new VolumeIntegralValueAcoustic();
 }
 
-QStringList HermesAcoustic::volumeIntegralValueHeader()
+ViewScalarFilter *ModuleAcoustic::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                                           PhysicFieldVariableComp physicFieldVariableComp)
 {
-    QStringList headers;
-    headers << "V" << "S" << "p_real" << "p_imag";
-    return QStringList(headers);
-}
+    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
+    Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
 
-SceneBoundary *HermesAcoustic::newBoundary()
-{
-    return new SceneBoundaryAcoustic(tr("new boundary"),
-                                     PhysicFieldBC_Acoustic_Pressure,
-                                     Value("0"));
-}
-
-SceneBoundary *HermesAcoustic::newBoundary(PyObject *self, PyObject *args)
-{
-    double pressure;
-    char *name, *type;
-    if (PyArg_ParseTuple(args, "ss|d", &name, &type, &pressure))
-    {
-        // check name
-        if (Util::scene()->getBoundary(name)) return NULL;
-
-        if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Acoustic_MatchedBoundary)
-            return new SceneBoundaryAcoustic(name,
-                                             physicFieldBCFromStringKey(type));
-        else
-            return new SceneBoundaryAcoustic(name,
-                                             physicFieldBCFromStringKey(type),
-                                             Value(QString::number(pressure)));
-    }
-
-    return NULL;
-}
-
-SceneBoundary *HermesAcoustic::modifyBoundary(PyObject *self, PyObject *args)
-{
-    double pressure;
-    char *name, *type;
-    if (PyArg_ParseTuple(args, "ssd", &name, &type, &pressure))
-    {
-        if (SceneBoundaryAcoustic *marker = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->getBoundary(name)))
-        {
-            if (physicFieldBCFromStringKey(type))
-            {
-                marker->type = physicFieldBCFromStringKey(type);
-                if (marker->type == PhysicFieldBC_Acoustic_Pressure)
-                {
-                    marker->value_real = Value(QString::number(pressure));
-                }
-                return marker;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
-                return NULL;
-            }
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
-            return NULL;
-        }
-    }
-
-    return NULL;
-}
-
-SceneMaterial *HermesAcoustic::newMaterial()
-{
-    return new SceneMaterialAcoustic(tr("new material"),
-                                     Value("1.25"),
-                                     Value("343"));
-}
-
-SceneMaterial *HermesAcoustic::newMaterial(PyObject *self, PyObject *args)
-{
-    double density, speed;
-    char *name;
-    if (PyArg_ParseTuple(args, "sdd", &name, &density, &speed))
-    {
-        // check name
-        if (Util::scene()->getMaterial(name)) return NULL;
-
-        return new SceneMaterialAcoustic(name,
-                                         Value(QString::number(density)),
-                                         Value(QString::number(speed)));
-    }
-
-    return NULL;
-}
-
-SceneMaterial *HermesAcoustic::modifyMaterial(PyObject *self, PyObject *args)
-{
-    double density, speed;
-    char *name;
-    if (PyArg_ParseTuple(args, "sdd", &name, &density, &speed))
-    {
-        if (SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->getMaterial(name)))
-        {
-            marker->density = Value(QString::number(density));
-            marker->speed = Value(QString::number(speed));
-            return marker;
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
-            return NULL;
-        }
-    }
-
-    return NULL;
-}
-
-void HermesAcoustic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
-{
-    // harmonic
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Pressure), PhysicFieldVariable_Acoustic_Pressure);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureReal), PhysicFieldVariable_Acoustic_PressureReal);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureImag), PhysicFieldVariable_Acoustic_PressureImag);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureLevel), PhysicFieldVariable_Acoustic_PressureLevel);
-        // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalVelocity), PhysicFieldVariable_Acoustic_LocalVelocity);
-        // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalAcceleration), PhysicFieldVariable_Acoustic_LocalAcceleration);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Density), PhysicFieldVariable_Acoustic_Density);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Speed), PhysicFieldVariable_Acoustic_Speed);
-    }
-    // transient
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-    {
-        // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Pressure), PhysicFieldVariable_Acoustic_PressureReal);
-
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureReal), PhysicFieldVariable_Acoustic_PressureReal);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureImag), PhysicFieldVariable_Acoustic_PressureImag);
-
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureLevel), PhysicFieldVariable_Acoustic_PressureLevel);
-        // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalVelocity), PhysicFieldVariable_Acoustic_LocalVelocity);
-        // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalAcceleration), PhysicFieldVariable_Acoustic_LocalAcceleration);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Density), PhysicFieldVariable_Acoustic_Density);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Speed), PhysicFieldVariable_Acoustic_Speed);
-    }
-}
-
-void HermesAcoustic::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
-{
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalAcceleration), PhysicFieldVariable_Acoustic_LocalAcceleration);
-}
-
-void HermesAcoustic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
-{
-    LocalPointValueAcoustic *localPointValueAcoustic = dynamic_cast<LocalPointValueAcoustic *>(localPointValue);
-
-    // magnetic
-    QTreeWidgetItem *acousticNode = new QTreeWidgetItem(trvWidget);
-    acousticNode->setText(0, tr("Acoustic field"));
-    acousticNode->setExpanded(true);
-
-    // material
-    addTreeWidgetItemValue(acousticNode, tr("Density:"), QString("%1").arg(localPointValueAcoustic->density, 0, 'f', 2), "kg/m3");
-    addTreeWidgetItemValue(acousticNode, tr("Speed of sound:"), QString("%1").arg(localPointValueAcoustic->speed, 0, 'f', 2), "m/s");
-
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-    {
-        // Pressure
-        QTreeWidgetItem *itemPressure = new QTreeWidgetItem(acousticNode);
-        itemPressure->setText(0, tr("Acoustic pressure"));
-        itemPressure->setExpanded(true);
-
-        addTreeWidgetItemValue(itemPressure, tr("real:"), QString("%1").arg(localPointValueAcoustic->pressure_real, 0, 'e', 3), "Pa");
-        addTreeWidgetItemValue(itemPressure, tr("imag:"), QString("%1").arg(localPointValueAcoustic->pressure_imag, 0, 'e', 3), "Pa");
-        addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueAcoustic->pressure_real) + sqr(localPointValueAcoustic->pressure_imag)), 0, 'e', 3), "Pa");
-
-        addTreeWidgetItemValue(acousticNode, tr("Sound pressure level:"), QString("%1").arg(localPointValueAcoustic->pressureLevel, 0, 'f', 2), "dB");
-
-        // Local velocity
-        /*
-        QTreeWidgetItem *itemLocalVelocity = new QTreeWidgetItem(pressureNode);
-        itemLocalVelocity->setText(0, tr("Local velocity"));
-        itemLocalVelocity->setExpanded(true);
-
-        addTreeWidgetItemValue(itemLocalVelocity, "v" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueAcoustic->localAccelaration.x, 0, 'f', 5), tr("m/s"));
-        addTreeWidgetItemValue(itemLocalVelocity, "v" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueAcoustic->localAccelaration.y, 0, 'f', 5), tr("m/s"));
-        addTreeWidgetItemValue(itemLocalVelocity, "v:", QString("%1").arg(localPointValueAcoustic->localAccelaration.magnitude(), 0, 'f', 5), "m/s");
-
-        // Local acceleration
-        QTreeWidgetItem *itemLocalAcceleration = new QTreeWidgetItem(pressureNode);
-        itemLocalAcceleration->setText(0, tr("Local acceleration"));
-        itemLocalAcceleration->setExpanded(true);
-
-        addTreeWidgetItemValue(itemLocalAcceleration, "a" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueAcoustic->localAccelaration.x, 0, 'f', 5), tr("m/s2"));
-        addTreeWidgetItemValue(itemLocalAcceleration, "a" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueAcoustic->localAccelaration.y, 0, 'f', 5), tr("m/s2"));
-        addTreeWidgetItemValue(itemLocalAcceleration, "a:", QString("%1").arg(localPointValueAcoustic->localAccelaration.magnitude(), 0, 'f', 5), "m/s2");
-        */
-    }
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-    {
-        // Pressure
-        addTreeWidgetItemValue(acousticNode, tr("Acoustic pressure:"), QString("%1").arg(localPointValueAcoustic->pressure_real, 0, 'e', 3), "Pa");
-        addTreeWidgetItemValue(acousticNode, tr("Sound pressure level:"), QString("%1").arg(localPointValueAcoustic->pressureLevel, 0, 'f', 2), "dB");
-    }
-}
-
-void HermesAcoustic::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
-{
-    SurfaceIntegralValueAcoustic *surfaceIntegralValueAcoustic = dynamic_cast<SurfaceIntegralValueAcoustic *>(surfaceIntegralValue);
-
-    QTreeWidgetItem *magneticNode = new QTreeWidgetItem(trvWidget);
-    magneticNode->setText(0, tr("Acoustic field"));
-    magneticNode->setExpanded(true);
-
-    // pressure
-    QTreeWidgetItem *itemPressure = new QTreeWidgetItem(magneticNode);
-    itemPressure->setText(0, tr("Pressure"));
-    itemPressure->setExpanded(true);
-
-    addTreeWidgetItemValue(itemPressure, tr("real:"), QString("%1").arg(surfaceIntegralValueAcoustic->pressureReal, 0, 'e', 3), "N");
-    addTreeWidgetItemValue(itemPressure, tr("imag:"), QString("%1").arg(surfaceIntegralValueAcoustic->pressureImag, 0, 'e', 3), "N");
-    addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(surfaceIntegralValueAcoustic->pressureReal) + sqr(surfaceIntegralValueAcoustic->pressureImag)), 0, 'e', 3), "N");
-}
-
-void HermesAcoustic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)
-{
-    VolumeIntegralValueAcoustic *volumeIntegralValueAcoustic = dynamic_cast<VolumeIntegralValueAcoustic *>(volumeIntegralValue);
-
-    // harmonic
-    QTreeWidgetItem *magneticNode = new QTreeWidgetItem(trvWidget);
-    magneticNode->setText(0, tr("Acoustic field"));
-    magneticNode->setExpanded(true);
-
-    // pressure
-    QTreeWidgetItem *itemPressure = new QTreeWidgetItem(magneticNode);
-    itemPressure->setText(0, tr("Pressure"));
-    itemPressure->setExpanded(true);
-
-    addTreeWidgetItemValue(itemPressure, tr("real:"), QString("%1").arg(volumeIntegralValueAcoustic->pressureReal, 0, 'e', 3), "N");
-    addTreeWidgetItemValue(itemPressure, tr("imag:"), QString("%1").arg(volumeIntegralValueAcoustic->pressureImag, 0, 'e', 3), "N");
-    addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueAcoustic->pressureReal) + sqr(volumeIntegralValueAcoustic->pressureImag)), 0, 'e', 3), "N");
-}
-
-ViewScalarFilter *HermesAcoustic::viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
-{
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
-    Solution *sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
     return new ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *>(sln1, sln2),
-                                        physicFieldVariable,
-                                        physicFieldVariableComp);
+                                        get_expression(physicFieldVariable, physicFieldVariableComp));
 }
 
-QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolve)
+Hermes::vector<SolutionArray *> ModuleAcoustic::solve(ProgressItemSolve *progressItemSolve)
 {
     // transient
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
-        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return QList<SolutionArray *>();
-        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return QList<SolutionArray *>();
-        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return QList<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return Hermes::vector<SolutionArray *>();
     }
 
     // edge markers
@@ -725,7 +449,7 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
         SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->boundaries[i]);
 
         // evaluate script
-        if (!boundary->value_real.evaluate()) return QList<SolutionArray *>();
+        if (!boundary->value_real.evaluate()) return Hermes::vector<SolutionArray *>();
     }
 
     // label markers
@@ -734,8 +458,8 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
         SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->materials[i]);
 
         // evaluate script
-        if (!material->density.evaluate()) return QList<SolutionArray *>();
-        if (!material->speed.evaluate()) return QList<SolutionArray *>();
+        if (!material->density.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!material->speed.evaluate()) return Hermes::vector<SolutionArray *>();
     }
 
     // boundary conditions
@@ -770,14 +494,14 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
     else
         wf = new WeakFormAcousticsTransient();
 
-    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, wf);
+    Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, wf);
 
     delete wf;
 
     return solutionArrayList;
 }
 
-void HermesAcoustic::updateTimeFunctions(double time)
+void ModuleAcoustic::update_time_functions(double time)
 {
     // update boundaries
     for (int i = 1; i<Util::scene()->boundaries.count(); i++)
@@ -787,319 +511,186 @@ void HermesAcoustic::updateTimeFunctions(double time)
     }
 }
 
-// ****************************************************************************************************************
+// **************************************************************************************************************************
+// rewrite
 
-LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPointValue(point)
+void ModuleAcoustic::readBoundaryFromDomElement(QDomElement *element)
 {
-    density = 0;
-    speed = 0;
-    pressure_real = 0;
-    pressure_imag = 0;
-    pressureLevel = 0;
-    localAccelaration = Point();
-    localVelocity = Point();
-
-    if (Util::scene()->sceneSolution()->isSolved())
+    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
+    switch (type)
     {
-        // value real
-        PointValue valueReal = PointValue(value, derivative, material);
-
-        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(valueReal.marker);
-        // solution
-        if (marker)
-        {            
-            density = marker->density.number;
-            speed = marker->speed.number;
-
-            if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-            {
-                Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
-
-                // value imag
-                PointValue valueImag = pointValue(sln2, point);
-                double frequency = Util::scene()->problemInfo()->frequency;
-
-                Point derReal = valueReal.derivative;
-                Point derImag = valueImag.derivative;
-
-                pressure_real = valueReal.value;
-                pressure_imag = valueImag.value;
-
-                localAccelaration.x = - derReal.x / density;
-                localAccelaration.y = - derReal.y / density;
-
-                localVelocity.x = localAccelaration.x / (2 * M_PI * frequency);
-                localVelocity.y = localAccelaration.y / (2 * M_PI * frequency);
-
-                pressureLevel = (sqrt(sqr(valueReal.value) + sqr(valueImag.value)) > PRESSURE_MIN_AIR) ?
-                            20.0 * log10(sqrt(sqr(valueReal.value) + sqr(valueImag.value)) / sqrt(2.0) / PRESSURE_MIN_AIR) : 0.0;
-            }
-            if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-            {
-                Point derReal = valueReal.derivative;
-
-                pressure_real = valueReal.value;
-
-                pressureLevel = (valueReal.value > PRESSURE_MIN_AIR) ? 20.0 * log10(valueReal.value / PRESSURE_MIN_AIR) : 0.0;
-            }
-        }
-    }
-}
-
-double LocalPointValueAcoustic::variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
-{
-    switch (physicFieldVariable)
-    {
-    case PhysicFieldVariable_Acoustic_Pressure:
-        return sqrt(sqr(pressure_real) + sqr(pressure_imag));
-    case PhysicFieldVariable_Acoustic_PressureReal:
-        return pressure_real;
-    case PhysicFieldVariable_Acoustic_PressureImag:
-        return pressure_imag;
-    case PhysicFieldVariable_Acoustic_LocalVelocity:
-    {
-        switch (physicFieldVariableComp)
-        {
-        case PhysicFieldVariableComp_X:
-            return localVelocity.x;
-        case PhysicFieldVariableComp_Y:
-            return localVelocity.y;
-        case PhysicFieldVariableComp_Magnitude:
-            return localVelocity.magnitude();
-        }
-    }
+    case PhysicFieldBC_None:
+    case PhysicFieldBC_Acoustic_Pressure:
+        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
+                                                             type,
+                                                             Value(element->attribute("pressure", "0"))));
         break;
-    case PhysicFieldVariable_Acoustic_LocalAcceleration:
-    {
-        switch (physicFieldVariableComp)
-        {
-        case PhysicFieldVariableComp_X:
-            return localAccelaration.x;
-        case PhysicFieldVariableComp_Y:
-            return localAccelaration.y;
-        case PhysicFieldVariableComp_Magnitude:
-            return localAccelaration.magnitude();
-        }
-    }
+    case PhysicFieldBC_Acoustic_NormalAcceleration:
+        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
+                                                             type,
+                                                             Value(element->attribute("acceleration", "0"))));
         break;
-    case PhysicFieldVariable_Acoustic_PressureLevel:
-        return pressureLevel;
-    case PhysicFieldVariable_Acoustic_Density:
-        return density;
-    case PhysicFieldVariable_Acoustic_Speed:
-        return speed;
-    default:
-        cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueAcoustic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
-        throw;
+    case PhysicFieldBC_Acoustic_Impedance:
+        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
+                                                             type,
+                                                             Value(element->attribute("impedance", "0"))));
         break;
-    }
-}
-
-QStringList LocalPointValueAcoustic::variables()
-{
-    QStringList row;
-    row << QString("%1").arg(point.x, 0, 'e', 5) <<
-           QString("%1").arg(point.y, 0, 'e', 5) <<
-           QString("%1").arg(pressure_real, 0, 'e', 5) <<
-           QString("%1").arg(pressure_imag, 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(pressure_real) + sqr(pressure_imag)), 0, 'e', 5) <<
-           QString("%1").arg(pressureLevel, 0, 'e', 5) <<
-           QString("%1").arg(density, 0, 'f', 2) <<
-           QString("%1").arg(speed, 0, 'f', 2);
-    // QString("%1").arg(localAccelaration.x, 0, 'e', 5) <<
-    // QString("%1").arg(localAccelaration.y, 0, 'e', 5);
-
-    return QStringList(row);
-}
-
-// ****************************************************************************************************************
-
-SurfaceIntegralValueAcoustic::SurfaceIntegralValueAcoustic() : SurfaceIntegralValue()
-{
-    pressureReal = 0.0;
-    pressureImag = 0.0;
-
-    calculate();
-
-    pressureReal /= 2.0;
-    pressureImag /= 2.0;
-}
-
-void SurfaceIntegralValueAcoustic::calculateVariables(int i)
-{
-    SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
-
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-        pressureReal += pt[i][2] * tan[i][2] * value1[i];
-    else
-        pressureReal += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * value1[i];
-
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-        pressureImag += pt[i][2] * tan[i][2] * value2[i];
-    else
-        pressureImag += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * value2[i];
-}
-
-QStringList SurfaceIntegralValueAcoustic::variables()
-{
-    QStringList row;
-    row << QString("%1").arg(length, 0, 'e', 5) <<
-           QString("%1").arg(surface, 0, 'e', 5) <<
-           QString("%1").arg(pressureReal, 0, 'e', 5) <<
-           QString("%1").arg(pressureImag, 0, 'e', 5);
-    return QStringList(row);
-}
-
-
-// ****************************************************************************************************************
-
-VolumeIntegralValueAcoustic::VolumeIntegralValueAcoustic() : VolumeIntegralValue()
-{
-    pressureReal = 0.0;
-    pressureImag = 0.0;
-
-    calculate();
-}
-
-void VolumeIntegralValueAcoustic::calculateVariables(int i)
-{
-    SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
-
-    result = 0.0;
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-    {
-        h1_integrate_expression(value1[i]);
-    }
-    else
-    {
-        h1_integrate_expression(2 * M_PI * x[i] * value1[i]);
-    }
-    pressureReal += result;
-
-    result = 0.0;
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-    {
-        h1_integrate_expression(value2[i]);
-    }
-    else
-    {
-        h1_integrate_expression(2 * M_PI * x[i] * value2[i]);
-    }
-    pressureImag += result;
-}
-
-void VolumeIntegralValueAcoustic::initSolutions()
-{
-    sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
-    sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
-}
-
-QStringList VolumeIntegralValueAcoustic::variables()
-{
-    QStringList row;
-    row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-           QString("%1").arg(crossSection, 0, 'e', 5) <<
-           QString("%1").arg(pressureReal, 0, 'e', 5) <<
-           QString("%1").arg(pressureImag, 0, 'e', 5);
-    return QStringList(row);
-}
-
-// *************************************************************************************************************************************
-
-void ViewScalarFilterAcoustic::calculateVariable(int i)
-{
-    switch (m_physicFieldVariable)
-    {
-    case PhysicFieldVariable_Acoustic_Pressure:
-    {
-        node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i]));
-    }
-        break;
-    case PhysicFieldVariable_Acoustic_PressureReal:
-    {
-        node->values[0][0][i] = value1[i];
-    }
-        break;
-    case PhysicFieldVariable_Acoustic_PressureImag:
-    {
-        node->values[0][0][i] = value2[i];
-    }
-        break;
-    case PhysicFieldVariable_Acoustic_PressureLevel:
-    {
-        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-            node->values[0][0][i] = (sqrt(sqr(value1[i]) + sqr(value2[i])) > PRESSURE_MIN_AIR) ?
-                        20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(2.0) / PRESSURE_MIN_AIR) : 0.0;
-        else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-            node->values[0][0][i] = (value1[i] > PRESSURE_MIN_AIR) ?
-                        20.0 * log10(value1[i] / PRESSURE_MIN_AIR) : 0.0;
-    }
-        break;
-    case PhysicFieldVariable_Acoustic_LocalVelocity:
-    {
-        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
-
-        switch (m_physicFieldVariableComp)
-        {
-        case PhysicFieldVariableComp_X:
-        {
-            node->values[0][0][i] = - dudx1[i] / marker->density.number / (2 * M_PI * Util::scene()->problemInfo()->frequency);
-        }
-            break;
-        case PhysicFieldVariableComp_Y:
-        {
-            node->values[0][0][i] = - dudy1[i] / marker->density.number / (2 * M_PI * Util::scene()->problemInfo()->frequency);
-        }
-            break;
-        case PhysicFieldVariableComp_Magnitude:
-        {
-            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i])) / marker->density.number / (2 * M_PI * Util::scene()->problemInfo()->frequency);;
-        }
-            break;
-        }
-    }
-        break;
-    case PhysicFieldVariable_Acoustic_LocalAcceleration:
-    {
-        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
-
-        switch (m_physicFieldVariableComp)
-        {
-        case PhysicFieldVariableComp_X:
-        {
-            node->values[0][0][i] = - dudx1[i] / marker->density.number;
-        }
-            break;
-        case PhysicFieldVariableComp_Y:
-        {
-            node->values[0][0][i] = - dudy1[i] / marker->density.number;
-        }
-            break;
-        case PhysicFieldVariableComp_Magnitude:
-        {
-            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i])) / marker->density.number;
-        }
-            break;
-        }
-    }
-        break;
-    case PhysicFieldVariable_Acoustic_Density:
-    {
-        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
-        node->values[0][0][i] = marker->density.number;
-    }
-        break;
-    case PhysicFieldVariable_Acoustic_Speed:
-    {
-        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
-        node->values[0][0][i] = marker->speed.number;
-    }
+    case PhysicFieldBC_Acoustic_MatchedBoundary:
+        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
+                                                             type));
         break;
     default:
-        cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterAcoustic::calculateVariable()" << endl;
-        throw;
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
         break;
     }
+}
+
+void ModuleAcoustic::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
+{
+    SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(marker);
+
+    element->setAttribute("type", physicFieldBCToStringKey(boundary->type));
+
+    switch (boundary->type)
+    {
+    case PhysicFieldBC_Acoustic_Pressure:
+        element->setAttribute("pressure", boundary->value_real.text);
+        break;
+    case PhysicFieldBC_Acoustic_NormalAcceleration:
+        element->setAttribute("acceleration", boundary->value_real.text);
+        break;
+    case PhysicFieldBC_Acoustic_Impedance:
+        element->setAttribute("impedance", boundary->value_real.text);
+        break;
+    case PhysicFieldBC_Acoustic_MatchedBoundary:
+        break;
+    default:
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+        break;
+    }
+
+}
+
+void ModuleAcoustic::readMaterialFromDomElement(QDomElement *element)
+{
+    Util::scene()->addMaterial(new SceneMaterialAcoustic(element->attribute("name"),
+                                                         Value(element->attribute("density", "1.25")),
+                                                         Value(element->attribute("speed", "343"))));
+}
+
+void ModuleAcoustic::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
+{
+    SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(marker);
+
+    element->setAttribute("density", material->density.text);
+    element->setAttribute("speed", material->speed.text);
+}
+
+SceneBoundary *ModuleAcoustic::newBoundary()
+{
+    return new SceneBoundaryAcoustic(tr("new boundary"),
+                                     PhysicFieldBC_Acoustic_Pressure,
+                                     Value("0"));
+}
+
+SceneBoundary *ModuleAcoustic::newBoundary(PyObject *self, PyObject *args)
+{
+    double pressure;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ss|d", &name, &type, &pressure))
+    {
+        // check name
+        if (Util::scene()->getBoundary(name)) return NULL;
+
+        if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Acoustic_MatchedBoundary)
+            return new SceneBoundaryAcoustic(name,
+                                             physicFieldBCFromStringKey(type));
+        else
+            return new SceneBoundaryAcoustic(name,
+                                             physicFieldBCFromStringKey(type),
+                                             Value(QString::number(pressure)));
+    }
+
+    return NULL;
+}
+
+SceneBoundary *ModuleAcoustic::modifyBoundary(PyObject *self, PyObject *args)
+{
+    double pressure;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &pressure))
+    {
+        if (SceneBoundaryAcoustic *marker = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->getBoundary(name)))
+        {
+            if (physicFieldBCFromStringKey(type))
+            {
+                marker->type = physicFieldBCFromStringKey(type);
+                if (marker->type == PhysicFieldBC_Acoustic_Pressure)
+                {
+                    marker->value_real = Value(QString::number(pressure));
+                }
+                return marker;
+            }
+            else
+            {
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                return NULL;
+            }
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
+
+SceneMaterial *ModuleAcoustic::newMaterial()
+{
+    return new SceneMaterialAcoustic(tr("new material"),
+                                     Value("1.25"),
+                                     Value("343"));
+}
+
+SceneMaterial *ModuleAcoustic::newMaterial(PyObject *self, PyObject *args)
+{
+    double density, speed;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdd", &name, &density, &speed))
+    {
+        // check name
+        if (Util::scene()->getMaterial(name)) return NULL;
+
+        return new SceneMaterialAcoustic(name,
+                                         Value(QString::number(density)),
+                                         Value(QString::number(speed)));
+    }
+
+    return NULL;
+}
+
+SceneMaterial *ModuleAcoustic::modifyMaterial(PyObject *self, PyObject *args)
+{
+    double density, speed;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdd", &name, &density, &speed))
+    {
+        if (SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->getMaterial(name)))
+        {
+            marker->density = Value(QString::number(density));
+            marker->speed = Value(QString::number(speed));
+            return marker;
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
 }
 
 // *************************************************************************************************************************************

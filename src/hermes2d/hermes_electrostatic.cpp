@@ -22,10 +22,10 @@
 #include "scene.h"
 #include "gui.h"
 
-class WeakFormElectrostatics : public WeakFormAgros
+class WeakFormElectrostatic : public WeakFormAgros
 {
 public:
-    WeakFormElectrostatics() : WeakFormAgros() { }
+    WeakFormElectrostatic() : WeakFormAgros() { }
 
     void registerForms()
     {
@@ -69,7 +69,7 @@ public:
 
 // ****************************************************************************************************************
 
-void ParserElectrostatics::setParserVariables(SceneMaterial *material)
+void ParserElectrostatic::setParserVariables(SceneMaterial *material)
 {
     SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
 
@@ -79,28 +79,28 @@ void ParserElectrostatics::setParserVariables(SceneMaterial *material)
 
 // ****************************************************************************************************************
 
-LocalPointValueElectrostatics::LocalPointValueElectrostatics(const Point &point) : LocalPointValue(point)
+LocalPointValueElectrostatic::LocalPointValueElectrostatic(const Point &point) : LocalPointValue(point)
 {
-    parser = new ParserElectrostatics();
+    parser = new ParserElectrostatic();
     initParser();
 
-    parser->parser[0]->DefineVar("epsr", &static_cast<ParserElectrostatics *>(parser)->pepsr);
-    parser->parser[0]->DefineVar("rho", &static_cast<ParserElectrostatics *>(parser)->prho);
+    parser->parser[0]->DefineVar("epsr", &static_cast<ParserElectrostatic *>(parser)->pepsr);
+    parser->parser[0]->DefineVar("rho", &static_cast<ParserElectrostatic *>(parser)->prho);
 
     calculate();
 }
 
 // ****************************************************************************************************************
 
-SurfaceIntegralValueElectrostatics::SurfaceIntegralValueElectrostatics() : SurfaceIntegralValue()
+SurfaceIntegralValueElectrostatic::SurfaceIntegralValueElectrostatic() : SurfaceIntegralValue()
 {
-    parser = new ParserElectrostatics();
+    parser = new ParserElectrostatic();
     initParser();
 
     for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
     {
-        ((mu::Parser *) *it)->DefineVar("epsr", &static_cast<ParserElectrostatics *>(parser)->pepsr);
-        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserElectrostatics *>(parser)->prho);
+        ((mu::Parser *) *it)->DefineVar("epsr", &static_cast<ParserElectrostatic *>(parser)->pepsr);
+        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserElectrostatic *>(parser)->prho);
     }
 
     calculate();
@@ -108,15 +108,15 @@ SurfaceIntegralValueElectrostatics::SurfaceIntegralValueElectrostatics() : Surfa
 
 // ****************************************************************************************************************
 
-VolumeIntegralValueElectrostatics::VolumeIntegralValueElectrostatics() : VolumeIntegralValue()
+VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic() : VolumeIntegralValue()
 {
-    parser = new ParserElectrostatics();
+    parser = new ParserElectrostatic();
     initParser();
 
     for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
     {
-        ((mu::Parser *) *it)->DefineVar("epsr", &static_cast<ParserElectrostatics *>(parser)->pepsr);
-        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserElectrostatics *>(parser)->prho);
+        ((mu::Parser *) *it)->DefineVar("epsr", &static_cast<ParserElectrostatic *>(parser)->pepsr);
+        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserElectrostatic *>(parser)->prho);
     }
 
     sln.push_back(Util::scene()->sceneSolution()->sln(0));
@@ -126,42 +126,42 @@ VolumeIntegralValueElectrostatics::VolumeIntegralValueElectrostatics() : VolumeI
 
 // *************************************************************************************************************************************
 
-ViewScalarFilterElectrostatics::ViewScalarFilterElectrostatics(Hermes::vector<MeshFunction *> sln,
+ViewScalarFilterElectrostatic::ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln,
                                                              std::string expression) :
     ViewScalarFilter(sln)
 {
-    parser = new ParserElectrostatics();
+    parser = new ParserElectrostatic();
     initParser(expression);
 
-    parser->parser[0]->DefineVar("epsr", &static_cast<ParserElectrostatics *>(parser)->pepsr);
-    parser->parser[0]->DefineVar("rho", &static_cast<ParserElectrostatics *>(parser)->prho);
+    parser->parser[0]->DefineVar("epsr", &static_cast<ParserElectrostatic *>(parser)->pepsr);
+    parser->parser[0]->DefineVar("rho", &static_cast<ParserElectrostatic *>(parser)->prho);
 }
 
 // **************************************************************************************************************************
 
-LocalPointValue *ModuleElectrostatics::local_point_value(const Point &point)
+LocalPointValue *ModuleElectrostatic::local_point_value(const Point &point)
 {
-    return new LocalPointValueElectrostatics(point);
+    return new LocalPointValueElectrostatic(point);
 }
 
-SurfaceIntegralValue *ModuleElectrostatics::surface_integral_value()
+SurfaceIntegralValue *ModuleElectrostatic::surface_integral_value()
 {
-    return new SurfaceIntegralValueElectrostatics();
+    return new SurfaceIntegralValueElectrostatic();
 }
 
-VolumeIntegralValue *ModuleElectrostatics::volume_integral_value()
+VolumeIntegralValue *ModuleElectrostatic::volume_integral_value()
 {
-    return new VolumeIntegralValueElectrostatics();
+    return new VolumeIntegralValueElectrostatic();
 }
 
-ViewScalarFilter *ModuleElectrostatics::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+ViewScalarFilter *ModuleElectrostatic::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                            PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
-    return new ViewScalarFilterElectrostatics(sln1, get_expression(physicFieldVariable, physicFieldVariableComp));
+    return new ViewScalarFilterElectrostatic(sln1, get_expression(physicFieldVariable, physicFieldVariableComp));
 }
 
-Hermes::vector<SolutionArray *> ModuleElectrostatics::solve(ProgressItemSolve *progressItemSolve)
+Hermes::vector<SolutionArray *> ModuleElectrostatic::solve(ProgressItemSolve *progressItemSolve)
 {
     // boundaries
     for (int i = 1; i<Util::scene()->boundaries.count(); i++)
@@ -195,7 +195,7 @@ Hermes::vector<SolutionArray *> ModuleElectrostatics::solve(ProgressItemSolve *p
         }
     }
 
-    WeakFormElectrostatics wf;
+    WeakFormElectrostatic wf;
 
     Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
 
@@ -205,7 +205,7 @@ Hermes::vector<SolutionArray *> ModuleElectrostatics::solve(ProgressItemSolve *p
 // **************************************************************************************************************************
 // rewrite
 
-void ModuleElectrostatics::readBoundaryFromDomElement(QDomElement *element)
+void ModuleElectrostatic::readBoundaryFromDomElement(QDomElement *element)
 {
     PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
     switch (type)
@@ -223,7 +223,7 @@ void ModuleElectrostatics::readBoundaryFromDomElement(QDomElement *element)
     }
 }
 
-void ModuleElectrostatics::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
+void ModuleElectrostatic::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
 {
     SceneBoundaryElectrostatic *material = dynamic_cast<SceneBoundaryElectrostatic *>(marker);
 
@@ -231,14 +231,14 @@ void ModuleElectrostatics::writeBoundaryToDomElement(QDomElement *element, Scene
     element->setAttribute("value", material->value.text);
 }
 
-void ModuleElectrostatics::readMaterialFromDomElement(QDomElement *element)
+void ModuleElectrostatic::readMaterialFromDomElement(QDomElement *element)
 {
     Util::scene()->addMaterial(new SceneMaterialElectrostatic(element->attribute("name"),
                                                               Value(element->attribute("charge_density", "0")),
                                                               Value(element->attribute("permittivity", "1"))));
 }
 
-void ModuleElectrostatics::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
+void ModuleElectrostatic::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
 {
     SceneMaterialElectrostatic *material = dynamic_cast<SceneMaterialElectrostatic *>(marker);
 
@@ -246,14 +246,14 @@ void ModuleElectrostatics::writeMaterialToDomElement(QDomElement *element, Scene
     element->setAttribute("permittivity", material->permittivity.text);
 }
 
-SceneBoundary *ModuleElectrostatics::newBoundary()
+SceneBoundary *ModuleElectrostatic::newBoundary()
 {
     return new SceneBoundaryElectrostatic(tr("new boundary"),
                                           PhysicFieldBC_Electrostatic_Potential,
                                           Value("0"));
 }
 
-SceneBoundary *ModuleElectrostatics::newBoundary(PyObject *self, PyObject *args)
+SceneBoundary *ModuleElectrostatic::newBoundary(PyObject *self, PyObject *args)
 {
     double value;
     char *name, *type;
@@ -270,7 +270,7 @@ SceneBoundary *ModuleElectrostatics::newBoundary(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneBoundary *ModuleElectrostatics::modifyBoundary(PyObject *self, PyObject *args)
+SceneBoundary *ModuleElectrostatic::modifyBoundary(PyObject *self, PyObject *args)
 {
     double value;
     char *name, *type;
@@ -300,14 +300,14 @@ SceneBoundary *ModuleElectrostatics::modifyBoundary(PyObject *self, PyObject *ar
     return NULL;
 }
 
-SceneMaterial *ModuleElectrostatics::newMaterial()
+SceneMaterial *ModuleElectrostatic::newMaterial()
 {
     return new SceneMaterialElectrostatic(tr("new material"),
                                           Value("0"),
                                           Value("1"));
 }
 
-SceneMaterial *ModuleElectrostatics::newMaterial(PyObject *self, PyObject *args)
+SceneMaterial *ModuleElectrostatic::newMaterial(PyObject *self, PyObject *args)
 {
     double charge_density, permittivity;
     char *name;
@@ -324,7 +324,7 @@ SceneMaterial *ModuleElectrostatics::newMaterial(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneMaterial *ModuleElectrostatics::modifyMaterial(PyObject *self, PyObject *args)
+SceneMaterial *ModuleElectrostatic::modifyMaterial(PyObject *self, PyObject *args)
 {
     double charge_density, permittivity;
     char *name;

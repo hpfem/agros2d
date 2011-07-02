@@ -300,9 +300,7 @@ void SurfaceIntegralValueView::doShowSurfaceIntegral()
         fieldNode->setExpanded(true);
 
         for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue->values.begin(); it != surfaceIntegralValue->values.end(); ++it)
-        {
             addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second, 0, 'e', 3), QString::fromStdString(it->first->unit));
-        }
 
         delete surfaceIntegralValue;
     }

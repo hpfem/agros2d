@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "config.h"
+#include "hermes2d/hermes_field.h"
 
 Config::Config()
 {
@@ -45,7 +46,18 @@ void Config::load()
     // general
     guiStyle = settings.value("General/GUIStyle").toString();
     language = settings.value("General/Language", QLocale::system().name()).toString();
-    defaultPhysicField = settings.value("General/DefaultPhysicField", "electrostatics").toString();
+    defaultPhysicField =  settings.value("General/DefaultPhysicField", "electrostatics").toString();
+
+    bool check = false;
+    std::map<std::string, std::string> modules = availableModules();
+    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
+        if (defaultPhysicField.toStdString() == it->first)
+        {
+            check = true;
+            break;
+        }
+    if (!check)
+        defaultPhysicField = "electrostatic";
 
     collaborationServerURL = settings.value("General/CollaborationServerURL", QString("http://agros2d.org/collaboration/")).toString();
 

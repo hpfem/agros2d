@@ -59,7 +59,7 @@ SOURCES += muparser/muParserBase.cpp \
     #hermes2d/hermes_elasticity.cpp \
     #hermes2d/hermes_flow.cpp \
     #hermes2d/hermes_rf.cpp \
-    #hermes2d/hermes_acoustic.cpp \
+    hermes2d/hermes_acoustic.cpp \
     localvalueview.cpp \
     surfaceintegralview.cpp \
     volumeintegralview.cpp \
@@ -109,7 +109,7 @@ HEADERS += util.h \
     #hermes2d/hermes_elasticity.h \
     #hermes2d/hermes_flow.h \
     #hermes2d/hermes_rf.h \
-    #hermes2d/hermes_acoustic.h \
+    hermes2d/hermes_acoustic.h \
     localvalueview.h \
     surfaceintegralview.h \
     volumeintegralview.h \

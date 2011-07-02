@@ -23,11 +23,11 @@
 #include "util.h"
 #include "hermes_field.h"
 
-struct ModuleHeatTransfer : public Hermes::Module::ModuleAgros
+struct ModuleHeat : public Hermes::Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    ModuleHeatTransfer(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
+    ModuleHeat(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
     inline int number_of_solution() const { return 1; }
     bool has_nonlinearity() const { return false; }
@@ -40,7 +40,7 @@ public:
                                          PhysicFieldVariableComp physicFieldVariableComp);
 
     Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-    void updateTimeFunctions(double time);
+    void update_time_functions(double time);
 
     // rewrite
     void readBoundaryFromDomElement(QDomElement *element);
@@ -56,7 +56,7 @@ public:
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 };
 
-class ParserHeatTransfer : public Parser
+class ParserHeat : public Parser
 {
 public:
     double plambda;
@@ -69,34 +69,34 @@ public:
 
 // *******************************************************************************************
 
-class LocalPointValueHeatTransfer : public LocalPointValue
+class LocalPointValueHeat : public LocalPointValue
 {
 public:
-    LocalPointValueHeatTransfer(const Point &point);
+    LocalPointValueHeat(const Point &point);
 };
 
-class SurfaceIntegralValueHeatTransfer : public SurfaceIntegralValue
+class SurfaceIntegralValueHeat : public SurfaceIntegralValue
 {
 public:
-    SurfaceIntegralValueHeatTransfer();
+    SurfaceIntegralValueHeat();
 };
 
-class VolumeIntegralValueHeatTransfer : public VolumeIntegralValue
+class VolumeIntegralValueHeat : public VolumeIntegralValue
 {
 public:
-    VolumeIntegralValueHeatTransfer();
+    VolumeIntegralValueHeat();
 };
 
-class ViewScalarFilterHeatTransfer : public ViewScalarFilter
+class ViewScalarFilterHeat : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterHeatTransfer(Hermes::vector<MeshFunction *> sln,
+    ViewScalarFilterHeat(Hermes::vector<MeshFunction *> sln,
                                  std::string expression);
 };
 
 // *******************************************************************************************
 
-class SceneBoundaryHeatTransfer : public SceneBoundary
+class SceneBoundaryHeat : public SceneBoundary
 {
 public:
     Value temperature;
@@ -104,15 +104,15 @@ public:
     Value h;
     Value externalTemperature;
 
-    SceneBoundaryHeatTransfer(const QString &name, PhysicFieldBC type, Value temperature);
-    SceneBoundaryHeatTransfer(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature);
+    SceneBoundaryHeat(const QString &name, PhysicFieldBC type, Value temperature);
+    SceneBoundaryHeat(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneMaterialHeatTransfer : public SceneMaterial
+class SceneMaterialHeat : public SceneMaterial
 {
 public:
     Value thermal_conductivity;
@@ -120,19 +120,19 @@ public:
     Value density;
     Value specific_heat;
 
-    SceneMaterialHeatTransfer(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
+    SceneMaterialHeat(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneBoundaryHeatTransferDialog : public SceneBoundaryDialog
+class SceneBoundaryHeatDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    SceneBoundaryHeatTransferDialog(SceneBoundaryHeatTransfer *boundary, QWidget *parent);
+    SceneBoundaryHeatDialog(SceneBoundaryHeat *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -151,12 +151,12 @@ private slots:
     void doTypeChanged(int index);
 };
 
-class SceneMaterialHeatTransferDialog : public SceneMaterialDialog
+class SceneMaterialHeatDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    SceneMaterialHeatTransferDialog(SceneMaterialHeatTransfer *material, QWidget *parent);
+    SceneMaterialHeatDialog(SceneMaterialHeat *material, QWidget *parent);
 
 protected:
     void createContent();

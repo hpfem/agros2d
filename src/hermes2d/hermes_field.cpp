@@ -27,7 +27,7 @@
 // #include "hermes_elasticity.h"
 // #include "hermes_flow.h"
 // #include "hermes_rf.h"
-// #include "hermes_acoustic.h"
+#include "hermes_acoustic.h"
 #include "progressdialog.h"
 
 #include "mesh/h2d_reader.h"
@@ -40,10 +40,12 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
 {
     Hermes::Module::ModuleAgros *module = NULL;
 
-    if (id == "electrostatics")
-        module = new ModuleElectrostatics(problem_type, analysis_type);
-    if (id == "heattransfer")
-        module = new ModuleHeatTransfer(problem_type, analysis_type);
+    if (id == "electrostatic")
+        module = new ModuleElectrostatic(problem_type, analysis_type);
+    if (id == "heat")
+        module = new ModuleHeat(problem_type, analysis_type);
+    if (id == "acoustic")
+        module = new ModuleAcoustic(problem_type, analysis_type);
 
     if (module)
         module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());
@@ -60,7 +62,6 @@ std::map<std::string, std::string> availableModules()
     // read modules
     if (modules.size() == 0)
     {
-        // modules["electrostatics"] = "Electrostatics";
         DIR *dp;
         if ((dp = opendir((datadir() + "/modules").toStdString().c_str())) == NULL)
             error("Modules dir '%s' doesn't exists", (datadir() + "/modules").toStdString().c_str());
@@ -68,7 +69,14 @@ std::map<std::string, std::string> availableModules()
         struct dirent *dirp;
         while ((dirp = readdir(dp)) != NULL)
         {
-            std::cout << dirp->d_name << std::cout;
+            std::string filename = dirp->d_name;
+
+            // skip current and parent dir
+            if (filename == "." || filename == "..")
+                continue;
+
+            if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
+                modules[filename.substr(0, filename.size() - 4)] = filename.substr(0, filename.size() - 4);
         }
         closedir(dp);
     }
@@ -185,7 +193,10 @@ void Hermes::Module::Module::read(std::string file_name)
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    if (!doc.setContent(&file)) {
+    QString error;
+    if (!doc.setContent(&file, &error))
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Error", error);
         file.close();
         return;
     }
@@ -616,7 +627,7 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
         actualTime = 0.0;
 
         // update time function
-        Util::scene()->problemInfo()->module()->updateTimeFunctions(actualTime);
+        Util::scene()->problemInfo()->module()->update_time_functions(actualTime);
 
         m_wf->set_current_time(actualTime);
         m_wf->solution = solution;
@@ -744,7 +755,7 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
                 // update essential bc values
                 Space::update_essential_bc_values(space, actualTime);
                 // update timedep values
-                Util::scene()->problemInfo()->module()->updateTimeFunctions(actualTime);
+                Util::scene()->problemInfo()->module()->update_time_functions(actualTime);
 
                 m_wf->set_current_time(actualTime);
                 m_wf->delete_all();

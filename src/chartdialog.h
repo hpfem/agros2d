@@ -25,6 +25,15 @@
 class Chart;
 class SLineEditDouble;
 class ValueLineEdit;
+class LocalPointValue;
+
+namespace Hermes
+{
+    namespace Module
+    {
+        struct LocalVariable;
+    }
+}
 
 class QwtPlotPicker;
 
@@ -116,6 +125,11 @@ private:
 
     void plotGeometry();
     void plotTime();
+
+    QStringList headers();
+    void addValue(LocalPointValue *localPointValue, double *yval, int i, int N,
+                  PhysicFieldVariableComp physicFieldVariableComp,
+                  Hermes::Module::LocalVariable *physicFieldVariable);
 
 private slots:
     void doFieldVariable(int index);

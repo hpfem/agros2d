@@ -1012,7 +1012,6 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
         cmbPhysicField->addItem(QString::fromStdString(it->second), QString::fromStdString(it->first));
 
-
     // FIXME - experimental features
     // if (Util::config()->showExperimentalFeatures)
 
