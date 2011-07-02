@@ -26,99 +26,45 @@ SurfaceIntegralValueView::SurfaceIntegralValueView(QWidget *parent): QDockWidget
 {
     logMessage("SurfaceIntegralValueView::SurfaceIntegralValueView()");
 
-    QSettings settings;
-
     setMinimumWidth(280);
     setObjectName("SurfaceIntegralValueView");
 
-    createActions();
-    createMenu();
+    txtView = new QTextEdit(this);
+    txtView->setReadOnly(true);
+    txtView->setMinimumSize(160, 160);
 
-    trvWidget = new QTreeWidget();
-    trvWidget->setHeaderHidden(false);
-    trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-    trvWidget->setMouseTracking(true);
-    trvWidget->setColumnCount(3);
-    trvWidget->setColumnWidth(0, settings.value("SurfaceIntegralValueView/TreeViewColumn0", 150).value<int>());
-    trvWidget->setColumnWidth(1, settings.value("SurfaceIntegralValueView/TreeViewColumn1", 80).value<int>());
-    trvWidget->setIndentation(12);
-
-    connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
-
-    QStringList labels;
-    labels << tr("Label") << tr("Value") << tr("Unit");
-    trvWidget->setHeaderLabels(labels);
-
-    setWidget(trvWidget);
-}
-
-SurfaceIntegralValueView::~SurfaceIntegralValueView()
-{
-    logMessage("SurfaceIntegralValueView::~SurfaceIntegralValueView()");
-
-    QSettings settings;
-    settings.setValue("SurfaceIntegralValueView/TreeViewColumn0", trvWidget->columnWidth(0));
-    settings.setValue("SurfaceIntegralValueView/TreeViewColumn1", trvWidget->columnWidth(1));
-}
-
-void SurfaceIntegralValueView::createActions()
-{
-    logMessage("SurfaceIntegralValueView::createActions()");
-
-    // copy value
-    actCopy = new QAction(icon(""), tr("Copy value"), this);
-    connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopyValue()));
-}
-
-void SurfaceIntegralValueView::createMenu()
-{
-    logMessage("SurfaceIntegralValueView::createMenu()");
-
-    mnuInfo = new QMenu(this);
-    mnuInfo->addAction(actCopy);
-}
-
-void SurfaceIntegralValueView::doCopyValue()
-{
-    logMessage("SurfaceIntegralValueView::doCopyValue()");
-
-    QTreeWidgetItem *item = trvWidget->currentItem();
-    if (item)
-        QApplication::clipboard()->setText(item->text(1));
-}
-
-void SurfaceIntegralValueView::doContextMenu(const QPoint &pos)
-{
-    logMessage("SurfaceIntegralValueView::doContextMenu()");
-
-    QTreeWidgetItem *item = trvWidget->itemAt(pos);
-    if (item)
-        if (!item->text(1).isEmpty())
-        {
-            trvWidget->setCurrentItem(item);
-            mnuInfo->exec(QCursor::pos());
-        }
+    setWidget(txtView);
 }
 
 void SurfaceIntegralValueView::doShowSurfaceIntegral()
 {
     logMessage("SurfaceIntegralValueView::doShowSurfaceIntegral()");
 
-    trvWidget->clear();
+    // TODO: replace by template
+    QString htmlHeader = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+            "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en-US\">"
+            "<head>"
+            "<meta http-equiv=\"content-type\" content=\"application/xhtml+xml; charset=UTF-8\" />"
+            "<title>Local point</title>"
+            "</head>"
+            "<body style=\"font-size: 14px;\">"
+            "<table width=\"100%\">";
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    QString htmlFooter = "</table>"
+            "</body>";
+
+    QString htmlBody;
+
+    SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo()->module()->surface_integral_value();
+    for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue->values.begin(); it != surfaceIntegralValue->values.end(); ++it)
     {
-        SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo()->module()->surface_integral_value();
-
-        QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
-        fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module()->name));
-        fieldNode->setExpanded(true);
-
-        for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue->values.begin(); it != surfaceIntegralValue->values.end(); ++it)
-            addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second, 0, 'e', 3), QString::fromStdString(it->first->unit));
-
-        delete surfaceIntegralValue;
+            htmlBody += "<tr>"
+                    "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
+                    "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
+                    "<td align=\"right\">" + QString("%1").arg(it->second, 0, 'e', 3) + "</td>"
+                    "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                    "</tr>";
     }
 
-    trvWidget->resizeColumnToContents(2);
+    txtView->setText(htmlHeader + htmlBody + htmlFooter);
 }

@@ -32,26 +32,14 @@ class SceneMaterial;
 class VolumeIntegralValueView : public QDockWidget
 {
     Q_OBJECT
-
 public slots:
     void doShowVolumeIntegral();
 
 public:
     VolumeIntegralValueView(QWidget *parent = 0);
-    ~VolumeIntegralValueView();
-
-private slots:
-    void doCopyValue();
-    void doContextMenu(const QPoint &pos);
 
 private:
-    QTreeWidget *trvWidget;
-
-    QAction *actCopy;
-    QMenu *mnuInfo;
-
-    void createActions();
-    void createMenu();
+    QTextEdit *txtView;
 };
 
 #endif // VOLUMEINTEGRALVIEW_H

@@ -1445,6 +1445,19 @@ void checkForNewVersion(bool quiet)
     checkVersion->run(quiet);
 }
 
+QString unitToHTML(const QString &str)
+{
+    // dirty hack (it should be disabled in config)
+    QString out = str;
+
+    out.replace("-2", "<sup>&#8722;2</sup>");
+    out.replace("-3", "<sup>&#8722;3</sup>");
+    out.replace("2", "<sup>2</sup>");
+    out.replace("3", "<sup>3</sup>");
+
+    return out;
+}
+
 CheckVersion::CheckVersion(QUrl url) : QObject()
 {
     logMessage("CheckVersion::CheckVersion()");

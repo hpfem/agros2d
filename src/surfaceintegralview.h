@@ -28,26 +28,14 @@ struct Element;
 class SurfaceIntegralValueView : public QDockWidget
 {
     Q_OBJECT
-
 public slots:
     void doShowSurfaceIntegral();
 
 public:
     SurfaceIntegralValueView(QWidget *parent = 0);
-    ~SurfaceIntegralValueView();
-
-private slots:
-    void doCopyValue();
-    void doContextMenu(const QPoint &pos);
 
 private:
-    QTreeWidget *trvWidget;
-
-    QAction *actCopy;
-    QMenu *mnuInfo;
-
-    void createActions();
-    void createMenu();
+    QTextEdit *txtView;
 };
 
 #endif // SURFACEINTEGRALVIEW_H

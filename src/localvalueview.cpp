@@ -27,28 +27,14 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
 {
     logMessage("LocalPointValueView::LocalPointValueView()");
 
-    QSettings settings;
-
     setMinimumWidth(280);
     setObjectName("LocalPointValueView");
 
     createActions();
-    createMenu();
 
-    trvWidget = new QTreeWidget();
-    trvWidget->setHeaderHidden(false);
-    trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-    trvWidget->setMouseTracking(true);
-    trvWidget->setColumnCount(3);
-    trvWidget->setColumnWidth(0, settings.value("LocalPointValueView/TreeViewColumn0", 150).value<int>());
-    trvWidget->setColumnWidth(1, settings.value("LocalPointValueView/TreeViewColumn1", 80).value<int>());
-    trvWidget->setIndentation(12);
-
-    QStringList labels;
-    labels << tr("Label") << tr("Value") << tr("Unit");
-    trvWidget->setHeaderLabels(labels);
-
-    connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
+    txtView = new QTextEdit(this);
+    txtView->setReadOnly(true);
+    txtView->setMinimumSize(160, 160);
 
     QPushButton *btnPoint = new QPushButton();
     btnPoint->setText(actPoint->text());
@@ -58,7 +44,7 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
 
     // main widget
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(trvWidget);
+    layout->addWidget(txtView);
     layout->addWidget(btnPoint);
     layout->setContentsMargins(0, 0, 0, 7);
 
@@ -68,15 +54,6 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
     setWidget(widget);
 }
 
-LocalPointValueView::~LocalPointValueView()
-{
-    logMessage("LocalPointValueView::~LocalPointValueView()");
-
-    QSettings settings;
-    settings.setValue("LocalPointValueView/TreeViewColumn0", trvWidget->columnWidth(0));
-    settings.setValue("LocalPointValueView/TreeViewColumn1", trvWidget->columnWidth(1));
-}
-
 void LocalPointValueView::createActions()
 {
     logMessage("LocalPointValueView::createActions()");
@@ -84,19 +61,6 @@ void LocalPointValueView::createActions()
     // point
     actPoint = new QAction(icon("scene-node"), tr("Local point value"), this);
     connect(actPoint, SIGNAL(triggered()), this, SLOT(doPoint()));
-
-    // copy value
-    actCopy = new QAction(icon(""), tr("Copy value"), this);
-    connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopyValue()));
-}
-
-void LocalPointValueView::createMenu()
-{
-    logMessage("LocalPointValueView::createMenu()");
-
-    mnuInfo = new QMenu(this);
-    mnuInfo->addAction(actPoint);
-    mnuInfo->addAction(actCopy);
 }
 
 void LocalPointValueView::doPoint()
@@ -110,22 +74,6 @@ void LocalPointValueView::doPoint()
     }
 }
 
-void LocalPointValueView::doContextMenu(const QPoint &pos)
-{
-    logMessage("LocalPointValueView::doContextMenu()");
-
-    actCopy->setEnabled(false);
-    QTreeWidgetItem *item = trvWidget->itemAt(pos);
-    if (item)
-        if (!item->text(1).isEmpty())
-        {
-            trvWidget->setCurrentItem(item);
-            actCopy->setEnabled(true);
-        }
-
-    mnuInfo->exec(QCursor::pos());
-}
-
 void LocalPointValueView::doShowPoint(const Point &point)
 {
     logMessage("LocalPointValueView::doShowPoint()");
@@ -135,64 +83,82 @@ void LocalPointValueView::doShowPoint(const Point &point)
     doShowPoint();
 }
 
-void LocalPointValueView::doCopyValue()
-{
-    logMessage("LocalPointValueView::doCopyValue()");
-
-    QTreeWidgetItem *item = trvWidget->currentItem();
-    if (item)
-        if (!item->text(1).isEmpty())
-            QApplication::clipboard()->setText(item->text(1));
-}
-
 void LocalPointValueView::doShowPoint()
 {
     logMessage("LocalPointValueView::doShowPoint()");
 
-    trvWidget->clear();
+    // TODO: replace by template
+    QString htmlHeader = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+            "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en-US\">"
+            "<head>"
+            "<meta http-equiv=\"content-type\" content=\"application/xhtml+xml; charset=UTF-8\" />"
+            "<title>Local point</title>"
+            "</head>"
+            "<body style=\"font-size: 14px;\">"
+            "<table width=\"100%\">";
 
-    // point
-    QTreeWidgetItem *pointNode = new QTreeWidgetItem(trvWidget);
-    pointNode->setText(0, tr("Point"));
-    pointNode->setExpanded(true);
+    QString htmlFooter = "</table>"
+            "</body>";
 
-    addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo()->labelX() + ":", QString("%1").arg(point.x, 0, 'f', 5), tr("m"));
-    addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo()->labelY() + ":", QString("%1").arg(point.y, 0, 'f', 5), tr("m"));
+    QString htmlBody;
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    htmlBody += "<tr>"
+            "<td><b>Point</b></td>"
+            "<td>" + Util::scene()->problemInfo()->labelX().toLower() + "</td>"
+            "<td align=\"right\"><i>" + QString("%1").arg(point.x, 0, 'e', 3) + "</i></td>"
+            "<td>&nbsp;</td>"
+            "</tr>";
+    htmlBody += "<tr>"
+            "<td>&nbsp;</td>"
+            "<td>" + Util::scene()->problemInfo()->labelY().toLower() + "</td>"
+            "<td align=\"right\"><i>" + QString("%1").arg(point.y, 0, 'e', 3) + "</i></td>"
+            "<td>&nbsp;</td>"
+            "</tr>";
+    htmlBody += "<tr>"
+            "<td>&nbsp;</td>"
+            "<td>&nbsp;</td>"
+            "<td>&nbsp;</td>"
+            "<td>&nbsp;</td>"
+            "</tr>";
+
+    LocalPointValue *value = Util::scene()->problemInfo()->module()->local_point_value(point);
+    for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
     {
-        QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
-        fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module()->name));
-        fieldNode->setExpanded(true);
-
-        trvWidget->insertTopLevelItem(0, pointNode);
-
-        LocalPointValue *value = Util::scene()->problemInfo()->module()->local_point_value(point);
-
-        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
+        if (it->first->is_scalar)
         {
-            if (it->first->is_scalar)
-            {
-                // scalar variable
-                addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second.scalar, 0, 'e', 3), QString::fromStdString(it->first->unit));
-            }
-            else
-            {
-                // vector variable
-                QTreeWidgetItem *itemVector = new QTreeWidgetItem(fieldNode);
-                itemVector->setText(0, QString::fromStdString(it->first->name));
-                itemVector->setExpanded(true);
-
-                addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(it->second.vector.x, 0, 'e', 3), QString::fromStdString(it->first->unit));
-                addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(it->second.vector.y, 0, 'e', 3), QString::fromStdString(it->first->unit));
-                addTreeWidgetItemValue(itemVector, QString::fromStdString(it->first->shortname) + ": ", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3), QString::fromStdString(it->first->unit));
-            }
+            // scalar variable
+            htmlBody += "<tr>"
+                    "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
+                    "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
+                    "<td align=\"right\">" + QString("%1").arg(it->second.scalar, 0, 'e', 3) + "</td>"
+                    "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                    "</tr>";
         }
-
-        delete value;
+        else
+        {
+            // vector variable
+            htmlBody += "<tr>"
+                    "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
+                    "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
+                    "<td align=\"right\">" + QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3) + "</td>"
+                    "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                    "</tr>";
+            htmlBody += "<tr>"
+                    "<td>&nbsp;</td>"
+                    "<td><i>" + QString::fromStdString(it->first->shortname) + "</i><sub>" + Util::scene()->problemInfo()->labelX().toLower() + "</sub></td>"
+                    "<td align=\"right\">" + QString("%1").arg(it->second.vector.x, 0, 'e', 3) + "</td>"
+                    "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                    "</tr>";
+            htmlBody += "<tr>"
+                    "<td>&nbsp;</td>"
+                    "<td><i>" + QString::fromStdString(it->first->shortname) + "</i><sub>" + Util::scene()->problemInfo()->labelY().toLower() + "</sub></td>"
+                    "<td align=\"right\">" + QString("%1").arg(it->second.vector.y, 0, 'e', 3) + "</td>"
+                    "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                    "</tr>";
+        }
     }
 
-    trvWidget->resizeColumnToContents(2);
+    txtView->setText(htmlHeader + htmlBody + htmlFooter);
 }
 
 LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDialog(parent)
@@ -230,14 +196,6 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
 
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
-}
-
-LocalPointValueDialog::~LocalPointValueDialog()
-{
-    logMessage("LocalPointValueDialog::~LocalPointValueDialog()");
-
-    delete txtPointX;
-    delete txtPointY;
 }
 
 Point LocalPointValueDialog::point()

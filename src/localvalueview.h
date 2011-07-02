@@ -37,23 +37,17 @@ public slots:
 
 public:
     LocalPointValueView(QWidget *parent = 0);
-    ~LocalPointValueView();
 
 private:
-    QTreeWidget *trvWidget;
-    QAction *actPoint;
-    QAction *actCopy;
-    QMenu *mnuInfo;
-
     Point point;
 
+    QTextEdit *txtView;
+    QAction *actPoint;
+
     void createActions();
-    void createMenu();
 
 private slots:
-    void doContextMenu(const QPoint &pos);
     void doPoint();
-    void doCopyValue();
 };
 
 class LocalPointValueDialog : public QDialog
@@ -61,7 +55,6 @@ class LocalPointValueDialog : public QDialog
     Q_OBJECT
 public:
     LocalPointValueDialog(Point point, QWidget *parent = 0);
-    ~LocalPointValueDialog();
 
     Point point();
 
