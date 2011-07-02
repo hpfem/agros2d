@@ -1447,7 +1447,7 @@ void checkForNewVersion(bool quiet)
 
 QString unitToHTML(const QString &str)
 {
-    // dirty hack (it should be disabled in config)
+    // dirty hack
     QString out = str;
 
     out.replace("-2", "<sup>&#8722;2</sup>");

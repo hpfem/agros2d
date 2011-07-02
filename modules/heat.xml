@@ -23,7 +23,7 @@
             <harmonic />
             <transient planar_comp_x="- dx1" planar_comp_y="- dy1" axi_comp_r="- dx1" axi_comp_z="- dy1" />
         </item>
-        <item id="heat_conductivity" name="Thermal conductivity" shortname="eps" unit="-" scalar="1">
+        <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="-" scalar="1">
             <steadystate planar_scalar="lambda" axi_scalar="lambda" />
             <harmonic />
             <transient planar_scalar="lambda" axi_scalar="lambda" />
