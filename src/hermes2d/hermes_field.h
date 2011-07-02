@@ -31,9 +31,9 @@
 #include "scenesolution.h"
 #include "scenemarker.h"
 
-#include "localvalueview.h"
-#include "surfaceintegralview.h"
-#include "volumeintegralview.h"
+#include "hermes2d/localpoint.h"
+#include "hermes2d/volumeintegral.h"
+#include "hermes2d/surfaceintegral.h"
 
 extern double actualTime;
 

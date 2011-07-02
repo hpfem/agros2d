@@ -95,7 +95,10 @@ SOURCES += muparser/muParserBase.cpp \
     style/manhattanstyle.cpp \
     indicators/indicators.cpp \
     indicators/indicator_unity.cpp \
-    collaboration.cpp
+    collaboration.cpp \
+    hermes2d/localpoint.cpp \
+    hermes2d/volumeintegral.cpp \
+    hermes2d/surfaceintegral.cpp
 HEADERS += util.h \
     value.h \
     scene.h \
@@ -143,7 +146,10 @@ HEADERS += util.h \
     style/manhattanstyle.h \
     indicators/indicators.h \
     indicators/indicator_unity.h \
-    collaboration.h
+    collaboration.h \
+    hermes2d/localpoint.h \
+    hermes2d/volumeintegral.h \
+    hermes2d/surfaceintegral.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common

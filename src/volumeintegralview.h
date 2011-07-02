@@ -29,35 +29,6 @@ class Solution;
 
 class SceneMaterial;
 
-class Parser;
-
-namespace Hermes
-{
-    namespace Module
-    {
-        struct Integral;
-    }
-}
-
-class VolumeIntegralValue
-{
-protected:
-    // parser
-    Parser *parser;
-
-    Hermes::vector<Solution *>sln;
-
-    void initParser();
-    void calculate();
-
-public:
-    // variables
-    std::map<Hermes::Module::Integral *, double> values;
-
-    VolumeIntegralValue();
-    ~VolumeIntegralValue();
-};
-
 class VolumeIntegralValueView : public QDockWidget
 {
     Q_OBJECT
