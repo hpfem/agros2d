@@ -23,7 +23,7 @@
 #include "util.h"
 #include "config.h"
 
-#include "hermes2d/hermes_field.h"
+#include "hermes2d/module.h"
 
 #include <dl_dxf.h>
 #include <dl_creationadapter.h>

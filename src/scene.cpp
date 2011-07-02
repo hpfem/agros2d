@@ -38,7 +38,7 @@
 
 #include "scripteditordialog.h"
 
-#include "hermes2d/hermes_field.h"
+#include "hermes2d/module.h"
 
 void ProblemInfo::clear()
 {

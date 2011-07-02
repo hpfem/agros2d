@@ -21,7 +21,7 @@
 #define HEAT_H
 
 #include "util.h"
-#include "hermes_field.h"
+#include "module.h"
 
 struct ModuleHeat : public Hermes::Module::ModuleAgros
 {

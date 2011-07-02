@@ -21,7 +21,7 @@
 #define GENERAL_H
 
 #include "util.h"
-#include "hermes_field.h"
+#include "module.h"
 
 struct HermesGeneral : public HermesField
 {

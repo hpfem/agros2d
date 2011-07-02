@@ -24,7 +24,7 @@
 #include "progressdialog.h"
 #include "value.h"
 
-#include "hermes2d/hermes_field.h"
+#include "hermes2d/module.h"
 
 void readPixmap(QLabel *lblEquation, const QString &name)
 {

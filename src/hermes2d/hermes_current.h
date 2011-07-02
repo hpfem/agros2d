@@ -21,7 +21,7 @@
 #define HERMES_CURRENT_H
 
 #include "util.h"
-#include "hermes_field.h"
+#include "module.h"
 
 
 struct ModuleCurrent : public Hermes::Module::ModuleAgros
