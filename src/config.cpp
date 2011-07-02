@@ -18,7 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "config.h"
-#include "hermes2d/hermes_field.h"
+#include "hermes2d/module.h"
 
 Config::Config()
 {

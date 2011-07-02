@@ -17,7 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "hermes_field.h"
+#include "module.h"
 
 // #include "hermes_general.h"
 #include "hermes_electrostatic.h"

@@ -49,7 +49,10 @@ SOURCES += muparser/muParserBase.cpp \
     value.cpp \
     scene.cpp \
     gui.cpp \
-    hermes2d/hermes_field.cpp \
+    hermes2d/localpoint.cpp \
+    hermes2d/volumeintegral.cpp \
+    hermes2d/surfaceintegral.cpp \
+    hermes2d/module.cpp \
     #hermes2d/hermes_general.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
@@ -103,7 +106,10 @@ HEADERS += util.h \
     value.h \
     scene.h \
     gui.h \
-    hermes2d/hermes_field.h \
+    hermes2d/localpoint.h \
+    hermes2d/volumeintegral.h \
+    hermes2d/surfaceintegral.h \
+    hermes2d/module.h \
     #hermes2d/hermes_general.h \
     hermes2d/hermes_electrostatic.h \
     hermes2d/hermes_heat.h \
