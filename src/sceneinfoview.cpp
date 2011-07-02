@@ -46,7 +46,19 @@ SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget
     connect(trvWidget, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
     connect(trvWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
 
-    setWidget(trvWidget);
+    txtView = new QTextEdit(this);
+    txtView->setReadOnly(true);
+    txtView->setMinimumSize(160, 160);
+
+    splitter = new QSplitter(Qt::Vertical, parent);
+    splitter->addWidget(trvWidget);
+    splitter->addWidget(txtView);
+
+    setWidget(splitter);
+
+    QSettings settings;
+    splitter->restoreState(settings.value("SceneInfoView/SplitterState", splitter->saveState()).toByteArray());
+    splitter->restoreGeometry(settings.value("SceneInfoView/SplitterGeometry", splitter->saveGeometry()).toByteArray());
 
     doItemSelected(NULL, Qt::UserRole);
 }
@@ -55,6 +67,9 @@ SceneInfoView::~SceneInfoView()
 {
     logMessage("SceneInfoView::~SceneInfoView()");
 
+    QSettings settings;
+    settings.setValue("SceneInfoView/SplitterState", splitter->saveState());
+    settings.setValue("SceneInfoView/SplitterGeometry", splitter->saveGeometry());
 }
 
 void SceneInfoView::createActions()
@@ -99,21 +114,6 @@ void SceneInfoView::createTreeView()
     trvWidget->setColumnCount(1);
     trvWidget->setColumnWidth(0, 150);
     trvWidget->setIndentation(12);
-
-    // problem
-    problemNode = new QTreeWidgetItem(trvWidget);
-    // problemNode->setIcon(0, icon("problem"));
-    problemNode->setText(0, tr("Problem"));
-    problemNode->setExpanded(true);
-    // general
-    problemInfoGeneralNode = new QTreeWidgetItem(problemNode);
-    problemInfoGeneralNode->setText(0, tr("General"));
-    problemInfoGeneralNode->setExpanded(true);
-
-    // solver
-    problemInfoSolverNode = new QTreeWidgetItem(problemNode);
-    problemInfoSolverNode->setText(0, tr("Solver"));
-    problemInfoSolverNode->setExpanded(true);
 
     // boundary conditions
     boundaryConditionsNode = new QTreeWidgetItem(trvWidget);
@@ -162,6 +162,55 @@ void SceneInfoView::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void SceneInfoView::showInfo()
+{
+    // template
+    QString content = readFileContent(datadir() + "/doc/report/dock.html");
+
+    QString html;
+    html += "<h4>"+ tr("Project") + "</h4>"
+            "<table width=\"100%\">";
+    html += "<tr><td width=\"50%\"><b>" + tr("Name: ") + "</b></td><td>" + Util::scene()->problemInfo()->name + "</td></tr>";
+    html += "<tr><td><b>" + tr("Field") + "</b></td><td>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</td></tr>";
+    html += "<tr><td><b>" + tr("Type") + "</b></td><td>" + problemTypeString(Util::scene()->problemInfo()->problemType) + "</td></tr>";
+    html += "<tr><td><b>" + tr("Analysis") + "</b></td><td>" + analysisTypeString(Util::scene()->problemInfo()->analysisType) + "</td></tr>";
+    html += "<tr><td><b>" + tr("Adaptivity") + "</b></td><td>" + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType) + "</td></tr>";
+    html += "<tr><td><b>" + tr("Solver") + "</b></td><td>" + matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver) + "</td></tr>";
+    html += "<tr><td><b>" + tr("Number of refinements") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->numberOfRefinements) + "</td></tr>";
+    html += "<tr><td><b>" + tr("Global polynomial order") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->polynomialOrder) + "</td></tr>";
+    html += "</table>";
+
+    html += "<h4>"+ tr("Mesh and solution") + "</h4>"
+            "<table width=\"100%\">";
+    if (Util::scene()->sceneSolution()->isMeshed())
+    {
+        html += "<tr><td><b>" + tr("Initial mesh") + "</b></td><td>" + tr("nodes") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()) + "</td></tr>";
+        html += "<tr><td>&nbsp;</td><td>" + tr("elements") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()) + "</td></tr>";
+    }
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
+        {
+            html += "<tr><td><b>" + tr("Adaptivity") + "</b></td><td>" + tr("error") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) + " %" + "</td></tr>";
+            html += "<tr><td>&nbsp;</td><td>" + tr("steps") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) + "</td></tr>";
+            html += "<tr><td>&nbsp;</td><td>" + tr("Initial mesh") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()) + "</td></tr>";
+            html += "<tr><td>&nbsp;</td><td>" + tr("elements") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()) + "</td></tr>";
+        }
+
+        if (Util::scene()->sceneSolution()->sln()->get_num_dofs() > 0)
+        {
+            html += "<tr><td><b>" + tr("DOFs") + "</b></td><td>&nbsp;</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()) + "</td></tr>";
+        }
+
+        QTime time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
+        html += "<tr><td><b>" + tr("Elapsed time") + "</b></td><td>&nbsp;</td><td>" + time.toString("mm:ss.zzz") + "</td></tr>";
+    }
+    html += "</table>";
+
+    content.replace("[Body]", html);
+    txtView->setText(content);
+}
+
 void SceneInfoView::doInvalidated()
 {
     logMessage("SceneInfoView::doInvalidated()");
@@ -172,76 +221,9 @@ void SceneInfoView::doInvalidated()
     blockSignals(true);
     setUpdatesEnabled(false);
 
+    showInfo();
+
     clearNodes();
-
-    // problem name
-    QTreeWidgetItem *itemProblemName = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemProblemName->setText(0, tr("Name: ") + Util::scene()->problemInfo()->name);
-    // problem type
-    QTreeWidgetItem *itemProblemType = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemProblemType->setText(0, tr("Type: ") + problemTypeString(Util::scene()->problemInfo()->problemType));
-    // physic field
-    QTreeWidgetItem *itemPhysicField = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemPhysicField->setText(0, tr("Field: ") + QString::fromStdString(Util::scene()->problemInfo()->module()->name));
-    // analysis
-    QTreeWidgetItem *itemAnalysisType = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemAnalysisType->setText(0, tr("Analysis: ") + analysisTypeString(Util::scene()->problemInfo()->analysisType));
-    // adaptivity
-    QTreeWidgetItem *itemAdaptivity = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemAdaptivity->setText(0, tr("Adaptivity: ") + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType));
-    // solver
-    QTreeWidgetItem *itemSolverMatrixSolver = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemSolverMatrixSolver->setText(0, tr("Solver: ") + matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver));
-
-    // solver
-    if (Util::scene()->sceneSolution()->isMeshed())
-    {
-        QTreeWidgetItem *itemInitialMeshNode = new QTreeWidgetItem(problemInfoSolverNode);
-        itemInitialMeshNode->setText(0, tr("Initial mesh"));
-        itemInitialMeshNode->setExpanded(true);
-
-        QTreeWidgetItem *itemSolverInitialVertices = new QTreeWidgetItem(itemInitialMeshNode);
-        itemSolverInitialVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()));
-
-        QTreeWidgetItem *itemSolverInitialElements = new QTreeWidgetItem(itemInitialMeshNode);
-        itemSolverInitialElements->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()));
-
-        if (Util::scene()->sceneSolution()->isSolved())
-        {
-            QTreeWidgetItem *itemSolvedMeshNode = new QTreeWidgetItem(problemInfoSolverNode);
-            itemSolvedMeshNode->setText(0, tr("Solved mesh"));
-            itemSolvedMeshNode->setExpanded(true);
-
-            QTreeWidgetItem *itemSolverSolvedVertices = new QTreeWidgetItem(itemSolvedMeshNode);
-            itemSolverSolvedVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()));
-
-            QTreeWidgetItem *itemSolverSolvedElements = new QTreeWidgetItem(itemSolvedMeshNode);
-            itemSolverSolvedElements->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()));
-
-            if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
-            {
-                QTreeWidgetItem *adaptivityNode = new QTreeWidgetItem(problemInfoSolverNode);
-                adaptivityNode->setText(0, tr("Adaptivity"));
-                adaptivityNode->setExpanded(true);
-
-                QTreeWidgetItem *itemSolverAdaptiveError = new QTreeWidgetItem(adaptivityNode);
-                itemSolverAdaptiveError->setText(0, tr("Error: ") + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) + " %");
-
-                QTreeWidgetItem *itemSolverAdaptiveSteps = new QTreeWidgetItem(adaptivityNode);
-                itemSolverAdaptiveSteps->setText(0, tr("Steps: ") + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()));
-            }
-
-            if (Util::scene()->sceneSolution()->sln()->get_num_dofs() > 0)
-            {
-                QTreeWidgetItem *itemSolverDOFs = new QTreeWidgetItem(problemInfoSolverNode);
-                itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()));
-            }
-                        
-            QTime time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
-            QTreeWidgetItem *itemSolverTimeElapsed = new QTreeWidgetItem(problemInfoSolverNode);
-            itemSolverTimeElapsed->setText(0, tr("Time elapsed: ") + time.toString("mm:ss.zzz"));
-        }
-    }
 
     // boundary conditions
     QList<QTreeWidgetItem *> listMarkes;
@@ -298,8 +280,8 @@ void SceneInfoView::doInvalidated()
         item->setText(0, QString("%1 - %2 m").
                       arg(i).
                       arg((Util::scene()->edges[i]->angle < EPS_ZERO) ?
-                          sqrt(sqr(Util::scene()->edges[i]->nodeEnd->point.x - Util::scene()->edges[i]->nodeStart->point.x) + sqr(Util::scene()->edges[i]->nodeEnd->point.y - Util::scene()->edges[i]->nodeStart->point.y)) :
-                          Util::scene()->edges[i]->radius() * Util::scene()->edges[i]->angle / 180.0 * M_PI, 0, 'e', 2));
+                              sqrt(sqr(Util::scene()->edges[i]->nodeEnd->point.x - Util::scene()->edges[i]->nodeStart->point.x) + sqr(Util::scene()->edges[i]->nodeEnd->point.y - Util::scene()->edges[i]->nodeStart->point.y)) :
+                              Util::scene()->edges[i]->radius() * Util::scene()->edges[i]->angle / 180.0 * M_PI, 0, 'e', 2));
         item->setIcon(0, icon("scene-edge"));
         item->setData(0, Qt::UserRole, Util::scene()->edges[i]->variant());
 
@@ -333,22 +315,6 @@ void SceneInfoView::clearNodes()
     logMessage("SceneInfoView::clearNodes()");
 
     blockSignals(true);
-
-    // problem info general
-    while (problemInfoGeneralNode->childCount() > 0)
-    {
-        QTreeWidgetItem *item = problemInfoGeneralNode->child(0);
-        problemInfoGeneralNode->removeChild(item);
-        delete item;
-    }
-
-    // problem info solver
-    while (problemInfoSolverNode->childCount() > 0)
-    {
-        QTreeWidgetItem *item = problemInfoSolverNode->child(0);
-        problemInfoSolverNode->removeChild(item);
-        delete item;
-    }
 
     // boundary conditions
     while (boundaryConditionsNode->childCount() > 0)

@@ -24,7 +24,7 @@
 
 class SceneView;
 class SceneInfoView;
-class LocalPointValueView;
+class ResultsView;
 class VolumeIntegralValueView;
 class SurfaceIntegralValueView;
 class PostprocessorView;
@@ -183,9 +183,7 @@ private:
 
     SceneView *sceneView;
     SceneInfoView *sceneInfoView;
-    LocalPointValueView *localPointValueView;
-    VolumeIntegralValueView *volumeIntegralValueView;
-    SurfaceIntegralValueView *surfaceIntegralValueView;
+    ResultsView *resultsView;
     PostprocessorView *postprocessorView;
     TerminalView *terminalView;
     TooltipView *tooltipView;

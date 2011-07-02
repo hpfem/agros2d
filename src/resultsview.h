@@ -17,29 +17,62 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef VOLUMEINTEGRALVIEW_H
-#define VOLUMEINTEGRALVIEW_H
+#ifndef LOCALVALUE_H
+#define LOCALVALUE_H
 
 #include "util.h"
+#include "hermes2d/localpoint.h"
 
-struct Element;
-class Quad2D;
-class RefMap;
+class ValueLineEdit;
+class SceneMaterial;
 class Solution;
 
-class SceneMaterial;
-
-class VolumeIntegralValueView : public QDockWidget
+class ResultsView : public QDockWidget
 {
     Q_OBJECT
+
 public slots:
+    void doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
+    void doShowResults();
+
+    void doShowPoint();
+    void doShowPoint(const Point &m_point);
     void doShowVolumeIntegral();
+    void doShowSurfaceIntegral();
 
 public:
-    VolumeIntegralValueView(QWidget *parent = 0);
+    ResultsView(QWidget *parent = 0);
 
 private:
+    SceneModePostprocessor m_sceneModePostprocessor;
+    Point m_point;
+
+    QPushButton *btnPoint;
     QTextEdit *txtView;
+    QAction *actPoint;
+
+    void createActions();
+
+private slots:
+    void doPoint();
 };
 
-#endif // VOLUMEINTEGRALVIEW_H
+class LocalPointValueDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    LocalPointValueDialog(Point point, QWidget *parent = 0);
+
+    Point point();
+
+private:
+    QDialogButtonBox *buttonBox;
+
+    ValueLineEdit *txtPointX;
+    ValueLineEdit *txtPointY;
+
+private slots:
+    void evaluated(bool isError);
+};
+
+#endif // LOCALVALUE_H

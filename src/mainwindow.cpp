@@ -38,9 +38,7 @@
 #include "progressdialog.h"
 #include "collaboration.h"
 
-#include "localvalueview.h"
-#include "volumeintegralview.h"
-#include "surfaceintegralview.h"
+#include "resultsview.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -70,16 +68,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
     connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
 
-    connect(sceneView, SIGNAL(mousePressed()), localPointValueView, SLOT(doShowPoint()));
-    connect(sceneView, SIGNAL(mousePressed(const Point &)), localPointValueView, SLOT(doShowPoint(const Point &)));
-    connect(sceneView, SIGNAL(mousePressed()), volumeIntegralValueView, SLOT(doShowVolumeIntegral()));
-    connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
-    connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
+    connect(sceneView, SIGNAL(mousePressed()), resultsView, SLOT(doShowResults()));
+    connect(sceneView, SIGNAL(mousePressed(const Point &)), resultsView, SLOT(doShowPoint(const Point &)));
     connect(sceneView, SIGNAL(sceneModeChanged(SceneMode)), this, SLOT(doSceneModeChanged(SceneMode)));
     connect(sceneView, SIGNAL(sceneModeChanged(SceneMode)), tooltipView, SLOT(loadTooltip(SceneMode)));
+    connect(sceneView, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
+    connect(sceneView, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(postprocessorView, SIGNAL(apply()), sceneView, SLOT(doInvalidated()));
     connect(postprocessorView, SIGNAL(apply()), this, SLOT(doInvalidated()));
-    connect(sceneView, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
 
     sceneView->doDefaultValues();
 
@@ -395,9 +391,7 @@ void MainWindow::createMenus()
 
     QMenu *mnuShowPanels = new QMenu(tr("Panels"), this);
     mnuShowPanels->addAction(sceneInfoView->toggleViewAction());
-    mnuShowPanels->addAction(localPointValueView->toggleViewAction());
-    mnuShowPanels->addAction(surfaceIntegralValueView->toggleViewAction());
-    mnuShowPanels->addAction(volumeIntegralValueView->toggleViewAction());
+    mnuShowPanels->addAction(resultsView->toggleViewAction());
     mnuShowPanels->addAction(postprocessorView->toggleViewAction());
     mnuShowPanels->addAction(terminalView->toggleViewAction());
     mnuShowPanels->addAction(tooltipView->toggleViewAction());
@@ -621,17 +615,9 @@ void MainWindow::createViews()
     sceneInfoView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, sceneInfoView);
 
-    localPointValueView = new LocalPointValueView(this);
-    localPointValueView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::RightDockWidgetArea, localPointValueView);
-
-    volumeIntegralValueView = new VolumeIntegralValueView(this);
-    volumeIntegralValueView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::RightDockWidgetArea, volumeIntegralValueView);
-
-    surfaceIntegralValueView = new SurfaceIntegralValueView(this);
-    surfaceIntegralValueView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::RightDockWidgetArea, surfaceIntegralValueView);
+    resultsView = new ResultsView(this);
+    resultsView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::RightDockWidgetArea, resultsView);
 
     postprocessorView = new PostprocessorView(sceneView, this);
     postprocessorView->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -647,9 +633,6 @@ void MainWindow::createViews()
     addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
 
     // tabify dock together
-    tabifyDockWidget(localPointValueView, surfaceIntegralValueView);
-    tabifyDockWidget(surfaceIntegralValueView, volumeIntegralValueView);
-
     tabifyDockWidget(sceneInfoView, postprocessorView);
 
     // raise scene info view
@@ -1070,7 +1053,7 @@ void MainWindow::doSolve()
 
         // show local point values
         Point point = Point(0, 0);
-        localPointValueView->doShowPoint(point);
+        resultsView->doShowPoint(point);
 
         // raise postprocessor
         postprocessorView->raise();
@@ -1234,13 +1217,7 @@ void MainWindow::doSceneModeChanged(SceneMode sceneMode)
 
 void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
 {
-    // raise dock
-    if (sceneModePostprocessor == SceneModePostprocessor_LocalValue)
-        localPointValueView->raise();
-    if (sceneModePostprocessor == SceneModePostprocessor_SurfaceIntegral)
-        surfaceIntegralValueView->raise();
-    if (sceneModePostprocessor == SceneModePostprocessor_VolumeIntegral)
-        volumeIntegralValueView->raise();
+    resultsView->raise();
 }
 
 void MainWindow::doHelp()
