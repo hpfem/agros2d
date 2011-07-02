@@ -522,17 +522,19 @@ void ProblemDialog::doPhysicFieldChanged(int index)
 {
     logMessage("ProblemDialog::doPhysicFieldChanged()");
 
+    Hermes::Module::ModuleAgros *module = moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
+                                                        ProblemType_Planar, AnalysisType_SteadyState);
+
     // analysis type
+    // store analysis type
     AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
-    ProblemType problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
 
-    Hermes::Module::ModuleAgros *module = moduleFactory("electrostatics", ProblemType_Planar, AnalysisType_SteadyState);
-
-    // analysis type
     cmbAnalysisType->clear();
     if (module->has_steady_state) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_SteadyState), AnalysisType_SteadyState);
     if (module->has_harmonic) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Harmonic), AnalysisType_Harmonic);
     if (module->has_transient) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Transient), AnalysisType_Transient);
+
+    // restore analysis type
     cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(analysisType));
     if (cmbAnalysisType->currentIndex() == -1) cmbAnalysisType->setCurrentIndex(0);
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());

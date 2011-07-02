@@ -23,11 +23,11 @@
 #include "util.h"
 #include "hermes_field.h"
 
-struct ModuleElectrostatics : public Hermes::Module::ModuleAgros
+struct ModuleElectrostatic : public Hermes::Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    ModuleElectrostatics(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
+    ModuleElectrostatic(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
     inline int number_of_solution() const { return 1; }
     bool has_nonlinearity() const { return false; }
@@ -57,7 +57,7 @@ public:
 
 // *******************************************************************************************
 
-class ParserElectrostatics : public Parser
+class ParserElectrostatic : public Parser
 {
 public:
     double pepsr;
@@ -66,28 +66,28 @@ public:
     void setParserVariables(SceneMaterial *material);
 };
 
-class LocalPointValueElectrostatics : public LocalPointValue
+class LocalPointValueElectrostatic : public LocalPointValue
 {
 public:
-    LocalPointValueElectrostatics(const Point &point);
+    LocalPointValueElectrostatic(const Point &point);
 };
 
-class SurfaceIntegralValueElectrostatics : public SurfaceIntegralValue
+class SurfaceIntegralValueElectrostatic : public SurfaceIntegralValue
 {
 public:
-    SurfaceIntegralValueElectrostatics();
+    SurfaceIntegralValueElectrostatic();
 };
 
-class VolumeIntegralValueElectrostatics : public VolumeIntegralValue
+class VolumeIntegralValueElectrostatic : public VolumeIntegralValue
 {
 public:
-    VolumeIntegralValueElectrostatics();
+    VolumeIntegralValueElectrostatic();
 };
 
-class ViewScalarFilterElectrostatics : public ViewScalarFilter
+class ViewScalarFilterElectrostatic : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterElectrostatics(Hermes::vector<MeshFunction *> sln,
+    ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln,
                                    std::string expression);
 };
 

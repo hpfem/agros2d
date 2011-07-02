@@ -217,7 +217,7 @@ struct Module
     virtual bool has_nonlinearity() const = 0;
 
     virtual Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
-    inline virtual void updateTimeFunctions(double time) {}
+    inline virtual void update_time_functions(double time) {}
 
     virtual LocalPointValue *local_point_value(const Point &point) = 0;
     virtual SurfaceIntegralValue *surface_integral_value() = 0;

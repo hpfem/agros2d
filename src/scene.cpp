@@ -40,39 +40,31 @@
 
 #include "hermes2d/hermes_field.h"
 
-/*
-    PhysicField_Undefined,
-    PhysicField_General,
-    PhysicField_Electrostatic = 2,
-    PhysicField_Magnetic,
-    PhysicField_Current = 4,
-    PhysicField_Heat,
-    PhysicField_Elasticity,
-    PhysicField_Flow,
-    PhysicField_RF,
-    PhysicField_Acoustic
-*/
-QString convertProblemTypeFromOldVersion(const QString &id)
-{
-    if (id == "electrostatic" || id == "2") return "electrostatics";
-    if (id == "magnetic" || id == "3") return "magnetics";
-    if (id == "heat" || id == "4") return "heattransfer";
-
-    return id;
-}
-
 void ProblemInfo::clear()
 {
     problemType = ProblemType_Planar;
     analysisType = AnalysisType_SteadyState;
 
-    // hermes object
+    // module object
     if (m_module) delete m_module;
+    m_module = NULL;
 
     // read default field (Util::config() is not set)
     QSettings settings;
-    QString defaultPhysicField = convertProblemTypeFromOldVersion(settings.value("General/DefaultPhysicField", "electrostatics").toString());
-    m_module = moduleFactory(defaultPhysicField.toStdString(), problemType, analysisType);
+    QString defaultPhysicField = settings.value("General/DefaultPhysicField", "electrostatic").toString();
+
+    bool check = false;
+    std::map<std::string, std::string> modules = availableModules();
+    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
+        if (defaultPhysicField.toStdString() == it->first)
+        {
+            check = true;
+            break;
+        }
+    if (!check)
+        defaultPhysicField = "electrostatic";
+
+    setModule(moduleFactory(defaultPhysicField.toStdString(), problemType, analysisType));
 
     name = QObject::tr("unnamed");
     date = QDate::currentDate();
@@ -1399,7 +1391,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype",
                                                                                              analysisTypeToStringKey(AnalysisType_SteadyState)));
     // physic field
-    m_problemInfo->setModule(moduleFactory(convertProblemTypeFromOldVersion(eleProblem.toElement().attribute("type")).toStdString(),
+    m_problemInfo->setModule(moduleFactory(eleProblem.toElement().attribute("type").toStdString(),
                                            problemTypeFromStringKey(eleProblem.toElement().attribute("problemtype")),
                                            analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(AnalysisType_SteadyState)))));
     // number of refinements

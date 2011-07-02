@@ -23,45 +23,30 @@
 #include "util.h"
 #include "hermes_field.h"
 
-struct HermesAcoustic : public HermesField
+struct ModuleAcoustic : public Hermes::Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    PhysicField physicField() const { return PhysicField_Acoustic; }
+    ModuleAcoustic(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    inline int numberOfSolution() const { return 2; }
-    inline bool hasSteadyState() const { return false; }
-    inline bool hasHarmonic() const { return true; }
-    inline bool hasTransient() const { return Util::config()->showExperimentalFeatures; }
-    inline bool hasNonlinearity() const { return false; }
+    inline int number_of_solution() const { return 2; }
+    bool has_nonlinearity() const { return false; }
 
+    LocalPointValue *local_point_value(const Point &point);
+    SurfaceIntegralValue *surface_integral_value();
+    VolumeIntegralValue *volume_integral_value();
+
+    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                         PhysicFieldVariableComp physicFieldVariableComp);
+
+    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+    void update_time_functions(double time);
+
+    // rewrite
     void readBoundaryFromDomElement(QDomElement *element);
     void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
     void readMaterialFromDomElement(QDomElement *element);
     void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
-    LocalPointValue *localPointValue(const Point &point);
-    QStringList localPointValueHeader();
-
-    SurfaceIntegralValue *surfaceIntegralValue();
-    QStringList surfaceIntegralValueHeader();
-
-    VolumeIntegralValue *volumeIntegralValue();
-    QStringList volumeIntegralValueHeader();
-
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Acoustic_Pressure ||
-                                                                          physicFieldBC == PhysicFieldBC_Acoustic_NormalAcceleration ||
-                                                                          physicFieldBC == PhysicFieldBC_Acoustic_Impedance ||
-                                                                          physicFieldBC == PhysicFieldBC_Acoustic_MatchedBoundary); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Acoustic_PressureReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_Pressure ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_PressureReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_PressureImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_LocalVelocity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_LocalAcceleration ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_PressureLevel ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_Density ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_Speed); }
 
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
@@ -69,77 +54,45 @@ public:
     SceneMaterial *newMaterial();
     SceneMaterial *newMaterial(PyObject *self, PyObject *args);
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
+};
 
-    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-    virtual void updateTimeFunctions(double time);
+// *******************************************************************************************
 
-    PhysicFieldVariableDeprecated contourPhysicFieldVariable();
-    PhysicFieldVariableDeprecated scalarPhysicFieldVariable();
-    PhysicFieldVariableComp scalarPhysicFieldVariableComp();
-    PhysicFieldVariableDeprecated vectorPhysicFieldVariable();
+class ParserAcoustic : public Parser
+{
+public:
+    double prho;
+    double pv;
 
-    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
-    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
-
-    void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
-    void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
-    void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
-
-    ViewScalarFilter *viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    void setParserVariables(SceneMaterial *material);
 };
 
 class LocalPointValueAcoustic : public LocalPointValue
 {
 public:
-    double density;
-    double speed;
-    double pressure_real;
-    double pressure_imag;
-    double pressureLevel;
-    Point localVelocity;
-    Point localAccelaration;
-
     LocalPointValueAcoustic(const Point &point);
-    double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-    QStringList variables();
 };
 
 class SurfaceIntegralValueAcoustic : public SurfaceIntegralValue
 {
-protected:
-    void calculateVariables(int i);
-
 public:
-    double pressureReal;
-    double pressureImag;
-
     SurfaceIntegralValueAcoustic();
-    QStringList variables();
 };
 
 class VolumeIntegralValueAcoustic : public VolumeIntegralValue
 {
-protected:
-    void calculateVariables(int i);
-    void initSolutions();
-
 public:
-    double pressureReal;
-    double pressureImag;
-
     VolumeIntegralValueAcoustic();
-    QStringList variables();
 };
 
 class ViewScalarFilterAcoustic : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *> sln, PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
-
-protected:
-    void calculateVariable(int i);
+    ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *> sln,
+                                   std::string expression);
 };
+
+// *******************************************************************************************
 
 class SceneBoundaryAcoustic : public SceneBoundary
 {
