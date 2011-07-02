@@ -26,99 +26,45 @@ VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(t
 {
     logMessage("VolumeIntegralValue::VolumeIntegralValueView()");
 
-    QSettings settings;
-
     setMinimumWidth(280);
     setObjectName("VolumeIntegralValueView");
 
-    createActions();
-    createMenu();
+    txtView = new QTextEdit(this);
+    txtView->setReadOnly(true);
+    txtView->setMinimumSize(160, 160);
 
-    trvWidget = new QTreeWidget();
-    trvWidget->setHeaderHidden(false);
-    trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-    trvWidget->setMouseTracking(true);
-    trvWidget->setColumnCount(3);
-    trvWidget->setColumnWidth(0, settings.value("VolumeIntegralValueView/TreeViewColumn0", 150).value<int>());
-    trvWidget->setColumnWidth(1, settings.value("VolumeIntegralValueView/TreeViewColumn1", 80).value<int>());
-    trvWidget->setIndentation(12);
-
-    connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
-
-    QStringList labels;
-    labels << tr("Label") << tr("Value") << tr("Unit");
-    trvWidget->setHeaderLabels(labels);
-
-    setWidget(trvWidget);
-}
-
-VolumeIntegralValueView::~VolumeIntegralValueView()
-{
-    logMessage("VolumeIntegralValue::~VolumeIntegralValueView()");
-
-    QSettings settings;
-    settings.setValue("VolumeIntegralValueView/TreeViewColumn0", trvWidget->columnWidth(0));
-    settings.setValue("VolumeIntegralValueView/TreeViewColumn1", trvWidget->columnWidth(1));
-}
-
-void VolumeIntegralValueView::createActions()
-{
-    logMessage("VolumeIntegralValue::createActions()");
-
-    // copy value
-    actCopy = new QAction(icon(""), tr("Copy value"), this);
-    connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopyValue()));
-}
-
-void VolumeIntegralValueView::createMenu()
-{
-    logMessage("VolumeIntegralValue::createMenu()");
-
-    mnuInfo = new QMenu(this);
-    mnuInfo->addAction(actCopy);
-}
-
-void VolumeIntegralValueView::doCopyValue()
-{
-    logMessage("VolumeIntegralValue::doCopyValue()");
-
-    QTreeWidgetItem *item = trvWidget->currentItem();
-    if (item)
-        QApplication::clipboard()->setText(item->text(1));
-}
-
-void VolumeIntegralValueView::doContextMenu(const QPoint &pos)
-{
-    logMessage("VolumeIntegralValue::doContextMenu()");
-
-    QTreeWidgetItem *item = trvWidget->itemAt(pos);
-    if (item)
-        if (!item->text(1).isEmpty())
-        {
-            trvWidget->setCurrentItem(item);
-            mnuInfo->exec(QCursor::pos());
-        }
+    setWidget(txtView);
 }
 
 void VolumeIntegralValueView::doShowVolumeIntegral()
 {
     logMessage("VolumeIntegralValue::doShowVolumeIntegral()");
 
-    trvWidget->clear();
+    // TODO: replace by template
+    QString htmlHeader = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+            "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en-US\">"
+            "<head>"
+            "<meta http-equiv=\"content-type\" content=\"application/xhtml+xml; charset=UTF-8\" />"
+            "<title>Local point</title>"
+            "</head>"
+            "<body style=\"font-size: 14px;\">"
+            "<table width=\"100%\">";
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    QString htmlFooter = "</table>"
+            "</body>";
+
+    QString htmlBody;
+
+    VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo()->module()->volume_integral_value();
+    for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue->values.begin(); it != volumeIntegralValue->values.end(); ++it)
     {
-        VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo()->module()->volume_integral_value();
-
-        QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
-        fieldNode->setText(0, QString::fromStdString(Util::scene()->problemInfo()->module()->name));
-        fieldNode->setExpanded(true);
-
-        for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue->values.begin(); it != volumeIntegralValue->values.end(); ++it)
-            addTreeWidgetItemValue(fieldNode, QString::fromStdString(it->first->name), QString("%1").arg(it->second, 0, 'e', 3), QString::fromStdString(it->first->unit));
-
-        delete volumeIntegralValue;
+            htmlBody += "<tr>"
+                    "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
+                    "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
+                    "<td align=\"right\">" + QString("%1").arg(it->second, 0, 'e', 3) + "</td>"
+                    "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                    "</tr>";
     }
 
-    trvWidget->resizeColumnToContents(2);
+    txtView->setText(htmlHeader + htmlBody + htmlFooter);
 }
