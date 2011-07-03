@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<module>
+    <general id ="magnetic" name="Magnetic">
+        <description>Magnetic field ...</description>
+        <properties steadystate="1" harmonic="1" transient="1" />    
+    </general>
+    
+    <constants>
+        <item id="MU0" value="1.2566371e-06" />
+    </constants>    
+
+    <localvariable>
+        <item id="magnetic_potential_real" name="Vector potential - real" shortname="Ar" unit="Wb/m" scalar="1">
+            <steadystate planar_scalar="value1" axi_scalar="value1" />
+            <harmonic planar_scalar="value1" axi_scalar="value1" />
+            <transient />
+        </item>
+        <item id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" unit="Wb/m" scalar="1">
+            <steadystate />
+            <harmonic planar_scalar="value2" axi_scalar="value2" />
+            <transient />
+        </item>
+        <item id="magnetic_flux_density_real" name="Flux density" shortname="Br" unit="T" scalar="0">
+            <steadystate planar_comp_x="dy1" planar_comp_y="- dx1" axi_comp_r="- dy1" axi_comp_z="dx1 + value1 / (x + 1e-12)" />
+            <harmonic />
+            <transient />
+        </item>
+        <item id="magnetic_magnetic_field" name="Magnetic field" shortname="H" unit="A/m" scalar="0">
+            <steadystate planar_comp_x="dy1 / (mur * MU0)" planar_comp_y="- dx1 / (mur * MU0)" axi_comp_r="- dy1 / (mur * MU0)" axi_comp_z="(dx1 + value1 / (x + 1e-12)) / (mur * MU0)" />
+            <harmonic />
+            <transient />
+        </item>
+        <item id="magnetic_energy_density" name="Energy density" shortname="we" unit="J/m3" scalar="1">
+            <steadystate planar_scalar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" axi_scalar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" />
+            <harmonic />
+            <transient />
+        </item>
+        <item id="magnetic_permeability" name="Permeability" shortname="eps" unit="-" scalar="1">
+            <steadystate planar_scalar="mur" axi_scalar="mur" />
+            <harmonic />
+            <transient />
+        </item>
+        <item id="magnetic_current_denstity_external_real" name="Current dens. - ext. - real" shortname="Jer" unit="A/m2" scalar="1">
+            <steadystate planar_scalar="Jer" axi_scalar="Jer" />
+            <harmonic />
+            <transient />
+        </item>  
+        <item id="magnetic_current_denstity_external_imag" name="Current dens. - ext. - imag" shortname="Jei" unit="A/m2" scalar="1">
+            <steadystate planar_scalar="Jei" axi_scalar="Jei" />
+            <harmonic />
+            <transient />
+        </item>  
+    </localvariable>
+
+    <view>
+        <scalarvariable>
+            <steadystate default="magnetic_flux_density_real">
+                <item id="magnetic_potential_real" />
+                <item id="magnetic_flux_density_real" />
+                <item id="magnetic_magnetic_field" />
+                <item id="magnetic_permeability" />
+                <item id="magnetic_current_denstity_external_real" />
+            </steadystate>
+            <harmonic/>
+            <transient/>
+        </scalarvariable>
+
+        <vectorvariable>
+            <steadystate default="magnetic_flux_density_real">
+                <item id="magnetic_flux_density_real" />
+                <item id="magnetic_magnetic_field" />
+            </steadystate>
+            <harmonic/>
+            <transient/>
+        </vectorvariable>
+    </view>
+    
+    <pointvalue>
+        <steadystate>
+           <item id="magnetic_flux_density_real" />
+            <item id="magnetic_magnetic_field" />
+            <item id="magnetic_permeability" />
+            <item id="magnetic_current_denstity_external_real" />         
+        </steadystate>
+        <harmonic/>
+        <transient/>
+    </pointvalue>  
+    
+    <volumeintegral>
+        <item id="volume" name="Volume" shortname="V" unit="m3">
+            <steadystate planar="1.0" axi="2.0 * PI * x" />
+            <harmonic/>
+            <transient/>
+        </item>        
+        <item id="surface" name="Cross section" shortname="S" unit="m2">
+            <steadystate planar="1.0" axi="1.0" />
+            <harmonic/>
+            <transient/>
+        </item>        
+    </volumeintegral>    
+    
+    <surfaceintegral>
+        <item id="length" name="Length" shortname="l" unit="m">
+            <steadystate planar="1.0" axi="1.0" />
+            <harmonic/>
+            <transient/>
+        </item>        
+        <item id="surface" name="Surface" shortname="S" unit="m2">
+            <steadystate planar="1.0" axi="2.0 * PI * x" />
+            <harmonic/>
+            <transient/>
+        </item>
+    </surfaceintegral> 
+</module>

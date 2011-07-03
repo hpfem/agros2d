@@ -199,8 +199,8 @@ struct Module
     // clear
     void clear();
 
-    inline ProblemType get_problem_type() { return m_problemType; }
-    inline AnalysisType get_analysis_type() { return m_analysisType; }
+    inline ProblemType get_problem_type() const { return m_problemType; }
+    inline AnalysisType get_analysis_type() const { return m_analysisType; }
 
     // variable by name
     LocalVariable *get_variable(std::string id);
