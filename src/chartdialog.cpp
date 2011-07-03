@@ -21,7 +21,6 @@
 
 #include "gui.h"
 #include "scene.h"
-#include "localvalueview.h"
 
 QList<Point> ChartLine::getPoints()
 {

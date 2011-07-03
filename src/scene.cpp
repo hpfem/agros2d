@@ -26,10 +26,6 @@
 #include "scenefunction.h"
 #include "scenesolution.h"
 
-#include "localvalueview.h"
-#include "surfaceintegralview.h"
-#include "volumeintegralview.h"
-
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
 #include "scenemarkerselectdialog.h"
