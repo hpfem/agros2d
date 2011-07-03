@@ -24,7 +24,7 @@
 // #include "hermes_magnetic.h"
 #include "hermes_heat.h"
 #include "hermes_current.h"
-// #include "hermes_elasticity.h"
+#include "hermes_elasticity.h"
 // #include "hermes_flow.h"
 // #include "hermes_rf.h"
 #include "hermes_acoustic.h"
@@ -48,6 +48,8 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
         module = new ModuleHeat(problem_type, analysis_type);
     if (id == "acoustic")
         module = new ModuleAcoustic(problem_type, analysis_type);
+    if (id == "elasticity")
+        module = new ModuleElasticity(problem_type, analysis_type);
 
     if (module)
         module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());

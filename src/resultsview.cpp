@@ -107,6 +107,9 @@ void ResultsView::doShowVolumeIntegral()
 {
     logMessage("ResultsView::doShowVolumeIntegral()");
 
+    if (!Util::scene()->sceneSolution()->isSolved())
+        return;
+
     // template
     QString content = readFileContent(datadir() + "/doc/report/dock.html");
 
@@ -133,6 +136,9 @@ void ResultsView::doShowVolumeIntegral()
 void ResultsView::doShowSurfaceIntegral()
 {
     logMessage("ResultsView::doShowSurfaceIntegral()");
+
+    if (!Util::scene()->sceneSolution()->isSolved())
+        return;
 
     // template
     QString content = readFileContent(datadir() + "/doc/report/dock.html");
@@ -186,40 +192,43 @@ void ResultsView::doShowPoint()
             "<td>&nbsp;</td>"
             "</tr>";
 
-    LocalPointValue *value = Util::scene()->problemInfo()->module()->local_point_value(m_point);
-    for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        if (it->first->is_scalar)
+        LocalPointValue *value = Util::scene()->problemInfo()->module()->local_point_value(m_point);
+        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
         {
-            // scalar variable
-            html += "<tr>"
-                    "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
-                    "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
-                    "<td align=\"right\">" + QString("%1").arg(it->second.scalar, 0, 'e', 3) + "</td>"
-                    "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
-                    "</tr>";
-        }
-        else
-        {
-            // vector variable
-            html += "<tr>"
-                    "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
-                    "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
-                    "<td align=\"right\">" + QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3) + "</td>"
-                    "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
-                    "</tr>";
-            html += "<tr>"
-                    "<td>&nbsp;</td>"
-                    "<td><i>" + QString::fromStdString(it->first->shortname) + "</i><sub>" + Util::scene()->problemInfo()->labelX().toLower() + "</sub></td>"
-                    "<td align=\"right\">" + QString("%1").arg(it->second.vector.x, 0, 'e', 3) + "</td>"
-                    "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
-                    "</tr>";
-            html += "<tr>"
-                    "<td>&nbsp;</td>"
-                    "<td><i>" + QString::fromStdString(it->first->shortname) + "</i><sub>" + Util::scene()->problemInfo()->labelY().toLower() + "</sub></td>"
-                    "<td align=\"right\">" + QString("%1").arg(it->second.vector.y, 0, 'e', 3) + "</td>"
-                    "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
-                    "</tr>";
+            if (it->first->is_scalar)
+            {
+                // scalar variable
+                html += "<tr>"
+                        "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
+                        "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
+                        "<td align=\"right\">" + QString("%1").arg(it->second.scalar, 0, 'e', 3) + "</td>"
+                        "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                        "</tr>";
+            }
+            else
+            {
+                // vector variable
+                html += "<tr>"
+                        "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
+                        "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
+                        "<td align=\"right\">" + QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3) + "</td>"
+                        "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                        "</tr>";
+                html += "<tr>"
+                        "<td>&nbsp;</td>"
+                        "<td><i>" + QString::fromStdString(it->first->shortname) + "</i><sub>" + Util::scene()->problemInfo()->labelX().toLower() + "</sub></td>"
+                        "<td align=\"right\">" + QString("%1").arg(it->second.vector.x, 0, 'e', 3) + "</td>"
+                        "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                        "</tr>";
+                html += "<tr>"
+                        "<td>&nbsp;</td>"
+                        "<td><i>" + QString::fromStdString(it->first->shortname) + "</i><sub>" + Util::scene()->problemInfo()->labelY().toLower() + "</sub></td>"
+                        "<td align=\"right\">" + QString("%1").arg(it->second.vector.y, 0, 'e', 3) + "</td>"
+                        "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
+                        "</tr>";
+            }
         }
     }
 

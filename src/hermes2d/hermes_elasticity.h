@@ -23,44 +23,32 @@
 #include "util.h"
 #include "module.h"
 
-struct HermesElasticity : public HermesField
+struct ModuleElasticity : public Hermes::Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    PhysicField physicField() const { return PhysicField_Elasticity; }
+    ModuleElasticity(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    inline int numberOfSolution() const { return 2; }
-    bool hasSteadyState() const { return true; }
-    bool hasHarmonic() const { return false; }
-    bool hasTransient() const { return false; }
-    inline bool hasNonlinearity() const { return false; }
+    inline int number_of_solution() const { return 2; }
+    bool has_nonlinearity() const { return false; }
 
+    LocalPointValue *local_point_value(const Point &point);
+    SurfaceIntegralValue *surface_integral_value();
+    VolumeIntegralValue *volume_integral_value();
+
+    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                         PhysicFieldVariableComp physicFieldVariableComp);
+
+    void deform_shape(double3* linVert, int count);
+    void deform_shape(double4* linVert, int count);
+
+    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+
+    // rewrite
     void readBoundaryFromDomElement(QDomElement *element);
     void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
     void readMaterialFromDomElement(QDomElement *element);
     void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
-    LocalPointValue *localPointValue(const Point &point);
-    QStringList localPointValueHeader();
-
-    SurfaceIntegralValue *surfaceIntegralValue();
-    QStringList surfaceIntegralValueHeader();
-
-    VolumeIntegralValue *volumeIntegralValue();
-    QStringList volumeIntegralValueHeader();
-
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Elasticity_Fixed ||
-                                                                          physicFieldBC == PhysicFieldBC_Elasticity_Free); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Elasticity_VonMisesStress ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_Displacement ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainXX ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainYY ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainZZ ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainXY ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressXX ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressYY ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressZZ ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressXY); }
 
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
@@ -68,88 +56,47 @@ public:
     SceneMaterial *newMaterial();
     SceneMaterial *newMaterial(PyObject *self, PyObject *args);
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
+};
 
-    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+// *******************************************************************************************
 
-    inline PhysicFieldVariableDeprecated contourPhysicFieldVariable() { return PhysicFieldVariable_Elasticity_Displacement; }
-    inline PhysicFieldVariableDeprecated scalarPhysicFieldVariable() { return PhysicFieldVariable_Elasticity_VonMisesStress; }
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
-    inline PhysicFieldVariableDeprecated vectorPhysicFieldVariable() { return PhysicFieldVariable_Elasticity_Displacement; }
+class ParserElasticity : public Parser
+{
+public:
+    double pe;
+    double pnu;
+    double pfx;
+    double pfy;
+    double palpha;
+    double pt;
+    double ptref;
 
-    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
-
-    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_Displacement), PhysicFieldVariable_Elasticity_Displacement);
-    }
-
-    void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
-    void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
-    void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
-
-    ViewScalarFilter *viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-
-    void deformShape(double3* linVert, int count);
-    void deformShape(double4* linVert, int count);
+    void setParserVariables(SceneMaterial *material);
 };
 
 class LocalPointValueElasticity : public LocalPointValue
 {
 public:
-    double young_modulus;
-    double poisson_ratio;
-    double von_mises_stress;
-    double tresca_stress;
-    double forceX;
-    double forceY;
-    double alpha;
-    double temp;
-    double temp_ref;
-    Point d;
-    double strain_x;
-    double strain_y;
-    double strain_z;
-    double strain_xy;
-    double stress_x;
-    double stress_y;
-    double stress_z;
-    double stress_xy;
-
     LocalPointValueElasticity(const Point &point);
-    double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-    QStringList variables();
 };
 
 class SurfaceIntegralValueElasticity : public SurfaceIntegralValue
 {
-protected:
-    void calculateVariables(int i);
-
 public:
     SurfaceIntegralValueElasticity();
-
-    QStringList variables();
 };
 
 class VolumeIntegralValueElasticity : public VolumeIntegralValue
 {
-protected:
-    void calculateVariables(int i);
-    void initSolutions();
-
 public:
     VolumeIntegralValueElasticity();
-    QStringList variables();
 };
 
 class ViewScalarFilterElasticity : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterElasticity(Hermes::vector<MeshFunction *> sln, PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {}
-
-protected:
-    void calculateVariable(int i);
+    ViewScalarFilterElasticity(Hermes::vector<MeshFunction *> sln,
+                                   std::string expression);
 };
 
 class SceneBoundaryElasticity : public SceneBoundary

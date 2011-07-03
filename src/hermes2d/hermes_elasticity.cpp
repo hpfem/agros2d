@@ -212,24 +212,189 @@ public:
     };
 };
 
-// *******************************************************************************************************
+// ****************************************************************************************************************
 
-void HermesElasticity::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
+void ParserElasticity::setParserVariables(SceneMaterial *material)
 {
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_Displacement), PhysicFieldVariable_Elasticity_Displacement);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_VonMisesStress), PhysicFieldVariable_Elasticity_VonMisesStress);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressXX), PhysicFieldVariable_Elasticity_StressXX);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressYY), PhysicFieldVariable_Elasticity_StressYY);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressZZ), PhysicFieldVariable_Elasticity_StressZZ);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressXY), PhysicFieldVariable_Elasticity_StressXY);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainXX), PhysicFieldVariable_Elasticity_StrainXX);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainYY), PhysicFieldVariable_Elasticity_StrainYY);
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainZZ), PhysicFieldVariable_Elasticity_StrainZZ);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainXY), PhysicFieldVariable_Elasticity_StrainXY);
+    SceneMaterialElasticity *marker = dynamic_cast<SceneMaterialElasticity *>(material);
+
+    pe = marker->young_modulus.number;
+    pnu = marker->poisson_ratio.number;
+    pfx = marker->forceX.number;
+    pfy = marker->forceY.number;
+    palpha = marker->alpha.number;
+    pt = marker->temp.number;
+    ptref = marker->temp_ref.number;
 }
 
-void HermesElasticity::readBoundaryFromDomElement(QDomElement *element)
+// ****************************************************************************************************************
+
+LocalPointValueElasticity::LocalPointValueElasticity(const Point &point) : LocalPointValue(point)
+{
+    parser = new ParserElasticity();
+    initParser();
+
+    parser->parser[0]->DefineVar("E", &static_cast<ParserElasticity *>(parser)->pe);
+    parser->parser[0]->DefineVar("nu", &static_cast<ParserElasticity *>(parser)->pnu);
+    parser->parser[0]->DefineVar("fx", &static_cast<ParserElasticity *>(parser)->pfx);
+    parser->parser[0]->DefineVar("fy", &static_cast<ParserElasticity *>(parser)->pfy);
+    parser->parser[0]->DefineVar("alpha", &static_cast<ParserElasticity *>(parser)->palpha);
+    parser->parser[0]->DefineVar("T", &static_cast<ParserElasticity *>(parser)->pt);
+    parser->parser[0]->DefineVar("Tr", &static_cast<ParserElasticity *>(parser)->ptref);
+
+    calculate();
+}
+
+// ****************************************************************************************************************
+
+SurfaceIntegralValueElasticity::SurfaceIntegralValueElasticity() : SurfaceIntegralValue()
+{
+    parser = new ParserElasticity();
+    initParser();
+
+    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
+    {
+        ((mu::Parser *) *it)->DefineVar("E", &static_cast<ParserElasticity *>(parser)->pe);
+        ((mu::Parser *) *it)->DefineVar("nu", &static_cast<ParserElasticity *>(parser)->pnu);
+        ((mu::Parser *) *it)->DefineVar("fx", &static_cast<ParserElasticity *>(parser)->pfx);
+        ((mu::Parser *) *it)->DefineVar("fy", &static_cast<ParserElasticity *>(parser)->pfy);
+        ((mu::Parser *) *it)->DefineVar("alpha", &static_cast<ParserElasticity *>(parser)->palpha);
+        ((mu::Parser *) *it)->DefineVar("T", &static_cast<ParserElasticity *>(parser)->pt);
+        ((mu::Parser *) *it)->DefineVar("Tr", &static_cast<ParserElasticity *>(parser)->ptref);
+    }
+
+    calculate();
+}
+
+// ****************************************************************************************************************
+
+VolumeIntegralValueElasticity::VolumeIntegralValueElasticity() : VolumeIntegralValue()
+{
+    parser = new ParserElasticity();
+    initParser();
+
+    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
+    {
+        ((mu::Parser *) *it)->DefineVar("E", &static_cast<ParserElasticity *>(parser)->pe);
+        ((mu::Parser *) *it)->DefineVar("nu", &static_cast<ParserElasticity *>(parser)->pnu);
+        ((mu::Parser *) *it)->DefineVar("fx", &static_cast<ParserElasticity *>(parser)->pfx);
+        ((mu::Parser *) *it)->DefineVar("fy", &static_cast<ParserElasticity *>(parser)->pfy);
+        ((mu::Parser *) *it)->DefineVar("alpha", &static_cast<ParserElasticity *>(parser)->palpha);
+        ((mu::Parser *) *it)->DefineVar("T", &static_cast<ParserElasticity *>(parser)->pt);
+        ((mu::Parser *) *it)->DefineVar("Tr", &static_cast<ParserElasticity *>(parser)->ptref);
+    }
+
+    sln.push_back(Util::scene()->sceneSolution()->sln(0));
+    sln.push_back(Util::scene()->sceneSolution()->sln(1));
+
+    calculate();
+}
+
+// *************************************************************************************************************************************
+
+ViewScalarFilterElasticity::ViewScalarFilterElasticity(Hermes::vector<MeshFunction *> sln,
+                                                             std::string expression) :
+    ViewScalarFilter(sln)
+{
+    parser = new ParserElasticity();
+    initParser(expression);
+
+    parser->parser[0]->DefineVar("E", &static_cast<ParserElasticity *>(parser)->pe);
+    parser->parser[0]->DefineVar("nu", &static_cast<ParserElasticity *>(parser)->pnu);
+    parser->parser[0]->DefineVar("fx", &static_cast<ParserElasticity *>(parser)->pfx);
+    parser->parser[0]->DefineVar("fy", &static_cast<ParserElasticity *>(parser)->pfy);
+    parser->parser[0]->DefineVar("alpha", &static_cast<ParserElasticity *>(parser)->palpha);
+    parser->parser[0]->DefineVar("T", &static_cast<ParserElasticity *>(parser)->pt);
+    parser->parser[0]->DefineVar("Tr", &static_cast<ParserElasticity *>(parser)->ptref);
+}
+
+// **************************************************************************************************************************
+
+LocalPointValue *ModuleElasticity::local_point_value(const Point &point)
+{
+    return new LocalPointValueElasticity(point);
+}
+
+SurfaceIntegralValue *ModuleElasticity::surface_integral_value()
+{
+    return new SurfaceIntegralValueElasticity();
+}
+
+VolumeIntegralValue *ModuleElasticity::volume_integral_value()
+{
+    return new VolumeIntegralValueElasticity();
+}
+
+ViewScalarFilter *ModuleElasticity::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                                           PhysicFieldVariableComp physicFieldVariableComp)
+{
+    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
+    Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
+
+    return new ViewScalarFilterElasticity(Hermes::vector<MeshFunction *>(sln1, sln2),
+                                          get_expression(physicFieldVariable, physicFieldVariableComp));
+}
+
+Hermes::vector<SolutionArray *> ModuleElasticity::solve(ProgressItemSolve *progressItemSolve)
+{
+    // boundaries
+    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
+    {
+        SceneBoundaryElasticity *boundary = dynamic_cast<SceneBoundaryElasticity *>(Util::scene()->boundaries[i]);
+
+        // evaluate script
+        if (!boundary->displacementX.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!boundary->displacementY.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!boundary->forceX.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!boundary->forceY.evaluate()) return Hermes::vector<SolutionArray *>();
+    }
+
+    // materials
+    for (int i = 1; i<Util::scene()->materials.count(); i++)
+    {
+        SceneMaterialElasticity *material = dynamic_cast<SceneMaterialElasticity *>(Util::scene()->materials[i]);
+
+        // evaluate script
+        if (!material->young_modulus.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!material->poisson_ratio.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!material->forceX.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!material->forceY.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!material->alpha.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!material->temp.evaluate()) return Hermes::vector<SolutionArray *>();
+        if (!material->temp_ref.evaluate()) return Hermes::vector<SolutionArray *>();
+    }
+
+    // boundary conditions
+    EssentialBCs bc1;
+    EssentialBCs bc2;
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        SceneBoundaryElasticity *boundary = dynamic_cast<SceneBoundaryElasticity *>(Util::scene()->edges[i]->boundary);
+
+        if (boundary)
+        {
+            if (boundary->typeX == PhysicFieldBC_Elasticity_Fixed)
+                bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->displacementX.number));
+            if (boundary->typeY == PhysicFieldBC_Elasticity_Fixed)
+                bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->displacementY.number));
+        }
+    }
+    Hermes::vector<EssentialBCs> bcs(bc1, bc2);
+
+    WeakFormElasticity wf;
+
+    // QTime time;
+    // time.start();
+    Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
+    // qDebug() << "solveSolutioArray: " << time.elapsed();
+
+    return solutionArrayList;
+}
+
+// ****************************************************************************************************************
+// rewrite
+
+void ModuleElasticity::readBoundaryFromDomElement(QDomElement *element)
 {
     PhysicFieldBC typeX = physicFieldBCFromStringKey(element->attribute("typex"));
     switch (typeX)
@@ -264,7 +429,7 @@ void HermesElasticity::readBoundaryFromDomElement(QDomElement *element)
                                                                Value(element->attribute("displacementx", "0"))));
 }
 
-void HermesElasticity::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
+void ModuleElasticity::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
 {
     SceneBoundaryElasticity *edgeElasticityMarker = dynamic_cast<SceneBoundaryElasticity *>(marker);
 
@@ -274,7 +439,7 @@ void HermesElasticity::writeBoundaryToDomElement(QDomElement *element, SceneBoun
     element->setAttribute("forcey", edgeElasticityMarker->forceY.text);
 }
 
-void HermesElasticity::readMaterialFromDomElement(QDomElement *element)
+void ModuleElasticity::readMaterialFromDomElement(QDomElement *element)
 {
     Util::scene()->addMaterial(new SceneMaterialElasticity(element->attribute("name"),
                                                            Value(element->attribute("young_modulus")),
@@ -286,7 +451,7 @@ void HermesElasticity::readMaterialFromDomElement(QDomElement *element)
                                                            Value(element->attribute("temp_ref", "0"))));
 }
 
-void HermesElasticity::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
+void ModuleElasticity::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
 {
     SceneMaterialElasticity *labelElasticityMarker = dynamic_cast<SceneMaterialElasticity *>(marker);
 
@@ -299,45 +464,7 @@ void HermesElasticity::writeMaterialToDomElement(QDomElement *element, SceneMate
     element->setAttribute("temp_ref", labelElasticityMarker->temp_ref.text);
 }
 
-LocalPointValue *HermesElasticity::localPointValue(const Point &point)
-{
-    return new LocalPointValueElasticity(point);
-}
-
-QStringList HermesElasticity::localPointValueHeader()
-{
-    QStringList headers;
-    headers << "X" << "Y" << "mises" << "tresca" << "u" << "v" << "disp"
-            << "sxx" << "syy" << "szz" << "sxy"
-            << "exx" << "eyy" << "ezz" << "exy";
-    return QStringList(headers);
-}
-
-SurfaceIntegralValue *HermesElasticity::surfaceIntegralValue()
-{
-    return new SurfaceIntegralValueElasticity();
-}
-
-QStringList HermesElasticity::surfaceIntegralValueHeader()
-{
-    QStringList headers;
-    headers << "l" << "S";
-    return QStringList(headers);
-}
-
-VolumeIntegralValue *HermesElasticity::volumeIntegralValue()
-{
-    return new VolumeIntegralValueElasticity();
-}
-
-QStringList HermesElasticity::volumeIntegralValueHeader()
-{
-    QStringList headers;
-    headers << "V" << "S";
-    return QStringList(headers);
-}
-
-SceneBoundary *HermesElasticity::newBoundary()
+SceneBoundary *ModuleElasticity::newBoundary()
 {
     return new SceneBoundaryElasticity(tr("new boundary condition"),
                                        PhysicFieldBC_Elasticity_Free,
@@ -348,7 +475,7 @@ SceneBoundary *HermesElasticity::newBoundary()
                                        Value("0"));
 }
 
-SceneBoundary *HermesElasticity::newBoundary(PyObject *self, PyObject *args)
+SceneBoundary *ModuleElasticity::newBoundary(PyObject *self, PyObject *args)
 {
 
     double forcex, forcey, displacementx, displacementy;
@@ -370,7 +497,7 @@ SceneBoundary *HermesElasticity::newBoundary(PyObject *self, PyObject *args)
     return Util::scene()->boundaries[0];
 }
 
-SceneBoundary *HermesElasticity::modifyBoundary(PyObject *self, PyObject *args)
+SceneBoundary *ModuleElasticity::modifyBoundary(PyObject *self, PyObject *args)
 {
     double forcex, forcey, displacementx, displacementy;
     char *name, *typex, *typey;
@@ -404,7 +531,7 @@ SceneBoundary *HermesElasticity::modifyBoundary(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneMaterial *HermesElasticity::newMaterial()
+SceneMaterial *ModuleElasticity::newMaterial()
 {
     return new SceneMaterialElasticity(tr("new material"),
                                        Value("2e11"),
@@ -416,7 +543,7 @@ SceneMaterial *HermesElasticity::newMaterial()
                                        Value("0"));
 }
 
-SceneMaterial *HermesElasticity::newMaterial(PyObject *self, PyObject *args)
+SceneMaterial *ModuleElasticity::newMaterial(PyObject *self, PyObject *args)
 {
     double young_modulus, poisson_ratio, forcex, forcey, alpha, temp, temp_ref;
     char *name;
@@ -438,7 +565,7 @@ SceneMaterial *HermesElasticity::newMaterial(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneMaterial *HermesElasticity::modifyMaterial(PyObject *self, PyObject *args)
+SceneMaterial *ModuleElasticity::modifyMaterial(PyObject *self, PyObject *args)
 {
     double young_modulus, poisson_ratio, forcex, forcey, alpha, temp, temp_ref;
     char *name;
@@ -463,93 +590,6 @@ SceneMaterial *HermesElasticity::modifyMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
-}
-
-void HermesElasticity::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
-{
-    LocalPointValueElasticity *localPointValueElasticity = dynamic_cast<LocalPointValueElasticity *>(localPointValue);
-
-    // elasticity
-    QTreeWidgetItem *elasticityNode = new QTreeWidgetItem(trvWidget);
-    elasticityNode->setText(0, tr("Elasticity"));
-    elasticityNode->setExpanded(true);
-
-    // Young modulus
-    addTreeWidgetItemValue(elasticityNode, tr("Young modulus:"), QString("%1").arg(localPointValueElasticity->young_modulus, 0, 'e', 3), "Pa");
-
-    // Poisson ratio
-    addTreeWidgetItemValue(elasticityNode, tr("Poisson ratio:"), QString("%1").arg(localPointValueElasticity->poisson_ratio, 0, 'f', 3), "");
-
-    // Volumetric force
-    QTreeWidgetItem *itemVolumetricForce = new QTreeWidgetItem(elasticityNode);
-    itemVolumetricForce->setText(0, tr("Volumetric force"));
-    itemVolumetricForce->setExpanded(true);
-
-    addTreeWidgetItemValue(itemVolumetricForce, "f" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->forceX, 0, 'e', 3), "N/m3");
-    addTreeWidgetItemValue(itemVolumetricForce, "f" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->forceY, 0, 'e', 3), "N/m3");
-
-    // Thermal expansion
-    QTreeWidgetItem *itemThermalExpansion = new QTreeWidgetItem(elasticityNode);
-    itemThermalExpansion->setText(0, tr("Thermal expansion"));
-    itemThermalExpansion->setExpanded(true);
-
-    addTreeWidgetItemValue(itemThermalExpansion, "Thermal exp. coef.:", QString("%1").arg(localPointValueElasticity->alpha, 0, 'e', 3), "1/K");
-    addTreeWidgetItemValue(itemThermalExpansion, "Temperature:", QString("%1").arg(localPointValueElasticity->temp, 0, 'e', 3), "K");
-    addTreeWidgetItemValue(itemThermalExpansion, "Ref. temperature:", QString("%1").arg(localPointValueElasticity->temp_ref, 0, 'e', 3), "K");
-
-    // Von Mises stress
-    addTreeWidgetItemValue(elasticityNode, tr("Von Mises stress:"), QString("%1").arg(localPointValueElasticity->von_mises_stress, 0, 'e', 3), "Pa");
-    addTreeWidgetItemValue(elasticityNode, tr("Tresca stress:"), QString("%1").arg(localPointValueElasticity->tresca_stress, 0, 'e', 3), "Pa");
-
-    // Displacement
-    QTreeWidgetItem *itemDisplacement = new QTreeWidgetItem(elasticityNode);
-    itemDisplacement->setText(0, tr("Displacement"));
-    itemDisplacement->setExpanded(true);
-
-    addTreeWidgetItemValue(itemDisplacement, "D" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->d.x, 0, 'e', 3), "m");
-    addTreeWidgetItemValue(itemDisplacement, "D" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->d.y, 0, 'e', 3), "m");
-    addTreeWidgetItemValue(itemDisplacement, "D:", QString("%1").arg(localPointValueElasticity->d.magnitude(), 0, 'e', 3), "m");
-
-    // Stresses
-    QTreeWidgetItem *itemStresses = new QTreeWidgetItem(elasticityNode);
-    itemStresses->setText(0, tr("Stresses"));
-    itemStresses->setExpanded(true);
-
-    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_x, 0, 'e', 3), "Pa");
-    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelY().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_y, 0, 'e', 3), "Pa");
-    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelZ().toLower() + Util::scene()->problemInfo()->labelZ().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_z, 0, 'e', 3), "Pa");
-    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_xy, 0, 'e', 3), "Pa");
-
-    // Strains
-    QTreeWidgetItem *itemStrains = new QTreeWidgetItem(elasticityNode);
-    itemStrains->setText(0, tr("Strains"));
-    itemStrains->setExpanded(true);
-
-    addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_x, 0, 'e', 3), "");
-    addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelY().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_y, 0, 'e', 3), "");
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-        addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelZ().toLower() + Util::scene()->problemInfo()->labelZ().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_z, 0, 'e', 3), "");
-    addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_xy, 0, 'e', 3), "");
-}
-
-void HermesElasticity::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
-{
-    // SurfaceIntegralValueElasticity *surfaceIntegralValueElasticity = dynamic_cast<SurfaceIntegralValueElasticity *>(surfaceIntegralValue);
-}
-
-void HermesElasticity::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)
-{
-
-}
-
-ViewScalarFilter *HermesElasticity::viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
-{
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
-    Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
-
-    return new ViewScalarFilterElasticity(Hermes::vector<MeshFunction *>(sln1, sln2),
-                                          physicFieldVariable,
-                                          physicFieldVariableComp);
 }
 
 template <class T>
@@ -587,419 +627,14 @@ void deformShapeTemplate(T linVert, int count)
     }
 }
 
-void HermesElasticity::deformShape(double3* linVert, int count)
+void ModuleElasticity::deform_shape(double3* linVert, int count)
 {
-    deformShapeTemplate<double3 *>(linVert, count);
+   deformShapeTemplate<double3 *>(linVert, count);
 }
 
-void HermesElasticity::deformShape(double4* linVert, int count)
+void ModuleElasticity::deform_shape(double4* linVert, int count)
 {
-    deformShapeTemplate<double4 *>(linVert, count);
-}
-
-QList<SolutionArray *> HermesElasticity::solve(ProgressItemSolve *progressItemSolve)
-{
-    // boundaries
-    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-    {
-        SceneBoundaryElasticity *boundary = dynamic_cast<SceneBoundaryElasticity *>(Util::scene()->boundaries[i]);
-
-        // evaluate script
-        if (!boundary->displacementX.evaluate()) return QList<SolutionArray *>();
-        if (!boundary->displacementY.evaluate()) return QList<SolutionArray *>();
-        if (!boundary->forceX.evaluate()) return QList<SolutionArray *>();
-        if (!boundary->forceY.evaluate()) return QList<SolutionArray *>();
-    }
-
-    // materials
-    for (int i = 1; i<Util::scene()->materials.count(); i++)
-    {
-        SceneMaterialElasticity *material = dynamic_cast<SceneMaterialElasticity *>(Util::scene()->materials[i]);
-
-        // evaluate script
-        if (!material->young_modulus.evaluate()) return QList<SolutionArray *>();
-        if (!material->poisson_ratio.evaluate()) return QList<SolutionArray *>();
-        if (!material->forceX.evaluate()) return QList<SolutionArray *>();
-        if (!material->forceY.evaluate()) return QList<SolutionArray *>();
-        if (!material->alpha.evaluate()) return QList<SolutionArray *>();
-        if (!material->temp.evaluate()) return QList<SolutionArray *>();
-        if (!material->temp_ref.evaluate()) return QList<SolutionArray *>();
-    }
-
-    // boundary conditions
-    EssentialBCs bc1;
-    EssentialBCs bc2;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        SceneBoundaryElasticity *boundary = dynamic_cast<SceneBoundaryElasticity *>(Util::scene()->edges[i]->boundary);
-
-        if (boundary)
-        {
-            if (boundary->typeX == PhysicFieldBC_Elasticity_Fixed)
-                bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->displacementX.number));
-            if (boundary->typeY == PhysicFieldBC_Elasticity_Fixed)
-                bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->displacementY.number));
-        }
-    }
-    Hermes::vector<EssentialBCs> bcs(bc1, bc2);
-
-    WeakFormElasticity wf;
-
-    // QTime time;
-    // time.start();
-    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
-    // qDebug() << "solveSolutioArray: " << time.elapsed();
-
-    return solutionArrayList;
-}
-
-// ****************************************************************************************************************
-
-LocalPointValueElasticity::LocalPointValueElasticity(const Point &point) : LocalPointValue(point)
-{
-    young_modulus = 0.0;
-    poisson_ratio = 0.0;
-    von_mises_stress = 0.0;
-    tresca_stress = 0.0;
-    forceX = 0.0;
-    forceY = 0.0;
-    alpha = 0.0;
-    temp = 0.0;
-    temp_ref = 0.0;
-    d = Point();
-    strain_x = 0.0;
-    strain_y = 0.0;
-    strain_z = 0.0;
-    strain_xy = 0.0;
-    stress_x = 0.0;
-    stress_y = 0.0;
-    stress_z = 0.0;
-    stress_xy = 0.0;
-
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        if (material)
-        {
-            SceneMaterialElasticity *marker = dynamic_cast<SceneMaterialElasticity *>(material);
-
-            young_modulus = marker->young_modulus.number;
-            poisson_ratio = marker->poisson_ratio.number;
-
-            forceX = marker->forceX.number;
-            forceY = marker->forceY.number;
-
-            alpha = marker->alpha.number;
-            temp = marker->temp.number;
-            temp_ref = marker->temp_ref.number;
-
-            Solution *sln_x = Util::scene()->sceneSolution()->sln(0);
-            Solution *sln_y = Util::scene()->sceneSolution()->sln(1);
-
-            PointValue value_x = pointValue(sln_x, point);
-            PointValue value_y = pointValue(sln_y, point);
-
-            d.x = value_x.value;
-            d.y = value_y.value;
-
-            strain_x = value_x.derivative.x;
-            strain_y = value_y.derivative.y;
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-                strain_z = 0.0;
-            else
-                strain_z = (point.x > 0) ? value_x.value / point.x : 0.0;
-
-            strain_xy = 0.5 * (value_x.derivative.y + value_y.derivative.x);
-
-            // elastic constant
-            double D = young_modulus / ((1 + poisson_ratio) * (1 - 2 * poisson_ratio));
-            double eps_th = (1 + poisson_ratio) * alpha * (temp - temp_ref);
-
-            stress_x = D * ((1 - poisson_ratio) * (strain_x - eps_th) + poisson_ratio * (strain_y - eps_th) + poisson_ratio * (strain_z));
-            stress_y = D * (poisson_ratio * (strain_x - eps_th) + (1 - poisson_ratio) * (strain_y - eps_th) + poisson_ratio * (strain_z));
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-                stress_z = D * (poisson_ratio * (strain_x - eps_th) + poisson_ratio * (strain_y - eps_th) + (1 - poisson_ratio) * (strain_z)) - young_modulus/1e6;
-            else
-                // stress_z = D * (poisson_ratio * (strain_x - eps_th) + poisson_ratio * (strain_y - eps_th) + (1 - poisson_ratio) * (strain_z));
-                stress_z = D * (poisson_ratio * (strain_x - eps_th) + poisson_ratio * (strain_y - eps_th) + (1 - poisson_ratio) * (strain_z));
-
-            stress_xy = D * (1 - 2 * poisson_ratio) / 2 * (value_x.derivative.y + value_y.derivative.x);
-
-            von_mises_stress = sqrt(0.5 * (sqr(stress_x - stress_y) + sqr(stress_y - stress_z) + sqr(stress_z - stress_x) + 6*sqr(stress_xy)));
-
-            tresca_stress = stress_x - stress_z;
-        }
-    }
-}
-
-double LocalPointValueElasticity::variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
-{
-    switch (physicFieldVariable)
-    {
-    case PhysicFieldVariable_Elasticity_VonMisesStress:
-    {
-        return von_mises_stress;
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StrainXX:
-    {
-        return strain_x;
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StrainYY:
-    {
-        return strain_y;
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StrainZZ:
-    {
-        return strain_z;
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StrainXY:
-    {
-        return strain_xy;
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StressXX:
-    {
-        return stress_x;
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StressYY:
-    {
-        return stress_y;
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StressZZ:
-    {
-        return stress_z;
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StressXY:
-    {
-        return stress_xy;
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_Displacement:
-    {
-        switch (physicFieldVariableComp)
-        {
-        case PhysicFieldVariableComp_X:
-            return d.x;
-            break;
-        case PhysicFieldVariableComp_Y:
-            return d.y;
-            break;
-        case PhysicFieldVariableComp_Magnitude:
-            return d.magnitude();
-            break;
-        }
-    }
-        break;
-    default:
-        cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueHeat::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
-        throw;
-        break;
-    }
-}
-
-QStringList LocalPointValueElasticity::variables()
-{
-    QStringList row;
-    row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
-           QString("%1").arg(point.y, 0, 'e', 5) <<
-           QString("%1").arg(von_mises_stress, 0, 'e', 5) <<
-           QString("%1").arg(tresca_stress, 0, 'e', 5) <<
-           QString("%1").arg(d.x, 0, 'e', 5) <<
-           QString("%1").arg(d.y, 0, 'e', 5) <<
-           QString("%1").arg(d.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(stress_x, 0, 'e', 5) <<
-           QString("%1").arg(stress_y, 0, 'e', 5) <<
-           QString("%1").arg(stress_z, 0, 'e', 5) <<
-           QString("%1").arg(stress_xy, 0, 'e', 5) <<
-           QString("%1").arg(strain_x, 0, 'e', 5) <<
-           QString("%1").arg(strain_y, 0, 'e', 5) <<
-           QString("%1").arg(strain_z, 0, 'e', 5) <<
-           QString("%1").arg(strain_xy, 0, 'e', 5);
-
-    return QStringList(row);
-}
-
-// *************************************************************************************************************************************
-
-SurfaceIntegralValueElasticity::SurfaceIntegralValueElasticity() : SurfaceIntegralValue()
-{
-    calculate();
-}
-
-void SurfaceIntegralValueElasticity::calculateVariables(int i)
-{
-
-}
-
-QStringList SurfaceIntegralValueElasticity::variables()
-{
-    QStringList row;
-    row <<  QString("%1").arg(length, 0, 'e', 5) <<
-           QString("%1").arg(surface, 0, 'e', 5);
-    return QStringList(row);
-}
-
-// ****************************************************************************************************************
-
-VolumeIntegralValueElasticity::VolumeIntegralValueElasticity() : VolumeIntegralValue()
-{
-    calculate();
-}
-
-void VolumeIntegralValueElasticity::calculateVariables(int i)
-{
-
-}
-
-void VolumeIntegralValueElasticity::initSolutions()
-{
-    sln1 = Util::scene()->sceneSolution()->sln(0);
-    sln2 = Util::scene()->sceneSolution()->sln(1);
-}
-
-QStringList VolumeIntegralValueElasticity::variables()
-{
-    QStringList row;
-    row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-           QString("%1").arg(crossSection, 0, 'e', 5);
-    return QStringList(row);
-}
-
-// *************************************************************************************************************************************
-
-void ViewScalarFilterElasticity::calculateVariable(int i)
-{
-    SceneMaterialElasticity *marker = dynamic_cast<SceneMaterialElasticity *>(material);
-
-    switch (m_physicFieldVariable)
-    {
-    case PhysicFieldVariable_Elasticity_VonMisesStress:
-    {
-        // stress tensor
-        double tz = marker->lambda() * (dudx1[i] + dudy2[i]);
-        double tx = tz + 2*marker->mu() * dudx1[i];
-        double ty = tz + 2*marker->mu() * dudy2[i];
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-            tz += 2*marker->mu() * value1[i] / x[i];
-        double txy = marker->mu() * (dudy1[i] + dudx2[i]);
-
-        // Von Mises stress
-        node->values[0][0][i] = 1.0/sqrt(2.0) * sqrt(sqr(tx - ty) + sqr(ty - tz) + sqr(tz - tx) + 6*sqr(txy));
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StrainXX:
-    {
-        node->values[0][0][i] = dudx1[i];
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StrainYY:
-    {
-        node->values[0][0][i] = dudy2[i];
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StrainZZ:
-    {
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            node->values[0][0][i] = 0.0;
-        else
-            node->values[0][0][i] = value1[i] / x[i];
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StrainXY:
-    {
-        node->values[0][0][i] = 0.5 * (dudy1[i] + dudx2[i]);
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StressXX:
-    {
-        // elastic constant
-        double D = marker->young_modulus.number / ((1 + marker->poisson_ratio.number) * (1 - 2 * marker->poisson_ratio.number));
-        double eps_th = (1 + marker->poisson_ratio.number) * marker->alpha.number * (marker->temp.number - marker->temp_ref.number);
-
-        double strain_x = dudx1[i];
-        double strain_y = dudy2[i];
-        double strain_z = 0.0;
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-            strain_z = value1[i] / x[i];
-
-        node->values[0][0][i] = D * ((1 - marker->poisson_ratio.number) * (strain_x - eps_th) + marker->poisson_ratio.number * (strain_y - eps_th) + marker->poisson_ratio.number * (strain_z));
-
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StressYY:
-    {
-        // elastic constant
-        double D = marker->young_modulus.number / ((1 + marker->poisson_ratio.number) * (1 - 2 * marker->poisson_ratio.number));
-        double eps_th = (1 + marker->poisson_ratio.number) * marker->alpha.number * (marker->temp.number - marker->temp_ref.number);
-
-        double strain_x = dudx1[i];
-        double strain_y = dudy2[i];
-        double strain_z = 0.0;
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-            strain_z = value1[i] / x[i];
-
-        node->values[0][0][i] = (marker->poisson_ratio.number * (strain_x - eps_th) + (1 - marker->poisson_ratio.number) * (strain_y - eps_th) + marker->poisson_ratio.number * (strain_z));
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StressZZ:
-    {
-        // elastic constant
-        double D = marker->young_modulus.number / ((1 + marker->poisson_ratio.number) * (1 - 2 * marker->poisson_ratio.number));
-        double eps_th = (1 + marker->poisson_ratio.number) * marker->alpha.number * (marker->temp.number - marker->temp_ref.number);
-
-        double strain_x = dudx1[i];
-        double strain_y = dudy2[i];
-        double strain_z = 0.0;
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-            strain_z = value1[i] / x[i];
-
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            node->values[0][0][i] = D * (marker->poisson_ratio.number * (strain_x - eps_th) + marker->poisson_ratio.number * (strain_y - eps_th) + (1 - marker->poisson_ratio.number) * (strain_z)) - marker->young_modulus.number/1e6;
-        else
-            node->values[0][0][i] = D * (marker->poisson_ratio.number * (strain_x - eps_th) + marker->poisson_ratio.number * (strain_y - eps_th) + (1 - marker->poisson_ratio.number) * (strain_z));
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_StressXY:
-    {
-        // elastic constant
-        double D = marker->young_modulus.number / ((1 + marker->poisson_ratio.number) * (1 - 2 * marker->poisson_ratio.number));
-
-        node->values[0][0][i] = D * (1 - 2 * marker->poisson_ratio.number) / 2 * (dudy1[i] + dudx2[i]);
-    }
-        break;
-    case PhysicFieldVariable_Elasticity_Displacement:
-    {
-        switch (m_physicFieldVariableComp)
-        {
-        case PhysicFieldVariableComp_X:
-        {
-            node->values[0][0][i] = value1[i];
-        }
-            break;
-        case PhysicFieldVariableComp_Y:
-        {
-            node->values[0][0][i] = value2[i];
-        }
-            break;
-        case PhysicFieldVariableComp_Magnitude:
-        {
-            node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i]));
-        }
-            break;
-        }
-    }
-        break;
-    default:
-        cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterElasticity::calculateVariable()" << endl;
-        throw;
-        break;
-    }
+   deformShapeTemplate<double4 *>(linVert, count);
 }
 
 // *************************************************************************************************************************************
@@ -1332,7 +967,7 @@ void SceneMaterialElasticityDialog::createContent()
     layout->addWidget(lblEquationImageCoeffs, 2, 2);
     readPixmap(lblEquationImageCoeffs,
                QString(":/images/equations/%1/%1_coeffs.png")
-               .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField())));
+               .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id)));
 
     layout->addWidget(createLabel(tr("<i>E</i> (Pa)"),
                                   tr("Young modulus")), 10, 0);
