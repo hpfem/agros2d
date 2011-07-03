@@ -41,7 +41,7 @@ protected:
     // parser
     Parser *parser;
 
-    Hermes::vector<Solution *>sln;
+    Hermes::vector<Solution *> sln;
 
     void initParser();
     void calculate();

@@ -165,8 +165,8 @@ void ParserMagnetic::setParserVariables(SceneMaterial *material)
     pgamma = marker->conductivity.number;
     pjer = marker->current_density_real.number;
     pjei = marker->current_density_real.number;
-    pbr = marker->remanence.number;
-    pbra = marker->remanence_angle.number;
+    pbrx = marker->remanence.number * cos(marker->remanence_angle.number / 180.0 * M_PI);
+    pbry = marker->remanence.number * sin(marker->remanence_angle.number / 180.0 * M_PI);
     pvx = marker->velocity_x.number;
     pvy = marker->velocity_y.number;
     pva = marker->velocity_angular.number;
@@ -183,8 +183,8 @@ LocalPointValueMagnetic::LocalPointValueMagnetic(const Point &point) : LocalPoin
     parser->parser[0]->DefineVar("gamma", &static_cast<ParserMagnetic *>(parser)->pgamma);
     parser->parser[0]->DefineVar("Jer", &static_cast<ParserMagnetic *>(parser)->pjer);
     parser->parser[0]->DefineVar("Jei", &static_cast<ParserMagnetic *>(parser)->pjei);
-    parser->parser[0]->DefineVar("Br", &static_cast<ParserMagnetic *>(parser)->pbr);
-    parser->parser[0]->DefineVar("Bra", &static_cast<ParserMagnetic *>(parser)->pbra);
+    parser->parser[0]->DefineVar("Brx", &static_cast<ParserMagnetic *>(parser)->pbrx);
+    parser->parser[0]->DefineVar("Bry", &static_cast<ParserMagnetic *>(parser)->pbry);
     parser->parser[0]->DefineVar("vx", &static_cast<ParserMagnetic *>(parser)->pvx);
     parser->parser[0]->DefineVar("vy", &static_cast<ParserMagnetic *>(parser)->pvy);
     parser->parser[0]->DefineVar("va", &static_cast<ParserMagnetic *>(parser)->pva);
@@ -205,8 +205,8 @@ SurfaceIntegralValueMagnetic::SurfaceIntegralValueMagnetic() : SurfaceIntegralVa
         ((mu::Parser *) *it)->DefineVar("gamma", &static_cast<ParserMagnetic *>(parser)->pgamma);
         ((mu::Parser *) *it)->DefineVar("Jer", &static_cast<ParserMagnetic *>(parser)->pjer);
         ((mu::Parser *) *it)->DefineVar("Jei", &static_cast<ParserMagnetic *>(parser)->pjei);
-        ((mu::Parser *) *it)->DefineVar("Br", &static_cast<ParserMagnetic *>(parser)->pbr);
-        ((mu::Parser *) *it)->DefineVar("Bra", &static_cast<ParserMagnetic *>(parser)->pbra);
+        ((mu::Parser *) *it)->DefineVar("Brx", &static_cast<ParserMagnetic *>(parser)->pbrx);
+        ((mu::Parser *) *it)->DefineVar("Bry", &static_cast<ParserMagnetic *>(parser)->pbry);
         ((mu::Parser *) *it)->DefineVar("vx", &static_cast<ParserMagnetic *>(parser)->pvx);
         ((mu::Parser *) *it)->DefineVar("vy", &static_cast<ParserMagnetic *>(parser)->pvy);
         ((mu::Parser *) *it)->DefineVar("va", &static_cast<ParserMagnetic *>(parser)->pva);
@@ -228,14 +228,23 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
         ((mu::Parser *) *it)->DefineVar("gamma", &static_cast<ParserMagnetic *>(parser)->pgamma);
         ((mu::Parser *) *it)->DefineVar("Jer", &static_cast<ParserMagnetic *>(parser)->pjer);
         ((mu::Parser *) *it)->DefineVar("Jei", &static_cast<ParserMagnetic *>(parser)->pjei);
-        ((mu::Parser *) *it)->DefineVar("Br", &static_cast<ParserMagnetic *>(parser)->pbr);
-        ((mu::Parser *) *it)->DefineVar("Bra", &static_cast<ParserMagnetic *>(parser)->pbra);
+        ((mu::Parser *) *it)->DefineVar("Brx", &static_cast<ParserMagnetic *>(parser)->pbrx);
+        ((mu::Parser *) *it)->DefineVar("Bry", &static_cast<ParserMagnetic *>(parser)->pbry);
         ((mu::Parser *) *it)->DefineVar("vx", &static_cast<ParserMagnetic *>(parser)->pvx);
         ((mu::Parser *) *it)->DefineVar("vy", &static_cast<ParserMagnetic *>(parser)->pvy);
         ((mu::Parser *) *it)->DefineVar("va", &static_cast<ParserMagnetic *>(parser)->pva);
     }
 
-    sln.push_back(Util::scene()->sceneSolution()->sln(0));
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState ||
+            Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+    {
+        sln.push_back(Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep()));
+    }
+    else
+    {
+        sln.push_back(Util::scene()->sceneSolution()->sln(0));
+        sln.push_back(Util::scene()->sceneSolution()->sln(1));
+    }
 
     calculate();
 }
@@ -253,8 +262,8 @@ ViewScalarFilterMagnetic::ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *
     parser->parser[0]->DefineVar("gamma", &static_cast<ParserMagnetic *>(parser)->pgamma);
     parser->parser[0]->DefineVar("Jer", &static_cast<ParserMagnetic *>(parser)->pjer);
     parser->parser[0]->DefineVar("Jei", &static_cast<ParserMagnetic *>(parser)->pjei);
-    parser->parser[0]->DefineVar("Br", &static_cast<ParserMagnetic *>(parser)->pbr);
-    parser->parser[0]->DefineVar("Bra", &static_cast<ParserMagnetic *>(parser)->pbra);
+    parser->parser[0]->DefineVar("Brx", &static_cast<ParserMagnetic *>(parser)->pbrx);
+    parser->parser[0]->DefineVar("Bry", &static_cast<ParserMagnetic *>(parser)->pbry);
     parser->parser[0]->DefineVar("vx", &static_cast<ParserMagnetic *>(parser)->pvx);
     parser->parser[0]->DefineVar("vy", &static_cast<ParserMagnetic *>(parser)->pvy);
     parser->parser[0]->DefineVar("va", &static_cast<ParserMagnetic *>(parser)->pva);
@@ -284,9 +293,19 @@ VolumeIntegralValue *ModuleMagnetic::volume_integral_value()
 
 ViewScalarFilter *ModuleMagnetic::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                           PhysicFieldVariableComp physicFieldVariableComp)
-{
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
-    return new ViewScalarFilterMagnetic(sln1, get_expression(physicFieldVariable, physicFieldVariableComp));
+{        
+    Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep());
+
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+    {
+        Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
+        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1, sln2),
+                                            get_expression(physicFieldVariable, physicFieldVariableComp));
+    }
+    else
+    {
+        return new ViewScalarFilterMagnetic(sln1, get_expression(physicFieldVariable, physicFieldVariableComp));
+    }
 }
 
 Hermes::vector<SolutionArray *> ModuleMagnetic::solve(ProgressItemSolve *progressItemSolve)

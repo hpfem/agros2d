@@ -65,8 +65,8 @@ public:
     double pgamma;
     double pjer;
     double pjei;
-    double pbr;
-    double pbra;
+    double pbrx;
+    double pbry;
     double pvx;
     double pvy;
     double pva;
