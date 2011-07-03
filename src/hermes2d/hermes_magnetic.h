@@ -23,59 +23,30 @@
 #include "util.h"
 #include "module.h"
 
-struct HermesMagnetic : public HermesField
+struct ModuleMagnetic : public Hermes::Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    PhysicField physicField() const { return PhysicField_Magnetic; }
+    ModuleMagnetic(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    int numberOfSolution() const;
-    inline bool hasSteadyState() const { return true; }
-    inline bool hasHarmonic() const { return true; }
-    inline bool hasTransient() const { return true; }
-    inline bool hasNonlinearity() const { return false; }
+    int number_of_solution() const;
+    bool has_nonlinearity() const { return false; }
 
+    LocalPointValue *local_point_value(const Point &point);
+    SurfaceIntegralValue *surface_integral_value();
+    VolumeIntegralValue *volume_integral_value();
+
+    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                         PhysicFieldVariableComp physicFieldVariableComp);
+
+    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+    void update_time_functions(double time);
+
+    // rewrite
     void readBoundaryFromDomElement(QDomElement *element);
     void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
     void readMaterialFromDomElement(QDomElement *element);
     void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
-    LocalPointValue *localPointValue(const Point &point);
-    QStringList localPointValueHeader();
-
-    SurfaceIntegralValue *surfaceIntegralValue();
-    QStringList surfaceIntegralValueHeader();
-
-    VolumeIntegralValue *volumeIntegralValue();
-    QStringList volumeIntegralValueHeader();
-
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Magnetic_VectorPotential ||
-                                                                          physicFieldBC == PhysicFieldBC_Magnetic_SurfaceCurrent); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Magnetic_VectorPotential ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_VectorPotentialReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_VectorPotentialImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_FluxDensity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_FluxDensityReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_FluxDensityImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_MagneticField ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_MagneticFieldReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_MagneticFieldImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityTotal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityTotalReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityTotalImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedTransform ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_PowerLosses ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_EnergyDensity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_Permeability ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_Conductivity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_Remanence ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_Velocity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_LorentzForce); }
 
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
@@ -83,113 +54,52 @@ public:
     SceneMaterial *newMaterial();
     SceneMaterial *newMaterial(PyObject *self, PyObject *args);
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
+};
 
-    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-    virtual void updateTimeFunctions(double time);
+// *******************************************************************************************
 
-    PhysicFieldVariableDeprecated contourPhysicFieldVariable();
-    PhysicFieldVariableDeprecated scalarPhysicFieldVariable();
-    PhysicFieldVariableComp scalarPhysicFieldVariableComp();
-    PhysicFieldVariableDeprecated vectorPhysicFieldVariable();
+class ParserMagnetic : public Parser
+{
+public: 
+    double pmur;
+    double pgamma;
+    double pjer;
+    double pjei;
+    double pbr;
+    double pbra;
+    double pvx;
+    double pvy;
+    double pva;
 
-    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
-    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
-
-    void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
-    void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
-    void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
-
-    ViewScalarFilter *viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    void setParserVariables(SceneMaterial *material);
 };
 
 class LocalPointValueMagnetic : public LocalPointValue
 {
 public:
-    double permeability;
-    double conductivity;
-    double remanence;
-    double remanence_angle;
-    Point velocity;
-
-    double potential_real;
-    double potential_imag;
-
-    double current_density_real;
-    double current_density_imag;
-    double current_density_total_real;
-    double current_density_total_imag;
-    double current_density_induced_transform_real;
-    double current_density_induced_transform_imag;
-    double current_density_induced_velocity_real;
-    double current_density_induced_velocity_imag;
-
-    Point H_real;
-    Point H_imag;
-    Point B_real;
-    Point B_imag;
-    Point FL_real;
-    Point FL_imag;
-    double pj;
-    double wm;
-
     LocalPointValueMagnetic(const Point &point);
-    double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-    QStringList variables();
 };
 
 class SurfaceIntegralValueMagnetic : public SurfaceIntegralValue
 {
-protected:
-    void calculateVariables(int i);
-
 public:
-    double forceMaxwellX;
-    double forceMaxwellY;
-    double torque;
-
     SurfaceIntegralValueMagnetic();
-    QStringList variables();
 };
 
 class VolumeIntegralValueMagnetic : public VolumeIntegralValue
 {
-protected:
-    void calculateVariables(int i);
-    void calculateVariablesOther1(int i);
-    void calculateVariablesOther2(int i);
-    void calculateVariablesOther3(int i);
-    void calculateVariablesOther4(int i);
-    void calculateVariablesOther5(int i);
-    void initSolutions();
-
 public:
-    double currentReal;
-    double currentImag;
-    double currentInducedTransformReal;
-    double currentInducedTransformImag;
-    double currentInducedVelocityReal;
-    double currentInducedVelocityImag;
-    double currentTotalReal;
-    double currentTotalImag;
-    double forceLorentzX;
-    double forceLorentzY;
-    double powerLosses;
-    double energy;
-    double torque;
-
     VolumeIntegralValueMagnetic();
-    QStringList variables();
 };
 
 class ViewScalarFilterMagnetic : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *> sln, PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
-
-protected:
-    void calculateVariable(int i);
+    ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *> sln,
+                                   std::string expression);
 };
+
+// *******************************************************************************************
 
 class SceneBoundaryMagnetic : public SceneBoundary
 {
@@ -224,6 +134,8 @@ public:
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
+
+// *******************************************************************************************
 
 class SceneEdgeMagneticDialog : public SceneBoundaryDialog
 {

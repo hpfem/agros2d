@@ -118,6 +118,8 @@ public:
     int showDialog(QWidget *parent);
 };
 
+// *******************************************************************************************
+
 class SceneBoundaryElectrostaticDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
