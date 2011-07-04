@@ -26,7 +26,7 @@
 #include "hermes_current.h"
 #include "hermes_elasticity.h"
 // #include "hermes_flow.h"
-// #include "hermes_rf.h"
+#include "hermes_rf.h"
 #include "hermes_acoustic.h"
 #include "progressdialog.h"
 
@@ -52,6 +52,8 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
         module = new ModuleAcoustic(problem_type, analysis_type);
     if (id == "elasticity")
         module = new ModuleElasticity(problem_type, analysis_type);
+    if (id == "rf")
+        module = new ModuleRF(problem_type, analysis_type);
 
     if (module)
         module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());
@@ -217,7 +219,7 @@ void Hermes::Module::Module::read(std::string file_name)
     QDomNode eleGeneral = eleDoc.elementsByTagName("general").at(0);
 
     id = eleGeneral.toElement().attribute("id").toStdString();
-    name = eleGeneral.toElement().attribute("name").toStdString();
+    name = QObject::tr(eleGeneral.toElement().attribute("name").toStdString().c_str()).toStdString();
     description = eleGeneral.toElement().elementsByTagName("description").at(0).toElement().text().toStdString();
 
     QDomNode eleProperties = eleGeneral.toElement().elementsByTagName("properties").at(0);

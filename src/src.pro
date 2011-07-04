@@ -60,7 +60,7 @@ SOURCES += muparser/muParserBase.cpp \
     hermes2d/hermes_current.cpp \
     hermes2d/hermes_elasticity.cpp \
     #hermes2d/hermes_flow.cpp \
-    #hermes2d/hermes_rf.cpp \
+    hermes2d/hermes_rf.cpp \
     hermes2d/hermes_acoustic.cpp \
     main.cpp \
     scripteditordialog.cpp \
@@ -114,7 +114,7 @@ HEADERS += util.h \
     hermes2d/hermes_current.h \
     hermes2d/hermes_elasticity.h \
     #hermes2d/hermes_flow.h \
-    #hermes2d/hermes_rf.h \
+    hermes2d/hermes_rf.h \
     hermes2d/hermes_acoustic.h \
     mainwindow.h \
     scripteditordialog.h \
