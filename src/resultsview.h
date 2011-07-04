@@ -22,6 +22,8 @@
 
 #include "util.h"
 #include "hermes2d/localpoint.h"
+#include "scenemarkerselectdialog.h"
+#include "scenebasicselectdialog.h"
 
 class ValueLineEdit;
 class SceneMaterial;
@@ -48,13 +50,16 @@ private:
     Point m_point;
 
     QPushButton *btnPoint;
+    QPushButton *btnMarker;
     QTextEdit *txtView;
     QAction *actPoint;
+    QAction *actMarker;
 
     void createActions();
 
 private slots:
     void doPoint();
+    void doMarker();
 };
 
 class LocalPointValueDialog : public QDialog

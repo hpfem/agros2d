@@ -33,9 +33,20 @@ SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget
     setObjectName("SceneInfoView");
 
     createActions();
-
     createMenu();
+
+    // problem information
+    txtView = new QTextEdit(this);
+    txtView->setReadOnly(true);
+    txtView->setMinimumSize(160, 160);
+
+    // boundary conditions, materials and geometry information
     createTreeView();
+
+    splitter = new QSplitter(Qt::Vertical, parent);
+    splitter->addWidget(txtView);
+    splitter->addWidget(trvWidget);
+    setWidget(splitter);
 
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
     connect(Util::scene()->sceneSolution(), SIGNAL(solved()), this, SLOT(doInvalidated()));
@@ -45,16 +56,6 @@ SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget
     connect(trvWidget, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
     connect(trvWidget, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
     connect(trvWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
-
-    txtView = new QTextEdit(this);
-    txtView->setReadOnly(true);
-    txtView->setMinimumSize(160, 160);
-
-    splitter = new QSplitter(Qt::Vertical, parent);
-    splitter->addWidget(trvWidget);
-    splitter->addWidget(txtView);
-
-    setWidget(splitter);
 
     QSettings settings;
     splitter->restoreState(settings.value("SceneInfoView/SplitterState", splitter->saveState()).toByteArray());
@@ -168,44 +169,68 @@ void SceneInfoView::showInfo()
     QString content = readFileContent(datadir() + "/doc/report/dock.html");
 
     QString html;
-    html += "<h4>"+ tr("Project") + "</h4>"
-            "<table width=\"100%\">";
+    html += "<h4>"+ tr("Basic informations") + "</h4>";
+    html += "<table width=\"100%\">";
     html += "<tr><td width=\"50%\"><b>" + tr("Name: ") + "</b></td><td>" + Util::scene()->problemInfo()->name + "</td></tr>";
     html += "<tr><td><b>" + tr("Field") + "</b></td><td>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</td></tr>";
     html += "<tr><td><b>" + tr("Type") + "</b></td><td>" + problemTypeString(Util::scene()->problemInfo()->problemType) + "</td></tr>";
     html += "<tr><td><b>" + tr("Analysis") + "</b></td><td>" + analysisTypeString(Util::scene()->problemInfo()->analysisType) + "</td></tr>";
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+        html += "<tr><td>" + tr("Frequency") + "</td><td>" + QString::number(Util::scene()->problemInfo()->frequency) + " Hz" + "</td></tr>";
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+    {
+        //html += "<tr><td>" + tr("Time step") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeStep) + " s" + "</td></tr>";
+        //html += "<tr><td>" + tr("Total time") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeTotal) + " s" + "</td></tr>";
+        //html += "<tr><td>" + tr("Initial condition") + "</td><td>" + QString::number(Util::scene()->problemInfo()->initialCondition) + "</td></tr>";
+    }
+
     html += "<tr><td><b>" + tr("Adaptivity") + "</b></td><td>" + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType) + "</td></tr>";
-    html += "<tr><td><b>" + tr("Solver") + "</b></td><td>" + matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver) + "</td></tr>";
+    if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
+    {
+        html += "<tr><td>" + tr("Adaptivity steps") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivitySteps) + "</td></tr>";
+        html += "<tr><td>" + tr("Adaptivity tolerance") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityTolerance) + " %" + "</td></tr>";
+        html += "<tr><td>" + tr("Maximum number of DOFs") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityMaxDOFs) + "</td></tr>";
+    }
+
+    html += "<tr><td><b>" + tr("Linearity") + "</b></td><td>" + linearityTypeString(Util::scene()->problemInfo()->linearityType) + "</td></tr>";
+    if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
+    {
+        html += "<tr><td>" + tr("Nonlin. tolerance") + "</td><td>" + QString::number(Util::scene()->problemInfo()->linearityNonlinearTolerance) + " %" + "</td></tr>";
+        html += "<tr><td>" + tr("Nonlin. steps") + "</td><td>" + QString::number(Util::scene()->problemInfo()->linearityNonlinearSteps) + "</td></tr>";
+    }
+
+    html += "<tr><td><b>" + tr("Linear Solver") + "</b></td><td>" + matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver) + "</td></tr>";
+    html += "<tr><td><b>" + tr("Mesh type") + "</b></td><td>" + meshTypeString(Util::scene()->problemInfo()->meshType) + "</td></tr>";
     html += "<tr><td><b>" + tr("Number of refinements") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->numberOfRefinements) + "</td></tr>";
-    html += "<tr><td><b>" + tr("Global polynomial order") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->polynomialOrder) + "</td></tr>";
+    html += "<tr><td><b>" + tr("Polynomial order") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->polynomialOrder) + "</td></tr>";
     html += "</table>";
 
-    html += "<h4>"+ tr("Mesh and solution") + "</h4>"
-            "<table width=\"100%\">";
     if (Util::scene()->sceneSolution()->isMeshed())
     {
-        html += "<tr><td><b>" + tr("Initial mesh") + "</b></td><td>" + tr("nodes") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()) + "</td></tr>";
-        html += "<tr><td>&nbsp;</td><td>" + tr("elements") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()) + "</td></tr>";
-    }
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
+        html += "<h4>"+ tr("Mesh and solution") + "</h4>";
+        html += "<table width=\"100%\">";
+        html += "<tr><td width=\"50%\"><b>" + tr("Initial mesh") + "</b></td><td>" + tr("nodes") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()) + "</td></tr>";
+        html += "<tr><td></td><td>" + tr("elements") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()) + "</td></tr>";
+        if (Util::scene()->sceneSolution()->isSolved())
         {
-            html += "<tr><td><b>" + tr("Adaptivity") + "</b></td><td>" + tr("error") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) + " %" + "</td></tr>";
-            html += "<tr><td>&nbsp;</td><td>" + tr("steps") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) + "</td></tr>";
-            html += "<tr><td>&nbsp;</td><td>" + tr("Initial mesh") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()) + "</td></tr>";
-            html += "<tr><td>&nbsp;</td><td>" + tr("elements") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()) + "</td></tr>";
-        }
+            if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
+            {
+                html += "<tr><td><b>" + tr("Adaptivity") + "</b></td><td>" + tr("error") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) + " %" + "</td></tr>";
+                html += "<tr><td></td><td>"  + tr("steps") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) + "</td></tr>";
+                html += "<tr><td><b>" + tr("Solution mesh") + "</b></td><td>" + tr("nodes") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()) + "</td></tr>";
+                html += "<tr><td></td><td>"+ tr("elements") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements())  + "</td></tr>";
+            }
 
-        if (Util::scene()->sceneSolution()->sln()->get_num_dofs() > 0)
-        {
-            html += "<tr><td><b>" + tr("DOFs") + "</b></td><td>&nbsp;</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()) + "</td></tr>";
-        }
+            if (Util::scene()->sceneSolution()->sln()->get_num_dofs() > 0)
+            {
+                html += "<tr><td><b>" + tr("DOFs") + "</b></td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()) + "</td></tr>";
+            }
 
-        QTime time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
-        html += "<tr><td><b>" + tr("Elapsed time") + "</b></td><td>&nbsp;</td><td>" + time.toString("mm:ss.zzz") + "</td></tr>";
+            QTime time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
+            html += "<tr><td><b>" + tr("Elapsed time") + "</b></td><td>" + time.toString("mm:ss.zzz") + "</td></tr>";
+        }
+        html += "</table>";
     }
-    html += "</table>";
 
     content.replace("[Body]", html);
     txtView->setText(content);
