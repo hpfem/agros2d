@@ -1217,7 +1217,13 @@ void MainWindow::doSceneModeChanged(SceneMode sceneMode)
 
 void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
 {
-    resultsView->raise();
+    //resultsView->raise();
+    if (sceneModePostprocessor == SceneModePostprocessor_LocalValue)
+        resultsView->doShowPoint();
+    else if (sceneModePostprocessor == SceneModePostprocessor_SurfaceIntegral)
+        resultsView->doShowSurfaceIntegral();
+    else if (sceneModePostprocessor == SceneModePostprocessor_VolumeIntegral)
+        resultsView->doShowVolumeIntegral();
 }
 
 void MainWindow::doHelp()

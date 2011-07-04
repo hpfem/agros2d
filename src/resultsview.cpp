@@ -42,10 +42,20 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
     btnPoint->setMaximumSize(btnPoint->sizeHint());
     connect(btnPoint, SIGNAL(clicked()), this, SLOT(doPoint()));
 
+    btnMarker = new QPushButton();
+    btnMarker->setText(actMarker->text());
+    //btnMarker->setIcon(actMarker->icon());
+    btnMarker->setMaximumSize(btnMarker->sizeHint());
+    connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarker()));
+
+    QHBoxLayout *btnLayout = new QHBoxLayout();
+    btnLayout->addWidget(btnPoint);
+    btnLayout->addWidget(btnMarker);
+
     // main widget
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(txtView);
-    layout->addWidget(btnPoint);
+    layout->addLayout(btnLayout);
     layout->setContentsMargins(0, 0, 0, 7);
 
     QWidget *widget = new QWidget(this);
@@ -61,6 +71,10 @@ void ResultsView::createActions()
     // point
     actPoint = new QAction(icon("scene-node"), tr("Local point value"), this);
     connect(actPoint, SIGNAL(triggered()), this, SLOT(doPoint()));
+
+    // markers
+    actMarker = new QAction(tr("Select by marker"), this);
+    connect(actMarker, SIGNAL(triggered()), this, SLOT(doMarker()));
 }
 
 void ResultsView::doPoint()
@@ -74,6 +88,14 @@ void ResultsView::doPoint()
     }
 }
 
+void ResultsView::doMarker()
+{
+    logMessage("ResultsView::doMarker()");
+
+    //SceneMarkerSelectDialog sceneMarkerSelectDialog(this, QApplication::activeWindow());
+    //sceneMarkerSelectDialog.exec();
+}
+
 void ResultsView::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
 {
     m_sceneModePostprocessor = sceneModePostprocessor;
@@ -85,6 +107,7 @@ void ResultsView::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneMo
 void ResultsView::doShowResults()
 {
     btnPoint->setEnabled(m_sceneModePostprocessor == SceneModePostprocessor_LocalValue);
+    btnMarker->setEnabled(m_sceneModePostprocessor != SceneModePostprocessor_LocalValue);
 
     if (m_sceneModePostprocessor == SceneModePostprocessor_LocalValue)
         doShowPoint();
@@ -172,24 +195,17 @@ void ResultsView::doShowPoint()
 
     QString html = "<h4>" + tr("Local point values") + "</h4>"
             "<table width=\"100%\">";
-
     html += "<tr>"
             "<td><b>Point</b></td>"
             "<td><i>" + Util::scene()->problemInfo()->labelX().toLower() + "</i></td>"
             "<td align=\"right\">" + QString("%1").arg(m_point.x, 0, 'e', 3) + "</td>"
-            "<td>&nbsp;</td>"
+            "<td></td>"
             "</tr>";
     html += "<tr>"
-            "<td>&nbsp;</td>"
+            "<td></td>"
             "<td><i>" + Util::scene()->problemInfo()->labelY().toLower() + "</i></td>"
             "<td align=\"right\">" + QString("%1").arg(m_point.y, 0, 'e', 3) + "</td>"
-            "<td>&nbsp;</td>"
-            "</tr>";
-    html += "<tr>"
-            "<td>&nbsp;</td>"
-            "<td>&nbsp;</td>"
-            "<td>&nbsp;</td>"
-            "<td>&nbsp;</td>"
+            "<td></td>"
             "</tr>";
 
     if (Util::scene()->sceneSolution()->isSolved())
