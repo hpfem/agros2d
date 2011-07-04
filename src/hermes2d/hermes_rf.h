@@ -23,59 +23,29 @@
 #include "util.h"
 #include "module.h"
 
-struct HermesRF : public HermesField
+struct ModuleRF : public Hermes::Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    PhysicField physicField() const { return PhysicField_RF; }
+    ModuleRF(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    int numberOfSolution() const;
-    inline bool hasSteadyState() const { return false; }
-    inline bool hasHarmonic() const { return true; }
-    inline bool hasTransient() const { return false; }
-    inline bool hasNonlinearity() const { return false; }
+    inline int number_of_solution() const { return 2; }
+    bool has_nonlinearity() const { return false; }
 
+    LocalPointValue *local_point_value(const Point &point);
+    SurfaceIntegralValue *surface_integral_value();
+    VolumeIntegralValue *volume_integral_value();
+
+    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                         PhysicFieldVariableComp physicFieldVariableComp);
+
+    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+
+    // rewrite
     void readBoundaryFromDomElement(QDomElement *element);
     void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
     void readMaterialFromDomElement(QDomElement *element);
     void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
-    LocalPointValue *localPointValue(const Point &point);
-    QStringList localPointValueHeader();
-
-    SurfaceIntegralValue *surfaceIntegralValue();
-    QStringList surfaceIntegralValueHeader();
-
-    VolumeIntegralValue *volumeIntegralValue();
-    QStringList volumeIntegralValueHeader();
-
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_RF_ElectricField ||
-                                                                          physicFieldBC == PhysicFieldBC_RF_SurfaceCurrent ||
-                                                                          physicFieldBC == PhysicFieldBC_RF_MatchedBoundary ||
-                                                                          physicFieldBC == PhysicFieldBC_RF_Port); }
-    inline bool teModeCheck(Mode teMode) { return (teMode == Mode_0 || teMode == Mode_01 || teMode == Mode_02); }
-
-    inline bool physicFieldVariableCheck(PhysicFieldVariableDeprecated physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_RF_MagneticField ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldXReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldXImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldXReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityXReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityXImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityYReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityYImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_ElectricField ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldImag ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVector ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVectorX ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVectorY ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PowerLosses ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Permittivity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Permeability ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Conductivity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_CurrentDensityReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_CurrentDensityImag); }
 
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
@@ -83,80 +53,48 @@ public:
     SceneMaterial *newMaterial();
     SceneMaterial *newMaterial(PyObject *self, PyObject *args);
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
+};
 
-    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+// *******************************************************************************************
 
-    PhysicFieldVariableDeprecated contourPhysicFieldVariable();
-    PhysicFieldVariableDeprecated scalarPhysicFieldVariable();
-    PhysicFieldVariableComp scalarPhysicFieldVariableComp();
-    PhysicFieldVariableDeprecated vectorPhysicFieldVariable();
+class ParserRF : public Parser
+{
+public:
+    double pepsr;
+    double pmur;
+    double pgamma;
+    double pjer;
+    double pjei;
 
-    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
-    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
-
-    void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
-    void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
-    void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
-
-    ViewScalarFilter *viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    void setParserVariables(SceneMaterial *material);
 };
 
 class LocalPointValueRF : public LocalPointValue
 {
 public:
-    double permittivity;
-    double permeability;
-    double conductivity;
-    double current_density_real;
-    double current_density_imag;
-
-    double electric_field_real;
-    double electric_field_imag;
-
-    Point magnetic_field_real;
-    Point magnetic_field_imag;
-    Point flux_density_real;
-    Point flux_density_imag;
-    Point poynting_vector;
-
     LocalPointValueRF(const Point &point);
-    double variableValue(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-    QStringList variables();
 };
 
 class SurfaceIntegralValueRF : public SurfaceIntegralValue
 {
-protected:
-    void calculateVariables(int i);
-
 public:
-    double forceMaxwellX;
-    double forceMaxwellY;
-
     SurfaceIntegralValueRF();
-    QStringList variables();
 };
 
 class VolumeIntegralValueRF : public VolumeIntegralValue
 {
-protected:
-    void calculateVariables(int i);
-    void initSolutions();
-
 public:
     VolumeIntegralValueRF();
-    QStringList variables();
 };
 
 class ViewScalarFilterRF : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterRF(Hermes::vector<MeshFunction *> sln, PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
-
-protected:
-    void calculateVariable(int i);
+    ViewScalarFilterRF(Hermes::vector<MeshFunction *> sln,
+                                   std::string expression);
 };
+
+// *******************************************************************************************
 
 class SceneBoundaryRF : public SceneBoundary
 {

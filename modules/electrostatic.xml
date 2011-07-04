@@ -30,7 +30,7 @@
             <harmonic />
             <transient />
         </item>
-        <item id="electrostatic_permittivity" name="Permittivity" shortname="eps" unit="-" scalar="1">
+        <item id="electrostatic_permittivity" name="Permittivity" shortname="epsr" unit="-" scalar="1">
             <steadystate planar_scalar="epsr" axi_scalar="epsr" />
             <harmonic />
             <transient />
