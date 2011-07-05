@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <module>
-    <general id ="magnetic" name="Magnetic">
+    <general id ="magnetic" name="Magnetic field">
         <description>Magnetic field ...</description>
         <properties steadystate="1" harmonic="1" transient="1" />    
     </general>
