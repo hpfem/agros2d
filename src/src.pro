@@ -37,14 +37,20 @@ CONFIG += warn_off
 OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
-SOURCES += muparser/muParserBase.cpp \
-    muparser/muParserBytecode.cpp \
-    muparser/muParserCallback.cpp \
-    muparser/muParser.cpp \
-    muparser/muParserError.cpp \
-    muparser/muParserInt.cpp \
-    muparser/muParserTest.cpp \
-    muparser/muParserTokenReader.cpp \
+SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
+    ../lib/dxflib/dl_dxf.cpp \
+    ../lib/muparser/muParserBase.cpp \
+    ../lib/muparser/muParserBytecode.cpp \
+    ../lib/muparser/muParserCallback.cpp \
+    ../lib/muparser/muParser.cpp \
+    ../lib/muparser/muParserError.cpp \
+    ../lib/muparser/muParserInt.cpp \
+    ../lib/muparser/muParserTest.cpp \
+    ../lib/muparser/muParserTokenReader.cpp \
+    ../lib/rapidxml/rapidxml.cpp \
+    ../lib/rapidxml/rapidxml_utils.cpp \
+    #../lib/rapidxml/rapidxml_iterators.hpp \
+    #../lib/rapidxml/rapidxml_print.hpp \
     util.cpp \
     value.cpp \
     scene.cpp \
@@ -79,8 +85,6 @@ SOURCES += muparser/muParserBase.cpp \
     config.cpp \
     configdialog.cpp \
     scenesolution.cpp \
-    dxflib/dl_writer_ascii.cpp \
-    dxflib/dl_dxf.cpp \
     reportdialog.cpp \
     videodialog.cpp \
     terminalview.cpp \
@@ -152,7 +156,9 @@ HEADERS += util.h \
     hermes2d/surfaceintegral.h \
     resultsview.h
 INCLUDEPATH += . \
-    dxflib \
+    ../lib/muparser \
+    ../lib/dxflib \
+    ../lib/rapidxml \
     ../hermes_common
 OTHER_FILES += python/agros2d.pyx \
     functions.py \

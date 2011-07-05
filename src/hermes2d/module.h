@@ -35,6 +35,9 @@
 #include "hermes2d/volumeintegral.h"
 #include "hermes2d/surfaceintegral.h"
 
+#include <rapidxml.cpp>
+#include <rapidxml_utils.cpp>
+
 extern double actualTime;
 
 class SceneBoundary;
@@ -79,20 +82,20 @@ struct LocalVariable
     {
         Expression() : scalar(""), comp_x(""), comp_y("") {}
 
-        Expression(QDomElement *element, ProblemType problem_type);
+        Expression(rapidxml::xml_node<> *node, ProblemType problem_type);
 
         // expressions
         std::string scalar;
         std::string comp_x;
         std::string comp_y;
 
-        void read(QDomElement *element, ProblemType problem_type);
+        void read(rapidxml::xml_node<> *node, ProblemType problem_type);
     };
 
     LocalVariable() : id(""), name(""), shortname(""), unit(""),
         expression(Expression()) {}
 
-    LocalVariable(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
+    LocalVariable(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
 
     // id
     std::string id;
@@ -109,7 +112,7 @@ struct LocalVariable
     // expressions
     Expression expression;
 
-    void read(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
+    void read(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
 };
 
 struct Integral
@@ -118,18 +121,18 @@ struct Integral
     {
         Expression() : scalar("") {}
 
-        Expression(QDomElement *element, ProblemType problem_type);
+        Expression(rapidxml::xml_node<> *node, ProblemType problem_type);
 
         // expressions
         std::string scalar;
 
-        void read(QDomElement *element, ProblemType problem_type);        
+        void read(rapidxml::xml_node<> *node, ProblemType problem_type);
     };
 
     Integral() : id(""), name(""), shortname(""), unit(""),
         expression(Expression()) {}
 
-    Integral(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
+    Integral(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
 
     // id
     std::string id;
@@ -143,7 +146,7 @@ struct Integral
     // expressions
     Expression expression;
 
-    void read(QDomElement *element, ProblemType problemType, AnalysisType analysisType);
+    void read(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
 };
 
 struct Module
@@ -195,7 +198,7 @@ struct Module
     ~Module();
 
     // read form xml
-    void read(std::string file_name);
+    void read(std::string filename);
     // clear
     void clear();
 
@@ -243,10 +246,10 @@ public:
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
 
-    virtual void readBoundaryFromDomElement(QDomElement *element) = 0;
-    virtual void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker) = 0;
-    virtual void readMaterialFromDomElement(QDomElement *element) = 0;
-    virtual void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker) = 0;
+    virtual void readBoundaryFromDomElement(QDomElement *node) = 0;
+    virtual void writeBoundaryToDomElement(QDomElement *node, SceneBoundary *marker) = 0;
+    virtual void readMaterialFromDomElement(QDomElement *node) = 0;
+    virtual void writeMaterialToDomElement(QDomElement *node, SceneMaterial *marker) = 0;
 
     virtual SceneBoundary *newBoundary() = 0;
     virtual SceneBoundary *newBoundary(PyObject *self, PyObject *args) = 0;

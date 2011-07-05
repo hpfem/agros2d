@@ -84,7 +84,18 @@ std::map<std::string, std::string> availableModules()
                 continue;
 
             if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
-                modules[filename.substr(0, filename.size() - 4)] = filename.substr(0, filename.size() - 4);
+            {
+                // read name
+                rapidxml::file<> file_data((datadir().toStdString() + "/modules/" + filename).c_str());
+
+                // parse xml
+                rapidxml::xml_document<> doc;
+                doc.parse<0>(file_data.data());
+
+                // module name
+                modules[filename.substr(0, filename.size() - 4)] =
+                        QObject::tr(doc.first_node("module")->first_node("general")->first_attribute("name")->value()).toStdString();
+            }
         }
         closedir(dp);
     }
@@ -94,82 +105,91 @@ std::map<std::string, std::string> availableModules()
 
 // ***********************************************************************************************
 
-Hermes::Module::LocalVariable::Expression::Expression(QDomElement *element, ProblemType problemType)
+Hermes::Module::LocalVariable::Expression::Expression(rapidxml::xml_node<> *node, ProblemType problemType)
 {
-    read(element, problemType);
+    read(node, problemType);
 }
 
-void Hermes::Module::LocalVariable::Expression::read(QDomElement *element, ProblemType problemType)
+void Hermes::Module::LocalVariable::Expression::read(rapidxml::xml_node<> *node, ProblemType problemType)
 {
     if (problemType == ProblemType_Planar)
     {
-        scalar = element->attribute("planar_scalar").toStdString();
-        comp_x = element->attribute("planar_comp_x").toStdString();
-        comp_y = element->attribute("planar_comp_y").toStdString();
+        if (node->first_attribute("planar_scalar"))
+            scalar = node->first_attribute("planar_scalar")->value();
+        if (node->first_attribute("planar_comp_x"))
+            comp_x = node->first_attribute("planar_comp_x")->value();
+        if (node->first_attribute("planar_comp_y"))
+            comp_y = node->first_attribute("planar_comp_y")->value();
     }
     else
     {
-        scalar = element->attribute("axi_scalar").toStdString();
-        comp_x = element->attribute("axi_comp_r").toStdString();
-        comp_y = element->attribute("axi_comp_z").toStdString();
+        if (node->first_attribute("planar_scalar"))
+            scalar = node->first_attribute("axi_scalar")->value();
+        if (node->first_attribute("axi_comp_r"))
+            comp_x = node->first_attribute("axi_comp_r")->value();
+        if (node->first_attribute("axi_comp_z"))
+            comp_y = node->first_attribute("axi_comp_z")->value();
     }
 }
 
 // ***********************************************************************************************
 
-Hermes::Module::LocalVariable::LocalVariable(QDomElement *element, ProblemType problemType, AnalysisType analysisType)
+Hermes::Module::LocalVariable::LocalVariable(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType)
 {
-    read(element, problemType, analysisType);
+    read(node, problemType, analysisType);
 }
 
-void Hermes::Module::LocalVariable::read(QDomElement *element, ProblemType problemType, AnalysisType analysisType)
+void Hermes::Module::LocalVariable::read(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType)
 {
-    id = element->attribute("id").toStdString();
-    name = element->attribute("name").toStdString();
-    shortname = element->attribute("shortname").toStdString();
-    unit = element->attribute("unit").toStdString();
+    id = node->first_attribute("id")->value();
+    name = node->first_attribute("name")->value();
+    shortname = node->first_attribute("shortname")->value();
+    unit = node->first_attribute("unit")->value();
 
-    is_scalar = element->attribute("scalar").toInt();
+    if (node->first_attribute("scalar"))
+        is_scalar = atoi(node->first_attribute("scalar")->value());
+    else
+        is_scalar = false;
 
-    expression = Expression(&element->elementsByTagName(QString::fromStdString(analysis_type_tostring(analysisType))).at(0).toElement(),
-                            problemType);
+    expression = Expression(node->first_node(analysis_type_tostring(analysisType).c_str()), problemType);
 }
 
 // ***********************************************************************************************
 
-Hermes::Module::Integral::Expression::Expression(QDomElement *element, ProblemType problemType)
+Hermes::Module::Integral::Expression::Expression(rapidxml::xml_node<> *node, ProblemType problemType)
 {
-    read(element, problemType);
+    read(node, problemType);
 }
 
-void Hermes::Module::Integral::Expression::read(QDomElement *element, ProblemType problemType)
+void Hermes::Module::Integral::Expression::read(rapidxml::xml_node<> *node, ProblemType problemType)
 {
     if (problemType == ProblemType_Planar)
     {
-        scalar = element->attribute("planar").toStdString();
+        if (node->first_attribute("planar"))
+            scalar = node->first_attribute("planar")->value();
     }
     else
     {
-        scalar = element->attribute("axi").toStdString();
+        if (node->first_attribute("axi"))
+            scalar = node->first_attribute("axi")->value();
     }
 }
 
 // ***********************************************************************************************
 
-Hermes::Module::Integral::Integral(QDomElement *element, ProblemType problemType, AnalysisType analysisType)
+Hermes::Module::Integral::Integral(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType)
 {
-    read(element, problemType, analysisType);
+    read(node, problemType, analysisType);
 }
 
-void Hermes::Module::Integral::read(QDomElement *element, ProblemType problemType, AnalysisType analysisType)
+void Hermes::Module::Integral::read(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType)
 {
-    id = element->attribute("id").toStdString();
-    name = element->attribute("name").toStdString();
-    shortname = element->attribute("shortname").toStdString();
-    unit = element->attribute("unit").toStdString();
+    id = node->first_attribute("id")->value();
+    name = node->first_attribute("name")->value();
+    shortname = node->first_attribute("shortname")->value();
+    unit = node->first_attribute("unit")->value();
 
-    expression = Expression(&element->elementsByTagName(QString::fromStdString(analysis_type_tostring(analysisType))).at(0).toElement(),
-                            problemType);
+    expression = Expression(node->first_node(analysis_type_tostring(analysisType).c_str()), problemType);
 }
 
 // ***********************************************************************************************
@@ -187,128 +207,107 @@ Hermes::Module::Module::~Module()
     clear();
 }
 
-void Hermes::Module::Module::read(std::string file_name)
+void Hermes::Module::Module::read(std::string filename)
 {
     clear();
 
-    // FIXME: rewrite xml reader
-    QDomDocument doc;
-    QFile file(QString::fromStdString(file_name));
-    if (!file.open(QIODevice::ReadOnly))
-        return;
-
-    // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    QString error;
-    if (!doc.setContent(&file, &error))
+    // read name
+    // file exists
+    if (ifstream(filename.c_str()))
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Error", error);
-        file.close();
-        return;
+        // save current locale
+        char *plocale = setlocale (LC_NUMERIC, "");
+        setlocale (LC_NUMERIC, "C");
+
+        rapidxml::file<> file_data(filename.c_str());
+
+        // parse document
+        rapidxml::xml_document<> doc;
+        doc.parse<0>(file_data.data());
+
+        // problems
+        rapidxml::xml_node<> *general = doc.first_node("module")->first_node("general");
+
+        id = general->first_attribute("id")->value();
+        name = QObject::tr(general->first_attribute("name")->value()).toStdString();
+        description = general->first_node("description")->value();
+
+        rapidxml::xml_node<> *properties = general->first_node("properties");
+        has_steady_state = atoi(properties->first_attribute("steadystate")->value());
+        has_harmonic = atoi(properties->first_attribute("harmonic")->value());
+        has_transient = atoi(properties->first_attribute("transient")->value());
+
+        // constants
+        rapidxml::xml_node<> *consts = doc.first_node("module")->first_node("constants");
+        for (rapidxml::xml_node<> *node = consts->first_node(); node; node = node->next_sibling())
+            constants[node->first_attribute("id")->value()] = atof(node->first_attribute("value")->value());
+
+        rapidxml::xml_node<> *vars = doc.first_node("module")->first_node("localvariable");
+        for (rapidxml::xml_node<> *node = vars->first_node(); node; node = node->next_sibling())
+            variables.push_back(new LocalVariable(node, m_problemType, m_analysisType));
+
+        // read view
+        rapidxml::xml_node<> *view = doc.first_node("module")->first_node("view");
+
+        // scalar variables
+        rapidxml::xml_node<> *view_scalar_vars = view->first_node("scalarvariable");
+        if (view_scalar_vars->first_node(analysis_type_tostring(m_analysisType).c_str()))
+        {
+            if (view_scalar_vars->first_node(analysis_type_tostring(m_analysisType).c_str())->first_attribute("default"))
+                view_default_scalar_variable = get_variable(view_scalar_vars->first_node(analysis_type_tostring(m_analysisType).c_str())->first_attribute("default")->value());
+
+            rapidxml::xml_node<> *node_scalar = view_scalar_vars->first_node(analysis_type_tostring(m_analysisType).c_str());
+            for (rapidxml::xml_node<> *node = node_scalar->first_node(); node; node = node->next_sibling())
+            {
+                LocalVariable *variable = get_variable(node->first_attribute("id")->value());
+                if (variable)
+                    view_scalar_variables.push_back(variable);
+            }
+        }
+
+        // vector variables
+        rapidxml::xml_node<> *view_vector_vars = view->first_node("vectorvariable");
+        if (view_vector_vars->first_node(analysis_type_tostring(m_analysisType).c_str()))
+        {
+            if (view_vector_vars->first_node(analysis_type_tostring(m_analysisType).c_str())->first_attribute("default"))
+                view_default_vector_variable = get_variable(view_vector_vars->first_node(analysis_type_tostring(m_analysisType).c_str())->first_attribute("default")->value());
+
+            rapidxml::xml_node<> *node_vector = view_vector_vars->first_node(analysis_type_tostring(m_analysisType).c_str());
+            for (rapidxml::xml_node<> *node = node_vector->first_node(); node; node = node->next_sibling())
+            {
+                LocalVariable *variable = get_variable(node->first_attribute("id")->value());
+                if (variable)
+                    view_vector_variables.push_back(variable);
+            }
+        }
+
+        // local variables
+        rapidxml::xml_node<> *pointvalues = doc.first_node("module")->first_node("pointvalue");
+
+        rapidxml::xml_node<> *node_pointvalue = pointvalues->first_node(analysis_type_tostring(m_analysisType).c_str());
+        if (node_pointvalue)
+        {
+            for (rapidxml::xml_node<> *node = node_pointvalue->first_node(); node; node = node->next_sibling())
+            {
+                LocalVariable *variable = get_variable(node->first_attribute("id")->value());
+                if (variable)
+                    local_point.push_back(variable);
+            }
+        }
+
+        // surface integral
+        rapidxml::xml_node<> *node_surface_integral = doc.first_node("module")->first_node("surfaceintegral");
+        for (rapidxml::xml_node<> *node = node_surface_integral->first_node(); node; node = node->next_sibling())
+            surface_integral.push_back(new Integral(node, m_problemType, m_analysisType));
+
+        // volume integral
+        rapidxml::xml_node<> *node_volume_integral = doc.first_node("module")->first_node("volumeintegral");
+        for (rapidxml::xml_node<> *node = node_volume_integral->first_node(); node; node = node->next_sibling())
+            volume_integral.push_back(new Integral(node, m_problemType, m_analysisType));
+
+        // set system locale
+        setlocale(LC_NUMERIC, plocale);
     }
-    file.close();
-
-    QDomNode n;
-
-    // main document
-    QDomElement eleDoc = doc.documentElement();
-
-    // problems
-    QDomNode eleGeneral = eleDoc.elementsByTagName("general").at(0);
-
-    id = eleGeneral.toElement().attribute("id").toStdString();
-    name = QObject::tr(eleGeneral.toElement().attribute("name").toStdString().c_str()).toStdString();
-    description = eleGeneral.toElement().elementsByTagName("description").at(0).toElement().text().toStdString();
-
-    QDomNode eleProperties = eleGeneral.toElement().elementsByTagName("properties").at(0);
-    has_steady_state = eleProperties.toElement().attribute("steadystate").toInt();
-    has_harmonic = eleProperties.toElement().attribute("harmonic").toInt();
-    has_transient = eleProperties.toElement().attribute("transient").toInt();
-
-    // constants
-    QDomNode eleConstants = eleDoc.toElement().elementsByTagName("constants").at(0);
-    n = eleConstants.firstChild();
-    while(!n.isNull())
-    {
-        constants[n.toElement().attribute("id").toStdString()] = n.toElement().attribute("value").toDouble();
-
-        n = n.nextSibling();
-    }
-
-    QDomNode eleVariables = eleDoc.toElement().elementsByTagName("localvariable").at(0);
-    n = eleVariables.firstChild();
-    while(!n.isNull())
-    {
-        variables.push_back(new LocalVariable(&n.toElement(), m_problemType, m_analysisType));
-
-        n = n.nextSibling();
-    }
-
-    // read view
-    QDomNode eleView = eleDoc.toElement().elementsByTagName("view").at(0);
-    // scalar variables
-    QDomNode eleViewScalarVariables = eleView.toElement().elementsByTagName("scalarvariable").at(0);
-    view_default_scalar_variable = get_variable(eleViewScalarVariables.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).toElement().attribute("default").toStdString());
-
-    n = eleViewScalarVariables.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).firstChild();
-    while(!n.isNull())
-    {
-        LocalVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
-        if (variable)
-            view_scalar_variables.push_back(variable);
-
-        n = n.nextSibling();
-    }
-    // vector variables
-    QDomNode eleViewVectorVariables = eleView.toElement().elementsByTagName("vectorvariable").at(0);
-    view_default_vector_variable = get_variable(eleViewVectorVariables.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).toElement().attribute("default").toStdString());
-
-    n = eleViewVectorVariables.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).firstChild();
-    while(!n.isNull())
-    {
-        LocalVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
-        if (variable)
-            view_vector_variables.push_back(variable);
-
-        n = n.nextSibling();
-    }
-
-    // local variables
-    QDomNode eleLocalVariable = eleDoc.toElement().elementsByTagName("pointvalue").at(0);
-    n = eleLocalVariable.toElement().elementsByTagName(QString::fromStdString(analysis_type_tostring(m_analysisType))).at(0).firstChild();
-    while(!n.isNull())
-    {
-        LocalVariable *variable = get_variable(n.toElement().attribute("id").toStdString());
-        if (variable)
-            local_point.push_back(variable);
-
-        n = n.nextSibling();
-    }
-
-    // surface integral
-    QDomNode eleSurfaceIntegral = eleDoc.toElement().elementsByTagName("surfaceintegral").at(0);
-    n = eleSurfaceIntegral.firstChild();
-    while(!n.isNull())
-    {
-        surface_integral.push_back(new Integral(&n.toElement(), m_problemType, m_analysisType));
-
-        n = n.nextSibling();
-    }
-
-    // volume integral
-    QDomNode eleVolumeIntegral = eleDoc.toElement().elementsByTagName("volumeintegral").at(0);
-    n = eleVolumeIntegral.firstChild();
-    while(!n.isNull())
-    {
-        volume_integral.push_back(new Integral(&n.toElement(), m_problemType, m_analysisType));
-
-        n = n.nextSibling();
-    }
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
 }
 
 void Hermes::Module::Module::clear()
@@ -947,7 +946,7 @@ bool SolutionAgros::solve(Hermes::vector<Space *> space,
         // coefficient vector for the Newton's method.
         info("Projecting to obtain initial vector for the Newton's method.");
         double *coeff_vec = new double[Space::get_num_dofs(space)];
-        OGProjection::project_global(space, solution.at(0), coeff_vec,
+        OGProjection::project_global(space, solution->value(), coeff_vec,
                                      Util::scene()->problemInfo()->matrixSolver);
 
         DiscreteProblem dpNonlinNewton(wf, space, false);
