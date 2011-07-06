@@ -56,6 +56,11 @@ void ProblemInfo::clear()
     // read default field (Util::config() is not set)
     QSettings settings;
     PhysicField defaultPhysicField = (PhysicField) settings.value("General/DefaultPhysicField", PhysicField_Electrostatic).toInt();
+    if (defaultPhysicField == PhysicField_Undefined)
+    {
+        defaultPhysicField = PhysicField_Electrostatic;
+        settings.setValue("General/DefaultPhysicField", defaultPhysicField);
+    }
     m_hermes = hermesFieldFactory(defaultPhysicField);
 
     name = QObject::tr("unnamed");
