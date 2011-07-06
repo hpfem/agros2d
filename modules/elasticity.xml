@@ -10,28 +10,18 @@
     <localvariable>
         <item id="elasticity_displacement" name="Displacement" shortname="d" unit="m" scalar="0">
             <steadystate planar_comp_x="value1" planar_comp_y="value2" axi_comp_r="value1" axi_comp_z="value2" />
-            <harmonic />
-            <transient />
         </item>
         <item id="elasticity_young_modulus" name="Young modulus" shortname="E" unit="Pa" scalar="1">
             <steadystate planar_scalar="E" axi_scalar="E" />
-            <harmonic />
-            <transient />
         </item>
         <item id="elasticity_poisson_number" name="Poisson number" shortname="nu" unit="-" scalar="1">
             <steadystate planar_scalar="nu" axi_scalar="nu" />
-            <harmonic />
-            <transient />
         </item>
         <item id="elasticity_inner_force" name="Inner force" shortname="f" unit="N" scalar="0">
             <steadystate planar_comp_x="fx" planar_comp_y="fy" axi_comp_r="fx" axi_comp_z="fy" />
-            <harmonic />
-            <transient />
         </item>
         <item id="elasticity_temperature" name="Temperature" shortname="T" unit="K" scalar="1">
             <steadystate planar_scalar="T" axi_scalar="T" />
-            <harmonic />
-            <transient />
         </item>        
     </localvariable>
 
@@ -44,16 +34,12 @@
                 <item id="elasticity_inner_force" />
                 <item id="elasticity_temperature" />
             </steadystate>
-            <harmonic/>
-            <transient/>
         </scalarvariable>
 
         <vectorvariable>
             <steadystate default="elasticity_displacement">
                 <item id="elasticity_displacement" />
             </steadystate>
-            <harmonic/>
-            <transient/>
         </vectorvariable>
     </view>
     
@@ -65,33 +51,23 @@
             <item id="elasticity_inner_force" />
             <item id="elasticity_temperature" />            
         </steadystate>
-        <harmonic/>
-        <transient/>
     </pointvalue>  
     
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
-            <harmonic/>
-            <transient/>
         </item>        
         <item id="surface" name="Cross section" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="1.0" />
-            <harmonic/>
-            <transient/>
         </item>       
     </volumeintegral>    
     
     <surfaceintegral>
         <item id="length" name="Length" shortname="l" unit="m">
             <steadystate planar="1.0" axi="1.0" />
-            <harmonic/>
-            <transient/>
         </item>        
         <item id="surface" name="Surface" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
-            <harmonic/>
-            <transient/>
         </item>
     </surfaceintegral> 
 </module>

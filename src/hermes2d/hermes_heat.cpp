@@ -32,14 +32,17 @@ public:
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneBoundaryHeat *boundary = dynamic_cast<SceneBoundaryHeat *>(Util::scene()->edges[i]->boundary);
+            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
             if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
-                if (boundary->type == PhysicFieldBC_Heat_Flux)
+                if (boundary->type == "heat_heat_flux")
                 {
                     // vector flux term
-                    double flux = boundary->heatFlux.number + boundary->h.number * boundary->externalTemperature.number;
+
+
+                    double flux = boundary->get_value("heat_heat_flux").number +
+                            boundary->get_value("heat_heat_transfer_coefficient").number * boundary->get_value("heat_external_temperature").number;
 
                     if (fabs(flux) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
@@ -47,10 +50,10 @@ public:
                                                                                                         flux,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
 
-                    if (fabs(boundary->h.number) > EPS_ZERO)
+                    if (fabs(boundary->get_value("heat_heat_transfer_coefficient").number) > EPS_ZERO)
                         add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(0, 0,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        boundary->h.number,
+                                                                                                        boundary->get_value("heat_heat_transfer_coefficient").number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
                 }
             }
@@ -169,7 +172,7 @@ VolumeIntegralValueHeat::VolumeIntegralValueHeat() : VolumeIntegralValue()
 // *************************************************************************************************************************************
 
 ViewScalarFilterHeat::ViewScalarFilterHeat(Hermes::vector<MeshFunction *> sln,
-                                                             std::string expression) :
+                                           std::string expression) :
     ViewScalarFilter(sln)
 {
     parser = new ParserHeat();
@@ -199,7 +202,7 @@ VolumeIntegralValue *ModuleHeat::volume_integral_value()
 }
 
 ViewScalarFilter *ModuleHeat::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                           PhysicFieldVariableComp physicFieldVariableComp)
+                                                 PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep());
     return new ViewScalarFilterHeat(sln1, get_expression(physicFieldVariable, physicFieldVariableComp));
@@ -220,13 +223,11 @@ Hermes::vector<SolutionArray *> ModuleHeat::solve(ProgressItemSolve *progressIte
     // edge markers
     for (int i = 1; i<Util::scene()->boundaries.count(); i++)
     {
-        SceneBoundaryHeat *boundary = dynamic_cast<SceneBoundaryHeat *>(Util::scene()->boundaries[i]);
+        SceneBoundary *boundary = Util::scene()->boundaries[i];
 
         // evaluate script
-        if (!boundary->temperature.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!boundary->heatFlux.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!boundary->h.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!boundary->externalTemperature.evaluate()) return Hermes::vector<SolutionArray *>();
+        for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
+            if (!it->second.evaluate()) return Hermes::vector<SolutionArray *>();
     }
 
     // label markers
@@ -245,12 +246,13 @@ Hermes::vector<SolutionArray *> ModuleHeat::solve(ProgressItemSolve *progressIte
     EssentialBCs bcs;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        SceneBoundaryHeat *boundary = dynamic_cast<SceneBoundaryHeat *>(Util::scene()->edges[i]->boundary);
+        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
         if (boundary)
         {
-            if (boundary->type == PhysicFieldBC_Heat_Temperature)
-                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->temperature.number));
+            if (boundary->type == "heat_temperature")
+                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                                                                       boundary->get_value("heat_temperature").number));
         }
     }
 
@@ -274,49 +276,6 @@ void ModuleHeat::update_time_functions(double time)
 // *************************************************************************************************************************************
 // rewrite
 
-void ModuleHeat::readBoundaryFromDomElement(QDomElement *element)
-{
-    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
-    switch (type)
-    {
-    case PhysicFieldBC_None:
-        // TODO
-        break;
-    case PhysicFieldBC_Heat_Temperature:
-        Util::scene()->addBoundary(new SceneBoundaryHeat(element->attribute("name"),
-                                                         type,
-                                                         Value(element->attribute("temperature", "0"))));
-        break;
-    case PhysicFieldBC_Heat_Flux:
-        Util::scene()->addBoundary(new SceneBoundaryHeat(element->attribute("name"), type,
-                                                         Value(element->attribute("heat_flux", "0")),
-                                                         Value(element->attribute("h", "0")),
-                                                         Value(element->attribute("external_temperature", "0"))));
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-        break;
-    }
-}
-
-void ModuleHeat::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
-{
-    SceneBoundaryHeat *boundary = dynamic_cast<SceneBoundaryHeat *>(marker);
-
-    element->setAttribute("type", physicFieldBCToStringKey(boundary->type));
-
-    if (boundary->type == PhysicFieldBC_Heat_Temperature)
-    {
-        element->setAttribute("temperature", boundary->temperature.text);
-    }
-    if (boundary->type == PhysicFieldBC_Heat_Flux)
-    {
-        element->setAttribute("heat_flux", boundary->heatFlux.text);
-        element->setAttribute("h", boundary->h.text);
-        element->setAttribute("external_temperature", boundary->externalTemperature.text);
-    }
-}
-
 void ModuleHeat::readMaterialFromDomElement(QDomElement *element)
 {
     Util::scene()->addMaterial(new SceneMaterialHeat(element->attribute("name"),
@@ -338,13 +297,12 @@ void ModuleHeat::writeMaterialToDomElement(QDomElement *element, SceneMaterial *
 
 SceneBoundary *ModuleHeat::newBoundary()
 {
-    return new SceneBoundaryHeat(tr("new boundary"),
-                                 PhysicFieldBC_Heat_Temperature,
-                                 Value("0"));
+    return new SceneBoundary(tr("new boundary").toStdString(), "heat_temperature");
 }
 
 SceneBoundary *ModuleHeat::newBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double value, h, externaltemperature;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd|dd", &name, &type, &value, &h, &externaltemperature))
@@ -365,10 +323,12 @@ SceneBoundary *ModuleHeat::newBoundary(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneBoundary *ModuleHeat::modifyBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double value, h, externaltemperature;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd|dd", &name, &type, &value, &h, &externaltemperature))
@@ -405,6 +365,7 @@ SceneBoundary *ModuleHeat::modifyBoundary(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleHeat::newMaterial()
@@ -471,63 +432,6 @@ void VolumeIntegralValueHeat::initSolutions()
 
 // *************************************************************************************************************************************
 
-SceneBoundaryHeat::SceneBoundaryHeat(const QString &name, PhysicFieldBC type, Value temperature) : SceneBoundary(name, type)
-{
-    this->temperature = temperature;
-}
-
-SceneBoundaryHeat::SceneBoundaryHeat(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature) : SceneBoundary(name, type)
-{
-    this->heatFlux = heatFlux;
-    this->h = h;
-    this->externalTemperature = externalTemperature;
-}
-
-QString SceneBoundaryHeat::script()
-{
-    if (type == PhysicFieldBC_Heat_Temperature)
-    {
-        return QString("addboundary(\"%1\", \"%2\", %3)").
-                arg(name).
-                arg(physicFieldBCToStringKey(type)).
-                arg(temperature.text);
-    }
-    if (type == PhysicFieldBC_Heat_Flux)
-    {
-        return QString("addboundary(\"%1\", \"%2\", %3, %4, %5)").
-                arg(name).
-                arg(physicFieldBCToStringKey(type)).
-                arg(heatFlux.text).
-                arg(h.text).
-                arg(externalTemperature.text);
-    }
-}
-
-QMap<QString, QString> SceneBoundaryHeat::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PhysicFieldBC_Heat_Temperature:
-        out["Temperature (K)"] = temperature.text;
-        break;
-    case PhysicFieldBC_Heat_Flux:
-        out["Heat flux (W/m2)"] = heatFlux.text;
-        out["Heat transfer coef. (Q/m2.K)"] = h.text;
-        out["External temperature (K)"] = externalTemperature.text;
-        break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneBoundaryHeat::showDialog(QWidget *parent)
-{
-    SceneBoundaryHeatDialog *dialog = new SceneBoundaryHeatDialog(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
 SceneMaterialHeat::SceneMaterialHeat(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat)
     : SceneMaterial(name)
 {
@@ -573,7 +477,7 @@ int SceneMaterialHeat::showDialog(QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneBoundaryHeatDialog::SceneBoundaryHeatDialog(SceneBoundaryHeat *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
+SceneBoundaryHeatDialog::SceneBoundaryHeatDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
 {
     m_boundary = boundary;
 
@@ -586,8 +490,7 @@ SceneBoundaryHeatDialog::SceneBoundaryHeatDialog(SceneBoundaryHeat *boundary, QW
 void SceneBoundaryHeatDialog::createContent()
 {
     cmbType = new QComboBox(this);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Heat_Temperature), PhysicFieldBC_Heat_Temperature);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Heat_Flux), PhysicFieldBC_Heat_Flux);
+    Util::scene()->problemInfo()->module()->fillComboBoxBoundaryCondition(cmbType);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtHeatFlux = new ValueLineEdit(this);
@@ -623,58 +526,45 @@ void SceneBoundaryHeatDialog::load()
 {
     SceneBoundaryDialog::load();
 
-    SceneBoundaryHeat *boundary = dynamic_cast<SceneBoundaryHeat *>(m_boundary);
-
-    cmbType->setCurrentIndex(cmbType->findData(boundary->type));
-    switch (boundary->type)
+    cmbType->setCurrentIndex(cmbType->findData(QString::fromStdString(m_boundary->type)));
+    if (m_boundary->type == "heat_temperature")
     {
-    case PhysicFieldBC_Heat_Temperature:
-    {
-        txtTemperature->setValue(boundary->temperature);
+        txtTemperature->setValue(m_boundary->get_value("heat_temperature"));
     }
-        break;
-    case PhysicFieldBC_Heat_Flux:
+    else if (m_boundary->type == "heat_heat_flux")
     {
-        txtHeatFlux->setValue(boundary->heatFlux);
-        txtHeatTransferCoefficient->setValue(boundary->h);
-        txtExternalTemperature->setValue(boundary->externalTemperature);
-    }
-        break;
+        txtHeatFlux->setValue(m_boundary->get_value("heat_heat_flux"));
+        txtHeatTransferCoefficient->setValue(m_boundary->get_value("heat_heat_transfer_coefficient"));
+        txtExternalTemperature->setValue(m_boundary->get_value("heat_external_temperature"));
     }
 }
 
 bool SceneBoundaryHeatDialog::save() {
     if (!SceneBoundaryDialog::save()) return false;;
 
-    SceneBoundaryHeat *boundary = dynamic_cast<SceneBoundaryHeat *>(m_boundary);
+    m_boundary->type = cmbType->itemData(cmbType->currentIndex()).toString().toStdString();
 
-    boundary->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
-    switch (boundary->type)
-    {
-    case PhysicFieldBC_Heat_Temperature:
+    if (m_boundary->type == "heat_temperature")
     {
         if (txtTemperature->evaluate())
-            boundary->temperature  = txtTemperature->value();
+            m_boundary->values[m_boundary->get_boundary_type_variable("heat_temperature")] = txtTemperature->value();
         else
             return false;
     }
-        break;
-    case PhysicFieldBC_Heat_Flux:
+    else if (m_boundary->type == "heat_heat_flux")
     {
         if (txtHeatFlux->evaluate())
-            boundary->heatFlux  = txtHeatFlux->value();
+            m_boundary->values[m_boundary->get_boundary_type_variable("heat_heat_flux")] = txtHeatFlux->value();
         else
             return false;
         if (txtHeatTransferCoefficient->evaluate())
-            boundary->h  = txtHeatTransferCoefficient->value();
+            m_boundary->values[m_boundary->get_boundary_type_variable("heat_heat_transfer_coefficient")] = txtHeatTransferCoefficient->value();
         else
             return false;
         if (txtExternalTemperature->evaluate())
-            boundary->externalTemperature  = txtExternalTemperature->value();
+            m_boundary->values[m_boundary->get_boundary_type_variable("heat_external_temperature")] = txtExternalTemperature->value();
         else
             return false;
-    }
-        break;
     }
 
     return true;
@@ -688,23 +578,18 @@ void SceneBoundaryHeatDialog::doTypeChanged(int index)
     txtExternalTemperature->setEnabled(false);
 
     // read equation
-    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+    readEquation(lblEquationImage, cmbType->itemData(index).toString());
 
     // enable controls
-    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
-    {
-    case PhysicFieldBC_Heat_Temperature:
+    if (cmbType->itemData(index) == "heat_temperature")
     {
         txtTemperature->setEnabled(true);
     }
-        break;
-    case PhysicFieldBC_Heat_Flux:
+    else if (cmbType->itemData(index) == "heat_heat_flux")
     {
         txtHeatFlux->setEnabled(true);
         txtHeatTransferCoefficient->setEnabled(true);
         txtExternalTemperature->setEnabled(true);
-    }
-        break;
     }
 
     setMinimumSize(sizeHint());

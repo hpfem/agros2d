@@ -47,7 +47,7 @@ void SceneMarkerSelectDialog::createControls()
     for (int i = 1; i < Util::scene()->boundaries.count(); i++)
     {
         QListWidgetItem *item = new QListWidgetItem(lstSurface);
-        item->setText(Util::scene()->boundaries[i]->name);
+        item->setText(QString::fromStdString(Util::scene()->boundaries[i]->name));
         item->setCheckState(Qt::Unchecked);
         lstSurface->addItem(item);
     }

@@ -155,7 +155,7 @@ QString createPythonFromModel()
                    arg(Util::scene()->edges[i]->nodeEnd->point.x).
                    arg(Util::scene()->edges[i]->nodeEnd->point.y).
                    arg(Util::scene()->edges[i]->angle).
-                   arg(Util::scene()->edges[i]->boundary->name) + "\n";
+                   arg(QString::fromStdString(Util::scene()->edges[i]->boundary->name)) + "\n";
         }
         str += "\n";
     }

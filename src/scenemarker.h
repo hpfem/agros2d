@@ -21,6 +21,7 @@
 #define SCENEMARKER_H
 
 #include "util.h"
+#include "hermes2d/boundary.h"
 
 class SLineEditDouble;
 class ValueLineEdit;
@@ -31,19 +32,15 @@ class SceneMaterial;
 Q_DECLARE_METATYPE(SceneBoundary *);
 Q_DECLARE_METATYPE(SceneMaterial *);
 
-class SceneBoundary
+class SceneBoundary : public Boundary
 {
 public:
-    QString name;
-    PhysicFieldBC type;
+    SceneBoundary(std::string name, std::string type = "");
 
-    SceneBoundary(const QString &name, PhysicFieldBC type);
+    int showDialog(QWidget *parent);
 
-    virtual int showDialog(QWidget *parent) = 0;
-
-    virtual QString script() = 0;
+    QString script();
     QString html();
-    virtual QMap<QString, QString> data() = 0;
     QVariant variant();
 };
 
@@ -53,7 +50,6 @@ public:
     SceneBoundaryNone();
 
     QString script() { return ""; }
-    QMap<QString, QString> data() { return QMap<QString, QString>(); }
     int showDialog(QWidget *parent) { return 0; }
 };
 
@@ -85,7 +81,6 @@ public:
 
     virtual QString script() = 0;
     QString html();
-    virtual QMap<QString, QString> data() = 0;
     QVariant variant();
 };
 
@@ -141,7 +136,7 @@ protected:
 
 protected slots:
     void evaluated(bool isError);
-    void readEquation(QLabel *lblEquation, PhysicFieldBC type);
+    void readEquation(QLabel *lblEquation, const QString &type);
 
 private slots:
     void doAccept();

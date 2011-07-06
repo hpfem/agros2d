@@ -9,6 +9,20 @@
         <item id="EPS0" value="8.854e-12" />
     </constants>    
 
+    <material>
+        <item id="electrostatic_permittivity" name="Permittivity" shortname="epsr" unit="F/m" />
+        <item id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" />                        
+    </material>
+
+    <boundary>
+        <item id="electrostatic_potential" name="Fixed voltage">
+            <variable id="electrostatic_potential" name="Fixed voltage" shortname="V" unit="V" />
+        </item>    
+        <item id="electrostatic_surface_charge_density" name="Surface charge density">
+            <variable id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" unit="C/m2" />
+        </item>        
+    </boundary>
+
     <localvariable>
         <item id="electrostatic_potential" name="Scalar potential" shortname="V" unit="V" scalar="1">
             <steadystate planar_scalar="value1" axi_scalar="value1" />

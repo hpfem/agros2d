@@ -75,26 +75,21 @@ inline std::string analysis_type_tostring(AnalysisType analysisType)
 
 namespace Module
 {
-
+// local variable
 struct LocalVariable
 {
     struct Expression
     {
         Expression() : scalar(""), comp_x(""), comp_y("") {}
-
         Expression(rapidxml::xml_node<> *node, ProblemType problem_type);
 
         // expressions
         std::string scalar;
         std::string comp_x;
         std::string comp_y;
-
-        void read(rapidxml::xml_node<> *node, ProblemType problem_type);
     };
 
-    LocalVariable() : id(""), name(""), shortname(""), unit(""),
-        expression(Expression()) {}
-
+    LocalVariable() : id(""), name(""), shortname(""), unit(""), expression(Expression()) {}
     LocalVariable(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
 
     // id
@@ -111,27 +106,69 @@ struct LocalVariable
 
     // expressions
     Expression expression;
-
-    void read(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
 };
 
+// material property
+struct MaterialType
+{
+    MaterialType() : id(""), name(""), shortname(""), unit("") {}
+    MaterialType(rapidxml::xml_node<> *node);
+
+    // id
+    std::string id;
+    // name
+    std::string name;
+    // short name
+    std::string shortname;
+    // unit
+    std::string unit;
+};
+
+// boundary condition type variable
+struct BoundaryTypeVariable
+{
+    BoundaryTypeVariable() : id(""), name(""), shortname(""), unit("") {}
+    BoundaryTypeVariable(rapidxml::xml_node<> *node);
+
+    // id
+    std::string id;
+    // name
+    std::string name;
+    // short name
+    std::string shortname;
+    // unit
+    std::string unit;
+};
+
+// boundary condition type
+struct BoundaryType
+{
+    BoundaryType() : id(""), name("") {}
+    BoundaryType(rapidxml::xml_node<> *node);
+    ~BoundaryType();
+
+    // id
+    std::string id;
+    // name
+    std::string name;
+
+    // variables
+    Hermes::vector<BoundaryTypeVariable *> variables;
+};
+
+// surface and volume integral value
 struct Integral
 {
     struct Expression
     {
         Expression() : scalar("") {}
-
         Expression(rapidxml::xml_node<> *node, ProblemType problem_type);
 
         // expressions
         std::string scalar;
-
-        void read(rapidxml::xml_node<> *node, ProblemType problem_type);
     };
 
-    Integral() : id(""), name(""), shortname(""), unit(""),
-        expression(Expression()) {}
-
+    Integral() : id(""), name(""), shortname(""), unit(""), expression(Expression()) {}
     Integral(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
 
     // id
@@ -144,11 +181,10 @@ struct Integral
     std::string unit;
 
     // expressions
-    Expression expression;
-
-    void read(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
+    Expression expression;    
 };
 
+// basic module
 struct Module
 {
     // id
@@ -164,6 +200,12 @@ struct Module
 
     // constants
     std::map<std::string, double> constants;
+
+    // material type
+    Hermes::vector<MaterialType *> material_types;
+
+    // boundary conditions
+    Hermes::vector<BoundaryType *> boundary_types;
 
     // all physical variables
     Hermes::vector<LocalVariable *> variables;
@@ -207,6 +249,8 @@ struct Module
 
     // variable by name
     LocalVariable *get_variable(std::string id);
+    BoundaryType *get_boundary_type(std::string id);
+    MaterialType *get_material_type(std::string id);
 
     // parser
     mu::Parser *get_parser();
@@ -245,9 +289,10 @@ public:
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
+    void fillComboBoxBoundaryCondition(QComboBox *cmbFieldVariable);
+    void fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable);
 
-    virtual void readBoundaryFromDomElement(QDomElement *node) = 0;
-    virtual void writeBoundaryToDomElement(QDomElement *node, SceneBoundary *marker) = 0;
+    // rewrite
     virtual void readMaterialFromDomElement(QDomElement *node) = 0;
     virtual void writeMaterialToDomElement(QDomElement *node, SceneMaterial *marker) = 0;
 
@@ -259,7 +304,7 @@ public:
     virtual SceneMaterial *modifyMaterial(PyObject *self, PyObject *args) = 0;
 
 private:
-    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<LocalVariable *> list);
+    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<Hermes::Module::LocalVariable *> list);
 };
 
 }
@@ -267,6 +312,9 @@ private:
 
 // module factory
 Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type);
+
+// boundary dialog factory
+SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidget *parent);
 
 // available modules
 std::map<std::string, std::string> availableModules();

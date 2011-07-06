@@ -809,7 +809,7 @@ bool ProgressItemMesh::triangleToHermes2D()
         if (edgeList[i].isUsed && edgeList[i].marker != 0)
         {
             int marker = 0;
-            if (Util::scene()->edges[edgeList[i].marker-1]->boundary->type != PhysicFieldBC_None)
+            if (Util::scene()->edges[edgeList[i].marker-1]->boundary->type != "")
                 // boundary marker
                 marker = edgeList[i].marker;
             else

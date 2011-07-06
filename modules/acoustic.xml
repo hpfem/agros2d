@@ -11,32 +11,26 @@
 
     <localvariable>
         <item id="acoustic_pressure_real" name="Pressure - real" shortname="p" unit="Pa" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="value1" axi_scalar="value1" />
             <transient />
         </item>
         <item id="acoustic_pressure_imag" name="Pressure - imag" shortname="p" unit="Pa" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="value2" axi_scalar="value2" />
             <transient />
         </item>
         <item id="acoustic_pressure_level" name="Pressure level" shortname="SPL" unit="dB" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="value1" axi_scalar="20 * log10(sqrt(value1 * value1 + value2 * value2) / P0)" />
             <transient />
         </item>        
         <item id="acoustic_local_acceleration" name="Local acceleration" shortname="a" unit="m/s2">
-            <steadystate />
             <harmonic planar_comp_x="- dx1 / rho" planar_comp_y="- dy1 / rho" axi_comp_r="- dx1 / rho" axi_comp_z="- dy1 / rho" />
             <transient />
         </item>
         <item id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="rho" axi_scalar="rho" />
             <transient />
         </item>
         <item id="acoustic_speed" name="Speed of sound" shortname="v" unit="m/s" scalar="1">
-            <steadystate/>
             <harmonic planar_scalar="v" axi_scalar="v" />
             <transient />
         </item>  
@@ -44,7 +38,6 @@
 
     <view>
         <scalarvariable>
-            <steadystate/>
             <harmonic default="acoustic_pressure_real">
                 <item id="acoustic_pressure_real" />
                 <item id="acoustic_pressure_imag" />
@@ -57,7 +50,6 @@
         </scalarvariable>
 
         <vectorvariable>
-            <steadystate/>
             <harmonic default="acoustic_local_acceleration"/>
                 <item id="acoustic_local_acceleration" />
             <transient/>
@@ -65,7 +57,6 @@
     </view>
     
     <pointvalue>
-        <steadystate/>         
         <harmonic>
             <item id="acoustic_pressure_real" />
             <item id="acoustic_pressure_imag" />
@@ -79,12 +70,10 @@
     
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
-            <steadystate/>
             <harmonic planar="1.0" axi="2.0 * PI * x" />
             <transient/>
         </item>        
         <item id="surface" name="Cross section" shortname="S" unit="m2">
-            <steadystate />
             <harmonic planar="1.0" axi="1.0" />
             <transient/>
         </item>
@@ -92,12 +81,10 @@
     
     <surfaceintegral>
         <item id="length" name="Length" shortname="l" unit="m">
-            <steadystate/>
             <harmonic planar="1.0" axi="1.0" />
             <transient/>
         </item>        
         <item id="surface" name="Surface" shortname="S" unit="m2">
-            <steadystate/>
             <harmonic planar="1.0" axi="2.0 * PI * x" />
             <transient/>
         </item>
