@@ -585,6 +585,8 @@ QString ReportDialog::htmlMaterials()
 
     QString out;
 
+    // FIXME - more general
+    /*
     out  = "\n";
     for (int i = 1; i < Util::scene()->materials.count(); i++)
     {
@@ -601,7 +603,7 @@ QString ReportDialog::htmlMaterials()
         out += "</table>";
         out += "\n";
     }
-
+    */
     return out;
 }
 
@@ -610,7 +612,8 @@ QString ReportDialog::htmlBoundaries()
     logMessage("ReportDialog::htmlBoundaries()");
 
     QString out;
-
+    // FIXME - more general
+    /*
     out  = "\n";
     for (int i = 1; i < Util::scene()->boundaries.count(); i++)
     {
@@ -627,7 +630,7 @@ QString ReportDialog::htmlBoundaries()
         out += "</table>";
         out += "\n";
     }
-
+    */
     return out;
 }
 
@@ -671,7 +674,7 @@ QString ReportDialog::htmlGeometryEdges()
         out += "<td>" + QString::number(Util::scene()->edges[i]->nodeEnd->point.x, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->edges[i]->nodeEnd->point.y, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->edges[i]->angle, 'f', 2) + "</td>";
-        out += "<td>" + Util::scene()->edges[i]->boundary->name + "</td></tr>";
+        out += "<td>" + QString::fromStdString(Util::scene()->edges[i]->boundary->name) + "</td></tr>";
     }
     out += "</table>";
     out += "\n";

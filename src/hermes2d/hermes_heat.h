@@ -43,8 +43,6 @@ public:
     void update_time_functions(double time);
 
     // rewrite
-    void readBoundaryFromDomElement(QDomElement *element);
-    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
     void readMaterialFromDomElement(QDomElement *element);
     void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
@@ -96,22 +94,6 @@ public:
 
 // *******************************************************************************************
 
-class SceneBoundaryHeat : public SceneBoundary
-{
-public:
-    Value temperature;
-    Value heatFlux;
-    Value h;
-    Value externalTemperature;
-
-    SceneBoundaryHeat(const QString &name, PhysicFieldBC type, Value temperature);
-    SceneBoundaryHeat(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
 class SceneMaterialHeat : public SceneMaterial
 {
 public:
@@ -132,7 +114,7 @@ class SceneBoundaryHeatDialog : public SceneBoundaryDialog
     Q_OBJECT
 
 public:
-    SceneBoundaryHeatDialog(SceneBoundaryHeat *boundary, QWidget *parent);
+    SceneBoundaryHeatDialog(SceneBoundary *boundary, QWidget *parent);
 
 protected:
     void createContent();

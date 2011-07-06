@@ -12,72 +12,58 @@
 
     <localvariable>
         <item id="rf_electric_field_real" name="Electric field - real" shortname="Er" unit="V/m" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="value1" axi_scalar="value1" />
             <transient />
         </item>
         <item id="rf_electric_field_imag" name="Electric field - imag" shortname="Ei" unit="V/m" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="value2" axi_scalar="value2" />
             <transient />
         </item>
         <item id="rf_displacement_real" name="Displacement - real" shortname="Dr" unit="C/m2" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="epsr * EPS0 * value1" axi_scalar="epsr * EPS0 * value1" />
             <transient />
         </item>
         <item id="rf_displacement_imag" name="Displacement - imag" shortname="Di" unit="C/m2" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="epsr * EPS0 * value2" axi_scalar="epsr * EPS0 * value2" />
             <transient />
         </item>  
         <item id="rf_current_density_real" name="Current density - real" shortname="Jr" unit="A/m2" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="gamma * value1" axi_scalar="gamma * value1" />
             <transient />
         </item>
         <item id="rf_current_density_imag" name="Current density - imag" shortname="Ji" unit="A/m2" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="gamma * value2" axi_scalar="gamma * value2" />
             <transient />
         </item>               
         <item id="rf_magnetic_field_real" name="Magnetic field - real" shortname="Hr" unit="A/m" scalar="0">
-            <steadystate />
             <harmonic planar_comp_x="- 1.0 / (2.0 * PI * f * mur * MU0) * dy2" planar_comp_y="1.0 / (2.0 * PI * f * mur * MU0) * dx2" axi_comp_r="- 1.0 / (2.0 * PI * f * mur * MU0) * dy2" axi_comp_z="1.0 / (2.0 * PI * f * mur * MU0) * dx2" />
             <transient />
         </item>
         <item id="rf_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" unit="A/m" scalar="0">
-            <steadystate />
             <harmonic planar_comp_x="1.0 / (2.0 * PI * f * mur * MU0) * dy1" planar_comp_y="1.0 / (2.0 * PI * f * mur * MU0) * dx1" axi_comp_r="1.0 / (2.0 * PI * f * mur * MU0) * dy1" axi_comp_z="1.0 / (2.0 * PI * f * mur * MU0) * dx1" />
             <transient />
         </item>
         <item id="rf_flux_density_real" name="Flux density - real" shortname="Br" unit="T" scalar="0">
-            <steadystate />
             <harmonic planar_comp_x="- 1.0 / (2.0 * PI * f) * dy2" planar_comp_y="1.0 / (2.0 * PI * f) * dx2" axi_comp_r="- 1.0 / (2.0 * PI * f) * dy2" axi_comp_z="1.0 / (2.0 * PI * f) * dx2" />
             <transient />
         </item>
         <item id="rf_flux_density_imag" name="Flux density - imag" shortname="Bi" unit="T" scalar="0">
-            <steadystate />
             <harmonic planar_comp_x="1.0 / (2.0 * PI * f) * dy1" planar_comp_y="1.0 / (2.0 * PI * f) * dx1" axi_comp_r="1.0 / (2.0 * PI * f) * dy1" axi_comp_z="1.0 / (2.0 * PI * f) * dx1" />
             <transient />
         </item>        
         <item id="rf_poynting_vector" name="Poyting vector" shortname="N" unit="W/m2" scalar="0">
-            <steadystate />
             <harmonic planar_comp_x="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dx1 - value1 * dx2)" planar_comp_y="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dy1 - value1 * dy2)" axi_comp_r="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dx1 - value1 * dx2)" axi_comp_z="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dy1 - value1 * dy2)" />
             <transient />
         </item>                       
         <item id="rf_permittivity" name="Permittivity" shortname="epsr" unit="-" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="epsr" axi_scalar="epsr" />
             <transient />
         </item>        
         <item id="rf_permeability" name="Permeability" shortname="mur" unit="-" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="mur" axi_scalar="mur" />
             <transient />
         </item>        
         <item id="rf_conductivity" name="Conductivity" shortname="gamma" unit="S/m" scalar="1">
-            <steadystate />
             <harmonic planar_scalar="gamma" axi_scalar="gamma" />
             <transient />
         </item>        
@@ -85,7 +71,6 @@
 
     <view>
         <scalarvariable>
-            <steadystate/>
             <harmonic default="rf_electric_field_real">
                 <item id="rf_electric_field_real" />
                 <item id="rf_electric_field_imag" />
@@ -106,7 +91,6 @@
         </scalarvariable>
 
         <vectorvariable>
-            <steadystate/>
             <harmonic default="rf_magnetic_field_real"/>
                 <item id="rf_magnetic_field_real" />
                 <item id="rf_magnetic_field_imag" />  
@@ -118,7 +102,6 @@
     </view>
     
     <pointvalue>
-        <steadystate/>         
         <harmonic>
             <item id="rf_electric_field_real" />
             <item id="rf_electric_field_imag" />
@@ -140,12 +123,10 @@
     
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
-            <steadystate/>
             <harmonic planar="1.0" axi="2.0 * PI * x" />
             <transient/>
         </item>        
         <item id="surface" name="Cross section" shortname="S" unit="m2">
-            <steadystate />
             <harmonic planar="1.0" axi="1.0" />
             <transient/>
         </item>
@@ -153,12 +134,10 @@
     
     <surfaceintegral>
         <item id="length" name="Length" shortname="l" unit="m">
-            <steadystate/>
             <harmonic planar="1.0" axi="1.0" />
             <transient/>
         </item>        
         <item id="surface" name="Surface" shortname="S" unit="m2">
-            <steadystate/>
             <harmonic planar="1.0" axi="2.0 * PI * x" />
             <transient/>
         </item>

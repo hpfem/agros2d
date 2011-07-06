@@ -42,8 +42,6 @@ public:
     Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
     // rewrite
-    void readBoundaryFromDomElement(QDomElement *element);
-    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
     void readMaterialFromDomElement(QDomElement *element);
     void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
@@ -93,18 +91,6 @@ public:
 
 // *******************************************************************************************
 
-class SceneBoundaryElectrostatic : public SceneBoundary
-{
-public:
-    Value value;
-
-    SceneBoundaryElectrostatic(const QString &name, PhysicFieldBC type, Value value);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
 class SceneMaterialElectrostatic : public SceneMaterial
 {
 public:
@@ -114,7 +100,6 @@ public:
     SceneMaterialElectrostatic(const QString &name, Value charge_density, Value permittivity);
 
     QString script();
-    QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
@@ -124,7 +109,7 @@ class SceneBoundaryElectrostaticDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 public:
-    SceneBoundaryElectrostaticDialog(SceneBoundaryElectrostatic *material, QWidget *parent);
+    SceneBoundaryElectrostaticDialog(SceneBoundary *boundary, QWidget *parent);
 
 protected:
     void createContent();

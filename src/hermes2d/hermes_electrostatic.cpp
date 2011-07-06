@@ -32,15 +32,15 @@ public:
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneBoundaryElectrostatic *boundaryHeat = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->edges[i]->boundary);
+            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
-            if (boundaryHeat && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
+            if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
-                if (boundaryHeat->type == PhysicFieldBC_Electrostatic_SurfaceCharge)
-                    if (fabs(boundaryHeat->value.number) > EPS_ZERO)
+                if (boundary->type == "electrostatic_surface_charge_density")
+                    if (fabs(boundary->get_value("electrostatic_surface_charge_density").number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        boundaryHeat->value.number,
+                                                                                                        boundary->get_value("electrostatic_surface_charge_density").number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
         }
@@ -155,7 +155,7 @@ VolumeIntegralValue *ModuleElectrostatic::volume_integral_value()
 }
 
 ViewScalarFilter *ModuleElectrostatic::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                           PhysicFieldVariableComp physicFieldVariableComp)
+                                                          PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
     return new ViewScalarFilterElectrostatic(sln1, get_expression(physicFieldVariable, physicFieldVariableComp));
@@ -166,10 +166,11 @@ Hermes::vector<SolutionArray *> ModuleElectrostatic::solve(ProgressItemSolve *pr
     // boundaries
     for (int i = 1; i<Util::scene()->boundaries.count(); i++)
     {
-        SceneBoundaryElectrostatic *boundary = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->boundaries[i]);
+        SceneBoundary *boundary = Util::scene()->boundaries[i];
 
         // evaluate script
-        if (!boundary->value.evaluate()) return Hermes::vector<SolutionArray *>();
+        for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
+            if (!it->second.evaluate()) return Hermes::vector<SolutionArray *>();
     }
 
     // materials
@@ -186,12 +187,13 @@ Hermes::vector<SolutionArray *> ModuleElectrostatic::solve(ProgressItemSolve *pr
     EssentialBCs bcs;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        SceneBoundaryElectrostatic *boundary = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->edges[i]->boundary);
+        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
         if (boundary)
         {
-            if (boundary->type == PhysicFieldBC_Electrostatic_Potential)
-                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value.number));
+            if (boundary->type == "electrostatic_potential")
+                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                                                                       boundary->get_value("electrostatic_potential").number));
         }
     }
 
@@ -204,32 +206,6 @@ Hermes::vector<SolutionArray *> ModuleElectrostatic::solve(ProgressItemSolve *pr
 
 // **************************************************************************************************************************
 // rewrite
-
-void ModuleElectrostatic::readBoundaryFromDomElement(QDomElement *element)
-{
-    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
-    switch (type)
-    {
-    case PhysicFieldBC_None:
-    case PhysicFieldBC_Electrostatic_Potential:
-    case PhysicFieldBC_Electrostatic_SurfaceCharge:
-        Util::scene()->addBoundary(new SceneBoundaryElectrostatic(element->attribute("name"),
-                                                                  type,
-                                                                  Value(element->attribute("value", "0"))));
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-        break;
-    }
-}
-
-void ModuleElectrostatic::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
-{
-    SceneBoundaryElectrostatic *material = dynamic_cast<SceneBoundaryElectrostatic *>(marker);
-
-    element->setAttribute("type", physicFieldBCToStringKey(material->type));
-    element->setAttribute("value", material->value.text);
-}
 
 void ModuleElectrostatic::readMaterialFromDomElement(QDomElement *element)
 {
@@ -248,13 +224,12 @@ void ModuleElectrostatic::writeMaterialToDomElement(QDomElement *element, SceneM
 
 SceneBoundary *ModuleElectrostatic::newBoundary()
 {
-    return new SceneBoundaryElectrostatic(tr("new boundary"),
-                                          PhysicFieldBC_Electrostatic_Potential,
-                                          Value("0"));
+    return new SceneBoundary(tr("new boundary").toStdString(), "electrostatic_potential");
 }
 
 SceneBoundary *ModuleElectrostatic::newBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double value;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
@@ -263,15 +238,17 @@ SceneBoundary *ModuleElectrostatic::newBoundary(PyObject *self, PyObject *args)
         if (Util::scene()->getBoundary(name)) return NULL;
 
         return new SceneBoundaryElectrostatic(name,
-                                              physicFieldBCFromStringKey(type),
+                                              type,
                                               Value(QString::number(value)));
     }
 
     return NULL;
+    */
 }
 
 SceneBoundary *ModuleElectrostatic::modifyBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double value;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
@@ -298,6 +275,7 @@ SceneBoundary *ModuleElectrostatic::modifyBoundary(PyObject *self, PyObject *arg
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleElectrostatic::newMaterial()
@@ -348,43 +326,6 @@ SceneMaterial *ModuleElectrostatic::modifyMaterial(PyObject *self, PyObject *arg
 
 // *************************************************************************************************************************************
 
-SceneBoundaryElectrostatic::SceneBoundaryElectrostatic(const QString &name, PhysicFieldBC type, Value value)
-    : SceneBoundary(name, type)
-{
-    this->value = value;
-}
-
-QString SceneBoundaryElectrostatic::script()
-{
-    return QString("addboundary(\"%1\", \"%2\", %3)").
-            arg(name).
-            arg(physicFieldBCToStringKey(type)).
-            arg(value.text);
-}
-
-QMap<QString, QString> SceneBoundaryElectrostatic::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PhysicFieldBC_Electrostatic_Potential:
-        out["Potential (V)"] = value.text;
-        break;
-    case PhysicFieldBC_Electrostatic_SurfaceCharge:
-        out["Surface charge density (C/m3)"] = value.text;
-        break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneBoundaryElectrostatic::showDialog(QWidget *parent)
-{
-    SceneBoundaryElectrostaticDialog *dialog = new SceneBoundaryElectrostaticDialog(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
 SceneMaterialElectrostatic::SceneMaterialElectrostatic(const QString &name, Value charge_density, Value permittivity)
     : SceneMaterial(name)
 {
@@ -400,14 +341,6 @@ QString SceneMaterialElectrostatic::script()
             arg(permittivity.text);
 }
 
-QMap<QString, QString> SceneMaterialElectrostatic::data()
-{
-    QMap<QString, QString> out;
-    out["Charge density (C/m3)"] = charge_density.text;
-    out["Permittivity (-)"] = permittivity.text;
-    return QMap<QString, QString>(out);
-}
-
 int SceneMaterialElectrostatic::showDialog(QWidget *parent)
 {
     SceneMaterialElectrostaticDialog *dialog = new SceneMaterialElectrostaticDialog(this, parent);
@@ -416,9 +349,9 @@ int SceneMaterialElectrostatic::showDialog(QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneBoundaryElectrostaticDialog::SceneBoundaryElectrostaticDialog(SceneBoundaryElectrostatic *material, QWidget *parent) : SceneBoundaryDialog(parent)
+SceneBoundaryElectrostaticDialog::SceneBoundaryElectrostaticDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
 {
-    m_boundary = material;
+    m_boundary = boundary;
 
     createDialog();
 
@@ -431,8 +364,7 @@ void SceneBoundaryElectrostaticDialog::createContent()
     lblValueUnit = new QLabel("");
 
     cmbType = new QComboBox(this);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Electrostatic_Potential), PhysicFieldBC_Electrostatic_Potential);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Electrostatic_SurfaceCharge), PhysicFieldBC_Electrostatic_SurfaceCharge);
+    Util::scene()->problemInfo()->module()->fillComboBoxBoundaryCondition(cmbType);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValue = new ValueLineEdit(this);
@@ -451,23 +383,33 @@ void SceneBoundaryElectrostaticDialog::load()
 {
     SceneBoundaryDialog::load();
 
-    SceneBoundaryElectrostatic *material = dynamic_cast<SceneBoundaryElectrostatic *>(m_boundary);
-
-    cmbType->setCurrentIndex(cmbType->findData(material->type));
-    txtValue->setValue(material->value);
+    cmbType->setCurrentIndex(cmbType->findData(QString::fromStdString(m_boundary->type)));
+    if (m_boundary->type == "electrostatic_potential")
+    {
+        txtValue->setValue(m_boundary->get_value("electrostatic_potential"));
+    }
+    else if (m_boundary->type == "electrostatic_surface_charge_density")
+    {
+        txtValue->setValue(m_boundary->get_value("electrostatic_surface_charge_density"));
+    }
 }
 
 bool SceneBoundaryElectrostaticDialog::save() {
     if (!SceneBoundaryDialog::save()) return false;
 
-    SceneBoundaryElectrostatic *material = dynamic_cast<SceneBoundaryElectrostatic *>(m_boundary);
-
-    material->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
+    m_boundary->type = cmbType->itemData(cmbType->currentIndex()).toString().toStdString();
 
     if (txtValue->evaluate())
-        material->value  = txtValue->value();
-    else
-        return false;
+        if (m_boundary->type == "electrostatic_potential")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("electrostatic_potential")] = txtValue->value();
+        }
+        else if (m_boundary->type == "electrostatic_surface_charge_density")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("electrostatic_surface_charge_density")] = txtValue->value();
+        }
+        else
+            return false;
 
     return true;
 }
@@ -477,25 +419,20 @@ void SceneBoundaryElectrostaticDialog::doTypeChanged(int index)
     txtValue->setEnabled(false);
 
     // read equation
-    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+    readEquation(lblEquationImage, cmbType->itemData(index).toString());
 
     // enable controls
-    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
-    {
-    case PhysicFieldBC_Electrostatic_Potential:
+    if (cmbType->itemData(index) == "electrostatic_potential")
     {
         txtValue->setEnabled(true);
         lblValueUnit->setText(tr("<i>%1</i><sub>0</sub> (V)").arg(QString::fromUtf8("φ")));
         lblValueUnit->setToolTip(cmbType->itemText(index));
     }
-        break;
-    case PhysicFieldBC_Electrostatic_SurfaceCharge:
+    else if (cmbType->itemData(index) == "electrostatic_surface_charge_density")
     {
         txtValue->setEnabled(true);
         lblValueUnit->setText(tr("<i>%1</i><sub>0</sub> (C/m<sup>2</sup>)").arg(QString::fromUtf8("σ")));
         lblValueUnit->setToolTip(cmbType->itemText(index));
-    }
-        break;
     }
 
     setMinimumSize(sizeHint());

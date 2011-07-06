@@ -454,7 +454,7 @@ void SceneEdgeDialog::fillComboBox()
     cmbBoundary->clear();
     for (int i = 0; i<Util::scene()->boundaries.count(); i++)
     {
-        cmbBoundary->addItem(Util::scene()->boundaries[i]->name, Util::scene()->boundaries[i]->variant());
+        cmbBoundary->addItem(QString::fromStdString(Util::scene()->boundaries[i]->name), Util::scene()->boundaries[i]->variant());
     }
 }
 
@@ -535,7 +535,7 @@ void SceneEdgeDialog::doBoundaryClicked()
     SceneBoundary *marker = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
     if (marker->showDialog(this) == QDialog::Accepted)
     {
-        cmbBoundary->setItemText(cmbBoundary->currentIndex(), marker->name);
+        cmbBoundary->setItemText(cmbBoundary->currentIndex(), QString::fromStdString(marker->name));
         Util::scene()->refresh();
     }
 }

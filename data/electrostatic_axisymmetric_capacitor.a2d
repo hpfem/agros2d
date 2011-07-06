@@ -6,9 +6,9 @@ eps1 = 10
 eps2 = 3</scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge type="electrostatic_potential" value="U" id="1" name="Source"/>
-                <edge type="electrostatic_potential" value="0" id="2" name="Ground"/>
-                <edge type="electrostatic_surface_charge_density" value="0" id="3" name="Neumann"/>
+                <edge type="electrostatic_potential" electrostatic_potential="U" id="1" name="Source"/>
+                <edge type="electrostatic_potential" electrostatic_potential="0" id="2" name="Ground"/>
+                <edge type="electrostatic_surface_charge_density" electrostatic_surface_charge_density="0" id="3" name="Neumann"/>
             </edges>
             <labels>
                 <label charge_density="0" id="1" name="Air" permittivity="1"/>

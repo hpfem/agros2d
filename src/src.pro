@@ -62,12 +62,12 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     #hermes2d/hermes_general.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
-    hermes2d/hermes_magnetic.cpp \
-    hermes2d/hermes_current.cpp \
-    hermes2d/hermes_elasticity.cpp \
+    #hermes2d/hermes_magnetic.cpp \
+    #hermes2d/hermes_current.cpp \
+    #hermes2d/hermes_elasticity.cpp \
+    #hermes2d/hermes_rf.cpp \
+    #hermes2d/hermes_acoustic.cpp \
     #hermes2d/hermes_flow.cpp \
-    hermes2d/hermes_rf.cpp \
-    hermes2d/hermes_acoustic.cpp \
     main.cpp \
     scripteditordialog.cpp \
     scripteditorcommandpython.cpp \
@@ -98,10 +98,11 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     style/manhattanstyle.cpp \
     indicators/indicators.cpp \
     indicators/indicator_unity.cpp \
-    collaboration.cpp \
     hermes2d/localpoint.cpp \
     hermes2d/volumeintegral.cpp \
     hermes2d/surfaceintegral.cpp \
+    hermes2d/boundary.cpp \
+    collaboration.cpp \
     resultsview.cpp
 HEADERS += util.h \
     value.h \
@@ -114,12 +115,12 @@ HEADERS += util.h \
     #hermes2d/hermes_general.h \
     hermes2d/hermes_electrostatic.h \
     hermes2d/hermes_heat.h \
-    hermes2d/hermes_magnetic.h \
-    hermes2d/hermes_current.h \
-    hermes2d/hermes_elasticity.h \
+    #hermes2d/hermes_magnetic.h \
+    #hermes2d/hermes_current.h \
+    #hermes2d/hermes_elasticity.h \
+    #hermes2d/hermes_rf.h \
+    #hermes2d/hermes_acoustic.h \
     #hermes2d/hermes_flow.h \
-    hermes2d/hermes_rf.h \
-    hermes2d/hermes_acoustic.h \
     mainwindow.h \
     scripteditordialog.h \
     scripteditorcommandpython.h \
@@ -154,6 +155,7 @@ HEADERS += util.h \
     hermes2d/localpoint.h \
     hermes2d/volumeintegral.h \
     hermes2d/surfaceintegral.h \
+    hermes2d/boundary.h \
     resultsview.h
 INCLUDEPATH += . \
     ../lib/muparser \

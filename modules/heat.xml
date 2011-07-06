@@ -7,35 +7,44 @@
     
     <constants />
         
+    <material>
+        <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="-" />
+        <item id="heat_density" name="Density" shortname="rho" unit="kg/m3" />
+        <item id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" />
+    </material>
+
+    <boundary>
+        <item id="heat_temperature" name="Temperature">
+            <variable id="heat_temperature" name="Temperature" shortname="T" unit="K" />
+        </item>    
+        <item id="heat_heat_flux" name="Heat flux">                        
+            <variable id="heat_heat_flux" name="Heat flux" shortname="F" unit="W/m2" />
+            <variable id="heat_heat_transfer_coefficient" name="Heat transfer coefficient" shortname="h" unit="W/m2.K" />
+            <variable id="heat_external_temperature" name="External temperature" shortname="Te" unit="K" />
+        </item>
+    </boundary>
+
     <localvariable>
         <item id="heat_temperature" name="Temperature" shortname="T" unit="K" scalar="1">
             <steadystate planar_scalar="value1" axi_scalar="value1" />
-            <harmonic />
             <transient planar_scalar="value1" axi_scalar="value1" />
         </item>
         <item id="heat_heat_flux" name="Heat flux" shortname="F" unit="W/m2" scalar="0">
             <steadystate planar_comp_x="- lambda * dx1" planar_comp_y="- lambda * dy1" axi_comp_r="- lambda * dx1" axi_comp_z="- lambda * dy1" />
-            <harmonic />
             <transient planar_comp_x="- lambda * dx1" planar_comp_y="- lambda * dy1" axi_comp_r="- lambda * dx1" axi_comp_z="- lambda * dy1" />
         </item>
         <item id="heat_temperature_gradient" name="Temperature gradient" shortname="G" unit="K/m" scalar="0">
             <steadystate planar_comp_x="- dx1" planar_comp_y="- dy1" axi_comp_r="- dx1" axi_comp_z="- dy1" />
-            <harmonic />
             <transient planar_comp_x="- dx1" planar_comp_y="- dy1" axi_comp_r="- dx1" axi_comp_z="- dy1" />
         </item>
-        <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="-" scalar="1">
+        <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="W/m.K" scalar="1">
             <steadystate planar_scalar="lambda" axi_scalar="lambda" />
-            <harmonic />
             <transient planar_scalar="lambda" axi_scalar="lambda" />
         </item>
         <item id="heat_density" name="Density" shortname="rho" unit="kg/m3" scalar="1">
-            <steadystate />
-            <harmonic />
             <transient planar_scalar="rho" axi_scalar="rho" />
         </item>
         <item id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" scalar="1">
-            <steadystate />
-            <harmonic />
             <transient planar_scalar="cp" axi_scalar="cp" />
         </item>
     </localvariable>
@@ -48,7 +57,6 @@
                 <item id="heat_temperature_gradient" />
                 <item id="heat_conductivity" />
             </steadystate>
-            <harmonic/>
             <transient default="heat_temperature">
                 <item id="heat_temperature" />
                 <item id="heat_heat_flux" />
@@ -64,7 +72,6 @@
                 <item id="heat_temperature_gradient" />
                 <item id="heat_heat_flux" />
             </steadystate>
-            <harmonic/>
             <transient default="heat_heat_flux">
                 <item id="heat_temperature_gradient" />
                 <item id="heat_heat_flux" />
@@ -79,7 +86,6 @@
             <item id="heat_temperature_gradient" />
             <item id="heat_conductivity" />           
         </steadystate>
-        <harmonic/>
         <transient>
             <item id="heat_temperature" />
             <item id="heat_heat_flux" />
@@ -93,17 +99,14 @@
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
-            <harmonic/>
             <transient planar="1.0" axi="2.0 * PI * x" />
         </item>        
         <item id="surface" name="Cross section" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="1.0" />
-            <harmonic/>
             <transient planar="1.0" axi="1.0" />
         </item>
         <item id="heat_temperature" name="Temperature" shortname="T" unit="T.m3">
             <steadystate planar="value1" axi="2.0 * PI * x * value1" />
-            <harmonic/>
             <transient planar="value1" axi="2.0 * PI * x * value1" />
         </item>
     </volumeintegral>    
@@ -111,22 +114,18 @@
     <surfaceintegral>
         <item id="length" name="Length" shortname="l" unit="m">
             <steadystate planar="1.0" axi="1.0" />
-            <harmonic/>
             <transient planar="1.0" axi="1.0" />
         </item>        
         <item id="surface" name="Surface" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
-            <harmonic/>
             <transient planar="1.0" axi="2.0 * PI * x" />
         </item>
         <item id="heat_temperature" name="Temperature" shortname="T" unit="T.m2">
             <steadystate planar="value1" axi="2.0 * PI * x * value1" />
-            <harmonic/>
             <transient planar="value1" axi="2.0 * PI * x * value1" />
         </item>
         <item id="heat_heat_flux" name="Heat flux" shortname="f" unit="W">
             <steadystate planar="- lambda * (tany * dx1 - tanx * dy1)" axi="- 2.0 * PI * x * lambda * (tany * dx1 - tanx * dy1)" />
-            <harmonic/>
             <transient planar="- lambda * (tany * dx1 - tanx * dy1)" axi="- 2.0 * PI * x * lambda * (tany * dx1 - tanx * dy1)" />
         </item>
     </surfaceintegral> 

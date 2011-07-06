@@ -805,7 +805,7 @@ void SceneView::paintGeometry()
     foreach (SceneEdge *edge, m_scene->edges)
     {
         // edge with marker
-        if (m_sceneMode == SceneMode_OperateOnEdges && edge->boundary->type == PhysicFieldBC_None)
+        if (m_sceneMode == SceneMode_OperateOnEdges && edge->boundary->type == "")
         {
             glEnable(GL_LINE_STIPPLE);
             glLineStipple(1, 0x8FFF);
@@ -2989,7 +2989,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                             SceneEdge *edgeAdded = m_scene->addEdge(edge);
                             if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                                                                       edge->nodeEnd->point,
-                                                                                                      edge->boundary->name,
+                                                                                                      QString::fromStdString(edge->boundary->name),
                                                                                                       edge->angle,
                                                                                                       edge->refineTowardsEdge));
                         }
@@ -3281,7 +3281,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                arg(edge->nodeStart->point.y, 0, 'g', 3).
                                arg(edge->nodeEnd->point.x, 0, 'g', 3).
                                arg(edge->nodeEnd->point.y, 0, 'g', 3).
-                               arg(edge->boundary->name).
+                               arg(QString::fromStdString(edge->boundary->name)).
                                arg(edge->angle, 0, 'f', 0).
                                arg(m_scene->edges.indexOf(edge)).
                                arg(edge->boundary->html()));

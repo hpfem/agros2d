@@ -318,7 +318,7 @@ void Scene::removeNode(SceneNode *node)
     {
         if ((edge->nodeStart == node) || (edge->nodeEnd == node))
         {
-            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, edge->boundary->name,
+            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, QString::fromStdString(edge->boundary->name),
                                                          edge->angle, edge->refineTowardsEdge));
             removeEdge(edge);
         }
@@ -498,7 +498,7 @@ SceneBoundary *Scene::getBoundary(const QString &name)
 
     for (int i = 0; i<boundaries.count(); i++)
     {
-        if (boundaries[i]->name == name)
+        if (boundaries[i]->name == name.toStdString())
             return boundaries[i];
     }
     return NULL;
@@ -510,7 +510,7 @@ bool Scene::setBoundary(const QString &name, SceneBoundary *boundary)
 
     for (int i = 1; i<boundaries.count(); i++)
     {
-        if (boundaries[i]->name == name)
+        if (boundaries[i]->name == name.toStdString())
         {
             SceneBoundary *markerTemp = boundaries[i];
 
@@ -535,7 +535,7 @@ bool Scene::setBoundary(const QString &name, SceneBoundary *boundary)
 void Scene::replaceBoundary(SceneBoundary *boundary)
 {
     // store original name
-    QString name = boundary->name;
+    std::string name = boundary->name;
 
     // add new marker
     SceneBoundary *markerNew = Util::scene()->problemInfo()->module()->newBoundary();
@@ -767,7 +767,7 @@ void Scene::deleteSelected()
     {
         if (edge->isSelected)
         {
-            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, edge->boundary->name,
+            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, QString::fromStdString(edge->boundary->name),
                                                          edge->angle, edge->refineTowardsEdge));
             removeEdge(edge);
         }
@@ -1035,7 +1035,7 @@ void Scene::doNewEdge()
         if (edgeAdded == edge)
             m_undoStack->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                       edge->nodeEnd->point,
-                                                      edge->boundary->name,
+                                                      QString::fromStdString(edge->boundary->name),
                                                       edge->angle,
                                                       edge->refineTowardsEdge));
     }
@@ -1442,6 +1442,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     {
         element = n.toElement();
         QString name = element.toElement().attribute("name");
+        QString type = element.toElement().attribute("type");
 
         if (element.toElement().attribute("id") == 0)
         {
@@ -1451,7 +1452,13 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         else
         {
             // read marker
-            m_problemInfo->module()->readBoundaryFromDomElement(&element.toElement());
+            SceneBoundary *boundary = new SceneBoundary(name.toStdString(), type.toStdString());
+            for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
+            {
+                Hermes::Module::BoundaryTypeVariable *variable = it->first;
+                boundary->values[variable] = Value(element.toElement().attribute(QString::fromStdString(variable->id), "0"));
+            }
+            Util::scene()->addBoundary(boundary);
         }
 
         n = n.nextSibling();
@@ -1694,24 +1701,27 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // markers ***************************************************************************************************************
 
     // edge markers
-    QDomNode eleBoundarys = doc.createElement("edges");
-    eleProblem.appendChild(eleBoundarys);
+    QDomNode eleBoundaries = doc.createElement("edges");
+    eleProblem.appendChild(eleBoundaries);
     for (int i = 1; i<boundaries.length(); i++)
     {
         QDomElement eleBoundary = doc.createElement("edge");
 
         eleBoundary.setAttribute("id", i);
-        eleBoundary.setAttribute("name", boundaries[i]->name);
-        if (boundaries[i]->type == PhysicFieldBC_None)
+        eleBoundary.setAttribute("name", QString::fromStdString(boundaries[i]->name));
+        if (boundaries[i]->type == "")
             eleBoundary.setAttribute("type", "none");
 
         if (i > 0)
         {
             // write marker
-            m_problemInfo->module()->writeBoundaryToDomElement(&eleBoundary, boundaries[i]);
+            eleBoundary.setAttribute("type", QString::fromStdString(boundaries[i]->type));
+
+            for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundaries[i]->values.begin(); it != boundaries[i]->values.end(); ++it)
+                eleBoundary.setAttribute(QString::fromStdString(it->first->id), it->second.text);
         }
 
-        eleBoundarys.appendChild(eleBoundary);
+        eleBoundaries.appendChild(eleBoundary);
     }
 
     // label markers

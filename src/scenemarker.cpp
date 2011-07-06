@@ -22,27 +22,39 @@
 #include "scene.h"
 #include "gui.h"
 
-SceneBoundary::SceneBoundary(const QString &name, PhysicFieldBC type)
+SceneBoundary::SceneBoundary(std::string name, std::string type)
+    : Boundary(name, type)
 {
     logMessage("SceneBoundary::SceneBoundary()");
+}
 
-    this->name = name;
-    this->type = type;
+QString SceneBoundary::script()
+{
+    return "";
+}
+
+int SceneBoundary::showDialog(QWidget *parent)
+{
+    SceneBoundaryDialog *dialog = boundaryDialogFactory(this, parent);
+    return dialog->exec();
 }
 
 QString SceneBoundary::html()
 {
-    logMessage("SceneBoundary::html()");
-
     QString out;
     out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
     out += "<table>";
-    QMap<QString, QString> data = this->data();
-    for (int j = 0; j < data.keys().length(); j++)
+
+    for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = values.begin(); it != values.end(); ++it)
     {
+        Hermes::Module::BoundaryTypeVariable *variable = it->first;
+
         out += "<tr>";
-        out += "<td>" + data.keys()[j] + ":</td>";
-        out += "<td>" + data.values()[j] + "</td>";
+        out += QString("<td>%1 (%2):</td>").
+                arg(QString::fromStdString(variable->name)).
+                arg(QString::fromStdString(variable->unit));
+        out += QString("<td>%1</td>").
+                arg(it->second.text);
         out += "</tr>";
     }
     out += "</table>";
@@ -59,7 +71,7 @@ QVariant SceneBoundary::variant()
     return v;
 }
 
-SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary("none", PhysicFieldBC_None)
+SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary("none")
 {
     logMessage("SceneBoundary::SceneBoundaryNone()");
 
@@ -76,17 +88,24 @@ SceneMaterial::SceneMaterial(const QString &name)
 
 QString SceneMaterial::html()
 {
-    logMessage("SceneMaterial::html()");
+    logMessage("SceneBoundary::html()");
 
     QString out;
     out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
     out += "<table>";
-    QMap<QString, QString> data = this->data();
-    for (int j = 0; j < data.keys().length(); j++)
+
+    for(Hermes::vector<Hermes::Module::MaterialType *>::iterator it = Util::scene()->problemInfo()->module()->material_types.begin();
+        it < Util::scene()->problemInfo()->module()->material_types.end(); ++it )
     {
+        Hermes::Module::MaterialType *material = ((Hermes::Module::MaterialType *) *it);
+
         out += "<tr>";
-        out += "<td>" + data.keys()[j] + ":</td>";
-        out += "<td>" + data.values()[j] + "</td>";
+        out += QString("<td>%1 (%2)</td>").
+                arg(QString::fromStdString(material->name)).
+                arg(QString::fromStdString(material->unit));
+        // FIXME - add value
+        out += QString("<td>%1</td>").
+                arg(QString::fromStdString("FIXME"));
         out += "</tr>";
     }
     out += "</table>";
@@ -154,7 +173,7 @@ void SceneBoundaryDialog::load()
 {
     logMessage("SceneBoundaryDialog::load()");
 
-    txtName->setText(m_boundary->name);
+    txtName->setText(QString::fromStdString(m_boundary->name));
 }
 
 bool SceneBoundaryDialog::save()
@@ -164,7 +183,7 @@ bool SceneBoundaryDialog::save()
     // find name duplicities
     foreach (SceneBoundary *boundary, Util::scene()->boundaries)
     {
-        if (boundary->name == txtName->text())
+        if (QString::fromStdString(boundary->name) == txtName->text())
         {
             if (m_boundary == boundary)
                 continue;
@@ -173,7 +192,7 @@ bool SceneBoundaryDialog::save()
             return false;
         }
     }
-    m_boundary->name = txtName->text();
+    m_boundary->name = txtName->text().toStdString();
     return true;
 }
 
@@ -206,11 +225,11 @@ void SceneBoundaryDialog::evaluated(bool isError)
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
 
-void SceneBoundaryDialog::readEquation(QLabel *lblEquation, PhysicFieldBC type)
+void SceneBoundaryDialog::readEquation(QLabel *lblEquation, const QString &type)
 {
     QString fileName = QString(":/images/equations/%1/%2_%3.png")
             .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name))
-            .arg(physicFieldBCToStringKey(type))
+            .arg(type)
             .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
 
     if (QFile::exists(fileName))
@@ -220,7 +239,7 @@ void SceneBoundaryDialog::readEquation(QLabel *lblEquation, PhysicFieldBC type)
         // general form
         readPixmap(lblEquation, QString(":/images/equations/%1/%2.png")
                    .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
-                   .arg(physicFieldBCToStringKey(type)));
+                   .arg(type));
 }
 
 // *************************************************************************************************************************************
@@ -340,7 +359,7 @@ SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(
     cmbBoundary = new QComboBox(this);
     for (int i = 0; i<Util::scene()->boundaries.count(); i++)
     {
-        cmbBoundary->addItem(Util::scene()->boundaries[i]->name, Util::scene()->boundaries[i]->variant());
+        cmbBoundary->addItem(QString::fromStdString(Util::scene()->boundaries[i]->name), Util::scene()->boundaries[i]->variant());
     }
 
     // select marker
