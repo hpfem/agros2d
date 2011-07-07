@@ -84,7 +84,8 @@ SOURCES += util.cpp \
     style/styleanimator.cpp \
     style/manhattanstyle.cpp \
     indicators/indicators.cpp \
-    indicators/indicator_unity.cpp
+    indicators/indicator_unity.cpp \
+    cloud.cpp
 HEADERS += util.h \
     value.h \
     scene.h \
@@ -131,7 +132,8 @@ HEADERS += util.h \
     style/styleanimator.h \
     style/manhattanstyle.h \
     indicators/indicators.h \
-    indicators/indicator_unity.h
+    indicators/indicator_unity.h \
+    cloud.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common

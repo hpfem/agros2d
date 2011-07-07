@@ -53,10 +53,12 @@ private slots:
 
     void doDocumentNew();
     void doDocumentOpen(const QString &fileName = "");
+    void doDocumentOpenCloud();
     void doDocumentOpenRecent(QAction *action);
     void doDocumentSave();
     void doDocumentSaveWithSolution();
     void doDocumentSaveAs();
+    void doDocumentSaveCloud();
     void doDocumentClose();
     void doDocumentImportDXF();
     void doDocumentExportDXF();
@@ -126,9 +128,11 @@ private:
 
     QAction *actDocumentNew;
     QAction *actDocumentOpen;
+    QAction *actDocumentOpenCloud;
     QAction *actDocumentSave;
     QAction *actDocumentSaveWithSolution;
     QAction *actDocumentSaveAs;
+    QAction *actDocumentSaveCloud;
     QAction *actDocumentClose;
     QAction *actDocumentImportDXF;
     QAction *actDocumentExportDXF;

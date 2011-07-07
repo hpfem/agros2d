@@ -36,6 +36,7 @@
 #include "logdialog.h"
 #include "problemdialog.h"
 #include "progressdialog.h"
+#include "cloud.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -161,6 +162,10 @@ void MainWindow::createActions()
     actDocumentOpen->setStatusTip(tr("Open an existing file"));
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(doDocumentOpen()));
 
+    actDocumentOpenCloud = new QAction(icon("document-open"), tr("&Open from cloud..."), this);
+    actDocumentOpenCloud->setStatusTip(tr("Open an file from cloud"));
+    connect(actDocumentOpenCloud, SIGNAL(triggered()), this, SLOT(doDocumentOpenCloud()));
+
     actDocumentSave = new QAction(icon("document-save"), tr("&Save"), this);
     actDocumentSave->setShortcuts(QKeySequence::Save);
     actDocumentSave->setStatusTip(tr("Save the file to disk"));
@@ -174,6 +179,10 @@ void MainWindow::createActions()
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
     actDocumentSaveAs->setStatusTip(tr("Save the file under a new name"));
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
+
+    actDocumentSaveCloud = new QAction(icon("document-save-as"), tr("Save to cloud..."), this);
+    actDocumentSaveCloud->setStatusTip(tr("Save to cloud"));
+    connect(actDocumentSaveCloud, SIGNAL(triggered()), this, SLOT(doDocumentSaveCloud()));
 
     actDocumentClose = new QAction(tr("&Close"), this);
     actDocumentClose->setShortcuts(QKeySequence::Close);
@@ -334,10 +343,12 @@ void MainWindow::createMenus()
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actDocumentOpen);
+    mnuFile->addAction(actDocumentOpenCloud);
     mnuFile->addAction(actDocumentSave);
     if (Util::config()->showExperimentalFeatures)
         mnuFile->addAction(actDocumentSaveWithSolution);
     mnuFile->addAction(actDocumentSaveAs);
+    mnuFile->addAction(actDocumentSaveCloud);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addMenu(mnuFileImportExport);
@@ -666,7 +677,7 @@ void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
             break;
         }
     }
-    break;
+        break;
     case MouseSceneMode_Pan:
         lblMouseMode->setText(tr("Mode: Pan"));
         break;
@@ -690,7 +701,7 @@ void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
             break;
         }
     }
-    break;
+        break;
     default:
         break;
     }
@@ -829,6 +840,17 @@ void MainWindow::doDocumentOpen(const QString &fileName)
     }
 }
 
+void MainWindow::doDocumentOpenCloud()
+{
+    CloudDialogContent *cloud = new CloudDialogContent(this);
+    if (cloud->showDialog() == QDialog::Accepted)
+    {
+        if (QFile::exists(cloud->fileName()))
+            doDocumentOpen(cloud->fileName());
+    }
+    delete cloud;
+}
+
 void MainWindow::doDocumentOpenRecent(QAction *action)
 {
     logMessage("MainWindow::doDocumentOpenRecent()");
@@ -898,6 +920,16 @@ void MainWindow::doDocumentSaveAs()
         setRecentFiles();
         settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
     }
+}
+
+void MainWindow::doDocumentSaveCloud()
+{
+    // save
+    doDocumentSave();
+
+    CloudDialogSave *cloud = new CloudDialogSave(this);
+    cloud->showDialog();
+    delete cloud;
 }
 
 void MainWindow::doDocumentClose()
