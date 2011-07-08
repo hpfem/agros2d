@@ -36,7 +36,7 @@
 #include "logdialog.h"
 #include "problemdialog.h"
 #include "progressdialog.h"
-#include "cloud.h"
+#include "colaboration.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -162,9 +162,9 @@ void MainWindow::createActions()
     actDocumentOpen->setStatusTip(tr("Open an existing file"));
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(doDocumentOpen()));
 
-    actDocumentOpenCloud = new QAction(icon("document-open"), tr("&Open from cloud..."), this);
-    actDocumentOpenCloud->setStatusTip(tr("Open an file from cloud"));
-    connect(actDocumentOpenCloud, SIGNAL(triggered()), this, SLOT(doDocumentOpenCloud()));
+    actDocumentDownloadFromServer = new QAction(icon("document-open"), tr("&Download from server..."), this);
+    actDocumentDownloadFromServer->setStatusTip(tr("Download from server..."));
+    connect(actDocumentDownloadFromServer, SIGNAL(triggered()), this, SLOT(doDocumentDownloadFromServer()));
 
     actDocumentSave = new QAction(icon("document-save"), tr("&Save"), this);
     actDocumentSave->setShortcuts(QKeySequence::Save);
@@ -180,9 +180,9 @@ void MainWindow::createActions()
     actDocumentSaveAs->setStatusTip(tr("Save the file under a new name"));
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
 
-    actDocumentSaveCloud = new QAction(icon("document-save-as"), tr("Save to cloud..."), this);
-    actDocumentSaveCloud->setStatusTip(tr("Save to cloud"));
-    connect(actDocumentSaveCloud, SIGNAL(triggered()), this, SLOT(doDocumentSaveCloud()));
+    actDocumentUploadToServer = new QAction(icon("document-save-as"), tr("Upload to server..."), this);
+    actDocumentUploadToServer->setStatusTip(tr("Upload to server..."));
+    connect(actDocumentUploadToServer, SIGNAL(triggered()), this, SLOT(doDocumentUploadToServer()));
 
     actDocumentClose = new QAction(tr("&Close"), this);
     actDocumentClose->setShortcuts(QKeySequence::Close);
@@ -340,18 +340,21 @@ void MainWindow::createMenus()
     mnuFileImportExport->addAction(actExportVTKScalar);
     mnuFileImportExport->addAction(actExportVTKOrder);
 
+    QMenu *mnuServer = new QMenu(tr("Colaboration"), this);
+    mnuServer->addAction(actDocumentDownloadFromServer);
+    mnuServer->addAction(actDocumentUploadToServer);
+
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actDocumentOpen);
-    mnuFile->addAction(actDocumentOpenCloud);
     mnuFile->addAction(actDocumentSave);
     if (Util::config()->showExperimentalFeatures)
         mnuFile->addAction(actDocumentSaveWithSolution);
     mnuFile->addAction(actDocumentSaveAs);
-    mnuFile->addAction(actDocumentSaveCloud);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addMenu(mnuFileImportExport);
+    mnuFile->addMenu(mnuServer);
     mnuFile->addAction(actDocumentClose);
     mnuFile->addSeparator();
 
@@ -840,7 +843,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
     }
 }
 
-void MainWindow::doDocumentOpenCloud()
+void MainWindow::doDocumentDownloadFromServer()
 {
     CloudDialogContent *cloud = new CloudDialogContent(this);
     if (cloud->showDialog() == QDialog::Accepted)
@@ -922,7 +925,7 @@ void MainWindow::doDocumentSaveAs()
     }
 }
 
-void MainWindow::doDocumentSaveCloud()
+void MainWindow::doDocumentUploadToServer()
 {
     // save
     doDocumentSave();

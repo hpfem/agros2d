@@ -17,10 +17,11 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef CLOUD_H
-#define CLOUD_H
+#ifndef COLABORATION_H
+#define COLABORATION_H
 
 #include "util.h"
+#include "colaboration.h"
 
 class CloudDialogContent : public QDialog
 {
@@ -80,4 +81,4 @@ private:
     QLineEdit *txtAffiliation;
 };
 
-#endif // CLOUD_H
+#endif // COLABORATION_H

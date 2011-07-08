@@ -17,13 +17,13 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "cloud.h"
+#include "colaboration.h"
 #include "scene.h"
 
 CloudDialogContent::CloudDialogContent(QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon(""));
-    setWindowTitle(tr("Read from cloud"));
+    setWindowTitle(tr("Download from server"));
 
     createControls();
 
@@ -51,10 +51,10 @@ void CloudDialogContent::createControls()
     trvProject = new QTreeWidget(this);
     trvProject->setHeaderHidden(false);
     trvProject->setMouseTracking(true);
-    trvProject->setColumnCount(5);
+    trvProject->setColumnCount(6);
 
     QStringList labels;
-    labels << tr("Name") << tr("Version") << tr("Date") << tr("Author") << tr("Affiliation");
+    labels << "" << tr("Date") << tr("Name") << tr("Version") << tr("Author") << tr("Affiliation");
     trvProject->setHeaderLabels(labels);
 
     QGridLayout *layoutProject = new QGridLayout();
@@ -80,7 +80,7 @@ void CloudDialogContent::readFromCloudContent()
 {
     QByteArray postData;
 
-    networkReply = networkAccessManager.get(QNetworkRequest(QUrl("http://agros2d.org/agros2d_problem_list.php")));
+    networkReply = networkAccessManager.get(QNetworkRequest(QUrl("http://agros2d.org/agros_problem_list_xml.php")));
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
 }
 
@@ -104,18 +104,18 @@ void CloudDialogContent::httpContentFinished()
         QString type = element.toElement().attribute("type");
         QString version = element.toElement().attribute("version");
         QString name = element.toElement().attribute("name");
-        QString date = element.toElement().attribute("date");
+        QDateTime date = QDateTime::fromString(element.toElement().attribute("date"), "yyyy-MM-dd HH:mm:ss");
         QString author = element.toElement().attribute("author");
         QString affiliation = element.toElement().attribute("affiliation");
 
         QTreeWidgetItem *item = new QTreeWidgetItem(trvProject);
         item->setData(0, Qt::UserRole, id_problem_version);
         item->setIcon(0, icon("agros2d"));
-        item->setText(0, name);
-        item->setText(1, version);
-        item->setText(2, date);
-        item->setText(3, author);
-        item->setText(4, affiliation);
+        item->setText(1, date.toString("HH:mm:ss dd.MM.yyyy"));
+        item->setText(2, name);
+        item->setText(3, version);
+        item->setText(4, author);
+        item->setText(5, affiliation);
 
         n = n.nextSibling();
     }
@@ -132,7 +132,7 @@ void CloudDialogContent::readFromCloud(int ID)
     QByteArray postData;
     postData.append("id_version=" + QString::number(ID));
 
-    networkReply = networkAccessManager.post(QNetworkRequest(QUrl("http://agros2d.org/agros2d_problem_download.php")), postData);
+    networkReply = networkAccessManager.post(QNetworkRequest(QUrl("http://agros2d.org/agros_problem_download.php")), postData);
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
 }
 
@@ -141,7 +141,7 @@ void CloudDialogContent::httpFileFinished()
     QByteArray text = networkReply->readAll();
     QString *data = new QString(text);
 
-    m_fileName = tempProblemDir() + "/cloud.a2d";
+    m_fileName = tempProblemDir() + "/colaboration.a2d";
     writeStringContent(m_fileName, data);
 
     delete data;
@@ -250,7 +250,7 @@ void CloudDialogSave::readFromCloudContent()
 {
     QByteArray postData;
 
-    networkReply = networkAccessManager.get(QNetworkRequest(QUrl("http://agros2d.org/agros2d_problem_list.php")));
+    networkReply = networkAccessManager.get(QNetworkRequest(QUrl("http://agros2d.org/agros_problem_list.php")));
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
 }
 
@@ -293,7 +293,7 @@ void CloudDialogSave::saveToCloud()
     postData.append("affiliation=" + txtAffiliation->text() + "&");
     postData.append("content=" + text);
 
-    networkReply = networkAccessManager.post(QNetworkRequest(QUrl("http://agros2d.org/agros2d_problem_upload.php")), postData);
+    networkReply = networkAccessManager.post(QNetworkRequest(QUrl("http://agros2d.org/agros_problem_upload.php")), postData);
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
 }
 
