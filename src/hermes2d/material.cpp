@@ -17,37 +17,36 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "boundary.h"
+#include "material.h"
 #include "module.h"
 
 #include "util.h"
 
-Boundary::Boundary(std::string name, std::string type)
+Material::Material(std::string name)
 {
     // name and type
     this->name = name;
-    this->type = type;
 
     // set values
     if (name != "none")
     {
-        Hermes::Module::BoundaryType *boundary = Util::scene()->problemInfo()->module()->get_boundary_type(type);
-        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary->variables.begin(); it < boundary->variables.end(); ++it)
+        Hermes::vector<Hermes::Module::MaterialType *> materials = Util::scene()->problemInfo()->module()->material_types;
+        for (Hermes::vector<Hermes::Module::MaterialType *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
-            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-            values[variable] = Value("0");
+            Hermes::Module::MaterialType *material_type = ((Hermes::Module::MaterialType *) *it);
+            values[material_type] = Value("0");
         }
     }
 }
 
-Boundary::~Boundary()
+Material::~Material()
 {
     values.clear();
 }
 
-Hermes::Module::BoundaryTypeVariable *Boundary::get_boundary_type_variable(std::string id)
+Hermes::Module::MaterialType *Material::get_material_type(std::string id)
 {
-    for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = values.begin(); it != values.end(); ++it)
+    for (std::map<Hermes::Module::MaterialType *, Value>::iterator it = values.begin(); it != values.end(); ++it)
     {
         if (it->first->id == id)
             return it->first;
@@ -55,12 +54,12 @@ Hermes::Module::BoundaryTypeVariable *Boundary::get_boundary_type_variable(std::
     return NULL;
 }
 
-Value Boundary::get_value(std::string id)
+Value Material::get_value(std::string id)
 {
-    Hermes::Module::BoundaryTypeVariable *variable = get_boundary_type_variable(id);
+    Hermes::Module::MaterialType *material_type = get_material_type(id);
 
-    if (variable)
-        return values[variable];
+    if (material_type)
+        return values[material_type];
 
     return Value();
 }

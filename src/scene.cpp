@@ -572,7 +572,7 @@ bool Scene::setMaterial(const QString &name, SceneMaterial *material)
 
     for (int i = 1; i<materials.count(); i++)
     {
-        if (materials[i]->name == name)
+        if (materials[i]->name == name.toStdString())
         {
             SceneMaterial *markerTemp = materials[i];
 
@@ -600,7 +600,7 @@ SceneMaterial *Scene::getMaterial(const QString &name)
 
     for (int i = 0; i<materials.count(); i++)
     {
-        if (materials[i]->name == name)
+        if (materials[i]->name == name.toStdString())
             return materials[i];
     }
     return NULL;
@@ -625,7 +625,7 @@ void Scene::removeMaterial(SceneMaterial *material)
 void Scene::replaceMaterial(SceneMaterial *material)
 {
     // store original name
-    QString name = material->name;
+    std::string name = material->name;
 
     // add new marker
     SceneMaterial *markerNew = Util::scene()->problemInfo()->module()->newMaterial();
@@ -777,7 +777,7 @@ void Scene::deleteSelected()
     {
         if (label->isSelected)
         {
-            m_undoStack->push(new SceneLabelCommandRemove(label->point, label->material->name, label->area, label->polynomialOrder));
+            m_undoStack->push(new SceneLabelCommandRemove(label->point, QString::fromStdString(label->material->name), label->area, label->polynomialOrder));
             removeLabel(label);
         }
     }
@@ -875,7 +875,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
             {
                 SceneLabel *labelNew = new SceneLabel(pointNew, label->material, label->area, label->polynomialOrder);
                 SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->material->name, labelNew->area, label->polynomialOrder));
+                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->material->name), labelNew->area, label->polynomialOrder));
             }
         }
     }
@@ -937,7 +937,7 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
             {
                 SceneLabel *labelNew = new SceneLabel(pointNew, label->material, label->area, label->polynomialOrder);
                 SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->material->name, labelNew->area, labelNew->polynomialOrder));
+                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->material->name), labelNew->area, labelNew->polynomialOrder));
             }
         }
 
@@ -992,7 +992,7 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
             {
                 SceneLabel *labelNew = new SceneLabel(pointNew, label->material, label->area, label->polynomialOrder);
                 SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->material->name, labelNew->area, labelNew->polynomialOrder));
+                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->material->name), labelNew->area, labelNew->polynomialOrder));
             }
         }
 
@@ -1052,7 +1052,7 @@ void Scene::doNewLabel(const Point &point)
     {
         SceneLabel *labelAdded = addLabel(label);
         if (labelAdded == label) m_undoStack->push(new SceneLabelCommandAdd(label->point,
-                                                                            label->material->name,
+                                                                            QString::fromStdString(label->material->name),
                                                                             label->area,
                                                                             label->polynomialOrder));
     }
@@ -1455,8 +1455,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             SceneBoundary *boundary = new SceneBoundary(name.toStdString(), type.toStdString());
             for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
             {
-                Hermes::Module::BoundaryTypeVariable *variable = it->first;
-                boundary->values[variable] = Value(element.toElement().attribute(QString::fromStdString(variable->id), "0"));
+                Hermes::Module::BoundaryTypeVariable *boundary_variable_type = it->first;
+                boundary->values[boundary_variable_type] = Value(element.toElement().attribute(QString::fromStdString(boundary_variable_type->id), "0"));
             }
             Util::scene()->addBoundary(boundary);
         }
@@ -1480,7 +1480,13 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         else
         {
             // read marker
-            m_problemInfo->module()->readMaterialFromDomElement(&element.toElement());
+            SceneMaterial *material = new SceneMaterial(name.toStdString());
+            for (std::map<Hermes::Module::MaterialType *, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
+            {
+                Hermes::Module::MaterialType *material_type = it->first;
+                material->values[material_type] = Value(element.toElement().attribute(QString::fromStdString(material_type->id), "0"));
+            }
+            Util::scene()->addMaterial(material);
         }
 
         n = n.nextSibling();
@@ -1732,12 +1738,13 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         QDomElement eleMaterial = doc.createElement("label");
 
         eleMaterial.setAttribute("id", i);
-        eleMaterial.setAttribute("name", materials[i]->name);
+        eleMaterial.setAttribute("name", QString::fromStdString(materials[i]->name));
 
         if (i > 0)
         {
             // write marker
-            m_problemInfo->module()->writeMaterialToDomElement(&eleMaterial, materials[i]);
+            for (std::map<Hermes::Module::MaterialType *, Value>::iterator it = materials[i]->values.begin(); it != materials[i]->values.end(); ++it)
+                eleMaterial.setAttribute(QString::fromStdString(it->first->id), it->second.text);
         }
 
         eleMaterials.appendChild(eleMaterial);

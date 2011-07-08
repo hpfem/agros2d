@@ -270,7 +270,7 @@ void SceneInfoView::doInvalidated()
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
-        item->setText(0, Util::scene()->materials[i]->name);
+        item->setText(0, QString::fromStdString(Util::scene()->materials[i]->name));
         item->setIcon(0, icon("scene-labelmarker"));
         item->setData(0, Qt::UserRole, Util::scene()->materials[i]->variant());
 

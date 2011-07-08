@@ -24,6 +24,10 @@
 
 SurfaceIntegralValue::SurfaceIntegralValue()
 {
+    parser = new Parser();
+    initParser();
+
+    calculate();
 }
 
 SurfaceIntegralValue::~SurfaceIntegralValue()
@@ -81,6 +85,9 @@ void SurfaceIntegralValue::calculate()
             ((mu::Parser *) *it)->DefineVar("dx" + number.str(), &pdx[k]);
             ((mu::Parser *) *it)->DefineVar("dy" + number.str(), &pdy[k]);
         }
+
+        for (std::map<std::string, double>::iterator itv = parser->parser_variables.begin(); itv != parser->parser_variables.end(); ++itv)
+            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
     }
 
     Hermes::vector<Solution *>sln;

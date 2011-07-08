@@ -171,7 +171,7 @@ QString createPythonFromModel()
                    arg(Util::scene()->labels[i]->point.y).
                    arg(Util::scene()->labels[i]->area).
                    arg(Util::scene()->labels[i]->polynomialOrder).
-                   arg(Util::scene()->labels[i]->material->name) + "\n";
+                   arg(QString::fromStdString(Util::scene()->labels[i]->material->name)) + "\n";
         }
 
     }

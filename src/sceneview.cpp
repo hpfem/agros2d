@@ -937,10 +937,10 @@ void SceneView::paintGeometry()
                 glColor3d(0.1, 0.1, 0.1);
 
                 Point point;
-                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(label->material->name)/m_scale2d/2.0;
+                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(QString::fromStdString(label->material->name))/m_scale2d/2.0;
                 point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale2d;
 
-                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, label->material->name, false);
+                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, QString::fromStdString(label->material->name), false);
             }
 
             // area size
@@ -3016,7 +3016,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     SceneLabel *label = new SceneLabel(p, m_scene->materials[0], 0, 0);
                     SceneLabel *labelAdded = m_scene->addLabel(label);
                     if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point,
-                                                                                                 label->material->name,
+                                                                                                 QString::fromStdString(label->material->name),
                                                                                                  label->area,
                                                                                                  label->polynomialOrder));
                     updateGL();
@@ -3299,7 +3299,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle area: %4 m<sup>2</sup><br/>Polynomial order: %5<br/>Index: %6 %7").
                                arg(label->point.x, 0, 'g', 3).
                                arg(label->point.y, 0, 'g', 3).
-                               arg(label->material->name).
+                               arg(QString::fromStdString(label->material->name)).
                                arg(label->area, 0, 'g', 3).
                                arg(label->polynomialOrder).
                                arg(m_scene->labels.indexOf(label)).

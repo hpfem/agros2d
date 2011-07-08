@@ -699,7 +699,7 @@ QString ReportDialog::htmlGeometryLabels()
         out += "<tr><td>" + QString::number(Util::scene()->labels[i]->point.x, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->labels[i]->point.y, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->labels[i]->area, 'e', 3) + "</td>";
-        out += "<td>" + Util::scene()->labels[i]->material->name + "</td></tr>";
+        out += "<td>" + QString::fromStdString(Util::scene()->labels[i]->material->name) + "</td></tr>";
     }
     out += "</table>";
     out += "\n";

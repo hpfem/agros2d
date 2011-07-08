@@ -102,6 +102,7 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     hermes2d/volumeintegral.cpp \
     hermes2d/surfaceintegral.cpp \
     hermes2d/boundary.cpp \
+    hermes2d/material.cpp \
     collaboration.cpp \
     resultsview.cpp
 HEADERS += util.h \
@@ -156,7 +157,8 @@ HEADERS += util.h \
     hermes2d/volumeintegral.h \
     hermes2d/surfaceintegral.h \
     hermes2d/boundary.h \
-    resultsview.h
+    hermes2d/material.h \
+    resultsview.h 
 INCLUDEPATH += . \
     ../lib/muparser \
     ../lib/dxflib \

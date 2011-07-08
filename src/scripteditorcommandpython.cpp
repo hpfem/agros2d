@@ -694,7 +694,7 @@ static PyObject *pythonPointResult(PyObject *self, PyObject *args)
         if (PyArg_ParseTuple(args, "dd", &x, &y))
         {
             Point point(x, y);
-            LocalPointValue *localPointValue = Util::scene()->problemInfo()->module()->local_point_value(point);
+            LocalPointValue localPointValue(point);
 
             // FIXME
             QStringList headers; // = Util::scene()->problemInfo()->module()->localPointValueHeader();
@@ -703,8 +703,6 @@ static PyObject *pythonPointResult(PyObject *self, PyObject *args)
             PyObject *dict = PyDict_New();
             for (int i = 0; i < variables.length(); i++)
                 PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
-
-            delete localPointValue;
 
             return dict;
         }
@@ -745,7 +743,7 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
                 }
             }
 
-            SurfaceIntegralValue *surfaceIntegral = Util::scene()->problemInfo()->module()->surface_integral_value();
+            SurfaceIntegralValue surfaceIntegral;
 
             // FIXME
             QStringList headers;// = Util::scene()->problemInfo()->module()->surfaceIntegralValueHeader();
@@ -754,8 +752,6 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
             PyObject *dict = PyDict_New();
             for (int i = 0; i < variables.length(); i++)
                 PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
-
-            delete surfaceIntegral;
 
             return dict;
         }
@@ -796,7 +792,7 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
                 }
             }
 
-            VolumeIntegralValue *volumeIntegral = Util::scene()->problemInfo()->module()->volume_integral_value();
+            VolumeIntegralValue volumeIntegral;
 
             // FIXME
             QStringList headers;// = Util::scene()->problemInfo()->module()->volumeIntegralValueHeader();
@@ -805,8 +801,6 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
             PyObject *dict = PyDict_New();
             for (int i = 0; i < variables.length(); i++)
                 PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
-
-            delete volumeIntegral;
 
             return dict;
         }

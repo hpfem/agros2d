@@ -22,6 +22,7 @@
 
 #include "util.h"
 #include "hermes2d/boundary.h"
+#include "hermes2d/material.h"
 
 class SLineEditDouble;
 class ValueLineEdit;
@@ -70,16 +71,14 @@ private:
 
 // *************************************************************************************************************************************
 
-class SceneMaterial
+class SceneMaterial : public Material
 {
 public:
-    QString name;
+    SceneMaterial(std::string name);
 
-    SceneMaterial(const QString &name);
+    int showDialog(QWidget *parent);
 
-    virtual int showDialog(QWidget *parent) = 0;
-
-    virtual QString script() = 0;
+    QString script();
     QString html();
     QVariant variant();
 };

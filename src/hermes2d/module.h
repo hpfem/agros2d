@@ -259,19 +259,17 @@ struct Module
     std::string get_expression(LocalVariable *physicFieldVariable,
                                PhysicFieldVariableComp physicFieldVariableComp);
 
-
     virtual int number_of_solution() const = 0;
     virtual bool has_nonlinearity() const = 0;
 
     virtual Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
+    bool solve_init_variables();
+
     inline virtual void update_time_functions(double time) {}
 
-    virtual LocalPointValue *local_point_value(const Point &point) = 0;
-    virtual SurfaceIntegralValue *surface_integral_value() = 0;
-    virtual VolumeIntegralValue *volume_integral_value() = 0;
 
-    virtual ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                 PhysicFieldVariableComp physicFieldVariableComp) = 0;
+    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                         PhysicFieldVariableComp physicFieldVariableComp);
 
     virtual inline void deform_shape(double3* linVert, int count) {}
     virtual inline void deform_shape(double4* linVert, int count) {}
@@ -293,9 +291,6 @@ public:
     void fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable);
 
     // rewrite
-    virtual void readMaterialFromDomElement(QDomElement *node) = 0;
-    virtual void writeMaterialToDomElement(QDomElement *node, SceneMaterial *marker) = 0;
-
     virtual SceneBoundary *newBoundary() = 0;
     virtual SceneBoundary *newBoundary(PyObject *self, PyObject *args) = 0;
     virtual SceneBoundary *modifyBoundary(PyObject *self, PyObject *args) = 0;
@@ -316,6 +311,9 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
 // boundary dialog factory
 SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidget *parent);
 
+// material dialog factory
+SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidget *parent);
+
 // available modules
 std::map<std::string, std::string> availableModules();
 
@@ -324,16 +322,19 @@ class Parser
 public:
     // parser
     Hermes::vector<mu::Parser *> parser;
+    std::map<std::string, double> parser_variables;
 
+    Parser();
     ~Parser();
 
-    virtual void setParserVariables(SceneMaterial *material) = 0;
+    void setParserVariables(SceneMaterial *material);
 };
 
 class ViewScalarFilter : public Filter
 {
 public:  
-    ViewScalarFilter(Hermes::vector<MeshFunction *> sln);
+    ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
+                     std::string expression);
     ~ViewScalarFilter();
 
     double get_pt_value(double x, double y, int item = H2D_FN_VAL);

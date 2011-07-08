@@ -74,6 +74,15 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
         return new SceneBoundaryHeatDialog(scene_boundary, parent);
 }
 
+// material dialog factory
+SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidget *parent)
+{
+    if (Util::scene()->problemInfo()->module()->id == "electrostatic")
+        return new SceneMaterialElectrostaticDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "heat")
+        return new SceneMaterialHeatDialog(scene_material, parent);
+}
+
 std::map<std::string, std::string> availableModules()
 {
     static std::map<std::string, std::string> modules;
@@ -454,6 +463,49 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
     default:
         error("Unknown type.");
     }
+}
+
+ViewScalarFilter *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+                                                             PhysicFieldVariableComp physicFieldVariableComp)
+{
+    Hermes::vector<MeshFunction *> sln;
+    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+        sln.push_back(Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->module()->number_of_solution())));
+
+    return new ViewScalarFilter(sln, get_expression(physicFieldVariable, physicFieldVariableComp));
+}
+
+bool Hermes::Module::Module::solve_init_variables()
+{
+    // transient
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+    {
+        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return false;
+        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return false;
+        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return false;
+    }
+
+    // edge markers
+    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
+    {
+        SceneBoundary *boundary = Util::scene()->boundaries[i];
+
+        // evaluate script
+        for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
+            if (!it->second.evaluate()) return false;
+    }
+
+    // label markers
+    for (int i = 1; i<Util::scene()->materials.count(); i++)
+    {
+        SceneMaterial *material = Util::scene()->materials[i];
+
+        // evaluate script
+        for (std::map<Hermes::Module::MaterialType *, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
+            if (!it->second.evaluate()) return false;
+    }
+
+    return true;
 }
 
 // ***********************************************************************************************
@@ -1094,19 +1146,45 @@ SolutionArray *SolutionAgros::solutionArray(Solution *sln, Space *space, double 
 
 // *********************************************************************************************************************************************
 
+Parser::Parser()
+{
+    for (Hermes::vector<Hermes::Module::MaterialType *>::iterator it = Util::scene()->problemInfo()->module()->material_types.begin();
+         it != Util::scene()->problemInfo()->module()->material_types.end(); ++it)
+    {
+        Hermes::Module::MaterialType *material_type = *it;
+        parser_variables[material_type->shortname] = 0.0;
+    }
+}
+
 Parser::~Parser()
 {
     // delete parser
     for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
         delete *it;
+
     parser.clear();
+}
+
+void Parser::setParserVariables(SceneMaterial *material)
+{
+    for (std::map<Hermes::Module::MaterialType *, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
+    {
+        Hermes::Module::MaterialType *material_type = it->first;
+        parser_variables[material_type->shortname] = it->second.number;
+    }
 }
 
 // *********************************************************************************************************************************************
 
-ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln)
+ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
+                                   std::string expression)
     : Filter(sln)
 {
+    parser = new Parser();
+    initParser(expression);
+
+    for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
+        parser->parser[0]->DefineVar(it->first, &it->second);
 }
 
 ViewScalarFilter::~ViewScalarFilter()
