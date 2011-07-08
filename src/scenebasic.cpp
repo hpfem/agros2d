@@ -669,7 +669,8 @@ void SceneLabelDialog::fillComboBox()
     cmbMaterial->clear();
     for (int i = 0; i<Util::scene()->materials.count(); i++)
     {
-        cmbMaterial->addItem(Util::scene()->materials[i]->name, Util::scene()->materials[i]->variant());
+        cmbMaterial->addItem(QString::fromStdString(Util::scene()->materials[i]->name),
+                             Util::scene()->materials[i]->variant());
     }
 }
 
@@ -750,7 +751,7 @@ void SceneLabelDialog::doMaterialClicked()
     SceneMaterial *marker = cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>();
     if (marker->showDialog(this) == QDialog::Accepted)
     {
-        cmbMaterial->setItemText(cmbMaterial->currentIndex(), marker->name);
+        cmbMaterial->setItemText(cmbMaterial->currentIndex(), QString::fromStdString(marker->name));
         Util::scene()->refresh();
     }
 }

@@ -32,75 +32,15 @@ public:
     inline int number_of_solution() const { return 1; }
     bool has_nonlinearity() const { return false; }
 
-    LocalPointValue *local_point_value(const Point &point);
-    SurfaceIntegralValue *surface_integral_value();
-    VolumeIntegralValue *volume_integral_value();
-
-    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                         PhysicFieldVariableComp physicFieldVariableComp);
-
     Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
     // rewrite
-    void readMaterialFromDomElement(QDomElement *element);
-    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
     SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
     SceneMaterial *newMaterial();
     SceneMaterial *newMaterial(PyObject *self, PyObject *args);
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
-};
-
-// *******************************************************************************************
-
-class ParserElectrostatic : public Parser
-{
-public:
-    double pepsr;
-    double prho;
-
-    void setParserVariables(SceneMaterial *material);
-};
-
-class LocalPointValueElectrostatic : public LocalPointValue
-{
-public:
-    LocalPointValueElectrostatic(const Point &point);
-};
-
-class SurfaceIntegralValueElectrostatic : public SurfaceIntegralValue
-{
-public:
-    SurfaceIntegralValueElectrostatic();
-};
-
-class VolumeIntegralValueElectrostatic : public VolumeIntegralValue
-{
-public:
-    VolumeIntegralValueElectrostatic();
-};
-
-class ViewScalarFilterElectrostatic : public ViewScalarFilter
-{
-public:
-    ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln,
-                                   std::string expression);
-};
-
-// *******************************************************************************************
-
-class SceneMaterialElectrostatic : public SceneMaterial
-{
-public:
-    Value charge_density;
-    Value permittivity;
-
-    SceneMaterialElectrostatic(const QString &name, Value charge_density, Value permittivity);
-
-    QString script();
-    int showDialog(QWidget *parent);
 };
 
 // *******************************************************************************************
@@ -130,7 +70,7 @@ class SceneMaterialElectrostaticDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 public:
-    SceneMaterialElectrostaticDialog(SceneMaterialElectrostatic *material, QWidget *parent);
+    SceneMaterialElectrostaticDialog(SceneMaterial *material, QWidget *parent);
 
 protected:
     void createContent();

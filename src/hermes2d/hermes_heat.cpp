@@ -62,38 +62,39 @@ public:
         // materials
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            SceneMaterialHeat *material = dynamic_cast<SceneMaterialHeat *>(Util::scene()->labels[i]->material);
+            SceneMaterial *material = Util::scene()->labels[i]->material;
 
             if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
                                                                                                QString::number(i).toStdString(),
-                                                                                               material->thermal_conductivity.number,
+                                                                                               material->get_value("heat_conductivity").number,
                                                                                                HERMES_SYM,
                                                                                                convertProblemType(Util::scene()->problemInfo()->problemType)));
 
-                if (fabs(material->volume_heat.number) > EPS_ZERO)
+                if (fabs(material->get_value("heat_volume_heat").number) > EPS_ZERO)
                     add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
                                                                                                    QString::number(i).toStdString(),
-                                                                                                   material->volume_heat.number,
+                                                                                                   material->get_value("heat_volume_heat").number,
                                                                                                    convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                 // transient analysis
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
                 {
-                    if ((fabs(material->density.number) > EPS_ZERO) && (fabs(material->specific_heat.number) > EPS_ZERO))
+                    if ((fabs(material->get_value("heat_density").number) > EPS_ZERO)
+                            && (fabs(material->get_value("heat_specific_heat").number) > EPS_ZERO))
                     {
                         if (solution.size() > 0)
                         {
                             add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
                                                                                                       QString::number(i).toStdString(),
-                                                                                                      material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                                                      material->get_value("heat_density").number * material->get_value("heat_specific_heat").number / Util::scene()->problemInfo()->timeStep.number,
                                                                                                       HERMES_SYM,
                                                                                                       convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                             add_vector_form(new CustomVectorFormTimeDep(0,
                                                                         QString::number(i).toStdString(),
-                                                                        material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                        material->get_value("heat_density").number * material->get_value("heat_specific_heat").number / Util::scene()->problemInfo()->timeStep.number,
                                                                         solution[0],
                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
                         }
@@ -104,143 +105,12 @@ public:
     }
 };
 
-// ****************************************************************************************************************
-
-void ParserHeat::setParserVariables(SceneMaterial *material)
-{
-    SceneMaterialHeat *marker = dynamic_cast<SceneMaterialHeat *>(material);
-
-    plambda = marker->thermal_conductivity.number;
-    prho = marker->density.number;
-    pcp = marker->specific_heat.number;
-    pq = marker->volume_heat.number;
-}
-
-// ****************************************************************************************************************
-
-LocalPointValueHeat::LocalPointValueHeat(const Point &point) : LocalPointValue(point)
-{
-    parser = new ParserHeat();
-    initParser();
-
-    parser->parser[0]->DefineVar("lambda", &static_cast<ParserHeat *>(parser)->plambda);
-    parser->parser[0]->DefineVar("rho", &static_cast<ParserHeat *>(parser)->prho);
-    parser->parser[0]->DefineVar("cp", &static_cast<ParserHeat *>(parser)->pcp);
-    parser->parser[0]->DefineVar("q", &static_cast<ParserHeat *>(parser)->pq);
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-SurfaceIntegralValueHeat::SurfaceIntegralValueHeat() : SurfaceIntegralValue()
-{
-    parser = new ParserHeat();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("lambda", &static_cast<ParserHeat *>(parser)->plambda);
-        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserHeat *>(parser)->prho);
-        ((mu::Parser *) *it)->DefineVar("cp", &static_cast<ParserHeat *>(parser)->pcp);
-        ((mu::Parser *) *it)->DefineVar("q", &static_cast<ParserHeat *>(parser)->pq);
-    }
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-VolumeIntegralValueHeat::VolumeIntegralValueHeat() : VolumeIntegralValue()
-{
-    parser = new ParserHeat();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("lambda", &static_cast<ParserHeat *>(parser)->plambda);
-        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserHeat *>(parser)->prho);
-        ((mu::Parser *) *it)->DefineVar("cp", &static_cast<ParserHeat *>(parser)->pcp);
-        ((mu::Parser *) *it)->DefineVar("q", &static_cast<ParserHeat *>(parser)->pq);
-    }
-
-    sln.push_back(Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep()));
-
-    calculate();
-}
-
-// *************************************************************************************************************************************
-
-ViewScalarFilterHeat::ViewScalarFilterHeat(Hermes::vector<MeshFunction *> sln,
-                                           std::string expression) :
-    ViewScalarFilter(sln)
-{
-    parser = new ParserHeat();
-    initParser(expression);
-
-    parser->parser[0]->DefineVar("lambda", &static_cast<ParserHeat *>(parser)->plambda);
-    parser->parser[0]->DefineVar("rho", &static_cast<ParserHeat *>(parser)->prho);
-    parser->parser[0]->DefineVar("cp", &static_cast<ParserHeat *>(parser)->pcp);
-    parser->parser[0]->DefineVar("q", &static_cast<ParserHeat *>(parser)->pq);
-}
-
-// **************************************************************************************************************************
-
-LocalPointValue *ModuleHeat::local_point_value(const Point &point)
-{
-    return new LocalPointValueHeat(point);
-}
-
-SurfaceIntegralValue *ModuleHeat::surface_integral_value()
-{
-    return new SurfaceIntegralValueHeat();
-}
-
-VolumeIntegralValue *ModuleHeat::volume_integral_value()
-{
-    return new VolumeIntegralValueHeat();
-}
-
-ViewScalarFilter *ModuleHeat::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                 PhysicFieldVariableComp physicFieldVariableComp)
-{
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep());
-    return new ViewScalarFilterHeat(sln1, get_expression(physicFieldVariable, physicFieldVariableComp));
-}
-
 // *******************************************************************************************************
 
 Hermes::vector<SolutionArray *> ModuleHeat::solve(ProgressItemSolve *progressItemSolve)
 {
-    // transient
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-    {
-        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // edge markers
-    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-    {
-        SceneBoundary *boundary = Util::scene()->boundaries[i];
-
-        // evaluate script
-        for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
-            if (!it->second.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // label markers
-    for (int i = 1; i<Util::scene()->materials.count(); i++)
-    {
-        SceneMaterialHeat *material = dynamic_cast<SceneMaterialHeat *>(Util::scene()->materials[i]);
-
-        // evaluate script
-        if (!material->thermal_conductivity.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->density.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->specific_heat.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->volume_heat.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
+    if (!solve_init_variables())
+        return Hermes::vector<SolutionArray *>();
 
     // boundary conditions
     EssentialBCs bcs;
@@ -268,32 +138,13 @@ void ModuleHeat::update_time_functions(double time)
     // update materials
     for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
-        SceneMaterialHeat *material = dynamic_cast<SceneMaterialHeat *>(Util::scene()->materials[i]);
-        material->volume_heat.evaluate(time);
+        SceneMaterial *material = dynamic_cast<SceneMaterial *>(Util::scene()->materials[i]);
+        material->get_value("heat_volume_heat").evaluate(time);
     }
 }
 
 // *************************************************************************************************************************************
 // rewrite
-
-void ModuleHeat::readMaterialFromDomElement(QDomElement *element)
-{
-    Util::scene()->addMaterial(new SceneMaterialHeat(element->attribute("name"),
-                                                     Value(element->attribute("volume_heat", "0")),
-                                                     Value(element->attribute("thermal_conductivity", "0")),
-                                                     Value(element->attribute("density", "0")),
-                                                     Value(element->attribute("specific_heat", "0"))));
-}
-
-void ModuleHeat::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
-{
-    SceneMaterialHeat *material = dynamic_cast<SceneMaterialHeat *>(marker);
-
-    element->setAttribute("thermal_conductivity", material->thermal_conductivity.text);
-    element->setAttribute("volume_heat", material->volume_heat.text);
-    element->setAttribute("density", material->density.text);
-    element->setAttribute("specific_heat", material->specific_heat.text);
-}
 
 SceneBoundary *ModuleHeat::newBoundary()
 {
@@ -370,15 +221,12 @@ SceneBoundary *ModuleHeat::modifyBoundary(PyObject *self, PyObject *args)
 
 SceneMaterial *ModuleHeat::newMaterial()
 {
-    return new SceneMaterialHeat(tr("new material"),
-                                 Value("0"),
-                                 Value("385"),
-                                 Value("0"),
-                                 Value("0"));
+    return new SceneMaterial(tr("new material").toStdString());
 }
 
 SceneMaterial *ModuleHeat::newMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double volume_heat, thermal_conductivity, density, specific_heat;
     char *name;
     if (PyArg_ParseTuple(args, "sdddd", &name, &volume_heat, &thermal_conductivity, &density, &specific_heat))
@@ -394,10 +242,12 @@ SceneMaterial *ModuleHeat::newMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleHeat::modifyMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double volume_heat, thermal_conductivity, density, specific_heat;
     char *name;
     if (PyArg_ParseTuple(args, "sdddd", &name, &volume_heat, &thermal_conductivity, &density, &specific_heat))
@@ -418,61 +268,7 @@ SceneMaterial *ModuleHeat::modifyMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
-}
-
-/*
-void VolumeIntegralValueHeat::initSolutions()
-{
-    sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep());
-    sln2 = NULL;
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-        sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() - 1);
-}
-*/
-
-// *************************************************************************************************************************************
-
-SceneMaterialHeat::SceneMaterialHeat(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat)
-    : SceneMaterial(name)
-{
-    this->thermal_conductivity = thermal_conductivity;
-    this->volume_heat = volume_heat;
-    this->density = density;
-    this->specific_heat = specific_heat;
-}
-
-QString SceneMaterialHeat::script()
-{
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState)
-        return QString("addmaterial(\"%1\", %2, %3, %4, %5)").
-                arg(name).
-                arg(volume_heat.text).
-                arg(thermal_conductivity.text).
-                arg(density.text).
-                arg(specific_heat.text);
-    else
-        return QString("addmaterial(\"%1\", \"%2\", %3, %4, %5)").
-                arg(name).
-                arg(volume_heat.text).
-                arg(thermal_conductivity.text).
-                arg(density.text).
-                arg(specific_heat.text);
-}
-
-QMap<QString, QString> SceneMaterialHeat::data()
-{
-    QMap<QString, QString> out;
-    out["Volume heat (W/m3)"] = volume_heat.text;
-    out["Thermal conductivity (W/m.K)"] = thermal_conductivity.text;
-    out["Density (kg/m3)"] = density.text;
-    out["Specific heat (J/kg.K)"] = specific_heat.text;
-    return QMap<QString, QString>(out);
-}
-
-int SceneMaterialHeat::showDialog(QWidget *parent)
-{
-    SceneMaterialHeatDialog *dialog = new SceneMaterialHeatDialog(this, parent);
-    return dialog->exec();
+    */
 }
 
 // *************************************************************************************************************************************
@@ -597,7 +393,7 @@ void SceneBoundaryHeatDialog::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-SceneMaterialHeatDialog::SceneMaterialHeatDialog(SceneMaterialHeat *material, QWidget *parent) : SceneMaterialDialog(parent)
+SceneMaterialHeatDialog::SceneMaterialHeatDialog(SceneMaterial *material, QWidget *parent) : SceneMaterialDialog(parent)
 {
     m_material = material;
 
@@ -639,37 +435,33 @@ void SceneMaterialHeatDialog::load()
 {
     SceneMaterialDialog::load();
 
-    SceneMaterialHeat *material = dynamic_cast<SceneMaterialHeat *>(m_material);
-
-    txtThermalConductivity->setValue(material->thermal_conductivity);
-    txtVolumeHeat->setValue(material->volume_heat);
-    txtDensity->setValue(material->density);
-    txtSpecificHeat->setValue(material->specific_heat);
+    txtThermalConductivity->setValue(m_material->get_value("heat_conductivity"));
+    txtVolumeHeat->setValue(m_material->get_value("heat_volume_heat"));
+    txtDensity->setValue(m_material->get_value("heat_density"));
+    txtSpecificHeat->setValue(m_material->get_value("heat_specific_heat"));
 }
 
 bool SceneMaterialHeatDialog::save()
 {
     if (!SceneMaterialDialog::save()) return false;;
 
-    SceneMaterialHeat *material = dynamic_cast<SceneMaterialHeat *>(m_material);
-
     if (txtThermalConductivity->evaluate())
-        material->thermal_conductivity  = txtThermalConductivity->value();
+        m_material->values[m_material->get_material_type("heat_conductivity")] = txtThermalConductivity->value();
     else
         return false;
 
     if (txtVolumeHeat->evaluate())
-        material->volume_heat  = txtVolumeHeat->value();
+        m_material->values[m_material->get_material_type("heat_volume_heat")] = txtVolumeHeat->value();
     else
         return false;
 
     if (txtDensity->evaluate())
-        material->density  = txtDensity->value();
+        m_material->values[m_material->get_material_type("heat_density")] = txtDensity->value();
     else
         return false;
 
     if (txtSpecificHeat->evaluate())
-        material->specific_heat  = txtSpecificHeat->value();
+        m_material->values[m_material->get_material_type("heat_specific_heat")] = txtSpecificHeat->value();
     else
         return false;
 

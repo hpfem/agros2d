@@ -139,8 +139,9 @@ void ResultsView::doShowVolumeIntegral()
     QString html = "<h4>" + tr("Volume integral") + "</h4>"
             "<table width=\"100%\">";
 
-    VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo()->module()->volume_integral_value();
-    for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue->values.begin(); it != volumeIntegralValue->values.end(); ++it)
+    VolumeIntegralValue volumeIntegralValue;
+    for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue.values.begin();
+         it != volumeIntegralValue.values.end(); ++it)
     {
         html += "<tr>"
                 "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
@@ -169,8 +170,8 @@ void ResultsView::doShowSurfaceIntegral()
     QString html = "<h4>" + tr("Surface integral") + "</h4>"
             "<table width=\"100%\">";
 
-    SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo()->module()->surface_integral_value();
-    for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue->values.begin(); it != surfaceIntegralValue->values.end(); ++it)
+    SurfaceIntegralValue surfaceIntegralValue;
+    for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue.values.begin(); it != surfaceIntegralValue.values.end(); ++it)
     {
         html += "<tr>"
                 "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
@@ -210,8 +211,8 @@ void ResultsView::doShowPoint()
 
     if (Util::scene()->sceneSolution()->isSolved())
     {
-        LocalPointValue *value = Util::scene()->problemInfo()->module()->local_point_value(m_point);
-        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value->values.begin(); it != value->values.end(); ++it)
+        LocalPointValue value(m_point);
+        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin(); it != value.values.end(); ++it)
         {
             if (it->first->is_scalar)
             {

@@ -8,9 +8,9 @@
                 <edge heat_heat_transfer_coefficient="25" heat_external_temperature="-15" type="heat_heat_flux" id="2" name="Exterior" heat_heat_flux="0"/>
             </edges>
             <labels>
-                <label thermal_conductivity="0.6" specific_heat="0" volume_heat="0" id="1" density="0" name="Brick"/>
-                <label thermal_conductivity="0.14" specific_heat="0" volume_heat="0" id="2" density="0" name="Glass"/>
-                <label thermal_conductivity="0.04" specific_heat="0" volume_heat="0" id="3" density="0" name="Insulation"/>
+                <label heat_conductivity="0.6" heat_specific_heat="0" heat_volume_heat="0" id="1" heat_density="0" name="Brick"/>
+                <label heat_conductivity="0.14" heat_specific_heat="0" heat_volume_heat="0" id="2" heat_density="0" name="Glass"/>
+                <label heat_conductivity="0.04" heat_specific_heat="0" heat_volume_heat="0" id="3" heat_density="0" name="Insulation"/>
             </labels>
         </problem>
     </problems>

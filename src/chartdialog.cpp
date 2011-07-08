@@ -422,7 +422,7 @@ void ChartDialog::plotGeometry()
     // calculate values
     for (int i = 0; i < points.length(); i++)
     {
-        LocalPointValue *localPointValue = Util::scene()->problemInfo()->module()->local_point_value(points.at(i));
+        LocalPointValue localPointValue(points.at(i));
 
         // x value
         if (radAxisLength->isChecked())
@@ -447,10 +447,8 @@ void ChartDialog::plotGeometry()
         if (radAxisX->isChecked()) xval[i] = points.at(i).x;
         if (radAxisY->isChecked()) xval[i] = points.at(i).y;
 
-        addValue(localPointValue, yval, i, points.length(),
+        addValue(&localPointValue, yval, i, points.length(),
                  physicFieldVariableComp, physicFieldVariable);
-
-        delete localPointValue;
     }
 
     // reverse vertical axis
@@ -523,15 +521,13 @@ void ChartDialog::plotTime()
         Util::scene()->sceneSolution()->setTimeStep(i, false);
 
         Point point(txtPointX->value().number, txtPointY->value().number);
-        LocalPointValue *localPointValue = Util::scene()->problemInfo()->module()->local_point_value(point);
+        LocalPointValue localPointValue(point);
 
-        addValue(localPointValue, yval, i, Util::scene()->sceneSolution()->timeStepCount(),
+        addValue(&localPointValue, yval, i, Util::scene()->sceneSolution()->timeStepCount(),
                  physicFieldVariableComp, physicFieldVariable);
 
         for (int j = 0; j<row.count(); j++)
             trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));
-
-        delete localPointValue;
     }
 
     chart->setData(xval, yval, count);

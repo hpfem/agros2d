@@ -63,7 +63,7 @@ void SceneMarkerSelectDialog::createControls()
     for (int i = 1; i < Util::scene()->materials.count(); i++)
     {
         QListWidgetItem *item = new QListWidgetItem(lstVolume);
-        item->setText(Util::scene()->materials[i]->name);
+        item->setText(QString::fromStdString(Util::scene()->materials[i]->name));
         item->setCheckState(Qt::Unchecked);
         lstVolume->addItem(item);
     }

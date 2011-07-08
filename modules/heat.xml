@@ -9,6 +9,7 @@
         
     <material>
         <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="-" />
+        <item id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" />        
         <item id="heat_density" name="Density" shortname="rho" unit="kg/m3" />
         <item id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" />
     </material>

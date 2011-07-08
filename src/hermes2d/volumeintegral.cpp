@@ -24,6 +24,13 @@
 
 VolumeIntegralValue::VolumeIntegralValue()
 {
+    parser = new Parser();
+    initParser();
+
+    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+        sln.push_back(Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->module()->number_of_solution())));
+
+    calculate();
 }
 
 VolumeIntegralValue::~VolumeIntegralValue()
@@ -76,7 +83,11 @@ void VolumeIntegralValue::calculate()
             ((mu::Parser *) *it)->DefineVar("value" + number.str(), &pvalue[k]);
             ((mu::Parser *) *it)->DefineVar("dx" + number.str(), &pdx[k]);
             ((mu::Parser *) *it)->DefineVar("dy" + number.str(), &pdy[k]);
+
         }
+
+        for (std::map<std::string, double>::iterator itv = parser->parser_variables.begin(); itv != parser->parser_variables.end(); ++itv)
+            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
     }
 
     Quad2D *quad = &g_quad_2d_std;

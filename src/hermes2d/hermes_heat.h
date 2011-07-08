@@ -32,20 +32,10 @@ public:
     inline int number_of_solution() const { return 1; }
     bool has_nonlinearity() const { return false; }
 
-    LocalPointValue *local_point_value(const Point &point);
-    SurfaceIntegralValue *surface_integral_value();
-    VolumeIntegralValue *volume_integral_value();
-
-    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                         PhysicFieldVariableComp physicFieldVariableComp);
-
     Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
     void update_time_functions(double time);
 
     // rewrite
-    void readMaterialFromDomElement(QDomElement *element);
-    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
     SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
@@ -138,7 +128,7 @@ class SceneMaterialHeatDialog : public SceneMaterialDialog
     Q_OBJECT
 
 public:
-    SceneMaterialHeatDialog(SceneMaterialHeat *material, QWidget *parent);
+    SceneMaterialHeatDialog(SceneMaterial *material, QWidget *parent);
 
 protected:
     void createContent();

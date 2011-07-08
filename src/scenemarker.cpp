@@ -28,15 +28,15 @@ SceneBoundary::SceneBoundary(std::string name, std::string type)
     logMessage("SceneBoundary::SceneBoundary()");
 }
 
-QString SceneBoundary::script()
-{
-    return "";
-}
-
 int SceneBoundary::showDialog(QWidget *parent)
 {
     SceneBoundaryDialog *dialog = boundaryDialogFactory(this, parent);
     return dialog->exec();
+}
+
+QString SceneBoundary::script()
+{
+    return "";
 }
 
 QString SceneBoundary::html()
@@ -74,21 +74,30 @@ QVariant SceneBoundary::variant()
 SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary("none")
 {
     logMessage("SceneBoundary::SceneBoundaryNone()");
-
 }
 
 // *************************************************************************************************************************************
 
-SceneMaterial::SceneMaterial(const QString &name)
+SceneMaterial::SceneMaterial(std::string name) : Material(name)
 {
     logMessage("SceneMaterial::SceneMaterial()");
+}
 
-    this->name = name;
+int SceneMaterial::showDialog(QWidget *parent)
+{
+    SceneMaterialDialog *dialog = materialDialogFactory(this, parent);
+    return dialog->exec();
+}
+
+QString SceneMaterial::script()
+{
+    logMessage("SceneMaterial::script()");
+    return "";
 }
 
 QString SceneMaterial::html()
 {
-    logMessage("SceneBoundary::html()");
+    logMessage("SceneMaterial::html()");
 
     QString out;
     out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
@@ -125,7 +134,6 @@ QVariant SceneMaterial::variant()
 SceneMaterialNone::SceneMaterialNone() : SceneMaterial("none")
 {
     logMessage("SceneMaterial::SceneMaterialNone()");
-
 }
 
 
@@ -300,7 +308,7 @@ void SceneMaterialDialog::load()
 {
     logMessage("DSceneMaterial::load()");
 
-    txtName->setText(m_material->name);
+    txtName->setText(QString::fromStdString(m_material->name));
 }
 
 bool SceneMaterialDialog::save()
@@ -310,7 +318,7 @@ bool SceneMaterialDialog::save()
     // find name duplicities
     foreach (SceneMaterial *material, Util::scene()->materials)
     {
-        if (material->name == txtName->text())
+        if (material->name == txtName->text().toStdString())
         {
             if (m_material == material)
                 continue;
@@ -319,7 +327,7 @@ bool SceneMaterialDialog::save()
             return false;
         }
     }
-    m_material->name = txtName->text();
+    m_material->name = txtName->text().toStdString();
     return true;
 }
 
@@ -431,7 +439,8 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
     cmbMaterial = new QComboBox(this);
     for (int i = 0; i<Util::scene()->materials.count(); i++)
     {
-        cmbMaterial->addItem(Util::scene()->materials[i]->name, Util::scene()->materials[i]->variant());
+        cmbMaterial->addItem(QString::fromStdString(Util::scene()->materials[i]->name),
+                             Util::scene()->materials[i]->variant());
     }
 
     // select marker

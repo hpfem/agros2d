@@ -24,6 +24,13 @@
 
 LocalPointValue::LocalPointValue(const Point &point) : point(point)
 {
+    parser = new Parser();
+    initParser();
+
+    for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
+        parser->parser[0]->DefineVar(it->first, &it->second);
+
+    calculate();
 }
 
 LocalPointValue::~LocalPointValue()
