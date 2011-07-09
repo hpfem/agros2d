@@ -58,6 +58,8 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     hermes2d/localpoint.cpp \
     hermes2d/volumeintegral.cpp \
     hermes2d/surfaceintegral.cpp \
+    hermes2d/boundary.cpp \
+    hermes2d/material.cpp \
     hermes2d/module.cpp \
     #hermes2d/hermes_general.cpp \
     hermes2d/hermes_electrostatic.cpp \
@@ -66,7 +68,7 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     #hermes2d/hermes_current.cpp \
     #hermes2d/hermes_elasticity.cpp \
     #hermes2d/hermes_rf.cpp \
-    #hermes2d/hermes_acoustic.cpp \
+    hermes2d/hermes_acoustic.cpp \
     #hermes2d/hermes_flow.cpp \
     main.cpp \
     scripteditordialog.cpp \
@@ -98,11 +100,6 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     style/manhattanstyle.cpp \
     indicators/indicators.cpp \
     indicators/indicator_unity.cpp \
-    hermes2d/localpoint.cpp \
-    hermes2d/volumeintegral.cpp \
-    hermes2d/surfaceintegral.cpp \
-    hermes2d/boundary.cpp \
-    hermes2d/material.cpp \
     collaboration.cpp \
     resultsview.cpp
 HEADERS += util.h \
@@ -112,6 +109,8 @@ HEADERS += util.h \
     hermes2d/localpoint.h \
     hermes2d/volumeintegral.h \
     hermes2d/surfaceintegral.h \
+    hermes2d/boundary.h \
+    hermes2d/material.h \
     hermes2d/module.h \
     #hermes2d/hermes_general.h \
     hermes2d/hermes_electrostatic.h \
@@ -120,7 +119,7 @@ HEADERS += util.h \
     #hermes2d/hermes_current.h \
     #hermes2d/hermes_elasticity.h \
     #hermes2d/hermes_rf.h \
-    #hermes2d/hermes_acoustic.h \
+    hermes2d/hermes_acoustic.h \
     #hermes2d/hermes_flow.h \
     mainwindow.h \
     scripteditordialog.h \
@@ -153,11 +152,6 @@ HEADERS += util.h \
     indicators/indicators.h \
     indicators/indicator_unity.h \
     collaboration.h \
-    hermes2d/localpoint.h \
-    hermes2d/volumeintegral.h \
-    hermes2d/surfaceintegral.h \
-    hermes2d/boundary.h \
-    hermes2d/material.h \
     resultsview.h 
 INCLUDEPATH += . \
     ../lib/muparser \

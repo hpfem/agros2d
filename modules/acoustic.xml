@@ -7,7 +7,25 @@
     
     <constants>
         <item id="P0" value="20e-6" />
-    </constants>    
+    </constants>  
+    
+    <material>
+        <item id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" />
+        <item id="acoustic_speed" name="Speed of sound" shortname="v" unit="m/s" />                        
+    </material>
+
+    <boundary>
+        <item id="acoustic_pressure" name="Pressure">
+            <variable id="acoustic_pressure" name="Pressure" shortname="p" unit="Pa" />
+        </item>    
+        <item id="acoustic_normal_acceleration" name="Normal acceleration">
+            <variable id="acoustic_normal_acceleration" name="Normal acceleration" shortname="an" unit="m/s2" />
+        </item> 
+        <item id="acoustic_impedance" name="Impedance boundary condition">
+            <variable id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" unit="Pa·s/m" />
+        </item>    
+        <item id="acoustic_matched_boundary" name="Matched boundary" />
+    </boundary>      
 
     <localvariable>
         <item id="acoustic_pressure_real" name="Pressure - real" shortname="p" unit="Pa" scalar="1">

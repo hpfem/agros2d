@@ -32,10 +32,6 @@ public:
     inline int number_of_solution() const { return 2; }
     bool has_nonlinearity() const { return false; }
 
-    LocalPointValue *local_point_value(const Point &point);
-    SurfaceIntegralValue *surface_integral_value();
-    VolumeIntegralValue *volume_integral_value();
-
     ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                          PhysicFieldVariableComp physicFieldVariableComp);
 
@@ -43,11 +39,6 @@ public:
     void update_time_functions(double time);
 
     // rewrite
-    void readBoundaryFromDomElement(QDomElement *element);
-    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
-    void readMaterialFromDomElement(QDomElement *element);
-    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
     SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
@@ -58,74 +49,12 @@ public:
 
 // *******************************************************************************************
 
-class ParserAcoustic : public Parser
-{
-public:
-    double prho;
-    double pv;
-
-    void setParserVariables(SceneMaterial *material);
-};
-
-class LocalPointValueAcoustic : public LocalPointValue
-{
-public:
-    LocalPointValueAcoustic(const Point &point);
-};
-
-class SurfaceIntegralValueAcoustic : public SurfaceIntegralValue
-{
-public:
-    SurfaceIntegralValueAcoustic();
-};
-
-class VolumeIntegralValueAcoustic : public VolumeIntegralValue
-{
-public:
-    VolumeIntegralValueAcoustic();
-};
-
-class ViewScalarFilterAcoustic : public ViewScalarFilter
-{
-public:
-    ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *> sln,
-                                   std::string expression);
-};
-
-// *******************************************************************************************
-
-class SceneBoundaryAcoustic : public SceneBoundary
-{
-public:
-    Value value_real;
-
-    SceneBoundaryAcoustic(const QString &name, PhysicFieldBC type, Value value_real);
-    SceneBoundaryAcoustic(const QString &name, PhysicFieldBC type);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
-class SceneMaterialAcoustic : public SceneMaterial
-{
-public:
-    Value density;
-    Value speed;
-
-    SceneMaterialAcoustic(const QString &name, Value density, Value speed);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
 class SceneBoundaryAcousticDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    SceneBoundaryAcousticDialog(SceneBoundaryAcoustic *boundary, QWidget *parent);
+    SceneBoundaryAcousticDialog(SceneBoundary *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -147,7 +76,7 @@ class SceneMaterialAcousticDialog : public SceneMaterialDialog
     Q_OBJECT
 
 public:
-    SceneMaterialAcousticDialog(SceneMaterialAcoustic *material, QWidget *parent);
+    SceneMaterialAcousticDialog(SceneMaterial *material, QWidget *parent);
 
 protected:
     void createContent();

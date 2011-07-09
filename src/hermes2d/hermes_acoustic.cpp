@@ -37,8 +37,8 @@ public:
         else if (gt == HERMES_AXISYM_X) result = int_y_u_v<double, scalar>(n, wt, u, v, e);
         else result = int_x_u_v<double, scalar>(n, wt, u, v, e);
 
-        SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->elem_marker).c_str())]->material);
-        return coeff / (material->density.number * material->speed.number) * result;
+        SceneMaterial *material = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->elem_marker).c_str())]->material;
+        return coeff / (material->get_value("acoustic_density").number * material->get_value("acoustic_speed").number) * result;
     }
 
     virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u,
@@ -70,33 +70,33 @@ public:
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->edges[i]->boundary);
+            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
             if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
-                if (boundary->type == PhysicFieldBC_Acoustic_NormalAcceleration)
-                    if (fabs(boundary->value_real.number) > EPS_ZERO)
+                if (boundary->type == "acoustic_normal_acceleration")
+                    if (fabs(boundary->get_value("acoustic_normal_acceleration").number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        boundary->value_real.number,
+                                                                                                        boundary->get_value("acoustic_normal_acceleration").number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
 
-                if (boundary->type == PhysicFieldBC_Acoustic_Impedance)
+                if (boundary->type == "acoustic_impedance")
                 {
-                    if (fabs(boundary->value_real.number) > EPS_ZERO)
+                    if (fabs(boundary->get_value("acoustic_impedance").number) > EPS_ZERO)
                     {
                         add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(0, 1,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        - 2 * M_PI * Util::scene()->problemInfo()->frequency / boundary->value_real.number,
+                                                                                                        - 2 * M_PI * Util::scene()->problemInfo()->frequency / boundary->get_value("acoustic_impedance").number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
                         add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(1, 0,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        2 * M_PI * Util::scene()->problemInfo()->frequency / boundary->value_real.number,
+                                                                                                        2 * M_PI * Util::scene()->problemInfo()->frequency / boundary->get_value("acoustic_impedance").number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
                     }
                 }
 
-                if (boundary->type == PhysicFieldBC_Acoustic_MatchedBoundary)
+                if (boundary->type == "acoustic_matched_boundary")
                 {
                     add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(0, 1,
                                                                                  QString::number(i + 1).toStdString(),
@@ -113,31 +113,31 @@ public:
         // materials
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->labels[i]->material);
+            SceneMaterial *material = Util::scene()->labels[i]->material;
 
             if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
                 // real part
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
                                                                                                QString::number(i).toStdString(),
-                                                                                               1.0 / material->density.number,
+                                                                                               1.0 / material->get_value("acoustic_density").number,
                                                                                                HERMES_SYM,
                                                                                                convertProblemType(Util::scene()->problemInfo()->problemType)));
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
                                                                                           QString::number(i).toStdString(),
-                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) / (material->density.number * sqr(material->speed.number)),
+                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) / (material->get_value("acoustic_density").number * sqr(material->get_value("acoustic_speed").number)),
                                                                                           HERMES_SYM,
                                                                                           convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                 // imag part
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(1, 1,
                                                                                                QString::number(i).toStdString(),
-                                                                                               1.0 / material->density.number,
+                                                                                               1.0 / material->get_value("acoustic_density").number,
                                                                                                HERMES_SYM,
                                                                                                convertProblemType(Util::scene()->problemInfo()->problemType)));
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 1,
                                                                                           QString::number(i).toStdString(),
-                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) / (material->density.number * sqr(material->speed.number)),
+                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) / (material->get_value("acoustic_density").number * sqr(material->get_value("acoustic_speed").number)),
                                                                                           HERMES_SYM,
                                                                                           convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
@@ -160,18 +160,18 @@ public:
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->edges[i]->boundary);
+            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
             if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
-                if (boundary->type == PhysicFieldBC_Acoustic_NormalAcceleration)
-                    if (fabs(boundary->value_real.number) > EPS_ZERO)
+                if (boundary->type == "acoustic_normal_acceleration")
+                    if (fabs(boundary->get_value("acoustic_normal_acceleration").number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        boundary->value_real.number,
+                                                                                                        boundary->get_value("acoustic_normal_acceleration").number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
 
-                if (boundary->type == PhysicFieldBC_Acoustic_Impedance)
+                if (boundary->type == "acoustic_impedance")
                 {
                     /*
                     if (fabs(boundary->value_real.number) > EPS_ZERO)
@@ -188,7 +188,7 @@ public:
                     */
                 }
 
-                if (boundary->type == PhysicFieldBC_Acoustic_MatchedBoundary)
+                if (boundary->type == "acoustic_matched_boundary")
                 {
                     add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
                                                                                  QString::number(i + 1).toStdString(),
@@ -207,19 +207,19 @@ public:
         // materials
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->labels[i]->material);
+            SceneMaterial *material = Util::scene()->labels[i]->material;
 
             if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
                                                                                                QString::number(i).toStdString(),
-                                                                                               1.0 / material->density.number,
+                                                                                               1.0 / material->get_value("acoustic_density").number,
                                                                                                HERMES_NONSYM,
                                                                                                convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 1,
                                                                                           QString::number(i).toStdString(),
-                                                                                          1.0 / (material->density.number * sqr(material->speed.number)) / Util::scene()->problemInfo()->timeStep.number,
+                                                                                          1.0 / (material->get_value("acoustic_density").number * sqr(material->get_value("acoustic_speed").number)) / Util::scene()->problemInfo()->timeStep.number,
                                                                                           HERMES_NONSYM,
                                                                                           convertProblemType(Util::scene()->problemInfo()->problemType)));
 
@@ -237,7 +237,7 @@ public:
 
                 add_vector_form(new CustomVectorFormTimeDep(0,
                                                             QString::number(i).toStdString(),
-                                                            1.0 / (material->density.number * sqr(material->speed.number)) / Util::scene()->problemInfo()->timeStep.number,
+                                                            1.0 / (material->get_value("acoustic_density").number * sqr(material->get_value("acoustic_speed").number)) / Util::scene()->problemInfo()->timeStep.number,
                                                             solution[0],
                                                             convertProblemType(Util::scene()->problemInfo()->problemType)));
 
@@ -320,7 +320,7 @@ class CustomAcousticPressureBC : public EssentialBoundaryCondition
 {
 public:
     /// Constructors.
-    CustomAcousticPressureBC(std::string marker, SceneBoundaryAcoustic *boundary) : EssentialBoundaryCondition(marker)
+    CustomAcousticPressureBC(std::string marker, SceneBoundary *boundary) : EssentialBoundaryCondition(marker)
     {
         m_boundary = boundary;
     }
@@ -329,154 +329,34 @@ public:
     inline EssentialBCValueType get_value_type() const { return EssentialBoundaryCondition::BC_FUNCTION; }
     virtual scalar value(double x, double y, double n_x, double n_y, double t_x, double t_y) const
     {
-        return m_boundary->value_real.number;
+        return m_boundary->get_value("acoustic_pressure").number;
     }
 
 private:
-    SceneBoundaryAcoustic *m_boundary;
+    SceneBoundary *m_boundary;
 };
 
 // ****************************************************************************************************************
 
-void ParserAcoustic::setParserVariables(SceneMaterial *material)
-{
-    SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
-
-    prho = marker->density.number;
-    pv = marker->speed.number;
-}
-
-// ****************************************************************************************************************
-
-LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPointValue(point)
-{
-    parser = new ParserAcoustic();
-    initParser();
-
-    parser->parser[0]->DefineVar("rho", &static_cast<ParserAcoustic *>(parser)->prho);
-    parser->parser[0]->DefineVar("v", &static_cast<ParserAcoustic *>(parser)->pv);
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-SurfaceIntegralValueAcoustic::SurfaceIntegralValueAcoustic() : SurfaceIntegralValue()
-{
-    parser = new ParserAcoustic();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserAcoustic *>(parser)->prho);
-        ((mu::Parser *) *it)->DefineVar("v", &static_cast<ParserAcoustic *>(parser)->pv);
-    }
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-VolumeIntegralValueAcoustic::VolumeIntegralValueAcoustic() : VolumeIntegralValue()
-{
-    parser = new ParserAcoustic();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("rho", &static_cast<ParserAcoustic *>(parser)->prho);
-        ((mu::Parser *) *it)->DefineVar("v", &static_cast<ParserAcoustic *>(parser)->pv);
-    }
-
-    sln.push_back(Util::scene()->sceneSolution()->sln(0));
-    sln.push_back(Util::scene()->sceneSolution()->sln(1));
-
-    calculate();
-}
-
-// *************************************************************************************************************************************
-
-ViewScalarFilterAcoustic::ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *> sln,
-                                                             std::string expression) :
-    ViewScalarFilter(sln)
-{
-    parser = new ParserAcoustic();
-    initParser(expression);
-
-    parser->parser[0]->DefineVar("rho", &static_cast<ParserAcoustic *>(parser)->prho);
-    parser->parser[0]->DefineVar("v", &static_cast<ParserAcoustic *>(parser)->pv);
-}
-
-// **************************************************************************************************************************
-
-LocalPointValue *ModuleAcoustic::local_point_value(const Point &point)
-{
-    return new LocalPointValueAcoustic(point);
-}
-
-SurfaceIntegralValue *ModuleAcoustic::surface_integral_value()
-{
-    return new SurfaceIntegralValueAcoustic();
-}
-
-VolumeIntegralValue *ModuleAcoustic::volume_integral_value()
-{
-    return new VolumeIntegralValueAcoustic();
-}
-
-ViewScalarFilter *ModuleAcoustic::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                           PhysicFieldVariableComp physicFieldVariableComp)
-{
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
-    Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
-
-    return new ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *>(sln1, sln2),
-                                        get_expression(physicFieldVariable, physicFieldVariableComp));
-}
-
 Hermes::vector<SolutionArray *> ModuleAcoustic::solve(ProgressItemSolve *progressItemSolve)
 {
-    // transient
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-    {
-        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // edge markers
-    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-    {
-        SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->boundaries[i]);
-
-        // evaluate script
-        if (!boundary->value_real.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // label markers
-    for (int i = 1; i<Util::scene()->materials.count(); i++)
-    {
-        SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->materials[i]);
-
-        // evaluate script
-        if (!material->density.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->speed.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
+    if (!solve_init_variables())
+        return Hermes::vector<SolutionArray *>();
 
     // boundary conditions
     EssentialBCs bc1;
     EssentialBCs bc2;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->edges[i]->boundary);
+        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
         if (boundary)
         {
-            if (boundary->type == PhysicFieldBC_Acoustic_Pressure)
+            if (boundary->type == "acoustic_pressure")
             {
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
                 {
-                    bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value_real.number));
+                    bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->get_value("acoustic_pressure").number));
                     bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), 0.0));
                 }
                 else
@@ -507,95 +387,22 @@ void ModuleAcoustic::update_time_functions(double time)
     // update boundaries
     for (int i = 1; i<Util::scene()->boundaries.count(); i++)
     {
-        SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->boundaries[i]);
-        boundary->value_real.evaluate(time);
+        SceneBoundary *boundary = Util::scene()->boundaries[i];
+        boundary->get_value("acoustic_pressure").evaluate(time);
     }
 }
 
 // **************************************************************************************************************************
 // rewrite
 
-void ModuleAcoustic::readBoundaryFromDomElement(QDomElement *element)
-{
-    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
-    switch (type)
-    {
-    case PhysicFieldBC_None:
-    case PhysicFieldBC_Acoustic_Pressure:
-        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
-                                                             type,
-                                                             Value(element->attribute("pressure", "0"))));
-        break;
-    case PhysicFieldBC_Acoustic_NormalAcceleration:
-        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
-                                                             type,
-                                                             Value(element->attribute("acceleration", "0"))));
-        break;
-    case PhysicFieldBC_Acoustic_Impedance:
-        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
-                                                             type,
-                                                             Value(element->attribute("impedance", "0"))));
-        break;
-    case PhysicFieldBC_Acoustic_MatchedBoundary:
-        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
-                                                             type));
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-        break;
-    }
-}
-
-void ModuleAcoustic::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
-{
-    SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(marker);
-
-    element->setAttribute("type", physicFieldBCToStringKey(boundary->type));
-
-    switch (boundary->type)
-    {
-    case PhysicFieldBC_Acoustic_Pressure:
-        element->setAttribute("pressure", boundary->value_real.text);
-        break;
-    case PhysicFieldBC_Acoustic_NormalAcceleration:
-        element->setAttribute("acceleration", boundary->value_real.text);
-        break;
-    case PhysicFieldBC_Acoustic_Impedance:
-        element->setAttribute("impedance", boundary->value_real.text);
-        break;
-    case PhysicFieldBC_Acoustic_MatchedBoundary:
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-        break;
-    }
-
-}
-
-void ModuleAcoustic::readMaterialFromDomElement(QDomElement *element)
-{
-    Util::scene()->addMaterial(new SceneMaterialAcoustic(element->attribute("name"),
-                                                         Value(element->attribute("density", "1.25")),
-                                                         Value(element->attribute("speed", "343"))));
-}
-
-void ModuleAcoustic::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
-{
-    SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(marker);
-
-    element->setAttribute("density", material->density.text);
-    element->setAttribute("speed", material->speed.text);
-}
-
 SceneBoundary *ModuleAcoustic::newBoundary()
 {
-    return new SceneBoundaryAcoustic(tr("new boundary"),
-                                     PhysicFieldBC_Acoustic_Pressure,
-                                     Value("0"));
+    return new SceneBoundary(tr("new boundary").toStdString(), "acoustic_pressure");
 }
 
 SceneBoundary *ModuleAcoustic::newBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double pressure;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ss|d", &name, &type, &pressure))
@@ -613,10 +420,12 @@ SceneBoundary *ModuleAcoustic::newBoundary(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneBoundary *ModuleAcoustic::modifyBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double pressure;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd", &name, &type, &pressure))
@@ -646,17 +455,17 @@ SceneBoundary *ModuleAcoustic::modifyBoundary(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleAcoustic::newMaterial()
 {
-    return new SceneMaterialAcoustic(tr("new material"),
-                                     Value("1.25"),
-                                     Value("343"));
+    return new SceneMaterial(tr("new material").toStdString());
 }
 
 SceneMaterial *ModuleAcoustic::newMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double density, speed;
     char *name;
     if (PyArg_ParseTuple(args, "sdd", &name, &density, &speed))
@@ -670,10 +479,12 @@ SceneMaterial *ModuleAcoustic::newMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleAcoustic::modifyMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double density, speed;
     char *name;
     if (PyArg_ParseTuple(args, "sdd", &name, &density, &speed))
@@ -692,87 +503,12 @@ SceneMaterial *ModuleAcoustic::modifyMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 // *************************************************************************************************************************************
 
-SceneBoundaryAcoustic::SceneBoundaryAcoustic(const QString &name, PhysicFieldBC type, Value value_real) : SceneBoundary(name, type)
-{
-    this->value_real = value_real;
-}
-
-SceneBoundaryAcoustic::SceneBoundaryAcoustic(const QString &name, PhysicFieldBC type) : SceneBoundary(name, type)
-{
-}
-
-QString SceneBoundaryAcoustic::script()
-{
-    return QString("addboundary(\"%1\", \"%2\", %3)").
-            arg(name).
-            arg(physicFieldBCToStringKey(type)).
-            arg(value_real.text);
-}
-
-QMap<QString, QString> SceneBoundaryAcoustic::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PhysicFieldBC_Acoustic_Pressure:
-        out["Pressure (Pa)"] = value_real.text;
-        break;
-    case PhysicFieldBC_Acoustic_NormalAcceleration:
-        out["Normal acceleration (m/s2)"] = value_real.text;
-        break;
-    case PhysicFieldBC_Acoustic_Impedance:
-        out["Input impedance (Pa.s/m)"] = value_real.text;
-        break;
-    case PhysicFieldBC_Acoustic_MatchedBoundary:
-        break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneBoundaryAcoustic::showDialog(QWidget *parent)
-{
-    SceneBoundaryAcousticDialog *dialog = new SceneBoundaryAcousticDialog(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneMaterialAcoustic::SceneMaterialAcoustic(const QString &name, Value density, Value speed)
-    : SceneMaterial(name)
-{
-    this->density = density;
-    this->speed = speed;
-}
-
-QString SceneMaterialAcoustic::script()
-{
-    return QString("addmaterial(\"%1\", %2, %3)").
-            arg(name).
-            arg(density.text).
-            arg(speed.text);
-}
-
-QMap<QString, QString> SceneMaterialAcoustic::data()
-{
-    QMap<QString, QString> out;
-    out["Density (-)"] = density.text;
-    out["Speed (-)"] = speed.text;
-    return QMap<QString, QString>(out);
-}
-
-int SceneMaterialAcoustic::showDialog(QWidget *parent)
-{
-    SceneMaterialAcousticDialog *dialog = new SceneMaterialAcousticDialog(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneBoundaryAcousticDialog::SceneBoundaryAcousticDialog(SceneBoundaryAcoustic *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
+SceneBoundaryAcousticDialog::SceneBoundaryAcousticDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
 {
     m_boundary = boundary;
 
@@ -787,14 +523,7 @@ void SceneBoundaryAcousticDialog::createContent()
     lblValueUnit = new QLabel("");
 
     cmbType = new QComboBox(this);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Acoustic_Pressure), PhysicFieldBC_Acoustic_Pressure);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Acoustic_NormalAcceleration), PhysicFieldBC_Acoustic_NormalAcceleration);
-    // FIX impedance boundary for transient
-    // if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-    {
-        cmbType->addItem(physicFieldBCString(PhysicFieldBC_Acoustic_MatchedBoundary), PhysicFieldBC_Acoustic_MatchedBoundary);
-        cmbType->addItem(physicFieldBCString(PhysicFieldBC_Acoustic_Impedance), PhysicFieldBC_Acoustic_Impedance);
-    }
+    Util::scene()->problemInfo()->module()->fillComboBoxBoundaryCondition(cmbType);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValue = new ValueLineEdit(this, true);
@@ -814,23 +543,41 @@ void SceneBoundaryAcousticDialog::load()
 {
     SceneBoundaryDialog::load();
 
-    SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(m_boundary);
-
-    cmbType->setCurrentIndex(cmbType->findData(boundary->type));
-    txtValue->setValue(boundary->value_real);
+    cmbType->setCurrentIndex(cmbType->findData(QString::fromStdString(m_boundary->type)));
+    if (m_boundary->type == "acoustic_pressure")
+    {
+        txtValue->setValue(m_boundary->get_value("acoustic_pressure"));
+    }
+    else if (m_boundary->type == "acoustic_normal_acceleration")
+    {
+        txtValue->setValue(m_boundary->get_value("acoustic_normal_acceleration"));
+    }
+    else if (m_boundary->type == "acoustic_impedance")
+    {
+        txtValue->setValue(m_boundary->get_value("acoustic_impedance"));
+    }
 }
 
 bool SceneBoundaryAcousticDialog::save() {
     if (!SceneBoundaryDialog::save()) return false;;
 
-    SceneBoundaryAcoustic *boundary = dynamic_cast<SceneBoundaryAcoustic *>(m_boundary);
-
-    boundary->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
+    m_boundary->type = cmbType->itemData(cmbType->currentIndex()).toString().toStdString();
 
     if (txtValue->evaluate())
-        boundary->value_real = txtValue->value();
-    else
-        return false;
+        if (m_boundary->type == "acoustic_pressure")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("acoustic_pressure")] = txtValue->value();
+        }
+        else if (m_boundary->type == "acoustic_normal_acceleration")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("acoustic_normal_acceleration")] = txtValue->value();
+        }
+        else if (m_boundary->type == "acoustic_impedance")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("acoustic_impedance")] = txtValue->value();
+        }
+        else
+            return false;
 
     return true;
 }
@@ -840,38 +587,31 @@ void SceneBoundaryAcousticDialog::doTypeChanged(int index)
     txtValue->setEnabled(false);
 
     // read equation
-    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+    readEquation(lblEquationImage, cmbType->itemData(index).toString());
 
     // enable controls
-    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
-    {
-    case PhysicFieldBC_Acoustic_Pressure:
+    if (cmbType->itemData(index) == "acoustic_pressure")
     {
         txtValue->setEnabled(true);
         lblValueUnit->setText(tr("<i>p</i><sub>0</sub> (Pa)"));
         lblValueUnit->setToolTip(cmbType->itemText(index));
     }
-        break;
-    case PhysicFieldBC_Acoustic_NormalAcceleration:
+    else if (cmbType->itemData(index) == "acoustic_normal_acceleration")
     {
         txtValue->setEnabled(true);
         lblValueUnit->setText(tr("<i>a</i><sub>0</sub> (m/s<sup>2</sup>)"));
         lblValueUnit->setToolTip(cmbType->itemText(index));
     }
-        break;
-    case PhysicFieldBC_Acoustic_Impedance:
+    else if (cmbType->itemData(index) == "acoustic_impedance")
     {
         txtValue->setEnabled(true);
         lblValueUnit->setText(tr("<i>Z</i><sub>0</sub> (Pa·s/m)"));
         lblValueUnit->setToolTip(cmbType->itemText(index));
     }
-        break;
-    case PhysicFieldBC_Acoustic_MatchedBoundary:
+    else if (cmbType->itemData(index) == "acoustic_matched_boundary")
     {
         lblValueUnit->setText("-");
         lblValueUnit->setToolTip(cmbType->itemText(index));
-    }
-        break;
     }
 
     setMinimumSize(sizeHint());
@@ -879,7 +619,7 @@ void SceneBoundaryAcousticDialog::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-SceneMaterialAcousticDialog::SceneMaterialAcousticDialog(SceneMaterialAcoustic *material, QWidget *parent) : SceneMaterialDialog(parent)
+SceneMaterialAcousticDialog::SceneMaterialAcousticDialog(SceneMaterial *material, QWidget *parent) : SceneMaterialDialog(parent)
 {
     m_material = material;
 
@@ -909,24 +649,20 @@ void SceneMaterialAcousticDialog::load()
 {
     SceneMaterialDialog::load();
 
-    SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(m_material);
-
-    txtDensity->setValue(material->density);
-    txtSpeed->setValue(material->speed);
+    txtDensity->setValue(m_material->get_value("acoustic_density"));
+    txtSpeed->setValue(m_material->get_value("acoustic_speed"));
 }
 
 bool SceneMaterialAcousticDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
-    SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(m_material);
-
     if (txtDensity->evaluate())
-        material->density  = txtDensity->value();
+        m_material->values[m_material->get_material_type("acoustic_density")] = txtDensity->value();
     else
         return false;
 
     if (txtSpeed->evaluate())
-        material->speed  = txtSpeed->value();
+        m_material->values[m_material->get_material_type("acoustic_speed")] = txtSpeed->value();
     else
         return false;
 

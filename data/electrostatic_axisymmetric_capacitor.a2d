@@ -11,9 +11,9 @@ eps2 = 3</scriptstartup>
                 <edge type="electrostatic_surface_charge_density" electrostatic_surface_charge_density="0" id="3" name="Neumann"/>
             </edges>
             <labels>
-                <label charge_density="0" id="1" name="Air" permittivity="1"/>
-                <label charge_density="0" id="2" name="Dielectric 1" permittivity="eps1"/>
-                <label charge_density="0" id="3" name="Dielectric 2" permittivity="eps2"/>
+                <label electrostatic_charge_density="0" id="1" name="Air" electrostatic_permittivity="1"/>
+                <label electrostatic_charge_density="0" id="2" name="Dielectric 1" electrostatic_permittivity="eps1"/>
+                <label electrostatic_charge_density="0" id="3" name="Dielectric 2" electrostatic_permittivity="eps2"/>
             </labels>
         </problem>
     </problems>
