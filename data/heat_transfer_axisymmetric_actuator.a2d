@@ -4,14 +4,14 @@
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge h="0" external_temperature="0" type="heat_heat_flux" id="1" name="Neumann" heat_flux="0"/>
-                <edge h="10" external_temperature="20" type="heat_heat_flux" id="2" name="Convection" heat_flux="0"/>
+                <edge heat_heat_transfer_coefficient="0" heat_external_temperature="0" type="heat_heat_flux" id="1" name="Neumann" heat_flux="0"/>
+                <edge heat_heat_transfer_coefficient="10" heat_external_temperature="20" type="heat_heat_flux" id="2" name="Convection" heat_flux="0"/>
             </edges>
             <labels>
-                <label thermal_conductivity="0.02" specific_heat="1000" volume_heat="0" id="1" density="1.2" name="Air"/>
-                <label thermal_conductivity="200" specific_heat="385" volume_heat="26000" id="2" density="8700" name="Copper"/>
-                <label thermal_conductivity="60" specific_heat="460" volume_heat="0" id="3" density="7800" name="Iron"/>
-                <label thermal_conductivity="100" specific_heat="378" volume_heat="0" id="4" density="8400" name="Brass"/>
+                <label heat_conductivity="0.02" heat_heat_specific_heat="1000" heat_volume_heat="0" id="1" heat_density="1.2" name="Air"/>
+                <label heat_conductivity="200" heat_heat_specific_heat="385" heat_volume_heat="26000" id="2" heat_density="8700" name="Copper"/>
+                <label heat_conductivity="60" heat_heat_specific_heat="460" heat_volume_heat="0" id="3" heat_density="7800" name="Iron"/>
+                <label heat_conductivity="100" heat_heat_specific_heat="378" heat_volume_heat="0" id="4" heat_density="8400" name="Brass"/>
             </labels>
         </problem>
     </problems>

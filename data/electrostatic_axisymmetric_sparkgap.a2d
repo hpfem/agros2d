@@ -4,12 +4,12 @@
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge type="electrostatic_potential" value="1000" id="1" name="Source"/>
-                <edge type="electrostatic_potential" value="0" id="2" name="Ground"/>
-                <edge type="electrostatic_surface_charge_density" value="0" id="3" name="Border"/>
+                <edge type="electrostatic_potential" electrostatic_potential="1000" id="1" name="Source"/>
+                <edge type="electrostatic_potential" electrostatic_potential="0" id="2" name="Ground"/>
+                <edge type="electrostatic_surface_charge_density" electrostatic_surface_charge_density="0" id="3" name="Border"/>
             </edges>
             <labels>
-                <label charge_density="0" id="1" name="Air" permittivity="1"/>
+                <label electrostatic_charge_density="0" id="1" name="Air" electrostatic_permittivity="1"/>
             </labels>
         </problem>
     </problems>

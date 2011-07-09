@@ -4,23 +4,23 @@
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge h="25" external_temperature="-15" type="heat_heat_flux" id="1" name="Exterior" heat_flux="0"/>
-                <edge h="4" external_temperature="21" type="heat_heat_flux" id="2" name="Interior" heat_flux="0"/>
-                <edge h="0" external_temperature="0" type="heat_heat_flux" id="3" name="Border" heat_flux="0"/>
+                <edge heat_heat_transfer_coefficient="25" heat_external_temperature="-15" type="heat_heat_flux" id="1" name="Exterior" heat_flux="0"/>
+                <edge heat_heat_transfer_coefficient="4" heat_external_temperature="21" type="heat_heat_flux" id="2" name="Interior" heat_flux="0"/>
+                <edge heat_heat_transfer_coefficient="0" heat_external_temperature="0" type="heat_heat_flux" id="3" name="Border" heat_flux="0"/>
             </edges>
             <labels>
-                <label thermal_conductivity="0.418" specific_heat="0" volume_heat="0" id="1" density="0" name="Zdici prvky SENDWIX tl. 240 kontakt"/>
-                <label thermal_conductivity="0.042" specific_heat="0" volume_heat="0" id="2" density="0" name="Izolace Rockwool Fasrock L"/>
-                <label thermal_conductivity="0.036" specific_heat="0" volume_heat="0" id="3" density="0" name="Flexibilni pena"/>
-                <label thermal_conductivity="1.01" specific_heat="0" volume_heat="0" id="4" density="0" name="Naslapna vrstva podlahy"/>
-                <label thermal_conductivity="0.037" specific_heat="0" volume_heat="0" id="5" density="0" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm"/>
-                <label thermal_conductivity="1.58" specific_heat="0" volume_heat="0" id="6" density="0" name="Stropní konstrukce Rector tl. 200 mm"/>
-                <label thermal_conductivity="0.671" specific_heat="0" volume_heat="0" id="7" density="0" name="Vapenopiskovy preklad Sendwix 2DF"/>
-                <label thermal_conductivity="0.57" specific_heat="0" volume_heat="0" id="8" density="0" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm"/>
-                <label thermal_conductivity="0.57" specific_heat="0" volume_heat="0" id="9" density="0" name="Tenkovrstva silikonova omitka Cermix 2 mm"/>
-                <label thermal_conductivity="0.47" specific_heat="0" volume_heat="0" id="10" density="0" name="Jednovrstva omitka Cemix 073 tl. 8 mm"/>
-                <label thermal_conductivity="0.14" specific_heat="0" volume_heat="0" id="11" density="0" name="Sklo"/>
-                <label thermal_conductivity="1.23" specific_heat="0" volume_heat="0" id="12" density="0" name="Betonovy zaklad"/>
+                <label heat_conductivity="0.418" specific_heat="0" heat_volume_heat="0" id="1" heat_density="0" name="Zdici prvky SENDWIX tl. 240 kontakt"/>
+                <label heat_conductivity="0.042" specific_heat="0" heat_volume_heat="0" id="2" heat_density="0" name="Izolace Rockwool Fasrock L"/>
+                <label heat_conductivity="0.036" specific_heat="0" heat_volume_heat="0" id="3" heat_density="0" name="Flexibilni pena"/>
+                <label heat_conductivity="1.01" specific_heat="0" heat_volume_heat="0" id="4" heat_density="0" name="Naslapna vrstva podlahy"/>
+                <label heat_conductivity="0.037" specific_heat="0" heat_volume_heat="0" id="5" heat_density="0" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm"/>
+                <label heat_conductivity="1.58" specific_heat="0" heat_volume_heat="0" id="6" heat_density="0" name="Stropní konstrukce Rector tl. 200 mm"/>
+                <label heat_conductivity="0.671" specific_heat="0" heat_volume_heat="0" id="7" heat_density="0" name="Vapenopiskovy preklad Sendwix 2DF"/>
+                <label heat_conductivity="0.57" specific_heat="0" heat_volume_heat="0" id="8" heat_density="0" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm"/>
+                <label heat_conductivity="0.57" specific_heat="0" heat_volume_heat="0" id="9" heat_density="0" name="Tenkovrstva silikonova omitka Cermix 2 mm"/>
+                <label heat_conductivity="0.47" specific_heat="0" heat_volume_heat="0" id="10" heat_density="0" name="Jednovrstva omitka Cemix 073 tl. 8 mm"/>
+                <label heat_conductivity="0.14" specific_heat="0" heat_volume_heat="0" id="11" heat_density="0" name="Sklo"/>
+                <label heat_conductivity="1.23" specific_heat="0" heat_volume_heat="0" id="12" heat_density="0" name="Betonovy zaklad"/>
             </labels>
         </problem>
     </problems>
