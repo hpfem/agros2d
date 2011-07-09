@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" maxdofs="60000" frequency="0" numberofrefinements="1" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="steadystate" adaptivitysteps="1" polynomialorder="3" problemtype="axisymmetric" timetotal="1" type="magnetic" timestep="1" id="0" name="Magnetic Steadystate Axisymmetric Actuator" initialcondition="0">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Steadystate Axisymmetric Actuator" date="2011-07-09" polynomialorder="3" meshtype="triangle" timestep="1" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="magnetic" timetotal="1">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>

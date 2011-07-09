@@ -1,7 +1,8 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
 QT += opengl \
     xml \
-    network
+    network \
+    svg
 
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=9
@@ -85,7 +86,7 @@ SOURCES += util.cpp \
     style/manhattanstyle.cpp \
     indicators/indicators.cpp \
     indicators/indicator_unity.cpp \
-    colaboration.cpp
+    collaboration.cpp
 HEADERS += util.h \
     value.h \
     scene.h \
@@ -133,7 +134,7 @@ HEADERS += util.h \
     style/manhattanstyle.h \
     indicators/indicators.h \
     indicators/indicator_unity.h \
-    colaboration.h
+    collaboration.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common

@@ -36,7 +36,7 @@
 #include "logdialog.h"
 #include "problemdialog.h"
 #include "progressdialog.h"
-#include "colaboration.h"
+#include "collaboration.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -162,7 +162,8 @@ void MainWindow::createActions()
     actDocumentOpen->setStatusTip(tr("Open an existing file"));
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(doDocumentOpen()));
 
-    actDocumentDownloadFromServer = new QAction(icon("document-open"), tr("&Download from server..."), this);
+    actDocumentDownloadFromServer = new QAction(icon(""), tr("&Download from server..."), this);
+    actDocumentDownloadFromServer->setShortcut(tr("Ctrl+Shift+O"));
     actDocumentDownloadFromServer->setStatusTip(tr("Download from server..."));
     connect(actDocumentDownloadFromServer, SIGNAL(triggered()), this, SLOT(doDocumentDownloadFromServer()));
 
@@ -180,7 +181,7 @@ void MainWindow::createActions()
     actDocumentSaveAs->setStatusTip(tr("Save the file under a new name"));
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
 
-    actDocumentUploadToServer = new QAction(icon("document-save-as"), tr("Upload to server..."), this);
+    actDocumentUploadToServer = new QAction(icon(""), tr("Upload to server..."), this);
     actDocumentUploadToServer->setStatusTip(tr("Upload to server..."));
     connect(actDocumentUploadToServer, SIGNAL(triggered()), this, SLOT(doDocumentUploadToServer()));
 
@@ -253,6 +254,10 @@ void MainWindow::createActions()
     actHelpShortCut = new QAction(icon(""), tr("&Shortcuts"), this);
     actHelpShortCut->setStatusTip(tr("Shortcuts"));
     connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
+
+    actCollaborationServer = new QAction(icon("collaboration"), tr("Collaboration server"), this);
+    actCollaborationServer->setStatusTip(tr("Collaboration server..."));
+    connect(actCollaborationServer, SIGNAL(triggered()), this, SLOT(doCollaborationServer()));
 
     actOnlineHelp = new QAction(icon(""), tr("&Online help"), this);
     actOnlineHelp->setStatusTip(tr("Online help"));
@@ -343,6 +348,7 @@ void MainWindow::createMenus()
     QMenu *mnuServer = new QMenu(tr("Colaboration"), this);
     mnuServer->addAction(actDocumentDownloadFromServer);
     mnuServer->addAction(actDocumentUploadToServer);
+    mnuServer->addAction(actCollaborationServer);
 
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
@@ -456,6 +462,7 @@ void MainWindow::createMenus()
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
     mnuHelp->addAction(actHelpShortCut);
+    mnuHelp->addAction(actCollaborationServer);
     mnuHelp->addAction(actOnlineHelp);
     mnuHelp->addAction(actCheckVersion);
 #ifndef Q_WS_MAC
@@ -845,7 +852,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
 void MainWindow::doDocumentDownloadFromServer()
 {
-    CloudDialogContent *cloud = new CloudDialogContent(this);
+    ServerDownloadDialog *cloud = new ServerDownloadDialog(this);
     if (cloud->showDialog() == QDialog::Accepted)
     {
         if (QFile::exists(cloud->fileName()))
@@ -930,7 +937,7 @@ void MainWindow::doDocumentUploadToServer()
     // save
     doDocumentSave();
 
-    CloudDialogSave *cloud = new CloudDialogSave(this);
+    ServerUploadDialog *cloud = new ServerUploadDialog(this);
     cloud->showDialog();
     delete cloud;
 }
@@ -1251,6 +1258,13 @@ void MainWindow::doHelpShortCut()
     logMessage("MainWindow::doHelpShortCut()");
 
     showPage("getting_started/basic_control.html#shortcut-keys");
+}
+
+void MainWindow::doCollaborationServer()
+{
+    logMessage("MainWindow::doCollaborationServer()");
+
+    QDesktopServices::openUrl(QUrl("http://agros2d.org/collaboration/problems.php"));
 }
 
 void MainWindow::doOnlineHelp()

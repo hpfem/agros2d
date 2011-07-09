@@ -21,61 +21,84 @@
 #define COLABORATION_H
 
 #include "util.h"
-#include "colaboration.h"
+#include "collaboration.h"
 
-class CloudDialogContent : public QDialog
+#include <QSvgWidget>
+
+class ServerDownloadDialog : public QDialog
 {
     Q_OBJECT
 public:
-    CloudDialogContent(QWidget *parent = 0);
-    ~CloudDialogContent();
+    ServerDownloadDialog(QWidget *parent = 0);
+    ~ServerDownloadDialog();
 
     int showDialog();
     void createControls();
-    void readFromCloudContent();
-    void readFromCloud(int ID);
+    void readFromServerContent();
+    void readFromServerXML(int ID, int version);
+    void readFromServerVersion(int ID);
 
     inline QString fileName() { return m_fileName; }
 
 private slots:
-    void doAccept();
-    void doReject();
+    void doItemSelected(QTreeWidgetItem *item, int role);
+    void doItemSelected(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+    void doVersionChanged(int index);
+    void doDownload();
+    void doClose();
+    void doFind();
     void httpContentFinished();
     void httpFileFinished();
+    void httpDetailSvgFinished();
+    void httpDetailFinished();
 
 private:
     QString m_fileName;
     QTreeWidget *trvProject;
 
+    QComboBox *cmbVersion;
+    QLabel *lblName;
+    QLabel *lblDate;
+    QLabel *lblAuthor;
+    QLabel *lblAffiliation;
+
+    QLineEdit *txtFind;
+    QPushButton *btnFind;
+
+    QPushButton *btnDownload;
+    QSvgWidget *svgImage;
+
     QNetworkAccessManager networkAccessManager;
     QNetworkReply *networkReply;
 };
 
-class CloudDialogSave : public QDialog
+class ServerUploadDialog : public QDialog
 {
     Q_OBJECT
 public:
-    CloudDialogSave(QWidget *parent = 0);
-    ~CloudDialogSave();
+    ServerUploadDialog(QWidget *parent = 0);
+    ~ServerUploadDialog();
 
     int showDialog();
     void createControls();
-    void readFromCloudContent();
-    void saveToCloud();
+    void readFromServerContent();
+    void uploadToServer();
 
 private slots:
     void doAccept();
     void doReject();
     void httpContentFinished();
     void httpFileFinished();
-    void doDocumentChanged(int index);
+    void doDocumentChanged();
 
 private:
     QNetworkAccessManager networkAccessManager;
     QNetworkReply *networkReply;
 
-    QComboBox *cmbDocument;
-    QLineEdit *txtName;
+    QRadioButton *radDocumentNew;
+    QRadioButton *radDocumentExisting;
+    QLabel *lblName;
+    QLabel *lblWarning;
     QComboBox *cmbName;
     QLineEdit *txtAuthor;
     QLineEdit *txtAffiliation;

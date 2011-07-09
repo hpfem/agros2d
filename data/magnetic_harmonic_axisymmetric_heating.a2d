@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="1" adaptivitytype="disabled" analysistype="harmonic" adaptivitysteps="1" polynomialorder="3" problemtype="axisymmetric" timetotal="0" type="magnetic" timestep="0" id="0" name="Magnetic Harmonic Axisymmetric Heating" initialcondition="0">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Harmonic Axisymmetric Heating" date="2011-07-09" polynomialorder="3" meshtype="triangle" timestep="0" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="1000" matrix_solver="umfpack" type="magnetic" timetotal="0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
@@ -29,19 +29,19 @@
             <node x="0.05" y="-0.01" id="11"/>
         </nodes>
         <edges>
-            <edge end="3" marker="1" id="0" start="7" angle="0"/>
-            <edge end="0" marker="0" id="1" start="3" angle="0"/>
-            <edge end="2" marker="1" id="2" start="3" angle="0"/>
-            <edge end="1" marker="0" id="3" start="0" angle="0"/>
-            <edge end="2" marker="0" id="4" start="1" angle="0"/>
-            <edge end="2" marker="1" id="5" start="9" angle="0"/>
-            <edge end="8" marker="1" id="6" start="9" angle="0"/>
-            <edge end="6" marker="1" id="7" start="8" angle="0"/>
-            <edge end="7" marker="1" id="8" start="6" angle="0"/>
-            <edge end="10" marker="0" id="9" start="5" angle="90"/>
-            <edge end="4" marker="0" id="10" start="10" angle="90"/>
-            <edge end="11" marker="0" id="11" start="4" angle="90"/>
-            <edge end="5" marker="0" id="12" start="11" angle="90"/>
+            <edge end="3" refine_towards="0" marker="1" id="0" start="7" angle="0"/>
+            <edge end="0" refine_towards="0" marker="0" id="1" start="3" angle="0"/>
+            <edge end="2" refine_towards="0" marker="1" id="2" start="3" angle="0"/>
+            <edge end="1" refine_towards="0" marker="0" id="3" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" marker="0" id="4" start="1" angle="0"/>
+            <edge end="2" refine_towards="0" marker="1" id="5" start="9" angle="0"/>
+            <edge end="8" refine_towards="0" marker="1" id="6" start="9" angle="0"/>
+            <edge end="6" refine_towards="0" marker="1" id="7" start="8" angle="0"/>
+            <edge end="7" refine_towards="0" marker="1" id="8" start="6" angle="0"/>
+            <edge end="10" refine_towards="0" marker="0" id="9" start="5" angle="90"/>
+            <edge end="4" refine_towards="0" marker="0" id="10" start="10" angle="90"/>
+            <edge end="11" refine_towards="0" marker="0" id="11" start="4" angle="90"/>
+            <edge end="5" refine_towards="0" marker="0" id="12" start="11" angle="90"/>
         </edges>
         <labels>
             <label x="0.0491249" y="0" polynomialorder="0" marker="1" id="0" area="0"/>
@@ -49,5 +49,4 @@
             <label x="0.0124949" y="0.038258" polynomialorder="0" marker="2" id="2" area="0.01"/>
         </labels>
     </geometry>
-    <functions/>
 </document>
