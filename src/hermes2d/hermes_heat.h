@@ -44,44 +44,6 @@ public:
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 };
 
-class ParserHeat : public Parser
-{
-public:
-    double plambda;
-    double prho;
-    double pcp;
-    double pq;
-
-    void setParserVariables(SceneMaterial *material);
-};
-
-// *******************************************************************************************
-
-class LocalPointValueHeat : public LocalPointValue
-{
-public:
-    LocalPointValueHeat(const Point &point);
-};
-
-class SurfaceIntegralValueHeat : public SurfaceIntegralValue
-{
-public:
-    SurfaceIntegralValueHeat();
-};
-
-class VolumeIntegralValueHeat : public VolumeIntegralValue
-{
-public:
-    VolumeIntegralValueHeat();
-};
-
-class ViewScalarFilterHeat : public ViewScalarFilter
-{
-public:
-    ViewScalarFilterHeat(Hermes::vector<MeshFunction *> sln,
-                                 std::string expression);
-};
-
 // *******************************************************************************************
 
 class SceneMaterialHeat : public SceneMaterial

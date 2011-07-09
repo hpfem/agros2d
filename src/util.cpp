@@ -107,10 +107,6 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_RF_SurfaceCurrent, "rf_surface_current");
     physicFieldBCList.insert(PhysicFieldBC_RF_MatchedBoundary, "rf_matched_boundary");
     physicFieldBCList.insert(PhysicFieldBC_RF_Port, "rf_port");
-    physicFieldBCList.insert(PhysicFieldBC_Acoustic_Pressure, "acoustic_pressure");
-    physicFieldBCList.insert(PhysicFieldBC_Acoustic_NormalAcceleration, "acoustic_normal_acceleration");
-    physicFieldBCList.insert(PhysicFieldBC_Acoustic_Impedance, "acoustic_impedance");
-    physicFieldBCList.insert(PhysicFieldBC_Acoustic_MatchedBoundary, "acoustic_matched_boundary");
 
     // TEMODE
     modeList.insert(Mode_0, "mode_0");
@@ -223,14 +219,6 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Matched boundary");
     case PhysicFieldBC_RF_Port:
         return QObject::tr("Port");
-    case PhysicFieldBC_Acoustic_Pressure:
-        return QObject::tr("Acoustic pressure");
-    case PhysicFieldBC_Acoustic_NormalAcceleration:
-        return QObject::tr("Normal acceleration");
-    case PhysicFieldBC_Acoustic_Impedance:
-        return QObject::tr("Impedance boundary condition");
-    case PhysicFieldBC_Acoustic_MatchedBoundary:
-        return QObject::tr("Matched boundary");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
         throw;
@@ -349,10 +337,16 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
 {
     logMessage("fillComboBoxPhysicField()");
 
+    // block signals
+    cmbPhysicField->blockSignals(true);
+
     cmbPhysicField->clear();
     std::map<std::string, std::string> modules = availableModules();
     for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
         cmbPhysicField->addItem(QString::fromStdString(it->second), QString::fromStdString(it->first));
+
+    // unblock signals
+    cmbPhysicField->blockSignals(false);
 
     // FIXME - experimental features
     // if (Util::config()->showExperimentalFeatures)
