@@ -37,7 +37,7 @@
             <transient />
         </item>
         <item id="acoustic_pressure_level" name="Pressure level" shortname="SPL" unit="dB" scalar="1">
-            <harmonic planar_scalar="value1" axi_scalar="20 * log10(sqrt(value1 * value1 + value2 * value2) / P0)" />
+            <harmonic planar_scalar="20 * log10(sqrt(value1 * value1 + value2 * value2) / P0)" axi_scalar="20 * log10(sqrt(value1 * value1 + value2 * value2) / P0)" />
             <transient />
         </item>        
         <item id="acoustic_local_acceleration" name="Local acceleration" shortname="a" unit="m/s2">
