@@ -32,24 +32,12 @@ public:
     inline int number_of_solution() const { return 2; }
     bool has_nonlinearity() const { return false; }
 
-    LocalPointValue *local_point_value(const Point &point);
-    SurfaceIntegralValue *surface_integral_value();
-    VolumeIntegralValue *volume_integral_value();
-
-    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                         PhysicFieldVariableComp physicFieldVariableComp);
-
     void deform_shape(double3* linVert, int count);
     void deform_shape(double4* linVert, int count);
 
     Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
     // rewrite
-    void readBoundaryFromDomElement(QDomElement *element);
-    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
-    void readMaterialFromDomElement(QDomElement *element);
-    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
     SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
@@ -60,92 +48,12 @@ public:
 
 // *******************************************************************************************
 
-class ParserElasticity : public Parser
-{
-public:
-    double pe;
-    double pnu;
-    double pfx;
-    double pfy;
-    double palpha;
-    double pt;
-    double ptref;
-
-    void setParserVariables(SceneMaterial *material);
-};
-
-class LocalPointValueElasticity : public LocalPointValue
-{
-public:
-    LocalPointValueElasticity(const Point &point);
-};
-
-class SurfaceIntegralValueElasticity : public SurfaceIntegralValue
-{
-public:
-    SurfaceIntegralValueElasticity();
-};
-
-class VolumeIntegralValueElasticity : public VolumeIntegralValue
-{
-public:
-    VolumeIntegralValueElasticity();
-};
-
-class ViewScalarFilterElasticity : public ViewScalarFilter
-{
-public:
-    ViewScalarFilterElasticity(Hermes::vector<MeshFunction *> sln,
-                                   std::string expression);
-};
-
-class SceneBoundaryElasticity : public SceneBoundary
-{
-public:
-    PhysicFieldBC typeX;
-    PhysicFieldBC typeY;
-    Value forceX;
-    Value forceY;
-    Value displacementX;
-    Value displacementY;
-
-    SceneBoundaryElasticity(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY,
-                              Value forceX, Value forceY, Value displacementX, Value displacementY);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
-class SceneMaterialElasticity : public SceneMaterial
-{
-public:
-    Value young_modulus;
-    Value poisson_ratio;
-    Value forceX;
-    Value forceY;
-    Value alpha;
-    Value temp;
-    Value temp_ref;
-
-    SceneMaterialElasticity(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY,
-                               Value alpha, Value temp, Value temp_ref);
-
-    // Lame constant
-    inline double lambda() const { return (young_modulus.number * poisson_ratio.number) / ((1.0 + poisson_ratio.number) * (1.0 - 2.0*poisson_ratio.number)); }
-    inline double mu() const { return young_modulus.number / (2.0*(1.0 + poisson_ratio.number)); }
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
 class SceneBoundaryElasticityDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    SceneBoundaryElasticityDialog(SceneBoundaryElasticity *boundary, QWidget *parent);
+    SceneBoundaryElasticityDialog(SceneBoundary *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -158,16 +66,14 @@ private:
     QLabel *lblEquationImageX;
     QLabel *lblEquationY;
     QLabel *lblEquationImageY;
-    QComboBox *cmbTypeX;
-    QComboBox *cmbTypeY;
+    QComboBox *cmbType;
     ValueLineEdit *txtForceX;
     ValueLineEdit *txtForceY;
     ValueLineEdit *txtDisplacementX;
     ValueLineEdit *txtDisplacementY;
 
 private slots:
-    void doTypeXChanged(int index);
-    void doTypeYChanged(int index);
+    void doTypeChanged(int index);
 };
 
 class SceneMaterialElasticityDialog : public SceneMaterialDialog
@@ -175,7 +81,7 @@ class SceneMaterialElasticityDialog : public SceneMaterialDialog
     Q_OBJECT
 
 public:
-    SceneMaterialElasticityDialog(SceneMaterialElasticity *material, QWidget *parent);
+    SceneMaterialElasticityDialog(SceneMaterial *material, QWidget *parent);
 
 protected:
     void createContent();

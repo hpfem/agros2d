@@ -93,12 +93,6 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_None, "none");
     physicFieldBCList.insert(PhysicFieldBC_General_Value, "general_value");
     physicFieldBCList.insert(PhysicFieldBC_General_Derivative, "general_derivative");
-    physicFieldBCList.insert(PhysicFieldBC_Magnetic_VectorPotential, "magnetic_vector_potential");
-    physicFieldBCList.insert(PhysicFieldBC_Magnetic_SurfaceCurrent, "magnetic_surface_current_density");
-    physicFieldBCList.insert(PhysicFieldBC_Current_Potential, "current_potential");
-    physicFieldBCList.insert(PhysicFieldBC_Current_InwardCurrentFlow, "current_inward_current_flow");
-    physicFieldBCList.insert(PhysicFieldBC_Elasticity_Fixed, "elasticity_fixed");
-    physicFieldBCList.insert(PhysicFieldBC_Elasticity_Free, "elasticity_free");
     physicFieldBCList.insert(PhysicFieldBC_Flow_Velocity, "flow_velocity");
     physicFieldBCList.insert(PhysicFieldBC_Flow_Pressure, "flow_pressure");
     physicFieldBCList.insert(PhysicFieldBC_Flow_Outlet, "flow_outlet");
@@ -191,18 +185,6 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Value");
     case PhysicFieldBC_General_Derivative:
         return QObject::tr("Derivative");
-    case PhysicFieldBC_Magnetic_VectorPotential:
-        return QObject::tr("Vector potential");
-    case PhysicFieldBC_Magnetic_SurfaceCurrent:
-        return QObject::tr("Surface current density");
-    case PhysicFieldBC_Current_Potential:
-        return QObject::tr("Potential");
-    case PhysicFieldBC_Current_InwardCurrentFlow:
-        return QObject::tr("Inward current flow");
-    case PhysicFieldBC_Elasticity_Fixed:
-        return QObject::tr("Fixed");
-    case PhysicFieldBC_Elasticity_Free:
-        return QObject::tr("Free");
     case PhysicFieldBC_Flow_Outlet:
         return QObject::tr("Outlet");
     case PhysicFieldBC_Flow_Wall:

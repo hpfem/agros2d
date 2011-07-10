@@ -7,6 +7,35 @@
     
     <constants />
 
+    <material>
+        <item id="elasticity_young_modulus" name="Young modulus" shortname="E" unit="Pa" />        
+        <item id="elasticity_poisson_ratio" name="Poisson ratio" shortname="nu" unit="-" />        
+        <item id="elasticity_force_x" name="Force - x" shortname="fx" unit="N/m3" />        
+        <item id="elasticity_force_y" name="Force - y" shortname="fy" unit="N/m3" />               
+        <item id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/m" />        
+        <item id="elasticity_temperature" name="Temperature" shortname="T" unit="K" />        
+        <item id="elasticity_temperature_reference" name="Reference emperature" shortname="Tr" unit="K" />        
+    </material>
+
+    <boundary>
+        <item id="elasticity_fixed_fixed" name="Fixed - fixed">
+            <variable id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
+            <variable id="elasticity_displacement_y" name="Fixed - y" shortname="dy" unit="m" />
+        </item>    
+        <item id="elasticity_fixed_free" name="Fixed - free">
+            <variable id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
+            <variable id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" />
+        </item>    
+        <item id="elasticity_free_fixed" name="Free - fixed">
+            <variable id="elasticity_free_x" name="Free - x" shortname="fx" unit="N/m2" />
+            <variable id="elasticity_force_y" name="Fixed - y" shortname="dy" unit="m" />
+        </item>    
+        <item id="elasticity_free_free" name="Free - Free">
+            <variable id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" />
+            <variable id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" />
+        </item>    
+    </boundary>
+    
     <localvariable>
         <item id="elasticity_displacement" name="Displacement" shortname="d" unit="m" scalar="0">
             <steadystate planar_comp_x="value1" planar_comp_y="value2" axi_comp_r="value1" axi_comp_z="value2" />
@@ -14,7 +43,7 @@
         <item id="elasticity_young_modulus" name="Young modulus" shortname="E" unit="Pa" scalar="1">
             <steadystate planar_scalar="E" axi_scalar="E" />
         </item>
-        <item id="elasticity_poisson_number" name="Poisson number" shortname="nu" unit="-" scalar="1">
+        <item id="elasticity_poisson_ratio" name="Poisson ratio" shortname="nu" unit="-" scalar="1">
             <steadystate planar_scalar="nu" axi_scalar="nu" />
         </item>
         <item id="elasticity_inner_force" name="Inner force" shortname="f" unit="N" scalar="0">
