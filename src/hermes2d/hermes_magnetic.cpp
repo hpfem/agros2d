@@ -32,22 +32,22 @@ public:
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneBoundaryMagnetic *boundary = dynamic_cast<SceneBoundaryMagnetic *>(Util::scene()->edges[i]->boundary);
+            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
             if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
-                if (boundary->type == PhysicFieldBC_Magnetic_SurfaceCurrent)
+                if (boundary->type == "magnetic_surface_current")
                 {
-                    if (fabs(boundary->value_real.number) > EPS_ZERO)
+                    if (fabs(boundary->get_value("magnetic_surface_current_real").number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        boundary->value_real.number,
+                                                                                                        boundary->get_value("magnetic_surface_current_real").number,
                                                                                                         HERMES_PLANAR));
                     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-                        if (fabs(boundary->value_imag.number) > EPS_ZERO)
+                        if (fabs(boundary->get_value("magnetic_surface_current_imag").number) > EPS_ZERO)
                             add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                             QString::number(i + 1).toStdString(),
-                                                                                                            boundary->value_imag.number,
+                                                                                                            boundary->get_value("magnetic_surface_current_imag").number,
                                                                                                             HERMES_PLANAR));
                 }
             }
@@ -56,44 +56,44 @@ public:
         // materials
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            SceneMaterialMagnetic *material = dynamic_cast<SceneMaterialMagnetic *>(Util::scene()->labels[i]->material);
+            SceneMaterial *material = Util::scene()->labels[i]->material;
 
             if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
                 // steady state and transient analysis
                 add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostatics(0, 0,
                                                                                                          QString::number(i).toStdString(),
-                                                                                                         1.0 / (material->permeability.number * MU0),
+                                                                                                         1.0 / (material->get_value("magnetic_permeability").number * MU0),
                                                                                                          HERMES_NONSYM,
                                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType),
                                                                                                          (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
 
                 // velocity
-                if ((fabs(material->conductivity.number) > EPS_ZERO) &&
-                        ((fabs(material->velocity_x.number) > EPS_ZERO) ||
-                         (fabs(material->velocity_y.number) > EPS_ZERO) ||
-                         (fabs(material->velocity_angular.number) > EPS_ZERO)))
+                if ((fabs(material->get_value("magnetic_conductivity").number) > EPS_ZERO) &&
+                        ((fabs(material->get_value("magnetic_velocity_x").number) > EPS_ZERO) ||
+                         (fabs(material->get_value("magnetic_velocity_y").number) > EPS_ZERO) ||
+                         (fabs(material->get_value("magnetic_velocity_angular").number) > EPS_ZERO)))
                     add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostaticsVelocity(0, 0,
                                                                                                                      QString::number(i).toStdString(),
-                                                                                                                     material->conductivity.number,
-                                                                                                                     material->velocity_x.number,
-                                                                                                                     material->velocity_y.number,
-                                                                                                                     material->velocity_angular.number));
+                                                                                                                     material->get_value("magnetic_conductivity").number,
+                                                                                                                     material->get_value("magnetic_velocity_x").number,
+                                                                                                                     material->get_value("magnetic_velocity_y").number,
+                                                                                                                     material->get_value("magnetic_velocity_angular").number));
 
                 // external current density
-                if (fabs(material->current_density_real.number) > EPS_ZERO)
+                if (fabs(material->get_value("magnetic_current_denstity_external_real").number) > EPS_ZERO)
                     add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
                                                                                                    QString::number(i).toStdString(),
-                                                                                                   material->current_density_real.number,
+                                                                                                   material->get_value("magnetic_current_denstity_external_real").number,
                                                                                                    HERMES_PLANAR));
 
                 // remanence
-                if (fabs(material->remanence.number) > EPS_ZERO)
+                if (fabs(material->get_value("magnetic_remanence").number) > EPS_ZERO)
                     add_vector_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostaticsRemanence(0,
                                                                                                                       QString::number(i).toStdString(),
-                                                                                                                      material->permeability.number * MU0,
-                                                                                                                      material->remanence.number,
-                                                                                                                      material->remanence_angle.number,
+                                                                                                                      material->get_value("magnetic_permeability").number * MU0,
+                                                                                                                      material->get_value("magnetic_remanence").number,
+                                                                                                                      material->get_value("magnetic_remanence_angle").number,
                                                                                                                       convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                 // harmonic analysis
@@ -101,50 +101,50 @@ public:
                 {
                     add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostatics(1, 1,
                                                                                                              QString::number(i).toStdString(),
-                                                                                                             1.0 / (material->permeability.number * MU0),
+                                                                                                             1.0 / (material->get_value("magnetic_permeability").number * MU0),
                                                                                                              HERMES_NONSYM,
                                                                                                              convertProblemType(Util::scene()->problemInfo()->problemType),
                                                                                                              (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 5)));
 
-                    if (fabs(material->conductivity.number) > EPS_ZERO)
+                    if (fabs(material->get_value("magnetic_conductivity").number) > EPS_ZERO)
                     {
                         add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 1,
                                                                                                   QString::number(i).toStdString(),
-                                                                                                  - 2 * M_PI * Util::scene()->problemInfo()->frequency * material->conductivity.number,
+                                                                                                  - 2 * M_PI * Util::scene()->problemInfo()->frequency * material->get_value("magnetic_conductivity").number,
                                                                                                   HERMES_NONSYM,
                                                                                                   HERMES_PLANAR));
 
                         add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 0,
                                                                                                   QString::number(i).toStdString(),
-                                                                                                  2 * M_PI * Util::scene()->problemInfo()->frequency * material->conductivity.number,
+                                                                                                  2 * M_PI * Util::scene()->problemInfo()->frequency * material->get_value("magnetic_conductivity").number,
                                                                                                   HERMES_NONSYM,
                                                                                                   HERMES_PLANAR));
                     }
 
                     // external current density
-                    if (fabs(material->current_density_imag.number) > EPS_ZERO)
+                    if (fabs(material->get_value("magnetic_current_denstity_external_imag").number) > EPS_ZERO)
                         add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(1,
                                                                                                        QString::number(i).toStdString(),
-                                                                                                       material->current_density_imag.number,
+                                                                                                       material->get_value("magnetic_current_denstity_external_imag").number,
                                                                                                        HERMES_PLANAR));
                 }
 
                 // transient analysis
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
                 {
-                    if (fabs(material->conductivity.number) > EPS_ZERO)
+                    if (fabs(material->get_value("magnetic_conductivity").number) > EPS_ZERO)
                     {
                         if (solution.size() > 0)
                         {
                             add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
                                                                                                       QString::number(i).toStdString(),
-                                                                                                      material->conductivity.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                                                      material->get_value("magnetic_conductivity").number / Util::scene()->problemInfo()->timeStep.number,
                                                                                                       HERMES_SYM,
                                                                                                       convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                             add_vector_form(new CustomVectorFormTimeDep(0,
                                                                         QString::number(i).toStdString(),
-                                                                        material->conductivity.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                        material->get_value("magnetic_conductivity").number / Util::scene()->problemInfo()->timeStep.number,
                                                                         solution[0],
                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
                         }
@@ -157,215 +157,31 @@ public:
 
 // ****************************************************************************************************************
 
-void ParserMagnetic::setParserVariables(SceneMaterial *material)
-{
-    SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
-
-    pmur = marker->permeability.number;
-    pgamma = marker->conductivity.number;
-    pjer = marker->current_density_real.number;
-    pjei = marker->current_density_real.number;
-    pbrx = marker->remanence.number * cos(marker->remanence_angle.number / 180.0 * M_PI);
-    pbry = marker->remanence.number * sin(marker->remanence_angle.number / 180.0 * M_PI);
-    pvx = marker->velocity_x.number;
-    pvy = marker->velocity_y.number;
-    pva = marker->velocity_angular.number;
-}
-
-// ****************************************************************************************************************
-
-LocalPointValueMagnetic::LocalPointValueMagnetic(const Point &point) : LocalPointValue(point)
-{
-    parser = new ParserMagnetic();
-    initParser();
-
-    parser->parser[0]->DefineVar("mur", &static_cast<ParserMagnetic *>(parser)->pmur);
-    parser->parser[0]->DefineVar("gamma", &static_cast<ParserMagnetic *>(parser)->pgamma);
-    parser->parser[0]->DefineVar("Jer", &static_cast<ParserMagnetic *>(parser)->pjer);
-    parser->parser[0]->DefineVar("Jei", &static_cast<ParserMagnetic *>(parser)->pjei);
-    parser->parser[0]->DefineVar("Brx", &static_cast<ParserMagnetic *>(parser)->pbrx);
-    parser->parser[0]->DefineVar("Bry", &static_cast<ParserMagnetic *>(parser)->pbry);
-    parser->parser[0]->DefineVar("vx", &static_cast<ParserMagnetic *>(parser)->pvx);
-    parser->parser[0]->DefineVar("vy", &static_cast<ParserMagnetic *>(parser)->pvy);
-    parser->parser[0]->DefineVar("va", &static_cast<ParserMagnetic *>(parser)->pva);
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-SurfaceIntegralValueMagnetic::SurfaceIntegralValueMagnetic() : SurfaceIntegralValue()
-{
-    parser = new ParserMagnetic();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("mur", &static_cast<ParserMagnetic *>(parser)->pmur);
-        ((mu::Parser *) *it)->DefineVar("gamma", &static_cast<ParserMagnetic *>(parser)->pgamma);
-        ((mu::Parser *) *it)->DefineVar("Jer", &static_cast<ParserMagnetic *>(parser)->pjer);
-        ((mu::Parser *) *it)->DefineVar("Jei", &static_cast<ParserMagnetic *>(parser)->pjei);
-        ((mu::Parser *) *it)->DefineVar("Brx", &static_cast<ParserMagnetic *>(parser)->pbrx);
-        ((mu::Parser *) *it)->DefineVar("Bry", &static_cast<ParserMagnetic *>(parser)->pbry);
-        ((mu::Parser *) *it)->DefineVar("vx", &static_cast<ParserMagnetic *>(parser)->pvx);
-        ((mu::Parser *) *it)->DefineVar("vy", &static_cast<ParserMagnetic *>(parser)->pvy);
-        ((mu::Parser *) *it)->DefineVar("va", &static_cast<ParserMagnetic *>(parser)->pva);
-    }
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue()
-{
-    parser = new ParserMagnetic();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("mur", &static_cast<ParserMagnetic *>(parser)->pmur);
-        ((mu::Parser *) *it)->DefineVar("gamma", &static_cast<ParserMagnetic *>(parser)->pgamma);
-        ((mu::Parser *) *it)->DefineVar("Jer", &static_cast<ParserMagnetic *>(parser)->pjer);
-        ((mu::Parser *) *it)->DefineVar("Jei", &static_cast<ParserMagnetic *>(parser)->pjei);
-        ((mu::Parser *) *it)->DefineVar("Brx", &static_cast<ParserMagnetic *>(parser)->pbrx);
-        ((mu::Parser *) *it)->DefineVar("Bry", &static_cast<ParserMagnetic *>(parser)->pbry);
-        ((mu::Parser *) *it)->DefineVar("vx", &static_cast<ParserMagnetic *>(parser)->pvx);
-        ((mu::Parser *) *it)->DefineVar("vy", &static_cast<ParserMagnetic *>(parser)->pvy);
-        ((mu::Parser *) *it)->DefineVar("va", &static_cast<ParserMagnetic *>(parser)->pva);
-    }
-
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState ||
-            Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-    {
-        sln.push_back(Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep()));
-    }
-    else
-    {
-        sln.push_back(Util::scene()->sceneSolution()->sln(0));
-        sln.push_back(Util::scene()->sceneSolution()->sln(1));
-    }
-
-    calculate();
-}
-
-// *************************************************************************************************************************************
-
-ViewScalarFilterMagnetic::ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *> sln,
-                                                             std::string expression) :
-    ViewScalarFilter(sln)
-{
-    parser = new ParserMagnetic();
-    initParser(expression);
-
-    parser->parser[0]->DefineVar("mur", &static_cast<ParserMagnetic *>(parser)->pmur);
-    parser->parser[0]->DefineVar("gamma", &static_cast<ParserMagnetic *>(parser)->pgamma);
-    parser->parser[0]->DefineVar("Jer", &static_cast<ParserMagnetic *>(parser)->pjer);
-    parser->parser[0]->DefineVar("Jei", &static_cast<ParserMagnetic *>(parser)->pjei);
-    parser->parser[0]->DefineVar("Brx", &static_cast<ParserMagnetic *>(parser)->pbrx);
-    parser->parser[0]->DefineVar("Bry", &static_cast<ParserMagnetic *>(parser)->pbry);
-    parser->parser[0]->DefineVar("vx", &static_cast<ParserMagnetic *>(parser)->pvx);
-    parser->parser[0]->DefineVar("vy", &static_cast<ParserMagnetic *>(parser)->pvy);
-    parser->parser[0]->DefineVar("va", &static_cast<ParserMagnetic *>(parser)->pva);
-}
-
-// **************************************************************************************************************************
-
 int ModuleMagnetic::number_of_solution() const
 {
     return (get_analysis_type() == AnalysisType_Harmonic) ? 2 : 1;
 }
 
-LocalPointValue *ModuleMagnetic::local_point_value(const Point &point)
-{
-    return new LocalPointValueMagnetic(point);
-}
-
-SurfaceIntegralValue *ModuleMagnetic::surface_integral_value()
-{
-    return new SurfaceIntegralValueMagnetic();
-}
-
-VolumeIntegralValue *ModuleMagnetic::volume_integral_value()
-{
-    return new VolumeIntegralValueMagnetic();
-}
-
-ViewScalarFilter *ModuleMagnetic::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                          PhysicFieldVariableComp physicFieldVariableComp)
-{        
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep());
-
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-    {
-        Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
-        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1, sln2),
-                                            get_expression(physicFieldVariable, physicFieldVariableComp));
-    }
-    else
-    {
-        return new ViewScalarFilterMagnetic(sln1, get_expression(physicFieldVariable, physicFieldVariableComp));
-    }
-}
-
 Hermes::vector<SolutionArray *> ModuleMagnetic::solve(ProgressItemSolve *progressItemSolve)
 {
-    // transient
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-    {
-        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // transient
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-    {
-        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // edge markers
-    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-    {
-        SceneBoundaryMagnetic *boundary = dynamic_cast<SceneBoundaryMagnetic *>(Util::scene()->boundaries[i]);
-
-        // evaluate script
-        if (!boundary->value_real.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!boundary->value_imag.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // label markers
-    for (int i = 1; i<Util::scene()->materials.count(); i++)
-    {
-        SceneMaterialMagnetic *material = dynamic_cast<SceneMaterialMagnetic *>(Util::scene()->materials[i]);
-
-        // evaluate script
-        if (!material->current_density_real.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->current_density_imag.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->permeability.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->conductivity.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->remanence.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->remanence_angle.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->velocity_x.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->velocity_y.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->velocity_angular.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
+    if (!solve_init_variables())
+        return Hermes::vector<SolutionArray *>();
 
     // boundary conditions
     EssentialBCs bc1;
     EssentialBCs bc2;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        SceneBoundaryMagnetic *boundary = dynamic_cast<SceneBoundaryMagnetic *>(Util::scene()->edges[i]->boundary);
+        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
         if (boundary)
         {
-            if (boundary->type == PhysicFieldBC_Magnetic_VectorPotential)
+            if (boundary->type == "magnetic_potential")
             {
-                bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value_real.number));
-                bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value_imag.number));
+                bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                                                                       boundary->get_value("magnetic_potential_real").number));
+                bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                                                                       boundary->get_value("magnetic_potential_imag").number));
             }
         }
     }
@@ -383,83 +199,24 @@ void ModuleMagnetic::update_time_functions(double time)
     // update materials
     for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
-        SceneMaterialMagnetic *material = dynamic_cast<SceneMaterialMagnetic *>(Util::scene()->materials[i]);
+        SceneMaterial *material = Util::scene()->materials[i];
 
-        material->current_density_real.evaluate(time);
-        material->current_density_imag.evaluate(time);
+        material->get_value("magnetic_current_denstity_external_real").evaluate(time);
+        material->get_value("magnetic_current_denstity_external_imag").evaluate(time);
     }
 }
 
 // **************************************************************************************************************************
 // rewrite
 
-void ModuleMagnetic::readBoundaryFromDomElement(QDomElement *element)
-{
-    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
-    switch (type)
-    {
-    case PhysicFieldBC_None:
-    case PhysicFieldBC_Magnetic_VectorPotential:
-    case PhysicFieldBC_Magnetic_SurfaceCurrent:
-        Util::scene()->addBoundary(new SceneBoundaryMagnetic(element->attribute("name"),
-                                                             type,
-                                                             Value(element->attribute("value_real", "0")),
-                                                             Value(element->attribute("value_imag", "0"))));
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-        break;
-    }
-}
-
-void ModuleMagnetic::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
-{
-    SceneBoundaryMagnetic *boundary = dynamic_cast<SceneBoundaryMagnetic *>(marker);
-
-    element->setAttribute("type", physicFieldBCToStringKey(boundary->type));
-    element->setAttribute("value_real", boundary->value_real.text);
-    element->setAttribute("value_imag", boundary->value_imag.text);
-}
-
-void ModuleMagnetic::readMaterialFromDomElement(QDomElement *element)
-{
-    Util::scene()->addMaterial(new SceneMaterialMagnetic(element->attribute("name"),
-                                                         Value(element->attribute("current_density_real", "0")),
-                                                         Value(element->attribute("current_density_imag", "0")),
-                                                         Value(element->attribute("permeability", "1")),
-                                                         Value(element->attribute("conductivity", "0")),
-                                                         Value(element->attribute("remanence", "0")),
-                                                         Value(element->attribute("remanence_angle", "0")),
-                                                         Value(element->attribute("velocity_x", "0")),
-                                                         Value(element->attribute("velocity_y", "0")),
-                                                         Value(element->attribute("velocity_angular", "0"))));
-}
-
-void ModuleMagnetic::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
-{
-    SceneMaterialMagnetic *material = dynamic_cast<SceneMaterialMagnetic *>(marker);
-
-    element->setAttribute("current_density_real", material->current_density_real.text);
-    element->setAttribute("current_density_imag", material->current_density_imag.text);
-    element->setAttribute("permeability", material->permeability.text);
-    element->setAttribute("conductivity", material->conductivity.text);
-    element->setAttribute("remanence", material->remanence.text);
-    element->setAttribute("remanence_angle", material->remanence_angle.text);
-    element->setAttribute("velocity_x", material->velocity_x.text);
-    element->setAttribute("velocity_y", material->velocity_y.text);
-    element->setAttribute("velocity_angular", material->velocity_angular.text);
-}
-
 SceneBoundary *ModuleMagnetic::newBoundary()
 {
-    return new SceneBoundaryMagnetic(tr("new boundary"),
-                                     PhysicFieldBC_Magnetic_VectorPotential,
-                                     Value("0"),
-                                     Value("0"));
+    return new SceneBoundary(tr("new boundary").toStdString(), "magnetic_current_denstity_external_real");
 }
 
 SceneBoundary *ModuleMagnetic::newBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double value_real;
     double value_imag = 0.0;
     char *name, *type;
@@ -475,10 +232,12 @@ SceneBoundary *ModuleMagnetic::newBoundary(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneBoundary *ModuleMagnetic::modifyBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double value_real, value_imag = 0.0;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd|d", &name, &type, &value_real, &value_imag))
@@ -506,24 +265,17 @@ SceneBoundary *ModuleMagnetic::modifyBoundary(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleMagnetic::newMaterial()
 {
-    return new SceneMaterialMagnetic(tr("new material"),
-                                     Value("0"),
-                                     Value("0"),
-                                     Value("1"),
-                                     Value("0"),
-                                     Value("0"),
-                                     Value("0"),
-                                     Value("0"),
-                                     Value("0"),
-                                     Value("0"));
+    return new SceneMaterial(tr("new material").toStdString());
 }
 
 SceneMaterial *ModuleMagnetic::newMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double current_density_real, current_density_imag, permeability, conductivity, remanence, remanence_angle, velocity_x, velocity_y, velocity_angular;
     char *name;
     if (PyArg_ParseTuple(args, "sddddddddd", &name, &current_density_real, &current_density_imag, &permeability, &conductivity, &remanence, &remanence_angle, &velocity_x, &velocity_y, &velocity_angular))
@@ -544,10 +296,12 @@ SceneMaterial *ModuleMagnetic::newMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleMagnetic::modifyMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double current_density_real, current_density_imag, permeability, conductivity, remanence, remanence_angle, velocity_x, velocity_y, velocity_angular;
     char *name;
     if (PyArg_ParseTuple(args, "sddddddddd", &name, &current_density_real, &current_density_imag, &permeability, &conductivity, &remanence, &remanence_angle, &velocity_x, &velocity_y, &velocity_angular))
@@ -573,137 +327,12 @@ SceneMaterial *ModuleMagnetic::modifyMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
-}
-
-/*
-ViewScalarFilter *ModuleMagnetic::viewScalarFilter(PhysicFieldVariableDeprecated physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
-{
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
-
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState)
-    {
-        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1),
-                                            physicFieldVariable,
-                                            physicFieldVariableComp);
-    }
-
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-    {
-        Solution *sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
-        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1, sln2),
-                                            physicFieldVariable,
-                                            physicFieldVariableComp);
-    }
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-    {
-        Solution *sln2;
-        if (Util::scene()->sceneSolution()->timeStep() > 0)
-            sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() - 1);
-        else
-            sln2 = sln1;
-
-        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1, sln2),
-                                            physicFieldVariable,
-                                            physicFieldVariableComp);
-    }
-}
-*/
-
-// *************************************************************************************************************************************
-
-SceneBoundaryMagnetic::SceneBoundaryMagnetic(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag) : SceneBoundary(name, type)
-{
-    this->value_real = value_real;
-    this->value_imag = value_imag;
-}
-
-QString SceneBoundaryMagnetic::script()
-{
-    return QString("addboundary(\"%1\", \"%2\", %3, %4)").
-            arg(name).
-            arg(physicFieldBCToStringKey(type)).
-            arg(value_real.text).
-            arg(value_imag.text);
-}
-
-QMap<QString, QString> SceneBoundaryMagnetic::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PhysicFieldBC_Magnetic_VectorPotential:
-        out["Vector potential - real (Wb/m)"] = value_real.text;
-        out["Vector potential - real (Wb/m)"] = value_imag.text;
-        break;
-    case PhysicFieldBC_Magnetic_SurfaceCurrent:
-        out["Surface current - real (A/m)"] = value_real.text;
-        out["Surface current - imag (A/m)"] = value_imag.text;
-        break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneBoundaryMagnetic::showDialog(QWidget *parent)
-{
-    SceneEdgeMagneticDialog *dialog = new SceneEdgeMagneticDialog(this, parent);
-    return dialog->exec();
+    */
 }
 
 // *************************************************************************************************************************************
 
-SceneMaterialMagnetic::SceneMaterialMagnetic(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity, Value remanence, Value remanence_angle, Value velocity_x, Value velocity_y, Value velocity_angular)
-    : SceneMaterial(name)
-{
-    this->permeability = permeability;
-    this->conductivity = conductivity;
-    this->current_density_real = current_density_real;
-    this->current_density_imag = current_density_imag;
-    this->remanence = remanence;
-    this->remanence_angle = remanence_angle;
-    this->velocity_x = velocity_x;
-    this->velocity_y = velocity_y;
-    this->velocity_angular = velocity_angular;
-}
-
-QString SceneMaterialMagnetic::script()
-{
-    return QString("addmaterial(\"%1\", %2, %3, %4, %5, %6, %7, %8, %9, %10)").
-            arg(name).
-            arg(current_density_real.text).
-            arg(current_density_imag.text).
-            arg(permeability.text).
-            arg(conductivity.text).
-            arg(remanence.text).
-            arg(remanence_angle.text).
-            arg(velocity_x.text).
-            arg(velocity_y.text).
-            arg(velocity_angular.text);
-}
-
-QMap<QString, QString> SceneMaterialMagnetic::data()
-{
-    QMap<QString, QString> out;
-    out["Current density - real (A/m2)"] = current_density_real.text;
-    out["Current density - imag (A/m2)"] = current_density_imag.text;
-    out["Permeability (-)"] = permeability.text;
-    out["Conductivity (S/m)"] = conductivity.text;
-    out["Remanence (T)"] = remanence.text;
-    out["Remanence angle (-)"] = remanence_angle.text;
-    out["Velocity x (m/s)"] = velocity_x.text;
-    out["Velocity y (m/s)"] = velocity_y.text;
-    out["Angular velocity (m/s)"] = velocity_angular.text;
-    return QMap<QString, QString>(out);
-}
-
-int SceneMaterialMagnetic::showDialog(QWidget *parent)
-{
-    SceneMaterialMagneticDialog *dialog = new SceneMaterialMagneticDialog(parent, this);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneEdgeMagneticDialog::SceneEdgeMagneticDialog(SceneBoundaryMagnetic *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
+SceneBoundaryMagneticDialog::SceneBoundaryMagneticDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
 {
     m_boundary = boundary;
 
@@ -713,13 +342,12 @@ SceneEdgeMagneticDialog::SceneEdgeMagneticDialog(SceneBoundaryMagnetic *boundary
     setSize();
 }
 
-void SceneEdgeMagneticDialog::createContent()
+void SceneBoundaryMagneticDialog::createContent()
 {
     lblValueUnit = new QLabel("");
 
     cmbType = new QComboBox(this);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Magnetic_VectorPotential), PhysicFieldBC_Magnetic_VectorPotential);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Magnetic_SurfaceCurrent), PhysicFieldBC_Magnetic_SurfaceCurrent);
+    Util::scene()->problemInfo()->module()->fillComboBoxBoundaryCondition(cmbType);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValueReal = new ValueLineEdit(this);
@@ -742,64 +370,77 @@ void SceneEdgeMagneticDialog::createContent()
     layout->addLayout(layoutCurrentDensity, 11, 2);
 }
 
-void SceneEdgeMagneticDialog::load()
+void SceneBoundaryMagneticDialog::load()
 {
     SceneBoundaryDialog::load();
 
-    SceneBoundaryMagnetic *boundary = dynamic_cast<SceneBoundaryMagnetic *>(m_boundary);
-
-    cmbType->setCurrentIndex(cmbType->findData(boundary->type));
-    txtValueReal->setValue(boundary->value_real);
-    txtValueImag->setValue(boundary->value_imag);
+    cmbType->setCurrentIndex(cmbType->findData(QString::fromStdString(m_boundary->type)));
+    if (m_boundary->type == "magnetic_potential")
+    {
+        txtValueReal->setValue(m_boundary->get_value("magnetic_potential_real"));
+        txtValueImag->setValue(m_boundary->get_value("magnetic_potential_imag"));
+    }
+    else if (m_boundary->type == "magnetic_surface_current")
+    {
+        txtValueReal->setValue(m_boundary->get_value("magnetic_surface_current_real"));
+        txtValueImag->setValue(m_boundary->get_value("magnetic_surface_current_imag"));
+    }
 }
 
-bool SceneEdgeMagneticDialog::save() {
-    if (!SceneBoundaryDialog::save()) return false;;
+bool SceneBoundaryMagneticDialog::save() {
+    if (!SceneBoundaryDialog::save()) return false;
 
-    SceneBoundaryMagnetic *boundary = dynamic_cast<SceneBoundaryMagnetic *>(m_boundary);
-
-    boundary->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
+    m_boundary->type = cmbType->itemData(cmbType->currentIndex()).toString().toStdString();
 
     if (txtValueReal->evaluate())
-        boundary->value_real  = txtValueReal->value();
-    else
-        return false;
+        if (m_boundary->type == "magnetic_potential")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("magnetic_potential_real")] = txtValueReal->value();
+        }
+        else if (m_boundary->type == "magnetic_surface_current")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("magnetic_surface_current_real")] = txtValueReal->value();
+        }
+        else
+            return false;
 
     if (txtValueImag->evaluate())
-        boundary->value_imag  = txtValueImag->value();
-    else
-        return false;
+        if (m_boundary->type == "magnetic_potential")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("magnetic_potential_imag")] = txtValueImag->value();
+        }
+        else if (m_boundary->type == "magnetic_surface_current")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("magnetic_surface_current_imag")] = txtValueImag->value();
+        }
+        else
+            return false;
 
     return true;
 }
 
-void SceneEdgeMagneticDialog::doTypeChanged(int index)
+void SceneBoundaryMagneticDialog::doTypeChanged(int index)
 {
     txtValueReal->setEnabled(false);
     txtValueImag->setEnabled(false);
 
     // read equation
-    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+    readEquation(lblEquationImage, cmbType->itemData(index).toString());
 
     // enable controls
-    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
-    {
-    case PhysicFieldBC_Magnetic_VectorPotential:
+    if (cmbType->itemData(index) == "magnetic_potential")
     {
         txtValueReal->setEnabled(true);
         txtValueImag->setEnabled(Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic);
         lblValueUnit->setText(tr("<i>A</i><sub>0</sub> (Wb/m)"));
         lblValueUnit->setToolTip(cmbType->itemText(index));
     }
-        break;
-    case PhysicFieldBC_Magnetic_SurfaceCurrent:
+    else if (cmbType->itemData(index) == "magnetic_surface_current")
     {
         txtValueReal->setEnabled(true);
         txtValueImag->setEnabled(Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic);
         lblValueUnit->setText(tr("<i>K</i><sub>0</sub> (A/m)"));
         lblValueUnit->setToolTip(cmbType->itemText(index));
-    }
-        break;
     }
 
     setMinimumSize(sizeHint());
@@ -807,7 +448,7 @@ void SceneEdgeMagneticDialog::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-SceneMaterialMagneticDialog::SceneMaterialMagneticDialog(QWidget *parent, SceneMaterialMagnetic *material) : SceneMaterialDialog(parent)
+SceneMaterialMagneticDialog::SceneMaterialMagneticDialog(SceneMaterial *material, QWidget *parent) : SceneMaterialDialog(parent)
 {
     m_material = material;
 
@@ -891,66 +532,62 @@ void SceneMaterialMagneticDialog::load()
 {
     SceneMaterialDialog::load();
 
-    SceneMaterialMagnetic *material = dynamic_cast<SceneMaterialMagnetic *>(m_material);
-
-    txtPermeability->setValue(material->permeability);
-    txtConductivity->setValue(material->conductivity);
-    txtCurrentDensityReal->setValue(material->current_density_real);
-    txtCurrentDensityImag->setValue(material->current_density_imag);
-    txtRemanence->setValue(material->remanence);
-    txtRemanenceAngle->setValue(material->remanence_angle);
-    txtVelocityX->setValue(material->velocity_x);
-    txtVelocityY->setValue(material->velocity_y);
-    txtVelocityAngular->setValue(material->velocity_angular);
+    txtPermeability->setValue(m_material->get_value("magnetic_permeability"));
+    txtConductivity->setValue(m_material->get_value("magnetic_conductivity"));
+    txtCurrentDensityReal->setValue(m_material->get_value("magnetic_current_denstity_external_real"));
+    txtCurrentDensityImag->setValue(m_material->get_value("magnetic_current_denstity_external_imag"));
+    txtRemanence->setValue(m_material->get_value("magnetic_remanence"));
+    txtRemanenceAngle->setValue(m_material->get_value("magnetic_remanence_angle"));
+    txtVelocityX->setValue(m_material->get_value("magnetic_velocity_x"));
+    txtVelocityY->setValue(m_material->get_value("magnetic_velocity_y"));
+    txtVelocityAngular->setValue(m_material->get_value("magnetic_velocity_angular"));
 }
 
 bool SceneMaterialMagneticDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
-    SceneMaterialMagnetic *material = dynamic_cast<SceneMaterialMagnetic *>(m_material);
-
     if (txtPermeability->evaluate())
-        material->permeability  = txtPermeability->value();
+        m_material->values[m_material->get_material_type("magnetic_permeability")] = txtPermeability->value();
     else
         return false;
 
     if (txtConductivity->evaluate())
-        material->conductivity  = txtConductivity->value();
+        m_material->values[m_material->get_material_type("magnetic_conductivity")] = txtConductivity->value();
     else
         return false;
 
     if (txtCurrentDensityReal->evaluate())
-        material->current_density_real  = txtCurrentDensityReal->value();
+        m_material->values[m_material->get_material_type("magnetic_current_denstity_external_real")] = txtCurrentDensityReal->value();
     else
         return false;
 
     if (txtCurrentDensityImag->evaluate())
-        material->current_density_imag  = txtCurrentDensityImag->value();
+        m_material->values[m_material->get_material_type("magnetic_current_denstity_external_imag")] = txtCurrentDensityImag->value();
     else
         return false;
 
     if (txtRemanence->evaluate())
-        material->remanence = txtRemanence->value();
+        m_material->values[m_material->get_material_type("magnetic_remanence")] = txtRemanence->value();
     else
         return false;
 
     if (txtRemanenceAngle->evaluate())
-        material->remanence_angle = txtRemanenceAngle->value();
+        m_material->values[m_material->get_material_type("magnetic_remanence_angle")] = txtRemanenceAngle->value();
     else
         return false;
 
     if (txtVelocityX->evaluate())
-        material->velocity_x = txtVelocityX->value();
+        m_material->values[m_material->get_material_type("magnetic_velocity_x")] = txtVelocityX->value();
     else
         return false;
 
     if (txtVelocityY->evaluate())
-        material->velocity_y = txtVelocityY->value();
+        m_material->values[m_material->get_material_type("magnetic_velocity_y")] = txtVelocityY->value();
     else
         return false;
 
     if (txtVelocityAngular->evaluate())
-        material->velocity_angular = txtVelocityAngular->value();
+        m_material->values[m_material->get_material_type("magnetic_velocity_angular")] = txtVelocityAngular->value();
     else
         return false;
 

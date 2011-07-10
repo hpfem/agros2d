@@ -32,22 +32,10 @@ public:
     int number_of_solution() const;
     bool has_nonlinearity() const { return false; }
 
-    LocalPointValue *local_point_value(const Point &point);
-    SurfaceIntegralValue *surface_integral_value();
-    VolumeIntegralValue *volume_integral_value();
-
-    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                         PhysicFieldVariableComp physicFieldVariableComp);
-
     Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
     void update_time_functions(double time);
 
     // rewrite
-    void readBoundaryFromDomElement(QDomElement *element);
-    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
-    void readMaterialFromDomElement(QDomElement *element);
-    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
     SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
@@ -58,91 +46,12 @@ public:
 
 // *******************************************************************************************
 
-class ParserMagnetic : public Parser
-{
-public: 
-    double pmur;
-    double pgamma;
-    double pjer;
-    double pjei;
-    double pbrx;
-    double pbry;
-    double pvx;
-    double pvy;
-    double pva;
-
-    void setParserVariables(SceneMaterial *material);
-};
-
-class LocalPointValueMagnetic : public LocalPointValue
-{
-public:
-    LocalPointValueMagnetic(const Point &point);
-};
-
-class SurfaceIntegralValueMagnetic : public SurfaceIntegralValue
-{
-public:
-    SurfaceIntegralValueMagnetic();
-};
-
-class VolumeIntegralValueMagnetic : public VolumeIntegralValue
-{
-public:
-    VolumeIntegralValueMagnetic();
-};
-
-class ViewScalarFilterMagnetic : public ViewScalarFilter
-{
-public:
-    ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *> sln,
-                                   std::string expression);
-};
-
-// *******************************************************************************************
-
-class SceneBoundaryMagnetic : public SceneBoundary
-{
-public:
-    Value value_real;
-    Value value_imag;
-
-    SceneBoundaryMagnetic(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
-class SceneMaterialMagnetic : public SceneMaterial
-{
-public:
-    Value permeability;
-    Value conductivity;
-    Value current_density_real;
-    Value current_density_imag;
-    Value remanence;
-    Value remanence_angle;
-    Value velocity_x;
-    Value velocity_y;
-    Value velocity_angular;
-
-    SceneMaterialMagnetic(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity,
-                             Value remanence, Value remanence_angle, Value velocity_x, Value velocity_y, Value velocity_angular);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
-// *******************************************************************************************
-
-class SceneEdgeMagneticDialog : public SceneBoundaryDialog
+class SceneBoundaryMagneticDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    SceneEdgeMagneticDialog(SceneBoundaryMagnetic *boundary, QWidget *parent);
+    SceneBoundaryMagneticDialog(SceneBoundary *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -165,7 +74,7 @@ class SceneMaterialMagneticDialog : public SceneMaterialDialog
     Q_OBJECT
 
 public:
-    SceneMaterialMagneticDialog(QWidget *parent, SceneMaterialMagnetic *material);
+    SceneMaterialMagneticDialog(SceneMaterial *material, QWidget *parent);
 
 protected:
     void createContent();

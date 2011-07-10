@@ -9,11 +9,34 @@
         <item id="MU0" value="1.2566371e-06" />
     </constants>    
 
+    <material>
+        <item id="magnetic_permeability" name="Permeability" shortname="mur" unit="-" />        
+        <item id="magnetic_conductivity" name="Electrical conductivity" shortname="gamma" unit="S/m" />        
+        <item id="magnetic_remanence" name="Remanent flux density" shortname="Br" unit="T" />        
+        <item id="magnetic_remanence_angle" name="Remanent flux density - angle" shortname="Bra" unit="deg." />        
+        <item id="magnetic_velocity_x" name="Velocity - x" shortname="vx" unit="m/s" />        
+        <item id="magnetic_velocity_y" name="Velocity - y" shortname="vy" unit="m/s" />        
+        <item id="magnetic_velocity_angular" name="Velocity - angular" shortname="va" unit="m/s" />        
+        <item id="magnetic_current_denstity_external_real" name="Current dens. - ext. - real" shortname="Jer" unit="A/m2" />        
+        <item id="magnetic_current_denstity_external_imag" name="Current dens. - ext. - imag" shortname="Jei" unit="A/m2" />        
+    </material>
+
+    <boundary>
+        <item id="magnetic_potential" name="Magnetic potential">
+            <variable id="magnetic_potential_real" name="Vector potential - real" shortname="Ar" unit="Wb/m" />
+            <variable id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" unit="Wb/m" />
+        </item>    
+        <item id="magnetic_surface_current" name="Surface current">
+            <variable id="magnetic_surface_current_real" name="Surface current - real" shortname="Jr" unit="A/m" />
+            <variable id="magnetic_surface_current_imag" name="Surface current - imag" shortname="Ji" unit="A/m" />
+        </item>        
+    </boundary>
+    
     <localvariable>
         <item id="magnetic_potential_real" name="Vector potential - real" shortname="Ar" unit="Wb/m" scalar="1">
             <steadystate planar_scalar="value1" axi_scalar="value1" />
             <harmonic planar_scalar="value1" axi_scalar="value1" />
-            <transient />
+            <transient planar_scalar="value1" axi_scalar="value1" />
         </item>
         <item id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" unit="Wb/m" scalar="1">
             <steadystate />
@@ -28,7 +51,7 @@
         <item id="magnetic_flux_density_real" name="Flux density - real" shortname="Br" unit="T" scalar="0">
             <steadystate planar_comp_x="dy1" planar_comp_y="- dx1" axi_comp_r="- dy1" axi_comp_z="dx1 + value1 / (x + 1e-12)" />
             <harmonic planar_comp_x="dy1" planar_comp_y="- dx1" axi_comp_r="- dy1" axi_comp_z="dx1 + value1 / (x + 1e-12)" />
-            <transient />
+            <transient planar_comp_x="dy1" planar_comp_y="- dx1" axi_comp_r="- dy1" axi_comp_z="dx1 + value1 / (x + 1e-12)" />
         </item>
         <item id="magnetic_flux_density_imag" name="Flux density - imag" shortname="Bi" unit="T" scalar="0">
             <steadystate />
@@ -43,7 +66,7 @@
         <item id="magnetic_magnetic_field_real" name="Magnetic field - real" shortname="Hr" unit="A/m" scalar="0">
             <steadystate planar_comp_x="dy1 / (mur * MU0)" planar_comp_y="- dx1 / (mur * MU0)" axi_comp_r="- dy1 / (mur * MU0)" axi_comp_z="(dx1 + value1 / (x + 1e-12)) / (mur * MU0)" />
             <harmonic planar_comp_x="dy1 / (mur * MU0)" planar_comp_y="- dx1 / (mur * MU0)" axi_comp_r="- dy1 / (mur * MU0)" axi_comp_z="(dx1 + value1 / (x + 1e-12)) / (mur * MU0)" />
-            <transient />
+            <transient planar_comp_x="dy1 / (mur * MU0)" planar_comp_y="- dx1 / (mur * MU0)" axi_comp_r="- dy1 / (mur * MU0)" axi_comp_z="(dx1 + value1 / (x + 1e-12)) / (mur * MU0)" />
         </item>
         <item id="magnetic_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" unit="A/m" scalar="0">
             <steadystate planar_comp_x="dy1 / (mur * MU0)" planar_comp_y="- dx1 / (mur * MU0)" axi_comp_r="- dy1 / (mur * MU0)" axi_comp_z="(dx1 + value1 / (x + 1e-12)) / (mur * MU0)" />
@@ -60,10 +83,10 @@
             <harmonic planar_scalar="mur" axi_scalar="mur" />
             <transient planar_scalar="mur" axi_scalar="mur" />
         </item>
-        <item id="magnetic_remanence" name="Remanent flux density" shortname="Brem" unit="T" scalar="0">
-            <steadystate planar_comp_x="Brx" planar_comp_y="Bry" axi_comp_r="Brx" axi_comp_z="Bry" />
-            <harmonic planar_comp_x="Brx" planar_comp_y="Bry" axi_comp_r="Brx" axi_comp_z="Bry" />
-            <transient planar_comp_x="Brx" planar_comp_y="Bry" axi_comp_r="Brx" axi_comp_z="Bry" />
+        <item id="magnetic_remanence" name="Remanent flux density" shortname="Brm" unit="T" scalar="0">
+            <steadystate planar_comp_x="Br * cos(Bra/180*PI)" planar_comp_y="Br * sin(Bra/180*PI)" axi_comp_r="Br * cos(Bra/180*PI)" axi_comp_z="Br * sin(Bra/180*PI)" />
+            <harmonic planar_comp_x="Br * cos(Bra/180*PI)" planar_comp_y="Br * sin(Bra/180*PI)" axi_comp_r="Br * cos(Bra/180*PI)" axi_comp_z="Br * sin(Bra/180*PI)" />
+            <transient planar_comp_x="Br * cos(Bra/180*PI)" planar_comp_y="Br * sin(Bra/180*PI)" axi_comp_r="Br * cos(Bra/180*PI)" axi_comp_z="Br * sin(Bra/180*PI)" />
         </item>
         <item id="magnetic_velocity" name="Velocity" shortname="v" unit="m/s" scalar="0">
             <steadystate planar_comp_x="vx - va * y" planar_comp_y="vy + va * x" axi_comp_r="0" axi_comp_z="vy" />
@@ -110,7 +133,16 @@
                 <item id="magnetic_current_denstity_external_real" />
                 <item id="magnetic_current_denstity_external_imag" />                
             </harmonic>
-            <transient/>
+            <transient default="magnetic_flux_density_real">
+                <item id="magnetic_potential_real" />
+                <item id="magnetic_flux_density_real" />
+                <item id="magnetic_magnetic_field_real" />
+                <item id="magnetic_energy_density" /> 
+                <item id="magnetic_remanence" />
+                <item id="magnetic_velocity" />                
+                <item id="magnetic_permeability" />
+                <item id="magnetic_current_denstity_external_real" />
+            </transient>                
         </scalarvariable>
 
         <vectorvariable>
@@ -128,7 +160,12 @@
                 <item id="magnetic_remanence" />          
                 <item id="magnetic_velocity" />                                 
             </harmonic>
-            <transient/>
+            <transient default="magnetic_flux_density_real">
+                <item id="magnetic_flux_density_real" />
+                <item id="magnetic_magnetic_field" />
+                <item id="magnetic_remanence" />                
+                <item id="magnetic_velocity" />                           
+            </transient>
         </vectorvariable>
     </view>
     
@@ -159,32 +196,41 @@
             <item id="magnetic_current_denstity_external_real" />    
             <item id="magnetic_current_denstity_external_imag" />                
         </harmonic>
-        <transient/>
+        <transient>
+            <item id="magnetic_potential_real" />
+            <item id="magnetic_flux_density_real" />
+            <item id="magnetic_magnetic_field_real" />
+            <item id="magnetic_energy_density" />                
+            <item id="magnetic_remanence" />            
+            <item id="magnetic_velocity" />                       
+            <item id="magnetic_permeability" />
+            <item id="magnetic_current_denstity_external_real" />             
+        </transient>
     </pointvalue>  
     
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
-            <harmonic/>
-            <transient/>
+            <harmonic planar="1.0" axi="1.0" />
+            <transient planar="1.0" axi="1.0" />
         </item>        
         <item id="surface" name="Cross section" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="1.0" />
-            <harmonic/>
-            <transient/>
+            <harmonic planar="1.0" axi="1.0" />
+            <transient planar="1.0" axi="1.0" />
         </item>        
     </volumeintegral>    
     
     <surfaceintegral>
         <item id="length" name="Length" shortname="l" unit="m">
             <steadystate planar="1.0" axi="1.0" />
-            <harmonic/>
-            <transient/>
+            <harmonic planar="1.0" axi="1.0" />
+            <transient planar="1.0" axi="1.0" />
         </item>        
         <item id="surface" name="Surface" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
-            <harmonic/>
-            <transient/>
+            <harmonic planar="1.0" axi="1.0" />
+            <transient planar="1.0" axi="1.0" />
         </item>
     </surfaceintegral> 
 </module>

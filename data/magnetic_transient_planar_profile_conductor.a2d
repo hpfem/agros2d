@@ -1,15 +1,15 @@
 <document>
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic transient planar profile conductor" date="2011-04-16" polynomialorder="3" meshtype="triangle" timestep="3e-6" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="50000" matrix_solver="umfpack" type="magnetic" timetotal="2.2e-4">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic transient planar profile conductor" date="2011-04-16" polynomialorder="3" meshtype="triangle" timestep="3e-6" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="50000" matrix_solver="umfpack" type="magnetic" timetotal="5*3e-6">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge value_imag="0" type="magnetic_surface_current_density" id="1" name="Neumann" value_real="0"/>
-                <edge value_imag="0" type="magnetic_vector_potential" id="2" name="A = 0" value_real="0"/>
+                <edge type="magnetic_surface_current" magnetic_surface_current_imag="0" id="1" name="Neumann" magnetic_surface_current_real="0"/>
+                <edge magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="2" name="A = 0"/>
             </edges>
             <labels>
-                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="1e7*(exp(-1/2e-5*time) - exp(-1/1e-5*time))" remanence="0" conductivity="57e6" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="Copper" current_density_imag="0" permeability="1" velocity_angular="0"/>
+                <label magnetic_velocity_angular="0" magnetic_current_denstity_external_imag="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_current_denstity_external_real="0" magnetic_velocity_y="0"/>
+                <label magnetic_velocity_angular="0" magnetic_current_denstity_external_imag="0" magnetic_permeability="1" magnetic_conductivity="57e6" magnetic_remanence="0" id="2" magnetic_remanence_angle="0" name="Copper" magnetic_velocity_x="0" magnetic_current_denstity_external_real="1e7*(exp(-1/2e-5*time) - exp(-1/1e-5*time))" magnetic_velocity_y="0"/>
             </labels>
         </problem>
     </problems>
