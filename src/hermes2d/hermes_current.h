@@ -33,21 +33,9 @@ public:
     inline int number_of_solution() const { return 1; }
     bool has_nonlinearity() const { return false; }
 
-    LocalPointValue *local_point_value(const Point &point);
-    SurfaceIntegralValue *surface_integral_value();
-    VolumeIntegralValue *volume_integral_value();
-
-    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                         PhysicFieldVariableComp physicFieldVariableComp);
-
     Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
     // rewrite
-    void readBoundaryFromDomElement(QDomElement *element);
-    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
-    void readMaterialFromDomElement(QDomElement *element);
-    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
-
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
     SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
@@ -58,71 +46,12 @@ public:
 
 // *******************************************************************************************
 
-class ParserCurrent : public Parser
-{
-public:
-    double pgamma;
-
-    void setParserVariables(SceneMaterial *material);
-};
-
-class LocalPointValueCurrent : public LocalPointValue
-{
-public:
-    LocalPointValueCurrent(const Point &point);
-};
-
-class SurfaceIntegralValueCurrent : public SurfaceIntegralValue
-{
-public:
-    SurfaceIntegralValueCurrent();
-};
-
-class VolumeIntegralValueCurrent : public VolumeIntegralValue
-{
-public:
-    VolumeIntegralValueCurrent();
-};
-
-class ViewScalarFilterCurrent : public ViewScalarFilter
-{
-public:
-    ViewScalarFilterCurrent(Hermes::vector<MeshFunction *> sln,
-                            std::string expression);
-};
-
-// *******************************************************************************************
-
-class SceneBoundaryCurrent : public SceneBoundary
-{
-public:
-    Value value;
-
-    SceneBoundaryCurrent(const QString &name, PhysicFieldBC type, Value value);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
-class SceneMaterialCurrent : public SceneMaterial
-{
-public:
-    Value conductivity;
-
-    SceneMaterialCurrent(const QString &name, Value conductivity);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
 class SceneBoundaryCurrentDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    SceneBoundaryCurrentDialog(SceneBoundaryCurrent *boundary, QWidget *parent);
+    SceneBoundaryCurrentDialog(SceneBoundary *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -144,7 +73,7 @@ class SceneMaterialCurrentDialog : public SceneMaterialDialog
     Q_OBJECT
 
 public:
-    SceneMaterialCurrentDialog(SceneMaterialCurrent *material, QWidget *parent);
+    SceneMaterialCurrentDialog(SceneMaterial *material, QWidget *parent);
 
 protected:
     void createContent();

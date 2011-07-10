@@ -32,15 +32,15 @@ public:
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneBoundaryCurrent *boundary = dynamic_cast<SceneBoundaryCurrent *>(Util::scene()->edges[i]->boundary);
+            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
             if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
-                if (boundary->type == PhysicFieldBC_Current_InwardCurrentFlow)
-                    if (fabs(boundary->value.number) > EPS_ZERO)
+                if (boundary->type == "current_inward_current_flow")
+                    if (fabs(boundary->get_value("current_inward_current_flow").number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        boundary->value.number,
+                                                                                                        boundary->get_value("current_inward_current_flow").number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
         }
@@ -48,13 +48,13 @@ public:
         // materials
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            SceneMaterialCurrent *material = dynamic_cast<SceneMaterialCurrent *>(Util::scene()->labels[i]->material);
+            SceneMaterial *material = Util::scene()->labels[i]->material;
 
             if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
                                                                                                QString::number(i).toStdString(),
-                                                                                               material->conductivity.number,
+                                                                                               material->get_value("current_conductivity").number,
                                                                                                HERMES_SYM,
                                                                                                convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
@@ -64,123 +64,22 @@ public:
 
 // ****************************************************************************************************************
 
-void ParserCurrent::setParserVariables(SceneMaterial *material)
-{
-    SceneMaterialCurrent *marker = dynamic_cast<SceneMaterialCurrent *>(material);
-
-    pgamma = marker->conductivity.number;
-}
-
-// ****************************************************************************************************************
-
-LocalPointValueCurrent::LocalPointValueCurrent(const Point &point) : LocalPointValue(point)
-{
-    parser = new ParserCurrent();
-    initParser();
-
-    parser->parser[0]->DefineVar("gamma", &static_cast<ParserCurrent *>(parser)->pgamma);
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-SurfaceIntegralValueCurrent::SurfaceIntegralValueCurrent() : SurfaceIntegralValue()
-{
-    parser = new ParserCurrent();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("gamma", &static_cast<ParserCurrent *>(parser)->pgamma);
-    }
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-VolumeIntegralValueCurrent::VolumeIntegralValueCurrent() : VolumeIntegralValue()
-{
-    parser = new ParserCurrent();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("gamma", &static_cast<ParserCurrent *>(parser)->pgamma);
-    }
-
-    sln.push_back(Util::scene()->sceneSolution()->sln(0));
-
-    calculate();
-}
-
-// *************************************************************************************************************************************
-
-ViewScalarFilterCurrent::ViewScalarFilterCurrent(Hermes::vector<MeshFunction *> sln,
-                                                             std::string expression) :
-    ViewScalarFilter(sln)
-{
-    parser = new ParserCurrent();
-    initParser(expression);
-
-    parser->parser[0]->DefineVar("gamma", &static_cast<ParserCurrent *>(parser)->pgamma);
-}
-
-// **************************************************************************************************************************
-
-LocalPointValue *ModuleCurrent::local_point_value(const Point &point)
-{
-    return new LocalPointValueCurrent(point);
-}
-
-SurfaceIntegralValue *ModuleCurrent::surface_integral_value()
-{
-    return new SurfaceIntegralValueCurrent();
-}
-
-VolumeIntegralValue *ModuleCurrent::volume_integral_value()
-{
-    return new VolumeIntegralValueCurrent();
-}
-
-ViewScalarFilter *ModuleCurrent::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                           PhysicFieldVariableComp physicFieldVariableComp)
-{
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
-    return new ViewScalarFilterCurrent(sln1, get_expression(physicFieldVariable, physicFieldVariableComp));
-}
-
 Hermes::vector<SolutionArray *> ModuleCurrent::solve(ProgressItemSolve *progressItemSolve)
 {
-    // edge markers
-    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-    {
-        SceneBoundaryCurrent *boundary = dynamic_cast<SceneBoundaryCurrent *>(Util::scene()->boundaries[i]);
-
-        // evaluate script
-        if (!boundary->value.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // label markers
-    for (int i = 1; i<Util::scene()->materials.count(); i++)
-    {
-        SceneMaterialCurrent *material = dynamic_cast<SceneMaterialCurrent *>(Util::scene()->materials[i]);
-
-        // evaluate script
-        if (!material->conductivity.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
+    if (!solve_init_variables())
+        return Hermes::vector<SolutionArray *>();
 
     // boundary conditions
     EssentialBCs bcs;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        SceneBoundaryCurrent *boundary = dynamic_cast<SceneBoundaryCurrent *>(Util::scene()->edges[i]->boundary);
+        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
         if (boundary)
         {
-            if (boundary->type == PhysicFieldBC_Current_Potential)
-                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value.number));
+            if (boundary->type == "current_potential")
+                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                                                                       boundary->get_value("current_potential").number));
         }
     }
 
@@ -194,54 +93,14 @@ Hermes::vector<SolutionArray *> ModuleCurrent::solve(ProgressItemSolve *progress
 // *******************************************************************************************************
 // rewrite
 
-void ModuleCurrent::readBoundaryFromDomElement(QDomElement *element)
-{
-    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
-    switch (type)
-    {
-    case PhysicFieldBC_None:
-    case PhysicFieldBC_Current_Potential:
-    case PhysicFieldBC_Current_InwardCurrentFlow:
-        Util::scene()->addBoundary(new SceneBoundaryCurrent(element->attribute("name"),
-                                                            type,
-                                                            Value(element->attribute("value", "0"))));
-        break;
-    default:
-        qCritical() << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type"));
-        break;
-    }
-}
-
-void ModuleCurrent::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
-{
-    SceneBoundaryCurrent *boundary = dynamic_cast<SceneBoundaryCurrent *>(marker);
-
-    element->setAttribute("type", physicFieldBCToStringKey(boundary->type));
-    element->setAttribute("value", boundary->value.text);
-}
-
-void ModuleCurrent::readMaterialFromDomElement(QDomElement *element)
-{
-    Util::scene()-> addMaterial(new SceneMaterialCurrent(element->attribute("name"),
-                                                         Value(element->attribute("conductivity", "0"))));
-}
-
-void ModuleCurrent::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
-{
-    SceneMaterialCurrent *material = dynamic_cast<SceneMaterialCurrent *>(marker);
-
-    element->setAttribute("conductivity", material->conductivity.text);
-}
-
 SceneBoundary *ModuleCurrent::newBoundary()
 {
-    return new SceneBoundaryCurrent(tr("new boundary condition"),
-                                    PhysicFieldBC_Current_Potential,
-                                    Value("0"));
+    return new SceneBoundary(tr("new boundary condition").toStdString(), "current_potential");
 }
 
 SceneBoundary *ModuleCurrent::newBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double value;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
@@ -255,10 +114,12 @@ SceneBoundary *ModuleCurrent::newBoundary(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneBoundary *ModuleCurrent::modifyBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double value;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
@@ -283,16 +144,17 @@ SceneBoundary *ModuleCurrent::modifyBoundary(PyObject *self, PyObject *args)
             return NULL;
         }
     }
+    */
 }
 
 SceneMaterial *ModuleCurrent::newMaterial()
 {
-    return new SceneMaterialCurrent(tr("new material"),
-                                    Value("57e6"));
+    return new SceneMaterial(tr("new material").toStdString());
 }
 
 SceneMaterial *ModuleCurrent::newMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double conductivity;
     char *name;
     if (PyArg_ParseTuple(args, "sd", &name, &conductivity))
@@ -305,10 +167,12 @@ SceneMaterial *ModuleCurrent::newMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleCurrent::modifyMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double conductivity;
     char *name;
     if (PyArg_ParseTuple(args, "sd", &name, &conductivity))
@@ -326,74 +190,12 @@ SceneMaterial *ModuleCurrent::modifyMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
-}
-
-// ****************************************************************************************************************
-
-SceneBoundaryCurrent::SceneBoundaryCurrent(const QString &name, PhysicFieldBC type, Value value) : SceneBoundary(name, type)
-{
-    this->value = value;
-}
-
-QString SceneBoundaryCurrent::script()
-{
-    return QString("addboundary(\"%1\", \"%2\", %3)").
-            arg(name).
-            arg(physicFieldBCToStringKey(type)).
-            arg(value.text);
-}
-
-QMap<QString, QString> SceneBoundaryCurrent::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PhysicFieldBC_Current_Potential:
-        out["Potential (V)"] = value.text;
-        break;
-    case PhysicFieldBC_Current_InwardCurrentFlow:
-        out["Inward current flow: (A/m2)"] = value.text;
-        break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneBoundaryCurrent::showDialog(QWidget *parent)
-{
-    SceneBoundaryCurrentDialog *dialog = new SceneBoundaryCurrentDialog(this, parent);
-    return dialog->exec();
+    */
 }
 
 // *************************************************************************************************************************************
 
-SceneMaterialCurrent::SceneMaterialCurrent(const QString &name, Value conductivity) : SceneMaterial(name)
-{
-    this->conductivity = conductivity;
-}
-
-QString SceneMaterialCurrent::script()
-{
-    return QString("addmaterial(\"%1\", %3)").
-            arg(name).
-            arg(conductivity.text);
-}
-
-QMap<QString, QString> SceneMaterialCurrent::data()
-{
-    QMap<QString, QString> out;
-    out["Conductivity (S/m)"] = conductivity.number;
-    return QMap<QString, QString>(out);
-}
-
-int SceneMaterialCurrent::showDialog(QWidget *parent)
-{
-    SceneMaterialCurrentDialog *dialog = new SceneMaterialCurrentDialog(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneBoundaryCurrentDialog::SceneBoundaryCurrentDialog(SceneBoundaryCurrent *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
+SceneBoundaryCurrentDialog::SceneBoundaryCurrentDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
 {
     m_boundary = boundary;
 
@@ -408,8 +210,7 @@ void SceneBoundaryCurrentDialog::createContent()
     lblValueUnit = new QLabel("");
 
     cmbType = new QComboBox(this);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Current_Potential), PhysicFieldBC_Current_Potential);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Current_InwardCurrentFlow), PhysicFieldBC_Current_InwardCurrentFlow);
+    Util::scene()->problemInfo()->module()->fillComboBoxBoundaryCondition(cmbType);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValue = new ValueLineEdit(this);
@@ -428,23 +229,33 @@ void SceneBoundaryCurrentDialog::load()
 {
     SceneBoundaryDialog::load();
 
-    SceneBoundaryCurrent *boundary = dynamic_cast<SceneBoundaryCurrent *>(m_boundary);
-
-    cmbType->setCurrentIndex(cmbType->findData(boundary->type));
-    txtValue->setValue(boundary->value);
+    cmbType->setCurrentIndex(cmbType->findData(QString::fromStdString(m_boundary->type)));
+    if (m_boundary->type == "current_potential")
+    {
+        txtValue->setValue(m_boundary->get_value("current_potential"));
+    }
+    else if (m_boundary->type == "current_inward_current_flow")
+    {
+        txtValue->setValue(m_boundary->get_value("current_inward_current_flow"));
+    }
 }
 
 bool SceneBoundaryCurrentDialog::save() {
     if (!SceneBoundaryDialog::save()) return false;;
 
-    SceneBoundaryCurrent *boundary = dynamic_cast<SceneBoundaryCurrent *>(m_boundary);
-
-    boundary->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
+    m_boundary->type = cmbType->itemData(cmbType->currentIndex()).toString().toStdString();
 
     if (txtValue->evaluate())
-        boundary->value = txtValue->value();
-    else
-        return false;
+        if (m_boundary->type == "current_potential")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("current_potential")] = txtValue->value();
+        }
+        else if (m_boundary->type == "current_inward_current_flow")
+        {
+            m_boundary->values[m_boundary->get_boundary_type_variable("current_inward_current_flow")] = txtValue->value();
+        }
+        else
+            return false;
 
     return true;
 }
@@ -454,25 +265,20 @@ void SceneBoundaryCurrentDialog::doTypeChanged(int index)
     txtValue->setEnabled(false);
 
     // read equation
-    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+    readEquation(lblEquationImage, cmbType->itemData(index).toString());
 
     // enable controls
-    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
-    {
-    case PhysicFieldBC_Current_Potential:
+    if (cmbType->itemData(index) == "current_potential")
     {
         txtValue->setEnabled(true);
         lblValueUnit->setText(tr("<i>%1</i><sub>0</sub> (V)").arg(QString::fromUtf8("φ")));
         lblValueUnit->setToolTip(cmbType->itemText(index));
     }
-        break;
-    case PhysicFieldBC_Current_InwardCurrentFlow:
+    else if (cmbType->itemData(index) == "current_inward_current_flow")
     {
         txtValue->setEnabled(true);
         lblValueUnit->setText(tr("<i>J</i><sub>0</sub> (A/m<sup>2</sup>)"));
         lblValueUnit->setToolTip(cmbType->itemText(index));
-    }
-        break;
     }
 
     setMinimumSize(sizeHint());
@@ -480,7 +286,7 @@ void SceneBoundaryCurrentDialog::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-SceneMaterialCurrentDialog::SceneMaterialCurrentDialog(SceneMaterialCurrent *material, QWidget *parent) : SceneMaterialDialog(parent)
+SceneMaterialCurrentDialog::SceneMaterialCurrentDialog(SceneMaterial *material, QWidget *parent) : SceneMaterialDialog(parent)
 {
     m_material = material;
 
@@ -505,19 +311,15 @@ void SceneMaterialCurrentDialog::load()
 {
     SceneMaterialDialog::load();
 
-    SceneMaterialCurrent *material = dynamic_cast<SceneMaterialCurrent *>(m_material);
-
-    txtConductivity->setValue(material->conductivity);
+    txtConductivity->setValue(m_material->get_value("current_conductivity"));
 }
 
 bool SceneMaterialCurrentDialog::save()
 {
     if (!SceneMaterialDialog::save()) return false;;
 
-    SceneMaterialCurrent *material = dynamic_cast<SceneMaterialCurrent *>(m_material);
-
     if (txtConductivity->evaluate())
-        material->conductivity  = txtConductivity->value();
+        m_material->values[m_material->get_material_type("current_conductivity")] = txtConductivity->value();
     else
         return false;
 

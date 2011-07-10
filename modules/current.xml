@@ -7,6 +7,19 @@
     
     <constants />
 
+    <material>
+        <item id="current_conductivity" name="Conductivity" shortname="gamma" unit="S/m" />        
+    </material>
+
+    <boundary>
+        <item id="current_potential" name="Fixed voltage">
+            <variable id="current_potential" name="Fixed voltage" shortname="V" unit="V" />
+        </item>    
+        <item id="current_inward_current_flow" name="Current density">
+            <variable id="current_inward_current_flow" name="Current density" shortname="J" unit="A/m2" />
+        </item>        
+    </boundary>
+    
     <localvariable>
         <item id="current_potential" name="Scalar potential" shortname="V" unit="V" scalar="1">
             <steadystate planar_scalar="value1" axi_scalar="value1" />
