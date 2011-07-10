@@ -49,8 +49,6 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     ../lib/muparser/muParserTokenReader.cpp \
     ../lib/rapidxml/rapidxml.cpp \
     ../lib/rapidxml/rapidxml_utils.cpp \
-    #../lib/rapidxml/rapidxml_iterators.hpp \
-    #../lib/rapidxml/rapidxml_print.hpp \
     util.cpp \
     value.cpp \
     scene.cpp \
@@ -64,7 +62,7 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     #hermes2d/hermes_general.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
-    #hermes2d/hermes_magnetic.cpp \
+    hermes2d/hermes_magnetic.cpp \
     hermes2d/hermes_current.cpp \
     #hermes2d/hermes_elasticity.cpp \
     #hermes2d/hermes_rf.cpp \
@@ -115,7 +113,7 @@ HEADERS += util.h \
     #hermes2d/hermes_general.h \
     hermes2d/hermes_electrostatic.h \
     hermes2d/hermes_heat.h \
-    #hermes2d/hermes_magnetic.h \
+    hermes2d/hermes_magnetic.h \
     hermes2d/hermes_current.h \
     #hermes2d/hermes_elasticity.h \
     #hermes2d/hermes_rf.h \

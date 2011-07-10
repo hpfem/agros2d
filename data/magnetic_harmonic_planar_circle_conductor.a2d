@@ -1,13 +1,13 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="5000" numberofrefinements="0" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="harmonic" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="0" type="magnetic" timestep="0" id="0" name="Magnetic Harmonic Planar Circle Conductor" initialcondition="0">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Harmonic Planar Circle Conductor" date="2011-07-10" polynomialorder="3" meshtype="triangle" timestep="0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="5000" matrix_solver="umfpack" type="magnetic" timetotal="0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0"/>
+                <edge magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0"/>
             </edges>
             <labels>
-                <label current_density_real="1e6" remanence="0" conductivity="57e6" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Copper" current_density_imag="0" permeability="1" velocity_angular="0"/>
+                <label magnetic_velocity_angular="0" magnetic_current_denstity_external_imag="0" magnetic_permeability="1" magnetic_conductivity="57e6" magnetic_remanence="0" id="1" magnetic_remanence_angle="0" name="Copper" magnetic_current_denstity_external_real="1e6" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
             </labels>
         </problem>
     </problems>
@@ -28,5 +28,4 @@
             <label x="0" y="0" polynomialorder="0" marker="1" id="0" area="5e-07"/>
         </labels>
     </geometry>
-    <functions/>
 </document>

@@ -21,7 +21,7 @@
 
 // #include "hermes_general.h"
 #include "hermes_electrostatic.h"
-// #include "hermes_magnetic.h"
+#include "hermes_magnetic.h"
 #include "hermes_heat.h"
 #include "hermes_current.h"
 // #include "hermes_elasticity.h"
@@ -49,9 +49,9 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
         module = new ModuleCurrent(problem_type, analysis_type);
     if (id == "acoustic")
         module = new ModuleAcoustic(problem_type, analysis_type);
-    /*
     if (id == "magnetic")
         module = new ModuleMagnetic(problem_type, analysis_type);
+    /*
     if (id == "elasticity")
         module = new ModuleElasticity(problem_type, analysis_type);
     if (id == "rf")
@@ -76,6 +76,8 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
         return new SceneBoundaryAcousticDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "current")
         return new SceneBoundaryCurrentDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "magnetic")
+        return new SceneBoundaryMagneticDialog(scene_boundary, parent);
 }
 
 // material dialog factory
@@ -89,6 +91,8 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
         return new SceneMaterialAcousticDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "current")
         return new SceneMaterialCurrentDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "magnetic")
+        return new SceneMaterialMagneticDialog(scene_material, parent);
 }
 
 std::map<std::string, std::string> availableModules()
