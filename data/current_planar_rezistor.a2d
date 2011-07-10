@@ -1,0 +1,40 @@
+<document>
+    <problems>
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="unnamed" date="2011-07-10" polynomialorder="2" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="current" timetotal="1.0">
+            <scriptstartup></scriptstartup>
+            <description></description>
+            <edges>
+                <edge current_potential="0" type="current_potential" id="1" name="Left"/>
+                <edge current_inward_current_flow="-100" type="current_inward_current_flow" id="2" name="Right"/>
+                <edge current_inward_current_flow="0" type="current_inward_current_flow" id="3" name="Neumann"/>
+            </edges>
+            <labels>
+                <label current_conductivity="2" id="1" name="M1"/>
+                <label current_conductivity="5" id="2" name="M2"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="-0.3" y="0.3" id="0"/>
+            <node x="-0.3" y="-0.3" id="1"/>
+            <node x="0.15" y="-0.3" id="2"/>
+            <node x="0.15" y="0.3" id="3"/>
+            <node x="0.3" y="0.3" id="4"/>
+            <node x="0.3" y="-0.3" id="5"/>
+        </nodes>
+        <edges>
+            <edge end="1" refine_towards="0" marker="1" id="0" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" marker="3" id="1" start="1" angle="0"/>
+            <edge end="5" refine_towards="0" marker="3" id="2" start="2" angle="0"/>
+            <edge end="3" refine_towards="0" marker="0" id="3" start="2" angle="0"/>
+            <edge end="3" refine_towards="0" marker="3" id="4" start="0" angle="0"/>
+            <edge end="4" refine_towards="0" marker="3" id="5" start="3" angle="0"/>
+            <edge end="5" refine_towards="0" marker="2" id="6" start="4" angle="0"/>
+        </edges>
+        <labels>
+            <label x="-0.15855" y="0.234051" polynomialorder="0" marker="1" id="0" area="0"/>
+            <label x="0.221274" y="0.235212" polynomialorder="0" marker="2" id="1" area="0"/>
+        </labels>
+    </geometry>
+</document>
