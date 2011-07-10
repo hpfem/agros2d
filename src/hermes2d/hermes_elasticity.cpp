@@ -22,6 +22,15 @@
 #include "scene.h"
 #include "gui.h"
 
+double get_lambda(double young_modulus, double poisson_ratio)
+{
+    return (young_modulus * poisson_ratio) / ((1.0 + poisson_ratio) * (1.0 - 2.0*poisson_ratio));
+}
+double get_mu(double young_modulus, double poisson_ratio)
+{
+    return young_modulus / (2.0*(1.0 + poisson_ratio));
+}
+
 class WeakFormElasticity : public WeakFormAgros
 {
 public:
@@ -32,25 +41,25 @@ public:
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneBoundaryElasticity *boundary = dynamic_cast<SceneBoundaryElasticity *>(Util::scene()->edges[i]->boundary);
+            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
             if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
-                if (boundary->typeX == PhysicFieldBC_Elasticity_Free)
+                if (boundary->type == "elasticity_free_fixed" || boundary->type == "elasticity_free_free")
                 {
-                    if (fabs(boundary->forceX.number) > EPS_ZERO)
+                    if (fabs(boundary->get_value("elasticity_force_x").number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        boundary->forceX.number,
+                                                                                                        boundary->get_value("elasticity_force_x").number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                 }
-                if (boundary->typeY == PhysicFieldBC_Elasticity_Free)
+                if (boundary->type == "elasticity_fixed_free" || boundary->type == "elasticity_free_free")
                 {
-                    if (fabs(boundary->forceY.number) > EPS_ZERO)
+                    if (fabs(boundary->get_value("elasticity_force_y").number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(1,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        boundary->forceY.number,
+                                                                                                        boundary->get_value("elasticity_force_y").number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
                 }
             }
@@ -59,52 +68,62 @@ public:
         // materials (Default forms not implemented axisymmetric problems!)
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            SceneMaterialElasticity *material = dynamic_cast<SceneMaterialElasticity *>(Util::scene()->labels[i]->material);
+            SceneMaterial *material = Util::scene()->labels[i]->material;
 
             if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
+                double lambda = get_lambda(material->get_value("elasticity_young_modulus").number,
+                                           material->get_value("elasticity_poisson_ratio").number);
+                double mu = get_mu(material->get_value("elasticity_young_modulus").number,
+                                   material->get_value("elasticity_poisson_ratio").number);
+
                 add_matrix_form(new WeakFormsElasticity::VolumetricMatrixForms::DefaultLinearXX(0, 0,
                                                                                                 QString::number(i).toStdString(),
-                                                                                                material->lambda(), material->mu(),
+                                                                                                lambda, mu,
                                                                                                 convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                 add_matrix_form(new WeakFormsElasticity::VolumetricMatrixForms::DefaultLinearXY(0, 1,
                                                                                                 QString::number(i).toStdString(),
-                                                                                                material->lambda(), material->mu(),
+                                                                                                lambda, mu,
                                                                                                 convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                 add_matrix_form(new WeakFormsElasticity::VolumetricMatrixForms::DefaultLinearYY(1, 1,
                                                                                                 QString::number(i).toStdString(),
-                                                                                                material->lambda(), material->mu(),
+                                                                                                lambda, mu,
                                                                                                 convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                 // inner forces
-                if (fabs(material->forceX.number) > EPS_ZERO)
+                if (fabs(material->get_value("elasticity_force_x").number) > EPS_ZERO)
                     add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
                                                                                                    QString::number(i).toStdString(),
-                                                                                                   material->forceX.number,
+                                                                                                   material->get_value("elasticity_force_x").number,
                                                                                                    convertProblemType(Util::scene()->problemInfo()->problemType)));
-                if (fabs(material->forceY.number) > EPS_ZERO)
+                if (fabs(material->get_value("elasticity_force_y").number) > EPS_ZERO)
                     add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(1,
                                                                                                    QString::number(i).toStdString(),
-                                                                                                   material->forceY.number,
+                                                                                                   material->get_value("elasticity_force_y").number,
                                                                                                    convertProblemType(Util::scene()->problemInfo()->problemType)));
 
                 // thermoelasticity
-                if ((fabs(material->alpha.number) > EPS_ZERO) &&
-                        (fabs(material->temp.number - material->temp_ref.number) > EPS_ZERO))
-                    add_vector_form(new DefaultLinearThermoelasticityX(0, 0,
-                                                                      QString::number(i).toStdString(),
-                                                                      material->lambda(), material->mu(),
-                                                                      material->alpha.number, material->temp.number, material->temp_ref.number,
-                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
-                if ((fabs(material->alpha.number) > EPS_ZERO) &&
-                        (fabs(material->temp.number - material->temp_ref.number) > EPS_ZERO))
+                if ((fabs(material->get_value("elasticity_alpha").number) > EPS_ZERO) &&
+                        (fabs(material->get_value("elasticity_temperature").number - material->get_value("elasticity_temperature_reference").number) > EPS_ZERO))
+                {
+                    add_vector_form(new DefaultLinearThermoelasticityX(0,
+                                                                       QString::number(i).toStdString(),
+                                                                       lambda, mu,
+                                                                       material->get_value("elasticity_alpha").number,
+                                                                       material->get_value("elasticity_temperature").number,
+                                                                       material->get_value("elasticity_temperature_reference").number,
+                                                                       convertProblemType(Util::scene()->problemInfo()->problemType)));
+
                     add_vector_form(new DefaultLinearThermoelasticityY(1,
-                                                                      QString::number(i).toStdString(),
-                                                                      material->lambda(), material->mu(),
-                                                                      material->alpha.number, material->temp.number, material->temp_ref.number,
-                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
+                                                                       QString::number(i).toStdString(),
+                                                                       lambda, mu,
+                                                                       material->get_value("elasticity_alpha").number,
+                                                                       material->get_value("elasticity_temperature").number,
+                                                                       material->get_value("elasticity_temperature_reference").number,
+                                                                       convertProblemType(Util::scene()->problemInfo()->problemType)));
+                }
             }
         }
     }
@@ -115,7 +134,7 @@ public:
         DefaultLinearThermoelasticityX(int i, scalar lambda, scalar mu, scalar alpha, scalar temp, scalar temp_ref, GeomType gt = HERMES_PLANAR)
             : WeakForm::VectorFormVol(i), lambda(lambda), mu(mu), alpha(alpha), temp(temp), temp_ref(temp_ref), gt(gt) { }
 
-        DefaultLinearThermoelasticityX(int i, int j, std::string area, scalar lambda, scalar mu, scalar alpha, scalar temp, scalar temp_ref, GeomType gt = HERMES_PLANAR)
+        DefaultLinearThermoelasticityX(int i, std::string area, scalar lambda, scalar mu, scalar alpha, scalar temp, scalar temp_ref, GeomType gt = HERMES_PLANAR)
             : WeakForm::VectorFormVol(i, area), lambda(lambda), mu(mu), alpha(alpha), temp(temp), temp_ref(temp_ref), gt(gt) { }
 
         virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
@@ -202,7 +221,7 @@ public:
         }
 
         // This is to make the form usable in rk_time_step().
-       virtual WeakForm::VectorFormVol* clone() {
+        virtual WeakForm::VectorFormVol* clone() {
             return new DefaultLinearThermoelasticityY(*this);
         }
 
@@ -214,169 +233,26 @@ public:
 
 // ****************************************************************************************************************
 
-void ParserElasticity::setParserVariables(SceneMaterial *material)
-{
-    SceneMaterialElasticity *marker = dynamic_cast<SceneMaterialElasticity *>(material);
-
-    pe = marker->young_modulus.number;
-    pnu = marker->poisson_ratio.number;
-    pfx = marker->forceX.number;
-    pfy = marker->forceY.number;
-    palpha = marker->alpha.number;
-    pt = marker->temp.number;
-    ptref = marker->temp_ref.number;
-}
-
-// ****************************************************************************************************************
-
-LocalPointValueElasticity::LocalPointValueElasticity(const Point &point) : LocalPointValue(point)
-{
-    parser = new ParserElasticity();
-    initParser();
-
-    parser->parser[0]->DefineVar("E", &static_cast<ParserElasticity *>(parser)->pe);
-    parser->parser[0]->DefineVar("nu", &static_cast<ParserElasticity *>(parser)->pnu);
-    parser->parser[0]->DefineVar("fx", &static_cast<ParserElasticity *>(parser)->pfx);
-    parser->parser[0]->DefineVar("fy", &static_cast<ParserElasticity *>(parser)->pfy);
-    parser->parser[0]->DefineVar("alpha", &static_cast<ParserElasticity *>(parser)->palpha);
-    parser->parser[0]->DefineVar("T", &static_cast<ParserElasticity *>(parser)->pt);
-    parser->parser[0]->DefineVar("Tr", &static_cast<ParserElasticity *>(parser)->ptref);
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-SurfaceIntegralValueElasticity::SurfaceIntegralValueElasticity() : SurfaceIntegralValue()
-{
-    parser = new ParserElasticity();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("E", &static_cast<ParserElasticity *>(parser)->pe);
-        ((mu::Parser *) *it)->DefineVar("nu", &static_cast<ParserElasticity *>(parser)->pnu);
-        ((mu::Parser *) *it)->DefineVar("fx", &static_cast<ParserElasticity *>(parser)->pfx);
-        ((mu::Parser *) *it)->DefineVar("fy", &static_cast<ParserElasticity *>(parser)->pfy);
-        ((mu::Parser *) *it)->DefineVar("alpha", &static_cast<ParserElasticity *>(parser)->palpha);
-        ((mu::Parser *) *it)->DefineVar("T", &static_cast<ParserElasticity *>(parser)->pt);
-        ((mu::Parser *) *it)->DefineVar("Tr", &static_cast<ParserElasticity *>(parser)->ptref);
-    }
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-VolumeIntegralValueElasticity::VolumeIntegralValueElasticity() : VolumeIntegralValue()
-{
-    parser = new ParserElasticity();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("E", &static_cast<ParserElasticity *>(parser)->pe);
-        ((mu::Parser *) *it)->DefineVar("nu", &static_cast<ParserElasticity *>(parser)->pnu);
-        ((mu::Parser *) *it)->DefineVar("fx", &static_cast<ParserElasticity *>(parser)->pfx);
-        ((mu::Parser *) *it)->DefineVar("fy", &static_cast<ParserElasticity *>(parser)->pfy);
-        ((mu::Parser *) *it)->DefineVar("alpha", &static_cast<ParserElasticity *>(parser)->palpha);
-        ((mu::Parser *) *it)->DefineVar("T", &static_cast<ParserElasticity *>(parser)->pt);
-        ((mu::Parser *) *it)->DefineVar("Tr", &static_cast<ParserElasticity *>(parser)->ptref);
-    }
-
-    sln.push_back(Util::scene()->sceneSolution()->sln(0));
-    sln.push_back(Util::scene()->sceneSolution()->sln(1));
-
-    calculate();
-}
-
-// *************************************************************************************************************************************
-
-ViewScalarFilterElasticity::ViewScalarFilterElasticity(Hermes::vector<MeshFunction *> sln,
-                                                             std::string expression) :
-    ViewScalarFilter(sln)
-{
-    parser = new ParserElasticity();
-    initParser(expression);
-
-    parser->parser[0]->DefineVar("E", &static_cast<ParserElasticity *>(parser)->pe);
-    parser->parser[0]->DefineVar("nu", &static_cast<ParserElasticity *>(parser)->pnu);
-    parser->parser[0]->DefineVar("fx", &static_cast<ParserElasticity *>(parser)->pfx);
-    parser->parser[0]->DefineVar("fy", &static_cast<ParserElasticity *>(parser)->pfy);
-    parser->parser[0]->DefineVar("alpha", &static_cast<ParserElasticity *>(parser)->palpha);
-    parser->parser[0]->DefineVar("T", &static_cast<ParserElasticity *>(parser)->pt);
-    parser->parser[0]->DefineVar("Tr", &static_cast<ParserElasticity *>(parser)->ptref);
-}
-
-// **************************************************************************************************************************
-
-LocalPointValue *ModuleElasticity::local_point_value(const Point &point)
-{
-    return new LocalPointValueElasticity(point);
-}
-
-SurfaceIntegralValue *ModuleElasticity::surface_integral_value()
-{
-    return new SurfaceIntegralValueElasticity();
-}
-
-VolumeIntegralValue *ModuleElasticity::volume_integral_value()
-{
-    return new VolumeIntegralValueElasticity();
-}
-
-ViewScalarFilter *ModuleElasticity::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                           PhysicFieldVariableComp physicFieldVariableComp)
-{
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
-    Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
-
-    return new ViewScalarFilterElasticity(Hermes::vector<MeshFunction *>(sln1, sln2),
-                                          get_expression(physicFieldVariable, physicFieldVariableComp));
-}
-
 Hermes::vector<SolutionArray *> ModuleElasticity::solve(ProgressItemSolve *progressItemSolve)
 {
-    // boundaries
-    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-    {
-        SceneBoundaryElasticity *boundary = dynamic_cast<SceneBoundaryElasticity *>(Util::scene()->boundaries[i]);
-
-        // evaluate script
-        if (!boundary->displacementX.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!boundary->displacementY.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!boundary->forceX.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!boundary->forceY.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // materials
-    for (int i = 1; i<Util::scene()->materials.count(); i++)
-    {
-        SceneMaterialElasticity *material = dynamic_cast<SceneMaterialElasticity *>(Util::scene()->materials[i]);
-
-        // evaluate script
-        if (!material->young_modulus.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->poisson_ratio.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->forceX.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->forceY.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->alpha.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->temp.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->temp_ref.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
+    if (!solve_init_variables())
+        return Hermes::vector<SolutionArray *>();
 
     // boundary conditions
     EssentialBCs bc1;
     EssentialBCs bc2;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        SceneBoundaryElasticity *boundary = dynamic_cast<SceneBoundaryElasticity *>(Util::scene()->edges[i]->boundary);
+        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
         if (boundary)
         {
-            if (boundary->typeX == PhysicFieldBC_Elasticity_Fixed)
-                bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->displacementX.number));
-            if (boundary->typeY == PhysicFieldBC_Elasticity_Fixed)
-                bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->displacementY.number));
+            if (boundary->type == "elasticity_fixed_free" || boundary->type == "elasticity_fixed_fixed")
+                bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                                                                       boundary->get_value("elasticity_displacement_x").number));
+            if (boundary->type == "elasticity_free_fixed" || boundary->type == "elasticity_fixed_fixed")
+                bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                                                                       boundary->get_value("elasticity_displacement_y").number));
         }
     }
     Hermes::vector<EssentialBCs> bcs(bc1, bc2);
@@ -394,90 +270,14 @@ Hermes::vector<SolutionArray *> ModuleElasticity::solve(ProgressItemSolve *progr
 // ****************************************************************************************************************
 // rewrite
 
-void ModuleElasticity::readBoundaryFromDomElement(QDomElement *element)
-{
-    PhysicFieldBC typeX = physicFieldBCFromStringKey(element->attribute("typex"));
-    switch (typeX)
-    {
-    case PhysicFieldBC_None:
-    case PhysicFieldBC_Elasticity_Fixed:
-    case PhysicFieldBC_Elasticity_Free:
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("typex")).toStdString() << endl;
-        break;
-    }
-
-    PhysicFieldBC typeY = physicFieldBCFromStringKey(element->attribute("typey"));
-    switch (typeY)
-    {
-    case PhysicFieldBC_None:
-    case PhysicFieldBC_Elasticity_Fixed:
-    case PhysicFieldBC_Elasticity_Free:
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("typey")).toStdString() << endl;
-        break;
-    }
-
-    if ((typeX != PhysicFieldBC_Undefined) && (typeY != PhysicFieldBC_Undefined))
-        Util::scene()->addBoundary(new SceneBoundaryElasticity(element->attribute("name"),
-                                                               typeX, typeY,
-                                                               Value(element->attribute("forcex", "0")),
-                                                               Value(element->attribute("forcey", "0")),
-                                                               Value(element->attribute("displacementx", "0")),
-                                                               Value(element->attribute("displacementx", "0"))));
-}
-
-void ModuleElasticity::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
-{
-    SceneBoundaryElasticity *edgeElasticityMarker = dynamic_cast<SceneBoundaryElasticity *>(marker);
-
-    element->setAttribute("typex", physicFieldBCToStringKey(edgeElasticityMarker->typeX));
-    element->setAttribute("typey", physicFieldBCToStringKey(edgeElasticityMarker->typeY));
-    element->setAttribute("forcex", edgeElasticityMarker->forceX.text);
-    element->setAttribute("forcey", edgeElasticityMarker->forceY.text);
-}
-
-void ModuleElasticity::readMaterialFromDomElement(QDomElement *element)
-{
-    Util::scene()->addMaterial(new SceneMaterialElasticity(element->attribute("name"),
-                                                           Value(element->attribute("young_modulus")),
-                                                           Value(element->attribute("poisson_ratio")),
-                                                           Value(element->attribute("forcex", "0")),
-                                                           Value(element->attribute("forcey", "0")),
-                                                           Value(element->attribute("alpha", "0")),
-                                                           Value(element->attribute("temp", "0")),
-                                                           Value(element->attribute("temp_ref", "0"))));
-}
-
-void ModuleElasticity::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
-{
-    SceneMaterialElasticity *labelElasticityMarker = dynamic_cast<SceneMaterialElasticity *>(marker);
-
-    element->setAttribute("young_modulus", labelElasticityMarker->young_modulus.text);
-    element->setAttribute("poisson_ratio", labelElasticityMarker->poisson_ratio.text);
-    element->setAttribute("forcex", labelElasticityMarker->forceX.text);
-    element->setAttribute("forcey", labelElasticityMarker->forceY.text);
-    element->setAttribute("alpha", labelElasticityMarker->alpha.text);
-    element->setAttribute("temp", labelElasticityMarker->temp.text);
-    element->setAttribute("temp_ref", labelElasticityMarker->temp_ref.text);
-}
-
 SceneBoundary *ModuleElasticity::newBoundary()
 {
-    return new SceneBoundaryElasticity(tr("new boundary condition"),
-                                       PhysicFieldBC_Elasticity_Free,
-                                       PhysicFieldBC_Elasticity_Free,
-                                       Value("0"),
-                                       Value("0"),
-                                       Value("0"),
-                                       Value("0"));
+    return new SceneBoundary(tr("new boundary").toStdString(), "FIXME");
 }
 
 SceneBoundary *ModuleElasticity::newBoundary(PyObject *self, PyObject *args)
 {
-
+    /*
     double forcex, forcey, displacementx, displacementy;
     char *name, *typex, *typey;
     if (PyArg_ParseTuple(args, "sssdddd", &name, &typex, &typey, &forcex, &forcey, &displacementx, &displacementy))
@@ -495,10 +295,12 @@ SceneBoundary *ModuleElasticity::newBoundary(PyObject *self, PyObject *args)
     }
 
     return Util::scene()->boundaries[0];
+    */
 }
 
 SceneBoundary *ModuleElasticity::modifyBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double forcex, forcey, displacementx, displacementy;
     char *name, *typex, *typey;
     if (PyArg_ParseTuple(args, "sssdddd", &name, &typex, &typey, &forcex, &forcey, &displacementx, &displacementy))
@@ -529,22 +331,17 @@ SceneBoundary *ModuleElasticity::modifyBoundary(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleElasticity::newMaterial()
 {
-    return new SceneMaterialElasticity(tr("new material"),
-                                       Value("2e11"),
-                                       Value("0.33"),
-                                       Value("0"),
-                                       Value("0"),
-                                       Value("1.2e-5"),
-                                       Value("0"),
-                                       Value("0"));
+    return new SceneMaterial(tr("new material").toStdString());
 }
 
 SceneMaterial *ModuleElasticity::newMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double young_modulus, poisson_ratio, forcex, forcey, alpha, temp, temp_ref;
     char *name;
     if (PyArg_ParseTuple(args, "sddddddd", &name, &young_modulus, &poisson_ratio, &forcex, &forcey, &alpha, &temp, &temp_ref))
@@ -563,10 +360,12 @@ SceneMaterial *ModuleElasticity::newMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleElasticity::modifyMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double young_modulus, poisson_ratio, forcex, forcey, alpha, temp, temp_ref;
     char *name;
     if (PyArg_ParseTuple(args, "sddddddd", &name, &young_modulus, &poisson_ratio, &forcex, &forcey, &alpha, &temp, &temp_ref))
@@ -590,6 +389,7 @@ SceneMaterial *ModuleElasticity::modifyMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 template <class T>
@@ -629,123 +429,17 @@ void deformShapeTemplate(T linVert, int count)
 
 void ModuleElasticity::deform_shape(double3* linVert, int count)
 {
-   deformShapeTemplate<double3 *>(linVert, count);
+    deformShapeTemplate<double3 *>(linVert, count);
 }
 
 void ModuleElasticity::deform_shape(double4* linVert, int count)
 {
-   deformShapeTemplate<double4 *>(linVert, count);
+    deformShapeTemplate<double4 *>(linVert, count);
 }
 
 // *************************************************************************************************************************************
 
-SceneBoundaryElasticity::SceneBoundaryElasticity(const QString &name, PhysicFieldBC typeX,
-                                                 PhysicFieldBC typeY, Value forceX, Value forceY,
-                                                 Value displacementX, Value displacementY)
-    : SceneBoundary(name, typeX)
-{
-    this->typeX = typeX;
-    this->typeY = typeY;
-    this->forceX = forceX;
-    this->forceY = forceY;
-    this->displacementX = displacementX;
-    this->displacementY = displacementY;
-}
-
-QString SceneBoundaryElasticity::script()
-{
-    return QString("addboundary(\"%1\", \"%2\", \"%3\", %4, %5, %6, %7)").
-            arg(name).
-            arg(physicFieldBCToStringKey(typeX)).
-            arg(physicFieldBCToStringKey(typeY)).
-            arg(forceX.text).
-            arg(forceY.text).
-            arg(displacementX.text).
-            arg(displacementY.text);
-}
-
-QMap<QString, QString> SceneBoundaryElasticity::data()
-{
-    QMap<QString, QString> out;
-    switch (typeX)
-    {
-    case PhysicFieldBC_Elasticity_Free:
-        out["Force X: (N)"] = forceX.number;
-        break;
-    case PhysicFieldBC_Elasticity_Fixed:
-        out["Displacement X: (N)"] = displacementX.number;
-        break;
-    }
-
-    switch (typeY)
-    {
-    case PhysicFieldBC_Elasticity_Free:
-        out["Force Y: (N)"] = forceY.number;
-        break;
-    case PhysicFieldBC_Elasticity_Fixed:
-        out["Displacement Y: (N)"] = displacementY.number;
-        break;
-    }
-
-    return QMap<QString, QString>(out);
-}
-
-int SceneBoundaryElasticity::showDialog(QWidget *parent)
-{
-    SceneBoundaryElasticityDialog *dialog = new SceneBoundaryElasticityDialog(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneMaterialElasticity::SceneMaterialElasticity(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY,
-                                                 Value alpha, Value temp, Value temp_ref)
-    : SceneMaterial(name)
-{
-    this->young_modulus = young_modulus;
-    this->poisson_ratio = poisson_ratio;
-    this->forceX = forceX;
-    this->forceY = forceY;
-    this->alpha = alpha;
-    this->temp = temp;
-    this->temp_ref = temp_ref;
-}
-
-QString SceneMaterialElasticity::script()
-{
-    return QString("addmaterial(\"%1\", %2, %3, %4, %5, %6, %7, %8)").
-            arg(name).
-            arg(young_modulus.text).
-            arg(poisson_ratio.text).
-            arg(forceX.text).
-            arg(forceY.text).
-            arg(alpha.text).
-            arg(temp.text).
-            arg(temp_ref.text);
-}
-
-QMap<QString, QString> SceneMaterialElasticity::data()
-{
-    QMap<QString, QString> out;
-    out["Young modulus (Pa)"] = young_modulus.number;
-    out["Poisson ratio (-)"] = poisson_ratio.number;
-    out["Volumetric force X (N/m3)"] = forceX.number;
-    out["Volumetric force Y (N/m3)"] = forceX.number;
-    out["Thermal exp. coef. (1/K)"] = alpha.number;
-    out["Temperature (K)"] = temp.number;
-    out["Ref. temperature (K)"] = temp_ref.number;
-    return QMap<QString, QString>(out);
-}
-
-int SceneMaterialElasticity::showDialog(QWidget *parent)
-{
-    SceneMaterialElasticityDialog *dialog = new SceneMaterialElasticityDialog(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneBoundaryElasticityDialog::SceneBoundaryElasticityDialog(SceneBoundaryElasticity *edgeEdgeElasticityMarker, QWidget *parent) : SceneBoundaryDialog(parent)
+SceneBoundaryElasticityDialog::SceneBoundaryElasticityDialog(SceneBoundary *edgeEdgeElasticityMarker, QWidget *parent) : SceneBoundaryDialog(parent)
 {
     m_boundary = edgeEdgeElasticityMarker;
 
@@ -765,28 +459,17 @@ void SceneBoundaryElasticityDialog::createContent()
     lblEquationY = new QLabel(tr("Equation:"));
     lblEquationImageY = new QLabel(this);
 
-    cmbTypeX = new QComboBox(this);
-    cmbTypeX->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Free), PhysicFieldBC_Elasticity_Free);
-    cmbTypeX->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Fixed), PhysicFieldBC_Elasticity_Fixed);
-    connect(cmbTypeX, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeXChanged(int)));
-
-    cmbTypeY = new QComboBox(this);
-    cmbTypeY->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Free), PhysicFieldBC_Elasticity_Free);
-    cmbTypeY->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Fixed), PhysicFieldBC_Elasticity_Fixed);
-    connect(cmbTypeY, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeYChanged(int)));
+    cmbType = new QComboBox(this);
+    Util::scene()->problemInfo()->module()->fillComboBoxBoundaryCondition(cmbType);
+    connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtForceX = new ValueLineEdit(this);
     txtForceY = new ValueLineEdit(this);
     txtDisplacementX = new ValueLineEdit(this);
     txtDisplacementY = new ValueLineEdit(this);
 
-    doTypeXChanged(cmbTypeX->currentIndex());
-    doTypeYChanged(cmbTypeY->currentIndex());
-
     // X
     QGridLayout *layoutX = new QGridLayout();
-    layoutX->addWidget(new QLabel(tr("BC Type:")), 0, 0);
-    layoutX->addWidget(cmbTypeX, 0, 1);
     layoutX->addWidget(lblEquationX, 1, 0);
     layoutX->addWidget(lblEquationImageX, 1, 1);
     layoutX->addWidget(createLabel(tr("<i>f</i><sub>%1</sub> (N/m<sup>2</sup>)").arg(Util::scene()->problemInfo()->labelX()),
@@ -801,8 +484,6 @@ void SceneBoundaryElasticityDialog::createContent()
 
     // X
     QGridLayout *layoutY = new QGridLayout();
-    layoutY->addWidget(new QLabel(tr("BC Type:")), 0, 0);
-    layoutY->addWidget(cmbTypeY, 0, 1);
     layoutY->addWidget(lblEquationY, 1, 0);
     layoutY->addWidget(lblEquationImageY, 1, 1);
     layoutY->addWidget(createLabel(tr("<i>f</i><sub>%1</sub> (N/m<sup>2</sup>)").arg(Util::scene()->problemInfo()->labelY()),
@@ -815,6 +496,8 @@ void SceneBoundaryElasticityDialog::createContent()
     QGroupBox *grpY = new QGroupBox(tr("Direction %1").arg(Util::scene()->problemInfo()->labelY()), this);
     grpY->setLayout(layoutY);
 
+    layout->addWidget(new QLabel(tr("BC type:")), 4, 0);
+    layout->addWidget(cmbType, 4, 2);
     layout->addWidget(grpX, 10, 0, 1, 3);
     layout->addWidget(grpY, 11, 0, 1, 3);
 }
@@ -823,98 +506,122 @@ void SceneBoundaryElasticityDialog::load()
 {
     SceneBoundaryDialog::load();
 
-    SceneBoundaryElasticity *edgeElasticityMarker = dynamic_cast<SceneBoundaryElasticity *>(m_boundary);
+    cmbType->setCurrentIndex(cmbType->findData(QString::fromStdString(m_boundary->type)));
 
-    cmbTypeX->setCurrentIndex(cmbTypeX->findData(edgeElasticityMarker->typeX));
-    cmbTypeY->setCurrentIndex(cmbTypeY->findData(edgeElasticityMarker->typeY));
-
-    txtForceX->setValue(edgeElasticityMarker->forceX);
-    txtForceY->setValue(edgeElasticityMarker->forceY);
-
-    txtDisplacementX->setValue(edgeElasticityMarker->displacementX);
-    txtDisplacementY->setValue(edgeElasticityMarker->displacementY);
+    if (m_boundary->type == "elasticity_fixed_fixed")
+    {
+        txtDisplacementX->setValue(m_boundary->get_value("elasticity_displacement_x"));
+        txtDisplacementY->setValue(m_boundary->get_value("elasticity_displacement_y"));
+    }
+    else if (m_boundary->type == "elasticity_fixed_free")
+    {
+        txtDisplacementX->setValue(m_boundary->get_value("elasticity_displacement_x"));
+        txtForceY->setValue(m_boundary->get_value("elasticity_force_y"));
+    }
+    else if (m_boundary->type == "elasticity_free_fixed")
+    {
+        txtForceX->setValue(m_boundary->get_value("elasticity_force_x"));
+        txtDisplacementY->setValue(m_boundary->get_value("elasticity_displacement_y"));
+    }
+    else if (m_boundary->type == "elasticity_free_free")
+    {
+        txtForceX->setValue(m_boundary->get_value("elasticity_force_x"));
+        txtForceY->setValue(m_boundary->get_value("elasticity_force_y"));
+    }
 }
 
 bool SceneBoundaryElasticityDialog::save() {
     if (!SceneBoundaryDialog::save()) return false;;
 
-    SceneBoundaryElasticity *edgeElasticityMarker = dynamic_cast<SceneBoundaryElasticity *>(m_boundary);
+    m_boundary->type = cmbType->itemData(cmbType->currentIndex()).toString().toStdString();
 
-    edgeElasticityMarker->typeX = (PhysicFieldBC) cmbTypeX->itemData(cmbTypeX->currentIndex()).toInt();
-    edgeElasticityMarker->typeY = (PhysicFieldBC) cmbTypeY->itemData(cmbTypeY->currentIndex()).toInt();
+    if (m_boundary->type == "elasticity_fixed_fixed")
+    {
+        if (txtDisplacementX->evaluate())
+            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_displacement_x")] = txtDisplacementX->value();
+        else
+            return false;
 
-    if (txtForceX->evaluate())
-        edgeElasticityMarker->forceX = txtForceX->value();
-    else
-        return false;
+        if (txtDisplacementY->evaluate())
+            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_displacement_y")] = txtDisplacementY->value();
+        else
+            return false;
+    }
+    else if (m_boundary->type == "elasticity_fixed_free")
+    {
+        if (txtDisplacementX->evaluate())
+            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_displacement_x")] = txtDisplacementX->value();
+        else
+            return false;
 
-    if (txtForceY->evaluate())
-        edgeElasticityMarker->forceY = txtForceY->value();
-    else
-        return false;
+        if (txtForceY->evaluate())
+            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_force_y")] = txtForceY->value();
+        else
+            return false;
+    }
+    else if (m_boundary->type == "elasticity_free_fixed")
+    {
+        if (txtForceX->evaluate())
+            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_force_x")] = txtForceX->value();
+        else
+            return false;
 
-    if (txtDisplacementX->evaluate())
-        edgeElasticityMarker->displacementX = txtDisplacementX->value();
-    else
-        return false;
+        if (txtDisplacementY->evaluate())
+            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_displacement_y")] = txtDisplacementY->value();
+        else
+            return false;
+    }
+    else if (m_boundary->type == "elasticity_free_free")
+    {
+        if (txtForceX->evaluate())
+            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_force_x")] = txtForceX->value();
+        else
+            return false;
 
-    if (txtDisplacementY->evaluate())
-        edgeElasticityMarker->displacementY = txtDisplacementY->value();
-    else
-        return false;
+        if (txtForceY->evaluate())
+            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_force_y")] = txtForceY->value();
+        else
+            return false;
+    }
 
     return true;
 }
 
-void SceneBoundaryElasticityDialog::doTypeXChanged(int index)
+void SceneBoundaryElasticityDialog::doTypeChanged(int index)
 {
     txtForceX->setEnabled(false);
     txtDisplacementX->setEnabled(false);
-
-    // read equation
-    readEquation(lblEquationImageX, (PhysicFieldBC) cmbTypeX->itemData(index).toInt());
-
-    switch ((PhysicFieldBC) cmbTypeX->itemData(index).toInt())
-    {
-    case PhysicFieldBC_Elasticity_Fixed:
-    {
-        txtDisplacementX->setEnabled(true);
-    }
-        break;
-    case PhysicFieldBC_Elasticity_Free:
-    {
-        txtForceX->setEnabled(true);
-    }
-        break;
-    }
-}
-
-void SceneBoundaryElasticityDialog::doTypeYChanged(int index)
-{
     txtForceY->setEnabled(false);
     txtDisplacementY->setEnabled(false);
 
     // read equation
-    readEquation(lblEquationImageY, (PhysicFieldBC) cmbTypeY->itemData(index).toInt());
+    // readEquation(lblEquationImageX, (PhysicFieldBC) cmbTypeX->itemData(index).toInt());
 
-    switch ((PhysicFieldBC) cmbTypeY->itemData(index).toInt())
+    if (cmbType->itemData(index) == "elasticity_fixed_fixed")
     {
-    case PhysicFieldBC_Elasticity_Fixed:
-    {
+        txtDisplacementX->setEnabled(true);
         txtDisplacementY->setEnabled(true);
     }
-        break;
-    case PhysicFieldBC_Elasticity_Free:
+    else if (cmbType->itemData(index) == "elasticity_fixed_free")
     {
+        txtDisplacementX->setEnabled(true);
         txtForceY->setEnabled(true);
     }
-        break;
+    else if (cmbType->itemData(index) == "elasticity_free_fixed")
+    {
+        txtForceX->setEnabled(true);
+        txtDisplacementY->setEnabled(true);
+    }
+    else if (cmbType->itemData(index) == "elasticity_free_free")
+    {
+        txtForceX->setEnabled(true);
+        txtForceY->setEnabled(true);
     }
 }
 
 // *************************************************************************************************************************************
 
-SceneMaterialElasticityDialog::SceneMaterialElasticityDialog(SceneMaterialElasticity *material, QWidget *parent) : SceneMaterialDialog(parent)
+SceneMaterialElasticityDialog::SceneMaterialElasticityDialog(SceneMaterial *material, QWidget *parent) : SceneMaterialDialog(parent)
 {
     m_material = material;
 
@@ -983,57 +690,53 @@ void SceneMaterialElasticityDialog::load()
 {
     SceneMaterialDialog::load();
 
-    SceneMaterialElasticity *labelElasticityMarker = dynamic_cast<SceneMaterialElasticity *>(m_material);
+    txtYoungModulus->setValue(m_material->get_value("elasticity_young_modulus"));
+    txtPoissonNumber->setValue(m_material->get_value("elasticity_poisson_ratio"));
 
-    txtYoungModulus->setValue(labelElasticityMarker->young_modulus);
-    txtPoissonNumber->setValue(labelElasticityMarker->poisson_ratio);
+    txtForceX->setValue(m_material->get_value("elasticity_force_x"));
+    txtForceY->setValue(m_material->get_value("elasticity_force_y"));
 
-    txtForceX->setValue(labelElasticityMarker->forceX);
-    txtForceY->setValue(labelElasticityMarker->forceY);
-
-    txtAlpha->setValue(labelElasticityMarker->alpha);
-    txtTemp->setValue(labelElasticityMarker->temp);
-    txtTempRef->setValue(labelElasticityMarker->temp_ref);
+    txtAlpha->setValue(m_material->get_value("elasticity_alpha"));
+    txtTemp->setValue(m_material->get_value("elasticity_temperature"));
+    txtTempRef->setValue(m_material->get_value("elasticity_temperature_reference"));
 }
 
 bool SceneMaterialElasticityDialog::save()
 {
     if (!SceneMaterialDialog::save()) return false;
 
-    SceneMaterialElasticity *labelElasticityMarker = dynamic_cast<SceneMaterialElasticity *>(m_material);
-
     if (txtYoungModulus->evaluate())
-        labelElasticityMarker->young_modulus = txtYoungModulus->value();
+        m_material->values[m_material->get_material_type("elasticity_young_modulus")] = txtYoungModulus->value();
     else
         return false;
 
     if (txtPoissonNumber->evaluate())
-        labelElasticityMarker->poisson_ratio = txtPoissonNumber->value();
+        m_material->values[m_material->get_material_type("elasticity_poisson_ratio")] = txtPoissonNumber->value();
     else
         return false;
 
     if (txtForceX->evaluate())
-        labelElasticityMarker->forceX = txtForceX->value();
+        m_material->values[m_material->get_material_type("elasticity_force_x")] = txtForceX->value();
     else
         return false;
 
     if (txtForceY->evaluate())
-        labelElasticityMarker->forceY = txtForceY->value();
+        m_material->values[m_material->get_material_type("elasticity_force_y")] = txtForceY->value();
     else
         return false;
 
     if (txtAlpha->evaluate())
-        labelElasticityMarker->alpha = txtAlpha->value();
+        m_material->values[m_material->get_material_type("elasticity_alpha")] = txtAlpha->value();
     else
         return false;
 
     if (txtTemp->evaluate())
-        labelElasticityMarker->temp = txtTemp->value();
+        m_material->values[m_material->get_material_type("elasticity_temperature")] = txtTemp->value();
     else
         return false;
 
     if (txtTempRef->evaluate())
-        labelElasticityMarker->temp_ref = txtTempRef->value();
+        m_material->values[m_material->get_material_type("elasticity_temperature_reference")] = txtTempRef->value();
     else
         return false;
 

@@ -1,15 +1,15 @@
 <document>
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Bimetal Strip" date="2011-08-28" polynomialorder="3" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="elasticity" timetotal="1.0">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="unnamed" date="2011-07-10" polynomialorder="3" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="elasticity" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
-                <edge typex="elasticity_free" typey="elasticity_free" id="1" name="Free" forcex="0" forcey="0"/>
-                <edge typex="elasticity_fixed" typey="elasticity_fixed" id="2" name="Fixed" forcex="0" forcey="0"/>
+                <edge elasticity_force_x="0" elasticity_force_y="0" type="elasticity_free_free" id="1" name="Free"/>
+                <edge type="elasticity_fixed_fixed" id="2" elasticity_displacement_x="0" name="Fixed" elasticity_displacement_y="0"/>
             </edges>
             <labels>
-                <label temp="80" poisson_ratio="0.33" temp_ref="20" young_modulus="208e9" alpha="15e-6" id="1" name="Mild steel" forcex="0" forcey="0"/>
-                <label temp="80" poisson_ratio="0.33" temp_ref="20" young_modulus="70e9" alpha="23e-6" id="2" name="Aluminium" forcex="0" forcey="0"/>
+                <label elasticity_force_x="0" elasticity_temperature="80" elasticity_force_y="0" elasticity_poisson_ratio="0.33" elasticity_young_modulus="208e9" elasticity_alpha="15e-6" elasticity_temperature_reference="20" id="1" name="Mild steel"/>
+                <label elasticity_force_x="0" elasticity_temperature="80" elasticity_force_y="0" elasticity_poisson_ratio="23e-6" elasticity_young_modulus="70e9" elasticity_alpha="0.33" elasticity_temperature_reference="20" id="2" name="Aluminium"/>
             </labels>
         </problem>
     </problems>

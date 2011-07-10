@@ -4,11 +4,11 @@
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
-                <edge typex="elasticity_free" typey="elasticity_free" id="1" name="Free" forcex="0" forcey="0"/>
-                <edge typex="elasticity_fixed" typey="elasticity_fixed" id="2" name="Fixed" forcex="0" forcey="0"/>
+                <edge elasticity_force_x="0" elasticity_force_y="0" type="elasticity_free_free" id="1" name="Free"/>
+                <edge type="elasticity_fixed_fixed" id="2" elasticity_displacement_x="0" name="Fixed" elasticity_displacement_y="0"/>
             </edges>
             <labels>
-                <label temp="0" poisson_ratio="0.33" temp_ref="0" young_modulus="2e11" alpha="0" id="1" name="Steel" forcex="0" forcey="-7800*9.81"/>
+                <label elasticity_force_x="0" elasticity_temperature="0" elasticity_force_y="-7800*9.81" elasticity_poisson_ratio="0.33" elasticity_young_modulus="2e11" elasticity_alpha="0" elasticity_temperature_reference="0" id="1" name="Steel"/>
             </labels>
         </problem>
     </problems>
