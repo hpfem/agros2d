@@ -61,6 +61,7 @@ private:
     QLabel *lblDate;
     QLabel *lblAuthor;
     QLabel *lblAffiliation;
+    QLabel *lblNotification;
 
     QLineEdit *txtFind;
     QPushButton *btnFind;
@@ -85,11 +86,12 @@ public:
     void uploadToServer();
 
 private slots:
-    void doAccept();
-    void doReject();
+    void doUpload();
+    void doClose();
     void httpContentFinished();
     void httpFileFinished();
     void doDocumentChanged();
+    void doExistingProblemSelected(int index);
 
 private:
     QNetworkAccessManager networkAccessManager;
@@ -98,10 +100,12 @@ private:
     QRadioButton *radDocumentNew;
     QRadioButton *radDocumentExisting;
     QLabel *lblName;
-    QLabel *lblWarning;
+    QLabel *lblInformation;
     QComboBox *cmbName;
     QLineEdit *txtAuthor;
     QLineEdit *txtAffiliation;
+    QLabel *lblNotification;
+    QPushButton *btnUpload;
 };
 
 #endif // COLABORATION_H
