@@ -2,40 +2,40 @@
 <module>
     <general id ="elasticity" name="Structural analysis">
         <description>Structural analysis is the determination of the effects of loads on physical structures and their components.</description>
-        <properties steadystate="1" harmonic="0" transient="0" />    
+        <properties steadystate="1" harmonic="0" transient="0" />
     </general>
-    
+
     <constants />
 
     <material>
-        <item id="elasticity_young_modulus" name="Young modulus" shortname="E" unit="Pa" />        
-        <item id="elasticity_poisson_ratio" name="Poisson ratio" shortname="nu" unit="-" />        
-        <item id="elasticity_force_x" name="Force - x" shortname="fx" unit="N/m3" />        
-        <item id="elasticity_force_y" name="Force - y" shortname="fy" unit="N/m3" />               
-        <item id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/m" />        
-        <item id="elasticity_temperature" name="Temperature" shortname="T" unit="K" />        
-        <item id="elasticity_temperature_reference" name="Reference emperature" shortname="Tr" unit="K" />        
+        <item id="elasticity_young_modulus" name="Young modulus" shortname="E" unit="Pa" />
+        <item id="elasticity_poisson_ratio" name="Poisson ratio" shortname="nu" unit="-" />
+        <item id="elasticity_force_x" name="Force - x" shortname="fx" unit="N/m3" />
+        <item id="elasticity_force_y" name="Force - y" shortname="fy" unit="N/m3" />
+        <item id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/K" />
+        <item id="elasticity_temperature" name="Temperature" shortname="T" unit="K" />
+        <item id="elasticity_temperature_reference" name="Reference temperature" shortname="Tr" unit="K" />
     </material>
 
     <boundary>
         <item id="elasticity_fixed_fixed" name="Fixed - fixed">
             <variable id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
             <variable id="elasticity_displacement_y" name="Fixed - y" shortname="dy" unit="m" />
-        </item>    
+        </item>
         <item id="elasticity_fixed_free" name="Fixed - free">
             <variable id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
             <variable id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" />
-        </item>    
+        </item>
         <item id="elasticity_free_fixed" name="Free - fixed">
             <variable id="elasticity_free_x" name="Free - x" shortname="fx" unit="N/m2" />
             <variable id="elasticity_force_y" name="Fixed - y" shortname="dy" unit="m" />
-        </item>    
+        </item>
         <item id="elasticity_free_free" name="Free - Free">
             <variable id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" />
             <variable id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" />
-        </item>    
+        </item>
     </boundary>
-    
+
     <localvariable>
         <item id="elasticity_displacement" name="Displacement" shortname="d" unit="m" scalar="0">
             <steadystate planar_comp_x="value1" planar_comp_y="value2" axi_comp_r="value1" axi_comp_z="value2" />
@@ -49,9 +49,15 @@
         <item id="elasticity_inner_force" name="Inner force" shortname="f" unit="N" scalar="0">
             <steadystate planar_comp_x="fx" planar_comp_y="fy" axi_comp_r="fx" axi_comp_z="fy" />
         </item>
+        <item id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/K" scalar="1">
+            <steadystate planar_scalar="alpha" axi_scalar="alpha" />
+        </item>
         <item id="elasticity_temperature" name="Temperature" shortname="T" unit="K" scalar="1">
             <steadystate planar_scalar="T" axi_scalar="T" />
-        </item>        
+        </item>
+        <item id="elasticity_temperature_reference" name="Reference temperature" shortname="Tr" unit="K" scalar="1">
+            <steadystate planar_scalar="Tr" axi_scalar="Tr" />
+        </item>
     </localvariable>
 
     <view>
@@ -71,32 +77,34 @@
             </steadystate>
         </vectorvariable>
     </view>
-    
+
     <pointvalue>
         <steadystate>
             <item id="elasticity_displacement" />
-            <item id="elasticity_young_modulus" />          
-            <item id="elasticity_poisson_number" />
+            <item id="elasticity_young_modulus" />
+            <item id="elasticity_poisson_ratio" />
             <item id="elasticity_inner_force" />
-            <item id="elasticity_temperature" />            
+            <item id="elasticity_alpha" />
+            <item id="elasticity_temperature" />
+            <item id="elasticity_temperature_reference" />
         </steadystate>
-    </pointvalue>  
-    
+    </pointvalue>
+
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
-        </item>        
+        </item>
         <item id="surface" name="Cross section" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="1.0" />
-        </item>       
-    </volumeintegral>    
-    
+        </item>
+    </volumeintegral>
+
     <surfaceintegral>
         <item id="length" name="Length" shortname="l" unit="m">
             <steadystate planar="1.0" axi="1.0" />
-        </item>        
+        </item>
         <item id="surface" name="Surface" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
         </item>
-    </surfaceintegral> 
+    </surfaceintegral>
 </module>

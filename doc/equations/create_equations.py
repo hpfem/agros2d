@@ -66,8 +66,8 @@ create_image(template, r"g_\mathrm{n} = \frac{\partial u}{\partial n_0} = g_0", 
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vec{A} = \vec{J}_\mathrm{ext}", dir + "magnetic/magnetic_steadystate.png")
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vec{A} + \sigma \frac{\partial \vec{A}}{\partial t} = \vec{J}_\mathrm{ext}", dir + "magnetic/magnetic_transient.png")
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \left( \curl \vecfaz{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vecfaz{A} + \mj \omega \sigma \vecfaz{A} = \vec{J}_\mathrm{ext}", dir + "magnetic/magnetic_harmonic.png")
-create_image(template, r"A = A_0", dir + "magnetic/magnetic_vector_potential.png")
-create_image(template, r"K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0", dir + "magnetic/magnetic_surface_current_density.png")
+create_image(template, r"A = A_0", dir + "magnetic/magnetic_potential.png")
+create_image(template, r"K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0", dir + "magnetic/magnetic_surface_current.png")
 
 # rf
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \curl \vecfaz{E} \right) - \mj \omega \left( \sigma + \mj \omega \varepsilon) \vecfaz{E} = \mj \omega \vecfaz{J}_\mathrm{ext}", dir + "rf/rf_harmonic.png")

@@ -2,14 +2,14 @@
 <module>
     <general id ="heat" name="Heat transfer">
         <description>Heat transfer is a discipline of thermal engineering that concerns the exchange of thermal energy from one physical system to another. Heat transfer is classified into various mechanisms, such as heat conduction, convection and thermal radiation.</description>
-        <properties steadystate="1" harmonic="0" transient="1" />    
+        <properties steadystate="1" harmonic="0" transient="1" />
     </general>
-    
+
     <constants />
-        
+
     <material>
         <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="-" />
-        <item id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" />        
+        <item id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" />
         <item id="heat_density" name="Density" shortname="rho" unit="kg/m3" />
         <item id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" />
     </material>
@@ -17,8 +17,8 @@
     <boundary>
         <item id="heat_temperature" name="Temperature">
             <variable id="heat_temperature" name="Temperature" shortname="T" unit="K" />
-        </item>    
-        <item id="heat_heat_flux" name="Heat flux">                        
+        </item>
+        <item id="heat_heat_flux" name="Heat flux">
             <variable id="heat_heat_flux" name="Heat flux" shortname="F" unit="W/m2" />
             <variable id="heat_heat_transfer_coefficient" name="Heat transfer coefficient" shortname="h" unit="W/m2.K" />
             <variable id="heat_external_temperature" name="External temperature" shortname="Te" unit="K" />
@@ -42,6 +42,9 @@
             <steadystate planar_scalar="lambda" axi_scalar="lambda" />
             <transient planar_scalar="lambda" axi_scalar="lambda" />
         </item>
+        <item id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" scalar="1">
+            <transient planar_scalar="p" axi_scalar="p" />
+        </item>
         <item id="heat_density" name="Density" shortname="rho" unit="kg/m3" scalar="1">
             <transient planar_scalar="rho" axi_scalar="rho" />
         </item>
@@ -57,12 +60,14 @@
                 <item id="heat_heat_flux" />
                 <item id="heat_temperature_gradient" />
                 <item id="heat_conductivity" />
+                <item id="heat_volume_heat" />
             </steadystate>
             <transient default="heat_temperature">
                 <item id="heat_temperature" />
                 <item id="heat_heat_flux" />
                 <item id="heat_temperature_gradient" />
                 <item id="heat_conductivity" />
+                <item id="heat_volume_heat" />
                 <item id="heat_density" />
                 <item id="heat_specific_heat" />
             </transient>
@@ -79,29 +84,31 @@
             </transient>
         </vectorvariable>
     </view>
-    
+
     <pointvalue>
         <steadystate>
             <item id="heat_temperature" />
             <item id="heat_heat_flux" />
             <item id="heat_temperature_gradient" />
-            <item id="heat_conductivity" />           
+            <item id="heat_conductivity" />
+            <item id="heat_volume_heat" />
         </steadystate>
         <transient>
             <item id="heat_temperature" />
             <item id="heat_heat_flux" />
             <item id="heat_temperature_gradient" />
-            <item id="heat_conductivity" />  
+            <item id="heat_conductivity" />
+            <item id="heat_volume_heat" />
             <item id="heat_density" />
-            <item id="heat_specific_heat" />                     
-        </transient>        
-    </pointvalue>  
-    
+            <item id="heat_specific_heat" />
+        </transient>
+    </pointvalue>
+
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
             <transient planar="1.0" axi="2.0 * PI * x" />
-        </item>        
+        </item>
         <item id="surface" name="Cross section" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="1.0" />
             <transient planar="1.0" axi="1.0" />
@@ -110,13 +117,13 @@
             <steadystate planar="value1" axi="2.0 * PI * x * value1" />
             <transient planar="value1" axi="2.0 * PI * x * value1" />
         </item>
-    </volumeintegral>    
-    
+    </volumeintegral>
+
     <surfaceintegral>
         <item id="length" name="Length" shortname="l" unit="m">
             <steadystate planar="1.0" axi="1.0" />
             <transient planar="1.0" axi="1.0" />
-        </item>        
+        </item>
         <item id="surface" name="Surface" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
             <transient planar="1.0" axi="2.0 * PI * x" />
@@ -129,5 +136,5 @@
             <steadystate planar="- lambda * (tany * dx1 - tanx * dy1)" axi="- 2.0 * PI * x * lambda * (tany * dx1 - tanx * dy1)" />
             <transient planar="- lambda * (tany * dx1 - tanx * dy1)" axi="- 2.0 * PI * x * lambda * (tany * dx1 - tanx * dy1)" />
         </item>
-    </surfaceintegral> 
+    </surfaceintegral>
 </module>

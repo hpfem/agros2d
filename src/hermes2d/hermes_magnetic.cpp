@@ -81,10 +81,10 @@ public:
                                                                                                                      material->get_value("magnetic_velocity_angular").number));
 
                 // external current density
-                if (fabs(material->get_value("magnetic_current_denstity_external_real").number) > EPS_ZERO)
+                if (fabs(material->get_value("magnetic_current_density_external_real").number) > EPS_ZERO)
                     add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
                                                                                                    QString::number(i).toStdString(),
-                                                                                                   material->get_value("magnetic_current_denstity_external_real").number,
+                                                                                                   material->get_value("magnetic_current_density_external_real").number,
                                                                                                    HERMES_PLANAR));
 
                 // remanence
@@ -122,10 +122,10 @@ public:
                     }
 
                     // external current density
-                    if (fabs(material->get_value("magnetic_current_denstity_external_imag").number) > EPS_ZERO)
+                    if (fabs(material->get_value("magnetic_current_density_external_imag").number) > EPS_ZERO)
                         add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(1,
                                                                                                        QString::number(i).toStdString(),
-                                                                                                       material->get_value("magnetic_current_denstity_external_imag").number,
+                                                                                                       material->get_value("magnetic_current_density_external_imag").number,
                                                                                                        HERMES_PLANAR));
                 }
 
@@ -201,8 +201,8 @@ void ModuleMagnetic::update_time_functions(double time)
     {
         SceneMaterial *material = Util::scene()->materials[i];
 
-        material->get_value("magnetic_current_denstity_external_real").evaluate(time);
-        material->get_value("magnetic_current_denstity_external_imag").evaluate(time);
+        material->get_value("magnetic_current_density_external_real").evaluate(time);
+        material->get_value("magnetic_current_density_external_imag").evaluate(time);
     }
 }
 
@@ -211,7 +211,7 @@ void ModuleMagnetic::update_time_functions(double time)
 
 SceneBoundary *ModuleMagnetic::newBoundary()
 {
-    return new SceneBoundary(tr("new boundary").toStdString(), "magnetic_current_denstity_external_real");
+    return new SceneBoundary(tr("new boundary").toStdString(), "magnetic_surface_current");
 }
 
 SceneBoundary *ModuleMagnetic::newBoundary(PyObject *self, PyObject *args)
@@ -534,8 +534,8 @@ void SceneMaterialMagneticDialog::load()
 
     txtPermeability->setValue(m_material->get_value("magnetic_permeability"));
     txtConductivity->setValue(m_material->get_value("magnetic_conductivity"));
-    txtCurrentDensityReal->setValue(m_material->get_value("magnetic_current_denstity_external_real"));
-    txtCurrentDensityImag->setValue(m_material->get_value("magnetic_current_denstity_external_imag"));
+    txtCurrentDensityReal->setValue(m_material->get_value("magnetic_current_density_external_real"));
+    txtCurrentDensityImag->setValue(m_material->get_value("magnetic_current_density_external_imag"));
     txtRemanence->setValue(m_material->get_value("magnetic_remanence"));
     txtRemanenceAngle->setValue(m_material->get_value("magnetic_remanence_angle"));
     txtVelocityX->setValue(m_material->get_value("magnetic_velocity_x"));
@@ -557,12 +557,12 @@ bool SceneMaterialMagneticDialog::save() {
         return false;
 
     if (txtCurrentDensityReal->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_current_denstity_external_real")] = txtCurrentDensityReal->value();
+        m_material->values[m_material->get_material_type("magnetic_current_density_external_real")] = txtCurrentDensityReal->value();
     else
         return false;
 
     if (txtCurrentDensityImag->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_current_denstity_external_imag")] = txtCurrentDensityImag->value();
+        m_material->values[m_material->get_material_type("magnetic_current_density_external_imag")] = txtCurrentDensityImag->value();
     else
         return false;
 

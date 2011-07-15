@@ -4,13 +4,13 @@
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0"/>
+                <edge type="magnetic_potential" magnetic_potential_imag="0" magnetic_potential_real="0" id="1" name="A = 0"/>
             </edges>
             <labels>
-                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="1e7" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="Copper" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="3" name="Isolation" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="0" remanence="0" conductivity="1e5" velocity_x="0" velocity_y="0" remanence_angle="0" id="4" name="Steel" current_density_imag="0" permeability="500" velocity_angular="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_remanence="0" magnetic_conductivity="0" magnetic_velocity_x="0" magnetic_velocity_y="0" magnetic_remanence_angle="0" id="1" name="Air" magnetic_current_density_external_imag="0" magnetic_permeability="1" magnetic_velocity_angular="0"/>
+                <label magnetic_current_density_external_real="1e7" magnetic_remanence="0" magnetic_conductivity="0" magnetic_velocity_x="0" magnetic_velocity_y="0" magnetic_remanence_angle="0" id="2" name="Copper" magnetic_current_density_external_imag="0" magnetic_permeability="1" magnetic_velocity_angular="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_remanence="0" magnetic_conductivity="0" magnetic_velocity_x="0" magnetic_velocity_y="0" magnetic_remanence_angle="0" id="3" name="Isolation" magnetic_current_density_external_imag="0" magnetic_permeability="1" magnetic_velocity_angular="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_remanence="0" magnetic_conductivity="1e5" magnetic_velocity_x="0" magnetic_velocity_y="0" magnetic_remanence_angle="0" id="4" name="Steel" magnetic_current_density_external_imag="0" magnetic_permeability="500" magnetic_velocity_angular="0"/>
             </labels>
         </problem>
     </problems>
