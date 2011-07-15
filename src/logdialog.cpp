@@ -111,7 +111,11 @@ void LogDialog::loadProgressLog()
 
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+#ifdef Q_WS_WIN
+            lstMessages->setPlainText(file.readAll());
+#else
             lstMessages->setPlainText(trUtf8(file.readAll()));
+#endif
             lstMessages->moveCursor(QTextCursor::End);
         }
 
@@ -151,7 +155,11 @@ void LogDialog::loadApplicationLog()
 
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+#ifdef Q_WS_WIN
+            lstMessages->setPlainText(file.readAll());
+#else
             lstMessages->setPlainText(trUtf8(file.readAll()));
+#endif
             lstMessages->moveCursor(QTextCursor::End);
         }
 
