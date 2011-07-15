@@ -75,8 +75,8 @@
         <file>images/rulers.png</file>
         <file>images/options-solver.png</file>
         <file>images/three-dots.png</file>
-        <file>images/remove-item.png</file>        
-        <file>images/collaboration.png</file>        
+        <file>images/remove-item.png</file>
+        <file>images/collaboration.png</file>
         <file>images/equations/current/current_steadystate.png</file>
         <file>images/equations/current/current_potential.png</file>
         <file>images/equations/current/current_inward_current_flow.png</file>
@@ -85,7 +85,7 @@
         <file>images/equations/electrostatic/electrostatic_surface_charge_density.png</file>
         <file>images/equations/general/general_steadystate.png</file>
         <file>images/equations/general/general_value.png</file>
-        <file>images/equations/general/general_derivative.png</file>        
+        <file>images/equations/general/general_derivative.png</file>
         <file>images/equations/heat/heat_steadystate.png</file>
         <file>images/equations/heat/heat_transient.png</file>
         <file>images/equations/heat/heat_temperature.png</file>
@@ -93,14 +93,12 @@
         <file>images/equations/magnetic/magnetic_harmonic.png</file>
         <file>images/equations/magnetic/magnetic_steadystate.png</file>
         <file>images/equations/magnetic/magnetic_transient.png</file>
-        <file>images/equations/magnetic/magnetic_vector_potential.png</file>
-        <file>images/equations/magnetic/magnetic_surface_current_density.png</file>                
         <file>images/equations/flow/flow_steadystate.png</file>
         <file>images/equations/flow/flow_transient.png</file>
         <file>images/equations/elasticity/elasticity_steadystate.png</file>
-        <file>images/equations/elasticity/elasticity_coeffs.png</file>     
-        <file>images/equations/elasticity/elasticity_free.png</file>     
-        <file>images/equations/elasticity/elasticity_fixed.png</file>             
+        <file>images/equations/elasticity/elasticity_coeffs.png</file>
+        <file>images/equations/elasticity/elasticity_free.png</file>
+        <file>images/equations/elasticity/elasticity_fixed.png</file>
         <file>images/equations/rf/rf_harmonic.png</file>
         <file>images/equations/rf/rf_surface_current.png</file>
         <file>images/equations/rf/rf_electric_field.png</file>
@@ -110,8 +108,10 @@
         <file>images/equations/acoustic/acoustic_pressure.png</file>
         <file>images/equations/acoustic/acoustic_normal_acceleration.png</file>
         <file>images/equations/acoustic/acoustic_impedance_harmonic.png</file>
-        <file>images/equations/acoustic/acoustic_impedance_transient.png</file>        
+        <file>images/equations/acoustic/acoustic_impedance_transient.png</file>
         <file>images/equations/acoustic/acoustic_matched_boundary_harmonic.png</file>
         <file>images/equations/acoustic/acoustic_matched_boundary_transient.png</file>
+        <file>images/equations/magnetic/magnetic_surface_current.png</file>
+        <file>images/equations/magnetic/magnetic_potential.png</file>
     </qresource>
 </RCC>
