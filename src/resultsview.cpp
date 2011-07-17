@@ -134,7 +134,7 @@ void ResultsView::doShowVolumeIntegral()
         return;
 
     // template
-    QString content = readFileContent(datadir() + "/doc/report/dock.html");
+    QString content = readFileContent(datadir() + "/resources/report/dock.html");
 
     QString html = "<h4>" + tr("Volume integral") + "</h4>"
             "<table width=\"100%\">";
@@ -165,7 +165,7 @@ void ResultsView::doShowSurfaceIntegral()
         return;
 
     // template
-    QString content = readFileContent(datadir() + "/doc/report/dock.html");
+    QString content = readFileContent(datadir() + "/resources/report/dock.html");
 
     QString html = "<h4>" + tr("Surface integral") + "</h4>"
             "<table width=\"100%\">";
@@ -192,7 +192,7 @@ void ResultsView::doShowPoint()
     logMessage("ResultsView::doShowPoint()");
 
     // template
-    QString content = readFileContent(datadir() + "/doc/report/dock.html");
+    QString content = readFileContent(datadir() + "/resources/report/dock.html");
 
     QString html = "<h4>" + tr("Local point values") + "</h4>"
             "<table width=\"100%\">";
