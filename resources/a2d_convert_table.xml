@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<document>
+    <problems>
+        <edges>
+            <parametr old="value_imag" new="magnetic_potential_imag"/>
+            <parametr keyword="type" oldvalue="magnetic_vector_potential" newvalue="magnetic_potential"/>
+            <parametr old="value_real" new="magnetic_potential_real"/>
+            <parametr old="value_imag" new="magnetic_surface_current_imag"/>
+            <parametr keyword="type" oldvalue="magnetic_surface_current_density" newvalue="magnetic_surface_current"/>
+            <parametr old="value_real" new="magnetic_surface_current_real"/>
+        </edges>
+        <labels>
+            <parametr old="current_density_real" new="magnetic_current_density_external_real"/>
+            <parametr old="remanence" new="magnetic_remanence"/>
+            <parametr old="conductivity" new="magnetic_conductivity"/>
+            <parametr old="velocity_x" new="magnetic_velocity_x"/>
+            <parametr old="velocity_y" new="magnetic_velocity_y"/>
+            <parametr old="remanence_angle" new="magnetic_remanence_angle"/>
+            <parametr old="current_density_imag" new="magnetic_current_density_external_imag"/>
+            <parametr old="permeability" new="magnetic_permeability"/>
+            <parametr old="velocity_angular" new="magnetic_velocity_angular"/>
+        </labels>
+    </problems>
+</document>
