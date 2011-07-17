@@ -2474,19 +2474,19 @@
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="55"/>
-        <location filename="../src/logdialog.cpp" line="187"/>
+        <location filename="../src/logdialog.cpp" line="195"/>
         <source>Save log</source>
         <translation>Datensatz speichern</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="58"/>
-        <location filename="../src/logdialog.cpp" line="208"/>
+        <location filename="../src/logdialog.cpp" line="216"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="61"/>
-        <location filename="../src/logdialog.cpp" line="238"/>
+        <location filename="../src/logdialog.cpp" line="246"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -2506,70 +2506,70 @@
         <translation>Adapt. Konver.</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="127"/>
-        <location filename="../src/logdialog.cpp" line="163"/>
+        <location filename="../src/logdialog.cpp" line="131"/>
+        <location filename="../src/logdialog.cpp" line="171"/>
         <source>No messages...</source>
         <translation>Keine Berichte...</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="187"/>
+        <location filename="../src/logdialog.cpp" line="195"/>
         <source>Log files (*.log)</source>
         <translation>Dateien det datesätze (*.log)</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="208"/>
+        <location filename="../src/logdialog.cpp" line="216"/>
         <source>Are you sure that you want to permanently delete the application logfile?</source>
         <translation>Sind Sie sicher, dass Sie den Datensatz der Applikation ständig entfernen wollen?</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="208"/>
+        <location filename="../src/logdialog.cpp" line="216"/>
         <source>&amp;Yes</source>
         <translation>&amp;Ja</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="208"/>
+        <location filename="../src/logdialog.cpp" line="216"/>
         <source>&amp;No</source>
         <translation>&amp;Nein</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="232"/>
+        <location filename="../src/logdialog.cpp" line="240"/>
         <source>Save data</source>
         <translation>Daten speichern</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="235"/>
+        <location filename="../src/logdialog.cpp" line="243"/>
         <source>Save image</source>
         <translation>Bild speichern</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="271"/>
+        <location filename="../src/logdialog.cpp" line="279"/>
         <source>Export data to file</source>
         <translation>Export Daten in Datei</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="271"/>
+        <location filename="../src/logdialog.cpp" line="279"/>
         <source>CSV files (*.csv)</source>
         <translation>CSV Dateien (*.csv)</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="283"/>
-        <location filename="../src/logdialog.cpp" line="308"/>
+        <location filename="../src/logdialog.cpp" line="291"/>
+        <location filename="../src/logdialog.cpp" line="316"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="283"/>
-        <location filename="../src/logdialog.cpp" line="308"/>
+        <location filename="../src/logdialog.cpp" line="291"/>
+        <location filename="../src/logdialog.cpp" line="316"/>
         <source>File &apos;%1&apos; could not be copied..</source>
         <translation>Die Datei &apos;%1&apos; konnte nicht kopiert werden.</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="296"/>
+        <location filename="../src/logdialog.cpp" line="304"/>
         <source>Save image to file</source>
         <translation>Bild in die Datei speichern</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="296"/>
+        <location filename="../src/logdialog.cpp" line="304"/>
         <source>PNG files (*.png)</source>
         <translation>PNG Dateien (*.png)</translation>
     </message>
@@ -5946,7 +5946,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1718"/>
+        <location filename="../src/scene.cpp" line="1349"/>
+        <source>For opening file &apos;%1&apos; is required Agros2D version 2.0 or higher.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="1724"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation type="unfinished"></translation>
     </message>

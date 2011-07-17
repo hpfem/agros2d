@@ -2629,19 +2629,19 @@
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="55"/>
-        <location filename="../src/logdialog.cpp" line="187"/>
+        <location filename="../src/logdialog.cpp" line="195"/>
         <source>Save log</source>
         <translation>Uložit záznam</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="58"/>
-        <location filename="../src/logdialog.cpp" line="208"/>
+        <location filename="../src/logdialog.cpp" line="216"/>
         <source>Delete</source>
         <translation>Smazat</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="61"/>
-        <location filename="../src/logdialog.cpp" line="238"/>
+        <location filename="../src/logdialog.cpp" line="246"/>
         <source>Close</source>
         <translation>Zavřít</translation>
     </message>
@@ -2661,70 +2661,70 @@
         <translation>Adapt. conv.</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="127"/>
-        <location filename="../src/logdialog.cpp" line="163"/>
+        <location filename="../src/logdialog.cpp" line="131"/>
+        <location filename="../src/logdialog.cpp" line="171"/>
         <source>No messages...</source>
         <translation>Žádné zprávy...</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="187"/>
+        <location filename="../src/logdialog.cpp" line="195"/>
         <source>Log files (*.log)</source>
         <translation>Soubory záznamů (*.log)</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="208"/>
+        <location filename="../src/logdialog.cpp" line="216"/>
         <source>Are you sure that you want to permanently delete the application logfile?</source>
         <translation>Jste si jisti, že chcete trvale odstranit záznam aplikace?</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="208"/>
+        <location filename="../src/logdialog.cpp" line="216"/>
         <source>&amp;Yes</source>
         <translation>&amp;Ano</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="208"/>
+        <location filename="../src/logdialog.cpp" line="216"/>
         <source>&amp;No</source>
         <translation>&amp;Ne</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="232"/>
+        <location filename="../src/logdialog.cpp" line="240"/>
         <source>Save data</source>
         <translation>Uložit data</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="235"/>
+        <location filename="../src/logdialog.cpp" line="243"/>
         <source>Save image</source>
         <translation>Uložit obrázek</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="271"/>
+        <location filename="../src/logdialog.cpp" line="279"/>
         <source>Export data to file</source>
         <translation>Export dat do souboru</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="271"/>
+        <location filename="../src/logdialog.cpp" line="279"/>
         <source>CSV files (*.csv)</source>
         <translation>CSV soubory (*.csv)</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="283"/>
-        <location filename="../src/logdialog.cpp" line="308"/>
+        <location filename="../src/logdialog.cpp" line="291"/>
+        <location filename="../src/logdialog.cpp" line="316"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="283"/>
-        <location filename="../src/logdialog.cpp" line="308"/>
+        <location filename="../src/logdialog.cpp" line="291"/>
+        <location filename="../src/logdialog.cpp" line="316"/>
         <source>File &apos;%1&apos; could not be copied..</source>
         <translation>Soubor &apos;%1&apos; nemohl být zkopírován.</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="296"/>
+        <location filename="../src/logdialog.cpp" line="304"/>
         <source>Save image to file</source>
         <translation>Uložit obrázek do souboru</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="296"/>
+        <location filename="../src/logdialog.cpp" line="304"/>
         <source>PNG files (*.png)</source>
         <translation>Soubory PNG (*.png)</translation>
     </message>
@@ -6192,7 +6192,12 @@
         <translation>Soubor &apos;%1&apos; nelze otevřít (%2).</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1718"/>
+        <location filename="../src/scene.cpp" line="1349"/>
+        <source>For opening file &apos;%1&apos; is required Agros2D version 2.0 or higher.</source>
+        <translation>Pro otevření souboru &apos;%1&apos; je vyžadován Agros2D verze 2.0 nebo vyšší.</translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="1724"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation>Soubor &apos;%1&apos; nelze uložit (%2).</translation>
     </message>
