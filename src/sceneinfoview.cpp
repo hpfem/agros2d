@@ -166,7 +166,7 @@ void SceneInfoView::keyPressEvent(QKeyEvent *event)
 void SceneInfoView::showInfo()
 {
     // template
-    QString content = readFileContent(datadir() + "/doc/report/dock.html");
+    QString content = readFileContent(datadir() + "/resources/report/dock.html");
 
     QString html;
     html += "<h4>"+ tr("Basic informations") + "</h4>";
@@ -430,7 +430,7 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
             {
                 if (Util::scene()->edges[i]->boundary == objectBoundary)
                     Util::scene()->edges[i]->isSelected = true;
-            }            
+            }
             m_sceneView->refresh();
             m_sceneView->setFocus();
 
@@ -447,7 +447,7 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
             {
                 if (Util::scene()->labels[i]->material == objectMaterial)
                     Util::scene()->labels[i]->isSelected = true;
-            }            
+            }
             m_sceneView->refresh();
             m_sceneView->setFocus();
 

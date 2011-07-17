@@ -204,8 +204,8 @@ void ReportDialog::defaultValues()
     txtFigureWidth->setValue(Value("600"));
     txtFigureHeight->setValue(Value("400"));
 
-    txtTemplate->setText(QString("%1/doc/report/default.html").arg(datadir()));
-    txtStyleSheet->setText(QString("%1/doc/report/default.css").arg(datadir()));
+    txtTemplate->setText(QString("%1/resources/report/default.html").arg(datadir()));
+    txtStyleSheet->setText(QString("%1/resources/report/default.css").arg(datadir()));
 
     checkPaths();
 }
