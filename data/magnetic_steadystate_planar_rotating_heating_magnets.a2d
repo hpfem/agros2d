@@ -1,6 +1,6 @@
-<document>
+<document version="2.0">
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="steadystate" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="1" type="magnetic" timestep="1" id="0" name="Magnetic Steadystate Planar Rotating Heating 8 Magnets" initialcondition="0">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Steadystate Planar Rotating Heating 8 Magnets" date="2011-07-17" polynomialorder="3" meshtype="triangle" timestep="1" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="magnetic" timetotal="1">
             <scriptstartup>Br = 1.28
 mur = 1.11
 sigma = 33e6
@@ -10,19 +10,19 @@ f = p*n/60
 omega = 2*pi*f</scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0"/>
+                <edge magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0"/>
             </edges>
             <labels>
-                <label current_density_real="0" remanence="0" conductivity="sigma" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Aluminum" current_density_imag="0" permeability="1" velocity_angular="omega"/>
-                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="0" remanence="Br" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="90" id="3" name="Magnet N" current_density_imag="0" permeability="mur" velocity_angular="0"/>
-                <label current_density_real="0" remanence="Br" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="4" name="Magnet E" current_density_imag="0" permeability="mur" velocity_angular="0"/>
-                <label current_density_real="0" remanence="Br" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="180" id="5" name="Magnet W" current_density_imag="0" permeability="mur" velocity_angular="0"/>
-                <label current_density_real="0" remanence="Br" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="-90" id="6" name="Magnet S" current_density_imag="0" permeability="mur" velocity_angular="0"/>
-                <label current_density_real="0" remanence="Br" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="45+180" id="7" name="Magnet NE" current_density_imag="0" permeability="mur" velocity_angular="0"/>
-                <label current_density_real="0" remanence="Br" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="-45+180" id="8" name="Magnet ES" current_density_imag="0" permeability="mur" velocity_angular="0"/>
-                <label current_density_real="0" remanence="Br" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="45" id="9" name="Magnet SW" current_density_imag="0" permeability="mur" velocity_angular="0"/>
-                <label current_density_real="0" remanence="Br" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="-45" id="10" name="Magnet WN" current_density_imag="0" permeability="mur" velocity_angular="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="omega" magnetic_permeability="1" magnetic_conductivity="sigma" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Aluminum" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="mur" magnetic_conductivity="0" magnetic_remanence="Br" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="90" name="Magnet N" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="mur" magnetic_conductivity="0" magnetic_remanence="Br" magnetic_current_density_external_imag="0" id="4" magnetic_remanence_angle="0" name="Magnet E" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="mur" magnetic_conductivity="0" magnetic_remanence="Br" magnetic_current_density_external_imag="0" id="5" magnetic_remanence_angle="180" name="Magnet W" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="mur" magnetic_conductivity="0" magnetic_remanence="Br" magnetic_current_density_external_imag="0" id="6" magnetic_remanence_angle="-90" name="Magnet S" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="mur" magnetic_conductivity="0" magnetic_remanence="Br" magnetic_current_density_external_imag="0" id="7" magnetic_remanence_angle="45+180" name="Magnet NE" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="mur" magnetic_conductivity="0" magnetic_remanence="Br" magnetic_current_density_external_imag="0" id="8" magnetic_remanence_angle="-45+180" name="Magnet ES" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="mur" magnetic_conductivity="0" magnetic_remanence="Br" magnetic_current_density_external_imag="0" id="9" magnetic_remanence_angle="45" name="Magnet SW" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="mur" magnetic_conductivity="0" magnetic_remanence="Br" magnetic_current_density_external_imag="0" id="10" magnetic_remanence_angle="-45" name="Magnet WN" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
             </labels>
         </problem>
     </problems>
@@ -70,46 +70,46 @@ omega = 2*pi*f</scriptstartup>
             <node x="0.0636396103067893" y="-0.03535533905932735" id="39"/>
         </nodes>
         <edges>
-            <edge end="4" marker="0" id="0" start="0" angle="90"/>
-            <edge end="1" marker="0" id="1" start="4" angle="90"/>
-            <edge end="5" marker="0" id="2" start="1" angle="90"/>
-            <edge end="0" marker="0" id="3" start="5" angle="90"/>
-            <edge end="6" marker="1" id="4" start="2" angle="90"/>
-            <edge end="3" marker="1" id="5" start="6" angle="90"/>
-            <edge end="7" marker="1" id="6" start="3" angle="90"/>
-            <edge end="2" marker="1" id="7" start="7" angle="90"/>
-            <edge end="8" marker="0" id="8" start="10" angle="0"/>
-            <edge end="11" marker="0" id="9" start="9" angle="0"/>
-            <edge end="11" marker="0" id="10" start="10" angle="0"/>
-            <edge end="8" marker="0" id="11" start="9" angle="0"/>
-            <edge end="22" marker="0" id="12" start="23" angle="0"/>
-            <edge end="20" marker="0" id="13" start="22" angle="0"/>
-            <edge end="20" marker="0" id="14" start="21" angle="0"/>
-            <edge end="23" marker="0" id="15" start="21" angle="0"/>
-            <edge end="17" marker="0" id="16" start="16" angle="0"/>
-            <edge end="17" marker="0" id="17" start="19" angle="0"/>
-            <edge end="19" marker="0" id="18" start="18" angle="0"/>
-            <edge end="16" marker="0" id="19" start="18" angle="0"/>
-            <edge end="14" marker="0" id="20" start="12" angle="0"/>
-            <edge end="15" marker="0" id="21" start="14" angle="0"/>
-            <edge end="15" marker="0" id="22" start="13" angle="0"/>
-            <edge end="13" marker="0" id="23" start="12" angle="0"/>
-            <edge end="32" marker="0" id="24" start="34" angle="0"/>
-            <edge end="33" marker="0" id="25" start="32" angle="0"/>
-            <edge end="35" marker="0" id="26" start="33" angle="0"/>
-            <edge end="35" marker="0" id="27" start="34" angle="0"/>
-            <edge end="24" marker="0" id="28" start="26" angle="0"/>
-            <edge end="25" marker="0" id="29" start="24" angle="0"/>
-            <edge end="25" marker="0" id="30" start="27" angle="0"/>
-            <edge end="26" marker="0" id="31" start="27" angle="0"/>
-            <edge end="38" marker="0" id="32" start="39" angle="0"/>
-            <edge end="36" marker="0" id="33" start="38" angle="0"/>
-            <edge end="37" marker="0" id="34" start="36" angle="0"/>
-            <edge end="39" marker="0" id="35" start="37" angle="0"/>
-            <edge end="30" marker="0" id="36" start="28" angle="0"/>
-            <edge end="30" marker="0" id="37" start="31" angle="0"/>
-            <edge end="28" marker="0" id="38" start="29" angle="0"/>
-            <edge end="31" marker="0" id="39" start="29" angle="0"/>
+            <edge end="4" refine_towards="0" marker="0" id="0" start="0" angle="90"/>
+            <edge end="1" refine_towards="0" marker="0" id="1" start="4" angle="90"/>
+            <edge end="5" refine_towards="0" marker="0" id="2" start="1" angle="90"/>
+            <edge end="0" refine_towards="0" marker="0" id="3" start="5" angle="90"/>
+            <edge end="6" refine_towards="0" marker="1" id="4" start="2" angle="90"/>
+            <edge end="3" refine_towards="0" marker="1" id="5" start="6" angle="90"/>
+            <edge end="7" refine_towards="0" marker="1" id="6" start="3" angle="90"/>
+            <edge end="2" refine_towards="0" marker="1" id="7" start="7" angle="90"/>
+            <edge end="8" refine_towards="0" marker="0" id="8" start="10" angle="0"/>
+            <edge end="11" refine_towards="0" marker="0" id="9" start="9" angle="0"/>
+            <edge end="11" refine_towards="0" marker="0" id="10" start="10" angle="0"/>
+            <edge end="8" refine_towards="0" marker="0" id="11" start="9" angle="0"/>
+            <edge end="22" refine_towards="0" marker="0" id="12" start="23" angle="0"/>
+            <edge end="20" refine_towards="0" marker="0" id="13" start="22" angle="0"/>
+            <edge end="20" refine_towards="0" marker="0" id="14" start="21" angle="0"/>
+            <edge end="23" refine_towards="0" marker="0" id="15" start="21" angle="0"/>
+            <edge end="17" refine_towards="0" marker="0" id="16" start="16" angle="0"/>
+            <edge end="17" refine_towards="0" marker="0" id="17" start="19" angle="0"/>
+            <edge end="19" refine_towards="0" marker="0" id="18" start="18" angle="0"/>
+            <edge end="16" refine_towards="0" marker="0" id="19" start="18" angle="0"/>
+            <edge end="14" refine_towards="0" marker="0" id="20" start="12" angle="0"/>
+            <edge end="15" refine_towards="0" marker="0" id="21" start="14" angle="0"/>
+            <edge end="15" refine_towards="0" marker="0" id="22" start="13" angle="0"/>
+            <edge end="13" refine_towards="0" marker="0" id="23" start="12" angle="0"/>
+            <edge end="32" refine_towards="0" marker="0" id="24" start="34" angle="0"/>
+            <edge end="33" refine_towards="0" marker="0" id="25" start="32" angle="0"/>
+            <edge end="35" refine_towards="0" marker="0" id="26" start="33" angle="0"/>
+            <edge end="35" refine_towards="0" marker="0" id="27" start="34" angle="0"/>
+            <edge end="24" refine_towards="0" marker="0" id="28" start="26" angle="0"/>
+            <edge end="25" refine_towards="0" marker="0" id="29" start="24" angle="0"/>
+            <edge end="25" refine_towards="0" marker="0" id="30" start="27" angle="0"/>
+            <edge end="26" refine_towards="0" marker="0" id="31" start="27" angle="0"/>
+            <edge end="38" refine_towards="0" marker="0" id="32" start="39" angle="0"/>
+            <edge end="36" refine_towards="0" marker="0" id="33" start="38" angle="0"/>
+            <edge end="37" refine_towards="0" marker="0" id="34" start="36" angle="0"/>
+            <edge end="39" refine_towards="0" marker="0" id="35" start="37" angle="0"/>
+            <edge end="30" refine_towards="0" marker="0" id="36" start="28" angle="0"/>
+            <edge end="30" refine_towards="0" marker="0" id="37" start="31" angle="0"/>
+            <edge end="28" refine_towards="0" marker="0" id="38" start="29" angle="0"/>
+            <edge end="31" refine_towards="0" marker="0" id="39" start="29" angle="0"/>
         </edges>
         <labels>
             <label x="0.0899971" y="0.155764" polynomialorder="0" marker="2" id="0" area="0"/>
@@ -124,5 +124,4 @@ omega = 2*pi*f</scriptstartup>
             <label x="-0.0562239" y="0.0368741" polynomialorder="0" marker="10" id="9" area="0"/>
         </labels>
     </geometry>
-    <functions/>
 </document>

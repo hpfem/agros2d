@@ -1,16 +1,16 @@
-<document>
+<document version="2.0">
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Levitation Heating (magnetic field)" date="2011-08-28" polynomialorder="2" meshtype="triangle" timestep="0" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="1000" matrix_solver="umfpack" type="magnetic" timetotal="0">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Harmonic Axisymmetric Levitation" date="2011-07-17" polynomialorder="2" meshtype="triangle" timestep="0" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="1000" matrix_solver="umfpack" type="magnetic" timetotal="0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="Border" value_real="0"/>
+                <edge magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="Border"/>
             </edges>
             <labels>
-                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="0" remanence="0" conductivity="33000000" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="Aluminium" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="10000000" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="3" name="Conductor 1" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="-10000000" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="4" name="Conductor 2" current_density_imag="0" permeability="1" velocity_angular="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="33000000" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Aluminium" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="10000000" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="-10000000" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="4" magnetic_remanence_angle="0" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
             </labels>
         </problem>
     </problems>

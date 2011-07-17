@@ -1366,6 +1366,14 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // main document
     QDomElement eleDoc = doc.documentElement();
+    QString version = eleDoc.attribute("version");
+
+    // convert document for agros2d version >2.0
+    if (version.isEmpty())
+    {
+        Util::scene()->convertA2DFile(fileName);
+        return ErrorResult(ErrorResultType_Information, tr("File '%1' has been converted to new version. Actualy is this file opened from temp directory. Please, save file to new location now.").arg(fileName));
+    }
 
     // check version of a2d file
     QString version = eleDoc.attribute("version");
@@ -1582,9 +1590,10 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.absoluteDir() != tempProblemDir())
+        {
             settings.setValue("General/LastProblemDir", fileInfo.absoluteFilePath());
-
-        m_problemInfo->fileName = fileName;
+            m_problemInfo->fileName = fileName;
+        }
     }
 
     // save current locale
@@ -1596,6 +1605,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // main document
     QDomElement eleDoc = doc.createElement("document");
     doc.appendChild(eleDoc);
+    eleDoc.setAttribute("version", "2.0");
 
     // problems
     QDomNode eleProblems = doc.createElement("problems");
@@ -1785,4 +1795,114 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     setlocale(LC_NUMERIC, plocale);
 
     return ErrorResult();
+}
+
+void Scene::convertA2DFile(const QString &fileName)
+{
+    logMessage("Scene::convertA2DFile()");
+
+    QDomDocument convertDocument;
+    QDomDocument convertTable;
+
+    // read document
+    QFile convertDocumentFile(fileName);
+    convertDocumentFile.open(QIODevice::ReadOnly);
+    convertDocument.setContent(&convertDocumentFile);
+    convertDocumentFile.close();
+
+    QDomElement document = convertDocument.documentElement();
+    QDomNode documentProblems = document.toElement().elementsByTagName("problems").at(0);
+    QDomNode documentProblem = documentProblems.toElement().elementsByTagName("problem").at(0);
+
+    // read convert table
+    QFile convertTableFile(datadir() + "/resources/a2d_convert_table.xml");
+    convertTableFile.open(QIODevice::ReadOnly);
+    convertTable.setContent(&convertTableFile);
+    convertTableFile.close();
+
+    QDomElement table = convertTable.documentElement();
+    QDomNode tableProblems = table.toElement().elementsByTagName("problems").at(0);
+
+    // convert edges
+    QDomNode documentEdges = documentProblem.toElement().elementsByTagName("edges").at(0);
+    QDomNode tableEdges = tableProblems.toElement().elementsByTagName("edges").at(0);
+
+    QDomNode documentEdge = documentEdges.firstChild();
+    while(!documentEdge.isNull())
+    {
+        QDomElement  documentElement = documentEdge.toElement();
+
+        QDomNode tableEdge = tableEdges.firstChild();
+        while(!tableEdge.isNull())
+        {
+            QDomElement  tableElement = tableEdge.toElement();
+
+            QString keyword = tableElement.toElement().attribute("keyword");
+            if (!keyword.isEmpty())
+            {
+                QString keywordValue = documentElement.attribute(keyword);
+                if (keywordValue == tableElement.attribute("oldvalue"))
+                    documentElement.setAttribute(keyword, tableElement.attribute("newvalue"));
+            }
+
+            QString value = documentElement.toElement().attribute(tableElement.toElement().attribute("old"));
+            if (!value.isEmpty())
+            {
+                documentElement.setAttribute(tableElement.toElement().attribute("new"), value);
+                documentElement.removeAttribute(tableElement.toElement().attribute("old"));
+            }
+
+            tableEdge = tableEdge.nextSibling();
+        }
+
+        documentEdge = documentEdge.nextSibling();
+    }
+
+    // convert labels
+    QDomNode documentLabels = documentProblem.toElement().elementsByTagName("labels").at(0);
+    QDomNode tableLabels = tableProblems.toElement().elementsByTagName("labels").at(0);
+
+    QDomNode documentLabel = documentLabels.firstChild();
+    while(!documentLabel.isNull())
+    {
+        QDomElement  documentElement = documentLabel.toElement();
+
+        QDomNode tableLabel = tableLabels.firstChild();
+        while(!tableLabel.isNull())
+        {
+            QDomElement  tableElement = tableLabel.toElement();
+
+            QString value = documentElement.toElement().attribute(tableElement.toElement().attribute("old"));
+            if (!value.isEmpty())
+            {
+                documentElement.setAttribute(tableElement.toElement().attribute("new"), value);
+                documentElement.removeAttribute(tableElement.toElement().attribute("old"));
+            }
+
+            tableLabel = tableLabel.nextSibling();
+        }
+
+        documentLabel = documentLabel.nextSibling();
+    }
+
+    // set document version
+    document.setAttribute("version", "2.0");
+
+    // write document
+    QFileInfo fileInfo(fileName);
+    QString tempFilePath = tempProblemDir() + "/" + fileInfo.baseName() + "." + fileInfo.suffix();
+    QFile tempFile(tempFilePath);
+
+    tempFile.open(QIODevice::WriteOnly);
+    QTextStream out(&tempFile);
+    convertDocument.save(out, 4);
+    tempFile.waitForBytesWritten(0);
+    tempFile.close();
+
+    // FIXME (call open function from MainWindow)
+    ErrorResult result = readFromFile(tempFilePath);
+    if (result.isError())
+    {
+        result.showDialog();
+    }
 }
