@@ -1342,6 +1342,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // main document
     QDomElement eleDoc = doc.documentElement();
 
+    // check version of a2d file
+    QString version = eleDoc.attribute("version");
+
+    if (!version.isEmpty())
+        return ErrorResult(ErrorResultType_Critical, tr("For opening file '%1' is required Agros2D version 2.0 or higher.").arg(fileName));
+
     // problems
     QDomNode eleProblems = eleDoc.elementsByTagName("problems").at(0);
     // first problem
