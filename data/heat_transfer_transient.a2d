@@ -1,15 +1,15 @@
-<document>
+<document version="2.0">
     <problems>
         <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="10" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Heat Transfer Transient" date="2011-04-16" polynomialorder="3" meshtype="triangle" timestep="1e3" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="heat" timetotal="40e3">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge heat_heat_transfer_coefficient="0" heat_external_temperature="0" type="heat_heat_flux" id="1" name="Insulation" heat_heat_flux="0"/>
-                <edge heat_heat_transfer_coefficient="10" heat_external_temperature="20" type="heat_heat_flux" id="2" name="Convection" heat_heat_flux="0"/>
-                <edge heat_temperature="0" type="heat_temperature" id="3" name="Temperature"/>
+                <edge heat_heat_transfer_coefficient="0" heat_external_temperature="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Insulation"/>
+                <edge heat_heat_transfer_coefficient="10" heat_external_temperature="20" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection"/>
+                <edge type="heat_temperature" heat_temperature="0" id="3" name="Temperature"/>
             </edges>
             <labels>
-                <label heat_conductivity="385" heat_specific_heat="385" heat_volume_heat="1e4*(time&lt;=10*1e3)" id="1" heat_density="8700" name="Copper"/>
+                <label heat_volume_heat="1e4*(time&lt;=10*1e3)" heat_density="8700" heat_conductivity="385" heat_specific_heat="385" id="1" name="Copper"/>
             </labels>
         </problem>
     </problems>
@@ -33,5 +33,5 @@
         <labels>
             <label x="-0.138626" y="-0.0639812" polynomialorder="0" marker="1" id="0" area="0.1"/>
         </labels>
-    </geometry>       
+    </geometry>
 </document>

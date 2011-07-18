@@ -1,4 +1,4 @@
-<document>
+<document version="2.0">
     <problems>
         <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="unnamed" date="2011-07-10" polynomialorder="2" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="current" timetotal="1.0">
             <scriptstartup></scriptstartup>
