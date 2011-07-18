@@ -1,0 +1,37 @@
+<document>
+    <problems>
+        <problem adaptivitytolerance="1" maxdofs="60000" frequency="0" numberofrefinements="0" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="transient" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="40e3" type="heat" timestep="1e3" id="0" name="Heat Transfer Transient" initialcondition="10" date="2011-04-16">
+            <scriptstartup></scriptstartup>
+            <description>This model is an example.</description>
+            <edges>
+                <edge h="0" external_temperature="0" type="heat_heat_flux" id="1" name="Insulation" heat_flux="0"/>
+                <edge h="10" external_temperature="20" type="heat_heat_flux" id="2" name="Convection" heat_flux="0"/>
+                <edge temperature="0" type="heat_temperature" id="3" name="Temperature"/>
+            </edges>
+            <labels>
+                <label thermal_conductivity="385" specific_heat="385" volume_heat="1e4*(time&lt;=10*1e3)" id="1" density="8700" name="Copper"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="-2" y="-0.5" id="0"/>
+            <node x="1" y="0.5" id="1"/>
+            <node x="-2" y="0.5" id="2"/>
+            <node x="0" y="-1" id="3"/>
+            <node x="1" y="-1" id="4"/>
+            <node x="0" y="-0.5" id="5"/>
+        </nodes>
+        <edges>
+            <edge end="0" refine_towards="0" marker="1" id="0" start="2" angle="0"/>
+            <edge end="2" refine_towards="0" marker="2" id="1" start="1" angle="0"/>
+            <edge end="5" refine_towards="0" marker="3" id="2" start="0" angle="0"/>
+            <edge end="3" refine_towards="0" marker="3" id="3" start="5" angle="0"/>
+            <edge end="4" refine_towards="0" marker="1" id="4" start="3" angle="0"/>
+            <edge end="1" refine_towards="0" marker="2" id="5" start="4" angle="0"/>
+        </edges>
+        <labels>
+            <label x="-0.138626" y="-0.0639812" polynomialorder="0" marker="1" id="0" area="0.1"/>
+        </labels>
+    </geometry>
+</document>

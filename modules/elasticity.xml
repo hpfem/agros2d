@@ -19,17 +19,17 @@
 
     <boundary>
         <item id="elasticity_fixed_fixed" name="Fixed - fixed">
-            <variable id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
-            <variable id="elasticity_displacement_y" name="Fixed - y" shortname="dy" unit="m" />
-        </item>
+            <variable id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" essential="1" />
+            <variable id="elasticity_displacement_y" name="Fixed - y" shortname="dy" unit="m" essential="1" />
+        </item>    
         <item id="elasticity_fixed_free" name="Fixed - free">
-            <variable id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
+            <variable id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" essential="1" />
             <variable id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" />
         </item>
         <item id="elasticity_free_fixed" name="Free - fixed">
             <variable id="elasticity_free_x" name="Free - x" shortname="fx" unit="N/m2" />
-            <variable id="elasticity_force_y" name="Fixed - y" shortname="dy" unit="m" />
-        </item>
+            <variable id="elasticity_force_y" name="Fixed - y" shortname="dy" unit="m" essential="1" />
+        </item>    
         <item id="elasticity_free_free" name="Free - Free">
             <variable id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" />
             <variable id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" />

@@ -11,18 +11,35 @@
 
     <material>
         <item id="electrostatic_permittivity" name="Permittivity" shortname="epsr" unit="F/m" />
-        <item id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" />
+        <item id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" />	
+        
+    	<steadystate>
+    		<material id="electrostatic_permittivity" />
+    		<material id="electrostatic_charge_density" />
+    	
+        	<matrix i="1" j="1" planar="epsr * EPS0 * (udx * vdx + udy * vdy)" axi="epsr * EPS0 * x * (udx * vdx + udy * vdy)" />
+        	<vector i="1" planar="rho * vval" axi="rho * x * vval" />	
+		</steadystate>
     </material>
 
     <boundary>
-        <item id="electrostatic_potential" name="Fixed voltage">
-            <variable id="electrostatic_potential" name="Fixed voltage" shortname="V" unit="V" />
-        </item>
-        <item id="electrostatic_surface_charge_density" name="Surface charge density">
-            <variable id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" unit="C/m2" />
-        </item>
+    	<item id="electrostatic_potential" name="Fixed voltage" shortname="V" unit="V" />
+    	<item id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" unit="C/m2" />
+    	
+    	<steadystate>
+			<boundary id="electrostatic_potential" name="Fixed voltage">
+				<item id="electrostatic_potential" />
+				
+				<essential i="1" id="electrostatic_potential" />
+			</boundary>    
+			<boundary id="electrostatic_surface_charge_density" name="Surface charge density">
+				<item id="electrostatic_surface_charge_density" />		
+				
+				<vector i="1" planar="sigma * vval" axi="sigma * x * vval" />
+			</boundary>        
+		</steadystate>
     </boundary>
-
+      
     <localvariable>
         <item id="electrostatic_potential" name="Scalar potential" shortname="V" unit="V" scalar="1">
             <steadystate planar_scalar="value1" axi_scalar="value1" />

@@ -2,7 +2,7 @@
 <module>
     <general id ="magnetic" name="Magnetic field">
         <description>Magnetic field ...</description>
-        <properties steadystate="1" harmonic="1" transient="1" />
+        <properties steadystate="1" harmonic="2" transient="1" />    
     </general>
 
     <constants>
@@ -23,9 +23,9 @@
 
     <boundary>
         <item id="magnetic_potential" name="Magnetic potential">
-            <variable id="magnetic_potential_real" name="Vector potential - real" shortname="Ar" unit="Wb/m" />
-            <variable id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" unit="Wb/m" />
-        </item>
+            <variable id="magnetic_potential_real" name="Vector potential - real" shortname="Ar" unit="Wb/m" essential="1" />
+            <variable id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" unit="Wb/m" essential="1" />
+        </item>    
         <item id="magnetic_surface_current" name="Surface current">
             <variable id="magnetic_surface_current_real" name="Surface current - real" shortname="Jr" unit="A/m" />
             <variable id="magnetic_surface_current_imag" name="Surface current - imag" shortname="Ji" unit="A/m" />

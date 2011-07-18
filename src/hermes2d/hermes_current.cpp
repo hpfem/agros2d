@@ -319,7 +319,7 @@ bool SceneMaterialCurrentDialog::save()
     if (!SceneMaterialDialog::save()) return false;;
 
     if (txtConductivity->evaluate())
-        m_material->values[m_material->get_material_type("current_conductivity")] = txtConductivity->value();
+        m_material->values[m_material->get_material_type_variable("current_conductivity")] = txtConductivity->value();
     else
         return false;
 

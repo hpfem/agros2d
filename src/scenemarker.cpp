@@ -103,10 +103,10 @@ QString SceneMaterial::html()
     out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
     out += "<table>";
 
-    for(Hermes::vector<Hermes::Module::MaterialType *>::iterator it = Util::scene()->problemInfo()->module()->material_types.begin();
-        it < Util::scene()->problemInfo()->module()->material_types.end(); ++it )
+    for(Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::scene()->problemInfo()->module()->material_type_variables.begin();
+        it < Util::scene()->problemInfo()->module()->material_type_variables.end(); ++it )
     {
-        Hermes::Module::MaterialType *material = ((Hermes::Module::MaterialType *) *it);
+        Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
 
         out += "<tr>";
         out += QString("<td>%1 (%2)</td>").

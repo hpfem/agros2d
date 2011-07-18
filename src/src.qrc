@@ -52,6 +52,7 @@
         <file>images/zoom-out.png</file>
         <file>images/zoom-original.png</file>
         <file>images/agros2d.png</file>
+        <file>images/agros2d.icns</file>
         <file>images/script.png</file>
         <file>images/script-create.png</file>
         <file>images/script-python.png</file>
@@ -93,6 +94,11 @@
         <file>images/equations/magnetic/magnetic_harmonic.png</file>
         <file>images/equations/magnetic/magnetic_steadystate.png</file>
         <file>images/equations/magnetic/magnetic_transient.png</file>
+<<<<<<< HEAD
+=======
+        <file>images/equations/magnetic/magnetic_vector_potential.png</file>
+        <file>images/equations/magnetic/magnetic_surface_current_density.png</file>
+>>>>>>> progress on xml - weak forms
         <file>images/equations/flow/flow_steadystate.png</file>
         <file>images/equations/flow/flow_transient.png</file>
         <file>images/equations/elasticity/elasticity_steadystate.png</file>

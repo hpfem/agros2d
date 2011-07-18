@@ -1,0 +1,64 @@
+<document>
+    <problems>
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="1" type="magnetic" timestep="1" id="0" name="Magnetic Steadystate Planar Velocity" initialcondition="0">
+            <scriptstartup></scriptstartup>
+            <description>This model is an example.</description>
+            <edges>
+                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0"/>
+            </edges>
+            <labels>
+                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
+                <label current_density_real="0" remanence="1.28" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="-90" id="2" name="Magnet" current_density_imag="0" permeability="1.11" velocity_angular="0"/>
+                <label current_density_real="0" remanence="0" conductivity="33e6" velocity_x="5" velocity_y="0" remanence_angle="0" id="3" name="Aluminum" current_density_imag="0" permeability="1" velocity_angular="0"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="-0.04" y="0.005" id="0"/>
+            <node x="0.04" y="0.005" id="1"/>
+            <node x="0.04" y="0.025" id="2"/>
+            <node x="-0.04" y="0.025" id="3"/>
+            <node x="-0.04" y="-0.025" id="4"/>
+            <node x="0.04" y="-0.025" id="5"/>
+            <node x="0.04" y="-0.005000000000000001" id="6"/>
+            <node x="-0.04" y="-0.005000000000000001" id="7"/>
+            <node x="-0.15" y="-0.002" id="8"/>
+            <node x="0.15" y="-0.002" id="9"/>
+            <node x="0.15" y="0.002" id="10"/>
+            <node x="-0.15" y="0.002" id="11"/>
+            <node x="-0.15" y="-0.1" id="12"/>
+            <node x="0.15" y="0.1" id="13"/>
+            <node x="0.15" y="-0.1" id="14"/>
+            <node x="-0.15" y="0.1" id="15"/>
+        </nodes>
+        <edges>
+            <edge end="1" marker="0" id="0" start="0" angle="0"/>
+            <edge end="2" marker="0" id="1" start="1" angle="0"/>
+            <edge end="3" marker="0" id="2" start="2" angle="0"/>
+            <edge end="0" marker="0" id="3" start="3" angle="0"/>
+            <edge end="5" marker="0" id="4" start="4" angle="0"/>
+            <edge end="6" marker="0" id="5" start="5" angle="0"/>
+            <edge end="7" marker="0" id="6" start="6" angle="0"/>
+            <edge end="4" marker="0" id="7" start="7" angle="0"/>
+            <edge end="9" marker="0" id="8" start="8" angle="0"/>
+            <edge end="10" marker="1" id="9" start="9" angle="0"/>
+            <edge end="11" marker="0" id="10" start="10" angle="0"/>
+            <edge end="8" marker="1" id="11" start="11" angle="0"/>
+            <edge end="13" marker="1" id="12" start="15" angle="0"/>
+            <edge end="10" marker="1" id="13" start="13" angle="0"/>
+            <edge end="14" marker="1" id="14" start="9" angle="0"/>
+            <edge end="12" marker="1" id="15" start="14" angle="0"/>
+            <edge end="8" marker="1" id="16" start="12" angle="0"/>
+            <edge end="15" marker="1" id="17" start="11" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.02181041395217148" y="0.01537913804319784" polynomialorder="0" marker="2" id="0" area="0"/>
+            <label x="0.02125117256878247" y="-0.01426065527641982" polynomialorder="0" marker="2" id="1" area="0"/>
+            <label x="0.02013268980200444" y="-0.07186251776548809" polynomialorder="0" marker="1" id="2" area="0"/>
+            <label x="0.02125117256878247" y="0.0763364488326002" polynomialorder="0" marker="1" id="3" area="0"/>
+            <label x="0.0850047" y="0.000279621" polynomialorder="5" marker="3" id="4" area="0"/>
+        </labels>
+    </geometry>
+    <functions/>
+</document>

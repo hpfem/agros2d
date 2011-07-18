@@ -26,7 +26,7 @@ namespace Hermes
 {
     namespace Module
     {
-        struct MaterialType;
+        struct MaterialTypeVariable;
     }
 }
 
@@ -36,12 +36,12 @@ public:
     std::string name;
 
     // variables
-    std::map<Hermes::Module::MaterialType *, Value> values;
+    std::map<Hermes::Module::MaterialTypeVariable *, Value> values;
 
     Material(std::string name);
     ~Material();
 
-    Hermes::Module::MaterialType *get_material_type(std::string id);
+    Hermes::Module::MaterialTypeVariable *get_material_type_variable(std::string id);
     Value get_value(std::string id);
 };
 

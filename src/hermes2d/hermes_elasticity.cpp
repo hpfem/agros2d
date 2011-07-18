@@ -706,37 +706,37 @@ bool SceneMaterialElasticityDialog::save()
     if (!SceneMaterialDialog::save()) return false;
 
     if (txtYoungModulus->evaluate())
-        m_material->values[m_material->get_material_type("elasticity_young_modulus")] = txtYoungModulus->value();
+        m_material->values[m_material->get_material_type_variable("elasticity_young_modulus")] = txtYoungModulus->value();
     else
         return false;
 
     if (txtPoissonNumber->evaluate())
-        m_material->values[m_material->get_material_type("elasticity_poisson_ratio")] = txtPoissonNumber->value();
+        m_material->values[m_material->get_material_type_variable("elasticity_poisson_ratio")] = txtPoissonNumber->value();
     else
         return false;
 
     if (txtForceX->evaluate())
-        m_material->values[m_material->get_material_type("elasticity_force_x")] = txtForceX->value();
+        m_material->values[m_material->get_material_type_variable("elasticity_force_x")] = txtForceX->value();
     else
         return false;
 
     if (txtForceY->evaluate())
-        m_material->values[m_material->get_material_type("elasticity_force_y")] = txtForceY->value();
+        m_material->values[m_material->get_material_type_variable("elasticity_force_y")] = txtForceY->value();
     else
         return false;
 
     if (txtAlpha->evaluate())
-        m_material->values[m_material->get_material_type("elasticity_alpha")] = txtAlpha->value();
+        m_material->values[m_material->get_material_type_variable("elasticity_alpha")] = txtAlpha->value();
     else
         return false;
 
     if (txtTemp->evaluate())
-        m_material->values[m_material->get_material_type("elasticity_temperature")] = txtTemp->value();
+        m_material->values[m_material->get_material_type_variable("elasticity_temperature")] = txtTemp->value();
     else
         return false;
 
     if (txtTempRef->evaluate())
-        m_material->values[m_material->get_material_type("elasticity_temperature_reference")] = txtTempRef->value();
+        m_material->values[m_material->get_material_type_variable("elasticity_temperature_reference")] = txtTempRef->value();
     else
         return false;
 

@@ -1,0 +1,68 @@
+#!/usr/bin/make -f
+
+# export DH_VERBOSE=1
+
+configure: configure-stamp
+
+configure-stamp:
+	dh_testdir
+	-$(MAKE) distclean
+	qmake-qt4 PREFIX=$(CURDIR)/debian/agros2d/usr CONFIG-="debug" CONFIG+="release" 
+	touch $@
+
+build: build-stamp
+
+build-stamp: configure-stamp  
+	dh_testdir	
+	$(MAKE)
+
+clean: 
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp -f 
+	qmake-qt4 CONFIG-="debug" CONFIG+="release"
+	$(MAKE) distclean
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_install
+	dh_installdirs
+	$(MAKE) install
+
+binary-indep: build install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs
+	dh_installexamples
+#	dh_install
+	dh_installmenu
+#	dh_installdebconf
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+	dh_installmime
+#	dh_python
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+#	dh_perl
+#	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure

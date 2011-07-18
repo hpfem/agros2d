@@ -16,9 +16,9 @@
 
     <boundary>
         <item id="heat_temperature" name="Temperature">
-            <variable id="heat_temperature" name="Temperature" shortname="T" unit="K" />
-        </item>
-        <item id="heat_heat_flux" name="Heat flux">
+            <variable id="heat_temperature" name="Temperature" shortname="T" unit="K" essential="1" />
+        </item>    
+        <item id="heat_heat_flux" name="Heat flux">                        
             <variable id="heat_heat_flux" name="Heat flux" shortname="F" unit="W/m2" />
             <variable id="heat_heat_transfer_coefficient" name="Heat transfer coefficient" shortname="h" unit="W/m2.K" />
             <variable id="heat_external_temperature" name="External temperature" shortname="Te" unit="K" />

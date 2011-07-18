@@ -530,9 +530,9 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
 
     cmbAnalysisType->clear();
-    if (module->has_steady_state) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_SteadyState), AnalysisType_SteadyState);
-    if (module->has_harmonic) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Harmonic), AnalysisType_Harmonic);
-    if (module->has_transient) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Transient), AnalysisType_Transient);
+    if (module->steady_state_solutions) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_SteadyState), AnalysisType_SteadyState);
+    if (module->harmonic_solutions) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Harmonic), AnalysisType_Harmonic);
+    if (module->transient_solutions) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Transient), AnalysisType_Transient);
 
     // restore analysis type
     cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(analysisType));

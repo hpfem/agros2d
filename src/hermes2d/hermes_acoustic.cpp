@@ -657,12 +657,12 @@ bool SceneMaterialAcousticDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
     if (txtDensity->evaluate())
-        m_material->values[m_material->get_material_type("acoustic_density")] = txtDensity->value();
+        m_material->values[m_material->get_material_type_variable("acoustic_density")] = txtDensity->value();
     else
         return false;
 
     if (txtSpeed->evaluate())
-        m_material->values[m_material->get_material_type("acoustic_speed")] = txtSpeed->value();
+        m_material->values[m_material->get_material_type_variable("acoustic_speed")] = txtSpeed->value();
     else
         return false;
 

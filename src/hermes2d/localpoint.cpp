@@ -103,7 +103,7 @@ void LocalPointValue::calculate()
                 parser->parser[0]->DefineVar("dy" + number.str(), &pdy[k]);
             }
 
-            parser->setParserVariables(tmpMaterial);
+            parser->setParserVariables(tmpMaterial, NULL);
 
             // parse expression
             for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module()->local_point.begin();

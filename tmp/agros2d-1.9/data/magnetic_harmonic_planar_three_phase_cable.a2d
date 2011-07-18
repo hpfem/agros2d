@@ -1,0 +1,87 @@
+<document>
+    <problems>
+        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="1" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="harmonic" adaptivitysteps="1" polynomialorder="2" problemtype="planar" timetotal="0" type="magnetic" timestep="0" id="0" name="Magnetic Harmonic Planar Three Phase Cable" initialcondition="0">
+            <scriptstartup>J0 = 1e6
+J01r = J0
+J01i = 0.0
+J02r = J0*cos(-120.0/180.0*pi)
+J02i = J0*sin(-120.0/180.0*pi)
+J03r = J0*cos(-240.0/180.0*pi)
+J03i = J0*sin(-240.0/180.0*pi)
+gamma = 57e6</scriptstartup>
+            <description>This model is an example.</description>
+            <edges>
+                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0"/>
+            </edges>
+            <labels>
+                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
+                <label current_density_real="J01r" remanence="0" conductivity="gamma" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="Conductor 1" current_density_imag="J01i" permeability="1" velocity_angular="0"/>
+                <label current_density_real="J02r" remanence="0" conductivity="gamma" velocity_x="0" velocity_y="0" remanence_angle="0" id="3" name="Conductor 2" current_density_imag="J02i" permeability="1" velocity_angular="0"/>
+                <label current_density_real="J03r" remanence="0" conductivity="gamma" velocity_x="0" velocity_y="0" remanence_angle="0" id="4" name="Conductor 3" current_density_imag="J03i" permeability="1" velocity_angular="0"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0.002255" y="0.00492" id="0"/>
+            <node x="-0.002255" y="0.00492" id="1"/>
+            <node x="0.0095" y="0" id="2"/>
+            <node x="-0.0095" y="0" id="3"/>
+            <node x="0.00975" y="0" id="4"/>
+            <node x="-0.00975" y="0" id="5"/>
+            <node x="5.816880180656292e-19" y="-0.0095" id="6"/>
+            <node x="5.969955974884089e-19" y="-0.00975" id="7"/>
+            <node x="5.816880180656292e-19" y="0.0095" id="8"/>
+            <node x="5.969955974884089e-19" y="0.00975" id="9"/>
+            <node x="0" y="0.007175" id="10"/>
+            <node x="0" y="0.002665" id="11"/>
+            <node x="0.003133344986619438" y="-0.004412887285533909" id="12"/>
+            <node x="0.005388344986619439" y="-0.0005071127144660895" id="13"/>
+            <node x="0.006213732272153347" y="-0.0035875" id="14"/>
+            <node x="0.002307957701085529" y="-0.0013325" id="15"/>
+            <node x="-0.005388344986619438" y="-0.0005071127144660911" id="16"/>
+            <node x="-0.003133344986619439" y="-0.004412887285533909" id="17"/>
+            <node x="-0.006213732272153348" y="-0.003587499999999998" id="18"/>
+            <node x="-0.002307957701085529" y="-0.001332499999999999" id="19"/>
+            <node x="0.05" y="0" id="20"/>
+            <node x="-0.05" y="0" id="21"/>
+            <node x="0" y="0.05" id="22"/>
+            <node x="0" y="-0.05" id="23"/>
+        </nodes>
+        <edges>
+            <edge end="8" refine_towards="0" marker="0" id="0" start="2" angle="90"/>
+            <edge end="3" refine_towards="0" marker="0" id="1" start="8" angle="90"/>
+            <edge end="6" refine_towards="0" marker="0" id="2" start="3" angle="90"/>
+            <edge end="2" refine_towards="0" marker="0" id="3" start="6" angle="90"/>
+            <edge end="9" refine_towards="0" marker="0" id="4" start="4" angle="90"/>
+            <edge end="5" refine_towards="0" marker="0" id="5" start="9" angle="90"/>
+            <edge end="7" refine_towards="0" marker="0" id="6" start="5" angle="90"/>
+            <edge end="4" refine_towards="0" marker="0" id="7" start="7" angle="90"/>
+            <edge end="10" refine_towards="0" marker="0" id="8" start="0" angle="90"/>
+            <edge end="1" refine_towards="0" marker="0" id="9" start="10" angle="90"/>
+            <edge end="11" refine_towards="0" marker="0" id="10" start="1" angle="90"/>
+            <edge end="0" refine_towards="0" marker="0" id="11" start="11" angle="90"/>
+            <edge end="16" refine_towards="0" marker="0" id="12" start="19" angle="90"/>
+            <edge end="18" refine_towards="0" marker="0" id="13" start="16" angle="90"/>
+            <edge end="17" refine_towards="0" marker="0" id="14" start="18" angle="90"/>
+            <edge end="19" refine_towards="0" marker="0" id="15" start="17" angle="90"/>
+            <edge end="12" refine_towards="0" marker="0" id="16" start="15" angle="90"/>
+            <edge end="14" refine_towards="0" marker="0" id="17" start="12" angle="90"/>
+            <edge end="13" refine_towards="0" marker="0" id="18" start="14" angle="90"/>
+            <edge end="15" refine_towards="0" marker="0" id="19" start="13" angle="90"/>
+            <edge end="22" refine_towards="0" marker="1" id="20" start="20" angle="90"/>
+            <edge end="21" refine_towards="0" marker="1" id="21" start="22" angle="90"/>
+            <edge end="23" refine_towards="0" marker="1" id="22" start="21" angle="90"/>
+            <edge end="20" refine_towards="0" marker="1" id="23" start="23" angle="90"/>
+        </edges>
+        <labels>
+            <label x="0.0162468" y="0.0243702" polynomialorder="0" marker="1" id="0" area="0"/>
+            <label x="0.00559029" y="0.00375598" polynomialorder="0" marker="1" id="1" area="0"/>
+            <label x="0" y="0.00497885" polynomialorder="0" marker="2" id="2" area="1e-07"/>
+            <label x="0.00384333" y="-0.0023584" polynomialorder="0" marker="3" id="3" area="1e-07"/>
+            <label x="-0.00419272" y="-0.00288249" polynomialorder="0" marker="4" id="4" area="1e-07"/>
+            <label x="-1.35974e-05" y="0.009661400000000001" polynomialorder="0" marker="1" id="5" area="0"/>
+        </labels>
+    </geometry>
+    <functions/>
+</document>

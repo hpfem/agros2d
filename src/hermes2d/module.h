@@ -38,6 +38,11 @@
 #include <rapidxml.cpp>
 #include <rapidxml_utils.cpp>
 
+#include "material.h"
+#include "boundary.h"
+#include "localpoint.h"
+#include "weakform_parser.h"
+
 extern double actualTime;
 
 class SceneBoundary;
@@ -54,7 +59,7 @@ class WeakFormAgros : public WeakForm
 public:
     WeakFormAgros(unsigned int neq = 1) : WeakForm(neq) { }
 
-    virtual void registerForms() = 0;
+    void registerForms();
 
     // previous solution
     Hermes::vector<Solution *> solution;
@@ -109,10 +114,12 @@ struct LocalVariable
 };
 
 // material property
-struct MaterialType
+struct MaterialTypeVariable
 {
-    MaterialType() : id(""), name(""), shortname(""), unit("") {}
-    MaterialType(rapidxml::xml_node<> *node);
+    MaterialTypeVariable() : id(""), name(""), shortname(""), unit("") {}
+    MaterialTypeVariable(std::string id, std::string name,
+                         std::string shortname, std::string unit);
+    MaterialTypeVariable(rapidxml::xml_node<> *node);
 
     // id
     std::string id;
@@ -128,6 +135,8 @@ struct MaterialType
 struct BoundaryTypeVariable
 {
     BoundaryTypeVariable() : id(""), name(""), shortname(""), unit("") {}
+    BoundaryTypeVariable(std::string id, std::string name,
+                         std::string shortname, std::string unit);
     BoundaryTypeVariable(rapidxml::xml_node<> *node);
 
     // id
@@ -144,7 +153,9 @@ struct BoundaryTypeVariable
 struct BoundaryType
 {
     BoundaryType() : id(""), name("") {}
-    BoundaryType(rapidxml::xml_node<> *node);
+    BoundaryType(Hermes::vector<BoundaryTypeVariable> boundary_type_variables,
+                 rapidxml::xml_node<> *node,
+                 ProblemType problem_type);
     ~BoundaryType();
 
     // id
@@ -154,6 +165,13 @@ struct BoundaryType
 
     // variables
     Hermes::vector<BoundaryTypeVariable *> variables;
+
+    // weakform
+    Hermes::vector<ParserFormMatrix *> weakform_matrix_surface;
+    Hermes::vector<ParserFormVector *> weakform_vector_surface;
+
+    // essential
+    std::map<int, BoundaryTypeVariable *> essential;
 };
 
 // surface and volume integral value
@@ -194,18 +212,22 @@ struct Module
     // description
     std::string description;
 
-    bool has_steady_state;
-    bool has_harmonic;
-    bool has_transient;
+    int steady_state_solutions;
+    int harmonic_solutions;
+    int transient_solutions;
 
     // constants
     std::map<std::string, double> constants;
 
     // material type
-    Hermes::vector<MaterialType *> material_types;
+    Hermes::vector<MaterialTypeVariable *> material_type_variables;
 
     // boundary conditions
     Hermes::vector<BoundaryType *> boundary_types;
+
+    // weak forms
+    Hermes::vector<ParserFormMatrix *> weakform_matrix_volume;
+    Hermes::vector<ParserFormVector *> weakform_vector_volume;
 
     // all physical variables
     Hermes::vector<LocalVariable *> variables;
@@ -250,7 +272,7 @@ struct Module
     // variable by name
     LocalVariable *get_variable(std::string id);
     BoundaryType *get_boundary_type(std::string id);
-    MaterialType *get_material_type(std::string id);
+    MaterialTypeVariable *get_material_type_variable(std::string id);
 
     // parser
     mu::Parser *get_parser();
@@ -259,7 +281,7 @@ struct Module
     std::string get_expression(LocalVariable *physicFieldVariable,
                                PhysicFieldVariableComp physicFieldVariableComp);
 
-    virtual int number_of_solution() const = 0;
+    int number_of_solution() const;
     virtual bool has_nonlinearity() const = 0;
 
     virtual Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
@@ -327,7 +349,7 @@ public:
     Parser();
     ~Parser();
 
-    void setParserVariables(SceneMaterial *material);
+    void setParserVariables(Material *material, Boundary *boundary);
 };
 
 class ViewScalarFilter : public Filter
