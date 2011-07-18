@@ -2,24 +2,24 @@
 <module>
     <general id ="current" name="Current field">
         <description>Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.</description>
-        <properties steadystate="1" harmonic="0" transient="0" />    
+        <properties steadystate="1" harmonic="0" transient="0" />
     </general>
-    
+
     <constants />
 
     <material>
-        <item id="current_conductivity" name="Conductivity" shortname="gamma" unit="S/m" />        
+        <item id="current_conductivity" name="Conductivity" shortname="gamma" unit="S/m" />
     </material>
 
     <boundary>
         <item id="current_potential" name="Fixed voltage">
             <variable id="current_potential" name="Fixed voltage" shortname="V" unit="V" />
-        </item>    
+        </item>
         <item id="current_inward_current_flow" name="Current density">
             <variable id="current_inward_current_flow" name="Current density" shortname="J" unit="A/m2" />
-        </item>        
+        </item>
     </boundary>
-    
+
     <localvariable>
         <item id="current_potential" name="Scalar potential" shortname="V" unit="V" scalar="1">
             <steadystate planar_scalar="value1" axi_scalar="value1" />
@@ -56,38 +56,38 @@
             </steadystate>
         </vectorvariable>
     </view>
-    
+
     <pointvalue>
         <steadystate>
             <item id="current_potential" />
             <item id="current_electric_field" />
             <item id="current_current_density" />
             <item id="current_joule_losses" />
-            <item id="current_conductivity" />          
+            <item id="current_conductivity" />
         </steadystate>
-    </pointvalue>  
-    
+    </pointvalue>
+
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
-        </item>        
+        </item>
         <item id="surface" name="Cross section" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="1.0" />
         </item>
         <item id="current_joule_losses" name="Joule losses" shortname="Pj" unit="W">
             <steadystate planar="0.5 * gamma * (dx1 * dx1 + dy1 * dy1)" axi="2.0 * PI * x * 0.5 * gamma * (dx1 * dx1 + dy1 * dy1)" />
         </item>
-    </volumeintegral>    
-    
+    </volumeintegral>
+
     <surfaceintegral>
         <item id="length" name="Length" shortname="l" unit="m">
             <steadystate planar="1.0" axi="1.0" />
-        </item>        
+        </item>
         <item id="surface" name="Surface" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="2.0 * PI * x" />
         </item>
         <item id="current_current" name="Current" shortname="I" unit="A">
             <steadystate planar="gamma * (tany * dx1 - tanx * dy1)" axi="2.0 * PI * x * gamma * (tany * dx1 - tanx * dy1)" />
         </item>
-    </surfaceintegral> 
+    </surfaceintegral>
 </module>

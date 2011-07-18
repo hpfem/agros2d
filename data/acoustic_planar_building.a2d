@@ -1,14 +1,14 @@
-<document>
+<document version="2.0">
     <problems>
         <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Acoustic Building" date="2011-04-08" polynomialorder="2" meshtype="triangle" timestep="1e-4" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="500" matrix_solver="umfpack" type="acoustic" timetotal="10e-2">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
                 <edge type="acoustic_matched_boundary" id="1" name="Wall"/>
-                <edge type="acoustic_pressure" id="2" name="Source" acoustic_pressure="1"/>
+                <edge acoustic_pressure="1" type="acoustic_pressure" id="2" name="Source"/>
             </edges>
             <labels>
-                <label acoustic_speed="343" id="1" acoustic_density="1.25" name="Air"/>
+                <label acoustic_speed="343" acoustic_density="1.25" id="1" name="Air"/>
             </labels>
         </problem>
     </problems>

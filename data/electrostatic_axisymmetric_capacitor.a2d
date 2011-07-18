@@ -1,4 +1,4 @@
-<document>
+<document version="2.0">
     <problems>
         <problem maxdofs="60000" adaptivitytolerance="5" id="0" analysistype="steadystate" initialcondition="0" linearitysteps="10" adaptivitysteps="10" linearity="linear" name="Electrostatic Axisymmetric Capacitor" date="2011-04-19" polynomialorder="3" meshtype="triangle" timestep="0" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="0">
             <scriptstartup>U = 10
@@ -6,14 +6,14 @@ eps1 = 10
 eps2 = 3</scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge type="electrostatic_potential" electrostatic_potential="U" id="1" name="Source"/>
-                <edge type="electrostatic_potential" electrostatic_potential="0" id="2" name="Ground"/>
-                <edge type="electrostatic_surface_charge_density" electrostatic_surface_charge_density="0" id="3" name="Neumann"/>
+                <edge electrostatic_potential="U" type="electrostatic_potential" id="1" name="Source"/>
+                <edge electrostatic_potential="0" type="electrostatic_potential" id="2" name="Ground"/>
+                <edge type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0"/>
             </edges>
             <labels>
-                <label electrostatic_charge_density="0" id="1" name="Air" electrostatic_permittivity="1"/>
-                <label electrostatic_charge_density="0" id="2" name="Dielectric 1" electrostatic_permittivity="eps1"/>
-                <label electrostatic_charge_density="0" id="3" name="Dielectric 2" electrostatic_permittivity="eps2"/>
+                <label id="1" electrostatic_charge_density="0" name="Air" electrostatic_permittivity="1"/>
+                <label id="2" electrostatic_charge_density="0" name="Dielectric 1" electrostatic_permittivity="eps1"/>
+                <label id="3" electrostatic_charge_density="0" name="Dielectric 2" electrostatic_permittivity="eps2"/>
             </labels>
         </problem>
     </problems>

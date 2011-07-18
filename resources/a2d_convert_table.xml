@@ -6,8 +6,22 @@
             <parametr type="magnetic_potential" old="value_imag" new="magnetic_potential_imag"/>
             <parametr type="magnetic_potential"old="value_real" new="magnetic_potential_real"/>
             <parametr parameter="type" oldvalue="magnetic_surface_current_density" newvalue="magnetic_surface_current"/>
-            <parametr type="magnetic_surface_current"old="value_imag" new="magnetic_surface_current_imag"/>
-            <parametr type="magnetic_surface_current"old="value_real" new="magnetic_surface_current_real"/>
+            <parametr type="magnetic_surface_current" old="value_imag" new="magnetic_surface_current_imag"/>
+            <parametr type="magnetic_surface_current" old="value_real" new="magnetic_surface_current_real"/>
+
+            <parametr type="electrostatic_potential" old="value" new="electrostatic_potential"/>
+            <parametr type="electrostatic_surface_charge_density" old="value" new="electrostatic_surface_charge_density"/>
+
+            <parametr type="heat_temperature" old="temperature" new="heat_temperature"/>
+            <parametr type="heat_heat_flux" old="heat_flux" new="heat_heat_flux"/>
+            <parametr type="heat_heat_flux" old="h" new="heat_heat_transfer_coefficient"/>
+            <parametr type="heat_heat_flux" old="external_temperature" new="heat_external_temperature"/>
+
+            <parametr type="acoustic_pressure" old="pressure" new="acoustic_pressure"/>
+            <parametr type="acoustic_normal_acceleration" old="acceleration" new="acoustic_normal_acceleration"/>
+            <parametr type="acoustic_impedance" old="" new="acoustic_impedance"/>
+
+            <parametr type="current_potential" old="value" new="current_potential"/>
         </edges>
         <labels>
             <parametr old="current_density_real" new="magnetic_current_density_external_real"/>
@@ -19,6 +33,19 @@
             <parametr old="current_density_imag" new="magnetic_current_density_external_imag"/>
             <parametr old="permeability" new="magnetic_permeability"/>
             <parametr old="velocity_angular" new="magnetic_velocity_angular"/>
+
+            <parametr old="permittivity" new="electrostatic_permittivity"/>
+            <parametr old="charge_density" new="electrostatic_charge_density"/>
+
+            <parametr old="thermal_conductivity" new="heat_conductivity"/>
+            <parametr old="volume_heat" new="heat_volume_heat"/>
+            <parametr old="density" new="heat_density"/>
+            <parametr old="specific_heat" new="heat_specific_heat"/>
+
+            <parametr old="density" new="acoustic_density"/>
+            <parametr old="speed" new="acoustic_speed"/>
+
+            <parametr old="conductivity" new="current_conductivity"/>
         </labels>
     </problems>
 </document>

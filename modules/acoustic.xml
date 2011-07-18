@@ -2,30 +2,30 @@
 <module>
     <general id ="acoustic" name="Acoustic">
         <description>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids, and solids.</description>
-        <properties steadystate="0" harmonic="1" transient="0" />    
+        <properties steadystate="0" harmonic="1" transient="0" />
     </general>
-    
+
     <constants>
         <item id="P0" value="20e-6" />
-    </constants>  
-    
+    </constants>
+
     <material>
         <item id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" />
-        <item id="acoustic_speed" name="Speed of sound" shortname="v" unit="m/s" />                        
+        <item id="acoustic_speed" name="Speed of sound" shortname="v" unit="m/s" />
     </material>
 
     <boundary>
         <item id="acoustic_pressure" name="Pressure">
             <variable id="acoustic_pressure" name="Pressure" shortname="p" unit="Pa" />
-        </item>    
+        </item>
         <item id="acoustic_normal_acceleration" name="Normal acceleration">
             <variable id="acoustic_normal_acceleration" name="Normal acceleration" shortname="an" unit="m/s2" />
-        </item> 
+        </item>
         <item id="acoustic_impedance" name="Impedance boundary condition">
             <variable id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" unit="Pa·s/m" />
-        </item>    
+        </item>
         <item id="acoustic_matched_boundary" name="Matched boundary" />
-    </boundary>      
+    </boundary>
 
     <localvariable>
         <item id="acoustic_pressure_real" name="Pressure - real" shortname="p" unit="Pa" scalar="1">
@@ -39,7 +39,7 @@
         <item id="acoustic_pressure_level" name="Pressure level" shortname="SPL" unit="dB" scalar="1">
             <harmonic planar_scalar="20 * log10(sqrt(value1 * value1 + value2 * value2) / P0)" axi_scalar="20 * log10(sqrt(value1 * value1 + value2 * value2) / P0)" />
             <transient />
-        </item>        
+        </item>
         <item id="acoustic_local_acceleration" name="Local acceleration" shortname="a" unit="m/s2">
             <harmonic planar_comp_x="- dx1 / rho" planar_comp_y="- dy1 / rho" axi_comp_r="- dx1 / rho" axi_comp_z="- dy1 / rho" />
             <transient />
@@ -51,7 +51,7 @@
         <item id="acoustic_speed" name="Speed of sound" shortname="v" unit="m/s" scalar="1">
             <harmonic planar_scalar="v" axi_scalar="v" />
             <transient />
-        </item>  
+        </item>
     </localvariable>
 
     <view>
@@ -73,38 +73,38 @@
             <transient/>
         </vectorvariable>
     </view>
-    
+
     <pointvalue>
         <harmonic>
             <item id="acoustic_pressure_real" />
             <item id="acoustic_pressure_imag" />
             <item id="acoustic_pressure_level" />
-            <item id="acoustic_local_acceleration" />       
+            <item id="acoustic_local_acceleration" />
             <item id="acoustic_density" />
-            <item id="acoustic_speed" />  
-        </harmonic>            
+            <item id="acoustic_speed" />
+        </harmonic>
         <transient/>
-    </pointvalue>  
-    
+    </pointvalue>
+
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
             <harmonic planar="1.0" axi="2.0 * PI * x" />
             <transient/>
-        </item>        
+        </item>
         <item id="surface" name="Cross section" shortname="S" unit="m2">
             <harmonic planar="1.0" axi="1.0" />
             <transient/>
         </item>
-    </volumeintegral>    
-    
+    </volumeintegral>
+
     <surfaceintegral>
         <item id="length" name="Length" shortname="l" unit="m">
             <harmonic planar="1.0" axi="1.0" />
             <transient/>
-        </item>        
+        </item>
         <item id="surface" name="Surface" shortname="S" unit="m2">
             <harmonic planar="1.0" axi="2.0 * PI * x" />
             <transient/>
         </item>
-    </surfaceintegral> 
+    </surfaceintegral>
 </module>
