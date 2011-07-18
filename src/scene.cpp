@@ -1835,21 +1835,24 @@ void Scene::convertA2DFile(const QString &fileName)
         QDomNode tableEdge = tableEdges.firstChild();
         while(!tableEdge.isNull())
         {
-            QDomElement  tableElement = tableEdge.toElement();
+            QDomElement tableElement = tableEdge.toElement();
 
-            QString keyword = tableElement.toElement().attribute("keyword");
-            if (!keyword.isEmpty())
+            QString parameter = tableElement.toElement().attribute("parameter");
+            if (!parameter.isEmpty())
             {
-                QString keywordValue = documentElement.attribute(keyword);
-                if (keywordValue == tableElement.attribute("oldvalue"))
-                    documentElement.setAttribute(keyword, tableElement.attribute("newvalue"));
+                QString parameterValue = documentElement.attribute(parameter);
+                if (parameterValue == tableElement.attribute("oldvalue"))
+                    documentElement.setAttribute(parameter, tableElement.attribute("newvalue"));
             }
 
             QString value = documentElement.toElement().attribute(tableElement.toElement().attribute("old"));
             if (!value.isEmpty())
             {
-                documentElement.setAttribute(tableElement.toElement().attribute("new"), value);
-                documentElement.removeAttribute(tableElement.toElement().attribute("old"));
+                if (documentElement.toElement().attribute("type") == tableElement.toElement().attribute("type"))
+                {
+                    documentElement.setAttribute(tableElement.toElement().attribute("new"), value);
+                    documentElement.removeAttribute(tableElement.toElement().attribute("old"));
+                }
             }
 
             tableEdge = tableEdge.nextSibling();
