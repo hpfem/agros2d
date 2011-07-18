@@ -446,22 +446,22 @@ bool SceneMaterialHeatDialog::save()
     if (!SceneMaterialDialog::save()) return false;;
 
     if (txtThermalConductivity->evaluate())
-        m_material->values[m_material->get_material_type("heat_conductivity")] = txtThermalConductivity->value();
+        m_material->values[m_material->get_material_type_variable("heat_conductivity")] = txtThermalConductivity->value();
     else
         return false;
 
     if (txtVolumeHeat->evaluate())
-        m_material->values[m_material->get_material_type("heat_volume_heat")] = txtVolumeHeat->value();
+        m_material->values[m_material->get_material_type_variable("heat_volume_heat")] = txtVolumeHeat->value();
     else
         return false;
 
     if (txtDensity->evaluate())
-        m_material->values[m_material->get_material_type("heat_density")] = txtDensity->value();
+        m_material->values[m_material->get_material_type_variable("heat_density")] = txtDensity->value();
     else
         return false;
 
     if (txtSpecificHeat->evaluate())
-        m_material->values[m_material->get_material_type("heat_specific_heat")] = txtSpecificHeat->value();
+        m_material->values[m_material->get_material_type_variable("heat_specific_heat")] = txtSpecificHeat->value();
     else
         return false;
 

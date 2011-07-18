@@ -390,7 +390,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
             }
         }
 
-        if ((Util::scene()->problemInfo()->module()->has_harmonic || Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) && chkProblemInformation->isChecked())
+        if ((Util::scene()->problemInfo()->module()->harmonic_solutions || Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) && chkProblemInformation->isChecked())
         {
             destination.replace("[ProblemInformation.Frequency]", "<table><tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->frequency) + "</td></tr>", Qt::CaseSensitive);
             destination.replace("[ProblemInformation.TimeStep]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeStep.number) + "</td></tr>", Qt::CaseSensitive);

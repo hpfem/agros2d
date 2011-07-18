@@ -26,45 +26,6 @@ class WeakFormElectrostatic : public WeakFormAgros
 {
 public:
     WeakFormElectrostatic() : WeakFormAgros() { }
-
-    void registerForms()
-    {
-        // boundary conditions
-        for (int i = 0; i<Util::scene()->edges.count(); i++)
-        {
-            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
-
-            if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
-            {
-                if (boundary->type == "electrostatic_surface_charge_density")
-                    if (fabs(boundary->get_value("electrostatic_surface_charge_density").number) > EPS_ZERO)
-                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
-                                                                                                        QString::number(i + 1).toStdString(),
-                                                                                                        boundary->get_value("electrostatic_surface_charge_density").number,
-                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-            }
-        }
-
-        // materials
-        for (int i = 0; i<Util::scene()->labels.count(); i++)
-        {
-            SceneMaterial *material = Util::scene()->labels[i]->material;
-
-            if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
-            {
-                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
-                                                                                               QString::number(i).toStdString(),
-                                                                                               material->get_value("electrostatic_permittivity").number * EPS0,
-                                                                                               HERMES_SYM,
-                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
-                if (fabs(material->get_value("electrostatic_charge_density").number) > EPS_ZERO)
-                    add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
-                                                                                                   QString::number(i).toStdString(),
-                                                                                                   material->get_value("electrostatic_charge_density").number,
-                                                                                                   convertProblemType(Util::scene()->problemInfo()->problemType)));
-            }
-        }
-    }
 };
 
 Hermes::vector<SolutionArray *> ModuleElectrostatic::solve(ProgressItemSolve *progressItemSolve)
@@ -73,6 +34,7 @@ Hermes::vector<SolutionArray *> ModuleElectrostatic::solve(ProgressItemSolve *pr
         return Hermes::vector<SolutionArray *>();
 
     // boundary conditions
+    /*
     EssentialBCs bcs;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
@@ -80,11 +42,41 @@ Hermes::vector<SolutionArray *> ModuleElectrostatic::solve(ProgressItemSolve *pr
 
         if (boundary)
         {
-            if (boundary->type == "electrostatic_potential")
-                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
-                                                                       boundary->get_value("electrostatic_potential").number));
+            for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
+            {
+                if (!it->second.evaluate()) return false;
+
+                if (boundary->type == "electrostatic_potential")
+                    bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                                                                           boundary->get_value("electrostatic_potential").number));
+            }
         }
     }
+    */
+
+    // boundary conditions
+    Hermes::vector<EssentialBCs> bcs;
+    for (int i = 0; i < Util::scene()->problemInfo()->module()->number_of_solution(); i++)
+        bcs.push_back(EssentialBCs());
+
+    for (int i = 0; i < Util::scene()->edges.count(); i++)
+    {
+        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
+
+        if (boundary)
+        {
+            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->type);
+
+            for (std::map<int, Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->essential.begin();
+                 it != boundary_type->essential.end(); ++it)
+            {
+                bcs[it->first - 1].add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                                                                                  boundary->values[it->second].number));
+
+            }
+        }
+    }
+
 
     WeakFormElectrostatic wf;
 
@@ -331,12 +323,12 @@ bool SceneMaterialElectrostaticDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
     if (txtPermittivity->evaluate())
-        m_material->values[m_material->get_material_type("electrostatic_potential")] = txtPermittivity->value();
+        m_material->values[m_material->get_material_type_variable("electrostatic_permittivity")] = txtPermittivity->value();
     else
         return false;
 
     if (txtChargeDensity->evaluate())
-        m_material->values[m_material->get_material_type("electrostatic_charge_density")] = txtChargeDensity->value();
+        m_material->values[m_material->get_material_type_variable("electrostatic_charge_density")] = txtChargeDensity->value();
     else
         return false;
 

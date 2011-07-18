@@ -547,47 +547,47 @@ bool SceneMaterialMagneticDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
     if (txtPermeability->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_permeability")] = txtPermeability->value();
+        m_material->values[m_material->get_material_type_variable("magnetic_permeability")] = txtPermeability->value();
     else
         return false;
 
     if (txtConductivity->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_conductivity")] = txtConductivity->value();
+        m_material->values[m_material->get_material_type_variable("magnetic_conductivity")] = txtConductivity->value();
     else
         return false;
 
     if (txtCurrentDensityReal->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_current_density_external_real")] = txtCurrentDensityReal->value();
+        m_material->values[m_material->get_material_type_variable("magnetic_current_denstity_external_real")] = txtCurrentDensityReal->value();
     else
         return false;
 
     if (txtCurrentDensityImag->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_current_density_external_imag")] = txtCurrentDensityImag->value();
+        m_material->values[m_material->get_material_type_variable("magnetic_current_denstity_external_imag")] = txtCurrentDensityImag->value();
     else
         return false;
 
     if (txtRemanence->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_remanence")] = txtRemanence->value();
+        m_material->values[m_material->get_material_type_variable("magnetic_remanence")] = txtRemanence->value();
     else
         return false;
 
     if (txtRemanenceAngle->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_remanence_angle")] = txtRemanenceAngle->value();
+        m_material->values[m_material->get_material_type_variable("magnetic_remanence_angle")] = txtRemanenceAngle->value();
     else
         return false;
 
     if (txtVelocityX->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_velocity_x")] = txtVelocityX->value();
+        m_material->values[m_material->get_material_type_variable("magnetic_velocity_x")] = txtVelocityX->value();
     else
         return false;
 
     if (txtVelocityY->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_velocity_y")] = txtVelocityY->value();
+        m_material->values[m_material->get_material_type_variable("magnetic_velocity_y")] = txtVelocityY->value();
     else
         return false;
 
     if (txtVelocityAngular->evaluate())
-        m_material->values[m_material->get_material_type("magnetic_velocity_angular")] = txtVelocityAngular->value();
+        m_material->values[m_material->get_material_type_variable("magnetic_velocity_angular")] = txtVelocityAngular->value();
     else
         return false;
 

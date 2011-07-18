@@ -102,7 +102,7 @@ void VolumeIntegralValue::calculate()
         if (Util::scene()->labels[i]->isSelected)
         {
             SceneMaterial *material = Util::scene()->labels[i]->material;
-            parser->setParserVariables(material);
+            parser->setParserVariables(material, NULL);
 
             for_all_active_elements(e, mesh)
             {

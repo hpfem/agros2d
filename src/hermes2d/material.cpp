@@ -30,10 +30,10 @@ Material::Material(std::string name)
     // set values
     if (name != "none")
     {
-        Hermes::vector<Hermes::Module::MaterialType *> materials = Util::scene()->problemInfo()->module()->material_types;
-        for (Hermes::vector<Hermes::Module::MaterialType *>::iterator it = materials.begin(); it < materials.end(); ++it)
+        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
-            Hermes::Module::MaterialType *material_type = ((Hermes::Module::MaterialType *) *it);
+            Hermes::Module::MaterialTypeVariable *material_type = ((Hermes::Module::MaterialTypeVariable *) *it);
             values[material_type] = Value("0");
         }
     }
@@ -44,9 +44,9 @@ Material::~Material()
     values.clear();
 }
 
-Hermes::Module::MaterialType *Material::get_material_type(std::string id)
+Hermes::Module::MaterialTypeVariable *Material::get_material_type_variable(std::string id)
 {
-    for (std::map<Hermes::Module::MaterialType *, Value>::iterator it = values.begin(); it != values.end(); ++it)
+    for (std::map<Hermes::Module::MaterialTypeVariable *, Value>::iterator it = values.begin(); it != values.end(); ++it)
     {
         if (it->first->id == id)
             return it->first;
@@ -56,7 +56,7 @@ Hermes::Module::MaterialType *Material::get_material_type(std::string id)
 
 Value Material::get_value(std::string id)
 {
-    Hermes::Module::MaterialType *material_type = get_material_type(id);
+    Hermes::Module::MaterialTypeVariable *material_type = get_material_type_variable(id);
 
     if (material_type)
         return values[material_type];

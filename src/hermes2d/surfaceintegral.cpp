@@ -160,7 +160,7 @@ void SurfaceIntegralValue::calculate()
                         double *y = ru->get_phys_y(eo);
 
                         SceneMaterial *material = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
-                        parser->setParserVariables(material);
+                        parser->setParserVariables(material, NULL);
 
                         // parse expression
                         int n = 0;

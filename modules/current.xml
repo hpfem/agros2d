@@ -13,8 +13,8 @@
 
     <boundary>
         <item id="current_potential" name="Fixed voltage">
-            <variable id="current_potential" name="Fixed voltage" shortname="V" unit="V" />
-        </item>
+            <variable id="current_potential" name="Fixed voltage" shortname="V" unit="V" essential="1" />
+        </item>    
         <item id="current_inward_current_flow" name="Current density">
             <variable id="current_inward_current_flow" name="Current density" shortname="J" unit="A/m2" />
         </item>

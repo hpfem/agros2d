@@ -1,0 +1,40 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Format: 1.8
+Date: Wen, 23 Mar 2011 12:40:00 +0200
+Source: agros2d
+Binary: agros2d
+Architecture: source
+Version: 1.9-ubuntu51
+Distribution: natty
+Urgency: low
+Maintainer: Pavel Karban <pkarban@gmail.com>
+Changed-By: Pavel Karban <pkarban@gmail.com>
+Description: 
+ agros2d    - hp-FEM multiphysics application based on Hermes2D library
+Changes: 
+ agros2d (1.9-ubuntu51) natty; urgency=low
+ .
+   * added quad element support
+Checksums-Sha1: 
+ 598f8d05caab76f642080a0d46ccc365e4a19211 1262 agros2d_1.9-ubuntu51.dsc
+ 6b85287f183429e49dfa4ebbaf5e25c01e3f8cf4 27193744 agros2d_1.9-ubuntu51.tar.gz
+Checksums-Sha256: 
+ b7236a4d04e43170106c8ae958eef98b24f124fded1d920fec16a0255f2b888b 1262 agros2d_1.9-ubuntu51.dsc
+ 6095c89ad52c96276dde3edaca9f3c18973bc18140a6fca0e14697e8f3ed5f8f 27193744 agros2d_1.9-ubuntu51.tar.gz
+Files: 
+ 657ed2efb897bbe51ab459a35262d0a4 1262 science extra agros2d_1.9-ubuntu51.dsc
+ ec8348eb749909e4f980b50c0cfbfa01 27193744 science extra agros2d_1.9-ubuntu51.tar.gz
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQEcBAEBAgAGBQJOFHERAAoJEFC0sp4RE5v55lkH/R4byvD8/8YaqhEJ5eEyM5PB
+8xtSe8G3Ph9iNCPxoGlxIN2enr5TX0F1MhinL5y8kmUmAnhpFY9MGyb9nOFQJ2vg
+OY3iVrTtM8VMEQOcjsvWS5BrE0RFs8CfvY5WoJxcDqwSuz4ZTfuyU40CGD9jUzi2
+SB2OL+dYQz3hBimtoLzDxRoDRFUunKvAkVJt9jKAneJDlstQNUHax4AwGy8K/XB5
+G4rmRA4nvvxFnpmqCE5cM7UrNn9oGDNX+sjitMZLJFQCMmEUIj9+vYOdKE+pKv5P
+20Urskk7Ab9fckAD4rQECrVXAoOy06S7vg+T7yvtK9z/yrq+NHbXNulAUQPW2xo=
+=WLJI
+-----END PGP SIGNATURE-----

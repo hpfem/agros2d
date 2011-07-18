@@ -1489,9 +1489,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         {
             // read marker
             SceneMaterial *material = new SceneMaterial(name.toStdString());
-            for (std::map<Hermes::Module::MaterialType *, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
+            for (std::map<Hermes::Module::MaterialTypeVariable *, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
             {
-                Hermes::Module::MaterialType *material_type = it->first;
+                Hermes::Module::MaterialTypeVariable *material_type = it->first;
                 material->values[material_type] = Value(element.toElement().attribute(QString::fromStdString(material_type->id), "0"));
             }
             Util::scene()->addMaterial(material);
@@ -1753,7 +1753,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         if (i > 0)
         {
             // write marker
-            for (std::map<Hermes::Module::MaterialType *, Value>::iterator it = materials[i]->values.begin(); it != materials[i]->values.end(); ++it)
+            for (std::map<Hermes::Module::MaterialTypeVariable *, Value>::iterator it = materials[i]->values.begin(); it != materials[i]->values.end(); ++it)
                 eleMaterial.setAttribute(QString::fromStdString(it->first->id), it->second.text);
         }
 

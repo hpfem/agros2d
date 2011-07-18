@@ -16,8 +16,8 @@
 
     <boundary>
         <item id="acoustic_pressure" name="Pressure">
-            <variable id="acoustic_pressure" name="Pressure" shortname="p" unit="Pa" />
-        </item>
+            <variable id="acoustic_pressure" name="Pressure" shortname="p" unit="Pa" essential="1" />
+        </item>    
         <item id="acoustic_normal_acceleration" name="Normal acceleration">
             <variable id="acoustic_normal_acceleration" name="Normal acceleration" shortname="an" unit="m/s2" />
         </item>

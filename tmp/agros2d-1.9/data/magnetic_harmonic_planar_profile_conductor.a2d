@@ -1,0 +1,46 @@
+<document>
+    <problems>
+        <problem adaptivitytolerance="1" frequency="50000" numberofrefinements="1" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="harmonic" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="0" type="magnetic" timestep="0" id="0" name="Magnetic Harmonic Planar Profile Conductor" initialcondition="0">
+            <scriptstartup></scriptstartup>
+            <description>This model is an example.</description>
+            <edges>
+                <edge value_imag="0" type="magnetic_surface_current_density" id="1" name="Neumann" value_real="0"/>
+                <edge value_imag="0" type="magnetic_vector_potential" id="2" name="A = 0" value_real="0"/>
+            </edges>
+            <labels>
+                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
+                <label current_density_real="1e6" remanence="0" conductivity="57e6" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="Copper" current_density_imag="0" permeability="1" velocity_angular="0"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0" y="0.000768" id="0"/>
+            <node x="0.000768" y="0" id="1"/>
+            <node x="0.000575999998324484" y="0.000192" id="2"/>
+            <node x="0.000192" y="0.000575999998324484" id="3"/>
+            <node x="0.000384" y="0.000192" id="4"/>
+            <node x="0.000192" y="0.000384" id="5"/>
+            <node x="0.002" y="0" id="6"/>
+            <node x="0" y="0.002" id="7"/>
+            <node x="0" y="0" id="8"/>
+        </nodes>
+        <edges>
+            <edge end="0" marker="1" id="0" start="7" angle="0"/>
+            <edge end="8" marker="1" id="1" start="0" angle="0"/>
+            <edge end="1" marker="1" id="2" start="8" angle="0"/>
+            <edge end="6" marker="1" id="3" start="1" angle="0"/>
+            <edge end="7" marker="2" id="4" start="6" angle="90"/>
+            <edge end="2" marker="0" id="5" start="1" angle="90"/>
+            <edge end="4" marker="0" id="6" start="2" angle="0"/>
+            <edge end="4" marker="0" id="7" start="5" angle="90"/>
+            <edge end="5" marker="0" id="8" start="3" angle="0"/>
+            <edge end="0" marker="0" id="9" start="3" angle="90"/>
+        </edges>
+        <labels>
+            <label x="0.000585418" y="0.00126858" polynomialorder="0" marker="1" id="0" area="0"/>
+            <label x="0.000109549" y="8.6116e-05" polynomialorder="4" marker="2" id="1" area="0"/>
+        </labels>
+    </geometry>
+    <functions/>
+</document>

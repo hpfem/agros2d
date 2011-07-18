@@ -39,7 +39,7 @@ double WeakForm::Form::get_current_stage_time() const
 }
 
 scalar WeakForm::MatrixFormVol::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
-                                      Geom<double> *e, ExtData<scalar> *ext) const
+                                      Geom<double> *e, ExtData<scalar> *ext)
 {
   error("WeakForm::MatrixFormVol::value must be overridden.");
   return 0.0;
@@ -66,7 +66,7 @@ WeakForm::MatrixFormVol::MatrixFormVol(unsigned int i, unsigned int j, SymFlag s
 }
 
 scalar WeakForm::MatrixFormSurf::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
-                                       Geom<double> *e, ExtData<scalar> *ext) const
+                                       Geom<double> *e, ExtData<scalar> *ext)
 {
   error("WeakForm::MatrixFormSurf::value must be overridden.");
   return 0.0;
@@ -93,7 +93,7 @@ WeakForm::MatrixFormSurf::MatrixFormSurf(unsigned int i, unsigned int j, std::st
 }
 
 scalar WeakForm::VectorFormVol::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v, 
-                                      Geom<double> *e, ExtData<scalar> *ext) const
+                                      Geom<double> *e, ExtData<scalar> *ext)
 {
   error("WeakForm::VectorFormVol::value must be overridden.");
   return 0.0;
@@ -127,7 +127,7 @@ WeakForm::VectorFormSurf::VectorFormSurf(unsigned int i, std::string area,
 }
 
 scalar WeakForm::VectorFormSurf::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v, 
-                                       Geom<double> *e, ExtData<scalar> *ext) const
+                                       Geom<double> *e, ExtData<scalar> *ext)
 {
   error("WeakForm::VectorFormSurf::value must be overridden.");
   return 0.0;

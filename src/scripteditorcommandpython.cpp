@@ -181,7 +181,7 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
         throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
 
     // frequency
-    if (Util::scene()->problemInfo()->module()->has_harmonic)
+    if (Util::scene()->problemInfo()->module()->harmonic_solutions)
     {
         if (frequency >= 0)
             Util::scene()->problemInfo()->frequency = frequency;

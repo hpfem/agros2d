@@ -1,0 +1,6 @@
+?package(agros2d): \
+   needs="wm" \
+   section="Applications/Education" \
+   title="Agros2D" \
+   icon="/usr/share/pixmaps/agros2d.png" \
+   command="/usr/bin/agros2d"

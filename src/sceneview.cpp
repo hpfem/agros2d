@@ -4305,7 +4305,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
         actSceneModePostprocessor->trigger();
 
         // last step
-        if (m_scene->problemInfo()->module()->has_transient)
+        if (m_scene->problemInfo()->module()->transient_solutions)
             m_scene->sceneSolution()->setTimeStep(m_scene->sceneSolution()->timeStepCount() - 1);
 
         // scalar field

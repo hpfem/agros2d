@@ -61,12 +61,12 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     hermes2d/module.cpp \
     #hermes2d/hermes_general.cpp \
     hermes2d/hermes_electrostatic.cpp \
-    hermes2d/hermes_heat.cpp \
-    hermes2d/hermes_magnetic.cpp \
-    hermes2d/hermes_current.cpp \
-    hermes2d/hermes_elasticity.cpp \
+    #hermes2d/hermes_heat.cpp \
+    #hermes2d/hermes_magnetic.cpp \
+    #hermes2d/hermes_current.cpp \
+    #hermes2d/hermes_elasticity.cpp \
     #hermes2d/hermes_rf.cpp \
-    hermes2d/hermes_acoustic.cpp \
+    #hermes2d/hermes_acoustic.cpp \
     #hermes2d/hermes_flow.cpp \
     main.cpp \
     scripteditordialog.cpp \
@@ -99,7 +99,8 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     indicators/indicators.cpp \
     indicators/indicator_unity.cpp \
     collaboration.cpp \
-    resultsview.cpp
+    resultsview.cpp \
+    hermes2d/weakform_parser.cpp
 HEADERS += util.h \
     value.h \
     scene.h \
@@ -112,12 +113,12 @@ HEADERS += util.h \
     hermes2d/module.h \
     #hermes2d/hermes_general.h \
     hermes2d/hermes_electrostatic.h \
-    hermes2d/hermes_heat.h \
-    hermes2d/hermes_magnetic.h \
-    hermes2d/hermes_current.h \
-    hermes2d/hermes_elasticity.h \
+    #hermes2d/hermes_heat.h \
+    #hermes2d/hermes_magnetic.h \
+    #hermes2d/hermes_current.h \
+    #hermes2d/hermes_elasticity.h \
     #hermes2d/hermes_rf.h \
-    hermes2d/hermes_acoustic.h \
+    #hermes2d/hermes_acoustic.h \
     #hermes2d/hermes_flow.h \
     mainwindow.h \
     scripteditordialog.h \
@@ -150,7 +151,8 @@ HEADERS += util.h \
     indicators/indicators.h \
     indicators/indicator_unity.h \
     collaboration.h \
-    resultsview.h 
+    resultsview.h \ 
+    hermes2d/weakform_parser.h
 INCLUDEPATH += . \
     ../lib/muparser \
     ../lib/dxflib \
@@ -203,11 +205,17 @@ linux-g++|linux-g++-64|linux-g++-32 {
 }
 
 macx-g++ {
+    ICON += resources/images/agros2d.icns
+    QMAKE_INFO_PLIST  += resources/Info.plist
+    #target.path = /Applications
+    #INSTALLS += target
+
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
     INCLUDEPATH += ../../qwt-5.2.1/src
     INCLUDEPATH += ../hermes2d/src
+
     LIBS += -L../hermes2d/lib
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
