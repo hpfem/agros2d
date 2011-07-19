@@ -185,6 +185,8 @@ linux-g++ {
 }
 
 macx-g++ {
+    #ICON = src/images/agros2d.icns
+
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
