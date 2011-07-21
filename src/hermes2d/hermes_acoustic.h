@@ -29,13 +29,8 @@ struct ModuleAcoustic : public Hermes::Module::ModuleAgros
 public:
     ModuleAcoustic(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    inline int number_of_solution() const { return 2; }
     bool has_nonlinearity() const { return false; }
 
-    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                         PhysicFieldVariableComp physicFieldVariableComp);
-
-    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
     void update_time_functions(double time);
 
     // rewrite

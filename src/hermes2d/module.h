@@ -223,6 +223,7 @@ struct Module
     Hermes::vector<MaterialTypeVariable *> material_type_variables;
 
     // boundary conditions
+    Hermes::vector<BoundaryTypeVariable *> boundary_type_variables;
     Hermes::vector<BoundaryType *> boundary_types;
 
     // weak forms
@@ -272,6 +273,7 @@ struct Module
     // variable by name
     LocalVariable *get_variable(std::string id);
     BoundaryType *get_boundary_type(std::string id);
+    BoundaryTypeVariable *get_boundary_type_variable(std::string id);
     MaterialTypeVariable *get_material_type_variable(std::string id);
 
     // parser
@@ -284,7 +286,7 @@ struct Module
     int number_of_solution() const;
     virtual bool has_nonlinearity() const = 0;
 
-    virtual Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
+    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
     bool solve_init_variables();
 
     inline virtual void update_time_functions(double time) {}

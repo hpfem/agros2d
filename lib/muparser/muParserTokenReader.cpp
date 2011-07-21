@@ -273,9 +273,9 @@ namespace mu
     // flag is set indicating to ignore undefined variables.
     // This is a way to conditionally avoid an error if 
     // undefined variables occur. 
-    // The GetUsedVar function must supress the error for
+    // (The GetUsedVar function must suppress the error for
     // undefined variables in order to collect all variable 
-    // names including the undefined ones.
+    // names including the undefined ones.)
     if ( (m_bIgnoreUndefVar || m_pFactory) && IsUndefVarTok(tok) )  
       return SaveBeforeReturn(tok);
 
@@ -623,8 +623,13 @@ namespace mu
           // can share characters in their identifiers.
           if ( IsInfixOpTok(a_Tok) ) 
             return true;
-          // nope, no infix operator
-          Error(ecUNEXPECTED_OPERATOR, m_iPos, a_Tok.GetAsString()); 
+          else
+          {
+            // nope, no infix operator
+            return false;
+            //Error(ecUNEXPECTED_OPERATOR, m_iPos, a_Tok.GetAsString()); 
+          }
+
         }
 
         m_iPos += (int)sID.length();
@@ -640,6 +645,17 @@ namespace mu
   /** \brief Check if a string position contains a unary post value operator. */
   bool ParserTokenReader::IsPostOpTok(token_type &a_Tok)
   {
+    // <ibg 20110629> Do not check for postfix operators if they are not allowed at
+    //                the current expression index.
+    //
+    //  This will fix the bug reported here:  
+    //
+    //  http://sourceforge.net/tracker/index.php?func=detail&aid=3343891&group_id=137191&atid=737979
+    //
+    if (m_iSynFlags & noPOSTOP)
+      return false;
+    // </ibg>
+
     // Tricky problem with equations like "3m+5":
     //     m is a postfix operator, + is a valid sign for postfix operators and 
     //     for binary operators parser detects "m+" as operator string and 
@@ -655,17 +671,14 @@ namespace mu
       return false;
 
     // iteraterate over all postfix operator strings
-    funmap_type::const_iterator item = m_pPostOprtDef->begin();
-    for (item=m_pPostOprtDef->begin(); item!=m_pPostOprtDef->end(); ++item)
+    funmap_type::const_reverse_iterator it = m_pPostOprtDef->rbegin();
+    for ( ; it!=m_pPostOprtDef->rend(); ++it)
     {
-      if (sTok.find(item->first)!=0)
+      if (sTok.find(it->first)!=0)
         continue;
 
-      a_Tok.Set(item->second, sTok);
-  	  m_iPos += (int)item->first.length();
-
-      if (m_iSynFlags & noPOSTOP)
-        Error(ecUNEXPECTED_OPERATOR, m_iPos-(int)item->first.length(), item->first);
+      a_Tok.Set(it->second, sTok);
+  	  m_iPos += (int)it->first.length();
 
       m_iSynFlags = noVAL | noVAR | noFUN | noBO | noPOSTOP | noSTR | noASSIGN;
       return true;
@@ -798,7 +811,7 @@ namespace mu
 
     a_Tok.SetString(m_pParser->m_vStringVarBuf[item->second], m_pParser->m_vStringVarBuf.size() );
 
-    m_iSynFlags = m_iSynFlags = noANY ^ ( noBC | noOPT | noEND | noARG_SEP);
+    m_iSynFlags = noANY ^ ( noBC | noOPT | noEND | noARG_SEP);
     return true;
   }
 
@@ -890,7 +903,7 @@ namespace mu
     a_Tok.SetString(strTok, m_pParser->m_vStringBuf.size());
 
     m_iPos += (int)strTok.length() + 2 + (int)iSkip;  // +2 wg Anführungszeichen; +iSkip für entfernte escape zeichen
-    m_iSynFlags = m_iSynFlags = noANY ^ ( noARG_SEP | noBC | noOPT | noEND );
+    m_iSynFlags = noANY ^ ( noARG_SEP | noBC | noOPT | noEND );
 
     return true;
   }

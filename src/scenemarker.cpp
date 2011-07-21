@@ -45,18 +45,20 @@ QString SceneBoundary::html()
     out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
     out += "<table>";
 
-    for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = values.begin(); it != values.end(); ++it)
+    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
     {
-        Hermes::Module::BoundaryTypeVariable *variable = it->first;
+        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
 
         out += "<tr>";
         out += QString("<td>%1 (%2):</td>").
                 arg(QString::fromStdString(variable->name)).
                 arg(QString::fromStdString(variable->unit));
         out += QString("<td>%1</td>").
-                arg(it->second.text);
+                arg(values[variable->id].text);
         out += "</tr>";
     }
+
     out += "</table>";
 
     return out;

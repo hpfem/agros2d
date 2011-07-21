@@ -31,11 +31,11 @@ Boundary::Boundary(std::string name, std::string type)
     // set values
     if (name != "none")
     {
-        Hermes::Module::BoundaryType *boundary = Util::scene()->problemInfo()->module()->get_boundary_type(type);
-        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary->variables.begin(); it < boundary->variables.end(); ++it)
+        Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-            values[variable] = Value("0");
+            values[variable->id] = Value("0");
         }
     }
 }
@@ -45,22 +45,10 @@ Boundary::~Boundary()
     values.clear();
 }
 
-Hermes::Module::BoundaryTypeVariable *Boundary::get_boundary_type_variable(std::string id)
-{
-    for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = values.begin(); it != values.end(); ++it)
-    {
-        if (it->first->id == id)
-            return it->first;
-    }
-    return NULL;
-}
-
 Value Boundary::get_value(std::string id)
 {
-    Hermes::Module::BoundaryTypeVariable *variable = get_boundary_type_variable(id);
-
-    if (variable)
-        return values[variable];
+    if (id != "")
+        return values[id];
 
     return Value();
 }

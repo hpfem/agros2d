@@ -31,8 +31,6 @@ public:
 
     bool has_nonlinearity() const { return false; }
 
-    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-
     // rewrite
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);

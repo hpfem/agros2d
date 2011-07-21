@@ -49,6 +49,8 @@ namespace mu
     class ParserTester // final
     {
     private:
+        static int c_iCount;
+
         // Multiarg callbacks
         static value_type f1of1(value_type v) { return v;};
       	
@@ -80,6 +82,7 @@ namespace mu
         static value_type add(value_type v1, value_type v2) { return v1+v2; }
         static value_type land(value_type v1, value_type v2) { return (int)v1 & (int)v2; }
         
+
         static value_type FirstArg(const value_type* a_afArg, int a_iArgc)
         {
           if (!a_iArgc)	
@@ -162,9 +165,7 @@ namespace mu
         static value_type Micro(value_type a_fVal) { return a_fVal * (value_type)1e-6; }
         static value_type Milli(value_type a_fVal) { return a_fVal / (value_type)1e3; }
 
-        static int c_iCount;
-
-	      int TestNames();
+        int TestNames();
 	      int TestSyntax();
 	      int TestMultiArg();
 	      int TestVolatile();

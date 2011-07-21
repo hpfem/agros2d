@@ -38,14 +38,13 @@ using namespace std;
     \brief This file contains the implementation of parser test cases.
 */
 
-
 namespace mu
 {
   namespace Test
   {
     int ParserTester::c_iCount = 0;
 
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
     ParserTester::ParserTester()
       :m_vTestFun()
     {
@@ -66,7 +65,7 @@ namespace mu
       ParserTester::c_iCount = 0;
     }
 
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
     int ParserTester::TestInterface()
     {
       int iStat = 0;
@@ -108,7 +107,7 @@ namespace mu
       return iStat;
     }
 
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
     int ParserTester::TestStrArg()
     {
       int iStat = 0;
@@ -133,7 +132,7 @@ namespace mu
       return iStat;
     }
 
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
     int ParserTester::TestBinOprt()
     {
       int iStat = 0;
@@ -277,7 +276,7 @@ namespace mu
       return iStat;
     }
 
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
     /** \brief Check muParser name restriction enforcement. */
     int ParserTester::TestNames()
     {
@@ -676,6 +675,10 @@ namespace mu
       iStat += EqnTest( _T("$($2^2)"),-4, true);
       iStat += EqnTest( _T("3+$3^2"),12, true);
 
+      // infix operators sharing the first few characters
+      iStat += EqnTest( _T("~ 123"),  123+2, true);
+      iStat += EqnTest( _T("~~ 123"),  123+2, true);
+
       if (iStat==0)
         mu::console() << _T("passed") << endl;
       else
@@ -707,21 +710,26 @@ namespace mu
       iStat += EqnTest( _T("f4of4(0,0,0,1000){m}"), 1, true);
       iStat += EqnTest( _T("2+(a*1000){m}"), 3, true);
 
+      // can postfix operators "m" und "meg" be told apart properly?
+      iStat += EqnTest( _T("2*3000meg+2"), 2*3e9+2, true);   
+
       // some incorrect results
       iStat += EqnTest( _T("1000{m}"), 0.1, false);
       iStat += EqnTest( _T("(a){m}"), 2, false);
       // failure due to syntax checking
       iStat += ThrowTest(_T("0x"), ecUNASSIGNABLE_TOKEN);  // incomplete hex definition
       iStat += ThrowTest(_T("3+"), ecUNEXPECTED_EOF);
-      iStat += ThrowTest( _T("4 + {m}"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("{m}4"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("sin({m})"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("{m} {m}"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("{m}(8)"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("4,{m}"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("-{m}"), ecUNEXPECTED_OPERATOR);
+      iStat += ThrowTest( _T("4 + {m}"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("{m}4"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("sin({m})"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("{m} {m}"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("{m}(8)"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("4,{m}"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("-{m}"), ecUNASSIGNABLE_TOKEN);
       iStat += ThrowTest( _T("2(-{m})"), ecUNEXPECTED_PARENS);
       iStat += ThrowTest( _T("2({m})"), ecUNEXPECTED_PARENS);
+ 
+      iStat += ThrowTest( _T("multi*1.0"), ecUNASSIGNABLE_TOKEN);
 
       if (iStat==0)
         mu::console() << _T("passed") << endl;
@@ -1120,6 +1128,7 @@ namespace mu
         p.DefineVar( _T("b"), &fVal[1]);
         p.DefineVar( _T("c"), &fVal[2]);
         p.DefinePostfixOprt( _T("{m}"), Milli);
+        p.DefinePostfixOprt( _T("m"), Milli);
         p.DefineFun( _T("ping"), Ping);
         p.DefineFun( _T("valueof"), ValueOf);
         p.DefineFun( _T("strfun1"), StrFun1);
@@ -1229,8 +1238,11 @@ namespace mu
         //       they are mere placeholders to test certain features.
         p1->DefineInfixOprt( _T("$"), sign, prPOW+1);  // sign with high priority
         p1->DefineInfixOprt( _T("~"), plus2);          // high priority
+        p1->DefineInfixOprt( _T("~~"), plus2);
         p1->DefinePostfixOprt( _T("{m}"), Milli);
         p1->DefinePostfixOprt( _T("{M}"), Mega);
+        p1->DefinePostfixOprt( _T("m"), Milli);
+        p1->DefinePostfixOprt( _T("meg"), Mega);
         p1->DefinePostfixOprt( _T("#"), times3);
         p1->DefinePostfixOprt( _T("§"), sqr); 
         p1->SetExpr(a_str);
