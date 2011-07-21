@@ -30,6 +30,11 @@ ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType probl
     i = atoi(node->first_attribute("i")->value());
     j = atoi(node->first_attribute("j")->value());
 
+    if (atoi(node->first_attribute("symmetric")->value()))
+        sym = HERMES_SYM;
+    else
+        sym = HERMES_NONSYM;
+
     if (problem_type == ProblemType_Planar)
     {
         if (node->first_attribute("planar"))
@@ -79,6 +84,7 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
     parser->parser[0]->DefineVar("uval", &puval);
     parser->parser[0]->DefineVar("udx", &pudx);
     parser->parser[0]->DefineVar("udy", &pudy);
+
     parser->parser[0]->DefineVar("vval", &pvval);
     parser->parser[0]->DefineVar("vdx", &pvdx);
     parser->parser[0]->DefineVar("vdy", &pvdy);
@@ -92,9 +98,11 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
 // **********************************************************************************************
 
 CustomParserMatrixFormVol::CustomParserMatrixFormVol(unsigned int i, unsigned int j,
-                                                     std::string area, std::string expression,
+                                                     std::string area,
+                                                     SymFlag sym,
+                                                     std::string expression,
                                                      Material *material)
-    : WeakForm::MatrixFormVol(i, j, HERMES_NONSYM, area), ParserForm()
+    : WeakForm::MatrixFormVol(i, j, sym, area), ParserForm()
 {
     initParser(material, NULL);
 
@@ -118,6 +126,7 @@ scalar CustomParserMatrixFormVol::value(int n, double *wt, Func<scalar> *u_ext[]
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
+        // result += wt[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]);
         result += wt[i] * parser->parser[0]->Eval();
     }
 
@@ -127,7 +136,7 @@ scalar CustomParserMatrixFormVol::value(int n, double *wt, Func<scalar> *u_ext[]
 Ord CustomParserMatrixFormVol::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
                                    Geom<Ord> *e, ExtData<Ord> *ext) const
 {
-    return Ord(10);
+    return Ord(6);
 }
 
 CustomParserVectorFormVol::CustomParserVectorFormVol(unsigned int i,
@@ -162,7 +171,7 @@ scalar CustomParserVectorFormVol::value(int n, double *wt, Func<scalar> *u_ext[]
 Ord CustomParserVectorFormVol::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
                                    ExtData<Ord> *ext) const
 {
-    return Ord(10);
+    return Ord(6);
 }
 
 // **********************************************************************************************
@@ -203,7 +212,7 @@ scalar CustomParserMatrixFormSurf::value(int n, double *wt, Func<scalar> *u_ext[
 Ord CustomParserMatrixFormSurf::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
                                     Geom<Ord> *e, ExtData<Ord> *ext) const
 {
-    return Ord(10);
+    return Ord(6);
 }
 
 CustomParserVectorFormSurf::CustomParserVectorFormSurf(unsigned int i,

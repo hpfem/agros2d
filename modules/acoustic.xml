@@ -2,7 +2,7 @@
 <module>
     <general id ="acoustic" name="Acoustic">
         <description>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids, and solids.</description>
-        <properties steadystate="0" harmonic="1" transient="0" />
+        <properties steadystate="0" harmonic="2" transient="0" />    
     </general>
 
     <constants>
@@ -11,21 +11,48 @@
 
     <material>
         <item id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" />
-        <item id="acoustic_speed" name="Speed of sound" shortname="v" unit="m/s" />
+        <item id="acoustic_speed" name="Speed of sound" shortname="v" unit="m/s" />  
+        
+    	<harmonic>
+    		<material id="acoustic_density" />
+    		<material id="acoustic_speed" />
+    	
+        	<matrix i="1" j="1" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval" 
+        						axi="1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="1" />
+        	<matrix i="2" j="2" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval" 
+        						axi="1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="1" />
+		</harmonic>
     </material>
 
     <boundary>
-        <item id="acoustic_pressure" name="Pressure">
-            <variable id="acoustic_pressure" name="Pressure" shortname="p" unit="Pa" essential="1" />
-        </item>    
-        <item id="acoustic_normal_acceleration" name="Normal acceleration">
-            <variable id="acoustic_normal_acceleration" name="Normal acceleration" shortname="an" unit="m/s2" />
-        </item>
-        <item id="acoustic_impedance" name="Impedance boundary condition">
-            <variable id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" unit="Pa·s/m" />
-        </item>
-        <item id="acoustic_matched_boundary" name="Matched boundary" />
-    </boundary>
+    	<item id="acoustic_pressure_real" name="Pressure - real" shortname="pr" unit="Pa" essential="1" />
+    	<item id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" unit="Pa" essential="1" />
+    	<item id="acoustic_normal_acceleration" name="Normal acceleration" shortname="an" unit="m/s2" />
+    	<item id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" unit="Pa·s/m" />
+ 
+ 		<harmonic>
+       		<boundary id="acoustic_pressure" name="Pressure">
+            	<item id="acoustic_pressure_real" />
+            	<item id="acoustic_pressure_imag" />
+				
+				<essential i="1" id="acoustic_pressure_real" />
+				<essential i="2" id="acoustic_pressure_imag" />
+			</boundary> 
+			
+      	  	<boundary id="acoustic_normal_acceleration" name="Normal acceleration">
+            	<item id="acoustic_normal_acceleration" />	
+				
+				<vector i="1" planar="an * vval" axi="an * x * vval" />
+			</boundary>  
+			
+			<boundary id="acoustic_impedance" name="Impedance boundary condition">
+            	<item id="acoustic_impedance" />
+        	</boundary>  
+        	
+			<boundary id="acoustic_matched_boundary" name="Matched boundary" >
+			</boundary>  
+		</harmonic>
+    </boundary>	    
 
     <localvariable>
         <item id="acoustic_pressure_real" name="Pressure - real" shortname="p" unit="Pa" scalar="1">

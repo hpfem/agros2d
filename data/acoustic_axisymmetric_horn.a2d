@@ -6,7 +6,7 @@
             <edges>
                 <edge type="acoustic_normal_acceleration" id="1" name="Wall" acoustic_normal_acceleration="0"/>
                 <edge type="acoustic_matched_boundary" id="2" name="Matched boundary"/>
-                <edge acoustic_pressure="1" type="acoustic_pressure" id="3" name="Source"/>
+                <edge type="acoustic_pressure" id="3" name="Source" acoustic_pressure_real="1" acoustic_pressure_imag="0" />
             </edges>
             <labels>
                 <label acoustic_speed="343" acoustic_density="1.25" id="1" name="Air"/>

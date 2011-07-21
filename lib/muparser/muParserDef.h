@@ -37,7 +37,7 @@
 */
 
 #define MUP_VERSION _T("1.9.9")
-#define MUP_VERSION_DATE _T("20110605; SVN")
+#define MUP_VERSION_DATE _T("20110713; SF-SVN")
 
 #define MUP_CHARS _T("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
@@ -180,7 +180,7 @@ namespace mu
     cmOPRT_POSTFIX,        ///< code for postfix operators
     cmOPRT_INFIX,          ///< code for infix operators
     cmEND,                 ///< end of formula
-    cmUNKNOWN,             ///< uninitialized item
+    cmUNKNOWN              ///< uninitialized item
   };
 
   //------------------------------------------------------------------------------

@@ -46,7 +46,8 @@ using namespace std;
 
 namespace mu
 {
-  std::locale ParserBase::s_locale;
+  std::locale ParserBase::s_locale = std::locale(std::locale::classic(), new change_dec_sep<char_type>('.'));
+
   bool ParserBase::g_DbgDumpCmdCode = false;
   bool ParserBase::g_DbgDumpStack = false;
 

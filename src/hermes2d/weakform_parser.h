@@ -32,12 +32,15 @@ class Parser;
 
 struct ParserFormMatrix
 {
-    ParserFormMatrix() : i(0), j(0), expression("") {}
+    ParserFormMatrix() : i(0), j(0), sym(HERMES_NONSYM), expression("") {}
     ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType problem_type);
 
     // position
     int i;
     int j;
+
+    // symmetric flag
+    SymFlag sym;
 
     // expression
     std::string expression;
@@ -81,7 +84,9 @@ class CustomParserMatrixFormVol : public WeakForm::MatrixFormVol, public ParserF
 {
 public:
     CustomParserMatrixFormVol(unsigned int i, unsigned int j,
-                              std::string area, std::string expression,
+                              std::string area,
+                              SymFlag sym,
+                              std::string expression,
                               Material *material);
 
     virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,

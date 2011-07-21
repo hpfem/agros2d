@@ -37,12 +37,11 @@ public:
     std::string type;
 
     // variables
-    std::map<Hermes::Module::BoundaryTypeVariable *, Value> values;
+    std::map<std::string, Value> values;
 
     Boundary(std::string name, std::string type = "");
     ~Boundary();
 
-    Hermes::Module::BoundaryTypeVariable *get_boundary_type_variable(std::string id);
     Value get_value(std::string id);
 };
 

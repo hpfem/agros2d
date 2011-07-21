@@ -22,6 +22,7 @@
 #include "scene.h"
 #include "gui.h"
 
+/*
 class CustomMatrixFormSurfMatchedBoundary : public WeakForm::MatrixFormSurf
 {
 public:
@@ -59,7 +60,9 @@ private:
     scalar coeff;
     GeomType gt;
 };
+*/
 
+/*
 class WeakFormAcousticsHarmonic : public WeakFormAgros
 {
 public:
@@ -109,42 +112,9 @@ public:
                 }
             }
         }
-
-        // materials
-        for (int i = 0; i<Util::scene()->labels.count(); i++)
-        {
-            SceneMaterial *material = Util::scene()->labels[i]->material;
-
-            if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
-            {
-                // real part
-                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
-                                                                                               QString::number(i).toStdString(),
-                                                                                               1.0 / material->get_value("acoustic_density").number,
-                                                                                               HERMES_SYM,
-                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
-                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
-                                                                                          QString::number(i).toStdString(),
-                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) / (material->get_value("acoustic_density").number * sqr(material->get_value("acoustic_speed").number)),
-                                                                                          HERMES_SYM,
-                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-                // imag part
-                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(1, 1,
-                                                                                               QString::number(i).toStdString(),
-                                                                                               1.0 / material->get_value("acoustic_density").number,
-                                                                                               HERMES_SYM,
-                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
-                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 1,
-                                                                                          QString::number(i).toStdString(),
-                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) / (material->get_value("acoustic_density").number * sqr(material->get_value("acoustic_speed").number)),
-                                                                                          HERMES_SYM,
-                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
-            }
-        }
     }
 };
-
+*/
 // time dependent
 
 // - 1/rho * \Delta p + 1/(rho * c^2) * \frac{\partial v}{\partial t} = 0.
@@ -190,11 +160,12 @@ public:
 
                 if (boundary->type == "acoustic_matched_boundary")
                 {
+                    /*
                     add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
                                                                                  QString::number(i + 1).toStdString(),
                                                                                  100,
                                                                                  convertProblemType(Util::scene()->problemInfo()->problemType)));
-                    /*
+
                     add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
                                                                                  QString::number(i + 1).toStdString(),
                                                                                  - 1.0,
@@ -338,6 +309,7 @@ private:
 
 // ****************************************************************************************************************
 
+/*
 Hermes::vector<SolutionArray *> ModuleAcoustic::solve(ProgressItemSolve *progressItemSolve)
 {
     if (!solve_init_variables())
@@ -381,6 +353,7 @@ Hermes::vector<SolutionArray *> ModuleAcoustic::solve(ProgressItemSolve *progres
 
     return solutionArrayList;
 }
+*/
 
 void ModuleAcoustic::update_time_functions(double time)
 {
@@ -546,7 +519,7 @@ void SceneBoundaryAcousticDialog::load()
     cmbType->setCurrentIndex(cmbType->findData(QString::fromStdString(m_boundary->type)));
     if (m_boundary->type == "acoustic_pressure")
     {
-        txtValue->setValue(m_boundary->get_value("acoustic_pressure"));
+        txtValue->setValue(m_boundary->get_value("acoustic_pressure_real"));
     }
     else if (m_boundary->type == "acoustic_normal_acceleration")
     {
@@ -566,15 +539,15 @@ bool SceneBoundaryAcousticDialog::save() {
     if (txtValue->evaluate())
         if (m_boundary->type == "acoustic_pressure")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("acoustic_pressure")] = txtValue->value();
+            m_boundary->values["acoustic_pressure_real"] = txtValue->value();
         }
         else if (m_boundary->type == "acoustic_normal_acceleration")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("acoustic_normal_acceleration")] = txtValue->value();
+            m_boundary->values["acoustic_normal_acceleration"] = txtValue->value();
         }
         else if (m_boundary->type == "acoustic_impedance")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("acoustic_impedance")] = txtValue->value();
+            m_boundary->values["acoustic_impedance"] = txtValue->value();
         }
         else
             return false;
@@ -657,12 +630,12 @@ bool SceneMaterialAcousticDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
     if (txtDensity->evaluate())
-        m_material->values[m_material->get_material_type_variable("acoustic_density")] = txtDensity->value();
+        m_material->values["acoustic_density"] = txtDensity->value();
     else
         return false;
 
     if (txtSpeed->evaluate())
-        m_material->values[m_material->get_material_type_variable("acoustic_speed")] = txtSpeed->value();
+        m_material->values["acoustic_speed"] = txtSpeed->value();
     else
         return false;
 

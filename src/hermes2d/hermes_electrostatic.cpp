@@ -22,69 +22,6 @@
 #include "scene.h"
 #include "gui.h"
 
-class WeakFormElectrostatic : public WeakFormAgros
-{
-public:
-    WeakFormElectrostatic() : WeakFormAgros() { }
-};
-
-Hermes::vector<SolutionArray *> ModuleElectrostatic::solve(ProgressItemSolve *progressItemSolve)
-{
-    if (!solve_init_variables())
-        return Hermes::vector<SolutionArray *>();
-
-    // boundary conditions
-    /*
-    EssentialBCs bcs;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
-
-        if (boundary)
-        {
-            for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
-            {
-                if (!it->second.evaluate()) return false;
-
-                if (boundary->type == "electrostatic_potential")
-                    bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
-                                                                           boundary->get_value("electrostatic_potential").number));
-            }
-        }
-    }
-    */
-
-    // boundary conditions
-    Hermes::vector<EssentialBCs> bcs;
-    for (int i = 0; i < Util::scene()->problemInfo()->module()->number_of_solution(); i++)
-        bcs.push_back(EssentialBCs());
-
-    for (int i = 0; i < Util::scene()->edges.count(); i++)
-    {
-        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
-
-        if (boundary)
-        {
-            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->type);
-
-            for (std::map<int, Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->essential.begin();
-                 it != boundary_type->essential.end(); ++it)
-            {
-                bcs[it->first - 1].add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
-                                                                                  boundary->values[it->second].number));
-
-            }
-        }
-    }
-
-
-    WeakFormElectrostatic wf;
-
-    Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
-
-    return solutionArrayList;
-}
-
 // **************************************************************************************************************************
 // rewrite
 
@@ -247,11 +184,11 @@ bool SceneBoundaryElectrostaticDialog::save() {
     if (txtValue->evaluate())
         if (m_boundary->type == "electrostatic_potential")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("electrostatic_potential")] = txtValue->value();
+            m_boundary->values["electrostatic_potential"] = txtValue->value();
         }
         else if (m_boundary->type == "electrostatic_surface_charge_density")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("electrostatic_surface_charge_density")] = txtValue->value();
+            m_boundary->values["electrostatic_surface_charge_density"] = txtValue->value();
         }
         else
             return false;
@@ -323,12 +260,12 @@ bool SceneMaterialElectrostaticDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
     if (txtPermittivity->evaluate())
-        m_material->values[m_material->get_material_type_variable("electrostatic_permittivity")] = txtPermittivity->value();
+        m_material->values["electrostatic_permittivity"] = txtPermittivity->value();
     else
         return false;
 
     if (txtChargeDensity->evaluate())
-        m_material->values[m_material->get_material_type_variable("electrostatic_charge_density")] = txtChargeDensity->value();
+        m_material->values["electrostatic_charge_density"] = txtChargeDensity->value();
     else
         return false;
 

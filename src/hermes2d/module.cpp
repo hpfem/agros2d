@@ -26,7 +26,7 @@
 // #include "hermes_current.h"
 // #include "hermes_elasticity.h"
 // #include "hermes_rf.h"
-// #include "hermes_acoustic.h"
+#include "hermes_acoustic.h"
 // #include "hermes_flow.h"
 
 #include "progressdialog.h"
@@ -45,13 +45,13 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
 
     if (id == "electrostatic")
         module = new ModuleElectrostatic(problem_type, analysis_type);
+    if (id == "acoustic")
+        module = new ModuleAcoustic(problem_type, analysis_type);
     /*
     if (id == "heat")
         module = new ModuleHeat(problem_type, analysis_type);
     if (id == "current")
         module = new ModuleCurrent(problem_type, analysis_type);
-    if (id == "acoustic")
-        module = new ModuleAcoustic(problem_type, analysis_type);
     if (id == "magnetic")
         module = new ModuleMagnetic(problem_type, analysis_type);
     if (id == "elasticity")
@@ -72,11 +72,11 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneBoundaryElectrostaticDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "acoustic")
+        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
     /*
     if (Util::scene()->problemInfo()->module()->id == "heat")
         return new SceneBoundaryHeatDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "current")
         return new SceneBoundaryCurrentDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "magnetic")
@@ -91,11 +91,11 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneMaterialElectrostaticDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "acoustic")
+        return new SceneMaterialAcousticDialog(scene_material, parent);
     /*
     if (Util::scene()->problemInfo()->module()->id == "heat")
         return new SceneMaterialHeatDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-        return new SceneMaterialAcousticDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "current")
         return new SceneMaterialCurrentDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "magnetic")
@@ -194,6 +194,7 @@ void WeakFormAgros::registerForms()
 
                 add_matrix_form(new CustomParserMatrixFormVol(form->i - 1, form->j - 1,
                                                               QString::number(i).toStdString(),
+                                                              form->sym,
                                                               form->expression,
                                                               material));
             }
@@ -258,15 +259,18 @@ Hermes::Module::LocalVariable::LocalVariable(rapidxml::xml_node<> *node, Problem
 
 Hermes::Module::Integral::Expression::Expression(rapidxml::xml_node<> *node, ProblemType problemType)
 {
-    if (problemType == ProblemType_Planar)
+    if (node)
     {
-        if (node->first_attribute("planar"))
-            scalar = node->first_attribute("planar")->value();
-    }
-    else
-    {
-        if (node->first_attribute("axi"))
-            scalar = node->first_attribute("axi")->value();
+        if (problemType == ProblemType_Planar)
+        {
+            if (node->first_attribute("planar"))
+                scalar = node->first_attribute("planar")->value();
+        }
+        else
+        {
+            if (node->first_attribute("axi"))
+                scalar = node->first_attribute("axi")->value();
+        }
     }
 }
 
@@ -302,19 +306,19 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     for (rapidxml::xml_node<> *variable = node->first_node("item");
          variable; variable = variable->next_sibling())
         if (std::string(variable->name()) == "item")
-        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable>::iterator it = boundary_type_variables.begin();
-            it < boundary_type_variables.end(); ++it )
-        {
-            Hermes::Module::BoundaryTypeVariable old = (Hermes::Module::BoundaryTypeVariable) *it;
-
-            if (old.id == variable->first_attribute("id")->value())
+            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable>::iterator it = boundary_type_variables.begin();
+                 it < boundary_type_variables.end(); ++it )
             {
-                Hermes::Module::BoundaryTypeVariable *var = new Hermes::Module::BoundaryTypeVariable(
-                            old.id, old.name, old.shortname, old.unit);
+                Hermes::Module::BoundaryTypeVariable old = (Hermes::Module::BoundaryTypeVariable) *it;
 
-                variables.push_back(var);
+                if (old.id == variable->first_attribute("id")->value())
+                {
+                    Hermes::Module::BoundaryTypeVariable *var = new Hermes::Module::BoundaryTypeVariable(
+                                old.id, old.name, old.shortname, old.unit);
+
+                    variables.push_back(var);
+                }
             }
-        }
 
     // weakform
     for (rapidxml::xml_node<> *node_matrix = node->first_node("matrix");
@@ -332,7 +336,7 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
          node_essential; node_essential = node_essential->next_sibling())
         if (std::string(node_essential->name()) == "essential")
             for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = variables.begin();
-                it < variables.end(); ++it )
+                 it < variables.end(); ++it )
             {
                 Hermes::Module::BoundaryTypeVariable *var = (Hermes::Module::BoundaryTypeVariable *) *it;
 
@@ -360,6 +364,9 @@ Hermes::Module::BoundaryTypeVariable::BoundaryTypeVariable(std::string id, std::
 
 Hermes::Module::BoundaryType::~BoundaryType()
 {
+    // essential
+    essential.clear();
+
     // variables
     for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
         delete *it;
@@ -642,6 +649,16 @@ Hermes::Module::BoundaryType *Hermes::Module::Module::get_boundary_type(std::str
     return NULL;
 }
 
+Hermes::Module::BoundaryTypeVariable *Hermes::Module::Module::get_boundary_type_variable(std::string id)
+{
+    for(Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type_variables.begin(); it < boundary_type_variables.end(); ++it )
+    {
+        if (((Hermes::Module::BoundaryTypeVariable *) *it)->id == id)
+            return *it;
+    }
+    return NULL;
+}
+
 Hermes::Module::MaterialTypeVariable *Hermes::Module::Module::get_material_type_variable(std::string id)
 {
     for(Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = material_type_variables.begin(); it < material_type_variables.end(); ++it )
@@ -677,6 +694,8 @@ mu::Parser *Hermes::Module::Module::get_parser()
 
     for (std::map<std::string, double>::iterator it = constants.begin(); it != constants.end(); ++it)
         parser->DefineConst(it->first, it->second);
+
+    parser->EnableOptimizer(true);
 
     return parser;
 }
@@ -727,7 +746,7 @@ bool Hermes::Module::Module::solve_init_variables()
         SceneBoundary *boundary = Util::scene()->boundaries[i];
 
         // evaluate script
-        for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
+        for (std::map<std::string, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
             if (!it->second.evaluate()) return false;
     }
 
@@ -737,11 +756,50 @@ bool Hermes::Module::Module::solve_init_variables()
         SceneMaterial *material = Util::scene()->materials[i];
 
         // evaluate script
-        for (std::map<Hermes::Module::MaterialTypeVariable *, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
+        for (std::map<std::string, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
             if (!it->second.evaluate()) return false;
     }
 
+
     return true;
+}
+
+Hermes::vector<SolutionArray *> Hermes::Module::Module::solve(ProgressItemSolve *progressItemSolve)
+{
+    if (!solve_init_variables())
+        return Hermes::vector<SolutionArray *>();
+
+    // essential boundary conditions
+    Hermes::vector<EssentialBCs> bcs;
+    for (int i = 0; i < Util::scene()->problemInfo()->module()->number_of_solution(); i++)
+        bcs.push_back(EssentialBCs());
+
+    for (int i = 0; i < Util::scene()->edges.count(); i++)
+    {
+        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
+
+        if (boundary)
+        {
+            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->type);
+
+            if (boundary_type)
+            {
+                for (std::map<int, Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->essential.begin();
+                     it != boundary_type->essential.end(); ++it)
+                {
+                    bcs[it->first - 1].add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                                                                                          boundary->values[it->second->id].number));
+
+                }
+            }
+        }
+    }
+
+    WeakFormAgros wf(number_of_solution());
+
+    Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
+
+    return solutionArrayList;
 }
 
 // ***********************************************************************************************
@@ -1384,12 +1442,7 @@ SolutionArray *SolutionAgros::solutionArray(Solution *sln, Space *space, double 
 
 Parser::Parser()
 {
-    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::scene()->problemInfo()->module()->material_type_variables.begin();
-         it != Util::scene()->problemInfo()->module()->material_type_variables.end(); ++it)
-    {
-        Hermes::Module::MaterialTypeVariable *material_type = *it;
-        parser_variables[material_type->shortname] = 0.0;
-    }
+
 }
 
 Parser::~Parser()
@@ -1404,18 +1457,24 @@ Parser::~Parser()
 void Parser::setParserVariables(Material *material, Boundary *boundary)
 {
     if (material)
-        for (std::map<Hermes::Module::MaterialTypeVariable *, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
+    {
+        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
-            Hermes::Module::MaterialTypeVariable *material_type = it->first;
-            parser_variables[material_type->shortname] = it->second.number;
+            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+            parser_variables[variable->shortname] = material->values[variable->id].number;
         }
+    }
 
     if (boundary)
-        for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
+    {
+        Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->type);
+        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
         {
-            Hermes::Module::BoundaryTypeVariable *boundary_type = it->first;
-            parser_variables[boundary_type->shortname] = it->second.number;
+            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+            parser_variables[variable->shortname] = boundary->values[variable->id].number;
         }
+    }
 }
 
 // *********************************************************************************************************************************************

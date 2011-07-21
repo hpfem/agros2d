@@ -36,12 +36,11 @@ public:
     std::string name;
 
     // variables
-    std::map<Hermes::Module::MaterialTypeVariable *, Value> values;
+    std::map<std::string, Value> values;
 
     Material(std::string name);
     ~Material();
 
-    Hermes::Module::MaterialTypeVariable *get_material_type_variable(std::string id);
     Value get_value(std::string id);
 };
 

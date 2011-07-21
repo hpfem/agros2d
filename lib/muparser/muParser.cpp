@@ -184,15 +184,6 @@ namespace mu
   Parser::Parser()
     :ParserBase()
   {
-    // For some reason locale initialization in the dll fails when done in the static
-    // constructor. I have to do it here
-    static bool bInitLocale = true;
-    if (bInitLocale)
-    {
-      Parser::s_locale = std::locale(std::locale::classic(), new change_dec_sep<char_type>('.'));
-      bInitLocale = false;
-    }
-
     AddValIdent(IsVal);
 
     InitCharSets();

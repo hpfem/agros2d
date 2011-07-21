@@ -1461,10 +1461,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         {
             // read marker
             SceneBoundary *boundary = new SceneBoundary(name.toStdString(), type.toStdString());
-            for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
+            for (std::map<std::string, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
             {
-                Hermes::Module::BoundaryTypeVariable *boundary_variable_type = it->first;
-                boundary->values[boundary_variable_type] = Value(element.toElement().attribute(QString::fromStdString(boundary_variable_type->id), "0"));
+                boundary->values[it->first] = Value(element.toElement().attribute(QString::fromStdString(it->first), "0"));
             }
             Util::scene()->addBoundary(boundary);
         }
@@ -1489,10 +1488,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         {
             // read marker
             SceneMaterial *material = new SceneMaterial(name.toStdString());
-            for (std::map<Hermes::Module::MaterialTypeVariable *, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
+            for (std::map<std::string, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
             {
-                Hermes::Module::MaterialTypeVariable *material_type = it->first;
-                material->values[material_type] = Value(element.toElement().attribute(QString::fromStdString(material_type->id), "0"));
+                material->values[it->first] = Value(element.toElement().attribute(QString::fromStdString(it->first), "0"));
             }
             Util::scene()->addMaterial(material);
         }
@@ -1733,8 +1731,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
             // write marker
             eleBoundary.setAttribute("type", QString::fromStdString(boundaries[i]->type));
 
-            for (std::map<Hermes::Module::BoundaryTypeVariable *, Value>::iterator it = boundaries[i]->values.begin(); it != boundaries[i]->values.end(); ++it)
-                eleBoundary.setAttribute(QString::fromStdString(it->first->id), it->second.text);
+            for (std::map<std::string, Value>::iterator it = boundaries[i]->values.begin(); it != boundaries[i]->values.end(); ++it)
+                eleBoundary.setAttribute(QString::fromStdString(it->first), it->second.text);
         }
 
         eleBoundaries.appendChild(eleBoundary);
@@ -1753,8 +1751,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         if (i > 0)
         {
             // write marker
-            for (std::map<Hermes::Module::MaterialTypeVariable *, Value>::iterator it = materials[i]->values.begin(); it != materials[i]->values.end(); ++it)
-                eleMaterial.setAttribute(QString::fromStdString(it->first->id), it->second.text);
+            for (std::map<std::string, Value>::iterator it = materials[i]->values.begin(); it != materials[i]->values.end(); ++it)
+                eleMaterial.setAttribute(QString::fromStdString(it->first), it->second.text);
         }
 
         eleMaterials.appendChild(eleMaterial);

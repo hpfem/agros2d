@@ -105,6 +105,10 @@ void LocalPointValue::calculate()
 
             parser->setParserVariables(tmpMaterial, NULL);
 
+            // set material variables
+            for (std::map<std::string, double>::iterator itv = parser->parser_variables.begin(); itv != parser->parser_variables.end(); ++itv)
+                parser->parser[0]->DefineVar(itv->first, &itv->second);
+
             // parse expression
             for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module()->local_point.begin();
                  it < Util::scene()->problemInfo()->module()->local_point.end(); ++it )
