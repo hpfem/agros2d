@@ -373,22 +373,6 @@ enum PhysicFieldVariableComp
     PhysicFieldVariableComp_Y
 };
 
-enum PhysicFieldBC
-{
-    PhysicFieldBC_Undefined,
-    PhysicFieldBC_None,
-    PhysicFieldBC_General_Value,
-    PhysicFieldBC_General_Derivative,
-    PhysicFieldBC_Flow_Velocity,
-    PhysicFieldBC_Flow_Pressure,
-    PhysicFieldBC_Flow_Outlet,
-    PhysicFieldBC_Flow_Wall,
-    PhysicFieldBC_RF_ElectricField,
-    PhysicFieldBC_RF_SurfaceCurrent,
-    PhysicFieldBC_RF_MatchedBoundary,
-    PhysicFieldBC_RF_Port
-};
-
 enum Mode
 {
     Mode_0,
@@ -468,7 +452,6 @@ enum SceneViewPostprocessorShow
 
 // captions
 QString analysisTypeString(AnalysisType analysisType);
-QString physicFieldBCString(PhysicFieldBC physicFieldBC);
 QString teModeString(Mode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString problemTypeString(ProblemType problemType);
@@ -511,9 +494,6 @@ MeshType meshTypeFromStringKey(const QString &meshType);
 
 QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp);
 PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp);
-
-QString physicFieldBCToStringKey(PhysicFieldBC physicFieldBC);
-PhysicFieldBC physicFieldBCFromStringKey(const QString &physicFieldBC);
 
 QString modeToStringKey(Mode teMode);
 Mode modeFromStringKey(const QString &teMode);

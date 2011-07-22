@@ -62,59 +62,6 @@ private:
 };
 */
 
-/*
-class WeakFormAcousticsHarmonic : public WeakFormAgros
-{
-public:
-    WeakFormAcousticsHarmonic() : WeakFormAgros(2) { }
-
-    void registerForms()
-    {
-        // boundary conditions
-        for (int i = 0; i<Util::scene()->edges.count(); i++)
-        {
-            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
-
-            if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
-            {
-                if (boundary->type == "acoustic_normal_acceleration")
-                    if (fabs(boundary->get_value("acoustic_normal_acceleration").number) > EPS_ZERO)
-                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
-                                                                                                        QString::number(i + 1).toStdString(),
-                                                                                                        boundary->get_value("acoustic_normal_acceleration").number,
-                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-                if (boundary->type == "acoustic_impedance")
-                {
-                    if (fabs(boundary->get_value("acoustic_impedance").number) > EPS_ZERO)
-                    {
-                        add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(0, 1,
-                                                                                                        QString::number(i + 1).toStdString(),
-                                                                                                        - 2 * M_PI * Util::scene()->problemInfo()->frequency / boundary->get_value("acoustic_impedance").number,
-                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-                        add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(1, 0,
-                                                                                                        QString::number(i + 1).toStdString(),
-                                                                                                        2 * M_PI * Util::scene()->problemInfo()->frequency / boundary->get_value("acoustic_impedance").number,
-                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-                    }
-                }
-
-                if (boundary->type == "acoustic_matched_boundary")
-                {
-                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(0, 1,
-                                                                                 QString::number(i + 1).toStdString(),
-                                                                                 - 2 * M_PI * Util::scene()->problemInfo()->frequency,
-                                                                                 convertProblemType(Util::scene()->problemInfo()->problemType)));
-                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
-                                                                                 QString::number(i + 1).toStdString(),
-                                                                                 2 * M_PI * Util::scene()->problemInfo()->frequency,
-                                                                                 convertProblemType(Util::scene()->problemInfo()->problemType)));
-                }
-            }
-        }
-    }
-};
-*/
 // time dependent
 
 // - 1/rho * \Delta p + 1/(rho * c^2) * \frac{\partial v}{\partial t} = 0.
