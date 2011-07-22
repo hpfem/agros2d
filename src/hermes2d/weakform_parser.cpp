@@ -30,10 +30,10 @@ ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType probl
     i = atoi(node->first_attribute("i")->value());
     j = atoi(node->first_attribute("j")->value());
 
-    if (atoi(node->first_attribute("symmetric")->value()))
-        sym = HERMES_SYM;
-    else
-        sym = HERMES_NONSYM;
+    sym = HERMES_NONSYM;
+    if (node->first_attribute("symmetric"))
+        if (atoi(node->first_attribute("symmetric")->value()))
+            sym = HERMES_SYM;
 
     if (problem_type == ProblemType_Planar)
     {

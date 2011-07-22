@@ -29,7 +29,6 @@
 bool verbose = false;
 
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
-static QHash<PhysicFieldBC, QString> physicFieldBCList;
 static QHash<Mode, QString> modeList;
 static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
@@ -46,9 +45,6 @@ MeshType meshTypeFromStringKey(const QString &meshType) { return meshTypeList.ke
 
 QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp) { return physicFieldVariableCompList[physicFieldVariableComp]; }
 PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp) { return physicFieldVariableCompList.key(physicFieldVariableComp); }
-
-QString physicFieldBCToStringKey(PhysicFieldBC physicFieldBC) { return physicFieldBCList[physicFieldBC]; }
-PhysicFieldBC physicFieldBCFromStringKey(const QString &physicFieldBC) { return physicFieldBCList.key(physicFieldBC); }
 
 QString modeToStringKey(Mode mode) { return modeList[mode]; }
 Mode modeFromStringKey(const QString &mode) { return modeList.key(mode); }
@@ -89,6 +85,7 @@ void initLists()
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Y, "y");
 
     // PHYSICFIELDBC
+    /*§
     physicFieldBCList.insert(PhysicFieldBC_Undefined, "");
     physicFieldBCList.insert(PhysicFieldBC_None, "none");
     physicFieldBCList.insert(PhysicFieldBC_General_Value, "general_value");
@@ -101,6 +98,7 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_RF_SurfaceCurrent, "rf_surface_current");
     physicFieldBCList.insert(PhysicFieldBC_RF_MatchedBoundary, "rf_matched_boundary");
     physicFieldBCList.insert(PhysicFieldBC_RF_Port, "rf_port");
+    */
 
     // TEMODE
     modeList.insert(Mode_0, "mode_0");
@@ -168,41 +166,6 @@ QString teModeString(Mode teMode)
         return QObject::tr("TE Mode 02");
     default:
         std::cerr << "TE mode '" + QString::number(teMode).toStdString() + "' is not implemented. TEModeString(TEMode teMode)" << endl;
-        throw;
-    }
-}
-
-
-QString physicFieldBCString(PhysicFieldBC physicFieldBC)
-{
-    logMessage("physicFieldBCString()");
-
-    switch (physicFieldBC)
-    {
-    case PhysicFieldBC_None:
-        return QObject::tr("none");
-    case PhysicFieldBC_General_Value:
-        return QObject::tr("Value");
-    case PhysicFieldBC_General_Derivative:
-        return QObject::tr("Derivative");
-    case PhysicFieldBC_Flow_Outlet:
-        return QObject::tr("Outlet");
-    case PhysicFieldBC_Flow_Wall:
-        return QObject::tr("Wall");
-    case PhysicFieldBC_Flow_Velocity:
-        return QObject::tr("Velocity");
-    case PhysicFieldBC_Flow_Pressure:
-        return QObject::tr("Pressure");
-    case PhysicFieldBC_RF_ElectricField:
-        return QObject::tr("Electric field");
-    case PhysicFieldBC_RF_SurfaceCurrent:
-        return QObject::tr("Surface current");
-    case PhysicFieldBC_RF_MatchedBoundary:
-        return QObject::tr("Matched boundary");
-    case PhysicFieldBC_RF_Port:
-        return QObject::tr("Port");
-    default:
-        std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
         throw;
     }
 }

@@ -22,74 +22,6 @@
 #include "scene.h"
 #include "gui.h"
 
-class WeakFormCurrent : public WeakFormAgros
-{
-public:
-    WeakFormCurrent() : WeakFormAgros() { }
-
-    void registerForms()
-    {
-        // boundary conditions
-        for (int i = 0; i<Util::scene()->edges.count(); i++)
-        {
-            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
-
-            if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
-            {
-                if (boundary->type == "current_inward_current_flow")
-                    if (fabs(boundary->get_value("current_inward_current_flow").number) > EPS_ZERO)
-                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
-                                                                                                        QString::number(i + 1).toStdString(),
-                                                                                                        boundary->get_value("current_inward_current_flow").number,
-                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-            }
-        }
-
-        // materials
-        for (int i = 0; i<Util::scene()->labels.count(); i++)
-        {
-            SceneMaterial *material = Util::scene()->labels[i]->material;
-
-            if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
-            {
-                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
-                                                                                               QString::number(i).toStdString(),
-                                                                                               material->get_value("current_conductivity").number,
-                                                                                               HERMES_SYM,
-                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
-            }
-        }
-    }
-};
-
-// ****************************************************************************************************************
-
-Hermes::vector<SolutionArray *> ModuleCurrent::solve(ProgressItemSolve *progressItemSolve)
-{
-    if (!solve_init_variables())
-        return Hermes::vector<SolutionArray *>();
-
-    // boundary conditions
-    EssentialBCs bcs;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
-
-        if (boundary)
-        {
-            if (boundary->type == "current_potential")
-                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
-                                                                       boundary->get_value("current_potential").number));
-        }
-    }
-
-    WeakFormCurrent wf;
-
-    Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
-
-    return solutionArrayList;
-}
-
 // *******************************************************************************************************
 // rewrite
 
@@ -248,11 +180,11 @@ bool SceneBoundaryCurrentDialog::save() {
     if (txtValue->evaluate())
         if (m_boundary->type == "current_potential")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("current_potential")] = txtValue->value();
+            m_boundary->values["current_potential"] = txtValue->value();
         }
         else if (m_boundary->type == "current_inward_current_flow")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("current_inward_current_flow")] = txtValue->value();
+            m_boundary->values["current_inward_current_flow"] = txtValue->value();
         }
         else
             return false;
@@ -319,7 +251,7 @@ bool SceneMaterialCurrentDialog::save()
     if (!SceneMaterialDialog::save()) return false;;
 
     if (txtConductivity->evaluate())
-        m_material->values[m_material->get_material_type_variable("current_conductivity")] = txtConductivity->value();
+        m_material->values["current_conductivity"] = txtConductivity->value();
     else
         return false;
 

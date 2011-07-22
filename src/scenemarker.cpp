@@ -46,18 +46,19 @@ QString SceneBoundary::html()
     out += "<table>";
 
     Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
-    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-    {
-        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+    if (boundary_type)
+        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+        {
+            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
 
-        out += "<tr>";
-        out += QString("<td>%1 (%2):</td>").
-                arg(QString::fromStdString(variable->name)).
-                arg(QString::fromStdString(variable->unit));
-        out += QString("<td>%1</td>").
-                arg(values[variable->id].text);
-        out += "</tr>";
-    }
+            out += "<tr>";
+            out += QString("<td>%1 (%2):</td>").
+                    arg(QString::fromStdString(variable->name)).
+                    arg(QString::fromStdString(variable->unit));
+            out += QString("<td>%1</td>").
+                    arg(values[variable->id].text);
+            out += "</tr>";
+        }
 
     out += "</table>";
 
@@ -105,8 +106,8 @@ QString SceneMaterial::html()
     out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
     out += "<table>";
 
-    for(Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::scene()->problemInfo()->module()->material_type_variables.begin();
-        it < Util::scene()->problemInfo()->module()->material_type_variables.end(); ++it )
+    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::scene()->problemInfo()->module()->material_type_variables.begin();
+         it < Util::scene()->problemInfo()->module()->material_type_variables.end(); ++it )
     {
         Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
 

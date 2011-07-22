@@ -30,10 +30,7 @@ struct ModuleCurrent : public Hermes::Module::ModuleAgros
 public:
     ModuleCurrent(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    inline int number_of_solution() const { return 1; }
     bool has_nonlinearity() const { return false; }
-
-    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
     // rewrite
     SceneBoundary *newBoundary();

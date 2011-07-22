@@ -8,16 +8,32 @@
     <constants />
 
     <material>
-        <item id="current_conductivity" name="Conductivity" shortname="gamma" unit="S/m" />
+        <item id="current_conductivity" name="Conductivity" shortname="gamma" unit="S/m" />   	
+        
+    	<steadystate>
+    		<material id="current_conductivity" />
+    		
+        	<matrix i="1" j="1" planar="gamma * (udx * vdx + udy * vdy)" axi="gamma * x * (udx * vdx + udy * vdy)" symmetric="1" />
+		</steadystate>
     </material>
 
     <boundary>
-        <item id="current_potential" name="Fixed voltage">
-            <variable id="current_potential" name="Fixed voltage" shortname="V" unit="V" essential="1" />
-        </item>    
-        <item id="current_inward_current_flow" name="Current density">
-            <variable id="current_inward_current_flow" name="Current density" shortname="J" unit="A/m2" />
-        </item>
+    	<item id="current_potential" name="Fixed voltage" shortname="V" unit="V" />
+    	<item id="current_inward_current_flow" name="Current density" shortname="Jn" unit="A/m2" />
+    	
+    	<steadystate>
+			<boundary id="current_potential" name="Fixed voltage">
+				<item id="current_potential" />
+				
+				<essential i="1" id="current_potential" />
+			</boundary> 
+			
+			<boundary id="current_inward_current_flow" name="Current density">
+				<item id="current_inward_current_flow" />		
+				
+				<vector i="1" planar="Jn * vval" axi="Jn * x * vval" />
+			</boundary>        
+		</steadystate>
     </boundary>
 
     <localvariable>

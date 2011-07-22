@@ -23,7 +23,7 @@
 #include "hermes_electrostatic.h"
 // #include "hermes_magnetic.h"
 // #include "hermes_heat.h"
-// #include "hermes_current.h"
+#include "hermes_current.h"
 // #include "hermes_elasticity.h"
 // #include "hermes_rf.h"
 #include "hermes_acoustic.h"
@@ -45,13 +45,13 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
 
     if (id == "electrostatic")
         module = new ModuleElectrostatic(problem_type, analysis_type);
+    if (id == "current")
+        module = new ModuleCurrent(problem_type, analysis_type);
     if (id == "acoustic")
         module = new ModuleAcoustic(problem_type, analysis_type);
     /*
     if (id == "heat")
         module = new ModuleHeat(problem_type, analysis_type);
-    if (id == "current")
-        module = new ModuleCurrent(problem_type, analysis_type);
     if (id == "magnetic")
         module = new ModuleMagnetic(problem_type, analysis_type);
     if (id == "elasticity")
@@ -72,13 +72,13 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneBoundaryElectrostaticDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "current")
+        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "acoustic")
         return new SceneBoundaryAcousticDialog(scene_boundary, parent);
     /*
     if (Util::scene()->problemInfo()->module()->id == "heat")
         return new SceneBoundaryHeatDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "current")
-        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "magnetic")
         return new SceneBoundaryMagneticDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "elasticity")
@@ -91,13 +91,13 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneMaterialElectrostaticDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "current")
+        return new SceneMaterialCurrentDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "acoustic")
         return new SceneMaterialAcousticDialog(scene_material, parent);
     /*
     if (Util::scene()->problemInfo()->module()->id == "heat")
         return new SceneMaterialHeatDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "current")
-        return new SceneMaterialCurrentDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "magnetic")
         return new SceneMaterialMagneticDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "elasticity")
