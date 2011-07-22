@@ -31,6 +31,7 @@ double get_mu(double young_modulus, double poisson_ratio)
     return young_modulus / (2.0*(1.0 + poisson_ratio));
 }
 
+/*
 class WeakFormElasticity : public WeakFormAgros
 {
 public:
@@ -230,9 +231,10 @@ public:
         GeomType gt;
     };
 };
-
+*/
 // ****************************************************************************************************************
 
+/*
 Hermes::vector<SolutionArray *> ModuleElasticity::solve(ProgressItemSolve *progressItemSolve)
 {
     if (!solve_init_variables())
@@ -266,6 +268,7 @@ Hermes::vector<SolutionArray *> ModuleElasticity::solve(ProgressItemSolve *progr
 
     return solutionArrayList;
 }
+*/
 
 // ****************************************************************************************************************
 // rewrite
@@ -538,48 +541,48 @@ bool SceneBoundaryElasticityDialog::save() {
     if (m_boundary->type == "elasticity_fixed_fixed")
     {
         if (txtDisplacementX->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_displacement_x")] = txtDisplacementX->value();
+            m_boundary->values["elasticity_displacement_x"] = txtDisplacementX->value();
         else
             return false;
 
         if (txtDisplacementY->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_displacement_y")] = txtDisplacementY->value();
+            m_boundary->values["elasticity_displacement_y"] = txtDisplacementY->value();
         else
             return false;
     }
     else if (m_boundary->type == "elasticity_fixed_free")
     {
         if (txtDisplacementX->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_displacement_x")] = txtDisplacementX->value();
+            m_boundary->values["elasticity_displacement_x"] = txtDisplacementX->value();
         else
             return false;
 
         if (txtForceY->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_force_y")] = txtForceY->value();
+            m_boundary->values["elasticity_force_y"] = txtForceY->value();
         else
             return false;
     }
     else if (m_boundary->type == "elasticity_free_fixed")
     {
         if (txtForceX->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_force_x")] = txtForceX->value();
+            m_boundary->values["elasticity_force_x"] = txtForceX->value();
         else
             return false;
 
         if (txtDisplacementY->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_displacement_y")] = txtDisplacementY->value();
+            m_boundary->values["elasticity_displacement_y"] = txtDisplacementY->value();
         else
             return false;
     }
     else if (m_boundary->type == "elasticity_free_free")
     {
         if (txtForceX->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_force_x")] = txtForceX->value();
+            m_boundary->values["elasticity_force_x"] = txtForceX->value();
         else
             return false;
 
         if (txtForceY->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("elasticity_force_y")] = txtForceY->value();
+            m_boundary->values["elasticity_force_y"] = txtForceY->value();
         else
             return false;
     }
@@ -706,37 +709,37 @@ bool SceneMaterialElasticityDialog::save()
     if (!SceneMaterialDialog::save()) return false;
 
     if (txtYoungModulus->evaluate())
-        m_material->values[m_material->get_material_type_variable("elasticity_young_modulus")] = txtYoungModulus->value();
+        m_material->values["elasticity_young_modulus"] = txtYoungModulus->value();
     else
         return false;
 
     if (txtPoissonNumber->evaluate())
-        m_material->values[m_material->get_material_type_variable("elasticity_poisson_ratio")] = txtPoissonNumber->value();
+        m_material->values["elasticity_poisson_ratio"] = txtPoissonNumber->value();
     else
         return false;
 
     if (txtForceX->evaluate())
-        m_material->values[m_material->get_material_type_variable("elasticity_force_x")] = txtForceX->value();
+        m_material->values["elasticity_force_x"] = txtForceX->value();
     else
         return false;
 
     if (txtForceY->evaluate())
-        m_material->values[m_material->get_material_type_variable("elasticity_force_y")] = txtForceY->value();
+        m_material->values["elasticity_force_y"] = txtForceY->value();
     else
         return false;
 
     if (txtAlpha->evaluate())
-        m_material->values[m_material->get_material_type_variable("elasticity_alpha")] = txtAlpha->value();
+        m_material->values["elasticity_alpha"] = txtAlpha->value();
     else
         return false;
 
     if (txtTemp->evaluate())
-        m_material->values[m_material->get_material_type_variable("elasticity_temperature")] = txtTemp->value();
+        m_material->values["elasticity_temperature"] = txtTemp->value();
     else
         return false;
 
     if (txtTempRef->evaluate())
-        m_material->values[m_material->get_material_type_variable("elasticity_temperature_reference")] = txtTempRef->value();
+        m_material->values["elasticity_temperature_reference"] = txtTempRef->value();
     else
         return false;
 

@@ -29,13 +29,10 @@ struct ModuleElasticity : public Hermes::Module::ModuleAgros
 public:
     ModuleElasticity(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    inline int number_of_solution() const { return 2; }
     bool has_nonlinearity() const { return false; }
 
     void deform_shape(double3* linVert, int count);
     void deform_shape(double4* linVert, int count);
-
-    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
     // rewrite
     SceneBoundary *newBoundary();
