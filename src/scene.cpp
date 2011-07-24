@@ -1372,7 +1372,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     if (version.isEmpty())
     {
         Util::scene()->convertA2DFile(fileName);
-        return ErrorResult(ErrorResultType_Information, tr("File '%1' has been converted to new version. Actualy is this file opened from temp directory. Please, save file to new location now.").arg(fileName));
+        return ErrorResult(ErrorResultType_Information, tr("File '%1' has been converted to new version. The file is created in temp directory. Please, save problem file to the new location.").arg(fileName));
     }
 
     // check version of a2d file
