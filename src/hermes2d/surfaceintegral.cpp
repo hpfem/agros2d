@@ -85,9 +85,6 @@ void SurfaceIntegralValue::calculate()
             ((mu::Parser *) *it)->DefineVar("dx" + number.str(), &pdx[k]);
             ((mu::Parser *) *it)->DefineVar("dy" + number.str(), &pdy[k]);
         }
-
-        for (std::map<std::string, double>::iterator itv = parser->parser_variables.begin(); itv != parser->parser_variables.end(); ++itv)
-            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
     }
 
     Hermes::vector<Solution *>sln;
@@ -160,6 +157,7 @@ void SurfaceIntegralValue::calculate()
                         double *y = ru->get_phys_y(eo);
 
                         SceneMaterial *material = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+                        parser->initParserMaterialVariables();
                         parser->setParserVariables(material, NULL);
 
                         // parse expression
