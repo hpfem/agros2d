@@ -65,7 +65,7 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     #hermes2d/hermes_magnetic.cpp \
     hermes2d/hermes_current.cpp \
     hermes2d/hermes_elasticity.cpp \
-    #hermes2d/hermes_rf.cpp \
+    hermes2d/hermes_rf.cpp \
     hermes2d/hermes_acoustic.cpp \
     #hermes2d/hermes_flow.cpp \
     main.cpp \
@@ -117,7 +117,7 @@ HEADERS += util.h \
     #hermes2d/hermes_magnetic.h \
     hermes2d/hermes_current.h \
     hermes2d/hermes_elasticity.h \
-    #hermes2d/hermes_rf.h \
+    hermes2d/hermes_rf.h \
     hermes2d/hermes_acoustic.h \
     #hermes2d/hermes_flow.h \
     mainwindow.h \

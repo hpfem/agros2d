@@ -22,6 +22,15 @@
             <parametr type="acoustic_impedance" old="" new="acoustic_impedance"/>
 
             <parametr type="current_potential" old="value" new="current_potential"/>
+
+            <parametr type="rf_electric_field" old="value_real" new="rf_electric_field_real"/>
+            <parametr type="rf_electric_field" old="value_imag" new="rf_electric_field_imag"/>
+            <parametr type="rf_magnetic_field" old="value_real" new="rf_magnetic_field_real"/>
+            <parametr type="rf_magnetic_field" old="value_imag" new="rf_magnetic_field_imag"/>
+            <parametr type="rf_surface_current" old="value_real" new="rf_surface_current_real"/>
+            <parametr type="rf_surface_current" old="value_imag" new="rf_surface_current_imag"/>
+            <parametr type="rf_port" old="value_real" new="rf_port_power"/>
+            <parametr type="rf_port" old="value_imag" new="rf_port_phase"/>
         </edges>
         <labels>
             <parametr old="current_density_real" new="magnetic_current_density_external_real"/>
@@ -46,6 +55,12 @@
             <parametr old="speed" new="acoustic_speed"/>
 
             <parametr old="conductivity" new="current_conductivity"/>
+
+            <parametr old="permittivity" new="rf_permittivity"/>
+            <parametr old="permeability" new="rf_permeability"/>
+            <parametr old="conductivity" new="rf_conductivity"/>
+            <parametr old="current_density_real" new="rf_current_density_external_real"/>
+            <parametr old="current_density_imag" new="rf_current_density_external_imag"/>
         </labels>
     </problems>
 </document>

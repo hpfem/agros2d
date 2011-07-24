@@ -2,13 +2,82 @@
 <module>
     <general id ="rf" name="RF">
         <description>RF.</description>
-        <properties steadystate="0" harmonic="1" transient="0" />
+        <properties steadystate="0" harmonic="2" transient="0" />
     </general>
 
     <constants>
         <item id="EPS0" value="8.854e-12" />
         <item id="MU0" value="1.2566371e-06" />
     </constants>
+    
+    <material>
+        <item id="rf_permittivity" name="Permittivity" shortname="epsr" unit="-" />
+        <item id="rf_permeability" name="Permeability" shortname="mur" unit="-" />  
+        <item id="rf_conductivity" name="Conductivity" shortname="gamma" unit="S/m" />
+        <item id="rf_current_density_external_real" name="Current dens. - ext. - real" shortname="Jer" unit="A/m2" />
+        <item id="rf_current_density_external_imag" name="Current dens. - ext. - imag" shortname="Jei" unit="A/m2" />
+        
+    	<harmonic>
+    		<material id="rf_permittivity" />
+    		<material id="rf_permeability" />
+        	<material id="rf_conductivity" />
+        	<material id="rf_current_density_external_real" />
+        	<material id="rf_current_density_external_imag" />
+    	
+        	<matrix i="1" j="1" planar="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * uval * vval" 
+        						axi="" />
+        	<matrix i="2" j="2" planar="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * uval * vval" 
+        						axi="" />
+		</harmonic>
+    </material>
+
+    <boundary>
+    	<item id="rf_electric_field_real" name="Electric field - real" shortname="Er" unit="V/m" />
+    	<item id="rf_electric_field_imag" name="Electric field - imag" shortname="Ei" unit="V/m" />
+    	<item id="rf_magnetic_field_real" name="Magnetic field - real" shortname="Hr" unit="A/m" />
+    	<item id="rf_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" unit="A/m" />
+    	<item id="rf_surface_current_real" name="Surface current - real" shortname="Jr" unit="A/m2" />
+    	<item id="rf_surface_current_imag" name="Surface current - imag" shortname="Ji" unit="A/m2" />
+    	<item id="rf_port_power" name="Power" shortname="P" unit="W" />
+    	<item id="rf_port_phase" name="Phase" shortname="alpha" unit="deg." />
+    	
+ 		<harmonic>
+       		<boundary id="rf_electric_field" name="Electric field">
+            	<item id="rf_electric_field_real" />
+            	<item id="rf_electric_field_imag" />
+				
+				<essential i="1" id="rf_electric_field_real" />
+				<essential i="2" id="rf_electric_field_imag" />
+			</boundary> 
+			
+       		<boundary id="rf_magnetic_field" name="Magnetic field">
+            	<item id="rf_magnetic_field_real" />
+            	<item id="rf_magnetic_field_imag" />
+				
+				<vector i="1" planar="Hr * vval" axi="Hr * x * vval" />
+				<vector i="2" planar="Hi * vval" axi="Hi * x * vval" />
+			</boundary>  
+			
+       		<boundary id="rf_surface_current" name="Surface current">
+            	<item id="rf_surface_current_real" />
+            	<item id="rf_surface_current_imag" />
+				
+				<vector i="1" planar="Hr * vval" axi="Hr * x * vval" />
+				<vector i="2" planar="Hi * vval" axi="Hi * x * vval" />
+			</boundary>  			
+			
+       		<boundary id="rf_port" name="Port">
+            	<item id="rf_port_power" />
+            	<item id="rf_port_phase" />
+            	
+            	<matrix i="1" j="2" planar="uval * vval" axi="uval * vval" />
+        		<matrix i="2" j="1" planar="uval * vval" axi="uval * vval" />
+        	</boundary>  
+        	
+			<boundary id="acoustic_matched_boundary" name="Matched boundary" >
+			</boundary>  
+		</harmonic>
+    </boundary>	     
 
     <localvariable>
         <item id="rf_electric_field_real" name="Electric field - real" shortname="Er" unit="V/m" scalar="1">
@@ -27,11 +96,11 @@
             <harmonic planar_scalar="epsr * EPS0 * value2" axi_scalar="epsr * EPS0 * value2" />
             <transient />
         </item>
-        <item id="rf_current_density_real" name="Current density - real" shortname="Jr" unit="A/m2" scalar="1">
+        <item id="rf_surface_current_real" name="Current density - real" shortname="Jr" unit="A/m2" scalar="1">
             <harmonic planar_scalar="gamma * value1" axi_scalar="gamma * value1" />
             <transient />
         </item>
-        <item id="rf_current_density_imag" name="Current density - imag" shortname="Ji" unit="A/m2" scalar="1">
+        <item id="rf_surface_current_imag" name="Current density - imag" shortname="Ji" unit="A/m2" scalar="1">
             <harmonic planar_scalar="gamma * value2" axi_scalar="gamma * value2" />
             <transient />
         </item>
@@ -74,8 +143,8 @@
             <harmonic default="rf_electric_field_real">
                 <item id="rf_electric_field_real" />
                 <item id="rf_electric_field_imag" />
-                <item id="rf_current_density_real" />
-                <item id="rf_current_density_imag" />
+                <item id="rf_surface_current_real" />
+                <item id="rf_surface_current_imag" />
                 <item id="rf_displacement_real" />
                 <item id="rf_displacement_imag" />
                 <item id="rf_magnetic_field_real" />
@@ -105,8 +174,8 @@
         <harmonic>
             <item id="rf_electric_field_real" />
             <item id="rf_electric_field_imag" />
-            <item id="rf_current_density_real" />
-            <item id="rf_current_density_imag" />
+            <item id="rf_surface_current_real" />
+            <item id="rf_surface_current_imag" />
             <item id="rf_displacement_real" />
             <item id="rf_displacement_imag" />
             <item id="rf_magnetic_field_real" />

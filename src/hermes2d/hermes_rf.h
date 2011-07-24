@@ -29,23 +29,7 @@ struct ModuleRF : public Hermes::Module::ModuleAgros
 public:
     ModuleRF(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    inline int number_of_solution() const { return 2; }
     bool has_nonlinearity() const { return false; }
-
-    LocalPointValue *local_point_value(const Point &point);
-    SurfaceIntegralValue *surface_integral_value();
-    VolumeIntegralValue *volume_integral_value();
-
-    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                         PhysicFieldVariableComp physicFieldVariableComp);
-
-    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-
-    // rewrite
-    void readBoundaryFromDomElement(QDomElement *element);
-    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
-    void readMaterialFromDomElement(QDomElement *element);
-    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
@@ -55,87 +39,14 @@ public:
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 };
 
-// *******************************************************************************************
-
-class ParserRF : public Parser
-{
-public:
-    double pepsr;
-    double pmur;
-    double pgamma;
-    double pjer;
-    double pjei;
-
-    void setParserVariables(SceneMaterial *material);
-};
-
-class LocalPointValueRF : public LocalPointValue
-{
-public:
-    LocalPointValueRF(const Point &point);
-};
-
-class SurfaceIntegralValueRF : public SurfaceIntegralValue
-{
-public:
-    SurfaceIntegralValueRF();
-};
-
-class VolumeIntegralValueRF : public VolumeIntegralValue
-{
-public:
-    VolumeIntegralValueRF();
-};
-
-class ViewScalarFilterRF : public ViewScalarFilter
-{
-public:
-    ViewScalarFilterRF(Hermes::vector<MeshFunction *> sln,
-                                   std::string expression);
-};
-
-// *******************************************************************************************
-
-class SceneBoundaryRF : public SceneBoundary
-{
-public:
-    Value value_real;
-    Value value_imag;
-    Mode mode;
-    Value power;
-    Value phase;
-
-    SceneBoundaryRF(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
-    SceneBoundaryRF(const QString &name, PhysicFieldBC type, Mode mode, Value power, Value phase);
-    SceneBoundaryRF(const QString &name, PhysicFieldBC type);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
-
-class SceneMaterialRF : public SceneMaterial
-{
-public:
-    Value permittivity;
-    Value permeability;
-    Value conductivity;
-    Value current_density_real;
-    Value current_density_imag;
-
-    SceneMaterialRF(const QString &name, Value permittivity, Value permeability, Value conductivity, Value current_density_real, Value current_density_imag);
-
-    QString script();
-    QMap<QString, QString> data();
-    int showDialog(QWidget *parent);
-};
+// ***********************************************************************************
 
 class SceneBoundaryRFDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    SceneBoundaryRFDialog(SceneBoundaryRF *edgeRFMarker, QWidget *parent);
+    SceneBoundaryRFDialog(SceneBoundary *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -160,7 +71,7 @@ class SceneMaterialRFDialog : public SceneMaterialDialog
     Q_OBJECT
 
 public:
-    SceneMaterialRFDialog(QWidget *parent, SceneMaterialRF *labelRFMarker);
+    SceneMaterialRFDialog(SceneMaterial *material, QWidget *parent);
 
 protected:
     void createContent();

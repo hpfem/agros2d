@@ -5,7 +5,7 @@
             <description></description>
             <edges>
                 <edge value_imag="0" type="rf_electric_field" id="1" name="Perfect electric conductor" value_real="0"/>
-                <edge type="rf_matched_boundary" id="2" name="Matched boundary"/>
+                <edge type="rf_magnetic_field" id="2" name="Matched boundary"/>
                 <edge value_imag="0" type="rf_electric_field" id="3" name="Surface current" value_real="1"/>
             </edges>
             <labels>

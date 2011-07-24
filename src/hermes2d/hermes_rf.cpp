@@ -22,6 +22,7 @@
 #include "scene.h"
 #include "gui.h"
 
+/*
 class WeakFormRFHarmonic : public WeakFormAgros
 {
 public:
@@ -245,7 +246,7 @@ public:
         scalar coeff, frequency;
     };
 };
-
+*/
 /*
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
@@ -384,262 +385,14 @@ Scalar rf_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
 
 */
 
-// *******************************************************************************************************
-void ParserRF::setParserVariables(SceneMaterial *material)
-{
-    SceneMaterialRF *marker = dynamic_cast<SceneMaterialRF *>(material);
-
-    pepsr = marker->permittivity.number;
-    pmur = marker->permeability.number;
-    pgamma = marker->conductivity.number;
-    pjer = marker->current_density_real.number;
-    pjei = marker->current_density_real.number;
-}
-
-// ****************************************************************************************************************
-
-LocalPointValueRF::LocalPointValueRF(const Point &point) : LocalPointValue(point)
-{
-    parser = new ParserRF();
-    initParser();
-
-    parser->parser[0]->DefineVar("epsr", &static_cast<ParserRF *>(parser)->pepsr);
-    parser->parser[0]->DefineVar("mur", &static_cast<ParserRF *>(parser)->pmur);
-    parser->parser[0]->DefineVar("gamma", &static_cast<ParserRF *>(parser)->pgamma);
-    parser->parser[0]->DefineVar("Jer", &static_cast<ParserRF *>(parser)->pjer);
-    parser->parser[0]->DefineVar("Jei", &static_cast<ParserRF *>(parser)->pjei);
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-SurfaceIntegralValueRF::SurfaceIntegralValueRF() : SurfaceIntegralValue()
-{
-    parser = new ParserRF();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("epsr", &static_cast<ParserRF *>(parser)->pepsr);
-        ((mu::Parser *) *it)->DefineVar("mur", &static_cast<ParserRF *>(parser)->pmur);
-        ((mu::Parser *) *it)->DefineVar("gamma", &static_cast<ParserRF *>(parser)->pgamma);
-        ((mu::Parser *) *it)->DefineVar("Jer", &static_cast<ParserRF *>(parser)->pjer);
-        ((mu::Parser *) *it)->DefineVar("Jei", &static_cast<ParserRF *>(parser)->pjei);
-    }
-
-    calculate();
-}
-
-// ****************************************************************************************************************
-
-VolumeIntegralValueRF::VolumeIntegralValueRF() : VolumeIntegralValue()
-{
-    parser = new ParserRF();
-    initParser();
-
-    for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
-    {
-        ((mu::Parser *) *it)->DefineVar("epsr", &static_cast<ParserRF *>(parser)->pepsr);
-        ((mu::Parser *) *it)->DefineVar("mur", &static_cast<ParserRF *>(parser)->pmur);
-        ((mu::Parser *) *it)->DefineVar("gamma", &static_cast<ParserRF *>(parser)->pgamma);
-        ((mu::Parser *) *it)->DefineVar("Jer", &static_cast<ParserRF *>(parser)->pjer);
-        ((mu::Parser *) *it)->DefineVar("Jei", &static_cast<ParserRF *>(parser)->pjei);
-    }
-
-    sln.push_back(Util::scene()->sceneSolution()->sln(0));
-    sln.push_back(Util::scene()->sceneSolution()->sln(1));
-
-    calculate();
-}
-
-// *************************************************************************************************************************************
-
-ViewScalarFilterRF::ViewScalarFilterRF(Hermes::vector<MeshFunction *> sln,
-                                       std::string expression) :
-    ViewScalarFilter(sln)
-{
-    parser = new ParserRF();
-    initParser(expression);
-
-    parser->parser[0]->DefineVar("epsr", &static_cast<ParserRF *>(parser)->pepsr);
-    parser->parser[0]->DefineVar("mur", &static_cast<ParserRF *>(parser)->pmur);
-    parser->parser[0]->DefineVar("gamma", &static_cast<ParserRF *>(parser)->pgamma);
-    parser->parser[0]->DefineVar("Jer", &static_cast<ParserRF *>(parser)->pjer);
-    parser->parser[0]->DefineVar("Jei", &static_cast<ParserRF *>(parser)->pjei);
-}
-
-// **************************************************************************************************************************
-
-LocalPointValue *ModuleRF::local_point_value(const Point &point)
-{
-    return new LocalPointValueRF(point);
-}
-
-SurfaceIntegralValue *ModuleRF::surface_integral_value()
-{
-    return new SurfaceIntegralValueRF();
-}
-
-VolumeIntegralValue *ModuleRF::volume_integral_value()
-{
-    return new VolumeIntegralValueRF();
-}
-
-ViewScalarFilter *ModuleRF::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                               PhysicFieldVariableComp physicFieldVariableComp)
-{
-    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
-    Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
-
-    return new ViewScalarFilterRF(Hermes::vector<MeshFunction *>(sln1, sln2),
-                                  get_expression(physicFieldVariable, physicFieldVariableComp));
-}
-
-Hermes::vector<SolutionArray *> ModuleRF::solve(ProgressItemSolve *progressItemSolve)
-{
-    // boundaries
-    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-    {
-        SceneBoundaryRF *boundary = dynamic_cast<SceneBoundaryRF *>(Util::scene()->boundaries[i]);
-
-        // evaluate script
-        if (!boundary->value_real.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!boundary->value_imag.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!boundary->power.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!boundary->phase.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // materials
-    for (int i = 1; i<Util::scene()->materials.count(); i++)
-    {
-        SceneMaterialRF *material = dynamic_cast<SceneMaterialRF *>(Util::scene()->materials[i]);
-
-        // evaluate script
-        if (!material->permeability.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->permittivity.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->conductivity.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->current_density_real.evaluate()) return Hermes::vector<SolutionArray *>();
-        if (!material->current_density_imag.evaluate()) return Hermes::vector<SolutionArray *>();
-    }
-
-    // boundary conditions
-    EssentialBCs bc1;
-    EssentialBCs bc2;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        SceneBoundaryRF *boundary = dynamic_cast<SceneBoundaryRF *>(Util::scene()->edges[i]->boundary);
-
-        if (boundary)
-        {
-            if (boundary->type == PhysicFieldBC_RF_ElectricField)
-            {
-                bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value_real.number));
-                bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value_imag.number));
-            }
-        }
-    }
-    Hermes::vector<EssentialBCs> bcs(bc1, bc2);
-
-    WeakFormRFHarmonic wf;
-
-    Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
-
-    return solutionArrayList;
-}
-
-// *************************************************************************************************************************************
-// rewrite
-
-void ModuleRF::readBoundaryFromDomElement(QDomElement *element)
-{
-    Mode mode = modeFromStringKey(element->attribute("mode"));
-    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
-    switch (type)
-    {
-    case PhysicFieldBC_None:
-        break;
-    case PhysicFieldBC_RF_ElectricField:
-    case PhysicFieldBC_RF_SurfaceCurrent:
-        Util::scene()->addBoundary(new SceneBoundaryRF(element->attribute("name"),
-                                                       type,
-                                                       Value(element->attribute("value_real", "0")),
-                                                       Value(element->attribute("value_imag", "0"))));
-        break;
-    case PhysicFieldBC_RF_Port:
-        Util::scene()->addBoundary(new SceneBoundaryRF(element->attribute("name"),
-                                                       type,
-                                                       mode,
-                                                       Value(element->attribute("power", "0")),
-                                                       Value(element->attribute("phase", "0"))));
-        break;
-    case PhysicFieldBC_RF_MatchedBoundary:
-        Util::scene()->addBoundary(new SceneBoundaryRF(element->attribute("name"),
-                                                       type));
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-        break;
-    }
-}
-
-void ModuleRF::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
-{
-    SceneBoundaryRF *edgeRFMarker = dynamic_cast<SceneBoundaryRF *>(marker);
-
-    element->setAttribute("type", physicFieldBCToStringKey(edgeRFMarker->type));
-
-    switch (edgeRFMarker->type)
-    {
-    case PhysicFieldBC_RF_ElectricField:
-    case PhysicFieldBC_RF_SurfaceCurrent:
-        element->setAttribute("value_real", edgeRFMarker->value_real.text);
-        element->setAttribute("value_imag", edgeRFMarker->value_imag.text);
-        break;
-    case PhysicFieldBC_RF_Port:
-        element->setAttribute("power", edgeRFMarker->power.text);
-        element->setAttribute("phase", edgeRFMarker->phase.text);
-        element->setAttribute("mode", modeToStringKey(edgeRFMarker->mode));
-        break;
-    case PhysicFieldBC_RF_MatchedBoundary:
-        break;
-    default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-        break;
-    }
-}
-
-void ModuleRF::readMaterialFromDomElement(QDomElement *element)
-{
-    Util::scene()->addMaterial(new SceneMaterialRF(element->attribute("name"),
-                                                   Value(element->attribute("permittivity", "1")),
-                                                   Value(element->attribute("permeability", "1")),
-                                                   Value(element->attribute("conductivity", "0")),
-                                                   Value(element->attribute("current_density_real", "0")),
-                                                   Value(element->attribute("current_density_imag", "0"))));
-}
-
-void ModuleRF::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
-{
-    SceneMaterialRF *labelRFMarker = dynamic_cast<SceneMaterialRF *>(marker);
-
-    element->setAttribute("permittivity", labelRFMarker->permittivity.text);
-    element->setAttribute("permeability", labelRFMarker->permeability.text);
-    element->setAttribute("conductivity", labelRFMarker->conductivity.text);
-    element->setAttribute("current_density_real", labelRFMarker->current_density_real.text);
-    element->setAttribute("current_density_imag", labelRFMarker->current_density_imag.text);
-}
-
 SceneBoundary *ModuleRF::newBoundary()
 {
-    return new SceneBoundaryRF(tr("new boundary"),
-                               PhysicFieldBC_RF_ElectricField,
-                               Value("0"),
-                               Value("0"));
+    return new SceneBoundary(tr("new boundary").toStdString(), "");
 }
 
 SceneBoundary *ModuleRF::newBoundary(PyObject *self, PyObject *args)
 {
+    /*
     double value1 = 0.0, value2 = 0.0;
     char *name, *type, *mode = "mode_0";
     if (PyArg_ParseTuple(args, "ss|dds", &name, &type, &value1, &value2, &mode))
@@ -666,10 +419,12 @@ SceneBoundary *ModuleRF::newBoundary(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneBoundary *ModuleRF::modifyBoundary(PyObject *self, PyObject *args)
 {
+    /*
     // FIXME - parse
     double value1 = 0.0, value2 = 0.0;
     char *name, *type, *mode = "mode_0";
@@ -705,20 +460,17 @@ SceneBoundary *ModuleRF::modifyBoundary(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleRF::newMaterial()
 {
-    return new SceneMaterialRF(tr("new material"),
-                               Value("1"),
-                               Value("1"),
-                               Value("0"),
-                               Value("0"),
-                               Value("0"));
+    return new SceneMaterial(tr("new material").toStdString());
 }
 
 SceneMaterial *ModuleRF::newMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double permittivity, permeability, conductivity = 0.0, current_density_real = 0.0, current_density_imag = 0.0;
     char *name;
     if (PyArg_ParseTuple(args, "sdd|ddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
@@ -735,10 +487,12 @@ SceneMaterial *ModuleRF::newMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 SceneMaterial *ModuleRF::modifyMaterial(PyObject *self, PyObject *args)
 {
+    /*
     double permittivity, permeability, conductivity, current_density_real, current_density_imag;
     char *name;
     if (PyArg_ParseTuple(args, "sddddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
@@ -760,129 +514,14 @@ SceneMaterial *ModuleRF::modifyMaterial(PyObject *self, PyObject *args)
     }
 
     return NULL;
+    */
 }
 
 // *************************************************************************************************************************************
 
-SceneBoundaryRF::SceneBoundaryRF(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag)
-    : SceneBoundary(name, type)
+SceneBoundaryRFDialog::SceneBoundaryRFDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
 {
-    this->value_real = value_real;
-    this->value_imag = value_imag;
-}
-
-SceneBoundaryRF::SceneBoundaryRF(const QString &name, PhysicFieldBC type, Mode mode, Value power, Value phase)
-    : SceneBoundary(name, type)
-{
-    this->power = power;
-    this->phase = phase;
-    this->mode = mode;
-}
-
-SceneBoundaryRF::SceneBoundaryRF(const QString &name, PhysicFieldBC type) : SceneBoundary(name, type) { }
-
-QString SceneBoundaryRF::script()
-{
-    if (type == PhysicFieldBC_RF_ElectricField ||
-            type == PhysicFieldBC_RF_SurfaceCurrent)
-        return QString("addboundary(\"%1\", \"%2\", %3, %4)").
-                arg(name).
-                arg(physicFieldBCToStringKey(type)).
-                arg(value_real.text).
-                arg(value_imag.text);
-
-    if (type == (PhysicFieldBC_RF_Port))
-        return QString("addboundary(\"%1\", \"%2\", %3, %4, \"%5\")").
-                arg(name).
-                arg(physicFieldBCToStringKey(type)).                
-                arg(power.text).
-                arg(phase.text).
-                arg(modeToStringKey(mode));
-
-    if (type == PhysicFieldBC_RF_MatchedBoundary)
-    {
-        return QString("addboundary(\"%1\", \"%2\")").
-                arg(name).
-                arg(physicFieldBCToStringKey(type));
-    }
-
-}
-
-QMap<QString, QString> SceneBoundaryRF::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PhysicFieldBC_RF_ElectricField:
-        out["Electric field - real (V/m)"] = value_real.text;
-        out["Electric field - imag (V/m)"] = value_imag.text;
-        break;
-    case PhysicFieldBC_RF_SurfaceCurrent:
-        out["Surface current - real (A/m)"] = value_real.text;
-        out["Surface current - imag (A/m)"] = value_imag.text;
-        break;
-    case PhysicFieldBC_RF_Port:
-        out["Port - power (W)"] = power.text;
-        out["Port - phase (deg.)"] = phase.text;
-        break;
-    case PhysicFieldBC_RF_MatchedBoundary:
-        break;
-
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneBoundaryRF::showDialog(QWidget *parent)
-{
-    SceneBoundaryRFDialog *dialog = new SceneBoundaryRFDialog(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneMaterialRF::SceneMaterialRF(const QString &name, Value permittivity,Value permeability, Value conductivity, Value current_density_real, Value current_density_imag)
-    : SceneMaterial(name)
-{
-    this->permittivity = permittivity;
-    this->permeability = permeability;
-    this->conductivity = conductivity;
-    this->current_density_real = current_density_real;
-    this->current_density_imag = current_density_imag;
-}
-
-QString SceneMaterialRF::script()
-{
-    return QString("addmaterial(\"%1\", %2, %3, %4, %5)").
-            arg(name).
-            arg(permittivity.text).
-            arg(permeability.text).
-            arg(conductivity.text).
-            arg(current_density_real.text).
-            arg(current_density_imag.text);
-}
-
-QMap<QString, QString> SceneMaterialRF::data()
-{
-    QMap<QString, QString> out;
-    out["Permittivity (-)"] = permittivity.text;
-    out["Permeability (-)"] = permeability.text;
-    out["Conductivity (S/m)"] = conductivity.text;
-    out["Current density - real (A/m2)"] = current_density_real.text;
-    out["Current density - imag (A/m2)"] = current_density_imag.text;
-    return QMap<QString, QString>(out);
-}
-
-int SceneMaterialRF::showDialog(QWidget *parent)
-{
-    SceneMaterialRFDialog *dialog = new SceneMaterialRFDialog(parent, this);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneBoundaryRFDialog::SceneBoundaryRFDialog(SceneBoundaryRF *edgeRFMarker, QWidget *parent) : SceneBoundaryDialog(parent)
-{
-    m_boundary = edgeRFMarker;
+    m_boundary = boundary;
 
     createDialog();
 
@@ -895,11 +534,16 @@ void SceneBoundaryRFDialog::createContent()
     lblValueUnitReal = new QLabel("");
     lblValueUnitImag = new QLabel("");
 
+    /*
     cmbType = new QComboBox(this);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_ElectricField), PhysicFieldBC_RF_ElectricField);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_SurfaceCurrent), PhysicFieldBC_RF_SurfaceCurrent);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_MatchedBoundary), PhysicFieldBC_RF_MatchedBoundary);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_Port), PhysicFieldBC_RF_Port);
+    connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
+    */
+    cmbType = new QComboBox(this);
+    Util::scene()->problemInfo()->module()->fillComboBoxBoundaryCondition(cmbType);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValueReal = new ValueLineEdit(this, true);
@@ -933,24 +577,26 @@ void SceneBoundaryRFDialog::load()
 {
     SceneBoundaryDialog::load();
 
-    SceneBoundaryRF *edgeRFMarker = dynamic_cast<SceneBoundaryRF *>(m_boundary);
-
-    cmbType->setCurrentIndex(cmbType->findData(edgeRFMarker->type));
-
-    if (edgeRFMarker->type == PhysicFieldBC_RF_Port)
-        cmbMode->setCurrentIndex(cmbMode->findData(edgeRFMarker->mode));
-
-    if (edgeRFMarker->type == PhysicFieldBC_RF_ElectricField ||
-            edgeRFMarker->type == PhysicFieldBC_RF_SurfaceCurrent)
+    cmbType->setCurrentIndex(cmbType->findData(QString::fromStdString(m_boundary->type)));
+    if (m_boundary->type == "rf_electric_field")
     {
-        txtValueReal->setValue(edgeRFMarker->value_real);
-        txtValueImag->setValue(edgeRFMarker->value_imag);
+        txtValueReal->setValue(m_boundary->get_value("rf_electric_field_real"));
+        txtValueImag->setValue(m_boundary->get_value("rf_electric_field_imag"));
     }
-
-    if (edgeRFMarker->type == PhysicFieldBC_RF_Port)
+    else if (m_boundary->type == "rf_magnetic_field")
     {
-        txtValueReal->setValue(edgeRFMarker->power);
-        txtValueImag->setValue(edgeRFMarker->phase);
+        txtValueReal->setValue(m_boundary->get_value("rf_magnetic_field_real"));
+        txtValueImag->setValue(m_boundary->get_value("rf_magnetic_field_imag"));
+    }
+    else if (m_boundary->type == "rf_surface_current")
+    {
+        txtValueReal->setValue(m_boundary->get_value("rf_surface_current_real"));
+        txtValueImag->setValue(m_boundary->get_value("rf_surface_current_imag"));
+    }
+    else if (m_boundary->type == "rf_port")
+    {
+        txtValueReal->setValue(m_boundary->get_value("rf_port_power"));
+        txtValueImag->setValue(m_boundary->get_value("rf_port_phase"));
     }
 }
 
@@ -958,47 +604,31 @@ bool SceneBoundaryRFDialog::save()
 {
     if (!SceneBoundaryDialog::save()) return false;;
 
-    SceneBoundaryRF *edgeRFMarker = dynamic_cast<SceneBoundaryRF *>(m_boundary);
+    m_boundary->type = cmbType->itemData(cmbType->currentIndex()).toString().toStdString();
 
-    edgeRFMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
-    edgeRFMarker->mode = (Mode) cmbMode->itemData(cmbMode->currentIndex()).toInt();
-
-    if (edgeRFMarker->type == PhysicFieldBC_RF_ElectricField ||
-            edgeRFMarker->type == PhysicFieldBC_RF_SurfaceCurrent)
-    {
-        if (txtValueReal->evaluate())
-            edgeRFMarker->value_real  = txtValueReal->value();
+    if (txtValueReal->evaluate() && txtValueImag->evaluate())
+        if (m_boundary->type == "rf_electric_field")
+        {
+            m_boundary->values["rf_electric_field_real"] = txtValueReal->value();
+            m_boundary->values["rf_electric_field_imag"] = txtValueImag->value();
+        }
+        else if (m_boundary->type == "rf_magnetic_field")
+        {
+            m_boundary->values["rf_magnetic_field_real"] = txtValueReal->value();
+            m_boundary->values["rf_magnetic_field_imag"] = txtValueImag->value();
+        }
+        else if (m_boundary->type == "rf_surface_current")
+        {
+            m_boundary->values["rf_surface_current_real"] = txtValueReal->value();
+            m_boundary->values["rf_surface_current_imag"] = txtValueImag->value();
+        }
+        else if (m_boundary->type == "rf_port")
+        {
+            m_boundary->values["rf_port_power"] = txtValueReal->value();
+            m_boundary->values["rf_port_phase"] = txtValueImag->value();
+        }
         else
             return false;
-
-        if (txtValueImag->evaluate())
-            edgeRFMarker->value_imag  = txtValueImag->value();
-        else
-            return false;
-    }
-    else
-    {
-        edgeRFMarker->value_real = Value();
-        edgeRFMarker->value_imag = Value();
-    }
-
-    if (edgeRFMarker->type == PhysicFieldBC_RF_Port)
-    {
-        if (txtValueReal->evaluate())
-            edgeRFMarker->power  = txtValueReal->value();
-        else
-            return false;
-
-        if (txtValueImag->evaluate())
-            edgeRFMarker->phase = txtValueImag->value();
-        else
-            return false;
-    }
-    else
-    {
-        edgeRFMarker->power = Value();
-        edgeRFMarker->phase = Value();
-    }
 
     return true;
 }
@@ -1010,11 +640,10 @@ void SceneBoundaryRFDialog::doTypeChanged(int index)
     cmbMode->setEnabled(false);
 
     // read equation
-    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+    readEquation(lblEquationImage, cmbType->itemData(index).toString());
 
-    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
-    {
-    case PhysicFieldBC_RF_ElectricField:
+    // enable controls
+    if (cmbType->itemData(index) == "rf_electric_field")
     {
         txtValueReal->setEnabled(true);
         lblValueUnitReal->setText(tr("<i>E</i><sub>%1</sub>").arg(Util::scene()->problemInfo()->labelZ().toLower()));
@@ -1023,9 +652,16 @@ void SceneBoundaryRFDialog::doTypeChanged(int index)
         lblValueUnitImag->setText(tr(" + j "));
         lblValueUnitImag->setToolTip(cmbType->itemText(index));
     }
-        break;
-
-    case PhysicFieldBC_RF_SurfaceCurrent:
+    else if (cmbType->itemData(index) == "rf_magnetic_field")
+    {
+        txtValueReal->setEnabled(true);
+        lblValueUnitReal->setText(tr("<i>H</i><sub>0</sub>"));
+        lblValueUnitReal->setToolTip(cmbType->itemText(index));
+        txtValueImag->setEnabled(true);
+        lblValueUnitImag->setText(tr(" + j "));
+        lblValueUnitImag->setToolTip(cmbType->itemText(index));
+    }
+    else if (cmbType->itemData(index) == "rf_surface_current")
     {
         txtValueReal->setEnabled(true);
         lblValueUnitReal->setText(tr("<i>J</i><sub>0</sub>"));
@@ -1034,16 +670,7 @@ void SceneBoundaryRFDialog::doTypeChanged(int index)
         lblValueUnitImag->setText(tr(" + j "));
         lblValueUnitImag->setToolTip(cmbType->itemText(index));
     }
-        break;
-
-    case PhysicFieldBC_RF_MatchedBoundary:
-    {
-        lblValueUnitReal->setText("-");
-        lblValueUnitImag->setText("");
-    }
-        break;
-
-    case PhysicFieldBC_RF_Port:
+    else if (cmbType->itemData(index) == "rf_port")
     {
         txtValueReal->setEnabled(true);
         lblValueUnitReal->setText(tr("<i>P</i> (W):"));
@@ -1053,16 +680,14 @@ void SceneBoundaryRFDialog::doTypeChanged(int index)
         lblValueUnitImag->setToolTip(tr("Phase"));
         cmbMode->setEnabled(true);
     }
-        break;
-    }
 }
 
 
 // *************************************************************************************************************************************
 
-SceneMaterialRFDialog::SceneMaterialRFDialog(QWidget *parent, SceneMaterialRF *labelRFMarker) : SceneMaterialDialog(parent)
+SceneMaterialRFDialog::SceneMaterialRFDialog(SceneMaterial *material, QWidget *parent) : SceneMaterialDialog(parent)
 {
-    m_material = labelRFMarker;
+    m_material = material;
 
     createDialog();
 
@@ -1108,42 +733,38 @@ void SceneMaterialRFDialog::load()
 {
     SceneMaterialDialog::load();
 
-    SceneMaterialRF *labelRFMarker = dynamic_cast<SceneMaterialRF *>(m_material);
-
-    txtPermittivity->setValue(labelRFMarker->permittivity);
-    txtPermeability->setValue(labelRFMarker->permeability);
-    txtConductivity->setValue(labelRFMarker->conductivity);
-    txtCurrentDensityReal->setValue(labelRFMarker->current_density_real);
-    txtCurrentDensityImag->setValue(labelRFMarker->current_density_imag);
+    txtPermittivity->setValue(m_material->get_value("rf_permittivity"));
+    txtPermeability->setValue(m_material->get_value("rf_permeability"));
+    txtConductivity->setValue(m_material->get_value("rf_conductivity"));
+    txtCurrentDensityReal->setValue(m_material->get_value("rf_surface_current_external_real"));
+    txtCurrentDensityImag->setValue(m_material->get_value("rf_surface_current_external_imag"));
 }
 
 bool SceneMaterialRFDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
-    SceneMaterialRF *labelRFMarker = dynamic_cast<SceneMaterialRF *>(m_material);
-
     if (txtPermittivity->evaluate())
-        labelRFMarker->permittivity  = txtPermittivity->value();
+        m_material->values["rf_permittivity"] = txtPermittivity->value();
     else
         return false;
 
     if (txtPermeability->evaluate())
-        labelRFMarker->permeability  = txtPermeability->value();
+        m_material->values["rf_permeability"] = txtPermeability->value();
     else
         return false;
 
     if (txtConductivity->evaluate())
-        labelRFMarker->conductivity  = txtConductivity->value();
+        m_material->values["rf_conductivity"] = txtConductivity->value();
     else
         return false;
 
     if (txtCurrentDensityReal->evaluate())
-        labelRFMarker->current_density_real  = txtCurrentDensityReal->value();
+        m_material->values["rf_surface_current_external_real"] = txtCurrentDensityReal->value();
     else
         return false;
 
     if (txtCurrentDensityImag->evaluate())
-        labelRFMarker->current_density_imag  = txtCurrentDensityImag->value();
+        m_material->values["rf_surface_current_external_imag"] = txtCurrentDensityImag->value();
     else
         return false;
 
