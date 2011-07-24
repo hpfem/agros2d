@@ -25,7 +25,7 @@
 #include "hermes_heat.h"
 #include "hermes_current.h"
 #include "hermes_elasticity.h"
-// #include "hermes_rf.h"
+#include "hermes_rf.h"
 #include "hermes_acoustic.h"
 // #include "hermes_flow.h"
 
@@ -53,11 +53,11 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
         module = new ModuleElasticity(problem_type, analysis_type);
     if (id == "heat")
         module = new ModuleHeat(problem_type, analysis_type);
+    if (id == "rf")
+        module = new ModuleRF(problem_type, analysis_type);
     /*
     if (id == "magnetic")
         module = new ModuleMagnetic(problem_type, analysis_type);
-    if (id == "rf")
-        module = new ModuleRF(problem_type, analysis_type);
     */
     if (module)
         module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());
@@ -80,6 +80,8 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
         return new SceneBoundaryElasticityDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "heat")
         return new SceneBoundaryHeatDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "rf")
+        return new SceneBoundaryRFDialog(scene_boundary, parent);
     /*
     if (Util::scene()->problemInfo()->module()->id == "magnetic")
         return new SceneBoundaryMagneticDialog(scene_boundary, parent);
@@ -99,6 +101,8 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
         return new SceneMaterialElasticityDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "heat")
         return new SceneMaterialHeatDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "rf")
+        return new SceneMaterialRFDialog(scene_material, parent);
     /*
     if (Util::scene()->problemInfo()->module()->id == "magnetic")
         return new SceneMaterialMagneticDialog(scene_material, parent);
