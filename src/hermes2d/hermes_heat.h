@@ -29,10 +29,8 @@ struct ModuleHeat : public Hermes::Module::ModuleAgros
 public:
     ModuleHeat(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    inline int number_of_solution() const { return 1; }
     bool has_nonlinearity() const { return false; }
 
-    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
     void update_time_functions(double time);
 
     // rewrite

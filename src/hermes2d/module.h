@@ -351,6 +351,8 @@ public:
     Parser();
     ~Parser();
 
+    void initParserBoundaryVariables(Boundary *boundary);
+    void initParserMaterialVariables();
     void setParserVariables(Material *material, Boundary *boundary);
 };
 

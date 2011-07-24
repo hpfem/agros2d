@@ -22,116 +22,32 @@
 #include "scene.h"
 #include "gui.h"
 
-class WeakFormHeatTransfer : public WeakFormAgros
+/*
+// transient analysis
+if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
 {
-public:
-    WeakFormHeatTransfer() : WeakFormAgros() { }
-
-    void registerForms()
+    if ((fabs(material->get_value("heat_density").number) > EPS_ZERO)
+            && (fabs(material->get_value("heat_specific_heat").number) > EPS_ZERO))
     {
-        // boundary conditions
-        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        if (solution.size() > 0)
         {
-            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
+            add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
+                                                                                      QString::number(i).toStdString(),
+                                                                                      material->get_value("heat_density").number * material->get_value("heat_specific_heat").number / Util::scene()->problemInfo()->timeStep.number,
+                                                                                      HERMES_SYM,
+                                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
 
-            if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
-            {
-                if (boundary->type == "heat_heat_flux")
-                {
-                    // vector flux term
-
-
-                    double flux = boundary->get_value("heat_heat_flux").number +
-                            boundary->get_value("heat_heat_transfer_coefficient").number * boundary->get_value("heat_external_temperature").number;
-
-                    if (fabs(flux) > EPS_ZERO)
-                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
-                                                                                                        QString::number(i + 1).toStdString(),
-                                                                                                        flux,
-                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-                    if (fabs(boundary->get_value("heat_heat_transfer_coefficient").number) > EPS_ZERO)
-                        add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(0, 0,
-                                                                                                        QString::number(i + 1).toStdString(),
-                                                                                                        boundary->get_value("heat_heat_transfer_coefficient").number,
-                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-                }
-            }
-        }
-
-        // materials
-        for (int i = 0; i<Util::scene()->labels.count(); i++)
-        {
-            SceneMaterial *material = Util::scene()->labels[i]->material;
-
-            if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
-            {
-                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
-                                                                                               QString::number(i).toStdString(),
-                                                                                               material->get_value("heat_conductivity").number,
-                                                                                               HERMES_SYM,
-                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-                if (fabs(material->get_value("heat_volume_heat").number) > EPS_ZERO)
-                    add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
-                                                                                                   QString::number(i).toStdString(),
-                                                                                                   material->get_value("heat_volume_heat").number,
-                                                                                                   convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-                // transient analysis
-                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-                {
-                    if ((fabs(material->get_value("heat_density").number) > EPS_ZERO)
-                            && (fabs(material->get_value("heat_specific_heat").number) > EPS_ZERO))
-                    {
-                        if (solution.size() > 0)
-                        {
-                            add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
-                                                                                                      QString::number(i).toStdString(),
-                                                                                                      material->get_value("heat_density").number * material->get_value("heat_specific_heat").number / Util::scene()->problemInfo()->timeStep.number,
-                                                                                                      HERMES_SYM,
-                                                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-                            add_vector_form(new CustomVectorFormTimeDep(0,
-                                                                        QString::number(i).toStdString(),
-                                                                        material->get_value("heat_density").number * material->get_value("heat_specific_heat").number / Util::scene()->problemInfo()->timeStep.number,
-                                                                        solution[0],
-                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-                        }
-                    }
-                }
-            }
+            add_vector_form(new CustomVectorFormTimeDep(0,
+                                                        QString::number(i).toStdString(),
+                                                        material->get_value("heat_density").number * material->get_value("heat_specific_heat").number / Util::scene()->problemInfo()->timeStep.number,
+                                                        solution[0],
+                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
         }
     }
-};
+}
+*/
 
 // *******************************************************************************************************
-
-Hermes::vector<SolutionArray *> ModuleHeat::solve(ProgressItemSolve *progressItemSolve)
-{
-    if (!solve_init_variables())
-        return Hermes::vector<SolutionArray *>();
-
-    // boundary conditions
-    EssentialBCs bcs;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
-
-        if (boundary)
-        {
-            if (boundary->type == "heat_temperature")
-                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
-                                                                       boundary->get_value("heat_temperature").number));
-        }
-    }
-
-    WeakFormHeatTransfer wf;
-
-    Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
-
-    return solutionArrayList;
-}
 
 void ModuleHeat::update_time_functions(double time)
 {
@@ -343,22 +259,22 @@ bool SceneBoundaryHeatDialog::save() {
     if (m_boundary->type == "heat_temperature")
     {
         if (txtTemperature->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("heat_temperature")] = txtTemperature->value();
+            m_boundary->values["heat_temperature"] = txtTemperature->value();
         else
             return false;
     }
     else if (m_boundary->type == "heat_heat_flux")
     {
         if (txtHeatFlux->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("heat_heat_flux")] = txtHeatFlux->value();
+            m_boundary->values["heat_heat_flux"] = txtHeatFlux->value();
         else
             return false;
         if (txtHeatTransferCoefficient->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("heat_heat_transfer_coefficient")] = txtHeatTransferCoefficient->value();
+            m_boundary->values["heat_heat_transfer_coefficient"] = txtHeatTransferCoefficient->value();
         else
             return false;
         if (txtExternalTemperature->evaluate())
-            m_boundary->values[m_boundary->get_boundary_type_variable("heat_external_temperature")] = txtExternalTemperature->value();
+            m_boundary->values["heat_external_temperature"] = txtExternalTemperature->value();
         else
             return false;
     }
@@ -446,22 +362,22 @@ bool SceneMaterialHeatDialog::save()
     if (!SceneMaterialDialog::save()) return false;;
 
     if (txtThermalConductivity->evaluate())
-        m_material->values[m_material->get_material_type_variable("heat_conductivity")] = txtThermalConductivity->value();
+        m_material->values["heat_conductivity"] = txtThermalConductivity->value();
     else
         return false;
 
     if (txtVolumeHeat->evaluate())
-        m_material->values[m_material->get_material_type_variable("heat_volume_heat")] = txtVolumeHeat->value();
+        m_material->values["heat_volume_heat"] = txtVolumeHeat->value();
     else
         return false;
 
     if (txtDensity->evaluate())
-        m_material->values[m_material->get_material_type_variable("heat_density")] = txtDensity->value();
+        m_material->values["heat_density"] = txtDensity->value();
     else
         return false;
 
     if (txtSpecificHeat->evaluate())
-        m_material->values[m_material->get_material_type_variable("heat_specific_heat")] = txtSpecificHeat->value();
+        m_material->values["heat_specific_heat"] = txtSpecificHeat->value();
     else
         return false;
 

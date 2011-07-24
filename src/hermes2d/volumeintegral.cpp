@@ -86,8 +86,7 @@ void VolumeIntegralValue::calculate()
 
         }
 
-        for (std::map<std::string, double>::iterator itv = parser->parser_variables.begin(); itv != parser->parser_variables.end(); ++itv)
-            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
+        parser->initParserMaterialVariables();
     }
 
     Quad2D *quad = &g_quad_2d_std;

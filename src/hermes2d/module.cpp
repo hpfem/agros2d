@@ -22,7 +22,7 @@
 // #include "hermes_general.h"
 #include "hermes_electrostatic.h"
 // #include "hermes_magnetic.h"
-// #include "hermes_heat.h"
+#include "hermes_heat.h"
 #include "hermes_current.h"
 #include "hermes_elasticity.h"
 // #include "hermes_rf.h"
@@ -51,9 +51,9 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
         module = new ModuleAcoustic(problem_type, analysis_type);
     if (id == "elasticity")
         module = new ModuleElasticity(problem_type, analysis_type);
-    /*
     if (id == "heat")
         module = new ModuleHeat(problem_type, analysis_type);
+    /*
     if (id == "magnetic")
         module = new ModuleMagnetic(problem_type, analysis_type);
     if (id == "rf")
@@ -78,9 +78,9 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
         return new SceneBoundaryAcousticDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "elasticity")
         return new SceneBoundaryElasticityDialog(scene_boundary, parent);
-    /*
     if (Util::scene()->problemInfo()->module()->id == "heat")
         return new SceneBoundaryHeatDialog(scene_boundary, parent);
+    /*
     if (Util::scene()->problemInfo()->module()->id == "magnetic")
         return new SceneBoundaryMagneticDialog(scene_boundary, parent);
     */
@@ -97,9 +97,9 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
         return new SceneMaterialAcousticDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "elasticity")
         return new SceneMaterialElasticityDialog(scene_material, parent);
-    /*
     if (Util::scene()->problemInfo()->module()->id == "heat")
         return new SceneMaterialHeatDialog(scene_material, parent);
+    /*
     if (Util::scene()->problemInfo()->module()->id == "magnetic")
         return new SceneMaterialMagneticDialog(scene_material, parent);
     */
@@ -1477,6 +1477,36 @@ void Parser::setParserVariables(Material *material, Boundary *boundary)
     }
 }
 
+void Parser::initParserMaterialVariables()
+{
+    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+    {
+        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+        parser_variables[variable->shortname] = 0.0;
+    }
+
+    // set material variables
+    for (std::map<std::string, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
+        for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
+            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
+}
+
+void Parser::initParserBoundaryVariables(Boundary *boundary)
+{
+    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->type);
+    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+    {
+        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+        parser_variables[variable->shortname] = 0.0;
+    }
+
+    // set material variables
+    for (std::map<std::string, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
+        for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
+            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
+}
+
 // *********************************************************************************************************************************************
 
 ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
@@ -1486,8 +1516,8 @@ ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
     parser = new Parser();
     initParser(expression);
 
-    for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
-        parser->parser[0]->DefineVar(it->first, &it->second);
+    // init material variables
+    parser->initParserMaterialVariables();
 }
 
 ViewScalarFilter::~ViewScalarFilter()
