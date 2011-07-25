@@ -62,7 +62,7 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     #hermes2d/hermes_general.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
-    #hermes2d/hermes_magnetic.cpp \
+    hermes2d/hermes_magnetic.cpp \
     hermes2d/hermes_current.cpp \
     hermes2d/hermes_elasticity.cpp \
     hermes2d/hermes_rf.cpp \
@@ -114,7 +114,7 @@ HEADERS += util.h \
     #hermes2d/hermes_general.h \
     hermes2d/hermes_electrostatic.h \
     hermes2d/hermes_heat.h \
-    #hermes2d/hermes_magnetic.h \
+    hermes2d/hermes_magnetic.h \
     hermes2d/hermes_current.h \
     hermes2d/hermes_elasticity.h \
     hermes2d/hermes_rf.h \
@@ -160,8 +160,15 @@ INCLUDEPATH += . \
     ../hermes_common
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
-    version.xml
-linux-g++|linux-g++-64|linux-g++-32 {
+    version.xml \
+    ../modules/rf.xml \
+    ../modules/magnetic.xml \
+    ../modules/heat.xml \
+    ../modules/electrostatic.xml \
+    ../modules/elasticity.xml \
+    ../modules/current.xml \
+    ../modules/acoustic.xml
+linux-g++ {
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
     # DEFINES += WITH_UNITY

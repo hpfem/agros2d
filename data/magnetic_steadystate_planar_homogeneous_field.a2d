@@ -5,7 +5,7 @@
 mur = 1.05</scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0"/>
+                <edge type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0"/>
             </edges>
             <labels>
                 <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="mur" magnetic_conductivity="0" magnetic_remanence="Br" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="90" name="Magnet up" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
