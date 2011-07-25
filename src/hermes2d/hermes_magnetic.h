@@ -29,10 +29,8 @@ struct ModuleMagnetic : public Hermes::Module::ModuleAgros
 public:
     ModuleMagnetic(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    int number_of_solution() const;
     bool has_nonlinearity() const { return false; }
 
-    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
     void update_time_functions(double time);
 
     // rewrite

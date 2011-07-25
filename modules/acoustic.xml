@@ -14,14 +14,14 @@
         <item id="acoustic_speed" name="Speed of sound" shortname="v" unit="m/s" />  
         
     	<harmonic>
-    		<material id="acoustic_density" />
-    		<material id="acoustic_speed" />
-    	
-        	<matrix i="1" j="1" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval" 
-        						axi="1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="1" />
-        	<matrix i="2" j="2" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval" 
-        						axi="1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="1" />
-		</harmonic>
+            <material id="acoustic_density" />
+            <material id="acoustic_speed" />
+
+            <matrix i="1" j="1" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval"
+                                axi="1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="1" />
+            <matrix i="2" j="2" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval"
+                                axi="1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="1" />
+        </harmonic>
     </material>
 
     <boundary>
@@ -31,33 +31,33 @@
     	<item id="acoustic_normal_acceleration_imag" name="Normal acceleration - imag" shortname="ani" unit="m/s2" />
     	<item id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" unit="Pa·s/m" />
  
- 		<harmonic>
-       		<boundary id="acoustic_pressure" name="Pressure">
-            	<item id="acoustic_pressure_real" />
-            	<item id="acoustic_pressure_imag" />
-				
-				<essential i="1" id="acoustic_pressure_real" />
-				<essential i="2" id="acoustic_pressure_imag" />
-			</boundary> 
-			
-      	  	<boundary id="acoustic_normal_acceleration" name="Normal acceleration">
-            	<item id="acoustic_normal_acceleration_real" />	
-				<item id="acoustic_normal_acceleration_imag" />	
-				
-				<vector i="1" planar="anr * vval" axi="anr * x * vval" />
-				<vector i="2" planar="ani * vval" axi="ani * x * vval" />
-			</boundary>  
-			
-			<boundary id="acoustic_impedance" name="Impedance boundary condition">
-            	<item id="acoustic_impedance" />
-            	
-            	<matrix i="1" j="2" planar="- 2 * PI * f / Z0 * uval * vval" axi="- x * 2 * PI * f / Z0 * uval * vval" />
-        		<matrix i="2" j="1" planar="  2 * PI * f / Z0 * uval * vval" axi="  x * 2 * PI * f / Z0 * uval * vval" />
-        	</boundary>  
-        	
-			<boundary id="acoustic_matched_boundary" name="Matched boundary" >
-			</boundary>  
-		</harmonic>
+        <harmonic>
+            <boundary id="acoustic_pressure" name="Pressure">
+                <item id="acoustic_pressure_real" />
+                <item id="acoustic_pressure_imag" />
+
+                <essential i="1" id="acoustic_pressure_real" />
+                <essential i="2" id="acoustic_pressure_imag" />
+            </boundary>
+
+            <boundary id="acoustic_normal_acceleration" name="Normal acceleration">
+                <item id="acoustic_normal_acceleration_real" />
+                <item id="acoustic_normal_acceleration_imag" />
+
+                <vector i="1" planar="anr * vval" axi="anr * x * vval" />
+                <vector i="2" planar="ani * vval" axi="ani * x * vval" />
+            </boundary>
+
+            <boundary id="acoustic_impedance" name="Impedance boundary condition">
+                <item id="acoustic_impedance" />
+
+                <matrix i="1" j="2" planar="- 2 * PI * f / Z0 * uval * vval" axi="- x * 2 * PI * f / Z0 * uval * vval" />
+                <matrix i="2" j="1" planar="  2 * PI * f / Z0 * uval * vval" axi="  x * 2 * PI * f / Z0 * uval * vval" />
+            </boundary>
+
+            <boundary id="acoustic_matched_boundary" name="Matched boundary" >
+            </boundary>
+        </harmonic>
     </boundary>	    
 
     <localvariable>

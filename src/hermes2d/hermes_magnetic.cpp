@@ -22,177 +22,31 @@
 #include "scene.h"
 #include "gui.h"
 
-class WeakFormMagnetic : public WeakFormAgros
+/*
+// transient analysis
+if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
 {
-public:
-    WeakFormMagnetic(int neq) : WeakFormAgros(neq) { }
-
-    void registerForms()
+    if (fabs(material->get_value("magnetic_conductivity").number) > EPS_ZERO)
     {
-        // boundary conditions
-        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        if (solution.size() > 0)
         {
-            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
+            add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
+                                                                                      QString::number(i).toStdString(),
+                                                                                      material->get_value("magnetic_conductivity").number / Util::scene()->problemInfo()->timeStep.number,
+                                                                                      HERMES_SYM,
+                                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
 
-            if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
-            {
-                if (boundary->type == "magnetic_surface_current")
-                {
-                    if (fabs(boundary->get_value("magnetic_surface_current_real").number) > EPS_ZERO)
-                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
-                                                                                                        QString::number(i + 1).toStdString(),
-                                                                                                        boundary->get_value("magnetic_surface_current_real").number,
-                                                                                                        HERMES_PLANAR));
-                    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-                        if (fabs(boundary->get_value("magnetic_surface_current_imag").number) > EPS_ZERO)
-                            add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
-                                                                                                            QString::number(i + 1).toStdString(),
-                                                                                                            boundary->get_value("magnetic_surface_current_imag").number,
-                                                                                                            HERMES_PLANAR));
-                }
-            }
-        }
-
-        // materials
-        for (int i = 0; i<Util::scene()->labels.count(); i++)
-        {
-            SceneMaterial *material = Util::scene()->labels[i]->material;
-
-            if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
-            {
-                // steady state and transient analysis
-                add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostatics(0, 0,
-                                                                                                         QString::number(i).toStdString(),
-                                                                                                         1.0 / (material->get_value("magnetic_permeability").number * MU0),
-                                                                                                         HERMES_NONSYM,
-                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType),
-                                                                                                         (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
-
-                // velocity
-                if ((fabs(material->get_value("magnetic_conductivity").number) > EPS_ZERO) &&
-                        ((fabs(material->get_value("magnetic_velocity_x").number) > EPS_ZERO) ||
-                         (fabs(material->get_value("magnetic_velocity_y").number) > EPS_ZERO) ||
-                         (fabs(material->get_value("magnetic_velocity_angular").number) > EPS_ZERO)))
-                    add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostaticsVelocity(0, 0,
-                                                                                                                     QString::number(i).toStdString(),
-                                                                                                                     material->get_value("magnetic_conductivity").number,
-                                                                                                                     material->get_value("magnetic_velocity_x").number,
-                                                                                                                     material->get_value("magnetic_velocity_y").number,
-                                                                                                                     material->get_value("magnetic_velocity_angular").number));
-
-                // external current density
-                if (fabs(material->get_value("magnetic_current_density_external_real").number) > EPS_ZERO)
-                    add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
-                                                                                                   QString::number(i).toStdString(),
-                                                                                                   material->get_value("magnetic_current_density_external_real").number,
-                                                                                                   HERMES_PLANAR));
-
-                // remanence
-                if (fabs(material->get_value("magnetic_remanence").number) > EPS_ZERO)
-                    add_vector_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostaticsRemanence(0,
-                                                                                                                      QString::number(i).toStdString(),
-                                                                                                                      material->get_value("magnetic_permeability").number * MU0,
-                                                                                                                      material->get_value("magnetic_remanence").number,
-                                                                                                                      material->get_value("magnetic_remanence_angle").number,
-                                                                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-                // harmonic analysis
-                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-                {
-                    add_matrix_form(new WeakFormsMaxwell::VolumetricMatrixForms::DefaultLinearMagnetostatics(1, 1,
-                                                                                                             QString::number(i).toStdString(),
-                                                                                                             1.0 / (material->get_value("magnetic_permeability").number * MU0),
-                                                                                                             HERMES_NONSYM,
-                                                                                                             convertProblemType(Util::scene()->problemInfo()->problemType),
-                                                                                                             (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 5)));
-
-                    if (fabs(material->get_value("magnetic_conductivity").number) > EPS_ZERO)
-                    {
-                        add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 1,
-                                                                                                  QString::number(i).toStdString(),
-                                                                                                  - 2 * M_PI * Util::scene()->problemInfo()->frequency * material->get_value("magnetic_conductivity").number,
-                                                                                                  HERMES_NONSYM,
-                                                                                                  HERMES_PLANAR));
-
-                        add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 0,
-                                                                                                  QString::number(i).toStdString(),
-                                                                                                  2 * M_PI * Util::scene()->problemInfo()->frequency * material->get_value("magnetic_conductivity").number,
-                                                                                                  HERMES_NONSYM,
-                                                                                                  HERMES_PLANAR));
-                    }
-
-                    // external current density
-                    if (fabs(material->get_value("magnetic_current_density_external_imag").number) > EPS_ZERO)
-                        add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(1,
-                                                                                                       QString::number(i).toStdString(),
-                                                                                                       material->get_value("magnetic_current_density_external_imag").number,
-                                                                                                       HERMES_PLANAR));
-                }
-
-                // transient analysis
-                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-                {
-                    if (fabs(material->get_value("magnetic_conductivity").number) > EPS_ZERO)
-                    {
-                        if (solution.size() > 0)
-                        {
-                            add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
-                                                                                                      QString::number(i).toStdString(),
-                                                                                                      material->get_value("magnetic_conductivity").number / Util::scene()->problemInfo()->timeStep.number,
-                                                                                                      HERMES_SYM,
-                                                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-                            add_vector_form(new CustomVectorFormTimeDep(0,
-                                                                        QString::number(i).toStdString(),
-                                                                        material->get_value("magnetic_conductivity").number / Util::scene()->problemInfo()->timeStep.number,
-                                                                        solution[0],
-                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-                        }
-                    }
-                }
-            }
+            add_vector_form(new CustomVectorFormTimeDep(0,
+                                                        QString::number(i).toStdString(),
+                                                        material->get_value("magnetic_conductivity").number / Util::scene()->problemInfo()->timeStep.number,
+                                                        solution[0],
+                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
         }
     }
-};
+}
+*/
 
 // ****************************************************************************************************************
-
-int ModuleMagnetic::number_of_solution() const
-{
-    return (get_analysis_type() == AnalysisType_Harmonic) ? 2 : 1;
-}
-
-Hermes::vector<SolutionArray *> ModuleMagnetic::solve(ProgressItemSolve *progressItemSolve)
-{
-    if (!solve_init_variables())
-        return Hermes::vector<SolutionArray *>();
-
-    // boundary conditions
-    EssentialBCs bc1;
-    EssentialBCs bc2;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
-
-        if (boundary)
-        {
-            if (boundary->type == "magnetic_potential")
-            {
-                bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
-                                                                       boundary->get_value("magnetic_potential_real").number));
-                bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
-                                                                       boundary->get_value("magnetic_potential_imag").number));
-            }
-        }
-    }
-    Hermes::vector<EssentialBCs> bcs(bc1, bc2);
-
-    WeakFormMagnetic wf(number_of_solution());
-
-    Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
-
-    return solutionArrayList;
-}
 
 void ModuleMagnetic::update_time_functions(double time)
 {
@@ -395,11 +249,11 @@ bool SceneBoundaryMagneticDialog::save() {
     if (txtValueReal->evaluate())
         if (m_boundary->type == "magnetic_potential")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("magnetic_potential_real")] = txtValueReal->value();
+            m_boundary->values["magnetic_potential_real"] = txtValueReal->value();
         }
         else if (m_boundary->type == "magnetic_surface_current")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("magnetic_surface_current_real")] = txtValueReal->value();
+            m_boundary->values["magnetic_surface_current_real"] = txtValueReal->value();
         }
         else
             return false;
@@ -407,11 +261,11 @@ bool SceneBoundaryMagneticDialog::save() {
     if (txtValueImag->evaluate())
         if (m_boundary->type == "magnetic_potential")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("magnetic_potential_imag")] = txtValueImag->value();
+            m_boundary->values["magnetic_potential_imag"] = txtValueImag->value();
         }
         else if (m_boundary->type == "magnetic_surface_current")
         {
-            m_boundary->values[m_boundary->get_boundary_type_variable("magnetic_surface_current_imag")] = txtValueImag->value();
+            m_boundary->values["magnetic_surface_current_imag"] = txtValueImag->value();
         }
         else
             return false;
@@ -547,47 +401,47 @@ bool SceneMaterialMagneticDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
     if (txtPermeability->evaluate())
-        m_material->values[m_material->get_material_type_variable("magnetic_permeability")] = txtPermeability->value();
+        m_material->values["magnetic_permeability"] = txtPermeability->value();
     else
         return false;
 
     if (txtConductivity->evaluate())
-        m_material->values[m_material->get_material_type_variable("magnetic_conductivity")] = txtConductivity->value();
+        m_material->values["magnetic_conductivity"] = txtConductivity->value();
     else
         return false;
 
     if (txtCurrentDensityReal->evaluate())
-        m_material->values[m_material->get_material_type_variable("magnetic_current_denstity_external_real")] = txtCurrentDensityReal->value();
+        m_material->values["magnetic_current_denstity_external_real"] = txtCurrentDensityReal->value();
     else
         return false;
 
     if (txtCurrentDensityImag->evaluate())
-        m_material->values[m_material->get_material_type_variable("magnetic_current_denstity_external_imag")] = txtCurrentDensityImag->value();
+        m_material->values["magnetic_current_denstity_external_imag"] = txtCurrentDensityImag->value();
     else
         return false;
 
     if (txtRemanence->evaluate())
-        m_material->values[m_material->get_material_type_variable("magnetic_remanence")] = txtRemanence->value();
+        m_material->values["magnetic_remanence"] = txtRemanence->value();
     else
         return false;
 
     if (txtRemanenceAngle->evaluate())
-        m_material->values[m_material->get_material_type_variable("magnetic_remanence_angle")] = txtRemanenceAngle->value();
+        m_material->values["magnetic_remanence_angle"] = txtRemanenceAngle->value();
     else
         return false;
 
     if (txtVelocityX->evaluate())
-        m_material->values[m_material->get_material_type_variable("magnetic_velocity_x")] = txtVelocityX->value();
+        m_material->values["magnetic_velocity_x"] = txtVelocityX->value();
     else
         return false;
 
     if (txtVelocityY->evaluate())
-        m_material->values[m_material->get_material_type_variable("magnetic_velocity_y")] = txtVelocityY->value();
+        m_material->values["magnetic_velocity_y"] = txtVelocityY->value();
     else
         return false;
 
     if (txtVelocityAngular->evaluate())
-        m_material->values[m_material->get_material_type_variable("magnetic_velocity_angular")] = txtVelocityAngular->value();
+        m_material->values["magnetic_velocity_angular"] = txtVelocityAngular->value();
     else
         return false;
 

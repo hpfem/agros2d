@@ -9,13 +9,13 @@ f = p*n/60
 omega = 2*pi*f</scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0"/>
+                <edge type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0"/>
             </edges>
             <labels>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="omega" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="sigma" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Aluminum" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="Jext" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="-Jext" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="4" magnetic_remanence_angle="0" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="omega" magnetic_permeability="1" magnetic_conductivity="sigma" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Aluminum" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="Jext" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                <label magnetic_current_density_external_real="-Jext" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="4" magnetic_remanence_angle="0" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
             </labels>
         </problem>
     </problems>

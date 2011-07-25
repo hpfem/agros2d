@@ -14,12 +14,12 @@
         <item id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" />	
         
     	<steadystate>
-    		<material id="electrostatic_permittivity" />
-    		<material id="electrostatic_charge_density" />
-    	
-        	<matrix i="1" j="1" planar="epsr * EPS0 * (udx * vdx + udy * vdy)" axi="epsr * EPS0 * x * (udx * vdx + udy * vdy)" symmetric="1" />
-        	<vector i="1" planar="rho * vval" axi="rho * x * vval" />	
-		</steadystate>
+            <material id="electrostatic_permittivity" />
+            <material id="electrostatic_charge_density" />
+
+            <matrix i="1" j="1" planar="epsr * EPS0 * (udx * vdx + udy * vdy)" axi="epsr * EPS0 * x * (udx * vdx + udy * vdy)" symmetric="1" />
+            <vector i="1" planar="rho * vval" axi="rho * x * vval" />
+         </steadystate>
     </material>
 
     <boundary>
@@ -27,18 +27,18 @@
     	<item id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" unit="C/m2" />
     	
     	<steadystate>
-			<boundary id="electrostatic_potential" name="Fixed voltage">
-				<item id="electrostatic_potential" />
-				
-				<essential i="1" id="electrostatic_potential" />
-			</boundary> 
-			
-			<boundary id="electrostatic_surface_charge_density" name="Surface charge density">
-				<item id="electrostatic_surface_charge_density" />		
-				
-				<vector i="1" planar="sigma * vval" axi="sigma * x * vval" />
-			</boundary>        
-		</steadystate>
+            <boundary id="electrostatic_potential" name="Fixed voltage">
+                <item id="electrostatic_potential" />
+
+                <essential i="1" id="electrostatic_potential" />
+            </boundary>
+
+            <boundary id="electrostatic_surface_charge_density" name="Surface charge density">
+                <item id="electrostatic_surface_charge_density" />
+
+                <vector i="1" planar="sigma * vval" axi="sigma * x * vval" />
+            </boundary>
+        </steadystate>
     </boundary>
       
     <localvariable>
