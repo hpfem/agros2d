@@ -14,12 +14,12 @@
         <item id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" />
         
     	<steadystate>
-    		<material id="heat_conductivity" />
-    		<material id="heat_volume_heat" />
-    		
-        	<matrix i="1" j="1" planar="lambda * (udx * vdx + udy * vdy)" axi="lambda * x * (udx * vdx + udy * vdy)" symmetric="1" />
-        	<vector i="1" planar="p * vval" axi="p * x * vval" />	
-		</steadystate>
+            <material id="heat_conductivity" />
+            <material id="heat_volume_heat" />
+
+            <matrix i="1" j="1" planar="lambda * (udx * vdx + udy * vdy)" axi="lambda * x * (udx * vdx + udy * vdy)" symmetric="1" />
+            <vector i="1" planar="p * vval" axi="p * x * vval" />
+        </steadystate>
     </material>
 
     <boundary>
@@ -29,21 +29,21 @@
     	<item id="heat_external_temperature" name="External temperature" shortname="Te" unit="K" />
     	
     	<steadystate>
-			<boundary id="heat_temperature" name="Temperature">
-				<item id="heat_temperature" />
-				
-				<essential i="1" id="heat_temperature" />
-			</boundary> 
-			
-			<boundary id="heat_heat_flux" name="Heat flux">
-				<item id="heat_heat_flux" />		
-				<item id="heat_heat_transfer_coefficient" />
-				<item id="heat_external_temperature" />
-				
-				<matrix i="1" j="1" planar="h * uval * vval" axi="h * x * uval * vval" />
-				<vector i="1" planar="(f + h * Te) * vval" axi="(f + h * Te) * x * vval" />
-			</boundary>        
-		</steadystate>
+            <boundary id="heat_temperature" name="Temperature">
+                <item id="heat_temperature" />
+
+                <essential i="1" id="heat_temperature" />
+            </boundary>
+
+            <boundary id="heat_heat_flux" name="Heat flux">
+                <item id="heat_heat_flux" />
+                <item id="heat_heat_transfer_coefficient" />
+                <item id="heat_external_temperature" />
+
+                <matrix i="1" j="1" planar="h * uval * vval" axi="h * x * uval * vval" />
+                <vector i="1" planar="(f + h * Te) * vval" axi="(f + h * Te) * x * vval" />
+            </boundary>
+        </steadystate>
     </boundary>
 
     <localvariable>
