@@ -76,6 +76,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneView, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(postprocessorView, SIGNAL(apply()), sceneView, SLOT(doInvalidated()));
     connect(postprocessorView, SIGNAL(apply()), this, SLOT(doInvalidated()));
+    connect(resultsView->btnSelectMarker, SIGNAL(clicked()), sceneView->actSceneViewSelectMarker, SLOT(trigger()));
 
     sceneView->doDefaultValues();
 

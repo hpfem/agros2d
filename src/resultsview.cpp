@@ -42,15 +42,11 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
     btnPoint->setMaximumSize(btnPoint->sizeHint());
     connect(btnPoint, SIGNAL(clicked()), this, SLOT(doPoint()));
 
-    btnMarker = new QPushButton();
-    btnMarker->setText(actMarker->text());
-    //btnMarker->setIcon(actMarker->icon());
-    btnMarker->setMaximumSize(btnMarker->sizeHint());
-    connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarker()));
+    btnSelectMarker = new QPushButton(tr("Select by marker"));
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->addWidget(btnPoint);
-    btnLayout->addWidget(btnMarker);
+    btnLayout->addWidget(btnSelectMarker);
 
     // main widget
     QVBoxLayout *layout = new QVBoxLayout();
@@ -71,10 +67,6 @@ void ResultsView::createActions()
     // point
     actPoint = new QAction(icon("scene-node"), tr("Local point value"), this);
     connect(actPoint, SIGNAL(triggered()), this, SLOT(doPoint()));
-
-    // markers
-    actMarker = new QAction(tr("Select by marker"), this);
-    connect(actMarker, SIGNAL(triggered()), this, SLOT(doMarker()));
 }
 
 void ResultsView::doPoint()
@@ -88,27 +80,17 @@ void ResultsView::doPoint()
     }
 }
 
-void ResultsView::doMarker()
-{
-    logMessage("ResultsView::doMarker()");
-
-    //SceneMarkerSelectDialog sceneMarkerSelectDialog(this, QApplication::activeWindow());
-    //sceneMarkerSelectDialog.exec();
-}
-
 void ResultsView::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
 {
     m_sceneModePostprocessor = sceneModePostprocessor;
     txtView->clear();
 
     btnPoint->setEnabled(m_sceneModePostprocessor == SceneModePostprocessor_LocalValue);
+    btnSelectMarker->setEnabled(Util::scene()->sceneSolution()->isSolved() && m_sceneModePostprocessor != SceneModePostprocessor_LocalValue);
 }
 
 void ResultsView::doShowResults()
 {
-    btnPoint->setEnabled(m_sceneModePostprocessor == SceneModePostprocessor_LocalValue);
-    btnMarker->setEnabled(m_sceneModePostprocessor != SceneModePostprocessor_LocalValue);
-
     if (m_sceneModePostprocessor == SceneModePostprocessor_LocalValue)
         doShowPoint();
     if (m_sceneModePostprocessor == SceneModePostprocessor_SurfaceIntegral)
