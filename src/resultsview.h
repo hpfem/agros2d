@@ -45,21 +45,20 @@ public slots:
 public:
     ResultsView(QWidget *parent = 0);
 
+    QPushButton *btnSelectMarker;
+
 private:
     SceneModePostprocessor m_sceneModePostprocessor;
     Point m_point;
 
     QPushButton *btnPoint;
-    QPushButton *btnMarker;
     QTextEdit *txtView;
     QAction *actPoint;
-    QAction *actMarker;
 
     void createActions();
 
 private slots:
     void doPoint();
-    void doMarker();
 };
 
 class LocalPointValueDialog : public QDialog
