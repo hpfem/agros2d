@@ -62,7 +62,7 @@ public:
     void registerForms();
 
     // previous solution
-    Hermes::vector<Solution *> solution;
+    Hermes::vector<MeshFunction *> solution;
 };
 
 namespace Hermes
@@ -443,52 +443,6 @@ private:
     bool solve(Hermes::vector<Space *> space,
                Hermes::vector<Solution *> solution,
                Solver *solver, SparseMatrix *matrix, Vector *rhs);
-};
-
-// custom forms **************************************************************************************************************************
-
-class CustomVectorFormTimeDep : public WeakForm::VectorFormVol
-{
-public:
-    CustomVectorFormTimeDep(int i, scalar coeff, Solution *solution, GeomType gt = HERMES_PLANAR)
-        : WeakForm::VectorFormVol(i), coeff(coeff), gt(gt)
-    {
-        ext.push_back(solution);
-    }
-    CustomVectorFormTimeDep(int i, std::string area, scalar coeff, Solution *solution, GeomType gt = HERMES_PLANAR)
-        : WeakForm::VectorFormVol(i, area), coeff(coeff), gt(gt)
-    {
-        ext.push_back(solution);
-    }
-
-    virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
-                         Geom<double> *e, ExtData<scalar> *ext) const {
-        if (gt == HERMES_PLANAR)
-            return coeff * int_u_v<double, scalar>(n, wt, ext->fn[0], v);
-        else if (gt == HERMES_AXISYM_X)
-            return coeff * int_y_u_v<double, scalar>(n, wt, ext->fn[0], v, e);
-        else
-            return coeff * int_x_u_v<double, scalar>(n, wt, ext->fn[0], v, e);
-    }
-
-    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
-                    ExtData<Ord> *ext) const {
-        if (gt == HERMES_PLANAR)
-            return int_u_v<Ord, Ord>(n, wt, ext->fn[0], v);
-        else if (gt == HERMES_AXISYM_X)
-            return int_y_u_v<Ord, Ord>(n, wt, ext->fn[0], v, e);
-        else
-            return int_x_u_v<Ord, Ord>(n, wt, ext->fn[0], v, e);
-    }
-
-    // This is to make the form usable in rk_time_step().
-    virtual WeakForm::VectorFormVol* clone() {
-        return new CustomVectorFormTimeDep(*this);
-    }
-
-private:
-    scalar coeff;
-    GeomType gt;
 };
 
 #endif // HERMES_FIELD_H

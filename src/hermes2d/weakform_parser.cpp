@@ -77,17 +77,24 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
 {
     parser->parser.push_back(Util::scene()->problemInfo()->module()->get_parser());
 
-
+    // coordinates
     parser->parser[0]->DefineVar("x", &px);
     parser->parser[0]->DefineVar("y", &py);
 
+    // current solution
     parser->parser[0]->DefineVar("uval", &puval);
     parser->parser[0]->DefineVar("udx", &pudx);
     parser->parser[0]->DefineVar("udy", &pudy);
 
+    // test function
     parser->parser[0]->DefineVar("vval", &pvval);
     parser->parser[0]->DefineVar("vdx", &pvdx);
     parser->parser[0]->DefineVar("vdy", &pvdy);
+
+    // previous solution
+    parser->parser[0]->DefineVar("upval", &pupval);
+    parser->parser[0]->DefineVar("updx", &pupdx);
+    parser->parser[0]->DefineVar("updy", &pupdy);
 
     parser->setParserVariables(material, boundary);
 
@@ -141,9 +148,12 @@ Ord CustomParserMatrixFormVol::ord(int n, double *wt, Func<Ord> *u_ext[], Func<O
 
 CustomParserVectorFormVol::CustomParserVectorFormVol(unsigned int i,
                                                      std::string area, std::string expression,
-                                                     Material *material)
+                                                     Material *material,
+                                                     Hermes::vector<MeshFunction *> solution)
     : WeakForm::VectorFormVol(i, area), ParserForm()
 {
+    ext = solution;
+
     initParser(material, NULL);
 
     parser->parser[0]->SetExpr(expression);
@@ -161,6 +171,19 @@ scalar CustomParserVectorFormVol::value(int n, double *wt, Func<scalar> *u_ext[]
         pvval = v->val[i];
         pvdx = v->dx[i];
         pvdy = v->dy[i];
+
+        if (ext->nf == 1)
+        {
+            pupval = ext->fn[0]->val[i];
+            pupdx = ext->fn[0]->dx[i];
+            pupdy = ext->fn[0]->dy[i];
+        }
+        else
+        {
+            pupval = 0.0;
+            pupdx = 0.0;
+            pupdy = 0.0;
+        }
 
         result += wt[i] * parser->parser[0]->Eval();
     }
