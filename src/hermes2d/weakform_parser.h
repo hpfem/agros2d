@@ -63,14 +63,24 @@ class ParserForm
 public:
     Parser *parser;
 
+    // coordinates
     double px;
     double py;
+
+    // current solution
     double puval;
     double pudx;
     double pudy;
+
+    // test function
     double pvval;
     double pvdx;
     double pvdy;
+
+    // previous solution
+    double pupval;
+    double pupdx;
+    double pupdy;
 
     ParserForm();
     ~ParserForm();
@@ -100,7 +110,8 @@ class CustomParserVectorFormVol : public WeakForm::VectorFormVol, public ParserF
 public:
     CustomParserVectorFormVol(unsigned int i,
                               std::string area, std::string expression,
-                              Material *material);
+                              Material *material,
+                              Hermes::vector<MeshFunction *> solution);
 
     virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
                          Geom<double> *e, ExtData<scalar> *ext);

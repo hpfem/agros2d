@@ -22,31 +22,6 @@
 #include "scene.h"
 #include "gui.h"
 
-/*
-// transient analysis
-if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-{
-    if ((fabs(material->get_value("heat_density").number) > EPS_ZERO)
-            && (fabs(material->get_value("heat_specific_heat").number) > EPS_ZERO))
-    {
-        if (solution.size() > 0)
-        {
-            add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
-                                                                                      QString::number(i).toStdString(),
-                                                                                      material->get_value("heat_density").number * material->get_value("heat_specific_heat").number / Util::scene()->problemInfo()->timeStep.number,
-                                                                                      HERMES_SYM,
-                                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-            add_vector_form(new CustomVectorFormTimeDep(0,
-                                                        QString::number(i).toStdString(),
-                                                        material->get_value("heat_density").number * material->get_value("heat_specific_heat").number / Util::scene()->problemInfo()->timeStep.number,
-                                                        solution[0],
-                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-        }
-    }
-}
-*/
-
 // *******************************************************************************************************
 
 void ModuleHeat::update_time_functions(double time)

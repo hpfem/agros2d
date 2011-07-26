@@ -203,10 +203,12 @@ void WeakFormAgros::registerForms()
             {
                 ParserFormVector *form = ((ParserFormVector *) *it);
 
+                // previous solution (time dep)
                 add_vector_form(new CustomParserVectorFormVol(form->i - 1,
                                                               QString::number(i).toStdString(),
                                                               form->expression,
-                                                              material));
+                                                              material,
+                                                              solution));
             }
         }
     }
@@ -691,6 +693,10 @@ mu::Parser *Hermes::Module::Module::get_parser()
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
         parser->DefineConst("f", Util::scene()->problemInfo()->frequency);
 
+    // timestep
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+        parser->DefineConst("dt", Util::scene()->problemInfo()->timeStep.number);
+
     for (std::map<std::string, double>::iterator it = constants.begin(); it != constants.end(); ++it)
         parser->DefineConst(it->first, it->second);
 
@@ -1067,8 +1073,10 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
         // update time function
         Util::scene()->problemInfo()->module()->update_time_functions(actualTime);
 
-        m_wf->set_current_time(actualTime);
-        m_wf->solution = solution;
+        m_wf->set_current_time(actualTime);        
+        m_wf->solution.clear();
+        for (int i = 0; i < solution.size(); i++)
+            m_wf->solution.push_back((MeshFunction *) solution[i]);
         m_wf->delete_all();
         m_wf->registerForms();
 

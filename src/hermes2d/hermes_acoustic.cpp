@@ -125,6 +125,7 @@ public:
         // materials
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
+            /*
             SceneMaterial *material = Util::scene()->labels[i]->material;
 
             if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
@@ -165,6 +166,7 @@ public:
                                                             solution[1],
                                                             convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
+            */
         }
     }
 
