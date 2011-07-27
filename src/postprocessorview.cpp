@@ -145,6 +145,10 @@ void PostprocessorView::saveBasic()
     m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
     m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
 
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable);
+    if (physicFieldVariable && physicFieldVariable->id == "custom")
+        physicFieldVariable->expression.scalar = txtScalarFieldExpression->text().toStdString();
+
     // vector field
     m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toString().toStdString();
 }
@@ -278,8 +282,9 @@ QWidget *PostprocessorView::controlsBasic()
     // layout scalar field
     cmbScalarFieldVariable = new QComboBox();
     connect(cmbScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
-
     cmbScalarFieldVariableComp = new QComboBox();
+    connect(cmbScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
+    txtScalarFieldExpression = new QLineEdit();
 
     chkScalarFieldRangeAuto = new QCheckBox(tr("Auto range"));
     connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
@@ -305,15 +310,18 @@ QWidget *PostprocessorView::controlsBasic()
     layoutScalarField->addWidget(new QLabel(tr("Component:")), 1, 0);
     layoutScalarField->addWidget(cmbScalarFieldVariableComp, 1, 1, 1, 3);
 
-    layoutScalarField->addWidget(chkScalarFieldRangeAuto, 2, 0);
+    layoutScalarField->addWidget(new QLabel(tr("Expression:")), 2, 0);
+    layoutScalarField->addWidget(txtScalarFieldExpression, 2, 1, 1, 3);
+
+    layoutScalarField->addWidget(chkScalarFieldRangeAuto, 3, 0);
     lblScalarFieldRangeMin = new QLabel(tr("Minimum:"));
-    layoutScalarField->addWidget(lblScalarFieldRangeMin, 2, 1);
-    layoutScalarField->addWidget(txtScalarFieldRangeMin, 2, 2);
-    layoutScalarField->addWidget(lblScalarFieldRangeMinError, 2, 3);
+    layoutScalarField->addWidget(lblScalarFieldRangeMin, 3, 1);
+    layoutScalarField->addWidget(txtScalarFieldRangeMin, 3, 2);
+    layoutScalarField->addWidget(lblScalarFieldRangeMinError, 3, 3);
     lblScalarFieldRangeMax = new QLabel(tr("Maximum:"));
-    layoutScalarField->addWidget(lblScalarFieldRangeMax, 3, 1);
-    layoutScalarField->addWidget(txtScalarFieldRangeMax, 3, 2);
-    layoutScalarField->addWidget(lblScalarFieldRangeMaxError, 3, 3);
+    layoutScalarField->addWidget(lblScalarFieldRangeMax, 4, 1);
+    layoutScalarField->addWidget(txtScalarFieldRangeMax, 4, 2);
+    layoutScalarField->addWidget(lblScalarFieldRangeMaxError, 4, 3);
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
@@ -607,13 +615,48 @@ void PostprocessorView::doScalarFieldVariable(int index)
             cmbScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
             cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
             cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
-        }
+        }        
     }
 
     if (cmbScalarFieldVariableComp->currentIndex() == -1)
         cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(scalarFieldVariableComp));
     if (cmbScalarFieldVariableComp->currentIndex() == -1)
         cmbScalarFieldVariableComp->setCurrentIndex(0);
+
+    doScalarFieldVariableComp(cmbScalarFieldVariableComp->currentIndex());
+}
+
+void PostprocessorView::doScalarFieldVariableComp(int index)
+{
+    txtScalarFieldExpression->setText("");
+
+    Hermes::Module::LocalVariable *physicFieldVariable = NULL;
+    if (cmbScalarFieldVariable->currentIndex() != -1)
+        physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString().toStdString());
+
+    if (physicFieldVariable)
+    {
+        txtScalarFieldExpression->setEnabled(physicFieldVariable->id == "custom");
+
+        // expression
+        switch ((PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt())
+        {
+        case PhysicFieldVariableComp_Scalar:
+            txtScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.scalar));
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+            txtScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
+                                              arg(QString::fromStdString(physicFieldVariable->expression.comp_x)).
+                                              arg(QString::fromStdString(physicFieldVariable->expression.comp_y)));
+            break;
+        case PhysicFieldVariableComp_X:
+            txtScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_x));
+            break;
+        case PhysicFieldVariableComp_Y:
+            txtScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_y));
+            break;
+        }
+    }
 }
 
 void PostprocessorView::doScalarFieldRangeAuto(int state)
@@ -664,6 +707,7 @@ void PostprocessorView::setControls()
 
     cmbScalarFieldVariable->setEnabled(false);
     cmbScalarFieldVariableComp->setEnabled(false);
+    txtScalarFieldExpression->setEnabled(false);
     chkScalarFieldRangeAuto->setEnabled(false);
     cmbVectorFieldVariable->setEnabled(chkShowVectors->isChecked());
 
@@ -676,6 +720,8 @@ void PostprocessorView::setControls()
 
         chkScalarFieldRangeAuto->setEnabled(true);
         doScalarFieldRangeAuto(-1);
+
+        doScalarFieldVariableComp(cmbScalarFieldVariableComp->currentIndex());
     }
 
     if (isSolved && (radPostprocessorScalarField3D->isChecked() ||

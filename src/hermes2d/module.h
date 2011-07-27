@@ -85,7 +85,8 @@ struct LocalVariable
 {
     struct Expression
     {
-        Expression() : scalar(""), comp_x(""), comp_y("") {}
+        Expression(std::string scalar = "", std::string comp_x = "", std::string comp_y = "")
+            : scalar(scalar), comp_x(comp_x), comp_y(comp_y) {}
         Expression(rapidxml::xml_node<> *node, ProblemType problem_type);
 
         // expressions
@@ -94,7 +95,8 @@ struct LocalVariable
         std::string comp_y;
     };
 
-    LocalVariable() : id(""), name(""), shortname(""), unit(""), expression(Expression()) {}
+    LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "")
+        : id(id), name(name), shortname(shortname), unit(unit), is_scalar(true), expression(Expression()) {}
     LocalVariable(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
 
     // id
