@@ -42,6 +42,8 @@ public:
     bool lineEditValueShowResult;
     bool saveProblemWithSolution;
 
+    QString collaborationServerURL;
+
     // geometry
     double nodeSize;
     double edgeWidth;

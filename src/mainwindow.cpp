@@ -1264,7 +1264,7 @@ void MainWindow::doCollaborationServer()
 {
     logMessage("MainWindow::doCollaborationServer()");
 
-    QDesktopServices::openUrl(QUrl("http://agros2d.org/collaboration/problems.php"));
+    QDesktopServices::openUrl(QUrl(Util::config()->collaborationServerURL + "problems.php"));
 }
 
 void MainWindow::doOnlineHelp()

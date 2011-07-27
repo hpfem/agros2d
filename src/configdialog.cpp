@@ -55,6 +55,9 @@ void ConfigDialog::load()
     // default physic field
     cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(Util::config()->defaultPhysicField));
 
+    // collaboration server
+    txtCollaborationServer->setText(Util::config()->collaborationServerURL);
+
     // check version
     chkCheckVersion->setChecked(Util::config()->checkVersion);
 
@@ -166,6 +169,9 @@ void ConfigDialog::save()
 
     // default physic field
     Util::config()->defaultPhysicField = (PhysicField) cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toInt();
+
+    // collaboration server
+    Util::config()->collaborationServerURL = txtCollaborationServer->text();
 
     // check version
     Util::config()->checkVersion = chkCheckVersion->isChecked();
@@ -377,6 +383,13 @@ QWidget *ConfigDialog::createMainWidget()
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
 
+    // collaboration layout
+    txtCollaborationServer = new SLineEditDouble();
+
+    QVBoxLayout *layoutCollaboration = new QVBoxLayout();
+    layoutCollaboration->addWidget(new QLabel(tr("Collaboration server URL:")));
+    layoutCollaboration->addWidget(txtCollaborationServer);
+
     // other layout
     cmdClearCommandHistory = new QPushButton(mainWidget);
     cmdClearCommandHistory->setText(tr("Clear command history"));
@@ -398,12 +411,16 @@ QWidget *ConfigDialog::createMainWidget()
     layoutOther->addWidget(chkEnabledProgressLog);
     layoutOther->addLayout(layoutClearCommandHistory);
 
+    QGroupBox *grpCollaboration = new QGroupBox(tr("Collaboration"));
+    grpCollaboration->setLayout(layoutCollaboration);
+
     QGroupBox *grpOther = new QGroupBox(tr("Other"));
     grpOther->setLayout(layoutOther);
 
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpGeneral);
+    layout->addWidget(grpCollaboration);
     layout->addWidget(grpOther);
     layout->addStretch();
 
@@ -441,7 +458,7 @@ QWidget *ConfigDialog::createViewWidget()
     chkShowGrid = new QCheckBox(tr("Show grid"));
     chkRulers = new QCheckBox(tr("Show rulers"));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
-    chkShowAxes = new QCheckBox(tr("Show axes"));    
+    chkShowAxes = new QCheckBox(tr("Show axes"));
     chkShowLabel = new QCheckBox(tr("Show label"));
     chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
 
@@ -451,7 +468,7 @@ QWidget *ConfigDialog::createViewWidget()
     layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
     layoutGrid->addWidget(chkSnapToGrid, 2, 0, 1, 2);
     layoutGrid->addWidget(chkRulers, 3, 0, 1, 2);
-    layoutGrid->addWidget(chkShowAxes, 4, 0, 1, 2);    
+    layoutGrid->addWidget(chkShowAxes, 4, 0, 1, 2);
     layoutGrid->addWidget(chkShowLabel, 5, 0, 1, 2);
     layoutGrid->addWidget(chkZoomToMouse, 6, 0, 1, 2);
 
