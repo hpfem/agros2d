@@ -61,6 +61,7 @@ private:
     // scalar field
     QComboBox *cmbScalarFieldVariable;
     QComboBox *cmbScalarFieldVariableComp;
+    QLineEdit *txtScalarFieldExpression;
     QCheckBox *chkScalarFieldRangeAuto;
     QLabel *lblScalarFieldRangeMin;
     QLabel *lblScalarFieldRangeMax;
@@ -131,6 +132,7 @@ public slots:
 
 private slots:
     void doScalarFieldVariable(int index);
+    void doScalarFieldVariableComp(int index);
     void doScalarFieldRangeAuto(int state);
     void doPostprocessorGroupClicked(QAbstractButton *button);
     void doScalarFieldRangeMinChanged();

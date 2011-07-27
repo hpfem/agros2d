@@ -508,6 +508,10 @@ void Hermes::Module::Module::read(std::string filename)
         for (rapidxml::xml_node<> *node = doc.first_node("module")->first_node("localvariable")->first_node("item");
              node; node = node->next_sibling())
             variables.push_back(new LocalVariable(node, m_problemType, m_analysisType));
+        // custom variable
+        LocalVariable *variable = new LocalVariable("custom", "Custom", "custom", "-");
+        variable->expression.scalar = "value1";
+        variables.push_back(variable);
 
         // view
         rapidxml::xml_node<> *view = doc.first_node("module")->first_node("view");
@@ -527,6 +531,8 @@ void Hermes::Module::Module::read(std::string filename)
                     view_scalar_variables.push_back(variable);
             }
         }
+        // custom        
+        view_scalar_variables.push_back(get_variable("custom"));
 
         // vector variables
         rapidxml::xml_node<> *view_vector_vars = view->first_node("vectorvariable");
@@ -1075,8 +1081,10 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
 
         m_wf->set_current_time(actualTime);        
         m_wf->solution.clear();
-        for (int i = 0; i < solution.size(); i++)
-            m_wf->solution.push_back((MeshFunction *) solution[i]);
+        // FIXME
+        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+            for (int i = 0; i < solution.size(); i++)
+                m_wf->solution.push_back((MeshFunction *) solution[i]);
         m_wf->delete_all();
         m_wf->registerForms();
 
