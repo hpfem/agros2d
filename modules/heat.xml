@@ -17,7 +17,7 @@
             <material id="heat_conductivity" />
             <material id="heat_volume_heat" />
 
-            <matrix i="1" j="1" planar="lambda * (udx * vdx + udy * vdy)" 
+            <matrix i="1" j="1" planar="lambda * (udx * vdx + udy * vdy)"
                                 axi="lambda * x * (udx * vdx + udy * vdy)" symmetric="1" />
             <vector i="1" planar="p * vval" 
                           axi="p * x * vval" />

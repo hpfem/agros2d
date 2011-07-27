@@ -17,70 +17,72 @@
         <item id="elasticity_temperature_reference" name="Reference emperature" shortname="Tr" unit="K" />  
         
         <steadystate>
-			<material id="elasticity_young_modulus" />        
-			<material id="elasticity_poisson_ratio" />        
-			<material id="elasticity_force_x" />        
-			<material id="elasticity_force_y" />               
-			<material id="elasticity_alpha" />        
-			<material id="elasticity_temperature" />        
-			<material id="elasticity_temperature_reference" />  
-			
-			<matrix i="1" j="1" planar="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2.0*E / (2.0*(1.0 + nu))) * (udx * vdx) + 
-										E / (2.0*(1.0 + nu)) * (udy * vdy)"
-								axi="" />
-			<matrix i="1" j="2" planar="(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) * (udx * vdx) + 
-										E / (2.0*(1.0 + nu)) * (udy * vdy)"
-								axi="" />
-			<matrix i="2" j="1" planar="E / (2.0*(1.0 + nu)) * (udx * vdx) + 
-										(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) * (udy * vdy)"
-					axi="" />	
-			<matrix i="2" j="2" planar="E / (2.0*(1.0 + nu)) * (udx * vdx) + 
-								((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2.0*E / (2.0*(1.0 + nu))) * (udy * vdy)"
-						axi="" />
-						
-			<vector i="1" planar="fx * vval" axi="fx * x * vval" />	
-			<vector i="2" planar="fy * vval" axi="fy * x * vval" />	
+            <material id="elasticity_young_modulus" />
+            <material id="elasticity_poisson_ratio" />
+            <material id="elasticity_force_x" />
+            <material id="elasticity_force_y" />
+            <material id="elasticity_alpha" />
+            <material id="elasticity_temperature" />
+            <material id="elasticity_temperature_reference" />
+
+            <matrix i="1" j="1" planar="(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udx * vdx) +
+                                        (E / (2.0*(1.0 + nu))) * (udy * vdy)"
+                                axi="" />
+            <matrix i="1" j="2" planar="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udy * vdx) +
+                                        (E / (2.0*(1.0 + nu))) * (udx * vdy)"
+                                axi="" />
+            <matrix i="2" j="1" planar="(E / (2.0*(1.0 + nu))) * (udy * vdx) +
+                                        ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udx * vdy)"
+                                axi="" />
+            <matrix i="2" j="2" planar="(E / (2.0*(1.0 + nu))) * (udx * vdx) +
+                                        (((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udy * vdy)"
+                                axi="" />
+
+            <vector i="1" planar="fx * vval + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdx"
+                          axi="fx * x * vval" />
+            <vector i="2" planar="fy * vval + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdy"
+                          axi="fy * x * vval" />
         </steadystate>
     </material>
     	
     <boundary>
-		<item id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
-		<item id="elasticity_displacement_y" name="Fixed - y" shortname="dy" unit="m" />
-		<item id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" />
-		<item id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" />
+        <item id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
+        <item id="elasticity_displacement_y" name="Fixed - y" shortname="dy" unit="m" />
+        <item id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" />
+        <item id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" />
 
-		<steadystate>
-			<boundary id="elasticity_fixed_fixed" name="Fixed - fixed">
-				<item id="elasticity_displacement_x" />
-				<item id="elasticity_displacement_y" />
-				
-				<essential i="1" id="elasticity_displacement_x" />
-				<essential i="2" id="elasticity_displacement_y" />
-			</boundary>   
+        <steadystate>
+            <boundary id="elasticity_fixed_fixed" name="Fixed - fixed">
+                    <item id="elasticity_displacement_x" />
+                    <item id="elasticity_displacement_y" />
 
-			<boundary id="elasticity_fixed_free" name="Fixed - free">
-				<item id="elasticity_displacement_x" />
-				<item id="elasticity_force_y" />
-				
-				<essential i="1" id="elasticity_displacement_x" />
-				<vector i="2" planar="fy * vval" axi="fy * x * vval" />
-			</boundary>    
-			
-			<boundary id="elasticity_free_fixed" name="Free - fixed">
-				<item id="elasticity_force_x" />
-				<item id="elasticity_displacement_y" />
-				
-				<vector i="1" planar="fx * vval" axi="fx * x * vval" />
-				<essential i="2" id="elasticity_displacement_y" />
-			</boundary>    
-			
-			<boundary id="elasticity_free_free" name="Free - Free">
-				<item id="elasticity_force_x" />
-				<item id="elasticity_force_y" />
-				
-				<vector i="1" planar="fx * vval" axi="fx * x * vval" />
-				<vector i="2" planar="fy * vval" axi="fy * x * vval" />
-			</boundary>    
+                    <essential i="1" id="elasticity_displacement_x" />
+                    <essential i="2" id="elasticity_displacement_y" />
+            </boundary>
+
+            <boundary id="elasticity_fixed_free" name="Fixed - free">
+                    <item id="elasticity_displacement_x" />
+                    <item id="elasticity_force_y" />
+
+                    <essential i="1" id="elasticity_displacement_x" />
+                    <vector i="2" planar="fy * vval" axi="fy * x * vval" />
+            </boundary>
+
+            <boundary id="elasticity_free_fixed" name="Free - fixed">
+                    <item id="elasticity_force_x" />
+                    <item id="elasticity_displacement_y" />
+
+                    <vector i="1" planar="fx * vval" axi="fx * x * vval" />
+                    <essential i="2" id="elasticity_displacement_y" />
+            </boundary>
+
+            <boundary id="elasticity_free_free" name="Free - Free">
+                    <item id="elasticity_force_x" />
+                    <item id="elasticity_force_y" />
+
+                    <vector i="1" planar="fx * vval" axi="fx * x * vval" />
+                    <vector i="2" planar="fy * vval" axi="fy * x * vval" />
+            </boundary>
         </steadystate>
     </boundary>
 
