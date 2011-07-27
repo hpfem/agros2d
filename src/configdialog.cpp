@@ -56,7 +56,7 @@ void ConfigDialog::load()
     cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(Util::config()->defaultPhysicField));
 
     // collaboration server
-    txtCollaborationServer->setText(Util::config()->collaborationServerURL);
+    txtCollaborationServerURL->setText(Util::config()->collaborationServerURL);
 
     // check version
     chkCheckVersion->setChecked(Util::config()->checkVersion);
@@ -171,7 +171,14 @@ void ConfigDialog::save()
     Util::config()->defaultPhysicField = (PhysicField) cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toInt();
 
     // collaboration server
-    Util::config()->collaborationServerURL = txtCollaborationServer->text();
+    QString collaborationServerUrl = txtCollaborationServerURL->text();
+    if (!collaborationServerUrl.startsWith("http://"))
+        collaborationServerUrl = QString("http://%1").arg(collaborationServerUrl);
+
+    if (!collaborationServerUrl.endsWith("/"))
+        collaborationServerUrl = QString("%1/").arg(collaborationServerUrl);
+
+    Util::config()->collaborationServerURL = collaborationServerUrl;
 
     // check version
     Util::config()->checkVersion = chkCheckVersion->isChecked();
@@ -384,11 +391,11 @@ QWidget *ConfigDialog::createMainWidget()
     grpGeneral->setLayout(layoutGeneral);
 
     // collaboration layout
-    txtCollaborationServer = new SLineEditDouble();
+    txtCollaborationServerURL = new SLineEditDouble();
 
     QVBoxLayout *layoutCollaboration = new QVBoxLayout();
     layoutCollaboration->addWidget(new QLabel(tr("Collaboration server URL:")));
-    layoutCollaboration->addWidget(txtCollaborationServer);
+    layoutCollaboration->addWidget(txtCollaborationServerURL);
 
     // other layout
     cmdClearCommandHistory = new QPushButton(mainWidget);
