@@ -982,7 +982,8 @@ void MainWindow::doDocumentImportDXF()
         sceneView->doZoomBestFit();
 
         QFileInfo fileInfo(fileName);
-        settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
     }
 }
 
@@ -1334,7 +1335,8 @@ void MainWindow::doDocumentExportMeshFile()
         if (!fileName.isEmpty())
         {
             QFile::copy(tempProblemFileName() + ".mesh", fileName + ".mesh");
-            settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
+            if (fileInfo.absoluteDir() != tempProblemDir())
+                settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
         }
 
         QFile::remove(tempProblemFileName() + ".mesh");
