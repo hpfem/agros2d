@@ -207,7 +207,6 @@ namespace Hermes
       }
     }
 
-
     template<typename Scalar>
     SimpleFilter<Scalar>::SimpleFilter(Hermes::vector<MeshFunction<Scalar>*> solutions, Hermes::vector<int> items)
     {
@@ -401,7 +400,6 @@ namespace Hermes
       this->cur_node = node;
     }
 
-
     template<typename Scalar>
     void MagFilter<Scalar>::filter_fn(int n, Hermes::vector<Scalar*> values, Scalar* result)
     {
@@ -454,6 +452,12 @@ namespace Hermes
     template<typename Scalar>
     SumFilter<Scalar>::SumFilter(Hermes::vector<MeshFunction<Scalar>*> solutions, Hermes::vector<int> items) : SimpleFilter<Scalar>(solutions, items) {}
 
+    template<>
+    void SquareFilter<double>::filter_fn(int n, Hermes::vector<double *> v1, double* result)
+    {
+      for (int i = 0; i < n; i++)
+        result[i] = sqr(v1.at(0)[i]);
+    };
 
     template<>
     void SquareFilter<double>::filter_fn(int n, Hermes::vector<double *> v1, double* result)
@@ -477,6 +481,11 @@ namespace Hermes
         error("SquareFilter only supports one MeshFunction.");
     };
 
+    void RealFilter::filter_fn(int n, Hermes::vector<std::complex<double>*> v1, double* result)
+    {
+      for (int i = 0; i < n; i++)
+        result[i] = v1.at(0)[i].real();
+    };
 
     void RealFilter::filter_fn(int n, Hermes::vector<std::complex<double>*> v1, double* result)
     {
@@ -490,7 +499,6 @@ namespace Hermes
       if (solutions.size() > 1)
         error("RealFilter only supports one MeshFunction.");
     };
-
 
     void ImagFilter::filter_fn(int n, Hermes::vector<std::complex<double>*> v1, double* result)
     {
@@ -671,8 +679,6 @@ namespace Hermes
       }
     }
 
-    template class HERMES_API Filter<double>;
-    template class HERMES_API Filter<std::complex<double> >;
     template class HERMES_API SimpleFilter<double>;
     template class HERMES_API SimpleFilter<std::complex<double> >;
     template class HERMES_API DXDYFilter<double>;
