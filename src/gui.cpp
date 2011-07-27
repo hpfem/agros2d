@@ -187,7 +187,7 @@ void Chart::saveImage(const QString &fileName)
         fileNameTemp = QFileDialog::getSaveFileName(this, tr("Export image to file"), dir, tr("PNG files (*.png)"));
 
         QFileInfo fileInfo(fileNameTemp);
-        if (!fileNameTemp.isEmpty())
+        if (!fileNameTemp.isEmpty() && fileInfo.absoluteDir() != tempProblemDir())
             settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
     else
@@ -625,7 +625,8 @@ void ImageLoaderDialog::doLoadFile()
     {
         doLoadFile(fileName);
         QFileInfo fileInfo(fileName);
-        settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
 }
 

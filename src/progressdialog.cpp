@@ -911,7 +911,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     outElements += "elements =\n";
     outElements += "{\n";
     for (int i = 0; i < elementList.count(); i++)
-    {        
+    {
         if (elementList[i].isUsed)
         {
             // element returns zero region number for areas without marker, markers must start from 1
@@ -1714,7 +1714,8 @@ void ProgressDialog::saveData()
                 out << curveErrorDOF->data().x(i) << ";" << curveErrorDOF->data().y(i) << endl;
         }
 
-        settings.setValue("General/LastDataDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastDataDir", fileInfo.absolutePath());
 
         file.close();
     }

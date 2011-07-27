@@ -333,7 +333,7 @@ void VideoDialog::doEncodeFFmpeg()
         return;
     }
 
-    while (!processFFmpeg->waitForFinished()) {}   
+    while (!processFFmpeg->waitForFinished()) {}
 }
 
 void VideoDialog::doSaveVideo()
@@ -351,7 +351,8 @@ void VideoDialog::doSaveVideo()
         QFile::remove(fileName);
         QFile::copy(outputFile, fileName);
 
-        settings.setValue("General/LastVideoDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastVideoDir", fileInfo.absolutePath());
     }
 }
 
