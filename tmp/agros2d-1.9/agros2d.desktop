@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Agros 2D
-Comment=hp-FEM multiphysics solver based on Hermes2D library
-Exec=agros2d
-Icon=agros2d
-Categories=Education;Science;Math;
-MimeType=application/x-agros2d
