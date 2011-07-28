@@ -43,6 +43,8 @@
 
 #include "indicators/indicators.h"
 
+#include "hermes2d_common_defs.h"
+
 // zero
 #define EPS_ZERO 1e-10
 
@@ -458,21 +460,21 @@ QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
 QString meshTypeString(MeshType meshType);
 QString linearityTypeString(LinearityType linearityType);
-QString matrixSolverTypeString(MatrixSolverType matrixSolverType);
+QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
 
-inline QString errorNormString(ProjNormType projNormType)
+inline QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
 {
     switch (projNormType)
     {
-    case HERMES_H1_NORM:
+    case Hermes::Hermes2D::HERMES_H1_NORM:
         return QObject::tr("H1 norm");
-    case HERMES_L2_NORM:
+    case Hermes::Hermes2D::HERMES_L2_NORM:
         return QObject::tr("L2 norm");
-    case HERMES_H1_SEMINORM:
+    case Hermes::Hermes2D::HERMES_H1_SEMINORM:
         return QObject::tr("H1 seminorm");
-    case HERMES_HDIV_NORM:
+    case Hermes::Hermes2D::HERMES_HDIV_NORM:
         return QObject::tr("Hdiv norm");
-    case HERMES_HCURL_NORM:
+    case Hermes::Hermes2D::HERMES_HCURL_NORM:
         return QObject::tr("Hcurl norm");
     default:
         std::cerr << "Norm '" + QString::number(projNormType).toStdString() + "' is not implemented. QString errorNormString(ProjNormType projNormType)" << endl;
@@ -507,8 +509,8 @@ AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
 QString linearityTypeToStringKey(LinearityType linearityType);
 LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
-QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType);
-MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
+QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
+Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
 
 // constants
 const QColor COLORBACKGROUND = QColor::fromRgb(255, 255, 255);
@@ -571,7 +573,7 @@ const double ADAPTIVITY_CONVEXP = 1.0;
 const double ADAPTIVITY_THRESHOLD = 0.3;
 const int ADAPTIVITY_STRATEGY = 0;
 const int ADAPTIVITY_MESHREGULARITY = -1;
-const ProjNormType ADAPTIVITY_PROJNORMTYPE = HERMES_H1_NORM;
+const Hermes::Hermes2D::ProjNormType ADAPTIVITY_PROJNORMTYPE = Hermes::Hermes2D::HERMES_H1_NORM;
 
 // command argument
 const QString COMMANDS_TRIANGLE = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";

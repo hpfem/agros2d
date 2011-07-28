@@ -135,7 +135,7 @@ public:
     double threshold;
     int strategy;
     int meshRegularity;
-    ProjNormType projNormType;
+    Hermes::Hermes2D::ProjNormType projNormType;
 
     // command argument
     QString commandTriangle;
