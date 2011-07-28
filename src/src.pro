@@ -158,7 +158,8 @@ INCLUDEPATH += . \
     ../lib/muparser \
     ../lib/dxflib \
     ../lib/rapidxml \
-    ../hermes_common
+    ../hermes_common \
+    ../hermes2d
 
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
