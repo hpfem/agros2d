@@ -21,7 +21,7 @@
 */
 #ifndef __HERMES_COMMON_PYTHON_API_H
 #define __HERMES_COMMON_PYTHON_API_H
-#include "config.h"
+#include "../hermes_common/include/config.h"
 #ifdef WITH_PYTHON
 
 #undef _POSIX_C_SOURCE

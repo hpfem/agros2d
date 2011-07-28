@@ -41,9 +41,7 @@ class SceneBoundary;
 class SceneMaterial;
 struct SceneViewSettings;
 
-//template <typename Scalar> class SceneSolution;
-//class SceneSolution<double>;
-
+template <typename Scalar> class SceneSolution;
 class ScriptEngineRemote;
 
 class ProblemDialog;
@@ -88,7 +86,7 @@ public:
     Value initialCondition;
 
     // matrix solver
-    Hermes::MatrixSolverType matrixSolver;
+    Hermes::Solvers::MatrixSolverType matrixSolver;
 
     ProblemInfo()
     {
