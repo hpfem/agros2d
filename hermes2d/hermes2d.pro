@@ -18,6 +18,7 @@ INCLUDEPATH += include \
                include/space \
                include/views \
                include/weakform \
+               include/weakform_library \
                ../hermes_common \
                ../hermes_common/include/ \
                ../hermes_common/include/solvers/ \
@@ -117,11 +118,11 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/discrete_problem.cpp \
                 src/runge_kutta.cpp \
                 src/spline.cpp \
-#                src/weakform_library/weakforms_elasticity.cpp \
-#                src/weakform_library/weakforms_h1.cpp \
-#                src/weakform_library/weakforms_hcurl.cpp \
-#                src/weakform_library/weakforms_maxwell.cpp \
-#                src/weakform_library/weakforms_neutronics.cpp \
+                src/weakform_library/weakforms_elasticity.cpp \
+                src/weakform_library/weakforms_h1.cpp \
+                src/weakform_library/weakforms_hcurl.cpp \
+                src/weakform_library/weakforms_maxwell.cpp \
+                src/weakform_library/weakforms_neutronics.cpp \
 
 HEADERS = += ../hermes_common/src/compat.h
 

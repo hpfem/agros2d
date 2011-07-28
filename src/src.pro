@@ -157,7 +157,8 @@ INCLUDEPATH += . \
     ../lib/muparser \
     ../lib/dxflib \
     ../lib/rapidxml \
-    ../hermes_common
+    ../hermes_common \
+    ../hermes2d
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
     version.xml \
@@ -177,7 +178,8 @@ linux-g++ {
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += ../hermes2d/src
+    INCLUDEPATH += ../hermes2d/include
+    INCLUDEPATH += ../hermes_common/include
     LIBS += -L../hermes2d/lib
     LIBS += -lhermes2d
     LIBS += -lumfpack
