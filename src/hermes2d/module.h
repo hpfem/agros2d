@@ -52,17 +52,19 @@ struct SolutionArray;
 
 class ProgressItemSolve;
 
-class ViewScalarFilter;
+//template <typename Scalar>
+//class ViewScalarFilter;
 
-class WeakFormAgros : public WeakForm
+template <typename Scalar>
+class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 {
 public:
-    WeakFormAgros(unsigned int neq = 1) : WeakForm(neq) { }
+    WeakFormAgros(unsigned int neq = 1) : Hermes::Hermes2D::WeakForm<Scalar>(neq) { }
 
     void registerForms();
 
     // previous solution
-    Hermes::vector<MeshFunction *> solution;
+    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 };
 
 namespace Hermes
@@ -294,7 +296,7 @@ struct Module
     inline virtual void update_time_functions(double time) {}
 
 
-    ViewScalarFilter *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+    ViewScalarFilter<double> *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,  //TODO PK <Scalar>
                                          PhysicFieldVariableComp physicFieldVariableComp);
 
     virtual inline void deform_shape(double3* linVert, int count) {}
@@ -358,17 +360,18 @@ public:
     void setParserVariables(Material *material, Boundary *boundary);
 };
 
-class ViewScalarFilter : public Filter
+template <typename Scalar>
+class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>
 {
 public:  
-    ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
+    ViewScalarFilter(Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
                      std::string expression);
     ~ViewScalarFilter();
 
-    double get_pt_value(double x, double y, int item = H2D_FN_VAL);
+    double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
 
 protected:
-    Node* node;
+    Hermes::Hermes2D::Node* node;
 
     double px;
     double py;
@@ -386,26 +389,28 @@ protected:
 void readMeshDirtyFix();
 
 // read mesh
-Mesh *readMeshFromFile(const QString &fileName);
-void writeMeshFromFile(const QString &fileName, Mesh *mesh);
+Hermes::Hermes2D::Mesh *readMeshFromFile(const QString &fileName);
+void writeMeshFromFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh);
 
-void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge);
+void refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge);
 
 // return geom type
-GeomType convertProblemType(ProblemType problemType);
+Hermes::Hermes2D::GeomType convertProblemType(ProblemType problemType);
 
 // solve
+template <typename Scalar>
 Hermes::vector<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                                  Hermes::vector<EssentialBCs> bcs,
-                                                  WeakFormAgros *wf);
+                                                  Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs,
+                                                  WeakFormAgros<Scalar> *wf);
 
 // solve
+template <typename Scalar>
 class SolutionAgros
 {
 public:
-    SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros *wf);
+    SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
 
-    Hermes::vector<SolutionArray *> solveSolutioArray(Hermes::vector<EssentialBCs> bcs);
+    Hermes::vector<SolutionArray *> solveSolutioArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
 private:
     int polynomialOrder;
     AdaptivityType adaptivityType;
@@ -423,28 +428,28 @@ private:
     double linearityNonlinearTolerance;
     int linearityNonlinearSteps;
 
-    MatrixSolverType matrixSolver;
+    Hermes::MatrixSolverType matrixSolver;
 
     // error
     bool isError;
 
     // mesh file
-    Mesh *mesh;
+    Hermes::Hermes2D::Mesh *mesh;
 
     // weak form
-    WeakFormAgros *m_wf;
+    WeakFormAgros<Scalar> *m_wf;
     ProgressItemSolve *m_progressItemSolve;
 
-    SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
+    SolutionArray *solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
 
-    bool solveLinear(DiscreteProblem *dp,
-                     Hermes::vector<Space *> space,
-                     Hermes::vector<Solution *> solution,
-                     Solver *solver, SparseMatrix *matrix, Vector *rhs);
+    bool solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar> *dp,
+                     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
+                     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
+                     Hermes::Solvers::LinearSolver<Scalar> *solver, SparseMatrix<Scalar> *matrix, Vector<Scalar> *rhs);
 
-    bool solve(Hermes::vector<Space *> space,
-               Hermes::vector<Solution *> solution,
-               Solver *solver, SparseMatrix *matrix, Vector *rhs);
+    bool solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
+               Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
+               Hermes::Solvers::NonlinearSolver<Scalar> *solver, SparseMatrix<Scalar> *matrix, Vector<Scalar> *rhs);
 };
 
 #endif // HERMES_FIELD_H

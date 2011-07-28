@@ -67,6 +67,7 @@
 
 #include "views/view.h"
 #include "views/base_view.h"
+#include "views/linearizer.h"
 #include "views/mesh_view.h"
 #include "views/order_view.h"
 #include "views/scalar_view.h"
