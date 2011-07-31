@@ -62,7 +62,7 @@ void LocalPointValue::calculate()
         if (index != -1)
         {
             // find marker
-            Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
+            Hermes::Hermes2D::Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
             SceneMaterial *tmpMaterial = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
 
             // set variables
@@ -74,7 +74,7 @@ void LocalPointValue::calculate()
             double *pvalue = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
             double *pdx = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
             double *pdy = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
-            std::vector<Solution *> sln(Util::scene()->problemInfo()->module()->number_of_solution());
+            std::vector<Hermes::Hermes2D::Solution<double> *> sln(Util::scene()->problemInfo()->module()->number_of_solution()); //TODO PK <double>
 
             for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
             {
@@ -87,11 +87,11 @@ void LocalPointValue::calculate()
                     // const solution at first time step
                     value = Util::scene()->problemInfo()->initialCondition.number;
                 else
-                    value = sln[k]->get_pt_value(point.x, point.y, H2D_FN_VAL_0);
+                    value = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
 
                 Point derivative;
-                derivative.x = sln[k]->get_pt_value(point.x, point.y, H2D_FN_DX_0);
-                derivative.y = sln[k]->get_pt_value(point.x, point.y, H2D_FN_DY_0);
+                derivative.x = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_DX_0);
+                derivative.y = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_DY_0);
 
                 // set variables
                 pvalue[k] = value;

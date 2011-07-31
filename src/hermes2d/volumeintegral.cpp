@@ -89,12 +89,12 @@ void VolumeIntegralValue::calculate()
         parser->initParserMaterialVariables();
     }
 
-    Quad2D *quad = &g_quad_2d_std;
+    Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
 
     sln[0]->set_quad_2d(quad);
 
-    Mesh *mesh = sln[0]->get_mesh();
-    Element *e;
+    Hermes::Hermes2D::Mesh *mesh = sln[0]->get_mesh();
+    Hermes::Hermes2D::Element *e;
 
     for (int i = 0; i<Util::scene()->labels.length(); i++)
     {
@@ -107,12 +107,12 @@ void VolumeIntegralValue::calculate()
             {
                 if (mesh->get_element_markers_conversion().get_user_marker(e->marker) == QString::number(i).toStdString())
                 {
-                    update_limit_table(e->get_mode());
+                    Hermes::Hermes2D::update_limit_table(e->get_mode());
 
                     for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
                         sln[k]->set_active_element(e);
 
-                    RefMap *ru = sln[0]->get_refmap();
+                    Hermes::Hermes2D::RefMap *ru = sln[0]->get_refmap();
 
                     int o = 0;
                     for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
@@ -123,18 +123,21 @@ void VolumeIntegralValue::calculate()
                     double *x = ru->get_phys_x(o);
                     double *y = ru->get_phys_y(o);
 
-                    limit_order(o);
+                    {
+                        using namespace Hermes::Hermes2D;
+                        limit_order(o);   //TODO PK for macro have to use "using namespace"...
+                    }
 
                     // solution
                     for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
                     {
-                        sln[k]->set_quad_order(o, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
+                        sln[k]->set_quad_order(o, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
                         // value
                         value[k] = sln[k]->get_fn_values();
                         // derivative
                         sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
                     }
-                    update_limit_table(e->get_mode());
+                    Hermes::Hermes2D::update_limit_table(e->get_mode());
 
                     // parse expression
                     int n = 0;

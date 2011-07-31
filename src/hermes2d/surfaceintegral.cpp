@@ -87,11 +87,11 @@ void SurfaceIntegralValue::calculate()
         }
     }
 
-    Hermes::vector<Solution *>sln;
+    Hermes::vector<Hermes::Hermes2D::Solution<double> *>sln; //TODO PK <double>
 
-    Element *e;
+    Hermes::Hermes2D::Element *e;
 
-    Quad2D *quad = &g_quad_2d_std;
+    Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
 
     for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
     {
@@ -100,7 +100,7 @@ void SurfaceIntegralValue::calculate()
         sln[k]->set_quad_2d(quad);
     }
 
-    Mesh* mesh = sln[0]->get_mesh();
+    Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
     for (int i = 0; i<Util::scene()->edges.length(); i++)
     {
         SceneEdge *sceneEdge = Util::scene()->edges[i];
@@ -131,21 +131,21 @@ void SurfaceIntegralValue::calculate()
                     // integral
                     if (integrate)
                     {
-                        update_limit_table(e->get_mode());
+                        Hermes::Hermes2D::update_limit_table(e->get_mode());
 
                         for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
                             sln[k]->set_active_element(e);
 
-                        RefMap* ru = sln[0]->get_refmap();
+                        Hermes::Hermes2D::RefMap* ru = sln[0]->get_refmap();
 
-                        Quad2D* quad2d = ru->get_quad_2d();
+                        Hermes::Hermes2D::Quad2D* quad2d = ru->get_quad_2d();
                         int eo = quad2d->get_edge_points(edge);
                         double3 *pt = quad2d->get_points(eo);
                         double3 *tan = ru->get_tangent(edge);
 
                         for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
                         {
-                            sln[k]->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
+                            sln[k]->set_quad_order(eo, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
                             // value
                             value[k] = sln[k]->get_fn_values();
                             // derivative

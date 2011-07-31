@@ -144,7 +144,8 @@ std::map<std::string, std::string> availableModules()
     return modules;
 }
 
-void WeakFormAgros::registerForms()
+template <typename Scalar>
+void WeakFormAgros<Scalar>::registerForms()
 {
     // boundary conditions
     for (int i = 0; i<Util::scene()->edges.count(); i++)
@@ -160,7 +161,7 @@ void WeakFormAgros::registerForms()
             {
                 ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
-                add_matrix_form_surf(new CustomParserMatrixFormSurf(form->i - 1, form->j - 1,
+                add_matrix_form_surf(new CustomParserMatrixFormSurf<Scalar>(form->i - 1, form->j - 1,
                                                                     QString::number(i + 1).toStdString(),
                                                                     form->expression,
                                                                     boundary));
@@ -171,7 +172,7 @@ void WeakFormAgros::registerForms()
             {
                 ParserFormVector *form = ((ParserFormVector *) *it);
 
-                add_vector_form_surf(new CustomParserVectorFormSurf(form->i - 1,
+                add_vector_form_surf(new CustomParserVectorFormSurf<Scalar>(form->i - 1,
                                                                     QString::number(i + 1).toStdString(),
                                                                     form->expression,
                                                                     boundary));
@@ -191,7 +192,7 @@ void WeakFormAgros::registerForms()
             {
                 ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
-                add_matrix_form(new CustomParserMatrixFormVol(form->i - 1, form->j - 1,
+                add_matrix_form(new CustomParserMatrixFormVol<Scalar>(form->i - 1, form->j - 1,
                                                               QString::number(i).toStdString(),
                                                               form->sym,
                                                               form->expression,
@@ -204,7 +205,7 @@ void WeakFormAgros::registerForms()
                 ParserFormVector *form = ((ParserFormVector *) *it);
 
                 // previous solution (time dep)
-                add_vector_form(new CustomParserVectorFormVol(form->i - 1,
+                add_vector_form(new CustomParserVectorFormVol<Scalar>(form->i - 1,
                                                               QString::number(i).toStdString(),
                                                               form->expression,
                                                               material,
@@ -731,14 +732,14 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
     }
 }
 
-ViewScalarFilter *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable, //TODO PK <double>
                                                              PhysicFieldVariableComp physicFieldVariableComp)
 {
-    Hermes::vector<MeshFunction *> sln;
+    Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
     for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
         sln.push_back(Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->module()->number_of_solution())));
 
-    return new ViewScalarFilter(sln, get_expression(physicFieldVariable, physicFieldVariableComp));
+    return new ViewScalarFilter<double>(sln, get_expression(physicFieldVariable, physicFieldVariableComp));//TODO PK <double>
 }
 
 bool Hermes::Module::Module::solve_init_variables()
@@ -781,9 +782,9 @@ Hermes::vector<SolutionArray *> Hermes::Module::Module::solve(ProgressItemSolve 
         return Hermes::vector<SolutionArray *>();
 
     // essential boundary conditions
-    Hermes::vector<EssentialBCs> bcs;
+    Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> > bcs; //TODO PK <double>
     for (int i = 0; i < Util::scene()->problemInfo()->module()->number_of_solution(); i++)
-        bcs.push_back(EssentialBCs());
+        bcs.push_back(Hermes::Hermes2D::EssentialBCs<double>());  //TODO PK <double>
 
     for (int i = 0; i < Util::scene()->edges.count(); i++)
     {
@@ -798,7 +799,7 @@ Hermes::vector<SolutionArray *> Hermes::Module::Module::solve(ProgressItemSolve 
                 for (std::map<int, Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->essential.begin();
                      it != boundary_type->essential.end(); ++it)
                 {
-                    bcs[it->first - 1].add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(),
+                    bcs[it->first - 1].add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCConst<double>(QString::number(i+1).toStdString(), //TODO PK <double>
                                                                                           boundary->values[it->second->id].number));
 
                 }
@@ -806,7 +807,7 @@ Hermes::vector<SolutionArray *> Hermes::Module::Module::solve(ProgressItemSolve 
         }
     }
 
-    WeakFormAgros wf(number_of_solution());
+    WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
     Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
 
@@ -887,23 +888,23 @@ void readMeshDirtyFix()
           "{ 1, 2, 90 }" << std::endl <<
           "}";
 
-    Mesh mesh;
-    H2DReader meshloader;
+    Hermes::Hermes2D::Mesh mesh;
+    Hermes::Hermes2D::H2DReader meshloader;
     meshloader.load_str(os.str().c_str(), &mesh);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 }
 
-Mesh *readMeshFromFile(const QString &fileName)
+Hermes::Hermes2D::Mesh *readMeshFromFile(const QString &fileName)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
     // load the mesh file
-    Mesh *mesh = new Mesh();
-    H2DReader meshloader;
+    Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
+    Hermes::Hermes2D::H2DReader meshloader;
     meshloader.load(fileName.toStdString().c_str(), mesh);
 
     // set system locale
@@ -912,20 +913,20 @@ Mesh *readMeshFromFile(const QString &fileName)
     return mesh;
 }
 
-void writeMeshFromFile(const QString &fileName, Mesh *mesh)
+void writeMeshFromFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    H2DReader meshloader;
+    Hermes::Hermes2D::H2DReader meshloader;
     meshloader.save(fileName.toStdString().c_str(), mesh);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 }
 
-void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
+void refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
 {
     // refine mesh - global
     if (refineGlobal)
@@ -941,9 +942,9 @@ void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
 }
 
 // return geom type
-GeomType convertProblemType(ProblemType problemType)
+Hermes::Hermes2D::GeomType convertProblemType(ProblemType problemType)
 {
-    return (problemType == ProblemType_Planar ? HERMES_PLANAR : HERMES_AXISYM_Y);
+    return (problemType == ProblemType_Planar ? Hermes::Hermes2D::HERMES_PLANAR : Hermes::Hermes2D::HERMES_AXISYM_Y);
 }
 
 Hermes::vector<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
