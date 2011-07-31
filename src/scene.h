@@ -86,7 +86,7 @@ public:
     Value initialCondition;
 
     // matrix solver
-    Hermes::Solvers::MatrixSolverType matrixSolver;
+    Hermes::MatrixSolverType matrixSolver;
 
     ProblemInfo()
     {
