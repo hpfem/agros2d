@@ -35,7 +35,7 @@ static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
 static QHash<MeshType, QString> meshTypeList;
 static QHash<LinearityType, QString> linearityTypeList;
-static QHash<MatrixSolverType, QString> matrixSolverTypeList;
+static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
 
 QString analysisTypeToStringKey(AnalysisType analysisType) { return analysisTypeList[analysisType]; }
 AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return analysisTypeList.key(analysisType); }
@@ -58,8 +58,8 @@ AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { retu
 QString linearityTypeToStringKey(LinearityType linearityType) { return linearityTypeList[linearityType]; }
 LinearityType linearityTypeFromStringKey(const QString &linearityType) { return linearityTypeList.key(linearityType); }
 
-QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
-MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
+QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
+Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
 
 void initLists()
 {
@@ -120,12 +120,12 @@ void initLists()
     adaptivityTypeList.insert(AdaptivityType_HP, "hp-adaptivity");
 
     // MatrixSolverType
-    matrixSolverTypeList.insert(SOLVER_UMFPACK, "umfpack");
-    matrixSolverTypeList.insert(SOLVER_PETSC, "petsc");
-    matrixSolverTypeList.insert(SOLVER_MUMPS, "mumps");
-    matrixSolverTypeList.insert(SOLVER_SUPERLU, "superlu");
-    matrixSolverTypeList.insert(SOLVER_AMESOS, "trilinos_amesos");
-    matrixSolverTypeList.insert(SOLVER_AZTECOO, "trilinos_aztecoo");
+    matrixSolverTypeList.insert(Hermes::SOLVER_UMFPACK, "umfpack");
+    matrixSolverTypeList.insert(Hermes::SOLVER_PETSC, "petsc");
+    matrixSolverTypeList.insert(Hermes::SOLVER_MUMPS, "mumps");
+    matrixSolverTypeList.insert(Hermes::SOLVER_SUPERLU, "superlu");
+    matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
+    matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
 
     // LinearityType
     linearityTypeList.insert(LinearityType_Undefined, "");
@@ -254,23 +254,23 @@ QString linearityTypeString(LinearityType linearityType)
     }
 }
 
-QString matrixSolverTypeString(MatrixSolverType matrixSolverType)
+QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
 {
     logMessage("matrixSolverTypeString()");
 
     switch (matrixSolverType)
     {
-    case SOLVER_UMFPACK:
+    case Hermes::SOLVER_UMFPACK:
         return QObject::tr("UMFPACK");
-    case SOLVER_PETSC:
+    case Hermes::SOLVER_PETSC:
         return QObject::tr("PETSc");
-    case SOLVER_MUMPS:
+    case Hermes::SOLVER_MUMPS:
         return QObject::tr("MUMPS");
-    case SOLVER_SUPERLU:
+    case Hermes::SOLVER_SUPERLU:
         return QObject::tr("SuperLU");
-    case SOLVER_AMESOS:
+    case Hermes::SOLVER_AMESOS:
         return QObject::tr("Trilinos/Amesos");
-    case SOLVER_AZTECOO:
+    case Hermes::SOLVER_AZTECOO:
         return QObject::tr("Trilinos/AztecOO");
     default:
         std::cerr << "Matrix solver type '" + QString::number(matrixSolverType).toStdString() + "' is not implemented. matrixSolverTypeString(MatrixSolverType matrixSolverType)" << endl;
@@ -707,7 +707,7 @@ Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle)
     Point t = (pointEnd - pointStart) / distance;
     double R = distance / (2.0*sin(angle/180.0*M_PI / 2.0));
 
-    Point p = Point(distance/2.0, sqrt(sqr(R) - sqr(distance)/4.0 > 0.0 ? sqr(R) - sqr(distance)/4.0 : 0.0));
+    Point p = Point(distance/2.0, sqrt(Hermes::sqr(R) - Hermes::sqr(distance)/4.0 > 0.0 ? Hermes::sqr(R) - Hermes::sqr(distance)/4.0 : 0.0));
     Point center = pointStart + Point(p.x*t.x - p.y*t.y, p.x*t.y + p.y*t.x);
 
     return center;

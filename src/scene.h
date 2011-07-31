@@ -84,7 +84,7 @@ public:
     Value initialCondition;
 
     // matrix solver
-    Hermes::Solvers::MatrixSolverType matrixSolver;
+    Hermes::MatrixSolverType matrixSolver;
 
     ProblemInfo()
     {
@@ -210,7 +210,7 @@ public:
     void setProblemInfo(ProblemInfo *problemInfo) { clear(); delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
 
     inline void refresh() { emit invalidated(); }
-    inline SceneSolution *sceneSolution() const { return m_sceneSolution; }
+    inline SceneSolution<double> *sceneSolution() const { return m_sceneSolution; } //TODO PK <double>
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
@@ -226,7 +226,7 @@ private:
     ProblemInfo *m_problemInfo;
 
     // scene solution
-    SceneSolution *m_sceneSolution;
+    SceneSolution<double> *m_sceneSolution;  //TODO PK <double>
 
     void createActions();
 

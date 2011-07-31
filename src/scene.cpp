@@ -83,7 +83,7 @@ void ProblemInfo::clear()
     initialCondition = Value("0.0", false);
 
     // matrix solver
-    matrixSolver = SOLVER_UMFPACK;
+    matrixSolver = Hermes::SOLVER_UMFPACK;
 
     // linearity
     linearityType = LinearityType_Linear;
@@ -218,7 +218,7 @@ Scene::Scene()
 
     m_problemInfo = new ProblemInfo();
     m_undoStack = new QUndoStack(this);
-    m_sceneSolution = new SceneSolution();
+    m_sceneSolution = new SceneSolution<double>(); //TODO PK <double>
 
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
     connect(m_sceneSolution, SIGNAL(solved()), this, SLOT(doInvalidated()));
@@ -1420,13 +1420,13 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // linearity
     m_problemInfo->linearityType = linearityTypeFromStringKey(eleProblem.toElement().attribute("linearity",
-                                                                                               linearityTypeToStringKey(LinearityType_Linear)));
+                   linearityTypeToStringKey(LinearityType_Linear)));
     m_problemInfo->linearityNonlinearSteps = eleProblem.toElement().attribute("linearitysteps", "10").toInt();
     m_problemInfo->linearityNonlinearTolerance = eleProblem.toElement().attribute("linearitytolerance", "1e-3").toDouble();
 
     // matrix solver
     m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblem.toElement().attribute("matrix_solver",
-                                                                                                 matrixSolverTypeToStringKey(SOLVER_UMFPACK)));
+                   matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK)));
 
     // startup script
     QDomNode eleScriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
