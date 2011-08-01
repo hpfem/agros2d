@@ -1606,8 +1606,8 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 
     Hermes::Hermes2D::Filter<Scalar>::update_refmap();
 
-    double *x = Hermes::Hermes2D::Function<Scalar>::refmap->get_phys_x(order);
-    double *y = Hermes::Hermes2D::Function<Scalar>::refmap->get_phys_y(order);
+    double *x = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_x(order);
+    double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
     Hermes::Hermes2D::Element *e = Hermes::Hermes2D::Function<Scalar>::refmap->get_active_element();
 
     SceneMaterial *material = Util::scene()->labels[atoi(Hermes::Hermes2D::Function<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
