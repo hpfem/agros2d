@@ -29,6 +29,7 @@ class SceneMaterial;
 template <typename Scalar>
 class ViewScalarFilter;
 
+template <typename Scalar>
 struct SolutionArray;
 
 class ProgressDialog;
@@ -60,8 +61,8 @@ public:
 
     // solution
     Hermes::Hermes2D::Solution<Scalar> *sln(int i = -1);
-    void setSolutionArrayList(Hermes::vector<SolutionArray *> solutionArrayList);
-    inline Hermes::vector<SolutionArray *> solutionArrayList() { return m_solutionArrayList; }
+    void setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> *> solutionArrayList);
+    inline Hermes::vector<SolutionArray<Scalar> *> solutionArrayList() { return m_solutionArrayList; }
 
     // time
     void setTimeStep(int timeStep, bool showViewProgress = true);
@@ -129,7 +130,7 @@ private:
     bool m_isSolving;
 
     // general solution array
-    Hermes::vector<SolutionArray *> m_solutionArrayList;
+    Hermes::vector<SolutionArray<Scalar> *> m_solutionArrayList;
     int m_timeStep;
 
     // mesh

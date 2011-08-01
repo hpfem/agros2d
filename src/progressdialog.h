@@ -25,20 +25,28 @@
 class Solution;
 class Linearizer;
 class Vectorizer;
+namespace Hermes{
+namespace Hermes2D{
+namespace Views{
 class Orderizer;
+
+}
+}
+}
 class Mesh;
 
 class Chart;
 class QwtPlotCurve;
 
+template <typename Scalar>
 struct SolutionArray
 {
     double time;
     double adaptiveError;
     int adaptiveSteps;
 
-    Solution *sln;
-    Orderizer *order;
+    Hermes::Hermes2D::Solution<Scalar> *sln;
+    Hermes::Hermes2D::Views::Orderizer *order;
 
     SolutionArray();
     ~SolutionArray();

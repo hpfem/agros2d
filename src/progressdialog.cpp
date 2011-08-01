@@ -69,9 +69,9 @@ void SolutionArray::load(QDomElement *element)
     contentOrder.append(element->elementsByTagName("order").at(0).toElement().childNodes().at(0).nodeValue());
     writeStringContentByteArray(fileNameOrder, QByteArray::fromBase64(contentOrder));
 
-    order = new Orderizer();
+    order = new Hermes::Hermes2D::Views::Orderizer();
     order->load_data(fileNameOrder.toStdString().c_str());
-    sln = new Solution();
+    sln = new Hermes::Hermes2D::Solution();
     sln->load(fileNameSolution.toStdString().c_str());
     adaptiveError = element->attribute("adaptiveerror").toDouble();
     adaptiveSteps = element->attribute("adaptivesteps").toInt();
