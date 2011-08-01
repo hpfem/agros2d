@@ -234,7 +234,7 @@ void ConfigDialog::save()
     Util::config()->threshold = txtThreshold->value();
     Util::config()->strategy = cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt();
     Util::config()->meshRegularity = cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt();
-    Util::config()->projNormType = (ProjNormType) cmbProjNormType->itemData(cmbProjNormType->currentIndex()).toInt();
+    Util::config()->projNormType = (Hermes::Hermes2D::ProjNormType) cmbProjNormType->itemData(cmbProjNormType->currentIndex()).toInt();
 
     // command argument
     Util::config()->commandTriangle = txtArgumentTriangle->text();

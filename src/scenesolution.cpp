@@ -24,7 +24,8 @@
 #include "sceneview.h"
 #include "progressdialog.h"
 
-SceneSolution::SceneSolution()
+template <typename Scalar>
+SceneSolution<Scalar>::SceneSolution()
 {
     logMessage("SceneSolution::SceneSolution()");
 
@@ -43,7 +44,8 @@ SceneSolution::SceneSolution()
     m_slnVectorYView = NULL;   
 }
 
-SceneSolution::~SceneSolution()
+template <typename Scalar>
+SceneSolution<Scalar>::~SceneSolution()
 {
     delete m_progressDialog;
     delete m_progressItemMesh;
@@ -51,7 +53,8 @@ SceneSolution::~SceneSolution()
     delete m_progressItemProcessView;
 }
 
-void SceneSolution::clear()
+template <typename Scalar>
+void SceneSolution<Scalar>::clear()
 {
     logMessage("SceneSolution::clear()");
 
@@ -104,7 +107,8 @@ void SceneSolution::clear()
     m_progressDialog->clear();
 }
 
-void SceneSolution::solve(SolverMode solverMode)
+template <typename Scalar>
+void SceneSolution<Scalar>::solve(SolverMode solverMode)
 {
     logMessage("SceneSolution::solve()");
 
@@ -158,7 +162,8 @@ void SceneSolution::solve(SolverMode solverMode)
     m_isSolving = false;
 }
 
-void SceneSolution::loadMeshInitial(QDomElement *element)
+template <typename Scalar>
+void SceneSolution<Scalar>::loadMeshInitial(QDomElement *element)
 {
     logMessage("SceneSolution::loadMeshInitial()");
 
@@ -176,7 +181,8 @@ void SceneSolution::loadMeshInitial(QDomElement *element)
     setMeshInitial(mesh);
 }
 
-void SceneSolution::saveMeshInitial(QDomDocument *doc, QDomElement *element)
+template <typename Scalar>
+void SceneSolution<Scalar>::saveMeshInitial(QDomDocument *doc, QDomElement *element)
 {
     logMessage("SceneSolution::saveMeshInitial()");
 
@@ -192,7 +198,8 @@ void SceneSolution::saveMeshInitial(QDomDocument *doc, QDomElement *element)
     }
 }
 
-void SceneSolution::loadSolution(QDomElement *element)
+template <typename Scalar>
+void SceneSolution<Scalar>::loadSolution(QDomElement *element)
 {
     logMessage("SceneSolution::loadSolution()");
 
@@ -230,7 +237,8 @@ void SceneSolution::loadSolution(QDomElement *element)
         setSolutionArrayList(solutionArrayList);
 }
 
-void SceneSolution::saveSolution(QDomDocument *doc, QDomElement *element)
+template <typename Scalar>
+void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement *element)
 {
     logMessage("SceneSolution::saveSolution()");
 
@@ -248,7 +256,8 @@ void SceneSolution::saveSolution(QDomDocument *doc, QDomElement *element)
     }
 }
 
-Solution *SceneSolution::sln(int i)
+template <typename Scalar>
+Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
 {
     logMessage("SceneSolution::sln()");
 
@@ -265,7 +274,8 @@ Solution *SceneSolution::sln(int i)
     return NULL;
 }
 
-Orderizer *SceneSolution::ordView()
+template <typename Scalar>
+Orderizer *SceneSolution<Scalar>::ordView()
 {
     logMessage("SceneSolution::ordView()");
 
@@ -275,21 +285,24 @@ Orderizer *SceneSolution::ordView()
         return NULL;
 }
 
-double SceneSolution::adaptiveError()
+template <typename Scalar>
+double SceneSolution<Scalar>::adaptiveError()
 {
     logMessage("SceneSolution::adaptiveError()");
 
     return (isSolved()) ? m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->adaptiveError : 100.0;
 }
 
-int SceneSolution::adaptiveSteps()
+template <typename Scalar>
+int SceneSolution<Scalar>::adaptiveSteps()
 {
     logMessage("SceneSolution::adaptiveSteps()");
 
     return (isSolved()) ? m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->adaptiveSteps : 0.0;
 }
 
-int SceneSolution::findElementInVectorizer(const Vectorizer &vec, const Point &point) const
+template <typename Scalar>
+int SceneSolution<Scalar>::findElementInVectorizer(const Vectorizer &vec, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInVectorizer()");
 
@@ -326,7 +339,8 @@ int SceneSolution::findElementInVectorizer(const Vectorizer &vec, const Point &p
 
 #define sign(x) (( x > 0 ) - ( x < 0 ))
 
-int SceneSolution::findElementInMesh(Mesh *mesh, const Point &point) const
+template <typename Scalar>
+int SceneSolution<Scalar>::findElementInMesh(Mesh *mesh, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInMesh()");
 
@@ -353,7 +367,8 @@ int SceneSolution::findElementInMesh(Mesh *mesh, const Point &point) const
     return -1;
 }
 
-void SceneSolution::setMeshInitial(Mesh *meshInitial)
+template <typename Scalar>
+void SceneSolution<Scalar>::setMeshInitial(Mesh *meshInitial)
 {
     if (m_meshInitial)
     {
@@ -363,7 +378,8 @@ void SceneSolution::setMeshInitial(Mesh *meshInitial)
     m_meshInitial = meshInitial;
 }
 
-void SceneSolution::setSolutionArrayList(Hermes::vector<SolutionArray *> solutionArrayList)
+template <typename Scalar>
+void SceneSolution<Scalar>::setSolutionArrayList(Hermes::vector<SolutionArray *> solutionArrayList)
 {
     logMessage("SceneSolution::setSolutionArrayList()");
 

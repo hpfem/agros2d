@@ -48,7 +48,7 @@ extern double actualTime;
 class SceneBoundary;
 class SceneMaterial;
 struct SceneViewSettings;
-struct SolutionArray;
+template <typename Scalar> struct SolutionArray;
 
 class ProgressItemSolve;
 
@@ -290,7 +290,7 @@ struct Module
     int number_of_solution() const;
     virtual bool has_nonlinearity() const = 0;
 
-    Hermes::vector<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+    Hermes::vector<SolutionArray<double> *> solve(ProgressItemSolve *progressItemSolve);  //TODO PK <Scalar>
     bool solve_init_variables();
 
     inline virtual void update_time_functions(double time) {}
@@ -399,7 +399,7 @@ Hermes::Hermes2D::GeomType convertProblemType(ProblemType problemType);
 
 // solve
 template <typename Scalar>
-Hermes::vector<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
+Hermes::vector<SolutionArray<Scalar> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                                                   Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs,
                                                   WeakFormAgros<Scalar> *wf);
 
@@ -410,7 +410,7 @@ class SolutionAgros
 public:
     SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
 
-    Hermes::vector<SolutionArray *> solveSolutioArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
+    Hermes::vector<SolutionArray<Scalar> *> solveSolutioArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
 private:
     int polynomialOrder;
     AdaptivityType adaptivityType;
@@ -440,7 +440,7 @@ private:
     WeakFormAgros<Scalar> *m_wf;
     ProgressItemSolve *m_progressItemSolve;
 
-    SolutionArray *solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
+    SolutionArray<Scalar> *solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
 
     bool solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar> *dp,
                      Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,

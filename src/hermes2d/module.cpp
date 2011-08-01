@@ -776,10 +776,10 @@ bool Hermes::Module::Module::solve_init_variables()
     return true;
 }
 
-Hermes::vector<SolutionArray *> Hermes::Module::Module::solve(ProgressItemSolve *progressItemSolve)
+Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
 {
     if (!solve_init_variables())
-        return Hermes::vector<SolutionArray *>();
+        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
 
     // essential boundary conditions
     Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> > bcs; //TODO PK <double>
@@ -809,7 +809,7 @@ Hermes::vector<SolutionArray *> Hermes::Module::Module::solve(ProgressItemSolve 
 
     WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
-    Hermes::vector<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
+    Hermes::vector<SolutionArray<double> *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);//TODO PK <double>
 
     return solutionArrayList;
 }
@@ -947,19 +947,21 @@ Hermes::Hermes2D::GeomType convertProblemType(ProblemType problemType)
     return (problemType == ProblemType_Planar ? Hermes::Hermes2D::HERMES_PLANAR : Hermes::Hermes2D::HERMES_AXISYM_Y);
 }
 
-Hermes::vector<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                                  Hermes::vector<EssentialBCs> bcs,
-                                                  WeakFormAgros *wf)
+template <typename Scalar>
+Hermes::vector<SolutionArray<double> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,  //TODO PK <double>
+                                                  Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs,
+                                                  WeakFormAgros<Scalar> *wf)
 {
-    SolutionAgros solutionAgros(progressItemSolve, wf);
+    SolutionAgros<Scalar> solutionAgros(progressItemSolve, wf);
 
-    Hermes::vector<SolutionArray *> solutionArrayList = solutionAgros.solveSolutioArray(bcs);
+    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solveSolutioArray(bcs);//TODO PK <double>
     return solutionArrayList;
 }
 
 // *********************************************************************************************************************************************
 
-SolutionAgros::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros *wf)
+template <typename Scalar>
+SolutionAgros<Scalar>::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf)
 {
     analysisType = Util::scene()->problemInfo()->analysisType;
     polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
@@ -982,46 +984,47 @@ SolutionAgros::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros
     m_wf = wf;
 }
 
-Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<EssentialBCs> bcs)
+template <typename Scalar>
+Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs)
 {
     QTime time;
 
     // solution agros array
-    Hermes::vector<SolutionArray *> solutionArrayList;
+    Hermes::vector<SolutionArray<Scalar> *> solutionArrayList;
 
     // load the mesh file
     mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
     refineMesh(mesh, true, true);
 
     // create an H1 space
-    Hermes::vector<Space *> space;
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space;
     // create hermes solution array
-    Hermes::vector<Solution *> solution;
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution;
     // create reference solution
-    Hermes::vector<Solution *> solutionReference;
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionReference;
 
     // projection norms
-    Hermes::vector<ProjNormType> projNormType;
+    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
 
     // prepare selector
-    Hermes::vector<RefinementSelectors::Selector *> selector;
+    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
     // error marker
     bool isError = false;
 
-    RefinementSelectors::Selector *select = NULL;
+    Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select = NULL;
     switch (adaptivityType)
     {
     case AdaptivityType_H:
-        select = new RefinementSelectors::HOnlySelector();
+        select = new Hermes::Hermes2D::RefinementSelectors::HOnlySelector<Scalar>();
         break;
     case AdaptivityType_P:
-        select = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_P_ANISO,
+        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
                                                               Util::config()->convExp,
                                                               H2DRS_DEFAULT_ORDER);
         break;
     case AdaptivityType_HP:
-        select = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_HP_ANISO,
+        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
                                                               Util::config()->convExp,
                                                               H2DRS_DEFAULT_ORDER);
         break;
@@ -1029,7 +1032,7 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
 
     for (int i = 0; i < numberOfSolution; i++)
     {
-        space.push_back(new H1Space(mesh, &bcs[i], polynomialOrder));
+        space.push_back(new Hermes::Hermes2D::H1Space<Scalar>(mesh, &bcs[i], polynomialOrder));
 
         // set order by element
         for (int j = 0; j < Util::scene()->labels.count(); j++)
@@ -1038,7 +1041,7 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
                                                QString::number(j).toStdString());
 
         // solution agros array
-        solution.push_back(new Solution());
+        solution.push_back(new Hermes::Hermes2D::Solution<Scalar>());
 
         if (adaptivityType != AdaptivityType_None)
         {
@@ -1047,12 +1050,12 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
             // add refinement selector
             selector.push_back(select);
             // reference solution
-            solutionReference.push_back(new Solution());
+            solutionReference.push_back(new Hermes::Hermes2D::Solution<Scalar>());
         }
     }
 
     // check for DOFs
-    if (Space::get_num_dofs(space) == 0)
+    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) == 0)
     {
         m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
     }
@@ -1085,7 +1088,7 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
         // FIXME
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
             for (int i = 0; i < solution.size(); i++)
-                m_wf->solution.push_back((MeshFunction *) solution[i]);
+                m_wf->solution.push_back((Hermes::Hermes2D::MeshFunction<Scalar> *) solution[i]);
         m_wf->delete_all();
         m_wf->registerForms();
 
@@ -1101,9 +1104,9 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
         for (int i = 0; i<maxAdaptivitySteps; i++)
         {
             // set up the solver, matrix, and rhs according to the solver selection.
-            SparseMatrix *matrix = create_matrix(matrixSolver);
-            Vector *rhs = create_vector(matrixSolver);
-            Solver *solver = create_linear_solver(matrixSolver, matrix, rhs);
+            SparseMatrix<Scalar> *matrix = Hermes::Algebra::create_matrix<Scalar>(matrixSolver);
+            Vector<Scalar> *rhs = create_vector<Scalar>(matrixSolver);
+            Hermes::Solvers::LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs); //TODO PK LinearSolver ??
 
             if (adaptivityType == AdaptivityType_None)
             {
@@ -1113,7 +1116,7 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
             else
             {
                 // construct globally refined reference mesh and setup reference space.
-                Hermes::vector<Space *> spaceReference = *Space::construct_refined_spaces(space);
+                Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceReference = *Hermes::Hermes2D::Space<Scalar>::construct_refined_spaces(space);
 
                 // assemble reference problem.
                 solve(spaceReference, solutionReference, solver, matrix, rhs);
@@ -1121,10 +1124,10 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
                 if (!isError)
                 {
                     // project the fine mesh solution onto the coarse mesh.
-                    OGProjection::project_global(space, solutionReference, solution, matrixSolver);
+                    Hermes::Hermes2D::OGProjection<Scalar>::project_global(space, solutionReference, solution, matrixSolver);
 
                     // Calculate element errors and total error estimate.
-                    Adapt adaptivity(space, projNormType);
+                    Hermes::Hermes2D::Adapt<Scalar> adaptivity(space, projNormType);
 
                     // Calculate error estimate for each solution component and the total error estimate.
                     error = adaptivity.calc_err_est(solution,
@@ -1135,12 +1138,12 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
                                                      arg(error, 0, 'f', 3).
                                                      arg(i + 1).
                                                      arg(maxAdaptivitySteps).
-                                                     arg(Space::get_num_dofs(space)).
-                                                     arg(Space::get_num_dofs(spaceReference)), false, 1);
+                                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
+                                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
                     // add error to the list
-                    m_progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(space));
+                    m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
 
-                    if (error < adaptivityTolerance || Space::get_num_dofs(space) >= adaptivityMaxDOFs)
+                    if (error < adaptivityTolerance || Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) >= adaptivityMaxDOFs)
                     {
                         break;
                     }
@@ -1184,21 +1187,21 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
         // timesteps
         if (!isError)
         {
-            SparseMatrix *matrix = NULL;
-            Vector *rhs = NULL;
-            Solver *solver = NULL;
+            SparseMatrix<Scalar> *matrix = NULL;
+            Vector<Scalar> *rhs = NULL;
+            LinearSolver<Scalar> *solver = NULL;   //TODO PK Linear
 
             // allocate dp for transient solution
-            DiscreteProblem *dpTran = NULL;
+            Hermes::Hermes2D::DiscreteProblem<Scalar> *dpTran = NULL;
             if (analysisType == AnalysisType_Transient)
             {
                 // set up the solver, matrix, and rhs according to the solver selection.
-                matrix = create_matrix(matrixSolver);
-                rhs = create_vector(matrixSolver);
-                solver = create_linear_solver(matrixSolver, matrix, rhs);
+                matrix = create_matrix<Scalar>(matrixSolver);
+                rhs = create_vector<Scalar>(matrixSolver);
+                solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs);
                 // solver->set_factorization_scheme(HERMES_REUSE_FACTORIZATION_COMPLETELY);
 
-                dpTran = new DiscreteProblem(m_wf, space, true);
+                dpTran = new Hermes::Hermes2D::DiscreteProblem<Scalar>(m_wf, space, true);
             }
 
             int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
@@ -1208,7 +1211,7 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
                 actualTime = (n+1)*timeStep;
 
                 // update essential bc values
-                Space::update_essential_bc_values(space, actualTime);
+                Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(space, actualTime);
                 // update timedep values
                 Util::scene()->problemInfo()->module()->update_time_functions(actualTime);
 
@@ -1275,10 +1278,11 @@ Hermes::vector<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<
     return solutionArrayList;
 }
 
-bool SolutionAgros::solveLinear(DiscreteProblem *dp,
-                                Hermes::vector<Space *> space,
-                                Hermes::vector<Solution *> solution,
-                                Solver *solver, SparseMatrix *matrix, Vector *rhs)
+template <typename Scalar>
+bool SolutionAgros<Scalar>::solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar> *dp,
+                                Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
+                                Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
+                                Hermes::Solvers::LinearSolver<Scalar> *solver, Hermes::Algebra::SparseMatrix<Scalar> *matrix, Hermes::Algebra::Vector<Scalar> *rhs)
 {
     // QTime time;
     // time.start();
@@ -1287,7 +1291,7 @@ bool SolutionAgros::solveLinear(DiscreteProblem *dp,
 
     if(solver->solve())
     {
-        Solution::vector_to_solutions(solver->get_solution(), space, solution);
+        Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(solver->get_solution(), space, solution);
         return true;
     }
     else
@@ -1297,14 +1301,15 @@ bool SolutionAgros::solveLinear(DiscreteProblem *dp,
     }
 }
 
-bool SolutionAgros::solve(Hermes::vector<Space *> space,
-                          Hermes::vector<Solution *> solution,
-                          Solver *solver, SparseMatrix *matrix, Vector *rhs)
+template <typename Scalar>
+bool SolutionAgros<Scalar>::solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
+                          Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
+                          Hermes::Solvers::NonlinearSolver<Scalar> *solver, Hermes::Algebra::SparseMatrix<Scalar> *matrix, Hermes::Algebra::Vector<Scalar> *rhs) //TODO PK nonlinear?
 {
     bool isError = false;
     if (linearityType == LinearityType_Linear)
     {
-        DiscreteProblem dpLin(m_wf, space, true);
+        Hermes::Hermes2D::DiscreteProblem<Scalar> dpLin(m_wf, space, true);
 
         isError = !solveLinear(&dpLin, space, solution,
                                solver, matrix, rhs);
@@ -1440,12 +1445,13 @@ bool SolutionAgros::solve(Hermes::vector<Space *> space,
     }
 }
 
-SolutionArray *SolutionAgros::solutionArray(Solution *sln, Space *space, double adaptiveError, double adaptiveSteps, double time)
+template <typename Scalar>
+SolutionArray<Scalar> *SolutionAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space, double adaptiveError, double adaptiveSteps, double time)
 {
-    SolutionArray *solution = new SolutionArray();
-    solution->order = new Orderizer();
+    SolutionArray<Scalar> *solution = new SolutionArray<Scalar>();
+    solution->order = new Hermes::Hermes2D::Views::Orderizer();
     if (space) solution->order->process_space(space);
-    solution->sln = new Solution();
+    solution->sln = new Hermes::Hermes2D::Solution<Scalar>();
     if (sln) solution->sln->copy(sln);
     solution->adaptiveError = adaptiveError;
     solution->adaptiveSteps = adaptiveSteps;
@@ -1525,9 +1531,10 @@ void Parser::initParserBoundaryVariables(Boundary *boundary)
 
 // *********************************************************************************************************************************************
 
-ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
+template <typename Scalar>
+ViewScalarFilter<Scalar>::ViewScalarFilter(Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
                                    std::string expression)
-    : Filter(sln)
+    : Hermes::Hermes2D::Filter<Scalar>(sln)
 {
     parser = new Parser();
     initParser(expression);
@@ -1536,7 +1543,8 @@ ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln,
     parser->initParserMaterialVariables();
 }
 
-ViewScalarFilter::~ViewScalarFilter()
+template <typename Scalar>
+ViewScalarFilter<Scalar>::~ViewScalarFilter()
 {
     delete parser;
 
@@ -1545,7 +1553,8 @@ ViewScalarFilter::~ViewScalarFilter()
     delete [] pdy;
 }
 
-void ViewScalarFilter::initParser(std::string expression)
+template <typename Scalar>
+void ViewScalarFilter<Scalar>::initParser(std::string expression)
 {
     mu::Parser *pars = Util::scene()->problemInfo()->module()->get_parser();
 
@@ -1554,11 +1563,11 @@ void ViewScalarFilter::initParser(std::string expression)
     pars->DefineVar("x", &px);
     pars->DefineVar("y", &py);
 
-    pvalue = new double[num];
-    pdx = new double[num];
-    pdy = new double[num];
+    pvalue = new double[Hermes::Hermes2D::Filter<Scalar>::num];
+    pdx = new double[Hermes::Hermes2D::Filter<Scalar>::num];
+    pdy = new double[Hermes::Hermes2D::Filter<Scalar>::num];
 
-    for (int k = 0; k < num; k++)
+    for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
     {
         std::stringstream number;
         number << (k+1);
@@ -1571,35 +1580,37 @@ void ViewScalarFilter::initParser(std::string expression)
     parser->parser.push_back(pars);
 }
 
-double ViewScalarFilter::get_pt_value(double x, double y, int item)
+template <typename Scalar>
+double ViewScalarFilter<Scalar>::get_pt_value(double x, double y, int item)
 {
     return 0.0;
 }
 
-void ViewScalarFilter::precalculate(int order, int mask)
+template <typename Scalar>
+void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 {
-    Quad2D* quad = quads[cur_quad];
+    Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
     int np = quad->get_num_points(order);
-    node = new_node(H2D_FN_DEFAULT, np);
+    node = Hermes::Hermes2D::Function<Scalar>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
 
     double **value = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
     double **dudx = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
     double **dudy = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
 
-    for (int k = 0; k < num; k++)
+    for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
     {
-        sln[k]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
-        sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
-        value[k] = sln[k]->get_fn_values();
+        Hermes::Hermes2D::Filter<Scalar>::sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
+        Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
+        value[k] = Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_fn_values();
     }
 
-    update_refmap();
+    Hermes::Hermes2D::Filter<Scalar>::update_refmap();
 
-    double *x = refmap->get_phys_x(order);
-    double *y = refmap->get_phys_y(order);
-    Element *e = refmap->get_active_element();
+    double *x = Hermes::Hermes2D::Function<Scalar>::refmap->get_phys_x(order);
+    double *y = Hermes::Hermes2D::Function<Scalar>::refmap->get_phys_y(order);
+    Hermes::Hermes2D::Element *e = Hermes::Hermes2D::Function<Scalar>::refmap->get_active_element();
 
-    SceneMaterial *material = Util::scene()->labels[atoi(mesh->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+    SceneMaterial *material = Util::scene()->labels[atoi(Hermes::Hermes2D::Function<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
     parser->setParserVariables(material, NULL);
 
     for (int i = 0; i < np; i++)
@@ -1607,7 +1618,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
         px = x[i];
         py = y[i];
 
-        for (int k = 0; k < num; k++)
+        for (int k = 0; k < Hermes::Hermes2D::Function<Scalar>::num; k++)   //TODO PK proc se vsude musi davat ten kvalifikator u zdedenych polozek?
         {
             pvalue[k] = value[k][i];
             pdx[k] = dudx[k][i];
@@ -1617,7 +1628,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
         // parse expression
         try
         {
-            node->values[0][0][i] = parser->parser[0]->Eval();
+            Hermes::Hermes2D::Function<Scalar>::node->values[0][0][i] = parser->parser[0]->Eval();
         }
         catch (mu::Parser::exception_type &e)
         {
@@ -1629,11 +1640,11 @@ void ViewScalarFilter::precalculate(int order, int mask)
     delete [] dudx;
     delete [] dudy;
 
-    if (nodes->present(order))
+    if (Hermes::Hermes2D::Function<Scalar>::nodes->present(order))
     {
-        assert(nodes->get(order) == cur_node);
-        ::free(nodes->get(order));
+        assert(Hermes::Hermes2D::Function<Scalar>::nodes->get(order) == Hermes::Hermes2D::Function<Scalar>::cur_node);
+        ::free(Hermes::Hermes2D::Function<Scalar>::nodes->get(order));
     }
-    nodes->add(node, order);
-    cur_node = node;
+    Hermes::Hermes2D::Function<Scalar>::nodes->add(node, order);
+    Hermes::Hermes2D::Function<Scalar>::cur_node = node;
 }

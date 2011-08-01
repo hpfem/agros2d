@@ -105,7 +105,7 @@ double SceneEdge::distance(const Point &point) const
         double x = nodeStart->point.x + t*(nodeEnd->point.x-nodeStart->point.x);
         double y = nodeStart->point.y + t*(nodeEnd->point.y-nodeStart->point.y);
 
-        return sqrt(sqr(point.x-x) + sqr(point.y-y));
+        return sqrt(Hermes::sqr(point.x-x) + Hermes::sqr(point.y-y));
     }
     else
     {
@@ -340,9 +340,9 @@ void DSceneNode::doEditingFinished()
 {
     logMessage("DSceneNode::doEditingFinished()");
 
-    lblDistance->setText(QString("%1 m").arg(sqrt(sqr(txtPointX->number()) + sqr(txtPointY->number()))));
+    lblDistance->setText(QString("%1 m").arg(sqrt(Hermes::sqr(txtPointX->number()) + Hermes::sqr(txtPointY->number()))));
     lblAngle->setText(QString("%1 deg.").arg(
-            (sqrt(sqr(txtPointX->number()) + sqr(txtPointY->number())) > EPS_ZERO)
+            (sqrt(Hermes::sqr(txtPointX->number()) + Hermes::sqr(txtPointY->number())) > EPS_ZERO)
             ? atan2(txtPointY->number(), txtPointX->number()) / M_PI * 180.0 : 0.0));
 }
 
@@ -552,7 +552,7 @@ void SceneEdgeDialog::doNodeChanged()
         if (txtAngle->number() < EPS_ZERO)
         {
             // line
-            lblLength->setText(QString("%1 m").arg(sqrt(sqr(nodeEnd->point.x - nodeStart->point.x) + sqr(nodeEnd->point.y - nodeStart->point.y))));
+            lblLength->setText(QString("%1 m").arg(sqrt(Hermes::sqr(nodeEnd->point.x - nodeStart->point.x) + Hermes::sqr(nodeEnd->point.y - nodeStart->point.y))));
         }
         else
         {

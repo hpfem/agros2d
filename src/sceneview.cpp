@@ -2176,7 +2176,7 @@ void SceneView::paintVectors()
                         double dx = ax + bx * point.x + cx * point.y;
                         double dy = ay + by * point.x + cy * point.y;
 
-                        double value = sqrt(sqr(dx) + sqr(dy));
+                        double value = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
                         double angle = atan2(dy, dx);
 
                         if ((Util::config()->vectorProportional) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
@@ -2198,7 +2198,7 @@ void SceneView::paintVectors()
                             dy = Util::config()->vectorScale * gs * sin(angle);
                         }
 
-                        double dm = sqrt(sqr(dx) + sqr(dy));
+                        double dm = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
 
                         // color
                         if ((Util::config()->vectorColor) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
@@ -4078,7 +4078,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     // triangles
     for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
-        Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
+        Hermes::Hermes2D::Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
         if (m_scene->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).c_str())]->isSelected)
         {
             if (element->is_triangle())

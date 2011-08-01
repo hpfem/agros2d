@@ -408,7 +408,7 @@ void deformShapeTemplate(T linVert, int count)
         double dx = Util::scene()->sceneSolution()->sln(0)->get_pt_value(x, y);
         double dy = Util::scene()->sceneSolution()->sln(1)->get_pt_value(x, y);
 
-        double dm = sqrt(sqr(dx) + sqr(dy));
+        double dm = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
 
         if (dm < min) min = dm;
         if (dm > max) max = dm;

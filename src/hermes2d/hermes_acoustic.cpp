@@ -67,7 +67,7 @@ private:
 // - 1/rho * \Delta p + 1/(rho * c^2) * \frac{\partial v}{\partial t} = 0.
 // - v                +                 \frac{\partial p}{\partial t} = 0,
 
-class WeakFormAcousticsTransient : public WeakFormAgros
+class WeakFormAcousticsTransient : public WeakFormAgros<double>
 {
 public:
     WeakFormAcousticsTransient() : WeakFormAgros(2) { }
@@ -171,14 +171,14 @@ public:
     }
 
 private:
-    class VectorFormVolWaveMass : public WeakForm::VectorFormVol
+    class VectorFormVolWaveMass : public Hermes::Hermes2D::VectorFormVol<double>
     {
     public:
         VectorFormVolWaveMass() : WeakForm::VectorFormVol(0) { }
 
         template<typename Real, typename Scalar>
-        Scalar vector_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *v,
-                           Geom<Real> *e, ExtData<Scalar> *ext) const {
+        Scalar vector_form(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<Real> *v,
+                           Hermes::Hermes2D::Geom<Real> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const {
             Scalar result = 0;
 
             for (int i = 0; i < n; i++)
@@ -187,13 +187,13 @@ private:
             return result;
         }
 
-        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
-                             Geom<double> *e, ExtData<scalar> *ext) const {
-            return vector_form<double, scalar>(n, wt, u_ext, v, e, ext);
+        virtual scalar value(int n, double *wt, Hermes::Hermes2D::Func<double> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+                             Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<double> *ext) const {
+            return vector_form<double, double>(n, wt, u_ext, v, e, ext);
         }
 
-        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
-                        ExtData<Ord> *ext) const {
+        virtual Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Ord> *u_ext[], Hermes::Hermes2D::Func<Ord> *v, Hermes::Hermes2D::Geom<Ord> *e,
+                        Hermes::Hermes2D::ExtData<Ord> *ext) const {
             return vector_form<Ord, Ord>(n, wt, u_ext, v, e, ext);
         }
 

@@ -305,7 +305,7 @@ void SceneInfoView::doInvalidated()
         item->setText(0, QString("%1 - %2 m").
                       arg(i).
                       arg((Util::scene()->edges[i]->angle < EPS_ZERO) ?
-                              sqrt(sqr(Util::scene()->edges[i]->nodeEnd->point.x - Util::scene()->edges[i]->nodeStart->point.x) + sqr(Util::scene()->edges[i]->nodeEnd->point.y - Util::scene()->edges[i]->nodeStart->point.y)) :
+                              sqrt(Hermes::sqr(Util::scene()->edges[i]->nodeEnd->point.x - Util::scene()->edges[i]->nodeStart->point.x) + Hermes::sqr(Util::scene()->edges[i]->nodeEnd->point.y - Util::scene()->edges[i]->nodeStart->point.y)) :
                               Util::scene()->edges[i]->radius() * Util::scene()->edges[i]->angle / 180.0 * M_PI, 0, 'e', 2));
         item->setIcon(0, icon("scene-edge"));
         item->setData(0, Qt::UserRole, Util::scene()->edges[i]->variant());

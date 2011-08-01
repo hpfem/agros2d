@@ -85,7 +85,8 @@ char *pythonMeshFileName()
         throw invalid_argument(QObject::tr("Problem is not meshed.").toStdString());
 }
 
-Solution *pythonSolutionObject()
+template <typename Scalar>
+Hermes::Hermes2D::Solution<Scalar> *pythonSolutionObject()
 {
     logMessage("pythonSolutionObject()");
 

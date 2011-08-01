@@ -432,7 +432,7 @@ void ChartDialog::plotGeometry()
             else
                 if (fabs(chartLine.angle) < EPS_ZERO)
                 {
-                    xval[i] = xval[i-1] + sqrt(sqr(points.at(i).x - points.at(i-1).x) + sqr(points.at(i).y - points.at(i-1).y));
+                    xval[i] = xval[i-1] + sqrt(Hermes::sqr(points.at(i).x - points.at(i-1).x) + Hermes::sqr(points.at(i).y - points.at(i-1).y));
                 }
                 else
                 {
