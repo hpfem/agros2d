@@ -11,7 +11,7 @@ Main window consists of several parts.
 
 * Menu bar and toolbar
 
-  Menu bar is the main control element; you can find all commands there. In toolbar the most frequently used commands are placed.
+  Menu bar is the main control element, you can find all commands there. In toolbar the most frequently used commands are placed.
 
 * Workspace
 
@@ -37,6 +37,10 @@ Main window consists of several parts.
 
     Information about elements of geometry that are added to the workspace is contained here.
 
+* Postprocessor properties panel
+
+  Postprocessor properties panel is used for display results of solution.
+
 * Local Values panel
 
   This panel displays calculated field quantity of local points.
@@ -52,6 +56,10 @@ Main window consists of several parts.
 * Terminal panel
 
   This panel is used to enter commands and display their output.
+
+* Hints
+
+  Hints displays short informations abouth actual modes or possible operations.
 
 * Status bar
 
@@ -104,6 +112,10 @@ Basic shortcuts in main window
 * **F8**
 
   Change mode to Postprocessor.
+
+* **F12**
+
+  Open Problem properties dialog.
 
 * **Alt+N**
 

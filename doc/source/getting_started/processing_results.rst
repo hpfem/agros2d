@@ -4,9 +4,9 @@ Processing Results
 Viewing of Results
 ------------------
 
-You can display your results using various pre-defined ways. Select "Scene properties" in menu "View" to open dialog "Scene View" or double click in workspace and select this possibility in the context menu.
+You can display your results using various pre-defined ways. All options can be set using the panel "Postprocessor properties".
 
-.. image:: ./scene_view_dialog.png
+.. image:: ./postprocessor_properties_panel.png
 
 Fig. 1.: Scene View dialog
 
