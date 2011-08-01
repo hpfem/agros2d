@@ -77,8 +77,8 @@ public:
 
     // solution
     Hermes::Hermes2D::Solution<Scalar> *sln(int i = -1);
-    void setSolutionArrayList(Hermes::vector<SolutionArray *> solutionArrayList);
-    inline Hermes::vector<SolutionArray *> solutionArrayList() { return m_solutionArrayList; }
+    void setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> *> solutionArrayList);
+    inline Hermes::vector<SolutionArray<Scalar> *> solutionArrayList() { return m_solutionArrayList; }
 
     // time
     void setTimeStep(int timeStep, bool showViewProgress = true);

@@ -257,7 +257,7 @@ void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement *element
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
+Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
 {
     logMessage("SceneSolution::sln()");
 
@@ -275,7 +275,7 @@ Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Views::Orderizer *SceneSolution<Scalar>::ordView()
+Orderizer *SceneSolution<Scalar>::ordView()
 {
     logMessage("SceneSolution::ordView()");
 
@@ -302,7 +302,7 @@ int SceneSolution<Scalar>::adaptiveSteps()
 }
 
 template <typename Scalar>
-int SceneSolution<Scalar>::findElementInVectorizer(const Hermes::Hermes2D::Views::Vectorizer<Scalar> &vec, const Point &point) const
+int SceneSolution<Scalar>::findElementInVectorizer(const Vectorizer &vec, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInVectorizer()");
 
@@ -340,7 +340,7 @@ int SceneSolution<Scalar>::findElementInVectorizer(const Hermes::Hermes2D::Views
 #define sign(x) (( x > 0 ) - ( x < 0 ))
 
 template <typename Scalar>
-int SceneSolution<Scalar>::findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point) const
+int SceneSolution<Scalar>::findElementInMesh(Mesh *mesh, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInMesh()");
 
@@ -368,7 +368,7 @@ int SceneSolution<Scalar>::findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial)
+void SceneSolution<Scalar>::setMeshInitial(Mesh *meshInitial)
 {
     if (m_meshInitial)
     {
@@ -379,7 +379,7 @@ void SceneSolution<Scalar>::setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial)
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> *> solutionArrayList)
+void SceneSolution<Scalar>::setSolutionArrayList(Hermes::vector<SolutionArray *> solutionArrayList)
 {
     logMessage("SceneSolution::setSolutionArrayList()");
 
