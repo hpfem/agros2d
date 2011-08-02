@@ -17,9 +17,9 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "surfaceintegral.h"
-
+#include "scenesolution.h"
 #include "scene.h"
+#include "surfaceintegral.h"
 #include "hermes2d.h"
 
 SurfaceIntegralValue::SurfaceIntegralValue()

@@ -37,11 +37,26 @@ class ProgressItemMesh;
 class ProgressItemSolve;
 class ProgressItemProcessView;
 
-template <typename Scalar>
-class SceneSolution : public QObject
+class SceneSolutionQT : public QObject
 {
     Q_OBJECT
 
+signals:
+    void timeStepChanged(bool showViewProgress = true);
+    void meshed();
+    void solved();
+
+    void processedSolutionMesh();
+    void processedRangeContour();
+    void processedRangeScalar();
+    void processedRangeVector();
+
+
+};
+
+template <typename Scalar>
+class SceneSolution : public SceneSolutionQT
+{
 public:
     SceneSolution();
     ~SceneSolution();
@@ -115,16 +130,6 @@ public:
     // progress dialog
     ProgressDialog *progressDialog();
 
-signals:
-    void timeStepChanged(bool showViewProgress = true);
-    void meshed();
-    void solved();
-
-    void processedSolutionMesh();
-    void processedRangeContour();
-    void processedRangeScalar();
-    void processedRangeVector();
-
 private:
     int m_timeElapsed;
     bool m_isSolving;
@@ -158,5 +163,7 @@ private:
     ProgressItemSolve *m_progressItemSolve;
     ProgressItemProcessView *m_progressItemProcessView;
 };
+
+typedef SceneSolution<double> SceneSolutionDouble;
 
 #endif // SCENESOLUTION_H

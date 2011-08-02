@@ -104,20 +104,22 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
 
 // **********************************************************************************************
 
-CustomParserMatrixFormVol::CustomParserMatrixFormVol(unsigned int i, unsigned int j,
+template <typename Scalar>
+CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, unsigned int j,
                                                      std::string area,
-                                                     SymFlag sym,
+                                                     Hermes::Hermes2D::SymFlag sym,
                                                      std::string expression,
                                                      Material *material)
-    : WeakForm::MatrixFormVol(i, j, sym, area), ParserForm()
+    : Hermes::Hermes2D::WeakForm<Scalar>::MatrixFormVol(i, j, sym, area), ParserForm()
 {
     initParser(material, NULL);
 
     parser->parser[0]->SetExpr(expression);
 }
 
-scalar CustomParserMatrixFormVol::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
-                                        Geom<double> *e, ExtData<scalar> *ext)
+template <typename Scalar>
+Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
+                                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
     for (int i = 0; i < n; i++)
@@ -140,17 +142,19 @@ scalar CustomParserMatrixFormVol::value(int n, double *wt, Func<scalar> *u_ext[]
     return result;
 }
 
-Ord CustomParserMatrixFormVol::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
-                                   Geom<Ord> *e, ExtData<Ord> *ext) const
+template <typename Scalar>
+Hermes::Ord CustomParserMatrixFormVol<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
+                                             Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
-    return Ord(6);
+    return Hermes::Ord(6);
 }
 
-CustomParserVectorFormVol::CustomParserVectorFormVol(unsigned int i,
+template <typename Scalar>
+CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i,
                                                      std::string area, std::string expression,
                                                      Material *material,
-                                                     Hermes::vector<MeshFunction *> solution)
-    : WeakForm::VectorFormVol(i, area), ParserForm()
+                                                     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution)
+    : Hermes::Hermes2D::WeakForm<Scalar>::VectorFormVol(i, area), ParserForm()
 {
     ext = solution;
 
@@ -159,8 +163,9 @@ CustomParserVectorFormVol::CustomParserVectorFormVol(unsigned int i,
     parser->parser[0]->SetExpr(expression);
 }
 
-scalar CustomParserVectorFormVol::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
-                                        Geom<double> *e, ExtData<scalar> *ext)
+template <typename Scalar>
+Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+                                        Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
     for (int i = 0; i < n; i++)
@@ -191,26 +196,29 @@ scalar CustomParserVectorFormVol::value(int n, double *wt, Func<scalar> *u_ext[]
     return result;
 }
 
-Ord CustomParserVectorFormVol::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
-                                   ExtData<Ord> *ext) const
+template <typename Scalar>
+Hermes::Ord CustomParserVectorFormVol<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
+                                                   Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
-    return Ord(6);
+    return Hermes::Ord(6);
 }
 
 // **********************************************************************************************
 
-CustomParserMatrixFormSurf::CustomParserMatrixFormSurf(unsigned int i, unsigned int j,
+template <typename Scalar>
+CustomParserMatrixFormSurf<Scalar>::CustomParserMatrixFormSurf(unsigned int i, unsigned int j,
                                                      std::string area, std::string expression,
                                                      Boundary *boundary)
-    : WeakForm::MatrixFormSurf(i, j, area), ParserForm()
+    : Hermes::Hermes2D::WeakForm<Scalar>::MatrixFormSurf(i, j, area), ParserForm()
 {
     initParser(NULL, boundary);
 
     parser->parser[0]->SetExpr(expression);
 }
 
-scalar CustomParserMatrixFormSurf::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
-                                         Geom<double> *e, ExtData<scalar> *ext)
+template <typename Scalar>
+Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
+                                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
     for (int i = 0; i < n; i++)
@@ -232,24 +240,27 @@ scalar CustomParserMatrixFormSurf::value(int n, double *wt, Func<scalar> *u_ext[
     return result;
 }
 
-Ord CustomParserMatrixFormSurf::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
-                                    Geom<Ord> *e, ExtData<Ord> *ext) const
+template <typename Scalar>
+Hermes::Ord CustomParserMatrixFormSurf<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
+                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
-    return Ord(6);
+    return Hermes::Ord(6);
 }
 
-CustomParserVectorFormSurf::CustomParserVectorFormSurf(unsigned int i,
+template <typename Scalar>
+CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i,
                                                      std::string area, std::string expression,
                                                      Boundary *boundary)
-    : WeakForm::VectorFormSurf(i, area), ParserForm()
+    : Hermes::Hermes2D::WeakForm<Scalar>::VectorFormSurf(i, area), ParserForm()
 {
     initParser(NULL, boundary);
 
     parser->parser[0]->SetExpr(expression);
 }
 
-scalar CustomParserVectorFormSurf::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
-                                         Geom<double> *e, ExtData<scalar> *ext)
+template <typename Scalar>
+Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+                                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
     for (int i = 0; i < n; i++)
@@ -267,8 +278,9 @@ scalar CustomParserVectorFormSurf::value(int n, double *wt, Func<scalar> *u_ext[
     return result;
 }
 
-Ord CustomParserVectorFormSurf::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
-                                    Geom<Ord> *e, ExtData<Ord> *ext) const
+template <typename Scalar>
+Hermes::Ord CustomParserVectorFormSurf<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
+                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
-    return Ord(10);
+    return Hermes::Ord(10);
 }

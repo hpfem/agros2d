@@ -19,8 +19,8 @@
 
 #include "gui.h"
 
-#include "scene.h"
 #include "scenesolution.h"
+#include "scene.h"
 #include "progressdialog.h"
 #include "value.h"
 

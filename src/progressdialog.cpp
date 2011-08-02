@@ -23,7 +23,8 @@
 #include "scene.h"
 #include "sceneview.h"
 
-SolutionArray::SolutionArray()
+template <typename Scalar>
+SolutionArray<Scalar>::SolutionArray()
 {
     logMessage("SolutionArray::SolutionArray()");
 
@@ -35,7 +36,8 @@ SolutionArray::SolutionArray()
     adaptiveError = 100.0;
 }
 
-SolutionArray::~SolutionArray()
+template <typename Scalar>
+SolutionArray<Scalar>::~SolutionArray()
 {
     logMessage("SolutionArray::~SolutionArray()");
 
@@ -52,7 +54,8 @@ SolutionArray::~SolutionArray()
     }
 }
 
-void SolutionArray::load(QDomElement *element)
+template <typename Scalar>
+void SolutionArray<Scalar>::load(QDomElement *element)
 {
     logMessage("SolutionArray::load()");
 
@@ -71,7 +74,7 @@ void SolutionArray::load(QDomElement *element)
 
     order = new Hermes::Hermes2D::Views::Orderizer();
     order->load_data(fileNameOrder.toStdString().c_str());
-    sln = new Hermes::Hermes2D::Solution();
+    sln = new Hermes::Hermes2D::Solution<Scalar>();
     sln->load(fileNameSolution.toStdString().c_str());
     adaptiveError = element->attribute("adaptiveerror").toDouble();
     adaptiveSteps = element->attribute("adaptivesteps").toInt();
@@ -82,7 +85,8 @@ void SolutionArray::load(QDomElement *element)
     QFile::remove(fileNameOrder);
 }
 
-void SolutionArray::save(QDomDocument *doc, QDomElement *element)
+template <typename Scalar>
+void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement *element)
 {
     logMessage("SolutionArray::save()");
 
@@ -250,12 +254,12 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             emit message(tr("Mesh files were deleted"), false, 4);
 
             // load mesh
-            Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
+            Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
 
             // check that all boundary edges have a marker assigned
             for (int i = 0; i < mesh->get_max_node_id(); i++)
             {
-                if (Node *node = mesh->get_node(i))
+                if (Hermes::Hermes2D::Node *node = mesh->get_node(i))
                 {
                     if (node->used == 1 && node->type == 1 && node->ref < 2 && node->marker == 0)
                     {
@@ -758,14 +762,14 @@ bool ProgressItemMesh::triangleToHermes2D()
                                     quad_check[2] = nodeList[tmp_node[(nd + 0) % 3]];
                                     quad_check[3] = nodeList[elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 2) % 3]];
 
-                                    if ((!same_line(quad_check[0].x, quad_check[0].y, quad_check[1].x, quad_check[1].y, quad_check[2].x, quad_check[2].y)) &&
-                                            (!same_line(quad_check[0].x, quad_check[0].y, quad_check[1].x, quad_check[1].y, quad_check[3].x, quad_check[3].y)) &&
-                                            (!same_line(quad_check[0].x, quad_check[0].y, quad_check[2].x, quad_check[2].y, quad_check[3].x, quad_check[3].y)) &&
-                                            (!same_line(quad_check[1].x, quad_check[1].y, quad_check[2].x, quad_check[2].y, quad_check[3].x, quad_check[3].y)) &&
-                                            is_convex(quad_check[1].x - quad_check[0].x, quad_check[1].y - quad_check[0].y, quad_check[2].x - quad_check[0].x, quad_check[2].y - quad_check[0].y) &&
-                                            is_convex(quad_check[2].x - quad_check[0].x, quad_check[2].y - quad_check[0].y, quad_check[3].x - quad_check[0].x, quad_check[3].y - quad_check[0].y) &&
-                                            is_convex(quad_check[2].x - quad_check[1].x, quad_check[2].y - quad_check[1].y, quad_check[3].x - quad_check[1].x, quad_check[3].y - quad_check[1].y) &&
-                                            is_convex(quad_check[3].x - quad_check[1].x, quad_check[3].y - quad_check[1].y, quad_check[0].x - quad_check[1].x, quad_check[0].y - quad_check[1].y))
+                                    if ((!Hermes::Hermes2D::Mesh::same_line(quad_check[0].x, quad_check[0].y, quad_check[1].x, quad_check[1].y, quad_check[2].x, quad_check[2].y)) &&
+                                            (!Hermes::Hermes2D::Mesh::same_line(quad_check[0].x, quad_check[0].y, quad_check[1].x, quad_check[1].y, quad_check[3].x, quad_check[3].y)) &&
+                                            (!Hermes::Hermes2D::Mesh::same_line(quad_check[0].x, quad_check[0].y, quad_check[2].x, quad_check[2].y, quad_check[3].x, quad_check[3].y)) &&
+                                            (!Hermes::Hermes2D::Mesh::same_line(quad_check[1].x, quad_check[1].y, quad_check[2].x, quad_check[2].y, quad_check[3].x, quad_check[3].y)) &&
+                                            Hermes::Hermes2D::Mesh::is_convex(quad_check[1].x - quad_check[0].x, quad_check[1].y - quad_check[0].y, quad_check[2].x - quad_check[0].x, quad_check[2].y - quad_check[0].y) &&
+                                            Hermes::Hermes2D::Mesh::is_convex(quad_check[2].x - quad_check[0].x, quad_check[2].y - quad_check[0].y, quad_check[3].x - quad_check[0].x, quad_check[3].y - quad_check[0].y) &&
+                                            Hermes::Hermes2D::Mesh::is_convex(quad_check[2].x - quad_check[1].x, quad_check[2].y - quad_check[1].y, quad_check[3].x - quad_check[1].x, quad_check[3].y - quad_check[1].y) &&
+                                            Hermes::Hermes2D::Mesh::is_convex(quad_check[3].x - quad_check[1].x, quad_check[3].y - quad_check[1].y, quad_check[0].x - quad_check[1].x, quad_check[0].y - quad_check[1].y))
                                     {
                                         // regularity check
                                         bool regular = true;
@@ -1014,7 +1018,7 @@ void ProgressItemSolve::solve()
 
     emit message(tr("Solver was started: %1 ").arg(matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver)), false, 1);
 
-    Hermes::vector<SolutionArray *> solutionArrayList = Util::scene()->problemInfo()->module()->solve(this);
+    Hermes::vector<SolutionArray<double> *> solutionArrayList = Util::scene()->problemInfo()->module()->solve(this);  //TODO PK <double>
 
     if (solutionArrayList.size() > 0)
     {
