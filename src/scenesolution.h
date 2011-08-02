@@ -37,8 +37,7 @@ class ProgressItemMesh;
 class ProgressItemSolve;
 class ProgressItemProcessView;
 
-template <typename Scalar>
-class SceneSolution : public QObject
+class SceneSolutionQT : public QObject
 {
     Q_OBJECT
 
@@ -56,7 +55,7 @@ signals:
 };
 
 template <typename Scalar>
-class SceneSolution : public SceneSolutionQT, Hermes::Hermes2D::Solution<Scalar>
+class SceneSolution : public SceneSolutionQT
 {
 public:
     SceneSolution();

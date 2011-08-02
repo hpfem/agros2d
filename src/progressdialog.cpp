@@ -74,7 +74,7 @@ void SolutionArray<Scalar>::load(QDomElement *element)
 
     order = new Hermes::Hermes2D::Views::Orderizer();
     order->load_data(fileNameOrder.toStdString().c_str());
-    sln = new Hermes::Hermes2D::Solution();
+    sln = new Hermes::Hermes2D::Solution<Scalar>();
     sln->load(fileNameSolution.toStdString().c_str());
     adaptiveError = element->attribute("adaptiveerror").toDouble();
     adaptiveSteps = element->attribute("adaptivesteps").toInt();

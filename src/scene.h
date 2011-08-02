@@ -41,7 +41,9 @@ class SceneBoundary;
 class SceneMaterial;
 struct SceneViewSettings;
 
-template <typename Scalar> class SceneSolution;
+//template <typename Scalar> class SceneSolution;
+class SceneSolution<double>;
+
 class ScriptEngineRemote;
 
 class ProblemDialog;
