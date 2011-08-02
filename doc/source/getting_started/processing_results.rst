@@ -7,8 +7,11 @@ Viewing of Results
 You can display your results using various pre-defined ways. All options can be set using the panel "Postprocessor properties".
 
 .. image:: ./postprocessor_properties_panel.png
+   :align: center
+   :scale: 50%
+   :alt: Postprocessor properties panel
 
-Fig. 1.: Scene View dialog
+Fig. 1.: Postprocessor properties panel
 
 Calculation of Field Quantity
 -----------------------------

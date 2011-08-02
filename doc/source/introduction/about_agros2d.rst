@@ -1,41 +1,25 @@
 About Agros2D
 =============
 
-Supported Physical Fields
--------------------------
-
-* Electrostatic field
-* Electric current field
-* Magnetic field (steady state, harmonic and transient analysis)
-* Heat transfer (steady state and transient analysis)
-* Structural mechanics
-* Incompressible flow (steady state and transient analysis) – in development
-* RF field – in development
+.. include:: ../basic_information.rst
 
 Key Features
 ------------
 
-* Interactive geometry definition
+* *hp*-FEM
+
+The *hp*-FEM (higher-order finite element method) is a modern version of the finite element method whitch combines finite elements of variable size (*h*) and polynomial degree (*p*) in order to obtain fast exponential convergence.
+
 * Curvilinear elements
-* AutoCAD DXF (Drawing Exchange Format) import and export
-* Automatic hp-adaptivity
-* Steady state and transient analysis
-* Visualization of field variables
-* Extraction of local values
-* Calculation of surface and volume integrals
-* Export of charts, data, and images
-* Export movies (transient analysis)
-* Scripting support (based on Python language)
-* Remote control
-* Html report
 
-Requirements
-------------
+.. image:: ./curvilinear_elements.png
+   :align: center
+   :scale: 30%
+   :alt: Curvilinear elements
 
-* Hermes (http://www.hpfem.org/hermes)
-* Nokia Qt (http://www.qtsoftware.com/products)
-* Python (http://www.python.org)
-* dxflib (http://www.ribbonsoft.com/dxflib.html)
-* Qwt (http://qwt.sourceforge.net)
-* Triangle (http://www.cs.cmu.edu/~quake/triangle.html
-* FFmpeg (http://ffmpeg.org)
+.. image:: ./edge_elements.png
+   :align: center
+   :scale: 30%
+   :alt: Edge elements
+
+Fig: Curvilinear (left) and edge (right) elements at the same geometry

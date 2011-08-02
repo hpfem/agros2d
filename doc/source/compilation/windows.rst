@@ -1,5 +1,5 @@
-Agros2D Compiling under MS Windows
-==================================
+Compiling under MS Windows
+==========================
 
 How to Build Release
 --------------------

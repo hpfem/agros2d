@@ -1,10 +1,13 @@
 Agros2D Documentation
 =====================
 
-Agros2D is a multiplatform C++ application for the solution of partial differential equations (PDE) based on the Hermes_ library, developed by the group at the University of West Bohemia in Pilsen. Agros2D is distributed under the GNU General Public License.
+.. include:: basic_information.rst
+
+Documentation Content
+---------------------
 
 Introduction
-------------
+^^^^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
@@ -13,7 +16,7 @@ Introduction
    ./compilation/windows.rst
 
 Getting Started
----------------
+^^^^^^^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
@@ -24,7 +27,7 @@ Getting Started
    ./getting_started/processing_results.rst
 
 Mathematical Background
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
@@ -32,7 +35,7 @@ Mathematical Background
    ./mathematical_background/physical_fields_theory.rst
 
 Scripting
----------
+^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
@@ -41,7 +44,7 @@ Scripting
    ./scripting/keyword_list.rst
 
 Program Features
-----------------
+^^^^^^^^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
@@ -49,7 +52,7 @@ Program Features
    ./program_features/program_features.rst
 
 Tutorials
----------
+^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
@@ -58,7 +61,7 @@ Tutorials
    ./tutorials/electrostatic_axisymmetric_capacitor.rst
 
 Changelog
----------
+^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
@@ -68,17 +71,21 @@ Changelog
 Links
 -----
 
-* Agros2D_ (project homepage)
-* Hermes_ (project homepage)
-* hp-FEM_ group
+* Agros2D
+
+  - `Project homepage <http://agros2d.org>`_
+  - `Online user documentation <http://hpfem.org/agros2d/help/index.html>`_
+  - `Mailing list <http://groups.google.com/group/agros2d>`_
+  - `Developers page <http://hpfem.org/agros2d>`_
+
+* Hermes
+
+  - `Project homepage <http://hpfem.org/hermes>`_
+  - `Online user documentation <http://hpfem.org/hermes/doc/index.html>`_
+  - `Mailing list <http://groups.google.com/group/hermes2d>`_ (Hermes2D)
 
 Indices and Tables
-==================
+------------------
 
 * :ref:`genindex`
-
 * :ref:`glossary`
-
-.. _Agros2D: http://agros2d.org
-.. _Hermes: http://hpfem.org/hermes
-.. _hp-FEM: http://hpfem.org
