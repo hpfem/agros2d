@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class Solution;
+//class Solution;
 class Linearizer;
 class Vectorizer;
 namespace Hermes{
