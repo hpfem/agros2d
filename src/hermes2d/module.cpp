@@ -1608,9 +1608,9 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 
     double *x = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_x(order);
     double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
-    Hermes::Hermes2D::Element *e = Hermes::Hermes2D::Function<Scalar>::refmap->get_active_element();
+    Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
 
-    SceneMaterial *material = Util::scene()->labels[atoi(Hermes::Hermes2D::Function<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+    SceneMaterial *material = Util::scene()->labels[atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
     parser->setParserVariables(material, NULL);
 
     for (int i = 0; i < np; i++)
@@ -1618,7 +1618,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
         px = x[i];
         py = y[i];
 
-        for (int k = 0; k < Hermes::Hermes2D::Function<Scalar>::num; k++)   //TODO PK proc se vsude musi davat ten kvalifikator u zdedenych polozek?
+        for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)   //TODO PK proc se vsude musi davat ten kvalifikator u zdedenych polozek?
         {
             pvalue[k] = value[k][i];
             pdx[k] = dudx[k][i];
@@ -1628,7 +1628,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
         // parse expression
         try
         {
-            Hermes::Hermes2D::Function<Scalar>::node->values[0][0][i] = parser->parser[0]->Eval();
+            node->values[0][0][i] = parser->parser[0]->Eval();
         }
         catch (mu::Parser::exception_type &e)
         {
