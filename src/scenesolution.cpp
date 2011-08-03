@@ -582,8 +582,5 @@ ProgressDialog *SceneSolution<Scalar>::progressDialog()  //TODO PK <double>
     return m_progressDialog;
 }
 
-void test()
-{
-    SceneSolution<double> double_scene_solution;
-    double_scene_solution.clear();
-}
+
+template class SceneSolution<double>;

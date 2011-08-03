@@ -809,7 +809,7 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressIt
 
     WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
-    Hermes::vector<SolutionArray<double> *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);//TODO PK <double>
+    Hermes::vector<SolutionArray<double> *> solutionArrayList = solveSolutioArray<double>(progressItemSolve, bcs, &wf);//TODO PK <double>
 
     return solutionArrayList;
 }
@@ -948,7 +948,7 @@ Hermes::Hermes2D::GeomType convertProblemType(ProblemType problemType)
 }
 
 template <typename Scalar>
-Hermes::vector<SolutionArray<double> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,  //TODO PK <double>
+Hermes::vector<SolutionArray<Scalar> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,  //TODO PK <double>
                                                   Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs,
                                                   WeakFormAgros<Scalar> *wf)
 {
@@ -1106,7 +1106,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
             // set up the solver, matrix, and rhs according to the solver selection.
             SparseMatrix<Scalar> *matrix = Hermes::Algebra::create_matrix<Scalar>(matrixSolver);
             Vector<Scalar> *rhs = create_vector<Scalar>(matrixSolver);
-            Hermes::Solvers::LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs); //TODO PK LinearSolver ??
+            //Hermes::Solvers::LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs); //TODO PK LinearSolver ??
 
             if (adaptivityType == AdaptivityType_None)
             {
@@ -1201,7 +1201,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs);
                 // solver->set_factorization_scheme(HERMES_REUSE_FACTORIZATION_COMPLETELY);
 
-                dpTran = new Hermes::Hermes2D::DiscreteProblem<Scalar>(m_wf, space, true);
+                dpTran = new Hermes::Hermes2D::DiscreteProblem<Scalar>(m_wf, space);
             }
 
             int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
@@ -1291,7 +1291,7 @@ bool SolutionAgros<Scalar>::solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar
 
     if(solver->solve())
     {
-        Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(solver->get_solution(), space, solution);
+        //Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(solver->get_solution(), space, solution); //TODO PK
         return true;
     }
     else
@@ -1309,7 +1309,7 @@ bool SolutionAgros<Scalar>::solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar>
     bool isError = false;
     if (linearityType == LinearityType_Linear)
     {
-        Hermes::Hermes2D::DiscreteProblem<Scalar> dpLin(m_wf, space, true);
+       // Hermes::Hermes2D::DiscreteProblem<Scalar> dpLin(m_wf, space, true);  //TODO PK linear solver
 
 //        isError = !solveLinear(&dpLin, space, solution,
 //                               solver, matrix, rhs);

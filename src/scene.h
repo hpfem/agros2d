@@ -42,7 +42,7 @@ class SceneMaterial;
 struct SceneViewSettings;
 
 //template <typename Scalar> class SceneSolution;
-class SceneSolution<double>;
+//class SceneSolution<double>;
 
 class ScriptEngineRemote;
 
