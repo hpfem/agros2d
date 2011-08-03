@@ -6,10 +6,10 @@
             <edges>
                 <edge heat_heat_transfer_coefficient="0" heat_external_temperature="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Insulation"/>
                 <edge heat_heat_transfer_coefficient="10" heat_external_temperature="20" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection"/>
-                <edge type="heat_temperature" heat_temperature="0" id="3" name="Temperature"/>
+                <edge type="heat_temperature" heat_temperature="10" id="3" name="Temperature"/>
             </edges>
             <labels>
-                <label heat_volume_heat="1e4*(time&lt;=10*1e3)" heat_density="8700" heat_conductivity="385" heat_specific_heat="385" id="1" name="Copper"/>
+                <label heat_volume_heat="1e4*(time&lt;=10*1e3)" heat_conductivity="385" heat_density="8700" heat_specific_heat="385" id="1" name="Copper"/>
             </labels>
         </problem>
     </problems>

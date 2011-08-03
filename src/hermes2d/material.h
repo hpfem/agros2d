@@ -42,6 +42,7 @@ public:
     ~Material();
 
     Value get_value(std::string id);
+    void evaluate(std::string id, double time);
 };
 
 #endif // MATERIAL_H
