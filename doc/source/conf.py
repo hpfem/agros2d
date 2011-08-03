@@ -217,7 +217,35 @@ latex_preamble = r"""
 \usepackage{amsfonts}
 \usepackage{amssymb}
 
-\include{./_static/mathdef}
+% Complex numbers
+\newcommand{\cplx}[1]{{\underline{#1}}} % Complex number
+\newcommand{\mi}{\mathrm{i}} % Complex unit
+\newcommand{\mj}{\mathrm{j}} % Complex unit
+\renewcommand{\Re}{\mathrm{Re}} % Real part
+\renewcommand{\Im}{\mathrm{Im}} % Imaginary part
+
+\newcommand{\phas}[1]{{\underline{#1}}} % Phasor
+\newcommand{\vecphas}[1]{\mbox{\underline{\boldmath$#1$}}} % Phasor of vector
+
+% Vectors and matrices
+\renewcommand{\vec}[1]{\mbox{\boldmath$#1$}} % Vector
+\newcommand{\mat}[1]{\mathrm{\mathbf{{#1}}}} % Matrix, tenzor
+
+% Diferential operators
+\newcommand{\dif}{\,\mathrm{d}} % Differential
+\newcommand{\grad}{\mathrm{grad}\ } % Gradient
+\newcommand{\curl}{\mathrm{curl}\ } % Rotation
+\renewcommand{\div}{\mathrm{div}\ } % Divergence
+
+\newcommand{\laplace}{\triangle} % Laplace
+
+% Others
+\newcommand{\const}{\mathrm{const.}} % Constant
+\newcommand*{\unit}[1]{\ensuremath{\mathrm{\,#1}}} % Units
+\newcommand{\degree}{\ensuremath{^{\circ}}} % Degrees
+\newcommand{\celsius}{\ensuremath{^{\circ}\mathrm{C}}} % Degree Celsius
+
+\newcommand{\me}{\mathrm{e}} % Euler number
 """
 
 pngmath_latex_preamble = latex_preamble
