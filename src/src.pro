@@ -144,7 +144,7 @@ OTHER_FILES += python/agros2d.pyx \
 linux-g++ {
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
-    DEFINES += WITH_UNITY
+    # DEFINES += WITH_UNITY
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
