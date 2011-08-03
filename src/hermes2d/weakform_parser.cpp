@@ -110,7 +110,7 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
                                                      Hermes::Hermes2D::SymFlag sym,
                                                      std::string expression,
                                                      Material *material)
-    : Hermes::Hermes2D::WeakForm<Scalar>::MatrixFormVol(i, j, sym, area), ParserForm()
+    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm()
 {
     initParser(material, NULL);
 
@@ -154,7 +154,7 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i,
                                                      std::string area, std::string expression,
                                                      Material *material,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution)
-    : Hermes::Hermes2D::WeakForm<Scalar>::VectorFormVol(i, area), ParserForm()
+    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm()
 {
     ext = solution;
 
@@ -209,7 +209,7 @@ template <typename Scalar>
 CustomParserMatrixFormSurf<Scalar>::CustomParserMatrixFormSurf(unsigned int i, unsigned int j,
                                                      std::string area, std::string expression,
                                                      Boundary *boundary)
-    : Hermes::Hermes2D::WeakForm<Scalar>::MatrixFormSurf(i, j, area), ParserForm()
+    : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j, area), ParserForm()
 {
     initParser(NULL, boundary);
 
@@ -251,7 +251,7 @@ template <typename Scalar>
 CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i,
                                                      std::string area, std::string expression,
                                                      Boundary *boundary)
-    : Hermes::Hermes2D::WeakForm<Scalar>::VectorFormSurf(i, area), ParserForm()
+    : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), ParserForm()
 {
     initParser(NULL, boundary);
 
