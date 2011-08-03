@@ -1725,3 +1725,5 @@ void ProgressDialog::saveData()
     }
 
 }
+
+template class SolutionArray<double>;

@@ -21,12 +21,12 @@
 
 // #include "hermes_general.h"
 #include "hermes_electrostatic.h"
-#include "hermes_magnetic.h"
-#include "hermes_heat.h"
-#include "hermes_current.h"
-#include "hermes_elasticity.h"
-#include "hermes_rf.h"
-#include "hermes_acoustic.h"
+//#include "hermes_magnetic.h"
+//#include "hermes_heat.h"
+//#include "hermes_current.h"
+//#include "hermes_elasticity.h"
+//#include "hermes_rf.h"
+//#include "hermes_acoustic.h"
 // #include "hermes_flow.h"
 
 #include "progressdialog.h"
@@ -45,18 +45,18 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
 
     if (id == "electrostatic")
         module = new ModuleElectrostatic(problem_type, analysis_type);
-    if (id == "current")
-        module = new ModuleCurrent(problem_type, analysis_type);
-    if (id == "magnetic")
-        module = new ModuleMagnetic(problem_type, analysis_type);
-    if (id == "acoustic")
-        module = new ModuleAcoustic(problem_type, analysis_type);
-    if (id == "elasticity")
-        module = new ModuleElasticity(problem_type, analysis_type);
-    if (id == "heat")
-        module = new ModuleHeat(problem_type, analysis_type);
-    if (id == "rf")
-        module = new ModuleRF(problem_type, analysis_type);
+//    if (id == "current")
+//        module = new ModuleCurrent(problem_type, analysis_type);
+//    if (id == "magnetic")
+//        module = new ModuleMagnetic(problem_type, analysis_type);
+//    if (id == "acoustic")
+//        module = new ModuleAcoustic(problem_type, analysis_type);
+//    if (id == "elasticity")
+//        module = new ModuleElasticity(problem_type, analysis_type);
+//    if (id == "heat")
+//        module = new ModuleHeat(problem_type, analysis_type);
+//    if (id == "rf")
+//        module = new ModuleRF(problem_type, analysis_type);
 
     if (module)
         module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());
@@ -71,18 +71,18 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneBoundaryElectrostaticDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "current")
-        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "magnetic")
-        return new SceneBoundaryMagneticDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "elasticity")
-        return new SceneBoundaryElasticityDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "heat")
-        return new SceneBoundaryHeatDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "rf")
-        return new SceneBoundaryRFDialog(scene_boundary, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "current")
+//        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "magnetic")
+//        return new SceneBoundaryMagneticDialog(scene_boundary, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "acoustic")
+//        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "elasticity")
+//        return new SceneBoundaryElasticityDialog(scene_boundary, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "heat")
+//        return new SceneBoundaryHeatDialog(scene_boundary, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "rf")
+//        return new SceneBoundaryRFDialog(scene_boundary, parent);
 }
 
 // material dialog factory
@@ -90,18 +90,18 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneMaterialElectrostaticDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "current")
-        return new SceneMaterialCurrentDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "magnetic")
-        return new SceneMaterialMagneticDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-        return new SceneMaterialAcousticDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "elasticity")
-        return new SceneMaterialElasticityDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "heat")
-        return new SceneMaterialHeatDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "rf")
-        return new SceneMaterialRFDialog(scene_material, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "current")
+//        return new SceneMaterialCurrentDialog(scene_material, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "magnetic")
+//        return new SceneMaterialMagneticDialog(scene_material, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "acoustic")
+//        return new SceneMaterialAcousticDialog(scene_material, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "elasticity")
+//        return new SceneMaterialElasticityDialog(scene_material, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "heat")
+//        return new SceneMaterialHeatDialog(scene_material, parent);
+//    if (Util::scene()->problemInfo()->module()->id == "rf")
+//        return new SceneMaterialRFDialog(scene_material, parent);
 }
 
 std::map<std::string, std::string> availableModules()
@@ -809,7 +809,7 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressIt
 
     WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
-    Hermes::vector<SolutionArray<double> *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);//TODO PK <double>
+    Hermes::vector<SolutionArray<double> *> solutionArrayList = solveSolutioArray<double>(progressItemSolve, bcs, &wf);//TODO PK <double>
 
     return solutionArrayList;
 }
@@ -948,7 +948,7 @@ Hermes::Hermes2D::GeomType convertProblemType(ProblemType problemType)
 }
 
 template <typename Scalar>
-Hermes::vector<SolutionArray<double> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,  //TODO PK <double>
+Hermes::vector<SolutionArray<Scalar> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,  //TODO PK <double>
                                                   Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs,
                                                   WeakFormAgros<Scalar> *wf)
 {
@@ -1106,12 +1106,12 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
             // set up the solver, matrix, and rhs according to the solver selection.
             SparseMatrix<Scalar> *matrix = Hermes::Algebra::create_matrix<Scalar>(matrixSolver);
             Vector<Scalar> *rhs = create_vector<Scalar>(matrixSolver);
-            Hermes::Solvers::LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs); //TODO PK LinearSolver ??
+            //Hermes::Solvers::LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs); //TODO PK LinearSolver ??
 
             if (adaptivityType == AdaptivityType_None)
             {
-                if (analysisType != AnalysisType_Transient)
-                    solve(space, solution, solver, matrix, rhs);
+//                if (analysisType != AnalysisType_Transient)
+//                    solve(space, solution, solver, matrix, rhs);   //TODO PK solver...
             }
             else
             {
@@ -1119,7 +1119,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceReference = *Hermes::Hermes2D::Space<Scalar>::construct_refined_spaces(space);
 
                 // assemble reference problem.
-                solve(spaceReference, solutionReference, solver, matrix, rhs);
+                //solve(spaceReference, solutionReference, solver, matrix, rhs);  //TODO PK solver...
 
                 if (!isError)
                 {
@@ -1170,7 +1170,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
             }
 
             // clean up.
-            delete solver;
+            //delete solver; //TODO PK solver...
             delete matrix;
             delete rhs;
         }
@@ -1201,7 +1201,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs);
                 // solver->set_factorization_scheme(HERMES_REUSE_FACTORIZATION_COMPLETELY);
 
-                dpTran = new Hermes::Hermes2D::DiscreteProblem<Scalar>(m_wf, space, true);
+                dpTran = new Hermes::Hermes2D::DiscreteProblem<Scalar>(m_wf, space);
             }
 
             int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
@@ -1223,9 +1223,9 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 if ((timesteps > 1) && (linearityType == LinearityType_Linear))
                     isError = !solveLinear(dpTran, space, solution,
                                            solver, matrix, rhs);
-                if ((timesteps > 1) && (linearityType != LinearityType_Linear))
-                    isError = !solve(space, solution,
-                                     solver, matrix, rhs);
+//                if ((timesteps > 1) && (linearityType != LinearityType_Linear))  //TODO PK nonlinear solver
+//                    isError = !solve(space, solution,
+//                                     solver, matrix, rhs);
 
                 // output
                 for (int i = 0; i < numberOfSolution; i++)
@@ -1291,7 +1291,7 @@ bool SolutionAgros<Scalar>::solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar
 
     if(solver->solve())
     {
-        Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(solver->get_solution(), space, solution);
+        //Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(solver->get_solution(), space, solution); //TODO PK
         return true;
     }
     else
@@ -1309,10 +1309,10 @@ bool SolutionAgros<Scalar>::solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar>
     bool isError = false;
     if (linearityType == LinearityType_Linear)
     {
-        Hermes::Hermes2D::DiscreteProblem<Scalar> dpLin(m_wf, space, true);
+       // Hermes::Hermes2D::DiscreteProblem<Scalar> dpLin(m_wf, space, true);  //TODO PK linear solver
 
-        isError = !solveLinear(&dpLin, space, solution,
-                               solver, matrix, rhs);
+//        isError = !solveLinear(&dpLin, space, solution,
+//                               solver, matrix, rhs);
 
         return !isError;
     }
@@ -1648,3 +1648,10 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
     Hermes::Hermes2D::Function<Scalar>::nodes->add(node, order);
     Hermes::Hermes2D::Function<Scalar>::cur_node = node;
 }
+
+template Hermes::vector<SolutionArray<double> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
+                                                  Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> > bcs,
+                                                  WeakFormAgros<double> *wf);
+template bool SolutionAgros<double>::solve(Hermes::vector<Hermes::Hermes2D::Space<double> *> space,
+                          Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution,
+                          Hermes::Solvers::NonlinearSolver<double> *solver, Hermes::Algebra::SparseMatrix<double> *matrix, Hermes::Algebra::Vector<double> *rhs);

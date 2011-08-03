@@ -55,7 +55,7 @@ signals:
 };
 
 template <typename Scalar>
-class SceneSolution : public SceneSolutionQT
+class SceneSolution : public SceneSolutionQT, Hermes::Hermes2D::Solution<Scalar>
 {
 public:
     SceneSolution();

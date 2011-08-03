@@ -175,7 +175,7 @@ void SceneSolution<Scalar>::loadMeshInitial(QDomElement *element)
     content.append(text.nodeValue());
     writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
 
-    Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");    
+    Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
     // refineMesh(mesh, true, true);
 
     setMeshInitial(mesh);
@@ -582,8 +582,5 @@ ProgressDialog *SceneSolution<Scalar>::progressDialog()  //TODO PK <double>
     return m_progressDialog;
 }
 
-void test()
-{
-    SceneSolution<double> double_scene_solution;
-    double_scene_solution.clear();
-}
+
+template class SceneSolution<double>;
