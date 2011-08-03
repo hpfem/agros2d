@@ -51,3 +51,8 @@ Value Material::get_value(std::string id)
 
     return Value();
 }
+
+void Material::evaluate(std::string id, double time)
+{
+    values[id].evaluate(time);
+}

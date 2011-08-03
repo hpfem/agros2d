@@ -22,30 +22,6 @@
 #include "scene.h"
 #include "gui.h"
 
-/*
-// transient analysis
-if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-{
-    if (fabs(material->get_value("magnetic_conductivity").number) > EPS_ZERO)
-    {
-        if (solution.size() > 0)
-        {
-            add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
-                                                                                      QString::number(i).toStdString(),
-                                                                                      material->get_value("magnetic_conductivity").number / Util::scene()->problemInfo()->timeStep.number,
-                                                                                      HERMES_SYM,
-                                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-            add_vector_form(new CustomVectorFormTimeDep(0,
-                                                        QString::number(i).toStdString(),
-                                                        material->get_value("magnetic_conductivity").number / Util::scene()->problemInfo()->timeStep.number,
-                                                        solution[0],
-                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-        }
-    }
-}
-*/
-
 // ****************************************************************************************************************
 
 void ModuleMagnetic::update_time_functions(double time)
@@ -54,9 +30,7 @@ void ModuleMagnetic::update_time_functions(double time)
     for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
         SceneMaterial *material = Util::scene()->materials[i];
-
-        material->get_value("magnetic_current_density_external_real").evaluate(time);
-        material->get_value("magnetic_current_density_external_imag").evaluate(time);
+        material->evaluate("magnetic_current_density_external_real", time);
     }
 }
 

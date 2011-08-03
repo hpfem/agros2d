@@ -30,7 +30,7 @@ void ModuleHeat::update_time_functions(double time)
     for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
         SceneMaterial *material = dynamic_cast<SceneMaterial *>(Util::scene()->materials[i]);
-        material->get_value("heat_volume_heat").evaluate(time);
+        material->evaluate("heat_volume_heat", time);
     }
 }
 
