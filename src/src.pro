@@ -153,12 +153,13 @@ HEADERS += util.h \
     collaboration.h \
     resultsview.h \ 
     hermes2d/weakform_parser.h
+
 INCLUDEPATH += . \
     ../lib/muparser \
     ../lib/dxflib \
     ../lib/rapidxml \
-    ../hermes_common \
-    ../hermes2d
+    ../hermes_common
+
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
     version.xml \
@@ -169,6 +170,7 @@ OTHER_FILES += python/agros2d.pyx \
     ../modules/elasticity.xml \
     ../modules/current.xml \
     ../modules/acoustic.xml
+
 linux-g++ {
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
