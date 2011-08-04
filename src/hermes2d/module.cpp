@@ -45,18 +45,18 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
 
     if (id == "electrostatic")
         module = new ModuleElectrostatic(problem_type, analysis_type);
-//    if (id == "current")
-//        module = new ModuleCurrent(problem_type, analysis_type);
-//    if (id == "magnetic")
-//        module = new ModuleMagnetic(problem_type, analysis_type);
-//    if (id == "acoustic")
-//        module = new ModuleAcoustic(problem_type, analysis_type);
-//    if (id == "elasticity")
-//        module = new ModuleElasticity(problem_type, analysis_type);
-//    if (id == "heat")
-//        module = new ModuleHeat(problem_type, analysis_type);
-//    if (id == "rf")
-//        module = new ModuleRF(problem_type, analysis_type);
+    //    if (id == "current")
+    //        module = new ModuleCurrent(problem_type, analysis_type);
+    //    if (id == "magnetic")
+    //        module = new ModuleMagnetic(problem_type, analysis_type);
+    //    if (id == "acoustic")
+    //        module = new ModuleAcoustic(problem_type, analysis_type);
+    //    if (id == "elasticity")
+    //        module = new ModuleElasticity(problem_type, analysis_type);
+    //    if (id == "heat")
+    //        module = new ModuleHeat(problem_type, analysis_type);
+    //    if (id == "rf")
+    //        module = new ModuleRF(problem_type, analysis_type);
 
     if (module)
         module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());
@@ -71,18 +71,18 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneBoundaryElectrostaticDialog(scene_boundary, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "current")
-//        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "magnetic")
-//        return new SceneBoundaryMagneticDialog(scene_boundary, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-//        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "elasticity")
-//        return new SceneBoundaryElasticityDialog(scene_boundary, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "heat")
-//        return new SceneBoundaryHeatDialog(scene_boundary, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "rf")
-//        return new SceneBoundaryRFDialog(scene_boundary, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "current")
+    //        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "magnetic")
+    //        return new SceneBoundaryMagneticDialog(scene_boundary, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "acoustic")
+    //        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "elasticity")
+    //        return new SceneBoundaryElasticityDialog(scene_boundary, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "heat")
+    //        return new SceneBoundaryHeatDialog(scene_boundary, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "rf")
+    //        return new SceneBoundaryRFDialog(scene_boundary, parent);
 }
 
 // material dialog factory
@@ -90,18 +90,18 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneMaterialElectrostaticDialog(scene_material, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "current")
-//        return new SceneMaterialCurrentDialog(scene_material, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "magnetic")
-//        return new SceneMaterialMagneticDialog(scene_material, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-//        return new SceneMaterialAcousticDialog(scene_material, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "elasticity")
-//        return new SceneMaterialElasticityDialog(scene_material, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "heat")
-//        return new SceneMaterialHeatDialog(scene_material, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "rf")
-//        return new SceneMaterialRFDialog(scene_material, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "current")
+    //        return new SceneMaterialCurrentDialog(scene_material, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "magnetic")
+    //        return new SceneMaterialMagneticDialog(scene_material, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "acoustic")
+    //        return new SceneMaterialAcousticDialog(scene_material, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "elasticity")
+    //        return new SceneMaterialElasticityDialog(scene_material, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "heat")
+    //        return new SceneMaterialHeatDialog(scene_material, parent);
+    //    if (Util::scene()->problemInfo()->module()->id == "rf")
+    //        return new SceneMaterialRFDialog(scene_material, parent);
 }
 
 std::map<std::string, std::string> availableModules()
@@ -162,9 +162,9 @@ void WeakFormAgros<Scalar>::registerForms()
                 ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
                 add_matrix_form_surf(new CustomParserMatrixFormSurf<Scalar>(form->i - 1, form->j - 1,
-                                                                    QString::number(i + 1).toStdString(),
-                                                                    form->expression,
-                                                                    boundary));
+                                                                            QString::number(i + 1).toStdString(),
+                                                                            form->expression,
+                                                                            boundary));
             }
 
             for (Hermes::vector<ParserFormVector *>::iterator it = boundary_type->weakform_vector_surface.begin();
@@ -173,9 +173,9 @@ void WeakFormAgros<Scalar>::registerForms()
                 ParserFormVector *form = ((ParserFormVector *) *it);
 
                 add_vector_form_surf(new CustomParserVectorFormSurf<Scalar>(form->i - 1,
-                                                                    QString::number(i + 1).toStdString(),
-                                                                    form->expression,
-                                                                    boundary));
+                                                                            QString::number(i + 1).toStdString(),
+                                                                            form->expression,
+                                                                            boundary));
             }
         }
     }
@@ -193,10 +193,10 @@ void WeakFormAgros<Scalar>::registerForms()
                 ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
                 add_matrix_form(new CustomParserMatrixFormVol<Scalar>(form->i - 1, form->j - 1,
-                                                              QString::number(i).toStdString(),
-                                                              form->sym,
-                                                              form->expression,
-                                                              material));
+                                                                      QString::number(i).toStdString(),
+                                                                      form->sym,
+                                                                      form->expression,
+                                                                      material));
             }
 
             for (Hermes::vector<ParserFormVector *>::iterator it = Util::scene()->problemInfo()->module()->weakform_vector_volume.begin();
@@ -206,10 +206,10 @@ void WeakFormAgros<Scalar>::registerForms()
 
                 // previous solution (time dep)
                 add_vector_form(new CustomParserVectorFormVol<Scalar>(form->i - 1,
-                                                              QString::number(i).toStdString(),
-                                                              form->expression,
-                                                              material,
-                                                              solution));
+                                                                      QString::number(i).toStdString(),
+                                                                      form->expression,
+                                                                      material,
+                                                                      solution));
             }
         }
     }
@@ -733,7 +733,7 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
 }
 
 ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable, //TODO PK <double>
-                                                             PhysicFieldVariableComp physicFieldVariableComp)
+                                                                     PhysicFieldVariableComp physicFieldVariableComp)
 {
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
     for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
@@ -800,7 +800,7 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressIt
                      it != boundary_type->essential.end(); ++it)
                 {
                     bcs[it->first - 1].add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCConst<double>(QString::number(i+1).toStdString(), //TODO PK <double>
-                                                                                          boundary->values[it->second->id].number));
+                                                                                                                    boundary->values[it->second->id].number));
 
                 }
             }
@@ -867,30 +867,36 @@ void readMeshDirtyFix()
     setlocale (LC_NUMERIC, "C");
 
     std::ostringstream os;
-    os << "vertices =" << std::endl <<
-          "{" << std::endl <<
-          "{ 0, 0 }," << std::endl <<
-          "{ 1, 0 }," << std::endl <<
-          "{ 0, 1 }" << std::endl <<
-          "}" << std::endl <<
-          "elements =" << std::endl <<
-          "{" << std::endl <<
-          "{ 0, 1, 2, 0 }" << std::endl <<
-          "}" << std::endl <<
-          "boundaries =" << std::endl <<
-          "{" << std::endl <<
-          "{ 0, 1, 1 }," << std::endl <<
-          "{ 1, 2, 1 }," << std::endl <<
-          "{ 2, 0, 1 }" << std::endl <<
-          "}" << std::endl <<
-          "curves =" << std::endl <<
-          "{" << std::endl <<
-          "{ 1, 2, 90 }" << std::endl <<
-          "}";
+    os << "vertices = [" << std::endl <<
+          "  [ 0, 0 ]," << std::endl <<
+          "  [ 1, 0 ]," << std::endl <<
+          "  [ 0, 1 ]" << std::endl <<
+          "]" << std::endl << std::endl <<
+          "elements = [" << std::endl <<
+          "  [ 0, 1, 2, \"element_0\" ]" << std::endl << std::endl <<
+          "boundaries = [" << std::endl <<
+          "  [ 0, 1, \"0\" ]," << std::endl <<
+          "  [ 1, 2, \"0\" ]," << std::endl <<
+          "  [ 2, 0, \"0\" ]" << std::endl <<
+          "]" << std::endl << std::endl <<
+          "curves = [" << std::endl <<
+          "  [ 0, 1, 90 ]" << std::endl <<
+          "]" << std::endl;
+
+    // qDebug() << QString::fromStdString(os.str());
 
     Hermes::Hermes2D::Mesh mesh;
     Hermes::Hermes2D::H2DReader meshloader;
-    meshloader.load_str(os.str().c_str(), &mesh);
+
+    // FIXME - Amuthan - hack!!!
+    std::ofstream outputFile((tempProblemDir().toStdString() + "/dummy.mesh").c_str(), fstream::out);
+    outputFile << os.str();
+    outputFile.close();
+
+    meshloader.load((tempProblemDir().toStdString() + "/dummy.mesh").c_str(), &mesh);
+
+    // FIXME - Amuthan - load_stream doesn't support streams!!!
+    // meshloader.load_str(os.str().c_str(), &mesh);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
@@ -949,8 +955,8 @@ Hermes::Hermes2D::GeomType convertProblemType(ProblemType problemType)
 
 template <typename Scalar>
 Hermes::vector<SolutionArray<Scalar> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,  //TODO PK <double>
-                                                  Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs,
-                                                  WeakFormAgros<Scalar> *wf)
+                                                          Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs,
+                                                          WeakFormAgros<Scalar> *wf)
 {
     SolutionAgros<Scalar> solutionAgros(progressItemSolve, wf);
 
@@ -1020,13 +1026,13 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
         break;
     case AdaptivityType_P:
         select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
-                                                              Util::config()->convExp,
-                                                              H2DRS_DEFAULT_ORDER);
+                                                                                        Util::config()->convExp,
+                                                                                        H2DRS_DEFAULT_ORDER);
         break;
     case AdaptivityType_HP:
         select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
-                                                              Util::config()->convExp,
-                                                              H2DRS_DEFAULT_ORDER);
+                                                                                        Util::config()->convExp,
+                                                                                        H2DRS_DEFAULT_ORDER);
         break;
     }
 
@@ -1110,8 +1116,8 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
 
             if (adaptivityType == AdaptivityType_None)
             {
-//                if (analysisType != AnalysisType_Transient)
-//                    solve(space, solution, solver, matrix, rhs);   //TODO PK solver...
+                //                if (analysisType != AnalysisType_Transient)
+                //                    solve(space, solution, solver, matrix, rhs);   //TODO PK solver...
             }
             else
             {
@@ -1223,9 +1229,9 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 if ((timesteps > 1) && (linearityType == LinearityType_Linear))
                     isError = !solveLinear(dpTran, space, solution,
                                            solver, matrix, rhs);
-//                if ((timesteps > 1) && (linearityType != LinearityType_Linear))  //TODO PK nonlinear solver
-//                    isError = !solve(space, solution,
-//                                     solver, matrix, rhs);
+                //                if ((timesteps > 1) && (linearityType != LinearityType_Linear))  //TODO PK nonlinear solver
+                //                    isError = !solve(space, solution,
+                //                                     solver, matrix, rhs);
 
                 // output
                 for (int i = 0; i < numberOfSolution; i++)
@@ -1280,9 +1286,9 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
 
 template <typename Scalar>
 bool SolutionAgros<Scalar>::solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar> *dp,
-                                Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
-                                Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
-                                Hermes::Solvers::LinearSolver<Scalar> *solver, Hermes::Algebra::SparseMatrix<Scalar> *matrix, Hermes::Algebra::Vector<Scalar> *rhs)
+                                        Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
+                                        Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
+                                        Hermes::Solvers::LinearSolver<Scalar> *solver, Hermes::Algebra::SparseMatrix<Scalar> *matrix, Hermes::Algebra::Vector<Scalar> *rhs)
 {
     // QTime time;
     // time.start();
@@ -1303,16 +1309,16 @@ bool SolutionAgros<Scalar>::solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar
 
 template <typename Scalar>
 bool SolutionAgros<Scalar>::solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
-                          Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
-                          Hermes::Solvers::NonlinearSolver<Scalar> *solver, Hermes::Algebra::SparseMatrix<Scalar> *matrix, Hermes::Algebra::Vector<Scalar> *rhs) //TODO PK nonlinear?
+                                  Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
+                                  Hermes::Solvers::NonlinearSolver<Scalar> *solver, Hermes::Algebra::SparseMatrix<Scalar> *matrix, Hermes::Algebra::Vector<Scalar> *rhs) //TODO PK nonlinear?
 {
     bool isError = false;
     if (linearityType == LinearityType_Linear)
     {
-       // Hermes::Hermes2D::DiscreteProblem<Scalar> dpLin(m_wf, space, true);  //TODO PK linear solver
+        // Hermes::Hermes2D::DiscreteProblem<Scalar> dpLin(m_wf, space, true);  //TODO PK linear solver
 
-//        isError = !solveLinear(&dpLin, space, solution,
-//                               solver, matrix, rhs);
+        //        isError = !solveLinear(&dpLin, space, solution,
+        //                               solver, matrix, rhs);
 
         return !isError;
     }
@@ -1533,7 +1539,7 @@ void Parser::initParserBoundaryVariables(Boundary *boundary)
 
 template <typename Scalar>
 ViewScalarFilter<Scalar>::ViewScalarFilter(Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
-                                   std::string expression)
+                                           std::string expression)
     : Hermes::Hermes2D::Filter<Scalar>(sln)
 {
     parser = new Parser();
@@ -1650,8 +1656,8 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 }
 
 template Hermes::vector<SolutionArray<double> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                                  Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> > bcs,
-                                                  WeakFormAgros<double> *wf);
+                                                                   Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> > bcs,
+                                                                   WeakFormAgros<double> *wf);
 template bool SolutionAgros<double>::solve(Hermes::vector<Hermes::Hermes2D::Space<double> *> space,
-                          Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution,
-                          Hermes::Solvers::NonlinearSolver<double> *solver, Hermes::Algebra::SparseMatrix<double> *matrix, Hermes::Algebra::Vector<double> *rhs);
+                                           Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution,
+                                           Hermes::Solvers::NonlinearSolver<double> *solver, Hermes::Algebra::SparseMatrix<double> *matrix, Hermes::Algebra::Vector<double> *rhs);

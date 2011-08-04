@@ -805,8 +805,7 @@ bool ProgressItemMesh::triangleToHermes2D()
 
     // edges
     QString outEdges;
-    outEdges += "boundaries =\n";
-    outEdges += "{\n";
+    outEdges += "boundaries = [\n";
     int countEdges = 0;
     for (int i = 0; i < edgeList.count(); i++)
     {
@@ -821,22 +820,21 @@ bool ProgressItemMesh::triangleToHermes2D()
                 marker = - (edgeList[i].marker-1);
 
             countEdges++;
-            outEdges += QString("  { %1, %2, %3 },\n").
+            outEdges += QString("  [ %1, %2, \"%3\" ],\n").
                     arg(edgeList[i].node[0]).
                     arg(edgeList[i].node[1]).
                     arg(marker);
         }
     }
     outEdges.truncate(outEdges.length()-2);
-    outEdges += "\n}\n\n";
+    outEdges += "\n]\n\n";
 
     // curves
     QString outCurves;
     int countCurves = 0;
     if (Util::config()->curvilinearElements)
     {
-        outCurves += "curves =\n";
-        outCurves += "{\n";
+        outCurves += "curves = [\n";
         for (int i = 0; i<edgeList.count(); i++)
         {
             if (edgeList[i].marker != 0)
@@ -861,7 +859,7 @@ bool ProgressItemMesh::triangleToHermes2D()
 
                     double angle = direction * theta * chordShort / chord;
 
-                    outCurves += QString("  { %1, %2, %3 },\n").
+                    outCurves += QString("  [ %1, %2, %3 ],\n").
                             arg(edgeList[i].node[0]).
                             arg(edgeList[i].node[1]).
                             arg(rad2deg(angle));
@@ -869,7 +867,7 @@ bool ProgressItemMesh::triangleToHermes2D()
             }
         }
         outCurves.truncate(outCurves.length()-2);
-        outCurves += "\n}\n\n";
+        outCurves += "\n]\n\n";
 
         // move nodes (arcs)
         for (int i = 0; i<edgeList.count(); i++)
@@ -899,21 +897,19 @@ bool ProgressItemMesh::triangleToHermes2D()
 
     // nodes
     QString outNodes;
-    outNodes += "vertices =\n";
-    outNodes += "{\n";
+    outNodes += "vertices = [\n";
     for (int i = 0; i<nodeList.count(); i++)
     {
-        outNodes += QString("  { %1,  %2 },\n").
+        outNodes += QString("  [ %1,  %2 ],\n").
                 arg(nodeList[i].x, 0, 'f', 10).
                 arg(nodeList[i].y, 0, 'f', 10);
     }
     outNodes.truncate(outNodes.length()-2);
-    outNodes += "\n}\n\n";
+    outNodes += "\n]\n\n";
 
     // elements
     QString outElements;
-    outElements += "elements =\n";
-    outElements += "{\n";
+    outElements += "elements = [\n";
     for (int i = 0; i < elementList.count(); i++)
     {
         if (elementList[i].isUsed)
@@ -921,7 +917,7 @@ bool ProgressItemMesh::triangleToHermes2D()
             // element returns zero region number for areas without marker, markers must start from 1
             if (elementList[i].isTriangle())
             {
-                outElements += QString("  { %1, %2, %3, %4 },\n").
+                outElements += QString("  [ %1, %2, %3, \"element_%4\" ],\n").
                         arg(elementList[i].node[0]).
                         arg(elementList[i].node[1]).
                         arg(elementList[i].node[2]).
@@ -929,7 +925,7 @@ bool ProgressItemMesh::triangleToHermes2D()
             }
             else
             {
-                outElements += QString("  { %1, %2, %3, %4, %5 },\n").
+                outElements += QString("  [ %1, %2, %3, %4, \"element_%5\" ],\n").
                         arg(elementList[i].node[0]).
                         arg(elementList[i].node[1]).
                         arg(elementList[i].node[2]).
@@ -939,7 +935,7 @@ bool ProgressItemMesh::triangleToHermes2D()
         }
     }
     outElements.truncate(outElements.length()-2);
-    outElements += "\n}\n\n";
+    outElements += "\n]\n\n";
 
     outMesh << outNodes;
     outMesh << outElements;
