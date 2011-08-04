@@ -339,7 +339,9 @@ namespace Hermes
                 if (!(istr >> dummy_int))
                 {	
                   en4.push_back(-1);
-                  e_mtl.push_back(restore(word));
+                  // FIXME - Amuthan
+                  std::string str = word.substr(8, word.size());
+                  e_mtl.push_back(restore(str));
 
                   ++counter;
                 }
@@ -347,7 +349,11 @@ namespace Hermes
                   en4.push_back(atoi(word.c_str()));
               }
               else
-                e_mtl.push_back(restore(word));
+              {
+                // FIXME - Amuthan
+                std::string str = word.substr(8, word.size());
+                e_mtl.push_back(restore(str));
+              }
 
               ++counter;
             }
