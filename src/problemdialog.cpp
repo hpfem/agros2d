@@ -139,11 +139,10 @@ QWidget *ProblemDialog::createControlsGeneral()
     lblTransientSteps = new QLabel("0");
 
     // linearity
-    cmbLinearityType = new QComboBox();
-    txtLinearityNonlinearitySteps = new QSpinBox(this);
-    txtLinearityNonlinearitySteps->setMinimum(1);
-    txtLinearityNonlinearitySteps->setMaximum(100);
-    txtLinearityNonlinearityTolerance = new SLineEditDouble(1);
+    txtNonlinearSteps = new QSpinBox(this);
+    txtNonlinearSteps->setMinimum(1);
+    txtNonlinearSteps->setMaximum(100);
+    txtNonlinearTolerance = new SLineEditDouble(1);
 
     connect(txtTransientTimeStep, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
     connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
@@ -151,7 +150,6 @@ QWidget *ProblemDialog::createControlsGeneral()
     connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
-    connect(cmbLinearityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doLinearityTypeChanged(int)));
     fillComboBox();
 
     int minWidth = 130;
@@ -170,8 +168,6 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutTable->addWidget(cmbAnalysisType, 5, 1);
     layoutTable->addWidget(new QLabel(tr("Adaptivity:")), 6, 0);
     layoutTable->addWidget(cmbAdaptivityType, 6, 1);
-    layoutTable->addWidget(new QLabel(tr("Linearity:")), 7, 0);
-    layoutTable->addWidget(cmbLinearityType, 7, 1);
     layoutTable->addWidget(new QLabel(tr("Linear solver:")), 8, 0);
     layoutTable->addWidget(cmbMatrixSolver, 8, 1);
 
@@ -231,9 +227,9 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutLinearity->setColumnMinimumWidth(0, minWidth);
     layoutLinearity->setColumnStretch(1, 1);
     layoutLinearity->addWidget(new QLabel(tr("Nonlin. tolerance (%):")), 0, 0);
-    layoutLinearity->addWidget(txtLinearityNonlinearityTolerance, 0, 1);
+    layoutLinearity->addWidget(txtNonlinearTolerance, 0, 1);
     layoutLinearity->addWidget(new QLabel(tr("Nonlin. steps:")), 1, 0);
-    layoutLinearity->addWidget(txtLinearityNonlinearitySteps, 1, 1);
+    layoutLinearity->addWidget(txtNonlinearSteps, 1, 1);
 
     QGroupBox *grpLinearity = new QGroupBox(tr("Linearity"));
     grpLinearity->setLayout(layoutLinearity);
@@ -373,9 +369,8 @@ void ProblemDialog::load()
     txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
 
     // linearity
-    cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_problemInfo->linearityType));
-    txtLinearityNonlinearitySteps->setValue(m_problemInfo->linearityNonlinearSteps);
-    txtLinearityNonlinearityTolerance->setValue(m_problemInfo->linearityNonlinearTolerance);
+    txtNonlinearSteps->setValue(m_problemInfo->nonlinearSteps);
+    txtNonlinearTolerance->setValue(m_problemInfo->nonlinearTolerance);
 
     // matrix solver
     cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_problemInfo->matrixSolver));
@@ -494,9 +489,8 @@ void ProblemDialog::load()
     m_problemInfo->description = txtDescription->toPlainText();
     m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
 
-    m_problemInfo->linearityType = (LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt();
-    m_problemInfo->linearityNonlinearSteps = txtLinearityNonlinearitySteps->value();
-    m_problemInfo->linearityNonlinearTolerance = txtLinearityNonlinearityTolerance->value();
+    m_problemInfo->nonlinearSteps = txtNonlinearSteps->value();
+    m_problemInfo->nonlinearTolerance = txtNonlinearTolerance->value();
 
     // matrix solver
     m_problemInfo->matrixSolver = (Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
@@ -539,16 +533,6 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     if (cmbAnalysisType->currentIndex() == -1) cmbAnalysisType->setCurrentIndex(0);
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 
-    // nonlinearity
-    cmbLinearityType->clear();
-    cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
-    if (module->has_nonlinearity())
-    {
-        cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
-        cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
-    }
-    doLinearityTypeChanged(cmbLinearityType->currentIndex());
-
     delete module;
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
@@ -560,14 +544,6 @@ void ProblemDialog::doAdaptivityChanged(int index)
 
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-}
-
-void ProblemDialog::doLinearityTypeChanged(int index)
-{
-    logMessage("ProblemDialog::doLinearityTypeChanged()");
-
-    txtLinearityNonlinearitySteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
-    txtLinearityNonlinearityTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 }
 
 void ProblemDialog::doAnalysisTypeChanged(int index)

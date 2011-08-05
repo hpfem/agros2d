@@ -350,14 +350,6 @@ enum AdaptivityType
     AdaptivityType_HP = 0
 };
 
-enum LinearityType
-{
-    LinearityType_Undefined,
-    LinearityType_Linear,
-    LinearityType_Picard,
-    LinearityType_Newton
-};
-
 enum MeshType
 {
     MeshType_Triangle,
@@ -459,7 +451,6 @@ QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariabl
 QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
 QString meshTypeString(MeshType meshType);
-QString linearityTypeString(LinearityType linearityType);
 QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
 
 inline QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
@@ -505,9 +496,6 @@ SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
-
-QString linearityTypeToStringKey(LinearityType linearityType);
-LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);

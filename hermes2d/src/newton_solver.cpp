@@ -19,6 +19,8 @@
 #include "newton_solver.h"
 #include "hermes_common.h"
 
+#include <iostream>
+
 namespace Hermes
 {
   namespace Hermes2D
@@ -134,20 +136,20 @@ namespace Hermes
         // Info for the user.
         if(it == 1) {
           if(this->verbose_output)
-            info("---- Newton initial residual norm: %g", residual_norm);
+            std::cout << "---- Newton initial residual norm: " << residual_norm << std::endl;
         }
         else 
           if(this->verbose_output)
-            info("---- Newton iter %d, residual norm: %g", it - 1, residual_norm);
+            std::cout << "---- Newton iter " << it - 1 << ", residual norm: " << residual_norm << std::endl;
 
         // If maximum allowed residual norm is exceeded, fail.
         if (residual_norm > max_allowed_residual_norm)
         {
           if (this->verbose_output)
           {
-            info("Current residual norm: %g", residual_norm);
-            info("Maximum allowed residual norm: %g", max_allowed_residual_norm);
-            info("Newton solve not successful, returning false.");
+            std::cout << "Current residual norm: :" <<  residual_norm << std::endl;
+            std::cout << "Maximum allowed residual norm: :" <<  max_allowed_residual_norm << std::endl;
+            std::cout << "Newton solve not successful, returning false." << std::endl;
           }
           break;
         }
@@ -188,7 +190,7 @@ namespace Hermes
         // Solve the linear system.
         if(!linear_solver->solve()) {
           if (this->verbose_output) 
-            info ("Matrix<Scalar> solver failed. Returning false.\n");
+            std::cout << "Matrix<Scalar> solver failed. Returning false." << std::endl;
           break;
         }
         
@@ -200,7 +202,7 @@ namespace Hermes
         if (it++ >= newton_max_iter)
         {
           if (this->verbose_output) 
-            info("Maximum allowed number of Newton iterations exceeded, returning false.");
+            std::cout << "Maximum allowed number of Newton iterations exceeded, returning false." << std::endl;
           break;
         }
         
@@ -268,20 +270,20 @@ namespace Hermes
         if(it == 1) 
         {
           if(this->verbose_output)
-            info("---- Newton initial residual norm: %g", residual_norm);
+            std::cout << "---- Newton initial residual norm: :" <<  residual_norm << std::endl;
         }
         else 
           if(this->verbose_output)
-            info("---- Newton iter %d, residual norm: %g", it - 1, residual_norm);
+            std::cout << "---- Newton iter " <<  it - 1 << ", residual norm: :" << residual_norm << std::endl;
 
         // If maximum allowed residual norm is exceeded, fail.
         if (residual_norm > max_allowed_residual_norm)
         {
           if (this->verbose_output)
           {
-            info("Current residual norm: %g", residual_norm);
-            info("Maximum allowed residual norm: %g", max_allowed_residual_norm);
-            info("Newton solve not successful, returning false.");
+            std::cout << "Current residual norm: :" <<  residual_norm << std::endl;
+            std::cout << "Maximum allowed residual norm: :" <<  max_allowed_residual_norm << std::endl;
+            std::cout << "Newton solve not successful, returning false." << std::endl;
           }
           break;
         }
@@ -322,7 +324,7 @@ namespace Hermes
         if (it++ >= newton_max_iter)
         {
           if (this->verbose_output) 
-            info("Maximum allowed number of Newton iterations exceeded, returning false.");
+            std::cout << "Maximum allowed number of Newton iterations exceeded, returning false." << std::endl;
           break;
         }
       }

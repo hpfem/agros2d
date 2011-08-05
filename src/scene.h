@@ -74,9 +74,8 @@ public:
     QString description;
 
     // linearity
-    LinearityType linearityType;
-    double linearityNonlinearTolerance; // percent
-    int linearityNonlinearSteps;
+    double nonlinearTolerance; // percent
+    int nonlinearSteps;
 
     // harmonic
     double frequency;
@@ -102,8 +101,6 @@ public:
     }
 
     void clear();
-
-    inline bool isLinear() const { return (linearityType == LinearityType_Linear); }
 
     void setModule(Hermes::Module::ModuleAgros *module);
     inline Hermes::Module::ModuleAgros *module() const { return m_module; }

@@ -41,7 +41,6 @@ private slots:
     void doPhysicFieldChanged(int index);
     void doAdaptivityChanged(int index);
     void doAnalysisTypeChanged(int index);
-    void doLinearityTypeChanged(int index);
     void doTransientChanged();
     void doShowEquation();
     void doAccept();
@@ -66,9 +65,8 @@ private:
     QSpinBox *txtPolynomialOrder;
 
     // linearity
-    QComboBox *cmbLinearityType;
-    QSpinBox *txtLinearityNonlinearitySteps;
-    SLineEditDouble *txtLinearityNonlinearityTolerance;
+    QSpinBox *txtNonlinearSteps;
+    SLineEditDouble *txtNonlinearTolerance;
 
     // harmonic
     SLineEditDouble *txtFrequency;

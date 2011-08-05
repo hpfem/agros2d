@@ -103,22 +103,21 @@ public:
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext);
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
-                            Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
+                            Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext);
 };
 
 template<typename Scalar>
-class CustomParserVectorFormVol : public Hermes::Hermes2D::VectorFormVol<double>, public ParserForm
+class CustomParserVectorFormVol : public Hermes::Hermes2D::VectorFormVol<Scalar>, public ParserForm
 {
 public:
     CustomParserVectorFormVol(unsigned int i,
                               std::string area, std::string expression,
-                              Material *material,
-                              Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution);
+                              Material *material);
 
-    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[],Hermes::Hermes2D::Func<double> *v,
+    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext);
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                              Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext);
 };
 
 // **********************************************************************************************
@@ -128,13 +127,13 @@ class CustomParserMatrixFormSurf : public Hermes::Hermes2D::MatrixFormSurf<Scala
 {
 public:
     CustomParserMatrixFormSurf(unsigned int i, unsigned int j,
-                              std::string area, std::string expression,
-                              Boundary *boundary);
+                               std::string area, std::string expression,
+                               Boundary *boundary);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext);
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext);
 };
 
 template<typename Scalar>
@@ -142,13 +141,13 @@ class CustomParserVectorFormSurf : public Hermes::Hermes2D::VectorFormSurf<Scala
 {
 public:
     CustomParserVectorFormSurf(unsigned int i,
-                              std::string area, std::string expression,
-                              Boundary *boundary);
+                               std::string area, std::string expression,
+                               Boundary *boundary);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext);
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                      Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext);
 };
 
 #endif // WEAKFORM_PARSER_H

@@ -29,8 +29,6 @@ struct ModuleElectrostatic : public Hermes::Module::ModuleAgros
 public:
     ModuleElectrostatic(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    bool has_nonlinearity() const { return false; }
-
     // rewrite
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);

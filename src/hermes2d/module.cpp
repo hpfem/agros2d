@@ -208,8 +208,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 add_vector_form(new CustomParserVectorFormVol<Scalar>(form->i - 1,
                                                                       QString::number(i).toStdString(),
                                                                       form->expression,
-                                                                      material,
-                                                                      solution));
+                                                                      material));
             }
         }
     }
@@ -980,9 +979,8 @@ SolutionAgros<Scalar>::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakF
     timeStep = Util::scene()->problemInfo()->timeStep.number;
     initialCondition = Util::scene()->problemInfo()->initialCondition.number;
 
-    linearityType = Util::scene()->problemInfo()->linearityType;
-    linearityNonlinearTolerance = Util::scene()->problemInfo()->linearityNonlinearTolerance;
-    linearityNonlinearSteps = Util::scene()->problemInfo()->linearityNonlinearSteps;
+    nonlinearTolerance = Util::scene()->problemInfo()->nonlinearTolerance;
+    nonlinearSteps = Util::scene()->problemInfo()->nonlinearSteps;
 
     matrixSolver = Util::scene()->problemInfo()->matrixSolver;
 
@@ -1077,16 +1075,14 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 solutionArrayList.push_back(solutionArray(solution.at(i)));
             }
 
-            // nonlinear
-            if ((linearityType != LinearityType_Linear) && (analysisType != AnalysisType_Transient))
-            {
-                solution.at(i)->set_const(mesh, 0.0);
-            }
+            // nonlinear - initial solution
+            solution.at(i)->set_const(mesh, 0.0);
         }
 
         actualTime = 0.0;
 
         // update time function
+        /*
         Util::scene()->problemInfo()->module()->update_time_functions(actualTime);
 
         m_wf->set_current_time(actualTime);        
@@ -1097,6 +1093,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 m_wf->solution.push_back((Hermes::Hermes2D::MeshFunction<Scalar> *) solution[i]);
         m_wf->delete_all();
         m_wf->registerForms();
+        */
 
         // emit message
         if (adaptivityType != AdaptivityType_None)
@@ -1105,6 +1102,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
         double error = 0.0;
 
         // solution
+        /*
         int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
         int actualAdaptivitySteps = -1;
         for (int i = 0; i<maxAdaptivitySteps; i++)
@@ -1189,26 +1187,27 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
         // delete selector
         if (select) delete select;
         selector.clear();
+        */
 
         // timesteps
-        if (!isError)
+        // if (!isError)
         {
-            SparseMatrix<Scalar> *matrix = NULL;
-            Vector<Scalar> *rhs = NULL;
-            LinearSolver<Scalar> *solver = NULL;   //TODO PK Linear
+            // set up the solver, matrix, and rhs according to the solver selection.
+            SparseMatrix<Scalar> *matrix = create_matrix<Scalar>(matrixSolver);
+            Vector<Scalar> *rhs = create_vector<Scalar>(matrixSolver);
+            LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs);
 
             // allocate dp for transient solution
+            /*
             Hermes::Hermes2D::DiscreteProblem<Scalar> *dpTran = NULL;
             if (analysisType == AnalysisType_Transient)
             {
-                // set up the solver, matrix, and rhs according to the solver selection.
-                matrix = create_matrix<Scalar>(matrixSolver);
-                rhs = create_vector<Scalar>(matrixSolver);
-                solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs);
-                // solver->set_factorization_scheme(HERMES_REUSE_FACTORIZATION_COMPLETELY);
-
                 dpTran = new Hermes::Hermes2D::DiscreteProblem<Scalar>(m_wf, space);
             }
+            */
+
+            int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
+            int actualAdaptivitySteps = -1;
 
             int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
             for (int n = 0; n<timesteps; n++)
@@ -1222,28 +1221,48 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 Util::scene()->problemInfo()->module()->update_time_functions(actualTime);
 
                 m_wf->set_current_time(actualTime);
+                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+                    for (int i = 0; i < solution.size(); i++)
+                        m_wf->solution.push_back((Hermes::Hermes2D::MeshFunction<Scalar> *) solution[i]);
                 m_wf->delete_all();
                 m_wf->registerForms();
 
-                // transient
-                if ((timesteps > 1) && (linearityType == LinearityType_Linear))
-                    isError = !solveLinear(dpTran, space, solution,
-                                           solver, matrix, rhs);
-                //                if ((timesteps > 1) && (linearityType != LinearityType_Linear))  //TODO PK nonlinear solver
-                //                    isError = !solve(space, solution,
-                //                                     solver, matrix, rhs);
+                // Initialize the FE problem.
+                Hermes::Hermes2D::DiscreteProblem<double> dp(m_wf, space);
+
+                int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space);
+
+                // Initial coefficient vector for the Newton's method.
+                double* coeff_vec = new double[ndof];
+                memset(coeff_vec, 0, ndof*sizeof(double));
+
+                // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
+                Hermes::Hermes2D::NewtonSolver<double> newton(&dp, Hermes::SOLVER_UMFPACK);
+                if (!newton.solve(coeff_vec, 1e-8, 10))
+                {
+                    m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed"), true);
+                    isError = true;
+                }
+                else
+                    Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), space, solution);
 
                 // output
-                for (int i = 0; i < numberOfSolution; i++)
+                if (!isError)
                 {
-                    solutionArrayList.push_back(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
+                    for (int i = 0; i < numberOfSolution; i++)
+                        solutionArrayList.push_back(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
+
+                    if (analysisType == AnalysisType_Transient)
+                        m_progressItemSolve->emitMessage(QObject::tr("Transient time step (%1/%2): %3 s").
+                                                         arg(n+1).
+                                                         arg(timesteps).
+                                                         arg(actualTime, 0, 'e', 2), false, n+2);
+                }
+                else
+                {
+                    break;
                 }
 
-                if (analysisType == AnalysisType_Transient)
-                    m_progressItemSolve->emitMessage(QObject::tr("Transient time step (%1/%2): %3 s").
-                                                     arg(n+1).
-                                                     arg(timesteps).
-                                                     arg(actualTime, 0, 'e', 2), false, n+2);
                 if (m_progressItemSolve->isCanceled())
                 {
                     isError = true;
@@ -1256,7 +1275,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
             if (matrix) delete matrix;
             if (rhs) delete rhs;
 
-            if (dpTran) delete dpTran;
+            // if (dpTran) delete dpTran;
         }
     }
     // delete mesh
@@ -1304,150 +1323,6 @@ bool SolutionAgros<Scalar>::solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar
     {
         m_progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
         return false;
-    }
-}
-
-template <typename Scalar>
-bool SolutionAgros<Scalar>::solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
-                          Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
-                          Hermes::Solvers::LinearSolver<Scalar> *solver, Hermes::Algebra::SparseMatrix<Scalar> *matrix, Hermes::Algebra::Vector<Scalar> *rhs) //TODO PK nonlinear?
-{
-    bool isError = false;
-    if (linearityType == LinearityType_Linear)
-    {
-        // Hermes::Hermes2D::DiscreteProblem<Scalar> dpLin(m_wf, space, true);  //TODO PK linear solver
-
-        //        isError = !solveLinear(&dpLin, space, solution,
-        //                               solver, matrix, rhs);
-
-        return !isError;
-    }
-
-    if (linearityType == LinearityType_Picard)
-    {
-        /*
-        DiscreteProblem dpNonlinPicard(m_wf, space, true);
-
-        // create Picard solution
-        Hermes::vector<Solution *> solutionPicard;
-        for (int i = 0; i < numberOfSolution; i++)
-            solutionPicard.push_back(new Solution());
-
-        // perform the Picard's iteration
-        for (int i = 0; i < linearityNonlinearSteps; i++)
-        {
-            isError = !solveLinear(&dpNonlinPicard, space, solutionPicard,
-                                   solver, matrix, rhs, false);
-
-            ProjNormType projNormTypeTMP = HERMES_H1_NORM;
-            // ProjNormType projNormTypeTMP = HERMES_L2_NORM;
-
-            // calc error
-            double *val_sol, *val_solpic, *val_diff;
-            double error = 0.0;
-            for (int i = 0; i < numberOfSolution; i++)
-            {
-                error += calc_abs_error(solution.at(i), solutionPicard.at(i), projNormTypeTMP) * 100.0
-                        / calc_norm(&sln_new, HERMES_H1_NORM) * 100;
-
-                val_sol = solution.at(i)->get_fn_values();
-                val_solpic = solutionPicard.at(i)->get_fn_values();
-
-                val_diff = new double[Space::get_num_dofs(space)];
-                for (int j = 0; j < Space::get_num_dofs(space); j++)
-                    val_diff[j] = val_solpic[j]; //  + 0.5 * (val_sol[j] - val_solpic[j]);
-            }
-
-            // emit signal
-            m_progressItemSolve->emitMessage(QObject::tr("Picards method rel. error (%2/%3): %1%").
-                                             arg(error, 0, 'f', 5).
-                                             arg(i + 1).
-                                             arg(linearityNonlinearSteps), false, 1);
-
-            // add error to the list
-            m_progressItemSolve->addNonlinearityError(error);
-
-            if (error < linearityNonlinearTolerance)
-            {
-                // FIXME - clean up
-                break;
-            }
-
-            // copy solution
-            for (int i = 0; i < numberOfSolution; i++)
-            {
-                // if (error > 100.0)
-                //     solution.at(i)->multiply(0.5);
-                // else
-                solution.at(i)->copy(solutionPicard.at(i));
-            }
-            // Solution::vector_to_solutions(val_solpic, space, solution);
-            // Solution::vector_to_solutions(solutionPicard., space, solution);
-        }
-
-        for (int i = 0; i < solutionPicard.size(); i++)
-            delete solutionPicard.at(i);
-        solutionPicard.clear();
-
-        return !isError;
-        */
-    }
-
-    if (linearityType == LinearityType_Newton)
-    {
-        /*
-        // project the initial condition on the FE space to obtain initial
-        // coefficient vector for the Newton's method.
-        info("Projecting to obtain initial vector for the Newton's method.");
-        double *coeff_vec = new double[Space::get_num_dofs(space)];
-        OGProjection::project_global(space, solution->value(), coeff_vec,
-                                     Util::scene()->problemInfo()->matrixSolver);
-
-        DiscreteProblem dpNonlinNewton(wf, space, false);
-
-        // The Newton's loop.
-        double damping_coeff = 1.0;
-
-        // perform the Picard's iteration
-        for (int i = 0; i < linearityNonlinearSteps; i++)
-        {
-            // assemble the Jacobian matrix and residual vector.
-            dpNonlinNewton.assemble(coeff_vec, matrix, rhs, false);
-
-            // Multiply the residual vector with -1 since the matrix
-            // equation reads J(Y^n) \deltaY^{n+1} = -F(Y^n).
-            rhs->change_sign();
-
-            // Calculate the l2-norm of residual vector
-            double error = get_l2_norm(rhs);
-
-            // emit signal
-            m_progressItemSolve->emitMessage(QObject::tr("Newton’s method rel. error (%2/%3): %1")
-                                             .arg(error, 0, 'f', 5)
-                                             .arg(i)
-                                             .arg(linearityNonlinearSteps), false, 1);
-
-            // add error to the list
-            m_progressItemSolve->addNonlinearityError(error);
-
-            // if residual norm is within tolerance, or the maximum number of iteration has been reached, then quit.
-            if (error < linearityNonlinearTolerance)
-                break;
-
-            // Solve the linear system.
-            isError = solver->solve();
-            if (!isError)
-                error("Matrix solver failed.\n");
-
-            // add \deltaY^{n+1} to Y^n.
-            for (int j = 0; j < Space::get_num_dofs(space); j++)
-                coeff_vec[j] += damping_coeff * solver->get_solution()[j];
-        }
-
-        Solution::vector_to_solutions(coeff_vec, space, solution);
-
-        delete [] coeff_vec;
-        */
     }
 }
 
