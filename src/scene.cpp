@@ -85,10 +85,9 @@ void ProblemInfo::clear()
     // matrix solver
     matrixSolver = Hermes::SOLVER_UMFPACK;
 
-    // linearity
-    linearityType = LinearityType_Linear;
-    linearityNonlinearTolerance = 1e-3;
-    linearityNonlinearSteps = 10;
+    // linearity   
+    nonlinearTolerance = 1e-3;
+    nonlinearSteps = 10;
 }
 
 void ProblemInfo::setModule(Hermes::Module::ModuleAgros *module)
@@ -1419,10 +1418,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->initialCondition.text = eleProblem.toElement().attribute("initialcondition", "0");
 
     // linearity
-    m_problemInfo->linearityType = linearityTypeFromStringKey(eleProblem.toElement().attribute("linearity",
-                   linearityTypeToStringKey(LinearityType_Linear)));
-    m_problemInfo->linearityNonlinearSteps = eleProblem.toElement().attribute("linearitysteps", "10").toInt();
-    m_problemInfo->linearityNonlinearTolerance = eleProblem.toElement().attribute("linearitytolerance", "1e-3").toDouble();
+    m_problemInfo->nonlinearSteps = eleProblem.toElement().attribute("nonlinearsteps", "10").toInt();
+    m_problemInfo->nonlinearTolerance = eleProblem.toElement().attribute("nonlineartolerance", "1e-3").toDouble();
 
     // matrix solver
     m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblem.toElement().attribute("matrix_solver",
@@ -1641,9 +1638,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text);
     eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text);
     // linearity
-    eleProblem.setAttribute("linearity", linearityTypeToStringKey(m_problemInfo->linearityType));
-    eleProblem.setAttribute("linearitysteps", m_problemInfo->linearityNonlinearSteps);
-    eleProblem.setAttribute("linearitytolerance", m_problemInfo->linearityNonlinearTolerance);
+    eleProblem.setAttribute("nonlinearsteps", m_problemInfo->nonlinearSteps);
+    eleProblem.setAttribute("nonlineartolerance", m_problemInfo->nonlinearTolerance);
 
     // matrix solver
     eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(m_problemInfo->matrixSolver));

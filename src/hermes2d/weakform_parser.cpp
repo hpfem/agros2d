@@ -106,10 +106,10 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
 
 template <typename Scalar>
 CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, unsigned int j,
-                                                     std::string area,
-                                                     Hermes::Hermes2D::SymFlag sym,
-                                                     std::string expression,
-                                                     Material *material)
+                                                             std::string area,
+                                                             Hermes::Hermes2D::SymFlag sym,
+                                                             std::string expression,
+                                                             Material *material)
     : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm()
 {
     initParser(material, NULL);
@@ -119,7 +119,7 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
 
 template <typename Scalar>
 Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
-                                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
+                                                Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
     for (int i = 0; i < n; i++)
@@ -144,20 +144,17 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
 template <typename Scalar>
 Hermes::Ord CustomParserMatrixFormVol<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
-                                             Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
+                                                   Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
-    return Hermes::Ord(6);
+    return Hermes::Ord(10);
 }
 
 template <typename Scalar>
 CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i,
-                                                     std::string area, std::string expression,
-                                                     Material *material,
-                                                     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution)
+                                                             std::string area, std::string expression,
+                                                             Material *material)
     : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm()
 {
-    ext = solution;
-
     initParser(material, NULL);
 
     parser->parser[0]->SetExpr(expression);
@@ -165,7 +162,7 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i,
 
 template <typename Scalar>
 Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
-                                        Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
+                                                Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
     for (int i = 0; i < n; i++)
@@ -177,18 +174,10 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
-        if (ext->nf == 1)
-        {
-            pupval = ext->fn[0]->val[i];
-            pupdx = ext->fn[0]->dx[i];
-            pupdy = ext->fn[0]->dy[i];
-        }
-        else
-        {
-            pupval = 0.0;
-            pupdx = 0.0;
-            pupdy = 0.0;
-        }
+        // previous solution
+        pupval = isnan(u_ext[this->i]->val[i]) ? 0.0 : u_ext[this->i]->val[i];
+        pupdx = isnan(u_ext[this->i]->dx[i]) ? 0.0 : u_ext[this->i]->dx[i];
+        pupdy = isnan(u_ext[this->i]->dy[i]) ? 0.0 : u_ext[this->i]->dy[i];
 
         result += wt[i] * parser->parser[0]->Eval();
     }
@@ -198,17 +187,17 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
 template <typename Scalar>
 Hermes::Ord CustomParserVectorFormVol<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                                                   Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
+                                                   Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
-    return Hermes::Ord(6);
+    return Hermes::Ord(10);
 }
 
 // **********************************************************************************************
 
 template <typename Scalar>
 CustomParserMatrixFormSurf<Scalar>::CustomParserMatrixFormSurf(unsigned int i, unsigned int j,
-                                                     std::string area, std::string expression,
-                                                     Boundary *boundary)
+                                                               std::string area, std::string expression,
+                                                               Boundary *boundary)
     : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j, area), ParserForm()
 {
     initParser(NULL, boundary);
@@ -218,7 +207,7 @@ CustomParserMatrixFormSurf<Scalar>::CustomParserMatrixFormSurf(unsigned int i, u
 
 template <typename Scalar>
 Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
-                                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
+                                                 Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
     for (int i = 0; i < n; i++)
@@ -242,15 +231,15 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 
 template <typename Scalar>
 Hermes::Ord CustomParserMatrixFormSurf<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
+                                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
-    return Hermes::Ord(6);
+    return Hermes::Ord(10);
 }
 
 template <typename Scalar>
 CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i,
-                                                     std::string area, std::string expression,
-                                                     Boundary *boundary)
+                                                               std::string area, std::string expression,
+                                                               Boundary *boundary)
     : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), ParserForm()
 {
     initParser(NULL, boundary);
@@ -260,7 +249,7 @@ CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i,
 
 template <typename Scalar>
 Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
-                                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
+                                                 Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
     for (int i = 0; i < n; i++)
@@ -280,7 +269,7 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 
 template <typename Scalar>
 Hermes::Ord CustomParserVectorFormSurf<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
+                                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
     return Hermes::Ord(10);
 }

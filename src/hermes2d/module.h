@@ -288,7 +288,6 @@ struct Module
                                PhysicFieldVariableComp physicFieldVariableComp);
 
     int number_of_solution() const;
-    virtual bool has_nonlinearity() const = 0;
 
     Hermes::vector<SolutionArray<double> *> solve(ProgressItemSolve *progressItemSolve);  //TODO PK <Scalar>
     bool solve_init_variables();
@@ -297,7 +296,7 @@ struct Module
 
 
     ViewScalarFilter<double> *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,  //TODO PK <Scalar>
-                                         PhysicFieldVariableComp physicFieldVariableComp);
+                                                 PhysicFieldVariableComp physicFieldVariableComp);
 
     virtual inline void deform_shape(double3* linVert, int count) {}
     virtual inline void deform_shape(double4* linVert, int count) {}
@@ -400,8 +399,8 @@ Hermes::Hermes2D::GeomType convertProblemType(ProblemType problemType);
 // solve
 template <typename Scalar>
 Hermes::vector<SolutionArray<Scalar> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                                  Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs,
-                                                  WeakFormAgros<Scalar> *wf);
+                                                          Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs,
+                                                          WeakFormAgros<Scalar> *wf);
 
 // solve
 template <typename Scalar>
@@ -424,9 +423,8 @@ private:
 
     AnalysisType analysisType;
 
-    LinearityType linearityType;
-    double linearityNonlinearTolerance;
-    int linearityNonlinearSteps;
+    double nonlinearTolerance;
+    int nonlinearSteps;
 
     Hermes::MatrixSolverType matrixSolver;
 
@@ -446,10 +444,6 @@ private:
                      Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
                      Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
                      Hermes::Solvers::LinearSolver<Scalar> *solver, SparseMatrix<Scalar> *matrix, Vector<Scalar> *rhs);
-
-    bool solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
-               Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
-               Hermes::Solvers::LinearSolver<Scalar> *solver, SparseMatrix<Scalar> *matrix, Vector<Scalar> *rhs);
 };
 
 #endif // HERMES_FIELD_H

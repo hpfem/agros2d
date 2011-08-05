@@ -330,10 +330,10 @@ namespace Hermes
       int sym;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-        Geom<double> *e, ExtData<Scalar> *ext) const;
+        Geom<double> *e, ExtData<Scalar> *ext) ;
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
-        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
+        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) ;
     };
 
     template<typename Scalar>
@@ -355,10 +355,10 @@ namespace Hermes
       unsigned int i, j;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-        Geom<double> *e, ExtData<Scalar> *ext) const;
+        Geom<double> *e, ExtData<Scalar> *ext) ;
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
-        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
+        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) ;
     };
 
     template<typename Scalar>
@@ -380,10 +380,10 @@ namespace Hermes
       unsigned int i;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v, 
-        Geom<double> *e, ExtData<Scalar> *ext) const;
+        Geom<double> *e, ExtData<Scalar> *ext);
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, 
-        ExtData<Hermes::Ord> *ext) const;
+        ExtData<Hermes::Ord> *ext);
     };
 
     template<typename Scalar>
@@ -405,10 +405,10 @@ namespace Hermes
       unsigned int i;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v, 
-        Geom<double> *e, ExtData<Scalar> *ext) const;
+        Geom<double> *e, ExtData<Scalar> *ext);
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v, 
-        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
+        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext);
     };
 
     /// Multi-component forms.

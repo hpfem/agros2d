@@ -192,12 +192,8 @@ void SceneInfoView::showInfo()
         html += "<tr><td>" + tr("Maximum number of DOFs") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityMaxDOFs) + "</td></tr>";
     }
 
-    html += "<tr><td><b>" + tr("Linearity") + "</b></td><td>" + linearityTypeString(Util::scene()->problemInfo()->linearityType) + "</td></tr>";
-    if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
-    {
-        html += "<tr><td>" + tr("Nonlin. tolerance") + "</td><td>" + QString::number(Util::scene()->problemInfo()->linearityNonlinearTolerance) + " %" + "</td></tr>";
-        html += "<tr><td>" + tr("Nonlin. steps") + "</td><td>" + QString::number(Util::scene()->problemInfo()->linearityNonlinearSteps) + "</td></tr>";
-    }
+    html += "<tr><td>" + tr("Nonlin. tolerance") + "</td><td>" + QString::number(Util::scene()->problemInfo()->nonlinearTolerance) + " %" + "</td></tr>";
+    html += "<tr><td>" + tr("Nonlin. steps") + "</td><td>" + QString::number(Util::scene()->problemInfo()->nonlinearSteps) + "</td></tr>";
 
     html += "<tr><td><b>" + tr("Linear Solver") + "</b></td><td>" + matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver) + "</td></tr>";
     html += "<tr><td><b>" + tr("Mesh type") + "</b></td><td>" + meshTypeString(Util::scene()->problemInfo()->meshType) + "</td></tr>";
