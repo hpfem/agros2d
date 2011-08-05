@@ -1656,11 +1656,8 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 }
 
 template Hermes::vector<SolutionArray<double> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                                  Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> > bcs,
-                                                  WeakFormAgros<double> *wf);
+                                                                   Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> > bcs,
+                                                                   WeakFormAgros<double> *wf);
 
 template class SolutionAgros<double>;
 
-//template bool SolutionAgros<double>::solve(Hermes::vector<Hermes::Hermes2D::Space<double> *> space,
-//                          Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution,
-//                          Hermes::Solvers::LinearSolver<double> *solver, Hermes::Algebra::SparseMatrix<double> *matrix, Hermes::Algebra::Vector<double> *rhs);
