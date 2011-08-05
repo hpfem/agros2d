@@ -1,7 +1,5 @@
 /****************************************************************************
-** $Id: dl_dxf.cpp 8865 2008-02-04 18:54:02Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2011 RibbonSoft. All rights reserved.
 **
 ** This file is part of the dxflib project.
 **
@@ -38,12 +36,17 @@
 #include "dl_writer_ascii.h"
 
 
+#if defined(__OS2__)||defined(__EMX__)||defined(_WIN32)
+#define strcasecmp(s,t) stricmp(s,t)
+#endif
+
+
 /**
  * Default constructor.
  */
 DL_Dxf::DL_Dxf() {
     styleHandleStd = 0;
-    version = VER_2000;
+    version = DL_VERSION_2000;
 
     vertices = NULL;
     maxVertices = 0;
@@ -212,6 +215,7 @@ bool DL_Dxf::readDxfGroups(FILE *fp, DL_CreationInterface* creationInterface,
         if (ok) {
             //std::cerr << groupCode << "\n";
             //std::cerr << groupValue << "\n";
+            creationInterface->processCodeValuePair(groupCode, groupValue);
             line+=2;
             processDXFGroup(creationInterface, groupCode, groupValue);
         } else {
@@ -445,12 +449,15 @@ bool DL_Dxf::processDXFGroup(DL_CreationInterface* creationInterface,
 
         int color;
         color = toInt(values[62], 256);
+        int color24;
+        color24 = toInt(values[420], -1);
 
         char linetype[DL_DXF_MAXLINE+1];
         strcpy(linetype, toString(values[6], "BYLAYER"));
 
         attrib = DL_Attributes(values[8],          // layer
                                color,              // color
+                               color24,            // 24 bit color
                                width,              // width
                                linetype);          // linetype
         creationInterface->setAttributes(attrib);
@@ -2107,7 +2114,7 @@ void DL_Dxf::writeHeader(DL_WriterA& dw) {
     }
 
     // Newer version require that (otherwise a*cad crashes..)
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(9, "$HANDSEED");
         dw.dxfHex(5, 0xFFFF);
     }
@@ -2129,12 +2136,12 @@ void DL_Dxf::writePoint(DL_WriterA& dw,
                         const DL_PointData& data,
                         const DL_Attributes& attrib) {
     dw.entity("POINT");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbPoint");
     }
     dw.entityAttributes(attrib);
-    dw.coord(POINT_COORD_CODE, data.x, data.y);
+    dw.coord(DL_POINT_COORD_CODE, data.x, data.y);
 }
 
 
@@ -2150,13 +2157,13 @@ void DL_Dxf::writeLine(DL_WriterA& dw,
                        const DL_LineData& data,
                        const DL_Attributes& attrib) {
     dw.entity("LINE");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbLine");
     }
     dw.entityAttributes(attrib);
-    dw.coord(LINE_START_CODE, data.x1, data.y1);
-    dw.coord(LINE_END_CODE, data.x2, data.y2);
+    dw.coord(DL_LINE_START_CODE, data.x1, data.y1);
+    dw.coord(DL_LINE_END_CODE, data.x2, data.y2);
 }
 
 
@@ -2172,7 +2179,7 @@ void DL_Dxf::writeLine(DL_WriterA& dw,
 void DL_Dxf::writePolyline(DL_WriterA& dw,
                            const DL_PolylineData& data,
                            const DL_Attributes& attrib) {
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.entity("LWPOLYLINE");
         dw.entityAttributes(attrib);
         dw.dxfString(100, "AcDbEntity");
@@ -2185,7 +2192,7 @@ void DL_Dxf::writePolyline(DL_WriterA& dw,
 		polylineLayer = attrib.getLayer();
         dw.dxfInt(66, 1);
         dw.dxfInt(70, data.flags);
-        dw.coord(VERTEX_COORD_CODE, 0.0, 0.0);
+        dw.coord(DL_VERTEX_COORD_CODE, 0.0, 0.0);
     }
 }
 
@@ -2202,9 +2209,10 @@ void DL_Dxf::writeVertex(DL_WriterA& dw,
                          const DL_VertexData& data) {
 
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfReal(10, data.x);
         dw.dxfReal(20, data.y);
+        dw.dxfReal(30, data.z);
         if (fabs(data.bulge)>1.0e-10) {
             dw.dxfReal(42, data.bulge);
         }
@@ -2212,7 +2220,7 @@ void DL_Dxf::writeVertex(DL_WriterA& dw,
         dw.entity("VERTEX");
         //dw.entityAttributes(attrib);
     	dw.dxfString(8, polylineLayer);
-        dw.coord(VERTEX_COORD_CODE, data.x, data.y);
+        dw.coord(DL_VERTEX_COORD_CODE, data.x, data.y, data.z);
         if (fabs(data.bulge)>1.0e-10) {
             dw.dxfReal(42, data.bulge);
         }
@@ -2225,7 +2233,7 @@ void DL_Dxf::writeVertex(DL_WriterA& dw,
  * Writes the polyline end. Only needed for DXF R12.
  */
 void DL_Dxf::writePolylineEnd(DL_WriterA& dw) {
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     } else {
         dw.entity("SEQEND");
     }
@@ -2246,7 +2254,7 @@ void DL_Dxf::writeSpline(DL_WriterA& dw,
 
     dw.entity("SPLINE");
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbSpline");
     }
@@ -2302,7 +2310,7 @@ void DL_Dxf::writeCircle(DL_WriterA& dw,
                          const DL_CircleData& data,
                          const DL_Attributes& attrib) {
     dw.entity("CIRCLE");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbCircle");
     }
@@ -2324,16 +2332,16 @@ void DL_Dxf::writeArc(DL_WriterA& dw,
                       const DL_ArcData& data,
                       const DL_Attributes& attrib) {
     dw.entity("ARC");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
     }
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbCircle");
     }
     dw.coord(10, data.cx, data.cy);
     dw.dxfReal(40, data.radius);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbArc");
     }
     dw.dxfReal(50, data.angle1);
@@ -2353,9 +2361,9 @@ void DL_Dxf::writeEllipse(DL_WriterA& dw,
                           const DL_EllipseData& data,
                           const DL_Attributes& attrib) {
 
-    if (version>VER_R12) {
+    if (version>DL_VERSION_R12) {
         dw.entity("ELLIPSE");
-        if (version==VER_2000) {
+        if (version==DL_VERSION_2000) {
             dw.dxfString(100, "AcDbEntity");
             dw.dxfString(100, "AcDbEllipse");
         }
@@ -2381,7 +2389,7 @@ void DL_Dxf::writeSolid(DL_WriterA& dw,
                    const DL_SolidData& data,
                    const DL_Attributes& attrib) {
     dw.entity("SOLID");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbTrace");
     }
@@ -2406,7 +2414,7 @@ void DL_Dxf::write3dFace(DL_WriterA& dw,
                    const DL_3dFaceData& data,
                    const DL_Attributes& attrib) {
     dw.entity("3DFACE");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbFace");
     }
@@ -2437,7 +2445,7 @@ void DL_Dxf::writeInsert(DL_WriterA& dw,
     }
 
     dw.entity("INSERT");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbBlockReference");
     }
@@ -2479,7 +2487,7 @@ void DL_Dxf::writeMText(DL_WriterA& dw,
                         const DL_Attributes& attrib) {
 
     dw.entity("MTEXT");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbMText");
     }
@@ -2529,7 +2537,7 @@ void DL_Dxf::writeText(DL_WriterA& dw,
                        const DL_Attributes& attrib) {
 
     dw.entity("TEXT");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbText");
     }
@@ -2569,11 +2577,11 @@ void DL_Dxf::writeDimAligned(DL_WriterA& dw,
 
     dw.entity("DIMENSION");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
     }
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbDimension");
     }
 
@@ -2586,7 +2594,7 @@ void DL_Dxf::writeDimAligned(DL_WriterA& dw,
     dw.dxfReal(31, 0.0);
 
     dw.dxfInt(70, 1);
-    if (version>VER_R12) {
+    if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
         dw.dxfReal(41, data.lineSpacingFactor); // opt
@@ -2598,7 +2606,7 @@ void DL_Dxf::writeDimAligned(DL_WriterA& dw,
     //dw.dxfString(3, data.style);
     dw.dxfString(3, "Standard");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbAlignedDimension");
     }
 
@@ -2628,11 +2636,11 @@ void DL_Dxf::writeDimLinear(DL_WriterA& dw,
 
     dw.entity("DIMENSION");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
     }
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbDimension");
     }
 
@@ -2645,7 +2653,7 @@ void DL_Dxf::writeDimLinear(DL_WriterA& dw,
     dw.dxfReal(31, 0.0);
 
     dw.dxfInt(70, 0);
-    if (version>VER_R12) {
+    if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
         dw.dxfReal(41, data.lineSpacingFactor); // opt
@@ -2657,7 +2665,7 @@ void DL_Dxf::writeDimLinear(DL_WriterA& dw,
     //dw.dxfString(3, data.style);
     dw.dxfString(3, "Standard");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbAlignedDimension");
     }
 
@@ -2671,7 +2679,7 @@ void DL_Dxf::writeDimLinear(DL_WriterA& dw,
 
     dw.dxfReal(50, edata.angle/(2.0*M_PI)*360.0);
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbRotatedDimension");
         /*
         dw.dxfString(1001, "ACAD");
@@ -2701,11 +2709,11 @@ void DL_Dxf::writeDimRadial(DL_WriterA& dw,
 
     dw.entity("DIMENSION");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
     }
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbDimension");
     }
 
@@ -2718,7 +2726,7 @@ void DL_Dxf::writeDimRadial(DL_WriterA& dw,
     dw.dxfReal(31, 0.0);
 
     dw.dxfInt(70, 4);
-    if (version>VER_R12) {
+    if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
         dw.dxfReal(41, data.lineSpacingFactor); // opt
@@ -2730,7 +2738,7 @@ void DL_Dxf::writeDimRadial(DL_WriterA& dw,
     //dw.dxfString(3, data.style);
     dw.dxfString(3, "Standard");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbRadialDimension");
     }
 
@@ -2758,11 +2766,11 @@ void DL_Dxf::writeDimDiametric(DL_WriterA& dw,
 
     dw.entity("DIMENSION");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
     }
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbDimension");
     }
 
@@ -2775,7 +2783,7 @@ void DL_Dxf::writeDimDiametric(DL_WriterA& dw,
     dw.dxfReal(31, 0.0);
 
     dw.dxfInt(70, 3);
-    if (version>VER_R12) {
+    if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
         dw.dxfReal(41, data.lineSpacingFactor); // opt
@@ -2787,7 +2795,7 @@ void DL_Dxf::writeDimDiametric(DL_WriterA& dw,
     //dw.dxfString(3, data.style);
     dw.dxfString(3, "Standard");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbDiametricDimension");
     }
 
@@ -2815,11 +2823,11 @@ void DL_Dxf::writeDimAngular(DL_WriterA& dw,
 
     dw.entity("DIMENSION");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
     }
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbDimension");
     }
 
@@ -2832,7 +2840,7 @@ void DL_Dxf::writeDimAngular(DL_WriterA& dw,
     dw.dxfReal(31, 0.0);
 
     dw.dxfInt(70, 2);
-    if (version>VER_R12) {
+    if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
         dw.dxfReal(41, data.lineSpacingFactor); // opt
@@ -2844,7 +2852,7 @@ void DL_Dxf::writeDimAngular(DL_WriterA& dw,
     //dw.dxfString(3, data.style);
     dw.dxfString(3, "Standard");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDb2LineAngularDimension");
     }
 
@@ -2882,11 +2890,11 @@ void DL_Dxf::writeDimAngular3P(DL_WriterA& dw,
 
     dw.entity("DIMENSION");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
     }
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbDimension");
     }
 
@@ -2899,7 +2907,7 @@ void DL_Dxf::writeDimAngular3P(DL_WriterA& dw,
     dw.dxfReal(31, 0.0);
 
     dw.dxfInt(70, 5);
-    if (version>VER_R12) {
+    if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
         dw.dxfReal(41, data.lineSpacingFactor); // opt
@@ -2911,7 +2919,7 @@ void DL_Dxf::writeDimAngular3P(DL_WriterA& dw,
     //dw.dxfString(3, data.style);
     dw.dxfString(3, "Standard");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDb3PointAngularDimension");
     }
 
@@ -2946,11 +2954,11 @@ void DL_Dxf::writeDimOrdinate(DL_WriterA& dw,
 
     dw.entity("DIMENSION");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
     }
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbDimension");
     }
 
@@ -2968,7 +2976,7 @@ void DL_Dxf::writeDimOrdinate(DL_WriterA& dw,
     }
 
     dw.dxfInt(70, type);
-    if (version>VER_R12) {
+    if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
         dw.dxfReal(41, data.lineSpacingFactor); // opt
@@ -2978,7 +2986,7 @@ void DL_Dxf::writeDimOrdinate(DL_WriterA& dw,
     //dw.dxfString(3, data.style);
     dw.dxfString(3, "Standard");
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbOrdinateDimension");
     }
 
@@ -3004,10 +3012,10 @@ void DL_Dxf::writeDimOrdinate(DL_WriterA& dw,
 void DL_Dxf::writeLeader(DL_WriterA& dw,
                          const DL_LeaderData& data,
                          const DL_Attributes& attrib) {
-    if (version>VER_R12) {
+    if (version>DL_VERSION_R12) {
         dw.entity("LEADER");
         dw.entityAttributes(attrib);
-        if (version==VER_2000) {
+        if (version==DL_VERSION_2000) {
             dw.dxfString(100, "AcDbEntity");
             dw.dxfString(100, "AcDbLeader");
         }
@@ -3033,7 +3041,7 @@ void DL_Dxf::writeLeader(DL_WriterA& dw,
  */
 void DL_Dxf::writeLeaderVertex(DL_WriterA& dw,
                                const DL_LeaderVertexData& data) {
-    if (version>VER_R12) {
+    if (version>DL_VERSION_R12) {
         dw.dxfReal(10, data.x);
         dw.dxfReal(20, data.y);
     }
@@ -3056,7 +3064,7 @@ void DL_Dxf::writeHatch1(DL_WriterA& dw,
 
     dw.entity("HATCH");
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbHatch");
     }
@@ -3193,7 +3201,7 @@ int DL_Dxf::writeImage(DL_WriterA& dw,
     dw.entity("IMAGE");
 
     dw.entityAttributes(attrib);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbRasterImage");
         dw.dxfInt(90, 0);
@@ -3251,11 +3259,11 @@ void DL_Dxf::writeImageDef(DL_WriterA& dw,
 }*/
 
     dw.dxfString(0, "IMAGEDEF");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     	dw.dxfHex(5, handle);
 	}
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbRasterImageDef");
         dw.dxfInt(90, 0);
     }
@@ -3309,11 +3317,14 @@ void DL_Dxf::writeLayer(DL_WriterA& dw,
     dw.dxfString(2, data.name);
     dw.dxfInt(70, data.flags);
     dw.dxfInt(62, color);
+    if (version>=DL_VERSION_2000 && attrib.getColor24()!=-1) {
+        dw.dxfInt(420, attrib.getColor24());
+    }
 
     dw.dxfString(6, (attrib.getLineType().length()==0 ?
                      string("CONTINUOUS") : attrib.getLineType()));
 
-    if (version>=VER_2000) {
+    if (version>=DL_VERSION_2000) {
         // layer defpoints cannot be plotted
         std::string lstr = data.name;
         std::transform(lstr.begin(), lstr.end(), lstr.begin(), tolower);
@@ -3321,10 +3332,10 @@ void DL_Dxf::writeLayer(DL_WriterA& dw,
             dw.dxfInt(290, 0);
         }
     }
-    if (version>=VER_2000 && attrib.getWidth()!=-1) {
+    if (version>=DL_VERSION_2000 && attrib.getWidth()!=-1) {
         dw.dxfInt(370, attrib.getWidth());
     }
-    if (version>=VER_2000) {
+    if (version>=DL_VERSION_2000) {
         dw.dxfHex(390, 0xF);
     }
 }
@@ -3348,7 +3359,7 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
     }
 
 	// ignore BYLAYER, BYBLOCK for R12
-	if (version<VER_2000) {
+    if (version<DL_VERSION_2000) {
 		if (!strcasecmp(data.name.c_str(), "BYBLOCK") ||
 		    !strcasecmp(data.name.c_str(), "BYLAYER")) {
 			return;
@@ -3367,7 +3378,7 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
     }
 
     dw.dxfString(2, data.name);
-	//if (version>=VER_2000) {
+    //if (version>=DL_VERSION_2000) {
     	dw.dxfInt(70, data.flags);
 	//}
 
@@ -3392,10 +3403,10 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 2);
         dw.dxfReal(40, 15.0);
         dw.dxfReal(49, 12.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "ACAD_ISO03W100")) {
         dw.dxfString(3, "ISO Dashed with Distance __    __    __    _");
@@ -3403,10 +3414,10 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 2);
         dw.dxfReal(40, 30.0);
         dw.dxfReal(49, 12.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -18.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "ACAD_ISO04W100")) {
         dw.dxfString(3, "ISO Long Dashed Dotted ____ . ____ . __");
@@ -3414,16 +3425,16 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 4);
         dw.dxfReal(40, 30.0);
         dw.dxfReal(49, 24.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "ACAD_ISO05W100")) {
         dw.dxfString(3, "ISO Long Dashed Double Dotted ____ .. __");
@@ -3431,22 +3442,22 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 6);
         dw.dxfReal(40, 33.0);
         dw.dxfReal(49, 24.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "BORDER")) {
         dw.dxfString(3, "Border __ __ . __ __ . __ __ . __ __ . __ __ .");
@@ -3454,22 +3465,22 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 6);
         dw.dxfReal(40, 44.45);
         dw.dxfReal(49, 12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "BORDER2")) {
         dw.dxfString(3, "Border (.5x) __.__.__.__.__.__.__.__.__.__.__.");
@@ -3477,22 +3488,22 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 6);
         dw.dxfReal(40, 22.225);
         dw.dxfReal(49, 6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "BORDERX2")) {
         dw.dxfString(3, "Border (2x) ____  ____  .  ____  ____  .  ___");
@@ -3500,22 +3511,22 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 6);
         dw.dxfReal(40, 88.9);
         dw.dxfReal(49, 25.4);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 25.4);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "CENTER")) {
         dw.dxfString(3, "Center ____ _ ____ _ ____ _ ____ _ ____ _ ____");
@@ -3523,16 +3534,16 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 4);
         dw.dxfReal(40, 50.8);
         dw.dxfReal(49, 31.75);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "CENTER2")) {
         dw.dxfString(3, "Center (.5x) ___ _ ___ _ ___ _ ___ _ ___ _ ___");
@@ -3540,16 +3551,16 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 4);
         dw.dxfReal(40, 28.575);
         dw.dxfReal(49, 19.05);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "CENTERX2")) {
         dw.dxfString(3, "Center (2x) ________  __  ________  __  _____");
@@ -3557,16 +3568,16 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 4);
         dw.dxfReal(40, 101.6);
         dw.dxfReal(49, 63.5);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DASHDOT")) {
         dw.dxfString(3, "Dash dot __ . __ . __ . __ . __ . __ . __ . __");
@@ -3574,16 +3585,16 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 4);
         dw.dxfReal(40, 25.4);
         dw.dxfReal(49, 12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DASHDOT2")) {
         dw.dxfString(3, "Dash dot (.5x) _._._._._._._._._._._._._._._.");
@@ -3591,16 +3602,16 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 4);
         dw.dxfReal(40, 12.7);
         dw.dxfReal(49, 6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DASHDOTX2")) {
         dw.dxfString(3, "Dash dot (2x) ____  .  ____  .  ____  .  ___");
@@ -3608,16 +3619,16 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 4);
         dw.dxfReal(40, 50.8);
         dw.dxfReal(49, 25.4);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DASHED")) {
         dw.dxfString(3, "Dashed __ __ __ __ __ __ __ __ __ __ __ __ __ _");
@@ -3625,10 +3636,10 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 2);
         dw.dxfReal(40, 19.05);
         dw.dxfReal(49, 12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DASHED2")) {
         dw.dxfString(3, "Dashed (.5x) _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _");
@@ -3636,10 +3647,10 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 2);
         dw.dxfReal(40, 9.525);
         dw.dxfReal(49, 6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DASHEDX2")) {
         dw.dxfString(3, "Dashed (2x) ____  ____  ____  ____  ____  ___");
@@ -3647,10 +3658,10 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 2);
         dw.dxfReal(40, 38.1);
         dw.dxfReal(49, 25.4);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DIVIDE")) {
         dw.dxfString(3, "Divide ____ . . ____ . . ____ . . ____ . . ____");
@@ -3658,22 +3669,22 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 6);
         dw.dxfReal(40, 31.75);
         dw.dxfReal(49, 12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DIVIDE2")) {
         dw.dxfString(3, "Divide (.5x) __..__..__..__..__..__..__..__.._");
@@ -3681,22 +3692,22 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 6);
         dw.dxfReal(40, 15.875);
         dw.dxfReal(49, 6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DIVIDEX2")) {
         dw.dxfString(3, "Divide (2x) ________  .  .  ________  .  .  _");
@@ -3704,22 +3715,22 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 6);
         dw.dxfReal(40, 63.5);
         dw.dxfReal(49, 25.4);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DOT")) {
         dw.dxfString(3, "Dot . . . . . . . . . . . . . . . . . . . . . .");
@@ -3727,10 +3738,10 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 2);
         dw.dxfReal(40, 6.35);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -6.35);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DOT2")) {
         dw.dxfString(3, "Dot (.5x) .....................................");
@@ -3738,10 +3749,10 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 2);
         dw.dxfReal(40, 3.175);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -3.175);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else if (!strcasecmp(data.name.c_str(), "DOTX2")) {
         dw.dxfString(3, "Dot (2x) .  .  .  .  .  .  .  .  .  .  .  .  .");
@@ -3749,10 +3760,10 @@ void DL_Dxf::writeLineType(DL_WriterA& dw,
         dw.dxfInt(73, 2);
         dw.dxfReal(40, 12.7);
         dw.dxfReal(49, 0.0);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
         dw.dxfReal(49, -12.7);
-        if (version>=VER_R13)
+        if (version>=DL_VERSION_R13)
             dw.dxfInt(74, 0);
     } else {
         std::cerr << "dxflib warning: DL_Dxf::writeLineType: Unknown Line Type\n";
@@ -3835,28 +3846,28 @@ void DL_Dxf::writeEndBlock(DL_WriterA& dw, const string& name) {
 
 
 /**
- * Writes a viewport section. This section is needed in VER_R13.
+ * Writes a viewport section. This section is needed in DL_VERSION_R13.
  * Note that this method currently only writes a faked VPORT section
  * to make the file readable by Aut*cad.
  */
 void DL_Dxf::writeVPort(DL_WriterA& dw) {
     dw.dxfString(0, "TABLE");
     dw.dxfString(2, "VPORT");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfHex(5, 0x8);
     }
     //dw.dxfHex(330, 0);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTable");
     }
     dw.dxfInt(70, 1);
     dw.dxfString(0, "VPORT");
     //dw.dxfHex(5, 0x2F);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.handle();
     }
     //dw.dxfHex(330, 8);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTableRecord");
         dw.dxfString(100, "AcDbViewportTableRecord");
     }
@@ -3896,7 +3907,7 @@ void DL_Dxf::writeVPort(DL_WriterA& dw) {
     dw.dxfInt( 77, 0);
     dw.dxfInt( 78, 0);
 
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfInt(281, 0);
         dw.dxfInt( 65, 1);
         dw.dxfReal(110, 0.0);
@@ -3917,28 +3928,28 @@ void DL_Dxf::writeVPort(DL_WriterA& dw) {
 
 
 /**
- * Writes a style section. This section is needed in VER_R13.
+ * Writes a style section. This section is needed in DL_VERSION_R13.
  * Note that this method currently only writes a faked STYLE section
  * to make the file readable by Aut*cad.
  */
 void DL_Dxf::writeStyle(DL_WriterA& dw) {
     dw.dxfString(  0, "TABLE");
     dw.dxfString(  2, "STYLE");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     	dw.dxfHex(5, 3);
 	}
     //dw.dxfHex(330, 0);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTable");
     }
     dw.dxfInt( 70, 1);
     dw.dxfString(  0, "STYLE");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     	dw.dxfHex(5, 0x11);
 	}
     //styleHandleStd = dw.handle();
     //dw.dxfHex(330, 3);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTableRecord");
         dw.dxfString(100, "AcDbTextStyleTableRecord");
     }
@@ -3957,18 +3968,18 @@ void DL_Dxf::writeStyle(DL_WriterA& dw) {
 
 
 /**
- * Writes a view section. This section is needed in VER_R13.
+ * Writes a view section. This section is needed in DL_VERSION_R13.
  * Note that this method currently only writes a faked VIEW section
  * to make the file readable by Aut*cad.
  */
 void DL_Dxf::writeView(DL_WriterA& dw) {
     dw.dxfString(  0, "TABLE");
     dw.dxfString(  2, "VIEW");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     	dw.dxfHex(5, 6);
 	}
     //dw.dxfHex(330, 0);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTable");
     }
     dw.dxfInt( 70, 0);
@@ -3978,18 +3989,18 @@ void DL_Dxf::writeView(DL_WriterA& dw) {
 
 
 /**
- * Writes a ucs section. This section is needed in VER_R13.
+ * Writes a ucs section. This section is needed in DL_VERSION_R13.
  * Note that this method currently only writes a faked UCS section
  * to make the file readable by Aut*cad.
  */
 void DL_Dxf::writeUcs(DL_WriterA& dw) {
     dw.dxfString(  0, "TABLE");
     dw.dxfString(  2, "UCS");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     	dw.dxfHex(5, 7);
 	}
     //dw.dxfHex(330, 0);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTable");
     }
     dw.dxfInt( 70, 0);
@@ -3999,7 +4010,7 @@ void DL_Dxf::writeUcs(DL_WriterA& dw) {
 
 
 /**
- * Writes a dimstyle section. This section is needed in VER_R13.
+ * Writes a dimstyle section. This section is needed in DL_VERSION_R13.
  * Note that this method currently only writes a faked DIMSTYLE section
  * to make the file readable by Aut*cad.
  */
@@ -4009,29 +4020,29 @@ void DL_Dxf::writeDimStyle(DL_WriterA& dw,
 
     dw.dxfString(  0, "TABLE");
     dw.dxfString(  2, "DIMSTYLE");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfHex(5, 0xA);
         dw.dxfString(100, "AcDbSymbolTable");
     }
     dw.dxfInt( 70, 1);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbDimStyleTable");
         dw.dxfInt( 71, 0);
     }
 
 
     dw.dxfString(  0, "DIMSTYLE");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfHex(105, 0x27);
     }
     //dw.handle(105);
     //dw.dxfHex(330, 0xA);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTableRecord");
         dw.dxfString(100, "AcDbDimStyleTableRecord");
     }
     dw.dxfString(  2, "Standard");
-    if (version==VER_R12) {
+    if (version==DL_VERSION_R12) {
         dw.dxfString(  3, "");
         dw.dxfString(  4, "");
         dw.dxfString(  5, "");
@@ -4044,20 +4055,20 @@ void DL_Dxf::writeDimStyle(DL_WriterA& dw,
     dw.dxfReal( 42, dimexo);
     dw.dxfReal( 43, 3.75);
     dw.dxfReal( 44, dimexe);
-    if (version==VER_R12) {
+    if (version==DL_VERSION_R12) {
         dw.dxfReal( 45, 0.0);
         dw.dxfReal( 46, 0.0);
         dw.dxfReal( 47, 0.0);
         dw.dxfReal( 48, 0.0);
     }
     dw.dxfInt( 70, 0);
-    if (version==VER_R12) {
+    if (version==DL_VERSION_R12) {
         dw.dxfInt( 71, 0);
         dw.dxfInt( 72, 0);
     }
     dw.dxfInt( 73, 0);
     dw.dxfInt( 74, 0);
-    if (version==VER_R12) {
+    if (version==DL_VERSION_R12) {
         dw.dxfInt( 75, 0);
         dw.dxfInt( 76, 0);
     }
@@ -4065,22 +4076,22 @@ void DL_Dxf::writeDimStyle(DL_WriterA& dw,
     dw.dxfInt( 78, 8);
     dw.dxfReal(140, dimtxt);
     dw.dxfReal(141, 2.5);
-    if (version==VER_R12) {
+    if (version==DL_VERSION_R12) {
         dw.dxfReal(142, 0.0);
     }
     dw.dxfReal(143, 0.03937007874016);
-    if (version==VER_R12) {
+    if (version==DL_VERSION_R12) {
         dw.dxfReal(144, 1.0);
         dw.dxfReal(145, 0.0);
         dw.dxfReal(146, 1.0);
     }
     dw.dxfReal(147, dimgap);
-    if (version==VER_R12) {
+    if (version==DL_VERSION_R12) {
         dw.dxfInt(170, 0);
     }
     dw.dxfInt(171, 3);
     dw.dxfInt(172, 1);
-    if (version==VER_R12) {
+    if (version==DL_VERSION_R12) {
         dw.dxfInt(173, 0);
         dw.dxfInt(174, 0);
         dw.dxfInt(175, 0);
@@ -4088,7 +4099,7 @@ void DL_Dxf::writeDimStyle(DL_WriterA& dw,
         dw.dxfInt(177, 0);
         dw.dxfInt(178, 0);
     }
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfInt(271, 2);
         dw.dxfInt(272, 2);
         dw.dxfInt(274, 3);
@@ -4105,30 +4116,30 @@ void DL_Dxf::writeDimStyle(DL_WriterA& dw,
 
 
 /**
- * Writes a blockrecord section. This section is needed in VER_R13.
+ * Writes a blockrecord section. This section is needed in DL_VERSION_R13.
  * Note that this method currently only writes a faked BLOCKRECORD section
  * to make the file readable by Aut*cad.
  */
 void DL_Dxf::writeBlockRecord(DL_WriterA& dw) {
     dw.dxfString(  0, "TABLE");
     dw.dxfString(  2, "BLOCK_RECORD");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     	dw.dxfHex(5, 1);
 	}
     //dw.dxfHex(330, 0);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTable");
     }
     dw.dxfInt( 70, 1);
 
     dw.dxfString(  0, "BLOCK_RECORD");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     	dw.dxfHex(5, 0x1F);
 	}
     //int msh = dw.handle();
     //dw.setModelSpaceHandle(msh);
     //dw.dxfHex(330, 1);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTableRecord");
         dw.dxfString(100, "AcDbBlockTableRecord");
     }
@@ -4136,13 +4147,13 @@ void DL_Dxf::writeBlockRecord(DL_WriterA& dw) {
     dw.dxfHex(340, 0x22);
 
     dw.dxfString(  0, "BLOCK_RECORD");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     	dw.dxfHex(5, 0x1B);
 	}
     //int psh = dw.handle();
     //dw.setPaperSpaceHandle(psh);
     //dw.dxfHex(330, 1);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTableRecord");
         dw.dxfString(100, "AcDbBlockTableRecord");
     }
@@ -4150,13 +4161,13 @@ void DL_Dxf::writeBlockRecord(DL_WriterA& dw) {
     dw.dxfHex(340, 0x1E);
 
     dw.dxfString(  0, "BLOCK_RECORD");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     	dw.dxfHex(5, 0x23);
 	}
     //int ps0h = dw.handle();
     //dw.setPaperSpace0Handle(ps0h);
     //dw.dxfHex(330, 1);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTableRecord");
         dw.dxfString(100, "AcDbBlockTableRecord");
     }
@@ -4173,11 +4184,11 @@ void DL_Dxf::writeBlockRecord(DL_WriterA& dw) {
  */
 void DL_Dxf::writeBlockRecord(DL_WriterA& dw, const string& name) {
     dw.dxfString(  0, "BLOCK_RECORD");
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
     	dw.handle();
 	}
     //dw->dxfHex(330, 1);
-    if (version==VER_2000) {
+    if (version==DL_VERSION_2000) {
         dw.dxfString(100, "AcDbSymbolTableRecord");
         dw.dxfString(100, "AcDbBlockTableRecord");
     }
@@ -4188,7 +4199,7 @@ void DL_Dxf::writeBlockRecord(DL_WriterA& dw, const string& name) {
 
 
 /**
- * Writes a objects section. This section is needed in VER_R13.
+ * Writes a objects section. This section is needed in DL_VERSION_R13.
  * Note that this method currently only writes a faked OBJECTS section
  * to make the file readable by Aut*cad.
  */
@@ -4512,7 +4523,7 @@ void DL_Dxf::writeObjects(DL_WriterA& dw) {
 
 
 /**
- * Writes the end of the objects section. This section is needed in VER_R13.
+ * Writes the end of the objects section. This section is needed in DL_VERSION_R13.
  * Note that this method currently only writes a faked OBJECTS section
  * to make the file readable by Aut*cad.
  */
@@ -4534,9 +4545,9 @@ void DL_Dxf::writeComment(DL_WriterA& dw, const string& comment) {
  * Checks if the given variable is known by the given DXF version.
  */
 bool DL_Dxf::checkVariable(const char* var, DL_Codes::version version) {
-    if (version>=VER_2000) {
+    if (version>=DL_VERSION_2000) {
         return true;
-    } else if (version==VER_R12) {
+    } else if (version==DL_VERSION_R12) {
         // these are all the variables recognized by dxf r12:
         if (!strcmp(var, "$ACADVER")) {
             return true;
