@@ -137,7 +137,7 @@ void ServerDownloadDialog::readFromServerContent()
     QByteArray postData;
     postData.append("text=" + txtFind->text());
 
-    networkReply = networkAccessManager.post(QNetworkRequest(QUrl("http://agros2d.org/collaboration/problem_list_xml.php")), postData);
+    networkReply = networkAccessManager.post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problem_list_xml.php")), postData);
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
 }
 
@@ -205,7 +205,7 @@ void ServerDownloadDialog::readFromServerXML(int ID, int version)
 {
     logMessage("ServerDownloadDialog::readFromServerXML()");
 
-    networkReply = networkAccessManager.get(QNetworkRequest(QUrl(QString("http://agros2d.org/collaboration/problem_download.php?type=xml&id=%1&version=%2").
+    networkReply = networkAccessManager.get(QNetworkRequest(QUrl(QString(Util::config()->collaborationServerURL + "problem_download.php?type=xml&id=%1&version=%2").
                                                                  arg(QString::number(ID)).
                                                                  arg(QString::number(version)))));
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
@@ -265,7 +265,7 @@ void ServerDownloadDialog::doVersionChanged(int index)
     postData.append(QString("id=%1&").arg(ID));
     postData.append(QString("version=%1").arg(cmbVersion->currentIndex() + 1));
 
-    networkReply = networkAccessManager.post(QNetworkRequest(QUrl("http://agros2d.org/collaboration/problem_detail_xml.php")), postData);
+    networkReply = networkAccessManager.post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problem_detail_xml.php")), postData);
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpDetailFinished()));
 }
 
@@ -294,7 +294,7 @@ void ServerDownloadDialog::httpDetailFinished()
 
     // svg
     int ID = trvProject->currentItem()->data(0, Qt::UserRole).toInt();
-    networkReply = networkAccessManager.get(QNetworkRequest(QUrl(QString("http://agros2d.org/collaboration/problem_download.php?id=%1&version=%2").
+    networkReply = networkAccessManager.get(QNetworkRequest(QUrl(QString(Util::config()->collaborationServerURL + "problem_download.php?id=%1&version=%2").
                                                                  arg(ID).
                                                                  arg(cmbVersion->currentIndex() + 1))));
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpDetailSvgFinished()));
@@ -484,7 +484,7 @@ void ServerUploadDialog::readFromServerContent()
 {
     logMessage("ServerUploadDialog::readFromServerContent()");
 
-    networkReply = networkAccessManager.get(QNetworkRequest(QUrl("http://agros2d.org/collaboration/problem_list_xml.php")));
+    networkReply = networkAccessManager.get(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problem_list_xml.php")));
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
 }
 
@@ -542,7 +542,7 @@ void ServerUploadDialog::uploadToServer()
     postData.append("affiliation=" + txtAffiliation->text() + "&");
     postData.append("content=" + text);
 
-    networkReply = networkAccessManager.post(QNetworkRequest(QUrl("http://agros2d.org/collaboration/problem_upload.php")), postData);
+    networkReply = networkAccessManager.post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problem_upload.php")), postData);
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
 }
 

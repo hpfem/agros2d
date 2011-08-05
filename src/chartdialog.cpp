@@ -667,7 +667,8 @@ void ChartDialog::doExportData()
             out << "% ylabel('" << trvTable->horizontalHeaderItem(2)->text() << "');" << endl;
         }
 
-        settings.setValue("General/LastDataDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastDataDir", fileInfo.absolutePath());
 
         file.close();
     }

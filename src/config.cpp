@@ -48,6 +48,8 @@ void Config::load()
     defaultPhysicField = (PhysicField) settings.value("General/DefaultPhysicField", PhysicField_Electrostatic).toInt();
     if (defaultPhysicField == PhysicField_Undefined) defaultPhysicField = PhysicField_Electrostatic;
 
+    collaborationServerURL = settings.value("General/CollaborationServerURL", QString("http://agros2d.org/collaboration/")).toString();
+
     checkVersion = settings.value("General/CheckVersion", true).toBool();
     showConvergenceChart = settings.value("General/ShowConvergenceChart", true).toBool();
     enabledApplicationLog = settings.value("General/EnabledApplicationLog", true).toBool();
@@ -180,6 +182,8 @@ void Config::save()
     settings.setValue("General/GUIStyle", guiStyle);
     settings.setValue("General/Language", language);
     settings.setValue("General/DefaultPhysicField", defaultPhysicField);
+
+    settings.setValue("General/CollaborationServerURL", collaborationServerURL);
 
     settings.setValue("General/CheckVersion", checkVersion);
     settings.setValue("General/ShowConvergenceChart", showConvergenceChart);

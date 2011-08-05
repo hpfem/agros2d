@@ -823,7 +823,6 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             if (!result.isError())
             {
                 setRecentFiles();
-                settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
 
                 sceneView->actSceneModeNode->trigger();
                 sceneView->doZoomBestFit();
@@ -928,7 +927,6 @@ void MainWindow::doDocumentSaveAs()
             result.showDialog();
 
         setRecentFiles();
-        settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
     }
 }
 
@@ -984,7 +982,8 @@ void MainWindow::doDocumentImportDXF()
         sceneView->doZoomBestFit();
 
         QFileInfo fileInfo(fileName);
-        settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
     }
 }
 
@@ -1002,7 +1001,8 @@ void MainWindow::doDocumentExportDXF()
         if (fileInfo.suffix().toLower() != "dxf") fileName += ".dxf";
         Util::scene()->writeToDxf(fileName);
 
-        settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
     }
 }
 
@@ -1023,7 +1023,8 @@ void MainWindow::doDocumentSaveImage()
         if (result.isError())
             result.showDialog();
 
-        settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
 }
 
@@ -1151,7 +1152,8 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
         disconnectTerminal(terminalView->terminal());
 
         QFileInfo fileInfo(fileNameScript);
-        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
     else
     {
@@ -1264,7 +1266,7 @@ void MainWindow::doCollaborationServer()
 {
     logMessage("MainWindow::doCollaborationServer()");
 
-    QDesktopServices::openUrl(QUrl("http://agros2d.org/collaboration/problems.php"));
+    QDesktopServices::openUrl(QUrl(Util::config()->collaborationServerURL + "problems.php"));
 }
 
 void MainWindow::doOnlineHelp()
@@ -1323,7 +1325,8 @@ void MainWindow::doDocumentExportMeshFile()
 
                 // copy file
                 QFile::copy(sourceFileName, fileName + ".mesh");
-                settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
+                if (fileInfo.absoluteDir() != tempProblemDir())
+                    settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
             }
 
             QFile::remove(sourceFileName);
@@ -1332,7 +1335,8 @@ void MainWindow::doDocumentExportMeshFile()
         if (!fileName.isEmpty())
         {
             QFile::copy(tempProblemFileName() + ".mesh", fileName + ".mesh");
-            settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
+            if (fileInfo.absoluteDir() != tempProblemDir())
+                settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
         }
 
         QFile::remove(tempProblemFileName() + ".mesh");
@@ -1369,7 +1373,8 @@ void MainWindow::doExportVTKScalar()
         if (!fileName.isEmpty())
         {
             QFileInfo fileInfo(fileName);
-            settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+            if (fileInfo.absoluteDir() != tempProblemDir())
+                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
         }
     }
 }
@@ -1398,7 +1403,8 @@ void MainWindow::doExportVTKOrder()
         if (!fileName.isEmpty())
         {
             QFileInfo fileInfo(fileName);
-            settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+            if (fileInfo.absoluteDir() != tempProblemDir())
+                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
         }
     }
 }

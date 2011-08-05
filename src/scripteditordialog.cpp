@@ -768,7 +768,8 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
 
         doCurrentPageChanged(tabWidget->currentIndex());
 
-        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
 }
 
@@ -819,7 +820,8 @@ void ScriptEditorDialog::doFileSave()
             errorResult.showDialog();
         }
 
-        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
 }
 
@@ -835,8 +837,10 @@ void ScriptEditorDialog::doFileSaveAs()
     {
         scriptEditorWidget()->file = fileName;
         doFileSave();
+
         QFileInfo fileInfo(fileName);
-        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
 }
 

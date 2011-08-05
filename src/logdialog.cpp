@@ -205,7 +205,8 @@ void LogDialog::doSaveLog()
         messages << lstMessages->toPlainText();
 
         QFileInfo fileInfo(fileName);
-        settings.setValue("General/LastLogDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastLogDir", fileInfo.absolutePath());
     }
 }
 
@@ -290,7 +291,8 @@ void LogDialog::doSaveData()
         if (!QFile::copy(dataFileName, fileName))
             QMessageBox::critical(QApplication::activeWindow(), tr("Error"), tr("File '%1' could not be copied..").arg(fileName));
         else
-            settings.setValue("General/LastDataDir", fileInfo.absolutePath());
+            if (fileInfo.absoluteDir() != tempProblemDir())
+                settings.setValue("General/LastDataDir", fileInfo.absolutePath());
     }
 }
 
@@ -315,7 +317,8 @@ void LogDialog::doSaveImage()
             if (!QFile::copy(imageFileName, fileName))
                 QMessageBox::critical(QApplication::activeWindow(), tr("Error"), tr("File '%1' could not be copied..").arg(fileName));
             else
-                settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+                if (fileInfo.absoluteDir() != tempProblemDir())
+                    settings.setValue("General/LastImageDir", fileInfo.absolutePath());
         }
     }
 
