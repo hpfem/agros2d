@@ -1112,12 +1112,12 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
             // set up the solver, matrix, and rhs according to the solver selection.
             SparseMatrix<Scalar> *matrix = Hermes::Algebra::create_matrix<Scalar>(matrixSolver);
             Vector<Scalar> *rhs = create_vector<Scalar>(matrixSolver);
-            //Hermes::Solvers::LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs); //TODO PK LinearSolver ??
+            Hermes::Solvers::LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(matrixSolver, matrix, rhs); //TODO PK LinearSolver ??
 
             if (adaptivityType == AdaptivityType_None)
             {
-                //                if (analysisType != AnalysisType_Transient)
-                //                    solve(space, solution, solver, matrix, rhs);   //TODO PK solver...
+                if (analysisType != AnalysisType_Transient)
+                    solve(space, solution, solver, matrix, rhs);   //TODO PK solver...
             }
             else
             {
@@ -1309,8 +1309,8 @@ bool SolutionAgros<Scalar>::solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar
 
 template <typename Scalar>
 bool SolutionAgros<Scalar>::solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
-                                  Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
-                                  Hermes::Solvers::NonlinearSolver<Scalar> *solver, Hermes::Algebra::SparseMatrix<Scalar> *matrix, Hermes::Algebra::Vector<Scalar> *rhs) //TODO PK nonlinear?
+                          Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
+                          Hermes::Solvers::LinearSolver<Scalar> *solver, Hermes::Algebra::SparseMatrix<Scalar> *matrix, Hermes::Algebra::Vector<Scalar> *rhs) //TODO PK nonlinear?
 {
     bool isError = false;
     if (linearityType == LinearityType_Linear)
@@ -1656,8 +1656,11 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 }
 
 template Hermes::vector<SolutionArray<double> *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                                                   Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> > bcs,
-                                                                   WeakFormAgros<double> *wf);
-template bool SolutionAgros<double>::solve(Hermes::vector<Hermes::Hermes2D::Space<double> *> space,
-                                           Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution,
-                                           Hermes::Solvers::NonlinearSolver<double> *solver, Hermes::Algebra::SparseMatrix<double> *matrix, Hermes::Algebra::Vector<double> *rhs);
+                                                  Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> > bcs,
+                                                  WeakFormAgros<double> *wf);
+
+template class SolutionAgros<double>;
+
+//template bool SolutionAgros<double>::solve(Hermes::vector<Hermes::Hermes2D::Space<double> *> space,
+//                          Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution,
+//                          Hermes::Solvers::LinearSolver<double> *solver, Hermes::Algebra::SparseMatrix<double> *matrix, Hermes::Algebra::Vector<double> *rhs);

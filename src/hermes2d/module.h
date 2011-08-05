@@ -449,7 +449,7 @@ private:
 
     bool solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
                Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
-               Hermes::Solvers::NonlinearSolver<Scalar> *solver, SparseMatrix<Scalar> *matrix, Vector<Scalar> *rhs);
+               Hermes::Solvers::LinearSolver<Scalar> *solver, SparseMatrix<Scalar> *matrix, Vector<Scalar> *rhs);
 };
 
 #endif // HERMES_FIELD_H
