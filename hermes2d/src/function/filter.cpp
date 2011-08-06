@@ -460,13 +460,6 @@ namespace Hermes
     };
 
     template<>
-    void SquareFilter<double>::filter_fn(int n, Hermes::vector<double *> v1, double* result)
-    {
-      for (int i = 0; i < n; i++)
-        result[i] = sqr(v1.at(0)[i]);
-    };
-
-    template<>
     void SquareFilter<std::complex<double> >::filter_fn(int n, Hermes::vector<std::complex<double> *> v1, std::complex<double> * result)
     {
       for (int i = 0; i < n; i++)
@@ -479,12 +472,6 @@ namespace Hermes
     {
       if (solutions.size() > 1)
         error("SquareFilter only supports one MeshFunction.");
-    };
-
-    void RealFilter::filter_fn(int n, Hermes::vector<std::complex<double>*> v1, double* result)
-    {
-      for (int i = 0; i < n; i++)
-        result[i] = v1.at(0)[i].real();
     };
 
     void RealFilter::filter_fn(int n, Hermes::vector<std::complex<double>*> v1, double* result)
