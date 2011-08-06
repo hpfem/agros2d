@@ -226,12 +226,12 @@ QWidget *ProblemDialog::createControlsGeneral()
     QGridLayout *layoutLinearity = new QGridLayout();
     layoutLinearity->setColumnMinimumWidth(0, minWidth);
     layoutLinearity->setColumnStretch(1, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Nonlin. tolerance (%):")), 0, 0);
+    layoutLinearity->addWidget(new QLabel(tr("Tolerance (%):")), 0, 0);
     layoutLinearity->addWidget(txtNonlinearTolerance, 0, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Nonlin. steps:")), 1, 0);
+    layoutLinearity->addWidget(new QLabel(tr("Steps:")), 1, 0);
     layoutLinearity->addWidget(txtNonlinearSteps, 1, 1);
 
-    QGroupBox *grpLinearity = new QGroupBox(tr("Linearity"));
+    QGroupBox *grpLinearity = new QGroupBox(tr("Newton solver"));
     grpLinearity->setLayout(layoutLinearity);
     grpLinearity->setVisible(Util::config()->showExperimentalFeatures);
 
@@ -240,7 +240,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutLeft->addLayout(layoutTable);
     // layoutLeft->addWidget(grpAdaptivity);
     layoutLeft->addStretch();
-    // layoutLeft->addWidget(grpLinearity);
+    layoutLeft->addWidget(grpLinearity);
     layoutLeft->addWidget(grpMesh);
 
     // right
@@ -249,7 +249,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutRight->addWidget(grpTransientAnalysis);
     // layoutRight->addWidget(grpMesh);
     layoutRight->addWidget(grpAdaptivity);
-    layoutRight->addWidget(grpLinearity);
+    // layoutRight->addWidget(grpLinearity);
     layoutRight->addStretch();
 
     // both

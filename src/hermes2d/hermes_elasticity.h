@@ -29,8 +29,6 @@ struct ModuleElasticity : public Hermes::Module::ModuleAgros
 public:
     ModuleElasticity(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
-    bool has_nonlinearity() const { return false; }
-
     void deform_shape(double3* linVert, int count);
     void deform_shape(double4* linVert, int count);
 
@@ -38,7 +36,6 @@ public:
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
     SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
-    SceneMaterial *newMaterial();
     SceneMaterial *newMaterial(PyObject *self, PyObject *args);
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 };

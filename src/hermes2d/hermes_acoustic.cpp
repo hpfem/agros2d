@@ -81,6 +81,7 @@ public:
 
             if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
+                /*
                 if (boundary->type == "acoustic_normal_acceleration")
                     if (fabs(boundary->get_value("acoustic_normal_acceleration").number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
@@ -88,6 +89,7 @@ public:
                                                                                                         boundary->get_value("acoustic_normal_acceleration").number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
 
+                */
                 if (boundary->type == "acoustic_impedance")
                 {
                     /*
@@ -171,6 +173,7 @@ public:
     }
 
 private:
+    /*
     class VectorFormVolWaveMass : public Hermes::Hermes2D::VectorFormVol<double>
     {
     public:
@@ -234,8 +237,10 @@ private:
 
         double c_squared;
     };    
+    */
 };
 
+/*
 class CustomAcousticPressureBC : public EssentialBoundaryCondition
 {
 public:
@@ -255,6 +260,7 @@ public:
 private:
     SceneBoundary *m_boundary;
 };
+*/
 
 // ****************************************************************************************************************
 
@@ -378,11 +384,6 @@ SceneBoundary *ModuleAcoustic::modifyBoundary(PyObject *self, PyObject *args)
 
     return NULL;
     */
-}
-
-SceneMaterial *ModuleAcoustic::newMaterial()
-{
-    return new SceneMaterial(tr("new material").toStdString());
 }
 
 SceneMaterial *ModuleAcoustic::newMaterial(PyObject *self, PyObject *args)

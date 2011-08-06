@@ -135,7 +135,11 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
-        // result += wt[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]);
+        // previous solution
+        pupval = u_ext[this->j]->val[i];
+        pupdx = u_ext[this->j]->dx[i];
+        pupdy = u_ext[this->j]->dy[i];
+
         result += wt[i] * parser->parser[0]->Eval();
     }
 
@@ -175,9 +179,9 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = isnan(u_ext[this->i]->val[i]) ? 0.0 : u_ext[this->i]->val[i];
-        pupdx = isnan(u_ext[this->i]->dx[i]) ? 0.0 : u_ext[this->i]->dx[i];
-        pupdy = isnan(u_ext[this->i]->dy[i]) ? 0.0 : u_ext[this->i]->dy[i];
+        pupval = u_ext[this->i]->val[i];
+        pupdx = u_ext[this->i]->dx[i];
+        pupdy = u_ext[this->i]->dy[i];
 
         result += wt[i] * parser->parser[0]->Eval();
     }
@@ -223,6 +227,11 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
+        // previous solution
+        pupval = u_ext[this->j]->val[i];
+        pupdx = u_ext[this->j]->dx[i];
+        pupdy = u_ext[this->j]->dy[i];
+
         result += wt[i] * parser->parser[0]->Eval();
     }
 
@@ -260,6 +269,11 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvval = v->val[i];
         pvdx = v->dx[i];
         pvdy = v->dy[i];
+
+        // previous solution
+        pupval = u_ext[this->i]->val[i];
+        pupdx = u_ext[this->i]->dx[i];
+        pupdy = u_ext[this->i]->dy[i];
 
         result += wt[i] * parser->parser[0]->Eval();
     }

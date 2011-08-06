@@ -29,10 +29,10 @@
             <material id="heat_density" />
             <material id="heat_specific_heat" />
 
-            <matrix i="1" j="1" planar="lambda * (udx * vdx + udy * vdy) + rho * cp / dt * uval * vval" 
-                                axi="lambda * x * (udx * vdx + udy * vdy) + x * rho * cp / dt * uval * vval" symmetric="1" />
-            <vector i="1" planar="p * vval + rho * cp / dt * upval * vval" 
-                          axi="p * x * vval + x * rho * cp / dt * upval * vval" />
+            <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
+                                axi="0.0 * x * uval * (updx * vdx + updy * vdy) + lambda * x * (udx * vdx + udy * vdy)" symmetric="1" />
+            <vector i="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval"
+                          axi="lambda * x * (updx * vdx + updy * vdy) - p * vval" />
         </transient>        
     </material>
 
@@ -54,8 +54,10 @@
                 <item id="heat_heat_transfer_coefficient" />
                 <item id="heat_external_temperature" />
 
-                <matrix i="1" j="1" planar="h * uval * vval" axi="h * x * uval * vval" />
-                <vector i="1" planar="(f + h * Te) * vval" axi="(f + h * Te) * x * vval" />
+                <matrix i="1" j="1" planar="h * uval * vval"
+                                    axi="h * x * uval * vval" symmetric="1" />
+                <vector i="1" planar="(f - h * Te) * vval + h * upval * vval"
+                              axi="(f - h * Te) * x * vval + h * x * upval * vval" />
             </boundary>
         </steadystate>
         

@@ -96,11 +96,6 @@ SceneBoundary *ModuleMagnetic::modifyBoundary(PyObject *self, PyObject *args)
     */
 }
 
-SceneMaterial *ModuleMagnetic::newMaterial()
-{
-    return new SceneMaterial(tr("new material").toStdString());
-}
-
 SceneMaterial *ModuleMagnetic::newMaterial(PyObject *self, PyObject *args)
 {
     /*

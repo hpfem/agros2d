@@ -21,12 +21,12 @@
 
 // #include "hermes_general.h"
 #include "hermes_electrostatic.h"
-//#include "hermes_magnetic.h"
-//#include "hermes_heat.h"
-//#include "hermes_current.h"
-//#include "hermes_elasticity.h"
-//#include "hermes_rf.h"
-//#include "hermes_acoustic.h"
+#include "hermes_magnetic.h"
+#include "hermes_heat.h"
+#include "hermes_current.h"
+#include "hermes_elasticity.h"
+#include "hermes_rf.h"
+#include "hermes_acoustic.h"
 // #include "hermes_flow.h"
 
 #include "progressdialog.h"
@@ -45,18 +45,18 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
 
     if (id == "electrostatic")
         module = new ModuleElectrostatic(problem_type, analysis_type);
-    //    if (id == "current")
-    //        module = new ModuleCurrent(problem_type, analysis_type);
-    //    if (id == "magnetic")
-    //        module = new ModuleMagnetic(problem_type, analysis_type);
-    //    if (id == "acoustic")
-    //        module = new ModuleAcoustic(problem_type, analysis_type);
-    //    if (id == "elasticity")
-    //        module = new ModuleElasticity(problem_type, analysis_type);
-    //    if (id == "heat")
-    //        module = new ModuleHeat(problem_type, analysis_type);
-    //    if (id == "rf")
-    //        module = new ModuleRF(problem_type, analysis_type);
+    if (id == "current")
+        module = new ModuleCurrent(problem_type, analysis_type);
+    if (id == "magnetic")
+        module = new ModuleMagnetic(problem_type, analysis_type);
+    if (id == "acoustic")
+        module = new ModuleAcoustic(problem_type, analysis_type);
+    if (id == "elasticity")
+        module = new ModuleElasticity(problem_type, analysis_type);
+    if (id == "heat")
+        module = new ModuleHeat(problem_type, analysis_type);
+    if (id == "rf")
+        module = new ModuleRF(problem_type, analysis_type);
 
     if (module)
         module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());
@@ -71,18 +71,18 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneBoundaryElectrostaticDialog(scene_boundary, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "current")
-    //        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "magnetic")
-    //        return new SceneBoundaryMagneticDialog(scene_boundary, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-    //        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "elasticity")
-    //        return new SceneBoundaryElasticityDialog(scene_boundary, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "heat")
-    //        return new SceneBoundaryHeatDialog(scene_boundary, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "rf")
-    //        return new SceneBoundaryRFDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "current")
+        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "magnetic")
+        return new SceneBoundaryMagneticDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "acoustic")
+        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "elasticity")
+        return new SceneBoundaryElasticityDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "heat")
+        return new SceneBoundaryHeatDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "rf")
+        return new SceneBoundaryRFDialog(scene_boundary, parent);
 }
 
 // material dialog factory
@@ -90,18 +90,18 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneMaterialElectrostaticDialog(scene_material, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "current")
-    //        return new SceneMaterialCurrentDialog(scene_material, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "magnetic")
-    //        return new SceneMaterialMagneticDialog(scene_material, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-    //        return new SceneMaterialAcousticDialog(scene_material, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "elasticity")
-    //        return new SceneMaterialElasticityDialog(scene_material, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "heat")
-    //        return new SceneMaterialHeatDialog(scene_material, parent);
-    //    if (Util::scene()->problemInfo()->module()->id == "rf")
-    //        return new SceneMaterialRFDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "current")
+        return new SceneMaterialCurrentDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "magnetic")
+        return new SceneMaterialMagneticDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "acoustic")
+        return new SceneMaterialAcousticDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "elasticity")
+        return new SceneMaterialElasticityDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "heat")
+        return new SceneMaterialHeatDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "rf")
+        return new SceneMaterialRFDialog(scene_material, parent);
 }
 
 std::map<std::string, std::string> availableModules()
@@ -855,6 +855,12 @@ void Hermes::Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbF
     }
 }
 
+SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
+{
+    return new SceneMaterial(tr("new material").toStdString());
+}
+
+
 // ***********************************************************************************************
 
 void readMeshDirtyFix()
@@ -1238,7 +1244,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
 
                 // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
                 Hermes::Hermes2D::NewtonSolver<double> newton(&dp, Hermes::SOLVER_UMFPACK);
-                if (!newton.solve(coeff_vec, 1e-8, 10))
+                if (!newton.solve(coeff_vec, nonlinearTolerance, nonlinearSteps))
                 {
                     m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed"), true);
                     isError = true;
