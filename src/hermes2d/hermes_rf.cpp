@@ -463,11 +463,6 @@ SceneBoundary *ModuleRF::modifyBoundary(PyObject *self, PyObject *args)
     */
 }
 
-SceneMaterial *ModuleRF::newMaterial()
-{
-    return new SceneMaterial(tr("new material").toStdString());
-}
-
 SceneMaterial *ModuleRF::newMaterial(PyObject *self, PyObject *args)
 {
     /*

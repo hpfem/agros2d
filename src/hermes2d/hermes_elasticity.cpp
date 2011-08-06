@@ -337,10 +337,6 @@ SceneBoundary *ModuleElasticity::modifyBoundary(PyObject *self, PyObject *args)
     */
 }
 
-SceneMaterial *ModuleElasticity::newMaterial()
-{
-    return new SceneMaterial(tr("new material").toStdString());
-}
 
 SceneMaterial *ModuleElasticity::newMaterial(PyObject *self, PyObject *args)
 {

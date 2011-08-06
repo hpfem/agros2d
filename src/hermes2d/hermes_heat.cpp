@@ -110,11 +110,6 @@ SceneBoundary *ModuleHeat::modifyBoundary(PyObject *self, PyObject *args)
     */
 }
 
-SceneMaterial *ModuleHeat::newMaterial()
-{
-    return new SceneMaterial(tr("new material").toStdString());
-}
-
 SceneMaterial *ModuleHeat::newMaterial(PyObject *self, PyObject *args)
 {
     /*

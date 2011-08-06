@@ -79,11 +79,6 @@ SceneBoundary *ModuleCurrent::modifyBoundary(PyObject *self, PyObject *args)
     */
 }
 
-SceneMaterial *ModuleCurrent::newMaterial()
-{
-    return new SceneMaterial(tr("new material").toStdString());
-}
-
 SceneMaterial *ModuleCurrent::newMaterial(PyObject *self, PyObject *args)
 {
     /*

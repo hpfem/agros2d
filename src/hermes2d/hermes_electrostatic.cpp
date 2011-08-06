@@ -81,11 +81,6 @@ SceneBoundary *ModuleElectrostatic::modifyBoundary(PyObject *self, PyObject *arg
     */
 }
 
-SceneMaterial *ModuleElectrostatic::newMaterial()
-{
-    return new SceneMaterial(tr("new material").toStdString());
-}
-
 SceneMaterial *ModuleElectrostatic::newMaterial(PyObject *self, PyObject *args)
 {
     /*
