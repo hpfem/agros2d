@@ -1374,12 +1374,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         return ErrorResult(ErrorResultType_Information, tr("File '%1' has been converted to new version. The file is created in temp directory. Please, save problem file to the new location.").arg(fileName));
     }
 
-    // check version of a2d file
-    QString version = eleDoc.attribute("version");
-
-    if (!version.isEmpty())
-        return ErrorResult(ErrorResultType_Critical, tr("For opening file '%1' is required Agros2D version 2.0 or higher.").arg(fileName));
-
     // problems
     QDomNode eleProblems = eleDoc.elementsByTagName("problems").at(0);
     // first problem

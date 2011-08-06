@@ -4,7 +4,6 @@ TEMPLATE = lib
 OBJECTS_DIR = build
 CONFIG = += staticlib
 DEFINES += NOGLUT
-DEFINES += WITH_UMFPACK
 
 INCLUDEPATH += include \
                include/adapt \
