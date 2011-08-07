@@ -860,7 +860,6 @@ SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
     return new SceneMaterial(tr("new material").toStdString());
 }
 
-
 // ***********************************************************************************************
 
 void readMeshDirtyFix()

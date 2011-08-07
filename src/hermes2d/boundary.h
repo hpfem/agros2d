@@ -39,7 +39,8 @@ public:
     // variables
     std::map<std::string, Value> values;
 
-    Boundary(std::string name, std::string type = "");
+    Boundary(std::string name, std::string type = "",
+             std::map<std::string, Value> values = std::map<std::string, Value>());
     ~Boundary();
 
     Value get_value(std::string id);

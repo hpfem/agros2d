@@ -154,23 +154,6 @@ SceneBoundary *HermesGeneral::newBoundary()
                                       Value("0"));
 }
 
-SceneBoundary *HermesGeneral::newBoundary(PyObject *self, PyObject *args)
-{
-    double value;
-    char *name, *type;
-    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
-    {
-        // check name
-        if (Util::scene()->getBoundary(name)) return NULL;
-
-        return new SceneBoundaryGeneral(name,
-                                          physicFieldBCFromStringKey(type),
-                                          Value(QString::number(value)));
-    }
-
-    return NULL;
-}
-
 SceneBoundary *HermesGeneral::modifyBoundary(PyObject *self, PyObject *args)
 {
     double value;
@@ -196,30 +179,6 @@ SceneBoundary *HermesGeneral::modifyBoundary(PyObject *self, PyObject *args)
             PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
-    }
-
-    return NULL;
-}
-
-SceneMaterial *HermesGeneral::newMaterial()
-{
-    return new SceneMaterialGeneral(tr("new material"),
-                                       Value("0"),
-                                       Value("1"));
-}
-
-SceneMaterial *HermesGeneral::newMaterial(PyObject *self, PyObject *args)
-{
-    double rightside, constant;
-    char *name;
-    if (PyArg_ParseTuple(args, "sdd", &name, &rightside, &constant))
-    {
-        // check name
-        if (Util::scene()->getMaterial(name)) return NULL;
-
-        return new SceneMaterialGeneral(name,
-                                           Value(QString::number(rightside)),
-                                           Value(QString::number(constant)));
     }
 
     return NULL;

@@ -22,20 +22,25 @@
 
 #include "util.h"
 
-Boundary::Boundary(std::string name, std::string type)
+Boundary::Boundary(std::string name, std::string type,
+                   std::map<std::string, Value> values)
 {
     // name and type
     this->name = name;
     this->type = type;
+    this->values = values;
 
     // set values
     if (name != "none")
     {
-        Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
-        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+        if (this->values.size() == 0)
         {
-            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-            values[variable->id] = Value("0");
+            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+            {
+                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+                this->values[variable->id] = Value("0");
+            }
         }
     }
 }

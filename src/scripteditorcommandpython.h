@@ -68,14 +68,15 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
                        int numberofrefinements, int polynomialorder, char *adaptivitytype,
                        double adaptivitysteps, double adaptivitytolerance,
                        double frequency,
-                       char *analysistype, double timestep, double totaltime, double initialcondition);
+                       char *analysistype, double timestep, double totaltime, double initialcondition,
+                       double nonlineartolerance, int nonlinearsteps);
 void pythonOpenDocument(char *str);
 void pythonSaveDocument(char *str);
 void pythonCloseDocument();
 
 void pythonAddNode(double x, double y);
-void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker);
-void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *marker);
+void pythonAddEdge(double x1, double y1, double x2, double y2, char *boundary, double angle, int refine);
+void pythonAddLabel(double x, double y, char *material, double area, int order);
 
 void pythonDeleteNode(int index);
 void pythonDeleteNodePoint(double x, double y);

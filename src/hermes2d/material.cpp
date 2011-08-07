@@ -22,19 +22,24 @@
 
 #include "util.h"
 
-Material::Material(std::string name)
+Material::Material(std::string name,
+                   std::map<std::string, Value> values)
 {
     // name and type
     this->name = name;
+    this->values = values;
 
     // set values
     if (name != "none")
     {
-        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
-        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+        if (this->values.size() == 0)
         {
-            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-            values[variable->id] = Value("0");
+            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+            {
+                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+                this->values[variable->id] = Value("0");
+            }
         }
     }
 }

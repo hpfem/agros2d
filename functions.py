@@ -15,30 +15,30 @@ EPS0 = 8.854e-12
 def sgn(number):
 	return (number >= 0) and 1 or -1 
 
-def addsemicircle(x0, y0, radius, marker = "none", label = "null"):
-	addedge(x0, (y0)-radius, (x0)+radius, y0, 90, marker)
-	addedge((x0)+radius, y0, x0, (y0)+radius, 90, marker)
-	addedge(x0, (y0)+radius, x0, (y0)-radius, 0, marker)
-	if (label != "null"):
-		addlabel((x0)+(radius/2.0), y0, 0, 0, label)
+def addsemicircle(x0, y0, radius, boundary = "none", material = "null"):
+	addedge(x0, (y0)-radius, (x0)+radius, y0, boundary=boundary, angle=90)
+	addedge((x0)+radius, y0, x0, (y0)+radius, boundary=boundary, angle=90)
+	addedge(x0, (y0)+radius, x0, (y0)-radius, boundary=boundary, angle=0)
+	if (material != "null"):
+		addlabel((x0)+(radius/2.0), y0, 0, 0, material=material)
 	return
 
-def addcircle(x0, y0, radius, marker = "none", label = "null"):
-	addedge(x0, (y0)-radius, (x0)+radius, y0, 90, marker)
-	addedge((x0)+radius, y0, x0, (y0)+radius, 90, marker)
-	addedge(x0, (y0)+radius, (x0)-radius, y0, 90, marker)
-	addedge((x0)-radius, y0, x0, (y0)-radius, 90, marker)
-	if (label != "null"):
-		addlabel(x0, y0, 0, 0, label)
+def addcircle(x0, y0, radius, boundary = "none", material = "null"):
+	addedge(x0, (y0)-radius, (x0)+radius, y0, boundary=boundary, angle=90)
+	addedge((x0)+radius, y0, x0, (y0)+radius, boundary=boundary, angle=90)
+	addedge(x0, (y0)+radius, (x0)-radius, y0, boundary=boundary, angle=90)
+	addedge((x0)-radius, y0, x0, (y0)-radius, boundary=boundary, angle=90)
+	if (material != "null"):
+		addlabel(x0, y0, 0, 0, material=material)
 	return
 
-def addrect(x0, y0, width, height, marker = "none", label = "null"):
-	addedge(x0, y0, (x0)+width, y0, 0, marker)
-	addedge(x0+width, y0, (x0)+width, (y0)+height, 0, marker)
-	addedge(x0+width, (y0)+height, x0, (y0)+height, 0, marker)
-	addedge(x0, (y0)+height, x0, y0, 0, marker)
-	if (label != "null"):
-		addlabel((x0)+(width/2.0), (y0)+(height/2.0), 0, 0, label)
+def addrect(x0, y0, width, height, boundary = "none", material = "null"):
+	addedge(x0, y0, (x0)+width, y0, boundary=boundary)
+	addedge(x0+width, y0, (x0)+width, (y0)+height, boundary=boundary)
+	addedge(x0+width, (y0)+height, x0, (y0)+height, boundary=boundary)
+	addedge(x0, (y0)+height, x0, y0, boundary=boundary)
+	if (material != "null"):
+		addlabel((x0)+(width/2.0), (y0)+(height/2.0), material=material)
 	return
 
 def agroslistvariables():

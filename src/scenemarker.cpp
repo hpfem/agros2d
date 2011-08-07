@@ -22,8 +22,9 @@
 #include "scene.h"
 #include "gui.h"
 
-SceneBoundary::SceneBoundary(std::string name, std::string type)
-    : Boundary(name, type)
+SceneBoundary::SceneBoundary(std::string name, std::string type,
+                             std::map<std::string, Value> values)
+    : Boundary(name, type, values)
 {
     logMessage("SceneBoundary::SceneBoundary()");
 }
@@ -36,7 +37,27 @@ int SceneBoundary::showDialog(QWidget *parent)
 
 QString SceneBoundary::script()
 {
-    return "";
+    // value
+    QString val = "{";
+    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+    {
+        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text + ", ";
+    }
+
+    if (val.length() > 1)
+        val = val.left(val.length() - 2);
+    val += "}";
+
+    QString str;
+
+    str += QString("addboundary(\"%1\", \"%2\", %3)").
+            arg(QString::fromStdString(name)).
+            arg(QString::fromStdString(type)).
+            arg(val);
+
+    return str;
 }
 
 QString SceneBoundary::html()
@@ -44,13 +65,13 @@ QString SceneBoundary::html()
     QString out;
     out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
     out += "<table>";
-
+    
     Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
     if (boundary_type)
         for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-
+            
             out += "<tr>";
             out += QString("<td>%1 (%2):</td>").
                     arg(QString::fromStdString(variable->name)).
@@ -59,16 +80,16 @@ QString SceneBoundary::html()
                     arg(values[variable->id].text);
             out += "</tr>";
         }
-
+    
     out += "</table>";
-
+    
     return out;
 }
 
 QVariant SceneBoundary::variant()
 {
     logMessage("SceneBoundary::variant()");
-
+    
     QVariant v;
     v.setValue(this);
     return v;
@@ -81,7 +102,8 @@ SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary("none")
 
 // *************************************************************************************************************************************
 
-SceneMaterial::SceneMaterial(std::string name) : Material(name)
+SceneMaterial::SceneMaterial(std::string name,
+                             std::map<std::string, Value> values) : Material(name, values)
 {
     logMessage("SceneMaterial::SceneMaterial()");
 }
@@ -94,23 +116,41 @@ int SceneMaterial::showDialog(QWidget *parent)
 
 QString SceneMaterial::script()
 {
-    logMessage("SceneMaterial::script()");
-    return "";
+    // value
+    QString val = "{";
+    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+    {
+        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text + ", ";
+    }
+
+    if (val.length() > 1)
+        val = val.left(val.length() - 2);
+    val += "}";
+
+    QString str;
+
+    str += QString("addmaterial(\"%1\", %2)").
+            arg(QString::fromStdString(name)).
+            arg(val);
+
+    return str;
 }
 
 QString SceneMaterial::html()
 {
     logMessage("SceneMaterial::html()");
-
+    
     QString out;
     out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
     out += "<table>";
-
+    
     for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::scene()->problemInfo()->module()->material_type_variables.begin();
          it < Util::scene()->problemInfo()->module()->material_type_variables.end(); ++it )
     {
         Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
-
+        
         out += "<tr>";
         out += QString("<td>%1 (%2)</td>").
                 arg(QString::fromStdString(material->name)).
@@ -121,14 +161,14 @@ QString SceneMaterial::html()
         out += "</tr>";
     }
     out += "</table>";
-
+    
     return out;
 }
 
 QVariant SceneMaterial::variant()
 {
     logMessage("SceneMaterial::variant()");
-
+    
     QVariant v;
     v.setValue(this);
     return v;
@@ -145,10 +185,10 @@ SceneMaterialNone::SceneMaterialNone() : SceneMaterial("none")
 SceneBoundaryDialog::SceneBoundaryDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("SceneBoundaryDialog::SceneBoundaryDialog()");
-
+    
     setWindowIcon(icon("scene-edgemarker"));
     setWindowTitle(tr("Boundary condition"));
-
+    
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
     lblEquation = new QLabel(tr("Equation:"));
@@ -158,39 +198,39 @@ SceneBoundaryDialog::SceneBoundaryDialog(QWidget *parent) : QDialog(parent)
 void SceneBoundaryDialog::createDialog()
 {
     logMessage("SceneBoundaryDialog::createDialog()");
-
+    
     // dialog buttons
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
-
+    
     layout->addWidget(new QLabel(tr("Name:")), 0, 0);
     layout->addWidget(txtName, 0, 2);
     layout->addWidget(lblEquation, 5, 0);
     layout->addWidget(lblEquationImage, 5, 2);
-
+    
     // content
     createContent();
-
+    
     layout->addWidget(buttonBox, 100, 0, 1, 3);
     layout->setRowStretch(99, 1);
-
+    
     txtName->setFocus();
-
+    
     setLayout(layout);
 }
 
 void SceneBoundaryDialog::load()
 {
     logMessage("SceneBoundaryDialog::load()");
-
+    
     txtName->setText(QString::fromStdString(m_boundary->name));
 }
 
 bool SceneBoundaryDialog::save()
 {
     logMessage("SceneBoundaryDialog::save()");
-
+    
     // find name duplicities
     foreach (SceneBoundary *boundary, Util::scene()->boundaries)
     {
@@ -198,7 +238,7 @@ bool SceneBoundaryDialog::save()
         {
             if (m_boundary == boundary)
                 continue;
-
+            
             QMessageBox::warning(this, tr("Boundary marker"), tr("Boundary marker name already exists."));
             return false;
         }
@@ -210,14 +250,14 @@ bool SceneBoundaryDialog::save()
 void SceneBoundaryDialog::setSize()
 {
     logMessage("SceneBoundaryDialog::setSize()");
-
+    
     setMinimumSize(sizeHint());
 }
 
 void SceneBoundaryDialog::doAccept()
 {
     logMessage("SceneBoundaryDialog::doAccept()");
-
+    
     if (save())
         accept();    
 }
@@ -225,14 +265,14 @@ void SceneBoundaryDialog::doAccept()
 void SceneBoundaryDialog::doReject()
 {
     logMessage("SceneBoundaryDialog::doReject()");
-
+    
     reject();
 }
 
 void SceneBoundaryDialog::evaluated(bool isError)
 {
     logMessage("SceneBoundaryDialog::evaluated()");
-
+    
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
 
@@ -242,7 +282,7 @@ void SceneBoundaryDialog::readEquation(QLabel *lblEquation, const QString &type)
             .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name))
             .arg(type)
             .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
-
+    
     if (QFile::exists(fileName))
         // analysis dependand
         readPixmap(lblEquation, fileName);
@@ -258,10 +298,10 @@ void SceneBoundaryDialog::readEquation(QLabel *lblEquation, const QString &type)
 SceneMaterialDialog::SceneMaterialDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("DSceneMaterial::DSceneMaterial()");
-
+    
     setWindowIcon(icon("scene-labelmarker"));
     setWindowTitle(tr("Material"));
-
+    
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
     lblEquation = new QLabel(tr("Equation:"));
@@ -271,16 +311,16 @@ SceneMaterialDialog::SceneMaterialDialog(QWidget *parent) : QDialog(parent)
 void SceneMaterialDialog::createDialog()
 {
     logMessage("DSceneMaterial::createDialog()");
-
+    
     // dialog buttons
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
-
+    
     // name
     layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
     layout->addWidget(txtName, 0, 2);
-
+    
     // equation
     layout->addWidget(lblEquation, 1, 0, 1, 2);
     layout->addWidget(lblEquationImage, 1, 2);
@@ -288,36 +328,36 @@ void SceneMaterialDialog::createDialog()
                QString(":/images/equations/%1/%1_%2.png")
                .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
                .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)));
-
+    
     // content
     createContent();
-
+    
     layout->addWidget(buttonBox, 100, 0, 1, 3);
     layout->setRowStretch(99, 1);
-
+    
     txtName->setFocus();
-
+    
     setLayout(layout);
 }
 
 void SceneMaterialDialog::setSize()
 {
     logMessage("DSceneMaterial::setSize()");
-
+    
     setMinimumSize(sizeHint());
 }
 
 void SceneMaterialDialog::load()
 {
     logMessage("DSceneMaterial::load()");
-
+    
     txtName->setText(QString::fromStdString(m_material->name));
 }
 
 bool SceneMaterialDialog::save()
 {
     logMessage("DSceneMaterial::save()");
-
+    
     // find name duplicities
     foreach (SceneMaterial *material, Util::scene()->materials)
     {
@@ -325,7 +365,7 @@ bool SceneMaterialDialog::save()
         {
             if (m_material == material)
                 continue;
-
+            
             QMessageBox::warning(this, tr("Material marker"), tr("Material marker name already exists."));
             return false;
         }
@@ -337,7 +377,7 @@ bool SceneMaterialDialog::save()
 void SceneMaterialDialog::doAccept()
 {
     logMessage("DSceneMaterial::doAccept()");
-
+    
     if (save())
         accept();
 }
@@ -345,14 +385,14 @@ void SceneMaterialDialog::doAccept()
 void SceneMaterialDialog::doReject()
 {
     logMessage("DSceneMaterial::doReject()");
-
+    
     reject();
 }
 
 void SceneMaterialDialog::evaluated(bool isError)
 {
     logMessage("DSceneMaterial::evaluated()");
-
+    
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
 
@@ -361,18 +401,18 @@ void SceneMaterialDialog::evaluated(bool isError)
 SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("SceneBoundarySelectDialog::SceneBoundarySelectDialog()");
-
+    
     setWindowTitle(tr("Boundary condition"));
     setWindowIcon(icon("scene-edge"));
     setModal(true);
-
+    
     // fill combo
     cmbBoundary = new QComboBox(this);
     for (int i = 0; i<Util::scene()->boundaries.count(); i++)
     {
         cmbBoundary->addItem(QString::fromStdString(Util::scene()->boundaries[i]->name), Util::scene()->boundaries[i]->variant());
     }
-
+    
     // select marker
     cmbBoundary->setCurrentIndex(-1);
     SceneBoundary *boundary = NULL;
@@ -393,30 +433,30 @@ SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(
     }
     if (boundary)
         cmbBoundary->setCurrentIndex(cmbBoundary->findData(boundary->variant()));
-
+    
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-
+    
     QHBoxLayout *layoutBoundary = new QHBoxLayout();
     layoutBoundary->addWidget(new QLabel(tr("Boundary:")));
     layoutBoundary->addWidget(cmbBoundary);
-
+    
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutBoundary);
     layout->addStretch();
     layout->addWidget(buttonBox);
-
+    
     setLayout(layout);
-
+    
     setMaximumSize(sizeHint());
 }
 
 void SceneBoundarySelectDialog::doAccept()
 {
     logMessage("SceneBoundarySelectDialog::doAccept()");
-
+    
     if (boundary())
     {
         for (int i = 0; i<Util::scene()->edges.count(); i++)
@@ -433,11 +473,11 @@ void SceneBoundarySelectDialog::doAccept()
 SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("SceneMaterialSelectDialog::SceneMaterialSelectDialog()");
-
+    
     setWindowTitle(tr("Material"));
     setWindowIcon(icon("scene-label"));
     setModal(true);
-
+    
     // fill combo
     cmbMaterial = new QComboBox(this);
     for (int i = 0; i<Util::scene()->materials.count(); i++)
@@ -445,7 +485,7 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
         cmbMaterial->addItem(QString::fromStdString(Util::scene()->materials[i]->name),
                              Util::scene()->materials[i]->variant());
     }
-
+    
     // select marker
     cmbMaterial->setCurrentIndex(-1);
     SceneMaterial *marker = NULL;
@@ -466,30 +506,30 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
     }
     if (marker)
         cmbMaterial->setCurrentIndex(cmbMaterial->findData(marker->variant()));
-
+    
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-
+    
     QHBoxLayout *layoutMaterial = new QHBoxLayout();
     layoutMaterial->addWidget(new QLabel(tr("Material:")));
     layoutMaterial->addWidget(cmbMaterial);
-
+    
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutMaterial);
     layout->addStretch();
     layout->addWidget(buttonBox);
-
+    
     setLayout(layout);
-
+    
     setMaximumSize(sizeHint());
 }
 
 void SceneMaterialSelectDialog::doAccept()
 {
     logMessage("SceneMaterialSelectDialog::doAccept()");
-
+    
     if (marker())
     {
         for (int i = 0; i<Util::scene()->labels.count(); i++)
