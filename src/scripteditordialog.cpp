@@ -96,22 +96,39 @@ QString createPythonFromModel()
 
     // model
     str += "# model\n";
-    str += QString("newdocument(\"%1\", \"%2\", \"%3\", %4, %5, \"%6\", %7, %8, %9, \"%10\", %11, %12, %13)").
-           arg(Util::scene()->problemInfo()->name).
-           arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
-           arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id)).
-           arg(Util::scene()->problemInfo()->numberOfRefinements).
-           arg(Util::scene()->problemInfo()->polynomialOrder).
-           arg(adaptivityTypeToStringKey(Util::scene()->problemInfo()->adaptivityType)).
-           arg(Util::scene()->problemInfo()->adaptivitySteps).
-           arg(Util::scene()->problemInfo()->adaptivityTolerance).
-           arg(Util::scene()->problemInfo()->frequency).
-           arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
-           arg(Util::scene()->problemInfo()->timeStep.text).
-           arg(Util::scene()->problemInfo()->timeTotal.text).
-           arg(Util::scene()->problemInfo()->initialCondition.text)
-           + "\n";
-    str += "\n";
+    str += QString("newdocument(name=\"%1\", type=\"%2\",\n"
+                   "            physicfield=\"%3\", analysistype=\"%4\",\n"
+                   "            numberofrefinements=%5, polynomialorder=%6,\n"
+                   "            nonlineartolerance=%7, nonlinearsteps=%8").
+            arg(Util::scene()->problemInfo()->name).
+            arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
+            arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id)).
+            arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
+            arg(Util::scene()->problemInfo()->numberOfRefinements).
+            arg(Util::scene()->problemInfo()->polynomialOrder).
+            arg(Util::scene()->problemInfo()->nonlinearTolerance).
+            arg(Util::scene()->problemInfo()->nonlinearSteps);
+
+    if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
+        str += QString(",\n"
+                       "            adaptivitytype=\"%1\", adaptivitysteps=%2, adaptivitytolerance=%3").
+                arg(adaptivityTypeToStringKey(Util::scene()->problemInfo()->adaptivityType)).
+                arg(Util::scene()->problemInfo()->adaptivitySteps).
+                arg(Util::scene()->problemInfo()->adaptivityTolerance);
+
+    if (Util::scene()->problemInfo()->frequency > 0.0)
+        str += QString(",\n"
+                       "            frequency=%1").
+                arg(Util::scene()->problemInfo()->frequency);
+
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+        str += QString(",\n"
+                       "            adaptivitytype=%1, adaptivitysteps=%2, adaptivitytolerance=%3").
+                arg(Util::scene()->problemInfo()->timeStep.text).
+                arg(Util::scene()->problemInfo()->timeTotal.text).
+                arg(Util::scene()->problemInfo()->initialCondition.text);
+
+    str += ")\n\n";
 
     // startup script
     if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
@@ -149,13 +166,23 @@ QString createPythonFromModel()
         str += "# edges\n";
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            str += QString("addedge(%1, %2, %3, %4, %5, \"%6\")").
-                   arg(Util::scene()->edges[i]->nodeStart->point.x).
-                   arg(Util::scene()->edges[i]->nodeStart->point.y).
-                   arg(Util::scene()->edges[i]->nodeEnd->point.x).
-                   arg(Util::scene()->edges[i]->nodeEnd->point.y).
-                   arg(Util::scene()->edges[i]->angle).
-                   arg(QString::fromStdString(Util::scene()->edges[i]->boundary->name)) + "\n";
+            str += QString("addedge(%1, %2, %3, %4").
+                    arg(Util::scene()->edges[i]->nodeStart->point.x).
+                    arg(Util::scene()->edges[i]->nodeStart->point.y).
+                    arg(Util::scene()->edges[i]->nodeEnd->point.x).
+                    arg(Util::scene()->edges[i]->nodeEnd->point.y);
+
+            if (Util::scene()->edges[i]->boundary->name != "none")
+                str += QString(", boundary=\"%1\"").
+                        arg(QString::fromStdString(Util::scene()->edges[i]->boundary->name));
+
+            if (Util::scene()->edges[i]->angle > 0.0)
+                str += ", angle=" + QString::number(Util::scene()->edges[i]->angle);
+
+            if (Util::scene()->edges[i]->refineTowardsEdge > 0)
+                str += ", refine=" + QString::number(Util::scene()->edges[i]->refineTowardsEdge);
+
+            str += ")\n";
         }
         str += "\n";
     }
@@ -166,12 +193,17 @@ QString createPythonFromModel()
         str += "# labels\n";
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            str += QString("addlabel(%1, %2, %3, %4, \"%5\")").
-                   arg(Util::scene()->labels[i]->point.x).
-                   arg(Util::scene()->labels[i]->point.y).
-                   arg(Util::scene()->labels[i]->area).
-                   arg(Util::scene()->labels[i]->polynomialOrder).
-                   arg(QString::fromStdString(Util::scene()->labels[i]->material->name)) + "\n";
+            str += QString("addlabel(%1, %2, material=\"%3\"").
+                    arg(Util::scene()->labels[i]->point.x).
+                    arg(Util::scene()->labels[i]->point.y).
+                    arg(QString::fromStdString(Util::scene()->labels[i]->material->name));
+
+            if (Util::scene()->labels[i]->area > 0.0)
+                str += ", area=" + QString::number(Util::scene()->labels[i]->area);
+            if (Util::scene()->labels[i]->polynomialOrder > 0)
+                str += ", order=" + QString::number(Util::scene()->labels[i]->polynomialOrder);
+
+            str += ")\n";
         }
 
     }
@@ -657,7 +689,7 @@ void ScriptEditorDialog::doRunPython()
     else
     {
         if (!scriptEditorWidget()->file.isEmpty() &&
-            QFile::exists(scriptEditorWidget()->file))
+                QFile::exists(scriptEditorWidget()->file))
             doFileSave();
 
         result = runPythonScript(txtEditor->toPlainText(),
@@ -1064,7 +1096,7 @@ void ScriptEditorDialog::doCursorPositionChanged()
 
     QTextCursor cur(txtEditor->textCursor());
     lblCurrentPosition->setText(tr("Line: %1, Col: %2").arg(cur.blockNumber()+1)
-                                                       .arg(cur.columnNumber()+1));
+                                .arg(cur.columnNumber()+1));
 }
 
 void ScriptEditorDialog::doCurrentDocumentChanged(bool changed)
@@ -1091,7 +1123,7 @@ void ScriptEditorDialog::setRecentFiles()
 
     if (!tabWidget) return;
 
-     // recent files
+    // recent files
     if (!scriptEditorWidget()->file.isEmpty())
     {
         QFileInfo fileInfo(scriptEditorWidget()->file);

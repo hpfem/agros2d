@@ -1,39 +1,42 @@
 # model
-newdocument("Elec2 (QuickField)", "planar", "electrostatic", 2, 3)
+newdocument(name="Elec2 (QuickField)", type="planar",
+            physicfield="electrostatic", analysistype="steadystate",
+            numberofrefinements=2, polynomialorder=3,
+            nonlineartolerance=0.001, nonlinearsteps=10)
 
 # boundaries
-addboundary("Neumann", "electrostatic_surface_charge_density", 0)
-addboundary("U =  0 V", "electrostatic_potential", 0)
-addboundary("U =  1000 V", "electrostatic_potential", 1000)
+addboundary("Neumann", "electrostatic_surface_charge_density", {"sigma" : 0})
+addboundary("U =  0 V", "electrostatic_potential", {"V" : 0})
+addboundary("U =  1000 V", "electrostatic_potential", {"V" : 1000})
 
 # materials
-addmaterial("Diel", 0, 3)
-addmaterial("Air", 0, 1)
-addmaterial("Source", 4e-10, 10)
+addmaterial("Diel", {"epsr" : 3, "rho" : 0})
+addmaterial("Air", {"epsr" : 1, "rho" : 0})
+addmaterial("Source", {"epsr" : 10, "rho" : 4e-10})
 
 # edges
-addedge(1, 2, 1, 1, 0, "U =  1000 V")
-addedge(4, 1, 1, 1, 0, "U =  1000 V")
-addedge(1, 2, 4, 2, 0, "U =  1000 V")
-addedge(4, 2, 4, 1, 0, "U =  1000 V")
-addedge(20, 24, 20, 1, 0, "Neumann")
-addedge(20, 1, 20, 0, 0, "Neumann")
-addedge(4, 1, 20, 1, 0, "none")
-addedge(0, 24, 0, 1, 0, "Neumann")
-addedge(0, 0, 0, 1, 0, "Neumann")
-addedge(0, 0, 20, 0, 0, "U =  0 V")
-addedge(0, 24, 20, 24, 0, "Neumann")
-addedge(0, 1, 1, 1, 0, "none")
-addedge(7, 13, 14, 13, 0, "none")
-addedge(14, 13, 14, 18, 0, "none")
-addedge(14, 18, 7, 18, 0, "none")
-addedge(7, 18, 7, 13, 0, "none")
+addedge(1, 2, 1, 1, boundary="U =  1000 V")
+addedge(4, 1, 1, 1, boundary="U =  1000 V")
+addedge(1, 2, 4, 2, boundary="U =  1000 V")
+addedge(4, 2, 4, 1, boundary="U =  1000 V")
+addedge(20, 24, 20, 1, boundary="Neumann")
+addedge(20, 1, 20, 0, boundary="Neumann")
+addedge(4, 1, 20, 1)
+addedge(0, 24, 0, 1, boundary="Neumann")
+addedge(0, 0, 0, 1, boundary="Neumann")
+addedge(0, 0, 20, 0, boundary="U =  0 V")
+addedge(0, 24, 20, 24, boundary="Neumann")
+addedge(0, 1, 1, 1)
+addedge(7, 13, 14, 13)
+addedge(14, 13, 14, 18)
+addedge(14, 18, 7, 18)
+addedge(7, 18, 7, 13)
 
 # labels
-addlabel(2.78257, 1.37346, 0, 0, "none")
-addlabel(10.3839, 15.7187, 0, 0, "Source")
-addlabel(3.37832, 15.8626, 0, 0, "Air")
-addlabel(12.3992, 0.556005, 0, 0, "Diel")
+addlabel(2.78257, 1.37346, material="none")
+addlabel(10.3839, 15.7187, material="Source")
+addlabel(3.37832, 15.8626, material="Air")
+addlabel(12.3992, 0.556005, material="Diel")
 
 # solve
 zoombestfit()

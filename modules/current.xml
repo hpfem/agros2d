@@ -11,13 +11,13 @@
         <item id="current_conductivity" name="Conductivity" shortname="gamma" unit="S/m" />   	
         
     	<steadystate>
-    		<material id="current_conductivity" />
+            <material id="current_conductivity" />
 
-                <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + gamma * (udx * vdx + udy * vdy)"
-                                    axi="0.0 * x * uval * (updx * vdx + updy * vdy) + gamma * x * (udx * vdx + udy * vdy)" symmetric="1" />
-                <vector i="1" planar="gamma * (updx * vdx + updy * vdy)"
-                              axi="gamma * x * (updx * vdx + updy * vdy)" />
-		</steadystate>
+            <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + gamma * (udx * vdx + udy * vdy)"
+                                axi="0.0 * x * uval * (updx * vdx + updy * vdy) + gamma * x * (udx * vdx + udy * vdy)" symmetric="1" />
+            <vector i="1" planar="gamma * (updx * vdx + updy * vdy)"
+                          axi="gamma * x * (updx * vdx + updy * vdy)" />
+        </steadystate>
     </material>
 
     <boundary>
@@ -25,18 +25,18 @@
     	<item id="current_inward_current_flow" name="Current density" shortname="Jn" unit="A/m2" />
     	
     	<steadystate>
-			<boundary id="current_potential" name="Fixed voltage">
-				<item id="current_potential" />
-				
-				<essential i="1" id="current_potential" />
-			</boundary> 
-			
-			<boundary id="current_inward_current_flow" name="Current density">
-				<item id="current_inward_current_flow" />		
-				
-				<vector i="1" planar="Jn * vval" axi="Jn * x * vval" />
-			</boundary>        
-		</steadystate>
+            <boundary id="current_potential" name="Fixed voltage">
+                <item id="current_potential" />
+
+                <essential i="1" id="current_potential" />
+            </boundary>
+
+            <boundary id="current_inward_current_flow" name="Current density">
+                <item id="current_inward_current_flow" />
+
+                <vector i="1" planar="- Jn * vval" axi="- Jn * x * vval" />
+            </boundary>
+        </steadystate>
     </boundary>
 
     <localvariable>
@@ -50,7 +50,7 @@
             <steadystate planar_comp_x="- gamma * dx1" planar_comp_y="- gamma * dy1" axi_comp_r="- gamma * dx1" axi_comp_z="- gamma * dy1" />
         </item>
         <item id="current_joule_losses" name="Joule losses" shortname="pj" unit="W/m3" scalar="1">
-            <steadystate planar_scalar="gamma * sqrt(dx1 * dx1 + dy1 * dy1)" axi_scalar="gamma * sqrt(dx1 * dx1 + dy1 * dy1)" />
+            <steadystate planar_scalar="0.5 * gamma * sqrt(dx1 * dx1 + dy1 * dy1)" axi_scalar="0.5 * gamma * sqrt(dx1 * dx1 + dy1 * dy1)" />
         </item>
         <item id="current_conductivity" name="Conductivity" shortname="gamma" unit="S/m" scalar="1">
             <steadystate planar_scalar="gamma" axi_scalar="gamma" />
@@ -106,7 +106,7 @@
             <steadystate planar="1.0" axi="2.0 * PI * x" />
         </item>
         <item id="current_current" name="Current" shortname="I" unit="A">
-            <steadystate planar="gamma * (tany * dx1 - tanx * dy1)" axi="2.0 * PI * x * gamma * (tany * dx1 - tanx * dy1)" />
+            <steadystate planar="gamma * (tanx * dy1 - tany * dx1)" axi="2.0 * PI * x * gamma * (tanx * dy1 - tany * dx1)" />
         </item>
     </surfaceintegral>
 </module>

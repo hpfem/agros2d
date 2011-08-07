@@ -21,14 +21,15 @@ cdef extern from "../scripteditorcommandpython.h":
                            int numberofrefinements, int polynomialorder, char *adaptivitytype,
                            double adaptivitysteps, double adaptivitytolerance,
                            double frequency,
-                           char *analysistype, double timestep, double totaltime, double initialcondition) except +
+                           char *analysistype, double timestep, double totaltime, double initialcondition,
+                           double nonlineartolerance, int nonlinearsteps) except +
     void pythonOpenDocument(char *str) except +
     void pythonSaveDocument(char *str) except +
     void pythonCloseDocument()
     
     void pythonAddNode(double x, double y) except +
-    void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker) except +
-    void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *marker) except +
+    void pythonAddEdge(double x1, double y1, double x2, double y2, char *boundary, double angle, int refine) except +
+    void pythonAddLabel(double x, double y, char *material, double area, int order) except +
 
     void pythonDeleteNode(int index) except +
     void pythonDeleteNodePoint(double x, double y)
@@ -98,12 +99,14 @@ def newdocument(char *name, char *type, char *physicfield,
                int numberofrefinements = 0, int polynomialorder = 1, char *adaptivitytype = "disabled",
                double adaptivitysteps = 1, double adaptivitytolerance = 0,
                double frequency = 0,
-               char *analysistype = "steadystate", double timestep = 0, double totaltime = 0, double initialcondition = 0):
+               char *analysistype = "steadystate", double timestep = 0, double totaltime = 0, double initialcondition = 0,
+               nonlineartolerance = 0.01, nonlinearsteps = 10):
     pythonNewDocument(name, type, physicfield,
                        numberofrefinements, polynomialorder, adaptivitytype,
                        adaptivitysteps, adaptivitytolerance,
                        frequency,
-                       analysistype, timestep, totaltime, initialcondition)
+                       analysistype, timestep, totaltime, initialcondition,
+                       nonlineartolerance, nonlinearsteps)
 
 def opendocument(char *str):
     pythonOpenDocument(str)
@@ -119,11 +122,11 @@ def closedocument():
 def addnode(double x, double y):
     pythonAddNode(x, y)
 
-def addedge(double x1, double y1, double x2, double y2, double angle = 0, char *marker = "none"):
-    pythonAddEdge(x1, y1, x2, y2, angle, marker)
+def addedge(double x1, double y1, double x2, double y2, char *boundary = "none", double angle = 0, int refine = 0):
+    pythonAddEdge(x1, y1, x2, y2, boundary, angle, refine)
 
-def addlabel(double x, double y, double area = 0, int polynomialorder = 0, char *marker = "none"):
-    pythonAddLabel(x, y, area, polynomialorder, marker)
+def addlabel(double x, double y, double area = 0, char *material = "none", int order = 0):
+    pythonAddLabel(x, y, material, area, order)
 
 def deletenode(int index):
     pythonDeleteNode(index)

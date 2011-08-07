@@ -34,10 +34,6 @@ public:
 
     // rewrite
     SceneBoundary *newBoundary();
-    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
-    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
-    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
-    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 };
 
 // *******************************************************************************************

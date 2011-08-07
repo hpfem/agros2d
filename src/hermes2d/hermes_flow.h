@@ -58,18 +58,8 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Flow_Pressure); }
 
     SceneBoundary *newBoundary();
-    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
     SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
-    SceneMaterial *newMaterial();
-    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
-
-    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-
-    inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Flow_Velocity; }
-    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Flow_Velocity; }
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Magnitude; }
-    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_Flow_Velocity; }
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     {

@@ -124,7 +124,8 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
                        int numberofrefinements, int polynomialorder, char *adaptivitytype,
                        double adaptivitysteps, double adaptivitytolerance,
                        double frequency,
-                       char *analysistype, double timestep, double totaltime, double initialcondition)
+                       char *analysistype, double timestep, double totaltime, double initialcondition,
+                       double nonlineartolerance, int nonlinearsteps)
 {
     logMessage("pythonNewDocument()");
 
@@ -202,6 +203,18 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
     else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         throw out_of_range(QObject::tr("Total time must be positive.").toStdString());
 
+    // nonlineartolerance
+    if (nonlineartolerance >= 0)
+        Util::scene()->problemInfo()->nonlinearTolerance = nonlineartolerance;
+    else
+        throw out_of_range(QObject::tr("Nonlinear tolerance '%1' is out of range.").arg(nonlineartolerance).toStdString());
+
+    // nonlinearsteps
+    if (nonlinearsteps >= 0)
+        Util::scene()->problemInfo()->nonlinearSteps = nonlinearsteps;
+    else
+        throw out_of_range(QObject::tr("Number of nonlinear steps '%1' must be positive.").arg(nonlinearsteps).toStdString());
+
     // transient initial condition
     Util::scene()->problemInfo()->initialCondition = Value(QString::number(initialcondition));
 
@@ -268,24 +281,26 @@ void pythonDeleteNodePoint(double x, double y)
 }
 
 // addedge(x1, y1, x2, y2, angle = 0, marker = "none")
-void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker)
+void pythonAddEdge(double x1, double y1, double x2, double y2, char *boundary, double angle, int refine)
 {
     logMessage("pythonAddEdge()");
 
     if (angle > 180.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 
-    SceneBoundary *boundary = Util::scene()->getBoundary(QString(marker));
-    if (!boundary)
-        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(marker).toStdString());
+    if (refine < 0)
+        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
+
+    SceneBoundary *scene_boundary = Util::scene()->getBoundary(QString(boundary));
+    if (!scene_boundary)
+        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(boundary).toStdString());
 
     // start node
     SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
     // end node
     SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
 
-    // FIXME 0 -> variable
-    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, boundary, angle, 0));
+    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, scene_boundary, angle, refine));
 }
 
 void pythonDeleteEdge(int index)
@@ -305,15 +320,18 @@ void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double an
 }
 
 // addlabel(x, y, area = 0, marker = "none", polynomialorder = 0)
-void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *marker)
+void pythonAddLabel(double x, double y, char *material, double area, int order)
 {
     logMessage("pythonAddLabel()");
 
-    SceneMaterial *material = Util::scene()->getMaterial(QString(marker));
-    if (!material)
-        throw invalid_argument(QObject::tr("Material '%1' is not defined.").arg(marker).toStdString());
+    if (order < 0)
+        throw out_of_range(QObject::tr("Polynomial order '%1' is out of range.").arg(order).toStdString());
 
-    Util::scene()->addLabel(new SceneLabel(Point(x, y), material, area, polynomialOrder));
+    SceneMaterial *scene_material = Util::scene()->getMaterial(QString(material));
+    if (!scene_material)
+        throw invalid_argument(QObject::tr("Material '%1' is not defined.").arg(material).toStdString());
+
+    Util::scene()->addLabel(new SceneLabel(Point(x, y), scene_material, area, order));
 }
 
 void pythonDeleteLabel(int index)
@@ -337,17 +355,44 @@ static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
 {
     logMessage("pythonAddBoundary()");
 
-    SceneBoundary *marker = Util::scene()->problemInfo()->module()->newBoundary(self, args);
-    if (marker)
+    PyObject *dict;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssO", &name, &type, &dict))
     {
-        Util::scene()->addBoundary(marker);
+        // check name
+        if (Util::scene()->getBoundary(name))
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary already exists.").toStdString().c_str());
+            return NULL;
+        }
+
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+
+        std::map<std::string, Value> values;
+        while (PyDict_Next(dict, &pos, &key, &value))
+        {
+            double val;
+            char *str;
+
+            // key
+            PyArg_Parse(key, "s", &str);
+            PyArg_Parse(value, "d", &val);
+
+            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+            {
+                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+                if (variable->shortname == std::string(str))
+                    values[variable->id] = Value(QString::number(val));
+            }
+        }
+
+        Util::scene()->addBoundary(new SceneBoundary(name, type, values));
         Py_RETURN_NONE;
     }
-    else
-    {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker already exists.").toStdString().c_str());
-        return NULL;
-    }
+
+    return NULL;
 }
 
 // modifyBoundary(name, type, value, ...)
@@ -355,10 +400,54 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyBoundary()");
 
-    if (Util::scene()->problemInfo()->module()->modifyBoundary(self,args))
-        Py_RETURN_NONE;
-    else
-        return NULL;
+    PyObject *dict;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssO", &name, &type, &dict))
+    {
+        if (SceneBoundary *boundary = Util::scene()->getBoundary(name))
+        {
+            if (Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type))
+            {
+                // boundary type
+                boundary->type = type;
+
+                // variables
+                PyObject *key, *value;
+                Py_ssize_t pos = 0;
+
+                while (PyDict_Next(dict, &pos, &key, &value))
+                {
+                    double val;
+                    char *str;
+
+                    // key
+                    PyArg_Parse(key, "s", &str);
+                    PyArg_Parse(value, "d", &val);
+
+                    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+                    {
+                        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+                        if (variable->shortname == std::string(str))
+                            boundary->values[variable->id] = Value(QString::number(val));
+                    }
+                }
+
+                Py_RETURN_NONE;
+            }
+            else
+            {
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                return NULL;
+            }
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
 }
 
 // addmaterial(name, type, value, ...)
@@ -366,17 +455,44 @@ static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
 {
     logMessage("pythonAddMaterial()");
 
-    SceneMaterial *marker = Util::scene()->problemInfo()->module()->newMaterial(self, args);
-    if (marker)
+    PyObject *dict;
+    char *name;
+    if (PyArg_ParseTuple(args, "sO", &name, &dict))
     {
-        Util::scene()->addMaterial(marker);
+        // check name
+        if (Util::scene()->getMaterial(name))
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker already exists.").toStdString().c_str());
+            return NULL;
+        }
+
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+
+        std::map<std::string, Value> values;
+        while (PyDict_Next(dict, &pos, &key, &value))
+        {
+            double val;
+            char *str;
+
+            // key
+            PyArg_Parse(key, "s", &str);
+            PyArg_Parse(value, "d", &val);
+
+            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+            {
+                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+                if (variable->shortname == std::string(str))
+                    values[variable->id] = Value(QString::number(val));
+            }
+        }
+
+        Util::scene()->addMaterial(new SceneMaterial(name, values));
         Py_RETURN_NONE;
     }
-    else
-    {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker already exists.").toStdString().c_str());
-        return NULL;
-    }
+
+    return NULL;
 }
 
 // modifymaterial(name, type, value, ...)
@@ -384,10 +500,44 @@ static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyMaterial()");
 
-    if (Util::scene()->problemInfo()->module()->modifyMaterial(self, args))
-        Py_RETURN_NONE;
-    else
-        return NULL;
+    PyObject *dict;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "sO", &name, &dict))
+    {
+        if (SceneMaterial *material = Util::scene()->getMaterial(name))
+        {
+            // variables
+            PyObject *key, *value;
+            Py_ssize_t pos = 0;
+
+            while (PyDict_Next(dict, &pos, &key, &value))
+            {
+                double val;
+                char *str;
+
+                // key
+                PyArg_Parse(key, "s", &str);
+                PyArg_Parse(value, "d", &val);
+
+                Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+                for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+                {
+                    Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+                    if (variable->shortname == std::string(str))
+                        material->values[variable->id] = Value(QString::number(val));
+                }
+            }
+
+            Py_RETURN_NONE;
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Material with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
 }
 
 // selectnone()
@@ -694,16 +844,47 @@ static PyObject *pythonPointResult(PyObject *self, PyObject *args)
         double x, y;
         if (PyArg_ParseTuple(args, "dd", &x, &y))
         {
-            Point point(x, y);
-            LocalPointValue localPointValue(point);
-
-            // FIXME
-            QStringList headers; // = Util::scene()->problemInfo()->module()->localPointValueHeader();
-            QStringList variables; // = localPointValue->variables();
-
             PyObject *dict = PyDict_New();
-            for (int i = 0; i < variables.length(); i++)
-                PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
+
+            // coordinates
+            PyDict_SetItemString(dict,
+                                 Util::scene()->problemInfo()->labelX().toLower().toStdString().c_str(),
+                                 Py_BuildValue("d", x));
+            PyDict_SetItemString(dict,
+                                 Util::scene()->problemInfo()->labelY().toLower().toStdString().c_str(),
+                                 Py_BuildValue("d", y));
+
+            Point point(x, y);
+
+            // local point variables
+            LocalPointValue value(point);
+            for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin(); it != value.values.end(); ++it)
+            {
+                if (it->first->is_scalar)
+                {
+                    // scalar
+                    PyDict_SetItemString(dict,
+                                         QString::fromStdString(it->first->shortname).toStdString().c_str(),
+                                         Py_BuildValue("d", it->second.scalar));
+                }
+                else
+                {
+                    // magnitude
+                    PyDict_SetItemString(dict,
+                                         QString::fromStdString(it->first->shortname).toStdString().c_str(),
+                                         Py_BuildValue("d", it->second.vector.magnitude()));
+
+                    // x
+                    PyDict_SetItemString(dict,
+                                         (QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower()).toStdString().c_str(),
+                                         Py_BuildValue("d", it->second.vector.x));
+
+                    // y
+                    PyDict_SetItemString(dict,
+                                         (QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower()).toStdString().c_str(),
+                                         Py_BuildValue("d", it->second.vector.y));
+                }
+            }
 
             return dict;
         }
@@ -744,15 +925,15 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
                 }
             }
 
-            SurfaceIntegralValue surfaceIntegral;
-
-            // FIXME
-            QStringList headers;// = Util::scene()->problemInfo()->module()->surfaceIntegralValueHeader();
-            QStringList variables;// = surfaceIntegral->variables();
-
             PyObject *dict = PyDict_New();
-            for (int i = 0; i < variables.length(); i++)
-                PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
+
+            SurfaceIntegralValue surfaceIntegral;
+            for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegral.values.begin(); it != surfaceIntegral.values.end(); ++it)
+            {
+                PyDict_SetItemString(dict,
+                                     QString::fromStdString(it->first->shortname).toStdString().c_str(),
+                                     Py_BuildValue("d", it->second));
+            }
 
             return dict;
         }
@@ -793,15 +974,15 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
                 }
             }
 
-            VolumeIntegralValue volumeIntegral;
-
-            // FIXME
-            QStringList headers;// = Util::scene()->problemInfo()->module()->volumeIntegralValueHeader();
-            QStringList variables;// = volumeIntegral->variables();
-
             PyObject *dict = PyDict_New();
-            for (int i = 0; i < variables.length(); i++)
-                PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
+
+            VolumeIntegralValue volumeIntegral;
+            for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegral.values.begin(); it != volumeIntegral.values.end(); ++it)
+            {
+                PyDict_SetItemString(dict,
+                                     QString::fromStdString(it->first->shortname).toStdString().c_str(),
+                                     Py_BuildValue("d", it->second));
+            }
 
             return dict;
         }

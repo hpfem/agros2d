@@ -30,28 +30,9 @@ SceneBoundary *ModuleElectrostatic::newBoundary()
     return new SceneBoundary(tr("new boundary").toStdString(), "electrostatic_potential");
 }
 
-SceneBoundary *ModuleElectrostatic::newBoundary(PyObject *self, PyObject *args)
-{
-    /*
-    double value;
-    char *name, *type;
-    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
-    {
-        // check name
-        if (Util::scene()->getBoundary(name)) return NULL;
-
-        return new SceneBoundaryElectrostatic(name,
-                                              type,
-                                              Value(QString::number(value)));
-    }
-
-    return NULL;
-    */
-}
-
+/*
 SceneBoundary *ModuleElectrostatic::modifyBoundary(PyObject *self, PyObject *args)
 {
-    /*
     double value;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
@@ -78,31 +59,12 @@ SceneBoundary *ModuleElectrostatic::modifyBoundary(PyObject *self, PyObject *arg
     }
 
     return NULL;
-    */
 }
+*/
 
-SceneMaterial *ModuleElectrostatic::newMaterial(PyObject *self, PyObject *args)
-{
-    /*
-    double charge_density, permittivity;
-    char *name;
-    if (PyArg_ParseTuple(args, "sdd", &name, &charge_density, &permittivity))
-    {
-        // check name
-        if (Util::scene()->getMaterial(name)) return NULL;
-
-        return new SceneMaterialElectrostatic(name,
-                                              Value(QString::number(charge_density)),
-                                              Value(QString::number(permittivity)));
-    }
-
-    return NULL;
-    */
-}
-
+/*
 SceneMaterial *ModuleElectrostatic::modifyMaterial(PyObject *self, PyObject *args)
 {
-    /*
     double charge_density, permittivity;
     char *name;
     if (PyArg_ParseTuple(args, "sdd", &name, &charge_density, &permittivity))
@@ -121,8 +83,8 @@ SceneMaterial *ModuleElectrostatic::modifyMaterial(PyObject *self, PyObject *arg
     }
 
     return NULL;
-    */
 }
+*/
 
 // *************************************************************************************************************************************
 

@@ -320,10 +320,6 @@ public:
     // rewrite
     virtual SceneBoundary *newBoundary() = 0;
     SceneMaterial *newMaterial();
-    virtual SceneBoundary *newBoundary(PyObject *self, PyObject *args) = 0;
-    virtual SceneBoundary *modifyBoundary(PyObject *self, PyObject *args) = 0;
-    virtual SceneMaterial *newMaterial(PyObject *self, PyObject *args) = 0;
-    virtual SceneMaterial *modifyMaterial(PyObject *self, PyObject *args) = 0;
 
 private:
     void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<Hermes::Module::LocalVariable *> list);
