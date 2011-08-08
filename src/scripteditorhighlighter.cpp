@@ -80,7 +80,8 @@ QScriptSyntaxHighlighter::QScriptSyntaxHighlighter(QTextDocument *parent) : QSyn
             << "del" << "elif" << "else" << "except" << "exec" << "finally"
             << "for" << "from" << "global" << "if" << "import" << "in"
             << "is" << "lambda" << "not" << "or" << "pass" << "print" << "raise"
-            << "return" << "try" << "while" << "yield";
+            << "return" << "try" << "while" << "yield"
+            << "None" << "True"<< "False";
 
     foreach (const QString &pattern, keywordPatterns)
     {
@@ -95,31 +96,41 @@ QScriptSyntaxHighlighter::QScriptSyntaxHighlighter(QTextDocument *parent) : QSyn
     rule.format = classFormat;
     highlightingRules.append(rule);
 
-    singleLineCommentFormat.setForeground(Qt::red);
-    rule.pattern = QRegExp("#[^\n]*");
-    rule.format = singleLineCommentFormat;
-    highlightingRules.append(rule);
-
-    multiLineCommentFormat.setForeground(Qt::red);
-
     quotationFormat.setForeground(Qt::darkGreen);
-    rule.pattern = QRegExp("\".*\"");
     rule.format = quotationFormat;
+    rule.pattern = QRegExp("\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\"");
+    highlightingRules.append(rule);
+    rule.pattern = QRegExp("'[^'\\\\]*(\\\\.[^'\\\\]*)*'");
     highlightingRules.append(rule);
 
-    functionFormat.setForeground(Qt::blue);
+    functionFormat.setForeground(Qt::darkMagenta);
     rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
-    operatorFormat.setForeground(Qt::magenta);
+    operatorFormat.setForeground(Qt::black);
     rule.pattern = QRegExp("[\\\\|\\<|\\>|\\=|\\!|\\+|\\-|\\*|\\/|\\%]+");
     rule.pattern.setMinimal(true);
     rule.format = operatorFormat;
     highlightingRules.append(rule);
 
+    numberFormat.setForeground(Qt::blue);
+    rule.format = numberFormat;
+    rule.pattern = QRegExp("\\b[+-]?[0-9]+[lL]?\\b");
+    highlightingRules.append(rule);
+    rule.pattern = QRegExp("\\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\\b");
+    highlightingRules.append(rule);
+    rule.pattern = QRegExp("\\b[+-]?[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b");
+    highlightingRules.append(rule);
+
+    singleLineCommentFormat.setForeground(Qt::red);
+    rule.pattern = QRegExp("#[^\n]*");
+    rule.format = singleLineCommentFormat;
+    highlightingRules.append(rule);
+
     commentStartExpression = QRegExp("\"\"\"");
     commentEndExpression = QRegExp("\"\"\"");
+    multiLineCommentFormat.setForeground(Qt::red);
 }
 
 void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
@@ -140,12 +151,16 @@ void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
     setCurrentBlockState(0);
 
     int startIndex = 0;
+    int add = 0;
     if (previousBlockState() != 1)
+    {
         startIndex = commentStartExpression.indexIn(text);
+        add = commentStartExpression.matchedLength();
+    }
 
     while (startIndex >= 0)
     {
-        int endIndex = commentEndExpression.indexIn(text, startIndex);
+        int endIndex = commentEndExpression.indexIn(text, startIndex + add);
         int commentLength;
         if (endIndex == -1)
         {
@@ -154,7 +169,8 @@ void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
         }
         else
         {
-            commentLength = endIndex - startIndex + commentEndExpression.matchedLength();
+            setCurrentBlockState(0);
+            commentLength = endIndex - startIndex + add + commentEndExpression.matchedLength();
         }
         setFormat(startIndex, commentLength, multiLineCommentFormat);
         startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
@@ -162,8 +178,8 @@ void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
 
     // parenthesis
     highlightBlockParenthesis(text, '(', ')');
-    //highlightBlockParenthesis(text, '[', ']');
-    //highlightBlockParenthesis(text, '{', '}');
+    // highlightBlockParenthesis(text, '[', ']');
+    // highlightBlockParenthesis(text, '{', '}');
 }
 
 void QScriptSyntaxHighlighter::highlightBlockParenthesis(const QString &text, char left, char right)
