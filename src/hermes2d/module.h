@@ -120,9 +120,10 @@ struct LocalVariable
 // material property
 struct MaterialTypeVariable
 {
-    MaterialTypeVariable() : id(""), name(""), shortname(""), unit("") {}
+    MaterialTypeVariable() : id(""), name(""), shortname(""), unit(""), default_value(0) {}
     MaterialTypeVariable(std::string id, std::string name,
-                         std::string shortname, std::string unit);
+                         std::string shortname, std::string unit,
+                         double default_value = 0);
     MaterialTypeVariable(rapidxml::xml_node<> *node);
 
     // id
@@ -133,14 +134,17 @@ struct MaterialTypeVariable
     std::string shortname;
     // unit
     std::string unit;
+    // default value
+    double default_value;
 };
 
 // boundary condition type variable
 struct BoundaryTypeVariable
 {
-    BoundaryTypeVariable() : id(""), name(""), shortname(""), unit("") {}
+    BoundaryTypeVariable() : id(""), name(""), shortname(""), unit(""), default_value(0) {}
     BoundaryTypeVariable(std::string id, std::string name,
-                         std::string shortname, std::string unit);
+                         std::string shortname, std::string unit,
+                         double default_value = 0);
     BoundaryTypeVariable(rapidxml::xml_node<> *node);
 
     // id
@@ -151,6 +155,8 @@ struct BoundaryTypeVariable
     std::string shortname;
     // unit
     std::string unit;
+    // default value
+    double default_value;
 };
 
 // boundary condition type

@@ -39,7 +39,7 @@ Boundary::Boundary(std::string name, std::string type,
             for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
             {
                 Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-                this->values[variable->id] = Value("0");
+                this->values[variable->id] = Value(QString::number(variable->default_value));
             }
         }
     }

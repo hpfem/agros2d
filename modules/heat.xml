@@ -8,10 +8,10 @@
     <constants />
 
     <material>
-        <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="-" />
+        <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="-" default="385" />
         <item id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" />
-        <item id="heat_density" name="Density" shortname="rho" unit="kg/m3" />
-        <item id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" />
+        <item id="heat_density" name="Density" shortname="rho" unit="kg/m3" default="7800" />
+        <item id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" default="400" />
         
     	<steadystate>
             <material id="heat_conductivity" />
@@ -37,10 +37,10 @@
     </material>
 
     <boundary>
-    	<item id="heat_temperature" name="Temperature" shortname="T" unit="K" />
+        <item id="heat_temperature" name="Temperature" shortname="T" unit="K" />
     	<item id="heat_heat_flux" name="Heat flux" shortname="f" unit="W/m2" />
-    	<item id="heat_heat_transfer_coefficient" name="Heat transfer coefficient" shortname="h" unit="W/m2.K" />
-    	<item id="heat_external_temperature" name="External temperature" shortname="Te" unit="K" />
+        <item id="heat_heat_transfer_coefficient" name="Heat transfer coefficient" shortname="h" unit="W/m2.K" default="5" />
+        <item id="heat_external_temperature" name="External temperature" shortname="Te" unit="K" default="20" />
     	
     	<steadystate>
             <boundary id="heat_temperature" name="Temperature">
