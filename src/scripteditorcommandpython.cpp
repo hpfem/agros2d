@@ -557,6 +557,9 @@ static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
     PyObject *list;
     if (PyArg_ParseTuple(args, "O", &list))
     {
+        sceneView()->actSceneModeNode->trigger();
+        Util::scene()->selectNone();
+
         Py_ssize_t size = PyList_Size(list);
         for (int i = 0; i < size; i++)
         {
@@ -607,6 +610,9 @@ static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
     PyObject *list;
     if (PyArg_ParseTuple(args, "O", &list))
     {
+        sceneView()->actSceneModeEdge->trigger();
+        Util::scene()->selectNone();
+
         Py_ssize_t size = PyList_Size(list);
         for (int i = 0; i < size; i++)
         {
@@ -657,9 +663,12 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
     PyObject *list;
     if (PyArg_ParseTuple(args, "O", &list))
     {
+        Util::scene()->selectNone();
+
         Py_ssize_t size = PyList_Size(list);
         for (int i = 0; i < size; i++)
         {
+            sceneView()->actSceneModeLabel->trigger();
             PyObject *value = PyList_GetItem(list, i);
 
             int index;
