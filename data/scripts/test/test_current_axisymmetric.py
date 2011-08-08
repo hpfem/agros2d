@@ -39,11 +39,11 @@ testJz = test("Current density - z", point["Jz"], -1.714583e9)
 testpj = test("Losses", point["pj"], 5.858385e10)	
 
 # volume integral
-volume = volumeintegral(0)
+volume = volumeintegral([0])
 testPj = test("Losses", volume["Pj"], 4.542019e9)
 
 # surface integral
-surface = surfaceintegral(1)
+surface = surfaceintegral([1])
 testI = test("Current", surface["I"], -2.166256e8)
 
 print("Test: Current field - axisymmetric: " + str(testV and testE and testEr and testEz and testJ and testJr and testJz and testpj and testI))
