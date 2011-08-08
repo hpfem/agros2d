@@ -35,6 +35,8 @@
 
 #include "mesh/h2d_reader.h"
 
+#include "newton_solver_agros.h"
+
 #include <dirent.h>
 
 double actualTime;
@@ -996,7 +998,7 @@ SolutionAgros<Scalar>::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakF
     timeStep = Util::scene()->problemInfo()->timeStep.number;
     initialCondition = Util::scene()->problemInfo()->initialCondition.number;
 
-    nonlinearTolerance = Util::scene()->problemInfo()->nonlinearTolerance;
+    nonlinearTolerance = 10e-40; //Util::scene()->problemInfo()->nonlinearTolerance;
     nonlinearSteps = Util::scene()->problemInfo()->nonlinearSteps;
 
     matrixSolver = Util::scene()->problemInfo()->matrixSolver;
@@ -1254,7 +1256,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 memset(coeff_vec, 0, ndof*sizeof(double));
 
                 // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
-                Hermes::Hermes2D::NewtonSolver<double> newton(&dp, Hermes::SOLVER_UMFPACK);
+                Hermes::Hermes2D::NewtonSolverAgros<double> newton(&dp, Hermes::SOLVER_UMFPACK);
                 if (!newton.solve(coeff_vec, nonlinearTolerance, nonlinearSteps))
                 {
                     m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed"), true);
