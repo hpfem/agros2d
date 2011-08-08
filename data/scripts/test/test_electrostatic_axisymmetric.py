@@ -50,11 +50,11 @@ testDz = test("Displacement - z", point["Dz"], 1.040894e-8)
 testwe = test("Energy density", point["we"], 1.01087e-6)
 
 # volume integral
-volume = volumeintegral(0, 1, 2)
+volume = volumeintegral([0, 1, 2])
 testEnergy = test("Energy", volume["We"], 1.799349e-8)
 
 # surface integral
-surface = surfaceintegral(1, 12)
+surface = surfaceintegral([1, 12])
 testQ = test("Electric charge", surface["Q"], -1.291778e-9)
 
 print("Test: Electrostatic - axisymmetric: " + str(testV and testE and testEr and testEz and testD and testDr and testDz and testwe and testEnergy and testQ))
