@@ -38,6 +38,10 @@ testJr = test("Current density - r", point["Jr"], -6.320475e8)
 testJz = test("Current density - z", point["Jz"], -1.714583e9)
 testpj = test("Losses", point["pj"], 5.858385e10)	
 
+# volume integral
+volume = volumeintegral(0)
+testPj = test("Losses", volume["Pj"], 4.542019e9)
+
 # surface integral
 surface = surfaceintegral(1)
 testI = test("Current", surface["I"], -2.166256e8)

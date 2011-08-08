@@ -17,10 +17,10 @@
             <material id="heat_conductivity" />
             <material id="heat_volume_heat" />
 
-            <matrix i="1" j="1" planar="lambda * (udx * vdx + udy * vdy)"
-                                axi="lambda * x * (udx * vdx + udy * vdy)" symmetric="1" />
-            <vector i="1" planar="p * vval" 
-                          axi="p * x * vval" />
+            <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
+                                axi="0.0 * x * uval * (updx * vdx + updy * vdy) + lambda * x * (udx * vdx + udy * vdy)" symmetric="1" />
+            <vector i="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval"
+                          axi="lambda * x * (updx * vdx + updy * vdy) - p * x * vval" />
         </steadystate>
         
     	<transient>
@@ -56,8 +56,8 @@
 
                 <matrix i="1" j="1" planar="h * uval * vval"
                                     axi="h * x * uval * vval" symmetric="1" />
-                <vector i="1" planar="(f - h * Te) * vval + h * upval * vval"
-                              axi="(f - h * Te) * x * vval + h * x * upval * vval" />
+                <vector i="1" planar="(- f - h * Te) * vval + h * upval * vval"
+                              axi="(- f - h * Te) * x * vval + h * x * upval * vval" />
             </boundary>
         </steadystate>
         

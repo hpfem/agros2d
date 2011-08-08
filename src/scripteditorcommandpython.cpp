@@ -28,27 +28,6 @@
 #include "scenemarker.h"
 #include "scripteditordialog.h"
 
-// FIX ********************************************************************************************************************************************************************
-// Terible, is it possible to write this code better???
-#define python_int_array() \
-    const int count = 100; \
-    int index[count]; \
-    for (int i = 0; i < count; i++) \
-    index[i] = INT_MIN; \
-    if (PyArg_ParseTuple(args, "i|iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", \
-    &index[ 0], &index[ 1], &index[ 2], &index[ 3], &index[ 4], &index[ 5], &index[ 6], &index[ 7], &index[ 8], &index[ 9], \
-    &index[10], &index[11], &index[12], &index[13], &index[14], &index[15], &index[16], &index[17], &index[18], &index[19], \
-    &index[20], &index[21], &index[22], &index[23], &index[24], &index[25], &index[26], &index[27], &index[28], &index[29], \
-    &index[30], &index[31], &index[32], &index[33], &index[34], &index[35], &index[36], &index[37], &index[38], &index[39], \
-    &index[40], &index[41], &index[42], &index[43], &index[44], &index[45], &index[46], &index[47], &index[48], &index[49], \
-    &index[50], &index[51], &index[52], &index[53], &index[54], &index[55], &index[56], &index[57], &index[58], &index[59], \
-    &index[60], &index[61], &index[62], &index[63], &index[64], &index[65], &index[66], &index[67], &index[68], &index[69], \
-    &index[70], &index[71], &index[72], &index[73], &index[74], &index[75], &index[76], &index[77], &index[78], &index[79], \
-    &index[80], &index[81], &index[82], &index[83], &index[84], &index[85], &index[86], &index[87], &index[88], &index[89], \
-    &index[90], &index[91], &index[92], &index[93], &index[94], &index[95], &index[96], &index[97], &index[98], &index[99]  \
-    )) \
-    // FIX ********************************************************************************************************************************************************************
-
 // version()
 char *pythonVersion()
 {
@@ -570,32 +549,39 @@ void pythonSelectAll()
     sceneView()->doInvalidated();
 }
 
-// selectnode(index, ...)
+// selectnode(node)
 static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
 {
     logMessage("pythonSelectNode()");
 
-    python_int_array()
+    PyObject *list;
+    if (PyArg_ParseTuple(args, "O", &list))
     {
-        sceneView()->actSceneModeEdge->trigger();
-        Util::scene()->selectNone();
-
-        for (int i = 0; i < count; i++)
+        Py_ssize_t size = PyList_Size(list);
+        for (int i = 0; i < size; i++)
         {
-            if (index[i] == INT_MIN)
-                continue;
-            if ((index[i] >= 0) && index[i] < Util::scene()->nodes.count())
+            PyObject *value = PyList_GetItem(list, i);
+
+            int index;
+            PyArg_Parse(value, "i", &index);
+
+            if ((index >= 0) && index < Util::scene()->nodes.count())
             {
-                Util::scene()->nodes[index[i]]->isSelected = true;
+                Util::scene()->nodes[index]->isSelected = true;
             }
             else
             {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->nodes.count()-1).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
                 return NULL;
             }
         }
+
         sceneView()->doInvalidated();
         Py_RETURN_NONE;
+    }
+    else
+    {
+        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
     }
     return NULL;
 }
@@ -613,23 +599,25 @@ void pythonSelectNodePoint(double x, double y)
     }
 }
 
-// selectedge(index, ...)
+// selectedge(list)
 static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
 {
     logMessage("pythonSelectEdge()");
 
-    python_int_array()
+    PyObject *list;
+    if (PyArg_ParseTuple(args, "O", &list))
     {
-        sceneView()->actSceneModeEdge->trigger();
-        Util::scene()->selectNone();
-
-        for (int i = 0; i < count; i++)
+        Py_ssize_t size = PyList_Size(list);
+        for (int i = 0; i < size; i++)
         {
-            if (index[i] == INT_MIN)
-                continue;
-            if ((index[i] >= 0) && index[i] < Util::scene()->edges.count())
+            PyObject *value = PyList_GetItem(list, i);
+
+            int index;
+            PyArg_Parse(value, "i", &index);
+
+            if ((index >= 0) && index < Util::scene()->edges.count())
             {
-                Util::scene()->edges[index[i]]->isSelected = true;
+                Util::scene()->edges[index]->isSelected = true;
             }
             else
             {
@@ -637,8 +625,13 @@ static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
                 return NULL;
             }
         }
+
         sceneView()->doInvalidated();
         Py_RETURN_NONE;
+    }
+    else
+    {
+        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
     }
     return NULL;
 }
@@ -656,32 +649,39 @@ void pythonSelectEdgePoint(double x, double y)
     }
 }
 
-// selectlabel(index, ...)
+// selectlabel(list)
 static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
 {
     logMessage("pythonSelectLabel()");
 
-    python_int_array()
+    PyObject *list;
+    if (PyArg_ParseTuple(args, "O", &list))
     {
-        sceneView()->actSceneModeLabel->trigger();
-        Util::scene()->selectNone();
-
-        for (int i = 0; i < count; i++)
+        Py_ssize_t size = PyList_Size(list);
+        for (int i = 0; i < size; i++)
         {
-            if (index[i] == INT_MIN)
-                continue;
-            if ((index[i] >= 0) && index[i] < Util::scene()->labels.count())
+            PyObject *value = PyList_GetItem(list, i);
+
+            int index;
+            PyArg_Parse(value, "i", &index);
+
+            if ((index >= 0) && index < Util::scene()->labels.count())
             {
-                Util::scene()->labels[index[i]]->isSelected = true;
+                Util::scene()->labels[index]->isSelected = true;
             }
             else
             {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels.count()-1).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
                 return NULL;
             }
         }
+
         sceneView()->doInvalidated();
         Py_RETURN_NONE;
+    }
+    else
+    {
+        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
     }
     return NULL;
 }
@@ -896,7 +896,7 @@ static PyObject *pythonPointResult(PyObject *self, PyObject *args)
     return NULL;
 }
 
-// result = surfaceintegral(index, ...)
+// result = surfaceintegral(list)
 static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
 {
     logMessage("pythonSurfaceIntegral()");
@@ -908,15 +908,20 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
         sceneView()->actPostprocessorModeSurfaceIntegral->trigger();
         Util::scene()->selectNone();
 
-        python_int_array()
+        PyObject *list;
+        if (PyArg_ParseTuple(args, "O", &list))
         {
-            for (int i = 0; i < count; i++)
+            Py_ssize_t size = PyList_Size(list);
+            for (int i = 0; i < size; i++)
             {
-                if (index[i] == INT_MIN)
-                    continue;
-                if ((index[i] >= 0) && index[i] < Util::scene()->edges.count())
+                PyObject *value = PyList_GetItem(list, i);
+
+                int index;
+                PyArg_Parse(value, "i", &index);
+
+                if ((index >= 0) && index < Util::scene()->edges.count())
                 {
-                    Util::scene()->edges[index[i]]->isSelected = true;
+                    Util::scene()->edges[index]->isSelected = true;
                 }
                 else
                 {
@@ -937,6 +942,10 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
 
             return dict;
         }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
+        }
     }
     else
     {
@@ -945,7 +954,7 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
     return NULL;
 }
 
-// result = volumeintegral(index, ...)
+// result = volumeintegral(list)
 static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
 {
     logMessage("pythonVolumeIntegral()");
@@ -957,15 +966,20 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
         sceneView()->actPostprocessorModeVolumeIntegral->trigger();
         Util::scene()->selectNone();
 
-        python_int_array()
+        PyObject *list;
+        if (PyArg_ParseTuple(args, "O", &list))
         {
-            for (int i = 0; i < count; i++)
+            Py_ssize_t size = PyList_Size(list);
+            for (int i = 0; i < size; i++)
             {
-                if (index[i] == INT_MIN)
-                    continue;
-                if ((index[i] >= 0) && index[i] < Util::scene()->labels.count())
+                PyObject *value = PyList_GetItem(list, i);
+
+                int index;
+                PyArg_Parse(value, "i", &index);
+
+                if ((index >= 0) && index < Util::scene()->labels.count())
                 {
-                    Util::scene()->labels[index[i]]->isSelected = true;
+                    Util::scene()->labels[index]->isSelected = true;
                 }
                 else
                 {
@@ -985,6 +999,10 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
             }
 
             return dict;
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
         }
     }
     else
@@ -1158,12 +1176,12 @@ static PyMethodDef pythonMethods[] =
     {"modifyboundary", pythonModifyBoundary, METH_VARARGS, "modifyBoundary(name, type, value, ...)"},
     {"addmaterial", pythonAddMaterial, METH_VARARGS, "addmaterial(name, type, value, ...)"},
     {"modifymaterial", pythonModifyMaterial, METH_VARARGS, "modifymaterial(name, type, value, ...)"},
-    {"selectnode", pythonSelectNode, METH_VARARGS, "selectnode(index, ...)"},
-    {"selectedge", pythonSelectEdge, METH_VARARGS, "selectedge(index, ...)"},
-    {"selectlabel", pythonSelectLabel, METH_VARARGS, "selectlabel(index, ...)"},
+    {"selectnode", pythonSelectNode, METH_VARARGS, "selectnode(list)"},
+    {"selectedge", pythonSelectEdge, METH_VARARGS, "selectedge(list)"},
+    {"selectlabel", pythonSelectLabel, METH_VARARGS, "selectlabel(list)"},
     {"pointresult", pythonPointResult, METH_VARARGS, "pointresult(x, y)"},
-    {"volumeintegral", pythonVolumeIntegral, METH_VARARGS, "volumeintegral(index, ...)"},
-    {"surfaceintegral", pythonSurfaceIntegral, METH_VARARGS, "surfaceintegral(index, ...)"},
+    {"volumeintegral", pythonVolumeIntegral, METH_VARARGS, "volumeintegral(list)"},
+    {"surfaceintegral", pythonSurfaceIntegral, METH_VARARGS, "surfaceintegral(list)"},
     {"capturestdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
     {NULL, NULL, 0, NULL}
 };

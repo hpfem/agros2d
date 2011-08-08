@@ -50,7 +50,7 @@
             <steadystate planar_comp_x="- gamma * dx1" planar_comp_y="- gamma * dy1" axi_comp_r="- gamma * dx1" axi_comp_z="- gamma * dy1" />
         </item>
         <item id="current_joule_losses" name="Joule losses" shortname="pj" unit="W/m3" scalar="1">
-            <steadystate planar_scalar="0.5 * gamma * sqrt(dx1 * dx1 + dy1 * dy1)" axi_scalar="0.5 * gamma * sqrt(dx1 * dx1 + dy1 * dy1)" />
+            <steadystate planar_scalar="gamma * (dx1 * dx1 + dy1 * dy1)" axi_scalar="gamma * (dx1 * dx1 + dy1 * dy1)" />
         </item>
         <item id="current_conductivity" name="Conductivity" shortname="gamma" unit="S/m" scalar="1">
             <steadystate planar_scalar="gamma" axi_scalar="gamma" />
@@ -94,7 +94,7 @@
             <steadystate planar="1.0" axi="1.0" />
         </item>
         <item id="current_joule_losses" name="Joule losses" shortname="Pj" unit="W">
-            <steadystate planar="0.5 * gamma * (dx1 * dx1 + dy1 * dy1)" axi="2.0 * PI * x * 0.5 * gamma * (dx1 * dx1 + dy1 * dy1)" />
+            <steadystate planar="gamma * (dx1 * dx1 + dy1 * dy1)" axi="2.0 * PI * x * gamma * (dx1 * dx1 + dy1 * dy1)" />
         </item>
     </volumeintegral>
 
