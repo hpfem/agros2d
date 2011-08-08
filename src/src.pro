@@ -100,7 +100,9 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     indicators/indicator_unity.cpp \
     collaboration.cpp \
     resultsview.cpp \
-    hermes2d/weakform_parser.cpp
+    hermes2d/weakform_parser.cpp \
+    hermes2d/newton_solver_agros.cpp
+
 HEADERS += util.h \
     value.h \
     scene.h \
@@ -152,7 +154,8 @@ HEADERS += util.h \
     indicators/indicator_unity.h \
     collaboration.h \
     resultsview.h \ 
-    hermes2d/weakform_parser.h
+    hermes2d/weakform_parser.h \
+    hermes2d/newton_solver_agros.h
 
 INCLUDEPATH += . \
     ../lib/muparser \
