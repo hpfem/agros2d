@@ -283,15 +283,21 @@ Hermes::Module::MaterialTypeVariable::MaterialTypeVariable(rapidxml::xml_node<> 
     name = QObject::tr(node->first_attribute("name")->value()).toStdString();
     shortname = node->first_attribute("shortname")->value();
     unit = node->first_attribute("unit")->value();
+    if (node->first_attribute("default"))
+        default_value = atoi(node->first_attribute("default")->value());
+    else
+        default_value = 0.0;
 }
 
 Hermes::Module::MaterialTypeVariable::MaterialTypeVariable(std::string id, std::string name,
-                                                           std::string shortname, std::string unit)
+                                                           std::string shortname, std::string unit,
+                                                           double default_value)
 {
     this->id = id;
     this->name = name;
     this->shortname = shortname;
     this->unit = unit;
+    this->default_value = default_value;
 }
 
 // ***********************************************************************************************
@@ -315,7 +321,7 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
                 if (old.id == variable->first_attribute("id")->value())
                 {
                     Hermes::Module::BoundaryTypeVariable *var = new Hermes::Module::BoundaryTypeVariable(
-                                old.id, old.name, old.shortname, old.unit);
+                                old.id, old.name, old.shortname, old.unit, old.default_value);
 
                     variables.push_back(var);
                 }
@@ -352,15 +358,21 @@ Hermes::Module::BoundaryTypeVariable::BoundaryTypeVariable(rapidxml::xml_node<> 
     name = QObject::tr(node->first_attribute("name")->value()).toStdString();
     shortname = node->first_attribute("shortname")->value();
     unit = node->first_attribute("unit")->value();
+    if (node->first_attribute("default"))
+        default_value = atoi(node->first_attribute("default")->value());
+    else
+        default_value = 0.0;
 }
 
 Hermes::Module::BoundaryTypeVariable::BoundaryTypeVariable(std::string id, std::string name,
-                                                           std::string shortname, std::string unit)
+                                                           std::string shortname, std::string unit,
+                                                           double default_value)
 {
     this->id = id;
     this->name = name;
     this->shortname = shortname;
     this->unit = unit;
+    this->default_value = default_value;
 }
 
 Hermes::Module::BoundaryType::~BoundaryType()
@@ -484,7 +496,7 @@ void Hermes::Module::Module::read(std::string filename)
                         if (old.id == node->first_attribute("id")->value())
                         {
                             Hermes::Module::MaterialTypeVariable *var = new Hermes::Module::MaterialTypeVariable(
-                                        old.id, old.name, old.shortname, old.unit);
+                                        old.id, old.name, old.shortname, old.unit, old.default_value);
 
                             material_type_variables.push_back(var);
                         }

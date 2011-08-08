@@ -38,7 +38,7 @@ Material::Material(std::string name,
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-                this->values[variable->id] = Value("0");
+                this->values[variable->id] = Value(QString::number(variable->default_value));
             }
         }
     }
