@@ -10,23 +10,23 @@
 //
 // Hermes2D is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #include "newton_solver.h"
 #include "hermes_common.h"
 
-#include <iostream>
+#include "../../src/alter_newton_solver.h"
 
 namespace Hermes
 {
   namespace Hermes2D
   {
     template<typename Scalar>
-    double NewtonSolver<Scalar>::max_allowed_residual_norm = 1e12;
+    double NewtonSolver<Scalar>::max_allowed_residual_norm = 1E6;
 
     template<typename Scalar>
     NewtonSolver<Scalar>::NewtonSolver(DiscreteProblem<Scalar>* dp) : NonlinearSolver<Scalar>(dp), kept_jacobian(NULL)
@@ -75,7 +75,7 @@ namespace Hermes
 
     template<typename Scalar>
     bool NewtonSolver<Scalar>::solve(Scalar* coeff_vec, double newton_tol, int newton_max_iter, bool residual_as_function)
-    {      
+    {
       // Delete the old solution vector, if there is any.
       if(this->sln_vector != NULL)
       {
@@ -89,22 +89,22 @@ namespace Hermes
       // The Newton's loop.
       double residual_norm;
       int it = 1;
-      
+
       bool delete_timer = false;
       if (this->timer == NULL)
       {
         this->timer = new TimePeriod;
         delete_timer = true;
       }
-            
+
       this->timer->tick();
       setup_time += this->timer->last();
-      
+
       while (1)
-      {        
+      {
         // Assemble the residual vector.
         this->dp->assemble(coeff_vec, residual);
-        
+
         this->timer->tick();
         assemble_time += this->timer->last();
 
@@ -127,7 +127,7 @@ namespace Hermes
           for (unsigned int i = 0; i < static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces().size(); i++)
             delete solutions[i];
         }
-        else 
+        else
         {
           // Calculate the l2-norm of residual vector, this is the traditional way.
           residual_norm = Global<Scalar>::get_l2_norm(residual);
@@ -136,20 +136,20 @@ namespace Hermes
         // Info for the user.
         if(it == 1) {
           if(this->verbose_output)
-            std::cout << "---- Newton initial residual norm: " << residual_norm << std::endl;
+            info("---- Newton initial residual norm: %g", residual_norm);
         }
-        else 
+        else
           if(this->verbose_output)
-            std::cout << "---- Newton iter " << it - 1 << ", residual norm: " << residual_norm << std::endl;
+            info("---- Newton iter %d, residual norm: %g", it - 1, residual_norm);
 
         // If maximum allowed residual norm is exceeded, fail.
         if (residual_norm > max_allowed_residual_norm)
         {
           if (this->verbose_output)
           {
-            std::cout << "Current residual norm: :" <<  residual_norm << std::endl;
-            std::cout << "Maximum allowed residual norm: :" <<  max_allowed_residual_norm << std::endl;
-            std::cout << "Newton solve not successful, returning false." << std::endl;
+            info("Current residual norm: %g", residual_norm);
+            info("Maximum allowed residual norm: %g", max_allowed_residual_norm);
+            info("Newton solve not successful, returning false.");
           }
           break;
         }
@@ -164,36 +164,36 @@ namespace Hermes
 
           this->timer->tick();
           solve_time += this->timer->last();
-          
+
           if (delete_timer)
           {
             delete this->timer;
             this->timer = NULL;
           }
-          
+
           return true;
         }
-        
+
         this->timer->tick();
         solve_time += this->timer->last();
 
         // Assemble the jacobian.
         this->dp->assemble(coeff_vec, jacobian);
-        
+
         this->timer->tick();
         assemble_time += this->timer->last();
 
         // Multiply the residual vector with -1 since the matrix
         // equation reads J(Y^n) \deltaY^{n+1} = -F(Y^n).
         residual->change_sign();
-        
+
         // Solve the linear system.
         if(!linear_solver->solve()) {
-          if (this->verbose_output) 
-            std::cout << "Matrix<Scalar> solver failed. Returning false." << std::endl;
+          if (this->verbose_output)
+            info ("Matrix<Scalar> solver failed. Returning false.\n");
           break;
         }
-        
+
         // Add \deltaY^{n+1} to Y^n.
         for (int i = 0; i < ndof; i++)
           coeff_vec[i] += linear_solver->get_sln_vector()[i];
@@ -201,23 +201,23 @@ namespace Hermes
         // Increase the number of iterations and test if we are still under the limit.
         if (it++ >= newton_max_iter)
         {
-          if (this->verbose_output) 
-            std::cout << "Maximum allowed number of Newton iterations exceeded, returning false." << std::endl;
+          if (this->verbose_output)
+            info("Maximum allowed number of Newton iterations exceeded, returning false.");
           break;
         }
-        
+
         this->timer->tick();
         solve_time += this->timer->last();
       }
       // Return false.
-      // All 'bad' situations end here. 
-      
+      // All 'bad' situations end here.
+
       if (delete_timer)
       {
         delete this->timer;
         this->timer = NULL;
       }
-      
+
       return false;
     }
 
@@ -260,30 +260,30 @@ namespace Hermes
           for (unsigned int i = 0; i < static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces().size(); i++)
             delete solutions[i];
         }
-        else 
+        else
         {
           // Calculate the l2-norm of residual vector, this is the traditional way.
           residual_norm = Global<Scalar>::get_l2_norm(residual);
         }
 
         // Info for the user.
-        if(it == 1) 
+        if(it == 1)
         {
           if(this->verbose_output)
-            std::cout << "---- Newton initial residual norm: :" <<  residual_norm << std::endl;
+            info("---- Newton initial residual norm: %g", residual_norm);
         }
-        else 
+        else
           if(this->verbose_output)
-            std::cout << "---- Newton iter " <<  it - 1 << ", residual norm: :" << residual_norm << std::endl;
+            info("---- Newton iter %d, residual norm: %g", it - 1, residual_norm);
 
         // If maximum allowed residual norm is exceeded, fail.
         if (residual_norm > max_allowed_residual_norm)
         {
           if (this->verbose_output)
           {
-            std::cout << "Current residual norm: :" <<  residual_norm << std::endl;
-            std::cout << "Maximum allowed residual norm: :" <<  max_allowed_residual_norm << std::endl;
-            std::cout << "Newton solve not successful, returning false." << std::endl;
+            info("Current residual norm: %g", residual_norm);
+            info("Maximum allowed residual norm: %g", max_allowed_residual_norm);
+            info("Newton solve not successful, returning false.");
           }
           break;
         }
@@ -311,7 +311,7 @@ namespace Hermes
 
         // Solve the linear system.
         if(!linear_solver->solve()) {
-          if (this->verbose_output) 
+          if (this->verbose_output)
             info ("Matrix<Scalar> solver failed. Returning false.\n");
           break;
         }
@@ -323,8 +323,8 @@ namespace Hermes
         // Increase the number of iterations and test if we are still under the limit.
         if (it++ >= newton_max_iter)
         {
-          if (this->verbose_output) 
-            std::cout << "Maximum allowed number of Newton iterations exceeded, returning false." << std::endl;
+          if (this->verbose_output)
+            info("Maximum allowed number of Newton iterations exceeded, returning false.");
           break;
         }
       }
@@ -338,7 +338,7 @@ namespace Hermes
     void NewtonSolver<Scalar>::set_iterative_method(const char* iterative_method_name)
     {
       NonlinearSolver<Scalar>::set_iterative_method(iterative_method_name);
-      // Set iterative method and preconditioner in case of iterative solver AztecOO.
+// Set iterative method and preconditioner in case of iterative solver AztecOO.
 #ifdef HAVE_AZTECOO
       if(this->matrix_solver_type != SOLVER_AZTECOO)
       {
@@ -356,7 +356,7 @@ namespace Hermes
     void NewtonSolver<Scalar>::set_preconditioner(const char* preconditioner_name)
     {
       NonlinearSolver<Scalar>::set_preconditioner(preconditioner_name);
-      // Set iterative method and preconditioner in case of iterative solver AztecOO.
+// Set iterative method and preconditioner in case of iterative solver AztecOO.
 #ifdef HAVE_AZTECOO
       if(this->matrix_solver_type != SOLVER_AZTECOO)
       {
