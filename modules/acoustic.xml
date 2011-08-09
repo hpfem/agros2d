@@ -17,10 +17,14 @@
             <material id="acoustic_density" />
             <material id="acoustic_speed" />
 
-            <matrix i="1" j="1" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval"
-                                axi="1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="1" />
-            <matrix i="2" j="2" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval"
-                                axi="1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="1" />
+            <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + 1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval"
+                                axi="0.0 * x * uval * (updx * vdx + updy * vdy) + 1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="0" />
+            <matrix i="2" j="2" planar="0.0 * uval * (updx * vdx + updy * vdy) + 1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval"
+                                axi="0.0 * x * uval * (updx * vdx + updy * vdy) + 1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="0" />
+            <vector i="1" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * v^2) * upval * vval"
+                          axi="1 / rho * x * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * v^2) * upval * vval" />
+            <vector i="2" planar="1 / rho * (updx * vdx + updy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * upval * vval"
+                          axi="1 / rho * x * (updx * vdx + updy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * upval * vval" />
         </harmonic>
     </material>
 
@@ -51,8 +55,14 @@
             <boundary id="acoustic_impedance" name="Impedance boundary condition">
                 <item id="acoustic_impedance" />
 
-                <matrix i="1" j="2" planar="- 2 * PI * f / Z0 * uval * vval" axi="- x * 2 * PI * f / Z0 * uval * vval" />
-                <matrix i="2" j="1" planar="  2 * PI * f / Z0 * uval * vval" axi="  x * 2 * PI * f / Z0 * uval * vval" />
+                <matrix i="1" j="2" planar="- 2 * PI * f / Z0 * uval * vval"
+                                    axi="- x * 2 * PI * f / Z0 * uval * vval" />
+                <matrix i="2" j="1" planar="2 * PI * f / Z0 * uval * vval"
+                                    axi="x * 2 * PI * f / Z0 * uval * vval" />
+                <vector i="2" planar="- 2 * PI * f / Z0 * upval * vval"
+                              axi="- x * 2 * PI * f / Z0 * upval * vval" />
+                <vector i="1" planar="2 * PI * f / Z0 * upval * vval"
+                              axi="x * 2 * PI * f / Z0 * upval * vval" />
             </boundary>
 
             <boundary id="acoustic_matched_boundary" name="Matched boundary" >

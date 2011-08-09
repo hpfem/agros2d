@@ -56,8 +56,8 @@
 
                 <matrix i="1" j="1" planar="h * uval * vval"
                                     axi="h * x * uval * vval" symmetric="1" />
-                <vector i="1" planar="(- f - h * Te) * vval + h * upval * vval"
-                              axi="(- f - h * Te) * x * vval + h * x * upval * vval" />
+                <vector i="1" planar="((- f - h * Te) + h * upval) * vval"
+                              axi="x * ((- f - h * Te) + h * upval) * vval" />
             </boundary>
         </steadystate>
         

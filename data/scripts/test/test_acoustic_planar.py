@@ -1,31 +1,35 @@
 # model
-newdocument("Acoustic", "planar", "acoustic", 3, 2, "disabled", 5, 1, 2000, "harmonic", 1.0, 1.0, 0.0)
+newdocument(name="Acoustic", type="planar",
+            physicfield="acoustic", analysistype="harmonic",
+            numberofrefinements=3, polynomialorder=2,
+            nonlineartolerance=0.001, nonlinearsteps=10,
+            frequency=2000)
 
 # boundaries
-addboundary("Source", "acoustic_pressure", 0.01)
-addboundary("Wall", "acoustic_normal_acceleration", 0)
-addboundary("Matched boundary", "acoustic_matched_boundary", 0)
+addboundary("Source", "acoustic_pressure", {"pr" : 0.01, "pi" : 0})
+addboundary("Wall", "acoustic_normal_acceleration", {"anr" : 0, "ani" : 0})
+addboundary("Matched boundary", "acoustic_impedance", {"Z0" : 1.25*343})
 
 # materials
-addmaterial("Vzduch", 1.25, 343)
+addmaterial("Vzduch", {"rho" : 1.25, "v" : 343})
 
 # edges
-addedge(-0.4, 0.05, 0.1, 0.2, 0, "Matched boundary")
-addedge(0.1, -0.2, -0.4, -0.05, 0, "Matched boundary")
-addedge(-0.4, 0.05, -0.4, -0.05, 0, "Matched boundary")
-addedge(-0.18, -0.06, -0.17, -0.05, 90, "Source")
-addedge(-0.17, -0.05, -0.18, -0.04, 90, "Source")
-addedge(-0.18, -0.04, -0.19, -0.05, 90, "Source")
-addedge(-0.19, -0.05, -0.18, -0.06, 90, "Source")
-addedge(0.1, -0.2, 0.1, 0.2, 90, "Matched boundary")
-addedge(0.03, 0.1, -0.04, -0.05, 90, "Wall")
-addedge(-0.04, -0.05, 0.08, -0.04, 0, "Wall")
-addedge(0.08, -0.04, 0.03, 0.1, 0, "Wall")
+addedge(-0.4, 0.05, 0.1, 0.2, boundary="Matched boundary")
+addedge(0.1, -0.2, -0.4, -0.05, boundary="Matched boundary")
+addedge(-0.4, 0.05, -0.4, -0.05, boundary="Matched boundary")
+addedge(-0.18, -0.06, -0.17, -0.05, boundary="Source", angle=90)
+addedge(-0.17, -0.05, -0.18, -0.04, boundary="Source", angle=90)
+addedge(-0.18, -0.04, -0.19, -0.05, boundary="Source", angle=90)
+addedge(-0.19, -0.05, -0.18, -0.06, boundary="Source", angle=90)
+addedge(0.1, -0.2, 0.1, 0.2, boundary="Matched boundary", angle=90)
+addedge(0.03, 0.1, -0.04, -0.05, boundary="Wall", angle=90)
+addedge(-0.04, -0.05, 0.08, -0.04, boundary="Wall")
+addedge(0.08, -0.04, 0.03, 0.1, boundary="Wall")
 
 # labels
-addlabel(-0.0814934, 0.0707097, 0, 0, "Vzduch")
-addlabel(-0.181474, -0.0504768, 0, 0, "none")
-addlabel(0.0314514, 0.0411749, 0, 0, "none")
+addlabel(-0.0814934, 0.0707097, material="Vzduch")
+addlabel(-0.181474, -0.0504768, material="none")
+addlabel(0.0314514, 0.0411749, material="none")
 
 # solve
 zoombestfit()
