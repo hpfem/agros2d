@@ -47,18 +47,18 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
 
     if (id == "electrostatic")
         module = new ModuleElectrostatic(problem_type, analysis_type);
-//    if (id == "current")
-//        module = new ModuleCurrent(problem_type, analysis_type);
+    if (id == "current")
+        module = new ModuleCurrent(problem_type, analysis_type);
     if (id == "magnetic")
         module = new ModuleMagnetic(problem_type, analysis_type);
-//    if (id == "acoustic")
-//        module = new ModuleAcoustic(problem_type, analysis_type);
-//    if (id == "elasticity")
-//        module = new ModuleElasticity(problem_type, analysis_type);
+    if (id == "acoustic")
+        module = new ModuleAcoustic(problem_type, analysis_type);
+    if (id == "elasticity")
+        module = new ModuleElasticity(problem_type, analysis_type);
     if (id == "heat")
         module = new ModuleHeat(problem_type, analysis_type);
-//    if (id == "rf")
-//        module = new ModuleRF(problem_type, analysis_type);
+    if (id == "rf")
+        module = new ModuleRF(problem_type, analysis_type);
 
     if (module)
         module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());
@@ -73,18 +73,18 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneBoundaryElectrostaticDialog(scene_boundary, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "current")
-//        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "current")
+        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "magnetic")
         return new SceneBoundaryMagneticDialog(scene_boundary, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-//        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "elasticity")
-//        return new SceneBoundaryElasticityDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "acoustic")
+        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "elasticity")
+        return new SceneBoundaryElasticityDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "heat")
         return new SceneBoundaryHeatDialog(scene_boundary, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "rf")
-//        return new SceneBoundaryRFDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "rf")
+        return new SceneBoundaryRFDialog(scene_boundary, parent);
 }
 
 // material dialog factory
@@ -92,18 +92,18 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
 {
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneMaterialElectrostaticDialog(scene_material, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "current")
-//        return new SceneMaterialCurrentDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "current")
+        return new SceneMaterialCurrentDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "magnetic")
         return new SceneMaterialMagneticDialog(scene_material, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-//        return new SceneMaterialAcousticDialog(scene_material, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "elasticity")
-//        return new SceneMaterialElasticityDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "acoustic")
+        return new SceneMaterialAcousticDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "elasticity")
+        return new SceneMaterialElasticityDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "heat")
         return new SceneMaterialHeatDialog(scene_material, parent);
-//    if (Util::scene()->problemInfo()->module()->id == "rf")
-//        return new SceneMaterialRFDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "rf")
+        return new SceneMaterialRFDialog(scene_material, parent);
 }
 
 std::map<std::string, std::string> availableModules()
