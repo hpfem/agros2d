@@ -63,10 +63,10 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
     hermes2d/hermes_magnetic.cpp \
-    hermes2d/hermes_current.cpp \
-    hermes2d/hermes_elasticity.cpp \
-    hermes2d/hermes_rf.cpp \
-    hermes2d/hermes_acoustic.cpp \
+ #   hermes2d/hermes_current.cpp \
+ #   hermes2d/hermes_elasticity.cpp \
+ #   hermes2d/hermes_rf.cpp \
+#    hermes2d/hermes_acoustic.cpp \
 #    hermes2d/hermes_flow.cpp \
     main.cpp \
     scripteditordialog.cpp \
@@ -100,8 +100,8 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     indicators/indicator_unity.cpp \
     collaboration.cpp \
     resultsview.cpp \
-    hermes2d/weakform_parser.cpp \
-    hermes2d/newton_solver_agros.cpp
+    hermes2d/weakform_parser.cpp\
+    alter_newton_solver.cpp
 
 HEADERS += util.h \
     value.h \
@@ -117,10 +117,10 @@ HEADERS += util.h \
     hermes2d/hermes_electrostatic.h \
     hermes2d/hermes_heat.h \
     hermes2d/hermes_magnetic.h \
-    hermes2d/hermes_current.h \
-    hermes2d/hermes_elasticity.h \
-    hermes2d/hermes_rf.h \
-    hermes2d/hermes_acoustic.h \
+   # hermes2d/hermes_current.h \
+   # hermes2d/hermes_elasticity.h \
+   # hermes2d/hermes_rf.h \
+   # hermes2d/hermes_acoustic.h \
     #hermes2d/hermes_flow.h \
     mainwindow.h \
     scripteditordialog.h \
@@ -155,7 +155,7 @@ HEADERS += util.h \
     collaboration.h \
     resultsview.h \ 
     hermes2d/weakform_parser.h \
-    hermes2d/newton_solver_agros.h
+    alter_newton_solver.h
 
 INCLUDEPATH += . \
     ../lib/muparser \
