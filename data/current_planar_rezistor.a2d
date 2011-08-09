@@ -1,6 +1,6 @@
 <document version="2.0">
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="unnamed" date="2011-07-22" polynomialorder="2" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="current" timetotal="1.0">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.01" name="unnamed" date="2011-07-22" polynomialorder="2" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="current" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
@@ -9,8 +9,8 @@
                 <edge current_inward_current_flow="0" type="current_inward_current_flow" id="3" name="Neumann"/>
             </edges>
             <labels>
-                <label current_conductivity="57e6" id="1" name="Cond 1"/>
-                <label current_conductivity="33e6" id="2" name="Cond 2"/>
+                <label current_conductivity="33e6" id="1" name="Cond 1"/>
+                <label current_conductivity="57e6" id="2" name="Cond 2"/>
             </labels>
         </problem>
     </problems>
