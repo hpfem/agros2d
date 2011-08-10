@@ -411,7 +411,8 @@ class SolutionAgros
 public:
     SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
 
-    Hermes::vector<SolutionArray<Scalar> *> solveSolutioArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
+    Hermes::vector<SolutionArray<Scalar> *> solveSolutionArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
+    Hermes::vector<SolutionArray<Scalar> *> solveSolutionArrayOld(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
 private:
     int polynomialOrder;
     AdaptivityType adaptivityType;
@@ -439,6 +440,21 @@ private:
     // weak form
     WeakFormAgros<Scalar> *m_wf;
     ProgressItemSolve *m_progressItemSolve;
+
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution;
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space;
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionReference;
+    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
+    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
+
+
+    void initCalculation(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
+    void cleanup();
+
+    bool solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceOne,
+                         Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionOne);
+
+
 
     SolutionArray<Scalar> *solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
 
