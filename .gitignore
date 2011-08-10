@@ -32,3 +32,5 @@ doc/doxygen
 *.exe
 pthreadGC2.dll
 mingwm10.dll
+src/python/agros2d.c
+
