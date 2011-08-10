@@ -1074,9 +1074,6 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
             selector.push_back(select);
             // reference solution
             solutionReference.push_back(new Hermes::Hermes2D::Solution<Scalar>());
-            Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> coarse_space = space;
-            space = Hermes::Hermes2D::Space<double>::construct_refined_space(coarse_space);
-
         }
     }
 
@@ -1249,12 +1246,6 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 m_wf->delete_all();
                 m_wf->registerForms();
 
-//                Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> coarse_space = space;
-//                if (adaptivityType != AdaptivityType_None){
-//                    space = Hermes::Hermes2D::Space<double>::construct_refined_space(coarse_space);
-//                    m_progressItemSolve->emitMessage(QObject::tr("Solving reference problem"), false);
-//                }
-
                 // Initialize the FE problem.
                 Hermes::Hermes2D::DiscreteProblem<double> dp(m_wf, space);
 
@@ -1273,12 +1264,6 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray
                 }
                 else
                     Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), space, solution);
-
-                Hermes::Hermes2D::Solution<double> coarse_solution;
-                if (adaptivityType != AdaptivityType_None){
-                    m_progressItemSolve->emitMessage(QObject::tr("Projecting reference solution on coarse mesh"), false);
-                    Hermes::Hermes2D::OGProjection<double>::project_global(&coarse_space, &solution, &coarse_solution, Hermes::SOLVER_UMFPACK);
-                }
 
                 // output
                 if (!isError)
