@@ -1029,47 +1029,47 @@ void SolutionAgros<Scalar>::initCalculation(Hermes::vector<Hermes::Hermes2D::Ess
     // load the mesh file
     mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
     refineMesh(mesh, true, true);
-
-    Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select = NULL;
-    switch (adaptivityType)
-    {
-    case AdaptivityType_H:
-        select = new Hermes::Hermes2D::RefinementSelectors::HOnlySelector<Scalar>();
-        break;
-    case AdaptivityType_P:
-        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
-                                                                                        Util::config()->convExp,
-                                                                                        H2DRS_DEFAULT_ORDER);
-        break;
-    case AdaptivityType_HP:
-        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
-                                                                                        Util::config()->convExp,
-                                                                                        H2DRS_DEFAULT_ORDER);
-        break;
-    }
+    cout << "velikost" << bcs.size() << endl;
+//    Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select = NULL;
+//    switch (adaptivityType)
+//    {
+//    case AdaptivityType_H:
+//        select = new Hermes::Hermes2D::RefinementSelectors::HOnlySelector<Scalar>();
+//        break;
+//    case AdaptivityType_P:
+//        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
+//                                                                                        Util::config()->convExp,
+//                                                                                        H2DRS_DEFAULT_ORDER);
+//        break;
+//    case AdaptivityType_HP:
+//        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
+//                                                                                        Util::config()->convExp,
+//                                                                                        H2DRS_DEFAULT_ORDER);
+//        break;
+//    }
 
     for (int i = 0; i < numberOfSolution; i++)
     {
-        space.push_back(new Hermes::Hermes2D::H1Space<Scalar>(mesh, &bcs[i], polynomialOrder));
+//        space.push_back(new Hermes::Hermes2D::H1Space<Scalar>(mesh, &bcs[i], polynomialOrder));
 
-        // set order by element
-        for (int j = 0; j < Util::scene()->labels.count(); j++)
-            if (Util::scene()->labels[j]->material != Util::scene()->materials[0])
-                space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,
-                                               QString::number(j).toStdString());
+//        // set order by element
+//        for (int j = 0; j < Util::scene()->labels.count(); j++)
+//            if (Util::scene()->labels[j]->material != Util::scene()->materials[0])
+//                space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,
+//                                               QString::number(j).toStdString());
 
-        // solution agros array
+//        // solution agros array
         solution.push_back(new Hermes::Hermes2D::Solution<Scalar>());
 
-        if (adaptivityType != AdaptivityType_None)
-        {
-            // add norm
-            projNormType.push_back(Util::config()->projNormType);
-            // add refinement selector
-            selector.push_back(select);
-            // reference solution
-            solutionReference.push_back(new Hermes::Hermes2D::Solution<Scalar>());
-        }
+//        if (adaptivityType != AdaptivityType_None)
+//        {
+//            // add norm
+//            projNormType.push_back(Util::config()->projNormType);
+//            // add refinement selector
+//            selector.push_back(select);
+//            // reference solution
+//            solutionReference.push_back(new Hermes::Hermes2D::Solution<Scalar>());
+//        }
     }
 }
 
@@ -1123,11 +1123,31 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
     // solution agros array
     Hermes::vector<SolutionArray<Scalar> *> solutionArrayList;
 
+    cout << "puvodni velikost" << bcs.size() << endl;
+
 
     // error marker
     bool isError = false;
 
     initCalculation(bcs);
+
+
+    for (int i = 0; i < numberOfSolution; i++)
+    {
+        space.push_back(new Hermes::Hermes2D::H1Space<Scalar>(mesh, &bcs[i], polynomialOrder));
+
+        // set order by element
+//        for (int j = 0; j < Util::scene()->labels.count(); j++)
+//            if (Util::scene()->labels[j]->material != Util::scene()->materials[0])
+//                space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,
+//                                               QString::number(j).toStdString());
+
+        // solution agros array
+//        solution.push_back(new Hermes::Hermes2D::Solution<Scalar>());
+
+      }
+
+
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) == 0)
@@ -1151,11 +1171,14 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
         solution.at(i)->set_const(mesh, 0.0);
     }
 
+
+
     actualTime = 0.0;
     int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
-    for (int n = 0; n<timesteps; n++)
+    //for (int n = 0; n<timesteps; n++)
     {
         solveOneProblem(space, solution);
+
     }
 
     int n, error = 0, actualAdaptivitySteps; //TODO
