@@ -157,6 +157,7 @@ namespace Hermes
     Hermes::Ord VectorFormVol<Scalar>::ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
       Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext)
     {
+        assert(0);
       error("VectorFormVol<Scalar>::ord must be overrided.");
       return Hermes::Ord();
     }
