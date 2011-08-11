@@ -448,11 +448,11 @@ private:
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
 
-    void initCalculation(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
+    void initCalculation(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> >& bcs);
     void cleanup();
 
-    bool solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceOne,
-                         Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionOne);
+    bool solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceParam,
+                         Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionParam);
 
 
 
