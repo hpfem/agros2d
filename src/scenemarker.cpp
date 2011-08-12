@@ -43,7 +43,7 @@ QString SceneBoundary::script()
     for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
     {
         Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text + ", ";
+        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text() + ", ";
     }
 
     if (val.length() > 1)
@@ -77,7 +77,7 @@ QString SceneBoundary::html()
                     arg(QString::fromStdString(variable->name)).
                     arg(QString::fromStdString(variable->unit));
             out += QString("<td>%1</td>").
-                    arg(values[variable->id].text);
+                    arg(values[variable->id].text());
             out += "</tr>";
         }
     
@@ -122,7 +122,7 @@ QString SceneMaterial::script()
     for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
     {
         Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text + ", ";
+        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text() + ", ";
     }
 
     if (val.length() > 1)

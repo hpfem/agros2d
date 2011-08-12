@@ -85,7 +85,7 @@ void LocalPointValue::calculate()
                 if ((Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) &&
                         Util::scene()->sceneSolution()->timeStep() == 0)
                     // const solution at first time step
-                    value = Util::scene()->problemInfo()->initialCondition.number;
+                    value = Util::scene()->problemInfo()->initialCondition.number();
                 else
                     value = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
 
@@ -107,6 +107,7 @@ void LocalPointValue::calculate()
             }
 
             // set material variables
+            // FIXME
             parser->setParserVariables(tmpMaterial, NULL);
 
             // parse expression

@@ -25,19 +25,40 @@
 class QwtPlotCurve;
 class QwtPlotPicker;
 class Chart;
+class DataTable;
 
 struct Value
 {
-    QString text;
-    double number;
+    DataTable *table;
 
-    Value() { text = "0"; number = 0;}
-    inline Value(const QString &value, bool evaluateExpression = true) { text = value; if (evaluateExpression) evaluate(true); }
+    Value();
+    Value(const QString &value, DataTable *table);
+    Value(const QString &value, bool evaluateExpression = true);
+    ~Value();
+
+    double number();
+
+    double value(double key = 0.0);
+    Hermes::Ord value(Hermes::Ord ord);
+    double derivative(double key = 0.0);
+    Hermes::Ord derivative(Hermes::Ord ord);
 
     bool evaluate(bool quiet = false);
     bool evaluate(double time, bool quiet = false);
 
+    QString toString();
+    void fromString(const QString &str);
+
+    inline void setText(const QString &str) { m_isEvaluated = false; m_text = str; }
+    inline QString text() const { return m_text; }
+
     bool isTimeDep() const;
+
+private:
+    int m_isLinear;
+    bool m_isEvaluated;
+    QString m_text;
+    double m_number;
 };
 
 // ****************************************************************************************************
@@ -46,7 +67,7 @@ class ValueLineEdit : public QWidget
 {
     Q_OBJECT
 public:
-    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false);
+    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false);
 
     double number();
     void setNumber(double number);
@@ -61,7 +82,6 @@ public:
 
 public slots:
     bool evaluate(bool quiet = true);
-    void doOpenValueTimeDialog();
 
 signals:
     void editingFinished();
@@ -80,15 +100,29 @@ private:
 
     bool m_hasTimeDep;
 
+    bool m_hasNonlin;
+    DataTable *m_table;
+
+    QPushButton *btnDataTableDelete;
+    QPushButton *btnDataTableDialog;
+
     QLineEdit *txtLineEdit;
     QLabel *lblValue;
+    QLabel *lblInfo;
+
 #ifdef Q_WS_MAC
     QToolButton *btnEdit;
 #else
-    QPushButton *btnEdit;
+    QPushButton *btnEditTimeDep;
 #endif
 
+    void setLayoutValue();
     void setLabel(const QString &text, QColor color, bool isVisible);
+
+private slots:
+    void doOpenValueTimeDialog();
+    void doOpenDataTableDelete();
+    void doOpenDataTableDialog();
 };
 
 // ****************************************************************************************************
@@ -102,7 +136,7 @@ public:
     ~ValueTimeDialog();
 
     Value value() const { return Value(txtLineEdit->text()); }
-    void setValue(const Value &timeFunction);
+    void setValue(Value value);
 
 private:
     Chart *chart;

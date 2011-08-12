@@ -278,7 +278,7 @@ Point LocalPointValueDialog::point()
 {
     logMessage("LocalPointValueDialog::point()");
 
-    return Point(txtPointX->value().number, txtPointY->value().number);
+    return Point(txtPointX->value().number(), txtPointY->value().number());
 }
 
 void LocalPointValueDialog::evaluated(bool isError)

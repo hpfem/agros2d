@@ -176,7 +176,7 @@ SceneMaterialHeatDialog::SceneMaterialHeatDialog(SceneMaterial *material, QWidge
 
 void SceneMaterialHeatDialog::createContent()
 {
-    txtThermalConductivity = new ValueLineEdit(this);
+    txtThermalConductivity = new ValueLineEdit(this, false, true);
     txtThermalConductivity->setMinimumSharp(0.0);
     txtVolumeHeat = new ValueLineEdit(this, true);
     txtDensity = new ValueLineEdit(this);

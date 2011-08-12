@@ -52,8 +52,8 @@ QString SceneFunction::script()
     return QString("addfunction(\"%1\", \"%2\", %3, %4)").
             arg(name).
             arg(function).
-            arg(start.text).
-            arg(end.text);
+            arg(start.text()).
+            arg(end.text());
 }
 
 QVariant SceneFunction::variant()

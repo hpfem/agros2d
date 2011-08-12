@@ -715,7 +715,7 @@ mu::Parser *Hermes::Module::Module::get_parser()
 
     // timestep
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-        parser->DefineConst("dt", Util::scene()->problemInfo()->timeStep.number);
+        parser->DefineConst("dt", Util::scene()->problemInfo()->timeStep.number());
 
     for (std::map<std::string, double>::iterator it = constants.begin(); it != constants.end(); ++it)
         parser->DefineConst(it->first, it->second);
@@ -813,7 +813,7 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressIt
                      it != boundary_type->essential.end(); ++it)
                 {
                     bcs[it->first - 1].add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCConst<double>(QString::number(i+1).toStdString(), //TODO PK <double>
-                                                                                                                    boundary->values[it->second->id].number));
+                                                                                                                    boundary->values[it->second->id].number()));
 
                 }
             }
@@ -995,9 +995,9 @@ SolutionAgros<Scalar>::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakF
     adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
     adaptivityMaxDOFs = Util::scene()->problemInfo()->adaptivityMaxDOFs;
     numberOfSolution = Util::scene()->problemInfo()->module()->number_of_solution();
-    timeTotal = Util::scene()->problemInfo()->timeTotal.number;
-    timeStep = Util::scene()->problemInfo()->timeStep.number;
-    initialCondition = Util::scene()->problemInfo()->initialCondition.number;
+    timeTotal = Util::scene()->problemInfo()->timeTotal.number();
+    timeStep = Util::scene()->problemInfo()->timeStep.number();
+    initialCondition = Util::scene()->problemInfo()->initialCondition.number();
 
     nonlinearTolerance = Util::scene()->problemInfo()->nonlinearTolerance;
     nonlinearSteps = Util::scene()->problemInfo()->nonlinearSteps;
@@ -1601,7 +1601,7 @@ void Parser::setParserVariables(Material *material, Boundary *boundary)
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
             Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-            parser_variables[variable->shortname] = material->values[variable->id].number;
+            parser_variables[variable->shortname] = material->values[variable->id].value(0.0);
         }
     }
 
@@ -1611,7 +1611,7 @@ void Parser::setParserVariables(Material *material, Boundary *boundary)
         for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-            parser_variables[variable->shortname] = boundary->values[variable->id].number;
+            parser_variables[variable->shortname] = boundary->values[variable->id].value(0.0);
         }
     }
 }

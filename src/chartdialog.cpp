@@ -98,11 +98,11 @@ ChartDialog::~ChartDialog()
 
     QSettings settings;
     settings.setValue("ChartDialog/Geometry", saveGeometry());
-    settings.setValue("ChartDialog/StartX", txtStartX->value().text);
-    settings.setValue("ChartDialog/EndX", txtEndX->value().text);
-    settings.setValue("ChartDialog/StartY", txtStartY->value().text);
-    settings.setValue("ChartDialog/EndY", txtEndY->value().text);
-    settings.setValue("ChartDialog/Angle", txtAngle->value().text);
+    settings.setValue("ChartDialog/StartX", txtStartX->value().text());
+    settings.setValue("ChartDialog/EndX", txtEndX->value().text());
+    settings.setValue("ChartDialog/StartY", txtStartY->value().text());
+    settings.setValue("ChartDialog/EndY", txtEndY->value().text());
+    settings.setValue("ChartDialog/Angle", txtAngle->value().text());
     settings.setValue("ChartDialog/AxisLength", radAxisLength->isChecked());
     settings.setValue("ChartDialog/AxisX", radAxisX->isChecked());
     settings.setValue("ChartDialog/AxisY", radAxisY->isChecked());
@@ -412,9 +412,9 @@ void ChartDialog::plotGeometry()
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
-    ChartLine chartLine(Point(txtStartX->value().number, txtStartY->value().number),
-                        Point(txtEndX->value().number, txtEndY->value().number),
-                        txtAngle->value().number,
+    ChartLine chartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
+                        Point(txtEndX->value().number(), txtEndY->value().number()),
+                        txtAngle->value().number(),
                         count);
 
     QList<Point> points = chartLine.getPoints();
@@ -520,7 +520,7 @@ void ChartDialog::plotTime()
         // change time level
         Util::scene()->sceneSolution()->setTimeStep(i, false);
 
-        Point point(txtPointX->value().number, txtPointY->value().number);
+        Point point(txtPointX->value().number(), txtPointY->value().number());
         LocalPointValue localPointValue(point);
 
         addValue(&localPointValue, yval, i, Util::scene()->sceneSolution()->timeStepCount(),
@@ -774,9 +774,9 @@ void ChartDialog::doChartLine()
             if (!txtEndY->evaluate()) return;
             if (!txtAngle->evaluate()) return;
 
-            emit setChartLine(ChartLine(Point(txtStartX->value().number, txtStartY->value().number),
-                                        Point(txtEndX->value().number, txtEndY->value().number),
-                                        txtAngle->value().number,
+            emit setChartLine(ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
+                                        Point(txtEndX->value().number(), txtEndY->value().number()),
+                                        txtAngle->value().number(),
                                         txtAxisPoints->value(),
                                         chkAxisPointsReverse->isChecked()));
         }
@@ -785,8 +785,8 @@ void ChartDialog::doChartLine()
             if (!txtPointX->evaluate()) return;
             if (!txtPointY->evaluate()) return;
 
-            emit setChartLine(ChartLine(Point(txtPointX->value().number, txtPointY->value().number),
-                                        Point(txtPointX->value().number, txtPointY->value().number),
+            emit setChartLine(ChartLine(Point(txtPointX->value().number(), txtPointY->value().number()),
+                                        Point(txtPointX->value().number(), txtPointY->value().number()),
                                         0.0,
                                         0));
         }

@@ -99,7 +99,10 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
     parser->setParserVariables(material, boundary);
 
     for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
+    {
         parser->parser[0]->DefineVar(it->first, &it->second);
+        parser->parser[0]->DefineVar("d" + it->first, &it->second);
+    }
 }
 
 // **********************************************************************************************
@@ -110,7 +113,7 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
                                                              Hermes::Hermes2D::SymFlag sym,
                                                              std::string expression,
                                                              Material *material)
-    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm()
+    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(), m_material(material)
 {
     initParser(material, NULL);
 
@@ -121,6 +124,8 @@ template <typename Scalar>
 Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                                                 Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
+    Value cond = m_material->get_value("heat_conductivity");
+
     double result = 0;
     for (int i = 0; i < n; i++)
     {
@@ -139,6 +144,9 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupval = u_ext[this->j]->val[i];
         pupdx = u_ext[this->j]->dx[i];
         pupdy = u_ext[this->j]->dy[i];
+
+        parser->parser_variables["lambda"] = cond.value(u->val[i]);
+        parser->parser_variables["dlambda"] = cond.derivative(u->val[i]);
 
         result += wt[i] * parser->parser[0]->Eval();
     }

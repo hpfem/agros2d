@@ -1407,9 +1407,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();
 
     // transient
-    m_problemInfo->timeStep.text = eleProblem.toElement().attribute("timestep", "1");
-    m_problemInfo->timeTotal.text = eleProblem.toElement().attribute("timetotal", "1");
-    m_problemInfo->initialCondition.text = eleProblem.toElement().attribute("initialcondition", "0");
+    m_problemInfo->timeStep.setText(eleProblem.toElement().attribute("timestep", "1"));
+    m_problemInfo->timeTotal.setText(eleProblem.toElement().attribute("timetotal", "1"));
+    m_problemInfo->initialCondition.setText(eleProblem.toElement().attribute("initialcondition", "0"));
 
     // linearity
     m_problemInfo->nonlinearSteps = eleProblem.toElement().attribute("nonlinearsteps", "10").toInt();
@@ -1628,9 +1628,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // harmonic magnetic
     eleProblem.setAttribute("frequency", m_problemInfo->frequency);
     // transient
-    eleProblem.setAttribute("timestep", m_problemInfo->timeStep.text);
-    eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text);
-    eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text);
+    eleProblem.setAttribute("timestep", m_problemInfo->timeStep.text());
+    eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text());
+    eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text());
     // linearity
     eleProblem.setAttribute("nonlinearsteps", m_problemInfo->nonlinearSteps);
     eleProblem.setAttribute("nonlineartolerance", m_problemInfo->nonlinearTolerance);
@@ -1722,7 +1722,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
             eleBoundary.setAttribute("type", QString::fromStdString(boundaries[i]->type));
 
             for (std::map<std::string, Value>::iterator it = boundaries[i]->values.begin(); it != boundaries[i]->values.end(); ++it)
-                eleBoundary.setAttribute(QString::fromStdString(it->first), it->second.text);
+                eleBoundary.setAttribute(QString::fromStdString(it->first), it->second.toString());
         }
 
         eleBoundaries.appendChild(eleBoundary);
@@ -1742,7 +1742,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         {
             // write marker
             for (std::map<std::string, Value>::iterator it = materials[i]->values.begin(); it != materials[i]->values.end(); ++it)
-                eleMaterial.setAttribute(QString::fromStdString(it->first), it->second.text);
+                eleMaterial.setAttribute(QString::fromStdString(it->first), it->second.toString());
         }
 
         eleMaterials.appendChild(eleMaterial);

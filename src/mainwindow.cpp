@@ -37,8 +37,9 @@
 #include "problemdialog.h"
 #include "progressdialog.h"
 #include "collaboration.h"
-
 #include "resultsview.h"
+
+#include "datatabledialog.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -128,6 +129,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         QString fileName = args[i];
         open(fileName);
     }
+
+    // DataTableDialog *dataTableDialog = new DataTableDialog(this);
+    // dataTableDialog->show();
 }
 
 MainWindow::~MainWindow()
