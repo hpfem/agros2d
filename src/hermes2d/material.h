@@ -39,7 +39,7 @@ public:
     std::map<std::string, Value> values;
 
     Material(std::string name,
-             std::map<std::string, Value> values = std::map<std::string, Value>());
+             std::map<std::string, Value> values = (std::map<std::string, Value>()));
     ~Material();
 
     Value get_value(std::string id);
