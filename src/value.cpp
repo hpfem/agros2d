@@ -25,8 +25,6 @@
 #include "datatable.h"
 #include "datatabledialog.h"
 
-#include "forms.h"
-
 Value::Value()
 {
     this->m_isLinear = -1;

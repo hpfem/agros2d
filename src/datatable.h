@@ -21,7 +21,6 @@
 #define DATATABLE_H
 
 #include "util.h"
-#include "forms.h"
 #include "spline.h"
 
 // data table row

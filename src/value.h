@@ -103,17 +103,20 @@ private:
     bool m_hasNonlin;
     DataTable *m_table;
 
-    QPushButton *btnDataTableDelete;
-    QPushButton *btnDataTableDialog;
+
 
     QLineEdit *txtLineEdit;
     QLabel *lblValue;
     QLabel *lblInfo;
 
 #ifdef Q_WS_MAC
-    QToolButton *btnEdit;
+    QToolButton *btnEditTimeDep;
+    QToolButton *btnDataTableDelete;
+    QToolButton *btnDataTableDialog;
 #else
     QPushButton *btnEditTimeDep;
+    QPushButton *btnDataTableDelete;
+    QPushButton *btnDataTableDialog;
 #endif
 
     void setLayoutValue();

@@ -22,7 +22,7 @@
 #include "scenesolution.h"
 #include "scene.h"
 #include "progressdialog.h"
-#include "value.h"
+#include "util.h"
 
 #include "hermes2d/module.h"
 

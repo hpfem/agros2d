@@ -43,7 +43,7 @@
 
 #include "indicators/indicators.h"
 
-#include "hermes2d_common_defs.h"
+#include "hermes2d.h"
 
 // zero
 #define EPS_ZERO 1e-10

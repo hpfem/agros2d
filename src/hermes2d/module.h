@@ -22,9 +22,6 @@
 
 #include "util.h"
 #include "hermes2d.h"
-#include "weakform_library/weakforms_h1.h"
-#include "weakform_library/weakforms_maxwell.h"
-#include "weakform_library/weakforms_elasticity.h"
 
 #include "scene.h"
 #include "scenebasic.h"

@@ -233,7 +233,8 @@ macx-g++ {
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
     INCLUDEPATH += ../../qwt-5.2.1/src
-    INCLUDEPATH += ../hermes2d/src
+    INCLUDEPATH += ../hermes2d/include
+    INCLUDEPATH += ../hermes_common/include
 
     LIBS += -L../hermes2d/lib
     LIBS += -L/opt/local/lib

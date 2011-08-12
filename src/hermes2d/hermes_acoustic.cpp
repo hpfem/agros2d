@@ -66,181 +66,170 @@ private:
 
 // - 1/rho * \Delta p + 1/(rho * c^2) * \frac{\partial v}{\partial t} = 0.
 // - v                +                 \frac{\partial p}{\partial t} = 0,
-
-//class WeakFormAcousticsTransient : public WeakFormAgros<double>
-//{
-//public:
-//    WeakFormAcousticsTransient() : WeakFormAgros(2) { }
-
-//    void registerForms()
-//    {
-//        // boundary conditions
-//        for (int i = 0; i<Util::scene()->edges.count(); i++)
-//        {
-//            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
-
-//            if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
-//            {
-//                /*
-//                if (boundary->type == "acoustic_normal_acceleration")
-//                    if (fabs(boundary->get_value("acoustic_normal_acceleration").number) > EPS_ZERO)
-//                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
-//                                                                                                        QString::number(i + 1).toStdString(),
-//                                                                                                        boundary->get_value("acoustic_normal_acceleration").number,
-//                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-//                */
-//                if (boundary->type == "acoustic_impedance")
-//                {
-//                    /*
-//                    if (fabs(boundary->value_real.number) > EPS_ZERO)
-//                    {
-//                        add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(0, 1,
-//                                                                                                        QString::number(i + 1).toStdString(),
-//                                                                                                        - 2 * M_PI * Util::scene()->problemInfo()->frequency / boundary->value_real.number,
-//                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-//                        add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(1, 0,
-//                                                                                                        QString::number(i + 1).toStdString(),
-//                                                                                                        2 * M_PI * Util::scene()->problemInfo()->frequency / boundary->value_real.number,
-//                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
-//                    }
-//                    */
-//                }
-
-//                if (boundary->type == "acoustic_matched_boundary")
-//                {
-//                    /*
-//                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
-//                                                                                 QString::number(i + 1).toStdString(),
-//                                                                                 100,
-//                                                                                 convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-//                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
-//                                                                                 QString::number(i + 1).toStdString(),
-//                                                                                 - 1.0,
-//                                                                                 convertProblemType(Util::scene()->problemInfo()->problemType)));
-//                    */
-//                }
-//            }
-//        }
-
-//        // materials
-//        for (int i = 0; i<Util::scene()->labels.count(); i++)
-//        {
-//            /*
-//            SceneMaterial *material = Util::scene()->labels[i]->material;
-
-//            if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
-//            {
-//                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
-//                                                                                               QString::number(i).toStdString(),
-//                                                                                               1.0 / material->get_value("acoustic_density").number,
-//                                                                                               HERMES_NONSYM,
-//                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-//                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 1,
-//                                                                                          QString::number(i).toStdString(),
-//                                                                                          1.0 / (material->get_value("acoustic_density").number * sqr(material->get_value("acoustic_speed").number)) / Util::scene()->problemInfo()->timeStep.number,
-//                                                                                          HERMES_NONSYM,
-//                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-//                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 0,
-//                                                                                          QString::number(i).toStdString(),
-//                                                                                          - 1.0 / Util::scene()->problemInfo()->timeStep.number,
-//                                                                                          HERMES_NONSYM,
-//                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-//                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 1,
-//                                                                                          QString::number(i).toStdString(),
-//                                                                                          1.0,
-//                                                                                          HERMES_NONSYM,
-//                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-//                add_vector_form(new CustomVectorFormTimeDep(0,
-//                                                            QString::number(i).toStdString(),
-//                                                            1.0 / (material->get_value("acoustic_density").number * sqr(material->get_value("acoustic_speed").number)) / Util::scene()->problemInfo()->timeStep.number,
-//                                                            solution[0],
-//                                                            convertProblemType(Util::scene()->problemInfo()->problemType)));
-
-//                add_vector_form(new CustomVectorFormTimeDep(1,
-//                                                            QString::number(i).toStdString(),
-//                                                            1.0 / Util::scene()->problemInfo()->timeStep.number,
-//                                                            solution[1],
-//                                                            convertProblemType(Util::scene()->problemInfo()->problemType)));
-//            }
-//            */
-//        }
-//    }
-
-//private:
-//    /*
-//    class VectorFormVolWaveMass : public Hermes::Hermes2D::VectorFormVol<double>
-//    {
-//    public:
-//        VectorFormVolWaveMass() : WeakForm::VectorFormVol(0) { }
-
-//        template<typename Real, typename Scalar>
-//        Scalar vector_form(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<Real> *v,
-//                           Hermes::Hermes2D::Geom<Real> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const {
-//            Scalar result = 0;
-
-//            for (int i = 0; i < n; i++)
-//                result += wt[i] * u_ext[1]->val[i] * v->val[i];
-
-//            return result;
-//        }
-
-//        virtual scalar value(int n, double *wt, Hermes::Hermes2D::Func<double> *u_ext[], Hermes::Hermes2D::Func<double> *v,
-//                             Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<double> *ext) const {
-//            return vector_form<double, double>(n, wt, u_ext, v, e, ext);
-//        }
-
-//        virtual Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Ord> *u_ext[], Hermes::Hermes2D::Func<Ord> *v, Hermes::Hermes2D::Geom<Ord> *e,
-//                        Hermes::Hermes2D::ExtData<Ord> *ext) const {
-//            return vector_form<Ord, Ord>(n, wt, u_ext, v, e, ext);
-//        }
-
-//        virtual WeakForm::VectorFormVol* clone() {
-//            return new VectorFormVolWaveMass(*this);
-//        }
-//    };
-
-//    class VectorFormVolWaveDiffusion : public WeakForm::VectorFormVol
-//    {
-//    public:
-//        VectorFormVolWaveDiffusion(double c_squared) : WeakForm::VectorFormVol(1), c_squared(c_squared) { }
-
-//        template<typename Real, typename Scalar>
-//        Scalar vector_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *v,
-//                           Geom<Real> *e, ExtData<Scalar> *ext) const {
-//            Scalar result = 0;
-
-//            for (int i = 0; i < n; i++)
-//                result += wt[i] * (u_ext[0]->dx[i] * v->dx[i] + u_ext[0]->dy[i] * v->dy[i]);
-
-//            return - c_squared * result;
-//        }
-
-//        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
-//                             Geom<double> *e, ExtData<scalar> *ext) const {
-//            return vector_form<double, scalar>(n, wt, u_ext, v, e, ext);
-//        }
-
-//        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
-//                        ExtData<Ord> *ext) const {
-//            return vector_form<Ord, Ord>(n, wt, u_ext, v, e, ext);
-//        }
-
-//        virtual WeakForm::VectorFormVol* clone() {
-//            return new VectorFormVolWaveDiffusion(*this);
-//        }
-
-//        double c_squared;
-//    };
-//    */
-//};
-
 /*
+class WeakFormAcousticsTransient : public WeakFormAgros<double>
+{
+public:
+    WeakFormAcousticsTransient() : WeakFormAgros(2) { }
+
+    void registerForms()
+    {
+        // boundary conditions
+        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        {
+            SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
+
+            if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
+            {
+                if (boundary->type == "acoustic_normal_acceleration")
+                    if (fabs(boundary->get_value("acoustic_normal_acceleration").number) > EPS_ZERO)
+                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        boundary->get_value("acoustic_normal_acceleration").number,
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                if (boundary->type == "acoustic_impedance")
+                {
+                    if (fabs(boundary->value_real.number) > EPS_ZERO)
+                    {
+                        add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(0, 1,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        - 2 * M_PI * Util::scene()->problemInfo()->frequency / boundary->value_real.number,
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+                        add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(1, 0,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        2 * M_PI * Util::scene()->problemInfo()->frequency / boundary->value_real.number,
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+                    }
+                }
+
+                if (boundary->type == "acoustic_matched_boundary")
+                {
+                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
+                                                                                 QString::number(i + 1).toStdString(),
+                                                                                 100,
+                                                                                 convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
+                                                                                 QString::number(i + 1).toStdString(),
+                                                                                 - 1.0,
+                                                                                 convertProblemType(Util::scene()->problemInfo()->problemType)));
+                }
+            }
+        }
+
+        // materials
+        for (int i = 0; i<Util::scene()->labels.count(); i++)
+        {
+            SceneMaterial *material = Util::scene()->labels[i]->material;
+
+            if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
+            {
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
+                                                                                               QString::number(i).toStdString(),
+                                                                                               1.0 / material->get_value("acoustic_density").number,
+                                                                                               HERMES_NONSYM,
+                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 1,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          1.0 / (material->get_value("acoustic_density").number * sqr(material->get_value("acoustic_speed").number)) / Util::scene()->problemInfo()->timeStep.number,
+                                                                                          HERMES_NONSYM,
+                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 0,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          - 1.0 / Util::scene()->problemInfo()->timeStep.number,
+                                                                                          HERMES_NONSYM,
+                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 1,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          1.0,
+                                                                                          HERMES_NONSYM,
+                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                add_vector_form(new CustomVectorFormTimeDep(0,
+                                                            QString::number(i).toStdString(),
+                                                            1.0 / (material->get_value("acoustic_density").number * sqr(material->get_value("acoustic_speed").number)) / Util::scene()->problemInfo()->timeStep.number,
+                                                            solution[0],
+                                                            convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                add_vector_form(new CustomVectorFormTimeDep(1,
+                                                            QString::number(i).toStdString(),
+                                                            1.0 / Util::scene()->problemInfo()->timeStep.number,
+                                                            solution[1],
+                                                            convertProblemType(Util::scene()->problemInfo()->problemType)));
+            }
+        }
+    }
+
+private:
+    class VectorFormVolWaveMass : public Hermes::Hermes2D::VectorFormVol<double>
+    {
+    public:
+        VectorFormVolWaveMass() : WeakForm::VectorFormVol(0) { }
+
+        template<typename Real, typename Scalar>
+        Scalar vector_form(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<Real> *v,
+                           Hermes::Hermes2D::Geom<Real> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const {
+            Scalar result = 0;
+
+            for (int i = 0; i < n; i++)
+                result += wt[i] * u_ext[1]->val[i] * v->val[i];
+
+            return result;
+        }
+
+        virtual scalar value(int n, double *wt, Hermes::Hermes2D::Func<double> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+                             Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<double> *ext) const {
+            return vector_form<double, double>(n, wt, u_ext, v, e, ext);
+        }
+
+        virtual Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Ord> *u_ext[], Hermes::Hermes2D::Func<Ord> *v, Hermes::Hermes2D::Geom<Ord> *e,
+                        Hermes::Hermes2D::ExtData<Ord> *ext) const {
+            return vector_form<Ord, Ord>(n, wt, u_ext, v, e, ext);
+        }
+
+        virtual WeakForm::VectorFormVol* clone() {
+            return new VectorFormVolWaveMass(*this);
+        }
+    };
+
+    class VectorFormVolWaveDiffusion : public WeakForm::VectorFormVol
+    {
+    public:
+        VectorFormVolWaveDiffusion(double c_squared) : WeakForm::VectorFormVol(1), c_squared(c_squared) { }
+
+        template<typename Real, typename Scalar>
+        Scalar vector_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *v,
+                           Geom<Real> *e, ExtData<Scalar> *ext) const {
+            Scalar result = 0;
+
+            for (int i = 0; i < n; i++)
+                result += wt[i] * (u_ext[0]->dx[i] * v->dx[i] + u_ext[0]->dy[i] * v->dy[i]);
+
+            return - c_squared * result;
+        }
+
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
+                             Geom<double> *e, ExtData<scalar> *ext) const {
+            return vector_form<double, scalar>(n, wt, u_ext, v, e, ext);
+        }
+
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
+                        ExtData<Ord> *ext) const {
+            return vector_form<Ord, Ord>(n, wt, u_ext, v, e, ext);
+        }
+
+        virtual WeakForm::VectorFormVol* clone() {
+            return new VectorFormVolWaveDiffusion(*this);
+        }
+
+        double c_squared;
+    };    
+};
+
 class CustomAcousticPressureBC : public EssentialBoundaryCondition
 {
 public:
