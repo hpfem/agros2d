@@ -75,7 +75,7 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenebasic.cpp \
-    scenefunction.cpp \
+#    scenefunction.cpp \
     sceneinfoview.cpp \
     sceneview.cpp \
     progressdialog.cpp \
@@ -101,7 +101,9 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     collaboration.cpp \
     resultsview.cpp \
     hermes2d/weakform_parser.cpp\
-    alter_newton_solver.cpp
+    alter_newton_solver.cpp \
+    datatable.cpp \
+    datatabledialog.cpp
 
 HEADERS += util.h \
     value.h \
@@ -129,7 +131,7 @@ HEADERS += util.h \
     scenebasic.h \
     sceneinfoview.h \
     scenemarker.h \
-    scenefunction.h \
+#    scenefunction.h \
     sceneview_data.h \
     sceneview.h \
     progressdialog.h \
@@ -155,7 +157,9 @@ HEADERS += util.h \
     collaboration.h \
     resultsview.h \ 
     hermes2d/weakform_parser.h \
-    alter_newton_solver.h
+    alter_newton_solver.h \
+    datatable.h \
+    datatabledialog.h
 
 INCLUDEPATH += . \
     ../lib/muparser \
@@ -175,14 +179,14 @@ OTHER_FILES += python/agros2d.pyx \
     ../modules/current.xml \
     ../modules/acoustic.xml
 
-linux-g++ {
+linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
     # DEFINES += WITH_UNITY
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
-    INCLUDEPATH += /usr/include/python2.6
+    INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
     INCLUDEPATH += ../hermes2d/include
     INCLUDEPATH += ../hermes_common/include

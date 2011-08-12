@@ -22,6 +22,114 @@
 #include "gui.h"
 #include "scripteditordialog.h"
 #include "scene.h"
+#include "datatable.h"
+#include "datatabledialog.h"
+
+#include "forms.h"
+
+Value::Value()
+{
+    this->m_isLinear = -1;
+    this->m_isEvaluated = false;
+    setText("0");
+    this->table = new DataTable();
+}
+
+Value::Value(const QString &value, DataTable *table)
+{
+    this->m_isLinear = -1;
+    this->m_isEvaluated = false;
+    setText(value.isEmpty() ? "0" : value);
+    this->table = table;
+}
+
+Value::Value(const QString &str, bool evaluateExpression)
+{
+    this->m_isLinear = -1;
+    this->m_isEvaluated = false;
+
+    fromString(str);
+
+    if (evaluateExpression)
+        evaluate(true);
+}
+
+Value::~Value()
+{
+
+}
+
+double Value::number()
+{
+    if (!m_isEvaluated)
+        evaluate(true);
+
+    return m_number;
+}
+
+double Value::value(double key)
+{
+    // FIXME
+    // if (m_isLinear == -1)
+    m_isLinear = false; // (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
+
+    if (m_isLinear || table->size() == 0)
+        return number();
+    else
+    {
+        // std::cout << table->value(key) << std::endl;
+        return table->value_spline(key);
+    }
+}
+
+Hermes::Ord Value::value(Hermes::Ord key)
+{
+    return 1.0;
+}
+
+double Value::derivative(double key)
+{
+    // FIXME
+    // if (m_isLinear == -1)
+    m_isLinear = false; // (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
+
+    if (m_isLinear || table->size() == 0)
+        return 0.0;
+    else
+        return table->derivative_spline(key);
+}
+
+Hermes::Ord Value::derivative(Hermes::Ord key)
+{
+    return 1.0;
+}
+
+QString Value::toString()
+{
+    if (table->size() == 0)
+        return m_text;
+    else
+        return m_text + ";" + QString::fromStdString(table->to_string());
+}
+
+void Value::fromString(const QString &str)
+{
+    table = new DataTable();
+
+    if (str.contains(";"))
+    {
+        // string and table
+        QStringList lst = str.split(";");
+        this->setText(lst.at(0));
+
+        table->from_string((lst.at(1) + ";" + lst.at(2)).toStdString());
+    }
+    else
+    {
+        // just string
+        this->setText(str);
+    }
+}
 
 bool Value::evaluate(bool quiet)
 {
@@ -37,10 +145,10 @@ bool Value::evaluate(double time, bool quiet)
 
     // eval expression
     ExpressionResult expressionResult;
-    expressionResult = runPythonExpression(text);
+    expressionResult = runPythonExpression(m_text);
     if (expressionResult.error.isEmpty())
     {
-        number = expressionResult.value;
+        m_number = expressionResult.value;
     }
     else
     {
@@ -54,12 +162,12 @@ bool Value::isTimeDep() const
 {
     // FIXME - do it better
     return Util::scene()->problemInfo()->analysisType == AnalysisType_Transient
-            && text.contains("time");
+            && m_text.contains("time");
 }
 
 // ***********************************************************************************
 
-ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep) : QWidget(parent)
+ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin) : QWidget(parent)
 {
     logMessage("SLineEditValue::SLineEditValue()");
 
@@ -69,6 +177,8 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep) : QWidget(parent)
     m_maximumSharp = numeric_limits<double>::max();
 
     m_hasTimeDep = hasTimeDep;
+    m_hasNonlin = hasNonlin;
+    m_table = new DataTable();
 
     // create controls
     txtLineEdit = new QLineEdit(this);
@@ -78,25 +188,50 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep) : QWidget(parent)
     connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
 
     lblValue = new QLabel(this);
+    lblInfo = new QLabel(tr("nonlinear material"));
+
+#ifdef Q_WS_MAC
+    btnDataTableDelete = new QToolButton();
+    btnDataTableDelete->setIcon(icon("remove-item"));
+    btnDataTableDelete->setMaximumHeight(txtLineEdit->height() - 4);
+#else
+    btnDataTableDelete = new QPushButton(icon("remove-item"), "");
+    btnDataTableDelete->setMaximumSize(btnDataTableDelete->sizeHint());
+#endif
+    connect(btnDataTableDelete, SIGNAL(clicked()), this, SLOT(doOpenDataTableDelete()));
+
+#ifdef Q_WS_MAC
+    btnDataTableDialog = new QToolButton();
+    btnDataTableDialog->setIcon(icon("three-dots"));
+    btnDataTableDialog->setMaximumHeight(txtLineEdit->height() - 4);
+#else
+    btnDataTableDialog = new QPushButton(icon("three-dots"), "");
+    btnDataTableDialog->setMaximumSize(btnDataTableDialog->sizeHint());
+#endif
+    connect(btnDataTableDialog, SIGNAL(clicked()), this, SLOT(doOpenDataTableDialog()));
 
     // timedep value
 #ifdef Q_WS_MAC
-    btnEdit = new QToolButton();
-    btnEdit->setIcon(icon("three-dots"));
-    btnEdit->setMaximumHeight(txtLineEdit->height() - 4);
+    btnEditTimeDep = new QToolButton();
+    btnEditTimeDep->setIcon(icon("three-dots"));
+    btnEditTimeDep->setMaximumHeight(txtLineEdit->height() - 4);
 #else
-    btnEdit = new QPushButton(icon("three-dots"), "");
+    btnEditTimeDep = new QPushButton(icon("three-dots"), "");
 #endif
-    connect(btnEdit, SIGNAL(clicked()), this, SLOT(doOpenValueTimeDialog()));
+    connect(btnEditTimeDep, SIGNAL(clicked()), this, SLOT(doOpenValueTimeDialog()));
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     layout->addWidget(txtLineEdit, 1);
     layout->addWidget(lblValue, 0, Qt::AlignRight);
-    layout->addWidget(btnEdit, 0, Qt::AlignRight);
+    layout->addWidget(lblInfo, 0, Qt::AlignRight);
+    layout->addWidget(btnEditTimeDep, 0, Qt::AlignRight);
+    layout->addWidget(btnDataTableDelete, 0, Qt::AlignRight);
+    layout->addWidget(btnDataTableDialog, 0, Qt::AlignRight);
 
     setLayout(layout);
 
+    setLayoutValue();
     evaluate();
 }
 
@@ -122,7 +257,12 @@ void ValueLineEdit::setValue(Value value)
 {
     logMessage("SLineEditValue::setValue()");
 
-    txtLineEdit->setText(value.text);
+    txtLineEdit->setText(value.text());
+
+    delete m_table;
+    m_table = value.table->copy();
+
+    setLayoutValue();
     evaluate();
 }
 
@@ -130,7 +270,7 @@ Value ValueLineEdit::value()
 {
     logMessage("SLineEditValue::value()");
 
-    return Value(txtLineEdit->text());
+    return Value(txtLineEdit->text(), m_table->copy());
 }
 
 bool ValueLineEdit::evaluate(bool quiet)
@@ -139,39 +279,46 @@ bool ValueLineEdit::evaluate(bool quiet)
 
     bool isOk = false;
 
-    Value val = value();
-    // btnEdit->setVisible(m_hasTimeDep && val.isTimeDep());
-    btnEdit->setVisible(m_hasTimeDep && Util::scene()->problemInfo()->analysisType == AnalysisType_Transient);
-
-    if (val.evaluate(quiet))
+    if (!m_hasNonlin || m_table->size() == 0)
     {
-        if (val.number <= m_minimumSharp)
+        Value val = value();
+        btnEditTimeDep->setVisible(m_hasTimeDep && Util::scene()->problemInfo()->analysisType == AnalysisType_Transient);
+
+        if (val.evaluate(quiet))
         {
-            setLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
-        }
-        else if (val.number >= m_maximumSharp)
-        {
-            setLabel(QString(">= %1").arg(m_maximumSharp), QColor(Qt::blue), true);
-        }
-        else if (val.number < m_minimum)
-        {
-            setLabel(QString("< %1").arg(m_minimum), QColor(Qt::blue), true);
-        }
-        else if (val.number > m_maximum)
-        {
-            setLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
+            if (val.number() <= m_minimumSharp)
+            {
+                setLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
+            }
+            else if (val.number() >= m_maximumSharp)
+            {
+                setLabel(QString(">= %1").arg(m_maximumSharp), QColor(Qt::blue), true);
+            }
+            else if (val.number() < m_minimum)
+            {
+                setLabel(QString("< %1").arg(m_minimum), QColor(Qt::blue), true);
+            }
+            else if (val.number() > m_maximum)
+            {
+                setLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
+            }
+            else
+            {
+                m_number = val.number();
+                setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText), Util::config()->lineEditValueShowResult);
+                isOk = true;
+            }
         }
         else
         {
-            m_number = val.number;
-            setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText), Util::config()->lineEditValueShowResult);
-            isOk = true;
+            setLabel(tr("error"), QColor(Qt::red), true);
+            setFocus();
         }
     }
     else
     {
-        setLabel(tr("error"), QColor(Qt::red), true);
-        setFocus();
+        // table
+        isOk = true;
     }
 
     if (isOk)
@@ -184,6 +331,28 @@ bool ValueLineEdit::evaluate(bool quiet)
         emit evaluated(true);
         return false;
     }
+}
+
+void ValueLineEdit::setLayoutValue()
+{
+    txtLineEdit->setVisible(false);
+    lblValue->setVisible(false);
+    lblInfo->setVisible(false);
+    btnDataTableDelete->setVisible(false);
+    btnDataTableDialog->setVisible(false);
+
+    if ((!m_hasNonlin) || (m_hasNonlin && m_table->size() == 0))
+    {
+        txtLineEdit->setVisible(true);
+        lblValue->setVisible(true);
+    }
+    if (m_hasNonlin && m_table->size() > 0)
+    {
+        lblInfo->setVisible(true);
+        btnDataTableDelete->setVisible(true);
+    }
+    if (m_hasNonlin)
+        btnDataTableDialog->setVisible(true);
 }
 
 void ValueLineEdit::setLabel(const QString &text, QColor color, bool isVisible)
@@ -211,15 +380,35 @@ void ValueLineEdit::focusInEvent(QFocusEvent *event)
 
 void ValueLineEdit::doOpenValueTimeDialog()
 {
-    ValueTimeDialog *dialog = new ValueTimeDialog();
-    dialog->setValue(Value(txtLineEdit->text()));
+    ValueTimeDialog dialog;
+    dialog.setValue(Value(txtLineEdit->text()));
 
-    if (dialog->exec() == QDialog::Accepted)
+    if (dialog.exec() == QDialog::Accepted)
     {
-        txtLineEdit->setText(dialog->value().text);
+        txtLineEdit->setText(dialog.value().text());
         evaluate();
     }
-    delete dialog;
+}
+
+void ValueLineEdit::doOpenDataTableDelete()
+{
+    m_table->clear();
+
+    setLayoutValue();
+    evaluate();
+}
+
+void ValueLineEdit::doOpenDataTableDialog()
+{
+    DataTableDialog dataTableDialog(this);
+    dataTableDialog.setTable(m_table);
+    if (dataTableDialog.exec() == QDialog::Accepted)
+    {
+        m_table = dataTableDialog.table();
+    }
+
+    setLayoutValue();
+    evaluate();
 }
 
 // ****************************************************************************************************************
@@ -246,9 +435,9 @@ ValueTimeDialog::~ValueTimeDialog()
     settings.setValue("ValueTimeDialog/Geometry", saveGeometry());
 }
 
-void ValueTimeDialog::setValue(const Value &value)
+void ValueTimeDialog::setValue(Value value)
 {
-    txtLineEdit->setText(value.text);
+    txtLineEdit->setText(value.text());
 
     // plot
     plotFunction();
@@ -359,7 +548,7 @@ void ValueTimeDialog::presetsChanged(int index)
     {
         if (txtTimeTotal->value().evaluate())
         {
-            QString preset = cmbPresets->itemData(cmbPresets->currentIndex()).toString().arg(txtTimeTotal->value().number / 2.0);
+            QString preset = cmbPresets->itemData(cmbPresets->currentIndex()).toString().arg(txtTimeTotal->value().number() / 2.0);
 
             txtLineEdit->setText(preset);
             cmbPresets->setCurrentIndex(0);
@@ -396,7 +585,7 @@ void ValueTimeDialog::plotFunction()
     double *xval = new double[count];
     double *yval = new double[count];
 
-    double totalTime = txtTimeTotal->value().number;
+    double totalTime = txtTimeTotal->value().number();
 
     // time step
     double dt = totalTime / (count + 1);
@@ -408,7 +597,7 @@ void ValueTimeDialog::plotFunction()
 
         if (!val.evaluate(xval[i], true))
             break;
-        yval[i] = val.number;
+        yval[i] = val.number();
     }
 
     chart->setData(xval, yval, count);

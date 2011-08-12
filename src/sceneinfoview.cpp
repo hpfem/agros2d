@@ -181,9 +181,9 @@ void SceneInfoView::showInfo()
 
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
-        html += "<tr><td><b>" + tr("Time step") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->timeStep.number) + " s" + "</td></tr>";
-        html += "<tr><td><b>" + tr("Total time") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->timeTotal.number) + " s" + "</td></tr>";
-        html += "<tr><td><b>" + tr("Initial condition") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->initialCondition.number) + "</td></tr>";
+        html += "<tr><td><b>" + tr("Time step") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->timeStep.number()) + " s" + "</td></tr>";
+        html += "<tr><td><b>" + tr("Total time") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->timeTotal.number()) + " s" + "</td></tr>";
+        html += "<tr><td><b>" + tr("Initial condition") + "</b></td><td>" + QString::number(Util::scene()->problemInfo()->initialCondition.number()) + "</td></tr>";
     }
     html += "</table>";
 

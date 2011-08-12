@@ -124,9 +124,9 @@ QString createPythonFromModel()
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         str += QString(",\n"
                        "            adaptivitytype=%1, adaptivitysteps=%2, adaptivitytolerance=%3").
-                arg(Util::scene()->problemInfo()->timeStep.text).
-                arg(Util::scene()->problemInfo()->timeTotal.text).
-                arg(Util::scene()->problemInfo()->initialCondition.text);
+                arg(Util::scene()->problemInfo()->timeStep.text()).
+                arg(Util::scene()->problemInfo()->timeTotal.text()).
+                arg(Util::scene()->problemInfo()->initialCondition.text());
 
     str += ")\n\n";
 

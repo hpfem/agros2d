@@ -213,7 +213,7 @@ void SceneSolution<Scalar>::loadSolution(QDomElement *element)
         SolutionArray<Scalar> *solutionArray = new SolutionArray<Scalar>();
         solutionArray->order = new Hermes::Hermes2D::Views::Orderizer();
         solutionArray->sln = new Hermes::Hermes2D::Solution<Scalar>();
-        solutionArray->sln->set_const(Util::scene()->sceneSolution()->meshInitial(), Util::scene()->problemInfo()->initialCondition.number);
+        solutionArray->sln->set_const(Util::scene()->sceneSolution()->meshInitial(), Util::scene()->problemInfo()->initialCondition.number());
         solutionArray->adaptiveError = 0.0;
         solutionArray->adaptiveSteps = 0.0;
         solutionArray->time = 0.0;
