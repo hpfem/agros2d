@@ -145,8 +145,8 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupdx = u_ext[this->j]->dx[i];
         pupdy = u_ext[this->j]->dy[i];
 
-        parser->parser_variables["lambda"] = cond.value(u->val[i]);
-        parser->parser_variables["dlambda"] = cond.derivative(u->val[i]);
+        // parser->parser_variables["lambda"] = cond.value(u->val[i]);
+        // parser->parser_variables["dlambda"] = cond.derivative(u->val[i]);
 
         result += wt[i] * parser->parser[0]->Eval();
     }
