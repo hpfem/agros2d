@@ -1,6 +1,11 @@
 Solving Problem
 ===============
 
+Generating of Initial Mesh
+--------------------------
+
+Initial mesh is generating automatically before solving, but you can set parameters of this mesh and also generete it manually. In "Problem properties" dialog you can choose type of mesh elements - triangle elements (default) and quadrilaterals (generating from triangle elements with vaious methods). Further opinions are global number of refinements and polynomial order. To generate mesh select "Mesh area" in the menu "Problem" or press Alt+W.
+
 Basic Procedure for Solving
 ---------------------------
 

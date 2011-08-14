@@ -3,7 +3,7 @@
 Commands
 ========
 
-Scripting in Agros2D is based on scripting language Python_.
+Scripting in Agros2D is based on scripting language `Python <http://www.python.org>`_.
 
 General Commands
 ----------------
@@ -33,7 +33,7 @@ General Commands
 * **mode(** *mode* **)**
    Set mode.
 
-   - mode = {"node", "edge", "label", "postprocessor"}
+   Key words that match a modes can be found in the :ref:`keyword-list`.
 
 .. index:: zoombestfit()
 
@@ -93,24 +93,20 @@ Document Commands
 * **newdocument(** *name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition* **)**
    Create new document.
 
-   - type = {"planar", "axisymmetric"}
-   - physicfield = {"general", "electrostatic", "magnetic", "current", "heat"}
    - numberofrefinements >= 0
    - polynomialorder = 1 to 10
-   - adaptivitytype = {"disabled", "h-adaptivity", "p-adaptivity", "hp-adaptivity"}
    - adaptivitysteps >= 0
    - adaptivitytolerance >= 0
    - frequency >= 0 (only for harmonic magnetic field)
-   - analysistype = {"steadystate", "transient", "harmonic"}
    - timestep > 0
    - totaltime > 0
 
    Key words that match a problem types, physic fields, adaptivity types and analysis types can be found in the :ref:`keyword-list`.
 
-An example:
+An example::
 
-.. literalinclude:: ./examples.rst
-   :lines: 1-2
+    newdocument("Electrostatic Axisymmetric Capacitor", "axisymmetric", "electrostatic", 0, 3, "disabled", 1, 1, 0, "steadystate", 0, 0, 0)
+    newdocument("Heat Transfer Axisymmetric Actuator", "axisymmetric", "heat", 0, 1, "hp-adaptivity", 5, 15, 0, "transient", 500, 15e3, 20)
 
 .. index:: opendocument()
 
@@ -218,13 +214,24 @@ Materials and Boundaries Commands
       addboundary(name, type, value)
    - Electrostatic field
       addboundary(name, type, value)
-   - Magnetic field
-      addboundary(name, type, value)
    - Current field
       addboundary(name, type, value)
+   - Magnetic field
+      addboundary(name, type, value)
+   - TE Waves
+      addboundary(name, type, value_real, value_imag)
+      addboundary(name, type, mode, power, phase)
+      addboundary(name, type)
    - Heat transfer
       addboundary(name, type, temperature)
       addboundary(name, type, heat_flux, h, external_temperature)
+   - Acoustic field
+      addboundary(name, type, value)
+      addboundary(name, type)
+   - Structural mechanics
+      addboundary(name, type_x, type_y, force_x, force_y, displacement_x, displacement_y)
+   - Incompressible flow
+      addboundary(name, type, velocity_x, velocity_y, pressure)
 
    Key words that match a boundary condition types can be found in the :ref:`keyword-list`.
 
@@ -242,12 +249,20 @@ Materials and Boundaries Commands
       addmaterial(name, rightside, constant)
    - Electrostatic field
       addmaterial(name, charge_density, permittivity)
-   - Magnetic field
-      addmaterial(name, current_density_real, current_density_imag, permeability, conductivity, remanence, remanence_angle, velocity_x, velocity_y, velocity_angular)
    - Current field
       addmaterial(name, conductivity)
+   - Magnetic field
+      addmaterial(name, current_density_real, current_density_imag, permeability, conductivity, remanence, remanence_angle, velocity_x, velocity_y, velocity_angular)
+   - TE Waves
+      addmaterial(name, permittivity, permeability, conductivity, current_density_real, current_density_imag)
    - Heat transfer
       addmaterial(name, volume_heat, thermal_conductivity, density, specific_heat)
+   - Acoustic field
+      addmaterial(name, density, speed)
+   - Structural mechanics
+      addmaterial(name, young_modulus, poisson_ratio, force_x, force_y, alpha, temp, temp_ref)
+   - Incompressible flow
+      addmaterial(name, dynamic_viscosity, density)
 
 .. index:: modifymaterial()
 
@@ -262,30 +277,30 @@ Postprocessor Commands
 * **result = pointresult(** *x, y* **)**
    Local variables at point [x, y]. Key words that match a point results can be found in the :ref:`keyword-list`.
 
-An example:
+An example::
 
-.. literalinclude:: ./examples.rst
-   :lines: 4-5
+    result = pointresult(0.1, 0.1)
+    print("Potential = " + str(result["V"]))
 
 .. index:: volumeintegral()
 
 * **result = volumeintegral(** *index, ...* **)**
    Volume integral in areas with given index. Key words that match a volume integrals can be found in the :ref:`keyword-list`.
 
-An example:
+An example::
 
-.. literalinclude:: ./examples.rst
-   :lines: 7-8
+    result = volumeintegral(0.1, 0.1)
+    print("Volume = " + str(result["V"]))
 
 .. index:: surfaceintegral()
 
 * **result = surfaceintegral(** *index, ...* **)**
    Surface integral in edges with given index. Key words that match a surface integrals can be found in the :ref:`keyword-list`.
 
-An example:
+An example::
 
-.. literalinclude:: ./examples.rst
-   :lines: 10-11
+    result = surfaceintegral(0.1, 0.1)
+    print("Charge = " + str(result["V"]))
 
 .. index:: showgrid()
 
@@ -386,5 +401,3 @@ You can run single commands and user functions. Select "Run command..." in the m
 You can use the full possibilities of Python while writing your scripts. For example, you can draw graphs, or perform other calculations.
 
 You can be found all keywords of the command parameters in :ref:`keyword-list`.
-
-.. _Python: http://www.python.org

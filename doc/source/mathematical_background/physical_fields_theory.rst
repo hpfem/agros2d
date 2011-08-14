@@ -1,5 +1,5 @@
-Physical Field Theory
-=====================
+Physical Fields Theory
+======================
 
 In this chapter we will describe physical field equations used in Agros2D.
 
