@@ -24,6 +24,7 @@
 #include <QtGui>
 #include <QtNetwork>
 #include <QDomDocument>
+#include <QtWebKit>
 
 #include <Python.h>
 

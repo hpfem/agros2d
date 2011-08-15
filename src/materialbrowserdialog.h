@@ -27,6 +27,12 @@ class MaterialBrowserDialog : public QDialog
     Q_OBJECT
 public:
     MaterialBrowserDialog(QWidget *parent = 0);
+    ~MaterialBrowserDialog();
+
+    int showDialog(bool select = false);
+
+    inline QList<double> x() const { return m_x; }
+    inline QList<double> y() const { return m_y; }
 
 protected:
     void createControls();
@@ -35,11 +41,28 @@ protected:
 private:
     QTreeWidget *trvMaterial;
     QTreeWidget *trvProperty;
+    QLabel *lblMaterial;
+    QLabel *lblProperty;
+    QLabel *lblShortname;
+    QLabel *lblSource;
+    QLabel *lblUnit;
+    QLabel *lblValue;
+    Chart *chartValue;
 
-signals:
+    QDialogButtonBox *buttonBox;
 
-public slots:
+    QList<double> m_x;
+    QList<double> m_y;
 
+    bool m_select;
+
+private slots:
+    void doMaterialSelected(QTreeWidgetItem *item, int role);
+    void doMaterialSelected(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+    void doPropertySelected(QTreeWidgetItem *item, int role);
+    void doPropertySelected(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+
+    void doAccept();
 };
 
 #endif // MATERIALBROWSERDIALOG_H

@@ -21,6 +21,7 @@
 
 #include "gui.h"
 #include "scripteditordialog.h"
+#include "materialbrowserdialog.h"
 
 DataTableDialog::DataTableDialog(QWidget *parent) : QDialog(parent)
 {
@@ -233,9 +234,12 @@ void DataTableDialog::createControls()
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doReject()));
     btnPlot = new QPushButton(tr("Plot"));
     connect(btnPlot, SIGNAL(clicked()), this, SLOT(doPlot()));
+    QPushButton *btnMaterialBrowser = new QPushButton(tr("Material browser"));
+    connect(btnMaterialBrowser, SIGNAL(clicked()), this, SLOT(doMaterialBrowser()));
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addStretch();
+    layoutButtons->addWidget(btnMaterialBrowser);
     layoutButtons->addWidget(btnPlot);
     layoutButtons->addWidget(btnOk);
     layoutButtons->addWidget(btnClose);
@@ -315,6 +319,23 @@ void DataTableDialog::doPlot()
     delete [] keysSpline;
     delete [] valuesSpline;
     delete [] derivativesSpline;
+}
+
+void DataTableDialog::doMaterialBrowser()
+{
+    MaterialBrowserDialog materialBrowserDialog(this);
+    if (materialBrowserDialog.showDialog(true) == QDialog::Accepted)
+    {
+        lstX->clear();
+        lstY->clear();
+        for (int i = 0; i < materialBrowserDialog.x().size(); i++)
+        {
+            lstX->appendPlainText(QString::number(materialBrowserDialog.x().at(i)));
+            lstY->appendPlainText(QString::number(materialBrowserDialog.y().at(i)));
+        }
+
+        doPlot();
+    }
 }
 
 void DataTableDialog::load()

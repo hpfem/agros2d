@@ -69,6 +69,7 @@ private slots:
 
     void doTextChanged();
     void doPlot();
+    void doMaterialBrowser();
 };
 
 #endif // DATATABLEDIALOG_H
