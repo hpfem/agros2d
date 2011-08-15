@@ -1099,10 +1099,10 @@ void MainWindow::doReport()
 
 void MainWindow::doMaterialBrowser()
 {
-    logMessage("MainWindow::doChart()");
+    logMessage("MainWindow::doMaterialBrowser()");
 
     MaterialBrowserDialog materialBrowserDialog(this);
-    materialBrowserDialog.exec();
+    materialBrowserDialog.showDialog(false);
 }
 
 void MainWindow::doChart()

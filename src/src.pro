@@ -198,7 +198,9 @@ OTHER_FILES += python/agros2d.pyx \
     ../modules/elasticity.xml \
     ../modules/current.xml \
     ../modules/acoustic.xml \
-    ../resources/materials/copper.xml
+    ../resources/materials/Copper.xml \
+    ../resources/materials/Aluminum.xml \
+    ../resources/materials/Iron.xml
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS
@@ -288,6 +290,8 @@ win32-msvc2008 {
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
 }
+
+
 
 
 

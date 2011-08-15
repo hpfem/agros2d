@@ -18,6 +18,19 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "materialbrowserdialog.h"
+#include "datatable.h"
+#include "gui.h"
+
+struct MaterialProperty
+{
+    QString id;
+    QString name;
+    QString shortname;
+    QString unit;
+    QString source;
+    QString value;
+};
+Q_DECLARE_METATYPE(MaterialProperty)
 
 MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent)
 {
@@ -29,6 +42,23 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent)
     createControls();
 
     readMaterials();
+
+    QSettings settings;
+    restoreGeometry(settings.value("MaterialBrowserDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+MaterialBrowserDialog::~MaterialBrowserDialog()
+{
+    QSettings settings;
+    settings.setValue("MaterialBrowserDialog/Geometry", saveGeometry());
+}
+
+int MaterialBrowserDialog::showDialog(bool select)
+{
+    m_select = select;
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(m_select);
+
+    return exec();
 }
 
 void MaterialBrowserDialog::createControls()
@@ -42,6 +72,10 @@ void MaterialBrowserDialog::createControls()
     trvMaterial->setColumnWidth(0, 150);
     trvMaterial->setIndentation(12);
 
+    connect(trvMaterial, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(doMaterialSelected(QTreeWidgetItem *, int)));
+    connect(trvMaterial, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(doMaterialSelected(QTreeWidgetItem *, int)));
+    connect(trvMaterial, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doMaterialSelected(QTreeWidgetItem *, QTreeWidgetItem *)));
+
     QStringList materialLabels;
     materialLabels << tr("Material");
     trvMaterial->setHeaderLabels(materialLabels);
@@ -53,21 +87,64 @@ void MaterialBrowserDialog::createControls()
     trvProperty->setColumnWidth(0, 150);
     trvProperty->setIndentation(12);
 
+    connect(trvProperty, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(doPropertySelected(QTreeWidgetItem *, int)));
+    connect(trvProperty, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(doPropertySelected(QTreeWidgetItem *, int)));
+    connect(trvProperty, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doPropertySelected(QTreeWidgetItem *, QTreeWidgetItem *)));
+
     QStringList propertyLabels;
     propertyLabels << tr("Property");
     trvProperty->setHeaderLabels(propertyLabels);
 
-    QWidget *info = new QWidget(this);
-    info->setMinimumWidth(300);
+    lblMaterial = new QLabel("-");
+    lblProperty = new QLabel("-");
+    lblShortname = new QLabel("-");
+    lblUnit = new QLabel("-");
+    lblSource = new QLabel("-");
+    lblSource->setWordWrap(true);
+    lblSource->setMaximumWidth(350);
+    lblValue = new QLabel("0.0");
+
+    chartValue = new Chart();
+
+    // chart picker
+    QwtPlotPicker *picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
+                               QwtPicker::PointSelection | QwtPicker::DragSelection,
+                               QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
+                               chartValue->canvas());
+    picker->setRubberBandPen(QColor(Qt::green));
+    picker->setRubberBand(QwtPicker::CrossRubberBand);
+    picker->setTrackerMode(QwtPicker::ActiveOnly);
+    picker->setTrackerPen(QColor(Qt::black));
+
+    QGridLayout *layoutProperty = new QGridLayout();
+    layoutProperty->addWidget(new QLabel(tr("Material:")), 0, 0);
+    layoutProperty->addWidget(lblMaterial, 0, 1);
+    layoutProperty->addWidget(new QLabel(tr("Property:")), 1, 0);
+    layoutProperty->addWidget(lblProperty, 1, 1);
+    layoutProperty->addWidget(new QLabel(tr("Shortname:")), 2, 0);
+    layoutProperty->addWidget(lblShortname, 2, 1);
+    layoutProperty->addWidget(new QLabel(tr("Unit:")), 3, 0);
+    layoutProperty->addWidget(lblUnit, 3, 1);
+    layoutProperty->addWidget(new QLabel(tr("Source:")), 4, 0);
+    layoutProperty->addWidget(lblSource, 4, 1);
+    layoutProperty->addWidget(new QLabel(tr("Value:")), 5, 0);
+    layoutProperty->addWidget(lblValue, 5, 1);
+    layoutProperty->setRowStretch(6, 1);
+    layoutProperty->setColumnStretch(1, 1);
+
+    QVBoxLayout *layoutPropertyChart = new QVBoxLayout();
+    layoutPropertyChart->addLayout(layoutProperty);
+    layoutPropertyChart->addWidget(chartValue, 1);
 
     QHBoxLayout *layoutMaterials = new QHBoxLayout();
     layoutMaterials->addWidget(trvMaterial);
     layoutMaterials->addWidget(trvProperty);
-    layoutMaterials->addWidget(info);
+    layoutMaterials->addLayout(layoutPropertyChart, 1);
 
     // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutMaterials, 1);
@@ -88,7 +165,9 @@ void MaterialBrowserDialog::readMaterials()
     dir.setNameFilters(filters);
     dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
 
+    // remove extension
     QStringList list = dir.entryList();
+    list.replaceInStrings(".xml", "");
 
     trvMaterial->clear();
 
@@ -97,4 +176,149 @@ void MaterialBrowserDialog::readMaterials()
         QTreeWidgetItem *node = new QTreeWidgetItem(trvMaterial);
         node->setText(0, list.at(i));
     }
+}
+
+void MaterialBrowserDialog::doMaterialSelected(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+    logMessage("MaterialBrowserDialog::doItemSelected()");
+
+    doMaterialSelected(current, Qt::UserRole);
+}
+
+void MaterialBrowserDialog::doMaterialSelected(QTreeWidgetItem *item, int role)
+{
+    logMessage("MaterialBrowserDialog::doItemSelected()");
+
+    if (item != NULL)
+    {
+        trvProperty->clear();
+        QString fileName = datadir() + "/resources/materials/" + item->text(0) + ".xml";
+
+        QDomDocument doc;
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            /*
+            qDebug << tr("File '%1' cannot be opened (%2).").
+                      arg(fileName).
+                      arg(file.errorString());
+                      */
+            return;
+        }
+
+        if (!doc.setContent(&file)) {
+            file.close();
+            /*
+            qDebug << tr("File '%1' is not valid material file.").arg(fileName);
+            */
+            return;
+        }
+        file.close();
+
+        // main document
+        QDomElement eleDoc = doc.documentElement();
+
+        QDomNode eleProperty = eleDoc.toElement().elementsByTagName("property").at(0);
+        QDomNode n = eleProperty.firstChild();
+        while(!n.isNull())
+        {
+            QDomElement element = n.toElement();
+
+            MaterialProperty material;
+
+            material.id = element.toElement().attribute("id");
+            material.name = element.toElement().attribute("name");
+            material.shortname = element.toElement().attribute("shortname");
+            material.unit = element.toElement().attribute("unit");
+            material.source = element.toElement().attribute("source");
+            material.value = element.toElement().attribute("value");
+
+            QVariant v;
+            v.setValue(material);
+
+            QTreeWidgetItem *node = new QTreeWidgetItem(trvProperty);
+            node->setText(0, material.name);
+            node->setData(0, Qt::UserRole, v);
+
+            n = n.nextSibling();
+        }
+
+        if (trvProperty->topLevelItemCount() > 0.0)
+        {
+            trvProperty->topLevelItem(0)->setSelected(true);
+            doPropertySelected(trvProperty->topLevelItem(0), trvProperty->topLevelItem(0));
+        }
+    }
+}
+
+void MaterialBrowserDialog::doPropertySelected(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+    logMessage("MaterialBrowserDialog::doPropertySelected()");
+
+    doPropertySelected(current, Qt::UserRole);
+}
+
+void MaterialBrowserDialog::doPropertySelected(QTreeWidgetItem *item, int role)
+{
+    logMessage("MaterialBrowserDialog::doPropertySelected()");
+
+    m_x.clear();
+    m_y.clear();
+
+    if (item != NULL)
+    {
+        MaterialProperty material = item->data(0, Qt::UserRole).value<MaterialProperty>();
+
+        lblMaterial->setText(trvMaterial->currentItem()->text(0));
+        lblProperty->setText(material.name);
+        lblShortname->setText(material.shortname);
+        lblUnit->setText(material.unit);
+        lblSource->setText(material.source);
+
+        if (material.value.contains(";"))
+        {
+            // nonlinear material
+            lblValue->setText(tr("nonlinear material"));
+            chartValue->setVisible(true);
+
+            // axes
+            QwtText text("");
+            text.setFont(QFont("Helvetica", 10, QFont::Normal));
+            text.setText(material.unit);
+            chartValue->setAxisTitle(QwtPlot::yLeft, text);
+
+            // data
+            QStringList str = material.value.split(";");
+            QStringList strx = str.at(0).split(",");
+            QStringList stry = str.at(1).split(",");
+
+            double *x = new double[strx.count()];
+            double *y = new double[stry.count()];
+            for (int i = 0; i < strx.count(); i++)
+            {
+                x[i] = strx.at(i).toDouble();
+                y[i] = stry.at(i).toDouble();
+
+                m_x.append(x[i]);
+                m_y.append(y[i]);
+            }
+
+            chartValue->setData(x, y, strx.count());
+
+            // clean up
+            delete [] x;
+            delete [] y;
+        }
+        else
+        {
+            // linear material
+            lblValue->setText(material.value);
+            chartValue->setVisible(false);
+        }
+    }
+}
+
+void MaterialBrowserDialog::doAccept()
+{
+    accept();
 }
