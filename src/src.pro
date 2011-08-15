@@ -13,6 +13,8 @@ DEFINES += VERSION_YEAR=2011
 DEFINES += VERSION_MONTH=5
 DEFINES += VERSION_DAY=23
 
+DEFINES += NO_THREADS
+
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
@@ -49,6 +51,20 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     ../lib/muparser/muParserTokenReader.cpp \
     ../lib/rapidxml/rapidxml.cpp \
     ../lib/rapidxml/rapidxml_utils.cpp \
+    ../lib/ctemplate/base/arena.cc \
+    ../lib/ctemplate/htmlparser/htmlparser.cc \
+    ../lib/ctemplate/htmlparser/htmlparser_cpp.h \
+    ../lib/ctemplate/htmlparser/jsparser.cc \
+    ../lib/ctemplate/htmlparser/statemachine.cc \
+    ../lib/ctemplate/per_expand_data.cc \
+    ../lib/ctemplate/template_annotator.cc \
+    ../lib/ctemplate/template_cache.cc \
+    ../lib/ctemplate/template.cc \
+    ../lib/ctemplate/template_dictionary.cc \
+    ../lib/ctemplate/template_modifiers.cc \
+    ../lib/ctemplate/template_namelist.cc \
+    ../lib/ctemplate/template_pathops.cc \
+    ../lib/ctemplate/template_string.cc \
     util.cpp \
     value.cpp \
     scene.cpp \
@@ -164,6 +180,8 @@ HEADERS += util.h \
     materialbrowserdialog.h
 
 INCLUDEPATH += . \
+    ../lib \
+    ../lib/ctemplate \
     ../lib/muparser \
     ../lib/dxflib \
     ../lib/rapidxml \
