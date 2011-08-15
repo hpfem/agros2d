@@ -38,6 +38,7 @@
 #include "progressdialog.h"
 #include "collaboration.h"
 #include "resultsview.h"
+#include "materialbrowserdialog.h"
 
 #include "datatabledialog.h"
 
@@ -327,6 +328,10 @@ void MainWindow::createActions()
     actReport->setStatusTip(tr("Problem html report"));
     connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
 
+    actMaterialBrowser = new QAction(icon(""), tr("Material browser..."), this);
+    actMaterialBrowser->setStatusTip(tr("Material browser"));
+    connect(actMaterialBrowser, SIGNAL(triggered()), this, SLOT(doMaterialBrowser()));
+
     actProgressLog = new QAction(icon("log"), tr("Progress &log"), this);
     actProgressLog->setStatusTip(tr("Show progress log"));
     connect(actProgressLog, SIGNAL(triggered()), this, SLOT(doProgressLog()));
@@ -446,6 +451,8 @@ void MainWindow::createMenus()
     mnuTools->addAction(actScriptEditor);
     mnuTools->addAction(actScriptEditorRunScript);
     mnuTools->addAction(actScriptEditorRunCommand);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actMaterialBrowser);
     mnuTools->addSeparator();
     mnuTools->addAction(actReport);
     mnuTools->addAction(actCreateVideo);
@@ -1083,6 +1090,14 @@ void MainWindow::doReport()
     logMessage("MainWindow::doReport()");
 
     reportDialog->showDialog();
+}
+
+void MainWindow::doMaterialBrowser()
+{
+    logMessage("MainWindow::doChart()");
+
+    MaterialBrowserDialog materialBrowserDialog(this);
+    materialBrowserDialog.exec();
 }
 
 void MainWindow::doChart()

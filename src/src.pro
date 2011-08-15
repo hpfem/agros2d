@@ -103,7 +103,8 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     hermes2d/weakform_parser.cpp\
     alter_newton_solver.cpp \
     datatable.cpp \
-    datatabledialog.cpp
+    datatabledialog.cpp \
+    materialbrowserdialog.cpp
 
 HEADERS += util.h \
     value.h \
@@ -159,7 +160,8 @@ HEADERS += util.h \
     hermes2d/weakform_parser.h \
     alter_newton_solver.h \
     datatable.h \
-    datatabledialog.h
+    datatabledialog.h \
+    materialbrowserdialog.h
 
 INCLUDEPATH += . \
     ../lib/muparser \
@@ -177,7 +179,8 @@ OTHER_FILES += python/agros2d.pyx \
     ../modules/electrostatic.xml \
     ../modules/elasticity.xml \
     ../modules/current.xml \
-    ../modules/acoustic.xml
+    ../modules/acoustic.xml \
+    ../resources/materials/copper.xml
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS
@@ -267,3 +270,6 @@ win32-msvc2008 {
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
 }
+
+
+

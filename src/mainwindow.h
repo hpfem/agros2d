@@ -82,6 +82,7 @@ private slots:
     void doScriptEditorRunCommand();
     void doOptions();
     void doReport();
+    void doMaterialBrowser();
     void doCreateVideo();
     void doFullScreen();
     void doApplicationLog();
@@ -161,6 +162,7 @@ private:
     QAction *actScriptEditorRunScript;
     QAction *actScriptEditorRunCommand;
     QAction *actReport;
+    QAction *actMaterialBrowser;
     QAction *actCreateVideo;
     QAction *actApplicationLog;
 
