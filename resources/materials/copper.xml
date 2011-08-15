@@ -1,0 +1,6 @@
+ <document>
+    <property name="Copper">
+        <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="W/m.K"
+              value="25,75,125,225,325,525,725,925;401,396,393,386,379,366,352,339" />
+    </property>
+</document>
