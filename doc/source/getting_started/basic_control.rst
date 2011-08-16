@@ -75,7 +75,7 @@ Script editor window
 
 The main part of the script editor window is editing area, which works with scripts. In the bottom of the window there is terminal panel. Script editor window also contains the file browser panel, menu bar and toolbar.
 
-.. image:: ./script_editor_window.png
+.. image:: ./script_editor.png
    :align: center
    :scale: 50%
    :alt: Script editor window
@@ -85,7 +85,7 @@ Chart window
 
 The main part of the chart window is the area to display the chart or data. You can switch among chart and data views through tabs at the top of the area. To enter the necessary data for the chart and to work with it controls on the right side of the window are used.
 
-.. image:: ./chart_window.png
+.. image:: ./chart.png
    :align: center
    :scale: 50%
    :alt: Chart window

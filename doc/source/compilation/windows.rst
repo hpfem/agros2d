@@ -4,22 +4,22 @@ Compiling under MS Windows
 How to Build Release
 --------------------
 
-1. Install Git client on Windows, for example msysGit: http://code.google.com/p/msysgit
+1. Install `Git <http://http://git-scm.com>`_ client on Windows, for example `msysGit <http://code.google.com/p/msysgit>`_
 
   * Run Git and run ``ssh-keygen``
   * Files with keys are created in a subfolder of the user profile, in subfolder  ".ssh". In case of Windows 7 for example C:\\Users\\username\\.ssh
   * You can use these keys. If you have already these keys created, just create a folder ".ssh" and put the necessary files (``known_hosts``, ``id_rsa.pub``, ``id_rsa``) there.
 
-2. Download current version version of Agros2D sources - from GitHub: `git://github.com/hpfem/agros2d.git <git://github.com/hpfem/agros2d.git>`_.
-3. Download and install QtCreator - http://qt.nokia.com/products
+2. Download current version version of Agros2D sources - from `GitHub <http://github.com>`_: `git://github.com/hpfem/agros2d.git <git://github.com/hpfem/agros2d.git>`_.
+3. Download and install `QtCreator <http://qt.nokia.com/products>`_
 4. Download and install Windows SDK for Qt - Qt libraries 4.7.2 for Windows (VS 2008) (http://qt.nokia.com/downloads/windows-cpp-vs2008).
 5. Install Microsoft Visual Studio C++ (Express version is enough) - MSVC compiler is necessary
 6. You can install additional (optional) debugger, e.g. Debugging Tools for Windows (http://download.cnet.com/Debugging-Tools-for-Windows/3000-2086_4-10907878.html)
 7. You need a necessary files from "triangle"  - copy binaries from Agros binaries for Windows, copy into the project folder with Agros2D sources
 8. You need a necessary files from "ffmpeg" - copy binaries from Agros binaries for Windows, copy into the project folder with Agros2D sources
-9. Install Python and NumPy
+9. Install `Python <http://www.python.org>`_ and `NumPy <http://numpy.scipy.org>`_
 
-  * Copy files from Python directory into the directory of Agros2D sources (http://www.python.org/download/) especially
+  * Copy files from Python directory into the directory of Agros2D sources especially
     
     - ``Python27\python.exe``
     - ``Python27\pythonw.exe``
