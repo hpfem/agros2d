@@ -59,7 +59,7 @@ Labels are used to define individual areas. To add a label you can use the same 
 Editing Parameters of Existing Components
 -----------------------------------------
 
-You can double left click on the requested element (node, edge, and label) for editing its parameters. For example, you can create an arc from a straight edge.
+You can double left click on the requested element (node, edge, and label) for editing its parameters. For example, you can create an arc from a straight edge. Positions of nodes, edges and labels you can changed with mouse and pressed keys Ctrl+Shift.
 
 Tips
 ----

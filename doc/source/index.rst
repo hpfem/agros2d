@@ -13,6 +13,7 @@ Introduction
    :maxdepth: 1
 
    ./introduction/about_agros2d.rst
+   ./compilation/linux.rst
    ./compilation/windows.rst
 
 Getting Started
@@ -59,6 +60,15 @@ Tutorials
 
    ./tutorials/electrostatic_planar_capacitor.rst
    ./tutorials/electrostatic_axisymmetric_capacitor.rst
+
+Examples
+^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+
+   ./examples/acoustic_axisymmetric_horn.rst
+   ./examples/electrostatic_axisymmetric_sparkgap.rst
 
 Changelog
 ^^^^^^^^^

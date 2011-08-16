@@ -6,10 +6,10 @@ Viewing of Results
 
 You can display your results using various pre-defined ways. All options can be set using the panel "Postprocessor properties".
 
-.. image:: ./postprocessor_properties_panel.png
+.. image:: ./postprocessor_properties.png
    :align: center
    :scale: 50%
-   :alt: Postprocessor properties panel
+   :alt: Postprocessor properties
 
 Fig. 1.: Postprocessor properties panel
 
