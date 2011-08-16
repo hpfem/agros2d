@@ -1110,8 +1110,11 @@ bool SolutionAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Spa
         m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed"), true);
         return false;
     }
-    else
+    else{
         Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), spaceParam, solutionParam);
+        m_progressItemSolve->emitMessage(QObject::tr("One problem solved"), true); //TODO temp
+        cout << "One problem solved" << endl;
+    }
 
     return true;
 }
@@ -1158,6 +1161,21 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
     int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
     for (int n = 0; n<timesteps; n++)
     {
+        // set actual time
+        actualTime = (n+1)*timeStep;
+
+        // update essential bc values
+        Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(space, actualTime);
+        // update timedep values
+        Util::scene()->problemInfo()->module()->update_time_functions(actualTime);
+
+        m_wf->set_current_time(actualTime);
+        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+            for (int i = 0; i < solution.size(); i++)
+                m_wf->solution.push_back((Hermes::Hermes2D::MeshFunction<Scalar> *) solution[i]);
+        m_wf->delete_all();
+        m_wf->registerForms();
+
         int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
         int actualAdaptivitySteps = -1;
         for (int i = 0; i<maxAdaptivitySteps; i++){
