@@ -98,8 +98,6 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     chartdialog.cpp \
     problemdialog.cpp \
     scenetransformdialog.cpp \
-    config.cpp \
-    configdialog.cpp \
     scenesolution.cpp \
     reportdialog.cpp \
     videodialog.cpp \
@@ -120,7 +118,9 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     alter_newton_solver.cpp \
     datatable.cpp \
     datatabledialog.cpp \
-    materialbrowserdialog.cpp
+    materialbrowserdialog.cpp \
+    conf.cpp \
+    confdialog.cpp
 
 HEADERS += util.h \
     value.h \
@@ -155,8 +155,6 @@ HEADERS += util.h \
     chartdialog.h \
     problemdialog.h \
     scenetransformdialog.h \
-    config.h \
-    configdialog.h \
     scenesolution.h \
     reportdialog.h \
     videodialog.h \
@@ -177,7 +175,9 @@ HEADERS += util.h \
     alter_newton_solver.h \
     datatable.h \
     datatabledialog.h \
-    materialbrowserdialog.h
+    materialbrowserdialog.h \
+    conf.h \
+    confdialog.h
 
 INCLUDEPATH += . \
     ../lib \
@@ -290,6 +290,14 @@ win32-msvc2008 {
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
 }
+
+
+
+
+
+
+
+
 
 
 

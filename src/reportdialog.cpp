@@ -495,7 +495,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
         destination.replace("[Solver.Label]", "<h3>" + tr("Solver information") + "</h3>", Qt::CaseSensitive);
         destination.replace("[Solver.Nodes]", "<table><tr><td>" + tr("Nodes:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()) + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[Solver.Elements]", "<tr><td>" + tr("Elements:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[Solver.DOFs]", "<tr><td>" + tr("DOFs:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()) + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[Solver.DOFs]", "<tr><td>" + tr("DOFs:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_space()->get_num_dofs()) + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[Solver.TimeElapsed]", "<tr><td>" + tr("Elapsed time:") + "</td><td>" + time.toString("mm:ss.zzz") + " s</td></tr></table>", Qt::CaseSensitive);
 
         if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)

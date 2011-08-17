@@ -24,9 +24,6 @@ namespace Hermes
   {
     // TODO LIST: 
     //
-    // BUG: If time-dependent Ditichlet boundary conditions are used, the 
-    //      Dirichlet lift is not updated for different stage times as it should 
-    //      be. 
     //
     // (1) With explicit and diagonally implicit methods, the matrix is treated
     //     in the same way as with fully implicit ones. To make this more 
@@ -48,29 +45,29 @@ namespace Hermes
     //     is not necessary when no adaptivity in space takes place and the 
     //     two spaces are the same (but it is done anyway).
     //
-    // (4) Enable more equations than one. Right now rk_time_step() does not 
-    //     work for systems.
+    // (4) Enable all other matrix solvers, so far UMFPack is hardwired here.
     //
-    // (5) Enable all other matrix solvers, so far UMFPack is hardwired here.
-    //
-    // (6) We do not take advantage of the fact that all blocks in the 
+    // (5) We do not take advantage of the fact that all blocks in the 
     //     Jacobian matrix have the same structure. Thus it is enough to 
     //     assemble the matrix M (one block) and copy the sparsity structure
     //     into all remaining nonzero blocks (and diagonal blocks). Right 
     //     now, the sparsity structure is created expensively in each block 
     //     again.
     //
-    // (7) If space does not change, the sparsity does not change. Right now 
+    // (6) If space does not change, the sparsity does not change. Right now 
     //     we discard everything at the end of every time step, we should not 
     //     do it.  
     //
-    // (8) If the problem does not depend explicitly on time, then all the blocks 
+    // (7) If the problem does not depend explicitly on time, then all the blocks 
     //     in the Jacobian matrix of the stationary residual are the same up 
     //     to a multiplicative constant. Thus they do not have to be aassembled 
     //     from scratch.
     // 
-    // (9) If the problem is linear, then the Jacobian is constant. If Space 
-    //     does not change between time steps, we should keep it. 
+    //
+    // (8) In practice, Butcher's tables are being transformed to the 
+    //     Jordan canonical form (I think) for better performance. This 
+    //     can be found, I think, in newer Butcher's papers or presentation 
+    //     (he has them online), and possibly in his book. 
 
     template<typename Scalar>
     class HERMES_API RungeKutta
@@ -101,32 +98,45 @@ namespace Hermes
       // values for newton_tol and newton_max_iter are for linear problems.
       // Many improvements are needed, a todo list is presented at the beginning of
       // the corresponding .cpp file.
-      bool rk_time_step(double current_time, double time_step, Hermes::vector<Solution<Scalar>*> slns_time_prev, Hermes::vector<Solution<Scalar>*> slns_time_new,
-        Hermes::vector<Solution<Scalar>*> error_fns, bool jacobian_changed = true, bool verbose = false, double newton_tol = 1e-6, 
-        int newton_max_iter = 20, double newton_damping_coeff = 1.0, 
-        double newton_max_allowed_residual_norm = 1e6);
-      bool rk_time_step(double current_time, double time_step, Solution<Scalar>* slns_time_prev, Solution<Scalar>* slns_time_new,
-        Solution<Scalar>* error_fn, bool jacobian_changed = true, bool verbose = false, double newton_tol = 1e-6, 
-        int newton_max_iter = 20, double newton_damping_coeff = 1.0, 
-        double newton_max_allowed_residual_norm = 1e6);
+      // freeze_jacobian... if true then the Jacobian is not recalculated in each 
+      //                    iteration of the Newton's method. 
+      // block_diagonal_jacobian... if true then the tensor product block Jacobian is 
+      //                            reduced to just the diagonal blocks.
+      bool rk_time_step(double current_time, double time_step, Hermes::vector<Solution<Scalar>*> slns_time_prev, 
+                        Hermes::vector<Solution<Scalar>*> slns_time_new, Hermes::vector<Solution<Scalar>*> error_fns, 
+                        bool freeze_jacobian = true, bool block_diagonal_jacobian = false,
+                        bool verbose = false, double newton_tol = 1e-6, 
+                        int newton_max_iter = 20, double newton_damping_coeff = 1.0, 
+                        double newton_max_allowed_residual_norm = 1e6);
+      bool rk_time_step(double current_time, double time_step, Solution<Scalar>* slns_time_prev, 
+                        Solution<Scalar>* slns_time_new, Solution<Scalar>* error_fn, 
+                        bool freeze_jacobian = true, bool block_diagonal_jacobian = false, 
+                        bool verbose = false, double newton_tol = 1e-6, int newton_max_iter = 20, 
+                        double newton_damping_coeff = 1.0, double newton_max_allowed_residual_norm = 1e6);
 
       // This is a wrapper for the previous function if error_fn is not provided
       // (adaptive time stepping is not wanted). 
-      bool rk_time_step(double current_time, double time_step, Hermes::vector<Solution<Scalar>*> slns_time_prev, Hermes::vector<Solution<Scalar>*> slns_time_new,
-        bool jacobian_changed = true, bool verbose = false, double newton_tol = 1e-6, int newton_max_iter = 20, 
-        double newton_damping_coeff = 1.0, double newton_max_allowed_residual_norm = 1e6);
-      bool rk_time_step(double current_time, double time_step, Solution<Scalar>* sln_time_prev, Solution<Scalar>* sln_time_new,
-        bool jacobian_changed = true, bool verbose = false, double newton_tol = 1e-6, int newton_max_iter = 20, 
-        double newton_damping_coeff = 1.0, double newton_max_allowed_residual_norm = 1e6);
+      bool rk_time_step(double current_time, double time_step, Hermes::vector<Solution<Scalar>*> slns_time_prev, 
+                        Hermes::vector<Solution<Scalar>*> slns_time_new, 
+                        bool freeze_jacobian = true, bool block_diagonal_jacobian = false, 
+                        bool verbose = false, double newton_tol = 1e-6, int newton_max_iter = 20, 
+                        double newton_damping_coeff = 1.0, double newton_max_allowed_residual_norm = 1e6);
+      bool rk_time_step(double current_time, double time_step, Solution<Scalar>* sln_time_prev, 
+                        Solution<Scalar>* sln_time_new, bool freeze_jacobian = true, 
+                        bool block_diagonal_jacobian = false, bool verbose = false, 
+                        double newton_tol = 1e-6, int newton_max_iter = 20, double newton_damping_coeff = 1.0, 
+                        double newton_max_allowed_residual_norm = 1e6);
 
 
     protected:
       /// Creates an augmented weak formulation for the multi-stage Runge-Kutta problem.
       /// The original discretized equation is M\dot{Y} = F(t, Y) where M is the mass
       /// matrix, Y the coefficient vector, and F the (nonlinear) stationary residual.
-      /// Below, "stage_wf_left" and "stage_wf_right" refer to the left-hand side
-      /// and right-hand side of the equation, respectively.
-      void create_stage_wf(unsigned int size, double current_time, double time_step, Hermes::vector<Solution<Scalar>*> slns_time_prev);
+      /// Below, "stage_wf_left" and "stage_wf_right" refer to the left-hand side M\dot{Y}
+      /// and right-hand side F(t, Y) of the above equation, respectively.
+      void create_stage_wf(unsigned int size, double current_time, double time_step, 
+                           Hermes::vector<Solution<Scalar>*> slns_time_prev,
+                           bool block_diagonal_jacobian);
 
       // Prepare u_ext_vec.
       void prepare_u_ext_vec(double time_step);

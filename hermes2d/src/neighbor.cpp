@@ -92,6 +92,13 @@ namespace Hermes
       neighbor_edges.clear();
       neighbors.clear();
       clear_supported_shapes();
+            
+      for(unsigned int i = 0; i < central_transformations.get_size(); i++)
+        if (this->central_transformations.present(i))
+          delete this->central_transformations.get(i);
+      for(unsigned int i = 0; i < neighbor_transformations.get_size(); i++)  
+        if (this->neighbor_transformations.present(i))
+          delete this->neighbor_transformations.get(i);  
     }
 
     template<typename Scalar>
@@ -185,7 +192,7 @@ namespace Hermes
             // Number of visited intermediate parents.
             int n_parents = 0;
 
-            for (unsigned int j = 0; j < Transformations::max_level; j++)
+            for (unsigned int j = 0; j < (unsigned) Transformations::max_level; j++)
               par_mid_vertices[j] = NULL;
 
             find_act_elem_up(parent, orig_vertex_id, par_mid_vertices, n_parents);
@@ -295,7 +302,8 @@ namespace Hermes
       _F_;
       if(neighborhood_type == H2D_DG_NO_TRANSF || neighborhood_type == H2D_DG_GO_UP) 
       {
-        neighbor_transformations.add(new Transformations, 0); 
+        if (!neighbor_transformations.present(0)) // in case of neighborhood_type == H2D_DG_NO_TRANSF
+          neighbor_transformations.add(new Transformations, 0); 
         Transformations *tr = neighbor_transformations.get(0);
         
         for(unsigned int i = 0; i < transformations.size(); i++)
@@ -371,37 +379,38 @@ namespace Hermes
             ) 
           {
             central_transforms->transf[level] = transformations[level];
-            // Also if the transformation count is already bigger than central_n_trans, we need to raise it.
+            // Also if the transformation count is already bigger than central_transforms->num_levels, we need to raise it.
             if(level >= central_transforms->num_levels)
               central_transforms->num_levels = level + 1;
           }
           // If we are already on a bigger (i.e. ~ way up) neighbor.
           if(central_transforms->num_levels == level + 1) 
           {
-            neighbor_transformations.add(new Transformations, neighbor_i);            
-            Transformations* neighbor_transforms = neighbor_transformations.get(neighbor_i);
+            if (!neighbor_transformations.present(neighbor_i))
+              neighbor_transformations.add(new Transformations, neighbor_i);
             
-            for(unsigned int i = level + 1; i < transformations.size(); i++)
-              // Triangles.
-              if(central_el->get_mode() == HERMES_MODE_TRIANGLE)
-                if ((active_edge == 0 && transformations[i] == 0) ||
-                    (active_edge == 1 && transformations[i] == 1) ||
-                    (active_edge == 2 && transformations[i] == 2))
-                  neighbor_transforms->transf[neighbor_transforms->num_levels++] = (!neighbor_edge.orientation ? neighbor_edge.local_num_of_edge : (neighbor_edge.local_num_of_edge + 1) % 3);
-                else
-                  neighbor_transforms->transf[neighbor_transforms->num_levels++] = (neighbor_edge.orientation ? neighbor_edge.local_num_of_edge : (neighbor_edge.local_num_of_edge + 1) % 3);
-              // Quads.
+            Transformations* neighbor_transforms = neighbor_transformations.get(neighbor_i);
+
+            // Triangles.
+            if(central_el->get_mode() == HERMES_MODE_TRIANGLE)
+              if ((active_edge == 0 && transformations[level] == 0) ||
+                  (active_edge == 1 && transformations[level] == 1) ||
+                  (active_edge == 2 && transformations[level] == 2))
+                neighbor_transforms->transf[neighbor_transforms->num_levels++] = (!neighbor_edge.orientation ? neighbor_edge.local_num_of_edge : (neighbor_edge.local_num_of_edge + 1) % 3);
               else
-                if ((active_edge == 0 && (transformations[i] == 0 || transformations[i] == 6)) ||
-                    (active_edge == 1 && (transformations[i] == 1 || transformations[i] == 4)) ||
-                    (active_edge == 2 && (transformations[i] == 2 || transformations[i] == 7)) ||
-                    (active_edge == 3 && (transformations[i] == 3 || transformations[i] == 5)))
-                  neighbor_transforms->transf[neighbor_transforms->num_levels++] = (!neighbor_edge.orientation ? neighbor_edge.local_num_of_edge : (neighbor_edge.local_num_of_edge + 1) % 4);
-                else if ((active_edge == 0 && (transformations[i] == 1 || transformations[i] == 7)) ||
-                         (active_edge == 1 && (transformations[i] == 2 || transformations[i] == 5)) ||
-                         (active_edge == 2 && (transformations[i] == 3 || transformations[i] == 6)) ||
-                         (active_edge == 3 && (transformations[i] == 0 || transformations[i] == 4)))
-                  neighbor_transforms->transf[neighbor_transforms->num_levels++] = (neighbor_edge.orientation ? neighbor_edge.local_num_of_edge : (neighbor_edge.local_num_of_edge + 1) % 4);
+                neighbor_transforms->transf[neighbor_transforms->num_levels++] = (neighbor_edge.orientation ? neighbor_edge.local_num_of_edge : (neighbor_edge.local_num_of_edge + 1) % 3);
+            // Quads.
+            else
+              if ((active_edge == 0 && (transformations[level] == 0 || transformations[level] == 6)) ||
+                  (active_edge == 1 && (transformations[level] == 1 || transformations[level] == 4)) ||
+                  (active_edge == 2 && (transformations[level] == 2 || transformations[level] == 7)) ||
+                  (active_edge == 3 && (transformations[level] == 3 || transformations[level] == 5)))
+                neighbor_transforms->transf[neighbor_transforms->num_levels++] = (!neighbor_edge.orientation ? neighbor_edge.local_num_of_edge : (neighbor_edge.local_num_of_edge + 1) % 4);
+              else if ((active_edge == 0 && (transformations[level] == 1 || transformations[level] == 7)) ||
+                        (active_edge == 1 && (transformations[level] == 2 || transformations[level] == 5)) ||
+                        (active_edge == 2 && (transformations[level] == 3 || transformations[level] == 6)) ||
+                        (active_edge == 3 && (transformations[level] == 0 || transformations[level] == 4)))
+                neighbor_transforms->transf[neighbor_transforms->num_levels++] = (neighbor_edge.orientation ? neighbor_edge.local_num_of_edge : (neighbor_edge.local_num_of_edge + 1) % 4);
           }
         }
       }
@@ -501,11 +510,22 @@ namespace Hermes
       _F_;
       for(unsigned int i = position; i < n_neighbors - 1; i++)
         central_transformations.get(i)->copy_from(central_transformations.get(i + 1));
-      central_transformations.get(n_neighbors - 1)->reset();
+      
+      if (central_transformations.present(n_neighbors - 1)) // may not be true when position == n_neighbors - 1
+        central_transformations.get(n_neighbors - 1)->reset();
         
       for(unsigned int i = position; i < n_neighbors - 1; i++)
-        neighbor_transformations.get(i)->copy_from(neighbor_transformations.get(i + 1));
-      neighbor_transformations.get(n_neighbors - 1)->reset();
+      {
+        if (neighbor_transformations.present(i + 1))
+        {
+          if (!neighbor_transformations.present(i))
+            neighbor_transformations.add(new Transformations, i);
+          
+          neighbor_transformations.get(i)->copy_from(neighbor_transformations.get(i + 1));
+        }
+      }
+      if (neighbor_transformations.present(n_neighbors - 1)) // may not be true when position == n_neighbors - 1
+        neighbor_transformations.get(n_neighbors - 1)->reset();
 
       neighbor_edges.erase (neighbor_edges.begin() + position);
       neighbors.erase (neighbors.begin() + position);
@@ -568,63 +588,63 @@ namespace Hermes
                 neighbor_edge.local_num_of_edge = j;
                 break;
               }
-              if(neighbor_edge.local_num_of_edge == -1) error("Neighbor edge wasn't found");
+            if(neighbor_edge.local_num_of_edge == -1) error("Neighbor edge wasn't found");
 
-              Node* n = NULL;
+            Node* n = NULL;
 
-              // Add to the array of neighbor_transformations one that transforms central el. to its parent completely
-              // adjacent to the single big neighbor.
-              assert(n_neighbors == 0);
-              
-              neighbor_transformations.add(new Transformations, n_neighbors);
-              Transformations *neighbor_transforms = neighbor_transformations.get(n_neighbors);
-              
-              neighbor_transforms->num_levels = n_parents;
+            // Add to the array of neighbor_transformations one that transforms central el. to its parent completely
+            // adjacent to the single big neighbor.
+            assert(n_neighbors == 0);
+            
+            neighbor_transformations.add(new Transformations, n_neighbors);
+            Transformations *neighbor_transforms = neighbor_transformations.get(n_neighbors);
+            
+            neighbor_transforms->num_levels = n_parents;
 
-              // Go back through the intermediate inactive parents down to the central element and stack corresponding
-              // neighbor_transformations into the array 'neighbor_transformations'.
-              for(int j = n_parents - 1; j > 0; j-- ) 
+            // Go back through the intermediate inactive parents down to the central element and stack corresponding
+            // neighbor_transformations into the array 'neighbor_transformations'.
+            for(int j = n_parents - 1; j > 0; j-- ) 
+            {
+              n = mesh->peek_vertex_node(par_mid_vertices[j]->id, p1);
+              if(n == NULL) 
               {
-                n = mesh->peek_vertex_node(par_mid_vertices[j]->id, p1);
-                if(n == NULL) 
+                neighbor_transforms->transf[n_parents - j - 1] = neighbor_edge.local_num_of_edge;
+                p1 = par_mid_vertices[j]->id;
+              }
+              else 
+              {
+                if(n->id == par_mid_vertices[j-1]->id) 
+                {
+                  neighbor_transforms->transf[n_parents - j - 1] = (neighbor_edge.local_num_of_edge + 1) % neighb_el->nvert;
+                  p2 = par_mid_vertices[j]->id;
+                }
+                else 
                 {
                   neighbor_transforms->transf[n_parents - j - 1] = neighbor_edge.local_num_of_edge;
                   p1 = par_mid_vertices[j]->id;
                 }
-                else 
-                {
-                  if(n->id == par_mid_vertices[j-1]->id) 
-                  {
-                    neighbor_transforms->transf[n_parents - j - 1] = (neighbor_edge.local_num_of_edge + 1) % neighb_el->nvert;
-                    p2 = par_mid_vertices[j]->id;
-                  }
-                  else 
-                  {
-                    neighbor_transforms->transf[n_parents - j - 1] = neighbor_edge.local_num_of_edge;
-                    p1 = par_mid_vertices[j]->id;
-                  }
-                }
               }
+            }
 
-              // Final transformation to the central element itself.
-              if (orig_vertex_id[0] == par_mid_vertices[0]->id)
-                neighbor_transforms->transf[n_parents - 1] = neighbor_edge.local_num_of_edge;
-              else
-                neighbor_transforms->transf[n_parents - 1] = (neighbor_edge.local_num_of_edge + 1) % neighb_el->nvert;
+            // Final transformation to the central element itself.
+            if (orig_vertex_id[0] == par_mid_vertices[0]->id)
+              neighbor_transforms->transf[n_parents - 1] = neighbor_edge.local_num_of_edge;
+            else
+              neighbor_transforms->transf[n_parents - 1] = (neighbor_edge.local_num_of_edge + 1) % neighb_el->nvert;
 
-              NeighborEdgeInfo local_edge_info;
-              local_edge_info.local_num_of_edge = neighbor_edge.local_num_of_edge;
+            NeighborEdgeInfo local_edge_info;
+            local_edge_info.local_num_of_edge = neighbor_edge.local_num_of_edge;
 
-              // Query the orientation of the neighbor edge relative to the central el.
-              local_edge_info.orientation = neighbor_edge_orientation(id_of_par_orient_1, id_of_par_orient_2, 0);
+            // Query the orientation of the neighbor edge relative to the central el.
+            local_edge_info.orientation = neighbor_edge_orientation(id_of_par_orient_1, id_of_par_orient_2, 0);
 
-              neighbor_edges.push_back(local_edge_info);
+            neighbor_edges.push_back(local_edge_info);
 
-              // There is only one neighbor,...
-              n_neighbors = 1;
+            // There is only one neighbor,...
+            n_neighbors = 1;
 
-              // ...add it to the vector of neighbors.
-              neighbors.push_back(neighb_el);
+            // ...add it to the vector of neighbors.
+            neighbors.push_back(neighb_el);
           }
         }
       }
@@ -639,7 +659,7 @@ namespace Hermes
       bnd_verts[0] = bounding_verts_id[0];
       bnd_verts[1] = bounding_verts_id[1];
 
-      assert(n_sons < Transformations::max_level);
+      assert(n_sons < (unsigned) Transformations::max_level);
 
       for (int i = 0; i < 2; i++)
       {
@@ -834,7 +854,7 @@ namespace Hermes
       _F_;
       if (!this->central_transformations.present(index_1))
         error("Out of bounds of central_transformations.");
-      if (index_2 >= Transformations::max_level)
+      if (index_2 >= (unsigned) Transformations::max_level)
         error("Trying to access transformation deeper than allowed.");
       
       return this->central_transformations.get(index_1)->transf[index_2];
@@ -856,7 +876,7 @@ namespace Hermes
       _F_;
       if (!this->neighbor_transformations.present(index_1))
         error("Out of bounds of neighbor_transformations.");
-      if (index_2 >= Transformations::max_level)
+      if (index_2 >= (unsigned) Transformations::max_level)
         error("Trying to access transformation deeper than allowed.");
       
       return this->neighbor_transformations.get(index_1)->transf[index_2];

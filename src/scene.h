@@ -21,7 +21,7 @@
 #define SCENE_H
 
 #include "util.h"
-#include "config.h"
+#include "conf.h"
 
 #include "hermes2d/module.h"
 

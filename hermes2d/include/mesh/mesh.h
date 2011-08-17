@@ -100,7 +100,6 @@ namespace Hermes
       unsigned active:1; ///< 0 = active, no sons; 1 = inactive (refined), has sons
       unsigned used:1;   ///< array item usage flag
       int marker;        ///< element marker
-      int userdata;     ///< arbitrary user-defined data
       int iro_cache;     ///< increase in integration order, see RefMap::calc_inv_ref_order()
       Element* parent;   ///< pointer to the parent element for the current son
       bool visited;      ///< true if the element has been visited during assembling
@@ -160,6 +159,10 @@ namespace Hermes
         free();
         dump_hash_stat();
       }
+
+      /// Rescales the mesh.
+      bool rescale(double x_ref, double y_ref);
+
       /// Creates a copy of another mesh.
       void copy(const Mesh* mesh);
 
@@ -329,8 +332,7 @@ namespace Hermes
       class HERMES_API MarkersConversion
       {
       public:
-        MarkersConversion();
-        ~MarkersConversion();
+        MarkersConversion() : min_marker_unused(1) {};
 
         /// Info about the maximum marker used so far, used in determining
         /// of the internal marker for a user-supplied std::string identification for
@@ -359,11 +361,12 @@ namespace Hermes
       protected:
         /// Conversion tables between the std::string markers the user sets and
         /// the markers used internally as members of Elements, Nodes.
-        std::map<int, std::string>* conversion_table;
+        std::map<int, std::string> conversion_table;
 
         /// Inverse tables, so that it is possible to search using either
         /// the internal representation, or the user std::string value.
-        std::map<std::string, int>* conversion_table_inverse;
+        std::map<std::string, int> conversion_table_inverse;
+        
         friend class Space<double>;
         friend class Space<std::complex<double> >;
         friend class Mesh;
@@ -372,26 +375,23 @@ namespace Hermes
       class ElementMarkersConversion : public MarkersConversion
       {
       public:
-        ElementMarkersConversion(){};
-        ElementMarkersConversion(const ElementMarkersConversion& src);  // Copy constructor.
-        void operator=(const ElementMarkersConversion& src);  // Assignment operator.
+        ElementMarkersConversion() {};
         virtual MarkersConversionType get_type() { return HERMES_ELEMENT_MARKERS_CONVERSION; };
       };
 
       class BoundaryMarkersConversion : public MarkersConversion
       {
       public:
-        BoundaryMarkersConversion(){};
-        BoundaryMarkersConversion(const BoundaryMarkersConversion& src);  // Copy constructor.
-        void operator=(const BoundaryMarkersConversion& src);  // Assignment operator.
+        BoundaryMarkersConversion() {};
         virtual MarkersConversionType get_type() { return HERMES_BOUNDARY_MARKERS_CONVERSION; };
       };
 
       ElementMarkersConversion element_markers_conversion;
       BoundaryMarkersConversion boundary_markers_conversion;
 
-      friend class H2DReader;
-      friend class ExodusIIReader;
+      friend class MeshReaderH2D;
+      friend class MeshReaderH2DXML;
+      friend class MeshReaderExodusII;
       friend class DiscreteProblem<double>;
       friend class DiscreteProblem<std::complex<double> >;
       friend class WeakForm<double>;

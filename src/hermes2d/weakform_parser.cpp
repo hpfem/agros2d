@@ -99,10 +99,7 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
     parser->setParserVariables(material, boundary);
 
     for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
-    {
         parser->parser[0]->DefineVar(it->first, &it->second);
-        parser->parser[0]->DefineVar("d" + it->first, &it->second);
-    }
 }
 
 // **********************************************************************************************
@@ -145,8 +142,8 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupdx = u_ext[this->j]->dx[i];
         pupdy = u_ext[this->j]->dy[i];
 
-        parser->parser_variables["lambda"] = cond.value(u->val[i]);
-        parser->parser_variables["dlambda"] = cond.derivative(u->val[i]);
+        // parser->parser_variables["lambda"] = 100.0; // cond.value(u->val[i]);
+        // parser->parser_variables["dlambda"] = 0.0; //  cond.derivative(u->val[i]);
 
         result += wt[i] * parser->parser[0]->Eval();
     }

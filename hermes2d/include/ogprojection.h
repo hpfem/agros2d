@@ -31,6 +31,8 @@ namespace Hermes
     class HERMES_API OGProjection
     {
     public:
+      OGProjection();
+
       static void project_global(Hermes::vector<Space<Scalar>*> spaces, Hermes::vector<MeshFunction<Scalar>*> source_meshfns,
         Scalar* target_vec, Hermes::MatrixSolverType matrix_solver = SOLVER_UMFPACK,
         Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>());
@@ -54,10 +56,21 @@ namespace Hermes
         ProjNormType proj_norm = HERMES_UNSET_NORM);
 
       static void project_global(Hermes::vector<Space<Scalar>*> spaces,
-        Hermes::vector<MatrixFormVol<Scalar> *> mfvol,
-        Hermes::vector<VectorFormVol<Scalar> *> vfvol,
-        Hermes::vector<MeshFunction<Scalar>*> source_meshfns,
+        Hermes::vector<MatrixFormVol<Scalar> *> custom_projection_jacobian,
+        Hermes::vector<VectorFormVol<Scalar> *> custom_projection_residual,
         Scalar* target_vec, Hermes::MatrixSolverType matrix_solver = SOLVER_UMFPACK);
+        
+      static void project_global(Hermes::vector<Space<Scalar> *> spaces,
+                                 Hermes::vector<MatrixFormVol<Scalar> *> custom_projection_jacobian,
+                                 Hermes::vector<VectorFormVol<Scalar> *> custom_projection_residual,
+                                 Hermes::vector<Solution<Scalar> *> sols_dest, 
+                                 Hermes::MatrixSolverType matrix_solver = Hermes::SOLVER_UMFPACK);
+                                
+      static void project_global(Space<Scalar>* space,
+                                 MatrixFormVol<Scalar>* custom_projection_jacobian,
+                                 VectorFormVol<Scalar>* custom_projection_residual,
+                                 Solution<Scalar>* sol_dest, 
+                                 Hermes::MatrixSolverType matrix_solver = Hermes::SOLVER_UMFPACK);  
 
       // Underlying function for global orthogonal projection.
       // Not intended for the user. NOTE: the weak form here must be
@@ -74,7 +87,6 @@ namespace Hermes
       public:
         ProjectionMatrixFormVol(int i, int j, ProjNormType projNormType) : MatrixFormVol<Scalar>(i, j)
         {
-          this->adapt_eval = false;
           this->projNormType = projNormType;
         }
 
@@ -189,7 +201,6 @@ namespace Hermes
       public:
         ProjectionVectorFormVol(int i, MeshFunction<Scalar>* ext, ProjNormType projNormType) : VectorFormVol<Scalar>(i)
         {
-          this->adapt_eval = false;
           this->projNormType = projNormType;
           this->ext = Hermes::vector<MeshFunction<Scalar>*>();
           this->ext.push_back(ext);
@@ -306,6 +317,8 @@ namespace Hermes
           return result;
         }
       };
+
+      static int ndof;
     };
   }
 }

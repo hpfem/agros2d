@@ -29,9 +29,10 @@
 #include "quadrature/limit_order.h"
 
 #include "mesh/mesh.h"
-#include "mesh/mesh_loader.h"
-#include "mesh/h2d_reader.h"
-#include "mesh/exodusii.h"
+#include "mesh/mesh_reader.h"
+#include "mesh/mesh_reader_h2d.h"
+#include "mesh/mesh_reader_h2d_xml.h"
+#include "mesh/mesh_reader_exodusii.h"
 
 #include "quadrature/quad.h"
 #include "quadrature/quad_all.h"
@@ -67,7 +68,6 @@
 
 #include "views/view.h"
 #include "views/base_view.h"
-#include "views/linearizer.h"
 #include "views/mesh_view.h"
 #include "views/order_view.h"
 #include "views/scalar_view.h"

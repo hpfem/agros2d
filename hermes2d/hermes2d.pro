@@ -32,6 +32,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/qsort.cpp \
                 ../hermes_common/src/c99_functions.cpp \
                 ../hermes_common/src/ord.cpp \
+                ../hermes_common/src/hermes_function.cpp \
                 ../hermes_common/src/third_party_codes/trilinos-teuchos/Teuchos_stacktrace.cpp \
                 ../hermes_common/src/solvers/dpinterface.cpp \
                 ../hermes_common/src/solvers/linear_solver.cpp \
@@ -62,17 +63,19 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/function/exact_solution.cpp \
                 src/function/solution.cpp  \
                 src/function/filter.cpp \
-                src/function/hermes_function.cpp \
-                src/mesh/refmap.cpp  \
                 src/mesh/curved.cpp \
-                src/mesh/refinement_type.cpp  \
-                src/mesh/element_to_refine.cpp \
-                src/mesh/exodusii.cpp  \
-                src/mesh/hash.cpp  \
-                src/mesh/h2d_reader.cpp \
-                src/mesh/mesh.cpp \
-                src/mesh/traverse.cpp \
+                src/mesh/hash.cpp \
                 src/mesh/mesh_data.cpp \
+                src/mesh/mesh_reader_exodusii.cpp \
+                src/mesh/mesh_reader_h2d_xml.cpp \
+                src/mesh/refinement_type.cpp \
+                src/mesh/traverse.cpp \
+                src/mesh/element_to_refine.cpp \
+                src/mesh/mesh.cpp \
+                src/mesh/mesh_h2d_xml.cpp \
+                src/mesh/mesh_reader_h2d.cpp \
+                src/mesh/nurbs.cpp \
+                src/mesh/refmap.cpp \
                 src/quadrature/limit_order.cpp \
                 src/quadrature/quad_std.cpp \
                 src/refinement_selectors/selector.cpp  \
@@ -116,7 +119,8 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/hermes2d_common_defs.cpp   \
                 src/discrete_problem.cpp \
                 src/runge_kutta.cpp \
-                src/spline.cpp \
+                src/spline.cpp
+
 #                src/weakform_library/weakforms_elasticity.cpp \
 #                src/weakform_library/weakforms_h1.cpp \
 #                src/weakform_library/weakforms_hcurl.cpp \
@@ -174,3 +178,4 @@ macx-g++ {
     LIBS += -lamd
     LIBS += -lblas
 }
+

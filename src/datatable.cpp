@@ -365,7 +365,7 @@ Hermes::Ord DataTable::derivative(Hermes::Ord key)
 double DataTable::value_spline(double key)
 {
     if (m_data && m_data->next)
-        return m_spline->get_value(key);
+        return m_spline->value(key);
     else
         return 0.0;
 }
@@ -379,7 +379,7 @@ double DataTable::derivative_spline(double key)
 {
     if (m_data && m_data->next)
     {
-        return m_spline->get_derivative(key);
+        return m_spline->derivative(key);
     }
     else
         return 0.0;

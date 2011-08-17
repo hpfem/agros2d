@@ -79,6 +79,9 @@ namespace Hermes
       matrix_buffer_dim = 0;
       have_matrix = false;
 
+      cache_for_adaptivity = false;
+      temp_cache_for_adaptivity = false;
+
       // Initialize precalc shapesets according to spaces provided.
       pss = new PrecalcShapeset*[wf->get_neq()];
 
@@ -122,6 +125,100 @@ namespace Hermes
         for(unsigned int i = 0; i < wf->get_neq(); i++)
           delete pss[i];
         delete [] pss;
+      }
+      if(cache_for_adaptivity)
+      {
+        // Matrix.
+        for(unsigned int i = 0; i < this->spaces.size(); i++)
+        {
+          for(unsigned int j = 0; j < this->spaces.size(); j++)
+          {
+            for(int k = 0; k <= this->spaces[i]->get_mesh()->get_max_element_id(); k++)
+              std::free(this->assembling_caches.previous_reference_dp_cache_matrix[i][j][k]);
+            std::free(this->assembling_caches.previous_reference_dp_cache_matrix[i][j]);
+          }
+          delete [] this->assembling_caches.previous_reference_dp_cache_matrix[i];
+          std::free(this->assembling_caches.element_reassembled_matrix[i]);
+        }
+        delete [] this->assembling_caches.previous_reference_dp_cache_matrix;
+
+        // Vector.
+        for(unsigned int i = 0; i < this->spaces.size(); i++)
+        {
+          for(int j = 0; j <= this->spaces[i]->get_mesh()->get_max_element_id(); j++)
+              std::free(this->assembling_caches.previous_reference_dp_cache_vector[i][j]);
+          std::free(this->assembling_caches.previous_reference_dp_cache_vector[i]);
+          std::free(this->assembling_caches.element_reassembled_vector[i]);
+        }
+        delete [] this->assembling_caches.previous_reference_dp_cache_vector;
+
+        // Spaces.
+        for(unsigned int space_i = 0; space_i < this->assembling_caches.stored_spaces_for_adaptivity.size(); space_i++)
+        {   
+          delete this->assembling_caches.stored_spaces_for_adaptivity.at(space_i)->get_mesh();
+          delete this->assembling_caches.stored_spaces_for_adaptivity.at(space_i);
+        }
+      }
+    }
+
+    template<typename Scalar>
+    void DiscreteProblem<Scalar>::set_adaptivity_cache()
+    {
+      cache_for_adaptivity = true;
+      
+      // Matrix.
+      this->assembling_caches.previous_reference_dp_cache_matrix = new Scalar****[this->spaces.size()];
+      this->assembling_caches.cache_matrix_size = new unsigned int*[this->spaces.size()];
+      this->assembling_caches.element_reassembled_matrix = new bool*[this->spaces.size()];
+      // Vector.
+      this->assembling_caches.previous_reference_dp_cache_vector = new Scalar**[this->spaces.size()];
+      this->assembling_caches.cache_vector_size = new unsigned int[this->spaces.size()];
+      this->assembling_caches.element_reassembled_vector = new bool*[this->spaces.size()];
+
+      for(unsigned int i = 0; i < this->spaces.size(); i++)
+      {
+        // Matrix.
+        this->assembling_caches.element_reassembled_matrix[i] = (bool*) malloc(sizeof(bool) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+
+        this->assembling_caches.previous_reference_dp_cache_matrix[i] = new Scalar***[this->spaces.size()];
+          this->assembling_caches.cache_matrix_size[i] = new unsigned int[this->spaces.size()];
+        for(unsigned int j = 0; j < this->spaces.size(); j++)
+        {
+          this->assembling_caches.cache_matrix_size[i][j] = this->spaces[i]->get_mesh()->get_max_element_id() + 1;
+          this->assembling_caches.previous_reference_dp_cache_matrix[i][j] = (Scalar***) malloc(sizeof(Scalar**) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+          for(int k = 0; k <= this->spaces[i]->get_mesh()->get_max_element_id(); k++)
+            this->assembling_caches.previous_reference_dp_cache_matrix[i][j][k] = NULL;
+        }
+
+        // Vector.
+        this->assembling_caches.element_reassembled_vector[i] = (bool*) malloc(sizeof(bool) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+
+        this->assembling_caches.previous_reference_dp_cache_vector[i] = (Scalar**) malloc(sizeof(Scalar*) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+        this->assembling_caches.cache_vector_size[i] = this->spaces[i]->get_mesh()->get_max_element_id() + 1;
+        for(int j = 0; j <= this->spaces[i]->get_mesh()->get_max_element_id(); j++)
+          this->assembling_caches.previous_reference_dp_cache_vector[i][j] = NULL;
+      }
+    }
+    
+    template<typename Scalar>
+    void DiscreteProblem<Scalar>::temp_disable_adaptivity_cache()
+    {
+      if(this->cache_for_adaptivity)
+      {
+        this->temp_cache_for_adaptivity = true;
+        this->cache_for_adaptivity = false;
+        return;
+      }
+      this->temp_cache_for_adaptivity = false;
+    }
+
+    template<typename Scalar>
+    void DiscreteProblem<Scalar>::temp_enable_adaptivity_cache()
+    {
+      if(this->temp_cache_for_adaptivity)
+      {
+        this->cache_for_adaptivity = true;
+        this->temp_cache_for_adaptivity = false;
       }
     }
 
@@ -308,7 +405,7 @@ namespace Hermes
           // Obtain assembly lists for the element at all spaces.
           /// \todo do not get the assembly list again if the element was not changed.
           for (unsigned int i = 0; i < wf->get_neq(); i++)
-            if (e[i] != NULL) 
+            if (e[i] != NULL)
               spaces[i]->get_element_assembly_list(e[i], &(al[i]));
 
           if(is_DG)
@@ -445,6 +542,79 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    void DiscreteProblem<Scalar>::set_spaces(Hermes::vector<Space<Scalar>*> spaces)
+    {
+      if(this->spaces.size() != spaces.size())
+        error("DiscreteProblem can not change the number of spaces.");
+
+      // After derefinement, the spaces' sizes can go down, in this case there is no sense in reallocing stuff, freeing and allocating again is the way.
+      bool smaller_spaces = false;
+      for(unsigned int i = 0; i < spaces.size(); i++)
+        if(this->spaces[i]->get_num_dofs() > spaces[i]->get_num_dofs())
+        {
+          smaller_spaces = true;
+          break;
+        }
+
+      this->spaces = spaces;
+      this->ndof = Space<Scalar>::get_num_dofs(spaces);
+      if(this->cache_for_adaptivity)
+      {
+        for(unsigned int i = 0; i < this->spaces.size(); i++)
+        {
+          if(smaller_spaces)
+          {
+            std::free(this->assembling_caches.element_reassembled_matrix[i]);
+            this->assembling_caches.element_reassembled_matrix[i] = (bool*) malloc(sizeof(bool) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+          }
+          else
+            this->assembling_caches.element_reassembled_matrix[i] = (bool*) realloc(this->assembling_caches.element_reassembled_matrix[i], sizeof(bool) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+          for(unsigned int j = 0; j < this->spaces.size(); j++)
+          {
+            if(smaller_spaces)
+            {
+              std::free(this->assembling_caches.previous_reference_dp_cache_matrix[i][j]);
+              this->assembling_caches.previous_reference_dp_cache_matrix[i][j] = (Scalar***) malloc(sizeof(Scalar**) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+            }
+            else
+              this->assembling_caches.previous_reference_dp_cache_matrix[i][j] = (Scalar***) realloc(this->assembling_caches.previous_reference_dp_cache_matrix[i][j], sizeof(Scalar**) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+            for(int k = this->assembling_caches.cache_matrix_size[i][j]; k <= this->spaces[i]->get_mesh()->get_max_element_id(); k++)
+              this->assembling_caches.previous_reference_dp_cache_matrix[i][j][k] = NULL;
+            this->assembling_caches.cache_matrix_size[i][j] = this->spaces[i]->get_mesh()->get_max_element_id() + 1;
+          }
+
+          // Vector.
+          if(smaller_spaces)
+          {
+            std::free(this->assembling_caches.element_reassembled_vector[i]);
+            this->assembling_caches.element_reassembled_vector[i] = (bool*) malloc(sizeof(bool) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+          }
+          else
+            this->assembling_caches.element_reassembled_vector[i] = (bool*) realloc(this->assembling_caches.element_reassembled_vector[i], sizeof(bool) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+          if(smaller_spaces)
+            {
+              std::free(this->assembling_caches.previous_reference_dp_cache_vector[i]);
+              this->assembling_caches.previous_reference_dp_cache_vector[i] = (Scalar**) malloc(sizeof(Scalar**) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+            }
+          else
+            this->assembling_caches.previous_reference_dp_cache_vector[i] = (Scalar**) realloc(this->assembling_caches.previous_reference_dp_cache_vector[i], sizeof(Scalar*) * (this->spaces[i]->get_mesh()->get_max_element_id() + 1));
+          for(int j = this->assembling_caches.cache_vector_size[i]; j <= this->spaces[i]->get_mesh()->get_max_element_id(); j++)
+              this->assembling_caches.previous_reference_dp_cache_vector[i][j] = NULL;
+          this->assembling_caches.cache_vector_size[i] = this->spaces[i]->get_mesh()->get_max_element_id() + 1;
+        }
+      }
+      this->invalidate_matrix();
+    }
+
+    template<typename Scalar>
+    void DiscreteProblem<Scalar>::set_spaces(Space<Scalar>* space)
+    {
+      Hermes::vector<Space<Scalar>*> spaces;
+      spaces.push_back(space);
+      set_spaces(spaces);
+    }
+
+    template<typename Scalar>
     void DiscreteProblem<Scalar>::assemble_sanity_checks(Table* block_weights)
     {
       _F_;
@@ -472,9 +642,6 @@ namespace Hermes
           u_ext.push_back(external_solution_i);
         }
       }
-      else 
-        for (unsigned int i = 0; i < wf->get_neq(); i++)
-          u_ext.push_back(new Solution<Scalar>(spaces[i]->get_mesh(), 0.0));
     }
 
     template<typename Scalar>
@@ -543,11 +710,21 @@ namespace Hermes
       if (mat != NULL)
         get_matrix_buffer(9);
 
+      if(cache_for_adaptivity)
+      {
+        for(unsigned int space_i = 0; space_i < this->spaces.size(); space_i++)
+          for(int i = 0; i <= this->spaces[space_i]->get_mesh()->get_max_element_id(); i++)
+          {
+            this->assembling_caches.element_reassembled_matrix[space_i][i] = false;
+            this->assembling_caches.element_reassembled_vector[space_i][i] = false;
+          }
+      }
+
       // Create assembling stages.
       Hermes::vector<Stage<Scalar> > stages = Hermes::vector<Stage<Scalar> >();
       bool want_matrix = (mat != NULL);
       bool want_vector = (rhs != NULL);
-      wf->get_stages(spaces, u_ext, stages, want_matrix, want_vector);
+      wf->get_stages(spaces, u_ext, stages, want_matrix, want_vector, cache_for_adaptivity);
 
       // Time measurement.
       profiling.assemble_util_time.tick();
@@ -585,6 +762,19 @@ namespace Hermes
       for(typename Hermes::vector<Solution<Scalar>*>::iterator it = u_ext.begin(); it != u_ext.end(); it++)
         delete *it;
 
+      // Handle the previous spaces when caching previous reference spaces integrals.
+      if(this->cache_for_adaptivity)
+      {
+        if(this->assembling_caches.stored_spaces_for_adaptivity.size() == 0 || this->assembling_caches.stored_spaces_for_adaptivity[0]->get_seq() != this->spaces[0]->get_seq())
+        {
+          for(unsigned int space_i = 0; space_i < this->assembling_caches.stored_spaces_for_adaptivity.size(); space_i++)
+          {   
+            delete this->assembling_caches.stored_spaces_for_adaptivity.at(space_i)->get_mesh();
+            delete this->assembling_caches.stored_spaces_for_adaptivity.at(space_i);
+          }
+          this->assembling_caches.stored_spaces_for_adaptivity = this->spaces;
+        }
+      }
       // Time measurement.
       profiling.total_time.tick();
       profiling.current_record.total = profiling.total_time.last();
@@ -670,9 +860,160 @@ namespace Hermes
         // The proper sub-element mappings to all the functions of
         // this stage is supplied by the function Traverse::get_next_state()
         // called in the while loop.
-        assemble_one_state(stage, mat, rhs, force_diagonal_blocks, 
-        block_weights, spss, refmap, 
-        u_ext, e, bnd, surf_pos, trav.get_base());
+      {
+        if(this->cache_for_adaptivity)
+        {
+          bool stored_value = true;
+
+          // Check that this is the first assembly of the matrix in this adaptivity step.
+          // If not, we have to calculate the matrix again.
+          if(this->assembling_caches.stored_spaces_for_adaptivity.size() > 0)
+          {
+            if(spaces[0]->get_seq() == this->assembling_caches.stored_spaces_for_adaptivity[0]->get_seq())
+              stored_value = false;
+          }
+          else
+            stored_value = false;
+
+          // Test if we want to use the stored value (when the last adaptation did not change this element in any space)
+          for (unsigned int i = 0; i < stage.idx.size(); i++)
+            if(spaces[stage.idx[i]]->edata[e[i]->id].changed_in_last_adaptation)
+              stored_value = false;
+
+          if(stored_value)
+          {
+            // We want the current assembly lists in order to know where in the matrix to insert.
+            AsmList<Scalar>* al = new AsmList<Scalar>[stage.idx.size()];
+
+            // Also we need to find out the id of the element in the previous reference mesh.
+            // So we want to know what son of the parent of e[i] is e[i]. Because this
+            // is the only same thing in the current and previous reference meshes.
+            unsigned int *son = new unsigned int[stage.idx.size()];
+            for (unsigned int i = 0; i < stage.idx.size(); i++)
+            {
+              spaces[stage.idx[i]]->get_element_assembly_list(e[i], &al[i]);
+              for(unsigned int sons_i = 0; sons_i < 4; sons_i++)
+                if(e[i]->parent->sons[sons_i] == e[i])
+                  son[i] = sons_i;
+            }
+
+            // Previous reference solution assembly lists.
+            AsmList<Scalar>* al_prev = new AsmList<Scalar>[stage.idx.size()];
+            Element** e_prev = new Element*[stage.idx.size()];
+            for (unsigned int i = 0; i < stage.idx.size(); i++)
+            {
+              if(stored_value)
+              {
+                e_prev[i] = this->assembling_caches.stored_spaces_for_adaptivity[stage.idx[i]]->get_mesh()->get_element(e[i]->parent->id)->sons[son[i]];
+
+                // If we have already reassembled this element.
+                if( (mat != NULL && this->assembling_caches.element_reassembled_matrix[i][e_prev[i]->id])
+                    ||
+                    (rhs != NULL && this->assembling_caches.element_reassembled_vector[i][e_prev[i]->id]) )
+                {
+                  stored_value = false;
+                  break;
+                }
+
+                this->assembling_caches.stored_spaces_for_adaptivity[stage.idx[i]]->get_element_assembly_list(e_prev[i], &al_prev[i]);
+                if(al[i].cnt != al_prev[i].cnt)
+                  stored_value = false;
+                for(unsigned int ai = 0; ai < al[i].cnt; ai++)
+                {
+                  if(al[i].idx[ai] != al_prev[i].idx[ai] || (al[i].dof[ai] != al_prev[i].dof[ai] && al[i].dof[ai] < 0))
+                  {
+                    stored_value = false;
+                    break;
+                  }
+                }
+              }
+            }
+            if(stored_value)
+            {
+              for (unsigned int i = 0; i < stage.idx.size(); i++)
+              {
+                if(mat != NULL)
+                {
+                  for (unsigned int j = 0; j < stage.idx.size(); j++)
+                  {
+                    for(unsigned int ai = 0; ai < al[i].cnt; ai++)
+                      for(unsigned int aj = 0; aj < al[j].cnt; aj++)
+                        if(al[i].dof[ai] > -1 && al[j].dof[aj] > -1)
+                          mat->add(al[i].dof[ai], al[j].dof[aj], 
+                            this->assembling_caches.previous_reference_dp_cache_matrix[stage.idx[i]][stage.idx[j]][e_prev[i]->id][ai][aj]);
+                          
+                    if(e[i]->id != e_prev[i]->id)
+                    {
+                      if(this->assembling_caches.previous_reference_dp_cache_matrix[stage.idx[i]][stage.idx[j]][e[i]->id] != NULL)
+                        std::free(this->assembling_caches.previous_reference_dp_cache_matrix[stage.idx[i]][stage.idx[j]][e[i]->id]);
+                      this->assembling_caches.previous_reference_dp_cache_matrix[stage.idx[i]][stage.idx[j]][e[i]->id] = new_matrix_malloc<Scalar>(al[i].cnt, al[j].cnt);
+          
+                      for (unsigned int j = 0; j < stage.idx.size(); j++)
+                        for(unsigned int ai = 0; ai < al[i].cnt; ai++)
+                          for(unsigned int aj = 0; aj < al[j].cnt; aj++)
+                            if(al[i].dof[ai] > -1 && al[j].dof[aj] > -1)
+                              this->assembling_caches.previous_reference_dp_cache_matrix[stage.idx[i]][stage.idx[j]][e[i]->id][ai][aj] = 
+                                this->assembling_caches.previous_reference_dp_cache_matrix[stage.idx[i]][stage.idx[j]][e_prev[i]->id][ai][aj];
+                    }
+                    this->assembling_caches.element_reassembled_matrix[i][e[i]->id] = true;
+                  }
+                }
+                if(rhs != NULL)
+                {
+                  for(unsigned int ai = 0; ai < al[i].cnt; ai++)
+                    if(al[i].dof[ai] > -1)
+                      rhs->add(al[i].dof[ai], this->assembling_caches.previous_reference_dp_cache_vector[stage.idx[i]][e_prev[i]->id][ai]);
+                  
+                  if(e[i]->id != e_prev[i]->id)
+                  {
+                    if(this->assembling_caches.previous_reference_dp_cache_vector[stage.idx[i]][e[i]->id] != NULL)
+                      std::free(this->assembling_caches.previous_reference_dp_cache_vector[stage.idx[i]][e[i]->id]);
+                    this->assembling_caches.previous_reference_dp_cache_vector[stage.idx[i]][e[i]->id] = (Scalar*) malloc(sizeof(Scalar) * al[i].cnt);
+
+                    for(unsigned int ai = 0; ai < al[i].cnt; ai++)
+                      if(al[i].dof[ai] > -1)
+                        this->assembling_caches.previous_reference_dp_cache_vector[stage.idx[i]][e[i]->id][ai] =
+                          this->assembling_caches.previous_reference_dp_cache_vector[stage.idx[i]][e_prev[i]->id][ai];
+                  }
+                  this->assembling_caches.element_reassembled_vector[i][e[i]->id] = true;
+                }
+              }
+            }
+            delete [] al;
+            delete [] al_prev;
+          }
+          if(!stored_value)
+          {
+            for (unsigned int i = 0; i < stage.idx.size(); i++)
+            {
+              if(mat != NULL)
+                for (unsigned int j = 0; j < stage.idx.size(); j++)
+                  if(this->assembling_caches.previous_reference_dp_cache_matrix[stage.idx[i]][stage.idx[j]][e[i]->id] != NULL)
+                  {
+                    std::free(this->assembling_caches.previous_reference_dp_cache_matrix[stage.idx[i]][stage.idx[j]][e[i]->id]);
+                    this->assembling_caches.previous_reference_dp_cache_matrix[stage.idx[i]][stage.idx[j]][e[i]->id] = NULL;
+                    this->assembling_caches.element_reassembled_matrix[i][e[i]->id] = true;
+                  }
+              if(rhs != NULL)
+                if(this->assembling_caches.previous_reference_dp_cache_vector[stage.idx[i]][e[i]->id] != NULL)
+                {
+                  std::free(this->assembling_caches.previous_reference_dp_cache_vector[stage.idx[i]][e[i]->id]);
+                  this->assembling_caches.previous_reference_dp_cache_vector[stage.idx[i]][e[i]->id] = NULL;
+                  this->assembling_caches.element_reassembled_vector[i][e[i]->id] = true;
+                }
+            }
+            assemble_one_state(stage, mat, rhs, force_diagonal_blocks, 
+            block_weights, spss, refmap, 
+            u_ext, e, bnd, surf_pos, trav.get_base());
+          }
+        }
+        else
+        {
+          assemble_one_state(stage, mat, rhs, force_diagonal_blocks, 
+          block_weights, spss, refmap, 
+          u_ext, e, bnd, surf_pos, trav.get_base());
+        }
+      }
 
       if (mat != NULL)
         mat->finish();
@@ -920,7 +1261,40 @@ namespace Hermes
         }
         // Insert the local stiffness matrix into the global one.
         if (mat != NULL)
+        {
           mat->add(al[m]->cnt, al[n]->cnt, local_stiffness_matrix, al[m]->dof, al[n]->dof);
+          if(this->cache_for_adaptivity)
+          {
+            Scalar** matrix = NULL;
+            if(this->assembling_caches.previous_reference_dp_cache_matrix[m][n][refmap[m]->get_active_element()->id] == NULL)
+            {
+              // This also zeroes the matrix.
+              matrix = new_matrix_malloc<Scalar>(al[m]->cnt, al[n]->cnt);
+              this->assembling_caches.previous_reference_dp_cache_matrix[m][n][refmap[m]->get_active_element()->id] = matrix;
+            }
+            else
+              matrix = this->assembling_caches.previous_reference_dp_cache_matrix[m][n][refmap[m]->get_active_element()->id];
+            for (unsigned int i = 0; i < al[m]->cnt; i++)
+              for (unsigned int j = 0; j < al[n]->cnt; j++)
+                if(al[m]->dof[i] >=0 && al[n]->dof[j] >=0)
+                  matrix[i][j] += local_stiffness_matrix[i][j];
+            if(sym)
+            {
+              if(this->assembling_caches.previous_reference_dp_cache_matrix[n][m][refmap[n]->get_active_element()->id] == NULL)
+              {
+                // This also zeroes the matrix.
+                matrix = new_matrix_malloc<Scalar>(al[n]->cnt, al[m]->cnt);
+                this->assembling_caches.previous_reference_dp_cache_matrix[n][m][refmap[n]->get_active_element()->id] = matrix;
+              }
+              else
+                matrix = this->assembling_caches.previous_reference_dp_cache_matrix[n][m][refmap[n]->get_active_element()->id];
+              for (unsigned int i = 0; i < al[m]->cnt; i++)
+                for (unsigned int j = 0; j < al[n]->cnt; j++)
+                  if(al[m]->dof[i] >=0 && al[n]->dof[j] >=0)
+                    matrix[j][i] += local_stiffness_matrix[j][i];
+            }
+          }
+        }
 
         // Insert also the off-diagonal (anti-)symmetric block, if required.
         if (tra)
@@ -931,7 +1305,25 @@ namespace Hermes
           transpose(local_stiffness_matrix, al[m]->cnt, al[n]->cnt);
 
           if (mat != NULL)
+          {
             mat->add(al[n]->cnt, al[m]->cnt, local_stiffness_matrix, al[n]->dof, al[m]->dof);
+            if(this->cache_for_adaptivity)
+            {
+              Scalar** matrix = NULL;
+              if(this->assembling_caches.previous_reference_dp_cache_matrix[n][m][refmap[n]->get_active_element()->id] == NULL)
+              {
+                // This also zeroes the matrix.
+                matrix = new_matrix_malloc<Scalar>(al[n]->cnt, al[m]->cnt);
+                this->assembling_caches.previous_reference_dp_cache_matrix[n][m][refmap[n]->get_active_element()->id] = matrix;
+              }
+              else
+                matrix = this->assembling_caches.previous_reference_dp_cache_matrix[n][m][refmap[n]->get_active_element()->id];
+              for (unsigned int i = 0; i < al[m]->cnt; i++)
+                for (unsigned int j = 0; j < al[n]->cnt; j++)
+                  if(al[m]->dof[i] >=0 && al[n]->dof[j] >=0)
+                    matrix[j][i] += local_stiffness_matrix[j][i];
+            }
+          }
         }
       }
     }
@@ -1079,6 +1471,18 @@ namespace Hermes
         }
         if (assemble_this_form == false) continue;
 
+        Scalar* vector = NULL;
+        if(this->cache_for_adaptivity)
+        {
+          if(this->assembling_caches.previous_reference_dp_cache_vector[m][refmap[m]->get_active_element()->id] == NULL)
+          {
+            vector = (Scalar*) malloc(al[m]->cnt * sizeof(Scalar));
+            this->assembling_caches.previous_reference_dp_cache_vector[m][refmap[m]->get_active_element()->id] = vector;
+            memset(vector, 0, al[m]->cnt * sizeof(Scalar));
+          }
+          else
+            vector = this->assembling_caches.previous_reference_dp_cache_vector[m][refmap[m]->get_active_element()->id];
+        }
         for (unsigned int i = 0; i < al[m]->cnt; i++)
         {
           if (al[m]->dof[i] < 0) continue;
@@ -1089,7 +1493,11 @@ namespace Hermes
           // multiplying the form is nonzero.
           if (std::abs(al[m]->coef[i]) > 1e-12)
           {
-            rhs->add(al[m]->dof[i], eval_form(vfv, u_ext, spss[m], refmap[m]) * al[m]->coef[i]);
+            Scalar result = eval_form(vfv, u_ext, spss[m], refmap[m]) * al[m]->coef[i];
+            rhs->add(al[m]->dof[i], result);
+            
+            if(this->cache_for_adaptivity)
+              vector[i] += result;
           }
         }
       }
@@ -1521,6 +1929,7 @@ namespace Hermes
         if(node->get_right_son() != NULL)
           traverse_multimesh_tree(node->get_right_son(), running_transformations);
         // Delete the vector prepared by the last accessed leaf.
+        delete running_transformations.back();
         running_transformations.pop_back();
         return;
       }
@@ -1648,7 +2057,9 @@ namespace Hermes
         ns->central_el->get_mode());
 
       // Delete the last neighbors' info (this is a dead end, caused by the function traverse_multimesh_subtree.
+      delete running_central_transformations.back();
       running_central_transformations.pop_back();
+      delete running_neighbor_transformations.back();
       running_neighbor_transformations.pop_back();
 
       // Insert new neighbors.
@@ -1656,11 +2067,22 @@ namespace Hermes
       {
         ns->neighbors.push_back(neighbor);
         ns->neighbor_edges.push_back(edge_info);
-        ns->central_transformations.add(new typename NeighborSearch<Scalar>::Transformations(*running_central_transformations[i]), ns->n_neighbors);
-        ns->neighbor_transformations.add(new typename NeighborSearch<Scalar>::Transformations(*running_neighbor_transformations[i]), ns->n_neighbors);
+        
+        if (!ns->central_transformations.present(ns->n_neighbors))
+          ns->central_transformations.add(new typename NeighborSearch<Scalar>::Transformations, ns->n_neighbors);
+        if (!ns->neighbor_transformations.present(ns->n_neighbors))
+          ns->neighbor_transformations.add(new typename NeighborSearch<Scalar>::Transformations, ns->n_neighbors);
+        ns->central_transformations.get(ns->n_neighbors)->copy_from(*running_central_transformations[i]);
+        ns->neighbor_transformations.get(ns->n_neighbors)->copy_from(*running_neighbor_transformations[i]);
+        
         ns->n_neighbors++;
       }
-
+      
+      for(unsigned int i = 0; i < running_central_transformations.size(); i++)
+        delete running_central_transformations[i];
+      for(unsigned int i = 0; i < running_neighbor_transformations.size(); i++)
+        delete running_neighbor_transformations[i];
+      
       // Return the number of neighbors deleted.
       return -1;
     }
@@ -2537,50 +2959,19 @@ namespace Hermes
       _F_;
       Scalar result = 0;
 
-      if (mfv->adapt_eval == false)
-      {
-        // Time measurement.
-        profiling.assemble_util_time.tick();
-        profiling.eval_util_time.reset();
+      // Time measurement.
+      profiling.assemble_util_time.tick();
+      profiling.eval_util_time.reset();
 
-        // Determine the integration order by parsing the form.
-        int order = calc_order_matrix_form_vol(mfv, u_ext, fu, fv, ru, rv);
-        // Perform non-adaptive numerical quadrature of order "order".
-        result = eval_form_subelement(order, mfv, u_ext, fu, fv, ru, rv);
+      // Determine the integration order by parsing the form.
+      int order = calc_order_matrix_form_vol(mfv, u_ext, fu, fv, ru, rv);
+      // Perform non-adaptive numerical quadrature of order "order".
+      result = eval_form_subelement(order, mfv, u_ext, fu, fv, ru, rv);
 
-        // Time measurement.
-        profiling.eval_util_time.tick();
-        profiling.current_record.form_preparation_eval += profiling.eval_util_time.accumulated();
-        profiling.assemble_util_time.tick(Hermes::HERMES_SKIP);
-      }
-      else 
-      {
-        // Perform adaptive numerical quadrature starting with order = 2.
-        // \todo The choice of initial order matters a lot for efficiency,
-        //       this needs more research.
-        Shapeset* fu_shapeset = fu->get_shapeset();
-        Shapeset* fv_shapeset = fv->get_shapeset();
-        int fu_index = fu->get_active_shape();
-        int fv_index = fv->get_active_shape();
-        int fu_order = fu_shapeset->get_order(fu_index);
-        int fv_order = fv_shapeset->get_order(fv_index);
-        int fu_order_h = H2D_GET_H_ORDER(fu_order);
-        int fu_order_v = H2D_GET_V_ORDER(fu_order);
-        int fv_order_h = H2D_GET_H_ORDER(fv_order);
-        int fv_order_v = H2D_GET_V_ORDER(fv_order);
-
-        // FIXME - this needs more research.
-        int order_init = (fu_order_h + fu_order_v) / 2 + (fv_order_h + fv_order_v) / 2;
-
-        // Calculate initial value of the form on coarse element.
-        Scalar result_init = eval_form_subelement(order_init, mfv, u_ext, fu, fv, ru, rv);
-
-        //printf("Eval_form: initial result = %g\n", result_init);
-
-        // Calculate the value of the form using adaptive quadrature.    
-        result = eval_form_adaptive(order_init, result_init,
-          mfv, u_ext, fu, fv, ru, rv);
-      }
+      // Time measurement.
+      profiling.eval_util_time.tick();
+      profiling.current_record.form_preparation_eval += profiling.eval_util_time.accumulated();
+      profiling.assemble_util_time.tick(Hermes::HERMES_SKIP);
 
       return result;
     }
@@ -2865,7 +3256,7 @@ namespace Hermes
 
       // Add the previous time level solution previously inserted at the back of ext.
       if(RungeKutta)
-        for(unsigned int ext_i = 0; ext_i < this->RK_original_spaces_count; ext_i++)
+        for(int ext_i = 0; ext_i < this->RK_original_spaces_count; ext_i++)
           prev[ext_i]->add(*ext->fn[mfv->ext.size() - this->RK_original_spaces_count + ext_i]);
 
       // The actual calculation takes place here.
@@ -2897,91 +3288,6 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Scalar DiscreteProblem<Scalar>::eval_form_adaptive(int order_init, Scalar result_init,
-      MatrixFormVol<Scalar> *mfv, 
-      Hermes::vector<Solution<Scalar>*> u_ext,
-      PrecalcShapeset *fu, PrecalcShapeset *fv, 
-      RefMap *ru, RefMap *rv)
-    {
-      // Initialize set of all transformable entities.
-      std::set<Transformable *> transformable_entities;
-      transformable_entities.insert(fu);
-      transformable_entities.insert(fv);
-      transformable_entities.insert(ru);
-      transformable_entities.insert(rv);
-      transformable_entities.insert(mfv->ext.begin(), mfv->ext.end());
-      transformable_entities.insert(u_ext.begin(), u_ext.end());
-
-      Scalar result = 0;
-
-      int order_increase = mfv->adapt_order_increase;
-
-      Scalar subs_value[4];
-
-      Scalar result_current_subelements = 0;
-
-      // Clear of the geometry cache for the current active subelement. This needs to be done before AND after
-      // as the further division to subelements must be only local.
-      this->delete_single_geom_cache(order_init + order_increase);
-      for(unsigned int sons_i = 0; sons_i < 4; sons_i++)
-      {
-        // Push the transformation to the current son to all functions and reference mappings involved.
-        Transformable::push_transforms(transformable_entities, sons_i);
-
-        // The actual calculation.
-        subs_value[sons_i] = eval_form_subelement(order_init + order_increase, mfv, 
-          u_ext, fu, fv, ru, rv);
-
-        // Clear of the geometry cache for the current active subelement.
-        this->delete_single_geom_cache(order_init + order_increase);
-
-        //printf("subs_value[%d] = %g\n", sons_i, subs_value[sons_i]);
-
-        result_current_subelements += subs_value[sons_i];
-
-        // Reset the transformation.
-        Transformable::pop_transforms(transformable_entities);
-      }
-
-      // Tolerance checking.
-      // First, if the result is negligible.
-      if (std::abs(result_current_subelements) < 1e-6)
-        return result_current_subelements;
-
-      // Relative error.
-      double rel_error = std::abs(result_current_subelements - result_init) / std::abs(result_current_subelements);
-
-      if (rel_error < mfv->adapt_rel_error_tol)
-        // Relative error in tolerance.
-        return result_current_subelements;
-      else 
-      {
-        Scalar result_recursion = 0;
-        // Relative error exceeds allowed tolerance: Call the function 
-        // eval_form_adaptive() in each subelement, with initial values
-        // subs_value[sons_i].
-
-        // Call the function eval_form_adaptive() recursively in all sons.
-        for(unsigned int sons_i = 0; sons_i < 4; sons_i++)
-        {
-          // Push the transformation to the current son to all functions and reference mappings involved.
-          Transformable::push_transforms(transformable_entities, sons_i);
-
-          // Recursion.
-          subs_value[sons_i] = eval_form_adaptive(order_init + order_increase, subs_value[sons_i],
-            mfv, u_ext, fu, fv, ru, rv);
-
-          result_recursion += subs_value[sons_i];
-
-          // Reset the transformation.
-          Transformable::pop_transforms(transformable_entities);
-        }
-
-        return result_recursion;
-      }
-    }
-
-    template<typename Scalar>
     Scalar DiscreteProblem<Scalar>::eval_form(VectorFormVol<Scalar> *vfv, 
       Hermes::vector<Solution<Scalar>*> u_ext, 
       PrecalcShapeset *fv, RefMap *rv)
@@ -2990,10 +3296,7 @@ namespace Hermes
 
       Scalar result = 0;
 
-      if (vfv->adapt_eval == false)
-      {
-
-        // Time measurement.
+     // Time measurement.
         profiling.assemble_util_time.tick();
         profiling.eval_util_time.reset();
 
@@ -3006,31 +3309,7 @@ namespace Hermes
         profiling.eval_util_time.tick();
         profiling.current_record.form_preparation_eval += profiling.eval_util_time.accumulated();
         profiling.assemble_util_time.tick(Hermes::HERMES_SKIP);
-      }
-      else 
-      {
-        // Perform adaptive numerical quadrature starting with order = 2.
-        // \todo The choice of initial order matters a lot for efficiency,
-        //       this needs more research.
-        Shapeset* fv_shapeset = fv->get_shapeset();
-        int fv_index = fv->get_active_shape();
-        int fv_order = fv_shapeset->get_order(fv_index);
-        int fv_order_h = H2D_GET_H_ORDER(fv_order);
-        int fv_order_v = H2D_GET_V_ORDER(fv_order);
-
-        // FIXME - this needs more research.
-        int order_init = (fv_order_h + fv_order_v) / 2;
-
-        // Calculate initial value of the form on coarse element.
-        Scalar result_init = eval_form_subelement(order_init, vfv, u_ext, fv, rv);
-
-        //printf("Eval_form: initial result = %g\n", result_init);
-
-        // Calculate the value of the form using adaptive quadrature.    
-        result = eval_form_adaptive(order_init, result_init,
-          vfv, u_ext, fv, rv);
-      }
-
+      
       return result;
     }
     template<typename Scalar>
@@ -3313,7 +3592,7 @@ namespace Hermes
 
       // Add the previous time level solution previously inserted at the back of ext.
       if(RungeKutta)
-        for(unsigned int ext_i = 0; ext_i < this->RK_original_spaces_count; ext_i++)
+        for(int ext_i = 0; ext_i < this->RK_original_spaces_count; ext_i++)
           prev[ext_i]->add(*ext->fn[vfv->ext.size() - this->RK_original_spaces_count + ext_i]);
 
       // The actual calculation takes place here.
@@ -3345,87 +3624,6 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Scalar DiscreteProblem<Scalar>::eval_form_adaptive(int order_init, Scalar result_init,
-      VectorFormVol<Scalar> *vfv, Hermes::vector<Solution<Scalar>*> u_ext,
-      PrecalcShapeset *fv, RefMap *rv)
-    {
-      // Initialize set of all transformable entities.
-      std::set<Transformable *> transformable_entities;
-      transformable_entities.insert(fv);
-      transformable_entities.insert(rv);
-      transformable_entities.insert(vfv->ext.begin(), vfv->ext.end());
-      transformable_entities.insert(u_ext.begin(), u_ext.end());
-
-      Scalar result = 0;
-
-      int order_increase = vfv->adapt_order_increase;
-
-      Scalar subs_value[4];
-
-      Scalar result_current_subelements = 0;
-
-      // Clear of the geometry cache for the current active subelement. This needs to be done before AND after
-      // as the further division to subelements must be only local.
-      this->delete_single_geom_cache(order_init + order_increase);
-      for(unsigned int sons_i = 0; sons_i < 4; sons_i++)
-      {
-        // Push the transformation to the current son to all functions and reference mappings involved.
-        Transformable::push_transforms(transformable_entities, sons_i);
-
-        // The actual calculation.
-        subs_value[sons_i] = eval_form_subelement(order_init + order_increase, vfv, 
-          u_ext, fv, rv);
-
-        // Clear of the geometry cache for the current active subelement.
-        this->delete_single_geom_cache(order_init + order_increase);
-
-        //printf("subs_value[%d] = %g\n", sons_i, subs_value[sons_i]);
-
-        result_current_subelements += subs_value[sons_i];
-
-        // Reset the transformation.
-        Transformable::pop_transforms(transformable_entities);
-      }
-
-      // Tolerance checking.
-      // First, if the result is negligible.
-      if (std::abs(result_current_subelements) < 1e-6)
-        return result_current_subelements;
-
-      // Relative error.
-      double rel_error = std::abs(result_current_subelements - result_init) / std::abs(result_current_subelements);
-
-      if (rel_error < vfv->adapt_rel_error_tol)
-        // Relative error in tolerance.
-        return result_current_subelements;
-      else 
-      {
-        Scalar result_recursion = 0;
-        // Relative error exceeds allowed tolerance: Call the function 
-        // eval_form_adaptive() in each subelement, with initial values
-        // subs_value[sons_i].
-
-        // Call the function eval_form_adaptive() recursively in all sons.
-        for(unsigned int sons_i = 0; sons_i < 4; sons_i++)
-        {
-          // Push the transformation to the current son to all functions and reference mappings involved.
-          Transformable::push_transforms(transformable_entities, sons_i);
-
-          // Recursion.
-          subs_value[sons_i] = eval_form_adaptive(order_init + order_increase, subs_value[sons_i],
-            vfv, u_ext, fv, rv);
-
-          result_recursion += subs_value[sons_i];
-
-          // Reset the transformation.
-          Transformable::pop_transforms(transformable_entities);
-        }
-
-        return result_recursion;
-      }
-    }
-
-    template<typename Scalar>
     Scalar DiscreteProblem<Scalar>::eval_form(MatrixFormSurf<Scalar> *mfs, 
       Hermes::vector<Solution<Scalar>*> u_ext, 
       PrecalcShapeset *fu, PrecalcShapeset *fv, RefMap *ru, RefMap *rv, SurfPos* surf_pos)
@@ -3433,8 +3631,6 @@ namespace Hermes
       _F_;
       Scalar result = 0;
 
-      if (mfs->adapt_eval == false)
-      {
         // Time measurement.
         profiling.assemble_util_time.tick();
         profiling.eval_util_time.reset();
@@ -3448,25 +3644,7 @@ namespace Hermes
         profiling.eval_util_time.tick();
         profiling.current_record.form_preparation_eval += profiling.eval_util_time.accumulated();
         profiling.assemble_util_time.tick(Hermes::HERMES_SKIP);
-      }
-      else 
-      {
-        // Perform adaptive numerical quadrature starting with order = 2.
-        // \todo The choice of initial order matters a lot for efficiency,
-        //       this needs more research.
-        int fu_order = fu->get_edge_fn_order(surf_pos->surf_num);
-        int fv_order = fv->get_edge_fn_order(surf_pos->surf_num);
-
-        // FIXME - this needs more research.
-        int order_init = fu_order + fv_order;
-
-        // Calculate initial value of the form on coarse element.
-        Scalar result_init = eval_form_subelement(order_init, mfs, u_ext, fu, fv, ru, rv, surf_pos);
-
-        // Calculate the value of the form using adaptive quadrature.    
-        result = eval_form_adaptive(order_init, result_init,
-          mfs, u_ext, fu, fv, ru, rv, surf_pos);
-      }
+    
 
       return result;
     }
@@ -3738,7 +3916,7 @@ namespace Hermes
 
       // Add the previous time level solution previously inserted at the back of ext.
       if(RungeKutta)
-        for(unsigned int ext_i = 0; ext_i < this->RK_original_spaces_count; ext_i++)
+        for(int ext_i = 0; ext_i < this->RK_original_spaces_count; ext_i++)
           prev[ext_i]->add(*ext->fn[mfs->ext.size() - this->RK_original_spaces_count + ext_i]);
 
       // The actual calculation takes place here.
@@ -3772,98 +3950,12 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Scalar DiscreteProblem<Scalar>::eval_form_adaptive(int order_init, Scalar result_init,
-      MatrixFormSurf<Scalar> *mfs, Hermes::vector<Solution<Scalar>*> u_ext,
-      PrecalcShapeset *fu, PrecalcShapeset *fv, RefMap *ru, RefMap *rv, SurfPos* surf_pos)
-    {
-      // Initialize set of all transformable entities.
-      std::set<Transformable *> transformable_entities;
-      transformable_entities.insert(fu);
-      transformable_entities.insert(fv);
-      transformable_entities.insert(ru);
-      transformable_entities.insert(rv);
-      transformable_entities.insert(mfs->ext.begin(), mfs->ext.end());
-      transformable_entities.insert(u_ext.begin(), u_ext.end());
-
-      Scalar result = 0;
-
-      int order_increase = mfs->adapt_order_increase;
-
-      Scalar subs_value[4];
-
-      Scalar result_current_subelements = 0;
-
-      // Clear of the geometry cache for the current active subelement. This needs to be done before AND after
-      // as the further division to subelements must be only local.
-      this->delete_single_geom_cache(order_init + order_increase);
-      for(unsigned int sons_i = 0; sons_i < 4; sons_i++)
-      {
-        // Push the transformation to the current son to all functions and reference mappings involved.
-        Transformable::push_transforms(transformable_entities, sons_i);
-
-        // The actual calculation.
-        subs_value[sons_i] = eval_form_subelement(order_init + order_increase, mfs, 
-          u_ext, fu, fv, ru, rv, surf_pos);
-
-        // Clear of the geometry cache for the current active subelement.
-        this->delete_single_geom_cache(order_init + order_increase);
-
-        //printf("subs_value[%d] = %g\n", sons_i, subs_value[sons_i]);
-
-        result_current_subelements += subs_value[sons_i];
-
-        // Reset the transformation.
-        Transformable::pop_transforms(transformable_entities);
-      }
-
-      // Tolerance checking.
-      // First, if the result is negligible.
-      if (std::abs(result_current_subelements) < 1e-6)
-        return result_current_subelements;
-
-      // Relative error.
-      double rel_error = std::abs(result_current_subelements - result_init) / std::abs(result_current_subelements);
-
-      if (rel_error < mfs->adapt_rel_error_tol)
-        // Relative error in tolerance.
-        return result_current_subelements;
-      else 
-      {
-        Scalar result_recursion = 0;
-        // Relative error exceeds allowed tolerance: Call the function 
-        // eval_form_adaptive() in each subelement, with initial values
-        // subs_value[sons_i].
-
-        // Call the function eval_form_adaptive() recursively in all sons.
-        for(unsigned int sons_i = 0; sons_i < 4; sons_i++)
-        {
-          // Push the transformation to the current son to all functions and reference mappings involved.
-          Transformable::push_transforms(transformable_entities, sons_i);
-
-          // Recursion.
-          subs_value[sons_i] = eval_form_adaptive(order_init + order_increase, subs_value[sons_i],
-            mfs, u_ext, fu, fv, ru, rv, surf_pos);
-
-          result_recursion += subs_value[sons_i];
-
-          // Reset the transformation.
-          Transformable::pop_transforms(transformable_entities);
-        }
-
-        return result_recursion;
-      }
-    }
-
-    template<typename Scalar>
     Scalar DiscreteProblem<Scalar>::eval_form(VectorFormSurf<Scalar> *vfs, 
       Hermes::vector<Solution<Scalar>*> u_ext, 
       PrecalcShapeset *fv, RefMap *rv, SurfPos* surf_pos)
     {
       _F_;
       Scalar result = 0;
-
-      if (vfs->adapt_eval == false)
-      {
 
         // Time measurement.
         profiling.assemble_util_time.tick();
@@ -3877,27 +3969,7 @@ namespace Hermes
         profiling.eval_util_time.tick();
         profiling.current_record.form_preparation_eval += profiling.eval_util_time.accumulated();
         profiling.assemble_util_time.tick(Hermes::HERMES_SKIP);
-      }
-      else 
-      {
-        // Perform adaptive numerical quadrature starting with order = 2.
-        // \todo The choice of initial order matters a lot for efficiency,
-        //       this needs more research.
-        int fv_order = fv->get_edge_fn_order(surf_pos->surf_num);
-
-        // FIXME - this needs more research.
-        int order_init = fv_order;
-
-        // Calculate initial value of the form on coarse element.
-        Scalar result_init = eval_form_subelement(order_init, vfs, u_ext, fv, rv, surf_pos);
-
-        //printf("Eval_form: initial result = %g\n", result_init);
-
-        // Calculate the value of the form using adaptive quadrature.    
-        result = eval_form_adaptive(order_init, result_init,
-          vfs, u_ext, fv, rv, surf_pos);
-      }
-
+      
       return result;
     }
     template<typename Scalar>
@@ -4164,7 +4236,7 @@ namespace Hermes
 
       // Add the previous time level solution previously inserted at the back of ext.
       if(RungeKutta)
-        for(unsigned int ext_i = 0; ext_i < this->RK_original_spaces_count; ext_i++)
+        for(int ext_i = 0; ext_i < this->RK_original_spaces_count; ext_i++)
           prev[ext_i]->add(*ext->fn[vfs->ext.size() - this->RK_original_spaces_count + ext_i]);
 
       // The actual calculation takes place here.
@@ -4195,87 +4267,6 @@ namespace Hermes
         return 0.5 * res; // Edges are parameterized from 0 to 1 while integration weights
         // are defined in (-1, 1). Thus multiplying with 0.5 to correct
         // the weights.
-    }
-
-    template<typename Scalar>
-    Scalar DiscreteProblem<Scalar>::eval_form_adaptive(int order_init, Scalar result_init,
-      VectorFormSurf<Scalar> *vfs, Hermes::vector<Solution<Scalar>*> u_ext,
-      PrecalcShapeset *fv, RefMap *rv, SurfPos* surf_pos)
-    {
-      // Initialize set of all transformable entities.
-      std::set<Transformable *> transformable_entities;
-      transformable_entities.insert(fv);
-      transformable_entities.insert(rv);
-      transformable_entities.insert(vfs->ext.begin(), vfs->ext.end());
-      transformable_entities.insert(u_ext.begin(), u_ext.end());
-
-      Scalar result = 0;
-
-      int order_increase = vfs->adapt_order_increase;
-
-      Scalar subs_value[4];
-
-      Scalar result_current_subelements = 0;
-
-      // Clear of the geometry cache for the current active subelement. This needs to be done before AND after
-      // as the further division to subelements must be only local.
-      this->delete_single_geom_cache(order_init + order_increase);
-      for(unsigned int sons_i = 0; sons_i < 4; sons_i++)
-      {
-        // Push the transformation to the current son to all functions and reference mappings involved.
-        Transformable::push_transforms(transformable_entities, sons_i);
-
-        // The actual calculation.
-        subs_value[sons_i] = eval_form_subelement(order_init + order_increase, vfs, 
-          u_ext, fv, rv, surf_pos);
-
-        // Clear of the geometry cache for the current active subelement.
-        this->delete_single_geom_cache(order_init + order_increase);
-
-        //printf("subs_value[%d] = %g\n", sons_i, subs_value[sons_i]);
-
-        result_current_subelements += subs_value[sons_i];
-
-        // Reset the transformation.
-        Transformable::pop_transforms(transformable_entities);
-      }
-
-      // Tolerance checking.
-      // First, if the result is negligible.
-      if (std::abs(result_current_subelements) < 1e-6)
-        return result_current_subelements;
-
-      // Relative error.
-      double rel_error = std::abs(result_current_subelements - result_init) / std::abs(result_current_subelements);
-
-      if (rel_error < vfs->adapt_rel_error_tol)
-        // Relative error in tolerance.
-        return result_current_subelements;
-      else 
-      {
-        Scalar result_recursion = 0;
-        // Relative error exceeds allowed tolerance: Call the function 
-        // eval_form_adaptive() in each subelement, with initial values
-        // subs_value[sons_i].
-
-        // Call the function eval_form_adaptive() recursively in all sons.
-        for(unsigned int sons_i = 0; sons_i < 4; sons_i++)
-        {
-          // Push the transformation to the current son to all functions and reference mappings involved.
-          Transformable::push_transforms(transformable_entities, sons_i);
-
-          // Recursion.
-          subs_value[sons_i] = eval_form_adaptive(order_init + order_increase, subs_value[sons_i],
-            vfs, u_ext, fv, rv, surf_pos);
-
-          result_recursion += subs_value[sons_i];
-
-          // Reset the transformation.
-          Transformable::pop_transforms(transformable_entities);
-        }
-
-        return result_recursion;
-      }
     }
 
     template<typename Scalar>

@@ -33,7 +33,7 @@
 #include "util.h"
 #include "scene.h"
 
-#include "mesh/h2d_reader.h"
+#include "mesh/mesh_reader_h2d.h"
 
 #include "newton_solver.h"
 
@@ -904,7 +904,7 @@ void readMeshDirtyFix()
     // qDebug() << QString::fromStdString(os.str());
 
     Hermes::Hermes2D::Mesh mesh;
-    Hermes::Hermes2D::H2DReader meshloader;
+    Hermes::Hermes2D::MeshReaderH2D meshloader;
 
     // FIXME - Amuthan - hack!!!
     std::ofstream outputFile((tempProblemDir().toStdString() + "/dummy.mesh").c_str(), fstream::out);
@@ -928,7 +928,7 @@ Hermes::Hermes2D::Mesh *readMeshFromFile(const QString &fileName)
 
     // load the mesh file
     Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
-    Hermes::Hermes2D::H2DReader meshloader;
+    Hermes::Hermes2D::MeshReaderH2D meshloader;
     meshloader.load(fileName.toStdString().c_str(), mesh);
 
     // set system locale
@@ -943,7 +943,7 @@ void writeMeshFromFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh)
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    Hermes::Hermes2D::H2DReader meshloader;
+    Hermes::Hermes2D::MeshReaderH2D meshloader;
     meshloader.save(fileName.toStdString().c_str(), mesh);
 
     // set system locale
@@ -1147,15 +1147,15 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
         if (analysisType == AnalysisType_Transient)
         {
             // constant initial solution
-            solution.at(i)->set_const(mesh, initialCondition);
+            // FIXME
+            // solution.at(i)->set_const(mesh, initialCondition);
             solutionArrayList.push_back(solutionArray(solution.at(i)));
         }
 
         // nonlinear - initial solution
-        solution.at(i)->set_const(mesh, 0.0);
+        // FIXME
+        // solution.at(i)->set_const(mesh, 0.0);
     }
-
-
 
     actualTime = 0.0;
     int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
@@ -1325,12 +1325,14 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
             if (analysisType == AnalysisType_Transient)
             {
                 // constant initial solution
-                solution.at(i)->set_const(mesh, initialCondition);
+                // FIXME
+                // solution.at(i)->set_const(mesh, initialCondition);
                 solutionArrayList.push_back(solutionArray(solution.at(i)));
             }
 
             // nonlinear - initial solution
-            solution.at(i)->set_const(mesh, 0.0);
+            // FIXME
+            // solution.at(i)->set_const(mesh, 0.0);
         }
 
         actualTime = 0.0;
@@ -1641,6 +1643,7 @@ void Parser::initParserMaterialVariables()
     {
         Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
         parser_variables[variable->shortname] = 0.0;
+        parser_variables["d" + variable->shortname] = 0.0;
     }
 
     // set material variables
