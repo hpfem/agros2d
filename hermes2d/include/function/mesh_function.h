@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __H2D_MESH_FN_H
-#define __H2D_MESH_FN_H
+#ifndef __H2D_MESH_FUNCTION_H
+#define __H2D_MESH_FUNCTION_H
 
 #include "function.h"
 #include "../mesh/refmap.h"
@@ -24,7 +24,6 @@ namespace Hermes
 {
   namespace Hermes2D
   {
-    class PrecalcShapeset;
     /// \brief Represents a function defined on a mesh.
     ///
     /// MeshFunction is a base class for all classes representing an arbitrary function
@@ -38,14 +37,15 @@ namespace Hermes
     class HERMES_API MeshFunction : public Function<Scalar>
     {
     public:
+
       MeshFunction();
       MeshFunction(Mesh *mesh);
-      virtual ~MeshFunction() = 0;
+      virtual ~MeshFunction();
 
       virtual void init();
       virtual void reinit();
 
-      void set_quad_2d(Quad2D* quad_2d);
+      virtual void set_quad_2d(Quad2D* quad_2d);
 
       virtual void set_active_element(Element* e);
 
@@ -56,14 +56,14 @@ namespace Hermes
 
       virtual Scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0) = 0;
 
-      /// Handling overflows. Has to be virtual, because
+      /// Virtual function handling overflows. Has to be virtual, because
       /// the necessary iterators in the templated class do not work with GCC.
       virtual void handle_overflow_idx();
 
       /// See Transformable::push_transform.
-      void push_transform(int son);
+      virtual void push_transform(int son);
 
-      void pop_transform();
+      virtual void pop_transform();
 
     protected:
 
@@ -82,4 +82,5 @@ namespace Hermes
     };
   }
 }
+
 #endif

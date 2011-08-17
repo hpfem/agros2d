@@ -1,5 +1,5 @@
-/* #define HAVE_FMEMOPEN */
-/* #define HAVE_LOG2 */
+// #define HAVE_FMEMOPEN
+// #define HAVE_LOG2
 /* #undef EXTREME_QUAD */
 
 #define WITH_UMFPACK

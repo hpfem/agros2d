@@ -29,7 +29,7 @@
 #include "tooltipview.h"
 #include "postprocessorview.h"
 #include "chartdialog.h"
-#include "configdialog.h"
+#include "confdialog.h"
 #include "scripteditordialog.h"
 #include "reportdialog.h"
 #include "videodialog.h"

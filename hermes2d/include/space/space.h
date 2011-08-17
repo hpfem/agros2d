@@ -29,6 +29,9 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    template<typename Scalar> class Adapt;
+    template<typename Scalar> class DiscreteProblem;
+
     /// \brief Represents a finite element space over a domain.
     ///
     /// The Space class represents a finite element space over a domain defined by 'mesh', spanned
@@ -91,6 +94,7 @@ namespace Hermes
       Space(Mesh* mesh, Shapeset* shapeset, EssentialBCs<Scalar>* essential_bcs, Ord2 p_init);
 
       virtual ~Space();
+
       virtual void free();
 
       /// Sets the boundary condition.
@@ -263,16 +267,19 @@ namespace Hermes
         };
         NodeData() : dof(0), edge_bc_proj(NULL) {}
       };
-
-      struct ElementData
+      
+      class ElementData
       {
+      public:
+        ElementData() : changed_in_last_adaptation(true) {};
         int order;
         int bdof, n;
+        bool changed_in_last_adaptation;
       };
 
       NodeData* ndata;    ///< node data table
-      int nsize, ndata_allocated; ///< number of items in ndata, allocated space
       ElementData* edata; ///< element data table
+      int nsize, ndata_allocated; ///< number of items in ndata, allocated space
       int esize;
 
       virtual int get_edge_order_internal(Node* en);
@@ -330,13 +337,19 @@ namespace Hermes
       virtual SpaceType get_type() const = 0;
 
       /// Create globally refined space.
-      static Hermes::vector<Space<Scalar>*>* construct_refined_spaces(Hermes::vector<Space<Scalar>*> coarse, int order_increase = 1);
+      static Hermes::vector<Space<Scalar>*>* construct_refined_spaces(Hermes::vector<Space<Scalar>*> coarse, 
+                                                                      int order_increase = 1, 
+                                                                      int refinement_type = 0);
 
-      static Space<Scalar>* construct_refined_space(Space<Scalar>* coarse, int order_increase = 1);
+      static Space<Scalar>* construct_refined_space(Space<Scalar>* coarse, int order_increase = 1, 
+                                                    int refinement_type = 0);
 
       static void update_essential_bc_values(Hermes::vector<Space<Scalar>*> spaces, double time);
 
       static void update_essential_bc_values(Space<Scalar>*s, double time);
+
+      friend class Adapt<Scalar>;
+      friend class DiscreteProblem<Scalar>;
     };
   }
 }

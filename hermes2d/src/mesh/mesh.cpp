@@ -15,7 +15,7 @@
 
 #include "hermes2d_common_defs.h"
 #include "mesh.h"
-#include "h2d_reader.h"
+#include "mesh_reader_h2d.h"
 
 namespace Hermes
 {
@@ -234,7 +234,6 @@ namespace Hermes
       // initialize the new element
       e->active = 1;
       e->marker = marker;
-      e->userdata = 0;
       e->nvert = 3;
       e->iro_cache = -1;
       e->cm = cm;
@@ -265,7 +264,6 @@ namespace Hermes
       // initialize the new element
       e->active = 1;
       e->marker = marker;
-      e->userdata = 0;
       e->nvert = 4;
       e->iro_cache = -1;
       e->cm = cm;
@@ -766,7 +764,7 @@ namespace Hermes
     void Mesh::refine_towards_boundary(std::string marker, int depth, bool aniso, bool mark_as_initial)
     {
       if(marker == HERMES_ANY)
-        for(std::map<int, std::string>::iterator it = this->boundary_markers_conversion.conversion_table->begin(); it != this->boundary_markers_conversion.conversion_table->end(); it++)
+        for(std::map<int, std::string>::iterator it = this->boundary_markers_conversion.conversion_table.begin(); it != this->boundary_markers_conversion.conversion_table.end(); it++)
           refine_towards_boundary(it->second, depth, aniso, mark_as_initial);
 
       else 
@@ -949,6 +947,35 @@ namespace Hermes
       if(!vertex_0_ok) error("Vertex v0 of quad element #%d does not lie on the left of the diagonal v2-v1.", i);
     }
 
+    bool Mesh::rescale(double x_ref, double y_ref)
+    {
+      // Sanity checks.
+      if (fabs(x_ref) < 1e-10) return false;
+      if (fabs(y_ref) < 1e-10) return false;
+
+      // If curvilinear, the mesh cannot be rescaled.
+      bool curved = false;
+      Element* e;
+      for_all_elements(e, this) {
+        if (e->cm != NULL) {
+          curved = true;
+          break;
+        }
+      }
+      if (curved == true) return false;
+
+      // Go through all vertices and rescale coordinates.
+      Node* n;
+      for_all_vertex_nodes(n, this) {
+        n->x /= x_ref;
+        n->y /= y_ref;
+      }
+
+      return true;
+    }
+
+
+
     void Mesh::copy(const Mesh* mesh)
     {
       unsigned int i;
@@ -1057,10 +1084,12 @@ namespace Hermes
           enew->en[j]->marker = en->marker;
         }
 
-        enew->userdata = e->userdata;
         if (e->is_curved())
           enew->cm = new CurvMap(e->cm);
       }
+      
+      this->boundary_markers_conversion = mesh->boundary_markers_conversion;
+      this->element_markers_conversion = mesh->element_markers_conversion;
 
       nbase = nactive = ninitial = mesh->nbase;
       ntopvert = mesh->ntopvert;
@@ -1086,6 +1115,7 @@ namespace Hermes
       free();
       HashTable::copy(mesh);
       this->boundary_markers_conversion = mesh->boundary_markers_conversion;
+      this->element_markers_conversion = mesh->element_markers_conversion;
 
       // clear reference for all nodes
       for(int i = 0; i < nodes.get_size(); i++)
@@ -1111,7 +1141,6 @@ namespace Hermes
           enew = elements.add();
           enew->active = 1;
           enew->marker = e->marker;
-          enew->userdata = 0;
           enew->nvert = 3;
           enew->iro_cache = -1;
           enew->cm = e->cm;
@@ -1132,7 +1161,6 @@ namespace Hermes
           enew = elements.add();
           enew->active = 1;
           enew->marker = e->marker;
-          enew->userdata = 0;
           enew->nvert = 4;
           enew->iro_cache = -1;
           enew->cm = e->cm;
@@ -1158,7 +1186,6 @@ namespace Hermes
           enew->en[j]->marker = en->marker;
         }
 
-        enew->userdata = e->userdata;
         if (e->is_curved())
           enew->cm = new CurvMap(e->cm);
       }
@@ -1170,14 +1197,17 @@ namespace Hermes
 
     void Mesh::convert_triangles_to_quads()
     {
+
     }
 
     void Mesh::convert_quads_to_triangles()
     {
+
     }
 
     void Mesh::convert_to_base()
     {
+
     }
 
     void Mesh::refine_triangle_to_quads(Mesh* mesh, Element* e, Element** sons_out)
@@ -1730,29 +1760,16 @@ namespace Hermes
       seq = g_mesh_seq++;
     }
 
-    Mesh::MarkersConversion::MarkersConversion()
-    {
-      conversion_table = new std::map<int, std::string>;
-      conversion_table_inverse = new std::map<std::string, int>;
-      min_marker_unused = 1;
-    }
-
-    Mesh::MarkersConversion::~MarkersConversion()
-    {
-      delete conversion_table;
-      delete conversion_table_inverse;
-    }
-
     void Mesh::MarkersConversion::insert_marker(int internal_marker, std::string user_marker)
     {
       // First a check that the string value is not already present.
       if(user_marker != "")
-        if(conversion_table_inverse->find(user_marker) != conversion_table_inverse->end())
+        if(conversion_table_inverse.find(user_marker) != conversion_table_inverse.end())
           return;
-      if(conversion_table->size() == 0 || conversion_table->find(internal_marker) == conversion_table->end()) 
+      if(conversion_table.size() == 0 || conversion_table.find(internal_marker) == conversion_table.end()) 
       {
-        conversion_table->insert(std::pair<int, std::string>(internal_marker, user_marker));
-        conversion_table_inverse->insert(std::pair<std::string, int>(user_marker, internal_marker));
+        conversion_table.insert(std::pair<int, std::string>(internal_marker, user_marker));
+        conversion_table_inverse.insert(std::pair<std::string, int>(user_marker, internal_marker));
         if(user_marker != "")
           this->min_marker_unused++;
       }
@@ -1769,9 +1786,9 @@ namespace Hermes
         return
         H2D_DG_BOUNDARY_EDGE;
 
-      if(conversion_table->find(internal_marker) == conversion_table->end())
+      if(conversion_table.find(internal_marker) == conversion_table.end())
         error("MarkersConversions class asked for a non existing marker %d", internal_marker);
-      return conversion_table->find(internal_marker)->second;
+      return conversion_table.find(internal_marker)->second;
     }
 
     int Mesh::MarkersConversion::get_internal_marker(std::string user_marker)
@@ -1784,53 +1801,9 @@ namespace Hermes
         return
         H2D_DG_BOUNDARY_EDGE_INT;
 
-      if(conversion_table_inverse->find(user_marker) == conversion_table_inverse->end())
+      if(conversion_table_inverse.find(user_marker) == conversion_table_inverse.end())
         error("MarkersConversions class asked for a non existing marker %s", user_marker.c_str());
-      return conversion_table_inverse->find(user_marker)->second;
-    }
-
-    Mesh::ElementMarkersConversion::ElementMarkersConversion(const Mesh::ElementMarkersConversion& src)
-    {
-      conversion_table = new std::map<int, std::string>;
-      conversion_table_inverse = new std::map<std::string, int>;
-
-      *conversion_table = *src.conversion_table;
-      *conversion_table_inverse = *src.conversion_table_inverse;
-
-      min_marker_unused = src.min_marker_unused;
-    }
-
-    void Mesh::ElementMarkersConversion::operator=(const ElementMarkersConversion& src)
-    {
-      conversion_table = new std::map<int, std::string>;
-      conversion_table_inverse = new std::map<std::string, int>;
-
-      *conversion_table = *src.conversion_table;
-      *conversion_table_inverse = *src.conversion_table_inverse;
-
-      min_marker_unused = src.min_marker_unused;
-    }
-
-    Mesh::BoundaryMarkersConversion::BoundaryMarkersConversion(const Mesh::BoundaryMarkersConversion& src)
-    {
-      conversion_table = new std::map<int, std::string>;
-      conversion_table_inverse = new std::map<std::string, int>;
-
-      *conversion_table = *src.conversion_table;
-      *conversion_table_inverse = *src.conversion_table_inverse;
-
-      min_marker_unused = src.min_marker_unused;
-    }
-
-    void Mesh::BoundaryMarkersConversion::operator=(const BoundaryMarkersConversion& src)
-    {
-      conversion_table = new std::map<int, std::string>;
-      conversion_table_inverse = new std::map<std::string, int>;
-
-      *conversion_table = *src.conversion_table;
-      *conversion_table_inverse = *src.conversion_table_inverse;
-
-      min_marker_unused = src.min_marker_unused;
+      return conversion_table_inverse.find(user_marker)->second;
     }
 
     void Mesh::convert_triangles_to_base(Element *e)

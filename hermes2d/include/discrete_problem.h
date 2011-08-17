@@ -24,7 +24,6 @@
 #include "function/function.h"
 #include "neighbor.h"
 #include "refinement_selectors/selector.h"
-#include "adapt/kelly_type_adapt.h"
 
 namespace Hermes
 {
@@ -93,6 +92,11 @@ namespace Hermes
 
       /// Get info about presence of a matrix.
       bool is_matrix_free() ;
+
+      /// Sets the storing of the previous matrix in adaptivity.
+      void set_adaptivity_cache();
+      void temp_enable_adaptivity_cache();
+      void temp_disable_adaptivity_cache();
 
       /// Preassembling.
       /// Precalculate matrix sparse structure.
@@ -265,10 +269,17 @@ namespace Hermes
       /// Set this problem to Finite Volume.
       void set_fvm();
 
+      void set_spaces(Hermes::vector<Space<Scalar>*> spaces);
+
+      void set_spaces(Space<Scalar>* space);
+
       /// Set the special handling of external functions of Runge-Kutta methods, including information how many spaces were there in the original problem.
       void set_RK(int original_spaces_count) { this->RungeKutta = true; RK_original_spaces_count = original_spaces_count; }
 
     protected:
+      bool cache_for_adaptivity;
+      bool temp_cache_for_adaptivity;
+
       DiscontinuousFunc<Hermes::Ord>* init_ext_fn_ord(NeighborSearch<Scalar>* ns, MeshFunction<Scalar>* fu);
 
       /// Main function for the evaluation of volumetric matrix forms. 
@@ -293,15 +304,6 @@ namespace Hermes
         PrecalcShapeset* fu, PrecalcShapeset* fv, 
         RefMap* ru, RefMap* rv);
 
-      /// Main function for the evaluation of volumetric matrix forms. 
-      /// Evaluates weak form on element given by the RefMap.
-      /// Integration order is chosen adaptively.
-      Scalar eval_form_adaptive(int order_init, Scalar result_init,
-        MatrixFormVol<Scalar>* mfv, 
-        Hermes::vector<Solution<Scalar>*> u_ext,
-        PrecalcShapeset* fu, PrecalcShapeset* fv, 
-        RefMap* ru, RefMap* rv);
-
       /// Vector<Scalar> volume forms. The functions provide the same functionality as the
       /// parallel ones for matrix volume forms.
       Scalar eval_form(VectorFormVol<Scalar>* vfv, Hermes::vector<Solution<Scalar>*> u_ext,
@@ -315,11 +317,6 @@ namespace Hermes
         PrecalcShapeset* fv, RefMap* rv);
 
       Scalar eval_form_subelement(int order, VectorFormVol<Scalar>* vfv, 
-        Hermes::vector<Solution<Scalar>*> u_ext,
-        PrecalcShapeset* fv, RefMap* rv);
-
-      Scalar eval_form_adaptive(int order_init, Scalar result_init,
-        VectorFormVol<Scalar>* vfv, 
         Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fv, RefMap* rv);
 
@@ -344,11 +341,6 @@ namespace Hermes
       Scalar eval_form_subelement(int order, MatrixFormSurf<Scalar>* mfs, Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fu, PrecalcShapeset* fv, RefMap* ru, RefMap* rv, SurfPos* surf_pos);
 
-      Scalar eval_form_adaptive(int order_init, Scalar result_init,
-        MatrixFormSurf<Scalar>* mfs, Hermes::vector<Solution<Scalar>*> u_ext,
-        PrecalcShapeset* fu, PrecalcShapeset* fv, RefMap* ru, 
-        RefMap* rv, SurfPos* surf_pos);
-
       /// Vector<Scalar> surface forms. The functions provide the same functionality as the
       /// parallel ones for matrix volume forms.
       Scalar eval_form(VectorFormSurf<Scalar>* vfs, 
@@ -364,10 +356,6 @@ namespace Hermes
         PrecalcShapeset* fv, RefMap* rv, SurfPos* surf_pos);
 
       Scalar eval_form_subelement(int order, VectorFormSurf<Scalar>* vfs, Hermes::vector<Solution<Scalar>*> u_ext,
-        PrecalcShapeset* fv, RefMap* rv, SurfPos* surf_pos);
-
-      Scalar eval_form_adaptive(int order_init, Scalar result_init,
-        VectorFormSurf<Scalar>* vfs, Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fv, RefMap* rv, SurfPos* surf_pos);
 
       /// Calculates integration order for DG matrix forms.
@@ -612,6 +600,35 @@ namespace Hermes
 
         /// PrecalcShapeset stored values for Elements with non-constant jacobian of the reference mapping for quads.
         std::map<KeyNonConst, Func<double>* , CompareNonConst> cache_fn_quads;
+
+        /// For caching of values calculated on the previous reference space during adaptivity.
+        /// Contains true if the matrix entry for the Element has already been recalculated, and the value
+        /// saved is therefore not possible to use.
+        bool** element_reassembled_matrix;
+        /// For caching of values calculated on the previous reference space during adaptivity.
+        /// Contains pair<Element id, true> if the vector entry for the Element has already been recalculated, and the value
+        /// saved is therefore not possible to use.
+        bool** element_reassembled_vector;
+
+        /// For caching of values calculated on the previous reference space during adaptivity.
+        /// The matrix cache, coordinates are : [Space_1][Space_2][Element id on Space_1][DOF on Space_1][DOF on Space_2].
+        Scalar***** previous_reference_dp_cache_matrix;
+
+        /// For caching of values calculated on the previous reference space during adaptivity.
+        /// The vector cache, coordinates are : [Space][Element id on Space][DOF on Space].
+        Scalar*** previous_reference_dp_cache_vector;
+        
+        /// For caching of values calculated on the previous reference space during adaptivity.
+        /// Current size of the [Element id on Space_1] dimension in previous_reference_dp_cache_matrix.
+        unsigned int** cache_matrix_size;
+
+        /// For caching of values calculated on the previous reference space during adaptivity.
+        /// Current size of the [Element id on Space] dimension in previous_reference_dp_cache_vector.
+        unsigned int* cache_vector_size;
+
+        /// For caching of values calculated on the previous reference space during adaptivity.
+        /// Previous spaces (incl. mesh) to be able to determine the previous element assembly lists etc.
+        Hermes::vector<Space<Scalar>*> stored_spaces_for_adaptivity;
 
         LightArray<Func<Hermes::Ord>*> cache_fn_ord;
       };

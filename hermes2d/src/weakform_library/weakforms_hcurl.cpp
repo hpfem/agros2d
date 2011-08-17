@@ -23,23 +23,23 @@ namespace Hermes
       template<typename Scalar>
       DefaultMatrixFormVol<Scalar>::DefaultMatrixFormVol
         (int i, int j, std::string area, Scalar const_coeff, 
-        HermesFunction<Scalar>* f_coeff, SymFlag sym, 
+        Hermes2DFunction<Scalar>* f_coeff, SymFlag sym, 
         GeomType gt)
         : MatrixFormVol<Scalar>(i, j, area, sym), const_coeff(const_coeff), function_coeff(f_coeff), gt(gt)
       {
         // If f_coeff is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new HermesFunction<Scalar>(1.0);
+        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant coefficients in Hcurl forms not implemented yet.");
       }
 
       template<typename Scalar>
       DefaultMatrixFormVol<Scalar>::DefaultMatrixFormVol
         (int i, int j, Hermes::vector<std::string> areas,Scalar const_coeff, 
-        HermesFunction<Scalar>* f_coeff, SymFlag sym, GeomType gt)
+        Hermes2DFunction<Scalar>* f_coeff, SymFlag sym, GeomType gt)
         : MatrixFormVol<Scalar>(i, j, areas, sym), const_coeff(const_coeff), function_coeff(f_coeff), gt(gt)
       {
         // If f_coeff is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new HermesFunction<Scalar>(1.0);
+        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant coefficients in Hcurl forms not implemented yet.");
       }
 
@@ -151,30 +151,30 @@ namespace Hermes
 
       template<typename Scalar>
       DefaultVectorFormVol<Scalar>::DefaultVectorFormVol(int i, std::string area, Scalar const_coeff0, Scalar const_coeff1,
-        HermesFunction<Scalar>* f_coeff0, HermesFunction<Scalar>* f_coeff1,
+        Hermes2DFunction<Scalar>* f_coeff0, Hermes2DFunction<Scalar>* f_coeff1,
         GeomType gt)
         : VectorFormVol<Scalar>(i, area), const_coeff0(const_coeff0), const_coeff1(const_coeff1),
         function_coeff0(f_coeff0), function_coeff1(f_coeff1), gt(gt)
       {
         // If f_coeff0 is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff0 == HERMES_DEFAULT_FUNCTION) this->function_coeff0 = new HermesFunction<Scalar>(1.0);
+        if (f_coeff0 == HERMES_DEFAULT_FUNCTION) this->function_coeff0 = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant coefficients in Hcurl forms not implemented yet.");
-        if (f_coeff1 == HERMES_DEFAULT_FUNCTION) this->function_coeff1 = new HermesFunction<Scalar>(1.0);
+        if (f_coeff1 == HERMES_DEFAULT_FUNCTION) this->function_coeff1 = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant coefficients in Hcurl forms not implemented yet.");
       }
 
       template<typename Scalar>
       DefaultVectorFormVol<Scalar>::DefaultVectorFormVol(int i, Hermes::vector<std::string> areas, 
         Scalar const_coeff0, Scalar const_coeff1,
-        HermesFunction<Scalar>* f_coeff0, HermesFunction<Scalar>* f_coeff1,
+        Hermes2DFunction<Scalar>* f_coeff0, Hermes2DFunction<Scalar>* f_coeff1,
         GeomType gt)
         : VectorFormVol<Scalar>(i, areas), const_coeff0(const_coeff0), const_coeff1(const_coeff1),
         function_coeff0(f_coeff0), function_coeff1(f_coeff1), gt(gt)
       {
         // If f_coeff0 is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff0 == HERMES_DEFAULT_FUNCTION) this->function_coeff0 = new HermesFunction<Scalar>(1.0);
+        if (f_coeff0 == HERMES_DEFAULT_FUNCTION) this->function_coeff0 = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant coefficients in Hcurl forms not implemented yet.");
-        if (f_coeff1 == HERMES_DEFAULT_FUNCTION) this->function_coeff1 = new HermesFunction<Scalar>(1.0);
+        if (f_coeff1 == HERMES_DEFAULT_FUNCTION) this->function_coeff1 = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant coefficients in Hcurl forms not implemented yet.");
       }
 
@@ -214,25 +214,25 @@ namespace Hermes
 
       template<typename Scalar>
       DefaultResidualVol<Scalar>::DefaultResidualVol(int i, std::string area, Scalar const_coeff,
-        HermesFunction<Scalar>* f_coeff,
+        Hermes2DFunction<Scalar>* f_coeff,
         GeomType gt)
         : VectorFormVol<Scalar>(i, area),
         idx_i(i), const_coeff(const_coeff), function_coeff(f_coeff), gt(gt)
       {
         // If f_coeff is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new HermesFunction<Scalar>(1.0);
+        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant functions in Hcurl forms not implemented yet.");
       }
 
       template<typename Scalar>
       DefaultResidualVol<Scalar>::DefaultResidualVol(int i, Hermes::vector<std::string> areas, Scalar const_coeff,
-        HermesFunction<Scalar>* f_coeff,
+        Hermes2DFunction<Scalar>* f_coeff,
         GeomType gt)
         : VectorFormVol<Scalar>(i, areas),
         idx_i(i), const_coeff(const_coeff), function_coeff(f_coeff), gt(gt)
       {
         // If f_coeff is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new HermesFunction<Scalar>(1.0);
+        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant functions in Hcurl forms not implemented yet.");
       }
 
@@ -327,7 +327,7 @@ namespace Hermes
             double mag0_i = std::abs(u_prev->val0[i]);
             double mag1_i = std::abs(u_prev->val1[i]);
             double mag_i = sqrt(sqr(mag0_i) + sqr(mag1_i));
-            result += wt[i] * const_coeff*spline_coeff->get_value(mag_i) 
+            result += wt[i] * const_coeff*spline_coeff->value(mag_i) 
               * (u_prev->curl[i] * conj(v->curl[i]));
           }
         }
@@ -349,7 +349,7 @@ namespace Hermes
             Ord mag0_i = u_prev->val0[i];
             Ord mag1_i = u_prev->val1[i];
             Ord mag_i = sqrt(sqr(mag0_i) + sqr(mag1_i));
-            result += wt[i] * const_coeff*spline_coeff->get_value(mag_i) 
+            result += wt[i] * const_coeff*spline_coeff->value_ord(mag_i) 
               * (u_prev->curl[i] * conj(v->curl[i]));
           }
         }
@@ -367,23 +367,23 @@ namespace Hermes
 
       template<typename Scalar>
       DefaultMatrixFormSurf<Scalar>::DefaultMatrixFormSurf(int i, int j, std::string area,
-        Scalar const_coeff, HermesFunction<Scalar>* f_coeff,
+        Scalar const_coeff, Hermes2DFunction<Scalar>* f_coeff,
         GeomType gt)
         : MatrixFormSurf<Scalar>(i, j, area), const_coeff(const_coeff), function_coeff(f_coeff), gt(gt)
       {
         // If f_coeff is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new HermesFunction<Scalar>(1.0);
+        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant functions in Hcurl forms not implemented yet.");
       }
 
       template<typename Scalar>
       DefaultMatrixFormSurf<Scalar>::DefaultMatrixFormSurf(int i, int j, Hermes::vector<std::string> areas,
-        Scalar const_coeff, HermesFunction<Scalar>* f_coeff,
+        Scalar const_coeff, Hermes2DFunction<Scalar>* f_coeff,
         GeomType gt)
         : MatrixFormSurf<Scalar>(i, j, areas), const_coeff(const_coeff), function_coeff(f_coeff), gt(gt)
       {
         // If f_coeff is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new HermesFunction<Scalar>(1.0);
+        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant functions in Hcurl forms not implemented yet.");
       }
 
@@ -430,23 +430,23 @@ namespace Hermes
 
       template<typename Scalar>
       DefaultResidualSurf<Scalar>::DefaultResidualSurf(int i, std::string area,
-        Scalar const_coeff, HermesFunction<Scalar>* f_coeff,
+        Scalar const_coeff, Hermes2DFunction<Scalar>* f_coeff,
         GeomType gt)
         : VectorFormSurf<Scalar>(i, area), const_coeff(const_coeff), function_coeff(f_coeff), gt(gt)
       {
         // If f_coeff is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new HermesFunction<Scalar>(1.0);
+        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant functions in Hcurl forms not implemented yet.");
       }
 
       template<typename Scalar>
       DefaultResidualSurf<Scalar>::DefaultResidualSurf(int i, Hermes::vector<std::string> areas,
-        Scalar const_coeff, HermesFunction<Scalar>* f_coeff,
+        Scalar const_coeff, Hermes2DFunction<Scalar>* f_coeff,
         GeomType gt)
         : VectorFormSurf<Scalar>(i, areas), const_coeff(const_coeff), function_coeff(f_coeff), gt(gt)
       {
         // If f_coeff is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new HermesFunction<Scalar>(1.0);
+        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant functions in Hcurl forms not implemented yet.");
       }
 
@@ -498,23 +498,23 @@ namespace Hermes
 
       template<typename Scalar>
       DefaultVectorFormSurf<Scalar>::DefaultVectorFormSurf(int i, std::string area, Scalar const_coeff,
-        HermesFunction<Scalar>* f_coeff,
+        Hermes2DFunction<Scalar>* f_coeff,
         GeomType gt)
         : VectorFormSurf<Scalar>(i, area), const_coeff(const_coeff), function_coeff(f_coeff), gt(gt)
       {
         // If f_coeff is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new HermesFunction<Scalar>(1.0);
+        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant coefficients in Hcurl forms not implemented yet.");
       }
 
       template<typename Scalar>
       DefaultVectorFormSurf<Scalar>::DefaultVectorFormSurf(int i, Hermes::vector<std::string> areas, Scalar const_coeff,
-        HermesFunction<Scalar>* f_coeff,
+        Hermes2DFunction<Scalar>* f_coeff,
         GeomType gt)
         : VectorFormSurf<Scalar>(i, areas), const_coeff(const_coeff), function_coeff(f_coeff), gt(gt)
       {
         // If f_coeff is HERMES_DEFAULT_FUNCTION, initialize it to be constant 1.0.
-        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new HermesFunction<Scalar>(1.0);
+        if (f_coeff == HERMES_DEFAULT_FUNCTION) this->function_coeff = new Hermes2DFunction<Scalar>(1.0);
         else error("Nonconstant coefficients in Hcurl forms not implemented yet.");
       }
 

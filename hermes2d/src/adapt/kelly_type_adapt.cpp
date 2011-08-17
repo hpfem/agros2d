@@ -165,9 +165,6 @@ namespace Hermes
         }
       }
 
-      //WARNING: AD HOC debugging parameter.
-      bool multimesh = false;
-
       // Begin the multimesh traversal.
       trav.begin(this->num, &(stage.meshes.front()), &(stage.fns.front()));
       while ((ee = trav.get_next_state(bnd, surf_pos)) != NULL)
@@ -236,6 +233,7 @@ namespace Hermes
                 NeighborNode* root;
                 int ns_index;
 
+                // Determine the minimum mesh seq in this stage.
                 this->dp.min_dg_mesh_seq = 0;
                 for(int j = 0; j < this->num; j++)
                   if(stage.meshes[j]->get_seq() < this->dp.min_dg_mesh_seq || j == 0)
@@ -243,40 +241,29 @@ namespace Hermes
 
                 ns_index = stage.meshes[i]->get_seq() - this->dp.min_dg_mesh_seq; // = 0 for single mesh
                 
-                // Determine the minimum mesh seq in this stage.
-                if (multimesh) 
-                {
-                  // Initialize the NeighborSearches.
-                  this->dp.init_neighbors(neighbor_searches, stage, isurf);
+                // Initialize the NeighborSearches.
+                this->dp.init_neighbors(neighbor_searches, stage, isurf);
 
-                  // Create a multimesh tree;
-                  root = new NeighborNode(NULL, 0);
-                  this->dp.build_multimesh_tree(root, neighbor_searches);
+                // Create a multimesh tree;
+                root = new NeighborNode(NULL, 0);
+                this->dp.build_multimesh_tree(root, neighbor_searches);
 
-                  // Update all NeighborSearches according to the multimesh tree.
-                  // After this, all NeighborSearches in neighbor_searches should have the same count 
-                  // of neighbors and proper set of transformations
-                  // for the central and the neighbor element(s) alike.
-                  // Also check that every NeighborSearch has the same number of neighbor elements.
-                  for(unsigned int j = 0; j < neighbor_searches.get_size(); j++)
-                    if(neighbor_searches.present(j)) 
-                    {
-                      NeighborSearch<Scalar>* ns = neighbor_searches.get(j);
-                      this->dp.update_neighbor_search(ns, root);
-                      if(num_neighbors == 0)
-                        num_neighbors = ns->n_neighbors;
-                      if(ns->n_neighbors != num_neighbors)
-                        error("Num_neighbors of different NeighborSearches not matching in KellyTypeAdapt<Scalar>::calc_err_internal.");
-                    }
-                }
-                else
+                // Update all NeighborSearches according to the multimesh tree.
+                // After this, all NeighborSearches in neighbor_searches should have the same count 
+                // of neighbors and proper set of transformations
+                // for the central and the neighbor element(s) alike.
+                // Also check that every NeighborSearch has the same number of neighbor elements.
+                for(unsigned int j = 0; j < neighbor_searches.get_size(); j++)
                 {
-                  NeighborSearch<Scalar> *ns = new NeighborSearch<Scalar>(ee[i], stage.meshes[i]);
-                  ns->original_central_el_transform = stage.fns[i]->get_transform();
-                  ns->set_active_edge(isurf);
-                  ns->clear_initial_sub_idx();
-                  num_neighbors = ns->n_neighbors;
-                  neighbor_searches.add(ns, ns_index);
+                  if(neighbor_searches.present(j)) 
+                  {
+                    NeighborSearch<Scalar>* ns = neighbor_searches.get(j);
+                    this->dp.update_neighbor_search(ns, root);
+                    if(num_neighbors == 0)
+                      num_neighbors = ns->n_neighbors;
+                    if(ns->n_neighbors != num_neighbors)
+                      error("Num_neighbors of different NeighborSearches not matching in KellyTypeAdapt<Scalar>::calc_err_internal.");
+                  }
                 }
 
                 // Go through all segments of the currently processed interface (segmentation is caused
@@ -301,87 +288,74 @@ namespace Hermes
 
                   // Set the active segment in all NeighborSearches
                   for(unsigned int j = 0; j < neighbor_searches.get_size(); j++)
+                  {
                     if(neighbor_searches.present(j)) 
                     {
                       neighbor_searches.get(j)->active_segment = neighbor;
                       neighbor_searches.get(j)->neighb_el = neighbor_searches.get(j)->neighbors[neighbor];
                       neighbor_searches.get(j)->neighbor_edge = neighbor_searches.get(j)->neighbor_edges[neighbor];
                     }
+                  }
 
-                    // Push all the necessary transformations to all functions of this stage.
-                    // The important thing is that the transformations to the current subelement are already there.
-                    // Also store the current neighbor element and neighbor edge in neighb_el, neighbor_edge.
-                    if (multimesh) 
-                    {
-                      for(unsigned int fns_i = 0; fns_i < stage.fns.size(); fns_i++)
-                      {
-                        NeighborSearch<Scalar> *ns = neighbor_searches.get(stage.meshes[fns_i]->get_seq() - this->dp.min_dg_mesh_seq);
-                        if (ns->central_transformations.present(neighbor))
-                          ns->central_transformations.get(neighbor)->apply_on(stage.fns[fns_i]);
-                      }
-                    }
-                    else
-                    {
-                      // Push the transformations only to the solution on the current mesh
-                      NeighborSearch<Scalar> *ns = neighbor_searches.get(ns_index);
-                      if (ns->central_transformations.present(neighbor))
-                        ns->central_transformations.get(neighbor)->apply_on(stage.fns[i]);
-                    }
-                    
-                    /* END COPY FROM DISCRETE_PROBLEM.CPP */
-                    rm->force_transform(this->sln[i]->get_transform(), this->sln[i]->get_ctm());
+                  // Push all the necessary transformations to all functions of this stage.
+                  // The important thing is that the transformations to the current subelement are already there.
+                  // Also store the current neighbor element and neighbor edge in neighb_el, neighbor_edge.
+                  for(unsigned int fns_i = 0; fns_i < stage.fns.size(); fns_i++)
+                  {
+                    NeighborSearch<Scalar> *ns = neighbor_searches.get(stage.meshes[fns_i]->get_seq() - this->dp.min_dg_mesh_seq);
+                    if (ns->central_transformations.present(neighbor))
+                      ns->central_transformations.get(neighbor)->apply_on(stage.fns[fns_i]);
+                  }
+                                     
+                  /* END COPY FROM DISCRETE_PROBLEM.CPP */
+                  rm->force_transform(this->sln[i]->get_transform(), this->sln[i]->get_ctm());
 
-                    // The estimate is multiplied by 0.5 in order to distribute the error equally onto
-                    // the two neighboring elements.
-                    double central_err = 0.5 * eval_interface_estimator(error_estimators_surf[iest],
-                                                                        rm, &surf_pos[isurf], neighbor_searches, 
-                                                                        ns_index);
-                    double neighb_err = central_err;
+                  // The estimate is multiplied by 0.5 in order to distribute the error equally onto
+                  // the two neighboring elements.
+                  double central_err = 0.5 * eval_interface_estimator(error_estimators_surf[iest],
+                                                                      rm, &surf_pos[isurf], neighbor_searches, 
+                                                                      ns_index);
+                  double neighb_err = central_err;
+
+                  // Scale the error estimate by the scaling function dependent on the element diameter
+                  // (use the central element's diameter).
+                  if (use_aposteriori_interface_scaling && interface_scaling_fns[i])
+                    central_err *= interface_scaling_fns[i]->value(ee[i]->get_diameter(), element_markers_conversion.get_user_marker(ee[i]->marker));
+
+                  // In the case this edge will be ignored when calculating the error for the element on
+                  // the other side, add the now computed error to that element as well.
+                  if (ignore_visited_segments)
+                  {
+                    Element *neighb = neighbor_searches.get(ns_index)->neighb_el;
 
                     // Scale the error estimate by the scaling function dependent on the element diameter
-                    // (use the central element's diameter).
+                    // (use the diameter of the element on the other side).
                     if (use_aposteriori_interface_scaling && interface_scaling_fns[i])
-                      central_err *= interface_scaling_fns[i]->value(ee[i]->get_diameter(), element_markers_conversion.get_user_marker(ee[i]->marker));
+                      neighb_err *= interface_scaling_fns[i]->value(neighb->get_diameter(), element_markers_conversion.get_user_marker(neighb->marker));
 
-                    // In the case this edge will be ignored when calculating the error for the element on
-                    // the other side, add the now computed error to that element as well.
-                    if (ignore_visited_segments)
-                    {
-                      Element *neighb = neighbor_searches.get(ns_index)->neighb_el;
+                    errors_components[i] += central_err + neighb_err;
+                    total_error += central_err + neighb_err;
+                    this->errors[i][ee[i]->id] += central_err;
+                    this->errors[i][neighb->id] += neighb_err;
+                  }
+                  else
+                    err += central_err;
 
-                      // Scale the error estimate by the scaling function dependent on the element diameter
-                      // (use the diameter of the element on the other side).
-                      if (use_aposteriori_interface_scaling && interface_scaling_fns[i])
-                        neighb_err *= interface_scaling_fns[i]->value(neighb->get_diameter(), element_markers_conversion.get_user_marker(neighb->marker));
+                  /* BEGIN COPY FROM DISCRETE_PROBLEM.CPP */
 
-                      errors_components[i] += central_err + neighb_err;
-                      total_error += central_err + neighb_err;
-                      this->errors[i][ee[i]->id] += central_err;
-                      this->errors[i][neighb->id] += neighb_err;
-                    }
-                    else
-                      err += central_err;
+                  // Clear the transformations from the RefMaps and all functions.
+                  for(unsigned int fns_i = 0; fns_i < stage.fns.size(); fns_i++)
+                    stage.fns[fns_i]->set_transform(neighbor_searches.get(stage.meshes[fns_i]->get_seq() - this->dp.min_dg_mesh_seq)->original_central_el_transform);
 
-                    /* BEGIN COPY FROM DISCRETE_PROBLEM.CPP */
+                  rm->set_transform(neighbor_searches.get(ns_index)->original_central_el_transform);
 
-                    // Clear the transformations from the RefMaps and all functions.
-                    if (multimesh)
-                      for(unsigned int fns_i = 0; fns_i < stage.fns.size(); fns_i++)
-                        stage.fns[fns_i]->set_transform(neighbor_searches.get(stage.meshes[fns_i]->get_seq() - this->dp.min_dg_mesh_seq)->original_central_el_transform);
-                    else
-                      stage.fns[i]->set_transform(neighbor_searches.get(ns_index)->original_central_el_transform);
-
-                    rm->set_transform(neighbor_searches.get(ns_index)->original_central_el_transform);
-
-
-                    /* END COPY FROM DISCRETE_PROBLEM.CPP */
+                  /* END COPY FROM DISCRETE_PROBLEM.CPP */
                 }
 
                 /* BEGIN COPY FROM DISCRETE_PROBLEM.CPP */
 
-                if (multimesh)
-                  // Delete the multimesh tree;
-                  delete root;
+                // Delete the multimesh tree;
+                delete root;
 
                 // Delete the neighbor_searches array.
                 for(unsigned int j = 0; j < neighbor_searches.get_size(); j++) 
@@ -396,7 +370,7 @@ namespace Hermes
 
           if (calc_norm)
           {
-            double nrm = eval_solution_norm(this->error_form[i][i], rm, this->sln[i]);
+            double nrm = eval_solution_norm(this->norm_form[i][i], rm, this->sln[i]);
             norms[i] += nrm;
             total_norm += nrm;
           }
@@ -544,42 +518,62 @@ namespace Hermes
 
       // Clean up.
       for (int i = 0; i < this->num; i++)
-        if (oi[i] != NULL) { oi[i]->free_ord(); delete oi[i]; }
-        delete [] oi;
-        delete fake_e;
-        delete fake_ext;
+      {
+        if (oi[i] != NULL) 
+        { 
+          oi[i]->free_ord(); 
+          delete oi[i]; 
+        }
+      }
+      delete [] oi;
+      delete fake_e;
+      fake_ext->free_ord();
+      delete fake_ext;
 
-        // eval the form
-        Quad2D* quad = this->sln[err_est_form->i]->get_quad_2d();
-        double3* pt = quad->get_points(order);
-        int np = quad->get_num_points(order);
+      // eval the form
+      Quad2D* quad = this->sln[err_est_form->i]->get_quad_2d();
+      double3* pt = quad->get_points(order);
+      int np = quad->get_num_points(order);
 
-        // Initialize geometry and jacobian*weights
-        Geom<double>* e = init_geom_vol(rm, order);
-        double* jac = rm->get_jacobian(order);
-        double* jwt = new double[np];
-        for(int i = 0; i < np; i++)
-          jwt[i] = pt[i][2] * jac[i];
+      // Initialize geometry and jacobian*weights
+      Geom<double>* e = init_geom_vol(rm, order);
+      double* jac = rm->get_jacobian(order);
+      double* jwt = new double[np];
+      for(int i = 0; i < np; i++)
+        jwt[i] = pt[i][2] * jac[i];
 
-        // Function values.
-        Func<Scalar>** ui = new Func<Scalar>* [this->num];
+      // Function values.
+      Func<Scalar>** ui = new Func<Scalar>* [this->num];
 
-        for (int i = 0; i < this->num; i++)
-          ui[i] = init_fn(this->sln[i], order);
+      for (int i = 0; i < this->num; i++)
+        ui[i] = init_fn(this->sln[i], order);
 
-        ExtData<Scalar>* ext = this->dp.init_ext_fns(err_est_form->ext, rm, order);
+      ExtData<Scalar>* ext = this->dp.init_ext_fns(err_est_form->ext, rm, order);
 
-        Scalar res = volumetric_scaling_const *
-          err_est_form->value(np, jwt, ui, ui[err_est_form->i], e, ext);
+      Scalar res = volumetric_scaling_const * err_est_form->value(np, jwt, ui, ui[err_est_form->i], e, ext);
 
-        for (int i = 0; i < this->num; i++)
-          if (ui[i] != NULL) { ui[i]->free_fn(); delete ui[i]; }
-          delete [] ui;
-          if (ext != NULL) { ext->free(); delete ext; }
-          e->free(); delete e;
-          delete [] jwt;
+      for (int i = 0; i < this->num; i++)
+      {
+        if (ui[i] != NULL) 
+        { 
+          ui[i]->free_fn(); 
+          delete ui[i]; 
+        }
+      }
+      delete [] ui;
+      
+      if (ext != NULL) 
+      { 
+        ext->free(); 
+        delete ext; 
+      }
+      
+      e->free(); 
+      delete e;
+      
+      delete [] jwt;
 
-          return std::abs(res);
+      return std::abs(res);
     }
 
     template<typename Scalar>
@@ -613,6 +607,7 @@ namespace Hermes
       
       delete [] oi;
       delete fake_e;
+      fake_ext->free_ord();
       delete fake_ext;
 
       // Evaluate the form.
@@ -650,7 +645,10 @@ namespace Hermes
         ext->free(); 
         delete ext; 
       }
-      e->free(); delete e;
+      
+      e->free(); 
+      delete e;
+      
       delete [] jwt;
 
       return std::abs(0.5*res);   // Edges are parameterized from 0 to 1 while integration weights
@@ -694,6 +692,7 @@ namespace Hermes
         delete fake_ui;
       }
 
+      fake_e->free_ord();
       delete fake_e;
 
       //delete fake_ext;
@@ -727,7 +726,10 @@ namespace Hermes
         delete ui; 
       }
       //if (ext != NULL) { ext->free(); delete ext; }
-      e->free(); delete e;
+      
+      e->free(); 
+      delete e;
+      
       delete [] jwt;
 
       return std::abs(0.5*res);   // Edges are parameterized from 0 to 1 while integration weights

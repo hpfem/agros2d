@@ -18,6 +18,8 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    unsigned g_space_seq = 0;
+
     template<typename Scalar>
     Space<Scalar>::Space(Mesh* mesh, Shapeset* shapeset, EssentialBCs<Scalar>* essential_bcs, Ord2 p_init)
       : shapeset(shapeset), essential_bcs(essential_bcs), mesh(mesh)
@@ -31,14 +33,14 @@ namespace Hermes
       this->nsize = esize = 0;
       this->ndata_allocated = 0;
       this->mesh_seq = -1;
-      this->seq = 0;
+      this->seq = g_space_seq;
       this->was_assigned = false;
       this->ndof = 0;
 
       if(essential_bcs != NULL)
         for(typename Hermes::vector<EssentialBoundaryCondition<Scalar>*>::const_iterator it = essential_bcs->begin(); it != essential_bcs->end(); it++)
           for(unsigned int i = 0; i < (*it)->markers.size(); i++)
-            if(mesh->get_boundary_markers_conversion().conversion_table_inverse->find((*it)->markers.at(i)) == mesh->get_boundary_markers_conversion().conversion_table_inverse->end())
+            if(mesh->get_boundary_markers_conversion().conversion_table_inverse.find((*it)->markers.at(i)) == mesh->get_boundary_markers_conversion().conversion_table_inverse.end())
               error("A boundary condition defined on a non-existent marker.");
 
       own_shapeset = (shapeset == NULL);
@@ -89,6 +91,8 @@ namespace Hermes
         edata = (ElementData*) realloc(edata, sizeof(ElementData) * esize);
         for (int i = oldsize; i < esize; i++)
           edata[i].order = -1;
+        for (int i = oldsize; i < esize; i++)
+          edata[i].changed_in_last_adaptation = true;
       }
     }
 
@@ -155,11 +159,11 @@ namespace Hermes
         order = H2D_MAKE_QUAD_ORDER(order, order);
 
       edata[id].order = order;
-      seq++;
+      seq = g_space_seq++;
     }
 
     template<typename Scalar>
-    Hermes::vector<Space<Scalar>*>* Space<Scalar>::construct_refined_spaces(Hermes::vector<Space<Scalar>*> coarse, int order_increase) {
+    Hermes::vector<Space<Scalar>*>* Space<Scalar>::construct_refined_spaces(Hermes::vector<Space<Scalar>*> coarse, int order_increase, int refinement_type) {
       _F_;
       Hermes::vector<Space<Scalar>*> * ref_spaces = new Hermes::vector<Space<Scalar>*>;
       bool same_meshes = true;
@@ -169,7 +173,7 @@ namespace Hermes
           same_meshes = false;
         Mesh* ref_mesh = new Mesh;
         ref_mesh->copy(coarse[i]->get_mesh());
-        ref_mesh->refine_all_elements();
+        ref_mesh->refine_all_elements(refinement_type);
         ref_spaces->push_back(coarse[i]->dup(ref_mesh, order_increase));
       }
 
@@ -180,18 +184,23 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Space<Scalar>* Space<Scalar>::construct_refined_space(Space<Scalar>* coarse, int order_increase) {
+    Space<Scalar>* Space<Scalar>::construct_refined_space(Space<Scalar>* coarse, 
+                                                          int order_increase, 
+                                                          int refinement_type) 
+    {
       _F_;
       Mesh* ref_mesh = new Mesh;
       ref_mesh->copy(coarse->get_mesh());
-      ref_mesh->refine_all_elements();
+      ref_mesh->refine_all_elements(refinement_type);
+
       Space<Scalar>* ref_space = coarse->dup(ref_mesh, order_increase);
 
       return ref_space;
     }
 
     template<typename Scalar>
-    void Space<Scalar>::update_essential_bc_values(Hermes::vector<Space<Scalar>*> spaces, double time) {
+    void Space<Scalar>::update_essential_bc_values(Hermes::vector<Space<Scalar>*> spaces, double time) 
+    {
       int n = spaces.size();
       for (int i = 0; i < n; i++) {
         if(spaces[i]->get_essential_bcs() != NULL)
@@ -261,7 +270,7 @@ namespace Hermes
             ed->order = quad_order;
         }
       }
-      seq++;
+      seq = g_space_seq++;
     }
 
     template<typename Scalar>
@@ -444,6 +453,10 @@ namespace Hermes
         this->mesh->unrefine_element_id(list[i]);
       }
 
+      // Recalculate all integrals, do not use previous adaptivity step.
+      for_all_active_elements(e, this->mesh)
+        this->edata[e->id].changed_in_last_adaptation = true;
+
       this->assign_dofs();
     }
 
@@ -477,8 +490,21 @@ namespace Hermes
         o = e->is_triangle() ? ho : H2D_MAKE_QUAD_ORDER(ho, vo);
 
         copy_orders_recurrent(mesh->get_element(e->id), o);
+        if(space->edata[e->id].changed_in_last_adaptation)
+        {
+          if(mesh->get_element(e->id)->active)
+            edata[e->id].changed_in_last_adaptation = true;
+          else
+            for(unsigned int i = 0; i < 4; i++)
+              if(mesh->get_element(e->id)->sons[i] != NULL)
+                if(mesh->get_element(e->id)->sons[i]->active)
+                  edata[mesh->get_element(e->id)->sons[i]->id].changed_in_last_adaptation = true;
+        }
+
+        Element * e;
       }
-      seq++;
+      
+      seq = g_space_seq++;
 
       // since space changed, enumerate basis functions
       this->assign_dofs();
@@ -534,7 +560,7 @@ namespace Hermes
       if (this->mesh == mesh) return;
       free();
       this->mesh = mesh;
-      seq++;
+      seq = g_space_seq++;
 
       // since space changed, enumerate basis functions
       this->assign_dofs();

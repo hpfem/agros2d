@@ -136,7 +136,7 @@ namespace Hermes
       virtual double get_current_time() const;
 
       void get_stages(Hermes::vector<Space<Scalar>*> spaces, Hermes::vector<Solution<Scalar>*>& u_ext,
-        Hermes::vector<Stage<Scalar> >& stages, bool want_matrix, bool want_vector);
+        Hermes::vector<Stage<Scalar> >& stages, bool want_matrix, bool want_vector, bool one_stage = false);
 
       bool** get_blocks(bool force_diagonal_blocks);
       
@@ -238,15 +238,13 @@ namespace Hermes
       }
 
       Stage<Scalar>* find_stage(Hermes::vector<Stage<Scalar> >& stages, int ii, int jj, Mesh* m1, Mesh* m2,
-        Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext);
+        Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext, bool one_stage = false);
 
       Stage<Scalar>* find_stage(Hermes::vector<Stage<Scalar> >& stages, Hermes::vector<std::pair<unsigned int, unsigned int> > coordinates,
-        Mesh* m1, Mesh* m2,
-        Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext);
+        Mesh* m1, Mesh* m2, Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext, bool one_stage = false);
 
       Stage<Scalar>* find_stage(Hermes::vector<Stage<Scalar> >& stages, Hermes::vector<unsigned int> coordinates,
-        Mesh* m1, Mesh* m2,
-        Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext);
+        Mesh* m1, Mesh* m2, Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext, bool one_stage = false);
 
       Mesh::ElementMarkersConversion* element_markers_conversion;
 
@@ -289,18 +287,6 @@ namespace Hermes
       /// solutions coming to the assembling procedure via the
       /// external coefficient vector.
       int u_ext_offset;
-
-      /// If true, the form will be evaluated using adaptive
-      /// numerical integration.
-      bool adapt_eval;
-
-      /// To obtain reference value, the element is split into
-      /// four sons. In addition, the order is increased by this value.
-      int adapt_order_increase;
-
-      /// Max. allowed relative error (stopping criterion for adaptive
-      /// numerical quadrature.
-      double adapt_rel_error_tol;
 
     protected:
       WeakForm<Scalar>* wf;
@@ -380,10 +366,10 @@ namespace Hermes
       unsigned int i;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v, 
-        Geom<double> *e, ExtData<Scalar> *ext);
+        Geom<double> *e, ExtData<Scalar> *ext) ;
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, 
-        ExtData<Hermes::Ord> *ext);
+        ExtData<Hermes::Ord> *ext) ;
     };
 
     template<typename Scalar>
@@ -405,10 +391,10 @@ namespace Hermes
       unsigned int i;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v, 
-        Geom<double> *e, ExtData<Scalar> *ext);
+        Geom<double> *e, ExtData<Scalar> *ext) ;
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v, 
-        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext);
+        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) ;
     };
 
     /// Multi-component forms.

@@ -24,6 +24,32 @@
 #include "sceneview.h"
 #include "progressdialog.h"
 
+class InitialCondition : public Hermes::Hermes2D::ExactSolutionScalar<double>
+{
+public:
+    InitialCondition(Hermes::Hermes2D::Mesh *mesh, double constant_value) : Hermes::Hermes2D::ExactSolutionScalar<double>(mesh),
+        constant_value(constant_value) {}
+
+    virtual double value(double x, double y) const
+    {
+        return constant_value;
+    }
+
+    virtual void derivatives(double x, double y, double& dx, double& dy) const
+    {
+        dx = 0;
+        dy = 0;
+    }
+
+    virtual Hermes::Ord ord(Hermes::Ord x, Hermes::Ord y) const
+    {
+        return Hermes::Ord(0);
+    }
+
+private:
+    double constant_value;
+};
+
 template <typename Scalar>
 SceneSolution<Scalar>::SceneSolution()
 {
@@ -41,7 +67,7 @@ SceneSolution<Scalar>::SceneSolution()
     m_slnContourView = NULL;
     m_slnScalarView = NULL;
     m_slnVectorXView = NULL;
-    m_slnVectorYView = NULL;   
+    m_slnVectorYView = NULL;
 }
 
 template <typename Scalar>
@@ -144,9 +170,8 @@ void SceneSolution<Scalar>::solve(SolverMode solverMode)
 
     if (isMeshed())
     {
-        Hermes::Hermes2D::Solution<Scalar> tsln;
-        tsln.set_zero(m_meshInitial);
-        m_linInitialMeshView.process_solution(&tsln);
+        InitialCondition initial(m_meshInitial, 0.0);
+        m_linInitialMeshView.process_solution(&initial);
     }
 
     // delete temp file
@@ -213,7 +238,8 @@ void SceneSolution<Scalar>::loadSolution(QDomElement *element)
         SolutionArray<Scalar> *solutionArray = new SolutionArray<Scalar>();
         solutionArray->order = new Hermes::Hermes2D::Views::Orderizer();
         solutionArray->sln = new Hermes::Hermes2D::Solution<Scalar>();
-        solutionArray->sln->set_const(Util::scene()->sceneSolution()->meshInitial(), Util::scene()->problemInfo()->initialCondition.number());
+        // FIXME
+        // solutionArray->sln->set_const(Util::scene()->sceneSolution()->meshInitial(), Util::scene()->problemInfo()->initialCondition.number());
         solutionArray->adaptiveError = 0.0;
         solutionArray->adaptiveSteps = 0.0;
         solutionArray->time = 0.0;
@@ -515,9 +541,8 @@ void SceneSolution<Scalar>::processSolutionMesh()
 
     if (isSolved())
     {
-        Hermes::Hermes2D::Solution<Scalar> tsln;
-        tsln.set_zero(sln()->get_mesh());
-        m_linSolutionMeshView.process_solution(&tsln);
+        InitialCondition initial(sln()->get_mesh(), 0.0);
+        m_linSolutionMeshView.process_solution(&initial);
 
         emit processedSolutionMesh();
     }
@@ -551,7 +576,7 @@ void SceneSolution<Scalar>::processRangeScalar()
     if (isSolved() && sceneView()->sceneViewSettings().scalarPhysicFieldVariable != "")
     {
         ViewScalarFilter<Scalar> *viewScalarFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().scalarPhysicFieldVariable),
-                                                                                                        sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
+                                                                                                                sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
 
         setSlnScalarView(viewScalarFilter);
         emit processedRangeScalar();
@@ -566,10 +591,10 @@ void SceneSolution<Scalar>::processRangeVector()
     if (isSolved() && sceneView()->sceneViewSettings().vectorPhysicFieldVariable != "")
     {
         ViewScalarFilter<Scalar> *viewVectorXFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().vectorPhysicFieldVariable),
-                                                                                                         PhysicFieldVariableComp_X);
+                                                                                                                 PhysicFieldVariableComp_X);
 
         ViewScalarFilter<Scalar> *viewVectorYFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().vectorPhysicFieldVariable),
-                                                                                                         PhysicFieldVariableComp_Y);
+                                                                                                                 PhysicFieldVariableComp_Y);
 
         setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
         emit processedRangeVector();

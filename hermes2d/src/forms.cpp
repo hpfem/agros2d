@@ -288,6 +288,7 @@ namespace Hermes
       this->nx = geom->nx;
       this->ny = geom->ny;
       this->orientation = geom->orientation;
+      this->wrapped_geom = geom;
     }
 
     template<typename T>
@@ -326,8 +327,9 @@ namespace Hermes
       e->nx = nx; e->ny = ny;
       e->tx = tx; e->ty = ty;
       e->diam = diam;
-      e->edge_marker = -8888;
-      e->elem_marker = -9999;
+      e->edge_marker = HERMES_DUMMY_EDGE_MARKER;
+      e->elem_marker = HERMES_DUMMY_ELEM_MARKER;
+      
       return e;
     }
 
@@ -696,8 +698,6 @@ namespace Hermes
             for (int i = 0; i < np; i++)
               u->laplace[i] = dxx[i] + dyy[i];
           }
-          else if (sln_type == HERMES_CONST)
-            memset(u->laplace, 0, np * sizeof(Scalar));
         }
 #endif
       }

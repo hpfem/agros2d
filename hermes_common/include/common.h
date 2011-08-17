@@ -55,6 +55,7 @@
 #include <cstring>
 
 #include "hermes_logging.h"
+#include "hermes_function.h"
 #include "common_time_period.h"
 #include "compat.h"
 #include "callstack.h"
@@ -64,8 +65,8 @@
 #include "array.h"
 #include "qsort.h"
 #include "ord.h"
-#include "python_API/python_api.h"
-#include "python_API/python_engine_api.h"
+// #include "python_API/python_api.h"
+// #include "python_API/python_engine_api.h"
 
 #ifndef CONFIG_H_INCLUDED
 #define CONFIG_H_INCLUDED
@@ -192,6 +193,10 @@ namespace Hermes
   // For internal use.
   const int H2D_DG_INNER_EDGE_INT = -1234567;
   const int H2D_DG_BOUNDARY_EDGE_INT = -12345;
+  
+  // For internal use (inside Geom<Ord>).
+  const int HERMES_DUMMY_ELEM_MARKER = -9999;
+  const int HERMES_DUMMY_EDGE_MARKER = -8888;
 
   namespace Helpers
   {
