@@ -17,9 +17,7 @@ agros2d.pro.user
 agros2d-remote
 agros2d-remote.pro.user
 debian/files
-doc/help
-doc/latex
-doc/web
+doc/build
 setup
 install
 *.res
