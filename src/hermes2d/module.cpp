@@ -194,11 +194,14 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
-                add_matrix_form(new CustomParserMatrixFormVol<Scalar>(form->i - 1, form->j - 1,
-                                                                      QString::number(i).toStdString(),
-                                                                      form->sym,
-                                                                      form->expression,
-                                                                      material));
+                CustomParserMatrixFormVol<Scalar>* custom_form = new CustomParserMatrixFormVol<Scalar>(form->i - 1, form->j - 1,
+                                                                                                       QString::number(i).toStdString(),
+                                                                                                       form->sym,
+                                                                                                       form->expression,
+                                                                                                       material);
+                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+                    custom_form->ext.push_back(solution[0]);  //TODO 0
+                add_matrix_form(custom_form);
             }
 
             for (Hermes::vector<ParserFormVector *>::iterator it = Util::scene()->problemInfo()->module()->weakform_vector_volume.begin();
@@ -206,11 +209,13 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormVector *form = ((ParserFormVector *) *it);
 
-                // previous solution (time dep)
-                add_vector_form(new CustomParserVectorFormVol<Scalar>(form->i - 1,
-                                                                      QString::number(i).toStdString(),
-                                                                      form->expression,
-                                                                      material));
+                CustomParserVectorFormVol<Scalar>* custom_form = new CustomParserVectorFormVol<Scalar>(form->i - 1,
+                                                                                                       QString::number(i).toStdString(),
+                                                                                                       form->expression,
+                                                                                                       material);
+                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+                    custom_form->ext.push_back(solution[0]);  //TODO 0
+                add_vector_form(custom_form);
             }
         }
     }
@@ -1085,14 +1090,6 @@ template <typename Scalar>
 bool SolutionAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceParam,
                                             Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionParam)
 {
-    double actualTime = 0.;
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spaceParam, actualTime);
-    Util::scene()->problemInfo()->module()->update_time_functions(actualTime);
-
-    m_wf->set_current_time(actualTime);
-    m_wf->delete_all();
-    m_wf->registerForms();
-
     // Initialize the FE problem.
     Hermes::Hermes2D::DiscreteProblem<double> dp(m_wf, spaceParam);
 
@@ -1112,7 +1109,7 @@ bool SolutionAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Spa
     }
     else{
         Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), spaceParam, solutionParam);
-        m_progressItemSolve->emitMessage(QObject::tr("One problem solved"), true); //TODO temp
+        m_progressItemSolve->emitMessage(QObject::tr("One problem solved"), false); //TODO temp
         cout << "One problem solved" << endl;
     }
 
@@ -1130,6 +1127,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
 
     // error marker
     bool isError = false;
+    double error = 0.0;
 
     initCalculation(bcs);
 
@@ -1142,7 +1140,10 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
     }
 
     for (int i = 0; i < numberOfSolution; i++)
-    {
+    {        
+        // nonlinear - initial solution
+        solution.at(i)->set_const(mesh, 0.0);
+
         // transient
         if (analysisType == AnalysisType_Transient)
         {
@@ -1151,18 +1152,16 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
             // solution.at(i)->set_const(mesh, initialCondition);
             solutionArrayList.push_back(solutionArray(solution.at(i)));
         }
-
-        // nonlinear - initial solution
-        // FIXME
-        // solution.at(i)->set_const(mesh, 0.0);
     }
+
 
     actualTime = 0.0;
     int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
+    cout << "total " << timeTotal << ", step " << timeStep << endl;
     for (int n = 0; n<timesteps; n++)
     {
         // set actual time
-        actualTime = (n+1)*timeStep;
+        actualTime = (n + 1) * timeStep;
 
         // update essential bc values
         Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(space, actualTime);
@@ -1193,7 +1192,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
                     Hermes::Hermes2D::Adapt<Scalar> adaptivity(space, projNormType);
 
                     // Calculate error estimate for each solution component and the total error estimate.
-                    double error = adaptivity.calc_err_est(solution, solutionReference) * 100;
+                    error = adaptivity.calc_err_est(solution, solutionReference) * 100;
 
                     // emit signal
                     m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
@@ -1219,7 +1218,6 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
             }
         }
 
-        int n, error = 0; //TODO
 
         // output
         if (!isError)

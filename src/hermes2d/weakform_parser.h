@@ -77,10 +77,15 @@ public:
     double pvdx;
     double pvdy;
 
-    // previous solution
+    // previous solution (in Newton method)
     double pupval;
     double pupdx;
     double pupdy;
+
+    // solution from the previous time level
+    double puptval;
+    double puptdx;
+    double puptdy;
 
     ParserForm();
     ~ParserForm();
