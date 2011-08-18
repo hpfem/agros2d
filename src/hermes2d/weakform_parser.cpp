@@ -96,6 +96,11 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
     parser->parser[0]->DefineVar("updx", &pupdx);
     parser->parser[0]->DefineVar("updy", &pupdy);
 
+    // solution from previous time level
+    parser->parser[0]->DefineVar("uptval", &puptval);
+    parser->parser[0]->DefineVar("uptdx", &puptdx);
+    parser->parser[0]->DefineVar("uptdy", &puptdy);
+
     parser->setParserVariables(material, boundary);
 
     for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
@@ -138,12 +143,15 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->j]->val[i];
+        pupval = u_ext[this->j]->val[i]; //TODO PK this->j
         pupdx = u_ext[this->j]->dx[i];
         pupdy = u_ext[this->j]->dy[i];
 
-        // parser->parser_variables["lambda"] = 100.0; // cond.value(u->val[i]);
-        // parser->parser_variables["dlambda"] = 0.0; //  cond.derivative(u->val[i]);
+        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient){
+            puptval = ext->fn[this->i]->val[i];
+            puptdx = ext->fn[this->i]->dx[i];
+            puptdy = ext->fn[this->i]->dy[i];
+        }
 
         result += wt[i] * parser->parser[0]->Eval();
     }
@@ -184,9 +192,15 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->i]->val[i];
+        pupval = u_ext[this->i]->val[i];  //TODO PK this->i
         pupdx = u_ext[this->i]->dx[i];
         pupdy = u_ext[this->i]->dy[i];
+
+        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient){
+            puptval = ext->fn[this->i]->val[i];
+            puptdx = ext->fn[this->i]->dx[i];
+            puptdy = ext->fn[this->i]->dy[i];
+        }
 
         result += wt[i] * parser->parser[0]->Eval();
     }

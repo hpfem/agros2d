@@ -2,7 +2,7 @@
 <module>
     <general id="electrostatic" name="Electrostatic field">
         <description>Electrostatics is the branch of science that deals with the phenomena and properties of stationary or slow-moving (without acceleration) electric charges.</description>
-        <properties steadystate="1" harmonic="0" transient="1" />
+        <properties steadystate="1" harmonic="0" transient="0" />
     </general>
 
     <constants>
@@ -22,23 +22,13 @@
             <vector i="1" planar="epsr * EPS0 * (updx * vdx + updy * vdy) - rho * vval"
                           axi="epsr * EPS0 * x * (updx * vdx + updy * vdy) - rho * x * vval" />
          </steadystate>
-
-         <transient>
-             <material id="electrostatic_permittivity" />
-             <material id="electrostatic_charge_density" />
-
-             <matrix i="1" j="1" planar="0.0 * EPS0 * uval * (updx * vdx + updy * vdy) + epsr * EPS0 * (udx * vdx + udy * vdy) - uval * vval * 0.1"
-                                 axi="0.0 * EPS0 * x * uval * (updx * vdx + updy * vdy) + epsr * EPS0 * x * (udx * vdx + udy * vdy)" symmetric="1" />
-             <vector i="1" planar="epsr * EPS0 * (updx * vdx + updy * vdy) - rho * vval + upval * vval * 0.1"
-                           axi="epsr * EPS0 * x * (updx * vdx + updy * vdy) - rho * x * vval" />
-          </transient>
     </material>
 
     <boundary>
         <item id="electrostatic_potential" name="Fixed voltage" shortname="V" unit="V" />
         <item id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" unit="C/m2" />
     	
-    	<steadystate>
+        <steadystate>
             <boundary id="electrostatic_potential" name="Fixed voltage">
                 <item id="electrostatic_potential" />
 
@@ -88,9 +78,9 @@
 
         <vectorvariable>
             <steadystate default="electrostatic_electric_field">
-                <item id="electrostatic_electric_field" />
-                <item id="electrostatic_displacement" />
-            </steadystate>
+               <item id="electrostatic_electric_field" />
+               <item id="electrostatic_displacement" />
+           </steadystate>
         </vectorvariable>
     </view>
 
