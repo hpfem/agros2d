@@ -141,7 +141,7 @@ INCLUDEPATH += . \
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
     version.xml
-linux-g++ {
+linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
     # DEFINES += WITH_UNITY
