@@ -1109,8 +1109,8 @@ bool SolutionAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Spa
     }
     else{
         Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), spaceParam, solutionParam);
-        m_progressItemSolve->emitMessage(QObject::tr("One problem solved"), false); //TODO temp
-        cout << "One problem solved" << endl;
+//        m_progressItemSolve->emitMessage(QObject::tr("One problem solved"), false); //TODO temp
+//        cout << "One problem solved" << endl;
     }
 
     return true;
@@ -1157,7 +1157,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
 
     actualTime = 0.0;
     int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
-    cout << "total " << timeTotal << ", step " << timeStep << endl;
+    cout << "total " << timeTotal << ", step " << timeStep << ", timesteps " << timesteps << endl;
     for (int n = 0; n<timesteps; n++)
     {
         // set actual time
@@ -1177,44 +1177,50 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
 
         int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
         int actualAdaptivitySteps = -1;
-        for (int i = 0; i<maxAdaptivitySteps; i++){
+        for (int i = 0; i<maxAdaptivitySteps; i++)
+        {
             if (adaptivityType == AdaptivityType_None)
-                solveOneProblem(space, solution);
-            else{
+            {
+                if(!solveOneProblem(space, solution))
+                    isError = true;
+            }
+            else
+            {
                 Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceReference = *Hermes::Hermes2D::Space<Scalar>::construct_refined_spaces(space);
 
-                if(solveOneProblem(spaceReference, solutionReference))
-                {
-                    // project the fine mesh solution onto the coarse mesh.
-                    Hermes::Hermes2D::OGProjection<Scalar>::project_global(space, solutionReference, solution, matrixSolver);
-
-                    // Calculate element errors and total error estimate.
-                    Hermes::Hermes2D::Adapt<Scalar> adaptivity(space, projNormType);
-
-                    // Calculate error estimate for each solution component and the total error estimate.
-                    error = adaptivity.calc_err_est(solution, solutionReference) * 100;
-
-                    // emit signal
-                    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
-                                                     arg(error, 0, 'f', 3).
-                                                     arg(i + 1).
-                                                     arg(maxAdaptivitySteps).
-                                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
-                                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
-                    // add error to the list
-                    m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
-
-                    if (error < adaptivityTolerance || Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) >= adaptivityMaxDOFs)
-                    {
-                        break;
-                    }
-                    if (i != maxAdaptivitySteps-1) adaptivity.adapt(selector,
-                                                                    Util::config()->threshold,
-                                                                    Util::config()->strategy,
-                                                                    Util::config()->meshRegularity);
-                    actualAdaptivitySteps = i+1;
-
+                if(!solveOneProblem(spaceReference, solutionReference)){
+                    isError = true;
+                    break;
                 }
+                // project the fine mesh solution onto the coarse mesh.
+                Hermes::Hermes2D::OGProjection<Scalar>::project_global(space, solutionReference, solution, matrixSolver);
+
+                // Calculate element errors and total error estimate.
+                Hermes::Hermes2D::Adapt<Scalar> adaptivity(space, projNormType);
+
+                // Calculate error estimate for each solution component and the total error estimate.
+                error = adaptivity.calc_err_est(solution, solutionReference) * 100;
+
+                // emit signal
+                m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
+                                                 arg(error, 0, 'f', 3).
+                                                 arg(i + 1).
+                                                 arg(maxAdaptivitySteps).
+                                                 arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
+                                                 arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
+                // add error to the list
+                m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
+
+                if (error < adaptivityTolerance || Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) >= adaptivityMaxDOFs)
+                {
+                    break;
+                }
+                if (i != maxAdaptivitySteps-1) adaptivity.adapt(selector,
+                                                                Util::config()->threshold,
+                                                                Util::config()->strategy,
+                                                                Util::config()->meshRegularity);
+                actualAdaptivitySteps = i+1;
+
             }
         }
 
@@ -1233,6 +1239,8 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
                                                  arg(timesteps).
                                                  arg(actualTime, 0, 'e', 2), false, n+2);
         }
+        else
+            break;
     }
 
 
