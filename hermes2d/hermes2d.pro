@@ -72,7 +72,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/mesh/traverse.cpp \
                 src/mesh/element_to_refine.cpp \
                 src/mesh/mesh.cpp \
-                src/mesh/mesh_h2d_xml.cpp \
                 src/mesh/mesh_reader_h2d.cpp \
                 src/mesh/nurbs.cpp \
                 src/mesh/refmap.cpp \
