@@ -407,7 +407,7 @@ namespace Hermes
     template<typename Scalar>
     Scalar Adapt<Scalar>::MatrixFormVolError::value(int n, double *wt, Func<Scalar> *u_ext[],
       Func<Scalar> *u, Func<Scalar> *v, Geom<double> *e,
-      ExtData<Scalar> *ext) const
+      ExtData<Scalar> *ext)
     {
       switch (projNormType)
       {
@@ -430,7 +430,7 @@ namespace Hermes
     template<typename Scalar>
     Hermes::Ord Adapt<Scalar>::MatrixFormVolError::ord(int n, double *wt, Func<Hermes::Ord> *u_ext[],
       Func<Hermes::Ord> *u, Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e,
-      ExtData<Hermes::Ord> *ext) const
+      ExtData<Hermes::Ord> *ext)
     {
       switch (projNormType)
       {

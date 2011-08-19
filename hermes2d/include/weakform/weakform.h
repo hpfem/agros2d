@@ -369,7 +369,7 @@ namespace Hermes
         Geom<double> *e, ExtData<Scalar> *ext) ;
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, 
-        ExtData<Hermes::Ord> *ext) ;
+        ExtData<Hermes::Ord> *ext);
     };
 
     template<typename Scalar>

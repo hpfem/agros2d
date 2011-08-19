@@ -319,7 +319,7 @@ double DataTable::value(double key)
 
 Hermes::Ord DataTable::value(Hermes::Ord key)
 {
-    return 1.0;
+    return Hermes::Ord(1);
 }
 
 double DataTable::derivative(double key)
@@ -359,7 +359,7 @@ double DataTable::derivative(double key)
 
 Hermes::Ord DataTable::derivative(Hermes::Ord key)
 {
-    return 1.0;
+    return Hermes::Ord(1);
 }
 
 double DataTable::value_spline(double key)
@@ -372,7 +372,7 @@ double DataTable::value_spline(double key)
 
 Hermes::Ord DataTable::value_spline(Hermes::Ord key)
 {
-    return 1.0;
+    return Hermes::Ord(1);
 }
 
 double DataTable::derivative_spline(double key)
@@ -387,7 +387,7 @@ double DataTable::derivative_spline(double key)
 
 Hermes::Ord DataTable::derivative_spline(Hermes::Ord key)
 {
-    return 1.0;
+    return Hermes::Ord(1);
 }
 
 std::string DataTable::to_string()
