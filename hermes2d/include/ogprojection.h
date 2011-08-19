@@ -91,7 +91,7 @@ namespace Hermes
         }
 
         Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-          Geom<double> *e, ExtData<Scalar> *ext) const
+          Geom<double> *e, ExtData<Scalar> *ext)
         {
           switch (projNormType)
           {
@@ -112,7 +112,7 @@ namespace Hermes
         }
 
         Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
-          Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const
+          Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext)
         {
           switch (projNormType)
           {
@@ -207,7 +207,7 @@ namespace Hermes
         }
 
         Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-          Geom<double> *e, ExtData<Scalar> *ext) const
+          Geom<double> *e, ExtData<Scalar> *ext)
         {
           switch (projNormType)
           {
@@ -228,7 +228,7 @@ namespace Hermes
         }
 
         Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
-          Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const
+          Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext)
         {
           switch (projNormType)
           {
@@ -253,7 +253,7 @@ namespace Hermes
 
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         SolFunctionDomain h1_projection_residual(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<TestFunctionDomain> *v,
-          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext) const
+          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext)
         {
           _F_
             SolFunctionDomain result = SolFunctionDomain(0);
@@ -266,7 +266,7 @@ namespace Hermes
 
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         SolFunctionDomain h1_semi_projection_residual(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<TestFunctionDomain> *v,
-          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext) const
+          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext)
         {
           _F_
             SolFunctionDomain result = SolFunctionDomain(0);
@@ -278,7 +278,7 @@ namespace Hermes
 
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         SolFunctionDomain l2_projection_residual(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<TestFunctionDomain> *v,
-          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext) const
+          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext)
         {
           _F_
             SolFunctionDomain result = SolFunctionDomain(0);
@@ -289,7 +289,7 @@ namespace Hermes
 
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         SolFunctionDomain hcurl_projection_residual(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<TestFunctionDomain> *v,
-          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext) const
+          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext)
         {
           _F_
             SolFunctionDomain result = SolFunctionDomain(0);
@@ -304,7 +304,7 @@ namespace Hermes
 
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         SolFunctionDomain hdiv_projection_residual(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<TestFunctionDomain> *v,
-          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext) const
+          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext)
         {
           _F_
             SolFunctionDomain result = SolFunctionDomain(0);

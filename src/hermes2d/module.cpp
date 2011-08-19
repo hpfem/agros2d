@@ -1136,15 +1136,14 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
     for (int i = 0; i < numberOfSolution; i++)
     {        
         // nonlinear - initial solution
-        solution.at(i)->set_const(mesh, 0.0);
+        // solution.at(i)->set_const(mesh, 0.0);
 
         // transient
         if (analysisType == AnalysisType_Transient)
         {
             // constant initial solution
-            // FIXME
-            // solution.at(i)->set_const(mesh, initialCondition);
-            solutionArrayList.push_back(solutionArray(solution.at(i)));
+            InitialCondition initial(mesh, 0.0);
+            solutionArrayList.push_back(solutionArray(static_cast<Hermes::Hermes2D::Solution<Scalar> *>(&initial)));
         }
     }
 

@@ -17,7 +17,7 @@
             <material id="heat_conductivity" />
             <material id="heat_volume_heat" />
 
-            <matrix i="1" j="1" planar="dlambda * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
+            <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
                                 axi="0.0 * x * uval * (updx * vdx + updy * vdy) + lambda * x * (udx * vdx + udy * vdy)" symmetric="1" />
             <vector i="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval"
                           axi="lambda * x * (updx * vdx + updy * vdy) - p * x * vval" />
@@ -29,9 +29,9 @@
             <material id="heat_density" />
             <material id="heat_specific_heat" />
 
-            <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)     + 0 * uval * upval * vval / 1 + rho * cp * uval * vval / 1"
+            <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy) + 0.0 * uval * upval * vval / 1 + rho * cp * uval * vval / 1"
                                 axi="0.0 * x * uval * (updx * vdx + updy * vdy) + lambda * x * (udx * vdx + udy * vdy)" symmetric="1" />
-            <vector i="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval     + rho * cp * (upval - uptval) * vval / 1"
+            <vector i="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval + rho * cp * (upval - uptval) * vval / 1"
                           axi="lambda * x * (updx * vdx + updy * vdy) - p * vval" />
         </transient>        
     </material>

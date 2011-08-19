@@ -82,7 +82,7 @@ double Value::value(double key)
 
 Hermes::Ord Value::value(Hermes::Ord key)
 {
-    return 1.0;
+    return Hermes::Ord(1);
 }
 
 double Value::derivative(double key)
@@ -99,7 +99,7 @@ double Value::derivative(double key)
 
 Hermes::Ord Value::derivative(Hermes::Ord key)
 {
-    return 1.0;
+    return Hermes::Ord(1);
 }
 
 QString Value::toString()
