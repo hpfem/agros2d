@@ -1096,7 +1096,7 @@ bool SolutionAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Spa
 
     // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
     Hermes::Hermes2D::NewtonSolver<double> newton(&dp, Hermes::SOLVER_UMFPACK);
-    if (!newton.solve(coeff_vec, nonlinearTolerance, nonlinearSteps))
+    if (!newton.solve(coeff_vec, nonlinearTolerance, 2*nonlinearSteps))  //TODO remove 2*
     {
         m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed"), true);
         return false;

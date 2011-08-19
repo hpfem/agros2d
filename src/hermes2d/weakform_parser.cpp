@@ -101,6 +101,9 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
     parser->parser[0]->DefineVar("uptdx", &puptdx);
     parser->parser[0]->DefineVar("uptdy", &puptdy);
 
+    // time step
+    parser->parser[0]->DefineVar("deltat", &pdeltat);
+
     parser->setParserVariables(material, boundary);
 
     for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
@@ -129,6 +132,9 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
     // Value cond = m_material->get_value("heat_conductivity");
 
     double result = 0;
+
+    pdeltat = Util::scene()->problemInfo()->timeStep.number;
+
     for (int i = 0; i < n; i++)
     {
         px = e->x[i];
@@ -182,6 +188,9 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
                                                 Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
+
+    pdeltat = Util::scene()->problemInfo()->timeStep.number;
+
     for (int i = 0; i < n; i++)
     {
         px = e->x[i];
@@ -233,6 +242,9 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
                                                  Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
+
+    pdeltat = Util::scene()->problemInfo()->timeStep.number;
+
     for (int i = 0; i < n; i++)
     {
         px = e->x[i];
@@ -280,6 +292,9 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
                                                  Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
+
+    pdeltat = Util::scene()->problemInfo()->timeStep.number;
+
     for (int i = 0; i < n; i++)
     {
         px = e->x[i];
