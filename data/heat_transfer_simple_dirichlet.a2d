@@ -1,0 +1,40 @@
+<document version="2.0">
+    <problems>
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.001" name="unnamed" date="2011-08-18" polynomialorder="2" meshtype="triangle" timestep="0.1" problemtype="planar" adaptivitytype="disabled" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="heat" timetotal="1">
+            <scriptstartup></scriptstartup>
+            <description></description>
+            <edges>
+                <edge type="heat_temperature" heat_temperature="50" id="1" name="topeni"/>
+                <edge heat_heat_transfer_coefficient="1" heat_external_temperature="-10" type="heat_heat_flux" heat_heat_flux="0" id="2" name="zed"/>
+            </edges>
+            <labels>
+                <label heat_volume_heat="0" heat_conductivity="1" heat_density="100" heat_specific_heat="1" id="1" name="new material"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="-0.1474099449807952" y="0.1937783314301532" id="0"/>
+            <node x="-0.2041593134710543" y="-0.1425654866950414" id="1"/>
+            <node x="0.2470673725734454" y="-0.1467178795114017" id="2"/>
+            <node x="0.2470673725734454" y="0.2380705214713311" id="3"/>
+            <node x="-0.0006920654693934111" y="-0.145333748572615" id="4"/>
+            <node x="0.002076196408180176" y="-0.06228589224540651" id="5"/>
+            <node x="0.05467317208207897" y="-0.06367002318419325" id="6"/>
+            <node x="0.05190491020450532" y="-0.145333748572615" id="7"/>
+        </nodes>
+        <edges>
+            <edge end="1" refine_towards="0" marker="1" id="0" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" marker="1" id="1" start="3" angle="0"/>
+            <edge end="0" refine_towards="0" marker="1" id="2" start="3" angle="0"/>
+            <edge end="4" refine_towards="0" marker="1" id="3" start="1" angle="0"/>
+            <edge end="4" refine_towards="0" marker="1" id="4" start="5" angle="0"/>
+            <edge end="6" refine_towards="0" marker="1" id="5" start="5" angle="0"/>
+            <edge end="7" refine_towards="0" marker="1" id="6" start="6" angle="0"/>
+            <edge end="7" refine_towards="0" marker="1" id="7" start="2" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.0283747" y="0.0498287" polynomialorder="0" marker="1" id="0" area="0"/>
+        </labels>
+    </geometry>
+</document>
