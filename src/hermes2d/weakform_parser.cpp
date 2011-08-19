@@ -133,7 +133,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
     double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep.number;
+    pdeltat = Util::scene()->problemInfo()->timeStep.number();
 
     for (int i = 0; i < n; i++)
     {
@@ -189,7 +189,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 {
     double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep.number;
+    pdeltat = Util::scene()->problemInfo()->timeStep.number();
 
     for (int i = 0; i < n; i++)
     {
@@ -205,7 +205,8 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupdx = u_ext[this->i]->dx[i];
         pupdy = u_ext[this->i]->dy[i];
 
-        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient){
+        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+        {
             puptval = ext->fn[this->i]->val[i];
             puptdx = ext->fn[this->i]->dx[i];
             puptdy = ext->fn[this->i]->dy[i];
@@ -243,7 +244,7 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 {
     double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep.number;
+    pdeltat = Util::scene()->problemInfo()->timeStep.number();
 
     for (int i = 0; i < n; i++)
     {
@@ -293,7 +294,7 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 {
     double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep.number;
+    pdeltat = Util::scene()->problemInfo()->timeStep.number();
 
     for (int i = 0; i < n; i++)
     {
