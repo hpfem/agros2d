@@ -87,6 +87,9 @@ public:
     double puptdx;
     double puptdy;
 
+    // time step
+    double pdeltat;
+
     ParserForm();
     ~ParserForm();
 
