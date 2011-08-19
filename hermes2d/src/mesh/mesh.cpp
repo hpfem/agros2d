@@ -1197,17 +1197,84 @@ namespace Hermes
 
     void Mesh::convert_triangles_to_quads()
     {
+      Element* e;
+
+      elements.set_append_only(true);
+      for_all_active_elements(e, this)
+        refine_element_to_quads_id(e->id);
+      elements.set_append_only(false);
+
+      Mesh mesh_tmp_for_convert;
+      mesh_tmp_for_convert.copy_converted(this);
+      for (int i = 0; i < mesh_tmp_for_convert.ntopvert; i++)
+      {
+        if (mesh_tmp_for_convert.nodes[i].type == 1)
+        {
+          mesh_tmp_for_convert.nodes[i].y = 0.0;
+        }
+      }
+      MeshReaderH2D loader_mesh_tmp_for_convert;
+      char* mesh_file_tmp = NULL;
+      mesh_file_tmp = tmpnam(NULL);
+      loader_mesh_tmp_for_convert.save(mesh_file_tmp, &mesh_tmp_for_convert);
+      loader_mesh_tmp_for_convert.load(mesh_file_tmp, &mesh_tmp_for_convert);
+      remove(mesh_file_tmp);
+      copy(&mesh_tmp_for_convert);
 
     }
 
     void Mesh::convert_quads_to_triangles()
     {
+      Element* e;
 
+      elements.set_append_only(true);
+      for_all_active_elements(e, this)
+        refine_element_to_triangles_id(e->id);
+      elements.set_append_only(false);
+
+      Mesh mesh_tmp_for_convert;
+      mesh_tmp_for_convert.copy_converted(this);
+      for (int i = 0; i < mesh_tmp_for_convert.ntopvert; i++)
+      {
+        if (mesh_tmp_for_convert.nodes[i].type == 1)
+        {
+          mesh_tmp_for_convert.nodes[i].y = 0.0;
+        }
+      }
+      MeshReaderH2D loader_mesh_tmp_for_convert;
+      char* mesh_file_tmp = NULL;
+      mesh_file_tmp = tmpnam(NULL);
+      loader_mesh_tmp_for_convert.save(mesh_file_tmp, &mesh_tmp_for_convert);
+      loader_mesh_tmp_for_convert.load(mesh_file_tmp, &mesh_tmp_for_convert);
+      remove(mesh_file_tmp);
+      copy(&mesh_tmp_for_convert);
     }
 
     void Mesh::convert_to_base()
     {
+      Element* e;
 
+      elements.set_append_only(true);
+      for_all_active_elements(e, this)
+        convert_element_to_base_id(e->id);
+      elements.set_append_only(false);
+
+      Mesh mesh_tmp_for_convert;
+      mesh_tmp_for_convert.copy_converted(this);
+      for (int i = 0; i < mesh_tmp_for_convert.ntopvert; i++)
+      {
+        if (mesh_tmp_for_convert.nodes[i].type == 1)
+        {
+          mesh_tmp_for_convert.nodes[i].y = 0.0;
+        }
+      }
+      MeshReaderH2D loader_mesh_tmp_for_convert;
+      char* mesh_file_tmp = NULL;
+      mesh_file_tmp = tmpnam(NULL);
+      loader_mesh_tmp_for_convert.save(mesh_file_tmp, &mesh_tmp_for_convert);
+      loader_mesh_tmp_for_convert.load(mesh_file_tmp, &mesh_tmp_for_convert);
+      remove(mesh_file_tmp);
+      copy(&mesh_tmp_for_convert);
     }
 
     void Mesh::refine_triangle_to_quads(Mesh* mesh, Element* e, Element** sons_out)

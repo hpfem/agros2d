@@ -917,7 +917,7 @@ bool ProgressItemMesh::triangleToHermes2D()
             // element returns zero region number for areas without marker, markers must start from 1
             if (elementList[i].isTriangle())
             {
-                outElements += QString("  [ %1, %2, %3, \"element_%4\" ],\n").
+                outElements += QString("  [ %1, %2, %3, \"%4\" ],\n").
                         arg(elementList[i].node[0]).
                         arg(elementList[i].node[1]).
                         arg(elementList[i].node[2]).
@@ -925,7 +925,7 @@ bool ProgressItemMesh::triangleToHermes2D()
             }
             else
             {
-                outElements += QString("  [ %1, %2, %3, %4, \"element_%5\" ],\n").
+                outElements += QString("  [ %1, %2, %3, %4, \"%5\" ],\n").
                         arg(elementList[i].node[0]).
                         arg(elementList[i].node[1]).
                         arg(elementList[i].node[2]).
