@@ -64,3 +64,4 @@ linux-g++ {
 
 OTHER_FILES += \
     agros2d.supp
+
