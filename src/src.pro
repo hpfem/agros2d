@@ -75,6 +75,7 @@ SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
     hermes2d/boundary.cpp \
     hermes2d/material.cpp \
     hermes2d/module.cpp \
+    hermes2d/solver.cpp \
     #hermes2d/hermes_general.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
@@ -177,7 +178,8 @@ HEADERS += util.h \
     datatabledialog.h \
     materialbrowserdialog.h \
     conf.h \
-    confdialog.h
+    confdialog.h \
+    hermes2d/solver.h
 
 INCLUDEPATH += . \
     ../lib \
@@ -290,6 +292,8 @@ win32-msvc2008 {
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
 }
+
+
 
 
 
