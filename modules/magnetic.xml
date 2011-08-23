@@ -32,10 +32,16 @@
 
             <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
-                                axi="1 / (mur * MU0) * (udx * vdx + udy * vdy) + uval * vdx / (x + 1e-12) -
+                                axi="1 / (mur * MU0) * ((udx * vdx + udy * vdy) + uval * vdx / (x + 1e-12)) -
                                      gamma * uval * vy * vdy" />
-            <vector i="1" planar="Jer * vval + Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)"
-                          axi="Jer * vval - Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)" />
+            <vector i="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
+                                  gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy) -
+                                  Jer * vval -
+                                  Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)"
+                          axi="1 / (mur * MU0) * ((updx * vdx + updy * vdy) + upval * vdx / (x + 1e-12)) -
+                               gamma * upval * vy * vdy -
+                               Jer * vval +
+                               Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)" />
         </steadystate>
 
         <transient>

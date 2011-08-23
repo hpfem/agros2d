@@ -1,47 +1,50 @@
 # model
-newdocument("Magnetostatic", "planar", "magnetic", 1, 7, "disabled", 1, 1, 0, "steadystate", 1, 1, 0)
+newdocument(name="Magnetostatic", type="planar", 
+			physicfield="magnetic", analysistype="steadystate", 
+			numberofrefinements=1, polynomialorder=7, 
+			nonlineartolerance=0.001, nonlinearsteps=10)
 
 # boundaries
-addboundary("A = 0", "magnetic_vector_potential", 0)
+addboundary("A = 0", "magnetic_potential", {"Ar" : 0})
 
 # materials
-addmaterial("Cu", 1e+06, 0, 1, 0, 0, 0, 0, 0, 0)
-addmaterial("Fe", 0, 0, 500, 0, 0, 0, 0, 0, 0)
-addmaterial("Air", 0, 0, 1, 0, 0, 0, 0, 0, 0)
-addmaterial("Magnet", 0, 0, 1.11, 0, 0.1, -30, 0, 0, 0)
-addmaterial("Velocity", 0, 0, 1, 1e7, 0, 0, 2, 0, 0)
+addmaterial("Cu", {"mur" : 1, "Jer" : 1e6})
+addmaterial("Fe", {"mur" : 500})
+addmaterial("Air", {"mur" : 1})
+addmaterial("Magnet", {"mur" : 1.11, "Jer" : 1e6, "Brm" : 0.1, "Bra" : -30})
+addmaterial("Velocity", {"mur" : 1, "gamma" : 1e7, "vx" : 2})
 
 # edges
-addedge(-0.5, 1, 0.5, 1, 0, "A = 0")
-addedge(0.5, -1, -0.5, -1, 0, "A = 0")
-addedge(-0.2, 0.6, 0, 0.6, 0, "none")
-addedge(0, 0.3, 0, 0.6, 0, "none")
-addedge(-0.2, 0.3, 0, 0.3, 0, "none")
-addedge(-0.2, 0.6, -0.2, 0.3, 0, "none")
-addedge(-0.035, 0.135, 0.035, 0.135, 0, "none")
-addedge(0.035, 0.135, 0.035, -0.04, 0, "none")
-addedge(0.035, -0.04, -0.035, -0.04, 0, "none")
-addedge(-0.035, 0.135, -0.035, -0.04, 0, "none")
-addedge(0, -0.5, 0.3, -0.5, 0, "none")
-addedge(0.3, -0.5, 0.3, -0.32, 0, "none")
-addedge(0.3, -0.32, 0, -0.32, 0, "none")
-addedge(0, -0.32, 0, -0.5, 0, "none")
-addedge(-0.5, 1, -0.5, -0.15, 0, "A = 0")
-addedge(-0.5, -0.15, -0.5, -0.2, 0, "A = 0")
-addedge(-0.5, -0.2, -0.5, -1, 0, "A = 0")
-addedge(0.5, 1, 0.5, -0.15, 0, "A = 0")
-addedge(0.5, -0.15, 0.5, -0.2, 0, "A = 0")
-addedge(0.5, -0.2, 0.5, -1, 0, "A = 0")
-addedge(0.5, -0.2, -0.5, -0.2, 0, "none")
-addedge(0.5, -0.15, -0.5, -0.15, 0, "none")
+addedge(-0.5, 1, 0.5, 1, boundary="A = 0")
+addedge(0.5, -1, -0.5, -1, boundary="A = 0")
+addedge(-0.2, 0.6, 0, 0.6)
+addedge(0, 0.3, 0, 0.6)
+addedge(-0.2, 0.3, 0, 0.3)
+addedge(-0.2, 0.6, -0.2, 0.3)
+addedge(-0.035, 0.135, 0.035, 0.135)
+addedge(0.035, 0.135, 0.035, -0.04)
+addedge(0.035, -0.04, -0.035, -0.04)
+addedge(-0.035, 0.135, -0.035, -0.04)
+addedge(0, -0.5, 0.3, -0.5)
+addedge(0.3, -0.5, 0.3, -0.32)
+addedge(0.3, -0.32, 0, -0.32)
+addedge(0, -0.32, 0, -0.5)
+addedge(-0.5, 1, -0.5, -0.15, boundary="A = 0")
+addedge(-0.5, -0.15, -0.5, -0.2, boundary="A = 0")
+addedge(-0.5, -0.2, -0.5, -1, boundary="A = 0")
+addedge(0.5, 1, 0.5, -0.15, boundary="A = 0")
+addedge(0.5, -0.15, 0.5, -0.2, boundary="A = 0")
+addedge(0.5, -0.2, 0.5, -1, boundary="A = 0")
+addedge(0.5, -0.2, -0.5, -0.2)
+addedge(0.5, -0.15, -0.5, -0.15)
 
 # labels
-addlabel(-0.0959509, 0.445344, 0.001, 0, "Fe")
-addlabel(0.00301448, 0.0404858, 0.005, 0, "Cu")
-addlabel(-0.145434, -0.706253, 0.01, 0, "Air")
-addlabel(0.143596, -0.364811, 0, 0, "Magnet")
-addlabel(0.310203, 0.631164, 0, 0, "Air")
-addlabel(-0.295858, -0.182894, 0, 0, "Velocity")
+addlabel(-0.0959509, 0.445344, 0.001, material="Fe")
+addlabel(0.00301448, 0.0404858, 0.005, material="Cu")
+addlabel(-0.145434, -0.706253, 0.01, material="Air")
+addlabel(0.143596, -0.364811, 0, material="Magnet")
+addlabel(0.310203, 0.631164, 0, material="Air")
+addlabel(-0.295858, -0.182894, 0, material="Velocity")
 
 # solve
 zoombestfit()
@@ -62,7 +65,7 @@ testJiv = test("Current density - induced velocity", point["Jiv_real"], -1.98773
 testJ = test("Current density - total", point["J_real"], -1.987738e5)
 
 # volume integral
-volume = volumeintegral(5)
+volume = volumeintegral([5])
 testWm = test("Energy", volume["Wm"], 3.088946)
 testPj = test("Losses", volume["Pj"], 220.022114)
 testFxv = test("Lorentz force - x", volume["Fx"], -110.011057)
@@ -70,7 +73,7 @@ testFyv = test("Lorentz force - y", volume["Fy"], -36.62167)
 testT = test("Torque", volume["T"], 20.463818)
 
 # surface integral
-surface = surfaceintegral(2, 3, 4, 5)
+surface = surfaceintegral([2, 3, 4, 5])
 testFx = test("Maxwell force - x", surface["Fx"], 2.531945, 0.05)
 testFy = test("Maxwell force - y", surface["Fy"], -10.176192, 0.05)
 

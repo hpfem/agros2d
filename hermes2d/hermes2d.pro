@@ -3,7 +3,7 @@ TARGET = lib/hermes2d
 TEMPLATE = lib
 OBJECTS_DIR = build
 CONFIG = += staticlib
-CONFIG += debug
+# CONFIG += debug
 DEFINES += NOGLUT
 
 INCLUDEPATH += include \
