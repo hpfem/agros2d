@@ -1,4 +1,5 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
+SUBDIRS += lib
 SUBDIRS += hermes2d
 SUBDIRS += src-remote
 SUBDIRS += src
