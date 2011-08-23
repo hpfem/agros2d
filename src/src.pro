@@ -39,33 +39,7 @@ CONFIG += warn_off
 OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
-SOURCES += ../lib/dxflib/dl_writer_ascii.cpp \
-    ../lib/dxflib/dl_dxf.cpp \
-    ../lib/muparser/muParserBase.cpp \
-    ../lib/muparser/muParserBytecode.cpp \
-    ../lib/muparser/muParserCallback.cpp \
-    ../lib/muparser/muParser.cpp \
-    ../lib/muparser/muParserError.cpp \
-    ../lib/muparser/muParserInt.cpp \
-    ../lib/muparser/muParserTest.cpp \
-    ../lib/muparser/muParserTokenReader.cpp \
-    ../lib/rapidxml/rapidxml.cpp \
-    ../lib/rapidxml/rapidxml_utils.cpp \
-    ../lib/ctemplate/base/arena.cc \
-    ../lib/ctemplate/htmlparser/htmlparser.cc \
-    ../lib/ctemplate/htmlparser/htmlparser_cpp.h \
-    ../lib/ctemplate/htmlparser/jsparser.cc \
-    ../lib/ctemplate/htmlparser/statemachine.cc \
-    ../lib/ctemplate/per_expand_data.cc \
-    ../lib/ctemplate/template_annotator.cc \
-    ../lib/ctemplate/template_cache.cc \
-    ../lib/ctemplate/template.cc \
-    ../lib/ctemplate/template_dictionary.cc \
-    ../lib/ctemplate/template_modifiers.cc \
-    ../lib/ctemplate/template_namelist.cc \
-    ../lib/ctemplate/template_pathops.cc \
-    ../lib/ctemplate/template_string.cc \
-    util.cpp \
+SOURCES += util.cpp \
     value.cpp \
     scene.cpp \
     gui.cpp \
@@ -204,6 +178,14 @@ OTHER_FILES += python/agros2d.pyx \
     ../resources/materials/Aluminum.xml \
     ../resources/materials/Iron.xml
 
+
+INCLUDEPATH += ../hermes2d/include
+INCLUDEPATH += ../hermes_common/include
+LIBS += -L../hermes2d/lib
+LIBS += -lhermes2d
+LIBS += -L../lib/lib
+LIBS += -llib
+
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
@@ -213,10 +195,6 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += ../hermes2d/include
-    INCLUDEPATH += ../hermes_common/include
-    LIBS += -L../hermes2d/lib
-    LIBS += -lhermes2d
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
@@ -258,15 +236,11 @@ macx-g++ {
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
     INCLUDEPATH += ../../qwt-5.2.1/src
-    INCLUDEPATH += ../hermes2d/include
-    INCLUDEPATH += ../hermes_common/include
 
-    LIBS += -L../hermes2d/lib
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
     LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config
     LIBS += -L../../qwt-5.2.1/lib
-    LIBS += -lhermes2d
     LIBS += -lpthread
     LIBS += -lpython2.7
     LIBS += -lqwt
@@ -280,12 +254,9 @@ win32-msvc2008 {
     DEFINES += "popen=_popen"
 
     INCLUDEPATH += c:/Python27/include
-    INCLUDEPATH += ../hermes2d/src
     INCLUDEPATH += ../../qwt-5.2.1/src
     LIBS += -Lc:/Python27/libs
-    LIBS += -L../hermes2d/lib
     LIBS += -L../../qwt-5.2.1/lib
-    LIBS += -lhermes2d
     LIBS += -lqwt
     LIBS += -lpython27
     LIBS += -llibumfpack
