@@ -98,7 +98,7 @@ void SolutionAgros<Scalar>::initCalculation(Hermes::vector<Hermes::Hermes2D::Ess
                                                QString::number(j).toStdString());
 
         // solution agros array
-        solution.push_back(new Hermes::Hermes2D::Solution<Scalar>());
+        solution.push_back(new Hermes::Hermes2D::Solution<double>);
 
         if (adaptivityType != AdaptivityType_None)
         {
@@ -181,7 +181,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
         {
             // constant initial solution
             InitialCondition *initial = new InitialCondition(mesh, initialCondition);
-            solutionArrayList.push_back(solutionArray(initial));
+            solutionArrayList.push_back(solutionArray(initial, space.at(i)));
         }
     }
 
@@ -200,8 +200,10 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
 
         m_wf->set_current_time(actualTime);
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-            for (int i = 0; i < solution.size(); i++)
-                m_wf->solution.push_back((Hermes::Hermes2D::MeshFunction<Scalar> *) solution[i]);
+            for (int i = 0; i < solution.size(); i++){
+                cout << "push " << solution[i] << " sit " << solution[i]->get_mesh() <<  endl;
+                m_wf->solution.push_back(solutionArrayList[i]->sln );
+            }
         m_wf->delete_all();
         m_wf->registerForms();
 
@@ -276,6 +278,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
 
     cleanup();
     return solutionArrayList;
+    //TODO je tu trochu zmatek v solutionArray, solutionAgros, atp...
 }
 
 template <typename Scalar>
