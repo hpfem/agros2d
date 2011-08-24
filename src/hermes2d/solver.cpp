@@ -281,6 +281,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArra
     //TODO je tu trochu zmatek v solutionArray, solutionAgros, atp...
 }
 
+/*
 template <typename Scalar>
 Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArrayOld(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs)
 {
@@ -620,6 +621,7 @@ bool SolutionAgros<Scalar>::solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar
         return false;
     }
 }
+*/
 
 template <typename Scalar>
 SolutionArray<Scalar> *SolutionAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space, double adaptiveError, double adaptiveSteps, double time)
