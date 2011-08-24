@@ -68,8 +68,8 @@ void LocalPointValue::calculate()
             // set variables
             double px = point.x;
             double py = point.y;
-            parser->parser[0]->DefineVar("x", &px);
-            parser->parser[0]->DefineVar("y", &py);
+            parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
+            parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
 
             double *pvalue = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
             double *pdx = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
@@ -102,8 +102,8 @@ void LocalPointValue::calculate()
                 number << (k+1);
 
                 parser->parser[0]->DefineVar("value" + number.str(), &pvalue[k]);
-                parser->parser[0]->DefineVar("dx" + number.str(), &pdx[k]);
-                parser->parser[0]->DefineVar("dy" + number.str(), &pdy[k]);
+                parser->parser[0]->DefineVar("d" + Util::scene()->problemInfo()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+                parser->parser[0]->DefineVar("d" + Util::scene()->problemInfo()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
             }
 
             // set material variables
