@@ -116,6 +116,12 @@ void MaterialBrowserDialog::createControls()
     picker->setTrackerMode(QwtPicker::ActiveOnly);
     picker->setTrackerPen(QColor(Qt::black));
 
+    QVBoxLayout *layoutChartValue = new QVBoxLayout();
+    layoutChartValue->addWidget(chartValue);
+
+    QGroupBox *grpChartValue = new QGroupBox(tr("Chart"));
+    grpChartValue->setLayout(layoutChartValue);
+
     QGridLayout *layoutProperty = new QGridLayout();
     layoutProperty->addWidget(new QLabel(tr("Material:")), 0, 0);
     layoutProperty->addWidget(lblMaterial, 0, 1);
@@ -132,9 +138,12 @@ void MaterialBrowserDialog::createControls()
     layoutProperty->setRowStretch(6, 1);
     layoutProperty->setColumnStretch(1, 1);
 
+    QGroupBox *grpProperty = new QGroupBox(tr("Property"));
+    grpProperty->setLayout(layoutProperty);
+
     QVBoxLayout *layoutPropertyChart = new QVBoxLayout();
-    layoutPropertyChart->addLayout(layoutProperty);
-    layoutPropertyChart->addWidget(chartValue, 1);
+    layoutPropertyChart->addWidget(grpProperty);
+    layoutPropertyChart->addWidget(grpChartValue, 1);
 
     QHBoxLayout *layoutMaterials = new QHBoxLayout();
     layoutMaterials->addWidget(trvMaterial);
