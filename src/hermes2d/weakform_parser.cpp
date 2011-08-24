@@ -151,6 +151,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupdx = u_ext[this->j]->dx[i];
         pupdy = u_ext[this->j]->dy[i];
 
+        /*
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
@@ -158,6 +159,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(u->val[i]);
             parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(u->val[i]);
         }
+        */
 
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         {
@@ -212,12 +214,14 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupdx = u_ext[this->i]->dx[i];
         pupdy = u_ext[this->i]->dy[i];
 
+        /*
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
             Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
             parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(ext->fn[this->i]->val[i]);
         }
+        */
 
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         {

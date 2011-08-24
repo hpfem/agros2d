@@ -1039,15 +1039,15 @@ void SceneView::paintOrder()
         glNewList(m_listOrder, GL_COMPILE);
 
         // order scalar view
-        m_scene->sceneSolution()->ordView()->lock_data();
+        m_scene->sceneSolution()->ordView().lock_data();
 
-        double3* vert = m_scene->sceneSolution()->ordView()->get_vertices();
-        int3* tris = m_scene->sceneSolution()->ordView()->get_triangles();
+        double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
+        int3* tris = m_scene->sceneSolution()->ordView().get_triangles();
 
         // draw mesh
         int min = 11;
         int max = 1;
-        for (int i = 0; i < m_scene->sceneSolution()->ordView()->get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
         {
             if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
@@ -1058,7 +1058,7 @@ void SceneView::paintOrder()
 
         // triangles
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->sceneSolution()->ordView()->get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
             glColor3d(paletteColorOrder(color)[0], paletteColorOrder(color)[1], paletteColorOrder(color)[2]);
@@ -1086,13 +1086,13 @@ void SceneView::paintOrder()
         QFont fontLabel = font();
         fontLabel.setPointSize(fontLabel.pointSize() - 3);
 
-        m_scene->sceneSolution()->ordView()->lock_data();
+        m_scene->sceneSolution()->ordView().lock_data();
 
-        double3* vert = m_scene->sceneSolution()->ordView()->get_vertices();
+        double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
         int* lvert;
         char** ltext;
         double2* lbox;
-        int nl = m_scene->sceneSolution()->ordView()->get_labels(lvert, ltext, lbox);
+        int nl = m_scene->sceneSolution()->ordView().get_labels(lvert, ltext, lbox);
 
         Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale2d*aspect(),
                    (2.0/contextHeight()*fontMetrics().height())/m_scale2d);
@@ -1110,7 +1110,7 @@ void SceneView::paintOrder()
             }
         }
 
-        m_scene->sceneSolution()->ordView()->unlock_data();
+        m_scene->sceneSolution()->ordView().unlock_data();
     }
 }
 
@@ -1121,20 +1121,20 @@ void SceneView::paintOrderColorBar()
     if (!m_isSolutionPrepared || !Util::config()->showOrderScale) return;
 
     // order scalar view
-    m_scene->sceneSolution()->ordView()->lock_data();
+    m_scene->sceneSolution()->ordView().lock_data();
 
-    double3* vert = m_scene->sceneSolution()->ordView()->get_vertices();
-    int3* tris = m_scene->sceneSolution()->ordView()->get_triangles();
+    double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
+    int3* tris = m_scene->sceneSolution()->ordView().get_triangles();
 
     int min = 11;
     int max = 1;
-    for (int i = 0; i < m_scene->sceneSolution()->ordView()->get_num_triangles(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
     {
         if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
         if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
     }
 
-    m_scene->sceneSolution()->ordView()->unlock_data();
+    m_scene->sceneSolution()->ordView().unlock_data();
 
     // order color map
     loadProjection2d();
