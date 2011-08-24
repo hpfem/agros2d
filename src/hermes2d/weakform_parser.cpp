@@ -120,9 +120,7 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
                                                              Material *material)
     : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(), m_material(material)
 {
-    qDebug() << "CustomParserMatrixFormVol - start";
     initParser(material, NULL);
-    qDebug() << "CustomParserMatrixFormVol - end";
 
     parser->parser[0]->SetExpr(expression);
 }
@@ -131,8 +129,6 @@ template <typename Scalar>
 Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                                                 Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
-    Value cond = m_material->get_value("heat_conductivity");
-
     double result = 0;
 
     pdeltat = Util::scene()->problemInfo()->timeStep.number();
@@ -155,12 +151,13 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupdx = u_ext[this->j]->dx[i];
         pupdy = u_ext[this->j]->dy[i];
 
-        // parser->parser_variables["lambda"] = 400.0; // cond.value(u->val[i]);
-        // parser->parser_variables["dlambda"] = 0.0; //  cond.derivative(u->val[i]);
-        // parser->parser_variables["lambda"] = cond.value(u_ext[this->j]->val[i]);
-        // parser->parser_variables["dlambda"] = cond.derivative(u_ext[this->j]->val[i]);
-
-        // qDebug() << parser->parser_variables["lambda"];
+        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+        {
+            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+            parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(u->val[i]);
+            parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(u->val[i]);
+        }
 
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         {
@@ -179,7 +176,7 @@ template <typename Scalar>
 Hermes::Ord CustomParserMatrixFormVol<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
                                                    Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
-    return Hermes::Ord(10);
+    return Hermes::Ord(6);
 }
 
 template <typename Scalar>
@@ -199,8 +196,6 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 {
     double result = 0;
 
-    Value cond = m_material->get_value("heat_conductivity");
-
     pdeltat = Util::scene()->problemInfo()->timeStep.number();
 
     for (int i = 0; i < n; i++)
@@ -217,10 +212,12 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupdx = u_ext[this->i]->dx[i];
         pupdy = u_ext[this->i]->dy[i];
 
-        // parser->parser_variables["lambda"] = 400.0;
-        // parser->parser_variables["lambda"] = cond.value(u_ext[this->i]->val[i]);
-
-        // qDebug() << parser->parser_variables["lambda"];
+        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+        {
+            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+            parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(ext->fn[this->i]->val[i]);
+        }
 
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         {
@@ -239,7 +236,7 @@ template <typename Scalar>
 Hermes::Ord CustomParserVectorFormVol<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
-    return Hermes::Ord(10);
+    return Hermes::Ord(6);
 }
 
 // **********************************************************************************************
@@ -291,7 +288,7 @@ template <typename Scalar>
 Hermes::Ord CustomParserMatrixFormSurf<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                                     Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
-    return Hermes::Ord(10);
+    return Hermes::Ord(6);
 }
 
 template <typename Scalar>
@@ -337,7 +334,7 @@ template <typename Scalar>
 Hermes::Ord CustomParserVectorFormSurf<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                                     Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
-    return Hermes::Ord(10);
+    return Hermes::Ord(6);
 }
 
 template class CustomParserMatrixFormVol<double>;
