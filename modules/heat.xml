@@ -189,8 +189,10 @@
             <transient planar="value1" axi="2.0 * PI * r * value1" />
         </item>
         <item id="heat_heat_flux" name="Heat flux" shortname="f" unit="W">
-            <steadystate planar="- lambda * (tany * dx1 - tanx * dy1)" axi="- 2.0 * PI * r * lambda * (tany * dr1 - tanr * dz1)" />
-            <transient planar="- lambda * (tany * dx1 - tanx * dy1)" axi="- 2.0 * PI * r * lambda * (tany * dr1 - tanr * dz1)" />
+            <steadystate planar="- lambda * (tany * dx1 - tanx * dy1)"
+                         axi="- 2.0 * PI * r * lambda * (tanz * dr1 - tanr * dz1)" />
+            <transient planar="- lambda * (tany * dx1 - tanx * dy1)"
+                        axi="- 2.0 * PI * r * lambda * (tanz * dr1 - tanr * dz1)" />
         </item>
     </surfaceintegral>
 </module>
