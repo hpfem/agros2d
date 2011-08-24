@@ -74,7 +74,7 @@ void SurfaceIntegralValue::calculate()
         ((mu::Parser *) *it)->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
         ((mu::Parser *) *it)->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
         ((mu::Parser *) *it)->DefineVar("tan" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &ptanx);
-        ((mu::Parser *) *it)->DefineVar("tan" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &ptany);
+        ((mu::Parser *) *it)->DefineVar("tan" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &ptany);
 
         for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
         {
