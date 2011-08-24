@@ -18,13 +18,13 @@
             <material id="acoustic_speed" />
 
             <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + 1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval"
-                                axi="0.0 * x * uval * (updx * vdx + updy * vdy) + 1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="0" />
+                                axi="0.0 * r * uval * (updr * vdr + updz * vdz) + 1 / rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="0" />
             <matrix i="2" j="2" planar="0.0 * uval * (updx * vdx + updy * vdy) + 1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval"
-                                axi="0.0 * x * uval * (updx * vdx + updy * vdy) + 1 / rho * x * (udx * vdx + udy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="0" />
+                                axi="0.0 * r * uval * (updr * vdr + updz * vdz) + 1 / rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="0" />
             <vector i="1" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * v^2) * upval * vval"
-                          axi="1 / rho * x * (updx * vdx + updy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * upval * vval" />
+                          axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * v^2) * upval * vval" />
             <vector i="2" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * v^2) * upval * vval"
-                          axi="1 / rho * x * (updx * vdx + updy * vdy) - x * (2 * PI * f)^2 / (rho * v^2) * upval * vval" />
+                          axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * v^2) * upval * vval" />
         </harmonic>
     </material>
 
@@ -48,21 +48,21 @@
                 <item id="acoustic_normal_acceleration_real" />
                 <item id="acoustic_normal_acceleration_imag" />
 
-                <vector i="1" planar="anr * vval" axi="anr * x * vval" />
-                <vector i="2" planar="ani * vval" axi="ani * x * vval" />
+                <vector i="1" planar="anr * vval" axi="anr * r * vval" />
+                <vector i="2" planar="ani * vval" axi="ani * r * vval" />
             </boundary>
 
             <boundary id="acoustic_impedance" name="Impedance boundary condition">
                 <item id="acoustic_impedance" />
 
                 <matrix i="1" j="2" planar="- 2 * PI * f / Z0 * uval * vval"
-                                    axi="- x * 2 * PI * f / Z0 * uval * vval" />
+                                    axi="- r * 2 * PI * f / Z0 * uval * vval" />
                 <matrix i="2" j="1" planar="2 * PI * f / Z0 * uval * vval"
-                                    axi="x * 2 * PI * f / Z0 * uval * vval" />
+                                    axi="r * 2 * PI * f / Z0 * uval * vval" />
                 <vector i="1" planar="- 2 * PI * f / Z0 * upval * vval"
-                              axi="- x * 2 * PI * f / Z0 * upval * vval" />
+                              axi="- r * 2 * PI * f / Z0 * upval * vval" />
                 <vector i="2" planar="2 * PI * f / Z0 * upval * vval"
-                              axi="x * 2 * PI * f / Z0 * upval * vval" />
+                              axi="r * 2 * PI * f / Z0 * upval * vval" />
             </boundary>
 
             <boundary id="acoustic_matched_boundary" name="Matched boundary" >
@@ -84,7 +84,7 @@
             <transient />
         </item>
         <item id="acoustic_local_acceleration" name="Local acceleration" shortname="a" unit="m/s2">
-            <harmonic planar_comp_x="- dx1 / rho" planar_comp_y="- dy1 / rho" axi_comp_r="- dx1 / rho" axi_comp_z="- dy1 / rho" />
+            <harmonic planar_comp_x="- dx1 / rho" planar_comp_y="- dy1 / rho" axi_comp_r="- dr1 / rho" axi_comp_z="- dz1 / rho" />
             <transient />
         </item>
         <item id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" scalar="1">
@@ -131,7 +131,7 @@
 
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
-            <harmonic planar="1.0" axi="2.0 * PI * x" />
+            <harmonic planar="1.0" axi="2.0 * PI * r" />
             <transient/>
         </item>
         <item id="surface" name="Cross section" shortname="S" unit="m2">
@@ -146,7 +146,7 @@
             <transient/>
         </item>
         <item id="surface" name="Surface" shortname="S" unit="m2">
-            <harmonic planar="1.0" axi="2.0 * PI * x" />
+            <harmonic planar="1.0" axi="2.0 * PI * r" />
             <transient/>
         </item>
     </surfaceintegral>

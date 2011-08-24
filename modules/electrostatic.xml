@@ -49,13 +49,13 @@
         </item>
         <item id="electrostatic_electric_field" name="Electric field" shortname="E" unit="V/m" scalar="0">
             <steadystate planar_comp_x="- dx1" planar_comp_y="- dy1"
-                         axi_comp_r="- dx1" axi_comp_z="- dy1" />
+                         axi_comp_r="- dr1" axi_comp_z="- dz1" />
         </item>
         <item id="electrostatic_displacement" name="Displacement" shortname="D" unit="C/m2" scalar="0">
-            <steadystate planar_comp_x="- epsr * EPS0 * dx1" planar_comp_y="- epsr * EPS0 * dy1" axi_comp_r="- epsr * EPS0 * dx1" axi_comp_z="- epsr * EPS0 * dy1" />
+            <steadystate planar_comp_x="- epsr * EPS0 * dx1" planar_comp_y="- epsr * EPS0 * dy1" axi_comp_r="- epsr * EPS0 * dr1" axi_comp_z="- epsr * EPS0 * dz1" />
         </item>
         <item id="electrostatic_energy_density" name="Energy density" shortname="we" unit="J/m3" scalar="1">
-            <steadystate planar_scalar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" axi_scalar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" />
+            <steadystate planar_scalar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" axi_scalar="0.5 * epsr * EPS0 * (dr1 * dr1 + dz1 * dz1)" />
         </item>
         <item id="electrostatic_permittivity" name="Permittivity" shortname="epsr" unit="-" scalar="1">
             <steadystate planar_scalar="epsr" axi_scalar="epsr" />
@@ -98,13 +98,13 @@
 
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
-            <steadystate planar="1.0" axi="2.0 * PI * x" />
+            <steadystate planar="1.0" axi="2.0 * PI * r" />
         </item>
         <item id="surface" name="Cross section" shortname="S" unit="m2">
             <steadystate planar="1.0" axi="1.0" />
         </item>
         <item id="electrostatic_energy" name="Energy" shortname="We" unit="J">
-            <steadystate planar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" axi="2.0 * PI * x * 0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" />
+            <steadystate planar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" axi="2.0 * PI * r * 0.5 * epsr * EPS0 * (dr1 * dr1 + dz1 * dz1)" />
         </item>
     </volumeintegral>
 
@@ -113,10 +113,10 @@
             <steadystate planar="1.0" axi="1.0" />
         </item>
         <item id="surface" name="Surface" shortname="S" unit="m2">
-            <steadystate planar="1.0" axi="2.0 * PI * x" />
+            <steadystate planar="1.0" axi="2.0 * PI * r" />
         </item>
         <item id="electrostatic_charge" name="Charge" shortname="Q" unit="C">
-            <steadystate planar="epsr * EPS0 * (tany * dx1 - tanx * dy1)" axi="2.0 * PI * x * epsr * EPS0 * (tany * dx1 - tanx * dy1)" />
+            <steadystate planar="epsr * EPS0 * (tany * dx1 - tanx * dy1)" axi="2.0 * PI * r * epsr * EPS0 * (tanz * dr1 - tanr * dz1)" />
         </item>
     </surfaceintegral>
 </module>
