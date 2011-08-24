@@ -146,7 +146,7 @@ SolverAgros<Scalar>::SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormA
 //TODO PK why bcs has to be reference???
 
 template <typename Scalar>
-void SolverAgros<Scalar>::initCalculation(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> >& bcs)
+void SolverAgros<Scalar>::initCalculation(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > &bcs)
 {
     // load the mesh file
     mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
@@ -202,8 +202,8 @@ void SolverAgros<Scalar>::cleanup()
 }
 
 template <typename Scalar>
-bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceParam,
-                                            Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionParam)
+bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> &spaceParam,
+                                          Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> &solutionParam)
 {
     // Initialize the FE problem.
     Hermes::Hermes2D::DiscreteProblem<double> dp(m_wf, spaceParam);
@@ -285,7 +285,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
             for (int i = 0; i < solution.size(); i++){
                 cout << "push " << solution[i] << " sit " << solution[i]->get_mesh() <<  endl;
-                m_wf->solution.push_back(solutionArrayList[i]->sln );
+                m_wf->solution.push_back(solutionArrayList.back()->sln ); //TODO back je blbe
             }
         m_wf->delete_all();
         m_wf->registerForms();
@@ -344,7 +344,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
         if (!isError)
         {
             for (int i = 0; i < numberOfSolution; i++){
-                cout << "solution" << i << endl;
+                cout << "solution" << i << " val(0, 0.2): " << (solution.at(i))->get_pt_value(0, 0.2) <<  endl;
                 solutionArrayList.push_back(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
             }
 
