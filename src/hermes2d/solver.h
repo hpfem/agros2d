@@ -27,10 +27,10 @@ class ProgressItemSolve;
 
 // solve
 template <typename Scalar>
-class SolutionAgros
+class SolverAgros
 {
 public:
-    SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
+    SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
 
     Hermes::vector<SolutionArray<Scalar> *> solveSolutionArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
     Hermes::vector<SolutionArray<Scalar> *> solveSolutionArrayOld(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
