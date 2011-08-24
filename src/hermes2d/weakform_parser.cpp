@@ -78,28 +78,28 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
     parser->parser.push_back(Util::scene()->problemInfo()->module()->get_parser());
 
     // coordinates
-    parser->parser[0]->DefineVar("x", &px);
-    parser->parser[0]->DefineVar("y", &py);
+    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
+    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
 
     // current solution
     parser->parser[0]->DefineVar("uval", &puval);
-    parser->parser[0]->DefineVar("udx", &pudx);
-    parser->parser[0]->DefineVar("udy", &pudy);
+    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelX().toLower().toStdString() , &pudx);
+    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pudy);
 
     // test function
     parser->parser[0]->DefineVar("vval", &pvval);
-    parser->parser[0]->DefineVar("vdx", &pvdx);
-    parser->parser[0]->DefineVar("vdy", &pvdy);
+    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pvdx);
+    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pvdy);
 
     // previous solution
     parser->parser[0]->DefineVar("upval", &pupval);
-    parser->parser[0]->DefineVar("updx", &pupdx);
-    parser->parser[0]->DefineVar("updy", &pupdy);
+    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pupdx);
+    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pupdy);
 
     // solution from previous time level
     parser->parser[0]->DefineVar("uptval", &puptval);
-    parser->parser[0]->DefineVar("uptdx", &puptdx);
-    parser->parser[0]->DefineVar("uptdy", &puptdy);
+    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &puptdx);
+    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &puptdy);
 
     // time step
     parser->parser[0]->DefineVar("deltat", &pdeltat);

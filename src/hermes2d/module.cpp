@@ -1077,8 +1077,8 @@ void ViewScalarFilter<Scalar>::initParser(std::string expression)
 
     pars->SetExpr(expression);
 
-    pars->DefineVar("x", &px);
-    pars->DefineVar("y", &py);
+    pars->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
+    pars->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
 
     pvalue = new double[Hermes::Hermes2D::Filter<Scalar>::num];
     pdx = new double[Hermes::Hermes2D::Filter<Scalar>::num];
@@ -1090,8 +1090,8 @@ void ViewScalarFilter<Scalar>::initParser(std::string expression)
         number << (k+1);
 
         pars->DefineVar("value" + number.str(), &pvalue[k]);
-        pars->DefineVar("dx" + number.str(), &pdx[k]);
-        pars->DefineVar("dy" + number.str(), &pdy[k]);
+        pars->DefineVar("d" + Util::scene()->problemInfo()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+        pars->DefineVar("d" + Util::scene()->problemInfo()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
     }
 
     parser->parser.push_back(pars);
