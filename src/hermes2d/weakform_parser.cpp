@@ -179,6 +179,12 @@ Hermes::Ord CustomParserMatrixFormVol<Scalar>::ord(int n, double *wt, Hermes::He
                                                    Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
     return Hermes::Ord(6);
+    Hermes::Ord result;
+
+    for (int i = 0; i < n; i++)
+        result += u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i];
+
+    return result;
 }
 
 template <typename Scalar>
@@ -241,6 +247,12 @@ Hermes::Ord CustomParserVectorFormVol<Scalar>::ord(int n, double *wt, Hermes::He
                                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
     return Hermes::Ord(6);
+    Hermes::Ord result;
+
+    for (int i = 0; i < n; i++)
+        result += v->dx[i] + v->dy[i];
+
+    return result;
 }
 
 // **********************************************************************************************
@@ -293,6 +305,12 @@ Hermes::Ord CustomParserMatrixFormSurf<Scalar>::ord(int n, double *wt, Hermes::H
                                                     Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
     return Hermes::Ord(6);
+    Hermes::Ord result;
+
+    for (int i = 0; i < n; i++)
+        result += u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i];
+
+    return result;
 }
 
 template <typename Scalar>
@@ -339,6 +357,12 @@ Hermes::Ord CustomParserVectorFormSurf<Scalar>::ord(int n, double *wt, Hermes::H
                                                     Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
 {
     return Hermes::Ord(6);
+    Hermes::Ord result;
+
+    for (int i = 0; i < n; i++)
+        result += v->dx[i] + v->dy[i];
+
+    return result;
 }
 
 template class CustomParserMatrixFormVol<double>;

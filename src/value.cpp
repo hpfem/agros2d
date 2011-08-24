@@ -153,6 +153,8 @@ bool Value::evaluate(double time, bool quiet)
         if (!quiet)
             QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), expressionResult.error);
     }
+
+    m_isEvaluated = true;
     return expressionResult.error.isEmpty();
 }
 
