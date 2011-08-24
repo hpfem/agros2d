@@ -233,7 +233,7 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     QGroupBox *grpLinearity = new QGroupBox(tr("Newton solver"));
     grpLinearity->setLayout(layoutLinearity);
-    grpLinearity->setVisible(Util::config()->showExperimentalFeatures);
+    // grpLinearity->setVisible(Util::config()->showExperimentalFeatures);
 
     // left
     QVBoxLayout *layoutLeft = new QVBoxLayout();

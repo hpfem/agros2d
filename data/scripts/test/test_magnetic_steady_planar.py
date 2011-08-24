@@ -1,7 +1,7 @@
 # model
 newdocument(name="Magnetostatic", type="planar", 
 			physicfield="magnetic", analysistype="steadystate", 
-			numberofrefinements=1, polynomialorder=7, 
+			numberofrefinements=1, polynomialorder=5, 
 			nonlineartolerance=0.001, nonlinearsteps=10)
 
 # boundaries
@@ -11,7 +11,7 @@ addboundary("A = 0", "magnetic_potential", {"Ar" : 0})
 addmaterial("Cu", {"mur" : 1, "Jer" : 1e6})
 addmaterial("Fe", {"mur" : 500})
 addmaterial("Air", {"mur" : 1})
-addmaterial("Magnet", {"mur" : 1.11, "Jer" : 1e6, "Brm" : 0.1, "Bra" : -30})
+addmaterial("Magnet", {"mur" : 1.11, "Brm" : 0.1, "Bra" : -30})
 addmaterial("Velocity", {"mur" : 1, "gamma" : 1e7, "vx" : 2})
 
 # edges

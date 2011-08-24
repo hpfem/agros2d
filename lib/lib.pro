@@ -4,9 +4,6 @@ TEMPLATE = lib
 OBJECTS_DIR = build
 CONFIG = += staticlib
 
-QMAKE_CFLAGS = -O3
-QMAKE_CXXFLAGS = -O3
-
 SOURCES += dxflib/dl_writer_ascii.cpp \
     dxflib/dl_dxf.cpp \
     muparser/muParserBase.cpp \

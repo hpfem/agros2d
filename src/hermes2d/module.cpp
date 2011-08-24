@@ -1000,6 +1000,8 @@ void Parser::setParserVariables(Material *material, Boundary *boundary)
         {
             Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
             parser_variables[variable->shortname] = material->values[variable->id].value(0.0);
+            parser_variables["d" + variable->shortname] = 0.0;
+            // qDebug() << "Parser::setParserVariables: " << parser_variables[variable->shortname];
         }
     }
 
@@ -1021,7 +1023,6 @@ void Parser::initParserMaterialVariables()
     {
         Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
         parser_variables[variable->shortname] = 0.0;
-        parser_variables["d" + variable->shortname] = 0.0;
     }
 
     // set material variables

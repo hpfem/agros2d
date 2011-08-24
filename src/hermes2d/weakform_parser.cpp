@@ -120,7 +120,9 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
                                                              Material *material)
     : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(), m_material(material)
 {
+    qDebug() << "CustomParserMatrixFormVol - start";
     initParser(material, NULL);
+    qDebug() << "CustomParserMatrixFormVol - end";
 
     parser->parser[0]->SetExpr(expression);
 }
@@ -129,7 +131,7 @@ template <typename Scalar>
 Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                                                 Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
-    // Value cond = m_material->get_value("heat_conductivity");
+    Value cond = m_material->get_value("heat_conductivity");
 
     double result = 0;
 
@@ -153,7 +155,15 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupdx = u_ext[this->j]->dx[i];
         pupdy = u_ext[this->j]->dy[i];
 
-        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient){
+        // parser->parser_variables["lambda"] = 400.0; // cond.value(u->val[i]);
+        // parser->parser_variables["dlambda"] = 0.0; //  cond.derivative(u->val[i]);
+        // parser->parser_variables["lambda"] = cond.value(u_ext[this->j]->val[i]);
+        // parser->parser_variables["dlambda"] = cond.derivative(u_ext[this->j]->val[i]);
+
+        // qDebug() << parser->parser_variables["lambda"];
+
+        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+        {
             puptval = ext->fn[this->i]->val[i];
             puptdx = ext->fn[this->i]->dx[i];
             puptdy = ext->fn[this->i]->dy[i];
@@ -176,7 +186,7 @@ template <typename Scalar>
 CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i,
                                                              std::string area, std::string expression,
                                                              Material *material)
-    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm()
+    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm(), m_material(material)
 {
     initParser(material, NULL);
 
@@ -188,6 +198,8 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
                                                 Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
 {
     double result = 0;
+
+    Value cond = m_material->get_value("heat_conductivity");
 
     pdeltat = Util::scene()->problemInfo()->timeStep.number();
 
@@ -204,6 +216,11 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupval = u_ext[this->i]->val[i];  //TODO PK this->i
         pupdx = u_ext[this->i]->dx[i];
         pupdy = u_ext[this->i]->dy[i];
+
+        // parser->parser_variables["lambda"] = 400.0;
+        // parser->parser_variables["lambda"] = cond.value(u_ext[this->i]->val[i]);
+
+        // qDebug() << parser->parser_variables["lambda"];
 
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         {

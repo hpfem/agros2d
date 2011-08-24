@@ -13,11 +13,11 @@
 /* #undef WITH_PYTHON */
 
 // stacktrace
-// #define HAVE_TEUCHOS_LINK
+#define HAVE_TEUCHOS_LINK
 /* #undef HAVE_TEUCHOS_BFD */
-// #define HAVE_EXECINFO
-// #define HAVE_VASPRINTF
-// #define HAVE_CXXABI
+#define HAVE_EXECINFO
+#define HAVE_VASPRINTF
+#define HAVE_CXXABI
 
 // trilinos
 /* #undef WITH_TRILINOS */

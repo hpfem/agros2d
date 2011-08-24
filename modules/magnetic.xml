@@ -196,12 +196,12 @@
             <harmonic planar_comp_x="dy1 / (mur * MU0)" planar_comp_y="- dx1 / (mur * MU0)" axi_comp_r="- dy1 / (mur * MU0)" axi_comp_z="(dx1 + value1 / (x + 1e-12)) / (mur * MU0)" />
             <transient />
         </item>
-        <item id="magnetic_energy_density" name="Energy density" shortname="we" unit="J/m3" scalar="1">
+        <item id="magnetic_energy_density" name="Energy density" shortname="wm" unit="J/m3" scalar="1">
             <steadystate planar_scalar="(dy1^2 + dx1^2) / (mur * MU0)" axi_scalar="(dy1^2 + (dx1 + value1 / (x + 1e-12))^2) / (mur * MU0)" />
             <harmonic planar_scalar="(dy1^2 + dx1^2 + dy2^2 + dx2^2) / (mur * MU0)" axi_scalar="(dy1^2 + (dx1 + value1 / (x + 1e-12))^2 + dy2^2 + (dx2 + value2 / (x + 1e-12))^2) / (mur * MU0)" />
             <transient planar_scalar="(dy1^2 + dx1^2) / (mur * MU0)" axi_scalar="(dy1^2 + (dx1 + value1 / (x + 1e-12))^2) / (mur * MU0)" />
         </item>
-        <item id="magnetic_permeability" name="Permeability" shortname="eps" unit="-" scalar="1">
+        <item id="magnetic_permeability" name="Permeability" shortname="mur" unit="-" scalar="1">
             <steadystate planar_scalar="mur" axi_scalar="mur" />
             <harmonic planar_scalar="mur" axi_scalar="mur" />
             <transient planar_scalar="mur" axi_scalar="mur" />
