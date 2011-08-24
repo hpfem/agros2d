@@ -52,7 +52,6 @@ public:
     SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
 
     Hermes::vector<SolutionArray<Scalar> *> solveSolutionArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
-    Hermes::vector<SolutionArray<Scalar> *> solveSolutionArrayOld(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
 private:
     int polynomialOrder;
     AdaptivityType adaptivityType;
