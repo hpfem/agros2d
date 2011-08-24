@@ -1,6 +1,6 @@
 <document version="2.0">
     <problems>
-        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.001" name="unnamed" date="2011-08-18" polynomialorder="2" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="heat" timetotal="4">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.001" name="unnamed" date="2011-08-18" polynomialorder="2" meshtype="triangle" timestep="1.0e-2" problemtype="planar" adaptivitytype="disabled" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="heat" timetotal="4e-2">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
