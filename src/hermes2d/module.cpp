@@ -201,9 +201,10 @@ void WeakFormAgros<Scalar>::registerForms()
                                                                                                        form->sym,
                                                                                                        form->expression,
                                                                                                        material);
-                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-                    custom_form->ext.push_back(solution.back());  //TODO jak pri vice reseni polich??
-                cout << "prev sln (0, 0.2) : " << solution.back()->get_pt_value(0, 0.2) << "number of solutions : " << solution.size() << endl;
+                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient){
+                    for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
+                        custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
+                }
                 add_matrix_form(custom_form);
             }
 
@@ -217,7 +218,8 @@ void WeakFormAgros<Scalar>::registerForms()
                                                                                                        form->expression,
                                                                                                        material);
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-                    custom_form->ext.push_back(solution.back());  //TODO jak pri vice reseni polich??
+                    for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
+                        custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
                 add_vector_form(custom_form);
             }
         }

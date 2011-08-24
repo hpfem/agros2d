@@ -224,8 +224,6 @@ bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space
     }
     else{
         Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), spaceParam, solutionParam);
-//        m_progressItemSolve->emitMessage(QObject::tr("One problem solved"), false); //TODO temp
-//        cout << "One problem solved" << endl;
     }
 
     return true;
@@ -284,8 +282,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
         m_wf->set_current_time(actualTime);
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
             for (int i = 0; i < solution.size(); i++){
-                cout << "push " << solution[i] << " sit " << solution[i]->get_mesh() <<  endl;
-                m_wf->solution.push_back(solutionArrayList.back()->sln ); //TODO back je blbe
+                m_wf->solution.push_back(solutionArrayList.at(solutionArrayList.size() - solution.size() + i)->sln );
             }
         m_wf->delete_all();
         m_wf->registerForms();
@@ -336,6 +333,20 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
                                                                 Util::config()->meshRegularity);
                 actualAdaptivitySteps = i+1;
 
+                if (m_progressItemSolve->isCanceled())
+                {
+                    isError = true;
+                    break;
+                }
+
+                // delete reference space
+                for (int i = 0; i < spaceReference.size(); i++)
+                {
+                    delete spaceReference.at(i)->get_mesh();
+                    delete spaceReference.at(i);
+                }
+                spaceReference.clear();
+
             }
         }
 
@@ -344,7 +355,6 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
         if (!isError)
         {
             for (int i = 0; i < numberOfSolution; i++){
-                cout << "solution" << i << " val(0, 0.2): " << (solution.at(i))->get_pt_value(0, 0.2) <<  endl;
                 solutionArrayList.push_back(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
             }
 
