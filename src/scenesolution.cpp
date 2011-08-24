@@ -212,7 +212,7 @@ void SceneSolution<Scalar>::loadSolution(QDomElement *element)
         Util::scene()->problemInfo()->initialCondition.evaluate(true);
 
         SolutionArray<Scalar> *solutionArray = new SolutionArray<Scalar>();
-        solutionArray->order = new Hermes::Hermes2D::Views::Orderizer();
+        // solutionArray->order = new Hermes::Hermes2D::Views::Orderizer();
         solutionArray->sln = new Hermes::Hermes2D::Solution<Scalar>();
         // FIXME
         // solutionArray->sln->set_const(Util::scene()->sceneSolution()->meshInitial(), Util::scene()->problemInfo()->initialCondition.number());
@@ -274,17 +274,6 @@ Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
             return m_solutionArrayList.at(currentTimeStep)->sln;
     }
     return NULL;
-}
-
-template <typename Scalar>
-Hermes::Hermes2D::Views::Orderizer *SceneSolution<Scalar>::ordView()
-{
-    logMessage("SceneSolution::ordView()");
-
-    if (isSolved())
-        return m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->order;
-    else
-        return NULL;
 }
 
 template <typename Scalar>
@@ -495,6 +484,14 @@ void SceneSolution<Scalar>::setSlnVectorView(ViewScalarFilter<Scalar> *slnVector
 }
 
 template <typename Scalar>
+void SceneSolution<Scalar>::setOrderView(Hermes::Hermes2D::Space<Scalar> *space)
+{
+    logMessage("SceneSolution::setOrderView()");
+
+    m_orderView.process_space(space);
+}
+
+template <typename Scalar>
 void SceneSolution<Scalar>::processView(bool showViewProgress)
 {
     if (showViewProgress)
@@ -575,6 +572,15 @@ void SceneSolution<Scalar>::processRangeVector()
         setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
         emit processedRangeVector();
     }
+}
+
+template <typename Scalar>
+void SceneSolution<Scalar>::processOrder()
+{
+    logMessage("SceneSolution::processOrder()");
+
+    setOrderView(m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
+    // emit processedRangeVector();
 }
 
 template <typename Scalar>

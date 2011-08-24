@@ -1396,7 +1396,7 @@ void MainWindow::doExportVTKOrder()
         if (QFile::exists(fileName))
             QFile::remove(fileName);
 
-        Util::scene()->sceneSolution()->ordView()->save_data_vtk(fileName.toStdString().c_str());
+        Util::scene()->sceneSolution()->ordView().save_data_vtk(fileName.toStdString().c_str());
 
         if (!fileName.isEmpty())
         {

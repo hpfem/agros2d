@@ -110,7 +110,8 @@ public:
     inline Hermes::Hermes2D::Views::Vectorizer<Scalar> &vecVectorView() { return m_vecVectorView; }
 
     // order view
-    Hermes::Hermes2D::Views::Orderizer *ordView();
+    void setOrderView(Hermes::Hermes2D::Space<Scalar> *space);
+    Hermes::Hermes2D::Views::Orderizer &ordView() { return m_orderView; }
 
     inline int timeElapsed() const { return m_timeElapsed; }
     double adaptiveError();
@@ -126,6 +127,7 @@ public:
     void processRangeContour();
     void processRangeScalar();
     void processRangeVector();
+    void processOrder();
 
     // progress dialog
     ProgressDialog *progressDialog();
@@ -156,6 +158,9 @@ private:
     Hermes::Hermes2D::Views::Vectorizer<Scalar> m_vecVectorView; // vectorizer for vector view
 
     Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
+
+    // order view
+    Hermes::Hermes2D::Views::Orderizer m_orderView;
 
     // progress dialog
     ProgressDialog *m_progressDialog;

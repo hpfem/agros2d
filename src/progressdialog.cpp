@@ -974,6 +974,9 @@ void ProgressItemProcessView::process()
 
     int step = 0;
 
+    // process order
+    Util::scene()->sceneSolution()->processOrder();
+
     if (sceneView()->sceneViewSettings().showSolutionMesh)
     {
         step++;
@@ -983,7 +986,7 @@ void ProgressItemProcessView::process()
     if (sceneView()->sceneViewSettings().showContours)
     {
         step++;
-        emit message(tr("Processing countour view cache"), false, step);
+        emit message(tr("Processing contour view cache"), false, step);
         Util::scene()->sceneSolution()->processRangeContour();
     }
     if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
