@@ -25,6 +25,25 @@
 
 class ProgressItemSolve;
 
+template <typename Scalar>
+struct SolutionArray
+{
+    double time;
+    double adaptiveError;
+    int adaptiveSteps;
+
+    Hermes::Hermes2D::Solution<Scalar> *sln;
+    Hermes::Hermes2D::Space<Scalar> *space;
+    //Hermes::Hermes2D::Views::Orderizer *order;
+
+    SolutionArray();
+    ~SolutionArray();
+
+    void load(QDomElement *element);
+    void save(QDomDocument *doc, QDomElement *element);
+};
+
+
 // solve
 template <typename Scalar>
 class SolverAgros

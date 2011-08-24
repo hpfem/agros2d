@@ -228,7 +228,7 @@ void SceneInfoView::showInfo()
                 html += "<tr><td>&nbsp;</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()) + " " + tr("elements") + "</td></tr>";
             }
 
-            if (Util::scene()->sceneSolution()->sln()->get_space()->get_num_dofs() > 0)
+            if (Util::scene()->sceneSolution()->sln()->get_space() && (Util::scene()->sceneSolution()->sln()->get_space()->get_num_dofs() > 0))
             {
                 html += "<tr><td>&nbsp;</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_space()->get_num_dofs()) + " " + tr("DOFs") + "</td></tr>";
             }

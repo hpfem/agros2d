@@ -23,6 +23,103 @@
 #include "progressdialog.h"
 
 template <typename Scalar>
+SolutionArray<Scalar>::SolutionArray()
+{
+    logMessage("SolutionArray::SolutionArray()");
+
+    sln = NULL;
+    space = NULL;
+
+    time = 0.0;
+    adaptiveSteps = 0;
+    adaptiveError = 100.0;
+}
+
+template <typename Scalar>
+SolutionArray<Scalar>::~SolutionArray()
+{
+    logMessage("SolutionArray::~SolutionArray()");
+
+    if (sln)
+    {
+        delete sln;
+        sln = NULL;
+    }
+
+    if (space)
+    {
+        delete space;
+        space = NULL;
+    }
+}
+
+template <typename Scalar>
+void SolutionArray<Scalar>::load(QDomElement *element)
+{
+    logMessage("SolutionArray::load()");
+
+    QString fileNameSolution = tempProblemFileName() + ".sln";
+    QString fileNameSpace = tempProblemFileName() + ".spc";
+
+    // write content (saved solution)
+    QByteArray contentSolution;
+    contentSolution.append(element->elementsByTagName("sln").at(0).toElement().childNodes().at(0).nodeValue());
+    writeStringContentByteArray(fileNameSolution, QByteArray::fromBase64(contentSolution));
+
+    // write content (saved space)
+    QByteArray contentSpace;
+    contentSpace.append(element->elementsByTagName("space").at(0).toElement().childNodes().at(0).nodeValue());
+    writeStringContentByteArray(fileNameSpace, QByteArray::fromBase64(contentSpace));
+
+    sln = new Hermes::Hermes2D::Solution<Scalar>();
+    sln->load(fileNameSolution.toStdString().c_str());
+    //space = new Hermes::Hermes2D::Space<Scalar>();
+    //space->load(fileNameSpace.toStdString().c_str());
+    adaptiveError = element->attribute("adaptiveerror").toDouble();
+    adaptiveSteps = element->attribute("adaptivesteps").toInt();
+    time = element->attribute("time").toDouble();
+
+    // delete solution
+    QFile::remove(fileNameSolution);
+    QFile::remove(fileNameSpace);
+}
+
+template <typename Scalar>
+void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement *element)
+{
+    logMessage("SolutionArray::save()");
+
+    // solution
+    QString fileNameSolution = tempProblemFileName() + ".sln";
+    sln->save(fileNameSolution.toStdString().c_str(), false);
+    QDomText textSolution = doc->createTextNode(readFileContentByteArray(fileNameSolution).toBase64());
+
+    // space
+    QString fileNameSpace = tempProblemFileName() + ".spc";
+    //space->save_data(fileNameSpace.toStdString().c_str());
+    QDomNode textSpace = doc->createTextNode(readFileContentByteArray(fileNameSpace).toBase64());
+
+    QDomNode eleSolution = doc->createElement("sln");
+    QDomNode eleSpace = doc->createElement("space");
+
+    eleSolution.appendChild(textSolution);
+    eleSpace.appendChild(textSpace);
+
+    element->setAttribute("adaptiveerror", adaptiveError);
+    element->setAttribute("adaptivesteps", adaptiveSteps);
+    element->setAttribute("time", time);
+    element->appendChild(eleSolution);
+    element->appendChild(eleSpace);
+
+    // delete
+    QFile::remove(fileNameSolution);
+    QFile::remove(fileNameSpace);
+}
+
+// *********************************************************************************************
+
+
+template <typename Scalar>
 SolverAgros<Scalar>::SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf)
 {
     analysisType = Util::scene()->problemInfo()->analysisType;
@@ -45,20 +142,6 @@ SolverAgros<Scalar>::SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormA
     m_wf = wf;
 }
 
-//template <typename Scalar>
-//Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutioArray2(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs)
-//{
-//    prepare();
-//    for(timesteps){
-//        if(not adapt)
-//            solve(space, solution);
-//        else{
-//            solve(refspace, refsolution);
-//            project....
-//        }
-
-//    }
-//}
 
 //TODO PK why bcs has to be reference???
 
@@ -627,8 +710,8 @@ template <typename Scalar>
 SolutionArray<Scalar> *SolverAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space, double adaptiveError, double adaptiveSteps, double time)
 {
     SolutionArray<Scalar> *solution = new SolutionArray<Scalar>();
-    solution->order = new Hermes::Hermes2D::Views::Orderizer();
-    if (space) solution->order->process_space(space);
+
+    assert(sln);
     if (sln->get_type() == Hermes::Hermes2D::HERMES_EXACT)
     {
         solution->sln = sln;
@@ -636,8 +719,14 @@ SolutionArray<Scalar> *SolverAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solu
     else
     {
         solution->sln = new Hermes::Hermes2D::Solution<Scalar>();
-        if (sln) solution->sln->copy(sln);
+        solution->sln->copy(sln);
     }
+
+    assert(space);
+    //solution->space = new Hermes::Hermes2D::Space<Scalar>();
+    solution->space = space->dup(space->get_mesh());
+
+
     solution->adaptiveError = adaptiveError;
     solution->adaptiveSteps = adaptiveSteps;
     solution->time = time;
@@ -646,3 +735,6 @@ SolutionArray<Scalar> *SolverAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solu
 }
 
 template class SolverAgros<double>;
+
+template class SolutionArray<double>;
+
