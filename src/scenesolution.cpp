@@ -24,6 +24,8 @@
 #include "sceneview.h"
 #include "progressdialog.h"
 
+#include "hermes2d/solver.h"
+
 template <typename Scalar>
 SceneSolution<Scalar>::SceneSolution()
 {

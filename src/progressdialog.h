@@ -38,22 +38,6 @@ class Mesh;
 class Chart;
 class QwtPlotCurve;
 
-template <typename Scalar>
-struct SolutionArray
-{
-    double time;
-    double adaptiveError;
-    int adaptiveSteps;
-
-    Hermes::Hermes2D::Solution<Scalar> *sln;
-    Hermes::Hermes2D::Views::Orderizer *order;
-
-    SolutionArray();
-    ~SolutionArray();
-
-    void load(QDomElement *element);
-    void save(QDomDocument *doc, QDomElement *element);
-};
 
 class ProgressItem : public QObject
 {

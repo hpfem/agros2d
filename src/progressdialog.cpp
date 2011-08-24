@@ -23,101 +23,6 @@
 #include "scene.h"
 #include "sceneview.h"
 
-template <typename Scalar>
-SolutionArray<Scalar>::SolutionArray()
-{
-    logMessage("SolutionArray::SolutionArray()");
-
-    sln = NULL;
-    order = NULL;
-
-    time = 0.0;
-    adaptiveSteps = 0;
-    adaptiveError = 100.0;
-}
-
-template <typename Scalar>
-SolutionArray<Scalar>::~SolutionArray()
-{
-    logMessage("SolutionArray::~SolutionArray()");
-
-    if (sln)
-    {
-        delete sln;
-        sln = NULL;
-    }
-
-    if (order)
-    {
-        delete order;
-        order = NULL;
-    }
-}
-
-template <typename Scalar>
-void SolutionArray<Scalar>::load(QDomElement *element)
-{
-    logMessage("SolutionArray::load()");
-
-    QString fileNameSolution = tempProblemFileName() + ".sln";
-    QString fileNameOrder = tempProblemFileName() + ".ord";
-
-    // write content (saved solution)
-    QByteArray contentSolution;
-    contentSolution.append(element->elementsByTagName("sln").at(0).toElement().childNodes().at(0).nodeValue());
-    writeStringContentByteArray(fileNameSolution, QByteArray::fromBase64(contentSolution));
-
-    // write content (saved order)
-    QByteArray contentOrder;
-    contentOrder.append(element->elementsByTagName("order").at(0).toElement().childNodes().at(0).nodeValue());
-    writeStringContentByteArray(fileNameOrder, QByteArray::fromBase64(contentOrder));
-
-    order = new Hermes::Hermes2D::Views::Orderizer();
-    order->load_data(fileNameOrder.toStdString().c_str());
-    sln = new Hermes::Hermes2D::Solution<Scalar>();
-    sln->load(fileNameSolution.toStdString().c_str());
-    adaptiveError = element->attribute("adaptiveerror").toDouble();
-    adaptiveSteps = element->attribute("adaptivesteps").toInt();
-    time = element->attribute("time").toDouble();
-
-    // delete solution
-    QFile::remove(fileNameSolution);
-    QFile::remove(fileNameOrder);
-}
-
-template <typename Scalar>
-void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement *element)
-{
-    logMessage("SolutionArray::save()");
-
-    // solution
-    QString fileNameSolution = tempProblemFileName() + ".sln";
-    sln->save(fileNameSolution.toStdString().c_str(), false);
-    QDomText textSolution = doc->createTextNode(readFileContentByteArray(fileNameSolution).toBase64());
-
-    // order
-    QString fileNameOrder = tempProblemFileName() + ".ord";
-    order->save_data(fileNameOrder.toStdString().c_str());
-    QDomNode textOrder = doc->createTextNode(readFileContentByteArray(fileNameOrder).toBase64());
-
-    QDomNode eleSolution = doc->createElement("sln");
-    QDomNode eleOrder = doc->createElement("order");
-
-    eleSolution.appendChild(textSolution);
-    eleOrder.appendChild(textOrder);
-
-    element->setAttribute("adaptiveerror", adaptiveError);
-    element->setAttribute("adaptivesteps", adaptiveSteps);
-    element->setAttribute("time", time);
-    element->appendChild(eleSolution);
-    element->appendChild(eleOrder);
-
-    // delete
-    QFile::remove(fileNameSolution);
-    QFile::remove(fileNameOrder);
-}
-
-// *********************************************************************************************
 
 ProgressItem::ProgressItem()
 {
@@ -1722,4 +1627,3 @@ void ProgressDialog::saveData()
 
 }
 
-template class SolutionArray<double>;
