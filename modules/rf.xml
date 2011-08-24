@@ -54,16 +54,16 @@
             	<item id="rf_magnetic_field_real" />
             	<item id="rf_magnetic_field_imag" />
 				
-				<vector i="1" planar="Hr * vval" axi="Hr * x * vval" />
-				<vector i="2" planar="Hi * vval" axi="Hi * x * vval" />
+				<vector i="1" planar="Hr * vval" axi="Hr * r * vval" />
+				<vector i="2" planar="Hi * vval" axi="Hi * r * vval" />
 			</boundary>  
 			
        		<boundary id="rf_surface_current" name="Surface current">
             	<item id="rf_surface_current_real" />
             	<item id="rf_surface_current_imag" />
 				
-				<vector i="1" planar="Hr * vval" axi="Hr * x * vval" />
-				<vector i="2" planar="Hi * vval" axi="Hi * x * vval" />
+				<vector i="1" planar="Hr * vval" axi="Hr * r * vval" />
+				<vector i="2" planar="Hi * vval" axi="Hi * r * vval" />
 			</boundary>  			
 			
        		<boundary id="rf_port" name="Port">
@@ -105,23 +105,23 @@
             <transient />
         </item>
         <item id="rf_magnetic_field_real" name="Magnetic field - real" shortname="Hr" unit="A/m" scalar="0">
-            <harmonic planar_comp_x="- 1.0 / (2.0 * PI * f * mur * MU0) * dy2" planar_comp_y="1.0 / (2.0 * PI * f * mur * MU0) * dx2" axi_comp_r="- 1.0 / (2.0 * PI * f * mur * MU0) * dy2" axi_comp_z="1.0 / (2.0 * PI * f * mur * MU0) * dx2" />
+            <harmonic planar_comp_x="- 1.0 / (2.0 * PI * f * mur * MU0) * dy2" planar_comp_y="1.0 / (2.0 * PI * f * mur * MU0) * dx2" axi_comp_r="- 1.0 / (2.0 * PI * f * mur * MU0) * dz2" axi_comp_z="1.0 / (2.0 * PI * f * mur * MU0) * dr2" />
             <transient />
         </item>
         <item id="rf_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" unit="A/m" scalar="0">
-            <harmonic planar_comp_x="1.0 / (2.0 * PI * f * mur * MU0) * dy1" planar_comp_y="1.0 / (2.0 * PI * f * mur * MU0) * dx1" axi_comp_r="1.0 / (2.0 * PI * f * mur * MU0) * dy1" axi_comp_z="1.0 / (2.0 * PI * f * mur * MU0) * dx1" />
+            <harmonic planar_comp_x="1.0 / (2.0 * PI * f * mur * MU0) * dy1" planar_comp_y="1.0 / (2.0 * PI * f * mur * MU0) * dx1" axi_comp_r="1.0 / (2.0 * PI * f * mur * MU0) * dz1" axi_comp_z="1.0 / (2.0 * PI * f * mur * MU0) * dr1" />
             <transient />
         </item>
         <item id="rf_flux_density_real" name="Flux density - real" shortname="Br" unit="T" scalar="0">
-            <harmonic planar_comp_x="- 1.0 / (2.0 * PI * f) * dy2" planar_comp_y="1.0 / (2.0 * PI * f) * dx2" axi_comp_r="- 1.0 / (2.0 * PI * f) * dy2" axi_comp_z="1.0 / (2.0 * PI * f) * dx2" />
+            <harmonic planar_comp_x="- 1.0 / (2.0 * PI * f) * dy2" planar_comp_y="1.0 / (2.0 * PI * f) * dx2" axi_comp_r="- 1.0 / (2.0 * PI * f) * dz2" axi_comp_z="1.0 / (2.0 * PI * f) * dr2" />
             <transient />
         </item>
         <item id="rf_flux_density_imag" name="Flux density - imag" shortname="Bi" unit="T" scalar="0">
-            <harmonic planar_comp_x="1.0 / (2.0 * PI * f) * dy1" planar_comp_y="1.0 / (2.0 * PI * f) * dx1" axi_comp_r="1.0 / (2.0 * PI * f) * dy1" axi_comp_z="1.0 / (2.0 * PI * f) * dx1" />
+            <harmonic planar_comp_x="1.0 / (2.0 * PI * f) * dy1" planar_comp_y="1.0 / (2.0 * PI * f) * dx1" axi_comp_r="1.0 / (2.0 * PI * f) * dz1" axi_comp_z="1.0 / (2.0 * PI * f) * dr1" />
             <transient />
         </item>
         <item id="rf_poynting_vector" name="Poyting vector" shortname="N" unit="W/m2" scalar="0">
-            <harmonic planar_comp_x="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dx1 - value1 * dx2)" planar_comp_y="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dy1 - value1 * dy2)" axi_comp_r="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dx1 - value1 * dx2)" axi_comp_z="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dy1 - value1 * dy2)" />
+            <harmonic planar_comp_x="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dx1 - value1 * dx2)" planar_comp_y="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dy1 - value1 * dy2)" axi_comp_r="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dr1 - value1 * dr2)" axi_comp_z="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dz1 - value1 * dz2)" />
             <transient />
         </item>
         <item id="rf_permittivity" name="Permittivity" shortname="epsr" unit="-" scalar="1">
@@ -192,7 +192,7 @@
 
     <volumeintegral>
         <item id="volume" name="Volume" shortname="V" unit="m3">
-            <harmonic planar="1.0" axi="2.0 * PI * x" />
+            <harmonic planar="1.0" axi="2.0 * PI * r" />
             <transient/>
         </item>
         <item id="surface" name="Cross section" shortname="S" unit="m2">
@@ -207,7 +207,7 @@
             <transient/>
         </item>
         <item id="surface" name="Surface" shortname="S" unit="m2">
-            <harmonic planar="1.0" axi="2.0 * PI * x" />
+            <harmonic planar="1.0" axi="2.0 * PI * r" />
             <transient/>
         </item>
     </surfaceintegral>
