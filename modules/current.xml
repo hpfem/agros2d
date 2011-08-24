@@ -13,8 +13,8 @@
     	<steadystate>
             <material id="current_conductivity" />
 
-            <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + gamma * (udx * vdx + udy * vdy)"
-                                axi="0.0 * r * uval * (updr * vdr + updz * vdz) + gamma * r * (udr * vdr + udz * vdz)" symmetric="1" />
+            <matrix i="1" j="1" planar="uval * (updx * vdx + updy * vdy) + gamma * (udx * vdx + udy * vdy)"
+                                axi="r * uval * (updr * vdr + updz * vdz) + gamma * r * (udr * vdr + udz * vdz)" symmetric="1" />
             <vector i="1" planar="gamma * (updx * vdx + updy * vdy)"
                           axi="gamma * r * (updr * vdr + updz * vdz)" />
         </steadystate>
@@ -44,7 +44,7 @@
             <steadystate planar_scalar="value1" axi_scalar="value1" />
         </item>
         <item id="current_electric_field" name="Electric field" shortname="E" unit="V/m" scalar="0">
-            <steadystate planar_comp_x="- dx1" planar_comp_y="- dy1" axi_comp_r="- dr1" axi_comp_z="- dr1" />
+            <steadystate planar_comp_x="- dx1" planar_comp_y="- dy1" axi_comp_r="- dr1" axi_comp_z="- dz1" />
         </item>
         <item id="current_current_density" name="Current density" shortname="J" unit="A/m2" scalar="0">
             <steadystate planar_comp_x="- gamma * dx1" planar_comp_y="- gamma * dy1" axi_comp_r="- gamma * dr1" axi_comp_z="- gamma * dz1" />
@@ -106,7 +106,7 @@
             <steadystate planar="1.0" axi="2.0 * PI * r" />
         </item>
         <item id="current_current" name="Current" shortname="I" unit="A">
-            <steadystate planar="gamma * (tanx * dy1 - tany * dx1)" axi="2.0 * PI * r * gamma * (tanr * dz1 - tanz * dz1)" />
+            <steadystate planar="gamma * (tanx * dy1 - tany * dx1)" axi="2.0 * PI * r * gamma * (tanr * dz1 - tanz * dr1)" />
         </item>
     </surfaceintegral>
 </module>
