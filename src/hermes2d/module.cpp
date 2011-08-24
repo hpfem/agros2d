@@ -829,7 +829,7 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressIt
 
     WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
-    SolutionAgros<double> solutionAgros(progressItemSolve, &wf);
+    SolverAgros<double> solutionAgros(progressItemSolve, &wf);
     Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solveSolutionArray(bcs);//TODO PK <double>
 
     // Hermes::vector<SolutionArray<double> *> solutionArrayList = solveSolutioArray<double>(progressItemSolve, bcs, &wf);//TODO PK <double>

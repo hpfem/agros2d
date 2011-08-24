@@ -23,7 +23,7 @@
 #include "progressdialog.h"
 
 template <typename Scalar>
-SolutionAgros<Scalar>::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf)
+SolverAgros<Scalar>::SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf)
 {
     analysisType = Util::scene()->problemInfo()->analysisType;
     polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
@@ -63,7 +63,7 @@ SolutionAgros<Scalar>::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakF
 //TODO PK why bcs has to be reference???
 
 template <typename Scalar>
-void SolutionAgros<Scalar>::initCalculation(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> >& bcs)
+void SolverAgros<Scalar>::initCalculation(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> >& bcs)
 {
     // load the mesh file
     mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
@@ -113,13 +113,13 @@ void SolutionAgros<Scalar>::initCalculation(Hermes::vector<Hermes::Hermes2D::Ess
 }
 
 template <typename Scalar>
-void SolutionAgros<Scalar>::cleanup()
+void SolverAgros<Scalar>::cleanup()
 {
 
 }
 
 template <typename Scalar>
-bool SolutionAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceParam,
+bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceParam,
                                             Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionParam)
 {
     // Initialize the FE problem.
@@ -150,7 +150,7 @@ bool SolutionAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Spa
 
 
 template <typename Scalar>
-Hermes::vector<SolutionArray<Scalar> *> SolutionAgros<Scalar>::solveSolutionArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs)
+Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs)
 {
     QTime time;
 
@@ -624,7 +624,7 @@ bool SolutionAgros<Scalar>::solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar
 */
 
 template <typename Scalar>
-SolutionArray<Scalar> *SolutionAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space, double adaptiveError, double adaptiveSteps, double time)
+SolutionArray<Scalar> *SolverAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space, double adaptiveError, double adaptiveSteps, double time)
 {
     SolutionArray<Scalar> *solution = new SolutionArray<Scalar>();
     solution->order = new Hermes::Hermes2D::Views::Orderizer();
@@ -645,4 +645,4 @@ SolutionArray<Scalar> *SolutionAgros<Scalar>::solutionArray(Hermes::Hermes2D::So
     return solution;
 }
 
-template class SolutionAgros<double>;
+template class SolverAgros<double>;
