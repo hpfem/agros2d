@@ -20,4 +20,8 @@ INCLUDEPATH += ../../../hermes2d/include \
     ../
 
 SOURCES += electrostatic_steadystate_planar.cpp
-# SOURCES += electrostatic_steadystate_axi.cpp
+SOURCES += electrostatic_steadystate_axi.cpp
+
+linux-g++|linux-g++-64|linux-g++-32 {
+    INCLUDEPATH += /usr/include
+}
