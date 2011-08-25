@@ -168,6 +168,14 @@ void WeakFormAgros<Scalar>::registerForms()
     string problemId = Util::scene()->problemInfo()->module()->id + "_" +
             analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
             problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
+<<<<<<< HEAD
+=======
+    std::cout << problemId;
+    if (is_generated_classes)
+        qDebug() << "generované třídy" ;
+    else
+        qDebug() << "xml_parser";
+>>>>>>> xml parser axi symmetry fix
 
     // boundary conditions
     for (int i = 0; i<Util::scene()->edges.count(); i++)
