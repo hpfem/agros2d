@@ -85,6 +85,9 @@ void ProblemInfo::clear()
     // matrix solver
     matrixSolver = Hermes::SOLVER_UMFPACK;
 
+    // weakforms
+    weakFormsType = WeakFormsType_Compiled;
+
     // linearity   
     nonlinearTolerance = 1e-3;
     nonlinearSteps = 10;
@@ -1414,6 +1417,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // linearity
     m_problemInfo->nonlinearSteps = eleProblem.toElement().attribute("nonlinearsteps", "10").toInt();
     m_problemInfo->nonlinearTolerance = eleProblem.toElement().attribute("nonlineartolerance", "1e-3").toDouble();
+
+    // weakforms
+    m_problemInfo->weakFormsType = weakFormsTypeFromStringKey(eleProblem.toElement().attribute("weakforms",
+                                                                                               weakFormsTypeToStringKey(WeakFormsType_Compiled)));
 
     // matrix solver
     m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblem.toElement().attribute("matrix_solver",

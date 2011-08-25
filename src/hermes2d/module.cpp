@@ -29,6 +29,8 @@
 #include "hermes_acoustic.h"
 // #include "hermes_flow.h"
 
+#include "weakform_factory.h"
+
 #include "progressdialog.h"
 #include "util.h"
 #include "scene.h"
@@ -167,11 +169,6 @@ void WeakFormAgros<Scalar>::registerForms()
             analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
             problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
 
-    if (is_generated_classes)
-        qDebug() << "generované třídy" ;
-    else
-        qDebug() << "xml_parser";
-
     // boundary conditions
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
@@ -186,7 +183,7 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
-                if (is_generated_classes)
+                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
                 {
                     add_matrix_form_surf(factoryMatrixFormSurf<Scalar>(problemId,
                                                                        form->i - 1, form->j - 1,
@@ -206,7 +203,7 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormVector *form = ((ParserFormVector *) *it);
 
-                if (is_generated_classes)
+                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
                 {
                     add_vector_form_surf(factoryVectorFormSurf<Scalar>(problemId,
                                                                        form->i - 1,
@@ -236,20 +233,9 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
-<<<<<<< HEAD
-                CustomParserMatrixFormVol<Scalar>* custom_form = new CustomParserMatrixFormVol<Scalar>(form->i - 1, form->j - 1,
-                                                                                                       QString::number(i).toStdString(),
-                                                                                                       form->sym,
-                                                                                                       form->expression,
-                                                                                                       material);
-                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient){
-                    for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
-                        custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
-                }
-=======
                 Hermes::Hermes2D::MatrixFormVol<Scalar>* custom_form = NULL;
 
-                if (is_generated_classes)
+                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
                 {
                     custom_form = factoryMatrixFormVol<Scalar>(problemId, form->i - 1, form->j - 1,
                                                                QString::number(i).toStdString(),
@@ -267,7 +253,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
                     custom_form->ext.push_back(solution.back());  //TODO jak pri vice reseni polich??
                 // cout << "prev sln (0, 0.2) : " << solution.back()->get_pt_value(0, 0.2) << "number of solutions : " << solution.size() << endl;
->>>>>>> progress on xml parser
+
                 add_matrix_form(custom_form);
             }
 
@@ -278,7 +264,7 @@ void WeakFormAgros<Scalar>::registerForms()
 
                 Hermes::Hermes2D::VectorFormVol<Scalar>* custom_form = NULL;
 
-                if (is_generated_classes)
+                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
                 {
                     custom_form = factoryVectorFormVol<Scalar>(problemId, form->i - 1,
                                                                QString::number(i).toStdString(),

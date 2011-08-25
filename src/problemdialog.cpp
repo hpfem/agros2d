@@ -140,6 +140,9 @@ QWidget *ProblemDialog::createControlsGeneral()
     txtTransientInitialCondition = new ValueLineEdit();
     lblTransientSteps = new QLabel("0");
 
+    // weak forms
+    cmbWeakForms = new QComboBox();
+
     // linearity
     txtNonlinearSteps = new QSpinBox(this);
     txtNonlinearSteps->setMinimum(1);
@@ -152,6 +155,8 @@ QWidget *ProblemDialog::createControlsGeneral()
     connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
+
+    // fill combobox
     fillComboBox();
 
     int minWidth = 130;
@@ -172,6 +177,8 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutTable->addWidget(cmbAdaptivityType, 6, 1);
     layoutTable->addWidget(new QLabel(tr("Linear solver:")), 8, 0);
     layoutTable->addWidget(cmbMatrixSolver, 8, 1);
+    layoutTable->addWidget(new QLabel(tr("Weak forms:")), 9, 0);
+    layoutTable->addWidget(cmbWeakForms, 9, 1);
 
     // harmonic analysis
     QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
@@ -344,6 +351,10 @@ void ProblemDialog::fillComboBox()
 #ifdef WITH_SUPERLU
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_SUPERLU), Hermes::SOLVER_SUPERLU);
 #endif
+
+    cmbWeakForms->clear();
+    cmbWeakForms->addItem(weakFormsTypeString(WeakFormsType_Compiled), WeakFormsType_Compiled);
+    cmbWeakForms->addItem(weakFormsTypeString(WeakFormsType_Interpreted), WeakFormsType_Interpreted);
 }
 
 void ProblemDialog::load()
@@ -376,6 +387,9 @@ void ProblemDialog::load()
 
     // matrix solver
     cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_problemInfo->matrixSolver));
+
+    // weakforms
+    cmbWeakForms->setCurrentIndex(cmbWeakForms->findData(m_problemInfo->weakFormsType));
 
     // startup
     txtStartupScript->setPlainText(m_problemInfo->scriptStartup);
@@ -496,6 +510,8 @@ void ProblemDialog::load()
 
     // matrix solver
     m_problemInfo->matrixSolver = (Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
+
+    m_problemInfo->weakFormsType = (WeakFormsType) cmbWeakForms->itemData(cmbWeakForms->currentIndex()).toInt();
 
     return true;
 }
