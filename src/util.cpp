@@ -26,6 +26,8 @@
 #include "scripteditordialog.h"
 #include "style/manhattanstyle.h"
 
+#include "hermes2d/module.h"
+
 bool verbose = false;
 
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;

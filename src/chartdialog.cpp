@@ -21,6 +21,9 @@
 
 #include "gui.h"
 #include "scene.h"
+#include "scenesolution.h"
+#include "hermes2d/module.h"
+
 
 QList<Point> ChartLine::getPoints()
 {

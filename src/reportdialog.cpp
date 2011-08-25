@@ -22,8 +22,12 @@
 #include "gui.h"
 
 #include "scene.h"
+#include "scenebasic.h"
+#include "scenesolution.h"
 #include "sceneview.h"
 #include "scripteditordialog.h"
+#include "hermes2d/module.h"
+
 
 ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {

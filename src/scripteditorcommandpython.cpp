@@ -24,9 +24,13 @@
 
 #include "util.h"
 #include "scene.h"
+#include "scenebasic.h"
 #include "sceneview.h"
+#include "scenesolution.h"
 #include "scenemarker.h"
 #include "scripteditordialog.h"
+#include "hermes2d/module.h"
+
 
 // version()
 char *pythonVersion()

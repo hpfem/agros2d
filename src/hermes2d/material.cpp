@@ -19,7 +19,7 @@
 
 #include "material.h"
 #include "module.h"
-
+#include "scene.h"
 #include "util.h"
 
 Material::Material(std::string name,

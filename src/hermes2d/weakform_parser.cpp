@@ -18,7 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "weakform_parser.h"
-
+#include "scene.h"
 #include "util.h"
 #include "hermes2d.h"
 #include "module.h"

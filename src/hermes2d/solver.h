@@ -21,9 +21,11 @@
 #define SOLVER_H
 
 #include "util.h"
-#include "module.h"
 
 class ProgressItemSolve;
+
+template <typename Scalar>
+class WeakFormAgros;
 
 template <typename Scalar>
 struct SolutionArray

@@ -18,9 +18,12 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "localpoint.h"
-
 #include "scene.h"
+#include "scenebasic.h"
+#include "scenemarker.h"
+#include "scenesolution.h"
 #include "hermes2d.h"
+#include "hermes2d/module.h"
 
 LocalPointValue::LocalPointValue(const Point &point) : point(point)
 {

@@ -19,9 +19,12 @@
 
 #include "resultsview.h"
 #include "scene.h"
+#include "scenesolution.h"
 #include "gui.h"
 #include "scenemarker.h"
 #include "hermes2d.h"
+#include "hermes2d/module.h"
+
 
 ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), parent)
 {

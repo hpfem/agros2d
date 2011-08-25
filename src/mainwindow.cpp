@@ -24,6 +24,7 @@
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneview.h"
+#include "scenesolution.h"
 #include "sceneinfoview.h"
 #include "terminalview.h"
 #include "tooltipview.h"
@@ -39,8 +40,8 @@
 #include "collaboration.h"
 #include "resultsview.h"
 #include "materialbrowserdialog.h"
-
 #include "datatabledialog.h"
+#include "hermes2d/module.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
