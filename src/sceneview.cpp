@@ -19,13 +19,15 @@
 
 #include "sceneview.h"
 #include "sceneview_data.h"
-
+#include "scenesolution.h"
 #include "scene.h"
 #include "scenemarkerselectdialog.h"
 #include "scenebasicselectdialog.h"
 
 #include "scenebasic.h"
 #include "progressdialog.h"
+#include "hermes2d/module.h"
+
 
 // scene view
 static SceneView *m_sceneView = NULL;;

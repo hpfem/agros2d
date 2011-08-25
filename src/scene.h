@@ -23,10 +23,6 @@
 #include "util.h"
 #include "conf.h"
 
-#include "hermes2d/module.h"
-
-#include "scenesolution.h"
-
 #include <dl_dxf.h>
 #include <dl_creationadapter.h>
 
@@ -41,8 +37,7 @@ class SceneBoundary;
 class SceneMaterial;
 struct SceneViewSettings;
 
-//template <typename Scalar> class SceneSolution;
-//class SceneSolution<double>;
+template <typename Scalar> class SceneSolution;
 
 class ScriptEngineRemote;
 

@@ -19,8 +19,11 @@
 
 #include "scenesolution.h"
 #include "scene.h"
+#include "scenebasic.h"
+#include "scenemarker.h"
 #include "surfaceintegral.h"
 #include "hermes2d.h"
+#include "hermes2d/module.h"
 
 SurfaceIntegralValue::SurfaceIntegralValue()
 {

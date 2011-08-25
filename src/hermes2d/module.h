@@ -23,9 +23,6 @@
 #include "util.h"
 #include "hermes2d.h"
 
-#include "scene.h"
-#include "scenebasic.h"
-#include "scenesolution.h"
 #include "scenemarker.h"
 
 #include "hermes2d/localpoint.h"
@@ -46,6 +43,7 @@ class SceneBoundary;
 class SceneMaterial;
 struct SceneViewSettings;
 template <typename Scalar> struct SolutionArray;
+template <typename Scalar> class ViewScalarFilter;
 
 class ProgressItemSolve;
 

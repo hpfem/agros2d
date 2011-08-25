@@ -1,5 +1,6 @@
 #include "util.h"
 #include "scene.h"
+#include "scenesolution.h"
 #include "alter_newton_solver.h"
 #include "progressdialog.h"
 

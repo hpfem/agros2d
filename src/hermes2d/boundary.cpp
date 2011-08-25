@@ -19,7 +19,7 @@
 
 #include "boundary.h"
 #include "module.h"
-
+#include "scene.h"
 #include "util.h"
 
 Boundary::Boundary(std::string name, std::string type,

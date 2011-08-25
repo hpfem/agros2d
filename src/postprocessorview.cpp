@@ -22,7 +22,10 @@
 #include "gui.h"
 
 #include "scene.h"
+#include "scenesolution.h"
 #include "sceneview.h"
+#include "hermes2d/module.h"
+
 
 PostprocessorView::PostprocessorView(SceneView *sceneView, QWidget *parent) : QDockWidget(tr("View Properties"), parent)
 {

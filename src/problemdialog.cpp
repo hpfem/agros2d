@@ -21,7 +21,9 @@
 
 #include "gui.h"
 #include "scene.h"
+#include "scenesolution.h"
 #include "scripteditordialog.h"
+#include "hermes2d/module.h"
 
 ProblemDialog::ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidget *parent) : QDialog(parent)
 {

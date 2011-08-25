@@ -21,7 +21,10 @@
 
 #include "gui.h"
 #include "scene.h"
+#include "scenebasic.h"
 #include "sceneview.h"
+#include "scenesolution.h"
+#include "hermes2d/module.h"
 
 
 ProgressItem::ProgressItem()

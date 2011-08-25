@@ -32,6 +32,9 @@
 #include "progressdialog.h"
 #include "util.h"
 #include "scene.h"
+#include "scenebasic.h"
+#include "scenemarker.h"
+#include "scenesolution.h"
 #include "hermes2d/solver.h"
 
 #include "mesh/mesh_reader_h2d.h"

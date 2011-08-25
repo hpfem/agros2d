@@ -20,6 +20,7 @@
 #include "hermes_elasticity.h"
 
 #include "scene.h"
+#include "scenesolution.h"
 #include "gui.h"
 
 double get_lambda(double young_modulus, double poisson_ratio)

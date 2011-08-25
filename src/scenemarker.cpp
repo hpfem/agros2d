@@ -18,8 +18,9 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scenemarker.h"
-
+#include "hermes2d/module.h"
 #include "scene.h"
+#include "scenebasic.h"
 #include "gui.h"
 
 SceneBoundary::SceneBoundary(std::string name, std::string type,
