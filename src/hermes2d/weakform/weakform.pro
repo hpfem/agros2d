@@ -9,7 +9,7 @@ QT += core gui network xml webkit
 TEMPLATE = lib
 TARGET = lib/weakform
 OBJECTS_DIR = build
-# CONFIG = += staticlib
+CONFIG += staticlib
 
 INCLUDEPATH += ../../../hermes2d/include \
     ../../../hermes_common/include \
@@ -21,8 +21,3 @@ INCLUDEPATH += ../../../hermes2d/include \
 
 SOURCES += electrostatic_steadystate_planar.cpp
 # SOURCES += electrostatic_steadystate_axi.cpp
-
-
-linux-g++|linux-g++-64|linux-g++-32 {
-    INCLUDEPATH += /usr/include
-}

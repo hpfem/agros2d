@@ -87,6 +87,9 @@ private:
     // equation
     QLabel *lblEquationPixmap;
 
+    // weak forms
+    QComboBox *cmbWeakForms;
+
     QTabWidget *tabType;
 
     void createControls();

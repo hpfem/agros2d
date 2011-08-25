@@ -349,6 +349,13 @@ enum AdaptivityType
     AdaptivityType_HP = 0
 };
 
+enum WeakFormsType
+{
+    WeakFormsType_Undefined,
+    WeakFormsType_Interpreted,
+    WeakFormsType_Compiled
+};
+
 enum MeshType
 {
     MeshType_Triangle,
@@ -449,6 +456,7 @@ QString teModeString(Mode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
+QString weakFormsTypeString(WeakFormsType weakFormsType);
 QString meshTypeString(MeshType meshType);
 QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
 
@@ -480,6 +488,9 @@ inline ProblemType problemTypeFromStringKey(const QString &problemType) { if (pr
 
 QString analysisTypeToStringKey(AnalysisType analysisType);
 AnalysisType analysisTypeFromStringKey(const QString &analysisType);
+
+QString weakFormsTypeToStringKey(WeakFormsType weakFormsType);
+WeakFormsType weakFormsTypeFromStringKey(const QString &weakFormsType);
 
 QString meshTypeToStringKey(MeshType meshType);
 MeshType meshTypeFromStringKey(const QString &meshType);

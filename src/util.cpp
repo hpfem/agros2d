@@ -33,6 +33,7 @@ bool verbose = false;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
 static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
+static QHash<WeakFormsType, QString> weakFormsTypeList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
 static QHash<MeshType, QString> meshTypeList;
@@ -40,6 +41,9 @@ static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
 
 QString analysisTypeToStringKey(AnalysisType analysisType) { return analysisTypeList[analysisType]; }
 AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return analysisTypeList.key(analysisType); }
+
+QString weakFormsTypeToStringKey(WeakFormsType weakFormsType) { return weakFormsTypeList[weakFormsType]; }
+WeakFormsType weakFormsTypeFromStringKey(const QString &weakFormsType) { return weakFormsTypeList.key(weakFormsType); }
 
 QString meshTypeToStringKey(MeshType meshType) { return meshTypeList[meshType]; }
 MeshType meshTypeFromStringKey(const QString &meshType) { return meshTypeList.key(meshType); }
@@ -68,6 +72,11 @@ void initLists()
     analysisTypeList.insert(AnalysisType_SteadyState, "steadystate");
     analysisTypeList.insert(AnalysisType_Transient, "transient");
     analysisTypeList.insert(AnalysisType_Harmonic, "harmonic");
+
+    // WeakForms Type
+    weakFormsTypeList.insert(WeakFormsType_Undefined, "");
+    weakFormsTypeList.insert(WeakFormsType_Interpreted, "interpreted");
+    weakFormsTypeList.insert(WeakFormsType_Compiled, "compiled");
 
     // Mesh Type
     meshTypeList.insert(MeshType_Triangle, "triangle");
@@ -204,6 +213,22 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
         return QObject::tr("hp-adaptivity");
     default:
         std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
+        throw;
+    }
+}
+
+QString weakFormsTypeString(WeakFormsType weakFormsType)
+{
+    logMessage("weakFormsTypeString()");
+
+    switch (weakFormsType)
+    {
+    case WeakFormsType_Interpreted:
+        return QObject::tr("Interpreted");
+    case WeakFormsType_Compiled:
+        return QObject::tr("Compiled");
+    default:
+        std::cerr << "Weak forms type '" + QString::number(weakFormsType).toStdString() + "' is not implemented. weakFormsTypeString(WeakFormsType weakFormsType)" << endl;
         throw;
     }
 }

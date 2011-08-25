@@ -179,6 +179,7 @@ void SceneInfoView::showInfo()
     html += "<tr><td><b>" + tr("Field") + "</b></td><td>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</td></tr>";
     html += "<tr><td><b>" + tr("Type") + "</b></td><td>" + problemTypeString(Util::scene()->problemInfo()->problemType) + "</td></tr>";
     html += "<tr><td><b>" + tr("Analysis") + "</b></td><td>" + analysisTypeString(Util::scene()->problemInfo()->analysisType) + "</td></tr>";
+    html += "<tr><td><b>" + tr("Weak forms") + "</b></td><td>" + weakFormsTypeString(Util::scene()->problemInfo()->weakFormsType) + "</td></tr>";
 
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
         html += "<tr><td>" + tr("Frequency") + "</td><td>" + QString::number(Util::scene()->problemInfo()->frequency) + " Hz" + "</td></tr>";

@@ -84,6 +84,9 @@ public:
     // matrix solver
     Hermes::MatrixSolverType matrixSolver;
 
+    // weakforms
+    WeakFormsType weakFormsType;
+
     ProblemInfo()
     {
         m_module = NULL;
