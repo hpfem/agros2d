@@ -21,6 +21,7 @@
 #define SCRIPTEDITORCOMMANDPYTHON_H
 
 #include "util.h"
+#include <Python.h>
 
 class Solution;
 

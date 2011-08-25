@@ -26,8 +26,6 @@
 #include <QDomDocument>
 #include <QtWebKit>
 
-#include <Python.h>
-
 #include <muParser.h>
 
 #include <typeinfo>

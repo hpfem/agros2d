@@ -1,7 +1,7 @@
 QT -= GUI
 TARGET = lib/lib
-TEMPLATE = lib
 OBJECTS_DIR = build
+TEMPLATE = lib
 CONFIG = += staticlib
 
 SOURCES += dxflib/dl_writer_ascii.cpp \

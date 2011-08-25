@@ -14,6 +14,7 @@ DEFINES += VERSION_MONTH=5
 DEFINES += VERSION_DAY=23
 
 DEFINES += NO_THREADS
+DEFINES += WEAKFORM_FACTORY
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -185,6 +186,8 @@ LIBS += -L../hermes2d/lib
 LIBS += -lhermes2d
 LIBS += -L../lib/lib
 LIBS += -llib
+LIBS += -Lhermes2d/weakform/lib
+LIBS += -lweakform
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS

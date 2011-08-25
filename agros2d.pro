@@ -1,6 +1,7 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
 SUBDIRS += lib
 SUBDIRS += hermes2d
+SUBDIRS += src/hermes2d/weakform
 SUBDIRS += src-remote
 SUBDIRS += src
 
@@ -68,4 +69,5 @@ linux-g++ {
 
 OTHER_FILES += \
     agros2d.supp
+
 

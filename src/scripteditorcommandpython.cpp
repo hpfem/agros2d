@@ -19,7 +19,6 @@
 
 #include "scripteditorcommandpython.h"
 
-#include <Python.h>
 #include "python/agros2d.c"
 
 #include "util.h"
