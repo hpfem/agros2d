@@ -152,8 +152,26 @@ std::map<std::string, std::string> availableModules()
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForms()
+Hermes::Hermes2D::VectorFormSurf<Scalar> *factoryVectorFormSurfx(int i, int j, SceneBoundary * boundary)
 {
+    // return new electrostaticsteadystateplanar::CustomVectorFormSurf_1_0<double>(i, "","", boundary);
+}
+
+template Hermes::Hermes2D::VectorFormSurf<double> *factoryVectorFormSurfx(int i, int j, SceneBoundary * boundary);
+
+
+template <typename Scalar>
+void WeakFormAgros<Scalar>::registerForms()
+{    
+    string problemId = Util::scene()->problemInfo()->module()->id + "_" +
+            analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
+            problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
+
+    if (is_generated_classes)
+        qDebug() << "generované třídy" ;
+    else
+        qDebug() << "xml_parser";
+
     // boundary conditions
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
@@ -168,10 +186,19 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
-                add_matrix_form_surf(new CustomParserMatrixFormSurf<Scalar>(form->i - 1, form->j - 1,
-                                                                            QString::number(i + 1).toStdString(),
-                                                                            form->expression,
-                                                                            boundary));
+                if (is_generated_classes)
+                {
+                    add_matrix_form_surf(factoryMatrixFormSurf<Scalar>(problemId,
+                                                                       form->i - 1, form->j - 1,
+                                                                       QString::number(i + 1).toStdString(),
+                                                                       boundary));
+                }
+                else
+                {
+                    add_matrix_form_surf(new CustomParserMatrixFormSurf<Scalar>(form->i - 1, form->j - 1,
+                                                                                QString::number(i + 1).toStdString(),
+                                                                                form->expression, boundary));
+                }
             }
 
             for (Hermes::vector<ParserFormVector *>::iterator it = boundary_type->weakform_vector_surface.begin();
@@ -179,10 +206,20 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormVector *form = ((ParserFormVector *) *it);
 
-                add_vector_form_surf(new CustomParserVectorFormSurf<Scalar>(form->i - 1,
-                                                                            QString::number(i + 1).toStdString(),
-                                                                            form->expression,
-                                                                            boundary));
+                if (is_generated_classes)
+                {
+                    add_vector_form_surf(factoryVectorFormSurf<Scalar>(problemId,
+                                                                       form->i - 1,
+                                                                       QString::number(i + 1).toStdString(),
+                                                                       boundary));
+                }
+                else
+                {
+                    add_vector_form_surf(new CustomParserVectorFormSurf<Scalar>(form->i - 1,
+                                                                                QString::number(i + 1).toStdString(),
+                                                                                form->expression,
+                                                                                boundary));
+                }
             }
         }
     }
@@ -199,6 +236,7 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
+<<<<<<< HEAD
                 CustomParserMatrixFormVol<Scalar>* custom_form = new CustomParserMatrixFormVol<Scalar>(form->i - 1, form->j - 1,
                                                                                                        QString::number(i).toStdString(),
                                                                                                        form->sym,
@@ -208,6 +246,28 @@ void WeakFormAgros<Scalar>::registerForms()
                     for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
                         custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
                 }
+=======
+                Hermes::Hermes2D::MatrixFormVol<Scalar>* custom_form = NULL;
+
+                if (is_generated_classes)
+                {
+                    custom_form = factoryMatrixFormVol<Scalar>(problemId, form->i - 1, form->j - 1,
+                                                               QString::number(i).toStdString(),
+                                                               form->sym,
+                                                               material);
+                }
+                else
+                {
+                    custom_form = new CustomParserMatrixFormVol<Scalar>(form->i - 1, form->j - 1,
+                                                                        QString::number(i).toStdString(),
+                                                                        form->sym,
+                                                                        form->expression,
+                                                                        material);
+                }
+                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+                    custom_form->ext.push_back(solution.back());  //TODO jak pri vice reseni polich??
+                // cout << "prev sln (0, 0.2) : " << solution.back()->get_pt_value(0, 0.2) << "number of solutions : " << solution.size() << endl;
+>>>>>>> progress on xml parser
                 add_matrix_form(custom_form);
             }
 
@@ -216,10 +276,22 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormVector *form = ((ParserFormVector *) *it);
 
-                CustomParserVectorFormVol<Scalar>* custom_form = new CustomParserVectorFormVol<Scalar>(form->i - 1,
-                                                                                                       QString::number(i).toStdString(),
-                                                                                                       form->expression,
-                                                                                                       material);
+                Hermes::Hermes2D::VectorFormVol<Scalar>* custom_form = NULL;
+
+                if (is_generated_classes)
+                {
+                    custom_form = factoryVectorFormVol<Scalar>(problemId, form->i - 1,
+                                                               QString::number(i).toStdString(),
+                                                               material);
+                }
+                else
+                {
+                    custom_form = new CustomParserVectorFormVol<Scalar>(form->i - 1,
+                                                                        QString::number(i).toStdString(),
+                                                                        form->expression,
+                                                                        material);
+                }
+
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
                     for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
                         custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
@@ -558,7 +630,7 @@ void Hermes::Module::Module::read(std::string filename)
                     view_scalar_variables.push_back(variable);
             }
         }
-        // custom        
+        // custom
         view_scalar_variables.push_back(get_variable("custom"));
 
         // vector variables
