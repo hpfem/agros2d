@@ -13,8 +13,8 @@
     	<steadystate>
             <material id="current_conductivity" />
 
-            <matrix i="1" j="1" planar="uval * (updx * vdx + updy * vdy) + gamma * (udx * vdx + udy * vdy)"
-                                axi="r * uval * (updr * vdr + updz * vdz) + gamma * r * (udr * vdr + udz * vdz)" symmetric="1" />
+            <matrix i="1" j="1" planar="gamma * (udx * vdx + udy * vdy)"
+                                axi="gamma * r * (udr * vdr + udz * vdz)" symmetric="1" />
             <vector i="1" planar="gamma * (updx * vdx + updy * vdy)"
                           axi="gamma * r * (updr * vdr + updz * vdz)" />
         </steadystate>
