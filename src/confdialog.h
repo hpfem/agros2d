@@ -84,6 +84,9 @@ private:
     // show convergence chart
     QCheckBox *chkShowConvergenceChart;
 
+    // show nonlinear chart
+    QCheckBox *chkShowNonlinearChart;
+
     // logs
     QCheckBox *chkEnabledApplicationLog;
     QCheckBox *chkEnabledProgressLog;

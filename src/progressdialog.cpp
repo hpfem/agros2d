@@ -907,6 +907,7 @@ void ProgressItemSolve::solve()
 
     m_adaptivityError.clear();
     m_adaptivityDOF.clear();
+    m_nonlinearError.clear();
 
     if (!QFile::exists(tempProblemFileName() + ".mesh"))
         return;
@@ -1063,9 +1064,11 @@ void ProgressDialog::createControls()
     controlsConvergenceErrorChart = createControlsConvergenceErrorChart();
     controlsConvergenceDOFChart = createControlsConvergenceDOFChart();
     controlsConvergenceErrorDOFChart = createControlsConvergenceErrorDOFChart();
+    controlsNonlinear = createControlsNonlinear();
 
     tabType = new QTabWidget();
     tabType->addTab(controlsProgress, icon(""), tr("Progress"));
+    tabType->addTab(controlsNonlinear, icon(""), tr("Nonlin. error"));
     tabType->addTab(controlsConvergenceErrorChart, icon(""), tr("Adapt. error"));
     tabType->addTab(controlsConvergenceDOFChart, icon(""), tr("Adapt. DOFs"));
     tabType->addTab(controlsConvergenceErrorDOFChart, icon(""), tr("Adapt. conv."));
@@ -1253,6 +1256,55 @@ QWidget *ProgressDialog::createControlsConvergenceErrorDOFChart()
     return widConvergenceChart;
 }
 
+QWidget *ProgressDialog::createControlsNonlinear()
+{
+    logMessage("ProgressDialog::createControlsNonlinear()");
+
+    chartNonlinear = new Chart(this);
+
+    // curves
+    curveNonlinear = new QwtPlotCurve();
+    curveNonlinear->setRenderHint(QwtPlotItem::RenderAntialiased);
+    curveNonlinear->setPen(QPen(Qt::blue));
+    curveNonlinear->setCurveAttribute(QwtPlotCurve::Inverted);
+    curveNonlinear->setYAxis(QwtPlot::yLeft);
+    curveNonlinear->setTitle(tr("nonlinearity"));
+    curveNonlinear->attach(chartNonlinear);
+
+    // curves
+    curveNonlinearMax = new QwtPlotCurve();
+    curveNonlinearMax->setRenderHint(QwtPlotItem::RenderAntialiased);
+    curveNonlinearMax->setPen(QPen(Qt::red));
+    curveNonlinearMax->setCurveAttribute(QwtPlotCurve::Inverted);
+    curveNonlinearMax->setYAxis(QwtPlot::yLeft);
+    curveNonlinearMax->setTitle(tr("max. error"));
+    curveNonlinearMax->attach(chartNonlinear);
+
+    // labels
+    QwtText textErrorLeft(tr("Error (%)"));
+    textErrorLeft.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chartNonlinear->setAxisTitle(QwtPlot::yLeft, textErrorLeft);
+
+    QwtText textErrorBottom(tr("Steps (-)"));
+    textErrorBottom.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chartNonlinear->setAxisTitle(QwtPlot::xBottom, textErrorBottom);
+
+    // legend
+    /*
+QwtLegend *legend = new QwtLegend();
+legend->setFrameStyle(QFrame::Box | QFrame::Sunken);
+chart->insertLegend(legend, QwtPlot::BottomLegend);
+*/
+
+    QVBoxLayout *layoutNonlinearity = new QVBoxLayout();
+    layoutNonlinearity->addWidget(chartNonlinear);
+
+    QWidget *widNonlinearityChart = new QWidget();
+    widNonlinearityChart->setLayout(layoutNonlinearity);
+
+    return widNonlinearityChart;
+}
+
 void ProgressDialog::resetControls(int currentTab)
 {
     btnSaveImage->setEnabled(false);
@@ -1262,7 +1314,7 @@ void ProgressDialog::resetControls(int currentTab)
     {
         btnSaveImage->setDisabled(tabType->currentIndex() == 0);
         btnSaveData->setDisabled(tabType->currentIndex() == 0);
-    }
+    }    
 }
 
 int ProgressDialog::progressSteps()
@@ -1349,18 +1401,19 @@ void ProgressDialog::start()
     }
 
     // successfull run
-    if (!Util::config()->showConvergenceChart ||
-            Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None ||
-            curveError->dataSize() == 0)
-    {
-        clear();
-        close();
-    }
-    else
+    if ((Util::config()->showConvergenceChart
+         && Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None
+         && curveError->dataSize() > 0)
+            || (Util::config()->showNonlinearChart && curveNonlinear->dataSize() > 0))
     {
         btnCancel->setEnabled(false);
         btnSaveImage->setEnabled(false);
         btnSaveData->setEnabled(false);
+    }
+    else
+    {
+        clear();
+        close();
     }
 }
 
@@ -1407,117 +1460,170 @@ void ProgressDialog::itemChanged()
     if (m_progressItem.count() == 0)
         return;
 
-    if (ProgressItemSolve *itemSolve = dynamic_cast<ProgressItemSolve *>(m_currentProgressItem))
+    ProgressItemSolve *itemSolve = dynamic_cast<ProgressItemSolve *>(m_currentProgressItem);
+    if (itemSolve)
     {
-        // error
-        int count = itemSolve->adaptivityError().count();
-
-        double *xval = new double[count];
-        double *yvalError = new double[count];
-        double *yvalDOF = new double[count];
-
-        double minDOF = numeric_limits<double>::max();
-        double maxDOF = numeric_limits<double>::min();
-
-        for (int i = 0; i<count; i++)
+        // adaptivity error
+        int adaptivityCount = itemSolve->adaptivityError().count();
+        if (adaptivityCount > 0)
         {
-            xval[i] = i+1;
-            yvalError[i] = itemSolve->adaptivityError().at(i);
-            yvalDOF[i] = itemSolve->adaptivityDOF().at(i);
+            double *xval = new double[adaptivityCount];
+            double *yvalError = new double[adaptivityCount];
+            double *yvalDOF = new double[adaptivityCount];
 
-            minDOF = min(minDOF, yvalDOF[i]);
-            maxDOF = max(maxDOF, yvalDOF[i]);
+            double minDOF = numeric_limits<double>::max();
+            double maxDOF = numeric_limits<double>::min();
+
+            for (int i = 0; i<adaptivityCount; i++)
+            {
+                xval[i] = i+1;
+                yvalError[i] = itemSolve->adaptivityError().at(i);
+                yvalDOF[i] = itemSolve->adaptivityDOF().at(i);
+
+                minDOF = min(minDOF, yvalDOF[i]);
+                maxDOF = max(maxDOF, yvalDOF[i]);
+            }
+
+            // max error
+            double *xvalErrorMax = new double[2];
+            double *yvalErrorMax = new double[2];
+            xvalErrorMax[0] = 1;
+            xvalErrorMax[1] = adaptivityCount;
+            yvalErrorMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
+            yvalErrorMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
+
+            // plot error
+            bool doReplotError = chartError->autoReplot();
+            chartError->setAutoReplot(false);
+
+            curveError->setData(xval, yvalError, adaptivityCount);
+            curveErrorMax->setData(xvalErrorMax, yvalErrorMax, 2);
+
+            chartError->setAutoReplot(doReplotError);
+            chartError->replot();
+
+            // plot dof
+            bool doReplotDOF = chartDOF->autoReplot();
+            chartDOF->setAutoReplot(false);
+
+            curveDOF->setData(xval, yvalDOF, adaptivityCount);
+
+            chartDOF->setAutoReplot(doReplotDOF);
+            chartDOF->replot();
+
+            // max error
+            double *xvalErrorDOFMax = new double[2];
+            double *yvalErrorDOFMax = new double[2];
+            xvalErrorDOFMax[0] = minDOF;
+            xvalErrorDOFMax[1] = maxDOF;
+            yvalErrorDOFMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
+            yvalErrorDOFMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
+
+            // plot conv. chart
+            bool doReplotErrorDOF = chartErrorDOF->autoReplot();
+            chartErrorDOF->setAutoReplot(false);
+
+            curveErrorDOF->setData(yvalDOF, yvalError, adaptivityCount);
+            curveErrorDOFMax->setData(xvalErrorDOFMax, yvalErrorDOFMax, 2);
+
+            chartErrorDOF->setAutoReplot(doReplotErrorDOF);
+            chartErrorDOF->replot();
+
+            // save data
+            QFile fileErr(tempProblemDir() + "/adaptivity_error.csv");
+            QTextStream outErr(&fileErr);
+            if (fileErr.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                for (unsigned i = 0; i < curveError->data().size(); i++)
+                    outErr << curveError->data().x(i) << ";" << curveError->data().y(i) << endl;
+            }
+            fileErr.close();
+
+            QFile fileDOF(tempProblemDir() + "/adaptivity_dof.csv");
+            QTextStream outDOF(&fileDOF);
+            if (fileDOF.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                for (unsigned i = 0; i < curveDOF->data().size(); i++)
+                    outDOF << curveDOF->data().x(i) << ";" << curveDOF->data().y(i) << endl;
+            }
+            fileDOF.close();
+
+            QFile fileErrDOF(tempProblemDir() + "/adaptivity_conv.csv");
+            QTextStream outErrDOF(&fileErrDOF);
+            if (fileErrDOF.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                for (unsigned i = 0; i < curveErrorDOF->data().size(); i++)
+                    outErrDOF << curveErrorDOF->data().x(i) << ";" << curveErrorDOF->data().y(i) << endl;
+            }
+            fileErrDOF.close();
+
+            // save images
+            QFile::remove(tempProblemDir() + "/adaptivity_error.png");
+            QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
+            QFile::remove(tempProblemDir() + "/adaptivity_conv.png");
+
+            chartError->saveImage(tempProblemDir() + "/adaptivity_error.png");
+            chartDOF->saveImage(tempProblemDir() + "/adaptivity_dof.png");
+            chartErrorDOF->saveImage(tempProblemDir() + "/adaptivity_conv.png");
+
+            delete[] xval;
+            delete[] yvalError;
+            delete[] xvalErrorMax;
+            delete[] yvalErrorMax;
+            delete[] yvalDOF;
+            delete[] xvalErrorDOFMax;
+            delete[] yvalErrorDOFMax;
         }
 
-        // max error
-        double *xvalErrorMax = new double[2];
-        double *yvalErrorMax = new double[2];
-        xvalErrorMax[0] = 1;
-        xvalErrorMax[1] = count;
-        yvalErrorMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
-        yvalErrorMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
-
-        // plot error
-        bool doReplotError = chartError->autoReplot();
-        chartError->setAutoReplot(false);
-
-        curveError->setData(xval, yvalError, count);
-        curveErrorMax->setData(xvalErrorMax, yvalErrorMax, 2);
-
-        chartError->setAutoReplot(doReplotError);
-        chartError->replot();
-
-        // plot dof
-        bool doReplotDOF = chartDOF->autoReplot();
-        chartDOF->setAutoReplot(false);
-
-        curveDOF->setData(xval, yvalDOF, count);
-
-        chartDOF->setAutoReplot(doReplotDOF);
-        chartDOF->replot();
-
-        // max error
-        double *xvalErrorDOFMax = new double[2];
-        double *yvalErrorDOFMax = new double[2];
-        xvalErrorDOFMax[0] = minDOF;
-        xvalErrorDOFMax[1] = maxDOF;
-        yvalErrorDOFMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
-        yvalErrorDOFMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
-
-        // plot conv. chart
-        bool doReplotErrorDOF = chartErrorDOF->autoReplot();
-        chartErrorDOF->setAutoReplot(false);
-
-        curveErrorDOF->setData(yvalDOF, yvalError, count);
-        curveErrorDOFMax->setData(xvalErrorDOFMax, yvalErrorDOFMax, 2);
-
-        chartErrorDOF->setAutoReplot(doReplotErrorDOF);
-        chartErrorDOF->replot();
-
-        // save data
-        QFile fileErr(tempProblemDir() + "/adaptivity_error.csv");
-        QTextStream outErr(&fileErr);
-        if (fileErr.open(QIODevice::WriteOnly | QIODevice::Text))
+        // nonlinearity
+        int nonlinearErrorCount = itemSolve->nonlinearError().count();
+        if (nonlinearErrorCount > 0)
         {
-            for (unsigned i = 0; i < curveError->data().size(); i++)
-                outErr << curveError->data().x(i) << ";" << curveError->data().y(i) << endl;
+            double *xval = new double[nonlinearErrorCount];
+            double *yvalError = new double[nonlinearErrorCount];
+
+            for (int i = 0; i<nonlinearErrorCount; i++)
+            {
+                xval[i] = i+1;
+                yvalError[i] = itemSolve->nonlinearError().at(i);
+            }
+
+            // max error
+            double *xvalErrorMax = new double[2];
+            double *yvalErrorMax = new double[2];
+            xvalErrorMax[0] = 1;
+            xvalErrorMax[1] = nonlinearErrorCount;
+            yvalErrorMax[0] = Util::scene()->problemInfo()->nonlinearTolerance;
+            yvalErrorMax[1] = Util::scene()->problemInfo()->nonlinearTolerance;
+
+            // plot error
+            bool doReplotError = chartNonlinear->autoReplot();
+            chartNonlinear->setAutoReplot(false);
+
+            curveNonlinear->setData(xval, yvalError, nonlinearErrorCount);
+            curveNonlinearMax->setData(xvalErrorMax, yvalErrorMax, 2);
+
+            chartNonlinear->setAutoReplot(doReplotError);
+            chartNonlinear->replot();
+
+            // save data
+            QFile fileErr(tempProblemDir() + "/nonlinear_error.csv");
+            QTextStream outErr(&fileErr);
+            if (fileErr.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                for (int i = 0; i < curveNonlinear->data().size(); i++)
+                    outErr << curveNonlinear->data().x(i) << ";" << curveNonlinear->data().y(i) << endl;
+            }
+            fileErr.close();
+
+            // save image
+            chartNonlinear->saveImage(tempProblemDir() + "/nonlinear_error.png");
+
+            delete[] xval;
+            delete[] yvalError;
+            delete[] xvalErrorMax;
+            delete[] yvalErrorMax;
         }
-        fileErr.close();
-
-        QFile fileDOF(tempProblemDir() + "/adaptivity_dof.csv");
-        QTextStream outDOF(&fileDOF);
-        if (fileDOF.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
-            for (unsigned i = 0; i < curveDOF->data().size(); i++)
-                outDOF << curveDOF->data().x(i) << ";" << curveDOF->data().y(i) << endl;
-        }
-        fileDOF.close();
-
-        QFile fileErrDOF(tempProblemDir() + "/adaptivity_conv.csv");
-        QTextStream outErrDOF(&fileErrDOF);
-        if (fileErrDOF.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
-            for (unsigned i = 0; i < curveErrorDOF->data().size(); i++)
-                outErrDOF << curveErrorDOF->data().x(i) << ";" << curveErrorDOF->data().y(i) << endl;
-        }
-        fileErrDOF.close();
-
-        // save images
-        QFile::remove(tempProblemDir() + "/adaptivity_error.png");
-        QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
-        QFile::remove(tempProblemDir() + "/adaptivity_conv.png");
-
-        chartError->saveImage(tempProblemDir() + "/adaptivity_error.png");
-        chartDOF->saveImage(tempProblemDir() + "/adaptivity_dof.png");
-        chartErrorDOF->saveImage(tempProblemDir() + "/adaptivity_conv.png");
-
-        delete[] xval;
-        delete[] yvalError;
-        delete[] xvalErrorMax;
-        delete[] yvalErrorMax;
-        delete[] yvalDOF;
-        delete[] xvalErrorDOFMax;
-        delete[] yvalErrorDOFMax;
     }
 }
 
@@ -1581,6 +1687,10 @@ void ProgressDialog::saveImage()
     {
         chartErrorDOF->saveImage();
     }
+    else if (tabType->currentWidget() == controlsNonlinear)
+    {
+        chartNonlinear->saveImage();
+    }
 }
 
 void ProgressDialog::saveData()
@@ -1612,7 +1722,6 @@ void ProgressDialog::saveData()
         {
             for (unsigned i = 0; i < curveError->data().size(); i++)
                 out << curveError->data().x(i) << ";" << curveError->data().y(i) << endl;
-
         }
         else if (tabType->currentWidget() == controlsConvergenceDOFChart)
         {
@@ -1623,6 +1732,11 @@ void ProgressDialog::saveData()
         {
             for (unsigned i = 0; i < curveErrorDOF->data().size(); i++)
                 out << curveErrorDOF->data().x(i) << ";" << curveErrorDOF->data().y(i) << endl;
+        }
+        else if (tabType->currentWidget() == controlsNonlinear)
+        {
+            for (unsigned i = 0; i < curveNonlinear->data().size(); i++)
+                out << curveNonlinear->data().x(i) << ";" << curveNonlinear->data().y(i) << endl;
         }
 
         if (fileInfo.absoluteDir() != tempProblemDir())

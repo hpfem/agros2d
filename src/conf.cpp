@@ -63,6 +63,7 @@ void Config::load()
 
     checkVersion = settings.value("General/CheckVersion", true).toBool();
     showConvergenceChart = settings.value("General/ShowConvergenceChart", true).toBool();
+    showNonlinearChart = settings.value("General/ShowNonlinearChart", true).toBool();
     enabledApplicationLog = settings.value("General/EnabledApplicationLog", true).toBool();
     enabledProgressLog = settings.value("General/EnabledProgressLog", true).toBool();
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
@@ -193,6 +194,7 @@ void Config::save()
 
     settings.setValue("General/CheckVersion", checkVersion);
     settings.setValue("General/ShowConvergenceChart", showConvergenceChart);
+    settings.setValue("General/ShowNonlinearChart", showNonlinearChart);
     settings.setValue("General/EnabledApplicationLog", enabledApplicationLog);
     settings.setValue("General/EnabledProgressLog", enabledProgressLog);
     settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);

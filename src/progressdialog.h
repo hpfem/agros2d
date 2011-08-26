@@ -194,6 +194,8 @@ public:
     inline QList<double> adaptivityError() { return m_adaptivityError; }
     inline QList<int> adaptivityDOF() { return m_adaptivityDOF; }
 
+    inline void addNonlinearError(double error) { m_nonlinearError.append(error); emit changed(); }
+    inline QList<double> nonlinearError() { return m_nonlinearError; }
 
 private slots:
     void solve();
@@ -201,6 +203,7 @@ private slots:
 private:
     QList<double> m_adaptivityError;
     QList<int> m_adaptivityDOF;
+    QList<double> m_nonlinearError;
 };
 
 class ProgressItemProcessView : public ProgressItem
@@ -231,6 +234,8 @@ public:
     bool run(bool showViewProgress = true);
     void clear();
 
+    inline ProgressItem *currentProgressItem() { return m_currentProgressItem; }
+
 signals:
     void cancelProgressItem();
 
@@ -248,6 +253,7 @@ private:
     QWidget *controlsConvergenceErrorChart;
     QWidget *controlsConvergenceDOFChart;
     QWidget *controlsConvergenceErrorDOFChart;
+    QWidget *controlsNonlinear;
 
     QLabel *lblMessage;
     QProgressBar *progressBar;
@@ -260,16 +266,20 @@ private:
     Chart *chartError;
     Chart *chartDOF;
     Chart *chartErrorDOF;
+    Chart *chartNonlinear;
     QwtPlotCurve *curveError;
     QwtPlotCurve *curveErrorMax;
     QwtPlotCurve *curveDOF;
     QwtPlotCurve *curveErrorDOF;
     QwtPlotCurve *curveErrorDOFMax;
+    QwtPlotCurve *curveNonlinear;
+    QwtPlotCurve *curveNonlinearMax;
 
     QWidget *createControlsProgress();
     QWidget *createControlsConvergenceErrorChart();
     QWidget *createControlsConvergenceDOFChart();
     QWidget *createControlsConvergenceErrorDOFChart();
+    QWidget *createControlsNonlinear();
 
     void createControls();
     int progressSteps();

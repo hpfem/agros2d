@@ -64,6 +64,9 @@ void ConfigDialog::load()
     // show convergence chart
     chkShowConvergenceChart->setChecked(Util::config()->showConvergenceChart);
 
+    // show nonlinear chart
+    chkShowNonlinearChart->setChecked(Util::config()->showNonlinearChart);
+
     // logs
     chkEnabledApplicationLog->setChecked(Util::config()->enabledApplicationLog);
     chkEnabledProgressLog->setChecked(Util::config()->enabledProgressLog);
@@ -171,6 +174,9 @@ void ConfigDialog::save()
 
     // show convergence chart
     Util::config()->showConvergenceChart = chkShowConvergenceChart->isChecked();
+
+    // show nonlinear chart
+    Util::config()->showNonlinearChart = chkShowNonlinearChart->isChecked();
 
     // logs
     Util::config()->enabledApplicationLog = chkEnabledApplicationLog->isChecked();
@@ -541,6 +547,7 @@ QWidget *ConfigDialog::createSolverWidget()
     if (Util::config()->showExperimentalFeatures)
         chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
     chkShowConvergenceChart = new QCheckBox(tr("Show convergence chart after solving"));
+    chkShowNonlinearChart = new QCheckBox(tr("Show nonlinear chart after solving"));
 
     QVBoxLayout *layoutSolver = new QVBoxLayout();
     layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
@@ -548,6 +555,7 @@ QWidget *ConfigDialog::createSolverWidget()
     if (Util::config()->showExperimentalFeatures)
         layoutSolver->addWidget(chkSaveWithSolution);
     layoutSolver->addWidget(chkShowConvergenceChart);
+    layoutSolver->addWidget(chkShowNonlinearChart);
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);
