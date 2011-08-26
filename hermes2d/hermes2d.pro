@@ -2,7 +2,7 @@ QT -= GUI
 TARGET = lib/hermes2d
 TEMPLATE = lib
 OBJECTS_DIR = build
-CONFIG = += staticlib
+CONFIG += staticlib
 CONFIG += debug
 DEFINES += NOGLUT
 
@@ -127,8 +127,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
 #                src/weakform_library/weakforms_maxwell.cpp \
 #                src/weakform_library/weakforms_neutronics.cpp \
 
-HEADERS = += ../hermes_common/src/compat.h
-
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
@@ -164,6 +162,9 @@ win32-msvc2008 {
 }
 
 macx-g++ {
+    DEFINES += HAVE_FMEMOPEN
+    DEFINES += HAVE_LOG2
+
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7

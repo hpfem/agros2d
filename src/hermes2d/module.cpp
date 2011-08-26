@@ -168,14 +168,6 @@ void WeakFormAgros<Scalar>::registerForms()
     string problemId = Util::scene()->problemInfo()->module()->id + "_" +
             analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
             problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
-<<<<<<< HEAD
-=======
-    std::cout << problemId;
-    if (is_generated_classes)
-        qDebug() << "generované třídy" ;
-    else
-        qDebug() << "xml_parser";
->>>>>>> xml parser axi symmetry fix
 
     // boundary conditions
     for (int i = 0; i<Util::scene()->edges.count(); i++)
@@ -191,18 +183,31 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
+                Hermes::Hermes2D::MatrixFormSurf<Scalar>* custom_form = NULL;
+
+                // compiled form
                 if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
                 {
-                    add_matrix_form_surf(factoryMatrixFormSurf<Scalar>(problemId,
-                                                                       form->i - 1, form->j - 1,
-                                                                       QString::number(i + 1).toStdString(),
-                                                                       boundary));
+                    custom_form = factoryMatrixFormSurf<Scalar>(problemId,
+                                                                form->i - 1, form->j - 1,
+                                                                QString::number(i + 1).toStdString(),
+                                                                boundary);
                 }
-                else
+
+                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+                    qDebug() << "Cannot find compiled MatrixFormSurf().";
+
+                // interpreted form
+                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
                 {
-                    add_matrix_form_surf(new CustomParserMatrixFormSurf<Scalar>(form->i - 1, form->j - 1,
-                                                                                QString::number(i + 1).toStdString(),
-                                                                                form->expression, boundary));
+                    custom_form = new CustomParserMatrixFormSurf<Scalar>(form->i - 1, form->j - 1,
+                                                                         QString::number(i + 1).toStdString(),
+                                                                         form->expression, boundary);
+                }
+
+                if (custom_form)
+                {
+                    add_matrix_form_surf(custom_form);
                 }
             }
 
@@ -211,19 +216,32 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 ParserFormVector *form = ((ParserFormVector *) *it);
 
+                Hermes::Hermes2D::VectorFormSurf<Scalar>* custom_form = NULL;
+
+                // compiled form
                 if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
                 {
-                    add_vector_form_surf(factoryVectorFormSurf<Scalar>(problemId,
-                                                                       form->i - 1,
-                                                                       QString::number(i + 1).toStdString(),
-                                                                       boundary));
+                    custom_form = factoryVectorFormSurf<Scalar>(problemId,
+                                                                form->i - 1,
+                                                                QString::number(i + 1).toStdString(),
+                                                                boundary);
                 }
-                else
+
+                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+                    qDebug() << "Cannot find compiled VectorFormSurf().";
+
+                // interpreted form
+                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
                 {
-                    add_vector_form_surf(new CustomParserVectorFormSurf<Scalar>(form->i - 1,
-                                                                                QString::number(i + 1).toStdString(),
-                                                                                form->expression,
-                                                                                boundary));
+                    new CustomParserVectorFormSurf<Scalar>(form->i - 1,
+                                                           QString::number(i + 1).toStdString(),
+                                                           form->expression,
+                                                           boundary);
+                }
+
+                if (custom_form)
+                {
+                    add_vector_form_surf(custom_form);
                 }
             }
         }
@@ -243,6 +261,7 @@ void WeakFormAgros<Scalar>::registerForms()
 
                 Hermes::Hermes2D::MatrixFormVol<Scalar>* custom_form = NULL;
 
+                // compiled form
                 if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
                 {
                     custom_form = factoryMatrixFormVol<Scalar>(problemId, form->i - 1, form->j - 1,
@@ -250,7 +269,12 @@ void WeakFormAgros<Scalar>::registerForms()
                                                                form->sym,
                                                                material);
                 }
-                else
+
+                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+                    qDebug() << "Cannot find compiled MatrixFormVol().";
+
+                // interpreted form
+                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
                 {
                     custom_form = new CustomParserMatrixFormVol<Scalar>(form->i - 1, form->j - 1,
                                                                         QString::number(i).toStdString(),
@@ -258,11 +282,22 @@ void WeakFormAgros<Scalar>::registerForms()
                                                                         form->expression,
                                                                         material);
                 }
+<<<<<<< HEAD
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
                     custom_form->ext.push_back(solution.back());  //TODO jak pri vice reseni polich??
                 // cout << "prev sln (0, 0.2) : " << solution.back()->get_pt_value(0, 0.2) << "number of solutions : " << solution.size() << endl;
+=======
 
-                add_matrix_form(custom_form);
+                if (custom_form)
+                {
+                    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+                        for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
+                            custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
+
+>>>>>>> use interpreted forms when compiled doesn't exists
+
+                    add_matrix_form(custom_form);
+                }
             }
 
             for (Hermes::vector<ParserFormVector *>::iterator it = Util::scene()->problemInfo()->module()->weakform_vector_volume.begin();
@@ -272,13 +307,19 @@ void WeakFormAgros<Scalar>::registerForms()
 
                 Hermes::Hermes2D::VectorFormVol<Scalar>* custom_form = NULL;
 
+                // compiled form
                 if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
                 {
                     custom_form = factoryVectorFormVol<Scalar>(problemId, form->i - 1,
                                                                QString::number(i).toStdString(),
                                                                material);
                 }
-                else
+
+                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+                    qDebug() << "Cannot find compiled VectorFormVol().";
+
+                // interpreted form
+                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
                 {
                     custom_form = new CustomParserVectorFormVol<Scalar>(form->i - 1,
                                                                         QString::number(i).toStdString(),
@@ -289,7 +330,11 @@ void WeakFormAgros<Scalar>::registerForms()
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
                     for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
                         custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
-                add_vector_form(custom_form);
+
+                if (custom_form)
+                {
+                    add_vector_form(custom_form);
+                }
             }
         }
     }
