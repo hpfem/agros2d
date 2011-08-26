@@ -172,7 +172,14 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             puptdy = ext->fn[this->i]->dy[i];
         }
 
-        result += wt[i] * parser->parser[0]->Eval();
+        try
+        {
+            result += wt[i] * parser->parser[0]->Eval();
+        }
+        catch (mu::Parser::exception_type &e)
+        {
+            std::cout << "CustomParserMatrixFormVol: " << parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
+        }
     }
 
     return result;
@@ -240,7 +247,14 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             puptdy = ext->fn[this->i]->dy[i];
         }
 
-        result += wt[i] * parser->parser[0]->Eval();
+        try
+        {
+            result += wt[i] * parser->parser[0]->Eval();
+        }
+        catch (mu::Parser::exception_type &e)
+        {
+            std::cout << "CustomParserVectorFormVol: " << parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
+        }
     }
 
     return result;
@@ -298,7 +312,14 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pupdx = u_ext[this->j]->dx[i];
         pupdy = u_ext[this->j]->dy[i];
 
-        result += wt[i] * parser->parser[0]->Eval();
+        try
+        {
+            result += wt[i] * parser->parser[0]->Eval();
+        }
+        catch (mu::Parser::exception_type &e)
+        {
+            std::cout << "CustomParserMatrixFormSurf: " << parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
+        }
     }
 
     return result;
@@ -350,7 +371,14 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pupdx = u_ext[this->i]->dx[i];
         pupdy = u_ext[this->i]->dy[i];
 
-        result += wt[i] * parser->parser[0]->Eval();
+        try
+        {
+            result += wt[i] * parser->parser[0]->Eval();
+        }
+        catch (mu::Parser::exception_type &e)
+        {
+            std::cout << "CustomParserVectorFormSurf: " << parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
+        }
     }
 
     return result;

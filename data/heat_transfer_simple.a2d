@@ -1,6 +1,6 @@
 <document version="2.0">
     <problems>
-        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.001" name="unnamed" date="2011-08-18" polynomialorder="2" meshtype="triangle" timestep="1.0e-2" problemtype="planar" adaptivitytype="disabled" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="heat" timetotal="4e-2">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.001" name="unnamed" date="2011-08-18" polynomialorder="2" weakforms="compiled" meshtype="triangle" timestep="1e-3" problemtype="planar" adaptivitytype="disabled" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="heat" timetotal="5e-3">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
@@ -8,7 +8,8 @@
                 <edge heat_heat_transfer_coefficient="1" heat_external_temperature="-10" type="heat_heat_flux" heat_heat_flux="0" id="2" name="zed"/>
             </edges>
             <labels>
-                <label heat_volume_heat="0" heat_conductivity="1" heat_density="1" heat_specific_heat="1" id="1" name="new material"/>
+                <label heat_volume_heat="0" heat_conductivity="200" heat_density="0" heat_specific_heat="0" id="1" name="Material"/>
+                <label heat_volume_heat="1e6" heat_conductivity="385" heat_density="0" heat_specific_heat="0" id="2" name="Source"/>
             </labels>
         </problem>
     </problems>
