@@ -10,6 +10,7 @@ TEMPLATE = lib
 TARGET = lib/weakform
 OBJECTS_DIR = build
 CONFIG += staticlib
+CONFIG += warn_off
 
 INCLUDEPATH += ../../../hermes2d/include \
     ../../../hermes_common/include \

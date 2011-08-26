@@ -71,12 +71,8 @@ class WeakForm:
     def parse_expression(self, expression):
         operators = ['*', '+', '/', '-', '=']        
        
-        variables = ['rho', 'epsr', 'sigma']        
-        
+        variables = self.variables
         parsed_exp = expression               
-        for variable in variables:
-            parsed_exp = parsed_exp.replace(variable, variable + '.value()')
-
         replaces = { ' ': '', 
                      '*x*':'*e->x[i]*',
                      '*r*': '*e->x[i]*',
@@ -94,10 +90,13 @@ class WeakForm:
                      'updy': 'u_ext[this->i]->dy[i]',
                      'upval': 'u_ext[this->i]->val[i]',
                      'uval': 'u->val[i]',
-                     'vval': 'v->val[i]' }        
+                     'vval': 'v->val[i]' }            
          
         for key, value in replaces.iteritems():            
             parsed_exp = parsed_exp.replace(key, value)
+
+        for variable in variables:
+            parsed_exp = parsed_exp.replace(variable.short_name, variable.short_name + '.value()')
         
         for operator in operators:        
             parsed_exp = parsed_exp.replace(operator, ' ' + operator + ' ')
@@ -234,25 +233,33 @@ class Module:
         fread = open('weakform_h.tem', 'r')
         h_template = minidom.parse(fread).documentElement        
         fread.close()                     
+        fread = open('weakform_factory_h.tem', 'r')       
+        factory_template = minidom.parse(fread).documentElement
+        fread.close()
+
+        factory_file_str = ''        
+        node = factory_template.getElementsByTagName('head')[0]            
+        string = node.childNodes[0].nodeValue        
+        factory_file_str += string                                                                    
+
         
-        for part_module in part_modules:                        
+        for part_module in part_modules:                                    
             cpp_file_str = ''            
-            h_file_str = ''
+            h_file_str = ''            
             filename = (part_module.id)    
             
             node = cpp_template.getElementsByTagName('head')[0]            
             string = node.childNodes[0].nodeValue                
-            h_file_str += string             
+            cpp_file_str += string             
 
             node = h_template.getElementsByTagName('head')[0]            
             string = node.childNodes[0].nodeValue                
-            cpp_file_str += string             
-
+            h_file_str += string             
+                                                    
             node = cpp_template.getElementsByTagName('includes')[0]            
             string = node.childNodes[0].nodeValue                                              
-            string = string.replace('general_weakform', filename)
-            cpp_file_str += string             
-            
+            string = string.replace('general_weakform', filename)           
+            cpp_file_str += string    
             node = h_template.getElementsByTagName('includes')[0]            
             string = node.childNodes[0].nodeValue                                              
             string = string.replace('general_weakform', filename)
@@ -299,7 +306,11 @@ class Module:
             weakform_pri_file = open(weakform_dir + 'weakform.pri', 'a')
             weakform_pri_file.write('SOURCES += ' + filename + '.cpp\n')
             weakform_pri_file.close()
-                                           
+        
+        factory_file = open(weakform_dir + 'weakform_factory.h', 'w')       
+        factory_file.write(factory_file_str)        
+        factory_file.close()
+            
 def parse_xml_file(filename, modules):
     # constants definition
     analysis_types = ['harmonic', 'transient', 'steadystate']
@@ -423,7 +434,7 @@ def parse_xml_file(filename, modules):
 
 #control output    
 
-module_files = ['electrostatic.xml']
+module_files = ['electrostatic.xml', 'current.xml']
 modules_dir = '../../../modules/'
 weakform_dir = './'
 
@@ -437,7 +448,10 @@ for module_file in module_files:
     parse_xml_file(module_file, modules)
 
 # remove pri file
-os.remove(weakform_dir + 'weakform.pri')
+try:
+    os.remove(weakform_dir + 'weakform.pri')
+except:
+    pass
 
 for module in modules:    
     #module.info()

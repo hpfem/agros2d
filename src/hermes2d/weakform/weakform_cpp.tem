@@ -65,7 +65,13 @@ Scalar CustomMatrixFormVol&lt;Scalar&gt;::value(int n, double *wt, Hermes::Herme
 Hermes::Ord CustomMatrixFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u,
                                              Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v, Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext)
 {
-    return Hermes::Ord(10);
+    //variable_definition
+    Hermes::Ord result(0);    
+    for (int i = 0; i &lt; n; i++)
+    {
+       //expression
+    }	
+    return result;
 }</custom_matrix_form_vol_ord>
 
 <custom_vector_form_vol>
@@ -95,7 +101,13 @@ Scalar CustomVectorFormVol&lt;Scalar&gt;::value(int n, double *wt, Hermes::Herme
 Hermes::Ord CustomVectorFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
                                              Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext)
 {
-    return Hermes::Ord(10);
+    //variable_definition
+    Hermes::Ord result(0);    
+    for (int i = 0; i &lt; n; i++)
+    {
+       //expression
+    }	
+    return result;
 }</custom_vector_form_vol_ord>
 
 
@@ -126,7 +138,14 @@ Scalar CustomMatrixFormSurf&lt;Scalar&gt;::value(int n, double *wt, Hermes::Herm
 Hermes::Ord CustomMatrixFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
                                               Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext)
 {
-    return Hermes::Ord(10);
+    //variable_definition
+    Hermes::Ord result(0);    
+    for (int i = 0; i &lt; n; i++)
+    {
+       //expression
+    }	
+    return result;
+
 }</custom_matrix_form_surf_ord>
 
 <custom_vector_form_surf>template &lt;typename Scalar&gt;
@@ -157,7 +176,14 @@ template &lt;typename Scalar&gt;
 Hermes::Ord CustomVectorFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
                                               Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext)
 {
-    return Hermes::Ord(10);
+    //variable_definition
+    Hermes::Ord result(0);    
+    for (int i = 0; i &lt; n; i++)
+    {
+       //expression
+    }	
+    return result;
+
 }</custom_vector_form_surf_ord>
 
 <footer>
