@@ -58,7 +58,7 @@
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy) +
                                         gamma / dt * uval * vval"
                                 axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
-                                     gamma * uval * vz * vdz +
+                                     gamma * uval * vy * vdz +
                                      gamma / dt * uval * vval" />
             <vector i="1" planar="Jer * vval + Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy) +
                                   gamma / dt * upval * vval"
@@ -80,14 +80,14 @@
             <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
                                 axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
-                                     gamma * uval * vz * vdz" />
+                                     gamma * uval * vy * vdz" />
             <vector i="1" planar="Jer * vval + Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)"
                           axi="Jer * vval - Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
 
             <matrix i="2" j="2" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
                                 axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
-                                     gamma * uval * vz * vdz" />
+                                     gamma * uval * vy * vdz" />
             <vector i="2" planar="Jei * vval" axi="Jei * vval" />
 
             <matrix i="1" j="2" planar="- 2 * PI * f * gamma * uval * vval"
@@ -197,9 +197,9 @@
             <transient />
         </item>
         <item id="magnetic_energy_density" name="Energy density" shortname="wm" unit="J/m3" scalar="1">
-            <steadystate planar_scalar="(dy1^2 + dx1^2) / (mur * MU0)" axi_scalar="(dz1^2 + (dr1 + value1 / (r + 1e-12))^2) / (mur * MU0)" />
+            <steadystate planar_scalar="0.5 * (dy1^2 + dx1^2) / (mur * MU0)" axi_scalar="0.5 * (dz1^2 + (dr1 + value1 / (r + 1e-12))^2) / (mur * MU0)" />
             <harmonic planar_scalar="(dy1^2 + dx1^2 + dy2^2 + dx2^2) / (mur * MU0)" axi_scalar="(dz1^2 + (dr1 + value1 / (r + 1e-12))^2 + dz2^2 + (dr2 + value2 / (r + 1e-12))^2) / (mur * MU0)" />
-            <transient planar_scalar="(dy1^2 + dx1^2) / (mur * MU0)" axi_scalar="(dz1^2 + (dr1 + value1 / (r + 1e-12))^2) / (mur * MU0)" />
+            <transient planar_scalar="0.5 * (dy1^2 + dx1^2) / (mur * MU0)" axi_scalar="0.5 * (dz1^2 + (dr1 + value1 / (r + 1e-12))^2) / (mur * MU0)" />
         </item>
         <item id="magnetic_permeability" name="Permeability" shortname="mur" unit="-" scalar="1">
             <steadystate planar_scalar="mur" axi_scalar="mur" />
@@ -212,9 +212,9 @@
             <transient planar_comp_x="Brm * cos(Bra/180*PI)" planar_comp_y="Brm * sin(Bra/180*PI)" axi_comp_r="Brm * cos(Bra/180*PI)" axi_comp_z="Brm * sin(Bra/180*PI)" />
         </item>
         <item id="magnetic_velocity" name="Velocity" shortname="v" unit="m/s" scalar="0">
-            <steadystate planar_comp_x="vx - va * y" planar_comp_y="vy + va * x" axi_comp_r="0" axi_comp_z="vz" />
-            <harmonic planar_comp_x="vx - va * y" planar_comp_y="vy + va * x" axi_comp_r="0" axi_comp_z="vz" />
-            <transient planar_comp_x="vx - va * y" planar_comp_y="vy + va * x" axi_comp_r="0" axi_comp_z="vz" />
+            <steadystate planar_comp_x="vx - va * y" planar_comp_y="vy + va * x" axi_comp_r="0" axi_comp_z="vy" />
+            <harmonic planar_comp_x="vx - va * y" planar_comp_y="vy + va * x" axi_comp_r="0" axi_comp_z="vy" />
+            <transient planar_comp_x="vx - va * y" planar_comp_y="vy + va * x" axi_comp_r="0" axi_comp_z="vy" />
         </item>
         <item id="magnetic_current_density_external_modul" name="Current dens. - ext." shortname="Je" unit="A/m2" scalar="1">
             <steadystate planar_scalar="sqrt(Jer^2+Jei^2)" axi_scalar="sqrt(Jer^2+Jei^2)" />
@@ -356,6 +356,10 @@
             <steadystate planar="1.0" axi="1.0" />
             <harmonic planar="1.0" axi="1.0" />
             <transient planar="1.0" axi="1.0" />
+        </item>
+        <item id="magnetic_energy" name="Energy" shortname="Wm" unit="J">
+            <steadystate planar="0.5 / (mur * MU0) * (dx1 * dx1 + dy1 * dy1)"
+                         axi="2.0 * PI * r * 0.5 / (mur * MU0) * (dz1^2 + (dr1 + value1 / (r + 1e-12))^2)" />
         </item>
     </volumeintegral>
 

@@ -139,7 +139,8 @@ void LocalPointValue::calculate()
                 {
                     std::cout << "Local value: " << ((Hermes::Module::LocalVariable *) *it)->name <<
                                  " (" << ((Hermes::Module::LocalVariable *) *it)->id << ") " <<
-                                 ((Hermes::Module::LocalVariable *) *it)->name << " - " << e.GetMsg() << std::endl;
+                                 ((Hermes::Module::LocalVariable *) *it)->name << " - " <<
+                                 parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
                 }
             }
 

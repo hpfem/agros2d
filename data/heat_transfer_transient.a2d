@@ -1,6 +1,6 @@
 <document version="2.0">
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="10" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Heat Transfer Transient" date="2011-04-16" polynomialorder="3" meshtype="triangle" timestep="1e3" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="heat" timetotal="40e3">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="10" adaptivitysteps="1" nonlineartolerance="0.001" name="Heat Transfer Transient" date="2011-04-16" polynomialorder="3" weakforms="compiled" meshtype="triangle" timestep="1e3" problemtype="planar" adaptivitytype="disabled" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="heat" timetotal="40e3">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>

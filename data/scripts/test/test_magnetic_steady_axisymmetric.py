@@ -65,15 +65,15 @@ testBz = test("Flux density - z", point["Brz"], 0.186384)
 testH = test("Magnetic intensity", point["Hr"], 518.646027)
 testHr = test("Magnetic intensity - r", point["Hrr"], 156.728443)
 testHz = test("Magnetic intensity - z", point["Hrz"], 494.39852)
-#testwm = test("Energy density", point["wm"], 50.704118)
+testwm = test("Energy density", point["wm"], 50.704118)
 
 # volume integral
 volume = volumeintegral([1])
-#testWm = test("Energy", volume["Wm"], 0.002273)
+testWm = test("Energy", volume["Wm"], 0.002273)
 
 # surface integral
 surface = surfaceintegral([12, 13, 14, 15])
 #testFz = test("Maxwell force - z", surface["Fy"], 0.368232)
 
 print("Test: Magnetic steady state - axisymmetric: " + str(point and testA and testB and testBr and testBz and testH and testHr and testHz and testwm 
-and testWm and testFz))
+and testWm)) # and testFz))
