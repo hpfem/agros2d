@@ -239,7 +239,6 @@ bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space
     Hermes::Hermes2D::DiscreteProblem<double> dp(m_wf, spaceParam);
 
     int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceParam);
-    cout << "ndof " << ndof << endl;
 
     // Initial coefficient vector for the Newton's method.
     double* coeff_vec = new double[ndof];
@@ -304,7 +303,6 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
 
     actualTime = 0.0;
     int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
-    cout << "total " << timeTotal << ", step " << timeStep << ", timesteps " << timesteps << endl;
     for (int n = 0; n<timesteps; n++)
     {
         // set actual time
