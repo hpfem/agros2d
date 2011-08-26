@@ -252,8 +252,14 @@ bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space
         m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed"), true);
         return false;
     }
-    else{
+    else
+    {
         Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), spaceParam, solutionParam);
+
+        m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
+                                         arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
+        m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
+                                         arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
     }
 
     //delete coeff_vec; //TODO nebo se to dela v resici???

@@ -1645,6 +1645,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // matrix solver
     eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(m_problemInfo->matrixSolver));
 
+    // weakforms
+    eleProblem.setAttribute("weakforms", weakFormsTypeToStringKey(m_problemInfo->weakFormsType));
+
     // startup script
     QDomElement eleScriptStartup = doc.createElement("scriptstartup");
     eleScriptStartup.appendChild(doc.createTextNode(m_problemInfo->scriptStartup));

@@ -2858,9 +2858,9 @@ namespace Hermes
           return assembling_caches.const_cache_fn_quads[key];
         }
       }
-      else 
+      else
       {
-        typename AssemblingCaches::KeyNonConst key(256 - fu->get_active_shape(), order, 
+        typename AssemblingCaches::KeyNonConst key(256 - fu->get_active_shape(), order,
           fu->get_transform(), fu->get_shapeset()->get_id());
         if(rm->get_active_element()->get_mode() == HERMES_MODE_TRIANGLE)
         {
@@ -2868,7 +2868,7 @@ namespace Hermes
             assembling_caches.cache_fn_triangles[key] = init_fn(fu, rm, order);
           return assembling_caches.cache_fn_triangles[key];
         }
-        else 
+        else
         {
           if(assembling_caches.cache_fn_quads.find(key) == assembling_caches.cache_fn_quads.end())
             assembling_caches.cache_fn_quads[key] = init_fn(fu, rm, order);
