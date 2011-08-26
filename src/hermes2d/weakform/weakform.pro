@@ -19,7 +19,8 @@ INCLUDEPATH += ../../../hermes2d/include \
     ../../ \
     ../
 
-SOURCES += electrostatic_steadystate_planar.cpp
-SOURCES += electrostatic_steadystate_axi.cpp
-# SOURCES += current_steadystate_planar.cpp
-# SOURCES += current_steadystate_axi.cpp
+include(weakform.pri)
+
+linux-g++|linux-g++-64|linux-g++-32 {
+    system(./xml_parser.py)
+}
