@@ -232,15 +232,16 @@ class Module:
         fread.close()        
         fread = open('weakform_h.tem', 'r')
         h_template = minidom.parse(fread).documentElement        
-        fread.close()                     
-        fread = open('weakform_factory_h.tem', 'r')       
-        factory_template = minidom.parse(fread).documentElement
-        fread.close()
+        fread.close()    
+                         
+        #fread = open('weakform_factory_h.tem', 'r')       
+        #factory_template = minidom.parse(fread).documentElement
+        #fread.close()
 
-        factory_file_str = ''        
-        node = factory_template.getElementsByTagName('head')[0]            
-        string = node.childNodes[0].nodeValue        
-        factory_file_str += string                                                                    
+        #factory_file_str = ''        
+        #node = factory_template.getElementsByTagName('head')[0]            
+        #string = node.childNodes[0].nodeValue        
+        #factory_file_str += string                                                                    
 
         
         for part_module in part_modules:                                    
@@ -307,9 +308,9 @@ class Module:
             weakform_pri_file.write('SOURCES += ' + filename + '.cpp\n')
             weakform_pri_file.close()
         
-        factory_file = open(weakform_dir + 'weakform_factory.h', 'w')       
-        factory_file.write(factory_file_str)        
-        factory_file.close()
+        #factory_file = open(weakform_dir + 'weakform_factory.h', 'w')       
+        #factory_file.write(factory_file_str)        
+        #factory_file.close()
             
 def parse_xml_file(filename, modules):
     # constants definition
