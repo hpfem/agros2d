@@ -233,10 +233,10 @@ void WeakFormAgros<Scalar>::registerForms()
                 // interpreted form
                 if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
                 {
-                    new CustomParserVectorFormSurf<Scalar>(form->i - 1,
-                                                           QString::number(i + 1).toStdString(),
-                                                           form->expression,
-                                                           boundary);
+                    custom_form = new CustomParserVectorFormSurf<Scalar>(form->i - 1,
+                                                                         QString::number(i + 1).toStdString(),
+                                                                         form->expression,
+                                                                         boundary);
                 }
 
                 if (custom_form)
@@ -1261,7 +1261,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
         }
         catch (mu::Parser::exception_type &e)
         {
-            std::cout << e.GetMsg() << endl;
+            std::cout << "Scalar view: " << e.GetMsg() << std::endl;
         }
     }
 

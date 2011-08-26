@@ -99,6 +99,7 @@
             <transient planar_scalar="lambda" axi_scalar="lambda" />
         </item>
         <item id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" scalar="1">
+            <steadystate planar_scalar="p" axi_scalar="p" />
             <transient planar_scalar="p" axi_scalar="p" />
         </item>
         <item id="heat_density" name="Density" shortname="rho" unit="kg/m3" scalar="1">

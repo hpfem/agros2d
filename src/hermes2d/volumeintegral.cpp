@@ -181,7 +181,9 @@ void VolumeIntegralValue::calculate()
                         }
                         catch (mu::Parser::exception_type &e)
                         {
-                            std::cout << e.GetMsg() << endl;
+                            std::cout << "Volume integral: " << ((Hermes::Module::LocalVariable *) *it)->name <<
+                                         " (" << ((Hermes::Module::LocalVariable *) *it)->id << ") " <<
+                                         ((Hermes::Module::LocalVariable *) *it)->name << " - " << e.GetMsg() << std::endl;
                         }
 
                         n++;
