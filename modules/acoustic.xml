@@ -21,10 +21,10 @@
                                 axi="0.0 * r * uval * (updr * vdr + updz * vdz) + 1 / rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="0" />
             <matrix i="2" j="2" planar="0.0 * uval * (updx * vdx + updy * vdy) + 1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * v^2) * uval * vval"
                                 axi="0.0 * r * uval * (updr * vdr + updz * vdz) + 1 / rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (rho * v^2) * uval * vval" symmetric="0" />
-            <vector i="1" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * v^2) * upval * vval"
-                          axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * v^2) * upval * vval" />
-            <vector i="2" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * v^2) * upval * vval"
-                          axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * v^2) * upval * vval" />
+            <vector i="1" j="1" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * v^2) * upval * vval"
+                                axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * v^2) * upval * vval" />
+            <vector i="2" j="2" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * v^2) * upval * vval"
+                                axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * v^2) * upval * vval" />
         </harmonic>
     </material>
 

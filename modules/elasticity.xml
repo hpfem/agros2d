@@ -25,23 +25,32 @@
             <material id="elasticity_temperature" />
             <material id="elasticity_temperature_reference" />
 
-            <matrix i="1" j="1" planar="(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udx * vdx) +
-                                        (E / (2.0*(1.0 + nu))) * (udy * vdy)"
+            <matrix i="1" j="1" planar="-(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udx * vdx)
+                                        -(E / (2.0*(1.0 + nu))) * (udy * vdy)"
                                 axi="" />
-            <matrix i="1" j="2" planar="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udy * vdx) +
-                                        (E / (2.0*(1.0 + nu))) * (udx * vdy)"
+            <matrix i="1" j="2" planar="-((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udy * vdx)
+                                        -(E / (2.0*(1.0 + nu))) * (udx * vdy)"
                                 axi="" />
-            <matrix i="2" j="1" planar="(E / (2.0*(1.0 + nu))) * (udy * vdx) +
-                                        ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udx * vdy)"
+            <matrix i="2" j="1" planar="-(E / (2.0*(1.0 + nu))) * (udy * vdx)
+                                        -((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udx * vdy)"
                                 axi="" />
-            <matrix i="2" j="2" planar="(E / (2.0*(1.0 + nu))) * (udx * vdx) +
-                                        (((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udy * vdy)"
+            <matrix i="2" j="2" planar="-(E / (2.0*(1.0 + nu))) * (udx * vdx)
+                                        -(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udy * vdy)"
                                 axi="" />
 
-            <vector i="1" planar="fx * vval + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdx"
-                          axi="fr * r * vval" />
-            <vector i="2" planar="fy * vval + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdy"
-                          axi="fz * r * vval" />
+            <vector i="1" j="1" planar="-(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updx * vdx)
+                                        -(E / (2.0*(1.0 + nu))) * (updy * vdy) + fx * vval"
+                                axi="" />
+            <vector i="1" j="2" planar="-((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updy * vdx)
+                                        -(E / (2.0*(1.0 + nu))) * (updx * vdy)"
+                                axi="" />
+            <vector i="2" j="1" planar="-(E / (2.0*(1.0 + nu))) * (updy * vdx)
+                                        -((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updx * vdy) + fy * vval"
+                                axi="" />
+            <vector i="2" j="2" planar="-(E / (2.0*(1.0 + nu))) * (updx * vdx)
+                                        -(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updy * vdy)"
+                                axi="" />
+
         </steadystate>
     </material>
     	
@@ -158,3 +167,11 @@
         </item>
     </surfaceintegral>
 </module>
+
+
+<!--
+termoclen...
+            <vector i="1" planar="fx * vval + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdx"
+                          axi="fr * r * vval" />
+            <vector i="2" planar="fy * vval + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdy"
+                          axi="fz * r * vval" />-->

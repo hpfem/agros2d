@@ -19,8 +19,8 @@
 
             <matrix i="1" j="1" planar="epsr * EPS0 * (udx * vdx + udy * vdy)"
                                 axi="epsr * EPS0 * r * (udr * vdr + udz * vdz)" symmetric="1" />
-            <vector i="1" planar="epsr * EPS0 * (updx * vdx + updy * vdy) - rho * vval"
-                          axi="epsr * EPS0 * r * (updr * vdr + updz * vdz) - rho * r * vval" />
+            <vector i="1" j="1" planar="epsr * EPS0 * (updx * vdx + updy * vdy) - rho * vval"
+                                axi="epsr * EPS0 * r * (updr * vdr + updz * vdz) - rho * r * vval" />
          </steadystate>
     </material>
 

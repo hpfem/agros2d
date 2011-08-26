@@ -50,6 +50,10 @@ ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType probl
 ParserFormVector::ParserFormVector(rapidxml::xml_node<> *node, ProblemType problem_type)
 {
     i = atoi(node->first_attribute("i")->value());
+    if (node->first_attribute("j")){
+        j = atoi(node->first_attribute("j")->value());
+        cout << "j je " << j << endl;
+    }
 
     if (problem_type == ProblemType_Planar)
     {
@@ -188,10 +192,10 @@ Hermes::Ord CustomParserMatrixFormVol<Scalar>::ord(int n, double *wt, Hermes::He
 }
 
 template <typename Scalar>
-CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i,
+CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, unsigned int j,
                                                              std::string area, std::string expression,
                                                              Material *material)
-    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm(), m_material(material)
+    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm(), m_material(material), j(j)
 {
     initParser(material, NULL);
 
@@ -216,9 +220,9 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->i]->val[i];  //TODO PK this->i
-        pupdx = u_ext[this->i]->dx[i];
-        pupdy = u_ext[this->i]->dy[i];
+        pupval = u_ext[this->j]->val[i];  //TODO PK this->i
+        pupdx = u_ext[this->j]->dx[i];
+        pupdy = u_ext[this->j]->dy[i];
 
         /*
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;

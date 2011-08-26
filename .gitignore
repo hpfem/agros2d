@@ -33,4 +33,4 @@ doc/doxygen
 pthreadGC2.dll
 mingwm10.dll
 src/python/agros2d.c
-
+src/hermes2d/weakform/*

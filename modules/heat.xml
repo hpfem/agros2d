@@ -19,8 +19,8 @@
 
             <matrix i="1" j="1" planar="dlambda * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
                                 axi="0.0 * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz)" symmetric="1" />
-            <vector i="1" planar="lambda * (updz * vdz + updr * vdr) - p * vval"
-                          axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval" />
+            <vector i="1" j="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval"
+                                axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval" />
         </steadystate>
         
     	<transient>
@@ -31,9 +31,9 @@
 
             <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy) + 0 * uval * upval * vval / deltat + rho * cp * uval * vval / deltat"
                                 axi="0.0 * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz)" symmetric="1" />
-            <vector i="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval +  rho * cp * (upval - uptval) * vval / deltat"
-                          axi="lambda * r * (updr * vdr + updz * vdz) - p * vval" />
-        </transient>        
+            <vector i="1" j="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval +  rho * cp * (upval - uptval) * vval / deltat"
+                                axi="lambda * r * (updr * vdr + updz * vdz) - p * vval" />
+        </transient>
     </material>
 
     <boundary>
@@ -56,8 +56,8 @@
 
                 <matrix i="1" j="1" planar="h * uval * vval"
                                     axi="h * r * uval * vval" symmetric="1" />
-                <vector i="1" planar="((- f - h * Te) + h * upval) * vval"
-                              axi="r * ((- f - h * Te) + h * upval) * vval" />
+                <vector i="1" j="1" planar="((- f - h * Te) + h * upval) * vval"
+                                    axi="r * ((- f - h * Te) + h * upval) * vval" />
             </boundary>
         </steadystate>
         
@@ -75,8 +75,8 @@
 
                 <matrix i="1" j="1" planar="h * uval * vval"
                                     axi="h * r * uval * vval" symmetric="1" />
-                <vector i="1" planar="((- f - h * Te) + h * upval) * vval"
-                              axi="r * ((- f - h * Te) + h * upval) * vval" />
+                <vector i="1" j="1" planar="((- f - h * Te) + h * upval) * vval"
+                                    axi="r * ((- f - h * Te) + h * upval) * vval" />
             </boundary>
         </transient>        
     </boundary>

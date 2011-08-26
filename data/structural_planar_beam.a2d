@@ -1,6 +1,6 @@
-<document>
+<document version="2.0">
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="unnamed" date="2011-07-07" polynomialorder="3" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="2" frequency="0" matrix_solver="umfpack" type="elasticity" timetotal="1.0">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.001" name="unnamed" date="2011-07-07" polynomialorder="3" weakforms="compiled" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" numberofrefinements="2" frequency="0" matrix_solver="umfpack" type="elasticity" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
@@ -8,7 +8,7 @@
                 <edge type="elasticity_fixed_fixed" id="2" elasticity_displacement_x="0" name="Fixed" elasticity_displacement_y="0"/>
             </edges>
             <labels>
-                <label elasticity_force_x="0" elasticity_temperature="0" elasticity_force_y="-7800*9.81" elasticity_poisson_ratio="0.33" elasticity_young_modulus="2e11" elasticity_alpha="0" elasticity_temperature_reference="0" id="1" name="Steel"/>
+                <label elasticity_force_x="0" elasticity_force_y="-7800*9.81" elasticity_temperature="0" elasticity_poisson_ratio="0.33" elasticity_young_modulus="2e11" elasticity_alpha="0" elasticity_temperature_reference="0" id="1" name="Steel"/>
             </labels>
         </problem>
     </problems>

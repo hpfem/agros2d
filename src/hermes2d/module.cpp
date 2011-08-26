@@ -315,7 +315,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 // interpreted form
                 if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
                 {
-                    custom_form = new CustomParserVectorFormVol<Scalar>(form->i - 1,
+                    custom_form = new CustomParserVectorFormVol<Scalar>(form->i - 1, form->j - 1,
                                                                         QString::number(i).toStdString(),
                                                                         form->expression,
                                                                         material);
@@ -327,6 +327,7 @@ void WeakFormAgros<Scalar>::registerForms()
 
                 if (custom_form)
                 {
+                    cout << "pridavam vektorovou formu, i: " << form->i << ", j: " << form->j << ", expresion: " << form->expression << endl;
                     add_vector_form(custom_form);
                 }
             }
