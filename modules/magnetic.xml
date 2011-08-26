@@ -34,14 +34,14 @@
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
                                 axi="1 / (mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
                                      gamma * uval * vz * vdz" />
-            <vector i="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
+            <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
                                   gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy) -
                                   Jer * vval -
                                   Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)"
-                          axi="1 / (mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) -
-                               gamma * upval * vz * vdz -
-                               Jer * vval +
-                               Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
+                                axi="1 / (mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) -
+                                 gamma * upval * vz * vdz -
+                                 Jer * vval +
+                                 Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
         </steadystate>
 
         <transient>

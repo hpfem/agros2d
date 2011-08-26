@@ -53,6 +53,7 @@ struct ParserFormVector
 
     // position
     int i;
+    int j;
 
     // expression
     std::string expression;
@@ -120,7 +121,7 @@ template<typename Scalar>
 class CustomParserVectorFormVol : public Hermes::Hermes2D::VectorFormVol<Scalar>, public ParserForm
 {
 public:
-    CustomParserVectorFormVol(unsigned int i,
+    CustomParserVectorFormVol(unsigned int i, unsigned int j,
                               std::string area, std::string expression,
                               Material *material);
 
@@ -130,6 +131,7 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext);
 private:
     Material *m_material;
+    unsigned int j;
 };
 
 // **********************************************************************************************
