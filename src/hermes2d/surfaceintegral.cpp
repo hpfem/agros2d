@@ -118,13 +118,13 @@ void SurfaceIntegralValue::calculate()
 
                     if (e->en[edge]->marker != 0)
                     {
-                        if (e->en[edge]->bnd == 1 && (atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).c_str())) - 1 == i)
+                        if (e->en[edge]->bnd == 1 && (atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) - 1 == i)
                         {
                             // boundary
                             integrate = true;
                             boundary = true;
                         }
-                        else if (- atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).c_str()) == i)
+                        else if (- atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str()) == i)
                         {
                             // inner page
                             integrate = true;
@@ -159,7 +159,7 @@ void SurfaceIntegralValue::calculate()
                         double *x = ru->get_phys_x(eo);
                         double *y = ru->get_phys_y(eo);
 
-                        SceneMaterial *material = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+                        SceneMaterial *material = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str())]->material;
                         parser->initParserMaterialVariables();
                         parser->setParserVariables(material, NULL);
 

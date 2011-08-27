@@ -2914,7 +2914,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     if (index != -1)
                     {
                         //  find label marker
-                        int labelIndex = atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker).c_str());
+                        int labelIndex = atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker).marker.c_str());
 
                         m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
                         updateGL();
@@ -4077,7 +4077,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
         Hermes::Hermes2D::Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
-        if (m_scene->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).c_str())]->isSelected)
+        if (m_scene->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str())]->isSelected)
         {
             if (element->is_triangle())
             {

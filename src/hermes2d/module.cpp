@@ -154,17 +154,10 @@ std::map<std::string, std::string> availableModules()
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::VectorFormSurf<Scalar> *factoryVectorFormSurfx(int i, int j, SceneBoundary * boundary)
-{
-    // return new electrostaticsteadystateplanar::CustomVectorFormSurf_1_0<double>(i, "","", boundary);
-}
-
-template Hermes::Hermes2D::VectorFormSurf<double> *factoryVectorFormSurfx(int i, int j, SceneBoundary * boundary);
-
-
-template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForms()
 {    
+    qDebug() << "registerForms";
+
     string problemId = Util::scene()->problemInfo()->module()->id + "_" +
             analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
             problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
@@ -1239,7 +1232,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
     double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
     Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
 
-    SceneMaterial *material = Util::scene()->labels[atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
+    SceneMaterial *material = Util::scene()->labels[atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str())]->material;
     parser->setParserVariables(material, NULL);
 
     for (int i = 0; i < np; i++)

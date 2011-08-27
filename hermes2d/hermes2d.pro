@@ -3,7 +3,7 @@ TARGET = lib/hermes2d
 TEMPLATE = lib
 OBJECTS_DIR = build
 CONFIG += staticlib
-CONFIG += debug
+# CONFIG += debug
 DEFINES += NOGLUT
 
 INCLUDEPATH += include \
@@ -56,7 +56,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/newton_solver.cpp \
                 src/picard_solver.cpp \
                 src/adapt/adapt.cpp \
-                src/adapt/kelly_type_adapt.cpp \
+                # src/adapt/kelly_type_adapt.cpp \
                 src/boundary_conditions/essential_boundary_conditions.cpp \
                 src/function/transformable.cpp \
                 src/function/function.cpp \
@@ -68,7 +68,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/mesh/hash.cpp \
                 src/mesh/mesh_data.cpp \
                 src/mesh/mesh_reader_exodusii.cpp \
-                src/mesh/mesh_reader_h2d_xml.cpp \
+                # src/mesh/mesh_reader_h2d_xml.cpp \
                 src/mesh/refinement_type.cpp \
                 src/mesh/traverse.cpp \
                 src/mesh/element_to_refine.cpp \

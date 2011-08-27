@@ -57,7 +57,7 @@ namespace Hermes
     void Space<Scalar>::free()
     {
       _F_;
-      free_extra_data();
+      free_bc_data();
       if (nsize) { ::free(ndata); ndata=NULL; }
       if (esize) { ::free(edata); edata=NULL; }
     }
@@ -270,7 +270,7 @@ namespace Hermes
       if(marker == HERMES_ANY)
         set_uniform_order_internal(Ord2(order,order), -1234);
       else
-        set_uniform_order_internal(Ord2(order,order), mesh->element_markers_conversion.get_internal_marker(marker));
+        set_uniform_order_internal(Ord2(order,order), mesh->element_markers_conversion.get_internal_marker(marker).marker);
 
       // since space changed, enumerate basis functions
       this->assign_dofs();
@@ -615,25 +615,6 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    int Space<Scalar>::set_seq(int seq_)
-    {
-      seq = seq_;
-      return seq;
-    }
-
-    template<typename Scalar>
-    void Space<Scalar>::propagate_zero_orders(Element* e)
-    {
-      _F_;
-      warn_if(get_element_order(e->id) != 0, "zeroing order of an element ID:%d, original order (H:%d; V:%d)", e->id, H2D_GET_H_ORDER(get_element_order(e->id)), H2D_GET_V_ORDER(get_element_order(e->id)));
-      set_element_order_internal(e->id, 0);
-      if (!e->active)
-        for (int i = 0; i < 4; i++)
-          if (e->sons[i] != NULL)
-            propagate_zero_orders(e->sons[i]);
-    }
-
-    template<typename Scalar>
     void Space<Scalar>::distribute_orders(Mesh* mesh, int* parents)
     {
       _F_;
@@ -662,12 +643,6 @@ namespace Hermes
       resize_tables();
 
       Element* e;
-      /** \todo Find out whether the following code this is crucial.
-      *  If uncommented, this enforces 0 order for all sons if the base element has 0 order.
-      *  In this case, an element with 0 order means an element which is left out from solution. */
-      //for_all_base_elements(e, mesh)
-      //  if (get_element_order(e->id) == 0)
-      //    propagate_zero_orders(e);
 
       //check validity of orders
       for_all_active_elements(e, mesh)
@@ -689,7 +664,7 @@ namespace Hermes
       assign_edge_dofs();
       assign_bubble_dofs();
 
-      free_extra_data();
+      free_bc_data();
       update_essential_bc_values();
       update_constraints();
       post_assign();
@@ -724,7 +699,7 @@ namespace Hermes
         {
           if (e->en[i]->bnd)
             if(essential_bcs != NULL)
-              if(essential_bcs->get_boundary_condition(mesh->boundary_markers_conversion.get_user_marker(e->en[i]->marker)) != NULL)
+              if(essential_bcs->get_boundary_condition(mesh->boundary_markers_conversion.get_user_marker(e->en[i]->marker).marker) != NULL)
               {
                 j = e->next_vert(i);
                 ndata[e->vn[i]->id].n = 0;
@@ -834,12 +809,12 @@ namespace Hermes
 
         if (nd->dof != H2D_UNASSIGNED_DOF && en->bnd)
           if(essential_bcs != NULL)
-            if(essential_bcs->get_boundary_condition(mesh->boundary_markers_conversion.get_user_marker(en->marker)) != NULL)
+            if(essential_bcs->get_boundary_condition(mesh->boundary_markers_conversion.get_user_marker(en->marker).marker) != NULL)
             {
               int order = get_edge_order_internal(en);
               surf_pos->marker = en->marker;
               nd->edge_bc_proj = get_bc_projection(surf_pos, order);
-              extra_data.push_back(nd->edge_bc_proj);
+              bc_data.push_back(nd->edge_bc_proj);
 
               int i = surf_pos->surf_num, j = e->next_vert(i);
               ndata[e->vn[i]->id].vertex_bc_coef = nd->edge_bc_proj + 0;
@@ -882,13 +857,20 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void Space<Scalar>::free_extra_data()
+    void Space<Scalar>::free_bc_data()
     {
       _F_;
-      for (unsigned int i = 0; i < extra_data.size(); i++)
-        delete [] (Scalar*) extra_data[i];
-      extra_data.clear();
+      for (unsigned int i = 0; i < bc_data.size(); i++)
+        delete [] (Scalar*) bc_data[i];
+      bc_data.clear();
     }
+
+    template<typename Scalar>
+    bool Space<Scalar>::save(const char *filename) const
+    {
+      return true;
+    }
+    
 
     template class HERMES_API Space<double>;
     template class HERMES_API Space<std::complex<double> >;
