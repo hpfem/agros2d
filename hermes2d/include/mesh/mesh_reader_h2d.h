@@ -23,7 +23,7 @@ namespace Hermes
 {
   namespace Hermes2D
   {
-    /// Mesh loader from Hermes2D format
+    /// Mesh reader from Hermes2D format
     ///
     /// @ingroup mesh_readers
     class HERMES_API MeshReaderH2D : public MeshReader
@@ -32,8 +32,8 @@ namespace Hermes
       MeshReaderH2D();
       virtual ~MeshReaderH2D();
 
-      virtual bool load(const char *file_name, Mesh *mesh);
-      virtual bool save(const char *file_name, Mesh *mesh);
+      virtual bool load(const char *filename, Mesh *mesh);
+      virtual bool save(const char *filename, Mesh *mesh);
 
     protected:
       Nurbs* load_nurbs(Mesh *mesh, MeshData *m, int id, Node** en, int &p1, int &p2);

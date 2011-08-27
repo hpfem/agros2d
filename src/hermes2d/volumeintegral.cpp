@@ -108,7 +108,7 @@ void VolumeIntegralValue::calculate()
 
             for_all_active_elements(e, mesh)
             {
-                if (mesh->get_element_markers_conversion().get_user_marker(e->marker) == QString::number(i).toStdString())
+                if (mesh->get_element_markers_conversion().get_user_marker(e->marker).marker == QString::number(i).toStdString())
                 {
                     Hermes::Hermes2D::update_limit_table(e->get_mode());
 

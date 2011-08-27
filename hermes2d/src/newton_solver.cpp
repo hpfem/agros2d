@@ -89,17 +89,17 @@ namespace Hermes
       // The Newton's loop.
       double residual_norm;
       int it = 1;
-
+      
       bool delete_timer = false;
       if (this->timer == NULL)
       {
         this->timer = new TimePeriod;
         delete_timer = true;
       }
-
+            
       this->timer->tick();
       setup_time += this->timer->last();
-
+      
       while (1)
       {        
         // Assemble just the residual vector.
@@ -172,7 +172,7 @@ namespace Hermes
             delete this->timer;
             this->timer = NULL;
           }
-
+          
           static_cast<DiscreteProblem<Scalar>*>(this->dp)->temp_enable_adaptivity_cache();
 
           return true;
@@ -214,7 +214,7 @@ namespace Hermes
       }
       // Return false.
       // All 'bad' situations end here. 
-
+      
       if (delete_timer)
       {
         delete this->timer;

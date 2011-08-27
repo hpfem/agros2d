@@ -19,8 +19,6 @@ void newton_log(char *str)
         {
             dynamic_cast<ProgressItemSolve *>(Util::scene()->sceneSolution()->progressDialog()->currentProgressItem())->
                     addNonlinearError(error);
-
-            qDebug() << error;
         }
     }
 }
