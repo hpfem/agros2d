@@ -33,12 +33,22 @@ class WeakForm:
         return function_name    
 
     def get_factory_code(self, factory_template):
-        string = factory_template.getElementsByTagName('condition')[0].childNodes[0].nodeValue
-        string = string.replace('class_name', self.id)                
+        if (self.type == 'vector'):
+            if(self.integral_type == 'vol'):
+                string = factory_template.getElementsByTagName('condition_vector_vol')[0].childNodes[0].nodeValue
+            else:    
+                string = factory_template.getElementsByTagName('condition_vector_surf')[0].childNodes[0].nodeValue
+        else:
+            if(self.integral_type == 'vol'):
+                string = factory_template.getElementsByTagName('condition_matrix_vol')[0].childNodes[0].nodeValue
+            else:
+                string = factory_template.getElementsByTagName('condition_matrix_surf')[0].childNodes[0].nodeValue
+        string = string.replace('class_name', self.id)
+        string = string.replace('axi', 'axisymmetric')                        
         namespace = self.id.replace('_','')
         string = string.replace('namespace', namespace)
         function_name = self.get_class_name();        
-        string = string.replace('FunctionName', function_name)                
+        string = string.replace('FunctionName', function_name)                        
         factory_code = []
         factory_code.append(self.get_temp_class_name())
         factory_code.append(string)                        
@@ -311,6 +321,7 @@ class XmlParser:
        self.template_file_names = ['weakform_cpp.tem', 'weakform_h.tem', 'weakform_factory_h.tem']
        self.modules_dir = '../../../modules/'
        self.weakform_dir = './'
+       self.weakform_factory_dir = '../'       
        self.modules = []
        self.templates = dict()        
        
@@ -338,23 +349,44 @@ class XmlParser:
         files = []
         conditions = []
         
-        for module in self.modules:            
+        for module in self.modules:               
             module_files, module_conditions = module.get_code(self.templates)            
             module.write_code(self.weakform_dir, self.templates)                
-            conditions.extend(module_conditions)
-        
-        # writes weakform_factory.h
-         
+            conditions.extend(module_conditions)                                      
+            files.extend(module_files)
+       
+       # writes weakform_factory.h         
+        factory_code_str = ''    
+        key = 'weakform_factory_h.tem'        
+        node = self.templates[key].getElementsByTagName('head')[0]  
+        factory_code_str += node.childNodes[0].nodeValue      
+       
+        for module_file in files:        
+            if module_file[::-1][:2][::-1] == '.h':                
+                node = self.templates[key].getElementsByTagName('includes')[0]  
+                string = node.childNodes[0].nodeValue 
+                string = string.replace("general_weakform.h", module_file)
+                factory_code_str += string
+
         weakform_temps = ['CustomMatrixFormVol','CustomVectorFormVol',
-                           'CustomMatrixFormSurf','CustomVectorFormSurf']            
-        i = 0;        
+                           'CustomMatrixFormSurf','CustomVectorFormSurf']                    
         for weakform_temp in weakform_temps:                            
             weakform_string = ''
             for condition in conditions:                
-                if condition[0] == weakform_temp:                
-                    weakform_string += condition[1]                    
-            print weakform_string             
-    
+                if condition[0] == weakform_temp:
+                    weakform_string += condition[1]            
+            node = self.templates[key].getElementsByTagName(weakform_temp)[0]                          
+            string = node.childNodes[0].nodeValue      
+            string = string.replace('//conditions', weakform_string)
+            factory_code_str += string
+                
+        node = self.templates[key].getElementsByTagName('footer')[0]  
+        factory_code_str += node.childNodes[0].nodeValue         
+        factory_file = open(self.weakform_factory_dir+'weakform_factory.h', 'w')
+        factory_file.write(factory_code_str)
+        factory_file.close()
+        
+        
     def parse_xml_file(self, filename):
         # constants definition
         analysis_types = ['harmonic', 'transient', 'steadystate']
