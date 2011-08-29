@@ -39,16 +39,18 @@
                                 axi="" />
 
             <vector i="1" j="1" planar="-(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updx * vdx)
-                                        -(E / (2.0*(1.0 + nu))) * (updy * vdy) + fx * vval"
+                                        -(E / (2.0*(1.0 + nu))) * (updy * vdy)
+                                        + fx * vval  + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdx"
                                 axi="" />
             <vector i="1" j="2" planar="-((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updy * vdx)
                                         -(E / (2.0*(1.0 + nu))) * (updx * vdy)"
                                 axi="" />
             <vector i="2" j="1" planar="-(E / (2.0*(1.0 + nu))) * (updy * vdx)
-                                        -((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updx * vdy) + fy * vval"
+                                        -((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updx * vdy)"
                                 axi="" />
             <vector i="2" j="2" planar="-(E / (2.0*(1.0 + nu))) * (updx * vdx)
-                                        -(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updy * vdy)"
+                                        -(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updy * vdy)
+                                        + fy * vval + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdy"
                                 axi="" />
 
         </steadystate>
