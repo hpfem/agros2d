@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="RF_waveguide_R100" date="2011-04-13" polynomialorder="5" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="16000000000" matrix_solver="umfpack" type="rf" timetotal="1.0">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="RF_waveguide_R100" date="2011-04-13" polynomialorder="5" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="16000000000" matrix_solver="umfpack" type="rf" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>

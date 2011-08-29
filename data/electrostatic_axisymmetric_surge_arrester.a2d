@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="5" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="10" linearity="linear" name="Electrostatic Axisymmetric Surge Arrester" date="2011-06-28" polynomialorder="1" meshtype="triangle" timestep="1.0" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" linearitytolerance="0.001" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="1.0">
+        <problem maxdofs="60000" adaptivitytolerance="5" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="10" linearity="linear" name="Surge Arrester" date="2011-06-28" polynomialorder="1" meshtype="triangle" timestep="1.0" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" linearitytolerance="0.001" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
