@@ -320,7 +320,7 @@ void WeakFormAgros<Scalar>::registerForms()
 
                 if (custom_form)
                 {
-                    cout << "pridavam vektorovou formu, i: " << form->i << ", j: " << form->j << ", expresion: " << form->expression << endl;
+                    //cout << "pridavam vektorovou formu, i: " << form->i << ", j: " << form->j << ", expresion: " << form->expression << endl;
                     add_vector_form(custom_form);
                 }
             }

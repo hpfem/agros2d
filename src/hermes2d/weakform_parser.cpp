@@ -52,7 +52,7 @@ ParserFormVector::ParserFormVector(rapidxml::xml_node<> *node, ProblemType probl
     i = atoi(node->first_attribute("i")->value());
     if (node->first_attribute("j")){
         j = atoi(node->first_attribute("j")->value());
-        cout << "j je " << j << endl;
+        //cout << "j je " << j << endl;
     }
 
     if (problem_type == ProblemType_Planar)
