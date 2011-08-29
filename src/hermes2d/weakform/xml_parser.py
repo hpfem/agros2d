@@ -2,6 +2,8 @@
 
 from xml.dom import minidom
 import os
+# becouse of parametr processing
+# import sys 
 
 class WeakForm:
     def __init__(self):        
@@ -30,7 +32,19 @@ class WeakForm:
         function_name =  'custom_' + self.type + '_form_' + self.integral_type                                
         return function_name    
 
-    def write_h_code(self, h_template):                                        
+    def get_factory_code(self, factory_template):
+        string = factory_template.getElementsByTagName('condition')[0].childNodes[0].nodeValue
+        string = string.replace('class_name', self.id)                
+        namespace = self.id.replace('_','')
+        string = string.replace('namespace', namespace)
+        function_name = self.get_class_name();        
+        string = string.replace('FunctionName', function_name)                
+        factory_code = []
+        factory_code.append(self.get_temp_class_name())
+        factory_code.append(string)                        
+        return factory_code
+        
+    def get_h_code(self, h_template):                                        
         h_code = ''                                                                             
         for node in h_template.getElementsByTagName(self.get_function_name()):                        
             string = node.childNodes[0].nodeValue                                                                                                                                                                                  
@@ -42,7 +56,7 @@ class WeakForm:
             h_code += replaced_string                                                                                                                           
         return h_code 
     
-    def write_cpp_code(self, cpp_template):                                
+    def get_cpp_code(self, cpp_template):                                
         function_types = ['','_value', '_ord']
         cpp_code = ''        
         for function_type in function_types:         
@@ -149,7 +163,7 @@ class PartModule:
         self.forms_number = 0
         
 class Module:
-    def __init__(self):        
+    def __init__(self):
         self.id = ''
         self.name = ''
         self.description = ''        
@@ -176,7 +190,7 @@ class Module:
             print material.name            
             print '--------------------------------'            
             print '\nmatrix forms:'            
-            for variable in module.variables:
+            for variable in self.variables:
                 print variable.name
             for weakform in material.weakforms:
                 print weakform.type, weakform.coordinate_type, weakform.integral_type
@@ -191,15 +205,16 @@ class Module:
                 print weakform.id, weakform.expression
                                 
                                         
-    def write_code(self):                                                     
+    def extract_modules(self):
         module_types = []
         part_modules = []
-        part_module = PartModule()        
+        part_module = PartModule()          
+        
         for material in self.materials:  
             for weakform in material.weakforms:                             
-                part_module_id = module.id + '_' + material.name + '_' \
+                part_module_id = self.id + '_' + material.name + '_' \
                     + weakform.coordinate_type                                
-                if (part_module_id in module_types):
+                if (part_module_id in module_types):                    
                     index = module_types.index(part_module_id)                                          
                     part_module = part_modules[index]
                                          
@@ -211,10 +226,11 @@ class Module:
                     part_module.description = self.description
                     part_module.coordinate_type = weakform.coordinate_type
                     part_module.constants = self.constants                    
-                    part_module.materials = self.materials = []                    
+                    part_module.materials = self.materials
                     part_module.analysis = material.name                    
                     part_modules.append(part_module)                                
-                weakform.variables = module.variables
+                weakform.variables = self.variables
+                weakform.id = part_module.id
                 part_module.weakforms.append(weakform)                
         
         for boundary in self.boundaries:                        
@@ -224,237 +240,245 @@ class Module:
                     part_module = part_modules[index] 
                     weakform.variables = boundary.variables
                     part_module.weakforms.append(weakform)
-                                  
-        # opens xml templates        
-                
-        fread = open('weakform_cpp.tem', 'r')
-        cpp_template = minidom.parse(fread).documentElement        
-        fread.close()        
-        fread = open('weakform_h.tem', 'r')
-        h_template = minidom.parse(fread).documentElement        
-        fread.close()    
-                         
-        #fread = open('weakform_factory_h.tem', 'r')       
-        #factory_template = minidom.parse(fread).documentElement
-        #fread.close()
-
-        #factory_file_str = ''        
-        #node = factory_template.getElementsByTagName('head')[0]            
-        #string = node.childNodes[0].nodeValue        
-        #factory_file_str += string                                                                    
-
+        return part_modules;
         
-        for part_module in part_modules:                                    
-            cpp_file_str = ''            
-            h_file_str = ''            
-            filename = (part_module.id)    
-            
-            node = cpp_template.getElementsByTagName('head')[0]            
-            string = node.childNodes[0].nodeValue                
-            cpp_file_str += string             
-
-            node = h_template.getElementsByTagName('head')[0]            
-            string = node.childNodes[0].nodeValue                
-            h_file_str += string             
-                                                    
-            node = cpp_template.getElementsByTagName('includes')[0]            
-            string = node.childNodes[0].nodeValue                                              
-            string = string.replace('general_weakform', filename)           
-            cpp_file_str += string    
-            node = h_template.getElementsByTagName('includes')[0]            
-            string = node.childNodes[0].nodeValue                                              
-            string = string.replace('general_weakform', filename)
-            h_file_str += string    
-            
-            node = cpp_template.getElementsByTagName('namespaces')[0]            
-            string = node.childNodes[0].nodeValue                                              
-            string = string.replace('general_weakform', filename)
-            string = string.replace('_', '')
-            cpp_file_str += string
-
-            node = h_template.getElementsByTagName('namespaces')[0]            
-            string = node.childNodes[0].nodeValue                                              
-            string = string.replace('general_weakform', filename)
-            string = string.replace('_', '')            
-            h_file_str += string + '\n'
-                                
-            class_names = set([])            
-            for weakform in part_module.weakforms:                 
-                class_names.add(weakform.get_class_name())
-                weakform.write_cpp_code(cpp_template)
-                cpp_file_str += weakform.write_cpp_code(cpp_template)            
-                h_file_str += weakform.write_h_code(h_template)
-            
-            node = cpp_template.getElementsByTagName('footer')[0]                            
-            for class_name in class_names:
-                string = node.childNodes[0].nodeValue
-                string = string.replace('ClassName', class_name) 
-                cpp_file_str += string         
-
-            node = h_template.getElementsByTagName('footer')[0]
-            string = node.childNodes[0].nodeValue
-            h_file_str += string
-            
-            source_file = open(weakform_dir + filename + '.cpp', 'w')
-            source_file.write(cpp_file_str)
-            source_file.close()        
-            
-            header_file = open(weakform_dir + filename + '.h', 'w')
-            header_file.write(h_file_str)            
-            header_file.close()
-            
-            # append to weakform.pri
-            weakform_pri_file = open(weakform_dir + 'weakform.pri', 'a')
-            weakform_pri_file.write('SOURCES += ' + filename + '.cpp\n')
-            weakform_pri_file.close()
-        
-        #factory_file = open(weakform_dir + 'weakform_factory.h', 'w')       
-        #factory_file.write(factory_file_str)        
-        #factory_file.close()
-            
-def parse_xml_file(filename, modules):
-    # constants definition
-    analysis_types = ['harmonic', 'transient', 'steadystate']
-    coordinate_types  = ['axi', 'planar']    
-    boundaries_types = ['essential', 'natural', 'vector']
-    weakform_types = ['matrix', 'vector']
-    
-    
-    # opens file and initializes xml parser    
-    fread = open(modules_dir + filename, 'r')
-    xmldoc = minidom.parse(fread).documentElement
-    fread.close()
-    
-    module = Module()
-    #parses general information
-    nodes = xmldoc.getElementsByTagName('general')
-    for subnode in nodes:
-        if subnode.attributes != None:
-            module.id =  subnode.attributes['id'].value
-            module.name = subnode.attributes['name'].value
-            
-    nodes = xmldoc.getElementsByTagName('description')
-    subnode = nodes[0]
-    module.description = subnode.childNodes[0].data
-        
-    # parses constans element
-    # ToDo: Make controls
-    nodes = xmldoc.getElementsByTagName('constants')
-    for subnode in nodes[0].childNodes:
-        if subnode.attributes != None:                          
-            const = Constant()
-            const.id = str(subnode.attributes['id'].value)
-            const.value = float(subnode.attributes['value'].value)
-            module.constants.append(const)
-                
-    # parses material element
-    # ToDo: Maket checks and controls    
-    
-    # parses weak-forms    
-    nodes = xmldoc.getElementsByTagName('material')    
-    for subnode in nodes[0].childNodes:
-        if subnode.nodeName == 'item':           
-            variable = Variable()            
-            variable.id = subnode.attributes['id'].value
-            variable.name = str(subnode.attributes['name'].value)
-            variable.short_name = str(subnode.attributes['shortname'].value)
-            variable.type = 'material'            
-            variable.units = str(subnode.attributes['unit'].value)            
-            module.variables.append(variable)
-    
-    for subnode in nodes[0].childNodes:        
-        if subnode.nodeName in analysis_types:
-            material = Material()    
-            analysis_type = subnode.nodeName    
-            material.name =  analysis_type      
-                  
-            for subsubnode in subnode.childNodes:
-                if subsubnode.nodeName in weakform_types:                    
-                    for i in range(subsubnode.attributes.length):                        
-                        coordinate_type = str(subsubnode.attributes.item(i).name)                                                                        
-                        if coordinate_type in coordinate_types:                                                                                   
-                            weakform = WeakForm()                            
-                            weakform.coordinate_type = coordinate_type                            
-                            weakform.analysis_type = analysis_type                                   
-                            weakform.type = subsubnode.nodeName                                
-                            weakform.integral_type = 'vol'    
-                            weakform.expression = \
-                                str(subsubnode.attributes[coordinate_type].value)                            
-                            weakform.i = int(subsubnode.attributes['i'].value)                                        
-                            if subsubnode.hasAttribute('j'):
-                                weakform.j = int(subsubnode.attributes['j'].value)                                 
-                            material.weakforms.append(weakform)
-            module.materials.append(material)
-            
-    nodes = xmldoc.getElementsByTagName('boundary')         
+                                                                                      
+    def get_code(self, param_templates):
+       templates = dict() 
+       templates['.cpp'] = param_templates['weakform_cpp.tem']
+       templates['.h'] = param_templates['weakform_h.tem']
+       file_strings = dict()
        
-    boundary = Boundary()            
-    for subnode in nodes[0].childNodes:       
-        if subnode.nodeName == 'item':
-            variable = Variable()
-            variable.id = subnode.attributes['id'].value
-            variable.name = subnode.attributes['name'].value            
-            variable.type = 'boundary'             
-            variable.short_name = subnode.attributes['shortname'].value                       
-            variable.unit = subnode.attributes['unit'].value
-            boundary.variables.append(variable)          
+       part_modules = self.extract_modules()                                                
+       factory_codes = []                   
+       for part_module in part_modules:                                    
+            filename = (part_module.id)                                     
+            for key in templates.iterkeys():                           
+               file_string_name = filename + key
+               node = templates[key].getElementsByTagName('head')[0]            
+               string = node.childNodes[0].nodeValue                               
+               file_strings[file_string_name] = string 
+               node = templates[key].getElementsByTagName('includes')[0]            
+               string = node.childNodes[0].nodeValue                                              
+               string = string.replace('general_weakform', filename)           
+               file_strings[file_string_name] += string  
+               node = templates[key].getElementsByTagName('namespaces')[0]            
+               string = node.childNodes[0].nodeValue                                              
+               string = string.replace('general_weakform', filename)
+               string = string.replace('_', '')
+               file_strings[file_string_name] += string
+            
+               class_names = set([])                            
+               
+               for weakform in part_module.weakforms:                                     
+                    if key == '.cpp':
+                        class_names.add(weakform.get_class_name())
+                        file_strings[file_string_name] += weakform.get_cpp_code(templates[key])            
+                        factory_code =  weakform.get_factory_code(param_templates['weakform_factory_h.tem'])
+                        factory_codes.append(factory_code)
+                    if key == '.h':                        
+                        file_strings[file_string_name] += weakform.get_h_code(templates[key])                                
+
+               node = templates[key].getElementsByTagName('footer')[0]                            
+               if key == '.cpp':                        
+                   for class_name in class_names:
+                       string = node.childNodes[0].nodeValue
+                       string = string.replace('ClassName', class_name)                        
+                       file_strings[file_string_name] += string             
+               if key == '.h':       
+                   string = node.childNodes[0].nodeValue                                     
+                   file_strings[file_string_name] += string                                                                  
+       return file_strings , factory_codes    
+                            
+ 
+    def write_code(self, weakform_dir, param_templates):                                                     
+            weakform_pri_file = open(weakform_dir + 'weakform.pri', 'a')            
+            files, conditions = self.get_code(param_templates)            
+
+            for filename in files.iterkeys():                                            
+                output_file = open(weakform_dir + filename , 'w')
+                output_file.write(files[filename])            
+                output_file.close()                            
+                # append to weakform.pri                
+                if filename[::-1][:4][::-1] == '.cpp':                
+                    weakform_pri_file.write('SOURCES += ' + filename + '\n')            
+            weakform_pri_file.close()
+  
+class XmlParser:
     
-    for subnode in nodes[0].childNodes:        
-        if subnode.nodeName in analysis_types:
-            analysis_type = subnode.nodeName             
-            for subsubnode in subnode.childNodes:
-                if subsubnode.nodeName == 'boundary':
-                    boundary.name = subsubnode.attributes['name'].value                                                              
-                    for element in  subsubnode.childNodes:                                               
-                        if element.nodeName in boundaries_types:                                                         
-                            boundary_type = element.nodeName                              
-                            if boundary_type in weakform_types :      
-                                for i in range(element.attributes.length):                                                                            
-                                    coordinate_type = str(element.attributes.item(i).name)                                                                        
-                                    if coordinate_type in coordinate_types:
-                                        weakform = WeakForm()
-                                        weakform.type = boundary_type
-                                        weakform.i = int(element.attributes['i'].value)
-                                        weakform.id = module.id + '_'  + \
-                                            analysis_type 
-                                        weakform.coordinate_type = coordinate_type
-                                        weakform.integral_type = 'surf'
-                                        weakform.analysis_type = analysis_type                                                 
-                                        weakform.expression = \
-                                        str(element.attributes[coordinate_type].value)
-                                        weakform.id += '_' + coordinate_type
-                                        boundary.weakforms.append(weakform)
-                            else:
-                                weakform = WeakForm()                                
-                                weakform.i = int(element.attributes['i'].value)
-                                weakform.id = module.id + '_'  + \
-                                    analysis_type 
-                                boundary.weakforms.append(weakform)                                
-    module.boundaries.append(boundary)
-    modules.append(module)
-
-#control output    
-
-module_files = ['electrostatic.xml', 'current.xml']
-modules_dir = '../../../modules/'
-weakform_dir = './'
-
-
-#for weakform in list_dir:
-#    if weakform[::-1][:4][::-1] == '.xml':
-#        module_files.append(weakform)         
-
-modules = []
-for module_file in module_files:        
-    parse_xml_file(module_file, modules)
-
-# remove pri file
-try:
-    os.remove(weakform_dir + 'weakform.pri')
-except:
-    pass
-
-for module in modules:    
-    #module.info()
-    module.write_code()    
+    def __init__(self):       
+       self.module_files = ['electrostatic.xml', 'current.xml']
+       self.template_file_names = ['weakform_cpp.tem', 'weakform_h.tem', 'weakform_factory_h.tem']
+       self.modules_dir = '../../../modules/'
+       self.weakform_dir = './'
+       self.modules = []
+       self.templates = dict()        
+       
+       for template_file in self.template_file_names:        
+           fread = open(template_file, 'r')
+           template = minidom.parse(fread).documentElement        
+           fread.close()    
+           self.templates[template_file] = template                   
+                                  
+    def process(self):
+       # print sys.argv
+        # read tamplate files        
+#        for filename in os.listdir('.'):
+#            if filename[::-1][:4][::-1] == '.tem':            
+                
+        for module_file in self.module_files:        
+            self.parse_xml_file(module_file)
+        
+        # remove pri file
+        try:
+            os.remove(self.weakform_dir + 'weakform.pri')
+        except:
+            pass
+        
+        files = []
+        conditions = []
+        
+        for module in self.modules:            
+            module_files, module_conditions = module.get_code(self.templates)            
+            module.write_code(self.weakform_dir, self.templates)                
+            conditions.extend(module_conditions)
+        
+        # writes weakform_factory.h
+         
+        weakform_temps = ['CustomMatrixFormVol','CustomVectorFormVol',
+                           'CustomMatrixFormSurf','CustomVectorFormSurf']            
+        i = 0;        
+        for weakform_temp in weakform_temps:                            
+            weakform_string = ''
+            for condition in conditions:                
+                if condition[0] == weakform_temp:                
+                    weakform_string += condition[1]                    
+            print weakform_string             
     
+    def parse_xml_file(self, filename):
+        # constants definition
+        analysis_types = ['harmonic', 'transient', 'steadystate']
+        coordinate_types  = ['axi', 'planar']    
+        boundaries_types = ['essential', 'natural', 'vector']
+        weakform_types = ['matrix', 'vector']
+        
+        
+        # opens file and initializes xml parser    
+        fread = open(self.modules_dir + filename, 'r')
+        xmldoc = minidom.parse(fread).documentElement
+        fread.close()
+        
+        module = Module()
+        #parses general information
+        nodes = xmldoc.getElementsByTagName('general')
+        for subnode in nodes:
+            if subnode.attributes != None:
+                module.id =  subnode.attributes['id'].value
+                module.name = subnode.attributes['name'].value
+                
+        nodes = xmldoc.getElementsByTagName('description')
+        subnode = nodes[0]
+        module.description = subnode.childNodes[0].data
+            
+        # parses constans element
+        # ToDo: Make controls
+        nodes = xmldoc.getElementsByTagName('constants')
+        for subnode in nodes[0].childNodes:
+            if subnode.attributes != None:                          
+                const = Constant()
+                const.id = str(subnode.attributes['id'].value)
+                const.value = float(subnode.attributes['value'].value)
+                module.constants.append(const)
+                    
+        # parses material element
+        # ToDo: Maket checks and controls    
+        
+        # parses weak-forms    
+        nodes = xmldoc.getElementsByTagName('material')    
+        for subnode in nodes[0].childNodes:
+            if subnode.nodeName == 'item':           
+                variable = Variable()            
+                variable.id = subnode.attributes['id'].value
+                variable.name = str(subnode.attributes['name'].value)
+                variable.short_name = str(subnode.attributes['shortname'].value)
+                variable.type = 'material'            
+                variable.units = str(subnode.attributes['unit'].value)            
+                module.variables.append(variable)
+        
+        for subnode in nodes[0].childNodes:        
+            if subnode.nodeName in analysis_types:
+                material = Material()    
+                analysis_type = subnode.nodeName    
+                material.name =  analysis_type      
+                      
+                for subsubnode in subnode.childNodes:
+                    if subsubnode.nodeName in weakform_types:                    
+                        for i in range(subsubnode.attributes.length):                        
+                            coordinate_type = str(subsubnode.attributes.item(i).name)                                                                        
+                            if coordinate_type in coordinate_types:                                                                                   
+                                weakform = WeakForm()                            
+                                weakform.coordinate_type = coordinate_type                            
+                                weakform.analysis_type = analysis_type                                   
+                                weakform.type = subsubnode.nodeName                                
+                                weakform.integral_type = 'vol'    
+                                weakform.expression = \
+                                    str(subsubnode.attributes[coordinate_type].value)                            
+                                weakform.i = int(subsubnode.attributes['i'].value)                                        
+                                if subsubnode.hasAttribute('j'):
+                                    weakform.j = int(subsubnode.attributes['j'].value)                                 
+                                material.weakforms.append(weakform)
+                module.materials.append(material)
+                
+        nodes = xmldoc.getElementsByTagName('boundary')         
+           
+        boundary = Boundary()            
+        for subnode in nodes[0].childNodes:       
+            if subnode.nodeName == 'item':
+                variable = Variable()
+                variable.id = subnode.attributes['id'].value
+                variable.name = subnode.attributes['name'].value            
+                variable.type = 'boundary'             
+                variable.short_name = subnode.attributes['shortname'].value                       
+                variable.unit = subnode.attributes['unit'].value
+                boundary.variables.append(variable)          
+        
+        for subnode in nodes[0].childNodes:        
+            if subnode.nodeName in analysis_types:
+                analysis_type = subnode.nodeName             
+                for subsubnode in subnode.childNodes:
+                    if subsubnode.nodeName == 'boundary':
+                        boundary.name = subsubnode.attributes['name'].value                                                              
+                        for element in  subsubnode.childNodes:                                               
+                            if element.nodeName in boundaries_types:                                                         
+                                boundary_type = element.nodeName                              
+                                if boundary_type in weakform_types :      
+                                    for i in range(element.attributes.length):                                                                            
+                                        coordinate_type = str(element.attributes.item(i).name)                                                                        
+                                        if coordinate_type in coordinate_types:
+                                            weakform = WeakForm()
+                                            weakform.type = boundary_type
+                                            weakform.i = int(element.attributes['i'].value)
+                                            weakform.id = module.id + '_'  + \
+                                                analysis_type 
+                                            weakform.coordinate_type = coordinate_type
+                                            weakform.integral_type = 'surf'
+                                            weakform.analysis_type = analysis_type                                                 
+                                            weakform.expression = \
+                                            str(element.attributes[coordinate_type].value)
+                                            weakform.id += '_' + coordinate_type
+                                            boundary.weakforms.append(weakform)
+                                else:
+                                    weakform = WeakForm()                                
+                                    weakform.i = int(element.attributes['i'].value)
+                                    weakform.id = module.id + '_'  + \
+                                        analysis_type 
+                                    boundary.weakforms.append(weakform)                                
+        module.boundaries.append(boundary)
+        self.modules.append(module)
+
+xml_parser = XmlParser()
+xml_parser.process()
+
+
+
+
