@@ -4208,7 +4208,7 @@ ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)
     return ErrorResult();
 }
 
-void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool showGrid, int w, int h)
+void SceneView::saveImagesForReport(const QString &path, bool showGrid, bool showRulers, bool showAxes, bool showLabel, int w, int h)
 {
     logMessage("SceneView::saveImagesForReport()");
 
@@ -4222,6 +4222,13 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
 
     bool showRulersCopy = Util::config()->showRulers;
     bool showGridCopy = Util::config()->showGrid;
+    bool showAxesCopy = Util::config()->showAxes;
+    bool showLabelCopy = Util::config()->showLabel;
+
+    Util::config()->showRulers = showRulers;
+    Util::config()->showGrid = showGrid;
+    Util::config()->showAxes = showAxes;
+    Util::config()->showLabel = showLabel;
 
     // remove old files
     QFile::remove(path + "/geometry.png");
@@ -4236,9 +4243,6 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
     m_sceneViewSettings.showVectors = false;
     m_sceneViewSettings.showInitialMesh = false;
     m_sceneViewSettings.showSolutionMesh = false;
-
-    Util::config()->showRulers = showRulers;
-    Util::config()->showGrid = showGrid;
 
     // geometry
     actSceneModeLabel->trigger();
@@ -4334,6 +4338,8 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
 
     Util::config()->showRulers = showRulersCopy;
     Util::config()->showGrid = showGridCopy;
+    Util::config()->showAxes = showAxesCopy;
+    Util::config()->showLabel = showLabelCopy;
 
     if (m_sceneMode == SceneMode_OperateOnNodes) actSceneModeNode->trigger();
     if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeEdge->isChecked();
