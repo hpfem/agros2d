@@ -38,7 +38,7 @@
             <boundary id="electrostatic_surface_charge_density" name="Surface charge density">
                 <item id="electrostatic_surface_charge_density" />
 
-                <vector i="1" planar="sigma * vval" axi="sigma * r * vval" />
+                <vector i="1" j="1" planar="sigma * vval" axi="sigma * r * vval" />
             </boundary>
         </steadystate>
     </boundary>
