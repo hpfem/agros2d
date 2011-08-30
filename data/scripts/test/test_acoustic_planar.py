@@ -38,9 +38,10 @@ solve()
 # point valueqtcreator 2.2 ppa
 point = pointresult(-0.084614, 0.053416)
 testp = test("Acoustic pressure", point["p"], 0.003064)
-testp_real = test("Acoustic pressure - real", point["p_real"], 0.002322)
-testp_imag = test("Acoustic pressure - imag", point["p_imag"], 0.001999)
+testp_real = test("Acoustic pressure - real", point["pr"], 0.002322)
+testp_imag = test("Acoustic pressure - imag", point["pi"], 0.001999)
 testI = test("Acoustic pressure", point["Lp"], 40.695085)
+
 # volume integral
 volume = volumeintegral(0)
 testPv_real = test("Pressure - real", volume["p_real"], -1.915211e-5)
