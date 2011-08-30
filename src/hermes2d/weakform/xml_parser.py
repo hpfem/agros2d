@@ -2,6 +2,7 @@
 
 from xml.dom import minidom
 import os
+from expression_parser import NumericStringParser
 # becouse of parametr processing
 # import sys 
 
@@ -92,41 +93,46 @@ class WeakForm:
                 cpp_code += replaced_string                                                                                                                           
         return cpp_code            
             
-    def parse_expression(self, expression):
-        operators = ['*', '+', '/', '-', '=']        
-       
-        variables = self.variables
-        parsed_exp = expression               
-        replaces = { ' ': '', 
-                     '*x*':'*e->x[i]*',
-                     '*r*': '*e->x[i]*',
+    def parse_expression(self, expression):                        
+        replaces = { 'x':'e->x[i]',
+                     'r': 'e->x[i]',
                      'udr': 'u->dx[i]',
                      'vdr': 'v->dx[i]',
                      'udz': 'u->dy[i]',
                      'vdz': 'v->dy[i]',                     
-                     'updr': 'u_ext[this->i]->dx[i]',                     
-                     'updz': 'u_ext[this->i]->dy[i]',                     
+                     'updr': 'u_ext[this->j]->dx[i]',                     
+                     'updz': 'u_ext[this->j]->dy[i]',                     
                      'udx': 'u->dx[i]',
                      'vdx': 'v->dx[i]',
                      'udy': 'u->dy[i]',
                      'vdy': 'v->dy[i]',
-                     'updx': 'u_ext[this->i]->dx[i]',
-                     'updy': 'u_ext[this->i]->dy[i]',
-                     'upval': 'u_ext[this->i]->val[i]',
+                     'updx': 'u_ext[this->j]->dx[i]',
+                     'updy': 'u_ext[this->j]->dy[i]',
+                     'upval': 'u_ext[this->j]->val[i]',
                      'uval': 'u->val[i]',
-                     'vval': 'v->val[i]' }            
-         
-        for key, value in replaces.iteritems():            
-            parsed_exp = parsed_exp.replace(key, value)
+                     'vval': 'v->val[i]', 
+                     'uptval': 'ext->fn[this->i]->val[i]',
+                     'deltat': 'Util::scene()->problemInfo()->timeStep.number()'                       
+                     }            
 
-        for variable in variables:
-            parsed_exp = parsed_exp.replace(variable.short_name, variable.short_name + '.value()')
-        
-        for operator in operators:        
-            parsed_exp = parsed_exp.replace(operator, ' ' + operator + ' ')
-        parsed_exp = parsed_exp.replace(' - >', '->')
-
-        parsed_exp = 'result += wt[i] * (' + parsed_exp + ');'                  
+        symbols = ['x', 'y', 'r', 'z', 'udr', 'udz', 'udx', 'udy',
+                   'vdr', 'vdz', 'vdx', 'vdy', 'updr', 'updx', 'updy', 'updz',
+                   'uval', 'vval', 'upval', 'deltat', 'uptval']
+                   
+        variables = []               
+        for variable in self.variables:        
+            symbols.append(variable.short_name)
+            variables.append(variable.short_name)
+             
+        for const in self.constants:
+            symbols.append(const.id)
+                
+        parser = NumericStringParser(symbols, replaces, variables)        
+        expression_list = parser.parse(expression).asList()      
+        parsed_exp = parser.get_expression(expression_list)                             
+        parsed_exp = 'result += wt[i] * (' + parsed_exp + ');'                          
+        print expression_list            
+        print parsed_exp                
         return parsed_exp
 
 class Material:
@@ -212,6 +218,7 @@ class Module:
             for variable in boundary.variables:
                 print variable.name                
             for weakform in boundary.weakforms:
+                print weakform.type, weakform.coordinate_type, weakform.integral_type                    
                 print weakform.id, weakform.expression
                                 
                                         
@@ -240,6 +247,7 @@ class Module:
                     part_module.analysis = material.name                    
                     part_modules.append(part_module)                                
                 weakform.variables = self.variables
+                weakform.constants = self.constants
                 weakform.id = part_module.id
                 part_module.weakforms.append(weakform)                
         
@@ -249,6 +257,7 @@ class Module:
                     index = module_types.index(weakform.id)                    
                     part_module = part_modules[index] 
                     weakform.variables = boundary.variables
+                    weakform.constants = self.constants
                     part_module.weakforms.append(weakform)
         return part_modules;
         
@@ -317,7 +326,7 @@ class Module:
 class XmlParser:
     
     def __init__(self):       
-       self.module_files = ['electrostatic.xml', 'current.xml']
+       self.module_files = ['heat.xml']
        self.template_file_names = ['weakform_cpp.tem', 'weakform_h.tem', 'weakform_factory_h.tem']
        self.modules_dir = '../../../modules/'
        self.weakform_dir = './'
@@ -339,7 +348,7 @@ class XmlParser:
                 
         for module_file in self.module_files:        
             self.parse_xml_file(module_file)
-        
+            
         # remove pri file
         try:
             os.remove(self.weakform_dir + 'weakform.pri')
@@ -349,7 +358,7 @@ class XmlParser:
         files = []
         conditions = []
         
-        for module in self.modules:               
+        for module in self.modules:                           
             module_files, module_conditions = module.get_code(self.templates)            
             module.write_code(self.weakform_dir, self.templates)                
             conditions.extend(module_conditions)                                      
@@ -391,7 +400,7 @@ class XmlParser:
         # constants definition
         analysis_types = ['harmonic', 'transient', 'steadystate']
         coordinate_types  = ['axi', 'planar']    
-        boundaries_types = ['essential', 'natural', 'vector']
+        boundaries_types = ['essential', 'natural', 'vector', 'matrix']
         weakform_types = ['matrix', 'vector']
         
         
@@ -483,13 +492,15 @@ class XmlParser:
                         for element in  subsubnode.childNodes:                                               
                             if element.nodeName in boundaries_types:                                                         
                                 boundary_type = element.nodeName                              
+                                print boundary_type
                                 if boundary_type in weakform_types :      
                                     for i in range(element.attributes.length):                                                                            
                                         coordinate_type = str(element.attributes.item(i).name)                                                                        
                                         if coordinate_type in coordinate_types:
-                                            weakform = WeakForm()
+                                            weakform = WeakForm()                                                                                            
                                             weakform.type = boundary_type
                                             weakform.i = int(element.attributes['i'].value)
+                                            weakform.j = int(element.attributes['j'].value)
                                             weakform.id = module.id + '_'  + \
                                                 analysis_type 
                                             weakform.coordinate_type = coordinate_type
@@ -502,6 +513,7 @@ class XmlParser:
                                 else:
                                     weakform = WeakForm()                                
                                     weakform.i = int(element.attributes['i'].value)
+                                    weakform.j = int(element.attributes['j'].value)
                                     weakform.id = module.id + '_'  + \
                                         analysis_type 
                                     boundary.weakforms.append(weakform)                                
@@ -510,7 +522,3 @@ class XmlParser:
 
 xml_parser = XmlParser()
 xml_parser.process()
-
-
-
-

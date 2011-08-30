@@ -46,7 +46,7 @@ public:
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u,
                             Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v, Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
 private:
-    Material *m_material;
+    Material *m_material;    	
 };</custom_matrix_form_vol> 
   
 
@@ -54,7 +54,7 @@ private:
 class CustomVectorFormVol : public Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt;
 {
 public:
-    CustomVectorFormVol(unsigned int i,
+    CustomVectorFormVol(unsigned int i, unsigned int j,
                               std::string area, 
                               Material *material);
 
@@ -63,6 +63,7 @@ public:
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
                             Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
     Material *m_material;
+    unsigned int j;
 };</custom_vector_form_vol>
   
 <custom_matrix_form_surf>template&lt;typename Scalar&gt;
@@ -85,7 +86,7 @@ private:
 class CustomVectorFormSurf : public Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt;
 {
 public:
-    CustomVectorFormSurf(unsigned int i,
+    CustomVectorFormSurf(unsigned int i, unsigned int j,
                                std::string area, 
                                Boundary *boundary);
 
@@ -95,6 +96,7 @@ public:
                             Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
 private:
     Boundary *m_boundary;
+    unsigned int j;
 };</custom_vector_form_surf>
 
 <footer> }

@@ -53,17 +53,17 @@
 
 <condition_vector_vol>
         if (problemId == "class_name")
-            return new namespace::FunctionName&lt;double&gt;(i, area, material);
+            return new namespace::FunctionName&lt;double&gt;(i, j, area, material);
 </condition_vector_vol>
 
 <condition_matrix_surf>
         if (problemId == "class_name")
-            return new namespace::FunctionName&lt;double&gt;(i, j, area, sym, boundary);
+            return new namespace::FunctionName&lt;double&gt;(i, j, area, boundary);
 </condition_matrix_surf>
 
 <condition_vector_surf>
         if (problemId == "class_name")
-            return new namespace::FunctionName&lt;double&gt;(i, area, boundary);
+            return new namespace::FunctionName&lt;double&gt;(i, j, area, boundary);
 </condition_vector_surf>
 
 <CustomMatrixFormVol>
@@ -79,7 +79,7 @@ Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt; *factoryMatrixFormVol(const std::s
 
 <CustomVectorFormVol>
 template &lt;typename Scalar&gt;
-Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt; *factoryVectorFormVol(const std::string &amp;problemId, int i,
+Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt; *factoryVectorFormVol(const std::string &amp;problemId, int i, int j,
                                                               const std::string &amp;area, SceneMaterial *material)
 {
     //conditions 
@@ -99,7 +99,7 @@ Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt; *factoryMatrixFormSurf(const std:
 
 <CustomVectorFormSurf>
 template &lt;typename Scalar&gt;
-Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt; *factoryVectorFormSurf(const std::string &amp;problemId, int i,
+Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt; *factoryVectorFormSurf(const std::string &amp;problemId, int i, int j,
                                                                 const std::string &amp;area, SceneBoundary *boundary)
 {
     //conditions 

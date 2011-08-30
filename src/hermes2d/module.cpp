@@ -215,7 +215,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
                 {
                     custom_form = factoryVectorFormSurf<Scalar>(problemId,
-                                                                form->i - 1,
+                                                                form->i - 1, form->j - 1,
                                                                 QString::number(i + 1).toStdString(),
                                                                 boundary);
                 }
@@ -297,7 +297,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 // compiled form
                 if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
                 {
-                    custom_form = factoryVectorFormVol<Scalar>(problemId, form->i - 1,
+                    custom_form = factoryVectorFormVol<Scalar>(problemId, form->i - 1, form->j - 1,
                                                                QString::number(i).toStdString(),
                                                                material);
                 }
