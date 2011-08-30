@@ -59,14 +59,16 @@ private:
     QCheckBox *chkFigureScalarView;
     QCheckBox *chkFigureContourView;
     QCheckBox *chkFigureVectorView;
-    QCheckBox *chkShowGrid;
-    QCheckBox *chkShowRulers;
-
-    QLineEdit *txtTemplate;
-    QLineEdit *txtStyleSheet;
 
     ValueLineEdit *txtFigureWidth;
     ValueLineEdit *txtFigureHeight;
+    QCheckBox *chkFigureShowGrid;
+    QCheckBox *chkFigureShowRulers;
+    QCheckBox *chkFigureShowAxes;
+    QCheckBox *chkFigureShowLabel;
+
+    QLineEdit *txtTemplate;
+    QLineEdit *txtStyleSheet;
 
     QPushButton *btnShowReport;
     QPushButton *btnDefault;

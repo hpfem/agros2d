@@ -27,7 +27,6 @@
 #include "hermes2d/module.h"
 #include "ctemplate/template.h"
 
-
 ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
     logMessage("ReportDialog::ReportDialog()");
@@ -77,13 +76,6 @@ void ReportDialog::createControls()
     chkFigureScalarView = new QCheckBox(tr("Scalar view"));
     chkFigureContourView = new QCheckBox(tr("Contour view"));
     chkFigureVectorView = new QCheckBox(tr("Vector view"));
-    chkShowGrid = new QCheckBox(tr("Show grid"));
-    chkShowRulers = new QCheckBox(tr("Show rulers"));
-
-    txtTemplate = new QLineEdit();
-    connect(txtTemplate, SIGNAL(textChanged(QString)), this, SLOT(checkPaths()));
-    txtStyleSheet = new QLineEdit();
-    connect(txtStyleSheet, SIGNAL(textChanged(QString)), this, SLOT(checkPaths()));
 
     txtFigureWidth = new ValueLineEdit();
     txtFigureWidth->setValue(Value("600"));
@@ -91,13 +83,20 @@ void ReportDialog::createControls()
     txtFigureHeight = new ValueLineEdit();
     txtFigureHeight->setValue(Value("400"));
     txtFigureHeight->setMinimum(200);
+    chkFigureShowGrid = new QCheckBox(tr("Show grid"));
+    chkFigureShowRulers = new QCheckBox(tr("Show rulers"));
+    chkFigureShowAxes = new QCheckBox(tr("Show axes"));
+    chkFigureShowLabel = new QCheckBox(tr("Show label"));
+
+    txtTemplate = new QLineEdit();
+    connect(txtTemplate, SIGNAL(textChanged(QString)), this, SLOT(checkPaths()));
+    txtStyleSheet = new QLineEdit();
+    connect(txtStyleSheet, SIGNAL(textChanged(QString)), this, SLOT(checkPaths()));
 
     btnDefault = new QPushButton(tr("Default"));
     connect(btnDefault, SIGNAL(clicked()), this, SLOT(defaultValues()));
-
     btnShowReport = new QPushButton(tr("Show report"));
     connect(btnShowReport, SIGNAL(clicked()), this, SLOT(doShowReport()));
-
     btnClose = new QPushButton(tr("Close"));
     btnClose->setDefault(true);
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
@@ -111,37 +110,34 @@ void ReportDialog::createControls()
     layoutSections->addWidget(chkMeshAndSolution);
     layoutSections->addWidget(chkScript);
 
-    QVBoxLayout *layoutFigures = new QVBoxLayout();
-    layoutFigures->addWidget(chkFigureGeometry);
-    layoutFigures->addWidget(chkFigureMesh);
-    layoutFigures->addWidget(chkFigureOrder);
-    layoutFigures->addWidget(chkFigureScalarView);
-    layoutFigures->addWidget(chkFigureContourView);
-    layoutFigures->addWidget(chkFigureVectorView);
-    layoutFigures->addWidget(new QLabel());
-    layoutFigures->addWidget(chkShowGrid);
-    layoutFigures->addWidget(chkShowRulers);
+    QVBoxLayout *layoutFigure = new QVBoxLayout();
+    layoutFigure->addWidget(chkFigureGeometry);
+    layoutFigure->addWidget(chkFigureMesh);
+    layoutFigure->addWidget(chkFigureOrder);
+    layoutFigure->addWidget(chkFigureScalarView);
+    layoutFigure->addWidget(chkFigureContourView);
+    layoutFigure->addWidget(chkFigureVectorView);
 
-    QGridLayout *layoutSection = new QGridLayout();
-    layoutSection->addLayout(layoutSections, 0, 0);
+    QGridLayout *layoutFigureProperties = new QGridLayout();
+    layoutFigureProperties->addWidget(new QLabel(tr("Width")), 0, 0);
+    layoutFigureProperties->addWidget(txtFigureWidth, 0, 1);
+    layoutFigureProperties->addWidget(new QLabel(tr("Height")), 1, 0);
+    layoutFigureProperties->addWidget(txtFigureHeight, 1, 1, 1, 2);
+    layoutFigureProperties->addWidget(chkFigureShowGrid, 2, 0, 1, 2);
+    layoutFigureProperties->addWidget(chkFigureShowRulers, 3, 0, 1, 2);
+    layoutFigureProperties->addWidget(chkFigureShowAxes, 4, 0, 1, 2);
+    layoutFigureProperties->addWidget(chkFigureShowLabel, 5, 0, 1, 2);
+
+    QHBoxLayout *layoutFigures = new QHBoxLayout();
+    layoutFigures->addLayout(layoutFigure);
+    layoutFigures->addLayout(layoutFigureProperties);
+    layoutFigures->addStretch();
 
     QGridLayout *layoutTemplate = new QGridLayout();
     layoutTemplate->addWidget(new QLabel(tr("Template")), 0, 0);
     layoutTemplate->addWidget(txtTemplate, 0, 1);
     layoutTemplate->addWidget(new QLabel(tr("Style sheet")), 1, 0);
     layoutTemplate->addWidget(txtStyleSheet, 1, 1);
-
-    QGridLayout *layoutFigureSize = new QGridLayout();
-    layoutFigureSize->addWidget(new QLabel(tr("Width")), 0, 0);
-    layoutFigureSize->addWidget(txtFigureWidth, 0, 1);
-    layoutFigureSize->addWidget(new QLabel(tr("Height")), 1, 0);
-    layoutFigureSize->addWidget(txtFigureHeight, 1, 1);
-    layoutFigureSize->setRowStretch(2, 1);
-
-    QHBoxLayout *layoutFigure = new QHBoxLayout();
-    layoutFigure->addLayout(layoutFigures);
-    layoutFigure->addLayout(layoutFigureSize);
-    layoutFigure->addStretch();
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addStretch();
@@ -150,10 +146,10 @@ void ReportDialog::createControls()
     layoutButtons->addWidget(btnClose);
 
     QGroupBox *grpBasicProperties = new QGroupBox(tr("Sections"));
-    grpBasicProperties->setLayout(layoutSection);
+    grpBasicProperties->setLayout(layoutSections);
 
     QGroupBox *grpFigure = new QGroupBox(tr("Figures properties"));
-    grpFigure->setLayout(layoutFigure);
+    grpFigure->setLayout(layoutFigures);
 
     QGroupBox *grpAdditionalProperties = new QGroupBox(tr("Additional properties"));
     grpAdditionalProperties->setLayout(layoutTemplate);
@@ -161,7 +157,7 @@ void ReportDialog::createControls()
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(grpBasicProperties, 0, 0);
     layout->addWidget(grpFigure, 0, 1);
-    // layout->addWidget(grpAdditionalProperties, 1, 0, 1, 2);
+    layout->addWidget(grpAdditionalProperties, 1, 0, 1, 2);
     layout->addLayout(layoutButtons, 2, 0, 2, 2);
 
     setLayout(layout);
@@ -201,13 +197,14 @@ void ReportDialog::defaultValues()
     chkScript->setChecked(true);
 
     chkFigureGeometry->setChecked(true);
-    chkShowGrid->setChecked(true);
-    chkShowRulers->setChecked(true);
-
     txtFigureWidth->setValue(Value("600"));
     txtFigureHeight->setValue(Value("400"));
+    chkFigureShowGrid->setChecked(Util::config()->showGrid);
+    chkFigureShowRulers->setChecked(Util::config()->showRulers);
+    chkFigureShowAxes->setChecked(Util::config()->showAxes);
+    chkFigureShowLabel->setChecked(Util::config()->showLabel);
 
-    txtTemplate->setText(QString("%1/resources/report/default.html").arg(datadir()));
+    txtTemplate->setText(QString("%1/resources/report/default.tpl").arg(datadir()));
     txtStyleSheet->setText(QString("%1/resources/report/default.css").arg(datadir()));
 
     checkPaths();
@@ -249,10 +246,10 @@ void ReportDialog::resetControls()
     chkFigureScalarView->setChecked(chkMeshAndSolution->isChecked());
     chkFigureScalarView->setEnabled(chkMeshAndSolution->isChecked());
 
-    chkShowGrid->setChecked(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
-    chkShowGrid->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
-    chkShowRulers->setChecked(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
-    chkShowRulers->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
+    chkFigureShowGrid->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
+    chkFigureShowRulers->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
+    chkFigureShowAxes->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
+    chkFigureShowLabel->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
 }
 
 void ReportDialog::showDialog()
@@ -280,10 +277,7 @@ void ReportDialog::doShowReport()
 
     QFile::remove(QString("%1/report/template.html").arg(tempProblemDir()));
     QFile::remove(QString("%1/report/style.css").arg(tempProblemDir()));
-    /*
-    bool fileTemplateOK = QFile::copy(QString(txtTemplate->text()),
-                                      QString("%1/report/template.html").arg(tempProblemDir()));
-    */
+
     bool fileStyleOK = QFile::copy(QString(txtStyleSheet->text()),
                                       QString("%1/report/style.css").arg(tempProblemDir()));
     if (!fileStyleOK)
@@ -301,7 +295,7 @@ void ReportDialog::generateIndex()
 {
     logMessage("ReportDialog::generateIndex()");
 
-    QString fileNameTemplate = datadir() + "/resources/report/default.tpl";
+    QString fileNameTemplate = txtTemplate->text();
     QString fileNameIndex = tempProblemDir() + "/report/report.html";
 
     QFile fileIndex(fileNameIndex);
@@ -320,11 +314,15 @@ void ReportDialog::generateFigures()
 {
     logMessage("ReportDialog::generateFigures()");
 
-    bool showRulers = chkShowRulers->isChecked();
-    bool showGrid = chkShowGrid->isChecked();
+    bool showRulers = chkFigureShowRulers->isChecked();
+    bool showGrid = chkFigureShowGrid->isChecked();
+    bool showAxes = chkFigureShowRulers->isChecked();
+    bool showLabel = chkFigureShowGrid->isChecked();
     m_sceneView->saveImagesForReport(tempProblemDir() + "/report",
-                                     showRulers,
                                      showGrid,
+                                     showRulers,
+                                     showAxes,
+                                     showLabel,
                                      txtFigureWidth->value().number(),
                                      txtFigureHeight->value().number());
 }
@@ -352,41 +350,41 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
     // problem information
     if (chkProblemInformation->isChecked())
     {
-        dict.SetValue("PROBLEMINFORMATION_LABEL", tr("Problem Information").toStdString());
-        dict.SetValue("NAME_LABEL", tr("Name:").toStdString());
-        dict.SetValue("NAME", Util::scene()->problemInfo()->name.toStdString());
-        dict.SetValue("DATE_LABEL", tr("Date:").toStdString());
-        dict.SetValue("DATE", Util::scene()->problemInfo()->date.toString("dd.MM.yyyy").toStdString());
-        dict.SetValue("FILENAME_LABEL", tr("File name:").toStdString());
-        dict.SetValue("FILENAME", QFileInfo(Util::scene()->problemInfo()->fileName).fileName().toStdString());
-        dict.SetValue("PROBLEMTYPE_LABEL", tr("Problem type:").toStdString());
-        dict.SetValue("PROBLEMTYPE", problemTypeString(Util::scene()->problemInfo()->problemType).toStdString());
-        dict.SetValue("PHYSICFIELD_LABEL", tr("Physic field:").toStdString());
-        dict.SetValue("PHYSICFIELD", Util::scene()->problemInfo()->module()->name);
-        dict.SetValue("ANALYSISTYPE_LABEL", tr("Analysis type:").toStdString());
-        dict.SetValue("ANALYSISTYPE", analysisTypeString(Util::scene()->problemInfo()->analysisType).toStdString());
-        dict.SetValue("NUMBEROFREFINEMENTS_LABEL", tr("Number of refinements:").toStdString());
-        dict.SetIntValue("NUMBEROFREFINEMENTS", Util::scene()->problemInfo()->numberOfRefinements);
-        dict.SetValue("POLYNOMIALORDER_LABEL", tr("Polynomial order:").toStdString());
-        dict.SetIntValue("POLYNOMIALORDER", Util::scene()->problemInfo()->polynomialOrder);
+        dict.SetValue("PROBLEM_LABEL", tr("Problem Information").toStdString());
+        dict.SetValue("PROBLEM_NAME_LABEL", tr("Name:").toStdString());
+        dict.SetValue("PROBLEM_NAME", Util::scene()->problemInfo()->name.toStdString());
+        dict.SetValue("PROBLEM_DATE_LABEL", tr("Date:").toStdString());
+        dict.SetValue("PROBLEM_DATE", Util::scene()->problemInfo()->date.toString("dd.MM.yyyy").toStdString());
+        dict.SetValue("PROBLEM_FILENAME_LABEL", tr("File name:").toStdString());
+        dict.SetValue("PROBLEM_FILENAME", QFileInfo(Util::scene()->problemInfo()->fileName).fileName().toStdString());
+        dict.SetValue("PROBLEM_PROBLEMTYPE_LABEL", tr("Problem type:").toStdString());
+        dict.SetValue("PROBLEM_PROBLEMTYPE", problemTypeString(Util::scene()->problemInfo()->problemType).toStdString());
+        dict.SetValue("PROBLEM_PHYSICFIELD_LABEL", tr("Physic field:").toStdString());
+        dict.SetValue("PROBLEM_PHYSICFIELD", Util::scene()->problemInfo()->module()->name);
+        dict.SetValue("PROBLEM_ANALYSISTYPE_LABEL", tr("Analysis type:").toStdString());
+        dict.SetValue("PROBLEM_ANALYSISTYPE", analysisTypeString(Util::scene()->problemInfo()->analysisType).toStdString());
+        dict.SetValue("PROBLEM_NUMBEROFREFINEMENTS_LABEL", tr("Number of refinements:").toStdString());
+        dict.SetIntValue("PROBLEM_NUMBEROFREFINEMENTS", Util::scene()->problemInfo()->numberOfRefinements);
+        dict.SetValue("PROBLEM_POLYNOMIALORDER_LABEL", tr("Polynomial order:").toStdString());
+        dict.SetIntValue("PROBLEM_POLYNOMIALORDER", Util::scene()->problemInfo()->polynomialOrder);
 
-        dict.SetValue("ADAPTIVITYTYPE_LABEL", tr("Adaptivity type:").toStdString());
-        dict.SetValue("ADAPTIVITYTYPE", adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType).toStdString());
-        dict.SetValue("ADAPTIVITYSTEPS_LABEL", tr("Adaptivity steps:").toStdString());
-        dict.SetIntValue("ADAPTIVITYSTEPS", Util::scene()->problemInfo()->adaptivitySteps);
-        dict.SetValue("ADAPTIVITYTOLERANCE_LABEL", tr("Adaptivity tolerance:").toStdString());
-        dict.SetFormattedValue("ADAPTIVITYTOLERANCE", "%.2f", Util::scene()->problemInfo()->adaptivityTolerance);
-        dict.SetValue("MAXDOFS_LABEL", tr("Maximum DOFs:").toStdString());
-        dict.SetIntValue("MAXDOFS", Util::scene()->problemInfo()->adaptivityMaxDOFs);
+        dict.SetValue("PROBLEM_ADAPTIVITYTYPE_LABEL", tr("Adaptivity type:").toStdString());
+        dict.SetValue("PROBLEM_ADAPTIVITYTYPE", adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType).toStdString());
+        dict.SetValue("PROBLEM_ADAPTIVITYSTEPS_LABEL", tr("Adaptivity steps:").toStdString());
+        dict.SetIntValue("PROBLEM_ADAPTIVITYSTEPS", Util::scene()->problemInfo()->adaptivitySteps);
+        dict.SetValue("PROBLEM_ADAPTIVITYTOLERANCE_LABEL", tr("Adaptivity tolerance:").toStdString());
+        dict.SetFormattedValue("PROBLEM_ADAPTIVITYTOLERANCE", "%.2f", Util::scene()->problemInfo()->adaptivityTolerance);
+        dict.SetValue("PROBLEM_MAXDOFS_LABEL", tr("Maximum DOFs:").toStdString());
+        dict.SetIntValue("PROBLEM_MAXDOFS", Util::scene()->problemInfo()->adaptivityMaxDOFs);
 
-        dict.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
-        dict.SetFormattedValue("FREQUENCY", "%.2f", Util::scene()->problemInfo()->frequency);
-        dict.SetValue("TIMESTEP_LABEL", tr("Time step:").toStdString());
-        dict.SetIntValue("TIMESTEP", Util::scene()->problemInfo()->timeStep.number());
-        dict.SetValue("TIMETOTAL_LABEL", tr("Total time:").toStdString());
-        dict.SetIntValue("TIMETOTAL", Util::scene()->problemInfo()->timeTotal.number());
-        dict.SetValue("INITITALCONDITION_LABEL", tr("Initial condition:").toStdString());
-        dict.SetFormattedValue("INITITALCONDITION", "%.2f", Util::scene()->problemInfo()->initialCondition.number());
+        dict.SetValue("PROBLEM_FREQUENCY_LABEL", tr("Frequency:").toStdString());
+        dict.SetFormattedValue("PROBLEM_FREQUENCY", "%.2f", Util::scene()->problemInfo()->frequency);
+        dict.SetValue("PROBLEM_TIMESTEP_LABEL", tr("Time step:").toStdString());
+        dict.SetIntValue("PROBLEM_TIMESTEP", Util::scene()->problemInfo()->timeStep.number());
+        dict.SetValue("PROBLEM_TIMETOTAL_LABEL", tr("Total time:").toStdString());
+        dict.SetIntValue("PROBLEM_TIMETOTAL", Util::scene()->problemInfo()->timeTotal.number());
+        dict.SetValue("PROBLEM_INITITALCONDITION_LABEL", tr("Initial condition:").toStdString());
+        dict.SetFormattedValue("PROBLEM_INITITALCONDITION", "%.2f", Util::scene()->problemInfo()->initialCondition.number());
     }
 
     // startup script
@@ -412,10 +410,10 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
         dict.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
         dict.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes").toStdString());
         dict.SetValue("GEOMETRY_NODES", htmlGeometryNodes().toStdString());
-        dict.SetValue("EDGES_LABEL", tr("Edges").toStdString());
-        dict.SetValue("EDGES", htmlGeometryEdges().toStdString());
-        dict.SetValue("LABELS_LABEL", tr("Labels").toStdString());
-        dict.SetValue("LABELS", htmlGeometryLabels().toStdString());
+        dict.SetValue("GEOMETRY_EDGES_LABEL", tr("Edges").toStdString());
+        dict.SetValue("GEOMETRY_EDGES", htmlGeometryEdges().toStdString());
+        dict.SetValue("GEOMETRY_LABELS_LABEL", tr("Labels").toStdString());
+        dict.SetValue("GEOMETRY_LABELS", htmlGeometryLabels().toStdString());
     }
 
     // solver
@@ -455,27 +453,24 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
     }
 
     // figures
+    dict.SetValue("FIGURE_LABEL", tr("Figures").toStdString());
     if (chkFigureGeometry->isChecked())
         dict.SetValue("FIGURE_GEOMETRY", htmlFigure("geometry.png", tr("Geometry")).toStdString());
-
     if (chkFigureMesh->isChecked())
         dict.SetValue("FIGURE_MESH", htmlFigure("mesh.png", tr("Mesh")).toStdString());
-
     if (chkFigureOrder->isChecked())
         dict.SetValue("FIGURE_ORDER", htmlFigure("order.png", tr("Polynomial order")).toStdString());
-
     if (chkFigureScalarView->isChecked())
         dict.SetValue("FIGURE_SCALARVIEW", htmlFigure("scalarview.png", tr("ScalarView: ")
                                                       + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_scalar_variable->name)).toStdString());
-
     if (chkFigureContourView->isChecked())
         dict.SetValue("FIGURE_CONTOURVIEW", htmlFigure("contourview.png", tr("ContourView: ")
                                                        + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_scalar_variable->name)).toStdString());
-
     if (chkFigureVectorView->isChecked())
         dict.SetValue("FIGURE_VECTORVIEW", htmlFigure("vectorview.png", tr("VectorView: ")
                                                       + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_vector_variable->name)).toStdString());
 
+    // expand template
     ctemplate::ExpandTemplate(fileNameTemplate.toStdString(), ctemplate::DO_NOT_STRIP, &dict, &report);
     return  QString::fromStdString(report);
 }

@@ -11,24 +11,24 @@
 <h2>{{DESCRIPTION_LABEL}}</h2>
 <p>{{DESCRIPTION}}</p>
 
-<h2>{{PROBLEMINFORMATION_LABEL}}</h2>
+<h2>{{PROBLEM_LABEL}}</h2>
 <table>
-	<tr><td>{{NAME_LABEL}}</td><td>{{NAME}}</td></tr>
-	<tr><td>{{DATE_LABEL}}</td><td>{{DATE}}</td></tr>
-	<tr><td>{{FILENAME_LABEL}}</td><td>{{FILENAME}}</td></tr>
-	<tr><td>{{PROBLEMTYPE_LABEL}}</td><td>{{PROBLEMTYPE}}</td></tr>
-	<tr><td>{{PHYSICFIELD_LABEL}}</td><td>{{PHYSICFIELD}}</td></tr>
-	<tr><td>{{ANALYSISTYPE_LABEL}}</td><td>{{ANALYSISTYPE}}</td></tr>
-	<tr><td>{{NUMBEROFREFINEMENTS_LABEL}}</td><td>{{NUMBEROFREFINEMENTS}}</td></tr>
-	<tr><td>{{POLYNOMIALORDER_LABEL}}</td><td>{{POLYNOMIALORDER}}</td></tr>
-	<tr><td>{{ADAPTIVITYTYPE_LABEL}}</td><td>{{ADAPTIVITYTYPE}}</td></tr>
-	<tr><td>{{ADAPTIVITYSTEPS_LABEL}}</td><td>{{ADAPTIVITYSTEPS}}</td></tr>
-	<tr><td>{{ADAPTIVITYTOLERANCE_LABEL}}</td><td>{{ADAPTIVITYTOLERANCE}} %</td></tr>
-	<tr><td>{{MAXDOFS_LABEL}}</td><td>{{MAXDOFS}}</td></tr>
-	<tr><td>{{FREQUENCY_LABEL}}</td><td>{{FREQUENCY}} Hz</td></tr>
-	<tr><td>{{TIMESTEP_LABEL}}</td><td>{{TIMESTEP}} s</td></tr>
-	<tr><td>{{TIMETOTAL_LABEL}}</td><td>{{TIMETOTAL}} s</td></tr>
-	<tr><td>{{INITITALCONDITION_LABEL}}</td><td>{{INITITALCONDITION}}</td></tr>
+	<tr><td>{{PROBLEM_NAME_LABEL}}</td><td>{{PROBLEM_NAME}}</td></tr>
+	<tr><td>{{PROBLEM_DATE_LABEL}}</td><td>{{PROBLEM_DATE}}</td></tr>
+	<tr><td>{{PROBLEM_FILENAME_LABEL}}</td><td>{{PROBLEM_FILENAME}}</td></tr>
+	<tr><td>{{PROBLEM_PROBLEMTYPE_LABEL}}</td><td>{{PROBLEM_PROBLEMTYPE}}</td></tr>
+	<tr><td>{{PROBLEM_PHYSICFIELD_LABEL}}</td><td>{{PROBLEM_PHYSICFIELD}}</td></tr>
+	<tr><td>{{PROBLEM_ANALYSISTYPE_LABEL}}</td><td>{{PROBLEM_ANALYSISTYPE}}</td></tr>
+	<tr><td>{{PROBLEM_NUMBEROFREFINEMENTS_LABEL}}</td><td>{{PROBLEM_NUMBEROFREFINEMENTS}}</td></tr>
+	<tr><td>{{PROBLEM_POLYNOMIALORDER_LABEL}}</td><td>{{PROBLEM_POLYNOMIALORDER}}</td></tr>
+	<tr><td>{{PROBLEM_ADAPTIVITYTYPE_LABEL}}</td><td>{{PROBLEM_ADAPTIVITYTYPE}}</td></tr>
+	<tr><td>{{PROBLEM_ADAPTIVITYSTEPS_LABEL}}</td><td>{{PROBLEM_ADAPTIVITYSTEPS}}</td></tr>
+	<tr><td>{{PROBLEM_ADAPTIVITYTOLERANCE_LABEL}}</td><td>{{PROBLEM_ADAPTIVITYTOLERANCE}} %</td></tr>
+	<tr><td>{{PROBLEM_MAXDOFS_LABEL}}</td><td>{{PROBLEM_MAXDOFS}}</td></tr>
+	<tr><td>{{PROBLEM_FREQUENCY_LABEL}}</td><td>{{PROBLEM_FREQUENCY}} Hz</td></tr>
+	<tr><td>{{PROBLEM_TIMESTEP_LABEL}}</td><td>{{PROBLEM_TIMESTEP}} s</td></tr>
+	<tr><td>{{PROBLEM_TIMETOTAL_LABEL}}</td><td>{{PROBLEM_TIMETOTAL}} s</td></tr>
+	<tr><td>{{PROBLEM_INITITALCONDITION_LABEL}}</td><td>{{PROBLEM_INITITALCONDITION}}</td></tr>
 </table>
 
 <h2>{{STARTUPSCRIPT_LABEL}}</h2>
@@ -44,10 +44,10 @@
 {{FIGURE_GEOMETRY}}
 <h3>{{GEOMETRY_NODES_LABEL}}</h3>
 {{GEOMETRY_NODES}}
-<h3>{{EDGES_LABEL}}</h3>
-{{EDGES}}
-<h3>{{LABELS_LABEL}}</h3>
-{{LABELS}}
+<h3>{{GEOMETRY_EDGES_LABEL}}</h3>
+{{GEOMETRY_EDGES}}
+<h3>{{GEOMETRY_LABELS_LABEL}}</h3>
+{{GEOMETRY_LABELS}}
 
 <h2>{{MESHANDSOLVER_LABEL}}</h2>
 <h3>{{SOLVER_LABEL}}</h3>
@@ -60,7 +60,8 @@
 	<tr><td>{{SOLVER_ADAPTIVESTEPS_LABEL}}</td><td>{{SOLVER_ADAPTIVESTEPS}}</td></tr>
 </table>
 
-<h2>{{FIGURE_MESH}}</h2>
+<h2>{{FIGURE_LABEL}}</h2>
+{{FIGURE_MESH}}
 {{FIGURE_ORDER}}
 {{FIGURE_SCALARVIEW}}
 {{FIGURE_CONTOURVIEW}}
