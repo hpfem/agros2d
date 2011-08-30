@@ -50,10 +50,10 @@ ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType probl
 ParserFormVector::ParserFormVector(rapidxml::xml_node<> *node, ProblemType problem_type)
 {
     i = atoi(node->first_attribute("i")->value());
-    if (node->first_attribute("j")){
+//    if (node->first_attribute("j")){
         j = atoi(node->first_attribute("j")->value());
-        //cout << "j je " << j << endl;
-    }
+        cout << "j je " << j << endl;
+//    }
 
     if (problem_type == ProblemType_Planar)
     {
@@ -167,9 +167,9 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         {
-            puptval = ext->fn[this->i]->val[i];
-            puptdx = ext->fn[this->i]->dx[i];
-            puptdy = ext->fn[this->i]->dy[i];
+            puptval = ext->fn[this->j]->val[i];
+            puptdx = ext->fn[this->j]->dx[i];
+            puptdy = ext->fn[this->j]->dy[i];
         }
 
         try
@@ -242,9 +242,9 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         {
-            puptval = ext->fn[this->i]->val[i];
-            puptdx = ext->fn[this->i]->dx[i];
-            puptdy = ext->fn[this->i]->dy[i];
+            puptval = ext->fn[this->j]->val[i];
+            puptdx = ext->fn[this->j]->dx[i];
+            puptdy = ext->fn[this->j]->dy[i];
         }
 
         try
@@ -367,9 +367,9 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->i]->val[i];
-        pupdx = u_ext[this->i]->dx[i];
-        pupdy = u_ext[this->i]->dy[i];
+        pupval = u_ext[this->j]->val[i];
+        pupdx = u_ext[this->j]->dx[i];
+        pupdy = u_ext[this->j]->dy[i];
 
         try
         {
