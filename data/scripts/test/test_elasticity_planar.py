@@ -1,32 +1,40 @@
 # model
-newdocument("Elasticity - planar", "planar", "elasticity", 3, 3, "disabled", 1, 1, 0, "steadystate", 1.0, 1.0, 0.0)
+newdocument(name="unnamed", type="planar",
+            physicfield="elasticity", analysistype="steadystate",
+            numberofrefinements=3, polynomialorder=3,
+            nonlineartolerance=0.001, nonlinearsteps=10)
 
 # boundaries
-addboundary("Fixed", "elasticity_fixed", "elasticity_fixed", 0, 0, 0, 0)
-addboundary("Free", "elasticity_free", "elasticity_free", 0, 0, 0, 0)
-addboundary("Load", "elasticity_free", "elasticity_free", 0, -1.2e4, 0, 0)
+addboundary("Free", "elasticity_free_free", {"fx" : 0, "fy" : 0})
+addboundary("Fixed", "elasticity_fixed_fixed", {"dx" : 0, "dy" : 0})
+addboundary("Load", "elasticity_fixed_free", {"fx" : 0, "fy" : -1.2e4})
 
-# materials
-addmaterial("Material 1", 2e11, 0.33, -1e6, 0, 1e-7, 30, 20)
-addmaterial("Material 2", 1e11, 0.33, 0, 3e4, 1e-7, 30, 20)
-addmaterial("Material 3", 1e11, 0.33, 0, 0, 1e-7, 30, 20)
+addmaterial("Material 1", {"E" : 2e11, "nu" : 0.33, "fx" : -1e6, "fy" : 0, "alpha" : 1e-7, "T" : 30, "Tr" : 20})
+addmaterial("Material 2", {"E" : 1e11, "nu" : 0.33, "fx" : 0, "fy" : 3e4, "alpha" : 1e-7, "T" : 30, "Tr" : 20})
+addmaterial("Material 3", {"E" : 1e11, "nu" : 0.33, "fx" : 0, "fy" : 0, "alpha" : 1e-7, "T" : 30, "Tr" : 20})
 
 # edges
-addedge(1.4, 0.2, 1.6, 0.2, 0, "Load")
-addedge(1.6, 0.2, 1.6, 0, 0, "Free")
-addedge(1.6, 0, 1.4, 0, 0, "Free")
-addedge(0, 0.2, 0, 0, 0, "Fixed")
-addedge(1.4, 0.2, 1.4, 0, 0, "none")
-addedge(0, 0.2, 0.6, 0.2, 0, "Free")
-addedge(0.6, 0.2, 0.6, 0, 0, "none")
-addedge(0, 0, 0.6, 0, 0, "Free")
-addedge(0.6, 0, 1.4, 0, 0, "Free")
-addedge(1.4, 0.2, 0.6, 0.2, 0, "Free")
+addedge(0, 0.05, 0, 0, boundary="Fixed", refine=1)
+addedge(0, 0, 1, 0, boundary="Free")
+addedge(1, 0, 1, 0.05, boundary="Fixed", refine=1)
+addedge(0, 0.05, 1, 0.05, boundary="Free")
+
+# edges
+addedge(1.4, 0.2, 1.6, 0.2, boundary="Load")
+addedge(1.6, 0.2, 1.6, 0, boundary="Free")
+addedge(1.6, 0, 1.4, 0, boundary="Free")
+addedge(0, 0.2, 0, 0, boundary="Fixed")
+addedge(1.4, 0.2, 1.4, 0)
+addedge(0, 0.2, 0.6, 0.2, boundary="Free")
+addedge(0.6, 0.2, 0.6, 0)
+addedge(0, 0, 0.6, 0, boundary="Free")
+addedge(0.6, 0, 1.4, 0, boundary="Free")
+addedge(1.4, 0.2, 0.6, 0.2, boundary="Free")
 
 # labels
-addlabel(0.0823077, 0.11114, 0, 0, "Material 1")
-addlabel(1.48989, 0.108829, 0, 0, "Material 3")
-addlabel(1.20588, 0.108829, 0, 0, "Material 2")
+addlabel(0.0823077, 0.11114, material="Material 1")
+addlabel(1.48989, 0.108829, material="Material 3")
+addlabel(1.20588, 0.108829, material="Material 2")
 
 # solve
 zoombestfit()
