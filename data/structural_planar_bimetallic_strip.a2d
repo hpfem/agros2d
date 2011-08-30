@@ -1,6 +1,6 @@
-<document>
+<document version="2.0">
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="unnamed" date="2011-07-10" polynomialorder="3" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="elasticity" timetotal="1.0">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.001" name="unnamed" date="2011-07-10" polynomialorder="3" weakforms="compiled" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="elasticity" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
@@ -8,8 +8,8 @@
                 <edge type="elasticity_fixed_fixed" id="2" elasticity_displacement_x="0" name="Fixed" elasticity_displacement_y="0"/>
             </edges>
             <labels>
-                <label elasticity_force_x="0" elasticity_temperature="80" elasticity_force_y="0" elasticity_poisson_ratio="0.33" elasticity_young_modulus="208e9" elasticity_alpha="15e-6" elasticity_temperature_reference="20" id="1" name="Mild steel"/>
-                <label elasticity_force_x="0" elasticity_temperature="80" elasticity_force_y="0" elasticity_poisson_ratio="23e-6" elasticity_young_modulus="70e9" elasticity_alpha="0.33" elasticity_temperature_reference="20" id="2" name="Aluminium"/>
+                <label elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature="80" elasticity_poisson_ratio="0.33" elasticity_young_modulus="208e9" elasticity_alpha="15e-6" elasticity_temperature_reference="20" id="1" name="Mild steel"/>
+                <label elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature="80" elasticity_poisson_ratio="0.33" elasticity_young_modulus="70e9" elasticity_alpha="23e-6" elasticity_temperature_reference="20" id="2" name="Aluminium"/>
             </labels>
         </problem>
     </problems>
