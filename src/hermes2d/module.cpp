@@ -226,7 +226,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 // interpreted form
                 if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
                 {
-                    custom_form = new CustomParserVectorFormSurf<Scalar>(form->i - 1,
+                    custom_form = new CustomParserVectorFormSurf<Scalar>(form->i - 1, form->j - 1,
                                                                          QString::number(i + 1).toStdString(),
                                                                          form->expression,
                                                                          boundary);

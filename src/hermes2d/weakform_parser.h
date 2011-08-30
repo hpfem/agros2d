@@ -154,7 +154,7 @@ template<typename Scalar>
 class CustomParserVectorFormSurf : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public ParserForm
 {
 public:
-    CustomParserVectorFormSurf(unsigned int i,
+    CustomParserVectorFormSurf(unsigned int i, unsigned int j,
                                std::string area, std::string expression,
                                Boundary *boundary);
 

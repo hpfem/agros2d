@@ -4,9 +4,9 @@
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
-                <edge type="acoustic_normal_acceleration" id="1" name="Wall" acoustic_normal_acceleration="0"/>
-                <edge type="acoustic_matched_boundary" id="2" name="Matched boundary"/>
-                <edge type="acoustic_pressure" id="3" name="Source" acoustic_pressure_real="1" acoustic_pressure_imag="0" />
+                <edge acoustic_pressure="0" acoustic_normal_acceleration_real="0" acoustic_normal_acceleration_imag="0" type="acoustic_normal_acceleration" id="1" name="Wall" acoustic_normal_acceleration="0"/>
+                <edge acoustic_pressure="0" type="acoustic_impedance" acoustic_impedance="1.25*343" id="2" name="Matched boundary"/>
+                <edge acoustic_pressure="0" acoustic_pressure_imag="0" type="acoustic_pressure" id="3" name="Source" acoustic_pressure_real="1"/>
             </edges>
             <labels>
                 <label acoustic_speed="343" acoustic_density="1.25" id="1" name="Air"/>
