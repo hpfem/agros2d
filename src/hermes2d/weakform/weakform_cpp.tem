@@ -23,6 +23,7 @@
 <includes>#include "general_weakform.h"
 
 #include "util.h"
+#include "scene.h"
 #include "hermes2d.h"
 #include "module.h"
 
@@ -76,10 +77,10 @@ Hermes::Ord CustomMatrixFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::He
 
 <custom_vector_form_vol>
 template &lt;typename Scalar&gt;
-CustomVectorFormVol&lt;Scalar&gt;::CustomVectorFormVol(unsigned int i,
+CustomVectorFormVol&lt;Scalar&gt;::CustomVectorFormVol(unsigned int i, unsigned int j,
                                                  std::string area, 
                                                  Material *material)
-    : Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt;(i, area), m_material(material)
+    : Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt;(i, area), m_material(material), j(j)
 {
 }</custom_vector_form_vol>
 
@@ -149,11 +150,11 @@ Hermes::Ord CustomMatrixFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::H
 }</custom_matrix_form_surf_ord>
 
 <custom_vector_form_surf>template &lt;typename Scalar&gt;
-CustomVectorFormSurf&lt;Scalar&gt;::CustomVectorFormSurf(unsigned int i,
+CustomVectorFormSurf&lt;Scalar&gt;::CustomVectorFormSurf(unsigned int i, unsigned int j,
                                                    std::string area, 
                                                    Boundary *boundary)
 
-    : Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt;(i, area), m_boundary(boundary)
+    : Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt;(i, area), m_boundary(boundary), j(j)
 {
 
 }</custom_vector_form_surf>

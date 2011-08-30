@@ -76,14 +76,14 @@
                     <item id="elasticity_force_y" />
 
                     <essential i="1" id="elasticity_displacement_x" />
-                    <vector i="2" planar="fy * vval" axi="fz * r * vval" />
+                    <vector i="2" planar="fy * vval" axi="fy * r * vval" />
             </boundary>
 
             <boundary id="elasticity_free_fixed" name="Free - fixed">
                     <item id="elasticity_force_x" />
                     <item id="elasticity_displacement_y" />
 
-                    <vector i="1" planar="fx * vval" axi="fr * r * vval" />
+                    <vector i="1" planar="fx * vval" axi="fx * r * vval" />
                     <essential i="2" id="elasticity_displacement_y" />
             </boundary>
 
@@ -91,8 +91,8 @@
                     <item id="elasticity_force_x" />
                     <item id="elasticity_force_y" />
 
-                    <vector i="1" planar="fx * vval" axi="fr * r * vval" />
-                    <vector i="2" planar="fy * vval" axi="fz * r * vval" />
+                    <vector i="1" planar="fx * vval" axi="fx * r * vval" />
+                    <vector i="2" planar="fy * vval" axi="fy * r * vval" />
             </boundary>
         </steadystate>
     </boundary>
