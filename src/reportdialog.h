@@ -72,7 +72,7 @@ private:
     QPushButton *btnDefault;
     QPushButton *btnClose;
 
-    QString replaceTemplates(const QString &source);
+    QString replaceTemplates(const QString &fileNameTemplate);
     QString htmlFigure(const QString &fileName, const QString &caption);
     QString htmlMaterials();
     QString htmlBoundaries();

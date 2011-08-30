@@ -18,15 +18,14 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "reportdialog.h"
-
 #include "gui.h"
-
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenesolution.h"
 #include "sceneview.h"
 #include "scripteditordialog.h"
 #include "hermes2d/module.h"
+#include "ctemplate/template.h"
 
 
 ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
@@ -281,13 +280,13 @@ void ReportDialog::doShowReport()
 
     QFile::remove(QString("%1/report/template.html").arg(tempProblemDir()));
     QFile::remove(QString("%1/report/style.css").arg(tempProblemDir()));
+    /*
     bool fileTemplateOK = QFile::copy(QString(txtTemplate->text()),
                                       QString("%1/report/template.html").arg(tempProblemDir()));
+    */
     bool fileStyleOK = QFile::copy(QString(txtStyleSheet->text()),
                                       QString("%1/report/style.css").arg(tempProblemDir()));
-    if (!fileTemplateOK)
-        QMessageBox::critical(QApplication::activeWindow(), tr("Error"), tr("Report template could not be copied."));
-    else if (!fileStyleOK)
+    if (!fileStyleOK)
         QMessageBox::critical(QApplication::activeWindow(), tr("Error"), tr("Template style could not be copied."));
     else
     {
@@ -302,23 +301,15 @@ void ReportDialog::generateIndex()
 {
     logMessage("ReportDialog::generateIndex()");
 
-    QString fileNameTemplate = tempProblemDir() + "/report/template.html";
+    QString fileNameTemplate = datadir() + "/resources/report/default.tpl";
     QString fileNameIndex = tempProblemDir() + "/report/report.html";
 
-    QString content;
-
-    // load template.html
-    content = readFileContent(fileNameTemplate);
-    QFile::remove(fileNameTemplate);
-
-    // save index.html
     QFile fileIndex(fileNameIndex);
     if (fileIndex.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream stream(&fileIndex);
         stream.setCodec("UTF-8");
-
-        stream << replaceTemplates(content);
+        stream << replaceTemplates(fileNameTemplate);
 
         fileIndex.flush();
         fileIndex.close();
@@ -338,155 +329,93 @@ void ReportDialog::generateFigures()
                                      txtFigureHeight->value().number());
 }
 
-QString ReportDialog::replaceTemplates(const QString &source)
+QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 {
-    logMessage("ReportDialog::()replaceTemplates");
+    logMessage("ReportDialog::replaceTemplates()");
 
-    QString destination = source;
+    std::string report;
+    ctemplate::TemplateDictionary dict("report");
 
     // stylesheet
-    destination.replace("[StyleSheet]", "./defaults.css", Qt::CaseSensitive);
+    dict.SetValue("STYLESHEET", "./style.css");
 
     // problem name
-    destination.replace("[Report.Label]", "<h1>" + Util::scene()->problemInfo()->name + "</h1>", Qt::CaseSensitive);
+    dict.SetValue("NAME", Util::scene()->problemInfo()->name.toStdString());
 
     // description
     if (chkDescription->isChecked())
     {
-        destination.replace("[Description.Label]", "<h2>" + tr("Description") + "</h2>", Qt::CaseSensitive);
-        destination.replace("[Description]", "<p>" + Util::scene()->problemInfo()->description + "</p>", Qt::CaseSensitive);
-    }
-    else
-    {
-        destination.remove("[Description.Label]", Qt::CaseSensitive);
-        destination.remove("[Description]", Qt::CaseSensitive);
+        dict.SetValue("DESCRIPTION_LABEL", tr("Description").toStdString());
+        dict.SetValue("DESCRIPTION", Util::scene()->problemInfo()->description.toStdString());
     }
 
     // problem information
     if (chkProblemInformation->isChecked())
     {
-        destination.replace("[ProblemInformation.Label]", "<h2>" + tr("Problem Information") + "</h2>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.Name]", "<table><tr><td>" + tr("Name:") + "</td><td>" + Util::scene()->problemInfo()->name + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.Date]", "<tr><td>" + tr("Date:") + "</td><td>" + Util::scene()->problemInfo()->date.toString("dd.MM.yyyy") + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.FileName]", "<tr><td>" + tr("Filename:") + "</td><td>" + QFileInfo(Util::scene()->problemInfo()->fileName).fileName() + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.ProblemType]", "<tr><td>" + tr("Problem type:") + "</td><td>" + problemTypeString(Util::scene()->problemInfo()->problemType) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.PhysicField]", "<tr><td>" + tr("Physic field:") + "</td><td>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.AnalysisType]", "<tr><td>" + tr("Analysis type:") + "</td><td>" + analysisTypeString(Util::scene()->problemInfo()->analysisType) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.NumberOfRefinements]", "<tr><td>" + tr("Number of refinements:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->numberOfRefinements) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.PolynomialOrder]", "<tr><td>" + tr("Polynomial order:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->polynomialOrder) + "</td></tr></table>", Qt::CaseSensitive);
+        dict.SetValue("PROBLEMINFORMATION_LABEL", tr("Problem Information").toStdString());
+        dict.SetValue("NAME_LABEL", tr("Name:").toStdString());
+        dict.SetValue("NAME", Util::scene()->problemInfo()->name.toStdString());
+        dict.SetValue("DATE_LABEL", tr("Date:").toStdString());
+        dict.SetValue("DATE", Util::scene()->problemInfo()->date.toString("dd.MM.yyyy").toStdString());
+        dict.SetValue("FILENAME_LABEL", tr("File name:").toStdString());
+        dict.SetValue("FILENAME", QFileInfo(Util::scene()->problemInfo()->fileName).fileName().toStdString());
+        dict.SetValue("PROBLEMTYPE_LABEL", tr("Problem type:").toStdString());
+        dict.SetValue("PROBLEMTYPE", problemTypeString(Util::scene()->problemInfo()->problemType).toStdString());
+        dict.SetValue("PHYSICFIELD_LABEL", tr("Physic field:").toStdString());
+        dict.SetValue("PHYSICFIELD", Util::scene()->problemInfo()->module()->name);
+        dict.SetValue("ANALYSISTYPE_LABEL", tr("Analysis type:").toStdString());
+        dict.SetValue("ANALYSISTYPE", analysisTypeString(Util::scene()->problemInfo()->analysisType).toStdString());
+        dict.SetValue("NUMBEROFREFINEMENTS_LABEL", tr("Number of refinements:").toStdString());
+        dict.SetIntValue("NUMBEROFREFINEMENTS", Util::scene()->problemInfo()->numberOfRefinements);
+        dict.SetValue("POLYNOMIALORDER_LABEL", tr("Polynomial order:").toStdString());
+        dict.SetIntValue("POLYNOMIALORDER", Util::scene()->problemInfo()->polynomialOrder);
 
-        if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None && chkProblemInformation->isChecked())
-        {
-            destination.replace("[ProblemInformation.AdaptivityType]", "<table><tr><td>" + tr("Adaptivity type:") + "</td><td>" + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.AdaptivitySteps]", "<tr><td>" + tr("Adaptivity steps:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivitySteps) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.AdaptivityTolerance]", "<tr><td>" + tr("Adaptivity tolerance:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityTolerance) + "</td></tr></table>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.MaxDOFs]", "<tr><td>" + tr("Maximum DOFs:") + "</td><td>" + QString::number(Util::config()->maxDofs) + "</td></tr></table>", Qt::CaseSensitive);
-        }
-        else
-        {
-            // remove empty tags
-            QString tag [4] = {"[ProblemInformation.AdaptivityType]", "[ProblemInformation.AdaptivitySteps]",
-                               "[ProblemInformation.AdaptivityTolerance]", "[ProblemInformation.MaxDOFs]"};
+        dict.SetValue("ADAPTIVITYTYPE_LABEL", tr("Adaptivity type:").toStdString());
+        dict.SetValue("ADAPTIVITYTYPE", adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType).toStdString());
+        dict.SetValue("ADAPTIVITYSTEPS_LABEL", tr("Adaptivity steps:").toStdString());
+        dict.SetIntValue("ADAPTIVITYSTEPS", Util::scene()->problemInfo()->adaptivitySteps);
+        dict.SetValue("ADAPTIVITYTOLERANCE_LABEL", tr("Adaptivity tolerance:").toStdString());
+        dict.SetFormattedValue("ADAPTIVITYTOLERANCE", "%.2f", Util::scene()->problemInfo()->adaptivityTolerance);
+        dict.SetValue("MAXDOFS_LABEL", tr("Maximum DOFs:").toStdString());
+        dict.SetIntValue("MAXDOFS", Util::scene()->problemInfo()->adaptivityMaxDOFs);
 
-            for (int i = 0; i < 3; i++)
-            {
-                destination.remove(tag[i].toUtf8(), Qt::CaseSensitive);
-            }
-        }
-
-        if ((Util::scene()->problemInfo()->module()->harmonic_solutions || Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) && chkProblemInformation->isChecked())
-        {
-            destination.replace("[ProblemInformation.Frequency]", "<table><tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->frequency) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.TimeStep]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeStep.number()) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.TimeTotal]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeTotal.number()) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.InititalCondition]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->initialCondition.number()) + "</td></tr></table>", Qt::CaseSensitive);
-        }
-        else
-        {
-            // remove empty tags
-            QString tag [4] = {"[ProblemInformation.Frequency]", "[ProblemInformation.TimeStep]",
-                               "[ProblemInformation.TimeTotal]", "[ProblemInformation.InititalCondition]",};
-
-            for (int i = 0; i < 4; i++)
-            {
-                destination.remove(tag[i].toUtf8(), Qt::CaseSensitive);
-            }
-        }
-    }
-    else
-    {
-        // remove empty tags
-        QString tag [17] = {"[ProblemInformation.Label]", "[ProblemInformation.Name]",
-                           "[ProblemInformation.Date]", "[ProblemInformation.FileName]",
-                           "[ProblemInformation.ProblemType]", "[ProblemInformation.PhysicField]",
-                           "[ProblemInformation.AnalysisType]", "[ProblemInformation.NumberOfRefinements]",
-                           "[ProblemInformation.PolynomialOrder]", "[ProblemInformation.AdaptivityType]",
-                           "[ProblemInformation.AdaptivityType]", "[ProblemInformation.AdaptivitySteps]",
-                           "[ProblemInformation.AdaptivityTolerance]", "[ProblemInformation.Frequency]",
-                           "[ProblemInformation.TimeStep]", "[ProblemInformation.TimeTotal]",
-                           "[ProblemInformation.InititalCondition]"};
-
-        for (int i = 0; i < 16; i++)
-        {
-            destination.remove(tag[i].toUtf8(), Qt::CaseSensitive);
-        }
+        dict.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
+        dict.SetFormattedValue("FREQUENCY", "%.2f", Util::scene()->problemInfo()->frequency);
+        dict.SetValue("TIMESTEP_LABEL", tr("Time step:").toStdString());
+        dict.SetIntValue("TIMESTEP", Util::scene()->problemInfo()->timeStep.number());
+        dict.SetValue("TIMETOTAL_LABEL", tr("Total time:").toStdString());
+        dict.SetIntValue("TIMETOTAL", Util::scene()->problemInfo()->timeTotal.number());
+        dict.SetValue("INITITALCONDITION_LABEL", tr("Initial condition:").toStdString());
+        dict.SetFormattedValue("INITITALCONDITION", "%.2f", Util::scene()->problemInfo()->initialCondition.number());
     }
 
     // startup script
     if (chkStartupScript->isChecked())
     {
-        destination.replace("[StartupScript.Label]", "<h2>" + tr("Startup Script") + "</h2>", Qt::CaseSensitive);
-        destination.replace("[StartupScript]", "<pre>" + Util::scene()->problemInfo()->scriptStartup + "</pre>", Qt::CaseSensitive);
-    }
-    else
-    {
-        destination.remove("[StartupScript.Label]", Qt::CaseSensitive);
-        destination.remove("[StartupScript]", Qt::CaseSensitive);
+        dict.SetValue("STARTUPSCRIPT_LABEL", tr("Startup Script").toStdString());
+        dict.SetValue("STARTUPSCRIPT", Util::scene()->problemInfo()->scriptStartup.toStdString());
     }
 
     // physical properties
     if (chkPhysicalProperties->isChecked())
     {
-        destination.replace("[PhysicalProperties.Label]", "<h2>" + tr("Physical Properties") + "</h2>", Qt::CaseSensitive);
-        destination.replace("[Materials.Label]", "<h3>" + tr("Materials") + "</h3>", Qt::CaseSensitive);
-        destination.replace("[Materials]", htmlMaterials(), Qt::CaseSensitive);
-        destination.replace("[Boundaries.Label]", "<h3>" + tr("Boundaris conditions") + "</h3>", Qt::CaseSensitive);
-        destination.replace("[Boundaries]", htmlBoundaries(), Qt::CaseSensitive);
-    }
-    else
-    {
-        // remove empty tags
-        QString tag [5] = {"[PhysicalProperties.Label]", "[Materials.Label]",
-                           "[Materials]", "[Boundaries.Label]", "[Boundaries]"};
-
-        for (int i = 0; i < 5; i++)
-        {
-            destination.remove(tag[i].toUtf8(), Qt::CaseSensitive);
-        }
+        dict.SetValue("PHYSICALPROPERTIES_LABEL", tr("Physical Properties").toStdString());
+        dict.SetValue("MATERIALS_LABEL", tr("Materials").toStdString());
+        //dict.SetValue("MATERIALS", );
+        dict.SetValue("BOUNDARIES_LABEL", tr("Boundaris conditions").toStdString());
+        //dict.SetValue("BOUNDARIES", );
     }
 
     // geometry
     if (chkGeometry->isChecked())
     {
-        destination.replace("[Geometry.Label]", "<h2>" + tr("Geometry") + "</h2>", Qt::CaseSensitive);
-        destination.replace("[Geometry.Nodes.Label]", "<h3>" + tr("Nodes") + "</h3>", Qt::CaseSensitive);
-        destination.replace("[Geometry.Nodes]", htmlGeometryNodes(), Qt::CaseSensitive);
-        destination.replace("[Geometry.Edges.Label]", "<h3>" + tr("Edges") + "</h3>", Qt::CaseSensitive);
-        destination.replace("[Geometry.Edges]", htmlGeometryEdges(), Qt::CaseSensitive);
-        destination.replace("[Geometry.Labels.Label]", "<h3>" + tr("Labels") + "</h3>", Qt::CaseSensitive);
-        destination.replace("[Geometry.Labels]", htmlGeometryLabels(), Qt::CaseSensitive);
-    }
-    else
-    {
-        // remove empty tags
-        QString tag [7] = {"[Geometry.Label]", "[Geometry.Nodes.Label]",
-                           "[Geometry.Nodes]", "[Geometry.Edges.Label]",
-                           "[Geometry.Edges]", "[Geometry.Labels.Label]", "[Geometry.Labels]"};
-
-        for (int i = 0; i < 7; i++)
-        {
-            destination.remove(tag[i].toUtf8(), Qt::CaseSensitive);
-        }
+        dict.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
+        dict.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes").toStdString());
+        dict.SetValue("GEOMETRY_NODES", htmlGeometryNodes().toStdString());
+        dict.SetValue("EDGES_LABEL", tr("Edges").toStdString());
+        dict.SetValue("EDGES", htmlGeometryEdges().toStdString());
+        dict.SetValue("LABELS_LABEL", tr("Labels").toStdString());
+        dict.SetValue("LABELS", htmlGeometryLabels().toStdString());
     }
 
     // solver
@@ -495,93 +424,60 @@ QString ReportDialog::replaceTemplates(const QString &source)
         QTime time;
         time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
 
-        destination.replace("[MeshAndSolver.Label]", "<h2>" + tr("Mesh and Solution") + "</h2>", Qt::CaseSensitive);
-        destination.replace("[Solver.Label]", "<h3>" + tr("Solver information") + "</h3>", Qt::CaseSensitive);
-        destination.replace("[Solver.Nodes]", "<table><tr><td>" + tr("Nodes:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[Solver.Elements]", "<tr><td>" + tr("Elements:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()) + "</td></tr>", Qt::CaseSensitive);
+        dict.SetValue("MESHANDSOLVER_LABEL", tr("Mesh and Solution").toStdString());
+        dict.SetValue("SOLVER_LABEL", tr("Solver information").toStdString());
+        dict.SetValue("SOLVER_NODES_LABEL", tr("Nodes:").toStdString());
+        dict.SetIntValue("SOLVER_NODES", Util::scene()->sceneSolution()->meshInitial()->get_num_nodes());
+        dict.SetValue("SOLVER_ELEMENTS_LABEL", tr("Elements:").toStdString());
+        dict.SetIntValue("SOLVER_ELEMENTS", Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements());
+        dict.SetValue("SOLVER_DOFS_LABEL", tr("DOFs:").toStdString());
+
         if (Util::scene()->sceneSolution()->sln()->get_space())
-            destination.replace("[Solver.DOFs]", "<tr><td>" + tr("DOFs:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_space()->get_num_dofs()) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[Solver.TimeElapsed]", "<tr><td>" + tr("Elapsed time:") + "</td><td>" + time.toString("mm:ss.zzz") + " s</td></tr></table>", Qt::CaseSensitive);
+            dict.SetIntValue("SOLVER_DOFS", Util::scene()->sceneSolution()->sln()->get_space()->get_num_dofs());
+
+        dict.SetValue("SOLVER_TIMEELAPSED_LABEL", tr("Elapsed time:").toStdString());
+        dict.SetValue("SOLVER_TIMEELAPSED", time.toString("mm:ss.zzz").toStdString());
 
         if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
         {
-            destination.replace("[Solver.AdaptiveError]", "<table><tr><td>" + tr("Adaptive error:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3)  + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[Solver.AdaptiveSteps]", "<tr><td>" + tr("Adaptive steps:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) + "</td></tr></table>", Qt::CaseSensitive);
-        }
-        else
-        {
-
-
-            // remove empty tags
-            QString tag [2] = {"[Solver.AdaptiveError]", "[Solver.AdaptiveSteps]"};
-
-            for (int i = 0; i < 2; i++)
-            {
-                destination.remove(tag[i].toUtf8(), Qt::CaseSensitive);
-            }
-        }
-    }
-    else
-    {
-        // remove empty tags
-        QString tag [8] = {"[MeshAndSolver.Label]", "[Solver.Label]",
-                           "[Solver.Nodes]", "[Solver.Elements]",
-                           "[Solver.DOFs]", "[Solver.TimeElapsed]",
-                           "[Solver.AdaptiveError]", "[Solver.AdaptiveSteps]"};
-
-        for (int i = 0; i < 8; i++)
-        {
-            destination.remove(tag[i].toUtf8(), Qt::CaseSensitive);
+            dict.SetValue("SOLVER_ADAPTIVEERROR_LABEL", tr("Adaptive error:").toStdString());
+            dict.SetFormattedValue("SOLVER_ADAPTIVEERROR", "%.2f", Util::scene()->sceneSolution()->adaptiveError());
+            dict.SetValue("SOLVER_DOFS_LABEL", tr("DOFs:").toStdString());
+            dict.SetFormattedValue("SOLVER_DOFS", "%.2f", Util::scene()->sceneSolution()->adaptiveSteps());
         }
     }
 
     // script
     if (chkScript->isChecked())
     {
-        destination.replace("[Script.Label]", "<h2>" + tr("Script") + "</h2>", Qt::CaseSensitive);
-        destination.replace("[Script]", "<pre>" + createPythonFromModel() + "</pre>", Qt::CaseSensitive);
+        dict.SetValue("SCRIPT_LABEL", tr("Script").toStdString());
+        dict.SetValue("SCRIPT", createPythonFromModel().toStdString());
     }
-    else
-    {
-        destination.remove("[Script.Label]", Qt::CaseSensitive);
-        destination.remove("[Script]", Qt::CaseSensitive);
-    }
-
-    // footer
-    destination.replace("[Report.Footer]", "<p id=\"footer\">" + tr("Computed by Agros2D (<a href=\"http://agros2d.org/\">http://agros2d.org/</a>)") + "</p>");
 
     // figures
     if (chkFigureGeometry->isChecked())
-        destination.replace("[Figure.Geometry]", htmlFigure("geometry.png", tr("Geometry")), Qt::CaseSensitive);
-    else
-        destination.remove("[Figure.Geometry]", Qt::CaseSensitive);
+        dict.SetValue("FIGURE_GEOMETRY", htmlFigure("geometry.png", tr("Geometry")).toStdString());
 
     if (chkFigureMesh->isChecked())
-        destination.replace("[Figure.Mesh]", htmlFigure("mesh.png", tr("Mesh")), Qt::CaseSensitive);
-    else
-        destination.remove("[Figure.Mesh]", Qt::CaseSensitive);
+        dict.SetValue("FIGURE_MESH", htmlFigure("mesh.png", tr("Mesh")).toStdString());
 
     if (chkFigureOrder->isChecked())
-            destination.replace("[Figure.Order]", htmlFigure("order.png", tr("Polynomial order")), Qt::CaseSensitive);
-    else
-        destination.remove("[Figure.Order]", Qt::CaseSensitive);
+        dict.SetValue("FIGURE_ORDER", htmlFigure("order.png", tr("Polynomial order")).toStdString());
 
     if (chkFigureScalarView->isChecked())
-        destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", tr("ScalarView: ") + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_scalar_variable->name)), Qt::CaseSensitive);
-    else
-        destination.remove("[Figure.ScalarView]", Qt::CaseSensitive);
+        dict.SetValue("FIGURE_SCALARVIEW", htmlFigure("scalarview.png", tr("ScalarView: ")
+                                                      + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_scalar_variable->name)).toStdString());
 
     if (chkFigureContourView->isChecked())
-        destination.replace("[Figure.ContourView]", htmlFigure("contourview.png", tr("ContourView: ") + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_scalar_variable->name)), Qt::CaseSensitive);
-    else
-        destination.remove("[Figure.ContourView]", Qt::CaseSensitive);
+        dict.SetValue("FIGURE_CONTOURVIEW", htmlFigure("contourview.png", tr("ContourView: ")
+                                                       + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_scalar_variable->name)).toStdString());
 
     if (chkFigureVectorView->isChecked())
-        destination.replace("[Figure.VectorView]", htmlFigure("vectorview.png", tr("VectorView: ") + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_vector_variable->name)), Qt::CaseSensitive);
-    else
-        destination.remove("[Figure.VectorView]", Qt::CaseSensitive);
+        dict.SetValue("FIGURE_VECTORVIEW", htmlFigure("vectorview.png", tr("VectorView: ")
+                                                      + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_vector_variable->name)).toStdString());
 
-    return destination;
+    ctemplate::ExpandTemplate(fileNameTemplate.toStdString(), ctemplate::DO_NOT_STRIP, &dict, &report);
+    return  QString::fromStdString(report);
 }
 
 QString ReportDialog::htmlMaterials()
