@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="Agros2D" />
+	<link href="{{STYLESHEET}}" rel="stylesheet" type="text/css" media="screen" />
+</head>
+<body>
+<h1>{{NAME}}</h1>
+
+<h2>{{DESCRIPTION_LABEL}}</h2>
+<p>{{DESCRIPTION}}</p>
+
+<h2>{{PROBLEMINFORMATION_LABEL}}</h2>
+<table>
+	<tr><td>{{NAME_LABEL}}</td><td>{{NAME}}</td></tr>
+	<tr><td>{{DATE_LABEL}}</td><td>{{DATE}}</td></tr>
+	<tr><td>{{FILENAME_LABEL}}</td><td>{{FILENAME}}</td></tr>
+	<tr><td>{{PROBLEMTYPE_LABEL}}</td><td>{{PROBLEMTYPE}}</td></tr>
+	<tr><td>{{PHYSICFIELD_LABEL}}</td><td>{{PHYSICFIELD}}</td></tr>
+	<tr><td>{{ANALYSISTYPE_LABEL}}</td><td>{{ANALYSISTYPE}}</td></tr>
+	<tr><td>{{NUMBEROFREFINEMENTS_LABEL}}</td><td>{{NUMBEROFREFINEMENTS}}</td></tr>
+	<tr><td>{{POLYNOMIALORDER_LABEL}}</td><td>{{POLYNOMIALORDER}}</td></tr>
+	<tr><td>{{ADAPTIVITYTYPE_LABEL}}</td><td>{{ADAPTIVITYTYPE}}</td></tr>
+	<tr><td>{{ADAPTIVITYSTEPS_LABEL}}</td><td>{{ADAPTIVITYSTEPS}}</td></tr>
+	<tr><td>{{ADAPTIVITYTOLERANCE_LABEL}}</td><td>{{ADAPTIVITYTOLERANCE}} %</td></tr>
+	<tr><td>{{MAXDOFS_LABEL}}</td><td>{{MAXDOFS}}</td></tr>
+	<tr><td>{{FREQUENCY_LABEL}}</td><td>{{FREQUENCY}} Hz</td></tr>
+	<tr><td>{{TIMESTEP_LABEL}}</td><td>{{TIMESTEP}} s</td></tr>
+	<tr><td>{{TIMETOTAL_LABEL}}</td><td>{{TIMETOTAL}} s</td></tr>
+	<tr><td>{{INITITALCONDITION_LABEL}}</td><td>{{INITITALCONDITION}}</td></tr>
+</table>
+
+<h2>{{STARTUPSCRIPT_LABEL}}</h2>
+<pre>{{STARTUPSCRIPT}}</pre>
+
+<h2>{{PHYSICALPROPERTIES_LABEL}}</h2>
+<h3>{{MATERIALS_LABEL}}</h3>
+{{MATERIALS}}
+<h3>{{BOUNDARIES_LABEL}}</h3>
+{{BOUNDARIES}}
+
+<h2>{{GEOMETRY_LABEL}}</h2>
+{{FIGURE_GEOMETRY}}
+<h3>{{GEOMETRY_NODES_LABEL}}</h3>
+{{GEOMETRY_NODES}}
+<h3>{{EDGES_LABEL}}</h3>
+{{EDGES}}
+<h3>{{LABELS_LABEL}}</h3>
+{{LABELS}}
+
+<h2>{{MESHANDSOLVER_LABEL}}</h2>
+<h3>{{SOLVER_LABEL}}</h3>
+<table>
+	<tr><td>{{SOLVER_NODES_LABEL}}</td><td>{{SOLVER_NODES}}</td></tr>
+	<tr><td>{{SOLVER_ELEMENTS_LABEL}}</td><td>{{SOLVER_ELEMENTS}}</td></tr>
+	<tr><td>{{SOLVER_DOFS_LABEL}}</td><td>{{SOLVER_DOFS}}</td></tr>
+	<tr><td>{{SOLVER_TIMEELAPSED_LABEL}}</td><td>{{SOLVER_TIMEELAPSED}}</td></tr>
+	<tr><td>{{SOLVER_ADAPTIVEERROR_LABEL}}</td><td>{{SOLVER_ADAPTIVEERROR}}</td></tr>
+	<tr><td>{{SOLVER_ADAPTIVESTEPS_LABEL}}</td><td>{{SOLVER_ADAPTIVESTEPS}}</td></tr>
+</table>
+
+<h2>{{FIGURE_MESH}}</h2>
+{{FIGURE_ORDER}}
+{{FIGURE_SCALARVIEW}}
+{{FIGURE_CONTOURVIEW}}
+{{FIGURE_VECTORVIEW}}
+
+<h2>{{SCRIPT_LABEL}}</h2>
+<pre>{{SCRIPT}}</pre>
+
+<p id=\"footer\">Computed by Agros2D (<a href=\"http://agros2d.org/\">http://agros2d.org/</a>)</p>
+</body>
+</html>
