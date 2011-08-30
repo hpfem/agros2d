@@ -54,16 +54,16 @@
             	<item id="rf_magnetic_field_real" />
             	<item id="rf_magnetic_field_imag" />
 				
-				<vector i="1" planar="Hr * vval" axi="Hr * r * vval" />
-				<vector i="2" planar="Hi * vval" axi="Hi * r * vval" />
+                                <vector i="1" j="1" planar="Hr * vval" axi="Hr * r * vval" />
+                                <vector i="2" j="2" planar="Hi * vval" axi="Hi * r * vval" />
 			</boundary>  
 			
        		<boundary id="rf_surface_current" name="Surface current">
             	<item id="rf_surface_current_real" />
             	<item id="rf_surface_current_imag" />
 				
-				<vector i="1" planar="Hr * vval" axi="Hr * r * vval" />
-				<vector i="2" planar="Hi * vval" axi="Hi * r * vval" />
+                                <vector i="1" j="1" planar="Hr * vval" axi="Hr * r * vval" />
+                                <vector i="2" j="2" planar="Hi * vval" axi="Hi * r * vval" />
 			</boundary>  			
 			
        		<boundary id="rf_port" name="Port">

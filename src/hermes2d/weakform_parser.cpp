@@ -50,10 +50,7 @@ ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType probl
 ParserFormVector::ParserFormVector(rapidxml::xml_node<> *node, ProblemType problem_type)
 {
     i = atoi(node->first_attribute("i")->value());
-//    if (node->first_attribute("j")){
-        j = atoi(node->first_attribute("j")->value());
-        cout << "j je " << j << endl;
-//    }
+    j = atoi(node->first_attribute("j")->value());
 
     if (problem_type == ProblemType_Planar)
     {
@@ -339,10 +336,10 @@ Hermes::Ord CustomParserMatrixFormSurf<Scalar>::ord(int n, double *wt, Hermes::H
 }
 
 template <typename Scalar>
-CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i,
+CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i, unsigned int j,
                                                                std::string area, std::string expression,
                                                                Boundary *boundary)
-    : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), ParserForm()
+    : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), ParserForm(), j(j)
 {
     initParser(NULL, boundary);
 

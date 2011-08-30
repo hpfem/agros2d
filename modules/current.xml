@@ -34,7 +34,7 @@
             <boundary id="current_inward_current_flow" name="Current density">
                 <item id="current_inward_current_flow" />
 
-                <vector i="1" planar="- Jn * vval" axi="- Jn * r * vval" />
+                <vector i="1" j="1" planar="- Jn * vval" axi="- Jn * r * vval" />
             </boundary>
         </steadystate>
     </boundary>
