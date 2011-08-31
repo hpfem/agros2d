@@ -155,7 +155,7 @@ std::map<std::string, std::string> availableModules()
 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForms()
-{    
+{
     qDebug() << "registerForms";
 
     string problemId = Util::scene()->problemInfo()->module()->id + "_" +
