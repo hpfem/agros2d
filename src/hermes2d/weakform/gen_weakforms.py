@@ -2,6 +2,6 @@
 
 from xml_parser import XmlParser
 
-modules = ['electrostatic', 'current', 'heat']
+modules = ['electrostatic', 'heat', 'current']
 xml_parser = XmlParser(modules)
 xml_parser.process()
