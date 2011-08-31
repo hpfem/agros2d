@@ -63,7 +63,7 @@ class WeakForm:
             replaced_string = string.replace(name, name + '_' + str(self.i) \
                 + '_'  + str(self.j))            
             replaced_string = replaced_string.replace('//expression', 
-                self.parse_expression(self.expression)) + '\n\n'             
+                self.parse_expression(self.expression, True)) + '\n\n'             
             h_code += replaced_string                                                                                                                           
         return h_code 
     
@@ -78,22 +78,26 @@ class WeakForm:
                 name = self.get_temp_class_name()             
                 replaced_string = string.replace(name, name + '_' + str(self.i) \
                 + '_'  + str(self.j))            
+                if function_type == '_ord':
+                    expression = self.parse_expression(self.expression, True)                     
+                else:
+                    expression = self.parse_expression(self.expression, False)                                                      
+                    variable_defs = ''            
+                    for variable in self.variables:                    
+                        variable_string = variable_def_temp.replace('variable_short', 
+                                        variable.short_name)                    
+                        variable_string = variable_string.replace('variable', 
+                                        variable.id)
+                        variable_defs += variable_string
+                        variable_defs = variable_defs.replace('material', variable.type)                                                                                        
+                    replaced_string = replaced_string.replace('//variable_definition', 
+                                                              str(variable_defs))                
                 replaced_string = replaced_string.replace('//expression', 
-                            self.parse_expression(self.expression)) + '\n\n'             
-                variable_defs = ''            
-                for variable in self.variables:                    
-                    variable_string = variable_def_temp.replace('variable_short', 
-                                    variable.short_name)                    
-                    variable_string = variable_string.replace('variable', 
-                                    variable.id)
-                    variable_defs += variable_string
-                    variable_defs = variable_defs.replace('material', variable.type)                                                                                        
-                replaced_string = replaced_string.replace('//variable_definition', 
-                                                          str(variable_defs))                
+                                expression) + '\n\n'                
                 cpp_code += replaced_string                                                                                                                           
         return cpp_code            
             
-    def parse_expression(self, expression):                        
+    def parse_expression(self, expression, without_variables):                        
         replaces = { 'x':'e->x[i]',
                      'r': 'e->x[i]',
                      'udr': 'u->dx[i]',
@@ -115,7 +119,7 @@ class WeakForm:
                      'deltat': 'Util::scene()->problemInfo()->timeStep.number()'                       
                      }            
 
-        symbols = ['x', 'y', 'r', 'z', 'udr', 'udz', 'udx', 'udy',
+        symbols = ['x', 'y', 'r', 'z', 'f', 'udr', 'udz', 'udx', 'udy',
                    'vdr', 'vdz', 'vdx', 'vdy', 'updr', 'updx', 'updy', 'updz',
                    'uval', 'vval', 'upval', 'deltat', 'uptval', 'PI']
                            
@@ -127,9 +131,9 @@ class WeakForm:
         for const in self.constants:
             symbols.append(const.id)
         
-        parser = NumericStringParser(symbols, replaces, variables)                        
+        parser = NumericStringParser(symbols, replaces, variables, without_variables)                        
         if not(expression.replace(' ','') == ''):
-            expression_list = parser.parse(expression).asList()                  
+            expression_list = parser.parse(expression).asList()                                  
             parsed_exp = parser.get_expression(expression_list)                             
         else:
             parsed_exp =''

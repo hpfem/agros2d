@@ -8,6 +8,6 @@ Created on Wed Aug 31 09:20:37 2011
 
 from xml_parser import XmlParser
 
-modules = ['acoustic']
+modules = ['heat']
 xml_parser = XmlParser(modules)
 xml_parser.process()

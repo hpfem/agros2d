@@ -11,10 +11,11 @@ class NumericStringParser(object):
         if toks and toks[0]=='-': 
             self.exprStack.append( 'unary -' )
 
-    def __init__(self, symbols, replaces, variables):
+    def __init__(self, symbols, replaces, variables, without_variables):
         self.string = ''            
         self.replaces = replaces
-        self.variables = variables        
+        self.variables = variables
+        self.without_variables = without_variables         
         point = Literal( "." )
         e     = CaselessLiteral( "E" )
         fnumber = Combine( Word( "+-"+nums, nums ) + 
@@ -59,8 +60,11 @@ class NumericStringParser(object):
             if (type(item) is list):                    
                 string += '(' + self.get_expression(item) + ')'                
             else:                                
-               if item in self.variables:
-                   string += item + '.value()' 
+               if item in self.variables:                   
+                   if self.without_variables:
+                       string += '1'
+                   else:
+                       string += item + '.value()'                    
                else:    
                    if item in self.replaces.iterkeys(): 
                        string += self.replaces[item]
