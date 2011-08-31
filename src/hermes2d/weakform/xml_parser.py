@@ -13,9 +13,11 @@ class WeakForm:
         self.integral_type = ''        
         self.coordinate_type = ''
         self.analysis_type = ''
-        self.i = 0
-        self.j = 0
+        self.boundary_type = ''        
+        self.i = 1
+        self.j = 1
         self.expression = ''
+        self.name = ''
         self.variables = []
         
     def get_temp_class_name(self):
@@ -25,7 +27,7 @@ class WeakForm:
        
     def get_class_name(self):
         class_name =  'Custom' + self.type.capitalize() + 'Form'  \
-            + self.integral_type.capitalize() + '_' + str(self.i) \
+            + self.integral_type.capitalize() + '_' + self.boundary_type + '_' + str(self.i) \
             + '_'  + str(self.j)                        
         return class_name    
     
@@ -56,14 +58,24 @@ class WeakForm:
         return factory_code
         
     def get_h_code(self, h_template):                                        
-        h_code = ''                                                                             
+        h_code = ''   
+        node = h_template.getElementsByTagName('variable_declaration')[0]
+        variable_def_temp = node.childNodes[0].nodeValue                                                                                                                     
         for node in h_template.getElementsByTagName(self.get_function_name()):                        
             string = node.childNodes[0].nodeValue                                                                                                                                                                                  
-            name = self.get_temp_class_name()             
-            replaced_string = string.replace(name, name + '_' + str(self.i) \
+            name = self.get_temp_class_name() 
+            variable_defs = ''
+            replaced_string = string.replace(name, name + '_' + self.boundary_type + '_' + str(self.i) \
                 + '_'  + str(self.j))            
-            replaced_string = replaced_string.replace('//expression', 
-                self.parse_expression(self.expression, True)) + '\n\n'             
+            for variable in self.variables:                                    
+                variable_string = variable_def_temp.replace('variable_short', 
+                                        variable.short_name)                    
+                variable_string = variable_string.replace('variable', 
+                                        variable.id)
+                variable_defs += variable_string
+                variable_defs = variable_defs.replace('material', variable.type)                                                                                        
+            replaced_string = replaced_string.replace('//variable_declaration', 
+                                                              str(variable_defs))                             
             h_code += replaced_string                                                                                                                           
         return h_code 
     
@@ -76,13 +88,10 @@ class WeakForm:
             for node in cpp_template.getElementsByTagName(self.get_function_name() + function_type):                        
                 string = node.childNodes[0].nodeValue                                                                                                                                                                                                  
                 name = self.get_temp_class_name()             
-                replaced_string = string.replace(name, name + '_' + str(self.i) \
+                replaced_string = string.replace(name, name + '_' + self.boundary_type + '_' + str(self.i) \
                 + '_'  + str(self.j))            
-                if function_type == '_ord':
-                    expression = self.parse_expression(self.expression, True)                     
-                else:
-                    expression = self.parse_expression(self.expression, False)                                                      
-                    variable_defs = ''            
+                if function_type == '':
+                    variable_defs = '' ;                    
                     for variable in self.variables:                    
                         variable_string = variable_def_temp.replace('variable_short', 
                                         variable.short_name)                    
@@ -91,7 +100,11 @@ class WeakForm:
                         variable_defs += variable_string
                         variable_defs = variable_defs.replace('material', variable.type)                                                                                        
                     replaced_string = replaced_string.replace('//variable_definition', 
-                                                              str(variable_defs))                
+                                                              str(variable_defs))     
+                if function_type == '_ord':
+                    expression = self.parse_expression(self.expression, True)                     
+                else:
+                    expression = self.parse_expression(self.expression, False)                                                                                                                    
                 replaced_string = replaced_string.replace('//expression', 
                                 expression) + '\n\n'                
                 cpp_code += replaced_string                                                                                                                           
@@ -130,7 +143,7 @@ class WeakForm:
              
         for const in self.constants:
             symbols.append(const.id)
-        
+                
         parser = NumericStringParser(symbols, replaces, variables, without_variables)                        
         if not(expression.replace(' ','') == ''):
             expression_list = parser.parse(expression).asList()                                  
@@ -222,10 +235,9 @@ class Module:
             print 'Variables'            
             for variable in boundary.variables:
                 print variable.name                
+            print 'Weakforms'        
             for weakform in boundary.weakforms:
-                print weakform.type, weakform.coordinate_type, weakform.integral_type                    
-                print weakform.id, weakform.expression
-                                
+                print weakform.id, weakform.i, weakform.j, weakform.type, weakform.coordinate_type, weakform.integral_type                                                                   
                                         
     def extract_modules(self):
         module_types = []
@@ -253,7 +265,7 @@ class Module:
                     part_modules.append(part_module)                                
                 weakform.variables = self.variables
                 weakform.constants = self.constants
-                weakform.id = part_module.id
+                weakform.id = part_module.id                
                 part_module.weakforms.append(weakform)                
         
         for boundary in self.boundaries:                        
@@ -263,6 +275,7 @@ class Module:
                     part_module = part_modules[index] 
                     weakform.variables = boundary.variables
                     weakform.constants = self.constants
+                    weakform.boundary_type = boundary.id
                     part_module.weakforms.append(weakform)
         return part_modules;
         
@@ -367,7 +380,7 @@ class XmlParser:
         
         for module in self.modules:                           
             module_files, module_conditions = module.get_code(self.templates)            
-            module.write_code(self.weakform_dir, self.templates)                
+            module.write_code(self.weakform_dir, self.templates)                           
             conditions.extend(module_conditions)                                      
             files.extend(module_files)
        
@@ -406,8 +419,7 @@ class XmlParser:
     def parse_xml_file(self, filename):
         # constants definition
         analysis_types = ['harmonic', 'transient', 'steadystate']
-        coordinate_types  = ['axi', 'planar']    
-        boundaries_types = ['essential', 'natural', 'vector', 'matrix']
+        coordinate_types  = ['axi', 'planar']        
         weakform_types = ['matrix', 'vector']
         
         
@@ -496,13 +508,15 @@ class XmlParser:
                 for subsubnode in subnode.childNodes:
                     if subsubnode.nodeName == 'boundary':
                         boundary.name = subsubnode.attributes['name'].value                                                              
+                        boundary.id = subsubnode.attributes['id'].value                                                                                      
+                        
                         for element in  subsubnode.childNodes:                                               
-                            if element.nodeName in boundaries_types:                                                         
-                                boundary_type = element.nodeName                                                              
+                            if element.nodeName in weakform_types:                                                         
+                                boundary_type = element.nodeName                                                                                              
                                 if boundary_type in weakform_types :      
                                     for i in range(element.attributes.length):                                                                            
                                         coordinate_type = str(element.attributes.item(i).name)                                                                        
-                                        if coordinate_type in coordinate_types:
+                                        if coordinate_type in coordinate_types:                                            
                                             weakform = WeakForm()                                                                                            
                                             weakform.type = boundary_type
                                             weakform.i = int(element.attributes['i'].value)
@@ -517,7 +531,7 @@ class XmlParser:
                                             weakform.analysis_type = analysis_type                                                 
                                             weakform.expression = \
                                             str(element.attributes[coordinate_type].value)
-                                            weakform.id += '_' + coordinate_type
+                                            weakform.id += '_' + coordinate_type                                                                                                                                    
                                             boundary.weakforms.append(weakform)
                                 else:
                                     weakform = WeakForm()                                
@@ -528,6 +542,7 @@ class XmlParser:
                                         weakform.j = 1
                                     weakform.id = module.id + '_'  + \
                                         analysis_type 
+                                    weakform.boundary_id = boundary.id                                            
                                     boundary.weakforms.append(weakform)                                
         module.boundaries.append(boundary)
         self.modules.append(module)

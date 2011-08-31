@@ -11,7 +11,7 @@
 
     <material>
         <item id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" />
-        <item id="acoustic_speed" name="Speed of sound" shortname="v" unit="m/s" />  
+        <item id="acoustic_speed" name="Speed of sound" shortname="vel" unit="m/s" />  
         
     	<harmonic>
             <material id="acoustic_density" />
@@ -91,8 +91,8 @@
             <harmonic planar_scalar="rho" axi_scalar="rho" />
             <transient />
         </item>
-        <item id="acoustic_speed" name="Speed of sound" shortname="v" unit="m/s" scalar="1">
-            <harmonic planar_scalar="v" axi_scalar="v" />
+        <item id="acoustic_speed" name="Speed of sound" shortname="vel" unit="m/s" scalar="1">
+            <harmonic planar_scalar="vel" axi_scalar="vel" />
             <transient />
         </item>
     </localvariable>

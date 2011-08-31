@@ -32,6 +32,9 @@
 <namespaces>namespace general_weakform
 {</namespaces>			
   		
+<variable_declaration> Value variable_short;
+</variable_declaration>
+
 <custom_matrix_form_vol>template&lt;typename Scalar&gt;
 class CustomMatrixFormVol : public Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt;
 {
@@ -46,7 +49,8 @@ public:
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u,
                             Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v, Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
 private:
-    Material *m_material;    	
+    Material *m_material;	
+    //variable_declaration	    	
 };</custom_matrix_form_vol> 
   
 
@@ -61,8 +65,11 @@ public:
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *v,
                          Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext);
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
+
                             Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
+private:		
     Material *m_material;
+    //variable_declaration
     unsigned int j;
 };</custom_vector_form_vol>
   
@@ -79,7 +86,8 @@ public:
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
                             Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
 private:
-    Boundary *m_boundary;	
+    Boundary *m_boundary;
+    //variable_declaration	
 };</custom_matrix_form_surf>
 
 <custom_vector_form_surf>template&lt;typename Scalar&gt;
@@ -96,6 +104,7 @@ public:
                             Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
 private:
     Boundary *m_boundary;
+    //variable_declaration
     unsigned int j;
 };</custom_vector_form_surf>
 

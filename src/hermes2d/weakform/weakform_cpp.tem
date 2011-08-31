@@ -39,9 +39,10 @@ CustomMatrixFormVol&lt;Scalar&gt;::CustomMatrixFormVol(unsigned int i, unsigned 
                                                  Material *material)
     : Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt;(i, j, area, sym), m_material(material)
 {
+    //variable_definition	
 }</custom_matrix_form_vol>
 
-<variable_definition>Value variable_short = m_material->get_value("variable");
+<variable_definition> variable_short = m_material->get_value("variable");
 </variable_definition>
 
 <comment_separator>
@@ -82,6 +83,7 @@ CustomVectorFormVol&lt;Scalar&gt;::CustomVectorFormVol(unsigned int i, unsigned 
                                                  Material *material)
     : Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt;(i, area), m_material(material), j(j)
 {
+           //variable_definition	
 }</custom_vector_form_vol>
 
 <custom_vector_form_vol_value>template &lt;typename Scalar&gt;
@@ -118,7 +120,7 @@ CustomMatrixFormSurf&lt;Scalar&gt;::CustomMatrixFormSurf(unsigned int i, unsigne
                                                    Boundary *boundary)
     : Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt;(i, j, area), m_boundary(boundary)
 {
-
+    //variable_definition
 }</custom_matrix_form_surf>
 
 
@@ -156,7 +158,7 @@ CustomVectorFormSurf&lt;Scalar&gt;::CustomVectorFormSurf(unsigned int i, unsigne
 
     : Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt;(i, area), m_boundary(boundary), j(j)
 {
-
+    //variable_definition
 }</custom_vector_form_surf>
 
 <custom_vector_form_surf_value>template &lt;typename Scalar&gt;
