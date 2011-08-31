@@ -53,10 +53,9 @@ class NumericStringParser(object):
         self.exprStack=[]        
         return self.bnf.parseString(num_string,True)
         
-    def get_expression(self, expression_list):
+    def get_expression(self, expression_list):        
         string = ''                
-        for item in expression_list:                                
-            print item
+        for item in expression_list:                                            
             if (type(item) is list):                    
                 string += '(' + self.get_expression(item) + ')'                
             else:                                
@@ -66,7 +65,5 @@ class NumericStringParser(object):
                    if item in self.replaces.iterkeys(): 
                        string += self.replaces[item]
                    else:
-                      string += item
-               
-                    
+                      string += item                                  
         return string
