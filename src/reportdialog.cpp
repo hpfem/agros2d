@@ -548,8 +548,21 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
         {
             dict.SetValue("SOLVER_ADAPTIVEERROR_LABEL", tr("Adaptive error:").toStdString());
             dict.SetFormattedValue("SOLVER_ADAPTIVEERROR", "%f", Util::scene()->sceneSolution()->adaptiveError());
-            dict.SetValue("SOLVER_ADAPTIVESTEPS_LABEL", tr("DOFs:").toStdString());
+            dict.SetValue("SOLVER_ADAPTIVESTEPS_LABEL", tr("Adaptive steps:").toStdString());
             dict.SetIntValue("SOLVER_ADAPTIVESTEPS", Util::scene()->sceneSolution()->adaptiveSteps());
+
+            QFile::remove(QString("%1/report/adaptivity_convergence.png").arg(tempProblemDir()));
+            bool copyChart = QFile::copy(QString("%1/adaptivity_conv.png").arg(tempProblemDir()), QString("%1/report/adaptivity_convergence.png").arg(tempProblemDir()));
+
+            if (copyChart)
+            {
+                dict.SetValue("CONVERGENCE_CHARTS_LABEL", tr("Convergence charts").toStdString());
+                dict.SetValue("FIGURE_ADAPTIVITY", tempProblemDir().toStdString()+ "/report/adaptivity_convergence.png");
+                dict.SetValue("FIGURE_ADAPTIVITY_DESCRIPTION", tr("Figure: ").toStdString() + tr("Adaptivity convergence chart").toStdString());
+
+                dict.ShowSection("CONVERGENCE_CHARTS_SECTION");
+            }
+
 
             dict.ShowSection("SOLVER_ADAPTIVITY_SECTION");
         }
