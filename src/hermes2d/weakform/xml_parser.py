@@ -506,7 +506,10 @@ class XmlParser:
                                             weakform = WeakForm()                                                                                            
                                             weakform.type = boundary_type
                                             weakform.i = int(element.attributes['i'].value)
-                                            weakform.j = int(element.attributes['j'].value)
+                                            if element.hasAttribute('j'):                                        
+                                                weakform.j = int(element.attributes['j'].value)
+                                            else:
+                                                weakform.j = 1
                                             weakform.id = module.id + '_'  + \
                                                 analysis_type 
                                             weakform.coordinate_type = coordinate_type
@@ -519,7 +522,10 @@ class XmlParser:
                                 else:
                                     weakform = WeakForm()                                
                                     weakform.i = int(element.attributes['i'].value)
-                                    weakform.j = int(element.attributes['j'].value)
+                                    if element.hasAttribute('j'):                                        
+                                        weakform.j = int(element.attributes['j'].value)
+                                    else:
+                                        weakform.j = 1
                                     weakform.id = module.id + '_'  + \
                                         analysis_type 
                                     boundary.weakforms.append(weakform)                                
