@@ -370,7 +370,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
         dict.SetIntValue("PROBLEM_POLYNOMIALORDER", Util::scene()->problemInfo()->polynomialOrder);
         dict.SetIntValue("PROBLEM_NUMBEROFREFINEMENTS", Util::scene()->problemInfo()->numberOfRefinements);
         dict.SetValue("PROBLEM_NEWTONTOLERANCE_LABEL", tr("Newton solver tolerance:").toStdString());
-        dict.SetFormattedValue ("PROBLEM_NEWTONTOLERANCE", "%.4f", Util::scene()->problemInfo()->nonlinearTolerance);
+        dict.SetFormattedValue ("PROBLEM_NEWTONTOLERANCE", "%f", Util::scene()->problemInfo()->nonlinearTolerance);
         dict.SetValue("PROBLEM_NEWTONSTEPS_LABEL", tr("Newton solver steps:").toStdString());
         dict.SetIntValue("PROBLEM_NEWTONSTEPS", Util::scene()->problemInfo()->nonlinearSteps);
 
@@ -382,7 +382,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
             dict.SetValue("PROBLEM_ADAPTIVITYSTEPS_LABEL", tr("Adaptivity steps:").toStdString());
             dict.SetIntValue("PROBLEM_ADAPTIVITYSTEPS", Util::scene()->problemInfo()->adaptivitySteps);
             dict.SetValue("PROBLEM_ADAPTIVITYTOLERANCE_LABEL", tr("Adaptivity tolerance:").toStdString());
-            dict.SetFormattedValue("PROBLEM_ADAPTIVITYTOLERANCE", "%.4f", Util::scene()->problemInfo()->adaptivityTolerance);
+            dict.SetFormattedValue("PROBLEM_ADAPTIVITYTOLERANCE", "%f", Util::scene()->problemInfo()->adaptivityTolerance);
             dict.SetValue("PROBLEM_MAXDOFS_LABEL", tr("Maximum DOFs:").toStdString());
             dict.SetIntValue("PROBLEM_MAXDOFS", Util::scene()->problemInfo()->adaptivityMaxDOFs);
 
@@ -393,7 +393,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
         {
             dict.SetValue("PROBLEM_FREQUENCY_LABEL", tr("Frequency:").toStdString());
-            dict.SetFormattedValue("PROBLEM_FREQUENCY", "%.4f", Util::scene()->problemInfo()->frequency);
+            dict.SetFormattedValue("PROBLEM_FREQUENCY", "%f", Util::scene()->problemInfo()->frequency);
 
             dict.ShowSection("PROBLEM_HARMONIC_SECTION");
         }
@@ -404,7 +404,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
             dict.SetValue("PROBLEM_TIMETOTAL_LABEL", tr("Total time:").toStdString());
             dict.SetIntValue("PROBLEM_TIMETOTAL", Util::scene()->problemInfo()->timeTotal.number());
             dict.SetValue("PROBLEM_INITITALCONDITION_LABEL", tr("Initial condition:").toStdString());
-            dict.SetFormattedValue("PROBLEM_INITITALCONDITION", "%.4f", Util::scene()->problemInfo()->initialCondition.number());
+            dict.SetFormattedValue("PROBLEM_INITITALCONDITION", "%f", Util::scene()->problemInfo()->initialCondition.number());
 
             dict.ShowSection("PROBLEM_TRANSIENT_SECTION");
         }
@@ -434,18 +434,16 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
             ctemplate::TemplateDictionary *material_dict = dict.AddSectionDictionary("MATERIAL_SECTION");
             material_dict->SetValue("MATERIAL_NAME", marker->name);
 
-            /*
             Hermes::vector<Hermes::Module::MaterialTypeVariable *> variables = Util::scene()->problemInfo()->module()->material_type_variables;
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
             {
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-                ctemplate::TemplateDictionary *material_keys_dict = dict.AddSectionDictionary("MATERIAL_KEYS_SECTION");
+                ctemplate::TemplateDictionary *material_key_dict = material_dict->AddSectionDictionary("MATERIAL_KEY_SECTION");
 
-                material_keys_dict->SetValue("MATERIAL_KEY", variable->name);
-                material_keys_dict->SetValue("MATERIAL_KEY_VALUE", marker->get_value(variable->id).toString().toStdString());
-                material_keys_dict->SetValue("MATERIAL_KEY_UNIT", variable->unit);
+                material_key_dict->SetValue("MATERIAL_KEY", variable->name);
+                material_key_dict->SetValue("MATERIAL_KEY_VALUE", marker->get_value(variable->id).toString().toStdString());
+                material_key_dict->SetValue("MATERIAL_KEY_UNIT", variable->unit);
             }
-            */
         }
 
         // boundaries
@@ -455,6 +453,20 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
             SceneBoundary *marker = Util::scene()->boundaries[i];
             ctemplate::TemplateDictionary *boundary_dict = dict.AddSectionDictionary("BOUNDARY_SECTION");
             boundary_dict->SetValue("BOUNDARY_NAME", marker->name);
+
+            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(marker->type);
+            if (boundary_type)
+            {
+                for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+                {
+                    Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+                    ctemplate::TemplateDictionary *boundary_key_dict = boundary_dict->AddSectionDictionary("BOUNDARY_KEY_SECTION");
+
+                    boundary_key_dict->SetValue("BOUNDARY_KEY", variable->name);
+                    boundary_key_dict->SetValue("BOUNDARY_KEY_VALUE", marker->get_value(variable->id).toString().toStdString());
+                    boundary_key_dict->SetValue("BOUNDARY_KEY_UNIT", variable->unit);
+                }
+            }
         }
         dict.ShowSection("PHYSICALPROPERTIES_SECTION");
     }
@@ -462,15 +474,15 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
     // geometry
     if (chkGeometry->isChecked())
     {
-        dict.SetValue("GEOMETRY_XLABEL", Util::scene()->problemInfo()->labelX().toStdString() + tr(" (m)").toStdString());
-        dict.SetValue("GEOMETRY_YLABEL", Util::scene()->problemInfo()->labelY().toStdString() +tr(" (m)").toStdString());
+        dict.SetValue("GEOMETRY_XLABEL", Util::scene()->problemInfo()->labelX().toStdString());
+        dict.SetValue("GEOMETRY_YLABEL", Util::scene()->problemInfo()->labelY().toStdString());
 
         dict.SetValue("GEOMETRY_STARTNODE", tr("Start node").toStdString());
         dict.SetValue("GEOMETRY_ENDNODE", tr("End node").toStdString());
-        dict.SetValue("GEOMETRY_ANGLE", tr("Angel (deg.)").toStdString());
+        dict.SetValue("GEOMETRY_ANGLE", tr("Angel").toStdString());
         dict.SetValue("GEOMETRY_MARKER", tr("Marker").toStdString());
 
-        dict.SetValue("GEOMETRY_ARRAY", tr("Array (m)").toStdString());
+        dict.SetValue("GEOMETRY_ARRAY", tr("Array").toStdString());
         dict.SetValue("GEOMETRY_POLYNOMIALORDER", tr("Polynomial order").toStdString());
 
         // nodes
@@ -479,8 +491,8 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
         for (int i = 0; i < Util::scene()->nodes.count(); i++)
         {
             ctemplate::TemplateDictionary *node_dict = dict.AddSectionDictionary("GEOMETRY_NODE_SECTION");
-            node_dict->SetFormattedValue("GEOMETRY_NODEX", "%.4f", Util::scene()->nodes[i]->point.x);
-            node_dict->SetFormattedValue("GEOMETRY_NODEY", "%.4f", Util::scene()->nodes[i]->point.y);
+            node_dict->SetFormattedValue("GEOMETRY_NODEX", "%f", Util::scene()->nodes[i]->point.x);
+            node_dict->SetFormattedValue("GEOMETRY_NODEY", "%f", Util::scene()->nodes[i]->point.y);
         }
 
         // edges
@@ -488,9 +500,11 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
         for (int i = 0; i < Util::scene()->edges.count(); i++)
         {
             ctemplate::TemplateDictionary *edge_dict = dict.AddSectionDictionary("GEOMETRY_EDGE_SECTION");
-            edge_dict->SetFormattedValue("GEOMETRY_EDGE_STARTNODE", "%.4f", Util::scene()->edges[i]->nodeStart);
-            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ENDNODE", "%.4f", Util::scene()->edges[i]->nodeEnd);
-            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ANGLE", "%.4f", Util::scene()->edges[i]->angle);
+            edge_dict->SetFormattedValue("GEOMETRY_EDGE_STARTNODEX", "%f", Util::scene()->edges[i]->nodeStart->point.x);
+            edge_dict->SetFormattedValue("GEOMETRY_EDGE_STARTNODEY", "%f", Util::scene()->edges[i]->nodeStart->point.y);
+            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ENDNODEX", "%f", Util::scene()->edges[i]->nodeEnd->point.x);
+            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ENDNODEY", "%f", Util::scene()->edges[i]->nodeEnd->point.y);
+            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ANGLE", "%f", Util::scene()->edges[i]->angle);
             edge_dict->SetValue ("GEOMETRY_EDGE_MARKER", Util::scene()->edges[i]->boundary->name);
         }
 
@@ -499,9 +513,9 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
         for (int i = 0; i < Util::scene()->labels.count(); i++)
         {
             ctemplate::TemplateDictionary *label_dict = dict.AddSectionDictionary("GEOMETRY_LABEL_SECTION");
-            label_dict->SetFormattedValue("GEOMETRY_LABELX", "%.4f", Util::scene()->labels[i]->point.x);
-            label_dict->SetFormattedValue("GEOMETRY_LABELY", "%.4f", Util::scene()->labels[i]->point.y);
-            label_dict->SetFormattedValue("GEOMETRY_LABEL_ARRAY", "%.4f", Util::scene()->labels[i]->area);
+            label_dict->SetFormattedValue("GEOMETRY_LABELX", "%f", Util::scene()->labels[i]->point.x);
+            label_dict->SetFormattedValue("GEOMETRY_LABELY", "%f", Util::scene()->labels[i]->point.y);
+            label_dict->SetFormattedValue("GEOMETRY_LABEL_ARRAY", "%f", Util::scene()->labels[i]->area);
             label_dict->SetValue ("GEOMETRY_LABEL_MARKER", Util::scene()->labels[i]->material->name);
             label_dict->SetIntValue ("GEOMETRY_LABEL_POLYNOMIALORDER", Util::scene()->labels[i]->polynomialOrder);
         }
@@ -533,7 +547,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
         if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
         {
             dict.SetValue("SOLVER_ADAPTIVEERROR_LABEL", tr("Adaptive error:").toStdString());
-            dict.SetFormattedValue("SOLVER_ADAPTIVEERROR", "%.4f", Util::scene()->sceneSolution()->adaptiveError());
+            dict.SetFormattedValue("SOLVER_ADAPTIVEERROR", "%f", Util::scene()->sceneSolution()->adaptiveError());
             dict.SetValue("SOLVER_ADAPTIVESTEPS_LABEL", tr("DOFs:").toStdString());
             dict.SetIntValue("SOLVER_ADAPTIVESTEPS", Util::scene()->sceneSolution()->adaptiveSteps());
 
@@ -600,6 +614,13 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 
     // footer
     dict.SetValue("FOOTER", tr("Computed by Agros2D (<a href=\"http://agros2d.org\">http://agros2d.org</a>)").toStdString ());
+
+    // units
+    dict.SetValue("PERCENT", tr("%").toStdString());
+    dict.SetValue("HERTZ", tr("Hz").toStdString());
+    dict.SetValue("SECOND", tr("s").toStdString());
+    dict.SetValue("METERS", tr("m").toStdString());
+    dict.SetValue("DEGREE", tr("deg.").toStdString());
 
     // expand template
     ctemplate::ExpandTemplate(fileNameTemplate.toStdString(), ctemplate::DO_NOT_STRIP, &dict, &report);
