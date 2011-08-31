@@ -4261,10 +4261,12 @@ void SceneView::saveImagesForReport(const QString &path, bool showGrid, bool sho
         actSceneModeLabel->trigger();
 
         m_sceneViewSettings.showInitialMesh = true;
+        m_sceneViewSettings.showSolutionMesh = true;
         ErrorResult resultMesh1 = saveImageToFile(path + "/mesh.png", w, h);
         if (resultMesh1.isError())
             resultMesh1.showDialog();
         m_sceneViewSettings.showInitialMesh = false;
+        m_sceneViewSettings.showSolutionMesh = false;
     }
 
     if (m_scene->sceneSolution()->isSolved())
