@@ -117,8 +117,8 @@ class WeakForm:
 
         symbols = ['x', 'y', 'r', 'z', 'udr', 'udz', 'udx', 'udy',
                    'vdr', 'vdz', 'vdx', 'vdy', 'updr', 'updx', 'updy', 'updz',
-                   'uval', 'vval', 'upval', 'deltat', 'uptval']
-                   
+                   'uval', 'vval', 'upval', 'deltat', 'uptval', 'PI']
+                           
         variables = []               
         for variable in self.variables:        
             symbols.append(variable.short_name)
@@ -126,13 +126,14 @@ class WeakForm:
              
         for const in self.constants:
             symbols.append(const.id)
-                
-        parser = NumericStringParser(symbols, replaces, variables)        
-        expression_list = parser.parse(expression).asList()      
-        parsed_exp = parser.get_expression(expression_list)                             
-        parsed_exp = 'result += wt[i] * (' + parsed_exp + ');'                          
-        print expression_list            
-        print parsed_exp                
+        
+        parser = NumericStringParser(symbols, replaces, variables)                        
+        if not(expression.replace(' ','') == ''):
+            expression_list = parser.parse(expression).asList()                  
+            parsed_exp = parser.get_expression(expression_list)                             
+        else:
+            parsed_exp =''
+        parsed_exp = 'result += wt[i] * (' + parsed_exp + ');'                                          
         return parsed_exp
 
 class Material:
@@ -325,8 +326,10 @@ class Module:
   
 class XmlParser:
     
-    def __init__(self):       
-       self.module_files = ['heat.xml']
+    def __init__(self, modules):       
+       self.module_files = [] 
+       for module in modules:
+           self.module_files.append(module + '.xml')
        self.template_file_names = ['weakform_cpp.tem', 'weakform_h.tem', 'weakform_factory_h.tem']
        self.modules_dir = '../../../modules/'
        self.weakform_dir = './'
@@ -491,8 +494,7 @@ class XmlParser:
                         boundary.name = subsubnode.attributes['name'].value                                                              
                         for element in  subsubnode.childNodes:                                               
                             if element.nodeName in boundaries_types:                                                         
-                                boundary_type = element.nodeName                              
-                                print boundary_type
+                                boundary_type = element.nodeName                                                              
                                 if boundary_type in weakform_types :      
                                     for i in range(element.attributes.length):                                                                            
                                         coordinate_type = str(element.attributes.item(i).name)                                                                        
@@ -519,6 +521,3 @@ class XmlParser:
                                     boundary.weakforms.append(weakform)                                
         module.boundaries.append(boundary)
         self.modules.append(module)
-
-xml_parser = XmlParser()
-xml_parser.process()

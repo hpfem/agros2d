@@ -23,5 +23,5 @@ INCLUDEPATH += ../../../hermes2d/include \
 include(weakform.pri)
 
 linux-g++|linux-g++-64|linux-g++-32 {
-    system(./xml_parser.py)
+    system(./gen_weakforms.py)
 }
