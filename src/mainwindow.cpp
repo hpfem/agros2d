@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     reportDialog = new ReportDialog(sceneView, this);
     videoDialog = new VideoDialog(sceneView, this);
     logDialog = new LogDialog(this);
+    collaborationDownloadDialog = new ServerDownloadDialog(this);
 
     createActions();
     createViews();
@@ -851,13 +852,11 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
 void MainWindow::doDocumentDownloadFromServer()
 {
-    ServerDownloadDialog *cloud = new ServerDownloadDialog(this);
-    if (cloud->showDialog() == QDialog::Accepted)
+    if (collaborationDownloadDialog->showDialog() == QDialog::Accepted)
     {
-        if (QFile::exists(cloud->fileName()))
-            doDocumentOpen(cloud->fileName());
+        if (QFile::exists(collaborationDownloadDialog->fileName()))
+            doDocumentOpen(collaborationDownloadDialog->fileName());
     }
-    delete cloud;
 }
 
 void MainWindow::doDocumentOpenRecent(QAction *action)

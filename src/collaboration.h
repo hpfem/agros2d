@@ -41,6 +41,8 @@ public:
     inline QString fileName() { return m_fileName; }
 
 private slots:
+    void load(const QString &str);
+    void loadProblems();
     void doClose();
     void httpContentFinished();
     void httpFileFinished();

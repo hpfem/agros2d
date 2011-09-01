@@ -80,11 +80,14 @@ void ServerDownloadDialog::createControls()
     // webView->load(networkReply->request(), QNetworkAccessManager::PostOperation);
 
     // dialog buttons
+    QPushButton *btnProblems = new QPushButton(tr("Problems"));
+    connect(btnProblems, SIGNAL(clicked()), this, SLOT(loadProblems()));
     QPushButton *btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
     layoutButtonViewport->addStretch();
+    layoutButtonViewport->addWidget(btnProblems);
     layoutButtonViewport->addWidget(btnClose);
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -95,9 +98,26 @@ void ServerDownloadDialog::createControls()
     setLayout(layout);
 }
 
+void ServerDownloadDialog::load(const QString &str)
+{
+    QString url = str;
+    if (url.contains(".php?"))
+        url = url.replace(".php?", ".php?no_header=1&");
+    else
+        url = url.replace(".php", ".php?no_header=1");
+
+    // qDebug() << "load: " << url;
+    webView->load(QUrl(url));
+}
+
+void ServerDownloadDialog::loadProblems()
+{
+    load(Util::config()->collaborationServerURL + "problems.php");
+}
+
 void ServerDownloadDialog::httpContentFinished()
 {
-    webView->load(QUrl(Util::config()->collaborationServerURL + "/problems.php"));
+    loadProblems();
 }
 
 void ServerDownloadDialog::readFromServerXML(int ID, int version)
@@ -127,12 +147,11 @@ void ServerDownloadDialog::linkClicked(const QUrl &url)
 {
     if (url.toString().startsWith(Util::config()->collaborationServerURL))
     {
-        qDebug() << url.toString();
         if (url.toString().contains("problem_download.php?type=xml&id="))
             readFromServerXML(url.queryItemValue("id").toInt(),
                               url.queryItemValue("version").toInt());
         else
-            webView->load(url);
+            load(url.toString());
     }
 }
 

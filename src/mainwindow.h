@@ -37,6 +37,7 @@ class ScriptEditorDialog;
 class ReportDialog;
 class VideoDialog;
 class LogDialog;
+class ServerDownloadDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -196,6 +197,7 @@ private:
     ReportDialog *reportDialog;
     VideoDialog *videoDialog;
     LogDialog *logDialog;
+    ServerDownloadDialog *collaborationDownloadDialog;
 
     void setRecentFiles();
 
