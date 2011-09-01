@@ -70,6 +70,7 @@ void ServerDownloadDialog::createControls()
     QStringList labels;
     labels << "" << tr("Date") << tr("Name") << tr("Author");
     trvProject->setHeaderLabels(labels);
+    trvProject->setVisible(false);
 
     txtFind = new QLineEdit(this);
     btnFind = new QPushButton(tr("Find"));
@@ -103,7 +104,7 @@ void ServerDownloadDialog::createControls()
 
     QGridLayout *layoutProject = new QGridLayout();
     layoutProject->addLayout(layoutFind, 0, 0);
-    layoutProject->addWidget(trvProject, 1, 0);
+    // layoutProject->addWidget(trvProject, 1, 0);
     layoutProject->addLayout(layoutDetail, 0, 1, 2, 1);
 
     QWidget *project = new QWidget();

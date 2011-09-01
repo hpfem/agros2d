@@ -2,6 +2,7 @@
 QT += opengl \
     xml \
     network \
+    webkit \
     svg
 
 DEFINES += VERSION_MAJOR=1
