@@ -122,6 +122,7 @@ void Config::load()
     contoursCount = settings.value("SceneViewSettings/ContoursCount", CONTOURSCOUNT).toInt();
 
     // scalar view
+    showScalarScale = settings.value("SceneViewSettings/ShowScalarScale", true).toBool();
     paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", PALETTETYPE).toInt();
     paletteFilter = settings.value("SceneViewSettings/PaletteFilter", PALETTEFILTER).toBool();
     paletteSteps = settings.value("SceneViewSettings/PaletteSteps", PALETTESTEPS).toInt();
@@ -136,8 +137,9 @@ void Config::load()
     vectorScale = settings.value("SceneViewSettings/VectorScale", VECTORSCALE).toDouble();
 
     // order view
-    orderLabel = settings.value("SceneViewSettings/OrderLabel", ORDERLABEL).toBool();
+    showOrderScale = settings.value("SceneViewSettings/ShowOrderScale", true).toBool();
     orderPaletteOrderType = (PaletteOrderType) settings.value("SceneViewSettings/OrderPaletteOrderType", ORDERPALETTEORDERTYPE).toInt();
+    orderLabel = settings.value("SceneViewSettings/OrderLabel", ORDERLABEL).toBool();
 
     // deformations
     deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
@@ -254,6 +256,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/ContoursCount", contoursCount);
 
     // scalar view
+    settings.setValue("SceneViewSettings/ShowScalarScale", showScalarScale);
     settings.setValue("SceneViewSettings/PaletteType", paletteType);
     settings.setValue("SceneViewSettings/PaletteFilter", paletteFilter);
     settings.setValue("SceneViewSettings/PaletteSteps", paletteSteps);
@@ -268,8 +271,9 @@ void Config::save()
     settings.setValue("SceneViewSettings/VectorScale", vectorScale);
 
     // order view
-    settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
+    settings.setValue("SceneViewSettings/ShowOrderScale", showOrderScale);
     settings.setValue("SceneViewSettings/OrderPaletteOrderType", orderPaletteOrderType);
+    settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
 
     // deformations
     settings.setValue("SceneViewSettings/DeformScalar", deformScalar);
