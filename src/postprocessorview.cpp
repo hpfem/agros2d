@@ -87,6 +87,7 @@ void PostprocessorView::loadAdvanced()
     txtContoursCount->setValue(Util::config()->contoursCount);
 
     // scalar field
+    chkShowScalarScale->setChecked(Util::config()->showScalarScale);
     cmbPalette->setCurrentIndex(cmbPalette->findData(Util::config()->paletteType));
     chkPaletteFilter->setChecked(Util::config()->paletteFilter);
     doPaletteFilter(chkPaletteFilter->checkState());
@@ -101,8 +102,9 @@ void PostprocessorView::loadAdvanced()
     txtVectorScale->setValue(Util::config()->vectorScale);
 
     // order view
-    chkOrderLabel->setChecked(Util::config()->orderLabel);
+    chkShowOrderScale->setChecked(Util::config()->showOrderScale);
     cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData(Util::config()->orderPaletteOrderType));
+    chkOrderLabel->setChecked(Util::config()->orderLabel);
 }
 
 void PostprocessorView::saveBasic()
@@ -143,6 +145,7 @@ void PostprocessorView::saveAdvanced()
     Util::config()->contoursCount = txtContoursCount->value();
 
     // scalar field
+    Util::config()->showScalarScale = chkShowScalarScale->isChecked();
     Util::config()->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
     Util::config()->paletteFilter = chkPaletteFilter->isChecked();
     Util::config()->paletteSteps = txtPaletteSteps->value();
@@ -155,8 +158,9 @@ void PostprocessorView::saveAdvanced()
     Util::config()->vectorScale = txtVectorScale->value();
 
     // order view
-    Util::config()->orderLabel = chkOrderLabel->isChecked();
+    Util::config()->showOrderScale = chkShowOrderScale->isChecked();
     Util::config()->orderPaletteOrderType = (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt();
+    Util::config()->orderLabel = chkOrderLabel->isChecked();
 
     // save
     Util::config()->save();
@@ -248,7 +252,7 @@ QWidget *PostprocessorView::controlsBasic()
     grpShow->setLayout(layoutShowSpace);
 
     // layout scalar field
-    cmbScalarFieldVariable = new QComboBox();   
+    cmbScalarFieldVariable = new QComboBox();
     connect(cmbScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
 
     cmbScalarFieldVariableComp = new QComboBox();
@@ -374,6 +378,8 @@ QWidget *PostprocessorView::controlsAdvanced()
     txtPaletteSteps->setMinimum(5);
     txtPaletteSteps->setMaximum(100);
 
+    chkShowScalarScale = new QCheckBox(tr("Show scale"), this);
+
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->setColumnMinimumWidth(0, minWidth);
     layoutScalarField->setColumnStretch(1, 1);
@@ -384,6 +390,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     layoutScalarField->addWidget(chkPaletteFilter, 1, 2);
     layoutScalarField->addWidget(new QLabel(tr("Quality:")), 2, 0);
     layoutScalarField->addWidget(cmbLinearizerQuality, 2, 1, 1, 2);
+    layoutScalarField->addWidget(chkShowScalarScale, 3, 0, 1, 2);
 
     QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
     grpScalarView->setLayout(layoutScalarField);
@@ -414,20 +421,22 @@ QWidget *PostprocessorView::controlsAdvanced()
     grpVectorView->setLayout(layoutVectorField);
 
     // layout order
-    chkOrderLabel = new QCheckBox(tr("Show order label"), this);
-
     cmbOrderPaletteOrder = new QComboBox();
     cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
     cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
     cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
     cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
 
+    chkShowOrderScale = new QCheckBox(tr("Show scale"), this);
+    chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
+
     QGridLayout *layoutOrder = new QGridLayout();
     layoutOrder->setColumnMinimumWidth(0, minWidth);
     layoutOrder->setColumnStretch(1, 1);
-    layoutOrder->addWidget(chkOrderLabel, 0, 0, 1, 2);
-    layoutOrder->addWidget(new QLabel(tr("Palette:")), 1, 0);
-    layoutOrder->addWidget(cmbOrderPaletteOrder, 1, 1);
+    layoutOrder->addWidget(new QLabel(tr("Palette:")), 0, 0);
+    layoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
+    layoutOrder->addWidget(chkShowOrderScale, 1, 0, 1, 2);
+    layoutOrder->addWidget(chkOrderLabel, 2, 0, 1, 2);
 
     QGroupBox *grpOrder = new QGroupBox(tr("Polynomial order"));
     grpOrder->setLayout(layoutOrder);

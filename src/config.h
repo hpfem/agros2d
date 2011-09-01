@@ -90,8 +90,9 @@ public:
     double vectorScale;
 
     // order view
-    bool orderLabel;
+    bool showOrderScale;
     PaletteOrderType orderPaletteOrderType;
+    bool orderLabel;
 
     // deformations
     bool deformScalar;
@@ -105,6 +106,7 @@ public:
     double scalarView3DHeight;
 
     // palette
+    bool showScalarScale;
     PaletteType paletteType;
     int paletteSteps;
     bool paletteFilter;

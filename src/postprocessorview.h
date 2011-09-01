@@ -81,6 +81,7 @@ private:
     QSpinBox *txtContoursCount;
 
     // scalar field
+    QCheckBox *chkShowScalarScale;
     QComboBox *cmbPalette;
     QCheckBox *chkPaletteFilter;
     QSpinBox *txtPaletteSteps;
@@ -93,8 +94,9 @@ private:
     QDoubleSpinBox *txtVectorScale;
 
     // order view
-    QCheckBox *chkOrderLabel;
+    QCheckBox *chkShowOrderScale;
     QComboBox *cmbOrderPaletteOrder;
+    QCheckBox *chkOrderLabel;
 
     QPushButton *btnOK;
 
