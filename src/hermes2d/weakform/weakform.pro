@@ -20,8 +20,8 @@ INCLUDEPATH += ../../../hermes2d/include \
     ../../ \
     ../
 
-include(weakform.pri)
-
 linux-g++|linux-g++-64|linux-g++-32 {
     system(python ./gen_weakforms.py)
 }
+
+include(weakform.pri)

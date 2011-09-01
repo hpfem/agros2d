@@ -146,7 +146,7 @@ HEADERS += util.h \
     indicators/indicators.h \
     indicators/indicator_unity.h \
     collaboration.h \
-    resultsview.h \ 
+    resultsview.h \
     hermes2d/weakform_parser.h \
     alter_newton_solver.h \
     datatable.h \
