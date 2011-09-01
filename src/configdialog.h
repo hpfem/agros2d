@@ -38,9 +38,11 @@ public:
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void doScalarFieldLog(int state);
+    void doClearApplicationLog();
     void doClearCommandHistory();
     void doSceneFont();
-    void doAdvancedDefault();
+    void doAdaptivityDefault();
+    void doCommandsDefault();
     void doColorsDefault();
 
     void doAccept();
@@ -53,7 +55,6 @@ private:
     QWidget *panView;
     QWidget *panSolver;
     QWidget *panColors;
-    QWidget *panAdvanced;
     QWidget *panGlobalScriptWidget;
 
     // main
@@ -65,6 +66,9 @@ private:
     // delete files
     QCheckBox *chkDeleteTriangleMeshFiles;
     QCheckBox *chkDeleteHermes2DMeshFile;
+
+    // clear application log
+    QPushButton *cmdClearApplicationLog;
 
     // clear command history
     QPushButton *cmdClearCommandHistory;
@@ -84,6 +88,9 @@ private:
     // logs
     QCheckBox *chkEnabledApplicationLog;
     QCheckBox *chkEnabledProgressLog;
+
+    // experimental features
+    QCheckBox *chkExperimentalFeatures;
 
     // general view
     QCheckBox *chkZoomToMouse;
@@ -144,9 +151,11 @@ private:
     QCheckBox *chkDeformContour;
     QCheckBox *chkDeformVector;
 
-    // advanced
-    QCheckBox *chkIsoOnly;
-    QLabel *lblIsoOnly;
+    // adaptivity
+    QLabel *lblMaxDofs;
+    QSpinBox *txtMaxDOFs;
+    //QCheckBox *chkIsoOnly;
+    //QLabel *lblIsoOnly;
     SLineEditDouble *txtConvExp;
     QLabel *lblConvExp;
     SLineEditDouble *txtThreshold;
@@ -158,7 +167,6 @@ private:
 
     QLineEdit *txtArgumentTriangle;
     QLineEdit *txtArgumentFFmpeg;
-    QCheckBox *chkExperimentalFeatures;
 
     // global script
     ScriptEditor *txtGlobalScript;
@@ -171,7 +179,6 @@ private:
     QWidget *createViewWidget();
     QWidget *createSolverWidget();
     QWidget *createColorsWidget();
-    QWidget *createAdvancedWidget();
     QWidget *createGlobalScriptWidget();
 };
 

@@ -134,7 +134,8 @@ void ConfigDialog::load()
     chkDeformVector->setChecked(Util::config()->deformVector);
 
     // adaptivity
-    chkIsoOnly->setChecked(Util::config()->isoOnly);
+    txtMaxDOFs->setValue(Util::config()->maxDofs);
+    //chkIsoOnly->setChecked(Util::config()->isoOnly);
     txtConvExp->setValue(Util::config()->convExp);
     txtThreshold->setValue(Util::config()->threshold);
     cmbStrategy->setCurrentIndex(cmbStrategy->findData(Util::config()->strategy));
@@ -257,7 +258,8 @@ void ConfigDialog::save()
     Util::config()->deformVector = chkDeformVector->isChecked();
 
     // adaptivity
-    Util::config()->isoOnly = chkIsoOnly->isChecked();
+    Util::config()->maxDofs = txtMaxDOFs->value();
+    //Util::config()->isoOnly = chkIsoOnly->isChecked();
     Util::config()->convExp = txtConvExp->value();
     Util::config()->threshold = txtThreshold->value();
     Util::config()->strategy = cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt();
@@ -290,7 +292,6 @@ void ConfigDialog::createControls()
     panSolver = createSolverWidget();
     panColors = createColorsWidget();
     panGlobalScriptWidget = createGlobalScriptWidget();
-    panAdvanced = createAdvancedWidget();
 
     // List View
     lstView->setCurrentRow(0);
@@ -301,7 +302,7 @@ void ConfigDialog::createControls()
     lstView->setIconSize(QSize(60, 60));
     lstView->setMinimumWidth(135);
     lstView->setMaximumWidth(135);
-    lstView->setMinimumHeight((60+fontMetrics().height()*4)*5);
+    lstView->setMinimumHeight((45+fontMetrics().height()*4)*5);
     connect(lstView, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
                this, SLOT(doCurrentItemChanged(QListWidgetItem *, QListWidgetItem *)));
 
@@ -333,17 +334,11 @@ void ConfigDialog::createControls()
     itemGlobalScript->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     itemGlobalScript->setSizeHint(sizeItem);
 
-    QListWidgetItem *itemAdvanced = new QListWidgetItem(icon("options-advanced"), tr("Advanced"), lstView);
-    itemAdvanced->setTextAlignment(Qt::AlignHCenter);
-    itemAdvanced->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    itemAdvanced->setSizeHint(sizeItem);
-
     pages->addWidget(panMain);
     pages->addWidget(panView);
     pages->addWidget(panSolver);
     pages->addWidget(panColors);
     pages->addWidget(panGlobalScriptWidget);
-    pages->addWidget(panAdvanced);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
     layoutHorizontal->addWidget(lstView);
@@ -390,36 +385,50 @@ QWidget *ConfigDialog::createMainWidget()
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
 
-    // collaboration layout
+    // collaboration
     txtCollaborationServerURL = new SLineEditDouble();
 
     QVBoxLayout *layoutCollaboration = new QVBoxLayout();
     layoutCollaboration->addWidget(new QLabel(tr("Collaboration server URL:")));
     layoutCollaboration->addWidget(txtCollaborationServerURL);
 
-    // other layout
+    QGroupBox *grpCollaboration = new QGroupBox(tr("Collaboration"));
+    grpCollaboration->setLayout(layoutCollaboration);
+
+    // logs
+    chkEnabledApplicationLog = new QCheckBox(tr("Enabled application log"));
+    chkEnabledProgressLog = new QCheckBox(tr("Enabled progress log"));
+
+    cmdClearApplicationLog = new QPushButton(mainWidget);
+    cmdClearApplicationLog->setText(tr("Clear application log"));
+    connect(cmdClearApplicationLog, SIGNAL(clicked()), this, SLOT(doClearApplicationLog()));
+
     cmdClearCommandHistory = new QPushButton(mainWidget);
     cmdClearCommandHistory->setText(tr("Clear command history"));
     connect(cmdClearCommandHistory, SIGNAL(clicked()), this, SLOT(doClearCommandHistory()));
 
+    QGridLayout *layoutClearButtons = new QGridLayout();
+    layoutClearButtons->addWidget(cmdClearApplicationLog, 0, 0);
+    layoutClearButtons->addWidget(cmdClearCommandHistory, 0, 1);
+
+    QVBoxLayout *layoutLogs = new QVBoxLayout();
+    layoutLogs->addWidget(chkEnabledProgressLog);
+    layoutLogs->addWidget(chkEnabledApplicationLog);
+    layoutLogs->addLayout(layoutClearButtons);
+
+    QGroupBox *grpLogs = new QGroupBox(tr("Logs"));
+    grpLogs->setLayout(layoutLogs);
+
+    // other
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
     chkCheckVersion = new QCheckBox(tr("Check new version during startup."));
-    chkEnabledApplicationLog = new QCheckBox(tr("Enabled application log"));
-    chkEnabledProgressLog = new QCheckBox(tr("Enabled progress log"));
-
-    QHBoxLayout *layoutClearCommandHistory = new QHBoxLayout();
-    layoutClearCommandHistory->addWidget(cmdClearCommandHistory);
-    layoutClearCommandHistory->addStretch();
+    chkExperimentalFeatures = new QCheckBox(tr("Enable experimental features"));
+    chkExperimentalFeatures->setToolTip(tr("Warning: Agros2D should be unstable!"));
 
     QVBoxLayout *layoutOther = new QVBoxLayout();
     layoutOther->addWidget(chkLineEditValueShowResult);
     layoutOther->addWidget(chkCheckVersion);
-    layoutOther->addWidget(chkEnabledApplicationLog);
-    layoutOther->addWidget(chkEnabledProgressLog);
-    layoutOther->addLayout(layoutClearCommandHistory);
-
-    QGroupBox *grpCollaboration = new QGroupBox(tr("Collaboration"));
-    grpCollaboration->setLayout(layoutCollaboration);
+    layoutOther->addWidget(chkExperimentalFeatures);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));
     grpOther->setLayout(layoutOther);
@@ -428,6 +437,7 @@ QWidget *ConfigDialog::createMainWidget()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpGeneral);
     layout->addWidget(grpCollaboration);
+    layout->addWidget(grpLogs);
     layout->addWidget(grpOther);
     layout->addStretch();
 
@@ -463,21 +473,13 @@ QWidget *ConfigDialog::createViewWidget()
     txtGridStep = new QLineEdit("0.1");
     txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
     chkShowGrid = new QCheckBox(tr("Show grid"));
-    chkRulers = new QCheckBox(tr("Show rulers"));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
-    chkShowAxes = new QCheckBox(tr("Show axes"));
-    chkShowLabel = new QCheckBox(tr("Show label"));
-    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
 
     QGridLayout *layoutGrid = new QGridLayout();
     layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
     layoutGrid->addWidget(txtGridStep, 0, 1);
     layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
-    layoutGrid->addWidget(chkSnapToGrid, 2, 0, 1, 2);
-    layoutGrid->addWidget(chkRulers, 3, 0, 1, 2);
-    layoutGrid->addWidget(chkShowAxes, 4, 0, 1, 2);
-    layoutGrid->addWidget(chkShowLabel, 5, 0, 1, 2);
-    layoutGrid->addWidget(chkZoomToMouse, 6, 0, 1, 2);
+    layoutGrid->addWidget(chkSnapToGrid,2 ,0, 1, 2);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);
@@ -495,11 +497,27 @@ QWidget *ConfigDialog::createViewWidget()
     QGroupBox *grpFont = new QGroupBox(tr("Scene font"));
     grpFont->setLayout(layoutFont);
 
+    // others
+    chkRulers = new QCheckBox(tr("Show rulers"));
+    chkShowAxes = new QCheckBox(tr("Show axes"));
+    chkShowLabel = new QCheckBox(tr("Show label"));
+    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
+
+    QVBoxLayout *layoutOther = new QVBoxLayout();
+    layoutOther->addWidget(chkShowAxes);
+    layoutOther->addWidget(chkRulers);
+    layoutOther->addWidget(chkShowLabel);
+    layoutOther->addWidget(chkZoomToMouse);
+
+    QGroupBox *grpOther = new QGroupBox(tr("Other"));
+    grpOther->setLayout(layoutOther);
+
     // layout general
     QVBoxLayout *layoutGeneral = new QVBoxLayout();
     layoutGeneral->addWidget(grpGeometry);
     layoutGeneral->addWidget(grpGrid);
     layoutGeneral->addWidget(grpFont);
+    layoutGeneral->addWidget(grpOther);
     layoutGeneral->addStretch();
 
     QWidget *widgetGeneral = new QWidget(this);
@@ -583,9 +601,7 @@ QWidget *ConfigDialog::createSolverWidget()
 {
     logMessage("ConfigDialog::createSolverWidget()");
 
-    QWidget *solverWidget = new QWidget(this);
-
-    // solver
+    // general
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
     if (Util::config()->showExperimentalFeatures)
@@ -602,7 +618,6 @@ QWidget *ConfigDialog::createSolverWidget()
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);
 
-    // mesh
     txtMeshAngleSegmentsCount = new QSpinBox(this);
     txtMeshAngleSegmentsCount->setMinimum(2);
     txtMeshAngleSegmentsCount->setMaximum(20);
@@ -616,13 +631,105 @@ QWidget *ConfigDialog::createSolverWidget()
     QGroupBox *grpMesh = new QGroupBox(tr("Mesh"));
     grpMesh->setLayout(layoutMesh);
 
-    // layout
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpSolver);
-    layout->addWidget(grpMesh);
-    layout->addStretch();
+    QVBoxLayout *layoutGeneral = new QVBoxLayout();
+    layoutGeneral->addWidget(grpSolver);
+    layoutGeneral->addWidget(grpMesh);
+    layoutGeneral->addStretch();
 
-    solverWidget->setLayout(layout);
+    QWidget *solverGeneralWidget = new QWidget(this);
+    solverGeneralWidget->setLayout(layoutGeneral);
+
+    // adaptivity
+    lblMaxDofs = new QLabel(tr("Maximum number of DOFs:"));
+    txtMaxDOFs = new QSpinBox(this);
+    txtMaxDOFs->setMinimum(1e2);
+    txtMaxDOFs->setMaximum(1e9);
+    txtMaxDOFs->setSingleStep(1e2);
+    /*
+    chkIsoOnly = new QCheckBox(tr("Isotropic refinement"));
+    lblIsoOnly = new QLabel(tr("<table>"
+                               "<tr><td><b>true</b></td><td>isotropic refinement</td></tr>"
+                               "<tr><td><b>false</b></td><td>anisotropic refinement</td></tr>"
+                               "</table>"));
+    */
+    txtConvExp = new SLineEditDouble();
+    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of candidates in hp-adaptivity"));
+    txtThreshold = new SLineEditDouble();
+    lblThreshold = new QLabel(tr("<b></b>quantitative parameter of the adapt(...) function<br/>with different meanings for various adaptive strategies"));
+    cmbStrategy = new QComboBox();
+    cmbStrategy->addItem(tr("0"), 0);
+    cmbStrategy->addItem(tr("1"), 1);
+    cmbStrategy->addItem(tr("2"), 2);
+    lblStrategy = new QLabel(tr("<table>"
+                                 "<tr><td><b>0</b></td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
+                                 "<tr><td><b>1</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
+                                 "<tr><td><b>2</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
+                                 "</table>"));
+    cmbMeshRegularity = new QComboBox();
+    cmbMeshRegularity->addItem(tr("arbitrary level hang. nodes"), -1);
+    cmbMeshRegularity->addItem(tr("at most one-level hang. nodes"), 1);
+    cmbMeshRegularity->addItem(tr("at most two-level hang. nodes"), 2);
+    cmbMeshRegularity->addItem(tr("at most three-level hang. nodes"), 3);
+    cmbMeshRegularity->addItem(tr("at most four-level hang. nodes"), 4);
+    cmbMeshRegularity->addItem(tr("at most five-level hang. nodes"), 5);
+
+    cmbProjNormType = new QComboBox();
+    cmbProjNormType->addItem(errorNormString(HERMES_H1_NORM), HERMES_H1_NORM);
+    cmbProjNormType->addItem(errorNormString(HERMES_L2_NORM), HERMES_L2_NORM);
+    cmbProjNormType->addItem(errorNormString(HERMES_H1_SEMINORM), HERMES_H1_SEMINORM);
+
+    // default
+    QPushButton *btnAdaptivityDefault = new QPushButton(tr("Default"));
+    connect(btnAdaptivityDefault, SIGNAL(clicked()), this, SLOT(doAdaptivityDefault()));
+
+    QGridLayout *layoutAdaptivitySettings = new QGridLayout();
+    layoutAdaptivitySettings->addWidget(lblMaxDofs, 0, 0);
+    layoutAdaptivitySettings->addWidget(txtMaxDOFs, 0, 1, 1, 2);
+    layoutAdaptivitySettings->addWidget(new QLabel(tr("Conv. exp.:")), 2, 0);
+    layoutAdaptivitySettings->addWidget(txtConvExp, 2, 1);
+    layoutAdaptivitySettings->addWidget(lblConvExp, 3, 0, 1, 2);
+    layoutAdaptivitySettings->addWidget(new QLabel(tr("Strategy:")), 4, 0);
+    layoutAdaptivitySettings->addWidget(cmbStrategy, 4, 1);
+    layoutAdaptivitySettings->addWidget(lblStrategy, 5, 0, 1, 2);
+    layoutAdaptivitySettings->addWidget(new QLabel(tr("Threshold:")), 6, 0);
+    layoutAdaptivitySettings->addWidget(txtThreshold, 6, 1);
+    layoutAdaptivitySettings->addWidget(lblThreshold, 7, 0, 1, 2);
+    layoutAdaptivitySettings->addWidget(new QLabel(tr("Mesh regularity:")), 8, 0);
+    layoutAdaptivitySettings->addWidget(cmbMeshRegularity, 8, 1);
+    layoutAdaptivitySettings->addWidget(new QLabel(tr("Norm:")), 9, 0);
+    layoutAdaptivitySettings->addWidget(cmbProjNormType, 9, 1);
+
+    QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
+    layoutAdaptivity->addLayout(layoutAdaptivitySettings);
+    layoutAdaptivity->addStretch();
+    layoutAdaptivity->addWidget(btnAdaptivityDefault, 0, Qt::AlignLeft);
+
+    QWidget *solverAdaptivityWidget = new QWidget(this);
+    solverAdaptivityWidget->setLayout(layoutAdaptivity);
+
+    // commands
+    txtArgumentTriangle = new QLineEdit("");
+    txtArgumentFFmpeg = new QLineEdit("");
+
+    // default
+    QPushButton *btnCommandsDefault = new QPushButton(tr("Default"));
+    connect(btnCommandsDefault, SIGNAL(clicked()), this, SLOT(doCommandsDefault()));
+
+    QVBoxLayout *layoutCommands = new QVBoxLayout();
+    layoutCommands->addWidget(new QLabel(tr("Triangle")));
+    layoutCommands->addWidget(txtArgumentTriangle);
+    layoutCommands->addWidget(new QLabel(tr("FFmpeg")));
+    layoutCommands->addWidget(txtArgumentFFmpeg);
+    layoutCommands->addStretch();
+    layoutCommands->addWidget(btnCommandsDefault, 0, Qt::AlignLeft);
+
+    QWidget *solverCommandsWidget = new QWidget(this);
+    solverCommandsWidget->setLayout(layoutCommands);
+
+    QTabWidget *solverWidget = new QTabWidget(this);
+    solverWidget->addTab(solverGeneralWidget, icon(""), tr("General"));
+    solverWidget->addTab(solverAdaptivityWidget, icon(""), tr("Adaptivity"));
+    solverWidget->addTab(solverCommandsWidget, icon(""), tr("Commands"));
 
     return solverWidget;
 }
@@ -693,96 +800,6 @@ QWidget *ConfigDialog::createColorsWidget()
     return colorsWidget;
 }
 
-QWidget *ConfigDialog::createAdvancedWidget()
-{
-    logMessage("ConfigDialog::createAdvancedWidget()");
-
-    QWidget *viewWidget = new QWidget(this);
-
-    // adaptivity
-    chkIsoOnly = new QCheckBox(tr("Isotropic refinement"));
-    lblIsoOnly = new QLabel(tr("<table>"
-                               "<tr><td><b>true</b></td><td>isotropic refinement</td></tr>"
-                               "<tr><td><b>false</b></td><td>anisotropic refinement</td></tr>"
-                               "</table>"));
-    txtConvExp = new SLineEditDouble();
-    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of candidates in hp-adaptivity"));
-    txtThreshold = new SLineEditDouble();
-    lblThreshold = new QLabel(tr("<b></b>quantitative parameter of the adapt(...) function<br/>with different meanings for various adaptive strategies"));
-    cmbStrategy = new QComboBox();
-    cmbStrategy->addItem(tr("0"), 0);
-    cmbStrategy->addItem(tr("1"), 1);
-    cmbStrategy->addItem(tr("2"), 2);
-    lblStrategy = new QLabel(tr("<table>"
-                                 "<tr><td><b>0</b></td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
-                                 "<tr><td><b>1</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
-                                 "<tr><td><b>2</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
-                                 "</table>"));
-    cmbMeshRegularity = new QComboBox();
-    cmbMeshRegularity->addItem(tr("arbitrary level hang. nodes"), -1);
-    cmbMeshRegularity->addItem(tr("at most one-level hang. nodes"), 1);
-    cmbMeshRegularity->addItem(tr("at most two-level hang. nodes"), 2);
-    cmbMeshRegularity->addItem(tr("at most three-level hang. nodes"), 3);
-    cmbMeshRegularity->addItem(tr("at most four-level hang. nodes"), 4);
-    cmbMeshRegularity->addItem(tr("at most five-level hang. nodes"), 5);
-
-    cmbProjNormType = new QComboBox();
-    cmbProjNormType->addItem(errorNormString(HERMES_H1_NORM), HERMES_H1_NORM);
-    cmbProjNormType->addItem(errorNormString(HERMES_L2_NORM), HERMES_L2_NORM);
-    cmbProjNormType->addItem(errorNormString(HERMES_H1_SEMINORM), HERMES_H1_SEMINORM);
-
-    QGridLayout *layoutAdaptivity = new QGridLayout();
-    // layoutAdaptivity->addWidget(chkIsoOnly, 0, 0);
-    // layoutAdaptivity->addWidget(lblIsoOnly, 1, 0, 1, 2);
-    layoutAdaptivity->addWidget(new QLabel(tr("Conv. exp.:")), 2, 0);
-    layoutAdaptivity->addWidget(txtConvExp, 2, 1);
-    layoutAdaptivity->addWidget(lblConvExp, 3, 0, 1, 2);
-    layoutAdaptivity->addWidget(new QLabel(tr("Strategy:")), 4, 0);
-    layoutAdaptivity->addWidget(cmbStrategy, 4, 1);
-    layoutAdaptivity->addWidget(lblStrategy, 5, 0, 1, 2);
-    layoutAdaptivity->addWidget(new QLabel(tr("Threshold:")), 6, 0);
-    layoutAdaptivity->addWidget(txtThreshold, 6, 1);
-    layoutAdaptivity->addWidget(lblThreshold, 7, 0, 1, 2);
-    layoutAdaptivity->addWidget(new QLabel(tr("Mesh regularity:")), 8, 0);
-    layoutAdaptivity->addWidget(cmbMeshRegularity, 8, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 9, 0);
-    layoutAdaptivity->addWidget(cmbProjNormType, 9, 1);
-
-    QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
-    grpAdaptivity->setLayout(layoutAdaptivity);
-
-    // commands
-    txtArgumentTriangle = new QLineEdit("");
-    txtArgumentFFmpeg = new QLineEdit("");
-    chkExperimentalFeatures = new QCheckBox(tr("Enable experimental features"));
-    chkExperimentalFeatures->setToolTip(tr("Warning: Agros2D should be unstable!"));
-
-    QGridLayout *layoutArgument = new QGridLayout();
-    layoutArgument->addWidget(new QLabel(tr("Triangle")), 0, 0);
-    layoutArgument->addWidget(txtArgumentTriangle, 1, 0);
-    layoutArgument->addWidget(new QLabel(tr("FFmpeg")), 2, 0);
-    layoutArgument->addWidget(txtArgumentFFmpeg, 3, 0);
-    layoutArgument->addWidget(chkExperimentalFeatures, 4, 0);
-
-    QGroupBox *grpArgument = new QGroupBox(tr("Commands"));
-    grpArgument->setLayout(layoutArgument);
-
-    // default
-    QPushButton *btnDefault = new QPushButton(tr("Default"));
-    connect(btnDefault, SIGNAL(clicked()), this, SLOT(doAdvancedDefault()));
-
-    // layout
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpAdaptivity);
-    layout->addWidget(grpArgument);
-    layout->addStretch();
-    layout->addWidget(btnDefault, 0, Qt::AlignLeft);
-
-    viewWidget->setLayout(layout);
-
-    return viewWidget;
-}
-
 QWidget *ConfigDialog::createGlobalScriptWidget()
 {
     logMessage("ConfigDialog::createGlobalScriptWidget()");
@@ -829,6 +846,19 @@ void ConfigDialog::doReject()
     reject();
 }
 
+void ConfigDialog::doClearApplicationLog()
+{
+    logMessage("ConfigDialog::doClearApplicationLog()");
+
+    if (QMessageBox::question(this, tr("Delete"), tr("Are you sure that you want to permanently delete the application logfile?"), tr("&Yes"), tr("&No")) == 0)
+    {
+        QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+        QFile::remove(location + "/app.log");
+
+        QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Application log was cleared successfully."));
+    }
+}
+
 void ConfigDialog::doClearCommandHistory()
 {
     logMessage("ConfigDialog::doClearCommandHistory()");
@@ -841,24 +871,25 @@ void ConfigDialog::doClearCommandHistory()
     QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared successfully."));
 }
 
-void ConfigDialog::doAdvancedDefault()
+void ConfigDialog::doAdaptivityDefault()
 {
-    logMessage("ConfigDialog::doAdvancedDefault()");
+    logMessage("ConfigDialog::doAdaptivityDefault()");
 
-    // adaptivity
-    chkIsoOnly->setChecked(ADAPTIVITY_ISOONLY);
+    txtMaxDOFs->setValue(MAX_DOFS);
+    //chkIsoOnly->setChecked(ADAPTIVITY_ISOONLY);
     txtConvExp->setValue(ADAPTIVITY_CONVEXP);
     txtThreshold->setValue(ADAPTIVITY_THRESHOLD);
     cmbStrategy->setCurrentIndex(cmbStrategy->findData(ADAPTIVITY_STRATEGY));
     cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(ADAPTIVITY_MESHREGULARITY));
     cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(ADAPTIVITY_PROJNORMTYPE));
+}
 
-    // command argument
+void ConfigDialog::doCommandsDefault()
+{
+    logMessage("ConfigDialog::doCommandsDefault()");
+
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
     txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
-
-    // experimental features
-    chkExperimentalFeatures->setChecked(false);
 }
 
 void ConfigDialog::doColorsDefault()
