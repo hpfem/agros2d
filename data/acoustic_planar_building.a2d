@@ -4,8 +4,8 @@
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge type="acoustic_matched_boundary" id="1" name="Wall"/>
-                <edge acoustic_pressure="1" type="acoustic_pressure" id="2" name="Source"/>
+                <edge type="acoustic_impedance" acoustic_impedance="1.25*343" id="1" name="Wall"/>
+                <edge acoustic_pressure_imag="0" type="acoustic_pressure" id="2" name="Source" acoustic_pressure_real="10"/>
             </edges>
             <labels>
                 <label acoustic_speed="343" acoustic_density="1.25" id="1" name="Air"/>

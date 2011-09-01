@@ -32,7 +32,7 @@
             <boundary id="electrostatic_potential" name="Fixed voltage">
                 <item id="electrostatic_potential" />
 
-                <essential i="1" id="electrostatic_potential" />
+                <essential i="1" j="1" id="electrostatic_potential" />
             </boundary>
 
             <boundary id="electrostatic_surface_charge_density" name="Surface charge density">

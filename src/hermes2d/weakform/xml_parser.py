@@ -14,8 +14,8 @@ class WeakForm:
         self.coordinate_type = ''
         self.analysis_type = ''
         self.boundary_type = ''        
-        self.i = 1
-        self.j = 1
+        self.i = 0
+        self.j = 0
         self.expression = ''
         self.name = ''
         self.variables = []
@@ -46,8 +46,12 @@ class WeakForm:
                 string = factory_template.getElementsByTagName('condition_matrix_vol')[0].childNodes[0].nodeValue
             else:
                 string = factory_template.getElementsByTagName('condition_matrix_surf')[0].childNodes[0].nodeValue
+                     
         string = string.replace('class_name', self.id)
         string = string.replace('axi', 'axisymmetric')                        
+        string = string.replace('row_index', str(self.i-1))                        
+        string = string.replace('column_index', str(self.j-1))
+        string = string.replace('boundary_type', self.boundary_type)        
         namespace = self.id.replace('_','')
         string = string.replace('namespace', namespace)
         function_name = self.get_class_name();        
@@ -111,7 +115,9 @@ class WeakForm:
         return cpp_code            
             
     def parse_expression(self, expression, without_variables):                        
-        replaces = { 'x':'e->x[i]',
+        replaces = { 'PI': 'M_PI',
+                     'f': 'Util::scene()->problemInfo()->frequency',                     
+                     'x':'e->x[i]',
                      'r': 'e->x[i]',
                      'udr': 'u->dx[i]',
                      'vdr': 'v->dx[i]',
@@ -268,15 +274,15 @@ class Module:
                 weakform.id = part_module.id                
                 part_module.weakforms.append(weakform)                
         
-        for boundary in self.boundaries:                        
-            for weakform in boundary.weakforms: 
-                if (weakform.id in module_types):                                                                
-                    index = module_types.index(weakform.id)                    
-                    part_module = part_modules[index] 
-                    weakform.variables = boundary.variables
-                    weakform.constants = self.constants
-                    weakform.boundary_type = boundary.id
-                    part_module.weakforms.append(weakform)
+        for boundary in self.boundaries:                                    
+                for weakform in boundary.weakforms: 
+                    if (weakform.id in module_types):                                                                
+                        if weakform.integral_type == 'surf':                             
+                            index = module_types.index(weakform.id)                    
+                            part_module = part_modules[index] 
+                            weakform.variables = boundary.variables
+                            weakform.constants = self.constants                                        
+                            part_module.weakforms.append(weakform)               
         return part_modules;
         
                                                                                       
@@ -380,7 +386,7 @@ class XmlParser:
         
         for module in self.modules:                           
             module_files, module_conditions = module.get_code(self.templates)            
-            module.write_code(self.weakform_dir, self.templates)                           
+            module.write_code(self.weakform_dir, self.templates)                                       
             conditions.extend(module_conditions)                                      
             files.extend(module_files)
        
@@ -485,7 +491,9 @@ class XmlParser:
                                     str(subsubnode.attributes[coordinate_type].value)                            
                                 weakform.i = int(subsubnode.attributes['i'].value)                                        
                                 if subsubnode.hasAttribute('j'):
-                                    weakform.j = int(subsubnode.attributes['j'].value)                                 
+                                    weakform.j = int(subsubnode.attributes['j'].value)  
+                                else:
+                                    weakform.j = 1
                                 material.weakforms.append(weakform)
                 module.materials.append(material)
                 
@@ -508,15 +516,14 @@ class XmlParser:
                 for subsubnode in subnode.childNodes:
                     if subsubnode.nodeName == 'boundary':
                         boundary.name = subsubnode.attributes['name'].value                                                              
-                        boundary.id = subsubnode.attributes['id'].value                                                                                      
-                        
+                        boundary.id = subsubnode.attributes['id'].value                                                                                                              
                         for element in  subsubnode.childNodes:                                               
                             if element.nodeName in weakform_types:                                                         
-                                boundary_type = element.nodeName                                                                                              
-                                if boundary_type in weakform_types :      
+                                boundary_type = element.nodeName                                                                                                                                                              
+                                if boundary_type in weakform_types :                                          
                                     for i in range(element.attributes.length):                                                                            
                                         coordinate_type = str(element.attributes.item(i).name)                                                                        
-                                        if coordinate_type in coordinate_types:                                            
+                                        if coordinate_type in coordinate_types:                                                                                        
                                             weakform = WeakForm()                                                                                            
                                             weakform.type = boundary_type
                                             weakform.i = int(element.attributes['i'].value)
@@ -533,6 +540,7 @@ class XmlParser:
                                             str(element.attributes[coordinate_type].value)
                                             weakform.id += '_' + coordinate_type                                                                                                                                    
                                             boundary.weakforms.append(weakform)
+                                            weakform.boundary_type = boundary.id
                                 else:
                                     weakform = WeakForm()                                
                                     weakform.i = int(element.attributes['i'].value)
@@ -541,8 +549,7 @@ class XmlParser:
                                     else:
                                         weakform.j = 1
                                     weakform.id = module.id + '_'  + \
-                                        analysis_type 
-                                    weakform.boundary_id = boundary.id                                            
+                                        analysis_type                                     
                                     boundary.weakforms.append(weakform)                                
         module.boundaries.append(boundary)
         self.modules.append(module)
