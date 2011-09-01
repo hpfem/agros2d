@@ -151,6 +151,7 @@ void Config::load()
     scalarView3DHeight = settings.value("SceneViewSettings/ScalarView3DHeight", 4.0).toDouble();
 
     // adaptivity
+    maxDofs = settings.value("Adaptivity/MaxDofs", MAX_DOFS).toInt();
     isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).toBool();
     convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).toDouble();
     threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).toDouble();
@@ -282,6 +283,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
 
     // adaptivity
+    settings.setValue("Adaptivity/MaxDofs", maxDofs);
     settings.setValue("Adaptivity/IsoOnly", isoOnly);
     settings.setValue("Adaptivity/ConvExp", convExp);
     settings.setValue("Adaptivity/Threshold", threshold);

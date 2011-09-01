@@ -127,6 +127,7 @@ public:
     QColor colorSelected;
 
     // adaptivity
+    int maxDofs;
     bool isoOnly;
     double convExp;
     double threshold;
