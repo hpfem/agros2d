@@ -28,7 +28,7 @@
             <boundary id="current_potential" name="Fixed voltage">
                 <item id="current_potential" />
 
-                <essential i="1" id="current_potential" />
+                <essential i="1" j="1" id="current_potential" />
             </boundary>
 
             <boundary id="current_inward_current_flow" name="Current density">

@@ -47,23 +47,23 @@
 </includes>
 
 <condition_matrix_vol>
-        if (problemId == "class_name")
-            return new namespace::FunctionName&lt;double&gt;(i, j, area, sym, material);
+        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index))
+            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, sym, material);
 </condition_matrix_vol>
 
 <condition_vector_vol>
-        if (problemId == "class_name")
-            return new namespace::FunctionName&lt;double&gt;(i, j, area, material);
+        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index))
+            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, material);
 </condition_vector_vol>
 
 <condition_matrix_surf>
-        if (problemId == "class_name")
-            return new namespace::FunctionName&lt;double&gt;(i, j, area, boundary);
+        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->type == "boundary_type"))
+            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, boundary);
 </condition_matrix_surf>
 
 <condition_vector_surf>
-        if (problemId == "class_name")
-            return new namespace::FunctionName&lt;double&gt;(i, j, area, boundary);
+        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->type == "boundary_type"))
+            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, boundary);
 </condition_vector_surf>
 
 <CustomMatrixFormVol>
