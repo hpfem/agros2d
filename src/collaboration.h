@@ -25,6 +25,8 @@
 
 #include <QSvgWidget>
 
+class QWebView;
+
 class ServerDownloadDialog : public QDialog
 {
     Q_OBJECT
@@ -34,40 +36,20 @@ public:
 
     int showDialog();
     void createControls();
-    void readFromServerContent();
     void readFromServerXML(int ID, int version);
-    void readFromServerVersion(int ID);
 
     inline QString fileName() { return m_fileName; }
 
 private slots:
-    void doItemSelected(QTreeWidgetItem *item, int role);
-    void doItemSelected(QTreeWidgetItem *current, QTreeWidgetItem *previous);
-    void doVersionChanged(int index);
-    void doDownload();
     void doClose();
-    void doFind();
     void httpContentFinished();
     void httpFileFinished();
-    void httpDetailSvgFinished();
-    void httpDetailFinished();
+    void linkClicked(const QUrl &url);
 
 private:
     QString m_fileName;
-    QTreeWidget *trvProject;
 
-    QComboBox *cmbVersion;
-    QLabel *lblName;
-    QLabel *lblDate;
-    QLabel *lblAuthor;
-    QLabel *lblAffiliation;
-    QLabel *lblNotification;
-
-    QLineEdit *txtFind;
-    QPushButton *btnFind;
-
-    QPushButton *btnDownload;
-    QSvgWidget *svgImage;
+    QWebView *webView;
 
     QNetworkAccessManager networkAccessManager;
     QNetworkReply *networkReply;
