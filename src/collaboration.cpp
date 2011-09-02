@@ -22,6 +22,139 @@
 
 #include <QtWebKit>
 
+static QNetworkAccessManager *networkAccessManager = NULL;
+static ServerLoginDialog *serverLoginDialog;
+
+ServerLoginDialog::ServerLoginDialog(QWidget *parent)
+    : QDialog(parent), m_userName("")
+{
+    logMessage("ServerLoginDialog::ServerLoginDialog()");
+
+    setWindowIcon(icon("collaboration"));
+    setWindowTitle(tr("Login"));
+
+    createControls();
+
+    setMinimumSize(sizeHint());
+
+    QSettings settings;
+    restoreGeometry(settings.value("ServerLoginDialog/Geometry", saveGeometry()).toByteArray());
+
+    // remembered values
+    txtUsername->setText(settings.value("ServerLoginDialog/Username", "").toString());
+    chkRememberPassword->setChecked(settings.value("ServerLoginDialog/RememberPassword", false).toBool());
+    txtPassword->setText(settings.value("ServerLoginDialog/Password", "").toString());
+}
+
+ServerLoginDialog::~ServerLoginDialog()
+{
+    logMessage("ServerLoginDialog::~ServerLoginDialog()");
+
+    QSettings settings;
+    settings.setValue("ServerLoginDialog/Geometry", saveGeometry());
+}
+
+int ServerLoginDialog::showDialog()
+{
+    lblCaption->setText("");
+    logMessage("ServerLoginDialog::showDialog()");
+
+    return exec();
+}
+
+void ServerLoginDialog::createControls()
+{
+    logMessage("ServerLoginDialog::createControls()");
+
+    txtUsername = new QLineEdit(this);
+    txtPassword = new QLineEdit(this);
+    txtPassword->setEchoMode(QLineEdit::Password);
+    lblCaption = new QLabel(this);
+
+    chkRememberPassword = new QCheckBox(tr("Remember password"), this);
+
+    QFormLayout *formLayout = new QFormLayout();
+    formLayout->addRow(tr("Username:"), txtUsername);
+    formLayout->addRow(tr("Password:"), txtPassword);
+    formLayout->addRow("", chkRememberPassword);
+    formLayout->addRow("", lblCaption);
+
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(formLayout, 1);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+}
+
+void ServerLoginDialog::login(const QString &username, const QString &password)
+{
+    m_userName = tr("Anonymous user");
+
+    QByteArray postData;
+    postData.append("login_username=" + username + "&");
+    postData.append("login_password=" + password);
+
+    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "/login_xml.php")), postData);
+
+    connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
+}
+
+void ServerLoginDialog::httpContentFinished()
+{
+    QString content = networkReply->readAll();
+    if (content.startsWith("User: "))
+    {
+        QSettings settings;
+        settings.setValue("ServerLoginDialog/Username", txtUsername->text());
+        settings.setValue("ServerLoginDialog/RememberPassword", chkRememberPassword->isChecked());
+        if (chkRememberPassword->isChecked())
+            settings.setValue("ServerLoginDialog/Password", txtPassword->text());
+        else
+            settings.setValue("ServerLoginDialog/Password", "");
+
+        m_userName = content.right(content.length() - 6);
+
+        accept();
+    }
+    else
+    {
+        lblCaption->setText(content);
+    }
+}
+
+void ServerLoginDialog::doAccept()
+{
+    logMessage("ServerLoginDialog::doAccept()");
+
+    if (txtUsername->text().isEmpty())
+    {
+        QMessageBox::critical(this, "", "Username is empty.");
+        return;
+    }
+    if (txtPassword->text().isEmpty())
+    {
+        QMessageBox::critical(this, "", "Password is empty.");
+        return;
+    }
+
+    login(txtUsername->text(), txtPassword->text());
+}
+
+void ServerLoginDialog::doReject()
+{
+    logMessage("ServerLoginDialog::doReject()");
+
+    reject();
+}
+
+// ***********************************************************************************
+
 ServerDownloadDialog::ServerDownloadDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("ServerDownloadDialog::ServerDownloadDialog()");
@@ -35,6 +168,8 @@ ServerDownloadDialog::ServerDownloadDialog(QWidget *parent) : QDialog(parent)
 
     QSettings settings;
     restoreGeometry(settings.value("ServerDownloadDialog/Geometry", saveGeometry()).toByteArray());
+
+    load(Util::config()->collaborationServerURL + "problems.php");
 }
 
 ServerDownloadDialog::~ServerDownloadDialog()
@@ -56,35 +191,30 @@ void ServerDownloadDialog::createControls()
 {
     logMessage("ServerDownloadDialog::createControls()");
 
-    networkAccessManager.setCookieJar(new QNetworkCookieJar());
+    lblName = new QLabel(tr("Anonymous user"));
+
+    if (!networkAccessManager)
+        networkAccessManager = new QNetworkAccessManager();
+    networkAccessManager->setCookieJar(new QNetworkCookieJar());
 
     webView = new QWebView(this);
-    webView->page()->setNetworkAccessManager(&networkAccessManager);
+    webView->page()->setNetworkAccessManager(networkAccessManager);
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
 
-    QByteArray postData;
-    postData.append("login_username=karban");
-    postData.append("login_password=agros");
-
-    // QNetworkRequest *request = new QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "/login.php"));
-    // request->setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-    // networkAccessManager.post(*request, postData);
-
-    // networkReply->setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-    networkReply = networkAccessManager.post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "/login.php")), postData);
-
-    // connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
-    connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
-    // webView->setUrl(QUrl(Util::config()->collaborationServerURL + "/problems.php"));
-    // webView->load(networkReply->request(), QNetworkAccessManager::PostOperation);
+    if (!serverLoginDialog)
+        serverLoginDialog = new ServerLoginDialog(this);
 
     // dialog buttons
+    QPushButton *btnLogin = new QPushButton(tr("Login"));
+    connect(btnLogin, SIGNAL(clicked()), this, SLOT(doLogin()));
     QPushButton *btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
+    layoutButtonViewport->addWidget(lblName);
     layoutButtonViewport->addStretch();
+    layoutButtonViewport->addWidget(btnLogin);
     layoutButtonViewport->addWidget(btnClose);
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -107,18 +237,13 @@ void ServerDownloadDialog::load(const QString &str)
     webView->load(QUrl(url));
 }
 
-void ServerDownloadDialog::httpContentFinished()
-{
-    load(Util::config()->collaborationServerURL + "problems.php");
-}
-
 void ServerDownloadDialog::readFromServerXML(int ID, int version)
 {
     logMessage("ServerDownloadDialog::readFromServerXML()");
 
-    networkReply = networkAccessManager.get(QNetworkRequest(QUrl(QString(Util::config()->collaborationServerURL + "/problem_download.php?type=xml&id=%1&version=%2").
-                                                                 arg(QString::number(ID)).
-                                                                 arg(QString::number(version)))));
+    networkReply = networkAccessManager->get(QNetworkRequest(QUrl(QString(Util::config()->collaborationServerURL + "/problem_download.php?type=xml&id=%1&version=%2").
+                                                                  arg(QString::number(ID)).
+                                                                  arg(QString::number(version)))));
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
 }
 
@@ -147,6 +272,13 @@ void ServerDownloadDialog::linkClicked(const QUrl &url)
     }
 }
 
+void ServerDownloadDialog::doLogin()
+{
+    serverLoginDialog->showDialog();
+    webView->reload();
+    lblName->setText(serverLoginDialog->userName());
+}
+
 void ServerDownloadDialog::doClose()
 {
     logMessage("ServerDownloadDialog::doClose()");
@@ -167,8 +299,6 @@ ServerUploadDialog::ServerUploadDialog(QWidget *parent) : QDialog(parent)
 
     QSettings settings;
     restoreGeometry(settings.value("ServerUploadDialog/Geometry", saveGeometry()).toByteArray());
-
-    readFromServerContent();
 }
 
 ServerUploadDialog::~ServerUploadDialog()
@@ -177,37 +307,31 @@ ServerUploadDialog::~ServerUploadDialog()
 
     QSettings settings;
     settings.setValue("ServerUploadDialog/Geometry", saveGeometry());
-    settings.setValue("ServerUploadDialog/Author", txtAuthor->text());
-    settings.setValue("ServerUploadDialog/Affiliation", txtAffiliation->text());
 }
 
 int ServerUploadDialog::showDialog()
 {
     logMessage("ServerUploadDialog::showDialog()");
 
-    return exec();
+    if (serverLoginDialog->showDialog() == QDialog::Accepted)
+    {
+        readFromServerContent();
+        return exec();
+    }
 }
 
 void ServerUploadDialog::createControls()
 {
     logMessage("ServerUploadDialog::createControls()");
 
-    lblName = new QLabel(this);
-    lblName->setVisible(false);
     cmbName = new QComboBox(this);
     cmbName->setVisible(false);
-    connect(cmbName, SIGNAL(highlighted(int)), this, SLOT(doExistingProblemSelected(int)));
+    txtName = new QLineEdit(this);
 
     lblInformation = new QLabel(this);
     QPalette palette = lblInformation->palette();
     palette.setColor(QPalette::WindowText, Qt::blue);
     lblInformation->setPalette(palette);
-    txtAuthor = new QLineEdit(this);
-    txtAffiliation = new QLineEdit(this);
-
-    QSettings settings;
-    txtAuthor->setText(settings.value("ServerUploadDialog/Author", "").toString());
-    txtAffiliation->setText(settings.value("ServerUploadDialog/Affiliation", "").toString());
 
     radDocumentNew = new QRadioButton(tr("New"), this);
     radDocumentNew->setChecked(true);
@@ -218,15 +342,13 @@ void ServerUploadDialog::createControls()
     QGridLayout *layoutDialog = new QGridLayout();
     layoutDialog->addWidget(new QLabel(tr("Document:")), 0, 0);
     layoutDialog->addWidget(radDocumentNew, 0, 1);
-    layoutDialog->addWidget(radDocumentExisting, 0, 2);
-    layoutDialog->addWidget(new QLabel(tr("Name:")), 1, 0);
-    layoutDialog->addWidget(lblName, 1, 1, 1, 2);
-    layoutDialog->addWidget(cmbName, 1, 1, 1, 2);
-    layoutDialog->addWidget(lblInformation, 2, 1);
-    layoutDialog->addWidget(new QLabel(tr("Author:")), 3, 0);
-    layoutDialog->addWidget(txtAuthor, 3, 1, 1, 2);
-    layoutDialog->addWidget(new QLabel(tr("Affiliation:")), 4, 0);
-    layoutDialog->addWidget(txtAffiliation, 4, 1, 1, 2);
+    layoutDialog->addWidget(radDocumentExisting, 1, 1);
+    layoutDialog->addWidget(new QLabel(tr("Name:")), 2, 0);
+    layoutDialog->addWidget(cmbName, 2, 1, 1, 2);
+    layoutDialog->addWidget(txtName, 2, 1, 1, 2);
+    layoutDialog->addWidget(new QLabel(tr("Physic field:")), 3, 0);
+    layoutDialog->addWidget(new QLabel(physicFieldString(Util::scene()->problemInfo()->physicField())), 3, 1);
+    layoutDialog->addWidget(lblInformation, 5, 1);
 
     // dialog buttons
     btnUpload = new QPushButton(tr("Upload"));
@@ -255,7 +377,7 @@ void ServerUploadDialog::doDocumentChanged()
     logMessage("ServerUploadDialog::doDocumentChanged()");
 
     cmbName->setVisible(false);
-    lblName->setVisible(false);
+    txtName->setVisible(false);
 
     if (radDocumentExisting->isChecked())
     {
@@ -269,16 +391,8 @@ void ServerUploadDialog::doDocumentChanged()
     }
     else
     {
-        lblName->setVisible(true);
-        lblName->setText(Util::scene()->problemInfo()->name);
-
-        if (Util::scene()->problemInfo()->name == QString(tr("unnamed")))
-        {
-            lblInformation->setText("Please, set name of the problem in problem dialog");
-            btnUpload->setDisabled(true);
-        }
-        else
-            lblInformation->clear();
+        txtName->setVisible(true);
+        txtName->setText(Util::scene()->problemInfo()->name);
     }
 }
 
@@ -294,7 +408,10 @@ void ServerUploadDialog::readFromServerContent()
 {
     logMessage("ServerUploadDialog::readFromServerContent()");
 
-    networkReply = networkAccessManager.get(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problem_list_xml.php")));
+    QByteArray postData;
+    postData.append("physicfield=" + physicFieldToStringKey(Util::scene()->problemInfo()->physicField()));
+
+    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problems_xml.php")), postData);
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
 }
 
@@ -305,11 +422,11 @@ void ServerUploadDialog::httpContentFinished()
     QString content = networkReply->readAll();
     if (content.isEmpty())
     {
-        lblNotification->setText(tr("Colaboration server could not be connected"));
-        btnUpload->setDisabled(true);
-
-        return;
+        QMessageBox::critical(this, "", tr("Colaboration server could not be connected"));
+        close();
     }
+
+    qDebug() << content;
 
     QDomDocument doc;
     doc.setContent(content);
@@ -348,11 +465,10 @@ void ServerUploadDialog::uploadToServer()
     QByteArray postData;
     postData.append("id_problem=" + QString::number(id_problem) + "&");
     postData.append("name=" + name + "&");
-    postData.append("author=" + txtAuthor->text() + "&");
-    postData.append("affiliation=" + txtAffiliation->text() + "&");
+    postData.append("physicfield=" + physicFieldToStringKey(Util::scene()->problemInfo()->physicField()) + "&");
     postData.append("content=" + text);
 
-    networkReply = networkAccessManager.post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problem_upload.php")), postData);
+    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problem_upload.php")), postData);
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
 }
 

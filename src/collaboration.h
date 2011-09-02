@@ -27,6 +27,35 @@
 
 class QWebView;
 
+class ServerLoginDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    ServerLoginDialog(QWidget *parent = 0);
+    ~ServerLoginDialog();
+
+    int showDialog();
+    void createControls();
+
+    void login(const QString &username, const QString &password);
+    inline QString userName() { return m_userName; }
+
+private slots:
+    void doAccept();
+    void doReject();
+    void httpContentFinished();
+
+private:
+    QString m_userName;
+
+    QLineEdit *txtUsername;
+    QLineEdit *txtPassword;
+    QCheckBox *chkRememberPassword;
+    QLabel *lblCaption;
+
+    QNetworkReply *networkReply;
+};
+
 class ServerDownloadDialog : public QDialog
 {
     Q_OBJECT
@@ -43,16 +72,16 @@ public:
 private slots:
     void load(const QString &str);
     void doClose();
-    void httpContentFinished();
+    void doLogin();
     void httpFileFinished();
     void linkClicked(const QUrl &url);
 
 private:
     QString m_fileName;
 
+    QLabel *lblName;
     QWebView *webView;
 
-    QNetworkAccessManager networkAccessManager;
     QNetworkReply *networkReply;
 };
 
@@ -77,16 +106,13 @@ private slots:
     void doExistingProblemSelected(int index);
 
 private:
-    QNetworkAccessManager networkAccessManager;
     QNetworkReply *networkReply;
 
     QRadioButton *radDocumentNew;
     QRadioButton *radDocumentExisting;
-    QLabel *lblName;
-    QLabel *lblInformation;
     QComboBox *cmbName;
-    QLineEdit *txtAuthor;
-    QLineEdit *txtAffiliation;
+    QLineEdit *txtName;
+    QLabel *lblInformation;
     QLabel *lblNotification;
     QPushButton *btnUpload;
 };
