@@ -42,7 +42,6 @@ public:
 
 private slots:
     void load(const QString &str);
-    void loadProblems();
     void doClose();
     void httpContentFinished();
     void httpFileFinished();

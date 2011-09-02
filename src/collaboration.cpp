@@ -80,14 +80,11 @@ void ServerDownloadDialog::createControls()
     // webView->load(networkReply->request(), QNetworkAccessManager::PostOperation);
 
     // dialog buttons
-    QPushButton *btnProblems = new QPushButton(tr("Problems"));
-    connect(btnProblems, SIGNAL(clicked()), this, SLOT(loadProblems()));
     QPushButton *btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
     layoutButtonViewport->addStretch();
-    layoutButtonViewport->addWidget(btnProblems);
     layoutButtonViewport->addWidget(btnClose);
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -110,14 +107,9 @@ void ServerDownloadDialog::load(const QString &str)
     webView->load(QUrl(url));
 }
 
-void ServerDownloadDialog::loadProblems()
-{
-    load(Util::config()->collaborationServerURL + "problems.php");
-}
-
 void ServerDownloadDialog::httpContentFinished()
 {
-    loadProblems();
+    load(Util::config()->collaborationServerURL + "problems.php");
 }
 
 void ServerDownloadDialog::readFromServerXML(int ID, int version)
