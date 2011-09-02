@@ -79,9 +79,6 @@ void ConfigDialog::load()
     chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
     chkZoomToMouse->setChecked(Util::config()->zoomToMouse);
 
-    // scene font
-    lblSceneFontExample->setFont(Util::config()->sceneFont);
-
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(Util::config()->deleteTriangleMeshFiles);
     chkDeleteHermes2DMeshFile->setChecked(Util::config()->deleteHermes2DMeshFile);
@@ -103,18 +100,6 @@ void ConfigDialog::load()
     colorSolutionMesh->setColor(Util::config()->colorSolutionMesh);
     colorHighlighted->setColor(Util::config()->colorHighlighted);
     colorSelected->setColor(Util::config()->colorSelected);
-
-    // grid
-    txtGridStep->setText(QString::number(Util::config()->gridStep));
-    chkShowGrid->setChecked(Util::config()->showGrid);
-    chkSnapToGrid->setChecked(Util::config()->snapToGrid);
-    chkRulers->setChecked(Util::config()->showRulers);
-
-    // axes
-    chkShowAxes->setChecked(Util::config()->showAxes);
-
-    // label
-    chkShowLabel->setChecked(Util::config()->showLabel);
 
     // scalar field
     chkScalarFieldRangeLog->setChecked(Util::config()->scalarRangeLog);
@@ -200,9 +185,6 @@ void ConfigDialog::save()
     Util::config()->labelSize = txtGeometryLabelSize->value();
     Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
 
-    // scene font
-    Util::config()->sceneFont = lblSceneFontExample->font();
-
     // mesh
     Util::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
     Util::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
@@ -228,18 +210,6 @@ void ConfigDialog::save()
     Util::config()->colorSolutionMesh = colorSolutionMesh->color();
     Util::config()->colorHighlighted = colorHighlighted->color();
     Util::config()->colorSelected = colorSelected->color();
-
-    // grid
-    Util::config()->showGrid = chkShowGrid->isChecked();
-    Util::config()->gridStep = txtGridStep->text().toDouble();
-    Util::config()->showRulers = chkRulers->isChecked();
-    Util::config()->snapToGrid = chkSnapToGrid->isChecked();
-
-    // axes
-    Util::config()->showAxes = chkShowAxes->isChecked();
-
-    // label
-    Util::config()->showLabel = chkShowLabel->isChecked();
 
     // scalar view
     Util::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
@@ -469,44 +439,10 @@ QWidget *ConfigDialog::createViewWidget()
     QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
     grpGeometry->setLayout(layoutGeometry);
 
-    // layout grid
-    txtGridStep = new QLineEdit("0.1");
-    txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
-    chkShowGrid = new QCheckBox(tr("Show grid"));
-    chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
-
-    QGridLayout *layoutGrid = new QGridLayout();
-    layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
-    layoutGrid->addWidget(txtGridStep, 0, 1);
-    layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
-    layoutGrid->addWidget(chkSnapToGrid,2 ,0, 1, 2);
-
-    QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
-    grpGrid->setLayout(layoutGrid);
-
-    // scene font
-    lblSceneFontExample = new QLabel(QString("%1, %2").arg(Util::config()->sceneFont.family()).arg(Util::config()->sceneFont.pointSize()));
-
-    btnSceneFont = new QPushButton(tr("Set font"));
-    connect(btnSceneFont, SIGNAL(clicked()), this, SLOT(doSceneFont()));
-
-    QGridLayout *layoutFont = new QGridLayout();
-    layoutFont->addWidget(lblSceneFontExample, 0, 1);
-    layoutFont->addWidget(btnSceneFont, 0, 2);
-
-    QGroupBox *grpFont = new QGroupBox(tr("Scene font"));
-    grpFont->setLayout(layoutFont);
-
-    // others
-    chkRulers = new QCheckBox(tr("Show rulers"));
-    chkShowAxes = new QCheckBox(tr("Show axes"));
-    chkShowLabel = new QCheckBox(tr("Show label"));
+    // others;
     chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
 
     QVBoxLayout *layoutOther = new QVBoxLayout();
-    layoutOther->addWidget(chkShowAxes);
-    layoutOther->addWidget(chkRulers);
-    layoutOther->addWidget(chkShowLabel);
     layoutOther->addWidget(chkZoomToMouse);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));
@@ -515,8 +451,6 @@ QWidget *ConfigDialog::createViewWidget()
     // layout general
     QVBoxLayout *layoutGeneral = new QVBoxLayout();
     layoutGeneral->addWidget(grpGeometry);
-    layoutGeneral->addWidget(grpGrid);
-    layoutGeneral->addWidget(grpFont);
     layoutGeneral->addWidget(grpOther);
     layoutGeneral->addStretch();
 
@@ -908,19 +842,6 @@ void ConfigDialog::doColorsDefault()
     colorSolutionMesh->setColor(COLORSOLUTIONMESH);
     colorHighlighted->setColor(COLORHIGHLIGHTED);
     colorSelected->setColor(COLORSELECTED);
-}
-
-void ConfigDialog::doSceneFont()
-{
-    logMessage("ConfigDialog::doSceneFont()");
-
-    bool ok;
-    QFont sceneFont = QFontDialog::getFont(&ok, lblSceneFontExample->font(), this);
-    if (ok)
-    {
-        lblSceneFontExample->setFont(sceneFont);
-        lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
-    }
 }
 
 // *******************************************************************************************************

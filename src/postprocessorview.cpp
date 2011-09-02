@@ -83,8 +83,16 @@ void PostprocessorView::loadAdvanced()
 {
     logMessage("PostprocessorView::loadAdvanced()");
 
-    // contours
-    txtContoursCount->setValue(Util::config()->contoursCount);
+    // workspace
+    txtGridStep->setText(QString::number(Util::config()->gridStep));
+    chkShowGrid->setChecked(Util::config()->showGrid);
+    chkSnapToGrid->setChecked(Util::config()->snapToGrid);
+
+    lblSceneFontExample->setFont(Util::config()->sceneFont);
+
+    chkShowAxes->setChecked(Util::config()->showAxes);
+    chkShowRulers->setChecked(Util::config()->showRulers);
+    chkShowLabel->setChecked(Util::config()->showLabel);
 
     // scalar field
     chkShowScalarScale->setChecked(Util::config()->showScalarScale);
@@ -93,6 +101,9 @@ void PostprocessorView::loadAdvanced()
     doPaletteFilter(chkPaletteFilter->checkState());
     txtPaletteSteps->setValue(Util::config()->paletteSteps);
     cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(Util::config()->linearizerQuality));
+
+    // contours
+    txtContoursCount->setValue(Util::config()->contoursCount);
 
     // vector field
     chkVectorProportional->setChecked(Util::config()->vectorProportional);
@@ -141,8 +152,17 @@ void PostprocessorView::saveAdvanced()
 {
     logMessage("PostprocessorView::saveAdvanced()");
 
-    // contours
-    Util::config()->contoursCount = txtContoursCount->value();
+    // workspace
+    Util::config()->showGrid = chkShowGrid->isChecked();
+    Util::config()->gridStep = txtGridStep->text().toDouble();
+    Util::config()->showRulers = chkShowRulers->isChecked();
+    Util::config()->snapToGrid = chkSnapToGrid->isChecked();
+
+    Util::config()->sceneFont = lblSceneFontExample->font();
+
+    Util::config()->showAxes = chkShowAxes->isChecked();
+    Util::config()->showRulers = chkShowRulers->isChecked();
+    Util::config()->showLabel = chkShowLabel->isChecked();
 
     // scalar field
     Util::config()->showScalarScale = chkShowScalarScale->isChecked();
@@ -150,6 +170,9 @@ void PostprocessorView::saveAdvanced()
     Util::config()->paletteFilter = chkPaletteFilter->isChecked();
     Util::config()->paletteSteps = txtPaletteSteps->value();
     Util::config()->linearizerQuality = cmbLinearizerQuality->itemData(cmbLinearizerQuality->currentIndex()).toDouble();
+
+    // contours
+    Util::config()->contoursCount = txtContoursCount->value();
 
     // vector field
     Util::config()->vectorProportional = chkVectorProportional->isChecked();
@@ -337,21 +360,61 @@ QWidget *PostprocessorView::controlsAdvanced()
 
     double minWidth = 110;
 
-    // layout contours
-    txtContoursCount = new QSpinBox(this);
-    txtContoursCount->setMinimum(1);
-    txtContoursCount->setMaximum(100);
+    // workspace
+    txtGridStep = new QLineEdit("0.1");
+    txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
+    chkShowGrid = new QCheckBox(tr("Show grid"));
+    connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
+    chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
 
-    QGridLayout *layoutContours = new QGridLayout();
-    layoutContours->setColumnMinimumWidth(0, minWidth);
-    layoutContours->setColumnStretch(1, 1);
-    layoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
-    layoutContours->addWidget(txtContoursCount, 0, 1);
+    QGridLayout *layoutGrid = new QGridLayout();
+    layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
+    layoutGrid->addWidget(txtGridStep, 0, 1);
+    layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
+    layoutGrid->addWidget(chkSnapToGrid,2 ,0, 1, 2);
 
-    QGroupBox *grpContours = new QGroupBox(tr("Contours"));
-    grpContours->setLayout(layoutContours);
+    QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
+    grpGrid->setLayout(layoutGrid);
 
-    // layout palette
+    lblSceneFontExample = new QLabel(QString("%1, %2").arg(Util::config()->sceneFont.family()).arg(Util::config()->sceneFont.pointSize()));
+
+    btnSceneFont = new QPushButton(tr("Set font"));
+    connect(btnSceneFont, SIGNAL(clicked()), this, SLOT(doSceneFont()));
+
+    QGridLayout *layoutFont = new QGridLayout();
+    layoutFont->addWidget(lblSceneFontExample, 0, 1);
+    layoutFont->addWidget(btnSceneFont, 0, 2);
+
+    QGroupBox *grpFont = new QGroupBox(tr("Scene font"));
+    grpFont->setLayout(layoutFont);
+
+    // others
+    chkShowRulers = new QCheckBox(tr("Show rulers"));
+    chkShowAxes = new QCheckBox(tr("Show axes"));
+    chkShowLabel = new QCheckBox(tr("Show label"));
+
+    QVBoxLayout *layoutOther = new QVBoxLayout();
+    layoutOther->addWidget(chkShowAxes);
+    layoutOther->addWidget(chkShowRulers);
+    layoutOther->addWidget(chkShowLabel);
+
+    QGroupBox *grpOther = new QGroupBox(tr("Other"));
+    grpOther->setLayout(layoutOther);
+
+    QPushButton *btnWorkspaceDefault = new QPushButton(tr("Default"));
+    connect(btnWorkspaceDefault, SIGNAL(clicked()), this, SLOT(doWorkspaceDefault()));
+
+    QVBoxLayout *layoutWorkspace = new QVBoxLayout();
+    layoutWorkspace->addWidget(grpGrid);
+    layoutWorkspace->addWidget(grpFont);
+    layoutWorkspace->addWidget(grpOther);
+    layoutWorkspace->addStretch();
+    layoutWorkspace->addWidget(btnWorkspaceDefault, 0, Qt::AlignLeft);
+
+    QWidget *workspaceWidget = new QWidget();
+    workspaceWidget->setLayout(layoutWorkspace);
+
+    // scalar field
     cmbPalette = new QComboBox();
     cmbPalette->addItem(tr("Jet"), Palette_Jet);
     cmbPalette->addItem(tr("Autumn"), Palette_Autumn);
@@ -380,20 +443,50 @@ QWidget *PostprocessorView::controlsAdvanced()
 
     chkShowScalarScale = new QCheckBox(tr("Show scale"), this);
 
-    QGridLayout *layoutScalarField = new QGridLayout();
-    layoutScalarField->setColumnMinimumWidth(0, minWidth);
-    layoutScalarField->setColumnStretch(1, 1);
-    layoutScalarField->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    layoutScalarField->addWidget(cmbPalette, 0, 1, 1, 2);
-    layoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 0);
-    layoutScalarField->addWidget(txtPaletteSteps, 1, 1);
-    layoutScalarField->addWidget(chkPaletteFilter, 1, 2);
-    layoutScalarField->addWidget(new QLabel(tr("Quality:")), 2, 0);
-    layoutScalarField->addWidget(cmbLinearizerQuality, 2, 1, 1, 2);
-    layoutScalarField->addWidget(chkShowScalarScale, 3, 0, 1, 2);
+    QPushButton *btnScalarFieldDefault = new QPushButton(tr("Default"));
+    connect(btnScalarFieldDefault, SIGNAL(clicked()), this, SLOT(doScalarFieldDefault()));
 
-    QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
-    grpScalarView->setLayout(layoutScalarField);
+    QGridLayout *gridLayoutScalarField = new QGridLayout();
+    gridLayoutScalarField->setColumnMinimumWidth(0, minWidth);
+    gridLayoutScalarField->setColumnStretch(1, 1);
+    gridLayoutScalarField->addWidget(new QLabel(tr("Palette:")), 0, 0);
+    gridLayoutScalarField->addWidget(cmbPalette, 0, 1, 1, 2);
+    gridLayoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 0);
+    gridLayoutScalarField->addWidget(txtPaletteSteps, 1, 1);
+    gridLayoutScalarField->addWidget(chkPaletteFilter, 1, 2);
+    gridLayoutScalarField->addWidget(new QLabel(tr("Quality:")), 2, 0);
+    gridLayoutScalarField->addWidget(cmbLinearizerQuality, 2, 1, 1, 2);
+    gridLayoutScalarField->addWidget(chkShowScalarScale, 3, 0, 1, 2);
+
+    QVBoxLayout *layoutScalarField = new QVBoxLayout();
+    layoutScalarField->addLayout(gridLayoutScalarField);
+    layoutScalarField->addStretch();
+    layoutScalarField->addWidget(btnScalarFieldDefault, 0, Qt::AlignLeft);
+
+    QWidget *scalarFieldWidget = new QWidget();
+    scalarFieldWidget->setLayout(layoutScalarField);
+
+    // contours
+    txtContoursCount = new QSpinBox(this);
+    txtContoursCount->setMinimum(1);
+    txtContoursCount->setMaximum(100);
+
+    QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
+    connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursDefault()));
+
+    QGridLayout *gridLayoutContours = new QGridLayout();
+    gridLayoutContours->setColumnMinimumWidth(0, minWidth);
+    gridLayoutContours->setColumnStretch(1, 1);
+    gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
+    gridLayoutContours->addWidget(txtContoursCount, 0, 1);
+
+    QVBoxLayout *layoutContours = new QVBoxLayout();
+    layoutContours->addLayout(gridLayoutContours);
+    layoutContours->addStretch();
+    layoutContours->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
+
+    QWidget *contoursWidget = new QWidget();
+    contoursWidget->setLayout(layoutContours);
 
     // vector field
     chkVectorProportional = new QCheckBox(tr("Proportional"), this);
@@ -407,20 +500,28 @@ QWidget *PostprocessorView::controlsAdvanced()
     txtVectorScale->setMinimum(0);
     txtVectorScale->setMaximum(20);
 
-    QGridLayout *layoutVectorField = new QGridLayout();
-    layoutVectorField->setColumnMinimumWidth(0, minWidth);
-    layoutVectorField->setColumnStretch(1, 1);
-    layoutVectorField->addWidget(new QLabel(tr("Vectors:")), 0, 0);
-    layoutVectorField->addWidget(txtVectorCount, 0, 1);
-    layoutVectorField->addWidget(chkVectorProportional, 0, 2);
-    layoutVectorField->addWidget(new QLabel(tr("Scale:")), 1, 0);
-    layoutVectorField->addWidget(txtVectorScale, 1, 1);
-    layoutVectorField->addWidget(chkVectorColor, 1, 2);
+    QPushButton *btnVectorFieldDefault = new QPushButton(tr("Default"));
+    connect(btnVectorFieldDefault, SIGNAL(clicked()), this, SLOT(doVectorFieldDefault()));
 
-    QGroupBox *grpVectorView = new QGroupBox(tr("Vector view"));
-    grpVectorView->setLayout(layoutVectorField);
+    QGridLayout *gridLayoutVectorField = new QGridLayout();
+    gridLayoutVectorField->setColumnMinimumWidth(0, minWidth);
+    gridLayoutVectorField->setColumnStretch(1, 1);
+    gridLayoutVectorField->addWidget(new QLabel(tr("Vectors:")), 0, 0);
+    gridLayoutVectorField->addWidget(txtVectorCount, 0, 1);
+    gridLayoutVectorField->addWidget(chkVectorProportional, 0, 2);
+    gridLayoutVectorField->addWidget(new QLabel(tr("Scale:")), 1, 0);
+    gridLayoutVectorField->addWidget(txtVectorScale, 1, 1);
+    gridLayoutVectorField->addWidget(chkVectorColor, 1, 2);
 
-    // layout order
+    QVBoxLayout *layoutVectorField = new QVBoxLayout();
+    layoutVectorField->addLayout(gridLayoutVectorField);
+    layoutVectorField->addStretch();
+    layoutVectorField->addWidget(btnVectorFieldDefault, 0, Qt::AlignLeft);
+
+    QWidget *vectorFieldWidget = new QWidget();
+    vectorFieldWidget->setLayout(layoutVectorField);
+
+    // polynomial order
     cmbOrderPaletteOrder = new QComboBox();
     cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
     cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
@@ -430,29 +531,35 @@ QWidget *PostprocessorView::controlsAdvanced()
     chkShowOrderScale = new QCheckBox(tr("Show scale"), this);
     chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
 
-    QGridLayout *layoutOrder = new QGridLayout();
-    layoutOrder->setColumnMinimumWidth(0, minWidth);
-    layoutOrder->setColumnStretch(1, 1);
-    layoutOrder->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    layoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
-    layoutOrder->addWidget(chkShowOrderScale, 1, 0, 1, 2);
-    layoutOrder->addWidget(chkOrderLabel, 2, 0, 1, 2);
+    QPushButton *btnOrderDefault = new QPushButton(tr("Default"));
+    connect(btnOrderDefault, SIGNAL(clicked()), this, SLOT(doOrderDefault()));
 
-    QGroupBox *grpOrder = new QGroupBox(tr("Polynomial order"));
-    grpOrder->setLayout(layoutOrder);
+    QGridLayout *gridLayoutOrder = new QGridLayout();
+    gridLayoutOrder->setColumnMinimumWidth(0, minWidth);
+    gridLayoutOrder->setColumnStretch(1, 1);
+    gridLayoutOrder->addWidget(new QLabel(tr("Palette:")), 0, 0);
+    gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
+    gridLayoutOrder->addWidget(chkShowOrderScale, 1, 0, 1, 2);
+    gridLayoutOrder->addWidget(chkOrderLabel, 2, 0, 1, 2);
 
-    // default
-    QPushButton *btnDefault = new QPushButton(tr("Default"));
-    connect(btnDefault, SIGNAL(clicked()), this, SLOT(doDefault()));
+    QVBoxLayout *layoutOrder = new QVBoxLayout();
+    layoutOrder->addLayout(gridLayoutOrder);
+    layoutOrder->addStretch();
+    layoutOrder->addWidget(btnOrderDefault, 0, Qt::AlignLeft);
+
+    QWidget *orderWidget = new QWidget();
+    orderWidget->setLayout(layoutOrder);
+
+    tbxAdvance = new QToolBox();
+    tbxAdvance->addItem(workspaceWidget, icon(""), "Workspace");
+    tbxAdvance->addItem(scalarFieldWidget, icon(""), "Scalar view");
+    tbxAdvance->addItem(contoursWidget, icon(""), "Contours");
+    tbxAdvance->addItem(vectorFieldWidget, icon(""), "Vector field");
+    tbxAdvance->addItem(orderWidget, icon(""), "Polynomial order");
 
     // layout postprocessor
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpContours);
-    layout->addWidget(grpScalarView);
-    layout->addWidget(grpVectorView);
-    layout->addWidget(grpOrder);
-    layout->addStretch();
-    layout->addWidget(btnDefault, 0, Qt::AlignLeft);
+    layout->addWidget(tbxAdvance);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -514,9 +621,6 @@ void PostprocessorView::setControls()
 
     bool isMeshed = Util::scene()->sceneSolution()->isMeshed();
     bool isSolved = Util::scene()->sceneSolution()->isSolved();
-
-    // disable controls
-    advanced->setEnabled(isSolved);
 
     chkShowGeometry->setEnabled(true);
 
@@ -609,28 +713,56 @@ void PostprocessorView::doApply()
     activateWindow();
 }
 
-void PostprocessorView::doDefault()
+void PostprocessorView::doWorkspaceDefault()
 {
-    logMessage("PostprocessorView::doDefault()");
+    logMessage("PostprocessorView::doWorkspaceDefault()");
 
-    // countour
-    txtContoursCount->setValue(CONTOURSCOUNT);
+    txtGridStep->setText(QString::number(GRIDSTEP));
+    chkShowGrid->setChecked(SHOWGRID);
+    chkSnapToGrid->setChecked(SNAPTOGRID);
 
-    // scalar view
+    lblSceneFontExample->setFont(FONT);
+
+    chkShowAxes->setChecked(SHOWAXES);
+    chkShowRulers->setChecked(SHOWRULERS);
+    chkShowLabel->setChecked(SHOWLABEL);
+}
+
+void PostprocessorView::doScalarFieldDefault()
+{
+    logMessage("PostprocessorView::doScalarFieldDefault()");
+
     cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) PALETTETYPE));
     chkPaletteFilter->setChecked(PALETTEFILTER);
     txtPaletteSteps->setValue(PALETTESTEPS);
     cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(LINEARIZER_QUALITY));
+    chkShowScalarScale->setChecked(SCALARSCALE);
+}
 
-    // vector view
+void PostprocessorView::doContoursDefault()
+{
+    logMessage("PostprocessorView::doContoursDefault()");
+
+    txtContoursCount->setValue(CONTOURSCOUNT);
+}
+
+void PostprocessorView::doVectorFieldDefault()
+{
+    logMessage("PostprocessorView::doVecotrFieldDefault()");
+
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
     txtVectorCount->setValue(VECTORNUMBER);
     txtVectorScale->setValue(VECTORSCALE);
+}
 
-    // order view
-    chkOrderLabel->setChecked(ORDERLABEL);
+void PostprocessorView::doOrderDefault()
+{
+    logMessage("PostprocessorView::doPolynomialOrderDefault()");
+
     cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData((PaletteOrderType) ORDERPALETTEORDERTYPE));
+    chkShowOrderScale->setChecked(ORDERSCALE);
+    chkOrderLabel->setChecked(ORDERLABEL);
 }
 
 void PostprocessorView::doScalarFieldRangeMinChanged()
@@ -642,7 +774,7 @@ void PostprocessorView::doScalarFieldRangeMinChanged()
     if (txtScalarFieldRangeMin->value() > txtScalarFieldRangeMax->value())
     {
         lblScalarFieldRangeMinError->setText(QString("> %1").arg(txtScalarFieldRangeMax->value()));
-        btnOK->setDisabled(true);
+        //btnOK->setDisabled(true);
     }
     /*
     else if (txtScalarFieldRangeMin->value() == txtScalarFieldRangeMax->value())
@@ -662,7 +794,7 @@ void PostprocessorView::doScalarFieldRangeMaxChanged()
     if (txtScalarFieldRangeMax->value() < txtScalarFieldRangeMin->value())
     {
         lblScalarFieldRangeMaxError->setText(QString("< %1").arg(txtScalarFieldRangeMin->value()));
-        btnOK->setDisabled(true);
+        //btnOK->setDisabled(true);
     }
     /*
     else if (txtScalarFieldRangeMax->value() == txtScalarFieldRangeMin->value())
@@ -671,4 +803,22 @@ void PostprocessorView::doScalarFieldRangeMaxChanged()
         btnOK->setDisabled(true);
     }
     */
+}
+
+void PostprocessorView::doSceneFont()
+{
+    logMessage("PostprocessorView::doSceneFont()");
+
+    bool ok;
+    QFont sceneFont = QFontDialog::getFont(&ok, lblSceneFontExample->font(), this);
+    if (ok)
+    {
+        lblSceneFontExample->setFont(sceneFont);
+        lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
+    }
+}
+
+void PostprocessorView::doShowGridChanged()
+{
+    chkSnapToGrid->setEnabled(!chkShowGrid->isEnabled());
 }

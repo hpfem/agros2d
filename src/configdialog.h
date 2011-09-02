@@ -40,7 +40,6 @@ private slots:
     void doScalarFieldLog(int state);
     void doClearApplicationLog();
     void doClearCommandHistory();
-    void doSceneFont();
     void doAdaptivityDefault();
     void doCommandsDefault();
     void doColorsDefault();
