@@ -126,7 +126,6 @@ private:
     QToolBar *tlbProblem;
     QToolBar *tlbTools;
     QToolBar *tlbTransient;
-    QToolBar *tlbWorkspace;
 
     QAction *actDocumentNew;
     QAction *actDocumentOpen;

@@ -747,6 +747,25 @@ const QColor COLORSOLUTIONMESH = QColor::fromRgb(150, 70, 0);
 const QColor COLORHIGHLIGHTED = QColor::fromRgb(250, 150, 0);
 const QColor COLORSELECTED = QColor::fromRgb(150, 0, 0);
 
+// workspace
+const double GRIDSTEP = 0.05;
+const bool SHOWGRID = true;
+const bool SNAPTOGRID = false;
+
+#ifdef Q_WS_X11
+    const QFont FONT = QFont("Monospace", 9);
+#endif
+#ifdef Q_WS_WIN
+    const QFont FONT = QFont("Courier New", 9);
+#endif
+#ifdef Q_WS_MAC
+    const QFont FONT = QFont("Monaco", 12);
+#endif
+
+const bool SHOWAXES = true;
+const bool SHOWRULERS = false;
+const bool SHOWLABEL = true;
+
 // posprocessor
 const double LINEARIZER_QUALITY = 0.0006;
 
@@ -758,14 +777,16 @@ const int PALETTESTEPS = 30;
 const bool SCALARRANGELOG = false;
 const double SCALARRANGEBASE = 10;
 const double SCALARDECIMALPLACE = 2;
+const bool SCALARSCALE = true;
 
 const bool VECTORPROPORTIONAL = true;
 const bool VECTORCOLOR = true;
 const int VECTORNUMBER = 50;
 const double VECTORSCALE = 0.6;
 
-const bool ORDERLABEL = false;
+const bool ORDERSCALE = true;
 const PaletteOrderType ORDERPALETTEORDERTYPE = PaletteOrder_Hermes;
+const bool ORDERLABEL = false;
 
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;

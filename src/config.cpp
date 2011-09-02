@@ -87,33 +87,25 @@ void Config::load()
     labelSize = settings.value("SceneViewSettings/LabelSize", 6.0).toDouble();
 
     // font
-#ifdef Q_WS_X11
-    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Monospace", 9)).value<QFont>();
-#endif
-#ifdef Q_WS_WIN
-    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Courier New", 9)).value<QFont>();
-#endif
-#ifdef Q_WS_MAC
-    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Monaco", 12)).value<QFont>();
-#endif
+    sceneFont = settings.value("SceneViewSettings/SceneFont", FONT).value<QFont>();
 
     // mesh
     angleSegmentsCount = settings.value("SceneViewSettings/AngleSegmentsCount", 3).toInt();
     curvilinearElements = settings.value("SceneViewSettings/CurvilinearElements", true).toBool();
 
     // grid
-    showGrid = settings.value("SceneViewSettings/ShowGrid", true).toBool();
-    gridStep = settings.value("SceneViewSettings/GridStep", 0.05).toDouble();
+    showGrid = settings.value("SceneViewSettings/ShowGrid", SHOWGRID).toBool();
+    gridStep = settings.value("SceneViewSettings/GridStep", GRIDSTEP).toDouble();
     // rulers
-    showRulers = settings.value("SceneViewSettings/ShowRulers", false).toBool();
+    showRulers = settings.value("SceneViewSettings/ShowRulers", SHOWRULERS).toBool();
     // snap to grid
-    snapToGrid = settings.value("SceneViewSettings/SnapToGrid", false).toBool();
+    snapToGrid = settings.value("SceneViewSettings/SnapToGrid", SNAPTOGRID).toBool();
 
     // axes
-    showAxes = settings.value("SceneViewSettings/ShowAxes", true).toBool();
+    showAxes = settings.value("SceneViewSettings/ShowAxes", SHOWAXES).toBool();
 
     // label
-    showLabel = settings.value("SceneViewSettings/ShowLabel", true).toBool();
+    showLabel = settings.value("SceneViewSettings/ShowLabel", SHOWLABEL).toBool();
 
     // linearizer quality
     linearizerQuality = settings.value("SceneViewSettings/LinearizerQuality", LINEARIZER_QUALITY).toDouble();
