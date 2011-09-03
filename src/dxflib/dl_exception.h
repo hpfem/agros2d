@@ -1,7 +1,5 @@
 /****************************************************************************
-** $Id: dl_exception.h 3591 2006-10-18 21:23:25Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2011 RibbonSoft. All rights reserved.
 ** Copyright (C) 2001 Robert J. Campbell Jr.
 **
 ** This file is part of the dxflib project.

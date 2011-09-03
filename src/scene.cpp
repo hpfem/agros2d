@@ -74,7 +74,6 @@ void ProblemInfo::clear()
     adaptivityType = AdaptivityType_None;
     adaptivitySteps = 0;
     adaptivityTolerance = 1.0;
-    adaptivityMaxDOFs = MAX_DOFS;
 
     // harmonic
     frequency = 0.0;
@@ -1375,7 +1374,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
     m_problemInfo->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
     m_problemInfo->adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
-    m_problemInfo->adaptivityMaxDOFs = eleProblem.toElement().attribute("maxdofs", QString::number(MAX_DOFS)).toInt();
 
     // harmonic
     m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();
@@ -1587,7 +1585,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("adaptivitytype", adaptivityTypeToStringKey(m_problemInfo->adaptivityType));
     eleProblem.setAttribute("adaptivitysteps", m_problemInfo->adaptivitySteps);
     eleProblem.setAttribute("adaptivitytolerance", m_problemInfo->adaptivityTolerance);
-    eleProblem.setAttribute("maxdofs", m_problemInfo->adaptivityMaxDOFs);
+    eleProblem.setAttribute("maxdofs", Util::config()->maxDofs);
     // harmonic magnetic
     eleProblem.setAttribute("frequency", m_problemInfo->frequency);
     // transient

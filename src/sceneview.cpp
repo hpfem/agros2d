@@ -1122,7 +1122,7 @@ void SceneView::paintOrderColorBar()
 {
     logMessage("SceneView::paintOrderColorBar()");
 
-    if (!m_isSolutionPrepared) return;
+    if (!m_isSolutionPrepared || !Util::config()->showOrderScale) return;
 
     // order scalar view
     m_scene->sceneSolution()->ordView()->lock_data();
@@ -1196,6 +1196,8 @@ void SceneView::paintOrderColorBar()
 void SceneView::paintScalarFieldColorBar(double min, double max)
 {
     logMessage("SceneView::paintScalarFieldColorBar()");
+
+    if (!Util::config()->showScalarScale) return;
 
     loadProjection2d();
 

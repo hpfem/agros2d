@@ -34,7 +34,6 @@ public:
 
 private slots:
     void doApply();
-    void doDefault();
 
 private:
     SceneView *m_sceneView;
@@ -76,15 +75,29 @@ private:
     // transient
     QComboBox *cmbTimeStep;
 
-    // advanced
-    // contours
-    QSpinBox *txtContoursCount;
+    // grid
+    QLineEdit *txtGridStep;
+    QCheckBox *chkShowGrid;
+    QCheckBox *chkSnapToGrid;
+
+    // scene font
+    QLabel *lblSceneFontExample;
+    QPushButton *btnSceneFont;
+
+    // workspace other
+    QCheckBox *chkShowAxes;
+    QCheckBox *chkShowRulers;
+    QCheckBox *chkShowLabel;
 
     // scalar field
+    QCheckBox *chkShowScalarScale;
     QComboBox *cmbPalette;
     QCheckBox *chkPaletteFilter;
     QSpinBox *txtPaletteSteps;
     QComboBox *cmbLinearizerQuality;
+
+    // contours
+    QSpinBox *txtContoursCount;
 
     // vector field
     QCheckBox *chkVectorProportional;
@@ -92,10 +105,12 @@ private:
     QSpinBox *txtVectorCount;
     QDoubleSpinBox *txtVectorScale;
 
-    // order view
-    QCheckBox *chkOrderLabel;
+    // polynomial order
+    QCheckBox *chkShowOrderScale;
     QComboBox *cmbOrderPaletteOrder;
+    QCheckBox *chkOrderLabel;
 
+    QToolBox *tbxAdvance;
     QPushButton *btnOK;
 
     void loadBasic();
@@ -121,6 +136,13 @@ private slots:
     void doScalarFieldRangeMinChanged();
     void doScalarFieldRangeMaxChanged();
     void doPaletteFilter(int state);
+    void doWorkspaceDefault();
+    void doScalarFieldDefault();
+    void doContoursDefault();
+    void doVectorFieldDefault();
+    void doOrderDefault();
+    void doSceneFont();
+    void doShowGridChanged();
 };
 
 #endif // SCENEVIEWDIALOG_H

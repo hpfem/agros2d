@@ -1,7 +1,5 @@
 /****************************************************************************
-** $Id: dl_writer_ascii.h 2719 2005-09-24 20:41:23Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2011 RibbonSoft. All rights reserved.
 ** Copyright (C) 2001 Robert J. Campbell Jr.
 **
 ** This file is part of the dxflib project.
@@ -42,14 +40,14 @@ using std::string;
  *   level DXF constructs to an ASCII format DXF file.
  * 
  * @para fname File name of the file to be created.
- * @para version DXF version. Defaults to VER_2002.
+ * @para version DXF version. Defaults to DL_VERSION_2002.
  *
  * @todo What if \c fname is NULL?  Or \c fname can't be opened for
  * another reason?
  */
 class DL_WriterA : public DL_Writer {
 public:
-    DL_WriterA(const char* fname, DL_Codes::version version=VER_2000)
+    DL_WriterA(const char* fname, DL_Codes::version version=DL_VERSION_2000)
             : DL_Writer(version), m_ofile(fname) {}
     virtual ~DL_WriterA() {}
 

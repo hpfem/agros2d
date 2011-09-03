@@ -25,6 +25,37 @@
 
 #include <QSvgWidget>
 
+class QWebView;
+
+class ServerLoginDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    ServerLoginDialog(QWidget *parent = 0);
+    ~ServerLoginDialog();
+
+    int showDialog();
+    void createControls();
+
+    void login(const QString &username, const QString &password);
+    inline QString userName() { return m_userName; }
+
+private slots:
+    void doAccept();
+    void doReject();
+    void httpContentFinished();
+
+private:
+    QString m_userName;
+
+    QLineEdit *txtUsername;
+    QLineEdit *txtPassword;
+    QCheckBox *chkRememberPassword;
+    QLabel *lblCaption;
+
+    QNetworkReply *networkReply;
+};
+
 class ServerDownloadDialog : public QDialog
 {
     Q_OBJECT
@@ -34,42 +65,22 @@ public:
 
     int showDialog();
     void createControls();
-    void readFromServerContent();
     void readFromServerXML(int ID, int version);
-    void readFromServerVersion(int ID);
 
     inline QString fileName() { return m_fileName; }
 
 private slots:
-    void doItemSelected(QTreeWidgetItem *item, int role);
-    void doItemSelected(QTreeWidgetItem *current, QTreeWidgetItem *previous);
-    void doVersionChanged(int index);
-    void doDownload();
+    void load(const QString &str);
     void doClose();
-    void doFind();
-    void httpContentFinished();
+    void doLogin();
     void httpFileFinished();
-    void httpDetailSvgFinished();
-    void httpDetailFinished();
+    void linkClicked(const QUrl &url);
 
 private:
     QString m_fileName;
-    QTreeWidget *trvProject;
 
-    QComboBox *cmbVersion;
-    QLabel *lblName;
-    QLabel *lblDate;
-    QLabel *lblAuthor;
-    QLabel *lblAffiliation;
-    QLabel *lblNotification;
+    QWebView *webView;
 
-    QLineEdit *txtFind;
-    QPushButton *btnFind;
-
-    QPushButton *btnDownload;
-    QSvgWidget *svgImage;
-
-    QNetworkAccessManager networkAccessManager;
     QNetworkReply *networkReply;
 };
 
@@ -94,17 +105,13 @@ private slots:
     void doExistingProblemSelected(int index);
 
 private:
-    QNetworkAccessManager networkAccessManager;
     QNetworkReply *networkReply;
 
     QRadioButton *radDocumentNew;
     QRadioButton *radDocumentExisting;
-    QLabel *lblName;
-    QLabel *lblInformation;
     QComboBox *cmbName;
-    QLineEdit *txtAuthor;
-    QLineEdit *txtAffiliation;
-    QLabel *lblNotification;
+    QLineEdit *txtName;
+    QLabel *lblInformation;    
     QPushButton *btnUpload;
 };
 

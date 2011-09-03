@@ -171,7 +171,7 @@ SolutionAgros::SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros
     adaptivityType = Util::scene()->problemInfo()->adaptivityType;
     adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
     adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
-    adaptivityMaxDOFs = Util::scene()->problemInfo()->adaptivityMaxDOFs;
+    adaptivityMaxDOFs = Util::config()->maxDofs;
     numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
     timeTotal = Util::scene()->problemInfo()->timeTotal.number;
     timeStep = Util::scene()->problemInfo()->timeStep.number;

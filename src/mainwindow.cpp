@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     reportDialog = new ReportDialog(sceneView, this);
     videoDialog = new VideoDialog(sceneView, this);
     logDialog = new LogDialog(this);
+    collaborationDownloadDialog = new ServerDownloadDialog(this);
 
     createActions();
     createViews();
@@ -561,14 +562,6 @@ void MainWindow::createToolBars()
     cmbTimeStep->setMinimumWidth(1.7*fontMetrics().width("0.00e+00"));
     connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
     tlbTransient->addWidget(cmbTimeStep);
-
-#ifndef Q_WS_MAC
-    tlbWorkspace = addToolBar(tr("Workspace"));
-    tlbWorkspace->setObjectName("Workspace");
-    tlbWorkspace->addAction(sceneView->actSceneShowGrid);
-    tlbWorkspace->addAction(sceneView->actSceneSnapToGrid);
-    tlbWorkspace->addAction(sceneView->actSceneShowRulers);
-#endif
 }
 
 void MainWindow::createStatusBar()
@@ -851,13 +844,11 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
 void MainWindow::doDocumentDownloadFromServer()
 {
-    ServerDownloadDialog *cloud = new ServerDownloadDialog(this);
-    if (cloud->showDialog() == QDialog::Accepted)
+    if (collaborationDownloadDialog->showDialog() == QDialog::Accepted)
     {
-        if (QFile::exists(cloud->fileName()))
-            doDocumentOpen(cloud->fileName());
+        if (QFile::exists(collaborationDownloadDialog->fileName()))
+            doDocumentOpen(collaborationDownloadDialog->fileName());
     }
-    delete cloud;
 }
 
 void MainWindow::doDocumentOpenRecent(QAction *action)

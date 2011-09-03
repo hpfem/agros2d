@@ -7,11 +7,11 @@ Description of Agros2D
 Main window
 ^^^^^^^^^^^
 
-Main window consists of several parts.
+Main window of Agros2D consists of several parts.
 
 * Menu bar and toolbar
 
-  Menu bar is the main control element; you can find all commands there. In toolbar the most frequently used commands are placed.
+  Menu bar is the main control element, you can find all commands there. In toolbar the most frequently used commands are placed.
 
 * Workspace
 
@@ -37,6 +37,10 @@ Main window consists of several parts.
 
     Information about elements of geometry that are added to the workspace is contained here.
 
+* Postprocessor properties panel
+
+  Postprocessor properties panel is used for display results of solution.
+
 * Local Values panel
 
   This panel displays calculated field quantity of local points.
@@ -53,31 +57,38 @@ Main window consists of several parts.
 
   This panel is used to enter commands and display their output.
 
+* Hints
+
+  Hints displays short informations abouth actual modes or possible operations.
+
 * Status bar
 
   Status bar is used to display information about the type of problem, solution of the physical field and cursor position in workspace.
 
 .. image:: ./main_window.png
-
-Fig. 1.: Main window
+   :align: center
+   :scale: 50%
+   :alt: Main window
 
 Script editor window
 ^^^^^^^^^^^^^^^^^^^^
 
 The main part of the script editor window is editing area, which works with scripts. In the bottom of the window there is terminal panel. Script editor window also contains the file browser panel, menu bar and toolbar.
 
-.. image:: ./script_editor_window.png
-
-Fig. 2.: Script editor window
+.. image:: ./script_editor.png
+   :align: center
+   :scale: 50%
+   :alt: Script editor window
 
 Chart window
 ^^^^^^^^^^^^
 
 The main part of the chart window is the area to display the chart or data. You can switch among chart and data views through tabs at the top of the area. To enter the necessary data for the chart and to work with it controls on the right side of the window are used.
 
-.. image:: ./chart_window.png
-
-Fig. 3.: Chart window
+.. image:: ./chart.png
+   :align: center
+   :scale: 50%
+   :alt: Chart window
 
 Shortcut Keys
 -------------
@@ -105,6 +116,10 @@ Basic shortcuts in main window
 
   Change mode to Postprocessor.
 
+* **F12**
+
+  Open Problem properties dialog.
+
 * **Alt+N**
 
   Add node using coordinates.
@@ -124,6 +139,10 @@ Basic shortcuts in main window
 * **Alt+M**
 
   Add material.
+
+* **Alt+W**
+
+  Mesh area.
 
 * **Alt+S**
 

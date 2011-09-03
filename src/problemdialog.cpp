@@ -52,7 +52,6 @@ ProblemDialog::~ProblemDialog()
     delete txtPolynomialOrder;
     delete txtAdaptivitySteps;
     delete txtAdaptivityTolerance;
-    delete txtMaxDOFs;
     delete cmbAdaptivityType;
 
     // harmonic
@@ -118,10 +117,6 @@ QWidget *ProblemDialog::createControlsGeneral()
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new SLineEditDouble(1);
-    txtMaxDOFs = new QSpinBox(this);
-    txtMaxDOFs->setMinimum(1e2);
-    txtMaxDOFs->setMaximum(1e9);
-    txtMaxDOFs->setSingleStep(1e2);
     cmbMatrixSolver = new QComboBox();
 
     // mesh
@@ -227,8 +222,6 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutAdaptivity->addWidget(txtAdaptivitySteps, 0, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 1, 0);
     layoutAdaptivity->addWidget(txtAdaptivityTolerance, 1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Maximum number of DOFs:")), 2, 0);
-    layoutAdaptivity->addWidget(txtMaxDOFs, 2, 1);
 
     QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
@@ -367,7 +360,6 @@ void ProblemDialog::load()
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_problemInfo->adaptivityType));
     txtAdaptivitySteps->setValue(m_problemInfo->adaptivitySteps);
     txtAdaptivityTolerance->setValue(m_problemInfo->adaptivityTolerance);
-    txtMaxDOFs->setValue(m_problemInfo->adaptivityMaxDOFs);
     //mesh
     txtNumberOfRefinements->setValue(m_problemInfo->numberOfRefinements);
     txtPolynomialOrder->setValue(m_problemInfo->polynomialOrder);
@@ -464,10 +456,6 @@ bool ProblemDialog::save()
             return false;
         }
     }
-    if (txtMaxDOFs->value() <= 0) {
-        QMessageBox::critical(this, tr("Error"), tr("Maximum DOFS must be greater then zero."));
-        return false;
-    }
 
     // run and check startup script
     if (!txtStartupScript->toPlainText().isEmpty())
@@ -490,7 +478,6 @@ bool ProblemDialog::save()
     m_problemInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
     m_problemInfo->adaptivitySteps = txtAdaptivitySteps->value();
     m_problemInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
-    m_problemInfo->adaptivityMaxDOFs = txtMaxDOFs->value();
 
     m_problemInfo->frequency = txtFrequency->value();
 
@@ -563,7 +550,6 @@ void ProblemDialog::doAdaptivityChanged(int index)
 
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    txtMaxDOFs->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 }
 
 void ProblemDialog::doLinearityTypeChanged(int index)

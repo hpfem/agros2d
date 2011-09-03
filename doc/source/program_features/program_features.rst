@@ -3,17 +3,7 @@
 Program Features
 ================
 
-Import and Export of Geometry
------------------------------
-
-You can import and export geometry in AutoCAD DXF format. This feature is available in the menu "File". This functionality is based on dxflib_.
-
-User Functions
---------------
-
-You can write your own functions to use in your scripts. If you write these functions to the file *functions.py* in Agros2D root directory, then you will be able to use them in the same way as other commands. You can also use :ref:`predefined-functions`.
-
-.. index:: agros2d-remote
+.. index:: Startup Script
 
 Startup Script
 --------------
@@ -27,6 +17,22 @@ Fig. 1.: Example of defining variables in Startup script
 .. image:: ./boundary_condition.png
 
 Fig. 2.: Example of using variables for adding a new boundary condition
+
+.. index:: User Functions
+
+User Functions
+--------------
+
+You can write your own functions to use in your scripts. If you write these functions to the file *functions.py* in Agros2D root directory, then you will be able to use them in the same way as other commands. You can also use :ref:`predefined-functions`.
+
+.. index:: Agros2D Collaboration Server
+
+Agros2D Collaboration Server
+----------------------------
+
+Agros2D have basic functionality for work in groups - Agros2D Collaboration Server. This server is used to sharing Agros2D data files (*.a2d, *.py) and its versioning. You can use public server http://agros2d.org/collaboration/ (this server is designed to free users sharing and for examples) or your private server.
+
+.. index:: Remote Control, agros2d-remote
 
 Remote Control
 --------------
@@ -48,9 +54,16 @@ An example: ::
 
 You can use commands described in the section :ref:`scripting`.
 
+.. index:: import, export, AutoCAD DXF, VTK
+
+Import and Export geometry, mesh, images and solutions
+------------------------------------------------------
+
+Agros2D has the option to export and import geometry in AutoCAD DXF format (based on `dxflib http://www.ribbonsoft.com/dxflib.html`_), mesh in Hermes2D mesh file format, images from workspace and solution results in `VTK <http://www.vtk.org/>`_ (Visualization Toolkit). This functionality is available in submenu "Import/Export" in menu "File".
+
+.. index:: Report
+
 Report
 ------
 
 You can use the automatic generation of reports about solution problems in Agros2D. This feature is available in the menu "Tools". Report is generated to HTML file.
-
-.. _dxflib: http://www.ribbonsoft.com/dxflib.html

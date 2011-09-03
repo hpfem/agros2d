@@ -1,7 +1,5 @@
 /****************************************************************************
-** $Id: dl_creationinterface.h 8865 2008-02-04 18:54:02Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2011 RibbonSoft. All rights reserved.
 **
 ** This file is part of the dxflib project.
 **
@@ -52,6 +50,12 @@ public:
     virtual ~DL_CreationInterface() {
         delete extrusion;
     }
+
+    /**
+     * Called for every code / value tuple of the DXF file. The complete DXF file
+     * contents can be handled by the implemetation of this function.
+     */
+    virtual void processCodeValuePair(unsigned int groupCode, char* groupValue) = 0;
 
     /**
      * Called for every layer.

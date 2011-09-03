@@ -37,6 +37,7 @@ class ScriptEditorDialog;
 class ReportDialog;
 class VideoDialog;
 class LogDialog;
+class ServerDownloadDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -125,7 +126,6 @@ private:
     QToolBar *tlbProblem;
     QToolBar *tlbTools;
     QToolBar *tlbTransient;
-    QToolBar *tlbWorkspace;
 
     QAction *actDocumentNew;
     QAction *actDocumentOpen;
@@ -196,6 +196,7 @@ private:
     ReportDialog *reportDialog;
     VideoDialog *videoDialog;
     LogDialog *logDialog;
+    ServerDownloadDialog *collaborationDownloadDialog;
 
     void setRecentFiles();
 

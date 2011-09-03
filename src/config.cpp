@@ -87,33 +87,25 @@ void Config::load()
     labelSize = settings.value("SceneViewSettings/LabelSize", 6.0).toDouble();
 
     // font
-#ifdef Q_WS_X11
-    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Monospace", 9)).value<QFont>();
-#endif
-#ifdef Q_WS_WIN
-    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Courier New", 9)).value<QFont>();
-#endif
-#ifdef Q_WS_MAC
-    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Monaco", 12)).value<QFont>();
-#endif
+    sceneFont = settings.value("SceneViewSettings/SceneFont", FONT).value<QFont>();
 
     // mesh
     angleSegmentsCount = settings.value("SceneViewSettings/AngleSegmentsCount", 3).toInt();
     curvilinearElements = settings.value("SceneViewSettings/CurvilinearElements", true).toBool();
 
     // grid
-    showGrid = settings.value("SceneViewSettings/ShowGrid", true).toBool();
-    gridStep = settings.value("SceneViewSettings/GridStep", 0.05).toDouble();
+    showGrid = settings.value("SceneViewSettings/ShowGrid", SHOWGRID).toBool();
+    gridStep = settings.value("SceneViewSettings/GridStep", GRIDSTEP).toDouble();
     // rulers
-    showRulers = settings.value("SceneViewSettings/ShowRulers", false).toBool();
+    showRulers = settings.value("SceneViewSettings/ShowRulers", SHOWRULERS).toBool();
     // snap to grid
-    snapToGrid = settings.value("SceneViewSettings/SnapToGrid", false).toBool();
+    snapToGrid = settings.value("SceneViewSettings/SnapToGrid", SNAPTOGRID).toBool();
 
     // axes
-    showAxes = settings.value("SceneViewSettings/ShowAxes", true).toBool();
+    showAxes = settings.value("SceneViewSettings/ShowAxes", SHOWAXES).toBool();
 
     // label
-    showLabel = settings.value("SceneViewSettings/ShowLabel", true).toBool();
+    showLabel = settings.value("SceneViewSettings/ShowLabel", SHOWLABEL).toBool();
 
     // linearizer quality
     linearizerQuality = settings.value("SceneViewSettings/LinearizerQuality", LINEARIZER_QUALITY).toDouble();
@@ -122,6 +114,7 @@ void Config::load()
     contoursCount = settings.value("SceneViewSettings/ContoursCount", CONTOURSCOUNT).toInt();
 
     // scalar view
+    showScalarScale = settings.value("SceneViewSettings/ShowScalarScale", true).toBool();
     paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", PALETTETYPE).toInt();
     paletteFilter = settings.value("SceneViewSettings/PaletteFilter", PALETTEFILTER).toBool();
     paletteSteps = settings.value("SceneViewSettings/PaletteSteps", PALETTESTEPS).toInt();
@@ -136,8 +129,9 @@ void Config::load()
     vectorScale = settings.value("SceneViewSettings/VectorScale", VECTORSCALE).toDouble();
 
     // order view
-    orderLabel = settings.value("SceneViewSettings/OrderLabel", ORDERLABEL).toBool();
+    showOrderScale = settings.value("SceneViewSettings/ShowOrderScale", true).toBool();
     orderPaletteOrderType = (PaletteOrderType) settings.value("SceneViewSettings/OrderPaletteOrderType", ORDERPALETTEORDERTYPE).toInt();
+    orderLabel = settings.value("SceneViewSettings/OrderLabel", ORDERLABEL).toBool();
 
     // deformations
     deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
@@ -151,6 +145,7 @@ void Config::load()
     scalarView3DHeight = settings.value("SceneViewSettings/ScalarView3DHeight", 4.0).toDouble();
 
     // adaptivity
+    maxDofs = settings.value("Adaptivity/MaxDofs", MAX_DOFS).toInt();
     isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).toBool();
     convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).toDouble();
     threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).toDouble();
@@ -253,6 +248,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/ContoursCount", contoursCount);
 
     // scalar view
+    settings.setValue("SceneViewSettings/ShowScalarScale", showScalarScale);
     settings.setValue("SceneViewSettings/PaletteType", paletteType);
     settings.setValue("SceneViewSettings/PaletteFilter", paletteFilter);
     settings.setValue("SceneViewSettings/PaletteSteps", paletteSteps);
@@ -267,8 +263,9 @@ void Config::save()
     settings.setValue("SceneViewSettings/VectorScale", vectorScale);
 
     // order view
-    settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
+    settings.setValue("SceneViewSettings/ShowOrderScale", showOrderScale);
     settings.setValue("SceneViewSettings/OrderPaletteOrderType", orderPaletteOrderType);
+    settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
 
     // deformations
     settings.setValue("SceneViewSettings/DeformScalar", deformScalar);
@@ -282,6 +279,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
 
     // adaptivity
+    settings.setValue("Adaptivity/MaxDofs", maxDofs);
     settings.setValue("Adaptivity/IsoOnly", isoOnly);
     settings.setValue("Adaptivity/ConvExp", convExp);
     settings.setValue("Adaptivity/Threshold", threshold);

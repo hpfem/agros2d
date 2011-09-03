@@ -139,7 +139,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
 
 HEADERS = += ../hermes_common/src/compat.h
 
-linux-g++ {
+linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
     DEFINES += HAVE_FMEMOPEN

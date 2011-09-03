@@ -1,7 +1,5 @@
 /****************************************************************************
-** $Id: dl_writer_ascii.cpp 7444 2007-12-01 19:42:39Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2011 RibbonSoft. All rights reserved.
 ** Copyright (C) 2001 Robert J. Campbell Jr.
 **
 ** This file is part of the dxflib project.

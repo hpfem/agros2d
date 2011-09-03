@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0.0" linearitysteps="10" adaptivitysteps="25" linearity="linear" name="unnamed" date="2011-05-17" polynomialorder="1" meshtype="quad_join" timestep="1.0" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" linearitytolerance="0.001" numberofrefinements="0" frequency="5000" matrix_solver="umfpack" type="acoustic" timetotal="1.0">
+        <problem maxdofs="60000" adaptivitytolerance="10" id="0" analysistype="harmonic" initialcondition="0.0" linearitysteps="10" adaptivitysteps="25" linearity="linear" name="Acoustic Horn" date="2011-05-17" polynomialorder="1" meshtype="quad_join" timestep="1.0" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" linearitytolerance="0.001" numberofrefinements="0" frequency="5000" matrix_solver="umfpack" type="acoustic" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>

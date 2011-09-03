@@ -1,7 +1,5 @@
 /****************************************************************************
-** $Id: dl_writer.h 7207 2007-11-19 08:17:22Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2011 RibbonSoft. All rights reserved.
 ** Copyright (C) 2001 Robert J. Campbell Jr.
 **
 ** This file is part of the dxflib project.
@@ -28,22 +26,17 @@
 #ifndef DL_WRITER_H
 #define DL_WRITER_H
 
+#include <strings.h>
+
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
-#if defined(__OS2__)||defined(__EMX__)
+#if defined(__OS2__)||defined(__EMX__)||defined(_WIN32)
 #define strcasecmp(s,t) stricmp(s,t)
 #endif
 
-#if defined(WIN32)
-#ifndef strcasecmp
-#define strcasecmp(s,t) _stricmp(s,t)
-#endif
-#endif
-
 #include <iostream>
-#include <string.h>
 
 #include "dl_attributes.h"
 #include "dl_codes.h"
@@ -63,7 +56,7 @@
 class DL_Writer {
 public:
     /**
-     * @para version DXF version. Defaults to VER_2002.
+     * @para version DXF version. Defaults to DL_VERSION_2002.
      */
     DL_Writer(DL_Codes::version version) : m_handle(0x30) {
         this->version = version;
@@ -200,7 +193,7 @@ public:
     void table(const char* name, int num, int handle) const {
         dxfString(0, "TABLE");
         dxfString(2, name);
-        if (version>=VER_2000) {
+        if (version>=DL_VERSION_2000) {
             dxfHex(5, handle);
             dxfString(100, "AcDbSymbolTable");
         }
@@ -307,7 +300,7 @@ public:
      */
     void entity(const char* entTypeName) const {
         dxfString(0, entTypeName);
-        if (version>=VER_2000) {
+        if (version>=DL_VERSION_2000) {
             handle();
         }
     }
@@ -333,14 +326,16 @@ public:
 		
 		// R12 doesn't accept BYLAYER values. The value has to be missing
 		//   in that case.
-        if (version>=VER_2000 || 
-			attrib.getColor()!=256) {
+        if (version>=DL_VERSION_2000 || attrib.getColor()!=256) {
         	dxfInt(62, attrib.getColor());
 		}
-        if (version>=VER_2000) {
+        if (version>=DL_VERSION_2000 && attrib.getColor24()!=-1) {
+            dxfInt(420, attrib.getColor24());
+        }
+        if (version>=DL_VERSION_2000) {
             dxfInt(370, attrib.getWidth());
         }
-        if (version>=VER_2000 || 
+        if (version>=DL_VERSION_2000 || 
 			strcasecmp(attrib.getLineType().c_str(), "BYLAYER")) {
 	        dxfString(6, attrib.getLineType());
 		}
@@ -363,7 +358,7 @@ public:
      */
     void tableLayerEntry(unsigned long int h=0)  const {
         dxfString(0, "LAYER");
-        if (version>=VER_2000) {
+        if (version>=DL_VERSION_2000) {
             if (h==0) {
                 handle();
             } else {
@@ -384,7 +379,7 @@ public:
      */
     void tableLineTypeEntry(unsigned long int h=0)  const {
         dxfString(0, "LTYPE");
-        if (version>=VER_2000) {
+        if (version>=DL_VERSION_2000) {
             if (h==0) {
                 handle();
             } else {
@@ -406,7 +401,7 @@ public:
      */
     void tableAppidEntry(unsigned long int h=0)  const {
         dxfString(0, "APPID");
-        if (version>=VER_2000) {
+        if (version>=DL_VERSION_2000) {
             if (h==0) {
                 handle();
             } else {
@@ -428,7 +423,7 @@ public:
      */
     void sectionBlockEntry(unsigned long int h=0)  const {
         dxfString(0, "BLOCK");
-        if (version>=VER_2000) {
+        if (version>=DL_VERSION_2000) {
             if (h==0) {
                 handle();
             } else {
@@ -454,7 +449,7 @@ public:
      */
     void sectionBlockEntryEnd(unsigned long int h=0)  const {
         dxfString(0, "ENDBLK");
-        if (version>=VER_2000) {
+        if (version>=DL_VERSION_2000) {
             if (h==0) {
                 handle();
             } else {
