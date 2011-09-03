@@ -28,6 +28,9 @@
 #include "scenesolution.h"
 #include "scenemarker.h"
 #include "scripteditordialog.h"
+#include "hermes2d/surfaceintegral.h"
+#include "hermes2d/volumeintegral.h"
+#include "hermes2d/localpoint.h"
 #include "hermes2d/module.h"
 
 

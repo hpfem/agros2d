@@ -21,6 +21,7 @@
 #define ACOUSTIC_H
 
 #include "util.h"
+#include "scenemarker.h"
 #include "module.h"
 
 struct ModuleAcoustic : public Hermes::Module::ModuleAgros

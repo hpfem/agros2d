@@ -18,11 +18,11 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "reportdialog.h"
-#include "gui.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenesolution.h"
 #include "sceneview.h"
+#include "scenemarker.h"
 #include "scripteditordialog.h"
 #include "hermes2d/module.h"
 #include "ctemplate/template.h"

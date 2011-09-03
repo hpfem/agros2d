@@ -21,6 +21,7 @@
 #define MAGNETIC_H
 
 #include "util.h"
+#include "scenemarker.h"
 #include "module.h"
 
 struct ModuleMagnetic : public Hermes::Module::ModuleAgros

@@ -21,6 +21,7 @@
 #define ELECTROSTATICS_H
 
 #include "util.h"
+#include "scenemarker.h"
 #include "module.h"
 
 struct ModuleElectrostatic : public Hermes::Module::ModuleAgros

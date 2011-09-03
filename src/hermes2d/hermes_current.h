@@ -21,6 +21,7 @@
 #define HERMES_CURRENT_H
 
 #include "util.h"
+#include "scenemarker.h"
 #include "module.h"
 
 
