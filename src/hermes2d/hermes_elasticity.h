@@ -21,6 +21,7 @@
 #define HERMES_ELASTICITY_H
 
 #include "util.h"
+#include "scenemarker.h"
 #include "module.h"
 
 struct ModuleElasticity : public Hermes::Module::ModuleAgros

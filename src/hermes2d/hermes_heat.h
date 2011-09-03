@@ -21,6 +21,7 @@
 #define HEAT_H
 
 #include "util.h"
+#include "scenemarker.h"
 #include "module.h"
 
 struct ModuleHeat : public Hermes::Module::ModuleAgros

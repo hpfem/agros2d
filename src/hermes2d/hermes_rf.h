@@ -21,6 +21,7 @@
 #define RF_H
 
 #include "util.h"
+#include "scenemarker.h"
 #include "module.h"
 
 struct ModuleRF : public Hermes::Module::ModuleAgros

@@ -23,27 +23,24 @@
 #include "util.h"
 #include "hermes2d.h"
 
-#include "scenemarker.h"
-
-#include "hermes2d/localpoint.h"
-#include "hermes2d/volumeintegral.h"
-#include "hermes2d/surfaceintegral.h"
-
 #include <rapidxml.cpp>
 #include <rapidxml_utils.cpp>
 
-#include "material.h"
-#include "boundary.h"
-#include "localpoint.h"
-#include "weakform_parser.h"
-
 extern double actualTime;
 
+class Boundary;
 class SceneBoundary;
+class SceneBoundaryDialog;
+
+class Material;
 class SceneMaterial;
+class SceneMaterialDialog;
+
 struct SceneViewSettings;
 template <typename Scalar> struct SolutionArray;
 template <typename Scalar> class ViewScalarFilter;
+class ParserFormMatrix;
+class ParserFormVector;
 
 class ProgressItemSolve;
 

@@ -20,15 +20,14 @@
 #ifndef WEAKFORM_PARSER_H
 #define WEAKFORM_PARSER_H
 
-#include "util.h"
-#include <weakform/weakform.h>
-#include "boundary.h"
-#include "material.h"
-
 #include <rapidxml.cpp>
 #include <rapidxml_utils.cpp>
 
+#include "util.h"
+
 class Parser;
+class Boundary;
+class Material;
 
 struct ParserFormMatrix
 {
