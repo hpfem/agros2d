@@ -35,7 +35,8 @@ ServerLoginDialog::ServerLoginDialog(QWidget *parent)
 
     createControls();
 
-    setMinimumSize(sizeHint());
+    setMinimumSize(sizeHint().width() * 1.5, sizeHint().height());
+    setMaximumSize(sizeHint().width() * 1.5, sizeHint().height());
 
     QSettings settings;
     restoreGeometry(settings.value("ServerLoginDialog/Geometry", saveGeometry()).toByteArray());
@@ -114,9 +115,14 @@ void ServerLoginDialog::httpContentFinished()
         settings.setValue("ServerLoginDialog/Username", txtUsername->text());
         settings.setValue("ServerLoginDialog/RememberPassword", chkRememberPassword->isChecked());
         if (chkRememberPassword->isChecked())
+        {
             settings.setValue("ServerLoginDialog/Password", txtPassword->text());
+        }
         else
+        {
             settings.setValue("ServerLoginDialog/Password", "");
+            txtPassword->setText("");
+        }
 
         m_userName = content.right(content.length() - 6);
 
@@ -184,14 +190,13 @@ int ServerDownloadDialog::showDialog()
 {
     logMessage("ServerDownloadDialog::showDialog()");
 
+    webView->reload();
     return exec();
 }
 
 void ServerDownloadDialog::createControls()
 {
     logMessage("ServerDownloadDialog::createControls()");
-
-    lblName = new QLabel(tr("Anonymous user"));
 
     if (!networkAccessManager)
         networkAccessManager = new QNetworkAccessManager();
@@ -212,7 +217,6 @@ void ServerDownloadDialog::createControls()
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
-    layoutButtonViewport->addWidget(lblName);
     layoutButtonViewport->addStretch();
     layoutButtonViewport->addWidget(btnLogin);
     layoutButtonViewport->addWidget(btnClose);
@@ -233,7 +237,6 @@ void ServerDownloadDialog::load(const QString &str)
     else
         url = url.replace(".php", ".php?no_header=1");
 
-    // qDebug() << "load: " << url;
     webView->load(QUrl(url));
 }
 
@@ -276,7 +279,6 @@ void ServerDownloadDialog::doLogin()
 {
     serverLoginDialog->showDialog();
     webView->reload();
-    lblName->setText(serverLoginDialog->userName());
 }
 
 void ServerDownloadDialog::doClose()
@@ -296,6 +298,9 @@ ServerUploadDialog::ServerUploadDialog(QWidget *parent) : QDialog(parent)
     setWindowTitle(tr("Upload to the server"));
 
     createControls();
+
+    setMinimumSize(sizeHint().width() * 1.7, sizeHint().height());
+    setMaximumSize(sizeHint().width() * 1.7, sizeHint().height());
 
     QSettings settings;
     restoreGeometry(settings.value("ServerUploadDialog/Geometry", saveGeometry()).toByteArray());
@@ -355,10 +360,8 @@ void ServerUploadDialog::createControls()
     connect(btnUpload, SIGNAL(clicked()), this, SLOT(doUpload()));
     QPushButton *btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
-    lblNotification = new QLabel(this);
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
-    layoutButtonViewport->addWidget(lblNotification);
     layoutButtonViewport->addStretch();
     layoutButtonViewport->addWidget(btnClose);
     layoutButtonViewport->addWidget(btnUpload);
@@ -381,8 +384,9 @@ void ServerUploadDialog::doDocumentChanged()
 
     if (radDocumentExisting->isChecked())
     {
-        cmbName->setCurrentIndex(cmbName->findText(Util::scene()->problemInfo()->name));
-        if (cmbName->currentIndex() == 0 && cmbName->count() > 0)
+        if (cmbName->findText(Util::scene()->problemInfo()->name, Qt::MatchStartsWith) != -1)
+            cmbName->setCurrentIndex(cmbName->findText(Util::scene()->problemInfo()->name, Qt::MatchStartsWith));
+        else if (cmbName->count() > 0)
             cmbName->setCurrentIndex(0);
 
         cmbName->setVisible(true);
@@ -423,10 +427,9 @@ void ServerUploadDialog::httpContentFinished()
     if (content.isEmpty())
     {
         QMessageBox::critical(this, "", tr("Colaboration server could not be connected"));
+        qDebug() << content;
         close();
     }
-
-    qDebug() << content;
 
     QDomDocument doc;
     doc.setContent(content);
@@ -440,10 +443,18 @@ void ServerUploadDialog::httpContentFinished()
     {
         QDomElement element = n.toElement();
 
-        cmbName->addItem(QString("%1").arg(element.toElement().attribute("name")),
+        cmbName->addItem(QString("%1 (%2)").
+                         arg(element.toElement().attribute("name")).
+                         arg(element.toElement().attribute("author")),
                          element.toElement().attribute("id"));
 
         n = n.nextSibling();
+    }
+
+    if (cmbName->findText(Util::scene()->problemInfo()->name, Qt::MatchStartsWith) != -1)
+    {
+        radDocumentExisting->setChecked(true);
+        doDocumentChanged();
     }
 }
 
@@ -478,8 +489,16 @@ void ServerUploadDialog::httpFileFinished()
 
     QString content = networkReply->readAll();
 
-    QMessageBox::information(this, tr("Upload to server"), tr("Problem '%1' was uploaded to the server.").arg(Util::scene()->problemInfo()->name));
-    accept();
+    if (content.startsWith("Message: "))
+    {
+        QMessageBox::information(this, tr("Upload to server"), tr("Problem '%1' was uploaded to the server.").arg(Util::scene()->problemInfo()->name));
+        accept();
+    }
+    else
+    {
+        lblInformation->setText(content);
+        qDebug() << content;
+    }
 }
 
 void ServerUploadDialog::doUpload()

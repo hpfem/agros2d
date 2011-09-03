@@ -79,7 +79,6 @@ private slots:
 private:
     QString m_fileName;
 
-    QLabel *lblName;
     QWebView *webView;
 
     QNetworkReply *networkReply;
@@ -112,8 +111,7 @@ private:
     QRadioButton *radDocumentExisting;
     QComboBox *cmbName;
     QLineEdit *txtName;
-    QLabel *lblInformation;
-    QLabel *lblNotification;
+    QLabel *lblInformation;    
     QPushButton *btnUpload;
 };
 
