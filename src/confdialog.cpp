@@ -616,9 +616,9 @@ QWidget *ConfigDialog::createSolverWidget()
     cmbMeshRegularity->addItem(tr("at most five-level hang. nodes"), 5);
 
     cmbProjNormType = new QComboBox();
-    cmbProjNormType->addItem(errorNormString(HERMES_H1_NORM), HERMES_H1_NORM);
-    cmbProjNormType->addItem(errorNormString(HERMES_L2_NORM), HERMES_L2_NORM);
-    cmbProjNormType->addItem(errorNormString(HERMES_H1_SEMINORM), HERMES_H1_SEMINORM);
+    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
+    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
+    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
 
     // default
     QPushButton *btnAdaptivityDefault = new QPushButton(tr("Default"));
@@ -740,96 +740,6 @@ QWidget *ConfigDialog::createColorsWidget()
     colorsWidget->setLayout(layout);
 
     return colorsWidget;
-}
-
-QWidget *ConfigDialog::createAdvancedWidget()
-{
-    logMessage("ConfigDialog::createAdvancedWidget()");
-
-    QWidget *viewWidget = new QWidget(this);
-
-    // adaptivity
-    chkIsoOnly = new QCheckBox(tr("Isotropic refinement"));
-    lblIsoOnly = new QLabel(tr("<table>"
-                               "<tr><td><b>true</b></td><td>isotropic refinement</td></tr>"
-                               "<tr><td><b>false</b></td><td>anisotropic refinement</td></tr>"
-                               "</table>"));
-    txtConvExp = new SLineEditDouble();
-    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of candidates in hp-adaptivity"));
-    txtThreshold = new SLineEditDouble();
-    lblThreshold = new QLabel(tr("<b></b>quantitative parameter of the adapt(...) function<br/>with different meanings for various adaptive strategies"));
-    cmbStrategy = new QComboBox();
-    cmbStrategy->addItem(tr("0"), 0);
-    cmbStrategy->addItem(tr("1"), 1);
-    cmbStrategy->addItem(tr("2"), 2);
-    lblStrategy = new QLabel(tr("<table>"
-                                 "<tr><td><b>0</b></td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
-                                 "<tr><td><b>1</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
-                                 "<tr><td><b>2</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
-                                 "</table>"));
-    cmbMeshRegularity = new QComboBox();
-    cmbMeshRegularity->addItem(tr("arbitrary level hang. nodes"), -1);
-    cmbMeshRegularity->addItem(tr("at most one-level hang. nodes"), 1);
-    cmbMeshRegularity->addItem(tr("at most two-level hang. nodes"), 2);
-    cmbMeshRegularity->addItem(tr("at most three-level hang. nodes"), 3);
-    cmbMeshRegularity->addItem(tr("at most four-level hang. nodes"), 4);
-    cmbMeshRegularity->addItem(tr("at most five-level hang. nodes"), 5);
-
-    cmbProjNormType = new QComboBox();
-    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
-    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
-    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
-
-    QGridLayout *layoutAdaptivity = new QGridLayout();
-    // layoutAdaptivity->addWidget(chkIsoOnly, 0, 0);
-    // layoutAdaptivity->addWidget(lblIsoOnly, 1, 0, 1, 2);
-    layoutAdaptivity->addWidget(new QLabel(tr("Conv. exp.:")), 2, 0);
-    layoutAdaptivity->addWidget(txtConvExp, 2, 1);
-    layoutAdaptivity->addWidget(lblConvExp, 3, 0, 1, 2);
-    layoutAdaptivity->addWidget(new QLabel(tr("Strategy:")), 4, 0);
-    layoutAdaptivity->addWidget(cmbStrategy, 4, 1);
-    layoutAdaptivity->addWidget(lblStrategy, 5, 0, 1, 2);
-    layoutAdaptivity->addWidget(new QLabel(tr("Threshold:")), 6, 0);
-    layoutAdaptivity->addWidget(txtThreshold, 6, 1);
-    layoutAdaptivity->addWidget(lblThreshold, 7, 0, 1, 2);
-    layoutAdaptivity->addWidget(new QLabel(tr("Mesh regularity:")), 8, 0);
-    layoutAdaptivity->addWidget(cmbMeshRegularity, 8, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 9, 0);
-    layoutAdaptivity->addWidget(cmbProjNormType, 9, 1);
-
-    QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
-    grpAdaptivity->setLayout(layoutAdaptivity);
-
-    // commands
-    txtArgumentTriangle = new QLineEdit("");
-    txtArgumentFFmpeg = new QLineEdit("");
-    chkExperimentalFeatures = new QCheckBox(tr("Enable experimental features"));
-    chkExperimentalFeatures->setToolTip(tr("Warning: Agros2D should be unstable!"));
-
-    QGridLayout *layoutArgument = new QGridLayout();
-    layoutArgument->addWidget(new QLabel(tr("Triangle")), 0, 0);
-    layoutArgument->addWidget(txtArgumentTriangle, 1, 0);
-    layoutArgument->addWidget(new QLabel(tr("FFmpeg")), 2, 0);
-    layoutArgument->addWidget(txtArgumentFFmpeg, 3, 0);
-    layoutArgument->addWidget(chkExperimentalFeatures, 4, 0);
-
-    QGroupBox *grpArgument = new QGroupBox(tr("Commands"));
-    grpArgument->setLayout(layoutArgument);
-
-    // default
-    QPushButton *btnDefault = new QPushButton(tr("Default"));
-    connect(btnDefault, SIGNAL(clicked()), this, SLOT(doAdvancedDefault()));
-
-    // layout
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpAdaptivity);
-    layout->addWidget(grpArgument);
-    layout->addStretch();
-    layout->addWidget(btnDefault, 0, Qt::AlignLeft);
-
-    viewWidget->setLayout(layout);
-
-    return viewWidget;
 }
 
 QWidget *ConfigDialog::createGlobalScriptWidget()

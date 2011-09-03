@@ -206,7 +206,6 @@ void SceneInfoView::showInfo()
         html += "<tr><td><b>" + tr("Adaptivity") + "</b></td><td>" + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType) + "</td></tr>";
         html += "<tr><td>" + tr("Adaptivity steps") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivitySteps) + "</td></tr>";
         html += "<tr><td>" + tr("Adaptivity tolerance") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityTolerance) + " %" + "</td></tr>";
-        html += "<tr><td>" + tr("Maximum number of DOFs") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityMaxDOFs) + "</td></tr>";
         html += "</table>";
     }
 

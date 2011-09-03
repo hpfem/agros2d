@@ -129,7 +129,7 @@ SolverAgros<Scalar>::SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormA
     adaptivityType = Util::scene()->problemInfo()->adaptivityType;
     adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
     adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
-    adaptivityMaxDOFs = Util::scene()->problemInfo()->adaptivityMaxDOFs;
+    adaptivityMaxDOFs = Util::config()->maxDofs;
     numberOfSolution = Util::scene()->problemInfo()->module()->number_of_solution();
     timeTotal = Util::scene()->problemInfo()->timeTotal.number();
     timeStep = Util::scene()->problemInfo()->timeStep.number();
