@@ -418,10 +418,17 @@ QWidget *PostprocessorView::controlsAdvanced()
     // scalar field
     cmbPalette = new QComboBox();
     cmbPalette->addItem(tr("Jet"), Palette_Jet);
-    cmbPalette->addItem(tr("Autumn"), Palette_Autumn);
     cmbPalette->addItem(tr("Hot"), Palette_Hot);
     cmbPalette->addItem(tr("Copper"), Palette_Copper);
+    cmbPalette->addItem(tr("Hot"), Palette_Hot);
     cmbPalette->addItem(tr("Cool"), Palette_Cool);
+    cmbPalette->addItem(tr("Bone"), Palette_Bone);
+    cmbPalette->addItem(tr("Pink"), Palette_Pink);
+    cmbPalette->addItem(tr("Spring"), Palette_Spring);
+    cmbPalette->addItem(tr("Summer"), Palette_Summer);
+    cmbPalette->addItem(tr("Autumn"), Palette_Autumn);
+    cmbPalette->addItem(tr("Winter"), Palette_Winter);
+    cmbPalette->addItem(tr("HSV"), Palette_HSV);
     cmbPalette->addItem(tr("B/W ascending"), Palette_BWAsc);
     cmbPalette->addItem(tr("B/W descending"), Palette_BWDesc);
 
@@ -526,6 +533,16 @@ QWidget *PostprocessorView::controlsAdvanced()
     cmbOrderPaletteOrder = new QComboBox();
     cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
     cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
+    cmbOrderPaletteOrder->addItem(tr("Copper"), PaletteOrder_Copper);
+    cmbOrderPaletteOrder->addItem(tr("Hot"), PaletteOrder_Hot);
+    cmbOrderPaletteOrder->addItem(tr("Cool"), PaletteOrder_Cool);
+    cmbOrderPaletteOrder->addItem(tr("Bone"), PaletteOrder_Bone);
+    cmbOrderPaletteOrder->addItem(tr("Pink"), PaletteOrder_Pink);
+    cmbOrderPaletteOrder->addItem(tr("Spring"), PaletteOrder_Spring);
+    cmbOrderPaletteOrder->addItem(tr("Summer"), PaletteOrder_Summer);
+    cmbOrderPaletteOrder->addItem(tr("Autumn"), PaletteOrder_Autumn);
+    cmbOrderPaletteOrder->addItem(tr("Winter"), PaletteOrder_Winter);
+    cmbOrderPaletteOrder->addItem(tr("HSV"), PaletteOrder_HSV);
     cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
     cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
 

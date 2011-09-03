@@ -632,10 +632,16 @@ enum SceneModePostprocessor
 enum PaletteType
 {
     Palette_Jet,
-    Palette_Autumn,
     Palette_Copper,
     Palette_Hot,
     Palette_Cool,
+    Palette_Bone,
+    Palette_Pink,
+    Palette_Spring,
+    Palette_Summer,
+    Palette_Autumn,
+    Palette_Winter,
+    Palette_HSV,
     Palette_BWAsc,
     Palette_BWDesc
 };
@@ -644,6 +650,16 @@ enum PaletteOrderType
 {
     PaletteOrder_Hermes,
     PaletteOrder_Jet,
+    PaletteOrder_Copper,
+    PaletteOrder_Hot,
+    PaletteOrder_Cool,
+    PaletteOrder_Bone,
+    PaletteOrder_Pink,
+    PaletteOrder_Spring,
+    PaletteOrder_Summer,
+    PaletteOrder_Autumn,
+    PaletteOrder_Winter,
+    PaletteOrder_HSV,
     PaletteOrder_BWAsc,
     PaletteOrder_BWDesc
 };
