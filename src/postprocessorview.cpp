@@ -89,6 +89,7 @@ void PostprocessorView::loadAdvanced()
     chkSnapToGrid->setChecked(Util::config()->snapToGrid);
 
     lblSceneFontExample->setFont(Util::config()->sceneFont);
+    lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
 
     chkShowAxes->setChecked(Util::config()->showAxes);
     chkShowRulers->setChecked(Util::config()->showRulers);
@@ -722,6 +723,7 @@ void PostprocessorView::doWorkspaceDefault()
     chkSnapToGrid->setChecked(SNAPTOGRID);
 
     lblSceneFontExample->setFont(FONT);
+    lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
 
     chkShowAxes->setChecked(SHOWAXES);
     chkShowRulers->setChecked(SHOWRULERS);

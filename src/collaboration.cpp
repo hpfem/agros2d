@@ -476,6 +476,8 @@ void ServerUploadDialog::httpFileFinished()
 {
     logMessage("ServerUploadDialog::httpFileFinished()");
 
+    QString content = networkReply->readAll();
+
     QMessageBox::information(this, tr("Upload to server"), tr("Problem '%1' was uploaded to the server.").arg(Util::scene()->problemInfo()->name));
     accept();
 }
