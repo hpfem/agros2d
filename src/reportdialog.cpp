@@ -384,7 +384,6 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
             dict.SetValue("PROBLEM_ADAPTIVITYTOLERANCE_LABEL", tr("Adaptivity tolerance:").toStdString());
             dict.SetFormattedValue("PROBLEM_ADAPTIVITYTOLERANCE", "%f", Util::scene()->problemInfo()->adaptivityTolerance);
             dict.SetValue("PROBLEM_MAXDOFS_LABEL", tr("Maximum DOFs:").toStdString());
-            dict.SetIntValue("PROBLEM_MAXDOFS", Util::scene()->problemInfo()->adaptivityMaxDOFs);
 
             dict.ShowSection("PROBLEM_ADAPTIVITY_SECTION");
         }

@@ -17,7 +17,7 @@
             <material id="heat_conductivity" />
             <material id="heat_volume_heat" />
 
-            <matrix i="1" j="1" planar="dlambda * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
+            <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
                                 axi="0.0 * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz)" symmetric="1" />
             <vector i="1" j="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval"
                                 axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval" />
@@ -32,7 +32,7 @@
             <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy) + 0 * uval * upval * vval / deltat + rho * cp * uval * vval / deltat"
                                 axi="0.0 * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz) + 0 * r * uval * upval * vval / deltat + r * rho * cp * uval * vval / deltat" symmetric="1" />
             <vector i="1" j="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval + rho * cp * (upval - uptval) * vval / deltat"
-                          axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval + r * rho * cp * (upval - uptval) * vval / deltat" />
+                                axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval + r * rho * cp * (upval - uptval) * vval / deltat" />
         </transient>        
     </material>
 
