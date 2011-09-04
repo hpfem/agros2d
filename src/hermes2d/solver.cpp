@@ -56,7 +56,7 @@ SolutionArray<Scalar>::~SolutionArray()
 }
 
 template <typename Scalar>
-void SolutionArray<Scalar>::load(QDomElement *element)
+void SolutionArray<Scalar>::load(QDomElement element)
 {
     logMessage("SolutionArray::load()");
 
@@ -65,21 +65,21 @@ void SolutionArray<Scalar>::load(QDomElement *element)
 
     // write content (saved solution)
     QByteArray contentSolution;
-    contentSolution.append(element->elementsByTagName("sln").at(0).toElement().childNodes().at(0).nodeValue());
+    contentSolution.append(element.elementsByTagName("sln").at(0).toElement().childNodes().at(0).nodeValue());
     writeStringContentByteArray(fileNameSolution, QByteArray::fromBase64(contentSolution));
 
     // write content (saved space)
     QByteArray contentSpace;
-    contentSpace.append(element->elementsByTagName("space").at(0).toElement().childNodes().at(0).nodeValue());
+    contentSpace.append(element.elementsByTagName("space").at(0).toElement().childNodes().at(0).nodeValue());
     writeStringContentByteArray(fileNameSpace, QByteArray::fromBase64(contentSpace));
 
     sln = new Hermes::Hermes2D::Solution<Scalar>();
     sln->load(fileNameSolution.toStdString().c_str());
     //space = new Hermes::Hermes2D::Space<Scalar>();
     //space->load(fileNameSpace.toStdString().c_str());
-    adaptiveError = element->attribute("adaptiveerror").toDouble();
-    adaptiveSteps = element->attribute("adaptivesteps").toInt();
-    time = element->attribute("time").toDouble();
+    adaptiveError = element.attribute("adaptiveerror").toDouble();
+    adaptiveSteps = element.attribute("adaptivesteps").toInt();
+    time = element.attribute("time").toDouble();
 
     // delete solution
     QFile::remove(fileNameSolution);
@@ -87,7 +87,7 @@ void SolutionArray<Scalar>::load(QDomElement *element)
 }
 
 template <typename Scalar>
-void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement *element)
+void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
 {
     logMessage("SolutionArray::save()");
 
@@ -107,11 +107,11 @@ void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement *element)
     eleSolution.appendChild(textSolution);
     eleSpace.appendChild(textSpace);
 
-    element->setAttribute("adaptiveerror", adaptiveError);
-    element->setAttribute("adaptivesteps", adaptiveSteps);
-    element->setAttribute("time", time);
-    element->appendChild(eleSolution);
-    element->appendChild(eleSpace);
+    element.setAttribute("adaptiveerror", adaptiveError);
+    element.setAttribute("adaptivesteps", adaptiveSteps);
+    element.setAttribute("time", time);
+    element.appendChild(eleSolution);
+    element.appendChild(eleSpace);
 
     // delete
     QFile::remove(fileNameSolution);

@@ -1559,14 +1559,14 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     if (eleDoc.elementsByTagName("mesh").count() > 0)
     {
         QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
-        Util::scene()->sceneSolution()->loadMeshInitial(&eleMesh.toElement());
+        Util::scene()->sceneSolution()->loadMeshInitial(eleMesh.toElement());
     }
 
     // solutions
     if (eleDoc.elementsByTagName("solutions").count() > 0)
     {
         QDomNode eleSolutions = eleDoc.elementsByTagName("solutions").at(0);
-        Util::scene()->sceneSolution()->loadSolution(&eleSolutions.toElement());
+        Util::scene()->sceneSolution()->loadSolution(eleSolutions.toElement());
         emit invalidated();
     }
 
@@ -1762,12 +1762,12 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     {
         // mesh
         QDomNode eleMesh = doc.createElement("mesh");
-        Util::scene()->sceneSolution()->saveMeshInitial(&doc, &eleMesh.toElement());
+        Util::scene()->sceneSolution()->saveMeshInitial(&doc, eleMesh.toElement());
         eleDoc.appendChild(eleMesh);
 
         // solution
         QDomNode eleSolutions = doc.createElement("solutions");
-        Util::scene()->sceneSolution()->saveSolution(&doc, &eleSolutions.toElement());
+        Util::scene()->sceneSolution()->saveSolution(&doc, eleSolutions.toElement());
         eleDoc.appendChild(eleSolutions);
     }
 

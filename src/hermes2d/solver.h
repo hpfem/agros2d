@@ -41,8 +41,8 @@ struct SolutionArray
     SolutionArray();
     ~SolutionArray();
 
-    void load(QDomElement *element);
-    void save(QDomDocument *doc, QDomElement *element);
+    void load(QDomElement element);
+    void save(QDomDocument *doc, QDomElement element);
 };
 
 
