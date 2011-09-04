@@ -164,11 +164,11 @@ void SceneSolution<Scalar>::solve(SolverMode solverMode)
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::loadMeshInitial(QDomElement *element)
+void SceneSolution<Scalar>::loadMeshInitial(QDomElement element)
 {
     logMessage("SceneSolution::loadMeshInitial()");
 
-    QDomText text = element->childNodes().at(0).toText();
+    QDomText text = element.childNodes().at(0).toText();
 
     // write content (saved mesh)
     QString fileName = tempProblemFileName() + ".mesh";
@@ -183,7 +183,7 @@ void SceneSolution<Scalar>::loadMeshInitial(QDomElement *element)
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::saveMeshInitial(QDomDocument *doc, QDomElement *element)
+void SceneSolution<Scalar>::saveMeshInitial(QDomDocument *doc, QDomElement element)
 {
     logMessage("SceneSolution::saveMeshInitial()");
 
@@ -195,12 +195,12 @@ void SceneSolution<Scalar>::saveMeshInitial(QDomDocument *doc, QDomElement *elem
 
         // read content
         QDomText text = doc->createTextNode(readFileContentByteArray(fileName).toBase64());
-        element->appendChild(text);
+        element.appendChild(text);
     }
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::loadSolution(QDomElement *element)
+void SceneSolution<Scalar>::loadSolution(QDomElement element)
 {
     logMessage("SceneSolution::loadSolution()");
 
@@ -223,11 +223,11 @@ void SceneSolution<Scalar>::loadSolution(QDomElement *element)
         solutionArrayList.push_back(solutionArray);
     }
 
-    QDomNode n = element->firstChild();
+    QDomNode n = element.firstChild();
     while(!n.isNull())
     {
         SolutionArray<Scalar> *solutionArray = new SolutionArray<Scalar>();
-        solutionArray->load(&n.toElement());
+        solutionArray->load(n.toElement());
 
         // add to the array
         solutionArrayList.push_back(solutionArray);
@@ -240,7 +240,7 @@ void SceneSolution<Scalar>::loadSolution(QDomElement *element)
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement *element)
+void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement element)
 {
     logMessage("SceneSolution::saveSolution()");
 
@@ -252,8 +252,8 @@ void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement *element
         for (int i = start; i < timeStepCount(); i++)
         {
             QDomNode eleSolution = doc->createElement("solution");
-            m_solutionArrayList.at(i)->save(doc, &eleSolution.toElement());
-            element->appendChild(eleSolution);
+            m_solutionArrayList.at(i)->save(doc, eleSolution.toElement());
+            element.appendChild(eleSolution);
         }
     }
 }

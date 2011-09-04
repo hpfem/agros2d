@@ -1,19 +1,19 @@
-<document>
+<document version="2.0">
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="5" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="10" linearity="linear" name="Surge Arrester" date="2011-06-28" polynomialorder="1" meshtype="triangle" timestep="1.0" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" linearitytolerance="0.001" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="1.0">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="5" id="0" analysistype="steadystate" initialcondition="0.0" adaptivitysteps="10" nonlineartolerance="0.001" name="Surge Arrester" date="2011-06-28" polynomialorder="1" weakforms="compiled" meshtype="triangle" timestep="1.0" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge type="electrostatic_surface_charge_density" value="0" id="1" name="Border"/>
-                <edge type="electrostatic_potential" value="4.24e4" id="2" name="Source"/>
-                <edge type="electrostatic_potential" value="0" id="3" name="Ground"/>
+                <edge type="electrostatic_surface_charge_density" id="1" name="Border" electrostatic_surface_charge_density="0"/>
+                <edge electrostatic_potential="4.24e4" type="electrostatic_potential" id="2" name="Source"/>
+                <edge electrostatic_potential="0" type="electrostatic_potential" id="3" name="Ground"/>
             </edges>
             <labels>
-                <label charge_density="0" id="1" name="Air" permittivity="1"/>
-                <label charge_density="0" id="2" name="Insulator" permittivity="3.9"/>
-                <label charge_density="0" id="3" name="ZnO" permittivity="60"/>
-                <label charge_density="0" id="4" name="Resin" permittivity="4.6"/>
-                <label charge_density="0" id="5" name="Conductor" permittivity="1e6"/>
+                <label id="1" electrostatic_charge_density="0" name="Air" electrostatic_permittivity="1"/>
+                <label id="2" electrostatic_charge_density="0" name="Insulator" electrostatic_permittivity="3.9"/>
+                <label id="3" electrostatic_charge_density="0" name="ZnO" electrostatic_permittivity="60"/>
+                <label id="4" electrostatic_charge_density="0" name="Resin" electrostatic_permittivity="4.6"/>
+                <label id="5" electrostatic_charge_density="0" name="Conductor" electrostatic_permittivity="1e6"/>
             </labels>
         </problem>
     </problems>

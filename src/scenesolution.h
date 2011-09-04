@@ -62,10 +62,10 @@ public:
     ~SceneSolution();
 
     void clear();
-    void loadMeshInitial(QDomElement *element);
-    void saveMeshInitial(QDomDocument *doc, QDomElement *element);
-    void loadSolution(QDomElement *element);
-    void saveSolution(QDomDocument *doc, QDomElement *element);
+    void loadMeshInitial(QDomElement element);
+    void saveMeshInitial(QDomDocument *doc, QDomElement element);
+    void loadSolution(QDomElement element);
+    void saveSolution(QDomDocument *doc, QDomElement element);
 
     // solve
     void solve(SolverMode solverMode);
