@@ -81,19 +81,34 @@
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
                                 axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
                                      gamma * uval * vy * vdz" />
-            <vector i="1" j="1" planar="Jer * vval + Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)"
-                                axi="Jer * vval - Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
+            <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
+                                        gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy)
+                                          - Jer * vval
+                                          - Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)"
+                                axi="1 / (mur * MU0) * (updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12) -
+                                     gamma * upval * vy * vdz
+                                          -Jer * vval
+                                          + Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
 
             <matrix i="2" j="2" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
                                 axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
                                      gamma * uval * vy * vdz" />
-            <vector i="2" j="2" planar="Jei * vval" axi="Jei * vval" />
+            <vector i="2" j="2" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
+                                        gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy)
+                                        - Jei * vval"
+                                axi="1 / (mur * MU0) * (updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12) -
+                                        gamma * upval * vy * vdz
+                                        - Jei * vval" />
 
             <matrix i="1" j="2" planar="- 2 * PI * f * gamma * uval * vval"
                                 axi="- 2 * PI * f * gamma * uval * vval" />
             <matrix i="2" j="1" planar="2 * PI * f * gamma * uval * vval"
                                 axi="2 * PI * f * gamma * uval * vval" />
+            <vector i="1" j="2" planar="- 2 * PI * f * gamma * upval * vval"
+                                axi="- 2 * PI * f * gamma * upval * vval" />
+            <vector i="2" j="1" planar="2 * PI * f * gamma * upval * vval"
+                                axi="2 * PI * f * gamma * upval * vval" />
         </harmonic>
     </material>
 
@@ -376,3 +391,23 @@
         </item>
     </surfaceintegral>
 </module>
+
+
+
+<!--            <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
+                                        gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
+                                axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
+                                     gamma * uval * vy * vdz" />
+            <vector i="1" j="1" planar="Jer * vval + Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)"
+                                axi="Jer * vval - Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
+
+            <matrix i="2" j="2" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
+                                        gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
+                                axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
+                                     gamma * uval * vy * vdz" />
+            <vector i="2" j="2" planar="Jei * vval" axi="Jei * vval" />
+
+            <matrix i="1" j="2" planar="- 2 * PI * f * gamma * uval * vval"
+                                axi="- 2 * PI * f * gamma * uval * vval" />
+            <matrix i="2" j="1" planar="2 * PI * f * gamma * uval * vval"
+                                axi="2 * PI * f * gamma * uval * vval" />-->

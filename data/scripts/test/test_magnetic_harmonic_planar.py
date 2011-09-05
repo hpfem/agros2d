@@ -1,38 +1,51 @@
 # model
-newdocument("Harmonic", "planar", "magnetic", 1, 3, "disabled", 1, 1, 50, "harmonic", 1, 1, 0)
+#newdocument("Harmonic", "planar", "magnetic", 1, 3, "disabled", 1, 1, 50, "harmonic", 1, 1, 0)
+newdocument(name="Magnetostatic", type="planar",
+                        physicfield="magnetic", analysistype="harmonic",
+                        numberofrefinements=1, polynomialorder=3,
+                        nonlineartolerance=0.001, nonlinearsteps=10)
 
 # boundaries
-addboundary("A = 0", "magnetic_vector_potential", 0, 0)
+#addboundary("A = 0", "magnetic_vector_potential", 0, 0)
+addboundary("A = 0", "magnetic_potential", {"Ar" : 0})
 
 # materials
-addmaterial("Air", 0, 0, 1, 0, 0, 0, 0, 0, 0)
-addmaterial("Cond 1", 2e7, 0, 1, 5.7e7, 0, 0, 0, 0, 0)
-addmaterial("Cond 2", 3e7, 0, 1, 5.7e7, 0, 0, 0, 0, 0)
-addmaterial("Magnet", 0, 0, 1.1, 0, 0.1, 20, 0, 0, 0)
+#addmaterial("Air", 0, 0, 1, 0, 0, 0, 0, 0, 0)
+#addmaterial("Cond 1", 2e7, 0, 1, 5.7e7, 0, 0, 0, 0, 0)
+#addmaterial("Cond 2", 3e7, 0, 1, 5.7e7, 0, 0, 0, 0, 0)
+#addmaterial("Magnet", 0, 0, 1.1, 0, 0.1, 20, 0, 0, 0)
+addmaterial("Air", {"mur" : 1})
+addmaterial("Cond 1", {"mur" : 1, "Jer" : 2e7, "gamma" : 5.7e7})
+addmaterial("Cond 2", {"mur" : 1, "Jer" : 3e7, "gamma" : 5.7e7})
+addmaterial("Magnet", {"mur" : 1.1, "Brm" : 0.1, "Bra" : 20})
 
 # edges
-addedge(-0.075, 0.06, 0.075, 0.06, 0, "A = 0")
-addedge(0.075, 0.06, 0.075, -0.06, 0, "A = 0")
-addedge(0.075, -0.06, -0.075, -0.06, 0, "A = 0")
-addedge(-0.075, -0.06, -0.075, 0.06, 0, "A = 0")
-addedge(-0.015, -0.01, -0.015, 0.01, 0, "none")
-addedge(-0.015, 0.01, -0.005, 0.01, 0, "none")
-addedge(-0.015, -0.01, -0.005, -0.01, 0, "none")
-addedge(-0.005, -0.01, -0.005, 0.01, 0, "none")
-addedge(0.005, 0.02, 0.005, 0, 0, "none")
-addedge(0.005, 0, 0.015, 0, 0, "none")
-addedge(0.015, 0, 0.015, 0.02, 0, "none")
-addedge(0.015, 0.02, 0.005, 0.02, 0, "none")
-addedge(0.01, -0.01, 0.03, -0.01, 0, "none")
-addedge(0.03, -0.03, 0.01, -0.03, 0, "none")
-addedge(0.01, -0.01, 0.01, -0.03, 0, "none")
-addedge(0.03, -0.01, 0.03, -0.03, 0, "none")
+addedge(-0.075, 0.06, 0.075, 0.06, boundary="A = 0")
+addedge(0.075, 0.06, 0.075, -0.06, boundary="A = 0")
+addedge(0.075, -0.06, -0.075, -0.06, boundary="A = 0")
+addedge(-0.075, -0.06, -0.075, 0.06, boundary="A = 0")
+addedge(-0.015, -0.01, -0.015, 0.01)
+addedge(-0.015, 0.01, -0.005, 0.01)
+addedge(-0.015, -0.01, -0.005, -0.01)
+addedge(-0.005, -0.01, -0.005, 0.01)
+addedge(0.005, 0.02, 0.005, 0)
+addedge(0.005, 0, 0.015, 0)
+addedge(0.015, 0, 0.015, 0.02)
+addedge(0.015, 0.02, 0.005, 0.02)
+addedge(0.01, -0.01, 0.03, -0.01)
+addedge(0.03, -0.03, 0.01, -0.03)
+addedge(0.01, -0.01, 0.01, -0.03)
+addedge(0.03, -0.01, 0.03, -0.03)
 
 # labels
-addlabel(0.035349, 0.036683, 0, 0, "Air")
-addlabel(0.00778124, 0.00444642, 1e-05, 0, "Cond 1")
-addlabel(-0.0111161, -0.00311249, 1e-05, 0, "Cond 2")
-addlabel(0.016868, -0.0186625, 0, 0, "Magnet")
+#addlabel(0.035349, 0.036683, 0, 0, "Air")
+#addlabel(0.00778124, 0.00444642, 1e-05, 0, "Cond 1")
+#addlabel(-0.0111161, -0.00311249, 1e-05, 0, "Cond 2")
+#addlabel(0.016868, -0.0186625, 0, 0, "Magnet")
+addlabel(0.035349, 0.036683, area=0, material="Air")
+addlabel(0.00778124, 0.00444642, area=1e-05, material="Cond 1")
+addlabel(-0.0111161, -0.00311249, area=1e-05, material="Cond 2")
+addlabel(0.016868, -0.0186625, area=0, material="Magnet")
 
 # solve
 zoombestfit()
