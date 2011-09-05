@@ -2,6 +2,7 @@
 #newdocument("Harmonic", "axisymmetric", "magnetic", 1, 3, "disabled", 1, 1, 100, "harmonic", 1, 1, 0)
 newdocument(name="Magnetostatic", type="axisymmetric",
                         physicfield="magnetic", analysistype="harmonic",
+                        frequency=100,
                         numberofrefinements=1, polynomialorder=3,
                         nonlineartolerance=0.001, nonlinearsteps=10)
 
