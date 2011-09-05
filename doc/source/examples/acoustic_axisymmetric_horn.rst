@@ -1,3 +1,5 @@
+.. _`acoustic-axisymmetric-horn`:
+
 Acoustic Axisymmetric Horn
 ==========================
 
