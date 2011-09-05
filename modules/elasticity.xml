@@ -27,31 +27,41 @@
 
             <matrix i="1" j="1" planar="-(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udx * vdx)
                                         -(E / (2.0*(1.0 + nu))) * (udy * vdy)"
-                                axi="" />
+                                axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udr * vdr + uval * vdr / r + udr * vval / r + uval * vval / r) +
+                                     r * (E / (2.0*(1.0 + nu))) * (2 * udr * vdr + 2 * uval * vval / (r*r) + udz * vdz)" />
             <matrix i="1" j="2" planar="-((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udy * vdx)
                                         -(E / (2.0*(1.0 + nu))) * (udx * vdy)"
-                                axi="" />
+                                axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udr * vdz + uval * vdz / r) +
+                                     r * (E / (2.0*(1.0 + nu))) * udz * vdr" />
             <matrix i="2" j="1" planar="-(E / (2.0*(1.0 + nu))) * (udy * vdx)
                                         -((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udx * vdy)"
-                                axi="" />
+                                axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udz * vdr + udz * vval / r) +
+                                     r * (E / (2.0*(1.0 + nu))) * udr * vdz" />
             <matrix i="2" j="2" planar="-(E / (2.0*(1.0 + nu))) * (udx * vdx)
                                         -(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udy * vdy)"
-                                axi="" />
+                                axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * udz * vdz +
+                                     r * (E / (2.0*(1.0 + nu))) * (udr * vdr + 2 * udz * vdz)" />
 
             <vector i="1" j="1" planar="-(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updx * vdx)
                                         -(E / (2.0*(1.0 + nu))) * (updy * vdy)
                                         + fx * vval  + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdx"
-                                axi="" />
+                                axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updr * vdr + upval * vdr / r + updr * vval / r + upval * vval / r) +
+                                     r * (E / (2.0*(1.0 + nu))) * (2 * updr * vdr + 2 * upval * vval / (r*r) + updz * vdz)
+                                     - r * fx * vval  - r * ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * (vdr + vval/r)" />
             <vector i="1" j="2" planar="-((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updy * vdx)
                                         -(E / (2.0*(1.0 + nu))) * (updx * vdy)"
-                                axi="" />
+                                axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updr * vdz + upval * vdz / r) +
+                                     r * (E / (2.0*(1.0 + nu))) * updz * vdr" />
             <vector i="2" j="1" planar="-(E / (2.0*(1.0 + nu))) * (updy * vdx)
                                         -((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updx * vdy)"
-                                axi="" />
+                                axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updz * vdr + updz * vval / r) +
+                                     r * (E / (2.0*(1.0 + nu))) * updr * vdz" />
             <vector i="2" j="2" planar="-(E / (2.0*(1.0 + nu))) * (updx * vdx)
                                         -(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updy * vdy)
                                         + fy * vval + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdy"
-                                axi="" />
+                                axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * updz * vdz +
+                                     r * (E / (2.0*(1.0 + nu))) * (updr * vdr + 2 * updz * vdz)
+                                     - r * fy * vval - r * ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdz" />
 
         </steadystate>
     </material>
@@ -67,32 +77,32 @@
                     <item id="elasticity_displacement_x" />
                     <item id="elasticity_displacement_y" />
 
-                    <essential i="1" id="elasticity_displacement_x" />
-                    <essential i="2" id="elasticity_displacement_y" />
+                    <essential i="1" j="1" id="elasticity_displacement_x" />
+                    <essential i="2" j="2" id="elasticity_displacement_y" />
             </boundary>
 
             <boundary id="elasticity_fixed_free" name="Fixed - free">
                     <item id="elasticity_displacement_x" />
                     <item id="elasticity_force_y" />
 
-                    <essential i="1" id="elasticity_displacement_x" />
-                    <vector i="2" planar="fy * vval" axi="fy * r * vval" />
+                    <essential i="1" j="1" id="elasticity_displacement_x" />
+                    <vector i="2" j="2" planar="fy * vval" axi="fy * r * vval" />
             </boundary>
 
             <boundary id="elasticity_free_fixed" name="Free - fixed">
                     <item id="elasticity_force_x" />
                     <item id="elasticity_displacement_y" />
 
-                    <vector i="1" planar="fx * vval" axi="fx * r * vval" />
-                    <essential i="2" id="elasticity_displacement_y" />
+                    <vector i="1" j="1" planar="fx * vval" axi="fx * r * vval" />
+                    <essential i="2" j="2" id="elasticity_displacement_y" />
             </boundary>
 
             <boundary id="elasticity_free_free" name="Free - Free">
                     <item id="elasticity_force_x" />
                     <item id="elasticity_force_y" />
 
-                    <vector i="1" planar="fx * vval" axi="fx * r * vval" />
-                    <vector i="2" planar="fy * vval" axi="fy * r * vval" />
+                    <vector i="1" j="1" planar="fx * vval" axi="fx * r * vval" />
+                    <vector i="2" j="2" planar="fy * vval" axi="fy * r * vval" />
             </boundary>
         </steadystate>
     </boundary>
