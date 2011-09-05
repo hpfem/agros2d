@@ -839,5 +839,5 @@ void PostprocessorView::doSceneFont()
 
 void PostprocessorView::doShowGridChanged()
 {
-    chkSnapToGrid->setEnabled(!chkShowGrid->isEnabled());
+    chkSnapToGrid->setEnabled(chkShowGrid->isChecked());
 }

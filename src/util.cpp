@@ -1447,9 +1447,9 @@ void showPage(const QString &str)
     logMessage("showPage()");
 
     if (str.isEmpty())
-        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/doc/web/index.html"));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/doc/help/index.html"));
     else
-        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/doc/web/" + str));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/doc/help/" + str));
 }
 
 
