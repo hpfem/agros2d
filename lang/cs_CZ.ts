@@ -45,10 +45,6 @@
         <translation>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D je multiplatformní multifyzikální aplikace určená k řešení parciálních diferenciálních rovnic (PDR) založená na knihovně &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; využívající metodu konečných prvků vyšších řádů (&lt;i&gt;hp&lt;/i&gt;FEM) s automatickou adaptivitou.&lt;br/&gt;&lt;br/&gt;Internetové stránky: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Diskuze: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - hlavní vývojář (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;František Mach&lt;/b&gt; - vývoj, dokumentace (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Lukáš Koudela&lt;/b&gt; - vývojář - RF modul (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polský překlad (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;Václav Kotlan&lt;/b&gt; - německý překlad(Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Petr Kropík&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D je multiplatformní multifyzikální aplikace k řešení parciálních diferenciálních rovnic (PDR) založená na knihovně &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; využívající metodu konečných prvků vyšších řádů (&lt;i&gt;hp&lt;/i&gt;MKP) s automatickou adaptivitou.&lt;br/&gt;&lt;br/&gt;WWW stránky: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Diskuze: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - hlavní vývojář (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;František Mach&lt;/b&gt; - vývoj, dokumentace (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polský překlad (Warsaw University of Technology, Varšava)&lt;br/&gt;&lt;b&gt;Václav Kotlan&lt;/b&gt; - německý překlad (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/gui.cpp" line="767"/>
         <source>&lt;h3&gt;Hermes2D&lt;/h3&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</source>
         <translation>&lt;h3&gt;Hermes2D&lt;/h3&gt;WWW stránky: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (vedoucí týmu, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (dříve University of Texas v El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Akademie věd ČR, Praha)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (dříve University of Texas v El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (dříve University of Texas v El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Akademie věd ČR, Praha)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (Centrum nových technologií, Plzeň)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (dříve University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Karlova univerzita, Praha)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</translation>
@@ -62,49 +58,6 @@
         <location filename="../src/gui.cpp" line="828"/>
         <source>&lt;h3&gt;License:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</source>
         <translation>&lt;h3&gt;Licence:&lt;/h3&gt;&lt;p&gt;Agros2D je volný software: můžete jej distribuovat a/nebo upravovat podle podmínek GNU General Public License, vydávané Free Software Foundation, a to buď verze 2 této licence anebo (podle vašeho uvážení) kterékoli pozdější verze.&lt;/p&gt;&lt;p&gt;Agros2D je distribuován v naději, že to bude užitečný, ale BEZ JAKÉKOLIV ZÁRUKY; dokonce i bez záruky PRODEJNOSTI nebo VHODNOSTI PRO URČITÝ ÚČEL. Podívejte se na GNU General Public License pro další podrobnosti.&lt;/p&gt;&lt;p&gt;Měli byste obdržet kopii GNU General Public License současně s Agros2D, pokud ne, podívejte se na stránky &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</translation>
-    </message>
-</context>
-<context>
-    <name>CentralWidget</name>
-    <message>
-        <source>Add new page</source>
-        <translation type="obsolete">Přidat novou stránku</translation>
-    </message>
-    <message>
-        <source>Go back</source>
-        <translation type="obsolete">Zpět</translation>
-    </message>
-    <message>
-        <source>Go forward</source>
-        <translation type="obsolete">Vpřed</translation>
-    </message>
-    <message>
-        <source>Go home</source>
-        <translation type="obsolete">Domů</translation>
-    </message>
-    <message>
-        <source>Print Document</source>
-        <translation type="obsolete">Vytisknout dokument</translation>
-    </message>
-    <message>
-        <source>unknown</source>
-        <translation type="obsolete">neznámý</translation>
-    </message>
-    <message>
-        <source>Add New Page</source>
-        <translation type="obsolete">Přidat novou stránku</translation>
-    </message>
-    <message>
-        <source>Close This Page</source>
-        <translation type="obsolete">Zavřít tuto stránku</translation>
-    </message>
-    <message>
-        <source>Close Other Pages</source>
-        <translation type="obsolete">Zavřít ostatní stránky</translation>
-    </message>
-    <message>
-        <source>Add Bookmark for this Page...</source>
-        <translation type="obsolete">Přidat záložku na tuto stránku...</translation>
     </message>
 </context>
 <context>
@@ -282,10 +235,6 @@
         <translation>Nastavení</translation>
     </message>
     <message>
-        <source>Width and height of bounding box over vector count.</source>
-        <translation type="obsolete">Śířka a výška hranice dělená počtem.</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="152"/>
         <source>Language change</source>
         <translation>Změna jazyka</translation>
@@ -317,10 +266,6 @@
         <translation>Python</translation>
     </message>
     <message>
-        <source>Advanced</source>
-        <translation type="obsolete">Pokročilé</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="348"/>
         <source>UI:</source>
         <translation>UR:</translation>
@@ -341,10 +286,6 @@
         <location filename="../src/configdialog.cpp" line="664"/>
         <source>General</source>
         <translation>Obecné</translation>
-    </message>
-    <message>
-        <source>Show label</source>
-        <translation type="obsolete">Zobrazit popisek</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="473"/>
@@ -380,17 +321,17 @@
     <message>
         <location filename="../src/configdialog.cpp" line="362"/>
         <source>Collaboration server URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresa serveru pro spolupráci:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="365"/>
         <source>Collaboration</source>
-        <translation type="unfinished"></translation>
+        <translation>Spolupráce</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="373"/>
         <source>Clear application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Smazat záznam aplikace</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="377"/>
@@ -400,7 +341,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="389"/>
         <source>Logs</source>
-        <translation type="unfinished"></translation>
+        <translation>Záznamy</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="393"/>
@@ -464,30 +405,6 @@
         <translation>Geometrie</translation>
     </message>
     <message>
-        <source>Show grid</source>
-        <translation type="obsolete">Zobrazit mřížku</translation>
-    </message>
-    <message>
-        <source>Show rulers</source>
-        <translation type="obsolete">Zobrazit pravítko</translation>
-    </message>
-    <message>
-        <source>Snap to grid</source>
-        <translation type="obsolete">Zachytávat do mřížky</translation>
-    </message>
-    <message>
-        <source>Show axes</source>
-        <translation type="obsolete">Zobrazit osy</translation>
-    </message>
-    <message>
-        <source>Grid step:</source>
-        <translation type="obsolete">Krok mřížky:</translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="obsolete">Mřížka</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="558"/>
         <source>Curvilinear elements</source>
         <translation>Křivočaré elementy</translation>
@@ -498,53 +415,9 @@
         <translation>Síť</translation>
     </message>
     <message>
-        <source>Set font</source>
-        <translation type="obsolete">Nastavit písmo</translation>
-    </message>
-    <message>
-        <source>Scene font</source>
-        <translation type="obsolete">Písmo ve scéně</translation>
-    </message>
-    <message>
-        <source>Autumn</source>
-        <translation type="obsolete">Podzim</translation>
-    </message>
-    <message>
-        <source>Hot</source>
-        <translation type="obsolete">Horko</translation>
-    </message>
-    <message>
-        <source>Copper</source>
-        <translation type="obsolete">Měď</translation>
-    </message>
-    <message>
-        <source>Cool</source>
-        <translation type="obsolete">Chladno</translation>
-    </message>
-    <message>
-        <source>B/W ascending</source>
-        <translation type="obsolete">ČB stoupající</translation>
-    </message>
-    <message>
-        <source>B/W descending</source>
-        <translation type="obsolete">ČB klesající</translation>
-    </message>
-    <message>
-        <source>Filter</source>
-        <translation type="obsolete">Filter</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="461"/>
         <source>Log. scale</source>
         <translation>Log. škála</translation>
-    </message>
-    <message>
-        <source>Palette:</source>
-        <translation type="obsolete">Paleta:</translation>
-    </message>
-    <message>
-        <source>Steps:</source>
-        <translation type="obsolete">Počet kroků:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="470"/>
@@ -552,17 +425,9 @@
         <translation>Základ log.:</translation>
     </message>
     <message>
-        <source>Number of decimal places:</source>
-        <translation type="obsolete">Počet desetiných míst:</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="476"/>
         <source>Scalar view</source>
         <translation>Skalární zobrazení</translation>
-    </message>
-    <message>
-        <source>Contours count:</source>
-        <translation type="obsolete">Počet ekvičar:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="506"/>
@@ -570,25 +435,9 @@
         <translation>Kontury</translation>
     </message>
     <message>
-        <source>Proportional</source>
-        <translation type="obsolete">Proporční</translation>
-    </message>
-    <message>
-        <source>Color (b/w)</source>
-        <translation type="obsolete">Barva (čb.)</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="701"/>
         <source>Vectors:</source>
         <translation>Vektory:</translation>
-    </message>
-    <message>
-        <source>Scale:</source>
-        <translation type="obsolete">Měřítko:</translation>
-    </message>
-    <message>
-        <source>Vector view</source>
-        <translation type="obsolete">Vektorové zobrazení</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="480"/>
@@ -626,18 +475,6 @@
         <translation>Tvar deformace</translation>
     </message>
     <message>
-        <source>Show order label</source>
-        <translation type="obsolete">Zobrazit popisek řádu polynomu</translation>
-    </message>
-    <message>
-        <source>Hermes</source>
-        <translation type="obsolete">Hermes</translation>
-    </message>
-    <message>
-        <source>Polynomial order</source>
-        <translation type="obsolete">Řád polynomu</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="529"/>
         <source>Postprocessor</source>
         <translation>Postprocesor</translation>
@@ -645,7 +482,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="577"/>
         <source>Maximum number of DOFs:</source>
-        <translation type="unfinished">Počet stupňů volnosti:</translation>
+        <translation>Maximální počet st. volnosti:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="694"/>
@@ -705,24 +542,12 @@
     <message>
         <location filename="../src/configdialog.cpp" line="792"/>
         <source>Application log was cleared successfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Isotropic refinement</source>
-        <translation type="obsolete">Izotropní zjemnění</translation>
+        <translation>Záznam aplikace byl úspěšně smazán.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="805"/>
         <source>Command history was cleared successfully.</source>
         <translation>Historie příkazů byla smázána.</translation>
-    </message>
-    <message>
-        <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;true&lt;/b&gt;&lt;td&gt;&lt;td&gt;isotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;false&lt;/b&gt;&lt;td&gt;&lt;td&gt;anisotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="obsolete">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;zaškrtnuto&lt;/b&gt;&lt;td&gt;&lt;td&gt;izotropní zjemnění&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;nezaškrtnuto&lt;/b&gt;&lt;td&gt;&lt;td&gt;anizotropní zjemnění&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences&lt;br/&gt;the selection of cancidates in hp-adaptivity</source>
-        <translation type="obsolete">&lt;b&gt;&lt;/b&gt;výchozí hodnota je 1.0, tento parametr ovlivňuje&lt;br/&gt;výběr kandidátů hp-adaptivity</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="592"/>
@@ -743,10 +568,6 @@
         <location filename="../src/configdialog.cpp" line="596"/>
         <source>2</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="obsolete">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;zjemnit elementy pokud není chyba menší než &lt;br/&gt;kvadratická odchylka od &lt;b&gt;prahu&lt;/b&gt; násobeného celkovou chybou.&lt;br/&gt;Pokud má více elementů stejnou chybu,&lt;br/&gt;jsou všechny zjemněny pro zachování symetrie sítě&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;zjemnit všechny elementy,&lt;br/&gt;které mají chybu větší než &lt;b&gt;práh&lt;/b&gt;&lt;br/&gt; násobený maximální chybou na elementu&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;zjemnit všechny elementy&lt;br/&gt;s chybou větší než &lt;b&gt;práh&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="603"/>
@@ -841,10 +662,6 @@
         <translation>Výchozí</translation>
     </message>
     <message>
-        <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;true&lt;/b&gt;&lt;/td&gt;&lt;td&gt;isotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;false&lt;/b&gt;&lt;/td&gt;&lt;td&gt;anisotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="obsolete">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;zaškrtnuto&lt;/b&gt;&lt;/td&gt;&lt;td&gt;izotropní zjemnění&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;nezaškrtnuto&lt;/b&gt;&lt;/td&gt;&lt;td&gt;anizotropní zjemnění&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="590"/>
         <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences&lt;br/&gt;the selection of candidates in hp-adaptivity</source>
         <translation>&lt;b&gt;&lt;/b&gt;výchozí hodnota je 1.0, tento parametr ovlivňuje&lt;br/&gt;výběr kandidátů hp-adaptivity</translation>
@@ -857,269 +674,28 @@
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>Delete</source>
-        <translation type="unfinished">Smazat</translation>
+        <translation>Smazat</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>Are you sure that you want to permanently delete the application logfile?</source>
-        <translation type="unfinished">Jste si jisti, že chcete trvale odstranit záznam aplikace?</translation>
+        <translation>Jste si jisti, že chcete trvale odstranit záznam aplikace?</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Ano</translation>
+        <translation>&amp;Ano</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Ne</translation>
+        <translation>&amp;Ne</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="792"/>
         <location filename="../src/configdialog.cpp" line="805"/>
         <source>Information</source>
         <translation>Informace</translation>
-    </message>
-    <message>
-        <source>Command history was cleared succesfully.</source>
-        <translation type="obsolete">Historie příkazů byla smázána.</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdge</name>
-    <message>
-        <source>Edge</source>
-        <translation type="obsolete">Hrana</translation>
-    </message>
-    <message>
-        <source>Start point:</source>
-        <translation type="obsolete">Počáteční bod:</translation>
-    </message>
-    <message>
-        <source>End point:</source>
-        <translation type="obsolete">Koncový bod:</translation>
-    </message>
-    <message>
-        <source>Coordinates</source>
-        <translation type="obsolete">Souřadnice</translation>
-    </message>
-    <message>
-        <source>Refine towards edge:</source>
-        <translation type="obsolete">Zjemnění sítě k hranám:</translation>
-    </message>
-    <message>
-        <source>Mesh parameters</source>
-        <translation type="obsolete">Parametry sítě</translation>
-    </message>
-    <message>
-        <source>Boundary condition:</source>
-        <translation type="obsolete">Okrajová podmínka:</translation>
-    </message>
-    <message>
-        <source>Angle (deg.):</source>
-        <translation type="obsolete">Úhel (st.):</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation type="obsolete">Délka:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeAcousticMarker</name>
-    <message>
-        <source>Amplitude</source>
-        <translation type="obsolete">Amplituda</translation>
-    </message>
-    <message>
-        <source>Frequency</source>
-        <translation type="obsolete">Frekvence</translation>
-    </message>
-    <message>
-        <source>Harmonic function</source>
-        <translation type="obsolete">Harmonická funkce</translation>
-    </message>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ okr. podmínky:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Hodnota:</translation>
-    </message>
-    <message>
-        <source>Transient value:</source>
-        <translation type="obsolete">Přechodová hodnota:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeCurrentMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ okr. podmínky:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Hodnota:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeElasticityMarker</name>
-    <message>
-        <source>Equation:</source>
-        <translation type="obsolete">Rovnice:</translation>
-    </message>
-    <message>
-        <source>BC Type:</source>
-        <translation type="obsolete">Typ okr. podmínky:</translation>
-    </message>
-    <message>
-        <source>Force</source>
-        <translation type="obsolete">Síla</translation>
-    </message>
-    <message>
-        <source>Displacement</source>
-        <translation type="obsolete">Posuv</translation>
-    </message>
-    <message>
-        <source>Force (N):</source>
-        <translation type="obsolete">Síla (N):</translation>
-    </message>
-    <message>
-        <source>Displacement (m):</source>
-        <translation type="obsolete">Posuv (m):</translation>
-    </message>
-    <message>
-        <source>Direction %1</source>
-        <translation type="obsolete">Směr %1</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeElectrostaticMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ okr. podmínky:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Hodnota:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeFlowMarker</name>
-    <message>
-        <source>BC Type:</source>
-        <translation type="obsolete">Typ okr. podmínky:</translation>
-    </message>
-    <message>
-        <source>Velocity X (m/s):</source>
-        <translation type="obsolete">Rychlost X (m/s):</translation>
-    </message>
-    <message>
-        <source>Velocity Y (m/s):</source>
-        <translation type="obsolete">Rychlost Y (m/s):</translation>
-    </message>
-    <message>
-        <source>Pressure (Pa):</source>
-        <translation type="obsolete">Tlak (Pa):</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeGeneralMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ okr. podmínky:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Hodnota:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeHeatMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ okr. podmínky:</translation>
-    </message>
-    <message>
-        <source>Temperature</source>
-        <translation type="obsolete">Teplota</translation>
-    </message>
-    <message>
-        <source>Heat flux</source>
-        <translation type="obsolete">Tepelný tok</translation>
-    </message>
-    <message>
-        <source>Heat transfer coef.</source>
-        <translation type="obsolete">Koef. tep. roztažnosti</translation>
-    </message>
-    <message>
-        <source>External temperature</source>
-        <translation type="obsolete">Externí teplota</translation>
-    </message>
-    <message>
-        <source>Temperature (deg.):</source>
-        <translation type="obsolete">Teplota (st.):</translation>
-    </message>
-    <message>
-        <source>Heat flux (W/m2):</source>
-        <translation type="obsolete">Tepelný tok (W/m2):</translation>
-    </message>
-    <message>
-        <source>Heat transfer coef. (W/m2.K):</source>
-        <translation type="obsolete">Koef. přestupu tepla (W/m2.K):</translation>
-    </message>
-    <message>
-        <source>External temperature (deg.):</source>
-        <translation type="obsolete">Externí teplota (st.):</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeMagneticMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ okr. podmínky:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Hodnota:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeMarker</name>
-    <message>
-        <source>Equation:</source>
-        <translation type="obsolete">Rovnice:</translation>
-    </message>
-    <message>
-        <source>Boundary marker</source>
-        <translation type="obsolete">Okrajová podmínka</translation>
-    </message>
-    <message>
-        <source>Boundary marker name already exists.</source>
-        <translation type="obsolete">Název okrajové podmínky již existuje.</translation>
-    </message>
-    <message>
-        <source>Boundary condition</source>
-        <translation type="obsolete">Okrajová podmínka</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Název:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeRFMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ okr. podmínky:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Hodnota:</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <translation type="obsolete">Výška:</translation>
     </message>
 </context>
 <context>
@@ -1161,351 +737,6 @@
     </message>
 </context>
 <context>
-    <name>DSceneLabel</name>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Značka oblasti</translation>
-    </message>
-    <message>
-        <source>Coordinates</source>
-        <translation type="obsolete">Souřadnice</translation>
-    </message>
-    <message>
-        <source>Global order is %1.</source>
-        <translation type="obsolete">Globální řád je %1.</translation>
-    </message>
-    <message>
-        <source>Mesh parameters</source>
-        <translation type="obsolete">Parametry sítě</translation>
-    </message>
-    <message>
-        <source>Material:</source>
-        <translation type="obsolete">Materiál:</translation>
-    </message>
-    <message>
-        <source>Triangle area (m):</source>
-        <translation type="obsolete">Obsah elementu (m):</translation>
-    </message>
-    <message>
-        <source>Polynomial order (-):</source>
-        <translation type="obsolete">Řád polynomu (-):</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelAcousticMarker</name>
-    <message>
-        <source>Density (kg/m3):</source>
-        <translation type="obsolete">Hustota (kg/m3):</translation>
-    </message>
-    <message>
-        <source>Speed of sound (m/s):</source>
-        <translation type="obsolete">Rychlost zvuku (m/s):</translation>
-    </message>
-    <message>
-        <source>Mass density</source>
-        <translation type="obsolete">Měrná hmotnost</translation>
-    </message>
-    <message>
-        <source>Speed of sound</source>
-        <translation type="obsolete">Rychlost zvuku</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelCurrentMarker</name>
-    <message>
-        <source>Conductivity (S/m):</source>
-        <translation type="obsolete">Vodivost (S/m):</translation>
-    </message>
-    <message>
-        <source>Conductivity</source>
-        <translation type="obsolete">Vodivost</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelElasticityMarker</name>
-    <message>
-        <source>Force X (N):</source>
-        <translation type="obsolete">Síla X (N):</translation>
-    </message>
-    <message>
-        <source>Force Y (N):</source>
-        <translation type="obsolete">Síla Y (N):</translation>
-    </message>
-    <message>
-        <source>Force</source>
-        <translation type="obsolete">Síla</translation>
-    </message>
-    <message>
-        <source>Volumetric forces</source>
-        <translation type="obsolete">Objemová síla</translation>
-    </message>
-    <message>
-        <source>Thermal exp. coef.</source>
-        <translation type="obsolete">Koef. tep. roztažnosti</translation>
-    </message>
-    <message>
-        <source>Temperature</source>
-        <translation type="obsolete">Teplota</translation>
-    </message>
-    <message>
-        <source>Ref. temperature</source>
-        <translation type="obsolete">Ref. teplota</translation>
-    </message>
-    <message>
-        <source>Lame&apos;s coefficients:</source>
-        <translation type="obsolete">Lamého koeficienty:</translation>
-    </message>
-    <message>
-        <source>Young modulus</source>
-        <translation type="obsolete">Youngův modul</translation>
-    </message>
-    <message>
-        <source>Poisson number</source>
-        <translation type="obsolete">Poissonovo číslo</translation>
-    </message>
-    <message>
-        <source>Thermal exp. coef. (1/deg):</source>
-        <translation type="obsolete">Koef. tep. roztažnosti (1/st.):</translation>
-    </message>
-    <message>
-        <source>Temperature (deg):</source>
-        <translation type="obsolete">Teplota (st.):</translation>
-    </message>
-    <message>
-        <source>Ref. temperature (deg):</source>
-        <translation type="obsolete">Ref. teplota (st.):</translation>
-    </message>
-    <message>
-        <source>Thermal expansion</source>
-        <translation type="obsolete">Teplotní roztažnost</translation>
-    </message>
-    <message>
-        <source>Young modulus (Pa):</source>
-        <translation type="obsolete">Youngův modul (Pa):</translation>
-    </message>
-    <message>
-        <source>Poisson number (-):</source>
-        <translation type="obsolete">Poissonovo číslo (-):</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelElectrostaticMarker</name>
-    <message>
-        <source>Permittivity (-):</source>
-        <translation type="obsolete">Permitivita (-):</translation>
-    </message>
-    <message>
-        <source>Charge density (C/m3):</source>
-        <translation type="obsolete">Hustota náboje (C/m3):</translation>
-    </message>
-    <message>
-        <source>Permittivity</source>
-        <translation type="obsolete">Permitivita</translation>
-    </message>
-    <message>
-        <source>Charge density</source>
-        <translation type="obsolete">Hustota náboje</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelFlowMarker</name>
-    <message>
-        <source>Dynamic viscosity (Pa.s):</source>
-        <translation type="obsolete">Dynamická viskozita (Pa.s):</translation>
-    </message>
-    <message>
-        <source>Density (kg/m3):</source>
-        <translation type="obsolete">Hustota (kg/m3):</translation>
-    </message>
-    <message>
-        <source>Dynamic viscosity</source>
-        <translation type="obsolete">Dynamická viskozita</translation>
-    </message>
-    <message>
-        <source>Mass density</source>
-        <translation type="obsolete">Měrná hmotnost</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelGeneralMarker</name>
-    <message>
-        <source>Constant:</source>
-        <translation type="obsolete">Konstanta:</translation>
-    </message>
-    <message>
-        <source>Rightside:</source>
-        <translation type="obsolete">Pravá strana:</translation>
-    </message>
-    <message>
-        <source>Constant</source>
-        <translation type="obsolete">Konstanta</translation>
-    </message>
-    <message>
-        <source>Rightside</source>
-        <translation type="obsolete">Pravá strana</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelHeatMarker</name>
-    <message>
-        <source>Thermal conductivity (W/m.K):</source>
-        <translation type="obsolete">Tepelná vodivost (W/m.K):</translation>
-    </message>
-    <message>
-        <source>Volume heat (J/m3):</source>
-        <translation type="obsolete">Objemové teplo (J/m3):</translation>
-    </message>
-    <message>
-        <source>Density (kg/m3):</source>
-        <translation type="obsolete">Hustota (kg/m3):</translation>
-    </message>
-    <message>
-        <source>Specific heat (J/kg.K):</source>
-        <translation type="obsolete">Specifické teplo (J/kg.K):</translation>
-    </message>
-    <message>
-        <source>Thermal conductivity</source>
-        <translation type="obsolete">Tepelná vodivost</translation>
-    </message>
-    <message>
-        <source>Volume heat</source>
-        <translation type="obsolete">Objemové teplo</translation>
-    </message>
-    <message>
-        <source>Mass density</source>
-        <translation type="obsolete">Měrná hmotnost</translation>
-    </message>
-    <message>
-        <source>Specific heat</source>
-        <translation type="obsolete">Měrné teplo</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelMagneticMarker</name>
-    <message>
-        <source>Rem. flux dens. (T):</source>
-        <translation type="obsolete">Rem. mag. indukce (T):</translation>
-    </message>
-    <message>
-        <source>Direction of rem. (deg.):</source>
-        <translation type="obsolete">Směr rem. (st.):</translation>
-    </message>
-    <message>
-        <source>Rem. flux dens.</source>
-        <translation type="obsolete">Rem. mag. indukce</translation>
-    </message>
-    <message>
-        <source>Direction of rem.</source>
-        <translation type="obsolete">Směr remanence</translation>
-    </message>
-    <message>
-        <source>Permanent magnet</source>
-        <translation type="obsolete">Permanentní magnet</translation>
-    </message>
-    <message>
-        <source>Velocity angular</source>
-        <translation type="obsolete">Úhlová rychlost</translation>
-    </message>
-    <message>
-        <source>Permeability</source>
-        <translation type="obsolete">Permeabilita</translation>
-    </message>
-    <message>
-        <source>Conductivity</source>
-        <translation type="obsolete">Vodivost</translation>
-    </message>
-    <message>
-        <source>Current density</source>
-        <translation type="obsolete">Proudová hustota</translation>
-    </message>
-    <message>
-        <source>Velocity %1 (m/s):</source>
-        <translation type="obsolete">Rychlost %1 (m/s):</translation>
-    </message>
-    <message>
-        <source>Velocity angular (rad/s):</source>
-        <translation type="obsolete">Úhlová rychlost (rad/s):</translation>
-    </message>
-    <message>
-        <source>Velocity</source>
-        <translation type="obsolete">Rychlost</translation>
-    </message>
-    <message>
-        <source>Permeability (-):</source>
-        <translation type="obsolete">Permeabilita (-):</translation>
-    </message>
-    <message>
-        <source>Conductivity (S/m):</source>
-        <translation type="obsolete">Vodivost (S/m):</translation>
-    </message>
-    <message>
-        <source>Current density (A/m2):</source>
-        <translation type="obsolete">Proudová hustota (A/m2):</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelMarker</name>
-    <message>
-        <source>Material marker</source>
-        <translation type="obsolete">Materiál</translation>
-    </message>
-    <message>
-        <source>Material marker name already exists.</source>
-        <translation type="obsolete">Název materiálu již existuje.</translation>
-    </message>
-    <message>
-        <source>Material</source>
-        <translation type="obsolete">Materiál</translation>
-    </message>
-    <message>
-        <source>Equation:</source>
-        <translation type="obsolete">Rovnice:</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Název:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelRFMarker</name>
-    <message>
-        <source>Permitivity (-):</source>
-        <translation type="obsolete">Permitivita (-):</translation>
-    </message>
-    <message>
-        <source>Permeability (-):</source>
-        <translation type="obsolete">Permeabilita (-):</translation>
-    </message>
-    <message>
-        <source>Conductivity (S/m):</source>
-        <translation type="obsolete">Vodivost (S/m):</translation>
-    </message>
-    <message>
-        <source>J_ext_real (A/m2):</source>
-        <translation type="obsolete">J_ext_real (A/m2):</translation>
-    </message>
-    <message>
-        <source>J_ext_imag (A/m2):</source>
-        <translation type="obsolete">J_ext_imag (A/m2):</translation>
-    </message>
-    <message>
-        <source>Permittivity</source>
-        <translation type="obsolete">Permitivita</translation>
-    </message>
-    <message>
-        <source>Permeability</source>
-        <translation type="obsolete">Permeabilita</translation>
-    </message>
-    <message>
-        <source>Conductivity</source>
-        <translation type="obsolete">Vodivost</translation>
-    </message>
-    <message>
-        <source>Current density</source>
-        <translation type="obsolete">Proudová hustota</translation>
-    </message>
-</context>
-<context>
     <name>DSceneNode</name>
     <message>
         <location filename="../src/scenebasic.cpp" line="288"/>
@@ -1527,17 +758,6 @@
         <location filename="../src/scenebasic.cpp" line="322"/>
         <source>Node</source>
         <translation>Uzel</translation>
-    </message>
-</context>
-<context>
-    <name>EdgeMarkerDialog</name>
-    <message>
-        <source>Edge marker</source>
-        <translation type="obsolete">Hrana</translation>
-    </message>
-    <message>
-        <source>Edge marker:</source>
-        <translation type="obsolete">Hrana:</translation>
     </message>
 </context>
 <context>
@@ -1606,32 +826,6 @@
         <location filename="../src/gui.cpp" line="504"/>
         <source>File could not be renamed.</source>
         <translation>Soubor nelze přejmenovat.</translation>
-    </message>
-</context>
-<context>
-    <name>HelpDialog</name>
-    <message>
-        <source>Help dialog</source>
-        <translation type="obsolete">Nápověda</translation>
-    </message>
-    <message>
-        <source>Filter:</source>
-        <translation type="obsolete">Filtr:</translation>
-    </message>
-    <message>
-        <source>Content</source>
-        <translation type="obsolete">Obsah</translation>
-    </message>
-    <message>
-        <source>Index</source>
-        <translation type="obsolete">Index</translation>
-    </message>
-</context>
-<context>
-    <name>HelpViewer</name>
-    <message>
-        <source>Open Link in New Tab</source>
-        <translation type="obsolete">Otevřít odkaz na nové stránce</translation>
     </message>
 </context>
 <context>
@@ -1721,10 +915,6 @@
         <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
-        <source>new boundary</source>
-        <translation type="obsolete">nová podmínka</translation>
-    </message>
-    <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="144"/>
         <source>new boundary condition</source>
         <translation>nová podmínka</translation>
@@ -1803,10 +993,6 @@
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="254"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
-    </message>
-    <message>
-        <source>new boundary</source>
-        <translation type="obsolete">nová podmínka</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="342"/>
@@ -1949,41 +1135,6 @@
     </message>
 </context>
 <context>
-    <name>HermesFlow</name>
-    <message>
-        <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="obsolete">Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
-    </message>
-    <message>
-        <source>new boundary</source>
-        <translation type="obsolete">nová podmínka</translation>
-    </message>
-    <message>
-        <source>new material</source>
-        <translation type="obsolete">nový materiál</translation>
-    </message>
-    <message>
-        <source>Flow</source>
-        <translation type="obsolete">Tok</translation>
-    </message>
-    <message>
-        <source>Dynamic viscosity:</source>
-        <translation type="obsolete">Dynamická viskozita:</translation>
-    </message>
-    <message>
-        <source>Density:</source>
-        <translation type="obsolete">Hustota:</translation>
-    </message>
-    <message>
-        <source>Velocity</source>
-        <translation type="obsolete">Rychlost</translation>
-    </message>
-    <message>
-        <source>Pressure:</source>
-        <translation type="obsolete">Tlak:</translation>
-    </message>
-</context>
-<context>
     <name>HermesGeneral</name>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="86"/>
@@ -2105,10 +1256,6 @@
         <translation></translation>
     </message>
     <message>
-        <source>deg./m</source>
-        <translation type="obsolete">st./m</translation>
-    </message>
-    <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="371"/>
         <source>Heat Transfer</source>
         <translation>Teplotní pole</translation>
@@ -2133,10 +1280,6 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="376"/>
         <source>W</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>deg.</source>
-        <translation type="obsolete">st.</translation>
     </message>
 </context>
 <context>
@@ -2525,14 +1668,6 @@
         <translation>Proudová hustota</translation>
     </message>
     <message>
-        <source>J_ext_real:</source>
-        <translation type="obsolete">J_ext_real:</translation>
-    </message>
-    <message>
-        <source>J_ext_imag:</source>
-        <translation type="obsolete">J_ext_imag:</translation>
-    </message>
-    <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="717"/>
         <source>Electric field</source>
         <translation>Intenzita el. pole</translation>
@@ -2597,17 +1732,6 @@
         <location filename="../src/gui.cpp" line="623"/>
         <source>Images (*.png *.bmp *.jpg)</source>
         <translation>Obrázky (*.png *.bmp *.jpg)</translation>
-    </message>
-</context>
-<context>
-    <name>LabelMarkerDialog</name>
-    <message>
-        <source>Label marker</source>
-        <translation type="obsolete">Značka oblasti</translation>
-    </message>
-    <message>
-        <source>Label marker:</source>
-        <translation type="obsolete">Značka oblasti:</translation>
     </message>
 </context>
 <context>
@@ -3012,10 +2136,6 @@
         <translation></translation>
     </message>
     <message>
-        <source>&amp;Postprocessor properties</source>
-        <translation type="obsolete">&amp;Vlastnosti postprocesoru</translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="307"/>
         <source>Script &amp;editor</source>
         <translation>&amp;Editor skriptů</translation>
@@ -3081,21 +2201,9 @@
         <translation>&amp;Zobrazení</translation>
     </message>
     <message>
-        <source>&amp;Show</source>
-        <translation type="obsolete">&amp;Zobrazit</translation>
-    </message>
-    <message>
-        <source>Show docks</source>
-        <translation type="obsolete">Zobrazit doky</translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="543"/>
         <source>Tools</source>
         <translation>Nástroje</translation>
-    </message>
-    <message>
-        <source>Workspace</source>
-        <translation type="obsolete">Pracovní plocha</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="671"/>
@@ -3183,10 +2291,6 @@
         <location filename="../src/mainwindow.cpp" line="1127"/>
         <source>Python script (*.py)</source>
         <translation>Python scripty (*.py)</translation>
-    </message>
-    <message>
-        <source>About Agros2D</source>
-        <translation type="obsolete">O Agros2D</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="250"/>
@@ -3502,18 +2606,6 @@
         <translation>Obj. skalární pole</translation>
     </message>
     <message>
-        <source>2D mode:</source>
-        <translation type="obsolete">2D mód:</translation>
-    </message>
-    <message>
-        <source>3D mode:</source>
-        <translation type="obsolete">3D mód:</translation>
-    </message>
-    <message>
-        <source>Postprocessor</source>
-        <translation type="obsolete">Postprocesor</translation>
-    </message>
-    <message>
         <location filename="../src/postprocessorview.cpp" line="234"/>
         <source>Contours</source>
         <translation>Kontury</translation>
@@ -3558,10 +2650,6 @@
         <location filename="../src/postprocessorview.cpp" line="305"/>
         <source>Component:</source>
         <translation>Složka:</translation>
-    </message>
-    <message>
-        <source>Auto range:</source>
-        <translation type="obsolete">Automatický rozsah:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="309"/>
@@ -3620,52 +2708,52 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="367"/>
         <source>Show grid</source>
-        <translation type="unfinished">Zobrazit mřížku</translation>
+        <translation>Zobrazit mřížku</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="369"/>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Přichytávat k mřížce</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="372"/>
         <source>Grid step:</source>
-        <translation type="unfinished">Krok mřížky:</translation>
+        <translation>Krok mřížky:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="377"/>
         <source>Grid</source>
-        <translation type="unfinished">Mřížka</translation>
+        <translation>Mřížka</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="382"/>
         <source>Set font</source>
-        <translation type="unfinished">Nastavit písmo</translation>
+        <translation>Nastavit písmo</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="389"/>
         <source>Scene font</source>
-        <translation type="unfinished">Písmo ve scéně</translation>
+        <translation>Písmo ve scéně</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="393"/>
         <source>Show rulers</source>
-        <translation type="unfinished">Zobrazit pravítko</translation>
+        <translation>Zobrazit pravítko</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="394"/>
         <source>Show axes</source>
-        <translation type="unfinished">Zobrazit osy</translation>
+        <translation>Zobrazit osy</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="395"/>
         <source>Show label</source>
-        <translation type="unfinished">Zobrazit popisek</translation>
+        <translation>Zobrazit popisek</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="402"/>
         <source>Other</source>
-        <translation type="unfinished">Ostatní</translation>
+        <translation>Ostatní</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="422"/>
@@ -3683,37 +2771,37 @@
         <location filename="../src/postprocessorview.cpp" line="425"/>
         <location filename="../src/postprocessorview.cpp" line="539"/>
         <source>Bone</source>
-        <translation type="unfinished"></translation>
+        <translation>Kost</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="426"/>
         <location filename="../src/postprocessorview.cpp" line="540"/>
         <source>Pink</source>
-        <translation type="unfinished"></translation>
+        <translation>Růžový</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="427"/>
         <location filename="../src/postprocessorview.cpp" line="541"/>
         <source>Spring</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaro</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="428"/>
         <location filename="../src/postprocessorview.cpp" line="542"/>
         <source>Summer</source>
-        <translation type="unfinished"></translation>
+        <translation>Léto</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="430"/>
         <location filename="../src/postprocessorview.cpp" line="544"/>
         <source>Winter</source>
-        <translation type="unfinished"></translation>
+        <translation>Zima</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="431"/>
         <location filename="../src/postprocessorview.cpp" line="545"/>
         <source>HSV</source>
-        <translation type="unfinished"></translation>
+        <translation>HSV</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="432"/>
@@ -3776,16 +2864,12 @@
         <location filename="../src/postprocessorview.cpp" line="452"/>
         <location filename="../src/postprocessorview.cpp" line="549"/>
         <source>Show scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit škálu</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="465"/>
         <source>Quality:</source>
         <translation>Kvalita:</translation>
-    </message>
-    <message>
-        <source>Log. scale</source>
-        <translation type="obsolete">Log. škála</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="460"/>
@@ -3797,14 +2881,6 @@
         <location filename="../src/postprocessorview.cpp" line="462"/>
         <source>Steps:</source>
         <translation>Počet kroků:</translation>
-    </message>
-    <message>
-        <source>Base:</source>
-        <translation type="obsolete">Základ log.:</translation>
-    </message>
-    <message>
-        <source>Decimal places:</source>
-        <translation type="obsolete">Počet des. míst:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="500"/>
@@ -3827,14 +2903,6 @@
         <translation>Měřítko:</translation>
     </message>
     <message>
-        <source>Vector view</source>
-        <translation type="obsolete">Vektorové zobrazení</translation>
-    </message>
-    <message>
-        <source>Show order label</source>
-        <translation type="obsolete">Zobrazit popisek řádu polynomu</translation>
-    </message>
-    <message>
         <location filename="../src/postprocessorview.cpp" line="534"/>
         <source>Hermes</source>
         <translation>Hermes</translation>
@@ -3851,7 +2919,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="550"/>
         <source>Show order labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit řár polynomu číselně</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="598"/>
@@ -3967,10 +3035,6 @@
         <translation>Parametry sítě</translation>
     </message>
     <message>
-        <source>Maximum number of DOFs:</source>
-        <translation type="obsolete">Počet stupňů volnosti:</translation>
-    </message>
-    <message>
         <location filename="../src/problemdialog.cpp" line="226"/>
         <source>Adaptivity</source>
         <translation>Adaptivita</translation>
@@ -4042,10 +3106,6 @@
         <location filename="../src/problemdialog.cpp" line="455"/>
         <source>Time step is greater then total time.</source>
         <translation>Časový krok je delší než celkový čas.</translation>
-    </message>
-    <message>
-        <source>Maximum DOFS must be greater then zero.</source>
-        <translation type="obsolete">Maximámální počet stupňů volnostu musí být kladný.</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="165"/>
@@ -4184,21 +3244,9 @@
         <translation>Program Triangle nelze spustit</translation>
     </message>
     <message>
-        <source>Mesh files was created</source>
-        <translation type="obsolete">Soubory sítě Triangle byly vytvořeny</translation>
-    </message>
-    <message>
-        <source>Mesh file was created</source>
-        <translation type="obsolete">Soubor sítě Triangle byl vytvořen</translation>
-    </message>
-    <message>
         <location filename="../src/progressdialog.cpp" line="232"/>
         <source>Mesh was converted to Hermes2D mesh file</source>
         <translation>Síť byla převedena do formátu Hermes2D</translation>
-    </message>
-    <message>
-        <source>Mesh files was deleted</source>
-        <translation type="obsolete">Soubory sítě Triangle byly smazány</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="227"/>
@@ -4986,14 +4034,6 @@
         <translation>Intenzita el. pole - imag. složka</translation>
     </message>
     <message>
-        <source>J_Ext_real</source>
-        <translation type="obsolete">J_Ext_real</translation>
-    </message>
-    <message>
-        <source>J_Ext_imag</source>
-        <translation type="obsolete">J_Ext_imag</translation>
-    </message>
-    <message>
         <location filename="../src/util.cpp" line="448"/>
         <location filename="../src/util.cpp" line="971"/>
         <source>Acoustic pressure</source>
@@ -5245,26 +4285,6 @@
         <translation></translation>
     </message>
     <message>
-        <source>Ere</source>
-        <translation type="obsolete">Ere</translation>
-    </message>
-    <message>
-        <source>Eim</source>
-        <translation type="obsolete">Eim</translation>
-    </message>
-    <message>
-        <source>w</source>
-        <translation type="obsolete">W</translation>
-    </message>
-    <message>
-        <source>J_r</source>
-        <translation type="obsolete">J_r</translation>
-    </message>
-    <message>
-        <source>J_i</source>
-        <translation type="obsolete">J_i</translation>
-    </message>
-    <message>
         <location filename="../src/util.cpp" line="650"/>
         <source>Lp</source>
         <translation>Lp</translation>
@@ -5313,10 +4333,6 @@
         <location filename="../src/util.cpp" line="876"/>
         <source>TE Waves</source>
         <translation>TE vlny</translation>
-    </message>
-    <message>
-        <source>Acoustic</source>
-        <translation type="obsolete">Akustické pole</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="967"/>
@@ -5670,10 +4686,6 @@
         <translation>Úhel &apos;%1&apos; je mimo rozsah.</translation>
     </message>
     <message>
-        <source>Marker &apos;%1&apos; is not defined.</source>
-        <translation type="obsolete">Značka &apos;%1&apos; není definována.</translation>
-    </message>
-    <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="517"/>
         <location filename="../src/hermes2d/hermes_current.cpp" line="182"/>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="189"/>
@@ -5776,14 +4788,6 @@
         <translation>Počet stupňů volnosti je nulový</translation>
     </message>
     <message>
-        <source>Adaptivity rel. error (step: %2/%3, DOFs: %4): %1% s</source>
-        <translation type="obsolete">Adaptivní rel. chyba (krok: %2/%3, st. volnosti: %4): %1% s</translation>
-    </message>
-    <message>
-        <source>Adaptivity rel. error (step: %2/%3, DOFs: %4): %1%</source>
-        <translation type="obsolete">Adaptivní rel. chyba (krok: %2/%3, st. volnosti: %4): %1%</translation>
-    </message>
-    <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="335"/>
         <source>Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%</source>
         <translation>Adaptivní rel. chyba (krok: %2/%3, st. volnosti: %4/%5): %1%</translation>
@@ -5799,21 +4803,9 @@
         <translation>Řešič matice selhal.</translation>
     </message>
     <message>
-        <source>Relative error: %1%	(step: %2/%3, DOFs: %4)</source>
-        <translation type="obsolete">Relativní chyba: %1%	(krok: %2/%3, St. volnosti: %4)</translation>
-    </message>
-    <message>
-        <source>Time step: %1/%2</source>
-        <translation type="obsolete">Časový krok: %1/%2</translation>
-    </message>
-    <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="393"/>
         <source>Boundary type &apos;%1&apos; or &apos;%2&apos; is not supported.</source>
         <translation>Hraniční podmínka &apos;%1&apos; nebo &apos;%2&apos; není podporována.</translation>
-    </message>
-    <message>
-        <source>Time function error</source>
-        <translation type="obsolete">Chyba časové funkce</translation>
     </message>
 </context>
 <context>
@@ -6064,10 +5056,6 @@
         <translation>Vypočteno v Agros2D (&lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;)</translation>
     </message>
     <message>
-        <source>Computed by Agros2D (&lt;a href=&quot;http://hpfem.org/agros2d&quot;&gt;http://hpfem.org/agros2d&lt;/a&gt;)</source>
-        <translation type="obsolete">Vypočteno v Agros2D (&lt;a href=&quot;http://hpfem.org/agros2d&quot;&gt;http://hpfem.org/agros2d&lt;/a&gt;)</translation>
-    </message>
-    <message>
         <location filename="../src/reportdialog.cpp" line="560"/>
         <source>Polynomial order</source>
         <translation>Řád polynomu</translation>
@@ -6168,17 +5156,6 @@
         <location filename="../src/reportdialog.cpp" line="287"/>
         <source>Template style could not be copied.</source>
         <translation>Nelze zkopírovat soubor se stylem.</translation>
-    </message>
-</context>
-<context>
-    <name>SLineEditValue</name>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">chyba</translation>
-    </message>
-    <message>
-        <source>This textedit allows using variables.</source>
-        <translation type="obsolete">Zde můžete zapisovat proměnné.</translation>
     </message>
 </context>
 <context>
@@ -6604,10 +5581,6 @@
 <context>
     <name>SceneBoundarySelectDialog</name>
     <message>
-        <source>Edge marker</source>
-        <translation type="obsolete">Hrana</translation>
-    </message>
-    <message>
         <location filename="../src/scenemarker.cpp" line="335"/>
         <source>Boundary condition</source>
         <translation>Okrajová podmínka</translation>
@@ -6731,10 +5704,6 @@
         <location filename="../src/sceneinfoview.cpp" line="127"/>
         <source>Materials</source>
         <translation>Materiály</translation>
-    </message>
-    <message>
-        <source>Functions</source>
-        <translation type="obsolete">Funkce</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="133"/>
@@ -7246,10 +6215,6 @@
 <context>
     <name>SceneMaterialSelectDialog</name>
     <message>
-        <source>Label marker</source>
-        <translation type="obsolete">Značka oblasti</translation>
-    </message>
-    <message>
         <location filename="../src/scenemarker.cpp" line="407"/>
         <source>Material</source>
         <translation>Materiál</translation>
@@ -7460,14 +6425,6 @@
         <translation>Model</translation>
     </message>
     <message>
-        <source>Set mode</source>
-        <translation type="obsolete">Nastavit mod</translation>
-    </message>
-    <message>
-        <source>&amp;Postprocessor properties</source>
-        <translation type="obsolete">&amp;Vlastnosti postprocesoru</translation>
-    </message>
-    <message>
         <location filename="../src/sceneview.cpp" line="2288"/>
         <source>Polynomial order</source>
         <translation>Řád polynomu</translation>
@@ -7525,117 +6482,6 @@
         <location filename="../src/sceneview.cpp" line="2272"/>
         <source>Operate on labels</source>
         <translation>Práce se značkami oblastí</translation>
-    </message>
-</context>
-<context>
-    <name>SceneViewDialog</name>
-    <message>
-        <source>Geometry</source>
-        <translation type="obsolete">Geometrie</translation>
-    </message>
-    <message>
-        <source>Polynomial order</source>
-        <translation type="obsolete">Řád polynomu</translation>
-    </message>
-    <message>
-        <source>Scalar view solid</source>
-        <translation type="obsolete">Objemové skalární pole</translation>
-    </message>
-    <message>
-        <source>2D mode</source>
-        <translation type="obsolete">2D mód</translation>
-    </message>
-    <message>
-        <source>3D mode</source>
-        <translation type="obsolete">3D mód</translation>
-    </message>
-    <message>
-        <source>Contours</source>
-        <translation type="obsolete">Ekvičáry</translation>
-    </message>
-    <message>
-        <source>Vectors</source>
-        <translation type="obsolete">Vektory</translation>
-    </message>
-    <message>
-        <source>Show</source>
-        <translation type="obsolete">Zobrazit</translation>
-    </message>
-    <message>
-        <source>Postprocessor</source>
-        <translation type="obsolete">Postprocesor</translation>
-    </message>
-    <message>
-        <source>Variable:</source>
-        <translation type="obsolete">Veličina:</translation>
-    </message>
-    <message>
-        <source>Scalar field</source>
-        <translation type="obsolete">Skalární pole</translation>
-    </message>
-    <message>
-        <source>Initial mesh</source>
-        <translation type="obsolete">Počáteční síť</translation>
-    </message>
-    <message>
-        <source>Postprocessor properties</source>
-        <translation type="obsolete">Vlastnosti postprocesoru</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">Nic</translation>
-    </message>
-    <message>
-        <source>Scalar view</source>
-        <translation type="obsolete">Skalární zobrazení</translation>
-    </message>
-    <message>
-        <source>Solution mesh</source>
-        <translation type="obsolete">Řešená síť</translation>
-    </message>
-    <message>
-        <source>Component:</source>
-        <translation type="obsolete">Složka:</translation>
-    </message>
-    <message>
-        <source>Auto range:</source>
-        <translation type="obsolete">Automatický rozsah:</translation>
-    </message>
-    <message>
-        <source>Minimum:</source>
-        <translation type="obsolete">Minimum:</translation>
-    </message>
-    <message>
-        <source>Maximum:</source>
-        <translation type="obsolete">Maximum:</translation>
-    </message>
-    <message>
-        <source>Vector field</source>
-        <translation type="obsolete">Vektorové pole</translation>
-    </message>
-    <message>
-        <source>Time step:</source>
-        <translation type="obsolete">Časový krok:</translation>
-    </message>
-    <message>
-        <source>Transient analysis</source>
-        <translation type="obsolete">Přechodný děj</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
-    </message>
-    <message>
-        <source>Scalar</source>
-        <translation type="obsolete">Skalár</translation>
-    </message>
-    <message>
-        <source>Magnitude</source>
-        <translation type="obsolete">Modul</translation>
     </message>
 </context>
 <context>
@@ -8019,56 +6865,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/collaboration.cpp" line="214"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation type="obsolete">Datum</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Název</translation>
-    </message>
-    <message>
-        <source>Author</source>
-        <translation type="obsolete">Autor</translation>
-    </message>
-    <message>
-        <source>Find</source>
-        <translation type="obsolete">Najít</translation>
-    </message>
-    <message>
-        <source>Version:</source>
-        <translation type="obsolete">Verze:</translation>
-    </message>
-    <message>
-        <source>Date:</source>
-        <translation type="obsolete">Datum:</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Název:</translation>
-    </message>
-    <message>
-        <source>Author:</source>
-        <translation type="obsolete">Autor:</translation>
-    </message>
-    <message>
-        <source>Affiliation:</source>
-        <translation type="obsolete">Instituce:</translation>
-    </message>
-    <message>
-        <source>Download</source>
-        <translation type="obsolete">Stahnout</translation>
+        <translation>Přihlášení</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="216"/>
         <source>Close</source>
         <translation>Zavřít</translation>
-    </message>
-    <message>
-        <source>Colaboration server could not be connected</source>
-        <translation type="obsolete">Chyba při spojení se serverem</translation>
     </message>
 </context>
 <context>
@@ -8076,27 +6878,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/collaboration.cpp" line="34"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
+        <translation>Přihlášení</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="75"/>
         <source>Remember password</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapamatovat si heslo</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="78"/>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Už. jméno:</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="79"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Heslo:</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="98"/>
         <source>Anonymous user</source>
-        <translation type="unfinished"></translation>
+        <translation>Anonymní uživatel</translation>
     </message>
 </context>
 <context>
@@ -8129,15 +6931,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/collaboration.cpp" line="354"/>
         <source>Physic field:</source>
-        <translation type="unfinished">Fyzikální pole:</translation>
-    </message>
-    <message>
-        <source>Author:</source>
-        <translation type="obsolete">Autor:</translation>
-    </message>
-    <message>
-        <source>Affiliation:</source>
-        <translation type="obsolete">Instituce:</translation>
+        <translation>Fyzikální pole:</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="359"/>
@@ -8148,10 +6942,6 @@ Do you want to save your changes?</source>
         <location filename="../src/collaboration.cpp" line="361"/>
         <source>Close</source>
         <translation>Zavřít</translation>
-    </message>
-    <message>
-        <source>unnamed</source>
-        <translation type="obsolete">nepojmenovaný</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="429"/>
@@ -8430,17 +7220,6 @@ Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály.
     </message>
 </context>
 <context>
-    <name>TopicChooser</name>
-    <message>
-        <source>Topic browser</source>
-        <translation type="obsolete">Témata</translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation type="obsolete">Zobrazit</translation>
-    </message>
-</context>
-<context>
     <name>ValueLineEdit</name>
     <message>
         <location filename="../src/value.cpp" line="75"/>
@@ -8519,10 +7298,6 @@ Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály.
         <location filename="../src/value.cpp" line="329"/>
         <source>Close</source>
         <translation>Zavřít</translation>
-    </message>
-    <message>
-        <source>Plot</source>
-        <translation type="obsolete">Vykreslit</translation>
     </message>
 </context>
 <context>
