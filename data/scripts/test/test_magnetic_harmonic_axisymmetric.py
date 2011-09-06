@@ -1,33 +1,42 @@
 # model
-newdocument("Harmonic", "axisymmetric", "magnetic", 1, 3, "disabled", 1, 1, 100, "harmonic", 1, 1, 0)
+#newdocument("Harmonic", "axisymmetric", "magnetic", 1, 3, "disabled", 1, 1, 100, "harmonic", 1, 1, 0)
+newdocument(name="Magnetostatic", type="axisymmetric",
+                        physicfield="magnetic", analysistype="harmonic",
+                        frequency=100,
+                        numberofrefinements=1, polynomialorder=3,
+                        nonlineartolerance=0.001, nonlinearsteps=10)
+
 
 # boundaries
-addboundary("A = 0", "magnetic_vector_potential", 0, 0)
+addboundary("A = 0", "magnetic_potential", {"Ar" : 0})
 
 # materials
-addmaterial("Coil", 1e6, 0, 1, 0, 0, 0, 0, 0, 0)
-addmaterial("Iron", 0, 0, 50, 5e3, 0, 0, 0, 0, 0)
-addmaterial("Air", 0, 0, 1, 0, 0, 0, 0, 0, 0)
+#addmaterial("Coil", 1e6, 0, 1, 0, 0, 0, 0, 0, 0)
+#addmaterial("Iron", 0, 0, 50, 5e3, 0, 0, 0, 0, 0)
+#addmaterial("Air", 0, 0, 1, 0, 0, 0, 0, 0, 0)
+addmaterial("Coil", {"mur" : 1, "Jer" : 1e6})
+addmaterial("Iron", {"mur" : 50, "gamma" : 5e3})
+addmaterial("Air", {"mur" : 1})
 
 # edges
-addedge(0, -0.17, 0.15, -0.17, 0, "A = 0")
-addedge(0.15, -0.17, 0.15, 0.17, 0, "A = 0")
-addedge(0.15, 0.17, 0, 0.17, 0, "A = 0")
-addedge(0.035, -0.03, 0.055, -0.03, 0, "none")
-addedge(0.055, -0.03, 0.055, 0.11, 0, "none")
-addedge(0.055, 0.11, 0.035, 0.11, 0, "none")
-addedge(0.035, 0.11, 0.035, -0.03, 0, "none")
-addedge(0, -0.05, 0.03, -0.05, 0, "none")
-addedge(0.03, -0.05, 0.03, 0.05, 0, "none")
-addedge(0.03, 0.05, 0, 0.05, 0, "none")
-addedge(0, 0.05, 0, -0.05, 0, "A = 0")
-addedge(0, 0.17, 0, 0.05, 0, "A = 0")
-addedge(0, -0.05, 0, -0.17, 0, "A = 0")
+addedge(0, -0.17, 0.15, -0.17, boundary="A = 0")
+addedge(0.15, -0.17, 0.15, 0.17, boundary="A = 0")
+addedge(0.15, 0.17, 0, 0.17, boundary="A = 0")
+addedge(0.035, -0.03, 0.055, -0.03)
+addedge(0.055, -0.03, 0.055, 0.11)
+addedge(0.055, 0.11, 0.035, 0.11)
+addedge(0.035, 0.11, 0.035, -0.03)
+addedge(0, -0.05, 0.03, -0.05)
+addedge(0.03, -0.05, 0.03, 0.05)
+addedge(0.03, 0.05, 0, 0.05)
+addedge(0, 0.05, 0, -0.05, boundary="A = 0")
+addedge(0, 0.17, 0, 0.05, boundary="A = 0")
+addedge(0, -0.05, 0, -0.17, boundary="A = 0")
 
 # labels
-addlabel(0.109339, 0.112786, 0, 0, "Air")
-addlabel(0.0442134, 0.0328588, 0, 0, "Coil")
-addlabel(0.0116506, -0.00740064, 0, 0, "Iron")
+addlabel(0.109339, 0.112786, area=0, material="Air")
+addlabel(0.0442134, 0.0328588, area=0, material="Coil")
+addlabel(0.0116506, -0.00740064, area=0, material="Iron")
 
 # solve
 zoombestfit()
