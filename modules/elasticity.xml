@@ -47,7 +47,7 @@
                                         + fx * vval  + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdx"
                                 axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updr * vdr + upval * vdr / r + updr * vval / r + upval * vval / r) +
                                      r * (E / (2.0*(1.0 + nu))) * (2 * updr * vdr + 2 * upval * vval / (r*r) + updz * vdz)
-                                     - r * fx * vval  - r * ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * (vdr + vval/r)" />
+                                     - r * fx * vval  - r * ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * (vdr + vval / r)" />
             <vector i="1" j="2" planar="-((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updy * vdx)
                                         -(E / (2.0*(1.0 + nu))) * (updx * vdy)"
                                 axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updr * vdz + upval * vdz / r) +
