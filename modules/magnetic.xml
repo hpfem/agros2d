@@ -88,7 +88,7 @@
                                 axi="1 / (mur * MU0) * (updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12) -
                                      gamma * upval * vy * vdz
                                           -Jer * vval
-                                          + Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
+                                          - Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
 
             <matrix i="2" j="2" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
