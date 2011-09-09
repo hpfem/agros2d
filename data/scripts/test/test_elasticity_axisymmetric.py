@@ -2,7 +2,7 @@
 #newdocument("Elasticity - axisymmetric", "axisymmetric", "elasticity", 4, 3, "disabled", 1, 1, 0, "steadystate", 1.0, 1.0, 0.0)
 newdocument(name="unnamed", type="axisymmetric",
             physicfield="elasticity", analysistype="steadystate",
-            numberofrefinements=1, polynomialorder=3,
+            numberofrefinements=2, polynomialorder=3,
             nonlineartolerance=0.001, nonlinearsteps=10)
 
 # boundaries
@@ -38,11 +38,12 @@ solve()
 
 # point value
 point = pointresult(1.369034, 0.04259)
-testVonMises = test("Von Mises stress", point["mises"], 1.69779e5)
+print(point)
+#testVonMises = test("Von Mises stress", point["mises"], 1.69779e5)
 # testTresca = test("Tresca stress", point["tresca"], 1.235475e5)
-testu = test("Displacement - x", point["u"], 5.544176e-6)
-testv = test("Displacement - y", point["v"], -2.672647e-6)
-testD = test("Displacement", point["disp"], 6.154748e-6)
+testu = test("Displacement - x", point["dr"], 5.544176e-6)
+testv = test("Displacement - y", point["dz"], -2.672647e-6)
+testD = test("Displacement", point["d"], 6.154748e-6)
 testsrr = test("Stress RR", point["sxx"], -1.132081e5)
 testszz = test("Stress ZZ", point["syy"], -1.210277e5)
 testsaa = test("Stress aa", point["szz"], -2.7248e5)
