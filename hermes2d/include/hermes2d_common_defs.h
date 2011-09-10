@@ -24,6 +24,7 @@
 #define __H2D_COMMON_H_
 
 #include "hermes_common.h"
+#include "config.h"
 
 namespace Hermes
 {
@@ -87,7 +88,7 @@ namespace Hermes
     /// Enabling second derivatives in weak forms. Turned off by default. Second
     /// derivatives are employed, among others, by stabilization methods for
     /// transport equations. For usage see the example linear-convection-diffusion.
-    // #define H2D_SECOND_DERIVATIVES_ENABLED
+#define H2D_SECOND_DERIVATIVES_ENABLED
 
     /// Projection norms.
     enum ProjNormType
@@ -160,4 +161,3 @@ namespace Hermes
   }
 }
 #endif
-

@@ -14,6 +14,19 @@
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "space.h"
+
+// This is here mainly because XSD uses its own error, therefore it has to be undefined here.
+#ifdef error(...)
+#undef error(...)
+#endif
+#include "space_h2d_xml.h"
+// This is here mainly because XSD uses its own error, therefore it had to be undefined previously.
+#ifndef error(...)
+#define error(...) hermes_exit_if(hermes_log_message_if(true, HERMES_BUILD_LOG_INFO(HERMES_EC_ERROR), __VA_ARGS__))
+#endif
+
+#include <iostream>
+
 namespace Hermes
 {
   namespace Hermes2D
@@ -513,7 +526,8 @@ namespace Hermes
       for_all_active_elements(e, space->get_mesh())
       {
         int o = space->get_element_order(e->id);
-        if (o < 0) error("Source space has an uninitialized order (element id = %d)", e->id);
+        if (o < 0) 
+          error("Source space has an uninitialized order (element id = %d)", e->id);
 
         int mo = shapeset->get_max_order();
         int lower_limit = (get_type() == HERMES_L2_SPACE || get_type() == HERMES_HCURL_SPACE) ? 0 : 1; // L2 and Hcurl may use zero orders.
@@ -868,9 +882,64 @@ namespace Hermes
     template<typename Scalar>
     bool Space<Scalar>::save(const char *filename) const
     {
+      XMLSpace::space xmlspace;
+
+      // Utility pointer.
+      Element *e;
+      for_all_elements(e, this->get_mesh())
+        xmlspace.element_data().push_back(XMLSpace::space::element_data_type(e->id, this->edata[e->id].order, this->edata[e->id].bdof, this->edata[e->id].n, this->edata[e->id].changed_in_last_adaptation));
+
+      std::string space_schema_location(H2D_XML_SCHEMAS_DIRECTORY);
+      space_schema_location.append("/space_h2d_xml.xsd");
+      ::xml_schema::namespace_info namespace_info_space("XMLSpace", space_schema_location);
+
+      ::xml_schema::namespace_infomap namespace_info_map;
+      namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("space", namespace_info_space));
+
+      std::ofstream out(filename);
+      XMLSpace::space_(out, xmlspace, namespace_info_map);
+      out.close();
+
       return true;
     }
     
+    template<typename Scalar>
+    void Space<Scalar>::load(const char *filename, EssentialBCs<Scalar>* essential_bcs) 
+    {
+      this->essential_bcs = essential_bcs;
+      this->mesh_seq == this->mesh->get_seq();
+    
+      if(essential_bcs != NULL)
+        for(typename Hermes::vector<EssentialBoundaryCondition<Scalar>*>::const_iterator it = essential_bcs->begin(); it != essential_bcs->end(); it++)
+          for(unsigned int i = 0; i < (*it)->markers.size(); i++)
+            if(mesh->get_boundary_markers_conversion().conversion_table_inverse.find((*it)->markers.at(i)) == mesh->get_boundary_markers_conversion().conversion_table_inverse.end())
+              error("A boundary condition defined on a non-existent marker.");
+
+      this->resize_tables();
+
+      try
+      {
+        std::auto_ptr<XMLSpace::space> parsed_xml_space (XMLSpace::space_(filename));
+
+        // Element data //
+        unsigned int elem_data_count = parsed_xml_space->element_data().size();
+        for (unsigned int elem_data_i = 0; elem_data_i < elem_data_count; elem_data_i++)
+        {
+          this->edata[parsed_xml_space->element_data().at(elem_data_i).element_id()].order = parsed_xml_space->element_data().at(elem_data_i).order();
+          this->edata[parsed_xml_space->element_data().at(elem_data_i).element_id()].bdof = parsed_xml_space->element_data().at(elem_data_i).bdof();
+          this->edata[parsed_xml_space->element_data().at(elem_data_i).element_id()].n = parsed_xml_space->element_data().at(elem_data_i).n();
+          this->edata[parsed_xml_space->element_data().at(elem_data_i).element_id()].changed_in_last_adaptation = parsed_xml_space->element_data().at(elem_data_i).changed_in_last_adaptation();
+        }
+      }
+      catch (const xml_schema::exception& e)
+      {
+        std::cerr << e << std::endl;
+        std::exit(1);
+      }
+
+      this->assign_dofs();
+      return;
+    }
 
     template class HERMES_API Space<double>;
     template class HERMES_API Space<std::complex<double> >;

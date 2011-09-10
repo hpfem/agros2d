@@ -93,6 +93,33 @@ namespace Hermes
       /// should be used when integrating the function.
       virtual Hermes::Ord ord(Hermes::Ord x, Hermes::Ord y) const = 0;
     };
+
+    template<typename Scalar>
+    class HERMES_API ConstantSolution : public ExactSolutionScalar<Scalar>
+    {
+    public:
+      ConstantSolution(Mesh* mesh, Scalar constant);
+
+      virtual Scalar value (double x, double y) const;
+
+      virtual void derivatives (double x, double y, double& dx, double& dy) const;
+
+      virtual Ord ord(Ord x, Ord y) const;
+    protected:
+      Scalar constant;
+    };
+
+    class HERMES_API ZeroSolution : public ExactSolutionScalar<double>
+    {
+    public:
+      ZeroSolution(Mesh* mesh);
+
+      virtual double value (double x, double y) const;
+
+      virtual void derivatives (double x, double y, double& dx, double& dy) const;
+
+      virtual Ord ord(Ord x, Ord y) const;
+    };
   }
 }
 #endif

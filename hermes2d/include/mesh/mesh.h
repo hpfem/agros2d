@@ -226,11 +226,11 @@ namespace Hermes
       /// should be refined uniformly, 1 if it is a quad and should be split
       /// horizontally, 2 if it is a quad and should be split vertically,
       /// and 3 if it is a triangle and should be split into three quads.
-      void refine_by_criterion(int (*criterion)(Element* e), int depth);
+      void refine_by_criterion(int (*criterion)(Element* e), int depth, bool mark_as_initial = false);
 
       /// Performs repeated refinements of elements containing the given vertex.
       /// A mesh graded towards the vertex is created.
-      void refine_towards_vertex(int vertex_id, int depth);
+      void refine_towards_vertex(int vertex_id, int depth, bool mark_as_initial = false);
 
       /// Performs repeated refinements of elements touching a part of the
       /// boundary marked by 'marker'. Elements touching both by an edge or
@@ -410,6 +410,7 @@ namespace Hermes
 
       friend class MeshReaderH2D;
       friend class MeshReaderH2DXML;
+      friend class MeshReaderH1DXML;
       friend class MeshReaderExodusII;
       friend class DiscreteProblem<double>;
       friend class DiscreteProblem<std::complex<double> >;
@@ -520,6 +521,10 @@ namespace Hermes
       Element* create_quad(int marker, Node* v0, Node* v1, Node* v2, Node* v3, CurvMap* cm);
       Element* create_triangle(int marker, Node* v0, Node* v1, Node* v2, CurvMap* cm);
       void refine_element(Element* e, int refinement);
+
+      /// Vector for storing refinements in order to be able to save/load meshes with identical element IDs.
+      /// Refinement "-1" stands for unrefinement.
+      Hermes::vector<std::pair<unsigned int, int> > refinements;
   
       /// Refines a quad element into four quads, or two quads (horizontally or 
       /// vertically. If mesh != NULL, the new elements are incorporated into

@@ -102,6 +102,52 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    void H1Space<Scalar>::load(const char *filename, Mesh* mesh, EssentialBCs<Scalar>* essential_bcs, Shapeset* shapeset)
+    {
+      _F_;
+
+      this->mesh = mesh;
+
+      if (shapeset == NULL)
+      {
+        this->shapeset = new H1Shapeset;
+        this->own_shapeset = true;
+      }
+      else
+        shapeset = shapeset;
+
+      if (!h1_proj_ref++)
+        this->precalculate_projection_matrix(2, h1_proj_mat, h1_chol_p);
+      this->proj_mat = h1_proj_mat;
+      this->chol_p   = h1_chol_p;
+
+      Space<Scalar>::load(filename, essential_bcs);
+    }
+
+    template<typename Scalar>
+    void H1Space<Scalar>::load(const char *filename, Mesh* mesh, Shapeset* shapeset)
+    {
+      _F_;
+      
+      this->mesh = mesh;
+
+      if (shapeset == NULL)
+      {
+        this->shapeset = new H1Shapeset;
+        this->own_shapeset = true;
+      }
+      else
+        shapeset = shapeset;
+
+      if (!h1_proj_ref++)
+        this->precalculate_projection_matrix(2, h1_proj_mat, h1_chol_p);
+      this->proj_mat = h1_proj_mat;
+      this->chol_p   = h1_chol_p;
+
+      Space<Scalar>::load(filename);
+    }
+
+    template<typename Scalar>
     void H1Space<Scalar>::assign_vertex_dofs()
     {
       _F_;
@@ -500,7 +546,7 @@ namespace Hermes
           nd->baselist = merge_baselists(bl[0], nc[0], bl[1], nc[1], en, edge_dofs, nd->ncomponents);
           this->bc_data.push_back(nd->baselist);
 
-          // set edge node coefs to function values of the edge functions
+          // set edge node coeffs to function values of the edge functions
           double mid = (ei[i]->lo + ei[i]->hi) * 0.5;
           nd = &this->ndata[en->id];
           for (k = 0; k < nd->n; k++, edge_dofs++)

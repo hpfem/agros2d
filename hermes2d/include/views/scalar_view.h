@@ -51,7 +51,6 @@ namespace Hermes
       ///
       /// ScalarView is a visualization window for all Scalar-valued PDE solutions.
       ///
-      template<typename Scalar>
       class HERMES_API ScalarView : public View
       {
       public:
@@ -63,8 +62,8 @@ namespace Hermes
         ScalarView(char* title, WinGeom* wg = NULL);
         virtual ~ScalarView();
 
-        void show(MeshFunction<Scalar>* sln, double eps = HERMES_EPS_NORMAL, int item = H2D_FN_VAL_0,
-          MeshFunction<Scalar>* xdisp = NULL, MeshFunction<Scalar>* ydisp = NULL, double dmult = 1.0);
+        void show(MeshFunction<double>* sln, double eps = HERMES_EPS_NORMAL, int item = H2D_FN_VAL_0,
+          MeshFunction<double>* xdisp = NULL, MeshFunction<double>* ydisp = NULL, double dmult = 1.0);
 
         void show_linearizer_data(double eps = HERMES_EPS_NORMAL, int item = H2D_FN_VAL_0);
 
@@ -78,10 +77,6 @@ namespace Hermes
 
 
       public:
-        void load_data(const char* filename);
-        void save_data(const char* filename);
-        void save_numbered(const char* format, int number);
-
         void export_mesh_edges_svg(const char* filename, float width_mm = 100.0f); ///< Exports mesh edges to SVG format. Height is calculated from input vertices. Function locks data.
 
 #define SVG_HEADER "<?xml version=\"1.0\" standalone=\"no\"?>\n"\
@@ -89,7 +84,7 @@ namespace Hermes
   "\"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
 #define SVG_UNIT_MM 3.543307 /* size of 1 mm in SVG px */
 
-        Linearizer<Scalar> lin;
+        Linearizer* lin;
 
       protected:
         /// Information about a vertex node.
@@ -218,6 +213,19 @@ namespace Hermes
 
         double3* normals;
 
+        
+        /// This function calculates the distance that the model (3D plot of the solution over the whole solution domain) must be
+        /// translated along the z-axis of the eye coordinate system, so that it fills the actual viewport without being clipped.
+        /// The only case when the model will be clipped is when the user defines his own vertical range limits - unfortunately,
+        /// the values beyond these limits are now still included in the displayed model, so the user may e.g. zoom-out to see them
+        /// - try the benchmark 'screen' for instance...
+        /// The algorithm essentially performs zooming without changing the field of view of the perspective projection and works as follows:
+        ///  1. Apply all transformations to the bounding box of the model at the origin.
+        ///  2. Compute the distance (along z-axis) from the origin to the center of perspective projection of the point with the
+        ///      biggest vertical (y-axis) distance from the origin.
+        ///  3. Compute the distance (along z-axis) from the origin to the center of perspective projection of the point with the
+        ///      biggest horizontal (x-axis) distance from the origin.
+        ///  4. Take the bigger of the two distances and reverse sign (since we will translate the model, not the camera)
         double calculate_ztrans_to_fit_view(); ///< Calculates the z-coordinate (in eye coordinates) of the closest viewpoint from which we can still see the whole model. Assumes a model/view matrix to be the current matrix on the OpenGL stack.
         virtual void reset_view(bool force_reset); ///< Resets 2d and 3d view.
         virtual void update_layout(); ///< Updates layout, i.e., centers 2d and 3d mesh.

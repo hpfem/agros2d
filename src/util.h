@@ -544,7 +544,7 @@ const bool SHOWRULERS = false;
 const bool SHOWLABEL = true;
 
 // posprocessor
-const double LINEARIZER_QUALITY = 0.0006;
+const double LINEARIZER_QUALITY = 0.0004;
 
 const int CONTOURSCOUNT = 15;
 

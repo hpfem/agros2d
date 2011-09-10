@@ -43,6 +43,10 @@ namespace Hermes
 
       virtual Space<Scalar>* dup(Mesh* mesh, int order_increase = 0) const;
 
+      void load(const char *filename, Mesh* mesh, EssentialBCs<Scalar>* essential_bcs, Shapeset* shapeset = NULL);
+
+      void load(const char *filename, Mesh* mesh, Shapeset* shapeset = NULL);
+
       virtual SpaceType get_type() const { return HERMES_HCURL_SPACE; }
 
       virtual void set_shapeset(Shapeset* shapeset);

@@ -450,8 +450,8 @@ QWidget *PostprocessorView::controlsAdvanced()
     cmbLinearizerQuality->addItem(tr("Coarse"), 0.001);
     cmbLinearizerQuality->addItem(tr("Normal"), LINEARIZER_QUALITY);
     cmbLinearizerQuality->addItem(tr("Fine"), 0.0001);
-    cmbLinearizerQuality->addItem(tr("Finer"), 0.0006);
-    cmbLinearizerQuality->addItem(tr("Extra fine"), 0.00001);
+    cmbLinearizerQuality->addItem(tr("Finer"), 0.00006);
+    cmbLinearizerQuality->addItem(tr("Extra fine"), 0.000005);
 
     chkPaletteFilter = new QCheckBox(tr("Filter"));
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));

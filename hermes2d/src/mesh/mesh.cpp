@@ -581,6 +581,7 @@ namespace Hermes
 
     void Mesh::unrefine_element_internal(Element* e)
     {
+      this->refinements.push_back(std::pair<unsigned int, int>(e->id, -1));
       assert(!e->active);
       unsigned int i;
       int s1, s2;
@@ -626,6 +627,8 @@ namespace Hermes
 
     void Mesh::refine_element(Element* e, int refinement)
     {
+      this->refinements.push_back(std::pair<unsigned int, int>(e->id, refinement));
+
       if (e->is_triangle()) 
       {
         if (refinement == 3) 
@@ -665,7 +668,7 @@ namespace Hermes
     static bool rtb_aniso;
     static char* rtb_vert;
 
-    void Mesh::refine_by_criterion(int (*criterion)(Element*), int depth)
+    void Mesh::refine_by_criterion(int (*criterion)(Element*), int depth, bool mark_as_initial)
     {
       Element* e;
       elements.set_append_only(true);
@@ -678,6 +681,9 @@ namespace Hermes
         }
       }
       elements.set_append_only(false);
+
+      if(mark_as_initial)
+        ninitial = this->get_max_element_id();
     }
 
     static int rtv_id;
@@ -690,10 +696,12 @@ namespace Hermes
       return -1;
     }
 
-    void Mesh::refine_towards_vertex(int vertex_id, int depth)
+    void Mesh::refine_towards_vertex(int vertex_id, int depth, bool mark_as_initial)
     {
       rtv_id = vertex_id;
       refine_by_criterion(rtv_criterion, depth);
+      if(mark_as_initial)
+        ninitial = this->get_max_element_id();
     }
 
     static int rtb_criterion(Element* e)
@@ -948,32 +956,47 @@ namespace Hermes
 
     bool Mesh::rescale(double x_ref, double y_ref)
     {
-      // Sanity checks.
-      if (fabs(x_ref) < 1e-10) return false;
-      if (fabs(y_ref) < 1e-10) return false;
-
-      // If curvilinear, the mesh cannot be rescaled.
-      bool curved = false;
-      Element* e;
-      for_all_elements(e, this) {
-        if (e->cm != NULL) {
-          curved = true;
-          break;
-        }
-      }
-      if (curved == true) return false;
-
       // Go through all vertices and rescale coordinates.
       Node* n;
       for_all_vertex_nodes(n, this) {
-        n->x /= x_ref;
-        n->y /= y_ref;
+        n->x *= x_ref;
+        n->y *= y_ref;
       }
+      
+      // If curvilinear, there is more to do.
+      bool curved = false;
+      Element* e;
+      for_all_elements(e, this) 
+      {
+        if (e->cm != NULL) 
+        {
+          for(unsigned int i = 0; i < e->nvert; i++)
+            if(e->cm->nurbs[i] != NULL)
+              if(e->cm->nurbs[i]->np != 3)
+              {
+                warning("Can not rescale general NURBS.");
+                return false;
+              }
+              else
+              {
+                // edge endpoints control points.
+                e->cm->nurbs[i]->pt[0][0] = e->vn[i]->x;
+                e->cm->nurbs[i]->pt[0][1] = e->vn[i]->y;
+                e->cm->nurbs[i]->pt[0][2] = 1.0;
+                e->cm->nurbs[i]->pt[2][0] = e->vn[(i + 1) % e->nvert]->x;
+                e->cm->nurbs[i]->pt[2][1] = e->vn[(i + 1) % e->nvert]->y;
+                e->cm->nurbs[i]->pt[2][2] = 1.0;
 
+                double a = (180.0 - e->cm->nurbs[i]->angle) / 180.0 * M_PI;
+                double x = 1.0 / std::tan(a * 0.5);
+                e->cm->nurbs[i]->pt[1][0] = 0.5*((e->cm->nurbs[i]->pt[2][0] + e->cm->nurbs[i]->pt[0][0]) + (e->cm->nurbs[i]->pt[2][1] - e->cm->nurbs[i]->pt[0][1]) * x);
+                e->cm->nurbs[i]->pt[1][1] = 0.5*((e->cm->nurbs[i]->pt[2][1] + e->cm->nurbs[i]->pt[0][1]) - (e->cm->nurbs[i]->pt[2][0] - e->cm->nurbs[i]->pt[0][0]) * x);
+                e->cm->nurbs[i]->pt[1][2] = Hermes::cos((M_PI - a) * 0.5);
+              }
+        }
+      }
       return true;
     }
-
-
 
     void Mesh::copy(const Mesh* mesh)
     {
@@ -985,6 +1008,8 @@ namespace Hermes
       // copy nodes and elements
       HashTable::copy(mesh);
       elements.copy(mesh->elements);
+
+      this->refinements = mesh->refinements;
 
       Element* e;
       for_all_elements(e, this)
@@ -1107,6 +1132,8 @@ namespace Hermes
 
         elements.free();
         HashTable::free();
+
+        this->refinements.clear();
     }
 
     void Mesh::copy_converted(Mesh* mesh)
@@ -1196,17 +1223,84 @@ namespace Hermes
 
     void Mesh::convert_triangles_to_quads()
     {
+      Element* e;
+
+      elements.set_append_only(true);
+      for_all_active_elements(e, this)
+        refine_element_to_quads_id(e->id);
+      elements.set_append_only(false);
+
+      Mesh mesh_tmp_for_convert;
+      mesh_tmp_for_convert.copy_converted(this);
+      for (int i = 0; i < mesh_tmp_for_convert.ntopvert; i++)
+      {
+        if (mesh_tmp_for_convert.nodes[i].type == 1)
+        {
+          mesh_tmp_for_convert.nodes[i].y = 0.0;
+        }
+      }
+      MeshReaderH2D loader_mesh_tmp_for_convert;
+      char* mesh_file_tmp = NULL;
+      mesh_file_tmp = tmpnam(NULL);
+      loader_mesh_tmp_for_convert.save(mesh_file_tmp, &mesh_tmp_for_convert);
+      loader_mesh_tmp_for_convert.load(mesh_file_tmp, &mesh_tmp_for_convert);
+      remove(mesh_file_tmp);
+      copy(&mesh_tmp_for_convert);
 
     }
 
     void Mesh::convert_quads_to_triangles()
     {
+      Element* e;
 
+      elements.set_append_only(true);
+      for_all_active_elements(e, this)
+        refine_element_to_triangles_id(e->id);
+      elements.set_append_only(false);
+
+      Mesh mesh_tmp_for_convert;
+      mesh_tmp_for_convert.copy_converted(this);
+      for (int i = 0; i < mesh_tmp_for_convert.ntopvert; i++)
+      {
+        if (mesh_tmp_for_convert.nodes[i].type == 1)
+        {
+          mesh_tmp_for_convert.nodes[i].y = 0.0;
+        }
+      }
+      MeshReaderH2D loader_mesh_tmp_for_convert;
+      char* mesh_file_tmp = NULL;
+      mesh_file_tmp = tmpnam(NULL);
+      loader_mesh_tmp_for_convert.save(mesh_file_tmp, &mesh_tmp_for_convert);
+      loader_mesh_tmp_for_convert.load(mesh_file_tmp, &mesh_tmp_for_convert);
+      remove(mesh_file_tmp);
+      copy(&mesh_tmp_for_convert);
     }
 
     void Mesh::convert_to_base()
     {
+      Element* e;
 
+      elements.set_append_only(true);
+      for_all_active_elements(e, this)
+        convert_element_to_base_id(e->id);
+      elements.set_append_only(false);
+
+      Mesh mesh_tmp_for_convert;
+      mesh_tmp_for_convert.copy_converted(this);
+      for (int i = 0; i < mesh_tmp_for_convert.ntopvert; i++)
+      {
+        if (mesh_tmp_for_convert.nodes[i].type == 1)
+        {
+          mesh_tmp_for_convert.nodes[i].y = 0.0;
+        }
+      }
+      MeshReaderH2D loader_mesh_tmp_for_convert;
+      char* mesh_file_tmp = NULL;
+      mesh_file_tmp = tmpnam(NULL);
+      loader_mesh_tmp_for_convert.save(mesh_file_tmp, &mesh_tmp_for_convert);
+      loader_mesh_tmp_for_convert.load(mesh_file_tmp, &mesh_tmp_for_convert);
+      remove(mesh_file_tmp);
+      copy(&mesh_tmp_for_convert);
     }
 
     void Mesh::refine_triangle_to_quads(Mesh* mesh, Element* e, Element** sons_out)

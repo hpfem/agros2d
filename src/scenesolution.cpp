@@ -62,10 +62,10 @@ void SceneSolution<Scalar>::clear()
 
     m_timeStep = -1;
 
-    m_linInitialMeshView.free();
-    m_linSolutionMeshView.free();
-    m_linContourView.free();
-    m_linScalarView.free();
+    // m_linInitialMeshView.free();
+    // m_linSolutionMeshView.free();
+    // m_linContourView.free();
+    // m_linScalarView.free();
     // m_vecVectorView.free();
 
     // solution array
@@ -293,7 +293,7 @@ int SceneSolution<Scalar>::adaptiveSteps()
 }
 
 template <typename Scalar>
-int SceneSolution<Scalar>::findElementInVectorizer(const Hermes::Hermes2D::Views::Vectorizer<Scalar> &vec, const Point &point) const
+int SceneSolution<Scalar>::findElementInVectorizer(Hermes::Hermes2D::Views::Vectorizer &vec, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInVectorizer()");
 
@@ -428,7 +428,9 @@ void SceneSolution<Scalar>::setSlnContourView(ViewScalarFilter<Scalar> *slnScala
     }
     
     m_slnContourView = slnScalarView;
-    m_linContourView.process_solution(m_slnContourView, Hermes::Hermes2D::H2D_FN_VAL_0, Util::config()->linearizerQuality);
+    m_linContourView.process_solution(m_slnContourView,
+                                      Hermes::Hermes2D::H2D_FN_VAL_0,
+                                      Util::config()->linearizerQuality);
 
     // deformed shape
     if (Util::config()->deformContour)
@@ -449,12 +451,15 @@ void SceneSolution<Scalar>::setSlnScalarView(ViewScalarFilter<Scalar> *slnScalar
     m_slnScalarView = slnScalarView;
     // QTime time;
     // time.start();
-    m_linScalarView.process_solution(m_slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0, Util::config()->linearizerQuality);
+    m_linScalarView.process_solution(m_slnScalarView,
+                                     Hermes::Hermes2D::H2D_FN_VAL_0,
+                                     Util::config()->linearizerQuality);
     // qDebug() << "linScalarView.process_solution: " << time.elapsed();
 
     // deformed shape
     if (Util::config()->deformScalar)
-        Util::scene()->problemInfo()->module()->deform_shape(m_linScalarView.get_vertices(), m_linScalarView.get_num_vertices());
+        Util::scene()->problemInfo()->module()->deform_shape(m_linScalarView.get_vertices(),
+                                                             m_linScalarView.get_num_vertices());
 }
 
 template <typename Scalar>
@@ -475,8 +480,10 @@ void SceneSolution<Scalar>::setSlnVectorView(ViewScalarFilter<Scalar> *slnVector
     
     m_slnVectorXView = slnVectorXView;
     m_slnVectorYView = slnVectorYView;
-    
-    m_vecVectorView.process_solution(m_slnVectorXView, Hermes::Hermes2D::H2D_FN_VAL_0, m_slnVectorYView, Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::Views::HERMES_EPS_LOW);
+
+    m_vecVectorView.process_solution(m_slnVectorXView, m_slnVectorYView,
+                                     Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
+                                     Hermes::Hermes2D::Views::HERMES_EPS_LOW);
 
     // deformed shape
     if (Util::config()->deformVector)

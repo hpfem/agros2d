@@ -25,18 +25,20 @@ namespace Hermes
     static Epetra_SerialComm seq_comm;
 
     template<typename Scalar>
-    void NoxSolver<Scalar>::prealloc_jacobian()
+    NoxDiscreteProblem<Scalar>::NoxDiscreteProblem(DiscreteProblemInterface<Scalar>* problem) : dp(problem)
     {
-      this->dp->create_sparse_structure(&jacobian);
+      this->precond = Teuchos::null;
+      if(!this->dp->is_matrix_free()) 
+        this->dp->create_sparse_structure(&jacobian);
     }
 
     template<typename Scalar>
-    bool NoxSolver<Scalar>::computeF(const Epetra_Vector &x, Epetra_Vector &f, FillType flag)
+    bool NoxDiscreteProblem<Scalar>::computeF(const Epetra_Vector &x, Epetra_Vector &f, FillType flag)
     {
       EpetraVector<Scalar> xx(x);  // wrap our structures around core Epetra objects
-      EpetraVector<Scalar> rhs(f);
+      EpetraVector<Scalar> rhs(f); 
 
-      rhs.zero();
+      rhs.zero(); 
 
       Scalar* coeff_vec = new Scalar[xx.length()];
       xx.extract(coeff_vec);
@@ -47,27 +49,27 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    bool NoxSolver<Scalar>::computeJacobian(const Epetra_Vector &x, Epetra_Operator &op)
+    bool NoxDiscreteProblem<Scalar>::computeJacobian(const Epetra_Vector &x, Epetra_Operator &op)
     {
       Epetra_RowMatrix *jac = dynamic_cast<Epetra_RowMatrix *>(&op);
       assert(jac != NULL);
 
       EpetraVector<Scalar> xx(x);			// wrap our structures around core Epetra objects
-      EpetraMatrix<Scalar> jacobian(*jac);
+      EpetraMatrix<Scalar> jacob(*jac);
 
-      jacobian.zero();
+      jacob.zero();
 
       Scalar* coeff_vec = new Scalar[xx.length()];
-      xx.extract(coeff_vec);
-      this->dp->assemble(coeff_vec, &jacobian, NULL); // NULL is for the right-hand side.
+      xx.extract(coeff_vec);  
+      this->dp->assemble(coeff_vec, &jacob, NULL); // NULL is for the right-hand side.
       delete [] coeff_vec;
-      //jacobian.finish();
+      //jacob.finish();
 
       return true;
     }
 
     template<typename Scalar>
-    bool NoxSolver<Scalar>::computePreconditioner(const Epetra_Vector &x, Epetra_Operator &m,
+    bool NoxDiscreteProblem<Scalar>::computePreconditioner(const Epetra_Vector &x, Epetra_Operator &m,
       Teuchos::ParameterList *precParams)
     {
       assert(precond != Teuchos::null);
@@ -89,22 +91,9 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    NoxSolver<Scalar>::NoxSolver(DiscreteProblemInterface<Scalar>* problem) : NonlinearSolver<Scalar>(problem)
+    NoxSolver<Scalar>::NoxSolver(DiscreteProblemInterface<Scalar>* problem) : NonlinearSolver<Scalar>(problem),ndp(problem)
     {
-      if(!this->dp->is_matrix_free()) 
-        prealloc_jacobian();
-
-      this->precond = Teuchos::null;
-
       // default values
-      nl_dir = "Newton";
-      output_flags = NOX::Utils::Error;
-      // linear solver settings
-      ls_type = "GMRES";
-      ls_max_iters = 800;
-      ls_tolerance = 1e-8;
-      ls_sizeof_krylov_subspace = 50;
-      precond_type = "None";
       // convergence test
       conv.max_iters = 10;
       conv.abs_resid = 1.0e-6;
@@ -119,56 +108,32 @@ namespace Hermes
       conv_flag.relresid = 0;
       conv_flag.update = 0;
       conv_flag.wrms = 0;
-    }
 
-    template<typename Scalar>
-    NoxSolver<Scalar>::NoxSolver(DiscreteProblemInterface<Scalar> *problem, unsigned message_type, const char* ls_type, const char* nl_dir, 
-      double ls_tolerance,
-      const char* precond_type,
-      unsigned flag_absresid,
-      double abs_resid,
-      unsigned flag_relresid,
-      double rel_resid,
-      int max_iters,
-      double update,
-      int ls_max_iters,
-      int ls_sizeof_krylov_subspace,
-      NOX::Abstract::Vector::NormType norm_type,
-      NOX::StatusTest::NormF::ScaleType stype,
-      double wrms_rtol,
-      double wrms_atol,
-      unsigned flag_update,
-      unsigned flag_wrms
-      ) : NonlinearSolver<Scalar>(problem)
-    {
-      if(!this->dp->is_matrix_free()) 
-        prealloc_jacobian();
+      nl_pars = Teuchos::rcp(new Teuchos::ParameterList);
+      // Set the nonlinear solver method
+      nl_pars->set("Nonlinear Solver", "Line Search Based");
+      nl_pars->sublist("Printing").set("Output Information", NOX::Utils::Error);
 
-      this->precond = Teuchos::null;
+      // Sublist for line search
+      Teuchos::ParameterList &search_pars = nl_pars->sublist("Line Search");
+      search_pars.set("Method", "Full Step");
 
-      // default values
-      this->nl_dir = nl_dir;
-      output_flags = message_type;
-      // linear solver settings
-      this->ls_type = ls_type;
-      this->ls_max_iters = ls_max_iters;
-      this->ls_tolerance = ls_tolerance;
-      this->ls_sizeof_krylov_subspace = ls_sizeof_krylov_subspace;
-      this->precond_type = precond_type;
-      // convergence test
-      this->conv.max_iters = max_iters;
-      this->conv.abs_resid = abs_resid;
-      this->conv.rel_resid = rel_resid;
-      this->conv.norm_type = norm_type;
-      this->conv.stype = stype;
-      this->conv.update = update;
-      this->conv.wrms_rtol = wrms_rtol;
-      this->conv.wrms_atol = wrms_atol;
+      // Sublist for direction
+      Teuchos::ParameterList &dir_pars = nl_pars->sublist("Direction");
+      dir_pars.set("Method", "Newton");
+      Teuchos::ParameterList &newton_pars = dir_pars.sublist("Newton");
 
-      this->conv_flag.absresid = flag_absresid;
-      this->conv_flag.relresid = flag_relresid;
-      this->conv_flag.update = flag_update;
-      this->conv_flag.wrms = flag_wrms;
+      newton_pars.set("Forcing Term Method", "Constant");
+
+      // Sublist for linear solver for the Newton method
+      Teuchos::ParameterList &ls_pars = newton_pars.sublist("Linear Solver");
+      ls_pars.set("Aztec Solver", "GMRES");
+      ls_pars.set("Max Iterations", 800);
+      ls_pars.set("Tolerance", 1e-8);
+      ls_pars.set("Size of Krylov Subspace", 50);
+      ls_pars.set("Preconditioner Reuse Policy", "Recompute");
+      ls_pars.set("Output Frequency", AZ_all);
+      ls_pars.set("Max Age Of Prec", 999);
     }
 
     template<typename Scalar>
@@ -180,228 +145,214 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void NoxSolver<Scalar>::set_precond(Teuchos::RCP<Precond<Scalar> > &pc)
+    void NoxDiscreteProblem<Scalar>::set_precond(Teuchos::RCP<Precond<Scalar> > &pc)
     {
-      this->precond_yes = true;
       precond = pc;
-      prealloc_jacobian();
+      this->dp->create_sparse_structure(&jacobian);
+    }
+
+    template<typename Scalar>
+    void NoxSolver<Scalar>::set_precond(Precond<Scalar> &pc)
+    {
+      Teuchos::RCP<Precond<Scalar> > tpc = Teuchos::rcpFromRef(pc);
+      ndp.set_precond(tpc);
+      nl_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver").set("Preconditioner", "User Defined");
     }
 
     template<typename Scalar>
     void NoxSolver<Scalar>::set_precond(const char *pc)
     {
-      this->precond_yes = true;
-      precond_type = pc;
+      nl_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver").set("Preconditioner",pc);
+    }
+    
+    template<typename Scalar>
+    void NoxSolver<Scalar>::set_output_flags(int flags)
+    {
+      nl_pars->sublist("Printing").set("Output Information", flags);
     }
 
-    template<>
-    void NoxSolver<double>::get_final_solution(Teuchos::RCP<NOX::Solver::Generic> & solver)
-    {
-      const NOX::Epetra::Group &f_grp =
-        dynamic_cast<const NOX::Epetra::Group &>(solver->getSolutionGroup());
-      const Epetra_Vector &f_sln =
-        (dynamic_cast<const NOX::Epetra::Vector &>(f_grp.getX())).getEpetraVector();
-      // extract solution
-      int n = this->dp->get_num_dofs();
-      delete [] sln_vector;
-      sln_vector = new double[n];
-      memset(sln_vector, 0, n * sizeof(double));
-      f_sln.ExtractCopy(sln_vector);
+    template<typename Scalar>
+    void NoxSolver<Scalar>::set_ls_type(const char *type){
+      nl_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver").set("Aztec Solver",type);
     }
 
-    template<>
-    void NoxSolver<std::complex<double> >::get_final_solution(Teuchos::RCP<NOX::Solver::Generic> & solver)
+    template<typename Scalar>
+    void NoxSolver<Scalar>::set_ls_max_iters(int iters)
+    { 
+      nl_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver").set("Max Iterations",iters);
+    }
+
+    template<typename Scalar>
+    void NoxSolver<Scalar>::set_ls_tolerance(double tolerance) 
+    { 
+      nl_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver").set("Tolerance",tolerance);
+    }
+
+    template<typename Scalar>
+    void NoxSolver<Scalar>::set_ls_sizeof_krylov_subspace(int size) 
+    { 
+      nl_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver").set("Size of Krylov Subspace",size);
+    }
+
+    template<typename Scalar>
+    void NoxSolver<Scalar>::set_precond_reuse(const char * pc_reuse)
     {
-      // extract solution
-      int n = this->dp->get_num_dofs();
-      delete [] sln_vector;
-      sln_vector = new std::complex<double>[n];
-      memset(sln_vector, 0, n * sizeof(std::complex<double>));
+      nl_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver").set("Preconditioner Reuse Policy", pc_reuse);
+    }
+    template<typename Scalar>
+    void NoxSolver<Scalar>::set_precond_max_age(int max_age)
+    {
+      nl_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver").set("Max Age Of Prec", max_age);
     }
 
     template<typename Scalar>
     bool NoxSolver<Scalar>::solve(Scalar* coeff_vec)
     {
       // Put the initial coeff_vec into the inner structure for the initial guess.
-      /// \todo Put this into a separate method.
       Hermes::Algebra::EpetraVector<Scalar> temp_init_sln;
       temp_init_sln.alloc(this->dp->get_num_dofs());
       for (int i = 0; i < this->dp->get_num_dofs(); i++)
         temp_init_sln.set(i, coeff_vec[i]);
       NOX::Epetra::Vector init_sln(*temp_init_sln.vec);
 
-      // Create the top level parameter list
-      Teuchos::RCP<Teuchos::ParameterList> nl_pars_ptr = Teuchos::rcp(new Teuchos::ParameterList);
-      Teuchos::ParameterList &nl_pars = *nl_pars_ptr.get();
+      // prepare variables
+      // print settings
+      Teuchos::ParameterList &print_pars = nl_pars->sublist("Printing");
+      // linear system settings
+      Teuchos::ParameterList &ls_pars = nl_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver");
+      // preconditioner
+      Teuchos::RCP<Precond<Scalar> > precond = ndp.get_precond();
+      //linear system     
+      Teuchos::RCP<NOX::Epetra::LinearSystemAztecOO> lin_sys;
+      // problem
+      Teuchos::RCP<NOX::Epetra::Interface::Required> i_req = Teuchos::rcpFromRef(ndp);
+      // jacobian matrix
+      Teuchos::RCP<Epetra_RowMatrix> jac_mat;
 
-      // Set the nonlinear solver method
-      nl_pars.set("Nonlinear Solver", "Line Search Based");
-
-      // Set the printing parameters in the "Printing" sublist
-      Teuchos::ParameterList &print_pars = nl_pars.sublist("Printing");
-      print_pars.set("Output Information", output_flags);
-
-      // Sublist for line search
-      Teuchos::ParameterList &search_pars = nl_pars.sublist("Line Search");
-      search_pars.set("Method", "Full Step");
-
-      // Sublist for direction
-      Teuchos::ParameterList &dir_pars = nl_pars.sublist("Direction");
-      dir_pars.set("Method", nl_dir);
-      Teuchos::ParameterList &newton_pars = dir_pars.sublist(nl_dir);
-
-      if(strcmp(nl_dir, "Newton") == 0)
-        newton_pars.set("Forcing Term Method", "Constant");
-
-      // Sublist for linear solver for the Newton method
-      Teuchos::ParameterList &ls_pars = newton_pars.sublist("Linear Solver");
-      ls_pars.set("Aztec Solver", ls_type);
-      ls_pars.set("Max Iterations", ls_max_iters);
-      ls_pars.set("Tolerance", ls_tolerance);
-      ls_pars.set("Size of Krylov Subspace", ls_sizeof_krylov_subspace);
-      /// \todo parametrize me.
-      ls_pars.set("Preconditioner Reuse Policy", "Recompute");
-      ls_pars.set("Output Frequency", AZ_all);
-
-      // precond stuff
-      Teuchos::RCP<Precond<Scalar> > precond = this->get_precond();
-      if(this->precond_yes == false)
-        ls_pars.set("Preconditioner", "None");
-      else 
-        if(this->dp->is_matrix_free()) 
-          ls_pars.set("Preconditioner", "User Defined");
+      // Create linear system 
+      if(this->dp->is_matrix_free()) 
+      {
+        if(precond == Teuchos::null) 
+        { //Matrix free without preconditioner
+          lin_sys = Teuchos::rcp(new NOX::Epetra::LinearSystemAztecOO(print_pars, ls_pars, i_req, init_sln));
+        }
         else 
-        {
-          if(strcasecmp(precond_type, "ML") == 0)
-            ls_pars.set("Preconditioner", "ML");
-          else 
-            if(strcasecmp(precond_type, "Ifpack") == 0)
-              ls_pars.set("Preconditioner", "Ifpack");
-            else 
-            {
-              warn("Unsupported type of preconditioner.");
-              ls_pars.set("Preconditioner", "None");
-            }
+        { //Matrix free with preconditioner
+          Teuchos::RCP<NOX::Epetra::Interface::Preconditioner> i_prec = Teuchos::rcpFromRef(ndp);
+          lin_sys = Teuchos::rcp(new NOX::Epetra::LinearSystemAztecOO(print_pars, ls_pars, i_req,
+            i_prec, precond, init_sln));
         }
-
-        /// \todo Parametrize me.
-        ls_pars.set("Max Age Of Prec", 999);
-
-        Teuchos::RCP<NOX::Epetra::Interface::Required> i_req = Teuchos::rcp(this);
-        Teuchos::RCP<NOX::Epetra::Interface::Jacobian> i_jac = Teuchos::rcp(this);
-        Teuchos::RCP<NOX::Epetra::Interface::Preconditioner> i_prec = Teuchos::rcp(this);
-        Teuchos::RCP<Epetra_RowMatrix> jac_mat;
-        Teuchos::RCP<NOX::Epetra::LinearSystemAztecOO> lin_sys;
-
-
-        if(this->dp->is_matrix_free()) 
-        {
-          // Matrix<Scalar>-Free (Epetra_Operator)
-          if(precond == Teuchos::null) 
-          {
-            Teuchos::RCP<NOX::Epetra::MatrixFree> mf = 
-              Teuchos::rcp(new NOX::Epetra::MatrixFree(print_pars, Teuchos::rcp(this), init_sln));
-            i_jac = mf;
-            lin_sys = Teuchos::rcp(new NOX::Epetra::LinearSystemAztecOO(print_pars, ls_pars, i_req,
-              i_jac, mf, init_sln));
-          }
-          else 
-          {
-            const Teuchos::RCP<Epetra_Operator> pc = precond;
-            lin_sys = Teuchos::rcp(new NOX::Epetra::LinearSystemAztecOO(print_pars, ls_pars, i_req,
-              i_prec, pc, init_sln));
-          }
-        }
-        else {  // not Matrix<Scalar> Free
-          // Create the Epetra_RowMatrix.
-          jac_mat = Teuchos::rcp(this->get_jacobian()->mat);
-          i_jac = Teuchos::rcp(this);
+      }
+      else
+      {  // not matrix Free (with jacobian)
+        Teuchos::RCP<NOX::Epetra::Interface::Jacobian> i_jac = Teuchos::rcpFromRef(ndp);
+        jac_mat = Teuchos::rcp(ndp.get_jacobian()->mat);
+        if(precond == Teuchos::null)
+        { //Matrix  without preconditioner
           lin_sys = Teuchos::rcp(new NOX::Epetra::LinearSystemAztecOO(print_pars, ls_pars, i_req,
             i_jac, jac_mat, init_sln));
         }
-
-        // Create the Group
-        Teuchos::RCP<NOX::Epetra::Group> grp = 
-          Teuchos::rcp(new NOX::Epetra::Group(print_pars, i_req, init_sln, lin_sys));
-
-        // Create convergence tests
-        Teuchos::RCP<NOX::StatusTest::Combo> converged =
-          Teuchos::rcp(new NOX::StatusTest::Combo(NOX::StatusTest::Combo::AND));
-
-        if(conv_flag.absresid) 
-        {
-          Teuchos::RCP<NOX::StatusTest::NormF> absresid =
-            Teuchos::rcp(new NOX::StatusTest::NormF(conv.abs_resid, conv.norm_type, conv.stype));
-          converged->addStatusTest(absresid);
+        else
+        { //Matrix  with preconditioner
+          Teuchos::RCP<NOX::Epetra::Interface::Preconditioner> i_prec = Teuchos::rcpFromRef(ndp);
+          lin_sys = Teuchos::rcp(new NOX::Epetra::LinearSystemAztecOO(print_pars, ls_pars, 
+            i_jac, jac_mat, i_prec, precond, init_sln));
         }
+      }
 
-        if(conv_flag.relresid) 
-        {
-          Teuchos::RCP<NOX::StatusTest::NormF> relresid = 
-            Teuchos::rcp(new NOX::StatusTest::NormF(*grp.get(), conv.rel_resid));
-          converged->addStatusTest(relresid);
-        }
+      // Create the Group
+      Teuchos::RCP<NOX::Epetra::Group> grp = 
+        Teuchos::rcp(new NOX::Epetra::Group(print_pars, i_req, init_sln, lin_sys));
 
-        if(conv_flag.update) 
-        {
-          Teuchos::RCP<NOX::StatusTest::NormUpdate> update = 
-            Teuchos::rcp(new NOX::StatusTest::NormUpdate(conv.update));
-          converged->addStatusTest(update);
-        }
+      // Create convergence tests
+      Teuchos::RCP<NOX::StatusTest::Combo> converged =
+        Teuchos::rcp(new NOX::StatusTest::Combo(NOX::StatusTest::Combo::AND));
 
-        if(conv_flag.wrms) 
-        {
-          Teuchos::RCP<NOX::StatusTest::NormWRMS> wrms =
-            Teuchos::rcp(new NOX::StatusTest::NormWRMS(conv.wrms_rtol, conv.wrms_atol));
-          converged->addStatusTest(wrms);
-        }
+      if(conv_flag.absresid) 
+      {
+        Teuchos::RCP<NOX::StatusTest::NormF> absresid =
+          Teuchos::rcp(new NOX::StatusTest::NormF(conv.abs_resid, conv.norm_type, conv.stype));
+        converged->addStatusTest(absresid);
+      }
 
-        Teuchos::RCP<NOX::StatusTest::MaxIters> maxiters = 
-          Teuchos::rcp(new NOX::StatusTest::MaxIters(conv.max_iters));
+      if(conv_flag.relresid) 
+      {
+        Teuchos::RCP<NOX::StatusTest::NormF> relresid = 
+          Teuchos::rcp(new NOX::StatusTest::NormF(*grp.get(), conv.rel_resid));
+        converged->addStatusTest(relresid);
+      }
 
-        Teuchos::RCP<NOX::StatusTest::FiniteValue> fv = 
-          Teuchos::rcp(new NOX::StatusTest::FiniteValue);
+      if(conv_flag.update) 
+      {
+        Teuchos::RCP<NOX::StatusTest::NormUpdate> update = 
+          Teuchos::rcp(new NOX::StatusTest::NormUpdate(conv.update));
+        converged->addStatusTest(update);
+      }
 
-        Teuchos::RCP<NOX::StatusTest::Combo> cmb = 
-          Teuchos::rcp(new NOX::StatusTest::Combo(NOX::StatusTest::Combo::OR));
+      if(conv_flag.wrms) 
+      {
+        Teuchos::RCP<NOX::StatusTest::NormWRMS> wrms =
+          Teuchos::rcp(new NOX::StatusTest::NormWRMS(conv.wrms_rtol, conv.wrms_atol));
+        converged->addStatusTest(wrms);
+      }
 
-        cmb->addStatusTest(fv);
-        cmb->addStatusTest(converged);
-        cmb->addStatusTest(maxiters);
+      Teuchos::RCP<NOX::StatusTest::MaxIters> maxiters = 
+        Teuchos::rcp(new NOX::StatusTest::MaxIters(conv.max_iters));
 
-        Teuchos::RCP<Teuchos::ParameterList> final_pars = nl_pars_ptr;
+      Teuchos::RCP<NOX::StatusTest::FiniteValue> fv = 
+        Teuchos::rcp(new NOX::StatusTest::FiniteValue);
 
-        // Create the method
-        Teuchos::RCP<NOX::Solver::Generic> solver = NOX::Solver::buildSolver(grp, cmb, final_pars);
+      Teuchos::RCP<NOX::StatusTest::Combo> cmb = 
+        Teuchos::rcp(new NOX::StatusTest::Combo(NOX::StatusTest::Combo::OR));
+
+      cmb->addStatusTest(fv);
+      cmb->addStatusTest(converged);
+      cmb->addStatusTest(maxiters);
+
+      // Output parameters
+      Teuchos::RCP<Teuchos::ParameterList> final_pars = nl_pars;
+
+      // Create the solver
+      Teuchos::RCP<NOX::Solver::Generic> solver = NOX::Solver::buildSolver(grp, cmb, final_pars);
+
+      /// Solve.
+      NOX::StatusTest::StatusType status = solver->solve();
 
 
-        /// Solve.
-        NOX::StatusTest::StatusType status = solver->solve();
+      if(!this->dp->is_matrix_free())
+        jac_mat.release();	// release the ownership (we take care of jac_mat by ourselves)
 
+      bool success;
+      if(status == NOX::StatusTest::Converged) 
+      {
+        // get result informations
+        num_iters = solver->getNumIterations();
+        residual = solver->getSolutionGroup().getNormF();
+        num_lin_iters = final_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver").sublist("Output").get("Total Number of Linear Iterations", -1);
+        achieved_tol = final_pars->sublist("Direction").sublist("Newton").sublist("Linear Solver").sublist("Output").get("Achieved Tolerance", 0.0);
 
-        if(!this->dp->is_matrix_free())
-          jac_mat.release();	// release the ownership (we take care of jac_mat by ourselves)
+        // Get the Epetra_Vector with the final solution from the solver
+        const NOX::Epetra::Group &f_grp =
+          dynamic_cast<const NOX::Epetra::Group &>(solver->getSolutionGroup());
+        const Epetra_Vector &f_sln =
+          (dynamic_cast<const NOX::Epetra::Vector &>(f_grp.getX())).getEpetraVector();
+        // extract solution
+        int n = this->dp->get_num_dofs();
+        delete [] this->sln_vector;
+        this->sln_vector = new double[n];
+        memset(this->sln_vector, 0, n * sizeof(double));
+        f_sln.ExtractCopy(this->sln_vector);
 
-        bool success;
-        if(status == NOX::StatusTest::Converged) 
-        {
-          num_iters = solver->getNumIterations();
-          residual = solver->getSolutionGroup().getNormF();
-          num_lin_iters = final_pars->sublist("Direction").sublist(nl_dir).sublist("Linear Solver").sublist("Output").get("Total Number of Linear Iterations", -1);
-          achieved_tol = final_pars->sublist("Direction").sublist(nl_dir).sublist("Linear Solver").sublist("Output").get("Achieved Tolerance", 0.0);
-
-          // Get the Epetra_Vector with the final solution from the solver
-          get_final_solution(solver);
-          success = true;
-        }
-        else { // not converged
-          num_iters = -1;
-          success = false;
-        }
-        return success;
+        success = true;
+      }
+      else { // not converged
+        num_iters = -1;
+        success = false;
+      }
+      return success;
     }
     template class HERMES_API NoxSolver<double>;
-    template class HERMES_API NoxSolver<std::complex<double> >;
+    //template class HERMES_API NoxSolver<std::complex<double> >; //complex version of nox solver is not implemented 
   }
 }
 #endif

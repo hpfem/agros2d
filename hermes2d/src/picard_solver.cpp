@@ -18,7 +18,6 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "picard_solver.h"
 #include "newton_solver.h"
-#include "../src/alter_newton_solver.h"
 
 namespace Hermes
 {

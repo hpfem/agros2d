@@ -74,7 +74,7 @@ void SolutionArray<Scalar>::load(QDomElement element)
     writeStringContentByteArray(fileNameSpace, QByteArray::fromBase64(contentSpace));
 
     sln = new Hermes::Hermes2D::Solution<Scalar>();
-    sln->load(fileNameSolution.toStdString().c_str());
+    // sln->load(fileNameSolution.toStdString().c_str());
     //space = new Hermes::Hermes2D::Space<Scalar>();
     //space->load(fileNameSpace.toStdString().c_str());
     adaptiveError = element.attribute("adaptiveerror").toDouble();
@@ -93,7 +93,7 @@ void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
 
     // solution
     QString fileNameSolution = tempProblemFileName() + ".sln";
-    sln->save(fileNameSolution.toStdString().c_str(), false);
+    // sln->save(fileNameSolution.toStdString().c_str(), false);
     QDomText textSolution = doc->createTextNode(readFileContentByteArray(fileNameSolution).toBase64());
 
     // space

@@ -90,24 +90,24 @@ public:
     bool isSolving() const { return m_isSolving; }
 
     // mesh
-    inline Hermes::Hermes2D::Views::Linearizer<Scalar> &linInitialMeshView() { return m_linInitialMeshView; }
-    inline Hermes::Hermes2D::Views::Linearizer<Scalar> &linSolutionMeshView() { return m_linSolutionMeshView; }
+    inline Hermes::Hermes2D::Views::Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
+    inline Hermes::Hermes2D::Views::Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
 
     // contour
     inline ViewScalarFilter<Scalar> *slnContourView() { return m_slnContourView; }
     void setSlnContourView(ViewScalarFilter<Scalar> *slnScalarView);
-    inline Hermes::Hermes2D::Views::Linearizer<Scalar> &linContourView() { return m_linContourView; }
+    inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
 
     // scalar view
     inline ViewScalarFilter<Scalar> *slnScalarView() { return m_slnScalarView; }
     void setSlnScalarView(ViewScalarFilter<Scalar> *slnScalarView);
-    inline Hermes::Hermes2D::Views::Linearizer<Scalar> &linScalarView() { return m_linScalarView; }
+    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
 
     // vector view
     void setSlnVectorView(ViewScalarFilter<Scalar> *slnVectorXView, ViewScalarFilter<Scalar> *slnVectorYView);
     inline ViewScalarFilter<Scalar> *slnVectorViewX() { return m_slnVectorXView; }
     inline ViewScalarFilter<Scalar> *slnVectorViewY() { return m_slnVectorYView; }
-    inline Hermes::Hermes2D::Views::Vectorizer<Scalar> &vecVectorView() { return m_vecVectorView; }
+    inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
 
     // order view
     void setOrderView(Hermes::Hermes2D::Space<Scalar> *space);
@@ -119,7 +119,7 @@ public:
     inline void setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
 
     int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point) const;
-    int findElementInVectorizer(const Hermes::Hermes2D::Views::Vectorizer<Scalar> &vecVectorView, const Point &point) const;
+    int findElementInVectorizer(Hermes::Hermes2D::Views::Vectorizer &vecVectorView, const Point &point) const;
 
     // process
     void processView(bool showViewProgress);
@@ -141,21 +141,21 @@ private:
     int m_timeStep;
 
     // mesh
-    Hermes::Hermes2D::Views::Linearizer<Scalar> m_linInitialMeshView;
-    Hermes::Hermes2D::Views::Linearizer<Scalar> m_linSolutionMeshView;
+    Hermes::Hermes2D::Views::Linearizer m_linInitialMeshView;
+    Hermes::Hermes2D::Views::Linearizer m_linSolutionMeshView;
 
     // contour
     ViewScalarFilter<Scalar> *m_slnContourView; // scalar view solution
-    Hermes::Hermes2D::Views::Linearizer<Scalar> m_linContourView;
+    Hermes::Hermes2D::Views::Linearizer m_linContourView;
 
     // scalar view
     ViewScalarFilter<Scalar> *m_slnScalarView; // scalar view solution
-    Hermes::Hermes2D::Views::Linearizer<Scalar> m_linScalarView; // linealizer for scalar view
+    Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
 
     // vector view
     ViewScalarFilter<Scalar> *m_slnVectorXView; // vector view solution - x
     ViewScalarFilter<Scalar> *m_slnVectorYView; // vector view solution - y
-    Hermes::Hermes2D::Views::Vectorizer<Scalar> m_vecVectorView; // vectorizer for vector view
+    Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
 
     Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
 
