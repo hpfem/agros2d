@@ -30,62 +30,6 @@ SceneBoundary *ModuleElectrostatic::newBoundary()
     return new SceneBoundary(tr("new boundary").toStdString(), "electrostatic_potential");
 }
 
-/*
-SceneBoundary *ModuleElectrostatic::modifyBoundary(PyObject *self, PyObject *args)
-{
-    double value;
-    char *name, *type;
-    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
-    {
-        if (SceneBoundaryElectrostatic *marker = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->getBoundary(name)))
-        {
-            if (physicFieldBCFromStringKey(type))
-            {
-                marker->type = physicFieldBCFromStringKey(type);
-                marker->value = Value(QString::number(value));
-                return marker;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
-                return NULL;
-            }
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
-            return NULL;
-        }
-    }
-
-    return NULL;
-}
-*/
-
-/*
-SceneMaterial *ModuleElectrostatic::modifyMaterial(PyObject *self, PyObject *args)
-{
-    double charge_density, permittivity;
-    char *name;
-    if (PyArg_ParseTuple(args, "sdd", &name, &charge_density, &permittivity))
-    {
-        if (SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(Util::scene()->getMaterial(name)))
-        {
-            marker->charge_density = Value(QString::number(charge_density));
-            marker->permittivity = Value(QString::number(permittivity));
-            return marker;
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
-            return NULL;
-        }
-    }
-
-    return NULL;
-}
-*/
-
 // *************************************************************************************************************************************
 
 SceneBoundaryElectrostaticDialog::SceneBoundaryElectrostaticDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)

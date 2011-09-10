@@ -51,7 +51,7 @@ SOURCES += util.cpp \
     hermes2d/material.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
-    #hermes2d/hermes_general.cpp \
+    hermes2d/hermes_general.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
     hermes2d/hermes_magnetic.cpp \
@@ -108,7 +108,7 @@ HEADERS += util.h \
     hermes2d/boundary.h \
     hermes2d/material.h \
     hermes2d/module.h \
-    #hermes2d/hermes_general.h \
+    hermes2d/hermes_general.h \
     hermes2d/hermes_electrostatic.h \
     hermes2d/hermes_heat.h \
     hermes2d/hermes_magnetic.h \

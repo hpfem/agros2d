@@ -19,7 +19,7 @@
 
 #include "module.h"
 
-// #include "hermes_general.h"
+#include "hermes_general.h"
 #include "hermes_electrostatic.h"
 #include "hermes_magnetic.h"
 #include "hermes_heat.h"
@@ -66,6 +66,8 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
         module = new ModuleHeat(problem_type, analysis_type);
     if (id == "rf")
         module = new ModuleRF(problem_type, analysis_type);
+    if (id == "general")
+        module = new ModuleGeneral(problem_type, analysis_type);
 
     if (module)
         module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());
@@ -92,8 +94,9 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
         return new SceneBoundaryHeatDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "rf")
         return new SceneBoundaryRFDialog(scene_boundary, parent);
+    if (Util::scene()->problemInfo()->module()->id == "general")
+        return new SceneBoundaryGeneralDialog(scene_boundary, parent);
 }
-
 // material dialog factory
 SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidget *parent)
 {
@@ -111,6 +114,8 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
         return new SceneMaterialHeatDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "rf")
         return new SceneMaterialRFDialog(scene_material, parent);
+    if (Util::scene()->problemInfo()->module()->id == "general")
+        return new SceneMaterialGeneralDialog(scene_material, parent);
 }
 
 std::map<std::string, std::string> availableModules()
