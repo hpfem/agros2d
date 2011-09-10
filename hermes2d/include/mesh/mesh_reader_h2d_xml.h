@@ -19,15 +19,15 @@
 #include "mesh_reader.h"
 
 // This is here mainly because XSD uses its own error, therefore it has to be undefined here.
-#ifdef error(...)
-#undef error(...)
+#ifdef error
+#undef error
 #endif
 
 #include "mesh_h2d_xml.h"
 #include "subdomains_h2d_xml.h"
 
 // This is here mainly because XSD uses its own error, therefore it had to be undefined previously.
-#ifndef error(...)
+#ifndef error
 #define error(...) hermes_exit_if(hermes_log_message_if(true, HERMES_BUILD_LOG_INFO(HERMES_EC_ERROR), __VA_ARGS__))
 #endif
 
@@ -59,10 +59,11 @@ namespace Hermes
       bool save(const char *filename, Hermes::vector<Mesh *> meshes);
 
     protected:
-      /// Internal method loading contents of parsed_xml_entity into mesh.
-      /// \param [in] parsed_xml_entity Either XMLSubdomains::domain or XMLMesh::mesh.
-      template<typename T>
-      bool load(std::auto_ptr<T> & parsed_xml_entity, Mesh *mesh);
+      /// Internal method loading contents of parsed_xml_mesh into mesh.
+      bool load(std::auto_ptr<XMLMesh::mesh> & parsed_xml_mesh, Mesh *mesh, std::map<unsigned int, unsigned int>& vertex_is);
+      
+      /// Internal method loading contents of parsed_xml_domain's domain into mesh.
+      bool load(std::auto_ptr<XMLSubdomains::domain> & parsed_xml_domain, Mesh *mesh, std::map<unsigned int, unsigned int>& vertex_is, std::map<unsigned int, unsigned int>& element_is, std::map<unsigned int, unsigned int>& edge_is);
 
       /// Loads one circular arc.
       /// \param [in] parsed_xml_entity Either XMLSubdomains::domain or XMLMesh::mesh.
@@ -73,9 +74,6 @@ namespace Hermes
       /// \param [in] parsed_xml_entity Either XMLSubdomains::domain or XMLMesh::mesh.
       template<typename T>
       Nurbs* load_nurbs(Mesh *mesh, std::auto_ptr<T> & parsed_xml_entity, int id, Node** en, int p1, int p2);
-
-      /// Saves all refinements done on the mesh.
-      void save_refinements(Mesh *mesh, Element* e, int id, XMLMesh::refinements_type & refinements);
 
       /// Saves one circular arc.
       void save_arc(Mesh *mesh, int p1, int p2, Nurbs* nurbs, XMLMesh::curves_type & curves);

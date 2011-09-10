@@ -216,25 +216,25 @@ namespace XMLMesh
   }
 
 
-  // boundary_edges_type
+  // edges_type
   // 
 
-  const boundary_edges_type::boundary_edge_sequence& boundary_edges_type::
-  boundary_edge () const
+  const edges_type::edge_sequence& edges_type::
+  edge () const
   {
-    return this->boundary_edge_;
+    return this->edge_;
   }
 
-  boundary_edges_type::boundary_edge_sequence& boundary_edges_type::
-  boundary_edge ()
+  edges_type::edge_sequence& edges_type::
+  edge ()
   {
-    return this->boundary_edge_;
+    return this->edge_;
   }
 
-  void boundary_edges_type::
-  boundary_edge (const boundary_edge_sequence& s)
+  void edges_type::
+  edge (const edge_sequence& s)
   {
-    this->boundary_edge_ = s;
+    this->edge_ = s;
   }
 
 
@@ -381,28 +381,28 @@ namespace XMLMesh
     this->elements_.set (x);
   }
 
-  const mesh::boundary_edges_type& mesh::
-  boundary_edges () const
+  const mesh::edges_type& mesh::
+  edges () const
   {
-    return this->boundary_edges_.get ();
+    return this->edges_.get ();
   }
 
-  mesh::boundary_edges_type& mesh::
-  boundary_edges ()
+  mesh::edges_type& mesh::
+  edges ()
   {
-    return this->boundary_edges_.get ();
-  }
-
-  void mesh::
-  boundary_edges (const boundary_edges_type& x)
-  {
-    this->boundary_edges_.set (x);
+    return this->edges_.get ();
   }
 
   void mesh::
-  boundary_edges (::std::auto_ptr< boundary_edges_type > x)
+  edges (const edges_type& x)
   {
-    this->boundary_edges_.set (x);
+    this->edges_.set (x);
+  }
+
+  void mesh::
+  edges (::std::auto_ptr< edges_type > x)
+  {
+    this->edges_.set (x);
   }
 
   const mesh::curves_optional& mesh::
@@ -563,65 +563,83 @@ namespace XMLMesh
     this->y_.set (x);
   }
 
+  const vertex::i_type& vertex::
+  i () const
+  {
+    return this->i_.get ();
+  }
 
-  // boundary_edge
+  vertex::i_type& vertex::
+  i ()
+  {
+    return this->i_.get ();
+  }
+
+  void vertex::
+  i (const i_type& x)
+  {
+    this->i_.set (x);
+  }
+
+
+  // edge
   // 
 
-  const boundary_edge::v1_type& boundary_edge::
+  const edge::v1_type& edge::
   v1 () const
   {
     return this->v1_.get ();
   }
 
-  boundary_edge::v1_type& boundary_edge::
+  edge::v1_type& edge::
   v1 ()
   {
     return this->v1_.get ();
   }
 
-  void boundary_edge::
+  void edge::
   v1 (const v1_type& x)
   {
     this->v1_.set (x);
   }
 
-  const boundary_edge::v2_type& boundary_edge::
+  const edge::v2_type& edge::
   v2 () const
   {
     return this->v2_.get ();
   }
 
-  boundary_edge::v2_type& boundary_edge::
+  edge::v2_type& edge::
   v2 ()
   {
     return this->v2_.get ();
   }
 
-  void boundary_edge::
+  void edge::
   v2 (const v2_type& x)
   {
     this->v2_.set (x);
   }
 
-  const boundary_edge::marker_type& boundary_edge::
+  const edge::marker_type& edge::
   marker () const
   {
     return this->marker_.get ();
   }
 
-  boundary_edge::marker_type& boundary_edge::
+  edge::marker_type& edge::
   marker ()
   {
     return this->marker_.get ();
   }
 
-  void boundary_edge::
+  void edge::
   marker (const marker_type& x)
   {
     this->marker_.set (x);
   }
 
-  void boundary_edge::
+  void edge::
   marker (::std::auto_ptr< marker_type > x)
   {
     this->marker_.set (x);
@@ -801,28 +819,22 @@ namespace XMLMesh
     this->element_id_.set (x);
   }
 
-  const refinement::refinement_type_optional& refinement::
+  const refinement::refinement_type_type& refinement::
   refinement_type () const
   {
-    return this->refinement_type_;
+    return this->refinement_type_.get ();
   }
 
-  refinement::refinement_type_optional& refinement::
+  refinement::refinement_type_type& refinement::
   refinement_type ()
   {
-    return this->refinement_type_;
+    return this->refinement_type_.get ();
   }
 
   void refinement::
   refinement_type (const refinement_type_type& x)
   {
     this->refinement_type_.set (x);
-  }
-
-  void refinement::
-  refinement_type (const refinement_type_optional& x)
-  {
-    this->refinement_type_ = x;
   }
 
 
@@ -1430,31 +1442,31 @@ namespace XMLMesh
     "quad_type",
     "XMLMesh");
 
-  // boundary_edges_type
+  // edges_type
   //
 
-  boundary_edges_type::
-  boundary_edges_type ()
+  edges_type::
+  edges_type ()
   : ::xml_schema::type (),
-    boundary_edge_ (::xml_schema::flags (), this)
+    edge_ (::xml_schema::flags (), this)
   {
   }
 
-  boundary_edges_type::
-  boundary_edges_type (const boundary_edges_type& x,
-                       ::xml_schema::flags f,
-                       ::xml_schema::container* c)
+  edges_type::
+  edges_type (const edges_type& x,
+              ::xml_schema::flags f,
+              ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    boundary_edge_ (x.boundary_edge_, f, this)
+    edge_ (x.edge_, f, this)
   {
   }
 
-  boundary_edges_type::
-  boundary_edges_type (const ::xercesc::DOMElement& e,
-                       ::xml_schema::flags f,
-                       ::xml_schema::container* c)
+  edges_type::
+  edges_type (const ::xercesc::DOMElement& e,
+              ::xml_schema::flags f,
+              ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    boundary_edge_ (f, this)
+    edge_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -1463,7 +1475,7 @@ namespace XMLMesh
     }
   }
 
-  void boundary_edges_type::
+  void edges_type::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -1473,14 +1485,14 @@ namespace XMLMesh
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      // boundary_edge
+      // edge
       //
-      if (n.name () == "boundary_edge" && n.namespace_ ().empty ())
+      if (n.name () == "edge" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< boundary_edge_type > r (
-          boundary_edge_traits::create (i, f, this));
+        ::std::auto_ptr< edge_type > r (
+          edge_traits::create (i, f, this));
 
-        this->boundary_edge_.push_back (r);
+        this->edge_.push_back (r);
         continue;
       }
 
@@ -1488,15 +1500,15 @@ namespace XMLMesh
     }
   }
 
-  boundary_edges_type* boundary_edges_type::
+  edges_type* edges_type::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class boundary_edges_type (*this, f, c);
+    return new class edges_type (*this, f, c);
   }
 
-  boundary_edges_type::
-  ~boundary_edges_type ()
+  edges_type::
+  ~edges_type ()
   {
   }
 
@@ -1660,12 +1672,12 @@ namespace XMLMesh
   mesh::
   mesh (const vertices_type& vertices,
         const elements_type& elements,
-        const boundary_edges_type& boundary_edges)
+        const edges_type& edges)
   : ::xml_schema::type (),
     variables_ (::xml_schema::flags (), this),
     vertices_ (vertices, ::xml_schema::flags (), this),
     elements_ (elements, ::xml_schema::flags (), this),
-    boundary_edges_ (boundary_edges, ::xml_schema::flags (), this),
+    edges_ (edges, ::xml_schema::flags (), this),
     curves_ (::xml_schema::flags (), this),
     refinements_ (::xml_schema::flags (), this)
   {
@@ -1674,12 +1686,12 @@ namespace XMLMesh
   mesh::
   mesh (::std::auto_ptr< vertices_type >& vertices,
         ::std::auto_ptr< elements_type >& elements,
-        ::std::auto_ptr< boundary_edges_type >& boundary_edges)
+        ::std::auto_ptr< edges_type >& edges)
   : ::xml_schema::type (),
     variables_ (::xml_schema::flags (), this),
     vertices_ (vertices, ::xml_schema::flags (), this),
     elements_ (elements, ::xml_schema::flags (), this),
-    boundary_edges_ (boundary_edges, ::xml_schema::flags (), this),
+    edges_ (edges, ::xml_schema::flags (), this),
     curves_ (::xml_schema::flags (), this),
     refinements_ (::xml_schema::flags (), this)
   {
@@ -1693,7 +1705,7 @@ namespace XMLMesh
     variables_ (x.variables_, f, this),
     vertices_ (x.vertices_, f, this),
     elements_ (x.elements_, f, this),
-    boundary_edges_ (x.boundary_edges_, f, this),
+    edges_ (x.edges_, f, this),
     curves_ (x.curves_, f, this),
     refinements_ (x.refinements_, f, this)
   {
@@ -1707,7 +1719,7 @@ namespace XMLMesh
     variables_ (f, this),
     vertices_ (f, this),
     elements_ (f, this),
-    boundary_edges_ (f, this),
+    edges_ (f, this),
     curves_ (f, this),
     refinements_ (f, this)
   {
@@ -1770,16 +1782,16 @@ namespace XMLMesh
         }
       }
 
-      // boundary_edges
+      // edges
       //
-      if (n.name () == "boundary_edges" && n.namespace_ ().empty ())
+      if (n.name () == "edges" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< boundary_edges_type > r (
-          boundary_edges_traits::create (i, f, this));
+        ::std::auto_ptr< edges_type > r (
+          edges_traits::create (i, f, this));
 
-        if (!boundary_edges_.present ())
+        if (!edges_.present ())
         {
-          this->boundary_edges_.set (r);
+          this->edges_.set (r);
           continue;
         }
       }
@@ -1829,10 +1841,10 @@ namespace XMLMesh
         "");
     }
 
-    if (!boundary_edges_.present ())
+    if (!edges_.present ())
     {
       throw ::xsd::cxx::tree::expected_element< char > (
-        "boundary_edges",
+        "edges",
         "");
     }
   }
@@ -1944,10 +1956,12 @@ namespace XMLMesh
 
   vertex::
   vertex (const x_type& x,
-          const y_type& y)
+          const y_type& y,
+          const i_type& i)
   : ::xml_schema::type (),
     x_ (x, ::xml_schema::flags (), this),
-    y_ (y, ::xml_schema::flags (), this)
+    y_ (y, ::xml_schema::flags (), this),
+    i_ (i, ::xml_schema::flags (), this)
   {
   }
 
@@ -1957,7 +1971,8 @@ namespace XMLMesh
           ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     x_ (x.x_, f, this),
-    y_ (x.y_, f, this)
+    y_ (x.y_, f, this),
+    i_ (x.i_, f, this)
   {
   }
 
@@ -1967,7 +1982,8 @@ namespace XMLMesh
           ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     x_ (f, this),
-    y_ (f, this)
+    y_ (f, this),
+    i_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -2003,6 +2019,12 @@ namespace XMLMesh
         this->y_.set (r);
         continue;
       }
+
+      if (n.name () == "i" && n.namespace_ ().empty ())
+      {
+        this->i_.set (i_traits::create (i, f, this));
+        continue;
+      }
     }
 
     if (!x_.present ())
@@ -2016,6 +2038,13 @@ namespace XMLMesh
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
         "y",
+        "");
+    }
+
+    if (!i_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "i",
         "");
     }
   }
@@ -2032,13 +2061,13 @@ namespace XMLMesh
   {
   }
 
-  // boundary_edge
+  // edge
   //
 
-  boundary_edge::
-  boundary_edge (const v1_type& v1,
-                 const v2_type& v2,
-                 const marker_type& marker)
+  edge::
+  edge (const v1_type& v1,
+        const v2_type& v2,
+        const marker_type& marker)
   : ::xml_schema::type (),
     v1_ (v1, ::xml_schema::flags (), this),
     v2_ (v2, ::xml_schema::flags (), this),
@@ -2046,10 +2075,10 @@ namespace XMLMesh
   {
   }
 
-  boundary_edge::
-  boundary_edge (const boundary_edge& x,
-                 ::xml_schema::flags f,
-                 ::xml_schema::container* c)
+  edge::
+  edge (const edge& x,
+        ::xml_schema::flags f,
+        ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     v1_ (x.v1_, f, this),
     v2_ (x.v2_, f, this),
@@ -2057,10 +2086,10 @@ namespace XMLMesh
   {
   }
 
-  boundary_edge::
-  boundary_edge (const ::xercesc::DOMElement& e,
-                 ::xml_schema::flags f,
-                 ::xml_schema::container* c)
+  edge::
+  edge (const ::xercesc::DOMElement& e,
+        ::xml_schema::flags f,
+        ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     v1_ (f, this),
     v2_ (f, this),
@@ -2073,7 +2102,7 @@ namespace XMLMesh
     }
   }
 
-  void boundary_edge::
+  void edge::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -2127,15 +2156,15 @@ namespace XMLMesh
     }
   }
 
-  boundary_edge* boundary_edge::
+  edge* edge::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class boundary_edge (*this, f, c);
+    return new class edge (*this, f, c);
   }
 
-  boundary_edge::
-  ~boundary_edge ()
+  edge::
+  ~edge ()
   {
   }
 
@@ -2388,10 +2417,11 @@ namespace XMLMesh
   //
 
   refinement::
-  refinement (const element_id_type& element_id)
+  refinement (const element_id_type& element_id,
+              const refinement_type_type& refinement_type)
   : ::xml_schema::type (),
     element_id_ (element_id, ::xml_schema::flags (), this),
-    refinement_type_ (::xml_schema::flags (), this)
+    refinement_type_ (refinement_type, ::xml_schema::flags (), this)
   {
   }
 
@@ -2447,6 +2477,13 @@ namespace XMLMesh
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
         "element_id",
+        "");
+    }
+
+    if (!refinement_type_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "refinement_type",
         "");
     }
   }
@@ -2736,13 +2773,13 @@ namespace XMLMesh
   _xsd_quad_type_std_ostream_init;
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const boundary_edges_type& i)
+  operator<< (::std::ostream& o, const edges_type& i)
   {
-    for (boundary_edges_type::boundary_edge_const_iterator
-         b (i.boundary_edge ().begin ()), e (i.boundary_edge ().end ());
+    for (edges_type::edge_const_iterator
+         b (i.edge ().begin ()), e (i.edge ().end ());
          b != e; ++b)
     {
-      o << ::std::endl << "boundary_edge: " << *b;
+      o << ::std::endl << "edge: " << *b;
     }
 
     return o;
@@ -2791,7 +2828,7 @@ namespace XMLMesh
 
     o << ::std::endl << "vertices: " << i.vertices ();
     o << ::std::endl << "elements: " << i.elements ();
-    o << ::std::endl << "boundary_edges: " << i.boundary_edges ();
+    o << ::std::endl << "edges: " << i.edges ();
     if (i.curves ())
     {
       o << ::std::endl << "curves: " << *i.curves ();
@@ -2818,11 +2855,12 @@ namespace XMLMesh
   {
     o << ::std::endl << "x: " << i.x ();
     o << ::std::endl << "y: " << i.y ();
+    o << ::std::endl << "i: " << i.i ();
     return o;
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const boundary_edge& i)
+  operator<< (::std::ostream& o, const edge& i)
   {
     o << ::std::endl << "v1: " << i.v1 ();
     o << ::std::endl << "v2: " << i.v2 ();
@@ -2866,11 +2904,7 @@ namespace XMLMesh
   operator<< (::std::ostream& o, const refinement& i)
   {
     o << ::std::endl << "element_id: " << i.element_id ();
-    if (i.refinement_type ())
-    {
-      o << ::std::endl << "refinement_type: " << *i.refinement_type ();
-    }
-
+    o << ::std::endl << "refinement_type: " << i.refinement_type ();
     return o;
   }
 
@@ -3528,19 +3562,19 @@ namespace XMLMesh
 
 
   void
-  operator<< (::xercesc::DOMElement& e, const boundary_edges_type& i)
+  operator<< (::xercesc::DOMElement& e, const edges_type& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
-    // boundary_edge
+    // edge
     //
-    for (boundary_edges_type::boundary_edge_const_iterator
-         b (i.boundary_edge ().begin ()), n (i.boundary_edge ().end ());
+    for (edges_type::edge_const_iterator
+         b (i.edge ().begin ()), n (i.edge ().end ());
          b != n; ++b)
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "boundary_edge",
+          "edge",
           e));
 
       s << *b;
@@ -3640,15 +3674,15 @@ namespace XMLMesh
       s << i.elements ();
     }
 
-    // boundary_edges
+    // edges
     //
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "boundary_edges",
+          "edges",
           e));
 
-      s << i.boundary_edges ();
+      s << i.edges ();
     }
 
     // curves
@@ -3730,10 +3764,21 @@ namespace XMLMesh
 
       a << i.y ();
     }
+
+    // i
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "i",
+          e));
+
+      a << i.i ();
+    }
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const boundary_edge& i)
+  operator<< (::xercesc::DOMElement& e, const edge& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
@@ -3895,14 +3940,13 @@ namespace XMLMesh
 
     // refinement_type
     //
-    if (i.refinement_type ())
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
           "refinement_type",
           e));
 
-      a << *i.refinement_type ();
+      a << i.refinement_type ();
     }
   }
 

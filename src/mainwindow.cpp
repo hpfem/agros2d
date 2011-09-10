@@ -1360,9 +1360,10 @@ void MainWindow::doExportVTKScalar()
         if (QFile::exists(fileName))
             QFile::remove(fileName);
 
-        Util::scene()->sceneSolution()->linScalarView().save_data_vtk(fileName.toStdString().c_str(),
-                                                                      sceneView->sceneViewSettings().scalarPhysicFieldVariable.c_str(),
-                                                                      true);
+        Util::scene()->sceneSolution()->linScalarView().save_solution_vtk(Util::scene()->sceneSolution()->sln(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
+                                                                          fileName.toStdString().c_str(),
+                                                                          sceneView->sceneViewSettings().scalarPhysicFieldVariable.c_str(),
+                                                                          true);
 
         if (!fileName.isEmpty())
         {
@@ -1392,7 +1393,8 @@ void MainWindow::doExportVTKOrder()
         if (QFile::exists(fileName))
             QFile::remove(fileName);
 
-        Util::scene()->sceneSolution()->ordView().save_data_vtk(fileName.toStdString().c_str());
+        Util::scene()->sceneSolution()->ordView().save_orders_vtk(Util::scene()->sceneSolution()->sln(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution())->get_space(),
+                                                                  fileName.toStdString().c_str());
 
         if (!fileName.isEmpty())
         {

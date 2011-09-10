@@ -1329,6 +1329,7 @@ void SceneView::paintScalarField()
         glEnable(GL_TEXTURE_1D);
         glBindTexture(GL_TEXTURE_1D, 1);
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         // set texture transformation matrix
         glMatrixMode(GL_TEXTURE);

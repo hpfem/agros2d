@@ -200,6 +200,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
     LIBS += -lumfpack
+    LIBS += -lxerces-c
     LIBS += -lamd
     LIBS += -lblas
     LIBS += -lpthread

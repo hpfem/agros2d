@@ -5,6 +5,7 @@ OBJECTS_DIR = build
 CONFIG += staticlib
 # CONFIG += debug
 DEFINES += NOGLUT
+DEFINES += WITH_UMFPACK
 
 INCLUDEPATH += include \
                include/adapt \
@@ -35,7 +36,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/ord.cpp \
                 ../hermes_common/src/hermes_function.cpp \
                 ../hermes_common/src/third_party_codes/trilinos-teuchos/Teuchos_stacktrace.cpp \
-                ../hermes_common/src/solvers/dpinterface.cpp \
+                ../hermes_common/src/solvers/dp_interface.cpp \
                 ../hermes_common/src/solvers/linear_solver.cpp \
                 ../hermes_common/src/solvers/nonlinear_solver.cpp \
                 ../hermes_common/src/solvers/nox_solver.cpp \
@@ -64,11 +65,14 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/function/exact_solution.cpp \
                 src/function/solution.cpp  \
                 src/function/filter.cpp \
+                src/function/solution_h2d_xml.cpp \
                 src/mesh/curved.cpp \
                 src/mesh/hash.cpp \
                 src/mesh/mesh_data.cpp \
                 src/mesh/mesh_reader_exodusii.cpp \
-                # src/mesh/mesh_reader_h2d_xml.cpp \
+                src/mesh/mesh_h1d_xml.cpp \
+                src/mesh/mesh_reader_h1d_xml.cpp \
+                src/mesh/mesh_reader_h2d_xml.cpp \
                 src/mesh/refinement_type.cpp \
                 src/mesh/traverse.cpp \
                 src/mesh/element_to_refine.cpp \
@@ -99,6 +103,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/space/space_hcurl.cpp  \
                 src/space/space_l2.cpp \
                 src/space/space_hdiv.cpp \
+                src/space/space_h2d_xml.cpp \
                 src/views/base_view.cpp  \
                 src/views/mesh_view.cpp  \
                 src/views/order_view.cpp  \
@@ -109,6 +114,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/views/view.cpp  \
                 src/views/view_data.cpp  \
                 src/views/view_support.cpp \
+                src/views/linearizer_base.cpp \
                 src/views/linearizer.cpp \
                 src/views/orderizer.cpp \
                 src/views/vectorizer.cpp \
@@ -138,6 +144,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += /usr/include/python2.7
     LIBS += -lumfpack
+    LIBS += -lxerces-c
     # LIBS += -ldmumps_seq
     # LIBS += -lsuperlu
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
@@ -179,4 +186,8 @@ macx-g++ {
     LIBS += -lamd
     LIBS += -lblas
 }
+
+HEADERS += \
+    ../hermes_common/include/config.h
+
 

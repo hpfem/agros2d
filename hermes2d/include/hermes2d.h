@@ -22,6 +22,7 @@
 
 #include "newton_solver.h"
 #include "picard_solver.h"
+#include "calculation_continuity.h"
 
 #include "boundary_conditions/essential_boundary_conditions.h"
 
@@ -31,7 +32,8 @@
 #include "mesh/mesh.h"
 #include "mesh/mesh_reader.h"
 #include "mesh/mesh_reader_h2d.h"
-//#include "mesh/mesh_reader_h2d_xml.h"
+#include "mesh/mesh_reader_h2d_xml.h"
+#include "mesh/mesh_reader_h1d_xml.h"
 #include "mesh/mesh_reader_exodusii.h"
 
 #include "quadrature/quad.h"

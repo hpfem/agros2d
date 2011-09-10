@@ -629,13 +629,13 @@ namespace XMLMesh
   class element_type;
   class triangle_type;
   class quad_type;
-  class boundary_edges_type;
+  class edges_type;
   class curves_type;
   class refinements_type;
   class mesh;
   class variable;
   class vertex;
-  class boundary_edge;
+  class edge;
   class arc;
   class NURBS;
   class refinement;
@@ -1598,17 +1598,17 @@ namespace XMLMesh
   };
 
   /**
-   * @brief Class corresponding to the %boundary_edges_type schema type.
+   * @brief Class corresponding to the %edges_type schema type.
    *
    * @nosubgrouping
    */
-  class boundary_edges_type: public ::xml_schema::type
+  class edges_type: public ::xml_schema::type
   {
     public:
     /**
-     * @name boundary_edge
+     * @name edge
      *
-     * @brief Accessor and modifier functions for the %boundary_edge
+     * @brief Accessor and modifier functions for the %edge
      * sequence element.
      */
     //@{
@@ -1616,27 +1616,27 @@ namespace XMLMesh
     /**
      * @brief Element type.
      */
-    typedef ::XMLMesh::boundary_edge boundary_edge_type;
+    typedef ::XMLMesh::edge edge_type;
 
     /**
      * @brief Element sequence container type.
      */
-    typedef ::xsd::cxx::tree::sequence< boundary_edge_type > boundary_edge_sequence;
+    typedef ::xsd::cxx::tree::sequence< edge_type > edge_sequence;
 
     /**
      * @brief Element iterator type.
      */
-    typedef boundary_edge_sequence::iterator boundary_edge_iterator;
+    typedef edge_sequence::iterator edge_iterator;
 
     /**
      * @brief Element constant iterator type.
      */
-    typedef boundary_edge_sequence::const_iterator boundary_edge_const_iterator;
+    typedef edge_sequence::const_iterator edge_const_iterator;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< boundary_edge_type, char > boundary_edge_traits;
+    typedef ::xsd::cxx::tree::traits< edge_type, char > edge_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -1644,16 +1644,16 @@ namespace XMLMesh
      *
      * @return A constant reference to the sequence container.
      */
-    const boundary_edge_sequence&
-    boundary_edge () const;
+    const edge_sequence&
+    edge () const;
 
     /**
      * @brief Return a read-write reference to the element sequence.
      *
      * @return A reference to the sequence container.
      */
-    boundary_edge_sequence&
-    boundary_edge ();
+    edge_sequence&
+    edge ();
 
     /**
      * @brief Copy elements from a given sequence.
@@ -1665,7 +1665,7 @@ namespace XMLMesh
      * sequence and all old elements will be lost.
      */
     void
-    boundary_edge (const boundary_edge_sequence& s);
+    edge (const edge_sequence& s);
 
     //@}
 
@@ -1678,7 +1678,7 @@ namespace XMLMesh
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    boundary_edges_type ();
+    edges_type ();
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1688,9 +1688,9 @@ namespace XMLMesh
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    boundary_edges_type (const ::xercesc::DOMElement& e,
-                         ::xml_schema::flags f = 0,
-                         ::xml_schema::container* c = 0);
+    edges_type (const ::xercesc::DOMElement& e,
+                ::xml_schema::flags f = 0,
+                ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -1701,9 +1701,9 @@ namespace XMLMesh
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    boundary_edges_type (const boundary_edges_type& x,
-                         ::xml_schema::flags f = 0,
-                         ::xml_schema::container* c = 0);
+    edges_type (const edges_type& x,
+                ::xml_schema::flags f = 0,
+                ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -1716,7 +1716,7 @@ namespace XMLMesh
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual boundary_edges_type*
+    virtual edges_type*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -1726,7 +1726,7 @@ namespace XMLMesh
      * @brief Destructor.
      */
     virtual 
-    ~boundary_edges_type ();
+    ~edges_type ();
 
     // Implementation.
     //
@@ -1739,7 +1739,7 @@ namespace XMLMesh
            ::xml_schema::flags);
 
     protected:
-    boundary_edge_sequence boundary_edge_;
+    edge_sequence edge_;
 
     //@endcond
   };
@@ -2304,9 +2304,9 @@ namespace XMLMesh
     //@}
 
     /**
-     * @name boundary_edges
+     * @name edges
      *
-     * @brief Accessor and modifier functions for the %boundary_edges
+     * @brief Accessor and modifier functions for the %edges
      * required element.
      */
     //@{
@@ -2314,28 +2314,28 @@ namespace XMLMesh
     /**
      * @brief Element type.
      */
-    typedef ::XMLMesh::boundary_edges_type boundary_edges_type;
+    typedef ::XMLMesh::edges_type edges_type;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< boundary_edges_type, char > boundary_edges_traits;
+    typedef ::xsd::cxx::tree::traits< edges_type, char > edges_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element.
      *
      * @return A constant reference to the element.
      */
-    const boundary_edges_type&
-    boundary_edges () const;
+    const edges_type&
+    edges () const;
 
     /**
      * @brief Return a read-write reference to the element.
      *
      * @return A reference to the element.
      */
-    boundary_edges_type&
-    boundary_edges ();
+    edges_type&
+    edges ();
 
     /**
      * @brief Set the element value.
@@ -2346,7 +2346,7 @@ namespace XMLMesh
      * the new value of the element.
      */
     void
-    boundary_edges (const boundary_edges_type& x);
+    edges (const edges_type& x);
 
     /**
      * @brief Set the element value without copying.
@@ -2357,7 +2357,7 @@ namespace XMLMesh
      * instead of making a copy.
      */
     void
-    boundary_edges (::std::auto_ptr< boundary_edges_type > p);
+    edges (::std::auto_ptr< edges_type > p);
 
     //@}
 
@@ -2524,7 +2524,7 @@ namespace XMLMesh
      */
     mesh (const vertices_type&,
           const elements_type&,
-          const boundary_edges_type&);
+          const edges_type&);
 
     /**
      * @brief Create an instance from the ultimate base and
@@ -2536,7 +2536,7 @@ namespace XMLMesh
      */
     mesh (::std::auto_ptr< vertices_type >&,
           ::std::auto_ptr< elements_type >&,
-          ::std::auto_ptr< boundary_edges_type >&);
+          ::std::auto_ptr< edges_type >&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -2600,7 +2600,7 @@ namespace XMLMesh
     variables_optional variables_;
     ::xsd::cxx::tree::one< vertices_type > vertices_;
     ::xsd::cxx::tree::one< elements_type > elements_;
-    ::xsd::cxx::tree::one< boundary_edges_type > boundary_edges_;
+    ::xsd::cxx::tree::one< edges_type > edges_;
     curves_optional curves_;
     refinements_optional refinements_;
 
@@ -2922,6 +2922,53 @@ namespace XMLMesh
     //@}
 
     /**
+     * @name i
+     *
+     * @brief Accessor and modifier functions for the %i
+     * required attribute.
+     */
+    //@{
+
+    /**
+     * @brief Attribute type.
+     */
+    typedef ::xml_schema::integer i_type;
+
+    /**
+     * @brief Attribute traits type.
+     */
+    typedef ::xsd::cxx::tree::traits< i_type, char > i_traits;
+
+    /**
+     * @brief Return a read-only (constant) reference to the attribute.
+     *
+     * @return A constant reference to the attribute.
+     */
+    const i_type&
+    i () const;
+
+    /**
+     * @brief Return a read-write reference to the attribute.
+     *
+     * @return A reference to the attribute.
+     */
+    i_type&
+    i ();
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x A new value to set.
+     *
+     * This function makes a copy of its argument and sets it as
+     * the new value of the attribute.
+     */
+    void
+    i (const i_type& x);
+
+    //@}
+
+    /**
      * @name Constructors
      */
     //@{
@@ -2931,7 +2978,8 @@ namespace XMLMesh
      * initializers for required elements and attributes.
      */
     vertex (const x_type&,
-            const y_type&);
+            const y_type&,
+            const i_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -2994,16 +3042,17 @@ namespace XMLMesh
     protected:
     ::xsd::cxx::tree::one< x_type > x_;
     ::xsd::cxx::tree::one< y_type > y_;
+    ::xsd::cxx::tree::one< i_type > i_;
 
     //@endcond
   };
 
   /**
-   * @brief Class corresponding to the %boundary_edge schema type.
+   * @brief Class corresponding to the %edge schema type.
    *
    * @nosubgrouping
    */
-  class boundary_edge: public ::xml_schema::type
+  class edge: public ::xml_schema::type
   {
     public:
     /**
@@ -3167,9 +3216,9 @@ namespace XMLMesh
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    boundary_edge (const v1_type&,
-                   const v2_type&,
-                   const marker_type&);
+    edge (const v1_type&,
+          const v2_type&,
+          const marker_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -3179,9 +3228,9 @@ namespace XMLMesh
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    boundary_edge (const ::xercesc::DOMElement& e,
-                   ::xml_schema::flags f = 0,
-                   ::xml_schema::container* c = 0);
+    edge (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -3192,9 +3241,9 @@ namespace XMLMesh
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    boundary_edge (const boundary_edge& x,
-                   ::xml_schema::flags f = 0,
-                   ::xml_schema::container* c = 0);
+    edge (const edge& x,
+          ::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -3207,7 +3256,7 @@ namespace XMLMesh
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual boundary_edge*
+    virtual edge*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -3217,7 +3266,7 @@ namespace XMLMesh
      * @brief Destructor.
      */
     virtual 
-    ~boundary_edge ();
+    ~edge ();
 
     // Implementation.
     //
@@ -3882,7 +3931,7 @@ namespace XMLMesh
      * @name refinement_type
      *
      * @brief Accessor and modifier functions for the %refinement_type
-     * optional attribute.
+     * required attribute.
      */
     //@{
 
@@ -3892,30 +3941,24 @@ namespace XMLMesh
     typedef ::xml_schema::integer refinement_type_type;
 
     /**
-     * @brief Attribute optional container type.
-     */
-    typedef ::xsd::cxx::tree::optional< refinement_type_type > refinement_type_optional;
-
-    /**
      * @brief Attribute traits type.
      */
     typedef ::xsd::cxx::tree::traits< refinement_type_type, char > refinement_type_traits;
 
     /**
-     * @brief Return a read-only (constant) reference to the attribute
-     * container.
+     * @brief Return a read-only (constant) reference to the attribute.
      *
-     * @return A constant reference to the optional container.
+     * @return A constant reference to the attribute.
      */
-    const refinement_type_optional&
+    const refinement_type_type&
     refinement_type () const;
 
     /**
-     * @brief Return a read-write reference to the attribute container.
+     * @brief Return a read-write reference to the attribute.
      *
-     * @return A reference to the optional container.
+     * @return A reference to the attribute.
      */
-    refinement_type_optional&
+    refinement_type_type&
     refinement_type ();
 
     /**
@@ -3929,18 +3972,6 @@ namespace XMLMesh
     void
     refinement_type (const refinement_type_type& x);
 
-    /**
-     * @brief Set the attribute value.
-     *
-     * @param x An optional container with the new value to set.
-     *
-     * If the value is present in @a x then this function makes a copy 
-     * of this value and sets it as the new value of the attribute.
-     * Otherwise the attribute container is set the 'not present' state.
-     */
-    void
-    refinement_type (const refinement_type_optional& x);
-
     //@}
 
     /**
@@ -3952,7 +3983,8 @@ namespace XMLMesh
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    refinement (const element_id_type&);
+    refinement (const element_id_type&,
+                const refinement_type_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -4014,7 +4046,7 @@ namespace XMLMesh
 
     protected:
     ::xsd::cxx::tree::one< element_id_type > element_id_;
-    refinement_type_optional refinement_type_;
+    ::xsd::cxx::tree::one< refinement_type_type > refinement_type_;
 
     //@endcond
   };
@@ -4401,7 +4433,7 @@ namespace XMLMesh
   operator<< (::std::ostream&, const quad_type&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const boundary_edges_type&);
+  operator<< (::std::ostream&, const edges_type&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const curves_type&);
@@ -4419,7 +4451,7 @@ namespace XMLMesh
   operator<< (::std::ostream&, const vertex&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const boundary_edge&);
+  operator<< (::std::ostream&, const edge&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const arc&);
@@ -4887,7 +4919,7 @@ namespace XMLMesh
   operator<< (::xercesc::DOMElement&, const quad_type&);
 
   void
-  operator<< (::xercesc::DOMElement&, const boundary_edges_type&);
+  operator<< (::xercesc::DOMElement&, const edges_type&);
 
   void
   operator<< (::xercesc::DOMElement&, const curves_type&);
@@ -4905,7 +4937,7 @@ namespace XMLMesh
   operator<< (::xercesc::DOMElement&, const vertex&);
 
   void
-  operator<< (::xercesc::DOMElement&, const boundary_edge&);
+  operator<< (::xercesc::DOMElement&, const edge&);
 
   void
   operator<< (::xercesc::DOMElement&, const arc&);

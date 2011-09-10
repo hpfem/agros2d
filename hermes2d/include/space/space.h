@@ -336,6 +336,9 @@ public:
 
       /// Saves this space into a file.
       bool save(const char *filename) const;
+
+      /// Loads a space from a file.
+      void load(const char *filename, EssentialBCs<Scalar>* essential_bcs = NULL);
     };
   }
 }
