@@ -1,0 +1,31 @@
+<document version="2.0">
+    <problems>
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" adaptivitysteps="20" nonlineartolerance="0.001" name="General Planar Poisson" date="2011-09-10" polynomialorder="1" weakforms="compiled" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="hp-adaptivity" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="custom" timetotal="1.0">
+            <scriptstartup></scriptstartup>
+            <description>This model is an example.</description>
+            <edges>
+                <edge type="general_essential" id="1" name="Ground"/>
+            </edges>
+            <labels>
+                <label id="1" name="Material"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="1" y="0" id="0"/>
+            <node x="0" y="0" id="1"/>
+            <node x="0" y="1" id="2"/>
+            <node x="1" y="1" id="3"/>
+        </nodes>
+        <edges>
+            <edge end="3" refine_towards="0" marker="1" id="0" start="2" angle="0"/>
+            <edge end="0" refine_towards="0" marker="1" id="1" start="3" angle="0"/>
+            <edge end="1" refine_towards="0" marker="1" id="2" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" marker="1" id="3" start="1" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.6803870126238244" y="0.5702535327396917" polynomialorder="0" marker="1" id="0" area="0"/>
+        </labels>
+    </geometry>
+</document>

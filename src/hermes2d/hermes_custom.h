@@ -17,30 +17,20 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef GENERAL_H
-#define GENERAL_H
+#ifndef CUSTOM_H
+#define CUSTOM_H
 
 #include "util.h"
 #include "scenemarker.h"
 #include "module.h"
 
-struct ModuleGeneral : public Hermes::Module::ModuleAgros
-{
-    Q_OBJECT
-public:
-    ModuleGeneral(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
-
-    // rewrite
-    SceneBoundary *newBoundary();
-};
-
 // *******************************************************************************************
 
-class SceneBoundaryGeneralDialog : public SceneBoundaryDialog
+class SceneBoundaryCustomDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 public:
-    SceneBoundaryGeneralDialog(SceneBoundary *boundary, QWidget *parent);
+    SceneBoundaryCustomDialog(SceneBoundary *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -49,30 +39,23 @@ protected:
     bool save();
 
 private:
-    QLabel *lblValueUnit;
     QComboBox *cmbType;
-    ValueLineEdit *txtValue;
 
 private slots:
     void doTypeChanged(int index);
 };
 
-class SceneMaterialGeneralDialog : public SceneMaterialDialog
+class SceneMaterialCustomDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 public:
-    SceneMaterialGeneralDialog(SceneMaterial *material, QWidget *parent);
+    SceneMaterialCustomDialog(SceneMaterial *material, QWidget *parent);
 
 protected:
     void createContent();
 
     void load();
     bool save();
-
-private:
-    ValueLineEdit *txtConstant1;
-    ValueLineEdit *txtConstant2;
-    ValueLineEdit *txtRightSide;
 };
 
-#endif // GENERAL_H
+#endif // CUSTOM_H

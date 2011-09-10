@@ -88,7 +88,7 @@ void ProblemInfo::clear()
     // weakforms
     weakFormsType = WeakFormsType_Compiled;
 
-    // linearity   
+    // linearity
     nonlinearTolerance = 1e-3;
     nonlinearSteps = 10;
 }
@@ -1393,7 +1393,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // physic field
     m_problemInfo->setModule(moduleFactory(eleProblem.toElement().attribute("type").toStdString(),
                                            problemTypeFromStringKey(eleProblem.toElement().attribute("problemtype")),
-                                           analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(AnalysisType_SteadyState)))));
+                                           analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(AnalysisType_SteadyState))),
+                                           (eleProblem.toElement().attribute("type") == "custom"
+                                            ? fileName.left(fileName.size() - 4) + ".xml" : "").toStdString()));
     // number of refinements
     m_problemInfo->numberOfRefinements = eleProblem.toElement().attribute("numberofrefinements").toInt();
     // polynomial order
@@ -1424,7 +1426,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // matrix solver
     m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblem.toElement().attribute("matrix_solver",
-                   matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK)));
+                                                                                                 matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK)));
 
     // startup script
     QDomNode eleScriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
@@ -1581,6 +1583,12 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     logMessage("Scene::writeToFile()");
 
     QSettings settings;
+
+    // custom form
+    if (m_problemInfo->module()->id == "custom")
+        if (QFile::exists(m_problemInfo->fileName.left(m_problemInfo->fileName.size() - 4) + ".xml"))
+            QFile::copy(m_problemInfo->fileName.left(m_problemInfo->fileName.size() - 4) + ".xml",
+                        fileName.left(fileName.size() - 4) + ".xml");
 
     if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
     {

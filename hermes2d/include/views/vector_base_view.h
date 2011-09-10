@@ -32,15 +32,15 @@ namespace Hermes
       // you can define NOGLUT to turn off all OpenGL stuff in Hermes2D
 #ifndef NOGLUT
       template<typename Scalar>
-      class HERMES_API VectorBaseView : public VectorView
+      class HERMES_API VectorBaseView : public VectorView<Scalar>
       {
       public:
 
         VectorBaseView(const char* title = "BaseView", WinGeom* wg = NULL)
-          : VectorView(title, wg) { pss = NULL; sln = NULL; this->lines = false; basic_title.assign(title); }
+          : VectorView<Scalar>(title, wg) { pss = NULL; sln = NULL; this->lines = false; basic_title.assign(title); }
 
         VectorBaseView(char* title, WinGeom* wg = NULL)
-          : VectorView(title, wg) { pss = NULL; sln = NULL; this->lines = false; basic_title.assign(title); }
+          : VectorView<Scalar>(title, wg) { pss = NULL; sln = NULL; this->lines = false; basic_title.assign(title); }
 
         void show(Space<Scalar>* space);
 

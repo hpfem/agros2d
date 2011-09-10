@@ -33,7 +33,10 @@ SceneBoundary::SceneBoundary(std::string name, std::string type,
 int SceneBoundary::showDialog(QWidget *parent)
 {
     SceneBoundaryDialog *dialog = boundaryDialogFactory(this, parent);
-    return dialog->exec();
+    if (dialog)
+        return dialog->exec();
+    else
+        QMessageBox::information(QApplication::activeWindow(), QObject::tr(""), QObject::tr("Boundary dialog doesn't exists."));
 }
 
 QString SceneBoundary::script()
@@ -112,7 +115,11 @@ SceneMaterial::SceneMaterial(std::string name,
 int SceneMaterial::showDialog(QWidget *parent)
 {
     SceneMaterialDialog *dialog = materialDialogFactory(this, parent);
-    return dialog->exec();
+    if (dialog)
+        return dialog->exec();
+    else
+        QMessageBox::information(QApplication::activeWindow(), QObject::tr(""), QObject::tr("Material dialog doesn't exists."));
+
 }
 
 QString SceneMaterial::script()

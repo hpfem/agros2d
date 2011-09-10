@@ -42,7 +42,7 @@ namespace Hermes
       /// of a given space.
       ///
       template<typename Scalar>
-      class HERMES_API BaseView : public ScalarView
+      class HERMES_API BaseView : public ScalarView<Scalar>
       {
       public:
 

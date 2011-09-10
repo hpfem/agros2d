@@ -28,11 +28,12 @@
         <item id="electrostatic_potential" name="Fixed voltage" shortname="V" unit="V" />
         <item id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" unit="C/m2" />
     	
-        <steadystate>
+        <steadystate default="electrostatic_potential">
             <boundary id="electrostatic_potential" name="Fixed voltage">
                 <item id="electrostatic_potential" />
 
-                <essential i="1" j="1" id="electrostatic_potential" />
+                <essential i="1" planar="V"
+                                 axi="V" />
             </boundary>
 
             <boundary id="electrostatic_surface_charge_density" name="Surface charge density">

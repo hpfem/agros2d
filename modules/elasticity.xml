@@ -72,29 +72,35 @@
         <item id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" />
         <item id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" />
 
-        <steadystate>
+        <steadystate default="elasticity_fixed_fixed">
             <boundary id="elasticity_fixed_fixed" name="Fixed - fixed">
                     <item id="elasticity_displacement_x" />
                     <item id="elasticity_displacement_y" />
 
-                    <essential i="1" j="1" id="elasticity_displacement_x" />
-                    <essential i="2" j="2" id="elasticity_displacement_y" />
+                    <essential i="1" planar="dx"
+                                     axi="dx" />
+                    <essential i="2" planar="dy"
+                                     axi="dy" />
             </boundary>
 
             <boundary id="elasticity_fixed_free" name="Fixed - free">
                     <item id="elasticity_displacement_x" />
                     <item id="elasticity_force_y" />
 
-                    <essential i="1" j="1" id="elasticity_displacement_x" />
-                    <vector i="2" j="2" planar="-fy * vval" axi="-fy * r * vval" />
+                    <essential i="1" planar="dx"
+                                     axi="dx" />
+                    <vector i="2" j="2" planar="-fy * vval"
+                                        axi="-fy * r * vval" />
             </boundary>
 
             <boundary id="elasticity_free_fixed" name="Free - fixed">
                     <item id="elasticity_force_x" />
                     <item id="elasticity_displacement_y" />
 
-                    <vector i="1" j="1" planar="-fx * vval" axi="-fx * r * vval" />
-                    <essential i="2" j="2" id="elasticity_displacement_y" />
+                    <vector i="1" j="1" planar="-fx * vval"
+                                        axi="-fx * r * vval" />
+                    <essential i="2" planar="dy"
+                                     axi="dy" />
             </boundary>
 
             <boundary id="elasticity_free_free" name="Free - Free">

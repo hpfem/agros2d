@@ -27,44 +27,36 @@ namespace Hermes
       /// Like the Linearizer, but generates a triangular mesh showing polynomial
       /// orders in a space, hence the funky name.
       ///
-      class HERMES_API Orderizer : public LinearizerBase
+      class HERMES_API Orderizer : public Linearizer<double>
       {
       public:
 
         Orderizer();
         ~Orderizer();
 
-        template<typename Scalar>
-        void process_space(Space<Scalar>* space);
+        void process_space(Space<double>* space);
+        void process_space(Space<std::complex<double> >* space);
 
+        int get_labels(int*& lvert, char**& ltext, double2*& lbox) const
+        { lvert = this->lvert; ltext = this->ltext; lbox = this->lbox; return nl; };
+
+        virtual void save_data(const char* filename);
+        virtual void load_data(const char* filename);
         /// Saves a MeshFunction (Solution, Filter) in VTK format.
-        template<typename Scalar>
-        void save_orders_vtk(Space<Scalar>* space, const char* file_name);
-        
-        int get_labels(int*& lvert, char**& ltext, double2*& lbox) const;
-        
-        void calc_vertices_aabb(double* min_x, double* max_x, 
-          double* min_y, double* max_y) const; ///< Returns axis aligned bounding box (AABB) of vertices. Assumes lock.
-        
-        int get_num_vertices();
-        double3* get_vertices();
+        virtual void save_orders_vtk(Space<double>* space, const char* file_name);
+        /// This function is used by save_solution_vtk().
+        virtual void save_data_vtk(const char* file_name);
+
       protected:
+
         char  buffer[1000];
         char* labels[11][11];
 
-        double3* verts;  ///< vertices: (x, y, value) triplets
-        int  label_size, label_count, cl1, cl2, cl3;
+        int  nl, cl1, cl2, cl3;
         int* lvert;
         char** ltext;
         double2* lbox;
 
-        void add_triangle(int iv0, int iv1, int iv2);
-
-        void add_edge(int iv1, int iv2, int marker);
-
-        int add_vertex();
-        
-        void make_vert(int & index, double x, double y, double val);
       };
     }
   }

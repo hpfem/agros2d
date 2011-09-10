@@ -385,11 +385,6 @@ Scalar rf_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
 
 */
 
-SceneBoundary *ModuleRF::newBoundary()
-{
-    return new SceneBoundary(tr("new boundary").toStdString(), "");
-}
-
 // *************************************************************************************************************************************
 
 SceneBoundaryRFDialog::SceneBoundaryRFDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)

@@ -24,18 +24,6 @@
 #include "scenemarker.h"
 #include "module.h"
 
-struct ModuleElectrostatic : public Hermes::Module::ModuleAgros
-{
-    Q_OBJECT
-public:
-    ModuleElectrostatic(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
-
-    // rewrite
-    SceneBoundary *newBoundary();
-};
-
-// *******************************************************************************************
-
 class SceneBoundaryElectrostaticDialog : public SceneBoundaryDialog
 {
     Q_OBJECT

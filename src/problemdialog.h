@@ -45,6 +45,7 @@ private slots:
     void doShowEquation();
     void doAccept();
     void doReject();
+    void doOpenXML();
 
 private:
     bool m_isNewProblem;

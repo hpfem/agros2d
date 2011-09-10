@@ -87,7 +87,12 @@ void ProblemDialog::createControls()
     tabType->addTab(createControlsDescription(), icon(""), tr("Description"));
 
     // dialog buttons
+    QPushButton *btnOpenXML = new QPushButton(tr("Open module"));
+    btnOpenXML->setDefault(false);
+    connect(btnOpenXML, SIGNAL(clicked()), this, SLOT(doOpenXML()));
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox->addButton(btnOpenXML, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -423,7 +428,9 @@ void ProblemDialog::load()
 
         m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
                                                (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
-                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt()));
+                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt(),
+                                               (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
+                                                ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString()));
 
         for (int i = 1; i < Util::scene()->boundaries.count(); i++)
         {
@@ -439,7 +446,9 @@ void ProblemDialog::load()
     {
         m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
                                                (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
-                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt()));
+                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt(),
+                                               (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
+                                                ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString()));
     }
 
     // check values
@@ -530,13 +539,42 @@ void ProblemDialog::doReject()
     reject();
 }
 
+void ProblemDialog::doOpenXML()
+{
+    logMessage("ProblemDialog::doOpenXML()");
+
+    QString fileName;
+    if (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom")
+    {
+        fileName = Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml";
+
+        if (!QFile::exists(fileName))
+            if (QMessageBox::question(this, tr("Custom module file"), tr("Custom module doesn't exist. Could I create it?"), tr("&Yes"), tr("&No")) == QMessageBox::Ok)
+            {
+                // copy custom module
+                QFile::copy(datadir() + "/resources/custom.xml",
+                            fileName);
+            }
+    }
+    else
+    {
+        fileName = datadir() + "/modules/" + cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() + ".xml";
+    }
+
+    qDebug() << fileName;
+
+    if (QFile::exists(fileName))
+        QDesktopServices::openUrl(QUrl(fileName));
+}
+
 void ProblemDialog::doPhysicFieldChanged(int index)
 {
     logMessage("ProblemDialog::doPhysicFieldChanged()");
 
     Hermes::Module::ModuleAgros *module = moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
-                                                        ProblemType_Planar, AnalysisType_SteadyState);
-
+                                                        ProblemType_Planar, AnalysisType_SteadyState,
+                                                        (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
+                                                         ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString());
     // analysis type
     // store analysis type
     AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();

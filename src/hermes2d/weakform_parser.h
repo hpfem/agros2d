@@ -29,6 +29,18 @@ class Parser;
 class Boundary;
 class Material;
 
+struct ParserFormEssential
+{
+    ParserFormEssential() : i(0), expression("") {}
+    ParserFormEssential(rapidxml::xml_node<> *node, ProblemType problem_type);
+
+    // position
+    int i;
+
+    // expression
+    std::string expression;
+};
+
 struct ParserFormMatrix
 {
     ParserFormMatrix() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), expression("") {}
@@ -42,7 +54,7 @@ struct ParserFormMatrix
     Hermes::Hermes2D::SymFlag sym;
 
     // expression
-    std::string expression;
+    std::string expression;   
 };
 
 struct ParserFormVector
@@ -171,7 +183,7 @@ template<typename Scalar>
 class CustomExactSolution : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public ParserForm
 {
 public:
-    CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, std::string expression);
+    CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, std::string expression, Boundary *boundary);
 
     double value(double x, double y);
     void derivatives (double x, double y, double& dx, double& dy);

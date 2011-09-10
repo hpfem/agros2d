@@ -41,16 +41,18 @@
     	<item id="rf_port_power" name="Power" shortname="P" unit="W" />
     	<item id="rf_port_phase" name="Phase" shortname="alpha" unit="deg." />
     	
- 		<harmonic>
-       		<boundary id="rf_electric_field" name="Electric field">
-            	<item id="rf_electric_field_real" />
-            	<item id="rf_electric_field_imag" />
-				
-				<essential i="1" id="rf_electric_field_real" />
-				<essential i="2" id="rf_electric_field_imag" />
-			</boundary> 
+        <harmonic default="rf_electric_field">
+            <boundary id="rf_electric_field" name="Electric field">
+                <item id="rf_electric_field_real" />
+                <item id="rf_electric_field_imag" />
+
+                <essential i="1" planar="Er"
+                                 axi="Er" />
+                <essential i="1" planar="Ei"
+                                 axi="Ei" />
+            </boundary>
 			
-       		<boundary id="rf_magnetic_field" name="Magnetic field">
+            <boundary id="rf_magnetic_field" name="Magnetic field">
             	<item id="rf_magnetic_field_real" />
             	<item id="rf_magnetic_field_imag" />
 				

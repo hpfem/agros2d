@@ -22,14 +22,6 @@
 #include "scene.h"
 #include "gui.h"
 
-// **************************************************************************************************************************
-// rewrite
-
-SceneBoundary *ModuleElectrostatic::newBoundary()
-{
-    return new SceneBoundary(tr("new boundary").toStdString(), "electrostatic_potential");
-}
-
 // *************************************************************************************************************************************
 
 SceneBoundaryElectrostaticDialog::SceneBoundaryElectrostaticDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
