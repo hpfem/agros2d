@@ -7,8 +7,8 @@
 
     <constants>
         <item id="ALPHA" value="1000" />        
-        <item id="XLOC" value="0.5" />  
-        <item id="YLOC" value="0.5" />  
+        <item id="XLOC" value="0.0" />  
+        <item id="YLOC" value="0.0" />  
         <item id="EXP" value="2.718281828" />
     </constants>
 

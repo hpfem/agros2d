@@ -64,16 +64,14 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_t
         module = new Hermes::Module::ModuleAgros(problem_type, analysis_type);
 
     // try to open custom module
-    if (id == "custom" && filename_custom != "")
+    if (id == "custom")
     {
         ifstream ifile_custom(filename_custom.c_str());
         if (!ifile_custom)
-        {
-            // FIXME: -> std
-            QFile::copy(datadir() + "/resources/custom.xml",
-                        QString::fromStdString(filename_custom));
-        }
-        module->read(filename_custom);
+            module->read(datadir().toStdString() + "/resources/custom.xml");
+        else
+            module->read(filename_custom);
+
         return module;
     }
 

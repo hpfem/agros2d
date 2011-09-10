@@ -446,9 +446,7 @@ void ProblemDialog::load()
     {
         m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
                                                (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
-                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt(),
-                                               (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
-                                                ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString()));
+                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt()));
     }
 
     // check values

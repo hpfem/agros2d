@@ -114,7 +114,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/views/view.cpp  \
                 src/views/view_data.cpp  \
                 src/views/view_support.cpp \
-                # src/views/linearizer_base.cpp \
+                src/views/linearizer_base.cpp \
                 src/views/linearizer.cpp \
                 src/views/orderizer.cpp \
                 src/views/vectorizer.cpp \
