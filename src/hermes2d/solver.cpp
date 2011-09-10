@@ -154,6 +154,9 @@ void SolverAgros<Scalar>::initCalculation()
     mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
     refineMesh(mesh, true, true);
 
+    qDebug() << "nodes: " << mesh->get_num_nodes();
+    qDebug() << "elements: " << mesh->get_num_elements();
+
     Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select = NULL;
     switch (adaptivityType)
     {
@@ -190,12 +193,11 @@ void SolverAgros<Scalar>::initCalculation()
                 for (std::map<int, Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->essential.begin();
                      it != boundary_type->essential.end(); ++it)
                 {
-                    /*
                     bcs[it->first - 1]->add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCConst<double>(QString::number(i+1).toStdString(), //TODO PK <double>
                                                                                                                      boundary->values[it->second->id].number()));
-                    */
-                    CustomExactSolution<double> *exact = new CustomExactSolution<double>(mesh, "sin(1/(ALPHA+sqrt(x^2+y^2)))");
-                    bcs[it->first - 1]->add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i+1).toStdString(), exact));
+
+                    // CustomExactSolution<double> *exact = new CustomExactSolution<double>(mesh, "sin(1/(ALPHA+sqrt(x^2+y^2)))");
+                    // bcs[it->first - 1]->add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i+1).toStdString(), exact));
                 }
             }
         }
@@ -224,6 +226,8 @@ void SolverAgros<Scalar>::initCalculation()
             solutionReference.push_back(new Hermes::Hermes2D::Solution<Scalar>());
         }
     }
+
+    qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(space);
 }
 
 template <typename Scalar>
@@ -266,7 +270,7 @@ bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space
     // Initialize the FE problem.
     Hermes::Hermes2D::DiscreteProblem<double> dp(m_wf, spaceParam);
 
-    int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceParam);
+    int ndof = Hermes::Hermes2D::Space<double>::get_num_dofs(spaceParam);
 
     // Initial coefficient vector for the Newton's method.
     double* coeff_vec = new double[ndof];

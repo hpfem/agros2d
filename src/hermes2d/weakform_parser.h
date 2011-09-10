@@ -176,7 +176,7 @@ public:
     double value(double x, double y);
     void derivatives (double x, double y, double& dx, double& dy);
 
-    Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y) const
+    Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y)
     {
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }

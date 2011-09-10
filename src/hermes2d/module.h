@@ -61,7 +61,7 @@ public:
         dy = 0;
     }
 
-    virtual Hermes::Ord ord(Hermes::Ord x, Hermes::Ord y) const
+    virtual Hermes::Ord ord(Hermes::Ord x, Hermes::Ord y)
     {
         return Hermes::Ord(0);
     }

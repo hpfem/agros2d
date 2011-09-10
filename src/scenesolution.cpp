@@ -454,6 +454,12 @@ void SceneSolution<Scalar>::setSlnScalarView(ViewScalarFilter<Scalar> *slnScalar
     m_linScalarView.process_solution(m_slnScalarView,
                                      Hermes::Hermes2D::H2D_FN_VAL_0,
                                      Util::config()->linearizerQuality);
+    /*
+    m_linScalarView.save_solution_vtk(m_slnScalarView, "/home/karban/xxx.vtk", "xxx");
+    m_linScalarView.process_solution(m_slnScalarView,
+                                     Hermes::Hermes2D::H2D_FN_VAL_0,
+                                     0.000001);
+    */
     // qDebug() << "linScalarView.process_solution: " << time.elapsed();
 
     // deformed shape

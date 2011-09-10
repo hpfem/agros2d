@@ -54,33 +54,33 @@ namespace Hermes
     ConstantSolution<Scalar>::ConstantSolution(Mesh* mesh, Scalar constant) : ExactSolutionScalar<Scalar>(mesh), constant(constant) {};
 
     template<typename Scalar>
-    Scalar ConstantSolution<Scalar>::value (double x, double y) const {
+    Scalar ConstantSolution<Scalar>::value (double x, double y)  {
       return constant;
     };
 
     template<typename Scalar>
-    void ConstantSolution<Scalar>::derivatives (double x, double y, double& dx, double& dy) const {
+    void ConstantSolution<Scalar>::derivatives (double x, double y, double& dx, double& dy)  {
       dx = 0;
       dy = 0;
     };
 
     template<typename Scalar>
-    Ord ConstantSolution<Scalar>::ord(Ord x, Ord y) const {
+    Ord ConstantSolution<Scalar>::ord(Ord x, Ord y)  {
       return Ord(0);
     }
 
     ZeroSolution::ZeroSolution(Mesh* mesh) : ExactSolutionScalar<double>(mesh) {};
 
-    double ZeroSolution::value (double x, double y) const {
+    double ZeroSolution::value (double x, double y)  {
       return 0.0; 
     };
 
-    void ZeroSolution::derivatives (double x, double y, double& dx, double& dy) const {
+    void ZeroSolution::derivatives (double x, double y, double& dx, double& dy)  {
       dx = 0;
       dy = 0;
     };
 
-    Ord ZeroSolution::ord(Ord x, Ord y) const {
+    Ord ZeroSolution::ord(Ord x, Ord y)  {
       return Ord(0);
     }
 
