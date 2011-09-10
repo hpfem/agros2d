@@ -83,8 +83,8 @@ private:
     ProgressItemSolve *m_progressItemSolve;
 
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution;
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space;
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionReference;
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space;
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 

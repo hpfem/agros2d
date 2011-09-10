@@ -8,7 +8,7 @@ eps2 = 3</scriptstartup>
             <edges>
                 <edge electrostatic_potential="U" type="electrostatic_potential" id="1" name="Source"/>
                 <edge electrostatic_potential="0" type="electrostatic_potential" id="2" name="Ground"/>
-                <edge electrostatic_potential="0" type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0"/>
+                <edge type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0"/>
             </edges>
             <labels>
                 <label id="1" electrostatic_charge_density="0" name="Air" electrostatic_permittivity="1"/>
