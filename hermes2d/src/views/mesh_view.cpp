@@ -32,7 +32,7 @@ namespace Hermes
     namespace Views
     {
       MeshView::MeshView(const char* title, WinGeom* wg)
-        : View(title, wg)
+        : View(title, wg), lin(NULL)
       {
         nodes = elems = NULL;
         b_scale = false;
@@ -42,7 +42,7 @@ namespace Hermes
       }
 
       MeshView::MeshView(char* title, WinGeom* wg)
-        : View(title, wg)
+        : View(title, wg), lin(NULL)
       {
         nodes = elems = NULL;
         b_scale = false;
@@ -51,6 +51,14 @@ namespace Hermes
         b_elem_mrk = false;
       }
 
+      MeshView::~MeshView()
+      {
+        if (nodes != NULL) delete [] nodes;
+        if (elems != NULL) delete [] elems;
+        if(lin != NULL)
+          delete this->lin;
+      }
+      
       void MeshView::show(Mesh* mesh)
       {
         ZeroSolution sln(mesh);
@@ -59,10 +67,13 @@ namespace Hermes
 
         this->mesh = mesh;
 
-        lin.process_solution(&sln);
-        lin.lock_data();
-        lin.calc_vertices_aabb(&vertices_min_x, &vertices_max_x, &vertices_min_y, &vertices_max_y);
-        lin.unlock_data();
+        if(lin == NULL)
+          lin = new Linearizer();
+
+        lin->process_solution(&sln);
+        lin->lock_data();
+        lin->calc_vertices_aabb(&vertices_min_x, &vertices_max_x, &vertices_min_y, &vertices_max_y);
+        lin->unlock_data();
 
         int i;
 
@@ -95,6 +106,7 @@ namespace Hermes
         refresh();
         reset_view(false);
         wait_for_draw();
+        delete lin;
       }
 
       void MeshView::on_display()
@@ -105,9 +117,9 @@ namespace Hermes
         glDisable(GL_DEPTH_TEST);
 
         // transform all vertices
-        lin.lock_data();
-        int i, nv = lin.get_num_vertices();
-        double3* vert = lin.get_vertices();
+        lin->lock_data();
+        int i, nv = lin->get_num_vertices();
+        double3* vert = lin->get_vertices();
         double2* tvert = new double2[nv];
         for (i = 0; i < nv; i++)
         {
@@ -116,10 +128,10 @@ namespace Hermes
         }
 
         // draw all triangles
-        int3* tris = lin.get_triangles();
+        int3* tris = lin->get_triangles();
         glColor3f(0.9f, 0.9f, 0.9f);
         glBegin(GL_TRIANGLES);
-        for (i = 0; i < lin.get_num_triangles(); i++)
+        for (i = 0; i < lin->get_num_triangles(); i++)
         {
           glVertex2d(tvert[tris[i][0]][0], tvert[tris[i][0]][1]);
           glVertex2d(tvert[tris[i][1]][0], tvert[tris[i][1]][1]);
@@ -129,8 +141,8 @@ namespace Hermes
 
         // draw all edges
         glLineStipple(5, 0x5555);
-        int3* edges = lin.get_edges();
-        for (i = 0; i < lin.get_num_edges(); i++)
+        int3* edges = lin->get_edges();
+        for (i = 0; i < lin->get_num_edges(); i++)
         {
           int mrk = b_markers ? edges[i][2] : 0;
 
@@ -178,13 +190,13 @@ namespace Hermes
           {
             if (elems[i].id < 0) continue;
             char text[2000];
-            sprintf(text, "%s", mesh->get_element_markers_conversion().get_user_marker(elems[i].type).c_str());
+            sprintf(text, "%s", mesh->get_element_markers_conversion().get_user_marker(elems[i].type).marker.c_str());
             draw_text(transform_x(elems[i].x), transform_y(elems[i].y), text, 0);
           }
         }
 
         delete [] tvert;
-        lin.unlock_data();
+        lin->unlock_data();
       }
 
       void MeshView::on_key_down(unsigned char key, int x, int y)
@@ -249,11 +261,6 @@ namespace Hermes
         }
       }
 
-      MeshView::~MeshView()
-      {
-        if (nodes != NULL) delete [] nodes;
-        if (elems != NULL) delete [] elems;
-      }
 
       const char* MeshView::get_help_text() const
       {

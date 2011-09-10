@@ -293,7 +293,7 @@ int SceneSolution<Scalar>::adaptiveSteps()
 }
 
 template <typename Scalar>
-int SceneSolution<Scalar>::findElementInVectorizer(Hermes::Hermes2D::Views::Vectorizer<double> &vec, const Point &point) const
+int SceneSolution<Scalar>::findElementInVectorizer(Hermes::Hermes2D::Views::Vectorizer &vec, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInVectorizer()");
 
@@ -487,8 +487,8 @@ void SceneSolution<Scalar>::setSlnVectorView(ViewScalarFilter<Scalar> *slnVector
     m_slnVectorXView = slnVectorXView;
     m_slnVectorYView = slnVectorYView;
 
-    m_vecVectorView.process_solution(m_slnVectorXView, Hermes::Hermes2D::H2D_FN_VAL_0,
-                                     m_slnVectorYView, Hermes::Hermes2D::H2D_FN_VAL_0,
+    m_vecVectorView.process_solution(m_slnVectorXView, m_slnVectorYView,
+                                     Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
                                      Hermes::Hermes2D::Views::HERMES_EPS_LOW);
 
     // deformed shape
