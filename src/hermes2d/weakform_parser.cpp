@@ -29,17 +29,6 @@ ParserFormEssential::ParserFormEssential(rapidxml::xml_node<> *node, ProblemType
 {
     i = atoi(node->first_attribute("i")->value());
 
-    /*
-    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = variables.begin();
-         it < variables.end(); ++it )
-    {
-        Hermes::Module::BoundaryTypeVariable *var = (Hermes::Module::BoundaryTypeVariable *) *it;
-
-        if (var->id == node_essential->first_attribute("id")->value())
-            essential[atoi(node_essential->first_attribute("i")->value())] = var;
-    }
-    */
-
     if (problem_type == ProblemType_Planar)
     {
         if (node->first_attribute("planar"))

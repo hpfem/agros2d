@@ -1587,8 +1587,11 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // custom form
     if (m_problemInfo->module()->id == "custom")
         if (QFile::exists(m_problemInfo->fileName.left(m_problemInfo->fileName.size() - 4) + ".xml"))
+        {
+            QFile::remove(fileName.left(fileName.size() - 4) + ".xml");
             QFile::copy(m_problemInfo->fileName.left(m_problemInfo->fileName.size() - 4) + ".xml",
                         fileName.left(fileName.size() - 4) + ".xml");
+        }
 
     if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
     {
