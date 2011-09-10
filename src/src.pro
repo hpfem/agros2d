@@ -178,7 +178,8 @@ OTHER_FILES += python/agros2d.pyx \
     ../resources/materials/Copper.xml \
     ../resources/materials/Aluminum.xml \
     ../resources/materials/Iron.xml \
-    hermes2d/weakform/xml_parser.py
+    hermes2d/weakform/xml_parser.py \
+    ../modules/general.xml
 
 
 INCLUDEPATH += ../hermes2d/include
@@ -268,3 +269,4 @@ win32-msvc2008 {
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
 }
+

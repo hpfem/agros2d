@@ -165,4 +165,21 @@ private:
     unsigned int j;
 };
 
+// *************************************************************************************************
+
+template<typename Scalar>
+class CustomExactSolution : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public ParserForm
+{
+public:
+    CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, std::string expression);
+
+    double value(double x, double y);
+    void derivatives (double x, double y, double& dx, double& dy);
+
+    Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y) const
+    {
+        return Hermes::Ord(Hermes::Ord::get_max_order());
+    }
+};
+
 #endif // WEAKFORM_PARSER_H

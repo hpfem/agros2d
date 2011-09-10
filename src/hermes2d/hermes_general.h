@@ -70,7 +70,8 @@ protected:
     bool save();
 
 private:
-    ValueLineEdit *txtConstant;
+    ValueLineEdit *txtConstant1;
+    ValueLineEdit *txtConstant2;
     ValueLineEdit *txtRightSide;
 };
 

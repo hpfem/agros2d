@@ -53,7 +53,7 @@ class SolverAgros
 public:
     SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
 
-    Hermes::vector<SolutionArray<Scalar> *> solveSolutionArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs);
+    Hermes::vector<SolutionArray<Scalar> *> solveSolutionArray();
 private:
     int polynomialOrder;
     AdaptivityType adaptivityType;
@@ -89,7 +89,7 @@ private:
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
 
-    void initCalculation(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > &bcs);
+    void initCalculation();
     void cleanup();
 
     bool solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> &spaceParam,

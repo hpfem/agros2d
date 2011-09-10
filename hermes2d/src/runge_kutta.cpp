@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "../src/alter_newton_solver.h"
+
 #include <typeinfo>
 #include "runge_kutta.h"
 #include "discrete_problem.h"
