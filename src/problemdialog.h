@@ -95,6 +95,7 @@ private:
     void createControls();
     QWidget *createControlsGeneral();
     QWidget *createControlsStartupScript();
+    // QWidget *createControlsCustomForms();
     QWidget *createControlsDescription();
 
     void fillComboBox();

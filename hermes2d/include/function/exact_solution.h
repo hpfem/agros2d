@@ -52,10 +52,10 @@ namespace Hermes
       virtual unsigned int get_dimension() const;
 
       /// Function returning the value.
-      virtual Scalar value (double x, double y) const = 0;
+      virtual Scalar value (double x, double y) = 0;
 
       /// Function returning the derivatives.
-      virtual void derivatives (double x, double y, Scalar& dx, Scalar& dy) const = 0;
+      virtual void derivatives (double x, double y, Scalar& dx, Scalar& dy) = 0;
 
       /// Function returning the value and derivatives.
       Scalar exact_function (double x, double y, Scalar& dx, Scalar& dy) const {

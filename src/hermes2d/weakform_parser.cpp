@@ -394,8 +394,45 @@ Hermes::Ord CustomParserVectorFormSurf<Scalar>::ord(int n, double *wt, Hermes::H
     return result;
 }
 
+// **********************************************************************************************
+
+template <typename Scalar>
+CustomExactSolution<Scalar>::CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, std::string expression)
+    : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), ParserForm()
+{
+    initParser(NULL, NULL);
+
+    parser->parser[0]->SetExpr(expression);
+}
+
+template <typename Scalar>
+double CustomExactSolution<Scalar>::value(double x, double y)
+{
+    double result = 0;
+
+    px = x;
+    py = y;
+
+    try
+    {
+        result = parser->parser[0]->Eval();
+    }
+    catch (mu::Parser::exception_type &e)
+    {
+        std::cout << "CustomExactSolution: " << parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
+    }
+
+    return result;
+}
+
+template <typename Scalar>
+void CustomExactSolution<Scalar>::derivatives (double x, double y, double& dx, double& dy)
+{
+}
+
 template class CustomParserMatrixFormVol<double>;
 template class CustomParserMatrixFormSurf<double>;
 template class CustomParserVectorFormVol<double>;
 template class CustomParserVectorFormSurf<double>;
 
+template class CustomExactSolution<double>;

@@ -911,38 +911,10 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressIt
     if (!solve_init_variables())
         return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
 
-    // essential boundary conditions
-    Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> > bcs; //TODO PK <double>
-    for (int i = 0; i < Util::scene()->problemInfo()->module()->number_of_solution(); i++)
-        bcs.push_back(Hermes::Hermes2D::EssentialBCs<double>());  //TODO PK <double>
-
-    for (int i = 0; i < Util::scene()->edges.count(); i++)
-    {
-        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
-
-        if (boundary)
-        {
-            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->type);
-
-            if (boundary_type)
-            {
-                for (std::map<int, Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->essential.begin();
-                     it != boundary_type->essential.end(); ++it)
-                {
-                    bcs[it->first - 1].add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCConst<double>(QString::number(i+1).toStdString(), //TODO PK <double>
-                                                                                                                    boundary->values[it->second->id].number()));
-
-                }
-            }
-        }
-    }
-
     WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
     SolverAgros<double> solutionAgros(progressItemSolve, &wf);
-    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solveSolutionArray(bcs);//TODO PK <double>
-
-    // Hermes::vector<SolutionArray<double> *> solutionArrayList = solveSolutioArray<double>(progressItemSolve, bcs, &wf);//TODO PK <double>
+    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solveSolutionArray();//TODO PK <double>
 
     return solutionArrayList;
 }

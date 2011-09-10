@@ -21,8 +21,10 @@
 #include "solver.h"
 #include "scene.h"
 #include "scenebasic.h"
+#include "scenemarker.h"
 #include "scenesolution.h"
 #include "progressdialog.h"
+#include "weakform_parser.h"
 
 template <typename Scalar>
 SolutionArray<Scalar>::SolutionArray()
@@ -145,11 +147,8 @@ SolverAgros<Scalar>::SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormA
     isError = false;
 }
 
-
-//TODO PK why bcs has to be reference???
-
 template <typename Scalar>
-void SolverAgros<Scalar>::initCalculation(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > &bcs)
+void SolverAgros<Scalar>::initCalculation()
 {
     // load the mesh file
     mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
@@ -173,9 +172,38 @@ void SolverAgros<Scalar>::initCalculation(Hermes::vector<Hermes::Hermes2D::Essen
         break;
     }
 
+    // essential boundary conditions
+    Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs; //TODO PK <double>
+    for (int i = 0; i < numberOfSolution; i++)
+        bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());  //TODO PK <double>
+
+    for (int i = 0; i < Util::scene()->edges.count(); i++)
+    {
+        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
+
+        if (boundary)
+        {
+            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->type);
+
+            if (boundary_type)
+            {
+                for (std::map<int, Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->essential.begin();
+                     it != boundary_type->essential.end(); ++it)
+                {
+                    /*
+                    bcs[it->first - 1]->add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCConst<double>(QString::number(i+1).toStdString(), //TODO PK <double>
+                                                                                                                     boundary->values[it->second->id].number()));
+                    */
+                    CustomExactSolution<double> *exact = new CustomExactSolution<double>(mesh, "sin(1/(ALPHA+sqrt(x^2+y^2)))");
+                    bcs[it->first - 1]->add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i+1).toStdString(), exact));
+                }
+            }
+        }
+    }
+
     for (int i = 0; i < numberOfSolution; i++)
     {
-        space.push_back(new Hermes::Hermes2D::H1Space<Scalar>(mesh, &bcs[i], polynomialOrder));
+        space.push_back(new Hermes::Hermes2D::H1Space<Scalar>(mesh, bcs[i], polynomialOrder));
 
         // set order by element
         for (int j = 0; j < Util::scene()->labels.count(); j++)
@@ -268,7 +296,7 @@ bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space
 
 
 template <typename Scalar>
-Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(Hermes::vector<Hermes::Hermes2D::EssentialBCs<Scalar> > bcs)
+Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray()
 {
     QTime time;
 
@@ -277,7 +305,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
 
     double error = 0.0;
 
-    initCalculation(bcs);
+    initCalculation();
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) == 0)

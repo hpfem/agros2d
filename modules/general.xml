@@ -5,20 +5,31 @@
         <properties steadystate="1" harmonic="0" transient="0" />
     </general>
 
-    <constants/>
+    <constants>
+        <item id="ALPHA" value="0.031831" />
+    </constants>
 
     <material>
-        <item id="general_constant_1" name="Constant 1" shortname="c1" unit="-" default="1" />
-        <item id="general_rightside" name="Right side" shortname="f" unit="-" />
-        
-        <steadystate>
-            <material id="general_constant_1" />
-            <material id="general_rightside" />
+    <item id="general_constant_1" name="Constant 1" shortname="c" unit="-" default="1" />
+    <item id="general_constant_2" name="Constant 2" shortname="a" unit="-" default="1" />
+    <item id="general_rightside" name="Right side" shortname="f" unit="-" />
 
-            <matrix i="1" j="1" planar="c1 * (udx * vdx + udy * vdy)"
-                                axi="c1 * r * (udr * vdr + udz * vdz)" symmetric="1" />
-            <vector i="1" j="1" planar="c1 * (updx * vdx + updy * vdy) - f * vval"
-                                axi="c1 * r * (updr * vdr + updz * vdz) - f * r * vval" />
+        <steadystate>
+        <material id="general_constant_1" />
+        <material id="general_constant_2" />
+        <material id="general_rightside" />
+
+            <!--
+            <matrix i="1" j="1" planar="c * (udx * vdx + udy * vdy) + a * uval * vval"
+                                axi="c * r * (udr * vdr + udz * vdz) + a * r * uval * vval" symmetric="1" />
+            <vector i="1" j="1" planar="c * (updx * vdx + updy * vdy) + a * upval * vval - f * vval"
+                                axi="c * r * (updr * vdr + updz * vdz) + a * r * upval * vval - f * r * vval" />
+            -->
+            <matrix i="1" j="1" planar="(udx * vdx + udy * vdy) - 1/(ALPHA+sqrt(x^2+y^2))^4 * uval * vval"
+                                axi="" symmetric="1" />
+            <vector i="1" j="1" planar="(updx * vdx + updy * vdy) - 1/(ALPHA+sqrt(x^2+y^2))^4 * upval * vval
+                                        - (sqrt(x^2+y^2)-ALPHA)/(sqrt(x^2+y^2)*(sqrt(x^2+y^2)+ALPHA)^3)*cos(1/(sqrt(x^2+y^2)+ALPHA)) * vval"
+                                axi="" />
          </steadystate>
     </material>
 

@@ -134,8 +134,8 @@ SceneMaterialGeneralDialog::SceneMaterialGeneralDialog(SceneMaterial *material, 
     createDialog();
 
     // tab order
-    setTabOrder(txtName, txtConstant);
-    setTabOrder(txtConstant, txtRightSide);
+    setTabOrder(txtName, txtConstant1);
+    setTabOrder(txtConstant1, txtRightSide);
 
     load();
     setSize();
@@ -143,34 +143,44 @@ SceneMaterialGeneralDialog::SceneMaterialGeneralDialog(SceneMaterial *material, 
 
 void SceneMaterialGeneralDialog::createContent()
 {
-    txtConstant = new ValueLineEdit(this);
-    txtConstant->setMinimumSharp(0.0);
+    txtConstant1 = new ValueLineEdit(this);
+    txtConstant1->setMinimumSharp(0.0);
+    txtConstant2 = new ValueLineEdit(this);
     txtRightSide = new ValueLineEdit(this);
 
-    connect(txtConstant, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtConstant1, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtRightSide, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     layout->addWidget(createLabel(tr("<i>c</i> (-)"),
-                                  tr("Constant")), 10, 0);
-    layout->addWidget(txtConstant, 10, 2);
+                                  tr("Constant c")), 10, 0);
+    layout->addWidget(txtConstant1, 10, 2);
+    layout->addWidget(createLabel(tr("<i>a</i> (-)"),
+                                  tr("Constant a")), 11, 0);
+    layout->addWidget(txtConstant2, 11, 2);
     layout->addWidget(createLabel(tr("<i>r</i> (-)"),
-                                  tr("Rightside")), 11, 0);
-    layout->addWidget(txtRightSide, 11, 2);
+                                  tr("Rightside")), 15, 0);
+    layout->addWidget(txtRightSide, 15, 2);
 }
 
 void SceneMaterialGeneralDialog::load()
 {
     SceneMaterialDialog::load();
 
-    txtConstant->setValue(m_material->get_value("general_constant_1"));
+    txtConstant1->setValue(m_material->get_value("general_constant_1"));
+    txtConstant2->setValue(m_material->get_value("general_constant_2"));
     txtRightSide->setValue(m_material->get_value("general_rightside"));
 }
 
 bool SceneMaterialGeneralDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
-    if (txtConstant->evaluate())
-        m_material->values["general_constant_1"] = txtConstant->value();
+    if (txtConstant1->evaluate())
+        m_material->values["general_constant_1"] = txtConstant1->value();
+    else
+        return false;
+
+    if (txtConstant2->evaluate())
+        m_material->values["general_constant_2"] = txtConstant2->value();
     else
         return false;
 
