@@ -34,14 +34,6 @@ void ModuleMagnetic::update_time_functions(double time)
     }
 }
 
-// **************************************************************************************************************************
-// rewrite
-
-SceneBoundary *ModuleMagnetic::newBoundary()
-{
-    return new SceneBoundary(tr("new boundary").toStdString(), "magnetic_surface_current");
-}
-
 // *************************************************************************************************************************************
 
 SceneBoundaryMagneticDialog::SceneBoundaryMagneticDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)

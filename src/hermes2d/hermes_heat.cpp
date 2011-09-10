@@ -35,14 +35,6 @@ void ModuleHeat::update_time_functions(double time)
 }
 
 // *************************************************************************************************************************************
-// rewrite
-
-SceneBoundary *ModuleHeat::newBoundary()
-{
-    return new SceneBoundary(tr("new boundary").toStdString(), "heat_temperature");
-}
-
-// *************************************************************************************************************************************
 
 SceneBoundaryHeatDialog::SceneBoundaryHeatDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
 {

@@ -22,14 +22,6 @@
 #include "scene.h"
 #include "gui.h"
 
-// *******************************************************************************************************
-// rewrite
-
-SceneBoundary *ModuleCurrent::newBoundary()
-{
-    return new SceneBoundary(tr("new boundary condition").toStdString(), "current_potential");
-}
-
 // *************************************************************************************************************************************
 
 SceneBoundaryCurrentDialog::SceneBoundaryCurrentDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)

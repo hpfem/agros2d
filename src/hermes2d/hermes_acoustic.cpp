@@ -299,24 +299,6 @@ Hermes::vector<SolutionArray *> ModuleAcoustic::solve(ProgressItemSolve *progres
 }
 */
 
-void ModuleAcoustic::update_time_functions(double time)
-{
-    // update boundaries
-    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-    {
-        SceneBoundary *boundary = Util::scene()->boundaries[i];
-        boundary->get_value("acoustic_pressure").evaluate(time);
-    }
-}
-
-// **************************************************************************************************************************
-// rewrite
-
-SceneBoundary *ModuleAcoustic::newBoundary()
-{
-    return new SceneBoundary(tr("new boundary").toStdString(), "acoustic_pressure");
-}
-
 // *************************************************************************************************************************************
 
 SceneBoundaryAcousticDialog::SceneBoundaryAcousticDialog(SceneBoundary *boundary, QWidget *parent) : SceneBoundaryDialog(parent)

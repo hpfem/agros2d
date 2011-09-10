@@ -25,6 +25,35 @@
 
 // **************************************************************************
 
+ParserFormEssential::ParserFormEssential(rapidxml::xml_node<> *node, ProblemType problem_type) : expression("")
+{
+    i = atoi(node->first_attribute("i")->value());
+
+    /*
+    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = variables.begin();
+         it < variables.end(); ++it )
+    {
+        Hermes::Module::BoundaryTypeVariable *var = (Hermes::Module::BoundaryTypeVariable *) *it;
+
+        if (var->id == node_essential->first_attribute("id")->value())
+            essential[atoi(node_essential->first_attribute("i")->value())] = var;
+    }
+    */
+
+    if (problem_type == ProblemType_Planar)
+    {
+        if (node->first_attribute("planar"))
+            expression = node->first_attribute("planar")->value();
+    }
+    else
+    {
+        if (node->first_attribute("axi"))
+            expression = node->first_attribute("axi")->value();
+    }
+}
+
+
+
 ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType problem_type)
 {
     i = atoi(node->first_attribute("i")->value());
@@ -397,10 +426,10 @@ Hermes::Ord CustomParserVectorFormSurf<Scalar>::ord(int n, double *wt, Hermes::H
 // **********************************************************************************************
 
 template <typename Scalar>
-CustomExactSolution<Scalar>::CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, std::string expression)
+CustomExactSolution<Scalar>::CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, std::string expression, Boundary *boundary)
     : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), ParserForm()
 {
-    initParser(NULL, NULL);
+    initParser(NULL, boundary);
 
     parser->parser[0]->SetExpr(expression);
 }

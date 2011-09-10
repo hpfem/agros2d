@@ -31,9 +31,6 @@ public:
     ModuleHeat(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
     void update_time_functions(double time);
-
-    // rewrite
-    SceneBoundary *newBoundary();
 };
 
 // *******************************************************************************************

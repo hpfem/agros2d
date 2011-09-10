@@ -32,9 +32,6 @@ public:
 
     void deform_shape(double3* linVert, int count);
     void deform_shape(double4* linVert, int count);
-
-    // rewrite
-    SceneBoundary *newBoundary();
 };
 
 // *******************************************************************************************

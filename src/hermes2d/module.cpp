@@ -19,7 +19,7 @@
 
 #include "module.h"
 
-#include "hermes_general.h"
+#include "hermes_custom.h"
 #include "hermes_electrostatic.h"
 #include "hermes_magnetic.h"
 #include "hermes_heat.h"
@@ -48,38 +48,53 @@
 
 double actualTime;
 
-Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type)
+Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type,
+                                           std::string filename_custom)
 {
-    Hermes::Module::ModuleAgros *module = NULL;
+    // std::cout << filename_custom << std::endl;
 
-    if (id == "electrostatic")
-        module = new ModuleElectrostatic(problem_type, analysis_type);
-    if (id == "current")
-        module = new ModuleCurrent(problem_type, analysis_type);
-    if (id == "magnetic")
-        module = new ModuleMagnetic(problem_type, analysis_type);
-    if (id == "acoustic")
-        module = new ModuleAcoustic(problem_type, analysis_type);
+    Hermes::Module::ModuleAgros *module = NULL;
     if (id == "elasticity")
         module = new ModuleElasticity(problem_type, analysis_type);
-    if (id == "heat")
+    else if (id == "heat")
         module = new ModuleHeat(problem_type, analysis_type);
-    if (id == "rf")
-        module = new ModuleRF(problem_type, analysis_type);
-    if (id == "general")
-        module = new ModuleGeneral(problem_type, analysis_type);
-
-    if (module)
-        module->read((datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString());
+    else if (id == "magnetic")
+        module = new ModuleMagnetic(problem_type, analysis_type);
     else
-        std::cout << "Module doesn't exists." << std::endl;
+        module = new Hermes::Module::ModuleAgros(problem_type, analysis_type);
 
-    return module;
+    // try to open custom module
+    if (id == "custom" && filename_custom != "")
+    {
+        ifstream ifile_custom(filename_custom.c_str());
+        if (!ifile_custom)
+        {
+            // FIXME: -> std
+            QFile::copy(datadir() + "/resources/custom.xml",
+                        QString::fromStdString(filename_custom));
+        }
+        module->read(filename_custom);
+        return module;
+    }
+
+    // open default module
+    std::string filename_default = (datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString();
+    ifstream ifile_default(filename_default.c_str());
+    if (ifile_default)
+    {
+        module->read(filename_default);
+        return module;
+    }
+
+    std::cout << "Module doesn't exists." << std::endl;
+    return NULL;
 }
 
 // boundary dialog factory
 SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidget *parent)
 {
+    if (Util::scene()->problemInfo()->module()->id == "custom")
+        return new SceneBoundaryCustomDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneBoundaryElectrostaticDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "current")
@@ -94,12 +109,14 @@ SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidge
         return new SceneBoundaryHeatDialog(scene_boundary, parent);
     if (Util::scene()->problemInfo()->module()->id == "rf")
         return new SceneBoundaryRFDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "general")
-        return new SceneBoundaryGeneralDialog(scene_boundary, parent);
+
+    return NULL;
 }
 // material dialog factory
 SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidget *parent)
 {
+    if (Util::scene()->problemInfo()->module()->id == "custom")
+        return new SceneMaterialCustomDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "electrostatic")
         return new SceneMaterialElectrostaticDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "current")
@@ -114,8 +131,8 @@ SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidge
         return new SceneMaterialHeatDialog(scene_material, parent);
     if (Util::scene()->problemInfo()->module()->id == "rf")
         return new SceneMaterialRFDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "general")
-        return new SceneMaterialGeneralDialog(scene_material, parent);
+
+    return NULL;
 }
 
 std::map<std::string, std::string> availableModules()
@@ -154,6 +171,9 @@ std::map<std::string, std::string> availableModules()
         }
         closedir(dp);
     }
+
+    // custom module
+    modules["custom"] = "Custom field";
 
     return modules;
 }
@@ -461,14 +481,7 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     for (rapidxml::xml_node<> *node_essential = node->first_node("essential");
          node_essential; node_essential = node_essential->next_sibling())
         if (std::string(node_essential->name()) == "essential")
-            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = variables.begin();
-                 it < variables.end(); ++it )
-            {
-                Hermes::Module::BoundaryTypeVariable *var = (Hermes::Module::BoundaryTypeVariable *) *it;
-
-                if (var->id == node_essential->first_attribute("id")->value())
-                    essential[atoi(node_essential->first_attribute("i")->value())] = var;
-            }
+            essential.push_back(new ParserFormEssential(node_essential, problem_type));
 }
 
 Hermes::Module::BoundaryTypeVariable::BoundaryTypeVariable(rapidxml::xml_node<> *node)
@@ -508,6 +521,10 @@ Hermes::Module::BoundaryType::~BoundaryType()
     for (Hermes::vector<ParserFormMatrix *>::iterator it = weakform_matrix_surface.begin(); it < weakform_matrix_surface.end(); ++it)
         delete *it;
     weakform_matrix_surface.clear();
+
+    for (Hermes::vector<ParserFormVector *>::iterator it = weakform_vector_surface.begin(); it < weakform_vector_surface.end(); ++it)
+        delete *it;
+    weakform_vector_surface.clear();
 
     for (Hermes::vector<ParserFormVector *>::iterator it = weakform_vector_surface.begin(); it < weakform_vector_surface.end(); ++it)
         delete *it;
@@ -590,6 +607,9 @@ void Hermes::Module::Module::read(std::string filename)
                  node; node = node->next_sibling())
                 if (std::string(node->name()) == "boundary")
                     boundary_types.push_back(new Hermes::Module::BoundaryType(boundary_type_variables_tmp, node, m_problemType));
+
+            // default boundary type
+            boundary_type_default = get_boundary_type(node_analysis->first_attribute("default")->value());
         }
         boundary_type_variables_tmp.clear();
 
@@ -959,6 +979,12 @@ void Hermes::Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbF
         cmbFieldVariable->addItem(QString::fromStdString(material->name),
                                   QString::fromStdString(material->id));
     }
+}
+
+SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()
+{
+    return new SceneBoundary(tr("new boundary").toStdString(),
+                             Util::scene()->problemInfo()->module()->boundary_type_default->id);
 }
 
 SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()

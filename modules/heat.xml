@@ -42,11 +42,12 @@
         <item id="heat_heat_transfer_coefficient" name="Heat transfer coefficient" shortname="h" unit="W/m2.K" default="5" />
         <item id="heat_external_temperature" name="External temperature" shortname="Te" unit="K" default="20" />
     	
-    	<steadystate>
+        <steadystate default="heat_temperature">
             <boundary id="heat_temperature" name="Temperature">
                 <item id="heat_temperature" />
 
-                <essential i="1" j="1" id="heat_temperature" />
+                <essential i="1" planar="T"
+                                 axi="T" />
             </boundary>
 
             <boundary id="heat_heat_flux" name="Heat flux">
@@ -61,11 +62,12 @@
             </boundary>
         </steadystate>
         
-    	<transient>
+        <transient default="heat_temperature">
             <boundary id="heat_temperature" name="Temperature">
                 <item id="heat_temperature" />
 
-                <essential i="1" j="1" id="heat_temperature" />
+                <essential i="1" planar="T"
+                                 axi="T" />
             </boundary>
 
             <boundary id="heat_heat_flux" name="Heat flux">

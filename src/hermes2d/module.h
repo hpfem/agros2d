@@ -41,6 +41,7 @@ template <typename Scalar> struct SolutionArray;
 template <typename Scalar> class ViewScalarFilter;
 class ParserFormMatrix;
 class ParserFormVector;
+class ParserFormEssential;
 
 class ProgressItemSolve;
 
@@ -199,7 +200,7 @@ struct BoundaryType
     Hermes::vector<ParserFormVector *> weakform_vector_surface;
 
     // essential
-    std::map<int, BoundaryTypeVariable *> essential;
+    Hermes::vector<ParserFormEssential *> essential;
 };
 
 // surface and volume integral value
@@ -253,6 +254,9 @@ struct Module
     // boundary conditions
     Hermes::vector<BoundaryTypeVariable *> boundary_type_variables;
     Hermes::vector<BoundaryType *> boundary_types;
+
+    // default boundary condition
+    BoundaryType *boundary_type_default;
 
     // weak forms
     Hermes::vector<ParserFormMatrix *> weakform_matrix_volume;
@@ -341,8 +345,7 @@ public:
     void fillComboBoxBoundaryCondition(QComboBox *cmbFieldVariable);
     void fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable);
 
-    // rewrite
-    virtual SceneBoundary *newBoundary() = 0;
+    SceneBoundary *newBoundary();
     SceneMaterial *newMaterial();
 
 private:
@@ -353,7 +356,8 @@ private:
 }
 
 // module factory
-Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type);
+Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type,
+                                           std::string filename_custom = "");
 
 // boundary dialog factory
 SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidget *parent);

@@ -24,17 +24,19 @@
     	<item id="current_potential" name="Fixed voltage" shortname="V" unit="V" />
     	<item id="current_inward_current_flow" name="Current density" shortname="Jn" unit="A/m2" />
     	
-    	<steadystate>
+        <steadystate default="current_potential">
             <boundary id="current_potential" name="Fixed voltage">
                 <item id="current_potential" />
 
-                <essential i="1" j="1" id="current_potential" />
+                <essential i="1" planar="V"
+                                 axi="V" />
             </boundary>
 
             <boundary id="current_inward_current_flow" name="Current density">
                 <item id="current_inward_current_flow" />
 
-                <vector i="1" j="1" planar="- Jn * vval" axi="- Jn * r * vval" />
+                <vector i="1" j="1" planar="- Jn * vval"
+                                    axi="- Jn * r * vval" />
             </boundary>
         </steadystate>
     </boundary>

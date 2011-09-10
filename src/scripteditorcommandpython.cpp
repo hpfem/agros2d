@@ -133,7 +133,8 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
     {
         Util::scene()->problemInfo()->setModule(moduleFactory(field.toStdString(),
                                                               problemTypeFromStringKey(QString(type)),
-                                                              analysisTypeFromStringKey(QString(analysistype))));
+                                                              analysisTypeFromStringKey(QString(analysistype)),
+                                                              ""));
     }
     else
         throw invalid_argument(QObject::tr("Physic field '%1' is not implemented.").arg(QString(physicfield)).toStdString());

@@ -36,6 +36,7 @@ namespace Hermes
       ///
       /// StreamView is a visualization window for all vector-valued PDE solutions (especially for flow problems).
       ///
+      template<typename Scalar>
       class HERMES_API StreamView : public View
       {
       public:
@@ -46,8 +47,8 @@ namespace Hermes
 
         /// Using velocity components (xsln, ysln) it creates streamlines that begin at the boundary with "marker"
         /// and the distance between starting points is "step"
-        void show(MeshFunction<double>* xsln, MeshFunction<double>* ysln, int marker, double step, double eps = HERMES_EPS_NORMAL);
-        void show(MeshFunction<double>* xsln, MeshFunction<double>* ysln, int marker, double step, double eps, int xitem, int yitem);
+        void show(MeshFunction<Scalar>* xsln, MeshFunction<Scalar>* ysln, int marker, double step, double eps = HERMES_EPS_NORMAL);
+        void show(MeshFunction<Scalar>* xsln, MeshFunction<Scalar>* ysln, int marker, double step, double eps, int xitem, int yitem);
 
         /// Creates additional streamline with strarting point (x,y)
         /// Note: Can be called only after StreamView::show
@@ -64,7 +65,7 @@ namespace Hermes
           int num_elem;
         };
 
-        Vectorizer* vec;
+        Vectorizer<Scalar> vec;
         double max_mag;
         bool lines, pmode;
 

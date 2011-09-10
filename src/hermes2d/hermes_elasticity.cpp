@@ -271,14 +271,6 @@ Hermes::vector<SolutionArray *> ModuleElasticity::solve(ProgressItemSolve *progr
 }
 */
 
-// ****************************************************************************************************************
-// rewrite
-
-SceneBoundary *ModuleElasticity::newBoundary()
-{
-    return new SceneBoundary(tr("new boundary").toStdString(), "FIXME");
-}
-
 template <class T>
 void deformShapeTemplate(T linVert, int count)
 {

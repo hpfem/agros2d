@@ -24,15 +24,6 @@
 #include "scenemarker.h"
 #include "module.h"
 
-struct ModuleRF : public Hermes::Module::ModuleAgros
-{
-    Q_OBJECT
-public:
-    ModuleRF(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
-
-    SceneBoundary *newBoundary();
-};
-
 // ***********************************************************************************
 
 class SceneBoundaryRFDialog : public SceneBoundaryDialog

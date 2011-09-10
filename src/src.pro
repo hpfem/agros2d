@@ -51,7 +51,6 @@ SOURCES += util.cpp \
     hermes2d/material.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
-    hermes2d/hermes_general.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
     hermes2d/hermes_magnetic.cpp \
@@ -96,7 +95,8 @@ SOURCES += util.cpp \
     datatabledialog.cpp \
     materialbrowserdialog.cpp \
     conf.cpp \
-    confdialog.cpp
+    confdialog.cpp \
+    hermes2d/hermes_custom.cpp
 
 HEADERS += util.h \
     value.h \
@@ -108,7 +108,6 @@ HEADERS += util.h \
     hermes2d/boundary.h \
     hermes2d/material.h \
     hermes2d/module.h \
-    hermes2d/hermes_general.h \
     hermes2d/hermes_electrostatic.h \
     hermes2d/hermes_heat.h \
     hermes2d/hermes_magnetic.h \
@@ -154,7 +153,8 @@ HEADERS += util.h \
     materialbrowserdialog.h \
     conf.h \
     confdialog.h \
-    hermes2d/solver.h
+    hermes2d/solver.h \
+    hermes2d/hermes_custom.h
 
 INCLUDEPATH += . \
     ../lib \
@@ -179,7 +179,9 @@ OTHER_FILES += python/agros2d.pyx \
     ../resources/materials/Aluminum.xml \
     ../resources/materials/Iron.xml \
     hermes2d/weakform/xml_parser.py \
-    ../modules/general.xml
+    ../modules/general.xml \
+    ../resources/custom.xml \
+    ../resources/a2d_convert_table.xml
 
 
 INCLUDEPATH += ../hermes2d/include
@@ -269,4 +271,9 @@ win32-msvc2008 {
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
 }
+
+
+
+
+
 

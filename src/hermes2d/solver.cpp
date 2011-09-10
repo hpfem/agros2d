@@ -184,22 +184,72 @@ void SolverAgros<Scalar>::initCalculation()
     {
         SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
-        if (boundary)
+        if (boundary && boundary != Util::scene()->boundaries[0])
         {
             Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->type);
+
+            for (Hermes::vector<ParserFormEssential *>::iterator it = boundary_type->essential.begin();
+                 it < boundary_type->essential.end(); ++it)
+            {
+                ParserFormEssential *form = ((ParserFormEssential *) *it);
+
+                Hermes::Hermes2D::EssentialBoundaryCondition<Scalar> *custom_form = NULL;
+
+                // compiled form
+                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+                {
+                    /*
+                    custom_form = factoryMatrixFormEssential<Scalar>(problemId,
+                                                                form->i - 1, form->j - 1,
+                                                                QString::number(i + 1).toStdString(),
+                                                                boundary);
+                    */
+                }
+
+                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+                    qDebug() << "Cannot find compiled VectorFormEssential().";
+
+                // interpreted form
+                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
+                {
+                    /*
+                    if (form->expression == "")
+                    {
+                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCConst<double>(form->i - 1,
+                                                                                            boundary->values[it->second->id].number());
+                    }
+                    else
+                    */
+                    {
+                        CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
+                                                                                                form->expression,
+                                                                                                boundary);
+                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
+                                                                                               function);
+                    }
+                }
+
+                if (custom_form)
+                {
+                    bcs[form->i - 1]->add_boundary_condition(custom_form);
+                }
+            }
+            /*
 
             if (boundary_type)
             {
                 for (std::map<int, Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->essential.begin();
                      it != boundary_type->essential.end(); ++it)
                 {
-                    bcs[it->first - 1]->add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCConst<double>(QString::number(i+1).toStdString(), //TODO PK <double>
-                                                                                                                     boundary->values[it->second->id].number()));
+                    // bcs[it->first - 1]->add_boundary_condition(
+                    // new Hermes::Hermes2D::DefaultEssentialBCConst<double>(QString::number(i+1).toStdString(), //TODO PK <double>
+                    //                                                                                                  boundary->values[it->second->id].number()));
 
-                    // CustomExactSolution<double> *exact = new CustomExactSolution<double>(mesh, "sin(1/(ALPHA+sqrt(x^2+y^2)))");
-                    // bcs[it->first - 1]->add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i+1).toStdString(), exact));
+                    CustomExactSolution<double> *exact = new CustomExactSolution<double>(mesh, "sin(1/(ALPHA+sqrt(x^2+y^2)))");
+                    bcs[it->first - 1]->add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i+1).toStdString(), exact));
                 }
             }
+            */
         }
     }
 

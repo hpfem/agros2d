@@ -24,20 +24,6 @@
 #include "scenemarker.h"
 #include "module.h"
 
-struct ModuleAcoustic : public Hermes::Module::ModuleAgros
-{
-    Q_OBJECT
-public:
-    ModuleAcoustic(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
-
-    void update_time_functions(double time);
-
-    // rewrite
-    SceneBoundary *newBoundary();
-};
-
-// *******************************************************************************************
-
 class SceneBoundaryAcousticDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
