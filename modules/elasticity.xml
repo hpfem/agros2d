@@ -124,7 +124,7 @@
             <steadystate planar_scalar="nu" axi_scalar="nu" />
         </item>
         <item id="elasticity_inner_force" name="Inner force" shortname="f" unit="N" scalar="0">
-            <steadystate planar_comp_x="fx" planar_comp_y="fy" axi_comp_r="fr" axi_comp_z="fz" />
+            <steadystate planar_comp_x="fx" planar_comp_y="fy" axi_comp_r="fx" axi_comp_z="fy" />
         </item>
         <item id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/K" scalar="1">
             <steadystate planar_scalar="alpha" axi_scalar="alpha" />
