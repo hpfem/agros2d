@@ -37,11 +37,11 @@
             <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
                                   gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy) -
                                   Jer * vval -
-                                  Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)"
+                                  Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdx + cos((Bra/180*PI)) * vdy)"
                                 axi="1 / (mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) -
                                     gamma * upval * vy * vdz -
                                     Jer * vval +
-                                    Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
+                                    Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdr + cos((Bra/180*PI)) * vdz)" />
         </steadystate>
 
         <transient>
@@ -55,15 +55,17 @@
             <material id="magnetic_current_density_external_real" />
 
             <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
-                                        gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy) +
-                                        gamma / dt * uval * vval"
-                                axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
-                                     gamma * uval * vy * vdz +
-                                     gamma / dt * uval * vval" />
-            <vector i="1" j="1" planar="Jer * vval + Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy) +
-                                     gamma / dt * upval * vval"
-                                axi="Jer * vval - Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz) +
-                                     gamma / dt * upval * vval" />
+                                        gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
+                                axi="1 / (mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
+                                     gamma * uval * vy * vdz" />
+            <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
+                                  gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy) -
+                                  Jer * vval -
+                                  Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdx + cos((Bra/180*PI)) * vdy)"
+                                axi="1 / (mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) -
+                                    gamma * upval * vy * vdz -
+                                    Jer * vval +
+                                    Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdr + cos((Bra/180*PI)) * vdz)" />
         </transient>
 
         <harmonic>
@@ -84,11 +86,11 @@
             <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
                                         gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy)
                                           - Jer * vval
-                                          - Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)"
+                                          - Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdx + cos((Bra/180*PI)) * vdy)"
                                 axi="1 / (mur * MU0) * (updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12) -
                                      gamma * upval * vy * vdz
                                           -Jer * vval
-                                          + Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
+                                          + Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdr + cos((Bra/180*PI)) * vdz)" />
 
             <matrix i="2" j="2" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
@@ -211,8 +213,8 @@
             <transient planar_comp_x="dy1 / (mur * MU0)" planar_comp_y="- dx1 / (mur * MU0)" axi_comp_r="- dz1 / (mur * MU0)" axi_comp_z="(dr1 + value1 / (r + 1e-12)) / (mur * MU0)" />
         </item>
         <item id="magnetic_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" unit="A/m" scalar="0">
-            <steadystate planar_comp_x="dy1 / (mur * MU0)" planar_comp_y="- dx1 / (mur * MU0)" axi_comp_r="- dz1 / (mur * MU0)" axi_comp_z="(dr1 + value1 / (r + 1e-12)) / (mur * MU0)" />
-            <harmonic planar_comp_x="dy1 / (mur * MU0)" planar_comp_y="- dx1 / (mur * MU0)" axi_comp_r="- dz1 / (mur * MU0)" axi_comp_z="(dr1 + value1 / (r + 1e-12)) / (mur * MU0)" />
+            <steadystate />
+            <harmonic planar_comp_x="dy2 / (mur * MU0)" planar_comp_y="- dx2 / (mur * MU0)" axi_comp_r="- dz2 / (mur * MU0)" axi_comp_z="(dr2 + value2 / (r + 1e-12)) / (mur * MU0)" />
             <transient />
         </item>
         <item id="magnetic_energy_density" name="Energy density" shortname="wm" unit="J/m3" scalar="1">
@@ -226,9 +228,9 @@
             <transient planar_scalar="mur" axi_scalar="mur" />
         </item>
         <item id="magnetic_remanence" name="Remanent flux density" shortname="Brm" unit="T" scalar="0">
-            <steadystate planar_comp_x="Brm * cos(Bra/180*PI)" planar_comp_y="Brm * sin(Bra/180*PI)" axi_comp_r="Brm * cos(Bra/180*PI)" axi_comp_z="Brm * sin(Bra/180*PI)" />
-            <harmonic planar_comp_x="Brm * cos(Bra/180*PI)" planar_comp_y="Brm * sin(Bra/180*PI)" axi_comp_r="Brm * cos(Bra/180*PI)" axi_comp_z="Brm * sin(Bra/180*PI)" />
-            <transient planar_comp_x="Brm * cos(Bra/180*PI)" planar_comp_y="Brm * sin(Bra/180*PI)" axi_comp_r="Brm * cos(Bra/180*PI)" axi_comp_z="Brm * sin(Bra/180*PI)" />
+            <steadystate planar_comp_x="Brm * cos((Bra/180*PI))" planar_comp_y="Brm * sin((Bra/180*PI))" axi_comp_r="Brm * cos((Bra/180*PI))" axi_comp_z="Brm * sin((Bra/180*PI))" />
+            <harmonic planar_comp_x="Brm * cos((Bra/180*PI))" planar_comp_y="Brm * sin((Bra/180*PI))" axi_comp_r="Brm * cos((Bra/180*PI))" axi_comp_z="Brm * sin((Bra/180*PI))" />
+            <transient planar_comp_x="Brm * cos((Bra/180*PI))" planar_comp_y="Brm * sin((Bra/180*PI))" axi_comp_r="Brm * cos((Bra/180*PI))" axi_comp_z="Brm * sin((Bra/180*PI))" />
         </item>
         <item id="magnetic_velocity" name="Velocity" shortname="v" unit="m/s" scalar="0">
             <steadystate planar_comp_x="vx - va * y" planar_comp_y="vy + va * x" axi_comp_r="0" axi_comp_z="vy" />
@@ -402,8 +404,8 @@
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
                                 axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
                                      gamma * uval * vy * vdz" />
-            <vector i="1" j="1" planar="Jer * vval + Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdx + cos(Bra/180*PI) * vdy)"
-                                axi="Jer * vval - Brm / (mur * MU0) * (- sin(Bra/180*PI) * vdr + cos(Bra/180*PI) * vdz)" />
+            <vector i="1" j="1" planar="Jer * vval + Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdx + cos((Bra/180*PI)) * vdy)"
+                                axi="Jer * vval - Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdr + cos((Bra/180*PI)) * vdz)" />
 
             <matrix i="2" j="2" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                         gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
