@@ -187,7 +187,7 @@ void SceneSolution<Scalar>::loadMeshInitial(QDomElement element)
     content.append(text.nodeValue());
     writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
 
-    Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
+    Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
     // refineMesh(mesh, true, true);
 
     setMeshInitial(mesh);

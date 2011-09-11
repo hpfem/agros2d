@@ -1063,7 +1063,7 @@ Hermes::Hermes2D::Mesh *readMeshFromFile(const QString &fileName)
 
     // load the mesh file
     Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
-    Hermes::Hermes2D::MeshReaderH2D meshloader;
+    Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.load(fileName.toStdString().c_str(), mesh);
 
     // set system locale
