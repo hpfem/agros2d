@@ -153,7 +153,7 @@ template <typename Scalar>
 void SolverAgros<Scalar>::readMesh()
 {
     // load the mesh file
-    mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
+    mesh = readMeshFromFile(tempProblemFileName() + ".xml");
     refineMesh(mesh, true, true);
 }
 

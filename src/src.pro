@@ -270,10 +270,3 @@ win32-msvc2008 {
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
 }
-
-
-
-
-
-
-

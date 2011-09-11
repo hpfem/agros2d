@@ -71,13 +71,15 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/mesh/mesh_data.cpp \
                 src/mesh/mesh_reader_exodusii.cpp \
                 src/mesh/mesh_h1d_xml.cpp \
+                src/mesh/mesh_h2d_xml.cpp \
                 src/mesh/mesh_reader_h1d_xml.cpp \
                 src/mesh/mesh_reader_h2d_xml.cpp \
+                src/mesh/mesh_reader_h2d.cpp \
+                src/mesh/subdomains_h2d_xml.cpp \
                 src/mesh/refinement_type.cpp \
                 src/mesh/traverse.cpp \
                 src/mesh/element_to_refine.cpp \
                 src/mesh/mesh.cpp \
-                src/mesh/mesh_reader_h2d.cpp \
                 src/mesh/nurbs.cpp \
                 src/mesh/refmap.cpp \
                 src/quadrature/limit_order.cpp \

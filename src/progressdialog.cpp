@@ -163,7 +163,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             emit message(tr("Mesh files were deleted"), false, 4);
 
             // load mesh
-            Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
+            Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
 
             // check that all boundary edges have a marker assigned
             for (int i = 0; i < mesh->get_max_node_id(); i++)
@@ -416,13 +416,26 @@ bool ProgressItemMesh::triangleToHermes2D()
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    QFile fileMesh(tempProblemFileName() + ".mesh");
-    if (!fileMesh.open(QIODevice::WriteOnly))
-    {
-        emit message(tr("Could not create Hermes2D mesh file"), true, 0);
-        return false;
-    }
-    QTextStream outMesh(&fileMesh);
+    QDomDocument doc;
+    QDomProcessingInstruction instr = doc.createProcessingInstruction("xml", "version='1.0' encoding='UTF-8' standalone='no'");
+    doc.appendChild(instr);
+
+    // main document
+    QDomElement eleMesh = doc.createElement("mesh:mesh");
+    eleMesh.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    eleMesh.setAttribute("xmlns:mesh", "XMLMesh");
+    eleMesh.setAttribute("xmlns:element", "XMLMesh");
+    eleMesh.setAttribute("xsi:schemaLocation", QString("XMLMesh %1/mesh_h2d_xml.xsd").arg(datadir() + "/resources"));
+    doc.appendChild(eleMesh);
+
+    QDomElement eleVertices = doc.createElement("vertices");
+    eleMesh.appendChild(eleVertices);
+    QDomElement eleElements = doc.createElement("elements");
+    eleMesh.appendChild(eleElements);
+    QDomElement eleEdges = doc.createElement("edges");
+    eleMesh.appendChild(eleEdges);
+    QDomElement eleCurves = doc.createElement("curves");
+    eleMesh.appendChild(eleCurves);
 
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -713,8 +726,6 @@ bool ProgressItemMesh::triangleToHermes2D()
     }
 
     // edges
-    QString outEdges;
-    outEdges += "boundaries = [\n";
     int countEdges = 0;
     for (int i = 0; i < edgeList.count(); i++)
     {
@@ -729,21 +740,20 @@ bool ProgressItemMesh::triangleToHermes2D()
                 marker = - (edgeList[i].marker-1);
 
             countEdges++;
-            outEdges += QString("  [ %1, %2, \"%3\" ],\n").
-                    arg(edgeList[i].node[0]).
-                    arg(edgeList[i].node[1]).
-                    arg(marker);
+
+            QDomElement eleEdge = doc.createElement("edge");
+            eleEdge.setAttribute("v1", edgeList[i].node[0]);
+            eleEdge.setAttribute("v2", edgeList[i].node[1]);
+            eleEdge.setAttribute("marker", marker);
+
+            eleEdges.appendChild(eleEdge);
         }
     }
-    outEdges.truncate(outEdges.length()-2);
-    outEdges += "\n]\n\n";
 
     // curves
-    QString outCurves;
     int countCurves = 0;
     if (Util::config()->curvilinearElements)
     {
-        outCurves += "curves = [\n";
         for (int i = 0; i<edgeList.count(); i++)
         {
             if (edgeList[i].marker != 0)
@@ -768,15 +778,15 @@ bool ProgressItemMesh::triangleToHermes2D()
 
                     double angle = direction * theta * chordShort / chord;
 
-                    outCurves += QString("  [ %1, %2, %3 ],\n").
-                            arg(edgeList[i].node[0]).
-                            arg(edgeList[i].node[1]).
-                            arg(rad2deg(angle));
+                    QDomElement eleArc = doc.createElement("arc");
+                    eleArc.setAttribute("v1", edgeList[i].node[0]);
+                    eleArc.setAttribute("v2", edgeList[i].node[1]);
+                    eleArc.setAttribute("angle", QString("%1").arg(rad2deg(angle)));
+
+                    eleCurves.appendChild(eleArc);
                 }
             }
         }
-        outCurves.truncate(outCurves.length()-2);
-        outCurves += "\n]\n\n";
 
         // move nodes (arcs)
         for (int i = 0; i<edgeList.count(); i++)
@@ -805,52 +815,32 @@ bool ProgressItemMesh::triangleToHermes2D()
     }
 
     // nodes
-    QString outNodes;
-    outNodes += "vertices = [\n";
     for (int i = 0; i<nodeList.count(); i++)
     {
-        outNodes += QString("  [ %1,  %2 ],\n").
-                arg(nodeList[i].x, 0, 'f', 10).
-                arg(nodeList[i].y, 0, 'f', 10);
+        QDomElement eleVertex = doc.createElement("vertex");
+        eleVertex.setAttribute("i", i);
+        eleVertex.setAttribute("x", QString("%1").arg(nodeList[i].x));
+        eleVertex.setAttribute("y", QString("%1").arg(nodeList[i].y));
+
+        eleVertices.appendChild(eleVertex);
     }
-    outNodes.truncate(outNodes.length()-2);
-    outNodes += "\n]\n\n";
 
     // elements
-    QString outElements;
-    outElements += "elements = [\n";
-    for (int i = 0; i < elementList.count(); i++)
+    for (int i = 0; i<elementList.count(); i++)
     {
         if (elementList[i].isUsed)
         {
-            // element returns zero region number for areas without marker, markers must start from 1
-            if (elementList[i].isTriangle())
-            {
-                outElements += QString("  [ %1, %2, %3, \"%4\" ],\n").
-                        arg(elementList[i].node[0]).
-                        arg(elementList[i].node[1]).
-                        arg(elementList[i].node[2]).
-                        arg(abs(elementList[i].marker) - 1);
-            }
-            else
-            {
-                outElements += QString("  [ %1, %2, %3, %4, \"%5\" ],\n").
-                        arg(elementList[i].node[0]).
-                        arg(elementList[i].node[1]).
-                        arg(elementList[i].node[2]).
-                        arg(elementList[i].node[3]).
-                        arg(abs(elementList[i].marker) - 1);
-            }
+            QDomElement eleElement = doc.createElement(QString("element:%1").arg(elementList[i].isTriangle() ? "triangle" : "quad"));
+            eleElement.setAttribute("v1", elementList[i].node[0]);
+            eleElement.setAttribute("v2", elementList[i].node[1]);
+            eleElement.setAttribute("v3", elementList[i].node[2]);
+            if (!elementList[i].isTriangle())
+                eleElement.setAttribute("v4", elementList[i].node[3]);
+            eleElement.setAttribute("marker", QString("%1").arg(abs(elementList[i].marker) - 1));
+
+            eleElements.appendChild(eleElement);
         }
     }
-    outElements.truncate(outElements.length()-2);
-    outElements += "\n]\n\n";
-
-    outMesh << outNodes;
-    outMesh << outElements;
-    outMesh << outEdges;
-    if (countCurves > 0)
-        outMesh << outCurves;
 
     nodeList.clear();
     edgeList.clear();
@@ -861,8 +851,16 @@ bool ProgressItemMesh::triangleToHermes2D()
     fileEle.close();
     fileNeigh.close();
 
-    fileMesh.waitForBytesWritten(0);
-    fileMesh.close();
+    // save to file
+    QFile file(tempProblemFileName() + ".xml");
+    if (!file.open(QIODevice::WriteOnly))
+        return false;
+
+    QTextStream out(&file);
+    doc.save(out, 4);
+
+    file.waitForBytesWritten(0);
+    file.close();
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
@@ -910,7 +908,7 @@ void ProgressItemSolve::solve()
     m_adaptivityDOF.clear();
     m_nonlinearError.clear();
 
-    if (!QFile::exists(tempProblemFileName() + ".mesh"))
+    if (!QFile::exists(tempProblemFileName() + ".xml"))
         return;
 
     // benchmark
@@ -974,7 +972,7 @@ void ProgressItemSolveAdaptiveStep::solve()
     else
     {
         emit message(tr("Problem was not solved"), true, 0);
-        Util::scene()->sceneSolution()->setTimeElapsed(0);       
+        Util::scene()->sceneSolution()->setTimeElapsed(0);
     }
 
     Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
