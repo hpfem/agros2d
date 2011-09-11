@@ -225,17 +225,19 @@ void SceneInfoView::showInfo()
         html += "<tr><td>&nbsp;</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()) + " " + tr("elements") + "</td></tr>";
         if (Util::scene()->sceneSolution()->isSolved())
         {
-            if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
-            {
-                html += "<tr><td><b>" + tr("Adaptivity") + "</b></td><td>" + tr("error") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) + " %" + "</td></tr>";
-                html += "<tr><td>&nbsp;</td><td>"  + tr("steps") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) + "</td></tr>";
-                html += "<tr><td><b>" + tr("Solution mesh") + "</b></td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()) + " " + tr("nodes") + "</td></tr>";
-                html += "<tr><td>&nbsp;</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()) + " " + tr("elements") + "</td></tr>";
-            }
-
             if (Util::scene()->sceneSolution()->sln()->get_space() && (Util::scene()->sceneSolution()->sln()->get_space()->get_num_dofs() > 0))
             {
                 html += "<tr><td>&nbsp;</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_space()->get_num_dofs()) + " " + tr("DOFs") + "</td></tr>";
+            }
+
+            if (Util::scene()->sceneSolution()->adaptiveError() > 0.0)
+                html += "<tr><td><b>" + tr("Adaptivity") + "</b></td><td>" + tr("error") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) + " %" + "</td></tr>";
+
+            if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
+            {
+                html += "<tr><td>&nbsp;</td><td>"  + tr("steps") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) + "</td></tr>";
+                html += "<tr><td><b>" + tr("Solution mesh") + "</b></td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()) + " " + tr("nodes") + "</td></tr>";
+                html += "<tr><td>&nbsp;</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()) + " " + tr("elements") + "</td></tr>";
             }
 
             QTime time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());

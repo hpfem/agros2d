@@ -322,7 +322,8 @@ private:
 enum SolverMode
 {
     SolverMode_Mesh,
-    SolverMode_MeshAndSolve
+    SolverMode_MeshAndSolve,
+    SolverMode_SolveAdaptiveStep
 };
 
 enum ProblemType

@@ -300,6 +300,10 @@ void MainWindow::createActions()
     actSolve->setStatusTip(tr("Solve problem"));
     connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolve()));
 
+    actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adaptive step"), this);
+    actSolveAdaptiveStep->setStatusTip(tr("Adaptive step"));
+    connect(actSolveAdaptiveStep, SIGNAL(triggered()), this, SLOT(doSolveAdaptiveStep()));
+
     actChart = new QAction(icon("chart"), tr("&Chart"), this);
     actChart->setStatusTip(tr("Chart"));
     connect(actChart, SIGNAL(triggered()), this, SLOT(doChart()));
@@ -547,6 +551,7 @@ void MainWindow::createToolBars()
     tlbProblem->addAction(actCreateMesh);
     tlbProblem->addAction(actSolve);
     tlbProblem->addAction(Util::scene()->actProblemProperties);
+    tlbProblem->addAction(actSolveAdaptiveStep);
 
     tlbTools = addToolBar(tr("Tools"));
 #ifdef Q_WS_MAC
@@ -1072,6 +1077,29 @@ void MainWindow::doSolve()
     activateWindow();
 }
 
+void MainWindow::doSolveAdaptiveStep()
+{
+    logMessage("MainWindow::doSolveAdaptiveStep()");
+
+    // solve problem
+    Util::scene()->sceneSolution()->solve(SolverMode_SolveAdaptiveStep);
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        sceneView->actSceneModePostprocessor->trigger();
+
+        // show local point values
+        Point point = Point(0, 0);
+        resultsView->doShowPoint(point);
+
+        // raise postprocessor
+        postprocessorView->raise();
+    }
+
+    doInvalidated();
+    setFocus();
+    activateWindow();
+}
+
 void MainWindow::doOptions()
 {
     logMessage("MainWindow::doOptions()");
@@ -1201,6 +1229,7 @@ void MainWindow::doInvalidated()
     if (Util::config()->showExperimentalFeatures)
         actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
+    actSolveAdaptiveStep->setEnabled(Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->analysisType != AnalysisType_Transient); // FIXME: timedep
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient));
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());

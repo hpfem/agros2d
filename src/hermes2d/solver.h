@@ -36,7 +36,6 @@ struct SolutionArray
 
     Hermes::Hermes2D::Solution<Scalar> *sln;
     Hermes::Hermes2D::Space<Scalar> *space;
-    //Hermes::Hermes2D::Views::Orderizer *order;
 
     SolutionArray();
     ~SolutionArray();
@@ -53,7 +52,8 @@ class SolverAgros
 public:
     SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
 
-    Hermes::vector<SolutionArray<Scalar> *> solveSolutionArray();
+    Hermes::vector<SolutionArray<Scalar> *> solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space = Hermes::vector<Hermes::Hermes2D::Space<Scalar> *>(),
+                                                  Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution = Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
 private:
     int polynomialOrder;
     AdaptivityType adaptivityType;
@@ -71,6 +71,7 @@ private:
     int nonlinearSteps;
 
     Hermes::MatrixSolverType matrixSolver;
+    WeakFormsType weakFormsType;
 
     // error
     bool isError;
@@ -82,14 +83,19 @@ private:
     WeakFormAgros<Scalar> *m_wf;
     ProgressItemSolve *m_progressItemSolve;
 
-    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution;
-    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionReference;
     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space;
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution;
+
+    // adaptivity
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionReference;
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
+    Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
+    void readMesh();
+    void createSpace();
+    void initSelectors();
 
-    void initCalculation();
     void cleanup();
 
     bool solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> &spaceParam,

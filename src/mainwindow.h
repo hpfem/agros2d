@@ -74,6 +74,7 @@ private slots:
 
     void doCreateMesh();
     void doSolve();
+    void doSolveAdaptiveStep();
     void doProgressLog();
 
     void doChart();
@@ -153,6 +154,7 @@ private:
     QAction *actOptions;
     QAction *actCreateMesh;
     QAction *actSolve;
+    QAction *actSolveAdaptiveStep;
     QAction *actProgressLog;
     QAction *actChart;
     QAction *actFullScreen;
@@ -206,7 +208,7 @@ private:
     void createToolBars();
     void createStatusBar();
     void createScene();
-    void createViews();
+    void createViews();   
 };
 
 #endif // MAINWINDOW_H

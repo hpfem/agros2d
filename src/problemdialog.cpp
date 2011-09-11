@@ -560,8 +560,6 @@ void ProblemDialog::doOpenXML()
         fileName = datadir() + "/modules/" + cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() + ".xml";
     }
 
-    qDebug() << fileName;
-
     if (QFile::exists(fileName))
         QDesktopServices::openUrl(QUrl(fileName));
 }

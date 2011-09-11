@@ -35,6 +35,7 @@ struct SolutionArray;
 class ProgressDialog;
 class ProgressItemMesh;
 class ProgressItemSolve;
+class ProgressItemSolveAdaptiveStep;
 class ProgressItemProcessView;
 
 class SceneSolutionQT : public QObject
@@ -166,6 +167,7 @@ private:
     ProgressDialog *m_progressDialog;
     ProgressItemMesh *m_progressItemMesh;
     ProgressItemSolve *m_progressItemSolve;
+    ProgressItemSolveAdaptiveStep *m_progressItemSolveAdaptiveStep;
     ProgressItemProcessView *m_progressItemProcessView;
 };
 

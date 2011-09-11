@@ -932,8 +932,33 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressIt
     WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
     SolverAgros<double> solutionAgros(progressItemSolve, &wf);
-    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solveSolutionArray();//TODO PK <double>
 
+    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(); //TODO PK <double>
+    return solutionArrayList;
+}
+
+Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solveAdaptiveStep(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
+{
+    if (!solve_init_variables())
+        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
+
+    WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
+
+    SolverAgros<double> solutionAgros(progressItemSolve, &wf);
+
+    Hermes::vector<Hermes::Hermes2D::Space<double> *> space;
+    Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution;
+
+    for (int i = 0; i < Util::scene()->problemInfo()->module()->number_of_solution(); i++)
+    {
+        int n = i + (Util::scene()->sceneSolution()->timeStepCount() - 1) * Util::scene()->problemInfo()->module()->number_of_solution();
+        // space
+        space.push_back(Util::scene()->sceneSolution()->sln(n)->get_space());
+        // solution
+        solution.push_back(Util::scene()->sceneSolution()->sln(n));
+    }
+
+    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(space, solution);
     return solutionArrayList;
 }
 

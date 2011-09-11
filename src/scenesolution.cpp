@@ -34,6 +34,7 @@ SceneSolution<Scalar>::SceneSolution()
     m_progressDialog = new ProgressDialog();
     m_progressItemMesh = new ProgressItemMesh();
     m_progressItemSolve = new ProgressItemSolve();
+    m_progressItemSolveAdaptiveStep = new ProgressItemSolveAdaptiveStep();
     m_progressItemProcessView = new ProgressItemProcessView();
 
     m_timeStep = -1;
@@ -52,6 +53,7 @@ SceneSolution<Scalar>::~SceneSolution()
     delete m_progressDialog;
     delete m_progressItemMesh;
     delete m_progressItemSolve;
+    delete m_progressItemSolveAdaptiveStep;
     delete m_progressItemProcessView;
 }
 
@@ -117,7 +119,8 @@ void SceneSolution<Scalar>::solve(SolverMode solverMode)
     if (isSolving()) return;
 
     // clear problem
-    clear();
+    if (solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve)
+        clear();
 
     m_isSolving = true;
 
@@ -129,11 +132,19 @@ void SceneSolution<Scalar>::solve(SolverMode solverMode)
     if (result.isError())
         result.showDialog();
 
-    m_progressDialog->clear();
-    m_progressDialog->appendProgressItem(m_progressItemMesh);
-    if (solverMode == SolverMode_MeshAndSolve)
+    if (solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve)
     {
-        m_progressDialog->appendProgressItem(m_progressItemSolve);
+        m_progressDialog->clear();
+        m_progressDialog->appendProgressItem(m_progressItemMesh);
+        if (solverMode == SolverMode_MeshAndSolve)
+        {
+            m_progressDialog->appendProgressItem(m_progressItemSolve);
+            m_progressDialog->appendProgressItem(m_progressItemProcessView);
+        }
+    }
+    else if (solverMode == SolverMode_SolveAdaptiveStep)
+    {
+        m_progressDialog->appendProgressItem(m_progressItemSolveAdaptiveStep);
         m_progressDialog->appendProgressItem(m_progressItemProcessView);
     }
 
