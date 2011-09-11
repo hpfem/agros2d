@@ -1,6 +1,6 @@
 <document version="2.0">
     <problems>
-        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" adaptivitysteps="20" nonlineartolerance="0.001" name="General Planar Poisson" date="2011-09-10" polynomialorder="1" weakforms="compiled" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="hp-adaptivity" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="custom" timetotal="1.0">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" adaptivitysteps="20" nonlineartolerance="0.001" name="General Planar Poisson" date="2011-09-10" polynomialorder="1" weakforms="compiled" meshtype="quad_join" timestep="1.0" problemtype="planar" adaptivitytype="hp-adaptivity" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="custom" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
