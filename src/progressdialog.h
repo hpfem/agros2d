@@ -197,13 +197,24 @@ public:
     inline void addNonlinearError(double error) { m_nonlinearError.append(error); emit changed(); }
     inline QList<double> nonlinearError() { return m_nonlinearError; }
 
-private slots:
-    void solve();
+protected slots:
+    virtual void solve();
 
-private:
+protected:
     QList<double> m_adaptivityError;
     QList<int> m_adaptivityDOF;
     QList<double> m_nonlinearError;
+};
+
+class ProgressItemSolveAdaptiveStep : public ProgressItemSolve
+{
+    Q_OBJECT
+
+public:
+    ProgressItemSolveAdaptiveStep();
+
+protected slots:
+    void solve();
 };
 
 class ProgressItemProcessView : public ProgressItem

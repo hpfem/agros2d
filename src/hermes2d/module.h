@@ -318,6 +318,7 @@ struct Module
     int number_of_solution() const;
 
     Hermes::vector<SolutionArray<double> *> solve(ProgressItemSolve *progressItemSolve);  //TODO PK <Scalar>
+    Hermes::vector<SolutionArray<double> *> solveAdaptiveStep(ProgressItemSolve *progressItemSolve);  //TODO PK <Scalar>
     bool solve_init_variables();
 
     inline virtual void update_time_functions(double time) {}

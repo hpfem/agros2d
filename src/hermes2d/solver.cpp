@@ -44,16 +44,16 @@ SolutionArray<Scalar>::~SolutionArray()
 {
     logMessage("SolutionArray::~SolutionArray()");
 
-    if (sln)
-    {
-        delete sln;
-        sln = NULL;
-    }
-
     if (space)
     {
         delete space;
         space = NULL;
+    }
+
+    if (sln)
+    {
+        // delete sln;
+        sln = NULL;
     }
 }
 
@@ -142,39 +142,25 @@ SolverAgros<Scalar>::SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormA
 
     matrixSolver = Util::scene()->problemInfo()->matrixSolver;
 
+    weakFormsType = Util::scene()->problemInfo()->weakFormsType;
+
     m_progressItemSolve = progressItemSolve;
     m_wf = wf;
     isError = false;
 }
 
 template <typename Scalar>
-void SolverAgros<Scalar>::initCalculation()
+void SolverAgros<Scalar>::readMesh()
 {
     // load the mesh file
     mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
     refineMesh(mesh, true, true);
+}
 
-    qDebug() << "nodes: " << mesh->get_num_nodes();
-    qDebug() << "elements: " << mesh->get_num_elements();
 
-    Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select = NULL;
-    switch (adaptivityType)
-    {
-    case AdaptivityType_H:
-        select = new Hermes::Hermes2D::RefinementSelectors::HOnlySelector<Scalar>();
-        break;
-    case AdaptivityType_P:
-        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
-                                                                                        Util::config()->convExp,
-                                                                                        H2DRS_DEFAULT_ORDER);
-        break;
-    case AdaptivityType_HP:
-        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
-                                                                                        Util::config()->convExp,
-                                                                                        H2DRS_DEFAULT_ORDER);
-        break;
-    }
-
+template <typename Scalar>
+void SolverAgros<Scalar>::createSpace()
+{
     // essential boundary conditions
     Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs; //TODO PK <double>
     for (int i = 0; i < numberOfSolution; i++)
@@ -196,30 +182,30 @@ void SolverAgros<Scalar>::initCalculation()
                 Hermes::Hermes2D::EssentialBoundaryCondition<Scalar> *custom_form = NULL;
 
                 // compiled form
-                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+                if (weakFormsType == WeakFormsType_Compiled)
                 {
                     /*
-                    custom_form = factoryMatrixFormEssential<Scalar>(problemId,
-                                                                form->i - 1, form->j - 1,
-                                                                QString::number(i + 1).toStdString(),
-                                                                boundary);
-                    */
+                custom_form = factoryMatrixFormEssential<Scalar>(problemId,
+                                                            form->i - 1, form->j - 1,
+                                                            QString::number(i + 1).toStdString(),
+                                                            boundary);
+                */
                 }
 
-                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+                if (!custom_form && weakFormsType == WeakFormsType_Compiled)
                     qDebug() << "Cannot find compiled VectorFormEssential().";
 
                 // interpreted form
-                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
+                if (!custom_form || weakFormsType == WeakFormsType_Interpreted)
                 {
                     /*
-                    if (form->expression == "")
-                    {
-                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCConst<double>(form->i - 1,
-                                                                                            boundary->values[it->second->id].number());
-                    }
-                    else
-                    */
+                if (form->expression == "")
+                {
+                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCConst<double>(form->i - 1,
+                                                                                        boundary->values[it->second->id].number());
+                }
+                else
+                */
                     {
                         CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
                                                                                                 form->expression,
@@ -234,25 +220,10 @@ void SolverAgros<Scalar>::initCalculation()
                     bcs[form->i - 1]->add_boundary_condition(custom_form);
                 }
             }
-            /*
-
-            if (boundary_type)
-            {
-                for (std::map<int, Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->essential.begin();
-                     it != boundary_type->essential.end(); ++it)
-                {
-                    // bcs[it->first - 1]->add_boundary_condition(
-                    // new Hermes::Hermes2D::DefaultEssentialBCConst<double>(QString::number(i+1).toStdString(), //TODO PK <double>
-                    //                                                                                                  boundary->values[it->second->id].number()));
-
-                    CustomExactSolution<double> *exact = new CustomExactSolution<double>(mesh, "sin(1/(ALPHA+sqrt(x^2+y^2)))");
-                    bcs[it->first - 1]->add_boundary_condition(new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i+1).toStdString(), exact));
-                }
-            }
-            */
         }
     }
 
+    // create space
     for (int i = 0; i < numberOfSolution; i++)
     {
         space.push_back(new Hermes::Hermes2D::H1Space<Scalar>(mesh, bcs[i], polynomialOrder));
@@ -262,22 +233,43 @@ void SolverAgros<Scalar>::initCalculation()
             if (Util::scene()->labels[j]->material != Util::scene()->materials[0])
                 space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,
                                                QString::number(j).toStdString());
+    }
 
-        // solution agros array
-        solution.push_back(new Hermes::Hermes2D::Solution<double>);
+}
 
+template <typename Scalar>
+void SolverAgros<Scalar>::initSelectors()
+{
+    // set adaptivity selector
+    select = NULL;
+    switch (adaptivityType)
+    {
+    case AdaptivityType_H:
+        select = new Hermes::Hermes2D::RefinementSelectors::HOnlySelector<Scalar>();
+        break;
+    case AdaptivityType_P:
+        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
+                                                                                        Util::config()->convExp,
+                                                                                        H2DRS_DEFAULT_ORDER);
+        break;
+    case AdaptivityType_HP:
+        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
+                                                                                        Util::config()->convExp,
+                                                                                        H2DRS_DEFAULT_ORDER);
+        break;
+    }
+
+    // create types of projection and selectors
+    for (int i = 0; i < numberOfSolution; i++)
+    {
         if (adaptivityType != AdaptivityType_None)
         {
             // add norm
             projNormType.push_back(Util::config()->projNormType);
             // add refinement selector
             selector.push_back(select);
-            // reference solution
-            solutionReference.push_back(new Hermes::Hermes2D::Solution<Scalar>());
         }
     }
-
-    qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(space);
 }
 
 template <typename Scalar>
@@ -286,12 +278,7 @@ void SolverAgros<Scalar>::cleanup()
     // delete mesh
     //delete mesh;
 
-    // delete space
-    for (unsigned int i = 0; i < space.size(); i++)
-    {
-        // delete space.at(i)->get_mesh();
-        delete space.at(i);
-    }
+    // clear space vector (space is deleted in SolutionArray)
     space.clear();
 
     // delete last solution
@@ -299,18 +286,15 @@ void SolverAgros<Scalar>::cleanup()
         delete solution.at(i);
     solution.clear();
 
-    if(adaptivityType != AdaptivityType_None){
-        // delete reference solution
-        for (int i = 0; i < solutionReference.size(); i++)
-            delete solutionReference.at(i);
-        solutionReference.clear();
+    // delete reference solution
+    for (int i = 0; i < solutionReference.size(); i++)
+        delete solutionReference.at(i);
+    solutionReference.clear();
 
-        // delete selector
-        //if (select) delete select;
-        for (int i = 0; i < selector.size(); i++)
-            delete selector.at(i);
-        selector.clear();
-    }
+    // delete selector
+    if (select)
+        delete select;
+    selector.clear();
 }
 
 template <typename Scalar>
@@ -348,9 +332,9 @@ bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space
     return true;
 }
 
-
 template <typename Scalar>
-Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray()
+Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceParam,
+                                                                   Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionParam)
 {
     QTime time;
 
@@ -359,7 +343,50 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
 
     double error = 0.0;
 
-    initCalculation();
+    // new solution
+    if (spaceParam.empty())
+    {
+        // read mesh from file
+        readMesh();
+
+        // create essential boundary conditions and space
+        createSpace();
+    }
+    else
+    {
+        // forced one step
+        adaptivitySteps = 1;
+        adaptivityTolerance = 0.0;
+        // forced hp-adaptivity
+        if (adaptivityType == AdaptivityType_None)
+            adaptivityType = AdaptivityType_HP;
+
+        space = spaceParam;
+        mesh = space[0]->get_mesh();
+    }
+
+    qDebug() << "nodes: " << mesh->get_num_nodes();
+    qDebug() << "elements: " << mesh->get_num_elements();
+    qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(space);
+
+    // create solutions
+    for (int i = 0; i < numberOfSolution; i++)
+    {
+        // solution agros array
+        if (solutionParam.empty())
+            solution.push_back(new Hermes::Hermes2D::Solution<double>);
+        else
+            solution.push_back(solutionParam.at(i));
+
+        if (adaptivityType != AdaptivityType_None)
+        {
+            // reference solution
+            solutionReference.push_back(new Hermes::Hermes2D::Solution<Scalar>());
+        }
+    }
+
+    // init selectors
+    initSelectors();
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) == 0)
@@ -396,30 +423,32 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
         Util::scene()->problemInfo()->module()->update_time_functions(actualTime);
 
         m_wf->set_current_time(actualTime);
-        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-            for (int i = 0; i < solution.size(); i++){
+        if (analysisType == AnalysisType_Transient)
+            for (int i = 0; i < solution.size(); i++)
                 m_wf->solution.push_back(solutionArrayList.at(solutionArrayList.size() - solution.size() + i)->sln );
-            }
         m_wf->delete_all();
         m_wf->registerForms();
 
         int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
         int actualAdaptivitySteps = -1;
-        for (int i = 0; i<maxAdaptivitySteps; i++)
+        for (int i = 0; i <= maxAdaptivitySteps; i++)
         {
             if (adaptivityType == AdaptivityType_None)
             {
-                if(!solveOneProblem(space, solution))
+                if (!solveOneProblem(space, solution))
                     isError = true;
             }
             else
             {
-                Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceReference = *Hermes::Hermes2D::Space<Scalar>::construct_refined_spaces(space);
+                Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceReference
+                        = *Hermes::Hermes2D::Space<Scalar>::construct_refined_spaces(space);
 
-                if(!solveOneProblem(spaceReference, solutionReference)){
+                if (!solveOneProblem(spaceReference, solutionReference))
+                {
                     isError = true;
                     break;
                 }
+
                 // project the fine mesh solution onto the coarse mesh.
                 Hermes::Hermes2D::OGProjection<Scalar>::project_global(space, solutionReference, solution, matrixSolver);
 
@@ -432,7 +461,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
                 // emit signal
                 m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
                                                  arg(error, 0, 'f', 3).
-                                                 arg(i + 1).
+                                                 arg(i).
                                                  arg(maxAdaptivitySteps).
                                                  arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
                                                  arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
@@ -447,7 +476,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
                                                                 Util::config()->threshold,
                                                                 Util::config()->strategy,
                                                                 Util::config()->meshRegularity);
-                actualAdaptivitySteps = i+1;
+                actualAdaptivitySteps = i;
 
                 if (m_progressItemSolve->isCanceled())
                 {
@@ -462,17 +491,15 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solveSolutionArray(
                     delete spaceReference.at(i);
                 }
                 spaceReference.clear();
-
             }
         }
-
 
         // output
         if (!isError)
         {
-            for (int i = 0; i < numberOfSolution; i++){
-                solutionArrayList.push_back(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
-            }
+            for (int i = 0; i < numberOfSolution; i++)
+                solutionArrayList.push_back(solutionArray(solution.at(i), space.at(i),
+                                                          error, actualAdaptivitySteps, (n+1)*timeStep));
 
             if (analysisType == AnalysisType_Transient)
                 m_progressItemSolve->emitMessage(QObject::tr("Transient time step (%1/%2): %3 s").

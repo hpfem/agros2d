@@ -942,6 +942,46 @@ void ProgressItemSolve::solve()
 
 // *********************************************************************************************
 
+ProgressItemSolveAdaptiveStep::ProgressItemSolveAdaptiveStep() : ProgressItemSolve()
+{
+    logMessage("ProgressItemSolve::ProgressItemSolveAdaptive()");
+
+    m_name = tr("Adapt. solver");
+}
+
+void ProgressItemSolveAdaptiveStep::solve()
+{
+    logMessage("ProgressItemSolveAdaptive::solve()");
+
+    // benchmark
+    QTime time;
+    time.start();
+
+    emit message(tr("Problem analysis: %1 (%2, %3)").
+                 arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)).
+                 arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
+                 arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false, 1);
+
+    emit message(tr("Solver was started: %1 ").arg(matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver)), false, 1);
+
+    Hermes::vector<SolutionArray<double> *> solutionArrayList = Util::scene()->problemInfo()->module()->solveAdaptiveStep(this);  //TODO PK <double>
+
+    if (solutionArrayList.size() > 0)
+    {
+        emit message(tr("Problem was solved"), false, 2);
+        Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
+    }
+    else
+    {
+        emit message(tr("Problem was not solved"), true, 0);
+        Util::scene()->sceneSolution()->setTimeElapsed(0);       
+    }
+
+    Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
+}
+
+// *********************************************************************************************
+
 ProgressItemProcessView::ProgressItemProcessView() : ProgressItem()
 {
     logMessage("ProgressItemProcessView::ProgressItemProcessView()");
@@ -1315,7 +1355,7 @@ void ProgressDialog::resetControls(int currentTab)
     {
         btnSaveImage->setDisabled(tabType->currentIndex() == 0);
         btnSaveData->setDisabled(tabType->currentIndex() == 0);
-    }    
+    }
 }
 
 int ProgressDialog::progressSteps()
