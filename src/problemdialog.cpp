@@ -547,7 +547,8 @@ void ProblemDialog::doOpenXML()
         fileName = Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml";
 
         if (!QFile::exists(fileName))
-            if (QMessageBox::question(this, tr("Custom module file"), tr("Custom module doesn't exist. Could I create it?"), tr("&Yes"), tr("&No")) == QMessageBox::Ok)
+            if (QMessageBox::question(this, tr("Custom module file"), tr("Custom module doesn't exist. Could I create it?"),
+                                      QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
             {
                 // copy custom module
                 QFile::copy(datadir() + "/resources/custom.xml",
