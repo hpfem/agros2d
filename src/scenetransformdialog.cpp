@@ -31,7 +31,7 @@ SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
-    setMinimumSize(sizeHint());
+    setMinimumSize(350, 225);
     setMaximumSize(minimumSize());
 }
 

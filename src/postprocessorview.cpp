@@ -24,7 +24,7 @@
 #include "scene.h"
 #include "sceneview.h"
 
-PostprocessorView::PostprocessorView(SceneView *sceneView, QWidget *parent) : QDockWidget(tr("Postprocessor properties"), parent)
+PostprocessorView::PostprocessorView(SceneView *sceneView, QWidget *parent) : QDockWidget(tr("View Properties"), parent)
 {
     logMessage("PostprocessorView::PostprocessorView()");
 
@@ -737,6 +737,7 @@ void PostprocessorView::doWorkspaceDefault()
 
     txtGridStep->setText(QString::number(GRIDSTEP));
     chkShowGrid->setChecked(SHOWGRID);
+    chkSnapToGrid->setEnabled(SHOWGRID);
     chkSnapToGrid->setChecked(SNAPTOGRID);
 
     lblSceneFontExample->setFont(FONT);

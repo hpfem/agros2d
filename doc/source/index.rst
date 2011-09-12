@@ -25,6 +25,7 @@ Getting Started
    ./getting_started/editing_geometry.rst
    ./getting_started/solving_problem.rst
    ./getting_started/processing_results.rst
+   ./getting_started/shortcut_keys.rst
 
 Mathematical Background
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -80,13 +81,13 @@ Changelog
 Links
 -----
 
-  - `Agros2D project homepage <http://agros2d.org>`_
-  - `Agros2D online user documentation <http://hpfem.org/agros2d/help/index.html>`_
-  - `Agros2D mailing list <http://groups.google.com/group/agros2d>`_
+* `Agros2D project homepage <http://agros2d.org>`_
+* `Agros2D online user documentation <http://hpfem.org/agros2d/help/index.html>`_
+* `Agros2D mailing list <http://groups.google.com/group/agros2d>`_
 
-  - `Hermes project homepage <http://hpfem.org/hermes>`_
-  - `Hermes online user documentation <http://hpfem.org/hermes/doc/index.html>`_
-  - `Hermes mailing list <http://groups.google.com/group/hermes2d>`_ (Hermes2D)
+* `Hermes project homepage <http://hpfem.org/hermes>`_
+* `Hermes online user documentation <http://hpfem.org/hermes/doc/index.html>`_
+* `Hermes mailing list <http://groups.google.com/group/hermes2d>`_ (Hermes2D)
 
 Indices and Tables
 ------------------
