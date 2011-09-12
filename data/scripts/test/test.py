@@ -17,7 +17,7 @@ execfile("test_magnetic_steady_axisymmetric.py")
 
 # harmonic magnetic field
 execfile("test_magnetic_harmonic_planar.py")
-# execfile("test_magnetic_harmonic_axisymmetric.py")
+execfile("test_magnetic_harmonic_axisymmetric.py")
 
 # heat transfer
 execfile("test_heat_transfer_steady_planar.py")
@@ -26,7 +26,7 @@ execfile("test_heat_transfer_steady_axisymmetric.py")
 
 # structural mechanics
 execfile("test_elasticity_planar.py")
-# execfile("test_elasticity_axisymmetric.py")
+execfile("test_elasticity_axisymmetric.py")
 
 # electromagnetic wave - TE
 # execfile("test_rf_planar.py")
