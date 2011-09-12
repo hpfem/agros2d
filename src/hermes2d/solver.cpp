@@ -17,8 +17,9 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "module.h"
 #include "solver.h"
+
+#include "module.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenemarker.h"
@@ -52,7 +53,7 @@ SolutionArray<Scalar>::~SolutionArray()
 
     if (sln)
     {
-        // delete sln;
+        delete sln;
         sln = NULL;
     }
 }
@@ -354,15 +355,18 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
     }
     else
     {
-        // forced one step
+        // single adaptive step
         adaptivitySteps = 1;
         adaptivityTolerance = 0.0;
+
         // forced hp-adaptivity
         if (adaptivityType == AdaptivityType_None)
             adaptivityType = AdaptivityType_HP;
 
-        space = spaceParam;
-        mesh = space[0]->get_mesh();
+        mesh = new Hermes::Hermes2D::Mesh();
+        mesh->copy(spaceParam[0]->get_mesh());
+        for (int i = 0; i < numberOfSolution; i++)
+            space.push_back(spaceParam[i]->dup(mesh));
     }
 
     qDebug() << "nodes: " << mesh->get_num_nodes();
@@ -373,10 +377,12 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
     for (int i = 0; i < numberOfSolution; i++)
     {
         // solution agros array
-        if (solutionParam.empty())
-            solution.push_back(new Hermes::Hermes2D::Solution<double>);
-        else
-            solution.push_back(solutionParam.at(i));
+        Hermes::Hermes2D::Solution<double> *sln = new Hermes::Hermes2D::Solution<double>();
+        solution.push_back(sln);
+
+        // single adaptive step
+        if (!solutionParam.empty())
+            sln->copy(solutionParam.at(i));
 
         if (adaptivityType != AdaptivityType_None)
         {
@@ -431,7 +437,8 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
 
         int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
         int actualAdaptivitySteps = -1;
-        for (int i = 0; i <= maxAdaptivitySteps; i++)
+        int i = 0;
+        do
         {
             if (adaptivityType == AdaptivityType_None)
             {
@@ -440,9 +447,11 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
             }
             else
             {
+                // construct refined spaces
                 Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceReference
                         = *Hermes::Hermes2D::Space<Scalar>::construct_refined_spaces(space);
 
+                // solve reference problem
                 if (!solveOneProblem(spaceReference, solutionReference))
                 {
                     isError = true;
@@ -452,16 +461,16 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
                 // project the fine mesh solution onto the coarse mesh.
                 Hermes::Hermes2D::OGProjection<Scalar>::project_global(space, solutionReference, solution, matrixSolver);
 
-                // Calculate element errors and total error estimate.
+                // calculate element errors and total error estimate.
                 Hermes::Hermes2D::Adapt<Scalar> adaptivity(space, projNormType);
 
-                // Calculate error estimate for each solution component and the total error estimate.
+                // calculate error estimate for each solution component and the total error estimate.
                 error = adaptivity.calc_err_est(solution, solutionReference) * 100;
 
                 // emit signal
                 m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
                                                  arg(error, 0, 'f', 3).
-                                                 arg(i).
+                                                 arg(i + 1).
                                                  arg(maxAdaptivitySteps).
                                                  arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
                                                  arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
@@ -472,11 +481,12 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
                 {
                     break;
                 }
-                if (i != maxAdaptivitySteps-1) adaptivity.adapt(selector,
-                                                                Util::config()->threshold,
-                                                                Util::config()->strategy,
-                                                                Util::config()->meshRegularity);
-                actualAdaptivitySteps = i;
+                adaptivity.adapt(selector,
+                                 Util::config()->threshold,
+                                 Util::config()->strategy,
+                                 Util::config()->meshRegularity);
+
+                actualAdaptivitySteps = i + 1;
 
                 if (m_progressItemSolve->isCanceled())
                 {
@@ -492,7 +502,10 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
                 }
                 spaceReference.clear();
             }
+
+            i++;
         }
+        while (i < maxAdaptivitySteps);
 
         // output
         if (!isError)

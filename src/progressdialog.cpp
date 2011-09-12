@@ -1488,7 +1488,7 @@ void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
     }
 
     // update
-    if (position % 1 == 0) QApplication::processEvents();
+    if (position % 3 == 0) QApplication::processEvents();
     lstMessage->update();
 }
 

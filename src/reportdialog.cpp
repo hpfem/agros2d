@@ -536,8 +536,8 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
         dict.SetIntValue("SOLVER_ELEMENTS", Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements());
         dict.SetValue("SOLVER_DOFS_LABEL", tr("DOFs:").toStdString());
 
-        if (Util::scene()->sceneSolution()->sln()->get_space())
-            dict.SetIntValue("SOLVER_DOFS", Util::scene()->sceneSolution()->sln()->get_space()->get_num_dofs());
+        if (Util::scene()->sceneSolution()->space())
+            dict.SetIntValue("SOLVER_DOFS", Util::scene()->sceneSolution()->space()->get_num_dofs());
 
         dict.SetValue("SOLVER_TIMEELAPSED_LABEL", tr("Elapsed time:").toStdString());
         dict.SetValue("SOLVER_TIMEELAPSED", time.toString("mm:ss.zzz").toStdString());

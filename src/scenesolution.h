@@ -76,7 +76,9 @@ public:
     void setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial);
 
     // solution
+    SolutionArray<Scalar> *solutionArray(int i = -1);
     Hermes::Hermes2D::Solution<Scalar> *sln(int i = -1);
+    Hermes::Hermes2D::Space<Scalar> *space(int i = -1);
     void setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> *> solutionArrayList);
     inline Hermes::vector<SolutionArray<Scalar> *> solutionArrayList() { return m_solutionArrayList; }
 

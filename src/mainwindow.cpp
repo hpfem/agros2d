@@ -548,9 +548,9 @@ void MainWindow::createToolBars()
     tlbProblem->addAction(sceneView->actPostprocessorModeSurfaceIntegral);
     tlbProblem->addAction(sceneView->actPostprocessorModeVolumeIntegral);
     tlbProblem->addSeparator();
+    tlbProblem->addAction(Util::scene()->actProblemProperties);
     tlbProblem->addAction(actCreateMesh);
     tlbProblem->addAction(actSolve);
-    tlbProblem->addAction(Util::scene()->actProblemProperties);
     tlbProblem->addAction(actSolveAdaptiveStep);
 
     tlbTools = addToolBar(tr("Tools"));
@@ -1422,7 +1422,7 @@ void MainWindow::doExportVTKOrder()
         if (QFile::exists(fileName))
             QFile::remove(fileName);
 
-        Util::scene()->sceneSolution()->ordView().save_orders_vtk(Util::scene()->sceneSolution()->sln(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution())->get_space(),
+        Util::scene()->sceneSolution()->ordView().save_orders_vtk(Util::scene()->sceneSolution()->space(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
                                                                   fileName.toStdString().c_str());
 
         if (!fileName.isEmpty())

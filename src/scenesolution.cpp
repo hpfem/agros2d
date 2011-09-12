@@ -270,9 +270,9 @@ void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement element)
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
+SolutionArray<Scalar> *SceneSolution<Scalar>::solutionArray(int i)
 {
-    logMessage("SceneSolution::sln()");
+    logMessage("SceneSolution::solutionArray()");
 
     int currentTimeStep = i;
     if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->problemInfo()->module()->number_of_solution())
@@ -281,10 +281,26 @@ Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
         if (currentTimeStep == -1)
             currentTimeStep = m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution();
 
-        if (m_solutionArrayList.at(currentTimeStep)->sln)
-            return m_solutionArrayList.at(currentTimeStep)->sln;
+        if (m_solutionArrayList.at(currentTimeStep))
+            return m_solutionArrayList.at(currentTimeStep);
     }
     return NULL;
+}
+
+template <typename Scalar>
+Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
+{
+    logMessage("SceneSolution::sln()");
+
+    return solutionArray(i)->sln;
+}
+
+template <typename Scalar>
+Hermes::Hermes2D::Space<Scalar> *SceneSolution<Scalar>::space(int i)
+{
+    logMessage("SceneSolution::space()");
+
+    return solutionArray(i)->space;
 }
 
 template <typename Scalar>
