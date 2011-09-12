@@ -1,5 +1,5 @@
 # model
-newdocument(name="Magnetostatic", type="planar",
+newdocument(name="Magnetic harmonic - planar", type="planar",
                         physicfield="magnetic", analysistype="harmonic",
                         frequency=50,
                         numberofrefinements=1, polynomialorder=3,
