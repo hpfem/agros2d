@@ -31,12 +31,12 @@
                                      (E / (2.0*(1.0 + nu))) * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" />
             <matrix i="1" j="2" planar="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udy * vdx)
                                         + (E / (2.0*(1.0 + nu))) * (udx * vdy)"
-                                axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * udr * vdz + uval * vdz) +
-                                     (E / (2.0*(1.0 + nu))) * r * udz * vdr" />
+                                axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * udz * vdr + udz * vval) +
+                                        (E / (2.0*(1.0 + nu))) * r * udr * vdz" />
             <matrix i="2" j="1" planar="(E / (2.0*(1.0 + nu))) * (udy * vdx)
                                         + ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udx * vdy)"
-                                axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * udz * vdr + udz * vval) +
-                                     (E / (2.0*(1.0 + nu))) * r * udr * vdz" />
+                                axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * udr * vdz + uval * vdz) +
+                                         (E / (2.0*(1.0 + nu))) * r * udz * vdr" />
             <matrix i="2" j="2" planar="(E / (2.0*(1.0 + nu))) * (udx * vdx)
                                         + (((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udy * vdy)"
                                 axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * udz * vdz +
@@ -50,12 +50,12 @@
                                      - r * fx * vval  - r * ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * (vdr + vval / r)" />
             <vector i="1" j="2" planar="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updy * vdx)
                                         + (E / (2.0*(1.0 + nu))) * (updx * vdy)"
-                                axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * updr * vdz + upval * vdz) +
-                                     (E / (2.0*(1.0 + nu))) * r * updz * vdr" />
+                                axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * updz * vdr + updz * vval) +
+                                        (E / (2.0*(1.0 + nu))) * r * updr * vdz" />
             <vector i="2" j="1" planar="(E / (2.0*(1.0 + nu))) * (updy * vdx)
                                         + ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updx * vdy)"
-                                axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * updz * vdr + updz * vval) +
-                                     (E / (2.0*(1.0 + nu))) * r * updr * vdz" />
+                                axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * updr * vdz + upval * vdz) +
+                                       (E / (2.0*(1.0 + nu))) * r * updz * vdr" />
             <vector i="2" j="2" planar="(E / (2.0*(1.0 + nu))) * (updx * vdx)
                                         + (((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updy * vdy)
                                         - fy * vval - ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdy"

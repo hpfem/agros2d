@@ -131,7 +131,7 @@
             <boundary id="magnetic_surface_current" name="Surface current">
                 <item id="magnetic_surface_current_real" />
 
-                <vector i="1" j="1" planar="Jr * vval" axi="Jr * vval" />
+                <vector i="1" j="1" planar="-Jr * vval" axi="-Jr * vval" />
             </boundary>
         </steadystate>
 
@@ -146,7 +146,7 @@
             <boundary id="magnetic_surface_current" name="Surface current">
                 <item id="magnetic_surface_current_real" />
 
-                <vector i="1" j="1" planar="Jr * vval" axi="Jr * vval" />
+                <vector i="1" j="1" planar="-Jr * vval" axi="-Jr * vval" />
             </boundary>
         </transient>
 
@@ -165,8 +165,8 @@
                 <item id="magnetic_surface_current_real" />
                 <item id="magnetic_surface_current_imag" />
 
-                <vector i="1" j="1" planar="Jr * vval" axi="Jr * vval" />
-                <vector i="2" j="2" planar="Ji * vval" axi="Ji * vval" />
+                <vector i="1" j="1" planar="-Jr * vval" axi="-Jr * vval" />
+                <vector i="2" j="2" planar="-Ji * vval" axi="-Ji * vval" />
             </boundary>
         </harmonic>
     </boundary>
