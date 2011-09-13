@@ -12,12 +12,20 @@ class NumericStringParser(object):
             self.exprStack.append( 'unary -' )
 
     def __init__(self, symbols, replaces, variables, without_variables):
+        
+        self.greek_letters = ('alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 
+                         'eta', 'theta', 'iota', 'kappa', 'lambda', 'mu', 'nu', 
+                         'xi', 'omicron', 'pi', 'rho', 'sigma', 'tau', 
+                         'upsilon', 'phi', 'chi', 'psi', 'omega')
+        
+        self.functions = ('cos', 'sin')
+        
         self.string = ''            
         self.replaces = replaces
         self.variables = variables
         self.without_variables = without_variables         
         point = Literal( "." )
-        e     = CaselessLiteral( "E" )
+        e = CaselessLiteral( "E" )
         fnumber = Combine( Word( "+-"+nums, nums ) + 
                            Optional( point + Optional( Word( nums ) ) ) +
                            Optional( e + Word( "+-"+nums, nums ) ) )
@@ -49,25 +57,63 @@ class NumericStringParser(object):
         term = factor + ZeroOrMore( ( multop + factor ).setParseAction( self.pushFirst ) )
         expr << term + ZeroOrMore( ( addop + term ).setParseAction( self.pushFirst ) )
         self.bnf = expr
-   
+    
     def parse(self,num_string):
         self.exprStack=[]        
         return self.bnf.parseString(num_string,True)
         
-    def get_expression(self, expression_list):        
-        string = ''                
+#    def translate_to_cpp(self, expression_list):        
+#        string = ''                        
+#        for item in expression_list:                                            
+#            if (type(item) is list):                    
+#                string += '(' + self.translate_to_cpp(item) + ')'                
+#            else:                                                
+#                if item in self.variables:                   
+#                    if self.without_variables:
+#                        string += '1'
+#                    else:
+#                        string += item + '.value()'                    
+#                else:    
+#                    if item in self.replaces.iterkeys(): 
+#                        string += self.replaces[item]
+#                    else:
+#                        string += item                                  
+#        return string
+
+    def translate_to_cpp(self, expression_list):        
+        string = ''                        
+        expression_list.reverse()
+        while not(len(expression_list) == 0):
+            item = expression_list.pop()                                                       
+            if (type(item) is list):                    
+                string += '(' + self.translate_to_cpp(item) + ')'                
+            elif item in self.functions:
+                string += item + '(' + self.translate_to_cpp(expression_list.pop()) + ')'                 
+            else:                                                
+                if item in self.variables:                   
+                    if self.without_variables:
+                        string += '1'
+                    else:
+                        string += item + '.value()'                    
+                else:    
+                    if item in self.replaces.iterkeys(): 
+                        string += self.replaces[item]
+                    else:
+                        string += item                                  
+        return string
+    
+    def translate_to_latex(self, expression_list):
+        string = ''                        
         for item in expression_list:                                            
             if (type(item) is list):                    
-                string += '(' + self.get_expression(item) + ')'                
-            else:                                
-               if item in self.variables:                   
-                   if self.without_variables:
-                       string += '1'
-                   else:
-                       string += item + '.value()'                    
-               else:    
-                   if item in self.replaces.iterkeys(): 
-                       string += self.replaces[item]
-                   else:
-                      string += item                                  
+                string += '(' + self.translate_to_latex(item) + ')'                
+            else:                                                
+                if item in self.replaces.iterkeys(): 
+                    string += self.replaces[item]                    
+                elif item in self.greek_letters:
+                    string += '\\' + item
+                elif item in self.variables:
+                    string += item[0] + '_{' + item[1:] + '}'
+                else:
+                    string += item                                  
         return string
