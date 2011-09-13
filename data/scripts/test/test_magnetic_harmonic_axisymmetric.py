@@ -1,6 +1,5 @@
 # model
-#newdocument("Harmonic", "axisymmetric", "magnetic", 1, 3, "disabled", 1, 1, 100, "harmonic", 1, 1, 0)
-newdocument(name="Magnetostatic", type="axisymmetric",
+newdocument(name="Magnetic harmonic - axisymmetric", type="axisymmetric",
                         physicfield="magnetic", analysistype="harmonic",
                         frequency=100,
                         numberofrefinements=1, polynomialorder=3,
@@ -11,9 +10,6 @@ newdocument(name="Magnetostatic", type="axisymmetric",
 addboundary("A = 0", "magnetic_potential", {"Ar" : 0})
 
 # materials
-#addmaterial("Coil", 1e6, 0, 1, 0, 0, 0, 0, 0, 0)
-#addmaterial("Iron", 0, 0, 50, 5e3, 0, 0, 0, 0, 0)
-#addmaterial("Air", 0, 0, 1, 0, 0, 0, 0, 0, 0)
 addmaterial("Coil", {"mur" : 1, "Jer" : 1e6})
 addmaterial("Iron", {"mur" : 50, "gamma" : 5e3})
 addmaterial("Air", {"mur" : 1})

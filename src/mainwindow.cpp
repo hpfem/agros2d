@@ -249,9 +249,9 @@ void MainWindow::createActions()
     actRedo->setShortcuts(QKeySequence::Redo);
     actRedo->setStatusTip(tr("Redo operation"));
 
-    actCopy = new QAction(icon("edit-copy"), tr("Copy"), this);
+    actCopy = new QAction(icon("edit-copy"), tr("Copy image to clipboard"), this);
     actCopy->setShortcuts(QKeySequence::Copy);
-    actCopy->setStatusTip(tr("Copy image to clipboard."));
+    actCopy->setStatusTip(tr("Copy image from workspace to clipboard."));
     connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopy()));
 
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
@@ -369,29 +369,25 @@ void MainWindow::createMenus()
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actDocumentOpen);
+    mnuFile->addMenu(mnuRecentFiles);
+    mnuFile->addSeparator();
     mnuFile->addAction(actDocumentSave);
     if (Util::config()->showExperimentalFeatures)
         mnuFile->addAction(actDocumentSaveWithSolution);
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
-    mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addMenu(mnuFileImportExport);
     mnuFile->addMenu(mnuServer);
-    mnuFile->addAction(actDocumentClose);
     mnuFile->addSeparator();
-
-    mnuFile->addSeparator();
-    mnuFile->addAction(actLoadBackground);
 #ifndef Q_WS_MAC
     mnuFile->addSeparator();
+    mnuFile->addAction(actDocumentClose);
     mnuFile->addAction(actExit);
 #endif
 
     mnuEdit = menuBar()->addMenu(tr("E&dit"));
     mnuEdit->addAction(actUndo);
     mnuEdit->addAction(actRedo);
-    mnuEdit->addSeparator();
-    mnuEdit->addAction(actCopy);
     mnuEdit->addSeparator();
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
 #ifdef Q_WS_X11
@@ -416,12 +412,10 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneView->actSceneZoomIn);
     mnuView->addAction(sceneView->actSceneZoomOut);
     mnuView->addAction(sceneView->actSceneZoomRegion);
-    mnuView->addSeparator();
     mnuView->addMenu(mnuProjection);
     mnuView->addSeparator();
-    mnuView->addAction(sceneView->actSceneShowGrid);
-    mnuView->addAction(sceneView->actSceneSnapToGrid);
-    mnuView->addAction(sceneView->actSceneShowRulers);
+    mnuView->addAction(actCopy);
+    mnuView->addAction(actLoadBackground);
     mnuView->addSeparator();
     mnuView->addMenu(mnuShowPanels);
     mnuView->addSeparator();
@@ -477,16 +471,18 @@ void MainWindow::createMenus()
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
+    mnuHelp->addAction(actOnlineHelp);
     mnuHelp->addAction(actHelpShortCut);
     mnuHelp->addAction(actCollaborationServer);
-    mnuHelp->addAction(actOnlineHelp);
-    mnuHelp->addAction(actCheckVersion);
 #ifndef Q_WS_MAC
     mnuHelp->addSeparator();
 #else
     mnuHelp->addAction(actOptions); // will be added to "Agros2D" MacOSX menu
     mnuHelp->addAction(actExit);    // will be added to "Agros2D" MacOSX menu
 #endif
+    mnuHelp->addSeparator();
+    mnuHelp->addAction(actCheckVersion);
+    mnuHelp->addSeparator();
     mnuHelp->addAction(actAbout);   // will be added to "Agros2D" MacOSX menu
     mnuHelp->addAction(actAboutQt); // will be added to "Agros2D" MacOSX menu
 }
@@ -554,6 +550,7 @@ void MainWindow::createToolBars()
     tlbProblem->addSeparator();
     tlbProblem->addAction(actCreateMesh);
     tlbProblem->addAction(actSolve);
+    tlbProblem->addAction(Util::scene()->actProblemProperties);
     tlbProblem->addAction(actSolveAdaptiveStep);
 
     tlbTools = addToolBar(tr("Tools"));
@@ -564,8 +561,6 @@ void MainWindow::createToolBars()
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actChart);
     tlbTools->addAction(actScriptEditor);
-    tlbTools->addSeparator();
-    tlbTools->addAction(Util::scene()->actProblemProperties);
 
     tlbTransient = addToolBar(tr("Transient"));
 #ifdef Q_WS_MAC
@@ -1287,7 +1282,7 @@ void MainWindow::doHelpShortCut()
 {
     logMessage("MainWindow::doHelpShortCut()");
 
-    showPage("getting_started/basic_control.html#shortcut-keys");
+    showPage("getting_started/shortcut_keys.html");
 }
 
 void MainWindow::doCollaborationServer()

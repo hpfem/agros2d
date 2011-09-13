@@ -27,7 +27,7 @@
 #include "hermes2d/module.h"
 
 
-PostprocessorView::PostprocessorView(SceneView *sceneView, QWidget *parent) : QDockWidget(tr("Postprocessor properties"), parent)
+PostprocessorView::PostprocessorView(SceneView *sceneView, QWidget *parent) : QDockWidget(tr("View Properties"), parent)
 {
     logMessage("PostprocessorView::PostprocessorView()");
 
@@ -792,6 +792,7 @@ void PostprocessorView::doWorkspaceDefault()
 
     txtGridStep->setText(QString::number(GRIDSTEP));
     chkShowGrid->setChecked(SHOWGRID);
+    chkSnapToGrid->setEnabled(SHOWGRID);
     chkSnapToGrid->setChecked(SNAPTOGRID);
 
     lblSceneFontExample->setFont(FONT);
@@ -894,5 +895,5 @@ void PostprocessorView::doSceneFont()
 
 void PostprocessorView::doShowGridChanged()
 {
-    chkSnapToGrid->setEnabled(!chkShowGrid->isEnabled());
+    chkSnapToGrid->setEnabled(chkShowGrid->isChecked());
 }
