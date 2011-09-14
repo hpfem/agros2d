@@ -4,9 +4,9 @@
   <xs:complexType name="propertiesType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute type="xs:byte" name="steadystate" use="optional"/>
-        <xs:attribute type="xs:byte" name="harmonic" use="optional"/>
-        <xs:attribute type="xs:byte" name="transient" use="optional"/>
+        <xs:attribute type="xs:byte" name="steadystate" use="required"/>
+        <xs:attribute type="xs:byte" name="harmonic" use="required"/>
+        <xs:attribute type="xs:byte" name="transient" use="required"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -20,8 +20,8 @@
       </xs:element>
       <xs:element type="propertiesType" name="properties"/>
     </xs:sequence>
-    <xs:attribute type="xs:string" name="id" use="optional"/>
-    <xs:attribute type="xs:string" name="name" use="optional"/>
+    <xs:attribute type="xs:string" name="id" use="required"/>
+    <xs:attribute type="xs:string" name="name" use="required"/>
   </xs:complexType>
   <xs:complexType name="itemType" mixed="true">
     <xs:choice maxOccurs="unbounded" minOccurs="0">
@@ -29,7 +29,7 @@
 	  <xs:element type="analysisType" name="transient"/>
       <xs:element type="analysisType" name="steadystate"/>
     </xs:choice>
-    <xs:attribute type="xs:string" name="id" use="optional"/>
+    <xs:attribute type="xs:string" name="id" use="required"/>
     <xs:attribute type="xs:float" name="value" use="optional"/>
     <xs:attribute type="xs:string" name="name" use="optional"/>
     <xs:attribute type="xs:string" name="shortname" use="optional"/>
@@ -117,12 +117,7 @@
       <xs:element type="analysisType" name="steadystate"/>
     </xs:choice>
   </xs:complexType>
-  <xs:complexType name="volumeintegralType">
-    <xs:sequence>
-      <xs:element type="itemType" name="item" maxOccurs="unbounded" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="surfaceintegralType">
+  <xs:complexType name="integralType">
     <xs:sequence>
       <xs:element type="itemType" name="item" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
@@ -136,8 +131,8 @@
       <xs:element type="localvariableType" name="localvariable"/>
       <xs:element type="viewType" name="view"/>
       <xs:element type="pointvalueType" name="pointvalue"/>
-      <xs:element type="volumeintegralType" name="volumeintegral"/>
-      <xs:element type="surfaceintegralType" name="surfaceintegral"/>
+      <xs:element type="integralType" name="volumeintegral"/>
+      <xs:element type="integralType" name="surfaceintegral"/>
     </xs:sequence>
   </xs:complexType>
 
