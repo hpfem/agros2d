@@ -391,6 +391,12 @@ namespace mu
       int iStat = 0;
       mu::console() << _T("testing syntax engine...");
 
+      iStat += ThrowTest(_T("1,"), ecUNEXPECTED_EOF);  // incomplete hex definition
+      iStat += ThrowTest(_T("a,"), ecUNEXPECTED_EOF);  // incomplete hex definition
+      iStat += ThrowTest(_T("sin(8),"), ecUNEXPECTED_EOF);  // incomplete hex definition
+      iStat += ThrowTest(_T("(sin(8)),"), ecUNEXPECTED_EOF);  // incomplete hex definition
+      iStat += ThrowTest(_T("a{m},"), ecUNEXPECTED_EOF);  // incomplete hex definition
+
       iStat += EqnTest(_T("(1+ 2*a)"), 3, true);   // Spaces within formula
       iStat += EqnTest(_T("sqrt((4))"), 2, true);  // Multiple brackets
       iStat += EqnTest(_T("sqrt((2)+2)"), 2, true);// Multiple brackets
