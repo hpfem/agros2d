@@ -33,13 +33,16 @@ public:
     SceneBoundaryCustomDialog(SceneBoundary *boundary, QWidget *parent);
 
 protected:
+    QComboBox *cmbType;
+
+    QList<QString> ids;
+    QList<QLabel *> lblLabel;
+    QList<ValueLineEdit *> txtVariable;
+
     void createContent();
 
     void load();
     bool save();
-
-private:
-    QComboBox *cmbType;
 
 private slots:
     void doTypeChanged(int index);
@@ -52,6 +55,10 @@ public:
     SceneMaterialCustomDialog(SceneMaterial *material, QWidget *parent);
 
 protected:
+    QList<QString> ids;
+    QList<QLabel *> lblLabel;
+    QList<ValueLineEdit *> txtVariable;
+
     void createContent();
 
     void load();
