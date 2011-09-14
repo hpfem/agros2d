@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<module>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
     <general id ="rf" name="RF">
         <description>RF.</description>
         <properties steadystate="0" harmonic="2" transient="0" />

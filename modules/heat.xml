@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<module>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
     <general id ="heat" name="Heat transfer">
         <description>Heat transfer is a discipline of thermal engineering that concerns the exchange of thermal energy from one physical system to another. Heat transfer is classified into various mechanisms, such as heat conduction, convection and thermal radiation.</description>
         <properties steadystate="1" harmonic="0" transient="1" />
