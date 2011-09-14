@@ -75,5 +75,7 @@ testWm = test("Energy", volume["Wm"], 0.002273)
 surface = surfaceintegral([12, 13, 14, 15])
 #testFz = test("Maxwell force - z", surface["Fy"], 0.368232)
 
-print("Test: Magnetic steady state - axisymmetric: " + str(point and testA and testB and testBr and testBz and testH and testHr and testHz and testwm 
-and testWm)) # and testFz))
+print("Test: Magnetic steady state - axisymmetric: " + str(point and testA
+                                                           and testB and testBr and testBz
+                                                           and testH and testHr and testHz
+                                                           and testwm and testWm))

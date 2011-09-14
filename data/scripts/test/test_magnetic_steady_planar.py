@@ -60,14 +60,14 @@ testH = test("Magnetic intensity", point["Hr"], 10382.294319)
 testHx = test("Magnetic intensity - x", point["Hrx"], 6695.236126)
 testHy = test("Magnetic intensity - y", point["Hry"], -7935.102302)
 testwm = test("Energy density", point["wm"], 67.727733)
-# testpj = test("Losses density ", point["pj"], 3977.255622)
-# testJiv = test("Current density - induced velocity", point["Jriv"], -1.987738e5)
-# testJ = test("Current density - total", point["Jr"], -1.987738e5)
+testpj = test("Losses density ", point["pj"], 3977.255622)
+testJiv = test("Current density - induced velocity", point["Jivr"], -1.987738e5)
+testJr = test("Current density - total", point["Jr"], -1.987738e5)
 
 # volume integral
 volume = volumeintegral([5])
 testWm = test("Energy", volume["Wm"], 3.088946)
-# testPj = test("Losses", volume["Pj"], 220.022114)
+testPj = test("Losses", volume["Pj"], 220.022114)
 # testFxv = test("Lorentz force - x", volume["Fx"], -110.011057)
 # testFyv = test("Lorentz force - y", volume["Fy"], -36.62167)
 # testT = test("Torque", volume["T"], 20.463818)
@@ -77,5 +77,8 @@ surface = surfaceintegral([2, 3, 4, 5])
 # testFx = test("Maxwell force - x", surface["Fx"], 2.531945, 0.05)
 # testFy = test("Maxwell force - y", surface["Fy"], -10.176192, 0.05)
 
-# print("Test: Magnetic steady state - planar: " + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj and testWm and testPj and testFxv and testFxv and testFyv and testT and testFx and testFy))
-print("Test: Magnetic steady state - planar: " + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testWm))
+print("Test: Magnetic steady state - planar: " + str(point and testA
+                                                     and testB and testBx and testBy
+                                                     and testH and testHx and testHy
+                                                     and testJiv and testJr
+                                                     and testwm and testpj and testWm and testPj))
