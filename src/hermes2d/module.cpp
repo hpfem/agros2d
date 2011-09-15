@@ -558,6 +558,8 @@ Hermes::Module::Module::~Module()
 
 void Hermes::Module::Module::read(std::string filename)
 {
+    std::cout << "using module: " << filename << std::endl << std::flush;
+
     clear();
 
     // read name

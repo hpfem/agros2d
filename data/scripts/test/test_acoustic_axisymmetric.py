@@ -1,5 +1,5 @@
 # model
-newdocument(name="Acoustic", type="axisymmetric",
+newdocument(name="Acoustics - planar", type="axisymmetric",
             physicfield="acoustic", analysistype="harmonic",
             numberofrefinements=3, polynomialorder=2,
             nonlineartolerance=0.001, nonlinearsteps=10,
@@ -56,4 +56,4 @@ surface = surfaceintegral([0])
 #testPs_imag = test("Pressure - imag", surface["p_imag"], -0.324708)
 
 # print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag and testSPL and testPv_real and testPv_imag and testPs_real and testPs_imag))
-print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag))
+print("Test: Acoustics - planar: " + str(testp and testp_real and testp_imag))

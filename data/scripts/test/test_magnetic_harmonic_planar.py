@@ -58,12 +58,12 @@ testHx_real = test("Magnetic field - x - real", point["Hrx"], -3400.886351)
 testHx_imag = test("Magnetic field - x - imag", point["Hix"], 22823.176772)
 testHy_real = test("Magnetic field - y - real", point["Hry"], 2613.37651)
 testHy_imag = test("Magnetic field - y - imag", point["Hiy"], -19543.255504)
-#testwm = test("Energy density", point["wm"], 289.413568)
-#testpj = test("Losses density ", point["pj"], 3.435114e5)
-#testJit_real = test("Current density - induced transform - real", point["Jit_real"], -1.849337e7)
-#testJit_imag = test("Current density - induced transform - imag", point["Jit_imag"], -6.073744e6)
-#testJ_real = test("Current density - total - real", point["Jer"], 1.50663e6)
-#testJ_imag = test("Current density - total - imag", point["Jei"], -6.073744e6)
+testwm = test("Energy density", point["wm"], 289.413568)
+testpj = test("Losses density ", point["pj"], 3.435114e5)
+testJit_real = test("Current density - induced transform - real", point["Jitr"], -1.849337e7)
+testJit_imag = test("Current density - induced transform - imag", point["Jiti"], -6.073744e6)
+testJ_real = test("Current density - total - real", point["Jr"], 1.50663e6)
+testJ_imag = test("Current density - total - imag", point["Ji"], -6.073744e6)
 #testFx_real = test("Lorentz force - y - real", point["Fx_real"], 1.442159e5)
 #testFx_imag = test("Lorentz force - x - imag", point["Fx_imag"], 56947.557678)
 #testFy_real = test("Lorentz force - y - real", point["Fy_real"], 1.677588e5)
@@ -71,23 +71,20 @@ testHy_imag = test("Magnetic field - y - imag", point["Hiy"], -19543.255504)
 
 # volume integral
 volume = volumeintegral([1])
-#print(volume)
-#testIit_real = test("Current - induced transform - real", volume["Iit_real"], -4104.701323)
-#testIit_imag = test("Current - induced transform - imag", volume["Iit_imag"], -1381.947299)
-#testIe_real = test("Current - external - real", volume["Ie_real"], 4000.0)
-#testIe_imag = test("Current - external - imag", volume["Ie_imag"], 0.0)
-#testI_real = test("Current - real", volume["I_real"], -104.701323)
-#testI_imag = test("Current - imag", volume["I_imag"], -1381.947299)
-#testWm = test("Energy", volume["Wm"], 0.042927)
-#testPj = test("Losses", volume["Pj"], 90.542962)
+testIe_real = test("Current - external - real", volume["Ier"], 4000.0)
+testIe_imag = test("Current - external - imag", volume["Iei"], 0.0)
+testIit_real = test("Current - induced transform - real", volume["Iitr"], -4104.701323)
+testIit_imag = test("Current - induced transform - imag", volume["Iiti"], -1381.947299)
+testIr = test("Current - real", volume["Ir"], -104.701323)
+testIi = test("Current - imag", volume["Ii"], -1381.947299)
+testWm = test("Energy", volume["Wm"], 0.042927)
+testPj = test("Losses", volume["Pj"], 90.542962)
 #testFLx = test("Lorentz force - x", volume["Fx"], -11.228229)
 #testFLy = test("Lorentz force - y", volume["Fy"], -4.995809)
 
-print("Test: Magnetic harmonic - planar: " + str(testA and testA_real and testA_imag and testB and testBx_real and testBx_imag and testBy_real and testBy_imag and testH and testHx_real and testHy_real and testHx_imag and testHy_imag))
-
-#testwm and testpj and
-#testJit_real and testJit_imag and testJ_real and testJ_imag and
-#testFx_real and testFx_imag and testFy_real and testFy_imag and
-#testIit_real and testIit_imag and testIe_real and testIe_imag and testI_real and testI_imag and
-#testWm and testPj and testFLx and testFLy
-#))
+print("Test: Magnetic harmonic - planar: " + str(testA and testA_real and testA_imag
+                                                 and testB and testBx_real and testBx_imag and testBy_real and testBy_imag
+                                                 and testH and testHx_real and testHy_real and testHx_imag and testHy_imag
+                                                 and testJit_real and testJit_imag and testJ_real and testJ_imag
+                                                 and testIe_real and testIe_imag and testIit_real and testIit_imag and testIr and testIi
+                                                 and testwm and testpj and testWm and testPj))

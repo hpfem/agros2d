@@ -64,7 +64,7 @@ namespace mu
                     value_type a_fPos, 
                     value_type a_fEpsilon = 0) const;
 
-  private:
+  protected:
 
     // Trigonometric functions
     static value_type  Sin(value_type);
