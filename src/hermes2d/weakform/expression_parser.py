@@ -61,12 +61,17 @@ class NumericStringParser(object):
     def parse(self,num_string):
         self.exprStack=[]        
         return self.bnf.parseString(num_string,True)
-        
+
+
 #    def translate_to_cpp(self, expression_list):        
 #        string = ''                        
-#        for item in expression_list:                                            
+#        expression_list.reverse()
+#        while not(len(expression_list) == 0):
+#            item = expression_list.pop()                                                       
 #            if (type(item) is list):                    
 #                string += '(' + self.translate_to_cpp(item) + ')'                
+#            elif item in self.functions:
+#                string += item + '(' + self.translate_to_cpp(expression_list.pop()) + ')'                 
 #            else:                                                
 #                if item in self.variables:                   
 #                    if self.without_variables:
@@ -81,26 +86,36 @@ class NumericStringParser(object):
 #        return string
 
     def translate_to_cpp(self, expression_list):        
-        string = ''                        
+        i = 0
+        string = []                                 
         expression_list.reverse()
         while not(len(expression_list) == 0):
             item = expression_list.pop()                                                       
             if (type(item) is list):                    
-                string += '(' + self.translate_to_cpp(item) + ')'                
+                string.append('(' + self.translate_to_cpp(item) + ')')                
             elif item in self.functions:
-                string += item + '(' + self.translate_to_cpp(expression_list.pop()) + ')'                 
+                string.append(item + '(' + self.translate_to_cpp(expression_list.pop()) + ')')                 
+            elif item == '^':                
+                string[i-1] = 'pow(' + string[i-1] +  ',' + self.translate_to_cpp([expression_list.pop()]) + ')'
+                print 
             else:                                                
                 if item in self.variables:                   
                     if self.without_variables:
-                        string += '1'
+                        string.append('1')
                     else:
-                        string += item + '.value()'                    
+                        string.append(item + '.value()')                    
                 else:    
                     if item in self.replaces.iterkeys(): 
-                        string += self.replaces[item]
+                        string.append(self.replaces[item])
                     else:
-                        string += item                                  
-        return string
+                        string.append(item)      
+            i += 1                            
+        
+        result = ""
+        for item in string:
+            result += item;        
+        return result
+        
     
     def translate_to_latex(self, expression_list):
         string = ''                        
