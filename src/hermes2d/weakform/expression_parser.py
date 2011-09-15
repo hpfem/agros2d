@@ -18,7 +18,7 @@ class NumericStringParser(object):
                          'xi', 'omicron', 'pi', 'rho', 'sigma', 'tau', 
                          'upsilon', 'phi', 'chi', 'psi', 'omega')
         
-        self.functions = ('cos', 'sin')
+        self.functions = ('cos', 'sin', 'log', 'log10', 'sqrt')
         
         self.string = ''            
         self.replaces = replaces
@@ -63,28 +63,6 @@ class NumericStringParser(object):
         return self.bnf.parseString(num_string,True)
 
 
-#    def translate_to_cpp(self, expression_list):        
-#        string = ''                        
-#        expression_list.reverse()
-#        while not(len(expression_list) == 0):
-#            item = expression_list.pop()                                                       
-#            if (type(item) is list):                    
-#                string += '(' + self.translate_to_cpp(item) + ')'                
-#            elif item in self.functions:
-#                string += item + '(' + self.translate_to_cpp(expression_list.pop()) + ')'                 
-#            else:                                                
-#                if item in self.variables:                   
-#                    if self.without_variables:
-#                        string += '1'
-#                    else:
-#                        string += item + '.value()'                    
-#                else:    
-#                    if item in self.replaces.iterkeys(): 
-#                        string += self.replaces[item]
-#                    else:
-#                        string += item                                  
-#        return string
-
     def translate_to_cpp(self, expression_list):        
         i = 0
         string = []                                 
@@ -109,7 +87,7 @@ class NumericStringParser(object):
                         string.append(self.replaces[item])
                     else:
                         string.append(item)      
-            i += 1                            
+            i += 1                                    
         
         result = ""
         for item in string:
@@ -118,17 +96,39 @@ class NumericStringParser(object):
         
     
     def translate_to_latex(self, expression_list):
-        string = ''                        
-        for item in expression_list:                                            
+        string = []
+        i = 0
+        expression_list.reverse()                        
+        while not(len(expression_list) == 0):
+            item = expression_list.pop()                                           
             if (type(item) is list):                    
-                string += '(' + self.translate_to_latex(item) + ')'                
-            else:                                                
+                string.append('\\left(' + self.translate_to_latex(item) + '\\right)')                
+            else:
+                try:
+                    float(item)                                        
+                    if not(item == item.replace('E','\\cdot 10^{')):
+                        item = item.replace('E','\\cdot 10^{') + '}'                                                                                                                       
+                except:
+                    pass
+                                                                
                 if item in self.replaces.iterkeys(): 
-                    string += self.replaces[item]                    
+                    string.append(self.replaces[item])                    
                 elif item in self.greek_letters:
-                    string += '\\' + item
+                    string.append('\\' + item)
+                                       
+                elif item == '^':
+                    string[i-1] = string[i-1] + '^' + expression_list.pop() 
+                elif item == '/':                
+                    string[i-1] = '\\frac{' + string[i-1] +  '}{' + self.translate_to_latex([expression_list.pop()]) + '}'                         
                 elif item in self.variables:
-                    string += item[0] + '_{' + item[1:] + '}'
+                    string.append(item[0] + '_{' + item[1:] + '}')
                 else:
-                    string += item                                  
-        return string
+                    string.append(item)
+                 
+                                  
+        i += 1                                    
+        
+        result = ""
+        for item in string:
+            result += item;        
+        return result

@@ -383,6 +383,7 @@ class WeakForm:
                      'vdz': '\\frac{\\partial v^{l}}{\\partial z}',           
                      'uval': 'u',
                      'vval': 'v',
+                     'upval': 'u^{l-1}',
                      'updx': '\\frac{\\partial u^{l-1}}{\\partial x}',
                      'updy': '\\frac{\\partial u^{l-1}}{\\partial y}',
                      'updr': '\\frac{\\partial u^{l-1}}{\\partial r}',
