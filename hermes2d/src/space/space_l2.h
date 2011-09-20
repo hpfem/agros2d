@@ -26,32 +26,14 @@
 class HERMES_API L2Space : public Space
 {
 public:
-
-  // Constructors for problems without Dirichlet BC.
-  L2Space(Mesh* mesh, BCTypes* bc_types, Ord2 p_init, Shapeset* shapeset = NULL);
-
-  L2Space(Mesh* mesh, BCTypes* bc_types, int p_init, Shapeset* shapeset = NULL);
-
-  L2Space(Mesh* mesh, BCTypes* bc_types, BCValues* bc_values, Ord2 p_init,
+  L2Space(Mesh* mesh, EssentialBCs* boundary_conditions, int p_init = 1,
           Shapeset* shapeset = NULL);
 
-  L2Space(Mesh* mesh, BCTypes* bc_types, BCValues* bc_values, int p_init,
+  L2Space(Mesh* mesh, int p_init = 1,
           Shapeset* shapeset = NULL);
 
   // Common code for the constructors.
   void init(Shapeset* shapeset, Ord2 p_init);
-
-  // all the following constructors are DEPRECATED.
-  // For backward compatibility. Good to be deleted as soon as all the examples etc. use the second one.
-  L2Space(Mesh* mesh, int p_init, Shapeset* shapeset = NULL);
-
-  L2Space(Mesh* mesh, BCTypes* bc_types,
-	  scalar (*bc_value_callback_by_coord)(int, double, double) = NULL, Ord2 p_init = Ord2(1,1),
-          Shapeset* shapeset = NULL);
-
-  L2Space(Mesh* mesh = NULL, BCType (*bc_type_callback)(int) = NULL,
-	  scalar (*bc_value_callback_by_coord)(int, double, double) = NULL, Ord2 p_init = Ord2(1,1),
-          Shapeset* shapeset = NULL);
 
   virtual ~L2Space();
 
@@ -59,7 +41,7 @@ public:
 
   virtual int get_edge_order(Element* e, int edge) {
     // There are no continuity constraints on shape functions in L2.
-    return h2d_make_edge_order( e->get_mode(), edge, edata[e->id].order );
+    return Hermes2D::make_edge_order( e->get_mode(), edge, edata[e->id].order );
   }
 
   virtual void set_shapeset(Shapeset* shapeset);

@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="2" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="steadystate" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="1.0" type="elasticity" timestep="1.0" id="0" name="unnamed" initialcondition="0.0">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="unnamed" date="2011-07-07" polynomialorder="3" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="2" frequency="0" matrix_solver="umfpack" type="elasticity" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
@@ -29,5 +29,4 @@
             <label x="0.5728" y="0.0249913" polynomialorder="0" marker="1" id="0" area="0"/>
         </labels>
     </geometry>
-    <functions/>
 </document>

@@ -22,6 +22,9 @@
 
 #include "util.h"
 #include "hermes2d.h"
+#include "weakform_library/h1.h"
+#include "weakform_library/maxwell.h"
+#include "weakform_library/elasticity.h"
 
 #include "scene.h"
 #include "scenebasic.h"
@@ -32,14 +35,10 @@
 #include "surfaceintegralview.h"
 #include "volumeintegralview.h"
 
-extern bool isPlanar;
-extern AnalysisType analysisType;
-extern double frequency;
 extern double actualTime;
-extern double timeStep;
 
-class SceneEdgeMarker;
-class SceneLabelMarker;
+class SceneBoundary;
+class SceneMaterial;
 struct SceneViewSettings;
 struct SolutionArray;
 
@@ -47,25 +46,35 @@ class ProgressItemSolve;
 
 class ViewScalarFilter;
 
+class WeakFormAgros : public WeakForm
+{
+public:
+    WeakFormAgros(unsigned int neq = 1) : WeakForm(neq) { }
+
+    virtual void registerForms() = 0;
+
+    // previous solution
+    Hermes::vector<Solution *> solution;
+};
+
 struct HermesField : public QObject
 {
     Q_OBJECT
 public:
-    HermesField() { m_physicField = PhysicField_Undefined; }
-    virtual ~HermesField() {}
+    virtual PhysicField physicField() const { return PhysicField_Undefined; }
 
-    inline PhysicField physicField() { return m_physicField; }
+    virtual int numberOfSolution() const = 0;
+    virtual bool hasSteadyState() const = 0;
+    virtual bool hasHarmonic() const = 0;
+    virtual bool hasTransient() const = 0;
+    virtual bool hasNonlinearity() const = 0;
 
-    virtual int numberOfSolution() = 0;
-    virtual bool hasHarmonic() = 0;
-    virtual bool hasTransient() = 0;
+    virtual void readBoundaryFromDomElement(QDomElement *element) = 0;
+    virtual void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker) = 0;
+    virtual void readMaterialFromDomElement(QDomElement *element) = 0;
+    virtual void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker) = 0;
 
-    virtual void readEdgeMarkerFromDomElement(QDomElement *element) = 0;
-    virtual void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker) = 0;
-    virtual void readLabelMarkerFromDomElement(QDomElement *element) = 0;
-    virtual void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker) = 0;
-
-    virtual LocalPointValue *localPointValue(Point point) = 0;
+    virtual LocalPointValue *localPointValue(const Point &point) = 0;
     virtual QStringList localPointValueHeader() = 0;
 
     virtual SurfaceIntegralValue *surfaceIntegralValue() = 0;
@@ -77,14 +86,15 @@ public:
     virtual bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) = 0;
     virtual bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) = 0;
 
-    virtual SceneEdgeMarker *newEdgeMarker() = 0;
-    virtual SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args) = 0;
-    virtual SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args) = 0;
-    virtual SceneLabelMarker *newLabelMarker() = 0;
-    virtual SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args) = 0;
-    virtual SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args) = 0;
+    virtual SceneBoundary *newBoundary() = 0;
+    virtual SceneBoundary *newBoundary(PyObject *self, PyObject *args) = 0;
+    virtual SceneBoundary *modifyBoundary(PyObject *self, PyObject *args) = 0;
+    virtual SceneMaterial *newMaterial() = 0;
+    virtual SceneMaterial *newMaterial(PyObject *self, PyObject *args) = 0;
+    virtual SceneMaterial *modifyMaterial(PyObject *self, PyObject *args) = 0;
 
     virtual QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
+    inline virtual void updateTimeFunctions(double time) { }
 
     virtual PhysicFieldVariable contourPhysicFieldVariable() = 0;
     virtual PhysicFieldVariable scalarPhysicFieldVariable() = 0;
@@ -102,9 +112,6 @@ public:
 
     virtual inline void deformShape(double3* linVert, int count) {}
     virtual inline void deformShape(double4* linVert, int count) {}
-
-protected:
-    PhysicField m_physicField;
 };
 
 HermesField *hermesFieldFactory(PhysicField physicField);
@@ -126,7 +133,7 @@ protected:
     double *value1, *value2, *value3;
     double *x, *y;
 
-    SceneLabelMarker *labelMarker;
+    SceneMaterial *material;
 
     void precalculate(int order, int mask);
     virtual void calculateVariable(int i) = 0;
@@ -141,85 +148,106 @@ void writeMeshFromFile(const QString &fileName, Mesh *mesh);
 
 void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge);
 
+// return geom type
+GeomType convertProblemType(ProblemType problemType);
+
 // solve
 QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                         Hermes::vector<BCTypes *> bcTypes,
-                                         Hermes::vector<BCValues *> bcValues,
-                                         void (*cbWeakForm)(WeakForm *, Hermes::vector<Solution *>));
+                                         Hermes::vector<EssentialBCs> bcs,
+                                         WeakFormAgros *wf);
+
+// solve
+class SolutionAgros
+{
+public:
+    SolutionAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros *wf);
+
+    QList<SolutionArray *> solveSolutioArray(Hermes::vector<EssentialBCs> bcs);
+private:
+    int polynomialOrder;
+    AdaptivityType adaptivityType;
+    int adaptivitySteps;
+    double adaptivityTolerance;
+    int adaptivityMaxDOFs;
+    int numberOfSolution;
+    double timeTotal;
+    double timeStep;
+    double initialCondition;
+
+    AnalysisType analysisType;
+
+    LinearityType linearityType;
+    double linearityNonlinearTolerance;
+    int linearityNonlinearSteps;
+
+    MatrixSolverType matrixSolver;
+
+    // error
+    bool isError;
+
+    // mesh file
+    Mesh *mesh;
+
+    // weak form
+    WeakFormAgros *m_wf;
+    ProgressItemSolve *m_progressItemSolve;
+
+    SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
+
+    bool solveLinear(DiscreteProblem *dp,
+                     Hermes::vector<Space *> space,
+                     Hermes::vector<Solution *> solution,
+                     Solver *solver, SparseMatrix *matrix, Vector *rhs);
+
+    bool solve(Hermes::vector<Space *> space,
+               Hermes::vector<Solution *> solution,
+               Solver *solver, SparseMatrix *matrix, Vector *rhs);
+};
 
 // custom forms **************************************************************************************************************************
 
-template<typename Real, typename Scalar>
-Scalar int_x_u_v(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e)
+class CustomVectorFormTimeDep : public WeakForm::VectorFormVol
 {
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * e->x[i] * (u->val[i] * v->val[i]);
-    return result;
-}
+public:
+    CustomVectorFormTimeDep(int i, scalar coeff, Solution *solution, GeomType gt = HERMES_PLANAR)
+        : WeakForm::VectorFormVol(i), coeff(coeff), gt(gt)
+    {
+        ext.push_back(solution);
+    }
+    CustomVectorFormTimeDep(int i, std::string area, scalar coeff, Solution *solution, GeomType gt = HERMES_PLANAR)
+        : WeakForm::VectorFormVol(i, area), coeff(coeff), gt(gt)
+    {
+        ext.push_back(solution);
+    }
 
-template<typename Real, typename Scalar>
-Scalar int_x_v(int n, double *wt, Func<Real> *v, Geom<Real> *e)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * e->x[i] * (v->val[i]);
-    return result;
-}
+    virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
+                         Geom<double> *e, ExtData<scalar> *ext) const {
+        if (gt == HERMES_PLANAR)
+            return coeff * int_u_v<double, scalar>(n, wt, ext->fn[0], v);
+        else if (gt == HERMES_AXISYM_X)
+            return coeff * int_y_u_v<double, scalar>(n, wt, ext->fn[0], v, e);
+        else
+            return coeff * int_x_u_v<double, scalar>(n, wt, ext->fn[0], v, e);
+    }
 
-template<typename Real, typename Scalar>
-Scalar int_x_grad_u_grad_v(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * e->x[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]);
-    return result;
-}
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
+                    ExtData<Ord> *ext) const {
+        if (gt == HERMES_PLANAR)
+            return int_u_v<Ord, Ord>(n, wt, ext->fn[0], v);
+        else if (gt == HERMES_AXISYM_X)
+            return int_y_u_v<Ord, Ord>(n, wt, ext->fn[0], v, e);
+        else
+            return int_x_u_v<Ord, Ord>(n, wt, ext->fn[0], v, e);
+    }
 
-template<typename Real, typename Scalar>
-Scalar int_u_dvdx_over_x(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * (v->dx[i] * u->val[i]) / e->x[i];
-    return result;
-}
+    // This is to make the form usable in rk_time_step().
+    virtual WeakForm::VectorFormVol* clone() {
+        return new CustomVectorFormTimeDep(*this);
+    }
 
-template<typename Real, typename Scalar>
-Scalar int_dvdx(int n, double *wt, Func<Real> *v)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * (v->dx[i]);
-    return result;
-}
-
-template<typename Real, typename Scalar>
-Scalar int_dvdy(int n, double *wt, Func<Real> *v)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * (v->dy[i]);
-    return result;
-}
-
-
-template<typename Real, typename Scalar>
-Scalar int_velocity(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, double vx, double vy, double omega)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * u->val[i] * ((vx - e->y[i] * omega) * v->dx[i] + (vy + e->x[i] * omega) * v->dy[i]);
-    return result;
-}
-
-template<typename Real, typename Scalar>
-Scalar int_magnet(int n, double *wt, Func<Real> *v, double angle)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * (- sin(angle / 180.0 * M_PI) * v->dx[i] + cos(angle / 180.0 * M_PI) * v->dy[i]);
-    return result;
-}
+private:
+    scalar coeff;
+    GeomType gt;
+};
 
 #endif // HERMES_FIELD_H

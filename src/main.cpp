@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     // start application
     QString str = QString("\n\n%1: Agros2D").
-                  arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz"));
+            arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz"));
 
     QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
     QDir("/").mkpath(location);
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 
 
 #ifdef Q_WS_MAC
-    styleName = "Aqua";
+        styleName = "Aqua";
 #endif
 
         settings.setValue("General/GUIStyle", styleName);
@@ -104,6 +104,9 @@ int main(int argc, char *argv[])
     // language
     QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();
     setLanguage(locale);
+
+    // init indicator (ubuntu - unity, windows - overlay icon, macosx - ???)
+    Indicator::init();
 
     MainWindow w;
     w.show();

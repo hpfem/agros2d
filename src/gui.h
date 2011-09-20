@@ -36,6 +36,8 @@
 
 #include "util.h"
 
+void readPixmap(QLabel *lblEquation, const QString &name);
+QLabel *createLabel(const QString &label, const QString &toolTip = "");
 void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
 void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
 void fillComboBoxTimeStep(QComboBox *cmbFieldVariable);
@@ -71,48 +73,6 @@ private:
 
 // ****************************************************************************************************
 
-class SLineEditValue : public QWidget
-{
-    Q_OBJECT
-public:
-    SLineEditValue(QWidget *parent = 0);
-
-    double number();
-    void setNumber(double number);
-
-    Value value();
-    void setValue(Value value);
-
-    inline void setMinimum(double min) { m_minimum = min; }
-    inline void setMinimumSharp(double min) { m_minimumSharp = min; }
-    inline void setMaximum(double max) { m_maximum = max; }
-    inline void setMaximumSharp(double max) { m_maximumSharp = max; }
-
-public slots:
-    bool evaluate(bool quiet = true);
-
-signals:
-    void editingFinished();
-    void evaluated(bool isError);
-
-protected:
-    void focusInEvent(QFocusEvent *event);
-
-private:
-    double m_minimum;
-    double m_minimumSharp;
-    double m_maximum;
-    double m_maximumSharp;
-    double m_number;
-
-    QLineEdit *txtLineEdit;
-    QLabel *lblValue;
-
-    void setLabel(const QString &text, QColor color, bool isVisible);
-};
-
-// ****************************************************************************************************
-
 class Chart : public QwtPlot
 {
     Q_OBJECT
@@ -126,6 +86,7 @@ public:
 
 public slots:
    void setData(double *xval, double *yval, int count);
+   void setData(QList<double> xval, QList<double> yval);
 
 private:
     QwtPlotCurve *m_curve;

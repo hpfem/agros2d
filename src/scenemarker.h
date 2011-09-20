@@ -23,21 +23,21 @@
 #include "util.h"
 
 class SLineEditDouble;
-class SLineEditValue;
+class ValueLineEdit;
 
-class SceneEdgeMarker;
-class SceneLabelMarker;
+class SceneBoundary;
+class SceneMaterial;
 
-Q_DECLARE_METATYPE(SceneEdgeMarker *);
-Q_DECLARE_METATYPE(SceneLabelMarker *);
+Q_DECLARE_METATYPE(SceneBoundary *);
+Q_DECLARE_METATYPE(SceneMaterial *);
 
-class SceneEdgeMarker
+class SceneBoundary
 {
 public:
     QString name;
     PhysicFieldBC type;
 
-    SceneEdgeMarker(const QString &name, PhysicFieldBC type);
+    SceneBoundary(const QString &name, PhysicFieldBC type);
 
     virtual int showDialog(QWidget *parent) = 0;
 
@@ -47,40 +47,39 @@ public:
     QVariant variant();
 };
 
-class SceneEdgeMarkerNone : public SceneEdgeMarker
+class SceneBoundaryNone : public SceneBoundary
 {
 public:
-    SceneEdgeMarkerNone();
+    SceneBoundaryNone();
 
     QString script() { return ""; }
     QMap<QString, QString> data() { return QMap<QString, QString>(); }
     int showDialog(QWidget *parent) { return 0; }
 };
 
-class EdgeMarkerDialog : public QDialog
+class SceneBoundarySelectDialog : public QDialog
 {
     Q_OBJECT
 public:
-    EdgeMarkerDialog(QWidget *parent = 0);
-    ~EdgeMarkerDialog();
+    SceneBoundarySelectDialog(QWidget *parent = 0);
 
-    inline SceneEdgeMarker *marker() { return (cmbMarker->currentIndex() >= 0) ? cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>() : NULL; }
+    inline SceneBoundary *boundary() { return (cmbBoundary->currentIndex() >= 0) ? cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>() : NULL; }
 
 protected slots:
     void doAccept();
 
 private:
-    QComboBox *cmbMarker;
+    QComboBox *cmbBoundary;
 };
 
 // *************************************************************************************************************************************
 
-class SceneLabelMarker
+class SceneMaterial
 {
 public:
     QString name;
 
-    SceneLabelMarker(const QString &name);
+    SceneMaterial(const QString &name);
 
     virtual int showDialog(QWidget *parent) = 0;
 
@@ -90,48 +89,48 @@ public:
     QVariant variant();
 };
 
-class SceneLabelMarkerNone : public SceneLabelMarker
+class SceneMaterialNone : public SceneMaterial
 {
 public:
-    SceneLabelMarkerNone();
+    SceneMaterialNone();
 
     QString script() { return ""; }
     QMap<QString, QString> data() { return QMap<QString, QString>(); }
     int showDialog(QWidget *parent) { return 0; }
 };
 
-class LabelMarkerDialog : public QDialog
+class SceneMaterialSelectDialog : public QDialog
 {
     Q_OBJECT
 public:
-    LabelMarkerDialog(QWidget *parent = 0);
-    ~LabelMarkerDialog();
+    SceneMaterialSelectDialog(QWidget *parent = 0);
 
-    inline SceneLabelMarker *marker() { return (cmbMarker->currentIndex() >= 0) ? cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>() : NULL; }
+    inline SceneMaterial *marker() { return (cmbMaterial->currentIndex() >= 0) ? cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>() : NULL; }
 
 protected slots:
     void doAccept();
 
 private:
-    QComboBox *cmbMarker;
+    QComboBox *cmbMaterial;
 };
 
 // *************************************************************************************************************************************
 
-class DSceneEdgeMarker: public QDialog
+class SceneBoundaryDialog: public QDialog
 {
     Q_OBJECT
 
 public:
-    DSceneEdgeMarker(QWidget *parent);
-    ~DSceneEdgeMarker();
+    SceneBoundaryDialog(QWidget *parent);
 
 protected:
     QGridLayout *layout;
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
-    SceneEdgeMarker *m_edgeMarker;
+    QLabel *lblEquation;
+    QLabel *lblEquationImage;
+    SceneBoundary *m_boundary;
 
     virtual void createContent() = 0;
     void createDialog();
@@ -142,26 +141,28 @@ protected:
 
 protected slots:
     void evaluated(bool isError);
+    void readEquation(QLabel *lblEquation, PhysicFieldBC type);
 
 private slots:
     void doAccept();
     void doReject();
 };
 
-class DSceneLabelMarker: public QDialog
+class SceneMaterialDialog: public QDialog
 {
     Q_OBJECT
 
 public:
-    DSceneLabelMarker(QWidget *parent);
-    ~DSceneLabelMarker();
+    SceneMaterialDialog(QWidget *parent);
 
 protected:
     QGridLayout *layout;
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
-    SceneLabelMarker *m_labelMarker;
+    QLabel *lblEquation;
+    QLabel *lblEquationImage;
+    SceneMaterial *m_material;
 
     virtual void createContent() = 0;
     void createDialog();

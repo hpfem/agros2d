@@ -24,16 +24,39 @@
 
 class Chart;
 class SLineEditDouble;
-class SLineEditValue;
+class ValueLineEdit;
 
 class QwtPlotPicker;
+
+// definition of chart line
+struct ChartLine
+{
+    Point start;
+    Point end;
+    double angle;
+    int numberOfPoints;
+    bool reverse;
+
+    ChartLine() : start(Point()), end(end), angle(0.0), numberOfPoints(0), reverse(false) {}
+
+    ChartLine(Point start, Point end, double angle = 0.0, int numberOfPoints = 200, bool reverse = false)
+    {
+        this->start = start;
+        this->end = end;
+        this->angle = angle;
+        this->numberOfPoints = numberOfPoints;
+        this->reverse = reverse;
+    }
+
+    QList<Point> getPoints();
+};
 
 class ChartDialog : public QDialog
 {
     Q_OBJECT
 
 signals:
-    void setChartLine(const Point &start, const Point &end);
+    void setChartLine(const ChartLine &chartLine);
 
 public slots:
     void doPlot();
@@ -61,22 +84,24 @@ private:
     QLabel *lblEndX;
     QLabel *lblEndY;
 
-    SLineEditValue *txtStartX;
-    SLineEditValue *txtStartY;
-    SLineEditValue *txtEndX;
-    SLineEditValue *txtEndY;
+    ValueLineEdit *txtStartX;
+    ValueLineEdit *txtStartY;
+    ValueLineEdit *txtEndX;
+    ValueLineEdit *txtEndY;
+    ValueLineEdit *txtAngle;
 
     QRadioButton *radAxisLength;
     QRadioButton *radAxisX;
     QRadioButton *radAxisY;
 
     QSpinBox *txtAxisPoints;
+    QCheckBox *chkAxisPointsReverse;
 
     // time
     QLabel *lblPointX;
     QLabel *lblPointY;
-    SLineEditValue *txtPointX;
-    SLineEditValue *txtPointY;
+    ValueLineEdit *txtPointX;
+    ValueLineEdit *txtPointY;
 
     QComboBox *cmbFieldVariable;
     QComboBox *cmbFieldVariableComp;

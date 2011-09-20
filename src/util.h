@@ -37,11 +37,17 @@
 #include <stdlib.h>
 #include <common.h>
 
+#include "value.h"
+
+#include "indicators/indicators.h"
+
+// zero
 #define EPS_ZERO 1e-10
+
+// physical constants
 #define EPS0 8.854e-12
 #define MU0 4*M_PI*1e-7
-#define NDOF_STOP 40000
-#define CONST_DOUBLE 1e100
+#define PRESSURE_MIN_AIR 20e-6
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)
 #define rad2deg(radians) (radians*180.0/M_PI)
@@ -142,17 +148,6 @@ private slots:
     void handleError(QNetworkReply::NetworkError error);
 };
 
-struct Value
-{
-    QString text;
-    double number;
-
-    Value() { text = "0"; number = 0;}
-    inline Value(const QString &value, bool evaluateExpression = true) { text = value; if (evaluateExpression) evaluate(true); }
-
-    bool evaluate(bool quiet = false);
-};
-
 struct Point
 {
     double x, y;
@@ -169,10 +164,10 @@ struct Point
     inline bool operator!=(const Point &vec) const { return ((fabs(vec.x-x) > EPS_ZERO) || (fabs(vec.y-y) > EPS_ZERO)); }
     inline bool operator==(const Point &vec) const { return ((fabs(vec.x-x) < EPS_ZERO) && (fabs(vec.y-y) < EPS_ZERO)); }
 
-    inline double magnitude() { return sqrt(x * x + y * y); }
-    inline double angle() { return atan2(y, x); }
+    inline double magnitude() const { return sqrt(x * x + y * y); }
+    inline double angle() const { return atan2(y, x); }
 
-    Point normalizePoint()
+    Point normalizePoint() const
     {
         double m = magnitude();
 
@@ -182,6 +177,9 @@ struct Point
         return Point(mx, my);
     }
 };
+
+// return center
+Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
 
 struct Point3
 {
@@ -195,12 +193,12 @@ struct Point3
     inline Point3 operator*(double num) const { return Point3(x * num, y * num, z * num); }
     inline Point3 operator/(double num) const { return Point3(x / num, y / num, z / num); }
 
-    inline double magnitude() { return sqrt(x * x + y * y); }
-    inline double anglexy() { return atan2(y, x); }
-    inline double angleyz() { return atan2(z, y); }
-    inline double anglezx() { return atan2(x, z); }
+    inline double magnitude() const { return sqrt(x * x + y * y); }
+    inline double anglexy() const { return atan2(y, x); }
+    inline double angleyz() const { return atan2(z, y); }
+    inline double anglezx() const { return atan2(x, z); }
 
-    Point3 normalizePoint()
+    Point3 normalizePoint() const
     {
         double m = magnitude();
 
@@ -221,8 +219,8 @@ struct RectPoint
     inline RectPoint() { this->start = Point(); this->end = Point(); }
 
     inline void set(const Point &start, const Point &end) { this->start = start; this->end = end; }
-    inline double width() { return fabs(end.x - start.x); }
-    inline double height() { return fabs(end.y - start.y); }
+    inline double width() const { return fabs(end.x - start.x); }
+    inline double height() const { return fabs(end.y - start.y); }
 };
 
 struct ScriptResult
@@ -345,6 +343,22 @@ enum AdaptivityType
     AdaptivityType_HP = 0
 };
 
+enum LinearityType
+{
+    LinearityType_Undefined,
+    LinearityType_Linear,
+    LinearityType_Picard,
+    LinearityType_Newton
+};
+
+enum MeshType
+{
+    MeshType_Triangle,
+    MeshType_QuadFineDivision,
+    MeshType_QuadRoughDivision,
+    MeshType_QuadJoin
+};
+
 enum PhysicFieldVariableComp
 {
     PhysicFieldVariableComp_Undefined,
@@ -363,7 +377,9 @@ enum PhysicField
     PhysicField_Current,
     PhysicField_Heat,
     PhysicField_Elasticity,
-    PhysicField_Flow
+    PhysicField_Flow,
+    PhysicField_RF,
+    PhysicField_Acoustic
 };
 
 enum PhysicFieldVariable
@@ -429,7 +445,37 @@ enum PhysicFieldVariable
     PhysicFieldVariable_Flow_Velocity,
     PhysicFieldVariable_Flow_VelocityX,
     PhysicFieldVariable_Flow_VelocityY,
-    PhysicFieldVariable_Flow_Pressure
+    PhysicFieldVariable_Flow_Pressure,
+    PhysicFieldVariable_RF_ElectricField,
+    PhysicFieldVariable_RF_ElectricFieldReal,
+    PhysicFieldVariable_RF_ElectricFieldImag,
+    PhysicFieldVariable_RF_MagneticField,
+    PhysicFieldVariable_RF_MagneticFieldXReal,
+    PhysicFieldVariable_RF_MagneticFieldXImag,
+    PhysicFieldVariable_RF_MagneticFieldYReal,
+    PhysicFieldVariable_RF_MagneticFieldYImag,
+    PhysicFieldVariable_RF_MagneticFluxDensity,
+    PhysicFieldVariable_RF_MagneticFluxDensityXReal,
+    PhysicFieldVariable_RF_MagneticFluxDensityXImag,
+    PhysicFieldVariable_RF_MagneticFluxDensityYReal,
+    PhysicFieldVariable_RF_MagneticFluxDensityYImag,
+    PhysicFieldVariable_RF_PoyntingVector,
+    PhysicFieldVariable_RF_PoyntingVectorX,
+    PhysicFieldVariable_RF_PoyntingVectorY,
+    PhysicFieldVariable_RF_PowerLosses,
+    PhysicFieldVariable_RF_Permittivity,
+    PhysicFieldVariable_RF_Permeability,
+    PhysicFieldVariable_RF_Conductivity,
+    PhysicFieldVariable_RF_CurrentDensityReal,
+    PhysicFieldVariable_RF_CurrentDensityImag,
+    PhysicFieldVariable_Acoustic_Pressure,
+    PhysicFieldVariable_Acoustic_PressureReal,
+    PhysicFieldVariable_Acoustic_PressureImag,
+    PhysicFieldVariable_Acoustic_LocalVelocity,
+    PhysicFieldVariable_Acoustic_LocalAcceleration,
+    PhysicFieldVariable_Acoustic_PressureLevel,
+    PhysicFieldVariable_Acoustic_Density,
+    PhysicFieldVariable_Acoustic_Speed
 };
 
 
@@ -453,6 +499,21 @@ enum PhysicFieldBC
     PhysicFieldBC_Flow_Pressure,
     PhysicFieldBC_Flow_Outlet,
     PhysicFieldBC_Flow_Wall,
+    PhysicFieldBC_RF_ElectricField,
+    PhysicFieldBC_RF_SurfaceCurrent,
+    PhysicFieldBC_RF_MatchedBoundary,
+    PhysicFieldBC_RF_Port,
+    PhysicFieldBC_Acoustic_Pressure,
+    PhysicFieldBC_Acoustic_NormalAcceleration,
+    PhysicFieldBC_Acoustic_Impedance,
+    PhysicFieldBC_Acoustic_MatchedBoundary
+};
+
+enum Mode
+{
+    Mode_0,
+    Mode_01,
+    Mode_02
 };
 
 inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
@@ -506,6 +567,36 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_Elasticity_StressXY:
 
     case PhysicFieldVariable_Flow_Pressure:
+
+    case PhysicFieldVariable_RF_ElectricField:
+    case PhysicFieldVariable_RF_ElectricFieldReal:
+    case PhysicFieldVariable_RF_ElectricFieldImag:
+    case PhysicFieldVariable_RF_MagneticField:
+    case PhysicFieldVariable_RF_MagneticFieldXReal:
+    case PhysicFieldVariable_RF_MagneticFieldXImag:
+    case PhysicFieldVariable_RF_MagneticFieldYReal:
+    case PhysicFieldVariable_RF_MagneticFieldYImag:
+    case PhysicFieldVariable_RF_MagneticFluxDensity:
+    case PhysicFieldVariable_RF_MagneticFluxDensityXReal:
+    case PhysicFieldVariable_RF_MagneticFluxDensityXImag:
+    case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
+    case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
+    case PhysicFieldVariable_RF_PoyntingVector:
+    case PhysicFieldVariable_RF_PoyntingVectorX:
+    case PhysicFieldVariable_RF_PoyntingVectorY:
+    case PhysicFieldVariable_RF_PowerLosses:
+    case PhysicFieldVariable_RF_Permittivity:
+    case PhysicFieldVariable_RF_Permeability:
+    case PhysicFieldVariable_RF_Conductivity:
+    case PhysicFieldVariable_RF_CurrentDensityReal:
+    case PhysicFieldVariable_RF_CurrentDensityImag:
+
+    case PhysicFieldVariable_Acoustic_Pressure:
+    case PhysicFieldVariable_Acoustic_PressureReal:
+    case PhysicFieldVariable_Acoustic_PressureImag:
+    case PhysicFieldVariable_Acoustic_PressureLevel:
+    case PhysicFieldVariable_Acoustic_Density:
+    case PhysicFieldVariable_Acoustic_Speed:
         return true;
         break;
     default:
@@ -533,18 +624,24 @@ enum MouseSceneMode
 
 enum SceneModePostprocessor
 {
-    SceneMode_LocalValue,
-    SceneMode_SurfaceIntegral,
-    SceneMode_VolumeIntegral
+    SceneModePostprocessor_LocalValue,
+    SceneModePostprocessor_SurfaceIntegral,
+    SceneModePostprocessor_VolumeIntegral
 };
 
 enum PaletteType
 {
     Palette_Jet,
-    Palette_Autumn,
     Palette_Copper,
     Palette_Hot,
     Palette_Cool,
+    Palette_Bone,
+    Palette_Pink,
+    Palette_Spring,
+    Palette_Summer,
+    Palette_Autumn,
+    Palette_Winter,
+    Palette_HSV,
     Palette_BWAsc,
     Palette_BWDesc
 };
@@ -553,6 +650,16 @@ enum PaletteOrderType
 {
     PaletteOrder_Hermes,
     PaletteOrder_Jet,
+    PaletteOrder_Copper,
+    PaletteOrder_Hot,
+    PaletteOrder_Cool,
+    PaletteOrder_Bone,
+    PaletteOrder_Pink,
+    PaletteOrder_Spring,
+    PaletteOrder_Summer,
+    PaletteOrder_Autumn,
+    PaletteOrder_Winter,
+    PaletteOrder_HSV,
     PaletteOrder_BWAsc,
     PaletteOrder_BWDesc
 };
@@ -575,9 +682,12 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
 QString physicFieldString(PhysicField physicField);
 QString analysisTypeString(AnalysisType analysisType);
 QString physicFieldBCString(PhysicFieldBC physicFieldBC);
+QString teModeString(Mode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
+QString meshTypeString(MeshType meshType);
+QString linearityTypeString(LinearityType linearityType);
 QString matrixSolverTypeString(MatrixSolverType matrixSolverType);
 
 inline QString errorNormString(ProjNormType projNormType)
@@ -612,6 +722,9 @@ inline ProblemType problemTypeFromStringKey(const QString &problemType) { if (pr
 QString analysisTypeToStringKey(AnalysisType analysisType);
 AnalysisType analysisTypeFromStringKey(const QString &analysisType);
 
+QString meshTypeToStringKey(MeshType meshType);
+MeshType meshTypeFromStringKey(const QString &meshType);
+
 QString physicFieldVariableToStringKey(PhysicFieldVariable physicFieldVariable);
 PhysicFieldVariable physicFieldVariableFromStringKey(const QString &physicFieldVariable);
 
@@ -621,11 +734,17 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QString physicFieldBCToStringKey(PhysicFieldBC physicFieldBC);
 PhysicFieldBC physicFieldBCFromStringKey(const QString &physicFieldBC);
 
+QString modeToStringKey(Mode teMode);
+Mode modeFromStringKey(const QString &teMode);
+
 QString sceneViewPostprocessorShowToStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow);
 SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString &sceneViewPostprocessorShow);
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
+
+QString linearityTypeToStringKey(LinearityType linearityType);
+LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
 QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType);
 MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
@@ -644,7 +763,28 @@ const QColor COLORSOLUTIONMESH = QColor::fromRgb(150, 70, 0);
 const QColor COLORHIGHLIGHTED = QColor::fromRgb(250, 150, 0);
 const QColor COLORSELECTED = QColor::fromRgb(150, 0, 0);
 
+// workspace
+const double GRIDSTEP = 0.05;
+const bool SHOWGRID = true;
+const bool SNAPTOGRID = false;
+
+#ifdef Q_WS_X11
+    const QFont FONT = QFont("Monospace", 9);
+#endif
+#ifdef Q_WS_WIN
+    const QFont FONT = QFont("Courier New", 9);
+#endif
+#ifdef Q_WS_MAC
+    const QFont FONT = QFont("Monaco", 12);
+#endif
+
+const bool SHOWAXES = true;
+const bool SHOWRULERS = false;
+const bool SHOWLABEL = true;
+
 // posprocessor
+const double LINEARIZER_QUALITY = 0.0006;
+
 const int CONTOURSCOUNT = 15;
 
 const PaletteType PALETTETYPE = Palette_Jet;
@@ -653,14 +793,16 @@ const int PALETTESTEPS = 30;
 const bool SCALARRANGELOG = false;
 const double SCALARRANGEBASE = 10;
 const double SCALARDECIMALPLACE = 2;
+const bool SCALARSCALE = true;
 
 const bool VECTORPROPORTIONAL = true;
 const bool VECTORCOLOR = true;
 const int VECTORNUMBER = 50;
 const double VECTORSCALE = 0.6;
 
-const bool ORDERLABEL = false;
+const bool ORDERSCALE = true;
 const PaletteOrderType ORDERPALETTEORDERTYPE = PaletteOrder_Hermes;
+const bool ORDERLABEL = false;
 
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;
@@ -671,7 +813,10 @@ const int ADAPTIVITY_MESHREGULARITY = -1;
 const ProjNormType ADAPTIVITY_PROJNORMTYPE = HERMES_H1_NORM;
 
 // command argument
-const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I \"%2\"";
+const QString COMMANDS_TRIANGLE = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
 const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
+
+// max dofs
+const int MAX_DOFS = 60e3;
 
 #endif // UTIL_H

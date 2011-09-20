@@ -1,7 +1,5 @@
 /****************************************************************************
-** $Id: dl_attributes.h 2334 2005-03-27 23:37:52Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2011 RibbonSoft. All rights reserved.
 **
 ** This file is part of the dxflib project.
 **
@@ -48,6 +46,7 @@ public:
     DL_Attributes() {
         setLayer("");
         setColor(0);
+        setColor24(-1);
         setWidth(0);
         setLineType("BYLAYER");
     }
@@ -70,6 +69,30 @@ public:
                   const string& lineType) {
         setLayer(layer);
         setColor(color);
+        setColor24(-1);
+        setWidth(width);
+        setLineType(lineType);
+    }
+    
+    
+    /**
+     * Constructor for DXF attributes.
+     *
+     * @param layer Layer name for this entity or NULL for no layer
+     *              (every entity should be on a named layer!).
+     * @param color Color number (0..256). 0 = BYBLOCK, 256 = BYLAYER.
+     * @param color24 24 bit color (see DXF reference).
+     * @param width Line thickness. Defaults to zero. -1 = BYLAYER, 
+     *               -2 = BYBLOCK, -3 = default width
+     * @param lineType Line type name or "BYLAYER" or "BYBLOCK". Defaults
+     *              to "BYLAYER"
+     */
+    DL_Attributes(const string& layer,
+                  int color, int color24, int width,
+                  const string& lineType) {
+        setLayer(layer);
+        setColor(color);
+        setColor24(color24);
         setWidth(width);
         setLineType(lineType);
     }
@@ -103,6 +126,17 @@ public:
     void setColor(int color) {
         this->color = color;
     }
+    
+    
+    
+    /**
+     * Sets the 24bit color.
+     *
+     * @see DL_Codes, dxfColors
+     */
+    void setColor24(int color) {
+        this->color24 = color;
+    }
 
 
 
@@ -113,6 +147,17 @@ public:
      */
     int getColor() const {
         return color;
+    }
+    
+    
+    
+    /**
+     * @return 24 bit color or -1 if no 24bit color is defined.
+     *
+     * @see DL_Codes, dxfColors
+     */
+    int getColor24() const {
+        return color24;
     }
 
 
@@ -164,6 +209,7 @@ public:
     DL_Attributes operator = (const DL_Attributes& attrib) {
         setLayer(attrib.layer);
         setColor(attrib.color);
+        setColor24(attrib.color24);
         setWidth(attrib.width);
         setLineType(attrib.lineType);
 
@@ -173,6 +219,7 @@ public:
 private:
     string layer;
     int color;
+    int color24;
     int width;
     string lineType;
 };

@@ -27,19 +27,19 @@ struct HermesFlow : public HermesField
 {
     Q_OBJECT
 public:
-    HermesFlow() { m_physicField = PhysicField_Flow; }
-    virtual ~HermesFlow() {}
+    PhysicField physicField() const { return PhysicField_Flow; }
 
-    inline int numberOfSolution() { return 3; }
-    bool hasHarmonic() { return false; }
-    bool hasTransient() { return true; }
+    inline int numberOfSolution() const { return 3; }
+    inline bool hasSteadyState() const { return true; }
+    inline bool hasHarmonic() const { return false; }
+    inline bool hasTransient() const { return true; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
-    LocalPointValue *localPointValue(Point point);
+    LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
 
     SurfaceIntegralValue *surfaceIntegralValue();
@@ -57,12 +57,12 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Flow_VelocityY ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Flow_Pressure); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
@@ -99,7 +99,7 @@ public:
     double dynamic_viscosity;
     double density;
 
-    LocalPointValueFlow(Point &point);
+    LocalPointValueFlow(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
@@ -136,7 +136,7 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeFlowMarker : public SceneEdgeMarker
+class SceneEdgeFlowMarker : public SceneBoundary
 {
 public:
     Value velocityX;
@@ -150,7 +150,7 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelFlowMarker : public SceneLabelMarker
+class SceneLabelFlowMarker : public SceneMaterial
 {
 public:
     Value dynamic_viscosity;
@@ -163,13 +163,12 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeFlowMarker : public DSceneEdgeMarker
+class DSceneEdgeFlowMarker : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
     DSceneEdgeFlowMarker(SceneEdgeFlowMarker *edgeEdgeFlowMarker, QWidget *parent);
-    ~DSceneEdgeFlowMarker();
 
 protected:
     void createContent();
@@ -179,21 +178,20 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtVelocityX;
-    SLineEditValue *txtVelocityY;
-    SLineEditValue *txtPressure;
+    ValueLineEdit *txtVelocityX;
+    ValueLineEdit *txtVelocityY;
+    ValueLineEdit *txtPressure;
 
 private slots:
     void doTypeChanged(int index);
 };
 
-class DSceneLabelFlowMarker : public DSceneLabelMarker
+class DSceneLabelFlowMarker : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
     DSceneLabelFlowMarker(QWidget *parent, SceneLabelFlowMarker *labelFlowMarker);
-    ~DSceneLabelFlowMarker();
 
 protected:
     void createContent();
@@ -202,8 +200,8 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtDynamicViscosity;
-    SLineEditValue *txtDensity;
+    ValueLineEdit *txtDynamicViscosity;
+    ValueLineEdit *txtDensity;
 };
 
 #endif // HERMES_FLOW_H

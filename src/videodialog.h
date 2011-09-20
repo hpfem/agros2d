@@ -49,6 +49,7 @@ private:
     QTimer *timerFile;
 
     // file
+    QPushButton *btnClose;
     QPushButton *btnEncodeFFmpeg;
     QPushButton *btnSaveVideo;
     QPushButton *btnOpenVideo;

@@ -126,8 +126,8 @@ void RefMap::calc_inv_ref_map(int order)
 
   // construct jacobi matrices of the direct reference map for all integration points
 
-  AUTOLA_OR(double2x2, m, np);
-  memset(m, 0, m.size);
+  double2x2* m = new double2x2[np];
+  memset(m, 0, np * sizeof(double2x2));
   ref_map_pss.force_transform(sub_idx, ctm);
   for (i = 0; i < nc; i++)
   {
@@ -163,6 +163,8 @@ void RefMap::calc_inv_ref_map(int order)
 
     jac[i] *= trj;
   }
+
+  delete [] m;
 }
 
 
@@ -171,8 +173,8 @@ void RefMap::calc_second_ref_map(int order)
   assert(quad_2d != NULL);
   int i, j, np = quad_2d->get_num_points(order);
 
-  AUTOLA_OR(double3x2, k, np);
-  memset(k, 0, k.size);
+  double3x2* k = new double3x2[np];
+  memset(k, 0, np * sizeof(double3x2));
   ref_map_pss.force_transform(sub_idx, ctm);
   for (i = 0; i < nc; i++)
   {
@@ -216,6 +218,8 @@ void RefMap::calc_second_ref_map(int order)
     mm[j][2][0] = -(a * m[j][0][0] + b * m[j][1][0]); // du/dx
     mm[j][2][1] = -(a * m[j][0][1] + b * m[j][1][1]); // du/dy
   }
+
+  delete [] k;
 }
 
 

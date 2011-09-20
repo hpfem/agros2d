@@ -27,19 +27,20 @@ struct HermesGeneral : public HermesField
 {
     Q_OBJECT
 public:
-    HermesGeneral() { m_physicField = PhysicField_General; }
-    virtual ~HermesGeneral() {}
+    PhysicField physicField() const { return PhysicField_General; }
 
-    inline int numberOfSolution() { return 1; }
-    bool hasHarmonic() { return false; }
-    bool hasTransient() { return false; }
+    inline int numberOfSolution() const { return 1; }
+    inline bool hasSteadyState() const { return true; }
+    inline bool hasHarmonic() const { return false; }
+    inline bool hasTransient() const { return false; }
+    inline bool hasNonlinearity() const { return false; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
-    LocalPointValue *localPointValue(Point point);
+    LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
 
     SurfaceIntegralValue *surfaceIntegralValue();
@@ -54,12 +55,12 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_General_Gradient ||
                                                                                             physicFieldVariable == PhysicFieldVariable_General_Constant); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
@@ -97,7 +98,7 @@ public:
     Point gradient;
     double constant;
 
-    LocalPointValueGeneral(Point &point);
+    LocalPointValueGeneral(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
@@ -135,37 +136,36 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeGeneralMarker : public SceneEdgeMarker
+class SceneBoundaryGeneral : public SceneBoundary
 {
 public:
     Value value;
 
-    SceneEdgeGeneralMarker(const QString &name, PhysicFieldBC type, Value value);
+    SceneBoundaryGeneral(const QString &name, PhysicFieldBC type, Value value);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelGeneralMarker : public SceneLabelMarker
+class SceneMaterialGeneral : public SceneMaterial
 {
 public:
     Value rightside;
     Value constant;
 
-    SceneLabelGeneralMarker(const QString &name, Value rightside, Value constant);
+    SceneMaterialGeneral(const QString &name, Value rightside, Value constant);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeGeneralMarker : public DSceneEdgeMarker
+class SceneBoundaryGeneralDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 public:
-    DSceneEdgeGeneralMarker(SceneEdgeGeneralMarker *edgeGeneralMarker, QWidget *parent);
-    ~DSceneEdgeGeneralMarker();
+    SceneBoundaryGeneralDialog(SceneBoundaryGeneral *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -174,16 +174,19 @@ protected:
     bool save();
 
 private:
+    QLabel *lblValueUnit;
     QComboBox *cmbType;
-    SLineEditValue *txtValue;
+    ValueLineEdit *txtValue;
+
+private slots:
+    void doTypeChanged(int index);
 };
 
-class DSceneLabelGeneralMarker : public DSceneLabelMarker
+class SceneMaterialGeneralDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 public:
-    DSceneLabelGeneralMarker(QWidget *parent, SceneLabelGeneralMarker *labelGeneralMarker);
-    ~DSceneLabelGeneralMarker();
+    SceneMaterialGeneralDialog(SceneMaterialGeneral *material, QWidget *parent);
 
 protected:
     void createContent();
@@ -192,8 +195,8 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtConstant;
-    SLineEditValue *txtRightSide;
+    ValueLineEdit *txtConstant;
+    ValueLineEdit *txtRightSide;
 };
 
 #endif // GENERAL_H

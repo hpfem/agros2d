@@ -16,13 +16,13 @@
 #ifndef __H2D_SOLUTION_H
 #define __H2D_SOLUTION_H
 
-#include "function.h"
+#include "../function/function.h"
 #include "../space/space.h"
 #include "../mesh/refmap.h"
 #include "../../../hermes_common/matrix.h"
 
 class PrecalcShapeset;
-
+class Ord;
 
 /// \brief Represents a function defined on a mesh.
 ///
@@ -61,6 +61,8 @@ public:
   /// See Transformable::push_transform.
   virtual void push_transform(int son);
 
+  virtual void pop_transform();
+  
 protected:
 
   int mode;
@@ -97,8 +99,8 @@ public:
   void init();
   Solution();
   Solution(Mesh *mesh);
-  Solution(Mesh *mesh, ExactFunction exactfn);
   Solution(Mesh *mesh, scalar init_const);
+  Solution(Mesh *mesh, scalar init_const_0, scalar init_const_1);
   Solution (Space* s, Vector* coeff_vec);
   Solution (Space* s, scalar* coeff_vec);
   virtual ~Solution();
@@ -109,9 +111,6 @@ public:
   void copy(const Solution* sln);
 
   int* get_element_orders() { return this->elem_orders;}
-
-  void set_exact(Mesh* mesh, ExactFunction exactfn);
-  void set_exact(Mesh* mesh, ExactFunction2 exactfn);
 
   void set_const(Mesh* mesh, scalar c);
   void set_const(Mesh* mesh, scalar c0, scalar c1); // two-component (Hcurl) const
@@ -174,8 +173,6 @@ public:
   /// Returns space type.
   ESpaceType get_space_type() const { return space_type; };
 
-
-
 public:
   /// Internal.
   virtual void set_active_element(Element* e);
@@ -217,7 +214,7 @@ protected:
   /// a table from the lowest layer.
   /// The highest layer (in contrast to the PrecalcShapeset class) is represented
   /// here only by this array.
-  LightArray<LightArray<Node*>*>* tables[4][4];
+  std::map<uint64_t, LightArray<Node*>*>* tables[4][4];
 
   Element* elems[4][4];
   int cur_elem, oldest[4];
@@ -231,8 +228,6 @@ protected:
   ESpaceType space_type;
   void transform_values(int order, Node* node, int newmask, int oldmask, int np);
 
-  ExactFunction exactfn1;
-  ExactFunction2 exactfn2;
   scalar   cnst[2];
   scalar   exact_mult;
 
@@ -255,28 +250,72 @@ protected:
 /// ExactSolution represents an arbitrary user-specified function defined on a domain (mesh),
 /// typically an exact solution to a PDE. This can be used to compare an approximate solution
 /// with an exact solution (see DiffFilter).
-///
-/// Please note that the same functionality can be obtained by using Solution::set_exact().
-/// This class is provided merely for convenience.
-///
 class HERMES_API ExactSolution : public Solution
 {
 public:
+  ExactSolution(Mesh* mesh);
 
-  ExactSolution(Mesh* mesh, ExactFunction exactfn)
-    { set_exact(mesh, exactfn); }
+  ~ExactSolution();
 
-  ExactSolution(Mesh* mesh, ExactFunction2 exactfn)
-    { set_exact(mesh, exactfn); }
-
-  int update(Mesh* mesh, ExactFunction exactfn)
-    { set_exact(mesh, exactfn);  return 1; }
-
-  int update(Mesh* mesh, ExactFunction2 exactfn)
-    { set_exact(mesh, exactfn);  return 1; }
-
+  // Dimension of result - either 1 or 2.
+  virtual unsigned int get_dimension() const = 0;
 };
 
+/// These classes are abstract (pure virtual destructor).
+/// The user is supposed to subclass them (see e.g. NIST benchmarks).
+class HERMES_API ExactSolutionScalar : public ExactSolution
+{
+public:
+  ExactSolutionScalar(Mesh* mesh);
+
+  ~ExactSolutionScalar() = 0;
+
+  // For scalar-valued solutions this returns 1.
+  virtual unsigned int get_dimension() const;
+
+  // Function returning the value.
+  virtual scalar value (double x, double y) const = 0;
+
+  // Function returning the derivatives.
+  virtual void derivatives (double x, double y, scalar& dx, scalar& dy) const = 0;
+
+  // Function returning the value and derivatives.
+  scalar exact_function (double x, double y, scalar& dx, scalar& dy) const {
+    derivatives (x, y, dx, dy);
+    return value (x, y);
+  };
+
+  // Function returning the integration order that 
+  // should be used when integrating the function.
+  virtual Ord ord(Ord x, Ord y) const = 0;
+};
+
+class HERMES_API ExactSolutionVector : public ExactSolution
+{
+public:
+  ExactSolutionVector(Mesh* mesh);
+
+  ~ExactSolutionVector() = 0;
+
+  // For vector-valued solutions this returns 2.
+  virtual unsigned int get_dimension() const;
+
+  // Function returning the value.
+  virtual scalar2 value (double x, double y) const = 0;
+
+  // Function returning the derivatives.
+  virtual void derivatives (double x, double y, scalar2& dx, scalar2& dy) const = 0;
+
+  // Function returning the value and derivatives.
+  virtual scalar2 exact_function(double x, double y, scalar2& dx, scalar2& dy) const {
+    derivatives (x, y, dx, dy);
+    return value (x, y);
+  };
+
+  // Function returning the integration order that 
+  // should be used when integrating the function.
+  virtual Ord ord(Ord x, Ord y) const = 0;
+};
 
 
 #endif

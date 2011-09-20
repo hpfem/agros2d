@@ -15,7 +15,10 @@
 FILE *fmemopen (void *buf, size_t size, const char *opentype);
 #endif
 
+// Windows DLL export/import definitions
 #define HERMES_API
+
+#define HERMES_MODULE_API
 
 #ifndef HAVE_STRCASECMP
 #define strcasecmp strcmp

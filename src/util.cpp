@@ -17,6 +17,10 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#ifdef WITH_UNITY
+#include <unity.h>
+#endif
+
 #include "util.h"
 #include "scene.h"
 #include "scripteditordialog.h"
@@ -28,13 +32,19 @@ static QHash<PhysicField, QString> physicFieldList;
 static QHash<PhysicFieldVariable, QString> physicFieldVariableList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<PhysicFieldBC, QString> physicFieldBCList;
+static QHash<Mode, QString> modeList;
 static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
+static QHash<MeshType, QString> meshTypeList;
+static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MatrixSolverType, QString> matrixSolverTypeList;
 
 QString analysisTypeToStringKey(AnalysisType analysisType) { return analysisTypeList[analysisType]; }
 AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return analysisTypeList.key(analysisType); }
+
+QString meshTypeToStringKey(MeshType meshType) { return meshTypeList[meshType]; }
+MeshType meshTypeFromStringKey(const QString &meshType) { return meshTypeList.key(meshType); }
 
 QString physicFieldToStringKey(PhysicField physicField) { return physicFieldList[physicField]; }
 PhysicField physicFieldFromStringKey(const QString &physicField) { return physicFieldList.key(physicField); }
@@ -48,11 +58,17 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QString physicFieldBCToStringKey(PhysicFieldBC physicFieldBC) { return physicFieldBCList[physicFieldBC]; }
 PhysicFieldBC physicFieldBCFromStringKey(const QString &physicFieldBC) { return physicFieldBCList.key(physicFieldBC); }
 
+QString modeToStringKey(Mode mode) { return modeList[mode]; }
+Mode modeFromStringKey(const QString &mode) { return modeList.key(mode); }
+
 QString sceneViewPostprocessorShowToStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList[sceneViewPostprocessorShow]; }
 SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString &sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList.key(sceneViewPostprocessorShow); }
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+
+QString linearityTypeToStringKey(LinearityType linearityType) { return linearityTypeList[linearityType]; }
+LinearityType linearityTypeFromStringKey(const QString &linearityType) { return linearityTypeList.key(linearityType); }
 
 QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
 MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
@@ -61,10 +77,17 @@ void initLists()
 {
     logMessage("initLists()");
 
+    // Analysis Type
     analysisTypeList.insert(AnalysisType_Undefined, "");
     analysisTypeList.insert(AnalysisType_SteadyState, "steadystate");
     analysisTypeList.insert(AnalysisType_Transient, "transient");
     analysisTypeList.insert(AnalysisType_Harmonic, "harmonic");
+
+    // Mesh Type
+    meshTypeList.insert(MeshType_Triangle, "triangle");
+    meshTypeList.insert(MeshType_QuadFineDivision, "quad_fine_division");
+    meshTypeList.insert(MeshType_QuadRoughDivision, "quad_rough_division");
+    meshTypeList.insert(MeshType_QuadJoin, "quad_join");
 
     // PHYSICFIELD
     physicFieldList.insert(PhysicField_Undefined, "");
@@ -75,6 +98,8 @@ void initLists()
     physicFieldList.insert(PhysicField_Elasticity, "elasticity");
     physicFieldList.insert(PhysicField_Magnetic, "magnetic");
     physicFieldList.insert(PhysicField_Flow, "flow");
+    physicFieldList.insert(PhysicField_RF, "rf");
+    physicFieldList.insert(PhysicField_Acoustic, "acoustic");
 
     // PHYSICFIELDVARIABLE
     physicFieldVariableList.insert(PhysicFieldVariable_Undefined, "");
@@ -145,6 +170,36 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_Flow_VelocityY, "flow_velocity_y");
     physicFieldVariableList.insert(PhysicFieldVariable_Flow_Pressure, "flow_velocity");
 
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_ElectricField, "rf_electric_field");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_ElectricFieldReal, "rf_electric_field_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_ElectricFieldImag, "rf_electric_field_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticField, "rf_magnetic_field");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldXReal, "rf_magnetic_field_x_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldXImag, "rf_magnetic_field_x_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldYReal, "rf_magnetic_field_y_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldYImag, "rf_magnetic_field_y_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensity, "rf_magnetic_flux_density");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityXReal, "rf_magnetic_flux_density_x_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityXImag, "rf_magnetic_flux_density_x_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityYReal, "rf_magnetic_flux_density_y_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityYImag, "rf_magnetic_flux_density_y_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVector, "rf_poynting_vector");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVectorX, "rf_poynting_vector_x");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVectorY, "rf_poynting_vector_y");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PowerLosses, "rf_power_losses");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_Permittivity, "rf_permittivity");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_Permeability, "rf_permeability");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_Conductivity, "rf_conductivity");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_CurrentDensityReal, "rf_current_density_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_CurrentDensityImag, "rf_current_density_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Pressure, "acoustic_pressure");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_PressureReal, "acoustic_pressure_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_PressureImag, "acoustic_pressure_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_LocalVelocity, "acoustic_local_velocity");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_LocalAcceleration, "acoustic_local_acceleration");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Density, "acoustic_density");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Speed, "acoustic_speed");
+
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Scalar, "scalar");
@@ -171,6 +226,19 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_Flow_Pressure, "flow_pressure");
     physicFieldBCList.insert(PhysicFieldBC_Flow_Outlet, "flow_outlet");
     physicFieldBCList.insert(PhysicFieldBC_Flow_Wall, "flow_wall");
+    physicFieldBCList.insert(PhysicFieldBC_RF_ElectricField, "rf_electric_field");
+    physicFieldBCList.insert(PhysicFieldBC_RF_SurfaceCurrent, "rf_surface_current");
+    physicFieldBCList.insert(PhysicFieldBC_RF_MatchedBoundary, "rf_matched_boundary");
+    physicFieldBCList.insert(PhysicFieldBC_RF_Port, "rf_port");
+    physicFieldBCList.insert(PhysicFieldBC_Acoustic_Pressure, "acoustic_pressure");
+    physicFieldBCList.insert(PhysicFieldBC_Acoustic_NormalAcceleration, "acoustic_normal_acceleration");
+    physicFieldBCList.insert(PhysicFieldBC_Acoustic_Impedance, "acoustic_impedance");
+    physicFieldBCList.insert(PhysicFieldBC_Acoustic_MatchedBoundary, "acoustic_matched_boundary");
+
+    // TEMODE
+    modeList.insert(Mode_0, "mode_0");
+    modeList.insert(Mode_01, "mode_01");
+    modeList.insert(Mode_02, "mode_02");
 
     // SCENEVIEW_POSTPROCESSOR_SHOW
     sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");
@@ -193,6 +261,12 @@ void initLists()
     matrixSolverTypeList.insert(SOLVER_SUPERLU, "superlu");
     matrixSolverTypeList.insert(SOLVER_AMESOS, "trilinos_amesos");
     matrixSolverTypeList.insert(SOLVER_AZTECOO, "trilinos_aztecoo");
+
+    // LinearityType
+    linearityTypeList.insert(LinearityType_Undefined, "");
+    linearityTypeList.insert(LinearityType_Linear, "linear");
+    linearityTypeList.insert(LinearityType_Picard, "picard");
+    linearityTypeList.insert(LinearityType_Newton, "newton");
 }
 
 QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
@@ -325,7 +399,67 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Velocity ") + Util::scene()->problemInfo()->labelY();
     case PhysicFieldVariable_Flow_Pressure:
         return QObject::tr("Pressure");
-    default:
+
+    case PhysicFieldVariable_RF_ElectricField:
+        return QObject::tr("Electric field");
+    case PhysicFieldVariable_RF_ElectricFieldReal:
+        return QObject::tr("Electric field - real");
+    case PhysicFieldVariable_RF_ElectricFieldImag:
+        return QObject::tr("Electric field - imag");
+    case PhysicFieldVariable_RF_MagneticField:
+        return QObject::tr("Magnetic field");
+    case PhysicFieldVariable_RF_MagneticFieldXReal:
+        return QObject::tr("Magnetic field %1 - real").arg(Util::scene()->problemInfo()->labelX());
+    case PhysicFieldVariable_RF_MagneticFieldXImag:
+        return QObject::tr("Magnetic field %1 - imag").arg(Util::scene()->problemInfo()->labelX());
+    case PhysicFieldVariable_RF_MagneticFieldYReal:
+        return QObject::tr("Magnetic field %1 - real").arg(Util::scene()->problemInfo()->labelY());
+    case PhysicFieldVariable_RF_MagneticFieldYImag:
+        return QObject::tr("Magnetic field %1 - imag").arg(Util::scene()->problemInfo()->labelY());
+    case PhysicFieldVariable_RF_MagneticFluxDensity:
+        return QObject::tr("Flux density");
+    case PhysicFieldVariable_RF_MagneticFluxDensityXReal:
+        return QObject::tr("Flux density %1 - real").arg(Util::scene()->problemInfo()->labelX());
+    case PhysicFieldVariable_RF_MagneticFluxDensityXImag:
+        return QObject::tr("Flux density %1 - imag").arg(Util::scene()->problemInfo()->labelX());
+    case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
+        return QObject::tr("Flux density %1 - real").arg(Util::scene()->problemInfo()->labelY());
+    case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
+        return QObject::tr("Flux density %1 - imag").arg(Util::scene()->problemInfo()->labelY());
+    case PhysicFieldVariable_RF_PoyntingVector:
+        return QObject::tr("Poynting vector");
+    case PhysicFieldVariable_RF_PoyntingVectorX:
+        return QObject::tr("Poynting vector %1").arg(Util::scene()->problemInfo()->labelX());
+    case PhysicFieldVariable_RF_PoyntingVectorY:
+        return QObject::tr("Poynting vector %1").arg(Util::scene()->problemInfo()->labelY());
+    case PhysicFieldVariable_RF_PowerLosses:
+        return QObject::tr("Power losses");
+    case PhysicFieldVariable_RF_Permittivity:
+        return QObject::tr("Permittivity");
+    case PhysicFieldVariable_RF_Permeability:
+        return QObject::tr("Permeability");
+    case PhysicFieldVariable_RF_Conductivity:
+        return QObject::tr("Conductivity");
+    case PhysicFieldVariable_RF_CurrentDensityReal:
+        return QObject::tr("Current density - real");
+    case PhysicFieldVariable_RF_CurrentDensityImag:
+        return QObject::tr("Current density - imag");
+    case PhysicFieldVariable_Acoustic_Pressure:
+        return QObject::tr("Acoustic pressure");
+    case PhysicFieldVariable_Acoustic_PressureReal:
+        return QObject::tr("Acoustic pressure - real");
+    case PhysicFieldVariable_Acoustic_PressureImag:
+        return QObject::tr("Acoustic pressure - imag");
+    case PhysicFieldVariable_Acoustic_PressureLevel:
+        return QObject::tr("Sound pressure level");
+    case PhysicFieldVariable_Acoustic_LocalVelocity:
+        return QObject::tr("Local velocity");
+    case PhysicFieldVariable_Acoustic_LocalAcceleration:
+        return QObject::tr("Local acceleration");
+    case PhysicFieldVariable_Acoustic_Density:
+        return QObject::tr("Density");
+    case PhysicFieldVariable_Acoustic_Speed:
+        return QObject::tr("Speed of sound");
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
     }
@@ -461,6 +595,67 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("v") + Util::scene()->problemInfo()->labelY().toLower();
     case PhysicFieldVariable_Flow_Pressure:
         return QObject::tr("p");
+
+    case PhysicFieldVariable_RF_ElectricField:
+        return QObject::tr("E");
+    case PhysicFieldVariable_RF_ElectricFieldReal:
+        return QObject::tr("E_re");
+    case PhysicFieldVariable_RF_ElectricFieldImag:
+        return QObject::tr("E_im");
+    case PhysicFieldVariable_RF_MagneticField:
+        return QObject::tr("H");
+    case PhysicFieldVariable_RF_MagneticFieldXReal:
+        return QObject::tr("H%1re").arg(Util::scene()->problemInfo()->labelX().toLower());
+    case PhysicFieldVariable_RF_MagneticFieldXImag:
+        return QObject::tr("H%1im").arg(Util::scene()->problemInfo()->labelX().toLower());
+    case PhysicFieldVariable_RF_MagneticFieldYReal:
+        return QObject::tr("H%1re").arg(Util::scene()->problemInfo()->labelY().toLower());
+    case PhysicFieldVariable_RF_MagneticFieldYImag:
+        return QObject::tr("H%1im").arg(Util::scene()->problemInfo()->labelY().toLower());
+    case PhysicFieldVariable_RF_MagneticFluxDensity:
+        return QObject::tr("B");
+    case PhysicFieldVariable_RF_MagneticFluxDensityXReal:
+        return QObject::tr("B%1re").arg(Util::scene()->problemInfo()->labelX().toLower());
+    case PhysicFieldVariable_RF_MagneticFluxDensityXImag:
+        return QObject::tr("B%1im").arg(Util::scene()->problemInfo()->labelX().toLower());
+    case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
+        return QObject::tr("B%1re").arg(Util::scene()->problemInfo()->labelY().toLower());
+    case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
+        return QObject::tr("B%1im").arg(Util::scene()->problemInfo()->labelY().toLower());
+    case PhysicFieldVariable_RF_PoyntingVector:
+        return QObject::tr("N");
+    case PhysicFieldVariable_RF_PoyntingVectorX:
+        return QObject::tr("N%1").arg(Util::scene()->problemInfo()->labelX().toLower());
+    case PhysicFieldVariable_RF_PoyntingVectorY:
+        return QObject::tr("N%1").arg(Util::scene()->problemInfo()->labelY().toLower());
+    case PhysicFieldVariable_RF_PowerLosses:
+        return QObject::tr("pj");
+    case PhysicFieldVariable_RF_Permittivity:
+        return QObject::tr("epsr");
+    case PhysicFieldVariable_RF_Permeability:
+        return QObject::tr("mur");
+    case PhysicFieldVariable_RF_Conductivity:
+        return QObject::tr("g");
+    case PhysicFieldVariable_RF_CurrentDensityReal:
+        return QObject::tr("J_re");
+    case PhysicFieldVariable_RF_CurrentDensityImag:
+        return QObject::tr("J_im");
+    case PhysicFieldVariable_Acoustic_Pressure:
+        return QObject::tr("p");
+    case PhysicFieldVariable_Acoustic_PressureReal:
+        return QObject::tr("p");
+    case PhysicFieldVariable_Acoustic_PressureImag:
+        return QObject::tr("p");
+    case PhysicFieldVariable_Acoustic_PressureLevel:
+        return QObject::tr("Lp");
+    case PhysicFieldVariable_Acoustic_LocalVelocity:
+        return QObject::tr("v");
+    case PhysicFieldVariable_Acoustic_LocalAcceleration:
+        return QObject::tr("a");
+    case PhysicFieldVariable_Acoustic_Density:
+        return QObject::tr("rho");
+    case PhysicFieldVariable_Acoustic_Speed:
+        return QObject::tr("v");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -589,6 +784,68 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("m/s");
     case PhysicFieldVariable_Flow_Pressure:
         return QObject::tr("Pa");
+
+    case PhysicFieldVariable_RF_ElectricField:
+        return QObject::tr("V/m");
+    case PhysicFieldVariable_RF_ElectricFieldReal:
+        return QObject::tr("V/m");
+    case PhysicFieldVariable_RF_ElectricFieldImag:
+        return QObject::tr("V/m");
+    case PhysicFieldVariable_RF_MagneticField:
+        return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_MagneticFieldXReal:
+        return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_MagneticFieldXImag:
+        return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_MagneticFieldYReal:
+        return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_MagneticFieldYImag:
+        return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_MagneticFluxDensity:
+        return QObject::tr("T");
+    case PhysicFieldVariable_RF_MagneticFluxDensityXReal:
+        return QObject::tr("T");
+    case PhysicFieldVariable_RF_MagneticFluxDensityXImag:
+        return QObject::tr("T");
+    case PhysicFieldVariable_RF_MagneticFluxDensityYReal:
+        return QObject::tr("T");
+    case PhysicFieldVariable_RF_MagneticFluxDensityYImag:
+        return QObject::tr("T");
+    case PhysicFieldVariable_RF_PoyntingVector:
+        return QObject::tr("W/m2");
+    case PhysicFieldVariable_RF_PoyntingVectorX:
+        return QObject::tr("W/m2");
+    case PhysicFieldVariable_RF_PoyntingVectorY:
+        return QObject::tr("W/m2");
+    case PhysicFieldVariable_RF_PowerLosses:
+        return QObject::tr("J/m3");
+    case PhysicFieldVariable_RF_Permittivity:
+        return QObject::tr("F/m");
+    case PhysicFieldVariable_RF_Permeability:
+        return QObject::tr("H/m");
+    case PhysicFieldVariable_RF_Conductivity:
+        return QObject::tr("S/m");
+    case PhysicFieldVariable_RF_CurrentDensityReal:
+        return QObject::tr("A/m2");
+    case PhysicFieldVariable_RF_CurrentDensityImag:
+        return QObject::tr("A/m2");
+
+    case PhysicFieldVariable_Acoustic_Pressure:
+        return QObject::tr("Pa");
+    case PhysicFieldVariable_Acoustic_PressureReal:
+        return QObject::tr("Pa");
+    case PhysicFieldVariable_Acoustic_PressureImag:
+        return QObject::tr("Pa");
+    case PhysicFieldVariable_Acoustic_PressureLevel:
+        return QObject::tr("dB");
+    case PhysicFieldVariable_Acoustic_LocalVelocity:
+        return QObject::tr("m/s");
+    case PhysicFieldVariable_Acoustic_LocalAcceleration:
+        return QObject::tr("m/s2");
+    case PhysicFieldVariable_Acoustic_Density:
+        return QObject::tr("kg/m3");
+    case PhysicFieldVariable_Acoustic_Speed:
+        return QObject::tr("m/s");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -615,6 +872,10 @@ QString physicFieldString(PhysicField physicField)
         return QObject::tr("Structural mechanics");
     case PhysicField_Flow:
         return QObject::tr("Incompressible flow");
+    case PhysicField_RF:
+        return QObject::tr("TE Waves");
+    case PhysicField_Acoustic:
+        return QObject::tr("Acoustics");
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
         throw;
@@ -638,6 +899,25 @@ QString analysisTypeString(AnalysisType analysisType)
         throw;
     }
 }
+
+QString teModeString(Mode teMode)
+{
+    logMessage("TEModeString()");
+
+    switch (teMode)
+    {
+    case Mode_0:
+        return QObject::tr("TE Mode 0");
+    case Mode_01:
+        return QObject::tr("TE Mode 01");
+    case Mode_02:
+        return QObject::tr("TE Mode 02");
+    default:
+        std::cerr << "TE mode '" + QString::number(teMode).toStdString() + "' is not implemented. TEModeString(TEMode teMode)" << endl;
+        throw;
+    }
+}
+
 
 QString physicFieldBCString(PhysicFieldBC physicFieldBC)
 {
@@ -679,6 +959,22 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Velocity");
     case PhysicFieldBC_Flow_Pressure:
         return QObject::tr("Pressure");
+    case PhysicFieldBC_RF_ElectricField:
+        return QObject::tr("Electric field");
+    case PhysicFieldBC_RF_SurfaceCurrent:
+        return QObject::tr("Surface current");
+    case PhysicFieldBC_RF_MatchedBoundary:
+        return QObject::tr("Matched boundary");
+    case PhysicFieldBC_RF_Port:
+        return QObject::tr("Port");
+    case PhysicFieldBC_Acoustic_Pressure:
+        return QObject::tr("Acoustic pressure");
+    case PhysicFieldBC_Acoustic_NormalAcceleration:
+        return QObject::tr("Normal acceleration");
+    case PhysicFieldBC_Acoustic_Impedance:
+        return QObject::tr("Impedance boundary condition");
+    case PhysicFieldBC_Acoustic_MatchedBoundary:
+        return QObject::tr("Matched boundary");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
         throw;
@@ -731,6 +1027,44 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
     }
 }
 
+QString meshTypeString(MeshType meshType)
+{
+    logMessage("meshTypeString()");
+
+    switch (meshType)
+    {
+    case MeshType_Triangle:
+        return QObject::tr("Triangle");
+    case MeshType_QuadFineDivision:
+        return QObject::tr("Quad fine div.");
+    case MeshType_QuadRoughDivision:
+        return QObject::tr("Quad rough div.");
+    case MeshType_QuadJoin:
+        return QObject::tr("Quad join");
+    default:
+        std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
+        throw;
+    }
+}
+
+QString linearityTypeString(LinearityType linearityType)
+{
+    logMessage("linearityTypeString()");
+
+    switch (linearityType)
+    {
+    case LinearityType_Linear:
+        return QObject::tr("Linear");
+    case LinearityType_Picard:
+        return QObject::tr("Picard’s method");
+    case LinearityType_Newton:
+        return QObject::tr("Newton’s method");
+    default:
+        std::cerr << "Linearity type '" + QString::number(linearityType).toStdString() + "' is not implemented. linearityTypeString(LinearityType linearityType)" << endl;
+        throw;
+    }
+}
+
 QString matrixSolverTypeString(MatrixSolverType matrixSolverType)
 {
     logMessage("matrixSolverTypeString()");
@@ -766,32 +1100,17 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     cmbPhysicField->addItem(physicFieldString(PhysicField_Current), PhysicField_Current);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Heat), PhysicField_Heat);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Elasticity), PhysicField_Elasticity);
-#ifdef BETA
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
-#endif
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Acoustic), PhysicField_Acoustic);
+    if (Util::config()->showExperimentalFeatures)
+    {
+        cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
+        cmbPhysicField->addItem(physicFieldString(PhysicField_RF), PhysicField_RF);
+    }
 
     // default physic field
     cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Util::config()->defaultPhysicField));
     if (cmbPhysicField->currentIndex() == -1)
         cmbPhysicField->setCurrentIndex(0);
-}
-
-bool Value::evaluate(bool quiet)
-{
-    logMessage("Value::evaluate()");
-
-    ExpressionResult expressionResult;
-    expressionResult = runPythonExpression(text);
-    if (expressionResult.error.isEmpty())
-    {
-        number = expressionResult.value;
-    }
-    else
-    {
-        if (!quiet)
-            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), expressionResult.error);
-    }
-    return expressionResult.error.isEmpty();
 }
 
 void setGUIStyle(const QString &styleName)
@@ -1128,9 +1447,9 @@ void showPage(const QString &str)
     logMessage("showPage()");
 
     if (str.isEmpty())
-        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/doc/web/index.html"));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/doc/help/index.html"));
     else
-        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/doc/web/" + str));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/doc/help/" + str));
 }
 
 
@@ -1191,6 +1510,18 @@ void writeStringContentByteArray(const QString &fileName, QByteArray content)
         file.waitForBytesWritten(0);
         file.close();
     }
+}
+
+Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle)
+{
+    double distance = (pointEnd - pointStart).magnitude();
+    Point t = (pointEnd - pointStart) / distance;
+    double R = distance / (2.0*sin(angle/180.0*M_PI / 2.0));
+
+    Point p = Point(distance/2.0, sqrt(sqr(R) - sqr(distance)/4.0 > 0.0 ? sqr(R) - sqr(distance)/4.0 : 0.0));
+    Point center = pointStart + Point(p.x*t.x - p.y*t.y, p.x*t.y + p.y*t.x);
+
+    return center;
 }
 
 static CheckVersion *checkVersion = NULL;

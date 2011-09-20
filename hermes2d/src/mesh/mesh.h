@@ -19,11 +19,10 @@
 #include "../h2d_common.h"
 #include "curved.h"
 
-struct Element;
+class Element;
 class HashTable;
 class Space;
 struct MItem;
-
 
 /// \brief Stores one node of a mesh.
 ///
@@ -86,8 +85,11 @@ struct HERMES_API Node
 /// If an element has curved edges, the member 'cm' points to an associated CurvMap structure,
 /// otherwise it is NULL.
 ///
-struct HERMES_API Element
+class HERMES_API Element
 {
+public:
+  Element() : visited(false) {};
+
   int id;            ///< element id number
   unsigned nvert:30; ///< number of vertices (3 or 4)
   unsigned active:1; ///< 0 = active, no sons; 1 = inactive (refined), has sons
@@ -159,7 +161,6 @@ public:
   ~Mesh() {
     free();
     dump_hash_stat();
-    delete markers_conversion;
   }
   /// Creates a copy of another mesh.
   void copy(const Mesh* mesh);
@@ -228,7 +229,7 @@ public:
 
   /// Refines all elements.
   /// \param refinement [in] Same meaning as in refine_element_id().
-  void refine_all_elements(int refinement = 0);
+  void refine_all_elements(int refinement = 0, bool mark_as_initial = false);
 
   /// Selects elements to refine according to a given criterion and
   /// performs 'depth' levels of refinements. The criterion function
@@ -247,10 +248,8 @@ public:
   /// boundary marked by 'marker'. Elements touching both by an edge or
   /// by a vertex are refined. 'aniso' allows or disables anisotropic
   /// splits of quads.
-  void refine_towards_boundary(int marker, int depth, bool aniso = true, bool tria_to_quad = false);
-
-  // Wrapper function utilizing the class MarkersConversion.
-  void refine_towards_boundary(std::string marker, int depth, bool aniso = true);
+  void refine_towards_boundary(Hermes::vector<std::string> markers, int depth, bool aniso = true, bool mark_as_initial = false);
+  void refine_towards_boundary(std::string marker, int depth, bool aniso = true, bool mark_as_initial = false);
 
   /// Regularizes the mesh by refining elements with hanging nodes of
   /// degree more than 'n'. As a result, n-irregular mesh is obtained.
@@ -292,17 +291,29 @@ public:
   Element* get_element_fast(int id) const { return &(elements[id]);}
   /// Refines all triangle elements to quads.
   /// It can refine a triangle element into three quadrilaterals.
-  /// Note: this function creates a base mesh -- it can only be
-  /// used before any other mesh refinement function is called.
+  /// Note: this function creates a base mesh.
   void convert_triangles_to_quads();
   /// Refines all quad elements to triangles.
   /// It refines a quadrilateral element into two triangles.
-  /// Note: this function creates a base mesh -- it can only be
-  /// used before any other mesh refinement function is called.
+  /// Note: this function creates a base mesh. 
   void convert_quads_to_triangles();
+  /// Convert all active elements to a base mesh.
+  void convert_to_base();
 
-  void refine_triangle_to_quads(Element* e);
   void refine_element_to_quads_id(int id);
+  void refine_triangle_to_quads(Mesh* mesh, Element* e, Element** elems_out = NULL);
+
+  void refine_element_to_triangles_id(int id);
+  void refine_quad_to_triangles(Element* e);
+  /// Refines one quad element into four quad elements.
+  /// The difference between refine_quad_to_quads() and refine_quad() 
+  /// is that all the internal edges of the former's son elements are  
+  /// straight edges. 
+  void refine_quad_to_quads(Element* e, int refinement = 0);
+
+  void convert_element_to_base_id(int id);
+  void convert_triangles_to_base(Element* e);
+  void convert_quads_to_base(Element* e);
 
   Array<Element> elements;
   int nactive;
@@ -327,69 +338,87 @@ protected:
   void regularize_quad(Element* e);
   void flatten();
 
-  void refine_quad_to_triangles(Element* e);
-  void refine_element_to_triangles_id(int id);
-
-  class MarkersConversion
+  class HERMES_API MarkersConversion
   {
   public:
     MarkersConversion();
-    MarkersConversion(const MarkersConversion& src);  // Copy constructor.
     ~MarkersConversion();
 
-    // Info about the maximum markers used so far, used in determining
+    // Info about the maximum marker used so far, used in determining
     // of the internal marker for a user-supplied std::string identification for
     // the purpose of disambiguity.
-    //
-    int min_boundary_marker_unused;
-    int min_element_marker_unused;
+    int min_marker_unused;
 
     // Function inserting a marker into conversion_table_for_element_markers.
     // This function controls if this user_marker x internal_marker is already
     // present, and if not, it inserts the std::pair.
-    void insert_element_marker(int internal_marker, std::string user_marker);
-    // An analogy for boundary markers.
-    void insert_boundary_marker(int internal_marker, std::string user_marker);
+    void insert_marker(int internal_marker, std::string user_marker);
 
     // Lookup functions.
     // Find a user marker for this internal marker.
-    std::string get_user_element_marker(int internal_marker);
-    // An analogy for boundary markers.
-    std::string get_user_boundary_marker(int internal_marker);
+    std::string get_user_marker(int internal_marker);
 
     // Find an internal marker for this user_marker.
-    int get_internal_element_marker(std::string user_marker);
-    // An analogy for boundary markers.
-    int get_internal_boundary_marker(std::string user_marker);
+    int get_internal_marker(std::string user_marker);
 
-    // Make sure that the internal markers do not collide.
-    // This function is called whenever user supplies his own integral label.
-    // This is done with respect to the task to preserve user-supplied integral markers.
-    void check_boundary_marker(int marker);
-    // An analogy for element markers.
-    void check_element_marker(int marker);
+    enum MarkersConversionType {
+      HERMES_ELEMENT_MARKERS_CONVERSION = 0,
+      HERMES_BOUNDARY_MARKERS_CONVERSION = 1
+    };
 
-  private:
+    virtual MarkersConversionType get_type() = 0;
+
+  protected:
     // Conversion tables between the std::string markers the user sets and
     // the markers used internally as members of Elements, Nodes.
-    std::map<int, std::string>* conversion_table_for_element_markers;
-    std::map<int, std::string>* conversion_table_for_boundary_markers;
+    std::map<int, std::string>* conversion_table;
 
     // Inverse tables, so that it is possible to search using either
     // the internal representation, or the user std::string value.
-    std::map<std::string, int>* conversion_table_for_element_markers_inverse;
-    std::map<std::string, int>* conversion_table_for_boundary_markers_inverse;
-
+    std::map<std::string, int>* conversion_table_inverse;
+    friend class Space;
+    friend class Mesh;
+    friend class SceneSolution;
   };
 
-  MarkersConversion* markers_conversion;
+  class ElementMarkersConversion : public MarkersConversion
+  {
+  public:
+    ElementMarkersConversion(){};
+    ElementMarkersConversion(const ElementMarkersConversion& src);  // Copy constructor.
+    void operator=(const ElementMarkersConversion& src);  // Assignment operator.
+    virtual MarkersConversionType get_type() { return HERMES_ELEMENT_MARKERS_CONVERSION; };
+  };
+
+  class BoundaryMarkersConversion : public MarkersConversion
+  {
+  public:
+    BoundaryMarkersConversion(){};
+    BoundaryMarkersConversion(const BoundaryMarkersConversion& src);  // Copy constructor.
+    void operator=(const BoundaryMarkersConversion& src);  // Assignment operator.
+    virtual MarkersConversionType get_type() { return HERMES_BOUNDARY_MARKERS_CONVERSION; };
+  };
+
+  ElementMarkersConversion element_markers_conversion;
+  BoundaryMarkersConversion boundary_markers_conversion;
 
   friend class H2DReader;
+  friend class ExodusIIReader;
   friend class BCTypes;
   friend class BCValues;
   friend class WeakForm;
   friend class Space;
+  friend class H1Space;
+  friend class L2Space;
+  friend class HcurlSpace;
+  friend class HdivSpace;
   friend class DiscreteProblem;
+  friend class KellyTypeAdapt;
+  friend class SceneSolution;
+
+public:
+  ElementMarkersConversion &get_element_markers_conversion() { return element_markers_conversion; };
+  BoundaryMarkersConversion &get_boundary_markers_conversion() { return boundary_markers_conversion; };
 };
 
 // Elementary functions to create a quad / triangle element. If mesh != NULL,
@@ -397,11 +426,12 @@ protected:
 Element* create_quad(Mesh* mesh, int marker, Node* v0, Node* v1, Node* v2, Node* v3, CurvMap* cm);
 Element* create_triangle(Mesh* mesh, int marker, Node* v0, Node* v1, Node* v2, CurvMap* cm);
 void refine_element(Mesh* mesh, Element* e, int refinement);
-void refine_quad(Mesh* mesh, Element* e, int refinement);
-void refine_triangle_to_triangles(Mesh* mesh, Element* e);
+void refine_quad(Mesh* mesh, Element* e, int refinement, Element** sons_out = NULL);
+void refine_triangle_to_triangles(Mesh* mesh, Element* e, Element** sons = NULL);
 Node* get_vertex_node(Node* v1, Node* v2);
+Node* get_edge_node();
 
-// helper macros for easy iteration through all elements, nodes etc. in a mesh
+// Helper macros for easy iteration through all elements, nodes etc. in a Mesh.
 #define for_all_elements(e, mesh) \
         for (int _id = 0, _max = (mesh)->get_max_element_id(); _id < _max; _id++) \
           if (((e) = (mesh)->get_element_fast(_id))->used)

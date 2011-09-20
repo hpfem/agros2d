@@ -60,11 +60,14 @@ protected:
 public:
     ProgressItem();
 
+    void init();
+    virtual void setSteps() = 0;
+
     inline QString name() { return m_name; }
     inline int steps() { return m_steps; }
     inline bool isCanceled() { return m_isCanceled; }
     inline void emitMessage(const QString &msg, bool isError, int position = 0) { emit message(msg, isError, position); }
-    virtual bool run() = 0;
+    virtual bool run(bool quiet = false) = 0;
 
 signals:
     void message(const QString &message, bool isError, int position);
@@ -87,7 +90,101 @@ private slots:
 public:
     ProgressItemMesh();
 
-    bool run();
+    void setSteps();
+
+    bool run(bool quiet = false);
+
+    void mesh();
+
+private:
+    struct MeshEdge
+    {
+        MeshEdge()
+        {
+            this->node[0] = -1;
+            this->node[1] = -1;
+            this->marker = -1;
+
+            this->isActive = true;
+            this->isUsed = true;
+        }
+
+        MeshEdge(int node_1, int node_2, int marker)
+        {
+            this->node[0] = node_1;
+            this->node[1] = node_2;
+            this->marker = marker;
+
+            this->isActive = true;
+            this->isUsed = true;
+        }
+
+        int node[2], marker;
+        bool isActive, isUsed;
+    };
+
+    struct MeshElement
+    {
+        MeshElement()
+        {
+            this->node[0] = -1;
+            this->node[1] = -1;
+            this->node[2] = -1;
+            this->node[3] = -1;
+            this->marker = -1;
+
+            this->isActive = true;
+            this->isUsed = true;
+        }
+
+        MeshElement(int node_1, int node_2, int node_3, int marker)
+        {
+            this->node[0] = node_1;
+            this->node[1] = node_2;
+            this->node[2] = node_3;
+            this->node[3] = -1;
+            this->marker = marker;
+
+            this->isActive = true;
+            this->isUsed = true;
+        }
+
+        MeshElement(int node_1, int node_2, int node_3, int node_4, int marker)
+        {
+            this->node[0] = node_1;
+            this->node[1] = node_2;
+            this->node[2] = node_3;
+            this->node[3] = node_4;
+            this->marker = marker;
+
+            this->isActive = true;
+            this->isUsed = true;
+        }
+
+        inline bool isTriangle() const { return (node[3] == -1); }
+
+        int node[4], marker;
+        bool isActive, isUsed;
+
+        int neigh[3];
+    };
+
+    /*
+    struct MeshNode
+    {
+        MeshNode(int n, double x, double y, int marker)
+        {
+            this->n = n;
+            this.x = x;
+            this.y = n;
+            this->marker = marker;
+        }
+
+        int n;
+        double x, y;
+        int marker;
+    };
+    */
 };
 
 class ProgressItemSolve : public ProgressItem
@@ -97,7 +194,10 @@ class ProgressItemSolve : public ProgressItem
 public:
     ProgressItemSolve();
 
-    bool run();
+    void setSteps();
+
+    bool run(bool quiet = false);
+
     inline void addAdaptivityError(double error, int dof) { m_adaptivityError.append(error); m_adaptivityDOF.append(dof); emit changed(); }
     inline QList<double> adaptivityError() { return m_adaptivityError; }
     inline QList<int> adaptivityDOF() { return m_adaptivityDOF; }
@@ -115,7 +215,6 @@ class ProgressItemProcessView : public ProgressItem
 {
     Q_OBJECT
 private:
-    // SceneView *m_sceneView;
 
 private slots:
     void process();
@@ -123,7 +222,9 @@ private slots:
 public:
     ProgressItemProcessView();
 
-    bool run();
+    void setSteps();
+
+    bool run(bool quiet = false);
 };
 
 class ProgressDialog : public QDialog
@@ -136,6 +237,7 @@ public:
 
     void appendProgressItem(ProgressItem *progressItem);
     bool run(bool showViewProgress = true);
+    void clear();
 
 signals:
     void cancelProgressItem();
@@ -178,16 +280,17 @@ private:
     QWidget *createControlsConvergenceErrorDOFChart();
 
     void createControls();
-    void clear();
     int progressSteps();
     int currentProgressStep();
     void saveProgressLog();
+
+public slots:
+    void close();
 
 private slots:
     void finished();
     void start();
     void cancel();
-    void close();
     void resetControls(int currentTab);
     void saveImage();
     void saveData();

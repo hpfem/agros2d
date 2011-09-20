@@ -112,12 +112,6 @@ QWidget *ProblemDialog::createControlsGeneral()
     dtmDate = new QDateTimeEdit();
     dtmDate->setDisplayFormat("dd.MM.yyyy");
     dtmDate->setCalendarPopup(true);
-    txtNumberOfRefinements = new QSpinBox(this);
-    txtNumberOfRefinements->setMinimum(0);
-    txtNumberOfRefinements->setMaximum(5);
-    txtPolynomialOrder = new QSpinBox(this);
-    txtPolynomialOrder->setMinimum(1);
-    txtPolynomialOrder->setMaximum(10);
     cmbAdaptivityType = new QComboBox();
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(1);
@@ -125,15 +119,31 @@ QWidget *ProblemDialog::createControlsGeneral()
     txtAdaptivityTolerance = new SLineEditDouble(1);
     cmbMatrixSolver = new QComboBox();
 
+    // mesh
+    txtNumberOfRefinements = new QSpinBox(this);
+    txtNumberOfRefinements->setMinimum(0);
+    txtNumberOfRefinements->setMaximum(5);
+    txtPolynomialOrder = new QSpinBox(this);
+    txtPolynomialOrder->setMinimum(1);
+    txtPolynomialOrder->setMaximum(10);
+    cmbMeshType = new QComboBox();
+
     // harmonic
     txtFrequency = new SLineEditDouble();
 
     // transient
     cmbAnalysisType = new QComboBox();
-    txtTransientTimeStep = new SLineEditValue();
-    txtTransientTimeTotal = new SLineEditValue();
-    txtTransientInitialCondition = new SLineEditValue();
+    txtTransientTimeStep = new ValueLineEdit();
+    txtTransientTimeTotal = new ValueLineEdit();
+    txtTransientInitialCondition = new ValueLineEdit();
     lblTransientSteps = new QLabel("0");
+
+    // linearity
+    cmbLinearityType = new QComboBox();
+    txtLinearityNonlinearitySteps = new QSpinBox(this);
+    txtLinearityNonlinearitySteps->setMinimum(1);
+    txtLinearityNonlinearitySteps->setMaximum(100);
+    txtLinearityNonlinearityTolerance = new SLineEditDouble(1);
 
     connect(txtTransientTimeStep, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
     connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
@@ -141,57 +151,134 @@ QWidget *ProblemDialog::createControlsGeneral()
     connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
+    connect(cmbLinearityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doLinearityTypeChanged(int)));
     fillComboBox();
 
-    QGridLayout *layoutProblemTable = new QGridLayout();
-    // top
-    layoutProblemTable->addWidget(new QLabel(tr("Name:")), 1, 0);
-    layoutProblemTable->addWidget(txtName, 1, 1, 1, 3);
+    int minWidth = 130;
+
+    // table
+    QGridLayout *layoutTable = new QGridLayout();
+    layoutTable->setColumnMinimumWidth(0, minWidth);
+    layoutTable->setColumnStretch(1, 1);
+    layoutTable->addWidget(new QLabel(tr("Date:")), 2, 0);
+    layoutTable->addWidget(dtmDate, 2, 1);
+    layoutTable->addWidget(new QLabel(tr("Physic field:")), 3, 0);
+    layoutTable->addWidget(cmbPhysicField, 3, 1);
+    layoutTable->addWidget(new QLabel(tr("Problem type:")), 4, 0);
+    layoutTable->addWidget(cmbProblemType, 4, 1);
+    layoutTable->addWidget(new QLabel(tr("Type of analysis:")), 5, 0);
+    layoutTable->addWidget(cmbAnalysisType, 5, 1);
+    layoutTable->addWidget(new QLabel(tr("Adaptivity:")), 6, 0);
+    layoutTable->addWidget(cmbAdaptivityType, 6, 1);
+    layoutTable->addWidget(new QLabel(tr("Linearity:")), 7, 0);
+    layoutTable->addWidget(cmbLinearityType, 7, 1);
+    layoutTable->addWidget(new QLabel(tr("Linear solver:")), 8, 0);
+    layoutTable->addWidget(cmbMatrixSolver, 8, 1);
+
+    // harmonic analysis
+    QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
+    layoutHarmonicAnalysis->setColumnMinimumWidth(0, minWidth);
+    layoutHarmonicAnalysis->addWidget(new QLabel(tr("Frequency (Hz):")), 0, 0);
+    layoutHarmonicAnalysis->addWidget(txtFrequency, 0, 1);
+
+    QGroupBox *grpHarmonicAnalysis = new QGroupBox(tr("Harmonic analysis"));
+    grpHarmonicAnalysis->setLayout(layoutHarmonicAnalysis);
+
+    // harmonic analysis
+    QGridLayout *layoutTransientAnalysis = new QGridLayout();
+    layoutTransientAnalysis->setColumnMinimumWidth(0, minWidth);
+    layoutTransientAnalysis->setColumnStretch(1, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Time step (s):")), 0, 0);
+    layoutTransientAnalysis->addWidget(txtTransientTimeStep, 0, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Total time (s):")), 1, 0);
+    layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 1, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Initial condition:")), 2, 0);
+    layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 2, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Steps:")), 3, 0);
+    layoutTransientAnalysis->addWidget(lblTransientSteps, 3, 1);
+
+    QGroupBox *grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
+    grpTransientAnalysis->setLayout(layoutTransientAnalysis);
+
+    // harmonic analysis
+    QGridLayout *layoutMesh = new QGridLayout();
+    layoutMesh->setColumnMinimumWidth(0, minWidth);
+    layoutMesh->setColumnStretch(1, 1);
+    layoutMesh->addWidget(new QLabel(tr("Mesh type:")), 0, 0);
+    layoutMesh->addWidget(cmbMeshType, 0, 1);
+    layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 1, 0);
+    layoutMesh->addWidget(txtNumberOfRefinements, 1, 1);
+    layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 2, 0);
+    layoutMesh->addWidget(txtPolynomialOrder, 2, 1);
+
+    QGroupBox *grpMesh = new QGroupBox(tr("Mesh parameters"));
+    grpMesh->setLayout(layoutMesh);
+
+    // adaptivity
+    QGridLayout *layoutAdaptivity = new QGridLayout();
+    layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
+    layoutAdaptivity->setColumnStretch(1, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity steps:")), 0, 0);
+    layoutAdaptivity->addWidget(txtAdaptivitySteps, 0, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 1, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 1, 1);
+
+    QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
+    grpAdaptivity->setLayout(layoutAdaptivity);
+
+    // linearity
+    QGridLayout *layoutLinearity = new QGridLayout();
+    layoutLinearity->setColumnMinimumWidth(0, minWidth);
+    layoutLinearity->setColumnStretch(1, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Nonlin. tolerance (%):")), 0, 0);
+    layoutLinearity->addWidget(txtLinearityNonlinearityTolerance, 0, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Nonlin. steps:")), 1, 0);
+    layoutLinearity->addWidget(txtLinearityNonlinearitySteps, 1, 1);
+
+    QGroupBox *grpLinearity = new QGroupBox(tr("Linearity"));
+    grpLinearity->setLayout(layoutLinearity);
+    grpLinearity->setVisible(Util::config()->showExperimentalFeatures);
+
     // left
-    layoutProblemTable->addWidget(new QLabel(tr("Date:")), 2, 0);
-    layoutProblemTable->addWidget(dtmDate, 2, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Physic field:")), 3, 0);
-    layoutProblemTable->addWidget(cmbPhysicField, 3, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Problem type:")), 4, 0);
-    layoutProblemTable->addWidget(cmbProblemType, 4, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Number of refinements:")), 5, 0);
-    layoutProblemTable->addWidget(txtNumberOfRefinements, 5, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Polynomial order:")), 6, 0);
-    layoutProblemTable->addWidget(txtPolynomialOrder, 6, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Adaptivity:")), 7, 0);
-    layoutProblemTable->addWidget(cmbAdaptivityType, 7, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Adaptivity steps:")), 8, 0);
-    layoutProblemTable->addWidget(txtAdaptivitySteps, 8, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 9, 0);
-    layoutProblemTable->addWidget(txtAdaptivityTolerance, 9, 1);
-    // right    
-    layoutProblemTable->addWidget(new QLabel(tr("Linear solver:")), 2, 2);
-    layoutProblemTable->addWidget(cmbMatrixSolver, 2, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
-    layoutProblemTable->addWidget(cmbAnalysisType, 3, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Frequency (Hz):")), 4, 2);
-    layoutProblemTable->addWidget(txtFrequency, 4, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Time step (s):")), 5, 2);
-    layoutProblemTable->addWidget(txtTransientTimeStep, 5, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Total time (s):")), 6, 2);
-    layoutProblemTable->addWidget(txtTransientTimeTotal, 6, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Initial condition:")), 7, 2);
-    layoutProblemTable->addWidget(txtTransientInitialCondition, 7, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Steps:")), 8, 2);
-    layoutProblemTable->addWidget(lblTransientSteps, 8, 3);
+    QVBoxLayout *layoutLeft = new QVBoxLayout();
+    layoutLeft->addLayout(layoutTable);
+    // layoutLeft->addWidget(grpAdaptivity);
+    layoutLeft->addStretch();
+    // layoutLeft->addWidget(grpLinearity);
+    layoutLeft->addWidget(grpMesh);
+
+    // right
+    QVBoxLayout *layoutRight = new QVBoxLayout();
+    layoutRight->addWidget(grpHarmonicAnalysis);
+    layoutRight->addWidget(grpTransientAnalysis);
+    // layoutRight->addWidget(grpMesh);
+    layoutRight->addWidget(grpAdaptivity);
+    layoutRight->addWidget(grpLinearity);
+    layoutRight->addStretch();
+
+    // both
+    QHBoxLayout *layoutPanel = new QHBoxLayout();
+    layoutPanel->addLayout(layoutLeft);
+    layoutPanel->addLayout(layoutRight);
+
+    // name
+    QGridLayout *layoutName = new QGridLayout();
+    layoutName->setColumnMinimumWidth(0, minWidth);
+    layoutName->setColumnStretch(1, 1);
+    layoutName->addWidget(new QLabel(tr("Name:")), 0, 0);
+    layoutName->addWidget(txtName, 0, 1);
 
     // equation
-    QHBoxLayout *layoutEquation = new QHBoxLayout();
-    layoutEquation->addWidget(new QLabel(tr("Equation:")));
-    layoutEquation->addWidget(lblEquationPixmap, 1);
-
-    // QWidget *widgetEquation = new QWidget(this);
-    // widgetEquation->setLayout(widgetEquation);
+    QGridLayout *layoutEquation = new QGridLayout();
+    layoutEquation->setColumnMinimumWidth(0, minWidth);
+    layoutEquation->setColumnStretch(1, 1);
+    layoutEquation->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    layoutEquation->addWidget(lblEquationPixmap, 0, 1, 1, 1, Qt::AlignLeft);
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
-    layoutProblem->addLayout(layoutProblemTable);
-    // layoutProblem->addWidget();
+    layoutProblem->addLayout(layoutName);
     layoutProblem->addLayout(layoutEquation);
+    layoutProblem->addLayout(layoutPanel);
 
     QWidget *widMain = new QWidget();
     widMain->setLayout(layoutProblem);
@@ -247,6 +334,11 @@ void ProblemDialog::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_P), AdaptivityType_P);
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
 
+    cmbMeshType->addItem(meshTypeString(MeshType_Triangle), MeshType_Triangle);
+    cmbMeshType->addItem(meshTypeString(MeshType_QuadFineDivision), MeshType_QuadFineDivision);
+    cmbMeshType->addItem(meshTypeString(MeshType_QuadRoughDivision), MeshType_QuadRoughDivision);
+    cmbMeshType->addItem(meshTypeString(MeshType_QuadJoin), MeshType_QuadJoin);
+
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_UMFPACK), SOLVER_UMFPACK);
 #ifdef WITH_MUMPS
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_MUMPS), SOLVER_MUMPS);
@@ -265,11 +357,13 @@ void ProblemDialog::load()
     txtName->setText(m_problemInfo->name);
     cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_problemInfo->problemType));
     dtmDate->setDate(m_problemInfo->date);
-    txtNumberOfRefinements->setValue(m_problemInfo->numberOfRefinements);
-    txtPolynomialOrder->setValue(m_problemInfo->polynomialOrder);
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_problemInfo->adaptivityType));
     txtAdaptivitySteps->setValue(m_problemInfo->adaptivitySteps);
     txtAdaptivityTolerance->setValue(m_problemInfo->adaptivityTolerance);
+    //mesh
+    txtNumberOfRefinements->setValue(m_problemInfo->numberOfRefinements);
+    txtPolynomialOrder->setValue(m_problemInfo->polynomialOrder);
+    cmbMeshType->setCurrentIndex(cmbMeshType->findData(m_problemInfo->meshType));
     // harmonic magnetic
     txtFrequency->setValue(m_problemInfo->frequency);
     // transient
@@ -277,6 +371,11 @@ void ProblemDialog::load()
     txtTransientTimeStep->setValue(m_problemInfo->timeStep);
     txtTransientTimeTotal->setValue(m_problemInfo->timeTotal);
     txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
+
+    // linearity
+    cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_problemInfo->linearityType));
+    txtLinearityNonlinearitySteps->setValue(m_problemInfo->linearityNonlinearSteps);
+    txtLinearityNonlinearityTolerance->setValue(m_problemInfo->linearityNonlinearTolerance);
 
     // matrix solver
     cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_problemInfo->matrixSolver));
@@ -300,7 +399,7 @@ bool ProblemDialog::save()
     {
         if (!this->m_isNewProblem)
         {
-            if (Util::scene()->edgeMarkers.count() != 1 || Util::scene()->labelMarkers.count() != 1)
+            if (Util::scene()->boundaries.count() != 1 || Util::scene()->materials.count() != 1)
             {
                 if (QMessageBox::question(this, tr("Change physical field type"), tr("Are you sure change physical field type?"), tr("&Yes"), tr("&No")) == 1)
                     return false;
@@ -312,14 +411,14 @@ bool ProblemDialog::save()
 
         m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 
-        for (int i = 1; i < Util::scene()->edgeMarkers.count(); i++)
+        for (int i = 1; i < Util::scene()->boundaries.count(); i++)
         {
-            Util::scene()->replaceEdgeMarker(Util::scene()->edgeMarkers[1]);
+            Util::scene()->replaceBoundary(Util::scene()->boundaries[1]);
         }
 
-        for (int i = 1; i < Util::scene()->labelMarkers.count(); i++)
+        for (int i = 1; i < Util::scene()->materials.count(); i++)
         {
-            Util::scene()->replaceLabelMarker(Util::scene()->labelMarkers[1]);
+            Util::scene()->replaceMaterial(Util::scene()->materials[1]);
         }
     }
     else
@@ -375,6 +474,7 @@ bool ProblemDialog::save()
     m_problemInfo->date = dtmDate->date();
     m_problemInfo->numberOfRefinements = txtNumberOfRefinements->value();
     m_problemInfo->polynomialOrder = txtPolynomialOrder->value();
+    m_problemInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();
     m_problemInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
     m_problemInfo->adaptivitySteps = txtAdaptivitySteps->value();
     m_problemInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
@@ -388,6 +488,10 @@ bool ProblemDialog::save()
 
     m_problemInfo->description = txtDescription->toPlainText();
     m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
+
+    m_problemInfo->linearityType = (LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt();
+    m_problemInfo->linearityNonlinearSteps = txtLinearityNonlinearitySteps->value();
+    m_problemInfo->linearityNonlinearTolerance = txtLinearityNonlinearityTolerance->value();
 
     // matrix solver
     m_problemInfo->matrixSolver = (MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
@@ -418,12 +522,22 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     // analysis type
     AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
     cmbAnalysisType->clear();
-    cmbAnalysisType->addItem(analysisTypeString(AnalysisType_SteadyState), AnalysisType_SteadyState);
+    if (hermesField->hasSteadyState()) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_SteadyState), AnalysisType_SteadyState);
     if (hermesField->hasHarmonic()) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Harmonic), AnalysisType_Harmonic);
     if (hermesField->hasTransient()) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Transient), AnalysisType_Transient);
     cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(analysisType));
     if (cmbAnalysisType->currentIndex() == -1) cmbAnalysisType->setCurrentIndex(0);
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
+
+    // nonlinearity
+    cmbLinearityType->clear();
+    cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
+    if (hermesField->hasNonlinearity())
+    {
+        cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
+        cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
+    }
+    doLinearityTypeChanged(cmbLinearityType->currentIndex());
 
     delete hermesField;
 
@@ -436,6 +550,14 @@ void ProblemDialog::doAdaptivityChanged(int index)
 
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+}
+
+void ProblemDialog::doLinearityTypeChanged(int index)
+{
+    logMessage("ProblemDialog::doLinearityTypeChanged()");
+
+    txtLinearityNonlinearitySteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    txtLinearityNonlinearityTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 }
 
 void ProblemDialog::doAnalysisTypeChanged(int index)
@@ -464,11 +586,8 @@ void ProblemDialog::doTransientChanged()
 
 void ProblemDialog::doShowEquation()
 {
-    logMessage("ProblemDialog::doShowEquation()");
-
-    QPixmap pixmap;
-    pixmap.load(QString(":/images/equations/%1_%2.png")
-                .arg(physicFieldToStringKey((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()))
-                .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
-    lblEquationPixmap->setPixmap(pixmap);
+    readPixmap(lblEquationPixmap,
+               QString(":/images/equations/%1/%1_%2.png")
+               .arg(physicFieldToStringKey((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()))
+               .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
 }

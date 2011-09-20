@@ -42,6 +42,8 @@ public:
     bool lineEditValueShowResult;
     bool saveProblemWithSolution;
 
+    QString collaborationServerURL;
+
     // geometry
     double nodeSize;
     double edgeWidth;
@@ -70,6 +72,9 @@ public:
     // label
     bool showLabel;
 
+    // linearizer quality
+    double linearizerQuality;
+
     // contour
     int contoursCount;
 
@@ -85,8 +90,9 @@ public:
     double vectorScale;
 
     // order view
-    bool orderLabel;
+    bool showOrderScale;
     PaletteOrderType orderPaletteOrderType;
+    bool orderLabel;
 
     // deformations
     bool deformScalar;
@@ -97,8 +103,10 @@ public:
     bool scalarView3DLighting;
     double scalarView3DAngle;
     bool scalarView3DBackground;
+    double scalarView3DHeight;
 
     // palette
+    bool showScalarScale;
     PaletteType paletteType;
     int paletteSteps;
     bool paletteFilter;
@@ -121,6 +129,7 @@ public:
     QColor colorSelected;
 
     // adaptivity
+    int maxDofs;
     bool isoOnly;
     double convExp;
     double threshold;
@@ -134,6 +143,8 @@ public:
 
     // global script
     QString globalScript;
+
+    bool showExperimentalFeatures;
 
     void load();
     void save();

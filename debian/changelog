@@ -1,6 +1,14 @@
-agros2d (1.8-ubuntu32) maverick; urgency=low
+agros2d (1.9-ubuntu43) natty; urgency=low
 
-  * reworked postprocessor settings
+  * added quad element support
+
+ -- Pavel Karban <pkarban@gmail.com>  Wen, 23 Mar 2011 12:40:00 +0200
+
+agros2d (1.9-ubuntu42) maverick; urgency=low
+
+  * reworked postprocessor settings  
+  * new hermes version
+  * timedep functions
 
  -- Pavel Karban <pkarban@gmail.com>  Wen, 5 Mar 2011 12:40:00 +0200
 

@@ -31,30 +31,8 @@ SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
-    setMinimumSize(420, 220);
+    setMinimumSize(350, 225);
     setMaximumSize(minimumSize());
-}
-
-SceneTransformDialog::~SceneTransformDialog()
-{
-    logMessage("SceneTransformDialog::~SceneTransformDialog()");
-
-    delete txtTranslateX;
-    delete txtTranslateY;
-
-    delete txtRotateBasePointX;
-    delete txtRotateBasePointY;
-    delete txtRotateAngle;
-
-    delete txtScaleBasePointX;
-    delete txtScaleBasePointY;
-    delete txtScaleFactor;
-
-    delete widTranslate;
-    delete widRotate;
-    delete widScale;
-
-    delete tabWidget;
 }
 
 void SceneTransformDialog::createControls()
@@ -62,8 +40,8 @@ void SceneTransformDialog::createControls()
     logMessage("SceneTransformDialog::createControls()");
 
     // translate
-    txtTranslateX = new SLineEditValue();
-    txtTranslateY = new SLineEditValue();
+    txtTranslateX = new ValueLineEdit();
+    txtTranslateY = new ValueLineEdit();
 
     QGridLayout *layoutTranslate = new QGridLayout();
     layoutTranslate->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
@@ -76,9 +54,9 @@ void SceneTransformDialog::createControls()
     widTranslate->setLayout(layoutTranslate);
 
     // rotate
-    txtRotateBasePointX = new SLineEditValue();
-    txtRotateBasePointY = new SLineEditValue();
-    txtRotateAngle = new SLineEditValue();
+    txtRotateBasePointX = new ValueLineEdit();
+    txtRotateBasePointY = new ValueLineEdit();
+    txtRotateAngle = new ValueLineEdit();
 
     QGridLayout *layoutRotate = new QGridLayout();
     layoutRotate->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
@@ -92,9 +70,9 @@ void SceneTransformDialog::createControls()
     widRotate->setLayout(layoutRotate);
 
     // scale
-    txtScaleBasePointX = new SLineEditValue();
-    txtScaleBasePointY = new SLineEditValue();
-    txtScaleFactor = new SLineEditValue();
+    txtScaleBasePointX = new ValueLineEdit();
+    txtScaleBasePointY = new ValueLineEdit();
+    txtScaleFactor = new ValueLineEdit();
 
     QGridLayout *layoutScale = new QGridLayout();
     layoutScale->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
@@ -116,7 +94,7 @@ void SceneTransformDialog::createControls()
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
     // tab widget
-    tabWidget = new QTabWidget(this);
+    tabWidget = new QTabWidget();
     tabWidget->addTab(widTranslate, icon(""), tr("Translate"));
     tabWidget->addTab(widRotate, icon(""), tr("Rotate"));
     tabWidget->addTab(widScale, icon(""), tr("Scale"));

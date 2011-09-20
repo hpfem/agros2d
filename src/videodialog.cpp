@@ -85,7 +85,7 @@ void VideoDialog::createControls()
     tabType->addTab(createControlsViewport(), icon(""), tr("Viewport"));
     tabType->addTab(createControlsFile(), icon(""), tr("File"));
 
-    QPushButton *btnClose = new QPushButton(tr("Close"));
+    btnClose = new QPushButton(tr("Close"));
     btnClose->setDefault(true);
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
@@ -235,11 +235,15 @@ void VideoDialog::doAnimate()
 
     if (timerAnimate->isActive())
     {
+        btnClose->setEnabled(true);
+
         timerAnimate->stop();
         btnAnimate->setText(tr("Animate"));
     }
     else
     {
+        btnClose->setEnabled(false);
+
         btnAnimate->setText(tr("Stop"));
         doSetTimeStep(txtAnimateFrom->value());
         timerAnimate->start(txtAnimateDelay->value() * 1e3);
@@ -291,6 +295,7 @@ void VideoDialog::doCreateImages()
 {
     logMessage("VideoDialog::doCreateImages()");
 
+    btnClose->setEnabled(false);
     progressBar->setMaximum(Util::scene()->sceneSolution()->timeStepCount() - 1);
     progressBar->setValue(0);
 
@@ -299,16 +304,19 @@ void VideoDialog::doCreateImages()
     for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
     {
         progressBar->setValue(i);
-        Util::scene()->sceneSolution()->setTimeStep(i);
+        Util::scene()->sceneSolution()->setTimeStep(i, false);
         m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
     }
 
+    btnClose->setEnabled(true);
     btnEncodeFFmpeg->setEnabled(true);
 }
 
 void VideoDialog::doEncodeFFmpeg()
 {
     logMessage("VideoDialog::doEncodeFFmpeg()");
+
+    btnClose->setEnabled(false);
 
     // exec mencoder
     QProcess *processFFmpeg = new QProcess();
@@ -321,6 +329,7 @@ void VideoDialog::doEncodeFFmpeg()
     if (!processFFmpeg->waitForStarted())
     {
         processFFmpeg->kill();
+        btnClose->setEnabled(true);
         return;
     }
 
@@ -342,7 +351,8 @@ void VideoDialog::doSaveVideo()
         QFile::remove(fileName);
         QFile::copy(outputFile, fileName);
 
-        settings.setValue("General/LastVideoDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastVideoDir", fileInfo.absolutePath());
     }
 }
 
@@ -376,6 +386,8 @@ void VideoDialog::doCommandFFmpeg()
 void VideoDialog::doVideoCreated(int result)
 {
     logMessage("VideoDialog::doVideoCreated()");
+
+    btnClose->setEnabled(true);
 
     if (result == 0)
     {

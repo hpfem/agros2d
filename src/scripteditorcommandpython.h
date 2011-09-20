@@ -38,7 +38,7 @@ public:
     void showMessage(const QString &message);
 
     ScriptResult runPythonScript(const QString &script, const QString &fileName);
-    ExpressionResult runPythonExpression(const QString &expression);
+    ExpressionResult runPythonExpression(const QString &expression, bool returnValue);
     ScriptResult parseError();
     inline bool isRunning() { return m_isRunning; }
 
@@ -107,7 +107,7 @@ void pythonZoomRegion(double x1, double y1, double x2, double y2);
 void pythonMode(char *str);
 void pythonPostprocessorMode(char *str);
 
-void pythonShowScalar(char *type, char *variable, char *component, int rangemin, int rangemax);
+void pythonShowScalar(char *type, char *variable, char *component, double rangemin, double rangemax);
 void pythonShowGrid(bool show);
 void pythonShowGeometry(bool show);
 void pythonShowInitialMesh(bool show);

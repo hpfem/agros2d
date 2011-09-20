@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="5" frequency="0" numberofrefinements="1" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="steadystate" adaptivitysteps="10" polynomialorder="3" problemtype="axisymmetric" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic Axisymmetric Capacitor" initialcondition="0">
+        <problem maxdofs="60000" adaptivitytolerance="5" id="0" analysistype="steadystate" initialcondition="0" linearitysteps="10" adaptivitysteps="10" linearity="linear" name="Electrostatic Axisymmetric Capacitor" date="2011-04-19" polynomialorder="3" meshtype="triangle" timestep="0" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="0">
             <scriptstartup>U = 10
 eps1 = 10
 eps2 = 3</scriptstartup>

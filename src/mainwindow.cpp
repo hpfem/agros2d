@@ -35,10 +35,14 @@
 #include "videodialog.h"
 #include "logdialog.h"
 #include "problemdialog.h"
+#include "progressdialog.h"
+#include "collaboration.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     logMessage("MainWindow::MainWindow()");
+
+    Util::createSingleton();
 
     // fixme - curve elements from script doesn't work
     readMeshDirtyFix();
@@ -51,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     reportDialog = new ReportDialog(sceneView, this);
     videoDialog = new VideoDialog(sceneView, this);
     logDialog = new LogDialog(this);
+    collaborationDownloadDialog = new ServerDownloadDialog(this);
 
     createActions();
     createViews();
@@ -66,13 +71,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneView, SIGNAL(mousePressed()), volumeIntegralValueView, SLOT(doShowVolumeIntegral()));
     connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
     connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
+    connect(sceneView, SIGNAL(sceneModeChanged(SceneMode)), this, SLOT(doSceneModeChanged(SceneMode)));
     connect(sceneView, SIGNAL(sceneModeChanged(SceneMode)), tooltipView, SLOT(loadTooltip(SceneMode)));
     connect(postprocessorView, SIGNAL(apply()), sceneView, SLOT(doInvalidated()));
     connect(postprocessorView, SIGNAL(apply()), this, SLOT(doInvalidated()));
+    connect(sceneView, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
 
     sceneView->doDefaultValues();
 
-    connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
+    connect(chartDialog, SIGNAL(setChartLine(ChartLine)), sceneView, SLOT(doSetChartLine(ChartLine)));
 
     QSettings settings;
     restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
@@ -156,24 +163,28 @@ void MainWindow::createActions()
     actDocumentOpen->setStatusTip(tr("Open an existing file"));
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(doDocumentOpen()));
 
+    actDocumentDownloadFromServer = new QAction(icon(""), tr("&Download from server..."), this);
+    actDocumentDownloadFromServer->setShortcut(tr("Ctrl+Shift+O"));
+    actDocumentDownloadFromServer->setStatusTip(tr("Download from server..."));
+    connect(actDocumentDownloadFromServer, SIGNAL(triggered()), this, SLOT(doDocumentDownloadFromServer()));
+
     actDocumentSave = new QAction(icon("document-save"), tr("&Save"), this);
     actDocumentSave->setShortcuts(QKeySequence::Save);
     actDocumentSave->setStatusTip(tr("Save the file to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
 
-#ifdef BETA
     actDocumentSaveWithSolution = new QAction(icon(""), tr("Save with solution"), this);
     actDocumentSaveWithSolution->setStatusTip(tr("Save the file to disk with solution"));
     connect(actDocumentSaveWithSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveWithSolution()));
-#else
-    QSettings settings;
-    settings.setValue("Solver/SaveProblemWithSolution", false);
-#endif
 
     actDocumentSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
     actDocumentSaveAs->setStatusTip(tr("Save the file under a new name"));
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
+
+    actDocumentUploadToServer = new QAction(icon(""), tr("Upload to server..."), this);
+    actDocumentUploadToServer->setStatusTip(tr("Upload to server..."));
+    connect(actDocumentUploadToServer, SIGNAL(triggered()), this, SLOT(doDocumentUploadToServer()));
 
     actDocumentClose = new QAction(tr("&Close"), this);
     actDocumentClose->setShortcuts(QKeySequence::Close);
@@ -231,9 +242,9 @@ void MainWindow::createActions()
     actRedo->setShortcuts(QKeySequence::Redo);
     actRedo->setStatusTip(tr("Redo operation"));
 
-    actCopy = new QAction(icon("edit-copy"), tr("Copy"), this);
+    actCopy = new QAction(icon("edit-copy"), tr("Copy image to clipboard"), this);
     actCopy->setShortcuts(QKeySequence::Copy);
-    actCopy->setStatusTip(tr("Copy image to clipboard."));
+    actCopy->setStatusTip(tr("Copy image from workspace to clipboard."));
     connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopy()));
 
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
@@ -244,6 +255,10 @@ void MainWindow::createActions()
     actHelpShortCut = new QAction(icon(""), tr("&Shortcuts"), this);
     actHelpShortCut->setStatusTip(tr("Shortcuts"));
     connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
+
+    actCollaborationServer = new QAction(icon("collaboration"), tr("Collaboration server"), this);
+    actCollaborationServer->setStatusTip(tr("Collaboration server..."));
+    connect(actCollaborationServer, SIGNAL(triggered()), this, SLOT(doCollaborationServer()));
 
     actOnlineHelp = new QAction(icon(""), tr("&Online help"), this);
     actOnlineHelp->setStatusTip(tr("Online help"));
@@ -269,6 +284,7 @@ void MainWindow::createActions()
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
     actCreateMesh = new QAction(icon("scene-mesh"), tr("&Mesh area"), this);
+    actCreateMesh->setShortcut(QKeySequence(tr("Alt+W")));
     actCreateMesh->setStatusTip(tr("Mesh area"));
     connect(actCreateMesh, SIGNAL(triggered()), this, SLOT(doCreateMesh()));
 
@@ -330,24 +346,27 @@ void MainWindow::createMenus()
     mnuFileImportExport->addAction(actExportVTKScalar);
     mnuFileImportExport->addAction(actExportVTKOrder);
 
+    QMenu *mnuServer = new QMenu(tr("Colaboration"), this);
+    mnuServer->addAction(actDocumentDownloadFromServer);
+    mnuServer->addAction(actDocumentUploadToServer);
+    mnuServer->addAction(actCollaborationServer);
+
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actDocumentOpen);
+    mnuFile->addMenu(mnuRecentFiles);
+    mnuFile->addSeparator();
     mnuFile->addAction(actDocumentSave);
-#ifdef BETA
-    mnuFile->addAction(actDocumentSaveWithSolution);
-#endif
+    if (Util::config()->showExperimentalFeatures)
+        mnuFile->addAction(actDocumentSaveWithSolution);
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
-    mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addMenu(mnuFileImportExport);
-    mnuFile->addAction(actDocumentClose);
+    mnuFile->addMenu(mnuServer);
     mnuFile->addSeparator();
-
-    mnuFile->addSeparator();
-    mnuFile->addAction(actLoadBackground);
 #ifndef Q_WS_MAC
     mnuFile->addSeparator();
+    mnuFile->addAction(actDocumentClose);
     mnuFile->addAction(actExit);
 #endif
 
@@ -355,38 +374,39 @@ void MainWindow::createMenus()
     mnuEdit->addAction(actUndo);
     mnuEdit->addAction(actRedo);
     mnuEdit->addSeparator();
-    mnuEdit->addAction(actCopy);
-    mnuEdit->addSeparator();
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
 #ifdef Q_WS_X11
     mnuEdit->addSeparator();
     mnuEdit->addAction(actOptions);
 #endif
 
+    QMenu *mnuProjection = new QMenu(tr("Projection"), this);
+    mnuProjection->addAction(sceneView->actSetProjectionXY);
+    mnuProjection->addAction(sceneView->actSetProjectionXZ);
+    mnuProjection->addAction(sceneView->actSetProjectionYZ);
+
+    QMenu *mnuShowPanels = new QMenu(tr("Panels"), this);
+    mnuShowPanels->addAction(sceneInfoView->toggleViewAction());
+    mnuShowPanels->addAction(localPointValueView->toggleViewAction());
+    mnuShowPanels->addAction(surfaceIntegralValueView->toggleViewAction());
+    mnuShowPanels->addAction(volumeIntegralValueView->toggleViewAction());
+    mnuShowPanels->addAction(postprocessorView->toggleViewAction());
+    mnuShowPanels->addAction(terminalView->toggleViewAction());
+    mnuShowPanels->addAction(tooltipView->toggleViewAction());
+
     mnuView = menuBar()->addMenu(tr("&View"));
     mnuView->addAction(sceneView->actSceneZoomBestFit);
-    mnuView->addAction(sceneView->actSceneZoomRegion);
     mnuView->addAction(sceneView->actSceneZoomIn);
     mnuView->addAction(sceneView->actSceneZoomOut);
-    QMenu *mnuShow = new QMenu(tr("&Show"), this);
-    mnuView->addMenu(mnuShow);
-    QMenu *mnuShowDocks = new QMenu(tr("Show docks"), this);
-    mnuShowDocks->addAction(sceneInfoView->toggleViewAction());
-    mnuShowDocks->addAction(localPointValueView->toggleViewAction());
-    mnuShowDocks->addAction(surfaceIntegralValueView->toggleViewAction());
-    mnuShowDocks->addAction(volumeIntegralValueView->toggleViewAction());
-    mnuShowDocks->addAction(postprocessorView->toggleViewAction());
-    mnuShowDocks->addAction(terminalView->toggleViewAction());
-    mnuShowDocks->addAction(tooltipView->toggleViewAction());
-    mnuView->addMenu(mnuShowDocks);
-    mnuShow->addAction(sceneView->actSceneShowGrid);
-    mnuShow->addAction(sceneView->actSceneSnapToGrid);
-    mnuShow->addAction(sceneView->actSceneShowRulers);
+    mnuView->addAction(sceneView->actSceneZoomRegion);
+    mnuView->addMenu(mnuProjection);
+    mnuView->addSeparator();
+    mnuView->addAction(actCopy);
+    mnuView->addAction(actLoadBackground);
+    mnuView->addSeparator();
+    mnuView->addMenu(mnuShowPanels);
     mnuView->addSeparator();
     mnuView->addAction(actFullScreen);
-    mnuView->addSeparator();
-    mnuView->addAction(actApplicationLog);
-    mnuView->addAction(actProgressLog);
 
     mnuProblem = menuBar()->addMenu(tr("&Problem"));
     mnuProblem->addAction(sceneView->actSceneModeNode);
@@ -400,8 +420,8 @@ void MainWindow::createMenus()
     mnuAdd->addAction(Util::scene()->actNewEdge);
     mnuAdd->addAction(Util::scene()->actNewLabel);
     mnuAdd->addSeparator();
-    mnuAdd->addAction(Util::scene()->actNewEdgeMarker);
-    mnuAdd->addAction(Util::scene()->actNewLabelMarker);
+    mnuAdd->addAction(Util::scene()->actNewBoundary);
+    mnuAdd->addAction(Util::scene()->actNewMaterial);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actSceneViewSelectRegion);
     mnuProblem->addAction(Util::scene()->actTransform);
@@ -426,6 +446,9 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actReport);
     mnuTools->addAction(actCreateVideo);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actApplicationLog);
+    mnuTools->addAction(actProgressLog);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
@@ -433,15 +456,18 @@ void MainWindow::createMenus()
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
-    mnuHelp->addAction(actHelpShortCut);
     mnuHelp->addAction(actOnlineHelp);
-    mnuHelp->addAction(actCheckVersion);
+    mnuHelp->addAction(actHelpShortCut);
+    mnuHelp->addAction(actCollaborationServer);
 #ifndef Q_WS_MAC
     mnuHelp->addSeparator();
 #else
     mnuHelp->addAction(actOptions); // will be added to "Agros2D" MacOSX menu
     mnuHelp->addAction(actExit);    // will be added to "Agros2D" MacOSX menu
 #endif
+    mnuHelp->addSeparator();
+    mnuHelp->addAction(actCheckVersion);
+    mnuHelp->addSeparator();
     mnuHelp->addAction(actAbout);   // will be added to "Agros2D" MacOSX menu
     mnuHelp->addAction(actAboutQt); // will be added to "Agros2D" MacOSX menu
 }
@@ -450,13 +476,25 @@ void MainWindow::createToolBars()
 {
     logMessage("MainWindow::createToolBars()");
 
+#ifdef Q_WS_MAC
+    int iconHeight = 24;
+#endif
+
     tlbFile = addToolBar(tr("File"));
+#ifdef Q_WS_MAC
+    tlbFile->setFixedHeight(iconHeight);
+    tlbFile->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbFile->setObjectName("File");
     tlbFile->addAction(actDocumentNew);
     tlbFile->addAction(actDocumentOpen);
     tlbFile->addAction(actDocumentSave);
 
     tlbEdit = addToolBar(tr("Edit"));
+#ifdef Q_WS_MAC
+    tlbEdit->setFixedHeight(iconHeight);
+    tlbEdit->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbEdit->setObjectName("Edit");
     tlbEdit->addAction(actUndo);
     tlbEdit->addAction(actRedo);
@@ -467,6 +505,10 @@ void MainWindow::createToolBars()
     tlbEdit->addAction(Util::scene()->actDeleteSelected);
 
     tlbView = addToolBar(tr("View"));
+#ifdef Q_WS_MAC
+    tlbView->setFixedHeight(iconHeight);
+    tlbView->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbView->setObjectName("View");
     tlbView->addAction(sceneView->actSceneZoomBestFit);
     tlbView->addAction(sceneView->actSceneZoomRegion);
@@ -474,6 +516,10 @@ void MainWindow::createToolBars()
     tlbView->addAction(sceneView->actSceneZoomOut);
 
     tlbProblem = addToolBar(tr("Problem"));
+#ifdef Q_WS_MAC
+    tlbProblem->setFixedHeight(iconHeight);
+    tlbProblem->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbProblem->setObjectName("Problem");
     tlbProblem->addAction(sceneView->actSceneModeNode);
     tlbProblem->addAction(sceneView->actSceneModeEdge);
@@ -489,27 +535,28 @@ void MainWindow::createToolBars()
     tlbProblem->addSeparator();
     tlbProblem->addAction(actCreateMesh);
     tlbProblem->addAction(actSolve);
+    tlbProblem->addAction(Util::scene()->actProblemProperties);
 
     tlbTools = addToolBar(tr("Tools"));
+#ifdef Q_WS_MAC
+    tlbTools->setFixedHeight(iconHeight);
+    tlbTools->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actChart);
     tlbTools->addAction(actScriptEditor);
-    tlbTools->addSeparator();
-    tlbTools->addAction(Util::scene()->actProblemProperties);
 
     tlbTransient = addToolBar(tr("Transient"));
+#ifdef Q_WS_MAC
+    tlbTransient->setFixedHeight(iconHeight);
+    tlbTransient->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbTransient->setObjectName("Transient");
     tlbTransient->addWidget(new QLabel(tr("Time step:") + " "));
     cmbTimeStep = new QComboBox(this);
     cmbTimeStep->setMinimumWidth(1.7*fontMetrics().width("0.00e+00"));
     connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
     tlbTransient->addWidget(cmbTimeStep);
-
-    tlbWorkspace = addToolBar(tr("Workspace"));
-    tlbWorkspace->setObjectName("Workspace");
-    tlbWorkspace->addAction(sceneView->actSceneShowGrid);
-    tlbWorkspace->addAction(sceneView->actSceneSnapToGrid);
-    tlbWorkspace->addAction(sceneView->actSceneShowRulers);
 }
 
 void MainWindow::createStatusBar()
@@ -545,9 +592,10 @@ void MainWindow::createScene()
 {
     logMessage("MainWindow::createScene()");
 
-    QHBoxLayout *layout = new QHBoxLayout;
-
     sceneView = new SceneView(this);
+
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->setMargin(5);
     layout->addWidget(sceneView);
 
     QWidget *widget = new QWidget;
@@ -582,11 +630,21 @@ void MainWindow::createViews()
 
     terminalView = new TerminalView(this);
     terminalView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    terminalView->setVisible(false);
     addDockWidget(Qt::BottomDockWidgetArea, terminalView);
 
     tooltipView = new TooltipView(this);
     tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
+
+    // tabify dock together
+    tabifyDockWidget(localPointValueView, surfaceIntegralValueView);
+    tabifyDockWidget(surfaceIntegralValueView, volumeIntegralValueView);
+
+    tabifyDockWidget(sceneInfoView, postprocessorView);
+
+    // raise scene info view
+    sceneInfoView->raise();
 }
 
 void MainWindow::doSceneMouseMoved(const QPointF &position)
@@ -753,7 +811,6 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             if (!result.isError())
             {
                 setRecentFiles();
-                settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
 
                 sceneView->actSceneModeNode->trigger();
                 sceneView->doZoomBestFit();
@@ -777,6 +834,15 @@ void MainWindow::doDocumentOpen(const QString &fileName)
     else
     {
         QMessageBox::critical(this, tr("File open"), tr("File '%1' is not found.").arg(fileNameDocument));
+    }
+}
+
+void MainWindow::doDocumentDownloadFromServer()
+{
+    if (collaborationDownloadDialog->showDialog() == QDialog::Accepted)
+    {
+        if (QFile::exists(collaborationDownloadDialog->fileName()))
+            doDocumentOpen(collaborationDownloadDialog->fileName());
     }
 }
 
@@ -847,8 +913,17 @@ void MainWindow::doDocumentSaveAs()
             result.showDialog();
 
         setRecentFiles();
-        settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
     }
+}
+
+void MainWindow::doDocumentUploadToServer()
+{
+    // save
+    doDocumentSave();
+
+    ServerUploadDialog *cloud = new ServerUploadDialog(this);
+    cloud->showDialog();
+    delete cloud;
 }
 
 void MainWindow::doDocumentClose()
@@ -893,7 +968,8 @@ void MainWindow::doDocumentImportDXF()
         sceneView->doZoomBestFit();
 
         QFileInfo fileInfo(fileName);
-        settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
     }
 }
 
@@ -911,7 +987,8 @@ void MainWindow::doDocumentExportDXF()
         if (fileInfo.suffix().toLower() != "dxf") fileName += ".dxf";
         Util::scene()->writeToDxf(fileName);
 
-        settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
     }
 }
 
@@ -932,7 +1009,8 @@ void MainWindow::doDocumentSaveImage()
         if (result.isError())
             result.showDialog();
 
-        settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
 }
 
@@ -954,6 +1032,8 @@ void MainWindow::doCreateMesh()
         sceneView->actSceneModeLabel->trigger();
         sceneView->sceneViewSettings().showInitialMesh = true;
         sceneView->doInvalidated();
+
+        Util::scene()->sceneSolution()->progressDialog()->close();
     }
 
     doInvalidated();
@@ -982,6 +1062,9 @@ void MainWindow::doSolve()
         // show local point values
         Point point = Point(0, 0);
         localPointValueView->doShowPoint(point);
+
+        // raise postprocessor
+        postprocessorView->raise();
     }
 
     doInvalidated();
@@ -996,7 +1079,7 @@ void MainWindow::doOptions()
     ConfigDialog configDialog(this);
     if (configDialog.exec())
     {
-        sceneView->timeStepChanged(true);
+        sceneView->timeStepChanged(false);
         sceneView->doInvalidated();
     }
 
@@ -1055,7 +1138,8 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
         disconnectTerminal(terminalView->terminal());
 
         QFileInfo fileInfo(fileNameScript);
-        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
     else
     {
@@ -1106,9 +1190,9 @@ void MainWindow::doInvalidated()
 {
     logMessage("MainWindow::doInvalidated()");
 
-#ifdef BETA
-    actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
-#endif
+    if (Util::config()->showExperimentalFeatures)
+        actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
+
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient));
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
@@ -1130,6 +1214,26 @@ void MainWindow::doInvalidated()
     //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
 }
 
+void MainWindow::doSceneModeChanged(SceneMode sceneMode)
+{
+    // raise dock
+    if (sceneMode == SceneMode_Postprocessor)
+        postprocessorView->raise();
+    else
+        sceneInfoView->raise();
+}
+
+void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
+{
+    // raise dock
+    if (sceneModePostprocessor == SceneModePostprocessor_LocalValue)
+        localPointValueView->raise();
+    if (sceneModePostprocessor == SceneModePostprocessor_SurfaceIntegral)
+        surfaceIntegralValueView->raise();
+    if (sceneModePostprocessor == SceneModePostprocessor_VolumeIntegral)
+        volumeIntegralValueView->raise();
+}
+
 void MainWindow::doHelp()
 {
     logMessage("MainWindow::doHelp()");
@@ -1141,7 +1245,14 @@ void MainWindow::doHelpShortCut()
 {
     logMessage("MainWindow::doHelpShortCut()");
 
-    showPage("getting_started/basic_control.html#shortcut-keys");
+    showPage("getting_started/shortcut_keys.html");
+}
+
+void MainWindow::doCollaborationServer()
+{
+    logMessage("MainWindow::doCollaborationServer()");
+
+    QDesktopServices::openUrl(QUrl(Util::config()->collaborationServerURL + "problems.php"));
 }
 
 void MainWindow::doOnlineHelp()
@@ -1200,7 +1311,8 @@ void MainWindow::doDocumentExportMeshFile()
 
                 // copy file
                 QFile::copy(sourceFileName, fileName + ".mesh");
-                settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
+                if (fileInfo.absoluteDir() != tempProblemDir())
+                    settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
             }
 
             QFile::remove(sourceFileName);
@@ -1209,7 +1321,8 @@ void MainWindow::doDocumentExportMeshFile()
         if (!fileName.isEmpty())
         {
             QFile::copy(tempProblemFileName() + ".mesh", fileName + ".mesh");
-            settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
+            if (fileInfo.absoluteDir() != tempProblemDir())
+                settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
         }
 
         QFile::remove(tempProblemFileName() + ".mesh");
@@ -1246,7 +1359,8 @@ void MainWindow::doExportVTKScalar()
         if (!fileName.isEmpty())
         {
             QFileInfo fileInfo(fileName);
-            settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+            if (fileInfo.absoluteDir() != tempProblemDir())
+                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
         }
     }
 }
@@ -1275,7 +1389,8 @@ void MainWindow::doExportVTKOrder()
         if (!fileName.isEmpty())
         {
             QFileInfo fileInfo(fileName);
-            settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+            if (fileInfo.absoluteDir() != tempProblemDir())
+                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
         }
     }
 }

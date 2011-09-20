@@ -22,8 +22,8 @@
 
 #include "util.h"
 
-class SLineEditValue;
-class SceneLabelMarker;
+class ValueLineEdit;
+class SceneMaterial;
 class Solution;
 
 struct PointValue
@@ -35,7 +35,7 @@ struct PointValue
         this->marker = NULL;
     }
 
-    PointValue(double value, Point derivative, SceneLabelMarker *marker)
+    PointValue(double value, Point derivative, SceneMaterial *marker)
     {
         this->value = value;
         this->derivative = derivative;
@@ -44,7 +44,7 @@ struct PointValue
 
     double value;
     Point derivative;
-    SceneLabelMarker *marker;
+    SceneMaterial *marker;
 };
 
 class LocalPointValue
@@ -52,14 +52,14 @@ class LocalPointValue
 protected:
     double value;
     Point derivative;
-    SceneLabelMarker *labelMarker;
+    SceneMaterial *material;
 
-    PointValue pointValue(Solution *sln, Point &point);
+    PointValue pointValue(Solution *sln, const Point &point);
 
 public:
     Point point;
 
-    LocalPointValue(Point &point);
+    LocalPointValue(const Point &point);
 
     virtual double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
     virtual QStringList variables() = 0;
@@ -106,8 +106,8 @@ public:
 private:
     QDialogButtonBox *buttonBox;
 
-    SLineEditValue *txtPointX;
-    SLineEditValue *txtPointY;
+    ValueLineEdit *txtPointX;
+    ValueLineEdit *txtPointY;
 
 private slots:
     void evaluated(bool isError);

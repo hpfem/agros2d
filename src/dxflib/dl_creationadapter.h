@@ -1,7 +1,5 @@
 /****************************************************************************
-** $Id: dl_creationadapter.h 8865 2008-02-04 18:54:02Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2011 RibbonSoft. All rights reserved.
 **
 ** This file is part of the dxflib project.
 **
@@ -40,6 +38,7 @@ class DL_CreationAdapter : public DL_CreationInterface {
 public:
     DL_CreationAdapter() {}
     virtual ~DL_CreationAdapter() {}
+    virtual void processCodeValuePair(unsigned int, char*) {}
     virtual void addLayer(const DL_LayerData&) {}
     virtual void addBlock(const DL_BlockData&) {}
     virtual void endBlock() {}

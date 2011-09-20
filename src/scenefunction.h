@@ -23,8 +23,8 @@
 #include "util.h"
 
 class SLineEdit;
-class SLineEditValue;
-class SLineEditValue;
+class ValueLineEdit;
+class ValueLineEdit;
 
 struct Point;
 class Chart;
@@ -80,8 +80,8 @@ private:
     QLineEdit *txtName;
     QLineEdit *txtFunction;
     QLabel *lblError;
-    SLineEditValue *txtStart;
-    SLineEditValue *txtEnd;
+    ValueLineEdit *txtStart;
+    ValueLineEdit *txtEnd;
 
     void createControls();
     void load();

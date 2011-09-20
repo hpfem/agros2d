@@ -80,8 +80,8 @@ void SceneInfoView::createMenu()
     mnuInfo->addAction(Util::scene()->actNewEdge);
     mnuInfo->addAction(Util::scene()->actNewLabel);
     mnuInfo->addSeparator();
-    mnuInfo->addAction(Util::scene()->actNewEdgeMarker);
-    mnuInfo->addAction(Util::scene()->actNewLabelMarker);
+    mnuInfo->addAction(Util::scene()->actNewBoundary);
+    mnuInfo->addAction(Util::scene()->actNewMaterial);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actDelete);
     mnuInfo->addSeparator();
@@ -126,14 +126,6 @@ void SceneInfoView::createTreeView()
     materialsNode->setIcon(0, icon("scenelabelmarker"));
     materialsNode->setText(0, tr("Materials"));
     materialsNode->setExpanded(true);
-
-    // functions
-    #ifdef BETA
-    functionsNode = new QTreeWidgetItem(trvWidget);
-    functionsNode->setText(0, tr("Functions"));
-    functionsNode->setIcon(0, icon("scenefunction"));
-    functionsNode->setExpanded(true);
-    #endif
 
     // geometry
     geometryNode = new QTreeWidgetItem(trvWidget);
@@ -194,6 +186,9 @@ void SceneInfoView::doInvalidated()
     // analysis
     QTreeWidgetItem *itemAnalysisType = new QTreeWidgetItem(problemInfoGeneralNode);
     itemAnalysisType->setText(0, tr("Analysis: ") + analysisTypeString(Util::scene()->problemInfo()->analysisType));
+    // adaptivity
+    QTreeWidgetItem *itemAdaptivity = new QTreeWidgetItem(problemInfoGeneralNode);
+    itemAdaptivity->setText(0, tr("Adaptivity: ") + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType));
     // solver
     QTreeWidgetItem *itemSolverMatrixSolver = new QTreeWidgetItem(problemInfoGeneralNode);
     itemSolverMatrixSolver->setText(0, tr("Solver: ") + matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver));
@@ -250,13 +245,13 @@ void SceneInfoView::doInvalidated()
 
     // boundary conditions
     QList<QTreeWidgetItem *> listMarkes;
-    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
 
-        item->setText(0, Util::scene()->edgeMarkers[i]->name);
+        item->setText(0, Util::scene()->boundaries[i]->name);
         item->setIcon(0, icon("scene-edgemarker"));
-        item->setData(0, Qt::UserRole, Util::scene()->edgeMarkers[i]->variant());
+        item->setData(0, Qt::UserRole, Util::scene()->boundaries[i]->variant());
 
         listMarkes.append(item);
     }
@@ -264,13 +259,13 @@ void SceneInfoView::doInvalidated()
 
     // materials
     QList<QTreeWidgetItem *> listMaterials;
-    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
-        item->setText(0, Util::scene()->labelMarkers[i]->name);
+        item->setText(0, Util::scene()->materials[i]->name);
         item->setIcon(0, icon("scene-labelmarker"));
-        item->setData(0, Qt::UserRole, Util::scene()->labelMarkers[i]->variant());
+        item->setData(0, Qt::UserRole, Util::scene()->materials[i]->variant());
 
         listMaterials.append(item);
     }
@@ -371,16 +366,6 @@ void SceneInfoView::clearNodes()
         delete item;
     }
 
-    #ifdef BETA
-    // functions
-    while (functionsNode->childCount() > 0)
-    {
-        QTreeWidgetItem *item = functionsNode->child(0);
-        functionsNode->removeChild(item);
-        delete item;
-    }
-    #endif
-
     // geometry
     while (nodesNode->childCount() > 0)
     {
@@ -446,13 +431,13 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         }
 
         // edge marker
-        if (SceneEdgeMarker *objectEdgeMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneEdgeMarker *>())
+        if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
         {
             // select all edges
             m_sceneView->actSceneModeEdge->trigger();
             for (int i = 0; i<Util::scene()->edges.count(); i++)
             {
-                if (Util::scene()->edges[i]->marker == objectEdgeMarker)
+                if (Util::scene()->edges[i]->boundary == objectBoundary)
                     Util::scene()->edges[i]->isSelected = true;
             }            
             m_sceneView->refresh();
@@ -463,13 +448,13 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         }
 
         // label marker
-        if (SceneLabelMarker *objectLabelMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneLabelMarker *>())
+        if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
         {
             // select all labels
             m_sceneView->actSceneModeLabel->trigger();
             for (int i = 0; i<Util::scene()->labels.count(); i++)
             {
-                if (Util::scene()->labels[i]->marker == objectLabelMarker)
+                if (Util::scene()->labels[i]->material == objectMaterial)
                     Util::scene()->labels[i]->isSelected = true;
             }            
             m_sceneView->refresh();
@@ -504,9 +489,9 @@ void SceneInfoView::doProperties()
         }
 
         // edge marker
-        if (SceneEdgeMarker *objectEdgeMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneEdgeMarker *>())
+        if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
         {
-            if (objectEdgeMarker->showDialog(this) == QDialog::Accepted)
+            if (objectBoundary->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneView->refresh();
                 doInvalidated();
@@ -514,9 +499,9 @@ void SceneInfoView::doProperties()
         }
 
         // label marker
-        if (SceneLabelMarker *objectLabelMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneLabelMarker *>())
+        if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
         {
-            if (objectLabelMarker->showDialog(this) == QDialog::Accepted)
+            if (objectMaterial->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneView->refresh();
                 doInvalidated();
@@ -550,15 +535,15 @@ void SceneInfoView::doDelete()
             }
         }
         // edge marker
-        if (SceneEdgeMarker *objectEdgeMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneEdgeMarker *>())
+        if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
         {
-            Util::scene()->removeEdgeMarker(objectEdgeMarker);
+            Util::scene()->removeBoundary(objectBoundary);
         }
 
         // label marker
-        if (SceneLabelMarker *objectLabelMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneLabelMarker *>())
+        if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
         {
-            Util::scene()->removeLabelMarker(objectLabelMarker);
+            Util::scene()->removeMaterial(objectMaterial);
         }
 
         m_sceneView->refresh();

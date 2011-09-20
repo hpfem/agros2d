@@ -1,7 +1,5 @@
 /****************************************************************************
-** $Id: dl_extrusion.h 4308 2007-01-30 08:20:44Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2011 RibbonSoft. All rights reserved.
 **
 ** This file is part of the dxflib project.
 **
@@ -54,7 +52,7 @@ public:
      * Destructor.
      */
 	~DL_Extrusion() {
-		delete direction ;
+		delete[] direction ;
     }
 
 

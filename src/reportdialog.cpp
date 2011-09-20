@@ -82,10 +82,10 @@ void ReportDialog::createControls()
     txtStyleSheet = new QLineEdit();
     connect(txtStyleSheet, SIGNAL(textChanged(QString)), this, SLOT(checkPaths()));
 
-    txtFigureWidth = new SLineEditValue();
+    txtFigureWidth = new ValueLineEdit();
     txtFigureWidth->setValue(Value("600"));
     txtFigureWidth->setMinimum(200);
-    txtFigureHeight = new SLineEditValue();
+    txtFigureHeight = new ValueLineEdit();
     txtFigureHeight->setValue(Value("400"));
     txtFigureHeight->setMinimum(200);
 
@@ -376,12 +376,13 @@ QString ReportDialog::replaceTemplates(const QString &source)
             destination.replace("[ProblemInformation.AdaptivityType]", "<table><tr><td>" + tr("Adaptivity type:") + "</td><td>" + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType) + "</td></tr>", Qt::CaseSensitive);
             destination.replace("[ProblemInformation.AdaptivitySteps]", "<tr><td>" + tr("Adaptivity steps:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivitySteps) + "</td></tr>", Qt::CaseSensitive);
             destination.replace("[ProblemInformation.AdaptivityTolerance]", "<tr><td>" + tr("Adaptivity tolerance:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityTolerance) + "</td></tr></table>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.MaxDOFs]", "<tr><td>" + tr("Maximum DOFs:") + "</td><td>" + QString::number(Util::config()->maxDofs) + "</td></tr></table>", Qt::CaseSensitive);
         }
         else
         {
             // remove empty tags
-            QString tag [3] = {"[ProblemInformation.AdaptivityType]", "[ProblemInformation.AdaptivitySteps]",
-                               "[ProblemInformation.AdaptivityTolerance]"};
+            QString tag [4] = {"[ProblemInformation.AdaptivityType]", "[ProblemInformation.AdaptivitySteps]",
+                               "[ProblemInformation.AdaptivityTolerance]", "[ProblemInformation.MaxDOFs]"};
 
             for (int i = 0; i < 3; i++)
             {
@@ -411,14 +412,15 @@ QString ReportDialog::replaceTemplates(const QString &source)
     else
     {
         // remove empty tags
-        QString tag [16] = {"[ProblemInformation.Label]", "[ProblemInformation.Name]",
+        QString tag [17] = {"[ProblemInformation.Label]", "[ProblemInformation.Name]",
                            "[ProblemInformation.Date]", "[ProblemInformation.FileName]",
                            "[ProblemInformation.ProblemType]", "[ProblemInformation.PhysicField]",
                            "[ProblemInformation.AnalysisType]", "[ProblemInformation.NumberOfRefinements]",
                            "[ProblemInformation.PolynomialOrder]", "[ProblemInformation.AdaptivityType]",
-                           "[ProblemInformation.AdaptivitySteps]", "[ProblemInformation.AdaptivityTolerance]",
-                           "[ProblemInformation.Frequency]", "[ProblemInformation.TimeStep]",
-                           "[ProblemInformation.TimeTotal]", "[ProblemInformation.InititalCondition]"};
+                           "[ProblemInformation.AdaptivityType]", "[ProblemInformation.AdaptivitySteps]",
+                           "[ProblemInformation.AdaptivityTolerance]", "[ProblemInformation.Frequency]",
+                           "[ProblemInformation.TimeStep]", "[ProblemInformation.TimeTotal]",
+                           "[ProblemInformation.InititalCondition]"};
 
         for (int i = 0; i < 16; i++)
         {
@@ -584,9 +586,9 @@ QString ReportDialog::htmlMaterials()
     QString out;
 
     out  = "\n";
-    for (int i = 1; i < Util::scene()->labelMarkers.count(); i++)
+    for (int i = 1; i < Util::scene()->materials.count(); i++)
     {
-        SceneLabelMarker *marker = Util::scene()->labelMarkers[i];
+        SceneMaterial *marker = Util::scene()->materials[i];
         out += "<h4>" + marker->name + "</h4>";
 
         out += "<table>";
@@ -610,9 +612,9 @@ QString ReportDialog::htmlBoundaries()
     QString out;
 
     out  = "\n";
-    for (int i = 1; i < Util::scene()->edgeMarkers.count(); i++)
+    for (int i = 1; i < Util::scene()->boundaries.count(); i++)
     {
-        SceneEdgeMarker *marker = Util::scene()->edgeMarkers[i];
+        SceneBoundary *marker = Util::scene()->boundaries[i];
         out += "<h4>" + marker->name + "</h4>";
 
         out += "<table>";
@@ -669,7 +671,7 @@ QString ReportDialog::htmlGeometryEdges()
         out += "<td>" + QString::number(Util::scene()->edges[i]->nodeEnd->point.x, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->edges[i]->nodeEnd->point.y, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->edges[i]->angle, 'f', 2) + "</td>";
-        out += "<td>" + Util::scene()->edges[i]->marker->name + "</td></tr>";
+        out += "<td>" + Util::scene()->edges[i]->boundary->name + "</td></tr>";
     }
     out += "</table>";
     out += "\n";
@@ -694,7 +696,7 @@ QString ReportDialog::htmlGeometryLabels()
         out += "<tr><td>" + QString::number(Util::scene()->labels[i]->point.x, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->labels[i]->point.y, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->labels[i]->area, 'e', 3) + "</td>";
-        out += "<td>" + Util::scene()->labels[i]->marker->name + "</td></tr>";
+        out += "<td>" + Util::scene()->labels[i]->material->name + "</td></tr>";
     }
     out += "</table>";
     out += "\n";

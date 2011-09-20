@@ -18,6 +18,7 @@
 #include "../../../hermes_common/matrix.h"
 #include "../quadrature/quad_all.h"
 #include "../shapeset/shapeset_l2_all.h"
+#include "../boundaryconditions/essential_bcs.h"
 
 void L2Space::init(Shapeset* shapeset, Ord2 p_init)
 {
@@ -31,96 +32,24 @@ void L2Space::init(Shapeset* shapeset, Ord2 p_init)
 
   // set uniform poly order in elements
   if (p_init.order_h < 0 || p_init.order_v < 0) error("P_INIT must be >= 0 in an L2 space.");
-  else this->set_uniform_order_internal(p_init);
+  else this->set_uniform_order_internal(p_init, HERMES_ANY_INT);
 
   // enumerate basis functions
   this->assign_dofs();
 }
 
-L2Space::L2Space(Mesh* mesh, BCTypes* bc_types, Ord2 p_init, Shapeset* shapeset): Space(mesh, shapeset,
-    bc_types, (BCValues*) NULL, p_init)
+L2Space::L2Space(Mesh* mesh, EssentialBCs* essential_bcs, int p_init, Shapeset* shapeset)
+    : Space(mesh, shapeset, essential_bcs, Ord2(p_init, p_init))
 {
-  init(shapeset, p_init);
-}
-
-L2Space::L2Space(Mesh* mesh, BCTypes* bc_types, int p_init, Shapeset* shapeset): Space(mesh, shapeset,
-    bc_types, (BCValues*) NULL, p_init)
-{
+  _F_
   init(shapeset, Ord2(p_init, p_init));
-}
-
-L2Space::L2Space(Mesh* mesh, BCTypes* bc_types, BCValues* bc_values, Ord2 p_init, Shapeset* shapeset): Space(mesh, shapeset,
-    bc_types, bc_values, p_init)
-{
-  init(shapeset, p_init);
-}
-
-L2Space::L2Space(Mesh* mesh, BCTypes* bc_types, BCValues* bc_values, int p_init, Shapeset* shapeset): Space(mesh, shapeset,
-    bc_types, bc_values, p_init)
-{
-  init(shapeset, Ord2(p_init, p_init));
-}
-
-
-// the following constructors are DEPRECATED.
-L2Space::L2Space(Mesh* mesh, BCTypes* bc_types,
-	  scalar (*bc_value_callback_by_coord)(int, double, double), Ord2 p_init, Shapeset* shapeset): Space(mesh, shapeset,
-    bc_types, bc_value_callback_by_coord, p_init)
-{
-  if (shapeset == NULL)
-  {
-    this->shapeset = new L2Shapeset;
-    own_shapeset = true;
-  }
-  ldata = NULL;
-  lsize = 0;
-
-  // set uniform poly order in elements
-  if (p_init.order_h < 0 || p_init.order_v < 0) error("P_INIT must be >= 0 in an L2 space.");
-  else this->set_uniform_order_internal(p_init);
-
-  // enumerate basis functions
-  this->assign_dofs();
-}
-
-
-L2Space::L2Space(Mesh* mesh, BCType (*bc_type_callback)(int),
-	  scalar (*bc_value_callback_by_coord)(int, double, double), Ord2 p_init, Shapeset* shapeset): Space(mesh, shapeset,
-    bc_type_callback, bc_value_callback_by_coord, p_init)
-{
-  if (shapeset == NULL)
-  {
-    this->shapeset = new L2Shapeset;
-    own_shapeset = true;
-  }
-  ldata = NULL;
-  lsize = 0;
-
-  // set uniform poly order in elements
-  if (p_init.order_h < 0 || p_init.order_v < 0) error("P_INIT must be >= 0 in an L2 space.");
-  else this->set_uniform_order_internal(p_init);
-
-  // enumerate basis functions
-  this->assign_dofs();
 }
 
 L2Space::L2Space(Mesh* mesh, int p_init, Shapeset* shapeset)
-  : Space(mesh, shapeset, new BCTypes(), new BCValues(), Ord2(p_init, p_init))
+    : Space(mesh, shapeset, NULL, Ord2(p_init, p_init))
 {
-  if (shapeset == NULL)
-  {
-    this->shapeset = new L2Shapeset;
-    own_shapeset = true;
-  }
-  ldata = NULL;
-  lsize = 0;
-
-  // set uniform poly order in elements
-  if (p_init < 0) error("P_INIT must be >= 0 in an L2 space.");
-  else this->set_uniform_order_internal(Ord2(p_init, p_init));
-
-  // enumerate basis functions
-  this->assign_dofs();
+  _F_
+  init(shapeset, Ord2(p_init, p_init));
 }
 
 L2Space::~L2Space()
@@ -133,8 +62,8 @@ L2Space::~L2Space()
 
 Space* L2Space::dup(Mesh* mesh, int order_increase) const
 {
-  L2Space* space = new L2Space(mesh, 0, shapeset);
-  space->copy_callbacks(this);
+  // FIXME - not tested
+  L2Space* space = new L2Space(mesh, essential_bcs, 0, shapeset);
   space->copy_orders(this, order_increase);
   return space;
 }
@@ -221,34 +150,26 @@ scalar* L2Space::get_bc_projection(SurfPos* surf_pos, int order)
   scalar* proj = new scalar[order + 1];
 
   // Obtain linear part of the projection.
-  // If the "old" callbacks are used.
-  if(surf_pos->space->bc_value_callback_by_coord != NULL) {
-  surf_pos->t = surf_pos->lo;
-  proj[0] = bc_value_callback_by_edge(surf_pos);
-  surf_pos->t = surf_pos->hi;
-  proj[1] = bc_value_callback_by_edge(surf_pos);
-  }
-  // If BCValues class is used.
-  else {
-    // If the BC on this part of the boundary is constant.
-    if(bc_values->is_const(surf_pos->marker)) {
-      proj[0] = proj[1] = bc_values->calculate(surf_pos->marker);
-    }
-    // If the BC is not constant.
-    else {
-      surf_pos->t = surf_pos->lo;
-      // Find out the (x,y) coordinates for the first endpoint.
-      double x, y;
-      Nurbs* nurbs = surf_pos->base->is_curved() ? surf_pos->base->cm->nurbs[surf_pos->surf_num] : NULL;
-      nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y);
-      // Calculate.
-      proj[0] = bc_values->calculate(surf_pos->marker, x, y);
-      surf_pos->t = surf_pos->hi;
-      // Find out the (x,y) coordinates for the second endpoint.
-      nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y);
-      // Calculate.
-      proj[1] = bc_values->calculate(surf_pos->marker, x, y);
-    }
+  // If the BC on this part of the boundary is constant.
+  EssentialBoundaryCondition *bc = static_cast<EssentialBoundaryCondition *>(essential_bcs->get_boundary_condition(mesh->boundary_markers_conversion.get_user_marker(surf_pos->marker)));
+
+  if (bc->get_value_type() == EssentialBoundaryCondition::BC_CONST)
+    proj[0] = proj[1] = bc->value_const;
+  // If the BC is not constant.
+  else if (bc->get_value_type() == EssentialBoundaryCondition::BC_FUNCTION)
+  {
+    surf_pos->t = surf_pos->lo;
+    // Find out the (x,y) coordinates for the first endpoint.
+    double x, y, n_x, n_y, t_x, t_y;
+    Nurbs* nurbs = surf_pos->base->is_curved() ? surf_pos->base->cm->nurbs[surf_pos->surf_num] : NULL;
+    CurvMap::nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y, n_x, n_y, t_x, t_y);
+    // Calculate.
+    proj[0] = bc->value(x, y, n_x, n_y, t_x, t_y);
+    surf_pos->t = surf_pos->hi;
+    // Find out the (x,y) coordinates for the second endpoint.
+    CurvMap::nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y, n_x, n_y, t_x, t_y);
+    // Calculate.
+    proj[1] = bc->value(x, y, n_x, n_y, t_x, t_y);
   }
 
   if (order-- > 1)
@@ -268,26 +189,25 @@ scalar* L2Space::get_bc_projection(SurfPos* surf_pos, int order)
         double t = (pt[j][0] + 1) * 0.5, s = 1.0 - t;
         scalar l = proj[0] * s + proj[1] * t;
         surf_pos->t = surf_pos->lo * s + surf_pos->hi * t;
-        // If the "old" callbacks are used.
-        if(surf_pos->space->bc_value_callback_by_coord != NULL)
-        rhs[i] += pt[j][1] * shapeset->get_fn_value(ii, pt[j][0], -1.0, 0)
-                           * (bc_value_callback_by_edge(surf_pos) - l);
-        // If BCValues class is used.
-        else {
-          // If the BC on this part of the boundary is constant.
-          if(bc_values->is_const(surf_pos->marker))
-            rhs[i] += pt[j][1] * shapeset->get_fn_value(ii, pt[j][0], -1.0, 0)
-            * (bc_values->calculate(surf_pos->marker) - l);
-          // If the BC is not constant.
-          else {
-            // Find out the (x,y) coordinate.
-            double x, y;
-            Nurbs* nurbs = surf_pos->base->is_curved() ? surf_pos->base->cm->nurbs[surf_pos->surf_num] : NULL;
-            nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y);
-            // Calculate.
-            rhs[i] += pt[j][1] * shapeset->get_fn_value(ii, pt[j][0], -1.0, 0)
-              * (bc_values->calculate(surf_pos->marker, x, y) - l);
-          }
+
+        // If the BC on this part of the boundary is constant.
+        EssentialBoundaryCondition *bc = static_cast<EssentialBoundaryCondition *>(essential_bcs->get_boundary_condition(mesh->boundary_markers_conversion.get_user_marker(surf_pos->marker)));
+
+        if (bc->get_value_type() == EssentialBoundaryCondition::BC_CONST)
+        {
+          rhs[i] += pt[j][1] * shapeset->get_fn_value(ii, pt[j][0], -1.0, 0)
+          * (bc->value_const - l);
+        }
+        // If the BC is not constant.
+        else if (bc->get_value_type() == EssentialBoundaryCondition::BC_FUNCTION)
+        {
+          // Find out the (x,y) coordinate.
+          double x, y, n_x, n_y, t_x, t_y;
+          Nurbs* nurbs = surf_pos->base->is_curved() ? surf_pos->base->cm->nurbs[surf_pos->surf_num] : NULL;
+          CurvMap::nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y, n_x, n_y, t_x, t_y);
+          // Calculate.
+          rhs[i] += pt[j][1] * shapeset->get_fn_value(ii, pt[j][0], -1.0, 0)
+            * (bc->value(x, y, n_x, n_y, t_x, t_y) - l);
         }
       }
     }

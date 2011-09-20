@@ -190,11 +190,11 @@ void DSceneFunction::createControls()
     txtFunction = new QLineEdit();
 
     // interval
-    txtStart = new SLineEditValue();
+    txtStart = new ValueLineEdit();
     txtStart->setMaximumWidth(100);
     connect(txtStart, SIGNAL(editingFinished()), this, SLOT(doPlot()));
 
-    txtEnd = new SLineEditValue();
+    txtEnd = new ValueLineEdit();
     txtEnd->setMaximumWidth(100);
     connect(txtEnd, SIGNAL(editingFinished()), this, SLOT(doPlot()));
 

@@ -23,6 +23,7 @@
 #include <QGLWidget>
 
 #include "util.h"
+#include "chartdialog.h"
 
 class Scene;
 class SceneView;
@@ -86,8 +87,12 @@ public slots:
     void doInvalidated();
     void solved();
     void doDefaultValues();
+    void doSetChartLine(const ChartLine &chartLine);
+    void doSetProjectionXY();
+    void doSetProjectionXZ();
+    void doSetProjectionYZ();
+
     void refresh();
-    void doSetChartLine(const Point &start, const Point &end);
     void timeStepChanged(bool showViewProgress = false);
 
     void processedSolutionMesh();
@@ -114,6 +119,10 @@ public:
     QAction *actSceneModeLabel;
     QAction *actSceneModePostprocessor;
 
+    QAction *actSetProjectionXY;
+    QAction *actSetProjectionXZ;
+    QAction *actSetProjectionYZ;
+
     QAction *actPostprocessorModeLocalPointValue;
     QAction *actPostprocessorModeSurfaceIntegral;
     QAction *actPostprocessorModeVolumeIntegral;
@@ -127,7 +136,7 @@ public:
     SceneLabel *findClosestLabel(const Point &point);
 
     inline SceneViewSettings &sceneViewSettings() { return m_sceneViewSettings; }
-    inline SceneMode sceneMode() { return m_sceneMode; }
+    inline SceneMode sceneMode() const { return m_sceneMode; }
 
     ErrorResult saveImageToFile(const QString &fileName, int w = 0, int h = 0);
     void saveImagesForReport(const QString &path, bool showRulers, bool showGrid, int w = 0, int h = 0);
@@ -141,7 +150,7 @@ public:
 
     void setSceneFont();
 
-    inline bool is3DMode()
+    inline bool is3DMode() const
     {
         return ((m_sceneMode == SceneMode_Postprocessor) &&
                 (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
@@ -154,6 +163,7 @@ signals:
     void mousePressed();
     void mousePressed(const Point &point);
     void sceneModeChanged(SceneMode sceneMode);
+    void postprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
     void mouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
 protected:
@@ -174,9 +184,9 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void closeEvent(QCloseEvent *event);
 
-    inline int contextWidth() { return context()->device()->width(); }
-    inline int contextHeight() { return context()->device()->height(); }
-    inline double aspect() { return (double) contextWidth() / (double) contextHeight(); }
+    inline int contextWidth() const { return context()->device()->width(); }
+    inline int contextHeight() const { return context()->device()->height(); }
+    inline double aspect() const { return (double) contextWidth() / (double) contextHeight(); }
 
 private:
     Scene *m_scene;
@@ -192,7 +202,7 @@ private:
     Point m_offset3d; // offset
     Point3 m_rotation3d; // rotation
 
-    RectPoint m_chartLine; // line
+    ChartLine m_chartLine; // line
 
     SceneNode *m_nodeLast;
 
@@ -226,7 +236,7 @@ private:
     int m_backgroundTexture;
     QRectF m_backgroundPosition;
 
-    QMenu *mnuInfo;
+    QMenu *mnuScene;
 
     QActionGroup *actMaterialGroup;
     QActionGroup *actBoundaryGroup;
@@ -241,8 +251,8 @@ private:
     void createMenu();
 
     // palette
-    const double *paletteColor(double x);
-    const double *paletteColorOrder(int n);
+    const double *paletteColor(double x) const;
+    const double *paletteColorOrder(int n) const;
     void paletteCreate();
     void paletteFilter();
     void paletteUpdateTexAdjust();
@@ -278,24 +288,24 @@ private:
     void paintPostprocessorSelectedVolume(); // paint selected volume for integration
     void paintPostprocessorSelectedSurface(); // paint selected surface for integration
 
-    void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments);
-    void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75);
+    void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const;
+    void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75) const;
 
     void setZoom(double power);
     void selectRegion(const Point &start, const Point &end);
 
-    void loadProjection2d(bool setScene = false);
-    void loadProjection3d(bool setScene = false);
+    void loadProjection2d(bool setScene = false) const;
+    void loadProjection3d(bool setScene = false) const;
 
-    inline Point position(double x, double y)
+    inline Point position(double x, double y) const
     {
         return position(Point(x, y));
     }
 
-    Point position(const Point &point)
+    inline Point position(const Point &point) const
     {
         return Point((2.0/contextWidth()*point.x-1)/m_scale2d*aspect()+m_offset2d.x,
-                -(2.0/contextHeight()*point.y-1)/m_scale2d+m_offset2d.y);
+                     -(2.0/contextHeight()*point.y-1)/m_scale2d+m_offset2d.y);
     }
 
 private slots:

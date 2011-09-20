@@ -26,7 +26,7 @@
 #ifdef WITH_MUMPS
   extern "C" {
     #include <mumps_c_types.h>
-  #if !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+  #ifndef HERMES_COMMON_COMPLEX
     #include <dmumps_c.h>
     typedef scalar mumps_scalar;
     #define MUMPS_SCALAR(a) SCALAR(a)
@@ -44,7 +44,7 @@
   #endif
   
 #else
-  #if !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+  #ifndef HERMES_COMMON_COMPLEX
     typedef scalar mumps_scalar;
     #define MUMPS_SCALAR(a) SCALAR(a)
   #else
@@ -71,6 +71,18 @@ public:
   virtual unsigned int get_matrix_size() const;
   virtual unsigned int get_nnz() const;
   virtual double get_fill_in() const;
+  virtual void add_matrix(MumpsMatrix* mat);
+  virtual void add_to_diagonal_blocks(int num_stages, MumpsMatrix* mat);
+  virtual void add_as_block(unsigned int i, unsigned int j, MumpsMatrix* mat);
+
+  // Applies the matrix to vector_in and saves result to vector_out.
+  void multiply_with_vector(scalar* vector_in, scalar* vector_out);
+  // Multiplies matrix with a scalar.
+  void multiply_with_scalar(scalar value);
+  // Creates matrix using size, nnz, and the three arrays.
+  void create(unsigned int size, unsigned int nnz, int* ap, int* ai, scalar* ax);
+  // Duplicates a matrix (including allocation).
+  MumpsMatrix* duplicate();
 
 protected:
   // MUMPS specific data structures for storing the system matrix (CSC format).
@@ -92,7 +104,7 @@ public:
 
   virtual void alloc(unsigned int ndofs);
   virtual void free();
-#if !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+#ifndef HERMES_COMMON_COMPLEX
   virtual scalar get(unsigned int idx) { return v[idx]; }
 #else
   virtual scalar get(unsigned int idx) { return cplx(v[idx].r, v[idx].i); }

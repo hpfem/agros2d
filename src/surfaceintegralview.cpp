@@ -40,38 +40,37 @@ void SurfaceIntegralValue::calculate()
         return;
 
     Quad2D *quad = &g_quad_2d_std;
-    Solution *sln = Util::scene()->sceneSolution()->sln();
+    Solution *sln1 = Util::scene()->sceneSolution()->sln();
+    Solution *sln2;
+    if (sln2)
+        sln2 = Util::scene()->sceneSolution()->sln(1);
 
-    sln->set_quad_2d(quad);
+    sln1->set_quad_2d(quad);
 
-    Mesh* mesh = sln->get_mesh();
+    Mesh* mesh = sln1->get_mesh();
     for (int i = 0; i<Util::scene()->edges.length(); i++)
     {
         SceneEdge *sceneEdge = Util::scene()->edges[i];
         if (sceneEdge->isSelected)
         {
             for_all_active_elements(e, mesh)
-            {
+            {               
                 for (unsigned edge = 0; edge < e->nvert; edge++)
                 {
                     bool integrate = false;
                     boundary = false;
 
-                    if (e->en[edge]->bnd && e->en[edge]->marker-1 == i)
+                    if (e->en[edge]->marker != 0)
                     {
-                        // boundary
-                        integrate = true;
-                        boundary = true;
-                    }
-                    else
-                    {
-                        // inner edge
-                        Node *node1 = mesh->get_node(e->en[edge]->p1);
-                        Node *node2 = mesh->get_node(e->en[edge]->p2);
-
-                        if ((sceneEdge->distance(Point(node1->x, node1->y)) < EPS_ZERO) &&
-                            (sceneEdge->distance(Point(node2->x, node2->y)) < EPS_ZERO))
+                        if (e->en[edge]->bnd == 1 && (atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).c_str())) - 1 == i)
                         {
+                            // boundary
+                            integrate = true;
+                            boundary = true;
+                        }
+                        else if (- atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).c_str()) == i)
+                        {
+                            // inner page
                             integrate = true;
                         }
                     }
@@ -81,21 +80,39 @@ void SurfaceIntegralValue::calculate()
                     {
                         update_limit_table(e->get_mode());
 
-                        sln->set_active_element(e);
-                        RefMap* ru = sln->get_refmap();
+                        sln1->set_active_element(e);
+                        if (sln2)
+                            sln2->set_active_element(e);
+
+                        RefMap* ru = sln1->get_refmap();
 
                         Quad2D* quad2d = ru->get_quad_2d();
                         int eo = quad2d->get_edge_points(edge);
-                        sln->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
+                        sln1->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
                         pt = quad2d->get_points(eo);
                         tan = ru->get_tangent(edge);
 
+                        // solution 1
                         // value
-                        value = sln->get_fn_values();
+                        value1 = sln1->get_fn_values();
                         // derivative
-                        sln->get_dx_dy_values(dudx, dudy);
+                        sln1->get_dx_dy_values(dudx1, dudy1);
+
+                        // solution 2
+                        if (sln2)
+                        {
+                            sln2->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
+                            // value
+                            value2 = sln2->get_fn_values();
+                            // derivative
+                            sln2->get_dx_dy_values(dudx2, dudy2);
+                        }
+
                         // x - coordinate
                         x = ru->get_phys_x(eo);
+                        y = ru->get_phys_y(eo);
+
+                        material = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
 
                         for (int i = 0; i < quad2d->get_num_points(eo); i++)
                         {

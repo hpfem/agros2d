@@ -27,7 +27,7 @@ class ScriptEditor;
 
 class ColorButton;
 class SLineEditDouble;
-class SLineEditValue;
+class ValueLineEdit;
 
 class ConfigDialog : public QDialog
 {
@@ -37,9 +37,11 @@ public:
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void doScalarFieldLog(int state);
+    void doClearApplicationLog();
     void doClearCommandHistory();
-    void doSceneFont();
-    void doAdvancedDefault();
+    void doAdaptivityDefault();
+    void doCommandsDefault();
     void doColorsDefault();
 
     void doAccept();
@@ -52,17 +54,20 @@ private:
     QWidget *panView;
     QWidget *panSolver;
     QWidget *panColors;
-    QWidget *panAdvanced;
     QWidget *panGlobalScriptWidget;
 
     // main
     QComboBox *cmbGUIStyle;
     QComboBox *cmbLanguage;
     QComboBox *cmbDefaultPhysicField;
+    SLineEditDouble *txtCollaborationServerURL;
 
     // delete files
     QCheckBox *chkDeleteTriangleMeshFiles;
     QCheckBox *chkDeleteHermes2DMeshFile;
+
+    // clear application log
+    QPushButton *cmdClearApplicationLog;
 
     // clear command history
     QPushButton *cmdClearCommandHistory;
@@ -71,9 +76,7 @@ private:
     QCheckBox *chkLineEditValueShowResult;
 
     // save with solution
-#ifdef BETA
     QCheckBox *chkSaveWithSolution;
-#endif
 
     // check version
     QCheckBox *chkCheckVersion;
@@ -84,6 +87,9 @@ private:
     // logs
     QCheckBox *chkEnabledApplicationLog;
     QCheckBox *chkEnabledProgressLog;
+
+    // experimental features
+    QCheckBox *chkExperimentalFeatures;
 
     // general view
     QCheckBox *chkZoomToMouse;
@@ -128,19 +134,27 @@ private:
     // label
     QCheckBox *chkShowLabel;
 
+    // scalar view
+    QCheckBox *chkScalarFieldRangeLog;
+    QLineEdit *txtScalarFieldRangeBase;
+    QSpinBox *txtScalarDecimalPlace;
+
     // 3d
     QCheckBox *chkView3DLighting;
-    SLineEditDouble *txtView3DAngle;
+    QDoubleSpinBox *txtView3DAngle;
     QCheckBox *chkView3DBackground;
+    QDoubleSpinBox *txtView3DHeight;
 
     // deform shape
     QCheckBox *chkDeformScalar;
     QCheckBox *chkDeformContour;
     QCheckBox *chkDeformVector;
 
-    // advanced
-    QCheckBox *chkIsoOnly;
-    QLabel *lblIsoOnly;
+    // adaptivity
+    QLabel *lblMaxDofs;
+    QSpinBox *txtMaxDOFs;
+    //QCheckBox *chkIsoOnly;
+    //QLabel *lblIsoOnly;
     SLineEditDouble *txtConvExp;
     QLabel *lblConvExp;
     SLineEditDouble *txtThreshold;
@@ -164,7 +178,6 @@ private:
     QWidget *createViewWidget();
     QWidget *createSolverWidget();
     QWidget *createColorsWidget();
-    QWidget *createAdvancedWidget();
     QWidget *createGlobalScriptWidget();
 };
 

@@ -37,6 +37,7 @@ class ScriptEditorDialog;
 class ReportDialog;
 class VideoDialog;
 class LogDialog;
+class ServerDownloadDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -53,10 +54,12 @@ private slots:
 
     void doDocumentNew();
     void doDocumentOpen(const QString &fileName = "");
+    void doDocumentDownloadFromServer();
     void doDocumentOpenRecent(QAction *action);
     void doDocumentSave();
     void doDocumentSaveWithSolution();
     void doDocumentSaveAs();
+    void doDocumentUploadToServer();
     void doDocumentClose();
     void doDocumentImportDXF();
     void doDocumentExportDXF();
@@ -89,10 +92,13 @@ private slots:
 
     void doHelp();
     void doHelpShortCut();
+    void doCollaborationServer();
     void doOnlineHelp();
     void doCheckVersion();
     void doAbout();
     void doInvalidated();
+    void doSceneModeChanged(SceneMode sceneMode);
+    void doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
 
     void doTimeStepChanged(int index);
 
@@ -120,15 +126,14 @@ private:
     QToolBar *tlbProblem;
     QToolBar *tlbTools;
     QToolBar *tlbTransient;
-    QToolBar *tlbWorkspace;
 
     QAction *actDocumentNew;
     QAction *actDocumentOpen;
+    QAction *actDocumentDownloadFromServer;
     QAction *actDocumentSave;
-    #ifdef BETA
     QAction *actDocumentSaveWithSolution;
-    #endif
     QAction *actDocumentSaveAs;
+    QAction *actDocumentUploadToServer;
     QAction *actDocumentClose;
     QAction *actDocumentImportDXF;
     QAction *actDocumentExportDXF;
@@ -162,6 +167,7 @@ private:
     QAction *actHelp;
     QAction *actHelpShortCut;
     QAction *actOnlineHelp;
+    QAction *actCollaborationServer;
     QAction *actCheckVersion;
     QAction *actAbout;
     QAction *actAboutQt;
@@ -190,6 +196,7 @@ private:
     ReportDialog *reportDialog;
     VideoDialog *videoDialog;
     LogDialog *logDialog;
+    ServerDownloadDialog *collaborationDownloadDialog;
 
     void setRecentFiles();
 

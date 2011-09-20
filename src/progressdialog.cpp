@@ -23,42 +23,6 @@
 #include "scene.h"
 #include "sceneview.h"
 
-struct TriangleEdge
-{
-    TriangleEdge()
-    {
-        this->node_1 = -1;
-        this->node_2 = -1;
-        this->marker = -1;
-    }
-
-    TriangleEdge(int node_1, int node_2, int marker)
-    {
-        this->node_1 = node_1;
-        this->node_2 = node_2;
-        this->marker = marker;
-    }
-
-    int node_1, node_2, marker;
-};
-
-/*
-struct NodeTriangle
-{
-    NodeTriangle(int n, double x, double y, int marker)
-    {
-        this->n = n;
-        this->x = x;
-        this->y = n;
-        this->marker = marker;
-    }
-
-    int n;
-    double x, y;
-    int marker;
-};
-*/
-
 SolutionArray::SolutionArray()
 {
     logMessage("SolutionArray::SolutionArray()");
@@ -156,11 +120,15 @@ ProgressItem::ProgressItem()
     logMessage("ProgressItem::ProgressItem()");
 
     m_name = "";
+
+    connect(this, SIGNAL(message(QString, bool, int)), this, SLOT(showMessage(QString, bool, int)));
+}
+
+void ProgressItem::init()
+{
     m_steps = 0;
     m_isError = false;
     m_isCanceled = false;
-
-    connect(this, SIGNAL(message(QString, bool, int)), this, SLOT(showMessage(QString, bool, int)));
 }
 
 void ProgressItem::showMessage(const QString &msg, bool isError, int position)
@@ -177,10 +145,25 @@ ProgressItemMesh::ProgressItemMesh() : ProgressItem()
     logMessage("ProgressItemMesh::ProgressItemMesh()");
 
     m_name = tr("Mesh");
+}
+
+void ProgressItemMesh::setSteps()
+{
     m_steps = 4;
 }
 
-bool ProgressItemMesh::run()
+bool ProgressItemMesh::run(bool quiet)
+{
+    logMessage("ProgressItemMesh::run()");
+
+    if (quiet) blockSignals(true);
+    mesh();
+    if (quiet) blockSignals(false);
+
+    return !m_isError;
+}
+
+void ProgressItemMesh::mesh()
 {
     logMessage("ProgressItemMesh::run()");
 
@@ -212,7 +195,8 @@ bool ProgressItemMesh::run()
             emit message(tr("Could not start Triangle"), true, 0);
             processTriangle.kill();
 
-            return !m_isError;
+            m_isError = true;
+            return;
         }
 
         // copy triangle files
@@ -228,8 +212,10 @@ bool ProgressItemMesh::run()
 
         while (!processTriangle.waitForFinished()) {}
     }
-
-    return !m_isError;
+    else
+    {
+        m_isError = true;
+    }
 }
 
 void ProgressItemMesh::meshTriangleCreated(int exitCode)
@@ -254,12 +240,13 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             }
 
             //  remove triangle temp files
-            QFile::remove(tempProblemFileName() + ".poly");
-            QFile::remove(tempProblemFileName() + ".node");
-            QFile::remove(tempProblemFileName() + ".edge");
-            QFile::remove(tempProblemFileName() + ".ele");
-            QFile::remove(tempProblemFileName() + ".triangle.out");
-            QFile::remove(tempProblemFileName() + ".triangle.err");
+            // QFile::remove(tempProblemFileName() + ".poly");
+            // QFile::remove(tempProblemFileName() + ".node");
+            // QFile::remove(tempProblemFileName() + ".edge");
+            // QFile::remove(tempProblemFileName() + ".ele");
+            // QFile::remove(tempProblemFileName() + ".neigh");
+            // QFile::remove(tempProblemFileName() + ".triangle.out");
+            // QFile::remove(tempProblemFileName() + ".triangle.err");
             emit message(tr("Mesh files were deleted"), false, 4);
 
             // load mesh
@@ -270,15 +257,14 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             {
                 if (Node *node = mesh->get_node(i))
                 {
-                    if (node->used)
+                    if (node->used == 1 && node->type == 1 && node->ref < 2 && node->marker == 0)
                     {
-                        if (node->ref < 2 && node->marker == 0)
-                        {
-                            emit message(tr("Boundary edge does not have a boundary marker"), true, 0);
+                        qDebug() << "p1: " << node->p1 << "p2: " << node->p2;
+                        emit message(tr("Boundary edge does not have a boundary marker"), true, 0);
 
-                            delete mesh;
-                            return;
-                        }
+                        delete mesh;
+                        m_isError = true;
+                        return;
                     }
                 }
             }
@@ -289,11 +275,13 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
         }
         else
         {
+            m_isError = true;
             QFile::remove(Util::scene()->problemInfo()->fileName + ".mesh");
         }
     }
     else
     {
+        m_isError = true;
         QString errorMessage = readFileContent(Util::scene()->problemInfo()->fileName + ".triangle.out");
         emit message(errorMessage, true, 0);
     }
@@ -319,7 +307,7 @@ bool ProgressItemMesh::writeToTriangle()
         // at least one boundary condition has to be assigned
         int count = 0;
         for (int i = 0; i<Util::scene()->edges.count(); i++)
-            if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) > 0)
+            if (Util::scene()->boundaries.indexOf(Util::scene()->edges[i]->boundary) > 0)
                 count++;
 
         if (count == 0)
@@ -338,7 +326,7 @@ bool ProgressItemMesh::writeToTriangle()
         // at least one material has to be assigned
         int count = 0;
         for (int i = 0; i<Util::scene()->labels.count(); i++)
-            if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) > 0)
+            if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) > 0)
                 count++;
 
         if (count == 0)
@@ -347,14 +335,14 @@ bool ProgressItemMesh::writeToTriangle()
             return false;
         }
     }
-    if (Util::scene()->edgeMarkers.count() < 2) // + none marker
+    if (Util::scene()->boundaries.count() < 2) // + none marker
     {
-        emit message(tr("Invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->edgeMarkers.count()), true, 0);
+        emit message(tr("Invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries.count()), true, 0);
         return false;
     }
-    if (Util::scene()->labelMarkers.count() < 2) // + none marker
+    if (Util::scene()->materials.count() < 2) // + none marker
     {
-        emit message(tr("Invalid number of materials (%1 < 1)").arg(Util::scene()->labelMarkers.count()), true, 0);
+        emit message(tr("Invalid number of materials (%1 < 1)").arg(Util::scene()->materials.count()), true, 0);
         return false;
     }
 
@@ -455,11 +443,11 @@ bool ProgressItemMesh::writeToTriangle()
 
     // holes
     int holesCount = 0;
-    for (int i = 0; i<Util::scene()->labels.count(); i++) if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0) holesCount++;
+    for (int i = 0; i<Util::scene()->labels.count(); i++) if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) == 0) holesCount++;
     QString outHoles = QString("%1\n").arg(holesCount);
     for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
-        if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
+        if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) == 0)
         {
             outHoles += QString("%1  %2  %3\n").
                     arg(i).
@@ -473,7 +461,7 @@ bool ProgressItemMesh::writeToTriangle()
     int labelsCount = 0;
     for(int i = 0; i<Util::scene()->labels.count(); i++)
     {
-        if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) > 0)
+        if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) > 0)
         {
             outLabels += QString("%1  %2  %3  %4  %5\n").
                     arg(labelsCount).
@@ -547,59 +535,296 @@ bool ProgressItemMesh::triangleToHermes2D()
     }
     QTextStream inEle(&fileEle);
 
+    QFile fileNeigh(tempProblemFileName() + ".neigh");
+    if (!fileNeigh.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        emit message(tr("Could not read Triangle neigh file"), true, 0);
+        return false;
+    }
+    QTextStream inNeigh(&fileNeigh);
+
     // triangle nodes
     sscanf(inNode.readLine().toStdString().c_str(), "%i", &k);
-    Point *nodeList = new Point[k];
+    QList<Point> nodeList;
     for (int i = 0; i<k; i++)
     {
         int marker;
         double x, y;
 
         sscanf(inNode.readLine().toStdString().c_str(), "%i   %lf %lf %i", &n, &x, &y, &marker);
-        nodeList[i] = Point(x, y);
+        nodeList.append(Point(x, y));
     }
-    int nodeCount = k;
 
     // triangle edges
     sscanf(inEdge.readLine().toStdString().c_str(), "%i", &k);
-
-    TriangleEdge *edgeList = new TriangleEdge[k];
+    QList<MeshEdge> edgeList;
+    QSet<int> edgeMarkersCheck;
     for (int i = 0; i<k; i++)
     {
-        int node_1, node_2, marker;
+        int node[2];
+        int marker;
 
-        sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node_1, &node_2, &marker);
-        edgeList[i] = TriangleEdge(node_1, node_2, marker);
+        sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node[0], &node[1], &marker);
+        edgeList.append(MeshEdge(node[0], node[1], marker));
     }
-    int edgeCount = k;
+    int edgeCountLinear = edgeList.count();
+
+    // check for multiple edge markers
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        if (Util::scene()->boundaries.indexOf(Util::scene()->edges[i]->boundary) > 0)
+        {
+            if (!edgeMarkersCheck.contains(i))
+            {
+                // emit message(tr("Edge marker '%1' is not present in mesh file.").
+                //              arg(i), true, 0);
+                // return false;
+            }
+        }
+    }
+    edgeMarkersCheck.clear();
+
+    // no edge marker
+    if (edgeCountLinear < 1)
+    {
+        emit message(tr("Invalid number of edge markers"), true, 0);
+        return false;
+    }
+
+    // triangle elements
+    sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
+    QList<MeshElement> elementList;
+    QSet<int> labelMarkersCheck;
+    for (int i = 0; i < k; i++)
+    {
+        int node[6];
+        int marker;
+
+        sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i	%i	%i	%i",
+               &n, &node[0], &node[1], &node[2], &node[3], &node[4], &node[5], &marker);
+
+        if (Util::scene()->problemInfo()->meshType == MeshType_Triangle ||
+                Util::scene()->problemInfo()->meshType == MeshType_QuadJoin ||
+                Util::scene()->problemInfo()->meshType == MeshType_QuadRoughDivision)
+        {
+            elementList.append(MeshElement(node[0], node[1], node[2], marker));
+        }
+
+        if (Util::scene()->problemInfo()->meshType == MeshType_QuadFineDivision)
+        {
+            // add additional node
+            nodeList.append(Point((nodeList[node[0]].x + nodeList[node[1]].x + nodeList[node[2]].x) / 3.0,
+                                  (nodeList[node[0]].y + nodeList[node[1]].y + nodeList[node[2]].y) / 3.0));
+            // add three quad elements
+            elementList.append(MeshElement(node[4], node[0], node[5], nodeList.count() - 1, marker));
+            elementList.append(MeshElement(node[5], node[1], node[3], nodeList.count() - 1, marker));
+            elementList.append(MeshElement(node[3], node[2], node[4], nodeList.count() - 1, marker));
+        }
+
+        if (elementList[i].marker == 0)
+        {
+            emit message(tr("Some areas have no label marker"), true, 0);
+            return false;
+        }
+
+        labelMarkersCheck.insert(marker);
+    }
+    int elementCountLinear = elementList.count();
+
+    // check for multiple label markers
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
+        if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) > 0)
+        {
+            if (!labelMarkersCheck.contains(i + 1))
+            {
+                emit message(tr("Label marker '%1' is not present in mesh file (multiple label markers in one area).").
+                             arg(i), true, 0);
+                return false;
+            }
+        }
+    }
+    labelMarkersCheck.clear();
+
+    // no label marker
+    if (elementList.count() < 1)
+    {
+        emit message(tr("Invalid number of label markers"), true, 0);
+        return false;
+    }
+
+    // triangle neigh
+    sscanf(inNeigh.readLine().toStdString().c_str(), "%i", &k);
+    for (int i = 0; i < k; i++)
+    {
+        int ele_1, ele_2, ele_3;
+
+        sscanf(inNeigh.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &ele_1, &ele_2, &ele_3);
+        elementList[i].neigh[0] = ele_1;
+        elementList[i].neigh[1] = ele_2;
+        elementList[i].neigh[2] = ele_3;
+    }
+
+    // heterogeneous mesh
+    // element division
+    if (Util::scene()->problemInfo()->meshType == MeshType_QuadFineDivision)
+    {
+        for (int i = 0; i < edgeCountLinear; i++)
+        {
+            if (edgeList[i].marker != 0)
+            {
+                for (int j = 0; j < elementList.count() / 3; j++)
+                {
+                    for (int k = 0; k < 3; k++)
+                    {
+                        if (edgeList[i].node[0] == elementList[3*j + k].node[1] && edgeList[i].node[1] == elementList[3*j + (k + 1) % 3].node[1])
+                        {
+                            edgeList.append(MeshEdge(edgeList[i].node[0], elementList[3*j + (k + 1) % 3].node[0], edgeList[i].marker));
+                            edgeList[i].node[0] = elementList[3*j + (k + 1) % 3].node[0];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (Util::scene()->problemInfo()->meshType == MeshType_QuadRoughDivision)
+    {
+        for (int i = 0; i < elementCountLinear; i++)
+        {
+            // check same material
+            if (elementList[i].isActive &&
+                    (elementList[i].neigh[0] != -1) &&
+                    (elementList[i].neigh[1] != -1) &&
+                    (elementList[i].neigh[2] != -1) &&
+                    elementList[elementList[i].neigh[0]].isActive &&
+                    elementList[elementList[i].neigh[1]].isActive &&
+                    elementList[elementList[i].neigh[2]].isActive &&
+                    (elementList[i].marker == elementList[elementList[i].neigh[0]].marker) &&
+                    (elementList[i].marker == elementList[elementList[i].neigh[1]].marker) &&
+                    (elementList[i].marker == elementList[elementList[i].neigh[2]].marker))
+            {
+                // add additional node
+                nodeList.append(Point((nodeList[elementList[i].node[0]].x + nodeList[elementList[i].node[1]].x + nodeList[elementList[i].node[2]].x) / 3.0,
+                                      (nodeList[elementList[i].node[0]].y + nodeList[elementList[i].node[1]].y + nodeList[elementList[i].node[2]].y) / 3.0));
+
+                // add three quad elements
+                for (int nd = 0; nd < 3; nd++)
+                    for (int neigh = 0; neigh < 3; neigh++)
+                        for (int neigh_nd = 0; neigh_nd < 3; neigh_nd++)
+                            if ((elementList[i].node[(nd + 0) % 3] == elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 1) % 3]) &&
+                                    (elementList[i].node[(nd + 1) % 3] == elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 0) % 3]))
+                                elementList.append(MeshElement(elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 1) % 3],
+                                                               elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 2) % 3],
+                                                               elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 0) % 3],
+                                                               nodeList.count() - 1, elementList[i].marker));
+
+                elementList[i].isUsed = false;
+                elementList[i].isActive = false;
+                for (int k = 0; k < 3; k++)
+                {
+                    elementList[elementList[i].neigh[k]].isUsed = false;
+                    elementList[elementList[i].neigh[k]].isActive = false;
+                }
+            }
+        }
+    }
+
+    if (Util::scene()->problemInfo()->meshType == MeshType_QuadJoin)
+    {
+        for (int i = 0; i < elementCountLinear; i++)
+        {
+            // check same material
+            if (elementList[i].isActive)
+            {
+                // add quad elements
+                for (int nd = 0; nd < 3; nd++)
+                    for (int neigh = 0; neigh < 3; neigh++)
+                        for (int neigh_nd = 0; neigh_nd < 3; neigh_nd++)
+                            if (elementList[i].isActive &&
+                                    elementList[i].neigh[neigh] != -1 &&
+                                    elementList[elementList[i].neigh[neigh]].isActive &&
+                                    elementList[i].marker == elementList[elementList[i].neigh[neigh]].marker)
+                                if ((elementList[i].node[(nd + 0) % 3] == elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 1) % 3]) &&
+                                        (elementList[i].node[(nd + 1) % 3] == elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 0) % 3]))
+                                {
+                                    int tmp_node[3];
+                                    for (int k = 0; k < 3; k++)
+                                        tmp_node[k] = elementList[i].node[k];
+
+                                    Point quad_check[4];
+                                    quad_check[0] = nodeList[tmp_node[(nd + 1) % 3]];
+                                    quad_check[1] = nodeList[tmp_node[(nd + 2) % 3]];
+                                    quad_check[2] = nodeList[tmp_node[(nd + 0) % 3]];
+                                    quad_check[3] = nodeList[elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 2) % 3]];
+
+                                    if ((!same_line(quad_check[0].x, quad_check[0].y, quad_check[1].x, quad_check[1].y, quad_check[2].x, quad_check[2].y)) &&
+                                            (!same_line(quad_check[0].x, quad_check[0].y, quad_check[1].x, quad_check[1].y, quad_check[3].x, quad_check[3].y)) &&
+                                            (!same_line(quad_check[0].x, quad_check[0].y, quad_check[2].x, quad_check[2].y, quad_check[3].x, quad_check[3].y)) &&
+                                            (!same_line(quad_check[1].x, quad_check[1].y, quad_check[2].x, quad_check[2].y, quad_check[3].x, quad_check[3].y)) &&
+                                            is_convex(quad_check[1].x - quad_check[0].x, quad_check[1].y - quad_check[0].y, quad_check[2].x - quad_check[0].x, quad_check[2].y - quad_check[0].y) &&
+                                            is_convex(quad_check[2].x - quad_check[0].x, quad_check[2].y - quad_check[0].y, quad_check[3].x - quad_check[0].x, quad_check[3].y - quad_check[0].y) &&
+                                            is_convex(quad_check[2].x - quad_check[1].x, quad_check[2].y - quad_check[1].y, quad_check[3].x - quad_check[1].x, quad_check[3].y - quad_check[1].y) &&
+                                            is_convex(quad_check[3].x - quad_check[1].x, quad_check[3].y - quad_check[1].y, quad_check[0].x - quad_check[1].x, quad_check[0].y - quad_check[1].y))
+                                    {
+                                        // regularity check
+                                        bool regular = true;
+                                        for (int k = 0; k < 4; k++)
+                                        {
+                                            double length_1 = (quad_check[k] - quad_check[(k + 1) % 4]).magnitude();
+                                            double length_2 = (quad_check[(k + 1) % 4] - quad_check[(k + 2) % 4]).magnitude();
+                                            double length_together = (quad_check[k] - quad_check[(k + 2) % 4]).magnitude();
+
+                                            if ((length_1 + length_2) / length_together < 1.03)
+                                                regular = false;
+                                        }
+
+                                        if (!regular)
+                                            break;
+
+                                        elementList[i].node[0] = tmp_node[(nd + 1) % 3];
+                                        elementList[i].node[1] = tmp_node[(nd + 2) % 3];
+                                        elementList[i].node[2] = tmp_node[(nd + 0) % 3];
+                                        elementList[i].node[3] = elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 2) % 3];
+
+                                        elementList[i].isActive = false;
+
+                                        elementList[elementList[i].neigh[neigh]].isUsed = false;
+                                        elementList[elementList[i].neigh[neigh]].isActive = false;
+
+                                        break;
+                                    }
+                                }
+            }
+        }
+    }
 
     // edges
     QString outEdges;
     outEdges += "boundaries =\n";
     outEdges += "{\n";
     int countEdges = 0;
-    for (int i = 0; i<edgeCount; i++)
+    for (int i = 0; i < edgeList.count(); i++)
     {
-        if (edgeList[i].marker != 0)
+        if (edgeList[i].isUsed && edgeList[i].marker != 0)
         {
-            if (Util::scene()->edges[edgeList[i].marker-1]->marker->type != PhysicFieldBC_None)
-            {
-                countEdges++;
-                outEdges += QString("  { %1, %2, %3 },\n").
-                        arg(edgeList[i].node_1).
-                        arg(edgeList[i].node_2).
-                        arg(abs(edgeList[i].marker));
-            }
+            int marker = 0;
+            if (Util::scene()->edges[edgeList[i].marker-1]->boundary->type != PhysicFieldBC_None)
+                // boundary marker
+                marker = edgeList[i].marker;
+            else
+                // inner edge marker (minus markers are ignored)
+                marker = - (edgeList[i].marker-1);
+
+            countEdges++;
+            outEdges += QString("  { %1, %2, %3 },\n").
+                    arg(edgeList[i].node[0]).
+                    arg(edgeList[i].node[1]).
+                    arg(marker);
         }
     }
     outEdges.truncate(outEdges.length()-2);
     outEdges += "\n}\n\n";
-
-    if (countEdges < 1)
-    {
-        emit message(tr("Invalid number of edge markers"), true, 0);
-        return false;
-    }
 
     // curves
     QString outCurves;
@@ -608,7 +833,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     {
         outCurves += "curves =\n";
         outCurves += "{\n";
-        for (int i = 0; i<edgeCount; i++)
+        for (int i = 0; i<edgeList.count(); i++)
         {
             if (edgeList[i].marker != 0)
             {
@@ -623,18 +848,18 @@ bool ProgressItemMesh::triangleToHermes2D()
                     double chord = 2 * Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(theta / 2.0);
 
                     // length of short chord
-                    double chordShort = (nodeList[edgeList[i].node_2] - nodeList[edgeList[i].node_1]).magnitude();
+                    double chordShort = (nodeList[edgeList[i].node[1]] - nodeList[edgeList[i].node[0]]).magnitude();
 
                     // direction
                     Point center = Util::scene()->edges[edgeList[i].marker-1]->center();
-                    int direction = (((nodeList[edgeList[i].node_1].x-center.x)*(nodeList[edgeList[i].node_2].y-center.y) -
-                                      (nodeList[edgeList[i].node_1].y-center.y)*(nodeList[edgeList[i].node_2].x-center.x)) > 0) ? 1 : -1;
+                    int direction = (((nodeList[edgeList[i].node[0]].x-center.x)*(nodeList[edgeList[i].node[1]].y-center.y) -
+                                      (nodeList[edgeList[i].node[0]].y-center.y)*(nodeList[edgeList[i].node[1]].x-center.x)) > 0) ? 1 : -1;
 
                     double angle = direction * theta * chordShort / chord;
 
                     outCurves += QString("  { %1, %2, %3 },\n").
-                            arg(edgeList[i].node_1).
-                            arg(edgeList[i].node_2).
+                            arg(edgeList[i].node[0]).
+                            arg(edgeList[i].node[1]).
                             arg(rad2deg(angle));
                 }
             }
@@ -643,7 +868,7 @@ bool ProgressItemMesh::triangleToHermes2D()
         outCurves += "\n}\n\n";
 
         // move nodes (arcs)
-        for (int i = 0; i<edgeCount; i++)
+        for (int i = 0; i<edgeList.count(); i++)
         {
             if (edgeList[i].marker != 0)
             {
@@ -652,17 +877,17 @@ bool ProgressItemMesh::triangleToHermes2D()
                 {
                     // angle
                     Point center = Util::scene()->edges[edgeList[i].marker-1]->center();
-                    double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node_1].y,
-                                               center.x - nodeList[edgeList[i].node_1].x) - M_PI;
+                    double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node[0]].y,
+                                               center.x - nodeList[edgeList[i].node[0]].x) - M_PI;
 
-                    double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node_2].y,
-                                               center.x - nodeList[edgeList[i].node_2].x) - M_PI;
+                    double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node[1]].y,
+                                               center.x - nodeList[edgeList[i].node[1]].x) - M_PI;
 
-                    nodeList[edgeList[i].node_1].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle1);
-                    nodeList[edgeList[i].node_1].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle1);
+                    nodeList[edgeList[i].node[0]].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle1);
+                    nodeList[edgeList[i].node[0]].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle1);
 
-                    nodeList[edgeList[i].node_2].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle2);
-                    nodeList[edgeList[i].node_2].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle2);
+                    nodeList[edgeList[i].node[1]].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle2);
+                    nodeList[edgeList[i].node[1]].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle2);
                 }
             }
         }
@@ -672,7 +897,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     QString outNodes;
     outNodes += "vertices =\n";
     outNodes += "{\n";
-    for (int i = 0; i<nodeCount; i++)
+    for (int i = 0; i<nodeList.count(); i++)
     {
         outNodes += QString("  { %1,  %2 },\n").
                 arg(nodeList[i].x, 0, 'f', 10).
@@ -685,34 +910,32 @@ bool ProgressItemMesh::triangleToHermes2D()
     QString outElements;
     outElements += "elements =\n";
     outElements += "{\n";
-    sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
-    int countElements = 0;
-    for (int i = 0; i<k; i++)
+    for (int i = 0; i < elementList.count(); i++)
     {
-        int node_1, node_2, node_3, marker;
-
-        countElements++;
-        sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i", &n, &node_1, &node_2, &node_3, &marker);
-        if (marker == 0)
+        if (elementList[i].isUsed)
         {
-            emit message(tr("Some areas have no label marker"), true, 0);
-            return false;
+            // element returns zero region number for areas without marker, markers must start from 1
+            if (elementList[i].isTriangle())
+            {
+                outElements += QString("  { %1, %2, %3, %4 },\n").
+                        arg(elementList[i].node[0]).
+                        arg(elementList[i].node[1]).
+                        arg(elementList[i].node[2]).
+                        arg(abs(elementList[i].marker) - 1);
+            }
+            else
+            {
+                outElements += QString("  { %1, %2, %3, %4, %5 },\n").
+                        arg(elementList[i].node[0]).
+                        arg(elementList[i].node[1]).
+                        arg(elementList[i].node[2]).
+                        arg(elementList[i].node[3]).
+                        arg(abs(elementList[i].marker) - 1);
+            }
         }
-        // triangle returns zero region number for areas without marker, markers must start from 1
-        marker--;
-        outElements += QString("  { %1, %2, %3, %4 },\n").
-                arg(node_1).
-                arg(node_2).
-                arg(node_3).
-                arg(abs(marker));
     }
     outElements.truncate(outElements.length()-2);
     outElements += "\n}\n\n";
-    if (countElements < 1)
-    {
-        emit message(tr("Invalid number of label markers"), true, 0);
-        return false;
-    }
 
     outMesh << outNodes;
     outMesh << outElements;
@@ -720,15 +943,17 @@ bool ProgressItemMesh::triangleToHermes2D()
     if (countCurves > 0)
         outMesh << outCurves;
 
+    nodeList.clear();
+    edgeList.clear();
+    elementList.clear();
+
     fileNode.close();
     fileEdge.close();
     fileEle.close();
+    fileNeigh.close();
 
     fileMesh.waitForBytesWritten(0);
     fileMesh.close();
-
-    delete [] nodeList;
-    delete [] edgeList;
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
@@ -743,16 +968,27 @@ ProgressItemSolve::ProgressItemSolve() : ProgressItem()
     logMessage("ProgressItemSolve::ProgressItemSolve()");
 
     m_name = tr("Solver");
-    m_steps = 1;
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-        m_steps += floor(Util::scene()->problemInfo()->timeTotal.number / Util::scene()->problemInfo()->timeStep.number);
 }
 
-bool ProgressItemSolve::run()
+void ProgressItemSolve::setSteps()
+{
+    m_steps = 1;
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+    {
+        Util::scene()->problemInfo()->timeTotal.evaluate();
+        Util::scene()->problemInfo()->timeStep.evaluate();
+
+        m_steps += floor(Util::scene()->problemInfo()->timeTotal.number / Util::scene()->problemInfo()->timeStep.number);
+    }
+}
+
+bool ProgressItemSolve::run(bool quiet)
 {
     logMessage("ProgressItemSolve::()");
 
+    if (quiet) blockSignals(true);
     solve();
+    if (quiet) blockSignals(false);
 
     return !m_isError;
 }
@@ -801,7 +1037,10 @@ ProgressItemProcessView::ProgressItemProcessView() : ProgressItem()
     logMessage("ProgressItemProcessView::ProgressItemProcessView()");
 
     m_name = tr("View");
+}
 
+void ProgressItemProcessView::setSteps()
+{
     m_steps = 0;
     if (sceneView()->sceneViewSettings().showContours == 1)
         m_steps += 1;
@@ -813,11 +1052,13 @@ ProgressItemProcessView::ProgressItemProcessView() : ProgressItem()
         m_steps += 1;
 }
 
-bool ProgressItemProcessView::run()
+bool ProgressItemProcessView::run(bool quiet)
 {
     logMessage("ProgressItemProcessView::run()");
 
+    if (quiet) blockSignals(true);
     process();
+    if (quiet) blockSignals(false);
 
     return !m_isError;
 }
@@ -869,14 +1110,12 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
     setWindowTitle(tr("Progress..."));
 
     createControls();
-    clear();
 
-    QFile::remove(tempProblemDir() + "/adaptivity_error.png");
-    QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
-    QFile::remove(tempProblemDir() + "/adaptivity_conv.png");
-
-    setMinimumSize(520, 360);
+    setMinimumSize(550, 360);
     setMaximumSize(minimumSize());
+
+    QSettings settings;
+    restoreGeometry(settings.value("ProgressDialog/Geometry", saveGeometry()).toByteArray());
 }
 
 ProgressDialog::~ProgressDialog()
@@ -885,20 +1124,23 @@ ProgressDialog::~ProgressDialog()
 
     if (Util::config()->enabledProgressLog)
         saveProgressLog();
-
-    clear();
 }
 
 void ProgressDialog::clear()
 {
     logMessage("ProgressDialog::clear()");
 
-    // delete progress items
-    for (int i = 0; i < m_progressItem.count(); i++)
-        delete m_progressItem.at(i);
+    // progress items
     m_progressItem.clear();
-
     m_currentProgressItem = NULL;
+
+    // convergence charts
+    curveError->setData(0);
+    curveErrorMax->setData(0);
+    curveDOF->setData(0);
+    curveErrorDOF->setData(0);
+    curveErrorDOFMax->setData(0);
+
     m_showViewProgress = true;
 }
 
@@ -917,13 +1159,6 @@ void ProgressDialog::createControls()
     tabType->addTab(controlsConvergenceDOFChart, icon(""), tr("Adapt. DOFs"));
     tabType->addTab(controlsConvergenceErrorDOFChart, icon(""), tr("Adapt. conv."));
     connect(tabType, SIGNAL(currentChanged(int)), this, SLOT(resetControls(int)));
-
-    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
-    {
-       controlsConvergenceErrorChart->setEnabled(false);
-       controlsConvergenceDOFChart->setEnabled(false);
-       controlsConvergenceErrorDOFChart->setEnabled(false);
-    }
 
     btnCancel = new QPushButton(tr("Cance&l"));
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancel()));
@@ -1061,8 +1296,8 @@ QWidget *ProgressDialog::createControlsConvergenceErrorDOFChart()
     logMessage("ProgressDialog::createControlsConvergenceErrorDOFChart()");
 
     chartErrorDOF = new Chart(this);
-//    chartErrorDOF->setAxisScaleEngine(0, new QwtLog10ScaleEngine);
-//    chartErrorDOF->setAxisScaleEngine(2, new QwtLog10ScaleEngine);
+    //    chartErrorDOF->setAxisScaleEngine(0, new QwtLog10ScaleEngine);
+    //    chartErrorDOF->setAxisScaleEngine(2, new QwtLog10ScaleEngine);
 
     // curves
     curveErrorDOF = new QwtPlotCurve();
@@ -1150,6 +1385,10 @@ void ProgressDialog::appendProgressItem(ProgressItem *progressItem)
 {
     logMessage("ProgressDialog::appendProgressItem()");
 
+    progressItem->init();
+    progressItem->setSteps();
+    progressItem->disconnect();
+
     m_progressItem.append(progressItem);
     connect(progressItem, SIGNAL(changed()), this, SLOT(itemChanged()));
     connect(progressItem, SIGNAL(message(QString, bool, int)), this, SLOT(showMessage(QString, bool, int)));
@@ -1159,6 +1398,16 @@ void ProgressDialog::appendProgressItem(ProgressItem *progressItem)
 bool ProgressDialog::run(bool showViewProgress)
 {
     logMessage("ProgressDialog::run()");
+
+    // current widget
+    tabType->setCurrentWidget(controlsProgress);
+
+    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
+    {
+        controlsConvergenceErrorChart->setEnabled(false);
+        controlsConvergenceDOFChart->setEnabled(false);
+        controlsConvergenceErrorDOFChart->setEnabled(false);
+    }
 
     m_showViewProgress = showViewProgress;
     QTimer::singleShot(0, this, SLOT(start()));
@@ -1174,7 +1423,6 @@ void ProgressDialog::start()
 
     progressBar->setRange(0, progressSteps());
     progressBar->setValue(0);
-    QApplication::processEvents();
 
     for (int i = 0; i < m_progressItem.count(); i++)
     {
@@ -1184,7 +1432,6 @@ void ProgressDialog::start()
         {
             // error
             finished();
-
             clear();
             return;
         }
@@ -1203,7 +1450,6 @@ void ProgressDialog::start()
         btnCancel->setEnabled(false);
         btnSaveImage->setEnabled(false);
         btnSaveData->setEnabled(false);
-        // tabType->setCurrentWidget(controlsConvergenceChart);
     }
 }
 
@@ -1233,10 +1479,13 @@ void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
     lblMessage->setText(message);
 
     if (position > 0)
+    {
         progressBar->setValue(currentProgressStep() + position);
+        Indicator::setProgress((double) position / progressSteps());
+    }
 
     // update
-    QApplication::processEvents();
+    if (position % 1 == 0) QApplication::processEvents();
     lstMessage->update();
 }
 
@@ -1342,7 +1591,11 @@ void ProgressDialog::itemChanged()
         }
         fileErrDOF.close();
 
-        // save image
+        // save images
+        QFile::remove(tempProblemDir() + "/adaptivity_error.png");
+        QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
+        QFile::remove(tempProblemDir() + "/adaptivity_conv.png");
+
         chartError->saveImage(tempProblemDir() + "/adaptivity_error.png");
         chartDOF->saveImage(tempProblemDir() + "/adaptivity_dof.png");
         chartErrorDOF->saveImage(tempProblemDir() + "/adaptivity_conv.png");
@@ -1377,6 +1630,13 @@ void ProgressDialog::cancel()
 void ProgressDialog::close()
 {
     logMessage("ProgressDialog::close()");
+
+    QSettings settings;
+    settings.setValue("ProgressDialog/Geometry", saveGeometry());
+
+    // save progress messages
+    if (Util::config()->enabledProgressLog)
+        saveProgressLog();
 
     cancel();
     accept();
@@ -1454,7 +1714,8 @@ void ProgressDialog::saveData()
                 out << curveErrorDOF->data().x(i) << ";" << curveErrorDOF->data().y(i) << endl;
         }
 
-        settings.setValue("General/LastDataDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastDataDir", fileInfo.absolutePath());
 
         file.close();
     }

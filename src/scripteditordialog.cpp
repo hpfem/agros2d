@@ -50,11 +50,11 @@ ScriptResult runPythonScript(const QString &script, const QString &fileName)
     return pythonEngine->runPythonScript(script, fileName);
 }
 
-ExpressionResult runPythonExpression(const QString &expression)
+ExpressionResult runPythonExpression(const QString &expression, bool returnValue)
 {
     logMessage("runPythonExpression()");
 
-    return pythonEngine->runPythonExpression(expression);
+    return pythonEngine->runPythonExpression(expression, returnValue);
 }
 
 bool scriptIsRunning()
@@ -122,23 +122,23 @@ QString createPythonFromModel()
     }
 
     // boundaries
-    if (Util::scene()->edgeMarkers.count() > 1)
+    if (Util::scene()->boundaries.count() > 1)
     {
         str += "# boundaries\n";
-        for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
+        for (int i = 1; i<Util::scene()->boundaries.count(); i++)
         {
-            str += Util::scene()->edgeMarkers[i]->script() + "\n";
+            str += Util::scene()->boundaries[i]->script() + "\n";
         }
         str += "\n";
     }
 
     // materials
-    if (Util::scene()->labelMarkers.count() > 1)
+    if (Util::scene()->materials.count() > 1)
     {
         str += "# materials\n";
-        for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+        for (int i = 1; i<Util::scene()->materials.count(); i++)
         {
-            str += Util::scene()->labelMarkers[i]->script() + "\n";
+            str += Util::scene()->materials[i]->script() + "\n";
         }
         str += "\n";
     }
@@ -155,7 +155,7 @@ QString createPythonFromModel()
                    arg(Util::scene()->edges[i]->nodeEnd->point.x).
                    arg(Util::scene()->edges[i]->nodeEnd->point.y).
                    arg(Util::scene()->edges[i]->angle).
-                   arg(Util::scene()->edges[i]->marker->name) + "\n";
+                   arg(Util::scene()->edges[i]->boundary->name) + "\n";
         }
         str += "\n";
     }
@@ -171,7 +171,7 @@ QString createPythonFromModel()
                    arg(Util::scene()->labels[i]->point.y).
                    arg(Util::scene()->labels[i]->area).
                    arg(Util::scene()->labels[i]->polynomialOrder).
-                   arg(Util::scene()->labels[i]->marker->name) + "\n";
+                   arg(Util::scene()->labels[i]->material->name) + "\n";
         }
 
     }
@@ -440,6 +440,10 @@ void ScriptEditorDialog::createActions()
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
     actHelp->setShortcut(QKeySequence::HelpContents);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
+
+    actHelpKeywordList = new QAction(icon("help-contents"), tr("&Keyword List"), this);
+    actHelpKeywordList->setShortcut(QKeySequence::HelpContents);
+    connect(actHelpKeywordList, SIGNAL(triggered()), this, SLOT(doHelpKeywordList()));
 }
 
 void ScriptEditorDialog::createControls()
@@ -488,14 +492,27 @@ void ScriptEditorDialog::createControls()
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
+    mnuHelp->addAction(actHelpKeywordList);
+
+#ifdef Q_WS_MAC
+    int iconHeight = 24;
+#endif
 
     QToolBar *tlbFile = addToolBar(tr("File"));
+#ifdef Q_WS_MAC
+    tlbFile->setFixedHeight(iconHeight);
+    tlbFile->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbFile->setObjectName("File");
     tlbFile->addAction(actFileNew);
     tlbFile->addAction(actFileOpen);
     tlbFile->addAction(actFileSave);
 
     QToolBar *tlbEdit = addToolBar(tr("Edit"));
+#ifdef Q_WS_MAC
+    tlbEdit->setFixedHeight(iconHeight);
+    tlbEdit->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbEdit->setObjectName("Edit");
     tlbEdit->addAction(actUndo);
     tlbEdit->addAction(actRedo);
@@ -505,6 +522,10 @@ void ScriptEditorDialog::createControls()
     tlbEdit->addAction(actPaste);
 
     QToolBar *tlbTools = addToolBar(tr("Tools"));
+#ifdef Q_WS_MAC
+    tlbTools->setFixedHeight(iconHeight);
+    tlbTools->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actRunPython);
     tlbTools->addSeparator();
@@ -521,6 +542,10 @@ void ScriptEditorDialog::createControls()
     connect(filBrowser, SIGNAL(directoryChanged(QString)), txtPath, SLOT(setText(QString)));
 
     QToolBar *tlbPath = addToolBar(tr("Path"));
+#ifdef Q_WS_MAC
+    tlbPath->setFixedHeight(iconHeight);
+    tlbPath->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
     tlbPath->setObjectName("Path");
     tlbPath->addWidget(new QLabel(tr("Path: "), this));
     tlbPath->addWidget(txtPath);
@@ -616,8 +641,6 @@ void ScriptEditorDialog::doRunPython()
     terminalView->terminal()->doPrintStdout("Run script: " + tabWidget->tabText(tabWidget->currentIndex()).replace("* ", "") + "\n", Qt::gray);
     connect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
 
-    qDebug() << "ScriptEditorDialog::doRunPython() - start";
-
     // benchmark
     QTime time;
     time.start();
@@ -647,8 +670,6 @@ void ScriptEditorDialog::doRunPython()
         if (!txtEditor->textCursor().hasSelection() && result.line >= 0)
             txtEditor->gotoLine(result.line, true);
     }
-
-    qDebug() << "ScriptEditorDialog::doRunPython() - end, elapsed time " << milisecondsToTime(time.elapsed()).toString("mm:ss.zzz");
 
     // disconnect
     disconnect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
@@ -752,7 +773,8 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
 
         doCurrentPageChanged(tabWidget->currentIndex());
 
-        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
 }
 
@@ -803,7 +825,8 @@ void ScriptEditorDialog::doFileSave()
             errorResult.showDialog();
         }
 
-        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
 }
 
@@ -819,8 +842,10 @@ void ScriptEditorDialog::doFileSaveAs()
     {
         scriptEditorWidget()->file = fileName;
         doFileSave();
+
         QFileInfo fileInfo(fileName);
-        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
 }
 
@@ -927,7 +952,14 @@ void ScriptEditorDialog::doHelp()
 {
     logMessage("ScriptEditorDialog::doHelp()");
 
-    showPage("scripting/scripting.html");
+    showPage("scripting/commands.html");
+}
+
+void ScriptEditorDialog::doHelpKeywordList()
+{
+    logMessage("ScriptEditorDialog::doHelpKeywordList()");
+
+    showPage("scripting/keyword_list.html");
 }
 
 void ScriptEditorDialog::doCloseTab(int index)

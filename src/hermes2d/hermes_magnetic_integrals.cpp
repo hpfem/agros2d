@@ -22,7 +22,7 @@
 #include "scene.h"
 #include "gui.h"
 
-LocalPointValueMagnetic::LocalPointValueMagnetic(Point &point) : LocalPointValue(point)
+LocalPointValueMagnetic::LocalPointValueMagnetic(const Point &point) : LocalPointValue(point)
 {
     permeability = 0;
     conductivity = 0;
@@ -54,9 +54,9 @@ LocalPointValueMagnetic::LocalPointValueMagnetic(Point &point) : LocalPointValue
     if (Util::scene()->sceneSolution()->isSolved())
     {
         // value real
-        PointValue valueReal = PointValue(value, derivative, labelMarker);
+        PointValue valueReal = PointValue(value, derivative, material);
 
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(valueReal.marker);
+        SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(valueReal.marker);
         // solution
         if (marker != NULL)
         {
@@ -388,18 +388,20 @@ QStringList LocalPointValueMagnetic::variables()
 
 SurfaceIntegralValueMagnetic::SurfaceIntegralValueMagnetic() : SurfaceIntegralValue()
 {
-    forceMaxwellX = 0;
-    forceMaxwellY = 0;
+    forceMaxwellX = 0.0;
+    forceMaxwellY = 0.0;
+    torque = 0.0;
 
     calculate();
 
     forceMaxwellX /= 2.0;
     forceMaxwellY /= 2.0;
+    torque /= 2.0;
 }
 
 void SurfaceIntegralValueMagnetic::calculateVariables(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
 
     if (fabs(marker->permeability.number - 1.0) < EPS_ZERO)
     {
@@ -408,20 +410,23 @@ void SurfaceIntegralValueMagnetic::calculateVariables(int i)
 
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            double Bx = - dudy[i];
-            double By =   dudx[i];
+            double Bx = - dudy1[i];
+            double By =   dudx1[i];
 
-            forceMaxwellX -= pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
-                    (Bx * (nx * Bx + ny * By) - 0.5 * nx * (sqr(Bx) + sqr(By)));
+            double dfX = pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
+                                (Bx * (nx * Bx + ny * By) - 0.5 * nx * (sqr(Bx) + sqr(By)));
+            double dfY = pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
+                                (By * (nx * Bx + ny * By) - 0.5 * ny * (sqr(Bx) + sqr(By)));
 
-            forceMaxwellY -= pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
-                    (By * (nx * Bx + ny * By)
-                     - 0.5 * ny * (sqr(Bx) + sqr(By)));
+            forceMaxwellX -= dfX;
+            forceMaxwellY -= dfY;
+
+            torque -= x[i] * dfY - y[i] * dfX;
         }
         else
         {
-            double Bx = - dudy[i];
-            double By =  (dudx[i] + ((x[i] > 0) ? value[i] / x[i] : 0.0));
+            double Bx = - dudy1[i];
+            double By =  (dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0));
 
             forceMaxwellX  = 0.0;
 
@@ -437,7 +442,8 @@ QStringList SurfaceIntegralValueMagnetic::variables()
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
            QString("%1").arg(surface, 0, 'e', 5) <<
            QString("%1").arg(forceMaxwellX, 0, 'e', 5) <<
-           QString("%1").arg(forceMaxwellY, 0, 'e', 5);
+           QString("%1").arg(forceMaxwellY, 0, 'e', 5) <<
+           QString("%1").arg(torque, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -468,7 +474,7 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
 
 void VolumeIntegralValueMagnetic::calculateVariables(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
 
     // current - real
     result = 0.0;
@@ -541,7 +547,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
 
 void VolumeIntegralValueMagnetic::calculateVariablesOther1(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
 
     // power losses
     result = 0.0;
@@ -619,7 +625,7 @@ void VolumeIntegralValueMagnetic::calculateVariablesOther1(int i)
 
 void VolumeIntegralValueMagnetic::calculateVariablesOther2(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
 
     // energy
     result = 0.0;
@@ -651,7 +657,7 @@ void VolumeIntegralValueMagnetic::calculateVariablesOther2(int i)
 
 void VolumeIntegralValueMagnetic::calculateVariablesOther3(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
 
     // Lorentz force X
     result = 0.0;
@@ -694,7 +700,8 @@ void VolumeIntegralValueMagnetic::calculateVariablesOther3(int i)
 
 void VolumeIntegralValueMagnetic::calculateVariablesOther4(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
+
     // Lorentz force Y
     result = 0.0;
     if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
@@ -736,7 +743,7 @@ void VolumeIntegralValueMagnetic::calculateVariablesOther4(int i)
 
 void VolumeIntegralValueMagnetic::calculateVariablesOther5(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
 
     // torque
     result = 0.0;
@@ -813,6 +820,8 @@ QStringList VolumeIntegralValueMagnetic::variables()
 
 void ViewScalarFilterMagnetic::calculateVariable(int i)
 {
+    SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
+
     switch (m_physicFieldVariable)
     {
     case PhysicFieldVariable_Magnetic_VectorPotential:
@@ -855,11 +864,14 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
     {
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i]) + sqr(dudy1[i]) + sqr(dudy2[i]));
+            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i]) +
+                                         sqr(dudy1[i]) + sqr(dudy2[i]));
         }
         else
         {
-            node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0)));
+            node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) +
+                                         sqr(dudx1[i] + ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0)) +
+                                         sqr(dudx2[i] + ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0)));
         }
     }
         break;
@@ -897,12 +909,13 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                 break;
             case PhysicFieldVariableComp_Y:
             {
-                node->values[0][0][i] = - dudx1[i] - ((x[i] > 0) ? value1[i] / x[i] : 0.0);
+                node->values[0][0][i] = - dudx1[i] - ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0);
             }
                 break;
             case PhysicFieldVariableComp_Magnitude:
             {
-                node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)));
+                node->values[0][0][i] = sqrt(sqr(dudy1[i]) +
+                                             sqr(dudx1[i] + ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0)));
             }
                 break;
             }
@@ -943,12 +956,13 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                 break;
             case PhysicFieldVariableComp_Y:
             {
-                node->values[0][0][i] = - dudx2[i] - ((x > 0) ? value2[i] / x[i] : 0.0);
+                node->values[0][0][i] = - dudx2[i] - ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0);
             }
                 break;
             case PhysicFieldVariableComp_Magnitude:
             {
-                node->values[0][0][i] = sqrt(sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0)));
+                node->values[0][0][i] = sqrt(sqr(dudy2[i]) +
+                                             sqr(dudx2[i] + ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0)));
             }
                 break;
             }
@@ -956,21 +970,21 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
     }
         break;
     case PhysicFieldVariable_Magnetic_MagneticField:
-    {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+    {        
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
             node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i]) + sqr(dudy1[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
         }
         else
         {
-            node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+            node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) +
+                                         sqr(dudx1[i] + ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0)) +
+                                         sqr(dudx2[i] + ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
         }
     }
         break;
     case PhysicFieldVariable_Magnetic_MagneticFieldReal:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
             switch (m_physicFieldVariableComp)
@@ -1003,12 +1017,12 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                 break;
             case PhysicFieldVariableComp_Y:
             {
-                node->values[0][0][i] = - (dudx1[i] - ((x[i] > 0) ? value1[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
+                node->values[0][0][i] = - (dudx1[i] - ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
             }
                 break;
             case PhysicFieldVariableComp_Magnitude:
             {
-                node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
             }
                 break;
             }
@@ -1017,7 +1031,6 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_MagneticFieldImag:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
             switch (m_physicFieldVariableComp)
@@ -1050,12 +1063,12 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                 break;
             case PhysicFieldVariableComp_Y:
             {
-                node->values[0][0][i] = - (dudx2[i] - ((x > 0) ? value2[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
+                node->values[0][0][i] = - (dudx2[i] - ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
             }
                 break;
             case PhysicFieldVariableComp_Magnitude:
             {
-                node->values[0][0][i] = sqrt(sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                node->values[0][0][i] = sqrt(sqr(dudy2[i]) + sqr(dudx2[i] + ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
             }
                 break;
             }
@@ -1064,7 +1077,6 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensity:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = sqrt(
                     sqr(marker->current_density_real.number) +
                     sqr(marker->current_density_imag.number));
@@ -1072,19 +1084,19 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityReal:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+        SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
         node->values[0][0][i] = marker->current_density_real.number;
     }
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityImag:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+        SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
         node->values[0][0][i] = marker->current_density_imag.number;
     }
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformReal:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+        SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
         {
             node->values[0][0][i] = 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i];
@@ -1097,13 +1109,11 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformImag:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i];
     }
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityInducedTransform:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = sqrt(
                     sqr(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) +
                     sqr(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]));
@@ -1111,28 +1121,25 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityReal:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                  (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]);
     }
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityImag:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx2[i] +
                                                                  (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy2[i]);
     }
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocity:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * sqrt(sqr(dudx1[i]) + sqr(dudx2[i])) +
                                                                  (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * sqrt(sqr(dudy1[i]) + sqr(dudy2[i])));
     }
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityTotalReal:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+        SceneMaterialMagnetic *marker = dynamic_cast<SceneMaterialMagnetic *>(material);
         node->values[0][0][i] = marker->current_density_real.number -
                 marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]);
@@ -1145,7 +1152,6 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityTotalImag:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = marker->current_density_imag.number +
                 marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]);
@@ -1155,7 +1161,6 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_CurrentDensityTotal:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = sqrt(
                     sqr(marker->current_density_real.number +
                         2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i] +
@@ -1172,7 +1177,6 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_PowerLosses:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState)
         {
             node->values[0][0][i] = (marker->conductivity.number > 0.0) ?
@@ -1208,8 +1212,6 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_LorentzForce:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
-
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
             switch (m_physicFieldVariableComp)
@@ -1386,7 +1388,6 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_EnergyDensity:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
             node->values[0][0][i] = 0.25 * (sqr(dudx1[i]) + sqr(dudy1[i])) / (marker->permeability.number * MU0);
@@ -1395,27 +1396,24 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         }
         else
         {
-            node->values[0][0][i] = 0.25 * (sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+            node->values[0][0][i] = 0.25 * (sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
             if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-                node->values[0][0][i] += 0.25 * (sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                node->values[0][0][i] += 0.25 * (sqr(dudy2[i]) + sqr(dudx2[i] + ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
         }
     }
         break;
     case PhysicFieldVariable_Magnetic_Permeability:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = marker->permeability.number;
     }
         break;
     case PhysicFieldVariable_Magnetic_Conductivity:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = marker->conductivity.number;
     }
         break;
     case PhysicFieldVariable_Magnetic_Velocity:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
             switch (m_physicFieldVariableComp)
@@ -1463,7 +1461,6 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Magnetic_Remanence:
     {
-        SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
         node->values[0][0][i] = marker->remanence.number;
 
         switch (m_physicFieldVariableComp)

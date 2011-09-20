@@ -28,15 +28,15 @@
 #include <dl_dxf.h>
 #include <dl_creationadapter.h>
 
-struct HermesGeneral;
+struct HermesElectrostatic;
 struct HermesField;
 
 class Scene;
 class SceneNode;
 class SceneEdge;
 class SceneLabel;
-class SceneEdgeMarker;
-class SceneLabelMarker;
+class SceneBoundary;
+class SceneMaterial;
 struct SceneViewSettings;
 class SceneSolution;
 class ScriptEngineRemote;
@@ -54,14 +54,20 @@ public:
     ProblemType problemType;
     int numberOfRefinements;
     int polynomialOrder;
+    MeshType meshType;
     AdaptivityType adaptivityType;
     int adaptivitySteps;
     double adaptivityTolerance; // percent
     QString scriptStartup;
     QString description;
 
+    // linearity
+    LinearityType linearityType;
+    double linearityNonlinearTolerance; // percent
+    int linearityNonlinearSteps;
+
     // harmonic
-    int frequency;
+    double frequency;
 
     // transient
     AnalysisType analysisType;
@@ -85,12 +91,14 @@ public:
 
     void clear();
 
+    inline bool isLinear() const { return (linearityType == LinearityType_Linear); }
+
     inline void setHermes(HermesField *hermes)
     {
         if (m_hermes) delete m_hermes;
         m_hermes = hermes;
     }
-    inline HermesField *hermes() { return m_hermes; }
+    inline HermesField *hermes() const { return m_hermes; }
 
     inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
     inline QString labelY() { return ((problemType == ProblemType_Planar) ? "Y" : "Z");  }
@@ -121,8 +129,8 @@ public slots:
     void doNewEdge();
     void doNewLabel(const Point &point = Point());
     void doDeleteSelected();
-    void doNewEdgeMarker();
-    void doNewLabelMarker();
+    void doNewBoundary();
+    void doNewMaterial();
     void doTransform();
     void doClearSolution();
     void doProblemProperties();
@@ -137,15 +145,15 @@ public:
     QList<SceneEdge *> edges;
     QList<SceneLabel *> labels;
 
-    QList<SceneEdgeMarker *> edgeMarkers;
-    QList<SceneLabelMarker *> labelMarkers;
+    QList<SceneBoundary *> boundaries;
+    QList<SceneMaterial *> materials;
 
     QAction *actNewNode;
     QAction *actNewEdge;
     QAction *actNewLabel;
     QAction *actDeleteSelected;
-    QAction *actNewEdgeMarker;
-    QAction *actNewLabelMarker;
+    QAction *actNewBoundary;
+    QAction *actNewMaterial;
     QAction *actProblemProperties;
     QAction *actClearSolution;
     QAction *actTransform;
@@ -165,23 +173,23 @@ public:
     void removeLabel(SceneLabel *label);
     SceneLabel *getLabel(const Point &point);
 
-    void addEdgeMarker(SceneEdgeMarker *edgeMarker);
-    void removeEdgeMarker(SceneEdgeMarker *edgeMarker);
-    void setEdgeEdgeMarker(SceneEdgeMarker *edgeMarker); // set edge marker to selected edges
-    SceneEdgeMarker *getEdgeMarker(const QString &name);
-    bool setEdgeMarker(const QString &name, SceneEdgeMarker *edgeMarker);
-    void replaceEdgeMarker(SceneEdgeMarker *edgeMarker);
+    void addBoundary(SceneBoundary *boundary);
+    void removeBoundary(SceneBoundary *boundary);
+    void setBoundary(SceneBoundary *boundary); // set edge marker to selected edges
+    SceneBoundary *getBoundary(const QString &name);
+    bool setBoundary(const QString &name, SceneBoundary *boundary);
+    void replaceBoundary(SceneBoundary *boundary);
 
-    void addLabelMarker(SceneLabelMarker *labelMarker);
-    void removeLabelMarker(SceneLabelMarker *labelMarker);
-    void setLabelLabelMarker(SceneLabelMarker *labelMarker); // set label marker to selected labels
-    SceneLabelMarker *getLabelMarker(const QString &name);
-    bool setLabelMarker(const QString &name, SceneLabelMarker *labelMarker);
-    void replaceLabelMarker(SceneLabelMarker *labelMarker);
+    void addMaterial(SceneMaterial *material);
+    void removeMaterial(SceneMaterial *material);
+    void setMaterial(SceneMaterial *material); // set label marker to selected labels
+    SceneMaterial *getMaterial(const QString &name);
+    bool setMaterial(const QString &name, SceneMaterial *material);
+    void replaceMaterial(SceneMaterial *material);
 
     void clear();
 
-    RectPoint boundingBox();
+    RectPoint boundingBox() const;
 
     void selectNone();
     void selectAll(SceneMode sceneMode);
@@ -197,14 +205,14 @@ public:
     void setProblemInfo(ProblemInfo *problemInfo) { clear(); delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
 
     inline void refresh() { emit invalidated(); }
-    inline SceneSolution *sceneSolution() { return m_sceneSolution; }
+    inline SceneSolution *sceneSolution() const { return m_sceneSolution; }
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
 
-    inline QUndoStack *undoStack() { return m_undoStack; }
+    inline QUndoStack *undoStack() const { return m_undoStack; }
 
 private:
     QUndoStack *m_undoStack;
@@ -224,6 +232,7 @@ private slots:
 class Util
 {
 public:
+    static void createSingleton();
     static Util* singleton();
     static inline Scene *scene() { return Util::singleton()->m_scene; }
     static inline QCompleter *completer() { return Util::singleton()->m_completer; }

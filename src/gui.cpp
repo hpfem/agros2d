@@ -22,8 +22,24 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "progressdialog.h"
+#include "value.h"
 
 #include "hermes2d/hermes_field.h"
+
+void readPixmap(QLabel *lblEquation, const QString &name)
+{
+    QPixmap pixmap;
+    pixmap.load(name);
+    lblEquation->setPixmap(pixmap);
+}
+
+QLabel *createLabel(const QString &label, const QString &toolTip)
+{
+    QLabel *lblEquation = new QLabel(label + ":");
+    lblEquation->setToolTip(toolTip);
+    lblEquation->setMinimumWidth(100);
+    return lblEquation;
+}
 
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit)
 {
@@ -33,7 +49,7 @@ void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const 
     item->setText(0, name);
     item->setText(1, text);
     item->setTextAlignment(1, Qt::AlignRight);
-    item->setText(2, unit + " ");
+    item->setText(2, QString("%1 ").arg(unit));
     item->setTextAlignment(2, Qt::AlignLeft);
 }
 
@@ -98,137 +114,6 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 }
 
 // ***********************************************************************************************************
-
-SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
-{
-    logMessage("SLineEditValue::SLineEditValue()");
-
-    m_minimum = -CONST_DOUBLE;
-    m_minimumSharp = -CONST_DOUBLE;
-    m_maximum =  CONST_DOUBLE;
-    m_maximumSharp =  CONST_DOUBLE;
-
-    // create controls
-    txtLineEdit = new QLineEdit(this);
-    txtLineEdit->setToolTip(tr("This textedit allows using variables."));
-    txtLineEdit->setText("0");
-    connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(evaluate()));
-    connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
-
-    lblValue = new QLabel(this);
-
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(txtLineEdit, 1);
-    layout->addWidget(lblValue, 0, Qt::AlignRight);
-
-    setLayout(layout);
-
-    evaluate();
-}
-
-void SLineEditValue::setNumber(double value)
-{
-    logMessage("SLineEditValue::setNumber()");
-
-    txtLineEdit->setText(QString::number(value));
-    evaluate();
-}
-
-double SLineEditValue::number()
-{
-    logMessage("SLineEditValue::number()");
-
-    if (evaluate())
-        return m_number;
-    else
-        return 0.0;
-}
-
-void SLineEditValue::setValue(Value value)
-{
-    logMessage("SLineEditValue::setValue()");
-
-    txtLineEdit->setText(value.text);
-    evaluate();
-}
-
-Value SLineEditValue::value()
-{
-    logMessage("SLineEditValue::value()");
-
-    return Value(txtLineEdit->text());
-}
-
-bool SLineEditValue::evaluate(bool quiet)
-{
-    logMessage("SLineEditValue::evaluate()");
-
-    bool isOk = false;
-
-    Value val = value();
-    if (val.evaluate(quiet))
-    {
-        if (val.number <= m_minimumSharp)
-        {
-            setLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
-        }
-        else if (val.number >= m_maximumSharp)
-        {
-            setLabel(QString(">= %1").arg(m_maximumSharp), QColor(Qt::blue), true);
-        }
-        else if (val.number < m_minimum)
-        {
-            setLabel(QString("< %1").arg(m_minimum), QColor(Qt::blue), true);
-        }
-        else if (val.number > m_maximum)
-        {
-            setLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
-        }
-        else
-        {
-            m_number = val.number;
-            setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText), Util::config()->lineEditValueShowResult);
-            isOk = true;
-        }
-    }
-    else
-    {
-        setLabel(tr("error"), QColor(Qt::red), true);
-        setFocus();
-    }
-
-    if (isOk)
-    {
-        emit evaluated(false);
-        return true;
-    }
-    else
-    {
-        emit evaluated(true);
-        return false;
-    }
-}
-
-void SLineEditValue::setLabel(const QString &text, QColor color, bool isVisible)
-{
-    logMessage("SLineEditValue::setLabel()");
-
-    lblValue->setText(text);
-    QPalette palette = lblValue->palette();
-    palette.setColor(QPalette::WindowText, color);
-    lblValue->setPalette(palette);
-    lblValue->setVisible(isVisible);
-}
-
-void SLineEditValue::focusInEvent(QFocusEvent *event)
-{
-    logMessage("SLineEditValue::focusInEvent()");
-
-    txtLineEdit->setFocus(event->reason());
-}
-
-// ****************************************************************************************************************
 
 Chart::Chart(QWidget *parent) : QwtPlot(parent)
 {
@@ -302,7 +187,7 @@ void Chart::saveImage(const QString &fileName)
         fileNameTemp = QFileDialog::getSaveFileName(this, tr("Export image to file"), dir, tr("PNG files (*.png)"));
 
         QFileInfo fileInfo(fileNameTemp);
-        if (!fileNameTemp.isEmpty())
+        if (!fileNameTemp.isEmpty() && fileInfo.absoluteDir() != tempProblemDir())
             settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
     else
@@ -350,6 +235,25 @@ void Chart::setData(double *xval, double *yval, int count)
     setAutoReplot(doReplot);
 
     replot();
+}
+
+void Chart::setData(QList<double> xval, QList<double> yval)
+{
+    logMessage("Chart::setData()");
+
+    double *txval = new double[xval.count()];
+    double *tyval = new double[xval.count()];
+
+    for (int i = 0; i < xval.count(); i++)
+    {
+        txval[i] = xval[i];
+        tyval[i] = yval[i];
+    }
+
+    setData(txval, tyval, xval.count());
+
+    delete [] txval;
+    delete [] tyval;
 }
 
 // ****************************************************************************************************
@@ -721,7 +625,8 @@ void ImageLoaderDialog::doLoadFile()
     {
         doLoadFile(fileName);
         QFileInfo fileInfo(fileName);
-        settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
 }
 
@@ -831,11 +736,14 @@ QWidget *AboutDialog::createAgros2D()
                                          "<p>"
                                          "<b>Pavel Karban</b> - main developer (University of West Bohemia, Pilsen))<br/>"
                                          "<b>František Mach</b> - developer, documentation (University of West Bohemia, Pilsen)<br/>"
+                                         "<b>Lukáš Koudela</b> - developer - RF module (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Bartosz Sawicki</b> - Polish translation (Warsaw University of Technology, Warsaw)<br/>"
                                          "<b>Václav Kotlan</b> - German translation (University of West Bohemia, Pilsen)<br/>"
+                                         "<b>Petr Kropík</b> - University of West Bohemia, Pilsen<br/>"
                                          "</p>")
                                       .arg(QApplication::applicationVersion()));
     labelContent->setWordWrap(true);
+    labelContent->setOpenExternalLinks(true);
 
 
     QLabel *labelIcon = new QLabel();
@@ -883,6 +791,7 @@ QWidget *AboutDialog::createHermes2D()
                                          "</p>"
                                          ));
     labelContent->setWordWrap(true);
+    labelContent->setOpenExternalLinks(true);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(labelContent);
@@ -905,6 +814,7 @@ QWidget *AboutDialog::createLibraries()
                                          "<b>FFmpeg:</b> FFmpeg group (<a href=\"http://ffmpeg.org/\">FFmpeg</a>)<br/>"
                                          ));
     labelContent->setWordWrap(true);
+    labelContent->setOpenExternalLinks(true);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(labelContent);
@@ -922,6 +832,7 @@ QWidget *AboutDialog::createLicense()
                                          "<p>Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Agros2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>."
                                          ));
     labelContent->setWordWrap(true);
+    labelContent->setOpenExternalLinks(true);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(labelContent);

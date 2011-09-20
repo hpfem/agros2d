@@ -27,19 +27,20 @@ struct HermesHeat : public HermesField
 {
     Q_OBJECT
 public:
-    HermesHeat() { m_physicField = PhysicField_Heat; }
-    virtual ~HermesHeat() {}
+    PhysicField physicField() const { return PhysicField_Heat; }
 
-    inline int numberOfSolution() { return 1; }
-    bool hasHarmonic() { return false; }
-    bool hasTransient() { return true; }
+    inline int numberOfSolution() const { return 1; }
+    inline bool hasSteadyState() const { return true; }
+    inline bool hasHarmonic() const { return false; }
+    inline bool hasTransient() const { return true; }
+    inline bool hasNonlinearity() const { return false; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
-    LocalPointValue *localPointValue(Point point);
+    LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
 
     SurfaceIntegralValue *surfaceIntegralValue();
@@ -55,14 +56,15 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Heat_Flux ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Heat_Conductivity); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+    virtual void updateTimeFunctions(double time);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Heat_Temperature; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Heat_Temperature; }
@@ -99,7 +101,7 @@ public:
     Point F;
     Point G;
 
-    LocalPointValueHeat(Point &point);
+    LocalPointValueHeat(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
@@ -148,7 +150,7 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeHeatMarker : public SceneEdgeMarker
+class SceneBoundaryHeat : public SceneBoundary
 {
 public:
     Value temperature;
@@ -156,15 +158,15 @@ public:
     Value h;
     Value externalTemperature;
 
-    SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, Value temperature);
-    SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature);
+    SceneBoundaryHeat(const QString &name, PhysicFieldBC type, Value temperature);
+    SceneBoundaryHeat(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelHeatMarker : public SceneLabelMarker
+class SceneMaterialHeat : public SceneMaterial
 {
 public:
     Value thermal_conductivity;
@@ -172,20 +174,19 @@ public:
     Value density;
     Value specific_heat;
 
-    SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
+    SceneMaterialHeat(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeHeatMarker : public DSceneEdgeMarker
+class SceneBoundaryHeatDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    DSceneEdgeHeatMarker(SceneEdgeHeatMarker *edgeEdgeHeatMarker, QWidget *parent);
-    ~DSceneEdgeHeatMarker();
+    SceneBoundaryHeatDialog(SceneBoundaryHeat *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -195,22 +196,21 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtTemperature;
-    SLineEditValue *txtHeatFlux;
-    SLineEditValue *txtHeatTransferCoefficient;
-    SLineEditValue *txtExternalTemperature;
+    ValueLineEdit *txtTemperature;
+    ValueLineEdit *txtHeatFlux;
+    ValueLineEdit *txtHeatTransferCoefficient;
+    ValueLineEdit *txtExternalTemperature;
 
 private slots:
     void doTypeChanged(int index);
 };
 
-class DSceneLabelHeatMarker : public DSceneLabelMarker
+class SceneMaterialHeatDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    DSceneLabelHeatMarker(QWidget *parent, SceneLabelHeatMarker *labelHeatMarker);
-    ~DSceneLabelHeatMarker();
+    SceneMaterialHeatDialog(SceneMaterialHeat *material, QWidget *parent);
 
 protected:
     void createContent();
@@ -219,10 +219,10 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtThermalConductivity;
-    SLineEditValue *txtVolumeHeat;
-    SLineEditValue *txtDensity;
-    SLineEditValue *txtSpecificHeat;
+    ValueLineEdit *txtThermalConductivity;
+    ValueLineEdit *txtVolumeHeat;
+    ValueLineEdit *txtDensity;
+    ValueLineEdit *txtSpecificHeat;
 };
 
 #endif // HEAT_H

@@ -28,7 +28,7 @@ class MeshFunction;
 struct SurfPos;
 class Ord;
 
-struct Element;
+class Element;
 class Shapeset;
 template<typename T> class Func;
 template<typename T> class Geom;
@@ -42,6 +42,14 @@ enum SymFlag
   HERMES_SYM = 1
 };
 
+// Geometrical type of weak forms.
+enum GeomType
+{
+  HERMES_PLANAR = 0,         // Planar problem.
+  HERMES_AXISYM_X = 1,       // Axisymmetric problem where x-axis is the axis of symmetry.
+  HERMES_AXISYM_Y = 2        // Axisymmetric problem where y-axis is the axis of symmetry.
+};
+
 /// \brief Represents the weak formulation of a PDE problem.
 ///
 /// The WeakForm class represents the weak formulation of a system of linear PDEs.
@@ -50,374 +58,253 @@ enum SymFlag
 /// a (neq x neq) matrix of bilinear forms a_mn(u,v) and L(V) is a neq-component vector
 /// of linear forms l(v). U and V are the vectors of basis and test functions.
 ///
-///
-///
+
 
 class HERMES_API WeakForm
 {
 public:
 
   WeakForm(unsigned int neq = 1, bool mat_free = false);
+  ~WeakForm();
+
+  Mesh::ElementMarkersConversion* get_element_markers_conversion() { 
+    return element_markers_conversion; 
+  };
+  Mesh::BoundaryMarkersConversion* get_boundary_markers_conversion() { 
+    return boundary_markers_conversion; 
+  };
 
   // General case.
-  typedef scalar (*matrix_form_val_t)(int n, double *wt, Func<scalar> *u[], Func<double> *vi, Func<double> *vj,
-                  Geom<double> *e, ExtData<scalar> *);
-  typedef Ord (*matrix_form_ord_t)(int n, double *wt, Func<Ord> *u[], Func<Ord> *vi, Func<Ord> *vj,
-               Geom<Ord> *e, ExtData<Ord> *);
-  typedef scalar (*vector_form_val_t)(int n, double *wt, Func<scalar> *u[], Func<double> *vi,
-                  Geom<double> *e, ExtData<scalar> *);
-  typedef Ord (*vector_form_ord_t)(int n, double *wt, Func<Ord> *u[], Func<Ord> *vi,
-                                   Geom<Ord> *e, ExtData<Ord> *);
 
-  // Matrix forms for error calculation.
-  typedef scalar (*error_matrix_form_val_t) (int n, double *wt, Func<scalar> *u_ext[],
-                                             Func<scalar> *u, Func<scalar> *v, Geom<double> *e,
-                                             ExtData<scalar> *); ///< Error bilinear form callback function.
-  typedef Ord (*error_matrix_form_ord_t) (int n, double *wt, Func<Ord> *u_ext[],
-                                          Func<Ord> *u, Func<Ord> *v, Geom<Ord> *e,
-                                          ExtData<Ord> *); ///< Error bilinear form to estimate order of a function.
+  class HERMES_API Form
+  {
+  public:
+    Form(std::string area = HERMES_ANY, Hermes::vector<MeshFunction *> ext = Hermes::vector<MeshFunction*>(),
+         Hermes::vector<scalar> param = Hermes::vector<scalar>(),
+         double scaling_factor = 1.0, int u_ext_offset = 0);
 
-  // Vector forms for error calculation.
-  typedef scalar (*error_vector_form_val_t) (int n, double *wt, Func<scalar> *u_ext[],
-                                             Func<scalar> *u, Geom<double> *e,
-                                             ExtData<scalar> *); ///< Error linear form callback function.
-  typedef Ord (*error_vector_form_ord_t) (int n, double *wt, Func<Ord> *u_ext[],
-                                          Func<Ord> *u, Geom<Ord> *e,
-                                          ExtData<Ord> *); ///< Error linear form to estimate order of a function.
+    inline void set_weakform(WeakForm* wf) { this->wf = wf; }
+
+    std::string area;
+    Hermes::vector<MeshFunction *> ext;
+    Hermes::vector<scalar> param;
+    // Form will be always multiplied (scaled) with this number.
+    double scaling_factor;
+    // External solutions for this form will start
+    // with u_ext[u_ext_offset] where u_ext[] are external
+    // solutions coming to the assembling procedure via the
+    // external coefficient vector.
+    int u_ext_offset;
+    // If true, the form will be evaluated using adaptive
+    // numerical integration.
+    bool adapt_eval;
+    // To obtain reference value, the element is split into
+    // four sons. In addition, the order is increased by this value.
+    int adapt_order_increase;
+    // Max. allowed relative error (stopping criterion for adaptive
+    // numerical quadrature.
+    double adapt_rel_error_tol;
+
+    /// For time-dependent right-hand side functions.
+    /// E.g. for Runge-Kutta methods. Otherwise the one time for the whole WeakForm can be used.
+    void set_current_stage_time(double time);
+    double get_current_stage_time() const;
+
+  protected:
+    WeakForm* wf;
+    double stage_time;
+  };
+
+  class HERMES_API MatrixFormVol : public Form
+  {
+  public:
+    MatrixFormVol(unsigned int i, unsigned int j, SymFlag sym = HERMES_NONSYM, 
+                  std::string area = HERMES_ANY, 
+                  Hermes::vector<MeshFunction *> ext = Hermes::vector<MeshFunction*>(),
+                  Hermes::vector<scalar> param = Hermes::vector<scalar>(),
+                  double scaling_factor = 1.0, int u_ext_offset = 0);
+
+    virtual MatrixFormVol* clone();
+
+    unsigned int i, j;
+    int sym;
+
+    virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                         Geom<double> *e, ExtData<scalar> *ext) const;
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
+                    Geom<Ord> *e, ExtData<Ord> *ext) const;
+  };
+
+  class HERMES_API MatrixFormSurf : public Form
+  {
+  public:
+    MatrixFormSurf(unsigned int i, unsigned int j, std::string area = HERMES_ANY, 
+                   Hermes::vector<MeshFunction *> ext = Hermes::vector<MeshFunction*>(),
+                   Hermes::vector<scalar> param = Hermes::vector<scalar>(),
+                   double scaling_factor = 1.0, int u_ext_offset = 0);
+
+    virtual MatrixFormSurf* clone();
+
+    unsigned int i, j;
+
+    virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                         Geom<double> *e, ExtData<scalar> *ext) const;
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
+                    Geom<Ord> *e, ExtData<Ord> *ext) const;
+  };
+
+  class HERMES_API VectorFormVol : public Form
+  {
+  public:
+    VectorFormVol(unsigned int i, std::string area = HERMES_ANY, 
+                  Hermes::vector<MeshFunction *> ext = Hermes::vector<MeshFunction*>(),
+                  Hermes::vector<scalar> param = Hermes::vector<scalar>(),
+                  double scaling_factor = 1.0, int u_ext_offset = 0);
+
+    virtual VectorFormVol* clone();
+
+    unsigned int i;
+
+    virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v, 
+                         Geom<double> *e, ExtData<scalar> *ext) const;
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e, 
+                    ExtData<Ord> *ext) const;
+  };
+
+  class HERMES_API VectorFormSurf : public Form
+  {
+  public:
+    VectorFormSurf(unsigned int i, std::string area = HERMES_ANY, 
+                   Hermes::vector<MeshFunction *> ext = Hermes::vector<MeshFunction*>(),
+                   Hermes::vector<scalar> param = Hermes::vector<scalar>(),
+                   double scaling_factor = 1.0, int u_ext_offset = 0);
+    
+    virtual VectorFormSurf* clone();
+
+    unsigned int i;
+
+    virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v, 
+                         Geom<double> *e, ExtData<scalar> *ext) const;
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, 
+                      Geom<Ord> *e, ExtData<Ord> *ext) const;
+  };
+
+  class HERMES_API MultiComponentMatrixFormVol : public Form
+  {
+  public:
+    MultiComponentMatrixFormVol(Hermes::vector<std::pair<unsigned int, unsigned int> >coordinates, SymFlag sym = HERMES_NONSYM, 
+                  std::string area = HERMES_ANY, 
+                  Hermes::vector<MeshFunction *> ext = Hermes::vector<MeshFunction*>(),
+                  Hermes::vector<scalar> param = Hermes::vector<scalar>(),
+                  double scaling_factor = 1.0, int u_ext_offset = 0);
+
+    virtual MultiComponentMatrixFormVol* clone();
+
+    Hermes::vector<std::pair<unsigned int, unsigned int> > coordinates;
+    int sym;
+
+    virtual void value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                         Geom<double> *e, ExtData<scalar> *ext, Hermes::vector<scalar>& result) const = 0;
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
+                    Geom<Ord> *e, ExtData<Ord> *ext) const = 0;
+  };
+
+  class HERMES_API MultiComponentMatrixFormSurf : public Form
+  {
+  public:
+    MultiComponentMatrixFormSurf(Hermes::vector<std::pair<unsigned int, unsigned int> >coordinates, std::string area = HERMES_ANY, 
+                   Hermes::vector<MeshFunction *> ext = Hermes::vector<MeshFunction*>(),
+                   Hermes::vector<scalar> param = Hermes::vector<scalar>(),
+                   double scaling_factor = 1.0, int u_ext_offset = 0);
+
+    virtual MultiComponentMatrixFormSurf* clone();
+
+    Hermes::vector<std::pair<unsigned int, unsigned int> > coordinates;
+
+    virtual void value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                         Geom<double> *e, ExtData<scalar> *ext, Hermes::vector<scalar>& result) const = 0;
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
+                    Geom<Ord> *e, ExtData<Ord> *ext) const = 0;
+  };
+
+  class HERMES_API MultiComponentVectorFormVol : public Form
+  {
+  public:
+    MultiComponentVectorFormVol(Hermes::vector<unsigned int> coordinates, std::string area = HERMES_ANY, 
+                  Hermes::vector<MeshFunction *> ext = Hermes::vector<MeshFunction*>(),
+                  Hermes::vector<scalar> param = Hermes::vector<scalar>(),
+                  double scaling_factor = 1.0, int u_ext_offset = 0);
+
+    virtual MultiComponentVectorFormVol* clone();
+
+    Hermes::vector<unsigned int> coordinates;
+
+    virtual void value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v, 
+                         Geom<double> *e, ExtData<scalar> *ext, Hermes::vector<scalar>& result) const = 0;
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e, 
+                    ExtData<Ord> *ext) const = 0;
+  };
+
+  class HERMES_API MultiComponentVectorFormSurf : public Form
+  {
+  public:
+    MultiComponentVectorFormSurf(Hermes::vector<unsigned int> coordinates, std::string area = HERMES_ANY, 
+                   Hermes::vector<MeshFunction *> ext = Hermes::vector<MeshFunction*>(),
+                   Hermes::vector<scalar> param = Hermes::vector<scalar>(),
+                   double scaling_factor = 1.0, int u_ext_offset = 0);
+    
+    virtual MultiComponentVectorFormSurf* clone();
+
+    Hermes::vector<unsigned int> coordinates;
+
+    virtual void value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v, 
+                         Geom<double> *e, ExtData<scalar> *ext, Hermes::vector<scalar>& result) const = 0;
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, 
+                      Geom<Ord> *e, ExtData<Ord> *ext) const = 0;
+  };
 
   // General case.
-  struct MatrixFormVol {
-    unsigned int i, j;
-    int sym, area;
-    matrix_form_val_t fn;
-    matrix_form_ord_t ord;
-    Hermes::vector<MeshFunction *> ext;
-    double scaling_factor;     // Form will be always multiplied (scaled) with this number.
-    int u_ext_offset;          // External solutions for this form will start 
-                               // with u_ext[u_ext_offset] where u_ext[] are external
-                               // solutions coming to the assembling procedure via the 
-                               // external coefficient vector.
-    bool adapt_eval;           // If true, the form will be evaluated using adaptive 
-                               // numerical integration.
-    int adapt_order_increase;  // To obtain reference value, the element is split into 
-                               // four sons. In addition, the order is increased by this value. 
-    double adapt_rel_error_tol;    // Max. allowed relative error (stopping criterion for adaptive 
-                               // numerical quadrature.
-  };
-  struct MatrixFormSurf {
-    unsigned int i, j;
-    int area;
-    matrix_form_val_t fn;
-    matrix_form_ord_t ord;
-    Hermes::vector<MeshFunction *> ext;
-    double scaling_factor;     // Form will be always multiplied (scaled) with this number.
-    int u_ext_offset;          // External solutions for this form will start 
-                               // with u_ext[u_ext_offset] where u_ext[] are external
-                               // solutions coming to the assembling procedure via the 
-                               // external coefficient vector.
-    bool adapt_eval;           // If true, the form will be evaluated using adaptive 
-                               // numerical integration.
-    int adapt_order_increase;  // To obtain reference value, the element is split into 
-                               // four sons. In addition, the order is increased by this value. 
-    double adapt_rel_error_tol;    // Max. allowed relative error (stopping criterion for adaptive 
-                               // numerical quadrature.
-  };
-  struct VectorFormVol  {
-    unsigned int i;
-    int area;
-    vector_form_val_t fn;
-    vector_form_ord_t ord;
-    Hermes::vector<MeshFunction *> ext;
-    double scaling_factor;     // Form will be always multiplied (scaled) with this number.
-    int u_ext_offset;          // External solutions for this form will start 
-                               // with u_ext[u_ext_offset] where u_ext[] are external
-                               // solutions coming to the assembling procedure via the 
-                               // external coefficient vector.
-    bool adapt_eval;           // If true, the form will be evaluated using adaptive 
-                               // numerical integration.
-    int adapt_order_increase;  // To obtain reference value, the element is split into 
-                               // four sons. In addition, the order is increased by this value. 
-    double adapt_rel_error_tol;    // Max. allowed relative error (stopping criterion for adaptive 
-                               // numerical quadrature.
-  };
-  struct VectorFormSurf {
-    unsigned int i;
-    int area;
-    vector_form_val_t fn;
-    vector_form_ord_t ord;
-    Hermes::vector<MeshFunction *> ext;
-    double scaling_factor;     // Form will be always multiplied (scaled) with this number.
-    int u_ext_offset;          // External solutions for this form will start 
-                               // with u_ext[u_ext_offset] where u_ext[] are external
-                               // solutions coming to the assembling procedure via the 
-                               // external coefficient vector.
-    bool adapt_eval;           // If true, the form will be evaluated using adaptive 
-                               // numerical integration.
-    int adapt_order_increase;  // To obtain reference value, the element is split into 
-                               // four sons. In addition, the order is increased by this value. 
-    double adapt_rel_error_tol;    // Max. allowed relative error (stopping criterion for adaptive 
-                               // numerical quadrature.
-  };
+  void add_matrix_form(MatrixFormVol* mfv);
+  void add_matrix_form_surf(MatrixFormSurf* mfs);
+  void add_vector_form(VectorFormVol* vfv);
+  void add_vector_form_surf(VectorFormSurf* vfs);
 
+  void add_multicomponent_matrix_form(MultiComponentMatrixFormVol* mfv);
+  void add_multicomponent_matrix_form_surf(MultiComponentMatrixFormSurf* mfs);
+  void add_multicomponent_vector_form(MultiComponentVectorFormVol* vfv);
+  void add_multicomponent_vector_form_surf(MultiComponentVectorFormSurf* vfs);
 
-  /* VOLUMETRIC MATRIX FORMS */
-
-  // Internal.
-  void add_matrix_form_internal(MatrixFormVol* mfv);
-  // Most general case, integer markers - internal
-  void add_matrix_form_internal(unsigned int i, unsigned int j, 
-                                matrix_form_val_t fn, matrix_form_ord_t ord,
-		                SymFlag sym, int area, Hermes::vector<MeshFunction*>ext,
-                                bool adapt_eval, int adapt_order_increase, double adapt_rel_error_tol);
-  // Most general case, string markers - internal
-  void add_matrix_form_internal(unsigned int i, unsigned int j, 
-                                matrix_form_val_t fn, matrix_form_ord_t ord,
-		                SymFlag sym, std::string area, Hermes::vector<MeshFunction*>ext,
-                                bool adapt_eval, int adapt_order_increase, double adapt_rel_error_tol);
-  // Wrapper for non-adaptive numerical integration.
-  // Version with integer markers.
-  void add_matrix_form(unsigned int i, unsigned int j, 
-                       matrix_form_val_t fn, matrix_form_ord_t ord,
-		       SymFlag sym = HERMES_NONSYM, int area = HERMES_ANY,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for non-adaptive numerical integration.
-  // Version with string markers.
-  void add_matrix_form(unsigned int i, unsigned int j, 
-                       matrix_form_val_t fn, matrix_form_ord_t ord,
-		       SymFlag sym, std::string area,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for adaptive numerical integration.
-  // Version with integer markers.
-  void add_matrix_form(unsigned int i, unsigned int j, matrix_form_val_t fn,
-		       SymFlag sym = HERMES_NONSYM, int area = HERMES_ANY,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                       int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for adaptive numerical integration.
-  // Version with string markers.
-  void add_matrix_form(unsigned int i, unsigned int j, matrix_form_val_t fn,
-		       SymFlag sym, std::string area,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                       int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for single equation case - non adaptive.
-  // Version with integer markers.
-  void add_matrix_form(matrix_form_val_t fn, matrix_form_ord_t ord,
-		       SymFlag sym = HERMES_NONSYM, int area = HERMES_ANY,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for single equation case - non adaptive.
-  // Version with string markers.
-  void add_matrix_form(matrix_form_val_t fn, matrix_form_ord_t ord,
-		       SymFlag sym, std::string area,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for single equation case - adaptive.
-  // Version with integer markers.
-  void add_matrix_form(matrix_form_val_t fn,
-		       SymFlag sym = HERMES_NONSYM, int area = HERMES_ANY,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                       int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for single equation case - adaptive.
-  // Version with string markers.
-  void add_matrix_form(matrix_form_val_t fn,
-		       SymFlag sym, std::string area,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                       int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-
-
-  /* SURFACE MATRIX FORMS */
-
-  // Internal.
-  void add_matrix_form_surf_internal(MatrixFormSurf* mfs);
-  // Most general case, integer markers - internal.
-  void add_matrix_form_surf_internal(unsigned int i, unsigned int j, 
-                                     matrix_form_val_t fn, matrix_form_ord_t ord,
-			             int area, Hermes::vector<MeshFunction*>ext,
-                                     bool adapt_eval, int adapt_order_increase, double adapt_rel_error_tol);
-  // Most general case, string markers - internal.
-  void add_matrix_form_surf_internal(unsigned int i, unsigned int j, 
-                                     matrix_form_val_t fn, matrix_form_ord_t ord,
-			             std::string area, Hermes::vector<MeshFunction*>ext,
-                                     bool adapt_eval, int adapt_order_increase, double adapt_rel_error_tol);
-  // Wrapper for non-adaptive numerical integration.
-  // Version with integer markers.
-  void add_matrix_form_surf(unsigned int i, unsigned int j, matrix_form_val_t fn, matrix_form_ord_t ord,
-			    int area = HERMES_ANY,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for non-adaptive numerical integration.
-  // Version with string markers.
-  void add_matrix_form_surf(unsigned int i, unsigned int j, matrix_form_val_t fn, matrix_form_ord_t ord,
-			    std::string area,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for adaptive numerical integration.
-  // Version with integer markers.
-  void add_matrix_form_surf(unsigned int i, unsigned int j, matrix_form_val_t fn, 
-                            int area = HERMES_ANY,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                            int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for adaptive numerical integration.
-  // Version with string markers.
-  void add_matrix_form_surf(unsigned int i, unsigned int j, matrix_form_val_t fn, 
-                            std::string area,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                            int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for single equation case - non adaptive.
-  // Version with integer markers.
-  void add_matrix_form_surf(matrix_form_val_t fn, matrix_form_ord_t ord, int area = HERMES_ANY,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for single equation case - non adaptive.
-  // Version with string markers.
-  void add_matrix_form_surf(matrix_form_val_t fn, matrix_form_ord_t ord, 
-                            std::string area,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for single equation case - adaptive.
-  // Version with integer markers.
-  void add_matrix_form_surf(matrix_form_val_t fn, int area = HERMES_ANY,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                            int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for single equation case - adaptive.
-  // Version with string markers.
-  void add_matrix_form_surf(matrix_form_val_t fn,
-                            std::string area,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                            int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-
-
-  /* VOLUMETRIC VECTOR FORMS */
-
-  // Internal.
-  void add_vector_form_internal(VectorFormVol* vfv);
-  // Most general case, integer markers - internal.
-  void add_vector_form_internal(unsigned int i, 
-                                vector_form_val_t fn, vector_form_ord_t ord,
-		                int area, Hermes::vector<MeshFunction*>ext,
-                                bool adapt_eval, int adapt_order_increase, 
-                                double adapt_rel_error_tol);
-  // Most general case, string markers - internal.
-  void add_vector_form_internal(unsigned int i, 
-                                vector_form_val_t fn, vector_form_ord_t ord,
-		                std::string area, Hermes::vector<MeshFunction*>ext,
-                                bool adapt_eval, int adapt_order_increase, 
-                                double adapt_rel_error_tol);
-  // Wrapper for non-adaptive numerical integration.
-  // Version with integer markers.
-  void add_vector_form(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord,
-		       int area = HERMES_ANY,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for non-adaptive numerical integration.
-  // Version with string markers.
-  void add_vector_form(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord,
-		       std::string area,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for adaptive numerical integration.
-  // Version with integer markers.
-  void add_vector_form(unsigned int i, vector_form_val_t fn, int area = HERMES_ANY,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                       int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for adaptive numerical integration.
-  // Version with string markers.
-  void add_vector_form(unsigned int i, vector_form_val_t fn, 
-                       std::string area,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                       int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for single equation case - non adaptive.
-  // Version with integer markers.
-  void add_vector_form(vector_form_val_t fn, vector_form_ord_t ord, int area = HERMES_ANY,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for single equation case - non adaptive.
-  // Version with string markers.
-  void add_vector_form(vector_form_val_t fn, vector_form_ord_t ord, 
-                       std::string area,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for single equation case - adaptive.
-  // Version with integer markers.
-  void add_vector_form(vector_form_val_t fn, int area = HERMES_ANY,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                       int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for single equation case - adaptive.
-  // Version with string markers.
-  void add_vector_form(vector_form_val_t fn, std::string area,
-                       Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                       int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-
-
-  /* SURFACE VECTOR FORMS */
-
-  // Internal.
-  void add_vector_form_surf_internal(VectorFormSurf* vfs);
-  // Most general case, integer markers - internal.
-  void add_vector_form_surf_internal(unsigned int i, 
-                                     vector_form_val_t fn, vector_form_ord_t ord,
-			             int area, Hermes::vector<MeshFunction*>ext,
-                                     bool adapt_eval, int adapt_order_increase, double adapt_rel_error_tol);
-  // Most general case, string markers - internal.
-  void add_vector_form_surf_internal(unsigned int i, 
-                                     vector_form_val_t fn, vector_form_ord_t ord,
-			             std::string area, Hermes::vector<MeshFunction*>ext,
-                                     bool adapt_eval, int adapt_order_increase, double adapt_rel_error_tol);
-  // Wrapper for non-adaptive numerical integration.
-  // Version with integer markers.
-  void add_vector_form_surf(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord,
-			    int area = HERMES_ANY,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for non-adaptive numerical integration.
-  // Version with string markers.
-  void add_vector_form_surf(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord,
-			    std::string area,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for adaptive numerical integration.
-  // Version with integer markers.
-  void add_vector_form_surf(unsigned int i, vector_form_val_t fn, int area = HERMES_ANY,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                            int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for adaptive numerical integration.
-  // Version with string markers.
-  void add_vector_form_surf(unsigned int i, vector_form_val_t fn, 
-                            std::string area,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                            int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for single equation case - non adaptive.
-  // Version with integer markers.
-  void add_vector_form_surf(vector_form_val_t fn, vector_form_ord_t ord,
-			    int area = HERMES_ANY,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for single equation case - non adaptive.
-  // Version with string markers.
-  void add_vector_form_surf(vector_form_val_t fn, vector_form_ord_t ord,
-			    std::string area,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
-  // Wrapper for single equation case - adaptive.
-  // Version with integer markers.
-  void add_vector_form_surf(vector_form_val_t fn, int area = HERMES_ANY,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                            int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-  // Wrapper for single equation case - adaptive.
-  // Version with string markers.
-  void add_vector_form_surf(vector_form_val_t fn, std::string area,
-                            Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>(),
-                            int adapt_order_increase = 0, double adapt_rel_error_tol = 1e-3);
-
-  // Sets external functions (not implemented yet).
-  void set_ext_fns(void* fn, Hermes::vector<MeshFunction*>ext = Hermes::vector<MeshFunction*>());
+  void set_ext_fns(void* fn, Hermes::vector<MeshFunction*> ext = Hermes::vector<MeshFunction*>());
 
   /// Returns the number of equations.
   unsigned int get_neq() { return neq; }
 
   /// Returns volumetric and surface weak forms.
-  Hermes::vector<MatrixFormVol> get_mfvol() { return mfvol; }
-  Hermes::vector<MatrixFormSurf> get_mfsurf() { return mfsurf; }
-  Hermes::vector<VectorFormVol> get_vfvol() { return vfvol; }
-  Hermes::vector<VectorFormSurf> get_vfsurf() { return vfsurf; }
+  Hermes::vector<MatrixFormVol *> get_mfvol() { return mfvol; }
+  Hermes::vector<MatrixFormSurf *> get_mfsurf() { return mfsurf; }
+  Hermes::vector<VectorFormVol *> get_vfvol() { return vfvol; }
+  Hermes::vector<VectorFormSurf *> get_vfsurf() { return vfsurf; }
 
   /// Sets volumetric and surface weak forms.
-  void set_mfvol(Hermes::vector<MatrixFormVol> mfvol) { this->mfvol = mfvol; }
-  void set_mfsurf(Hermes::vector<MatrixFormSurf> mfvol) { this->mfsurf = mfsurf; }
-  void set_vfvol(Hermes::vector<VectorFormVol> vfvol) { this->vfvol = vfvol; }
-  void set_vfsurf(Hermes::vector<VectorFormSurf> vfvol) { this->vfsurf = vfsurf; }
+  void set_mfvol(Hermes::vector<MatrixFormVol *> mfvol) { this->mfvol = mfvol; }
+  void set_mfsurf(Hermes::vector<MatrixFormSurf *> mfvol) { this->mfsurf = mfsurf; }
+  void set_vfvol(Hermes::vector<VectorFormVol *> vfvol) { this->vfvol = vfvol; }
+  void set_vfsurf(Hermes::vector<VectorFormSurf *> vfvol) { this->vfsurf = vfsurf; }
 
   /// Deletes all volumetric and surface forms.
   void delete_all()
   {
+    for (int i = 0; i < mfvol.size(); i++)
+      delete mfvol[i];
     mfvol.clear();
+    for (int i = 0; i < mfsurf.size(); i++)
+      delete mfsurf[i];
     mfsurf.clear();
+    for (int i = 0; i < vfvol.size(); i++)
+      delete vfvol[i];
     vfvol.clear();
+    for (int i = 0; i < vfsurf.size(); i++)
+      delete vfsurf[i];
     vfsurf.clear();
   };
 
@@ -426,37 +313,38 @@ public:
 
   bool is_matrix_free() { return is_matfree; }
 
+  /// For time-dependent right-hand side functions.
+  void set_current_time(double time);
+  virtual double get_current_time() const;
+
 protected:
+  double current_time;
   unsigned int neq;
   int seq;
   bool is_matfree;
 
-  struct Area  {  /*std::string name;*/  Hermes::vector<int> markers;  };
+  struct Area  { Hermes::vector<std::string> markers;  };
 
   Hermes::vector<Area> areas;
 
 public:
-  scalar evaluate_fn(int point_cnt, double *weights, Func<double> *values_v,
-                     Geom<double> *geometry, ExtData<scalar> *values_ext_fnc, Element* element,
-                     Shapeset* shape_set, int shape_inx); ///< Evaluate value of the user defined function.
-  Ord evaluate_ord(int point_cnt, double *weights, Func<Ord> *values_v,
-                   Geom<Ord> *geometry, ExtData<Ord> *values_ext_fnc, Element* element,
-                   Shapeset* shape_set, int shape_inx); ///< Evaluate order of the user defined function.
-
   // General case.
-  Hermes::vector<MatrixFormVol>  mfvol;
-  Hermes::vector<MatrixFormSurf> mfsurf;
-  Hermes::vector<VectorFormVol>  vfvol;
-  Hermes::vector<VectorFormSurf> vfsurf;
+  Hermes::vector<MatrixFormVol *> mfvol;
+  Hermes::vector<MatrixFormSurf *> mfsurf;
+  Hermes::vector<VectorFormVol *> vfvol;
+  Hermes::vector<VectorFormSurf *> vfsurf;
 
-  // These members are used temporarily for storing markers defined by user-supplied strings.
+  Hermes::vector<MultiComponentMatrixFormVol *> mfvol_mc;
+  Hermes::vector<MultiComponentMatrixFormSurf *> mfsurf_mc;
+  Hermes::vector<MultiComponentVectorFormVol *> vfvol_mc;
+  Hermes::vector<MultiComponentVectorFormSurf *> vfsurf_mc;
+
+  // Storage of forms according to user-supplied strings.
   std::map<std::string, MatrixFormVol>  mfvol_string_temp;
   std::map<std::string, MatrixFormSurf> mfsurf_string_temp;
   std::map<std::string, VectorFormVol>  vfvol_string_temp;
   std::map<std::string, VectorFormSurf> vfsurf_string_temp;
 
-  // Function which according to the conversion table provided, updates the above members.
-  void update_markers_acc_to_conversion(Mesh::MarkersConversion* markers_conversion);
 
   struct Stage
   {
@@ -466,10 +354,15 @@ public:
     Hermes::vector<MeshFunction*> ext;
 
     // general case
-    Hermes::vector<MatrixFormVol *>  mfvol;
+    Hermes::vector<MatrixFormVol *> mfvol;
     Hermes::vector<MatrixFormSurf *> mfsurf;
-    Hermes::vector<VectorFormVol *>  vfvol;
+    Hermes::vector<VectorFormVol *> vfvol;
     Hermes::vector<VectorFormSurf *> vfsurf;
+
+    Hermes::vector<MultiComponentMatrixFormVol *> mfvol_mc;
+    Hermes::vector<MultiComponentMatrixFormSurf *> mfsurf_mc;
+    Hermes::vector<MultiComponentVectorFormVol *> vfvol_mc;
+    Hermes::vector<MultiComponentVectorFormSurf *> vfsurf_mc;
 
     std::set<int> idx_set;
     std::set<unsigned> seq_set;
@@ -477,28 +370,41 @@ public:
   };
 
   void get_stages(Hermes::vector< Space* > spaces, Hermes::vector< Solution* >& u_ext,
-                  std::vector< WeakForm::Stage >& stages, bool rhsonly);
+                  std::vector< WeakForm::Stage >& stages, bool want_matrix, bool want_vector);
   bool** get_blocks(bool force_diagonal_blocks);
 
-  bool is_in_area(int marker, int area) const
-    { return area >= 0 ? area == marker : is_in_area_2(marker, area); }
+  bool is_in_area(std::string marker, std::string area) const
+  { return area == marker; }
 
   bool is_sym() const { return false; /* not impl. yet */ }
 
-//  friend class DiscreteProblem;
-//  friend class RefDiscreteProblem;
-  friend class LinearProblem;
   friend class DiscreteProblem;
   friend class Precond;
 
+  // To be called only by the constructor of DiscreteProblem.
+  void set_markers_conversion(Mesh::ElementMarkersConversion* element_markers_conversion, 
+                              Mesh::BoundaryMarkersConversion* boundary_markers_conversion)
+  {
+    this->element_markers_conversion = element_markers_conversion;
+    this->boundary_markers_conversion = boundary_markers_conversion;
+  }
 
-private:
+protected:
 
   Stage* find_stage(std::vector<WeakForm::Stage>& stages, int ii, int jj,
                     Mesh* m1, Mesh* m2,
                     Hermes::vector<MeshFunction*>& ext, Hermes::vector<Solution*>& u_ext);
 
-  bool is_in_area_2(int marker, int area) const;
+  Stage* find_stage(std::vector<WeakForm::Stage>& stages, Hermes::vector<std::pair<unsigned int, unsigned int> > coordinates,
+                    Mesh* m1, Mesh* m2,
+                    Hermes::vector<MeshFunction*>& ext, Hermes::vector<Solution*>& u_ext);
+
+  Stage* find_stage(std::vector<WeakForm::Stage>& stages, Hermes::vector<unsigned int> coordinates,
+                    Mesh* m1, Mesh* m2,
+                    Hermes::vector<MeshFunction*>& ext, Hermes::vector<Solution*>& u_ext);
+
+  Mesh::ElementMarkersConversion* element_markers_conversion;
+  Mesh::BoundaryMarkersConversion* boundary_markers_conversion;
 };
 
 #endif

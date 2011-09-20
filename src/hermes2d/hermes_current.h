@@ -27,19 +27,20 @@ struct HermesCurrent : public HermesField
 {
     Q_OBJECT
 public:
-    HermesCurrent() { m_physicField = PhysicField_Current; }
-    virtual ~HermesCurrent() {}
+    PhysicField physicField() const { return PhysicField_Current; }
 
-    inline int numberOfSolution() { return 1; }
-    bool hasHarmonic() { return false; }
-    bool hasTransient() { return false; }
+    inline int numberOfSolution() const { return 1; }
+    inline bool hasSteadyState() const { return true; }
+    inline bool hasHarmonic() const { return false; }
+    inline bool hasTransient() const { return false; }
+    inline bool hasNonlinearity() const { return false; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
-    LocalPointValue *localPointValue(Point point);
+    LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
 
     SurfaceIntegralValue *surfaceIntegralValue();
@@ -56,12 +57,12 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Current_Losses ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Current_Conductivity); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
@@ -101,7 +102,7 @@ public:
     Point J;
     Point E;
 
-    LocalPointValueCurrent(Point &point);
+    LocalPointValueCurrent(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
@@ -143,37 +144,36 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeCurrentMarker : public SceneEdgeMarker {
+class SceneBoundaryCurrent : public SceneBoundary {
 
 public:
     Value value;
 
-    SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, Value value);
+    SceneBoundaryCurrent(const QString &name, PhysicFieldBC type, Value value);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelCurrentMarker : public SceneLabelMarker
+class SceneMaterialCurrent : public SceneMaterial
 {
 public:
     Value conductivity;
 
-    SceneLabelCurrentMarker(const QString &name, Value conductivity);
+    SceneMaterialCurrent(const QString &name, Value conductivity);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeCurrentMarker : public DSceneEdgeMarker
+class SceneBoundaryCurrentDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCurrentMarker, QWidget *parent);
-    ~DSceneEdgeCurrentMarker();
+    SceneBoundaryCurrentDialog(SceneBoundaryCurrent *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -182,17 +182,20 @@ protected:
     bool save();
 
 private:
+    QLabel *lblValueUnit;
     QComboBox *cmbType;
-    SLineEditValue *txtValue;
+    ValueLineEdit *txtValue;
+
+private slots:
+    void doTypeChanged(int index);
 };
 
-class DSceneLabelCurrentMarker : public DSceneLabelMarker
+class SceneMaterialCurrentDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker);
-    ~DSceneLabelCurrentMarker();
+    SceneMaterialCurrentDialog(SceneMaterialCurrent *material, QWidget *parent);
 
 protected:
     void createContent();
@@ -201,7 +204,7 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtConductivity;
+    ValueLineEdit *txtConductivity;
 };
 
 #endif // HERMES_CURRENT_H

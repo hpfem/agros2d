@@ -1,7 +1,5 @@
 /****************************************************************************
-** $Id: dl_entities.h 7812 2008-01-04 16:56:09Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2011 RibbonSoft. All rights reserved.
 **
 ** This file is part of the dxflib project.
 **

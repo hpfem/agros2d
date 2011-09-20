@@ -43,7 +43,7 @@ protected:
   typedef scalar (*value_callback)(double, double);
 
   /// Type of the function representing the BC. time_dependent.
-  typedef scalar (*value_callback_time)(double, double, double);
+  typedef scalar (*value_callback_time)(int, double, double, double);
 
   /// Storage of functions. 
   std::map<int, value_callback> value_callbacks;
@@ -292,7 +292,7 @@ public:
       if(value_callbacks_time[marker] == NULL)
         error("Attempt to retrieve a value of a function representing the Dirichlet BC without \
               this being set up for the current Space.");
-      return value_callbacks_time[marker](x, y, *this->t);
+      return value_callbacks_time[marker](marker, x, y, *this->t);
     }
     else {
       if(value_callbacks[marker] == NULL)

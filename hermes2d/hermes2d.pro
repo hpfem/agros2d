@@ -11,6 +11,7 @@ INCLUDEPATH += src \
         ../hermes_common
 
 SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
+            ../hermes_common/compat/c99_functions.cpp \
             ../hermes_common/callstack.cpp \
             ../hermes_common/common.cpp \
             ../hermes_common/common_time_period.cpp \
@@ -67,10 +68,11 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             src/ogprojection.cpp \
             src/qsort.cpp \
             src/runge_kutta.cpp \
-            src/boundaryconditions/boundaryconditions.cpp \
+            src/boundaryconditions/essential_bcs.cpp \
             src/adapt/adapt.cpp \
             src/function/filter.cpp \
             src/function/norm.cpp \
+            src/function/forms.cpp \
             src/function/solution.cpp \
             src/gen/gen_hc_gradeigen.cpp \
             src/gen/gen_hc_gradleg.cpp \
@@ -133,23 +135,23 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             src/views/view.cpp \
             src/views/view_data.cpp \
             src/views/view_support.cpp \
-            src/weakform/forms.cpp \
             src/weakform/weakform.cpp
 
 HEADERS = += ../hermes_common/src/compat.h
 
-linux-g++ {
-    DEFINES += WITH_MUMPS
-    DEFINES += WITH_SUPERLU
+linux-g++|linux-g++-64|linux-g++-32 {
+    # DEFINES += WITH_MUMPS
+    # DEFINES += WITH_SUPERLU
     DEFINES += HAVE_FMEMOPEN
+    DEFINES += HAVE_LOG2
 
     INCLUDEPATH += /usr/include/suitesparse
-    INCLUDEPATH += /usr/include/superlu
+    # INCLUDEPATH += /usr/include/superlu
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += /usr/include/python2.7
     LIBS += -lumfpack
-    LIBS += -ldmumps_seq
-    LIBS += -lsuperlu
+    # LIBS += -ldmumps_seq
+    # LIBS += -lsuperlu
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
 }
@@ -159,6 +161,7 @@ win32-msvc2008 {
     DEFINES += IMPLEMENT_C99
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
+    DEFINES += "M_LN2=0.69314718055994530942"
 
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include
@@ -168,4 +171,20 @@ win32-msvc2008 {
     LIBS += -lblas
     LIBS += -lpthread
     LIBS += -lpython27
+}
+
+macx-g++ {
+    INCLUDEPATH += /opt/local/include
+    INCLUDEPATH += /opt/local/include/ufsparse
+    INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
+    INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/numpy/core/include
+    LIBS += -L/opt/local/lib
+    LIBS += -L/usr/lib
+    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config
+    LIBS += -lpthread
+    LIBS += -lpython2.7
+    LIBS += -lqwt
+    LIBS += -lumfpack
+    LIBS += -lamd
+    LIBS += -lblas
 }

@@ -1,5 +1,5 @@
 # model
-newdocument("Elasticity - axisymmetric", "axisymmetric", "elasticity", 3, 3, "disabled", 1, 1, 0, "steadystate", 1.0, 1.0, 0.0)
+newdocument("Elasticity - axisymmetric", "axisymmetric", "elasticity", 4, 3, "disabled", 1, 1, 0, "steadystate", 1.0, 1.0, 0.0)
 
 # boundaries
 addboundary("Fixed", "elasticity_fixed", "elasticity_fixed", 0, 0, 0, 0)
@@ -8,7 +8,7 @@ addboundary("Load", "elasticity_free", "elasticity_free", 0, -10000, 0, 0)
 
 # materials
 addmaterial("Material 1", 2e+11, 0.33, 0, 0, 1e-7, 30, 30)
-addmaterial("Material 2", 1e+11, 0.33, 0, 30000, 1e-7, 30, 30)
+addmaterial("Material 2", 1e+11, 0.33, 0, 30000, 1.2e-5, 20.5, 20)
 addmaterial("Material 3", 1e+11, 0.33, 0, 0, 2e-7, 30, 30)
 
 # edges
@@ -34,19 +34,19 @@ solve()
 
 # point value
 point = pointresult(1.369034, 0.04259)
-testVonMises = test("Von Mises stress", point["mises"], 30287.972891)
+testVonMises = test("Von Mises stress", point["mises"], 1.69779e5)
 # testTresca = test("Tresca stress", point["tresca"], 1.235475e5)
-testu = test("Displacement - x", point["u"], -2.943525e-7)
-testv = test("Displacement - y", point["v"], -2.185688e-6)
-testD = test("Displacement", point["disp"], 2.205419e-6)
-testsrr = test("Stress RR", point["sxx"], -20854.325496)
-testszz = test("Stress ZZ", point["syy"], -776.910669)
-testsaa = test("Stress aa", point["szz"], -28623.833756)
-testtxy = test("Stress RZ", point["sxy"], -9976.028911)
-testerr = test("Strain RR", point["exx"], -1.109809e-7)
-testezz = test("Strain ZZ", point["eyy"], 1.552395e-7)
-testeaa = test("Strain aa", point["ezz"], -2.150074e-7)
-testerz = test("Strain RZ", point["exy"], -1.32874e-7)
+testu = test("Displacement - x", point["u"], 5.544176e-6)
+testv = test("Displacement - y", point["v"], -2.672647e-6)
+testD = test("Displacement", point["disp"], 6.154748e-6)
+testsrr = test("Stress RR", point["sxx"], -1.132081e5)
+testszz = test("Stress ZZ", point["syy"], -1.210277e5)
+testsaa = test("Stress aa", point["szz"], -2.7248e5)
+testtxy = test("Stress RZ", point["sxy"], 39372.872587)
+testerr = test("Strain RR", point["exx"], 6.165992e-6)
+testezz = test("Strain ZZ", point["eyy"], 6.061992e-6)
+testeaa = test("Strain aa", point["ezz"], 4.049699e-6)
+testerz = test("Strain RZ", point["exy"], 5.236592e-7)
 
 # surface integral
 # surface = surfaceintegral(0)

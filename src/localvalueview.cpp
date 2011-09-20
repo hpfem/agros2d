@@ -23,34 +23,37 @@
 #include "scenemarker.h"
 #include "hermes2d.h"
 
-LocalPointValue::LocalPointValue(Point &point)
+LocalPointValue::LocalPointValue(const Point &point)
 {
     logMessage("LocalPointValue::LocalPointValue()");
 
     this->point = point;
+    if (Util::scene()->sceneSolution()->isSolved() &&
+            Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+        Util::scene()->problemInfo()->hermes()->updateTimeFunctions(Util::scene()->sceneSolution()->time());
 
     PointValue val = pointValue(Util::scene()->sceneSolution()->sln(), point);
 
     value = val.value;
     derivative = val.derivative;
-    labelMarker = val.marker;
+    material = val.marker;
 }
 
-PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
+PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
 {
     logMessage("LocalPointValue::pointValue()");
 
     double tmpValue;
     Point tmpDerivative;
-    SceneLabelMarker *tmpLabelMarker = NULL;
+    SceneMaterial *tmpMaterial = NULL;
 
     if (sln)
     {
-        int index = Util::scene()->sceneSolution()->findTriangleInMesh(Util::scene()->sceneSolution()->meshInitial(), point);
+        int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), point);
         if (index != -1)
         {
             if ((Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) &&
-                Util::scene()->sceneSolution()->timeStep() == 0)
+                    Util::scene()->sceneSolution()->timeStep() == 0)
                 // const solution at first time step
                 tmpValue = Util::scene()->problemInfo()->initialCondition.number;
             else                
@@ -60,12 +63,12 @@ PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
             tmpDerivative.y =  sln->get_pt_value(point.x, point.y, H2D_FN_DY_0);
 
             // find marker
-            Element *element = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
-            tmpLabelMarker = Util::scene()->labels[element->marker]->marker;
+            Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
+            tmpMaterial = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).c_str())]->material;
         }
     }
 
-    return PointValue(tmpValue, tmpDerivative, tmpLabelMarker);
+    return PointValue(tmpValue, tmpDerivative, tmpMaterial);
 }
 
 // *************************************************************************************************************************************
@@ -227,9 +230,9 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
 
     setModal(true);
 
-    txtPointX = new SLineEditValue();
+    txtPointX = new ValueLineEdit();
     txtPointX->setNumber(point.x);
-    txtPointY = new SLineEditValue();
+    txtPointY = new ValueLineEdit();
     txtPointY->setNumber(point.y);
 
     connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

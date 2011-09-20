@@ -24,18 +24,23 @@
 
 struct Element;
 
+class SceneMaterial;
+
 class SurfaceIntegralValue
 {
 protected:
     Element *e;
 
     double *x;
-    double *value;
-    double *dudx, *dudy;
+    double *y;
+    double *value1, *value2;
+    double *dudx1, *dudy1, *dudx2, *dudy2;
     double3 *pt;
     double3 *tan;
 
     bool boundary;
+
+    SceneMaterial *material;
 
     void calculate();
     virtual void calculateVariables(int i) = 0;

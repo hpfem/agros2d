@@ -19,7 +19,7 @@ HERMES_API std::ostream& operator<<(std::ostream& stream, const ElementToRefine&
   for(int i = 0; i < num_sons; i++) {
     if (i > 0)
       stream << " ";
-    stream << h2d_get_quad_order_str(elem_ref.p[i]);
+    stream << Hermes2D::get_quad_order_str(elem_ref.p[i]);
   }
   stream << "]";
   return stream;
@@ -123,7 +123,7 @@ uint8_t ElementToRefineStream::get_byte_size(int value) {
     return 1;
   else {
     int value_abs = abs(value);
-    double byte_len = ceil((log((double) value_abs) / 0.69314718055994530942 + 1) / 8);
+    double byte_len = ceil((log2(value_abs) + 1) / 8);
     error_if(byte_len > 255, "Required calculation of byte size of %d but the size is larger than 256 bytes", value);
     return (uint8_t)byte_len;
   }
@@ -165,9 +165,10 @@ int ElementToRefineStream::read_bytes(int num_bytes) {
   return result;
 }
 
-HERMES_API ElementToRefineStream& operator<<(ElementToRefineStream& stream, const std::vector<ElementToRefine>& elem_refs) {
+HERMES_API ElementToRefineStream& operator<<(ElementToRefineStream& stream, 
+           const std::vector<ElementToRefine>& elem_refs) {
   //calculate range of values
-  Range<int> range_id, range_comp, range_order;
+  Range<int> range_id(0, 0), range_comp(0, 0), range_order(0, 0);
   vector<ElementToRefine>::const_iterator elem_ref = elem_refs.begin();
   while (elem_ref != elem_refs.end()) {
     range_id.enlarge_to_include(elem_ref->id);

@@ -23,14 +23,13 @@
 #include "util.h"
 
 class Scene;
-class SLineEditValue;
+class ValueLineEdit;
 
 class SceneTransformDialog : public QDialog
 {
     Q_OBJECT
 public:
     SceneTransformDialog(QWidget *parent = 0);
-    ~SceneTransformDialog();
 
 private slots:
     void doAccept();
@@ -40,20 +39,20 @@ protected:
     void createControls();
 
 private:
-    QTabWidget* tabWidget;
+    QTabWidget *tabWidget;
 
     QWidget *widTranslate;
     QWidget *widRotate;
     QWidget *widScale;
 
-    SLineEditValue *txtTranslateX;
-    SLineEditValue *txtTranslateY;
-    SLineEditValue *txtRotateBasePointX;
-    SLineEditValue *txtRotateBasePointY;
-    SLineEditValue *txtRotateAngle;
-    SLineEditValue *txtScaleBasePointX;
-    SLineEditValue *txtScaleBasePointY;
-    SLineEditValue *txtScaleFactor;
+    ValueLineEdit *txtTranslateX;
+    ValueLineEdit *txtTranslateY;
+    ValueLineEdit *txtRotateBasePointX;
+    ValueLineEdit *txtRotateBasePointY;
+    ValueLineEdit *txtRotateAngle;
+    ValueLineEdit *txtScaleBasePointX;
+    ValueLineEdit *txtScaleBasePointY;
+    ValueLineEdit *txtScaleFactor;
 
     QCheckBox *chkCopy;
 };

@@ -4,6 +4,8 @@
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
     int c_INT_MAX "INT_MAX"
+    int c_DOUBLE_MIN "DOUBLE_MIN"
+    int c_DOUBLE_MAX "DOUBLE_MAX"
 
 cdef extern from "../scripteditorcommandpython.h":
     void pythonMessage(char *str)
@@ -58,7 +60,7 @@ cdef extern from "../scripteditorcommandpython.h":
     void pythonMode(char *str) except +
     void pythonPostprocessorMode(char *str) except +
 
-    void pythonShowScalar(char *type, char *variable, char *component, int rangemin, int rangemax) except +
+    void pythonShowScalar(char *type, char *variable, char *component, double rangemin, double rangemax) except +
     void pythonShowGrid(int show)
     void pythonShowGeometry(int show)
     void pythonShowInitialMesh(int show)
@@ -196,7 +198,7 @@ def mode(char *str):
 def postprocessormode(char *str):
     pythonPostprocessorMode(str)
 
-def showscalar(char *type, char *variable, char *component, int rangemin = c_INT_MIN, int rangemax = c_INT_MIN):
+def showscalar(char *type, char *variable, char *component, double rangemin = -123456, double rangemax = -123456):
     pythonShowScalar(type, variable, component, rangemin, rangemax)
 
 def showgrid(int show):

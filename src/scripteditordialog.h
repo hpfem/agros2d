@@ -45,7 +45,7 @@ bool scriptIsRunning();
 
 QString createPythonFromModel();
 ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
-ExpressionResult runPythonExpression(const QString &expression);
+ExpressionResult runPythonExpression(const QString &expression, bool returnValue = true);
 
 class ScriptEngineRemote : QObject
 {
@@ -109,7 +109,9 @@ public slots:
     void doReplace();
 
     void doDataChanged();
+
     void doHelp();
+    void doHelpKeywordList();
 
     void doCloseTab(int index);
 
@@ -161,6 +163,7 @@ private:
     QAction *actCreateFromModel;
 
     QAction *actHelp;
+    QAction *actHelpKeywordList;
 
     QTabWidget *tabWidget;
 

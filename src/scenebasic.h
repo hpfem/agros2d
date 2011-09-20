@@ -23,7 +23,7 @@
 #include "util.h"
 
 class SLineEditDouble;
-class SLineEditValue;
+class ValueLineEdit;
 
 struct Point;
 
@@ -32,8 +32,8 @@ class SceneNode;
 class SceneEdge;
 class SceneLabel;
 
-class SceneEdgeMarker;
-class SceneLabelMarker;
+class SceneBoundary;
+class SceneMaterial;
 
 Q_DECLARE_METATYPE(SceneBasic *);
 Q_DECLARE_METATYPE(SceneNode *);
@@ -63,7 +63,7 @@ public:
 
     SceneNode(const Point &point);
 
-    double distance(const Point &point);
+    double distance(const Point &point) const;
 
     int showDialog(QWidget *parent, bool isNew = false);
 };
@@ -73,18 +73,20 @@ public:
 class SceneEdge : public SceneBasic
 {
 public:
-    SceneEdgeMarker *marker;
+    SceneBoundary *boundary;
     SceneNode *nodeStart;
     SceneNode *nodeEnd;
     double angle;
     int refineTowardsEdge;
 
-    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *marker, double angle, int refineTowardsEdge);
+    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *boundary, double angle, int refineTowardsEdge);
 
-    Point center();
-    double radius();
-    double distance(const Point &point);
-    int segments(); // needed by mesh generator
+    Point center() const;
+    double radius() const;
+    double distance(const Point &point) const;
+    int segments() const; // needed by mesh generator
+    double length() const;
+    bool isStraight() const { return (fabs(angle) < EPS_ZERO); }
 
     int showDialog(QWidget *parent, bool isNew = false);
 };
@@ -94,14 +96,14 @@ public:
 class SceneLabel : public SceneBasic 
 {
 public:
-    SceneLabelMarker *marker;
+    SceneMaterial *material;
     Point point;
     double area;
     int polynomialOrder;
 
-    SceneLabel(const Point &point, SceneLabelMarker *marker, double area, int polynomialOrder);
+    SceneLabel(const Point &point, SceneMaterial *material, double area, int polynomialOrder);
 
-    double distance(const Point &point);
+    double distance(const Point &point) const;
 
     int showDialog(QWidget *parent, bool isNew = false);
 };
@@ -155,8 +157,8 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtPointX;
-    SLineEditValue *txtPointY;
+    ValueLineEdit *txtPointX;
+    ValueLineEdit *txtPointY;
     QLabel *lblDistance;
     QLabel *lblAngle;
 
@@ -166,12 +168,12 @@ private slots:
 
 // *************************************************************************************************************************************
 
-class DSceneEdge : public DSceneBasic
+class SceneEdgeDialog : public DSceneBasic
 {
     Q_OBJECT
 
 public:
-    DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew);
+    SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew);
 
 protected:
     QLayout *createContent();
@@ -180,11 +182,12 @@ protected:
     bool save();
 
 private:
+    QLabel *lblEquation;
     QComboBox *cmbNodeStart;
     QComboBox *cmbNodeEnd;
-    QComboBox *cmbMarker;
-    QPushButton *btnMarker;
-    SLineEditValue *txtAngle;
+    QComboBox *cmbBoundary;
+    QPushButton *btnBoundary;
+    ValueLineEdit *txtAngle;
     QLabel *lblLength;
     QCheckBox *chkRefineTowardsEdge;
     QSpinBox *txtRefineTowardsEdge;
@@ -192,20 +195,20 @@ private:
     void fillComboBox();
 
 private slots:
-    void doMarkerChanged(int index);
-    void doMarkerClicked();
+    void doBoundaryChanged(int index);
+    void doBoundaryClicked();
     void doNodeChanged();
     void doRefineTowardsEdge(int state);
 };
 
 // *************************************************************************************************************************************
 
-class DSceneLabel : public DSceneBasic
+class SceneLabelDialog : public DSceneBasic
 {
     Q_OBJECT
 
 public:
-    DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew = false);
+    SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew = false);
 
 protected:
     QLayout *createContent();
@@ -214,11 +217,11 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtPointX;
-    SLineEditValue *txtPointY;
-    QComboBox *cmbMarker;
-    QPushButton *btnMarker;
-    SLineEditValue *txtArea;
+    ValueLineEdit *txtPointX;
+    ValueLineEdit *txtPointY;
+    QComboBox *cmbMaterial;
+    QPushButton *btnMaterial;
+    ValueLineEdit *txtArea;
     QSpinBox *txtPolynomialOrder;
     QCheckBox *chkArea;
     QCheckBox *chkPolynomialOrder;
@@ -226,8 +229,8 @@ private:
     void fillComboBox();
 
 private slots:
-    void doMarkerChanged(int index);
-    void doMarkerClicked();
+    void doMaterialChanged(int index);
+    void doMaterialClicked();
     void doArea(int);
     void doPolynomialOrder(int);
 };

@@ -27,19 +27,20 @@ struct HermesElasticity : public HermesField
 {
     Q_OBJECT
 public:
-    HermesElasticity() { m_physicField = PhysicField_Elasticity; }
-    virtual ~HermesElasticity() {}
+    PhysicField physicField() const { return PhysicField_Elasticity; }
 
-    inline int numberOfSolution() { return 2; }
-    bool hasHarmonic() { return false; }
-    bool hasTransient() { return false; }
+    inline int numberOfSolution() const { return 2; }
+    bool hasSteadyState() const { return true; }
+    bool hasHarmonic() const { return false; }
+    bool hasTransient() const { return false; }
+    inline bool hasNonlinearity() const { return false; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
-    LocalPointValue *localPointValue(Point point);
+    LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
 
     SurfaceIntegralValue *surfaceIntegralValue();
@@ -61,12 +62,12 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Elasticity_StressZZ ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Elasticity_StressXY); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
@@ -114,7 +115,7 @@ public:
     double stress_z;
     double stress_xy;
 
-    LocalPointValueElasticity(Point &point);
+    LocalPointValueElasticity(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
@@ -151,7 +152,7 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeElasticityMarker : public SceneEdgeMarker
+class SceneBoundaryElasticity : public SceneBoundary
 {
 public:
     PhysicFieldBC typeX;
@@ -161,15 +162,15 @@ public:
     Value displacementX;
     Value displacementY;
 
-    QString script();
-    QMap<QString, QString> data();
-    SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY,
+    SceneBoundaryElasticity(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY,
                               Value forceX, Value forceY, Value displacementX, Value displacementY);
 
+    QString script();
+    QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelElasticityMarker : public SceneLabelMarker
+class SceneMaterialElasticity : public SceneMaterial
 {
 public:
     Value young_modulus;
@@ -180,24 +181,24 @@ public:
     Value temp;
     Value temp_ref;
 
-    SceneLabelElasticityMarker(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY,
+    SceneMaterialElasticity(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY,
                                Value alpha, Value temp, Value temp_ref);
 
     // Lame constant
-    inline double lambda() { return (young_modulus.number * poisson_ratio.number) / ((1.0 + poisson_ratio.number) * (1.0 - 2.0*poisson_ratio.number)); }
-    inline double mu() { return young_modulus.number / (2.0*(1.0 + poisson_ratio.number)); }
+    inline double lambda() const { return (young_modulus.number * poisson_ratio.number) / ((1.0 + poisson_ratio.number) * (1.0 - 2.0*poisson_ratio.number)); }
+    inline double mu() const { return young_modulus.number / (2.0*(1.0 + poisson_ratio.number)); }
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeElasticityMarker : public DSceneEdgeMarker
+class SceneBoundaryElasticityDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker *edgeEdgeElasticityMarker, QWidget *parent);
+    SceneBoundaryElasticityDialog(SceneBoundaryElasticity *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -206,24 +207,28 @@ protected:
     bool save();
 
 private:
+    QLabel *lblEquationX;
+    QLabel *lblEquationImageX;
+    QLabel *lblEquationY;
+    QLabel *lblEquationImageY;
     QComboBox *cmbTypeX;
     QComboBox *cmbTypeY;
-    SLineEditValue *txtForceX;
-    SLineEditValue *txtForceY;
-    SLineEditValue *txtDisplacementX;
-    SLineEditValue *txtDisplacementY;
+    ValueLineEdit *txtForceX;
+    ValueLineEdit *txtForceY;
+    ValueLineEdit *txtDisplacementX;
+    ValueLineEdit *txtDisplacementY;
 
 private slots:
     void doTypeXChanged(int index);
     void doTypeYChanged(int index);
 };
 
-class DSceneLabelElasticityMarker : public DSceneLabelMarker
+class SceneMaterialElasticityDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    DSceneLabelElasticityMarker(QWidget *parent, SceneLabelElasticityMarker *labelElasticityMarker);
+    SceneMaterialElasticityDialog(SceneMaterialElasticity *material, QWidget *parent);
 
 protected:
     void createContent();
@@ -232,13 +237,13 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtYoungModulus;
-    SLineEditValue *txtPoissonNumber;
-    SLineEditValue *txtForceX;
-    SLineEditValue *txtForceY;
-    SLineEditValue *txtAlpha;
-    SLineEditValue *txtTemp;
-    SLineEditValue *txtTempRef;
+    ValueLineEdit *txtYoungModulus;
+    ValueLineEdit *txtPoissonNumber;
+    ValueLineEdit *txtForceX;
+    ValueLineEdit *txtForceY;
+    ValueLineEdit *txtAlpha;
+    ValueLineEdit *txtTemp;
+    ValueLineEdit *txtTempRef;
 };
 
 #endif // HERMES_ELASTICITY_H

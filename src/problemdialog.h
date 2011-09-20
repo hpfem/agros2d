@@ -26,7 +26,7 @@ class ProblemInfo;
 class ScriptEditor;
 
 class SLineEditDouble;
-class SLineEditValue;
+class ValueLineEdit;
 
 class ProblemDialog: public QDialog
 {
@@ -41,6 +41,7 @@ private slots:
     void doPhysicFieldChanged(int index);
     void doAdaptivityChanged(int index);
     void doAnalysisTypeChanged(int index);
+    void doLinearityTypeChanged(int index);
     void doTransientChanged();
     void doShowEquation();
     void doAccept();
@@ -54,21 +55,29 @@ private:
     QComboBox *cmbProblemType;
     QComboBox *cmbPhysicField;
     QDateTimeEdit *dtmDate;
-    QSpinBox *txtNumberOfRefinements;
-    QSpinBox *txtPolynomialOrder;
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     SLineEditDouble *txtAdaptivityTolerance;
     QComboBox *cmbMatrixSolver;
+
+    // mesh
+    QComboBox *cmbMeshType;
+    QSpinBox *txtNumberOfRefinements;
+    QSpinBox *txtPolynomialOrder;
+
+    // linearity
+    QComboBox *cmbLinearityType;
+    QSpinBox *txtLinearityNonlinearitySteps;
+    SLineEditDouble *txtLinearityNonlinearityTolerance;
 
     // harmonic
     SLineEditDouble *txtFrequency;
 
     // transient
     QComboBox *cmbAnalysisType;
-    SLineEditValue *txtTransientTimeStep;
-    SLineEditValue *txtTransientTimeTotal;
-    SLineEditValue *txtTransientInitialCondition;
+    ValueLineEdit *txtTransientTimeStep;
+    ValueLineEdit *txtTransientTimeTotal;
+    ValueLineEdit *txtTransientInitialCondition;
     QLabel *lblTransientSteps;
 
     // startup script

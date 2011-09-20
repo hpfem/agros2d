@@ -1,4 +1,4 @@
- // This file is part of Agros2D.
+// This file is part of Agros2D.
 //
 // Agros2D is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,23 +31,23 @@
 // FIX ********************************************************************************************************************************************************************
 // Terible, is it possible to write this code better???
 #define python_int_array() \
-const int count = 100; \
-                  int index[count]; \
-                  for (int i = 0; i < count; i++) \
-                  index[i] = INT_MIN; \
-                             if (PyArg_ParseTuple(args, "i|iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", \
-                                                  &index[ 0], &index[ 1], &index[ 2], &index[ 3], &index[ 4], &index[ 5], &index[ 6], &index[ 7], &index[ 8], &index[ 9], \
-                                                  &index[10], &index[11], &index[12], &index[13], &index[14], &index[15], &index[16], &index[17], &index[18], &index[19], \
-                                                  &index[20], &index[21], &index[22], &index[23], &index[24], &index[25], &index[26], &index[27], &index[28], &index[29], \
-                                                  &index[30], &index[31], &index[32], &index[33], &index[34], &index[35], &index[36], &index[37], &index[38], &index[39], \
-                                                  &index[40], &index[41], &index[42], &index[43], &index[44], &index[45], &index[46], &index[47], &index[48], &index[49], \
-                                                  &index[50], &index[51], &index[52], &index[53], &index[54], &index[55], &index[56], &index[57], &index[58], &index[59], \
-                                                  &index[60], &index[61], &index[62], &index[63], &index[64], &index[65], &index[66], &index[67], &index[68], &index[69], \
-                                                  &index[70], &index[71], &index[72], &index[73], &index[74], &index[75], &index[76], &index[77], &index[78], &index[79], \
-                                                  &index[80], &index[81], &index[82], &index[83], &index[84], &index[85], &index[86], &index[87], &index[88], &index[89], \
-                                                  &index[90], &index[91], &index[92], &index[93], &index[94], &index[95], &index[96], &index[97], &index[98], &index[99]  \
-                                                  )) \
-                             // FIX ********************************************************************************************************************************************************************
+    const int count = 100; \
+    int index[count]; \
+    for (int i = 0; i < count; i++) \
+    index[i] = INT_MIN; \
+    if (PyArg_ParseTuple(args, "i|iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", \
+    &index[ 0], &index[ 1], &index[ 2], &index[ 3], &index[ 4], &index[ 5], &index[ 6], &index[ 7], &index[ 8], &index[ 9], \
+    &index[10], &index[11], &index[12], &index[13], &index[14], &index[15], &index[16], &index[17], &index[18], &index[19], \
+    &index[20], &index[21], &index[22], &index[23], &index[24], &index[25], &index[26], &index[27], &index[28], &index[29], \
+    &index[30], &index[31], &index[32], &index[33], &index[34], &index[35], &index[36], &index[37], &index[38], &index[39], \
+    &index[40], &index[41], &index[42], &index[43], &index[44], &index[45], &index[46], &index[47], &index[48], &index[49], \
+    &index[50], &index[51], &index[52], &index[53], &index[54], &index[55], &index[56], &index[57], &index[58], &index[59], \
+    &index[60], &index[61], &index[62], &index[63], &index[64], &index[65], &index[66], &index[67], &index[68], &index[69], \
+    &index[70], &index[71], &index[72], &index[73], &index[74], &index[75], &index[76], &index[77], &index[78], &index[79], \
+    &index[80], &index[81], &index[82], &index[83], &index[84], &index[85], &index[86], &index[87], &index[88], &index[89], \
+    &index[90], &index[91], &index[92], &index[93], &index[94], &index[95], &index[96], &index[97], &index[98], &index[99]  \
+    )) \
+    // FIX ********************************************************************************************************************************************************************
 
 // version()
 char *pythonVersion()
@@ -172,7 +172,7 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
         throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
 
     // frequency
-    if (Util::scene()->problemInfo()->physicField() == PhysicField_Magnetic)
+    if (Util::scene()->problemInfo()->hermes()->hasHarmonic())
     {
         if (frequency >= 0)
             Util::scene()->problemInfo()->frequency = frequency;
@@ -275,9 +275,9 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
     if (angle > 180.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 
-    SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(QString(marker));
-    if (!edgeMarker)
-        throw invalid_argument(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
+    SceneBoundary *boundary = Util::scene()->getBoundary(QString(marker));
+    if (!boundary)
+        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(marker).toStdString());
 
     // start node
     SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
@@ -285,7 +285,7 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
     SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
 
     // FIXME 0 -> variable
-    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, edgeMarker, angle, 0));
+    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, boundary, angle, 0));
 }
 
 void pythonDeleteEdge(int index)
@@ -309,11 +309,11 @@ void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *
 {
     logMessage("pythonAddLabel()");
 
-    SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(QString(marker));
-    if (!labelMarker)
-        throw invalid_argument(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
+    SceneMaterial *material = Util::scene()->getMaterial(QString(marker));
+    if (!material)
+        throw invalid_argument(QObject::tr("Material '%1' is not defined.").arg(marker).toStdString());
 
-    Util::scene()->addLabel(new SceneLabel(Point(x, y), labelMarker, area, polynomialOrder));
+    Util::scene()->addLabel(new SceneLabel(Point(x, y), material, area, polynomialOrder));
 }
 
 void pythonDeleteLabel(int index)
@@ -337,10 +337,10 @@ static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
 {
     logMessage("pythonAddBoundary()");
 
-    SceneEdgeMarker *marker = Util::scene()->problemInfo()->hermes()->newEdgeMarker(self, args);
+    SceneBoundary *marker = Util::scene()->problemInfo()->hermes()->newBoundary(self, args);
     if (marker)
     {
-        Util::scene()->addEdgeMarker(marker);
+        Util::scene()->addBoundary(marker);
         Py_RETURN_NONE;
     }
     else
@@ -355,7 +355,7 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyBoundary()");
 
-    if (Util::scene()->problemInfo()->hermes()->modifyEdgeMarker(self,args))
+    if (Util::scene()->problemInfo()->hermes()->modifyBoundary(self,args))
         Py_RETURN_NONE;
     else
         return NULL;
@@ -366,10 +366,10 @@ static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
 {
     logMessage("pythonAddMaterial()");
 
-    SceneLabelMarker *marker = Util::scene()->problemInfo()->hermes()->newLabelMarker(self, args);
+    SceneMaterial *marker = Util::scene()->problemInfo()->hermes()->newMaterial(self, args);
     if (marker)
     {
-        Util::scene()->addLabelMarker(marker);
+        Util::scene()->addMaterial(marker);
         Py_RETURN_NONE;
     }
     else
@@ -384,7 +384,7 @@ static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyMaterial()");
 
-    if (Util::scene()->problemInfo()->hermes()->modifyLabelMarker(self, args))
+    if (Util::scene()->problemInfo()->hermes()->modifyMaterial(self, args))
         Py_RETURN_NONE;
     else
         return NULL;
@@ -652,8 +652,8 @@ void pythonMode(char *str)
     else if (QString(str) == "postprocessor")
         if (Util::scene()->sceneSolution()->isSolved())
             sceneView()->actSceneModePostprocessor->trigger();
-    else
-        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+        else
+            throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
     else
         throw invalid_argument(QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString());
 
@@ -817,7 +817,7 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
 }
 
 // showscalar(type = { "none", "scalar", "scalar3d", "order" }, variable, component, rangemin, rangemax)
-void pythonShowScalar(char *type, char *variable, char *component, int rangemin, int rangemax)
+void pythonShowScalar(char *type, char *variable, char *component, double rangemin, double rangemax)
 {
     logMessage("pythonShowScalar()");
 
@@ -832,7 +832,7 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
     sceneView()->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
     if (sceneView()->sceneViewSettings().scalarPhysicFieldVariable == PhysicFieldVariable_Undefined)
         throw invalid_argument(QObject::tr("Physic field variable '%1' is not implemented.").arg(QString(variable)).toStdString());
-    if (Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView()->sceneViewSettings().scalarPhysicFieldVariable))
+    if (!Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView()->sceneViewSettings().scalarPhysicFieldVariable))
         throw invalid_argument(QObject::tr("Physic field variable '%1' cannot be used with this field.").arg(QString(variable)).toStdString());
 
     // variable component
@@ -840,11 +840,11 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
     if (sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp == PhysicFieldVariableComp_Undefined)
         throw invalid_argument(QObject::tr("Physic field variable component '%1' is not implemented.").arg(QString(component)).toStdString());
     if ((isPhysicFieldVariableScalar(sceneView()->sceneViewSettings().scalarPhysicFieldVariable)) &&
-        (sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar))
+            (sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar))
         throw invalid_argument(QObject::tr("Physic field variable is scalar variable.").toStdString());
 
     // range
-    if (rangemin != INT_MIN)
+    if (rangemin != -123456)
     {
         sceneView()->sceneViewSettings().scalarRangeAuto = false;
         sceneView()->sceneViewSettings().scalarRangeMin = rangemin;
@@ -853,10 +853,11 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
     {
         sceneView()->sceneViewSettings().scalarRangeAuto = true;
     }
-    if (rangemax != INT_MIN)
+    if (rangemax != -123456)
         sceneView()->sceneViewSettings().scalarRangeMax = rangemax;
 
-    sceneView()->doInvalidated();
+    // sceneView()->doInvalidated();
+    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
 }
 
 // showgrid(show = {True, False})
@@ -901,7 +902,9 @@ void pythonShowContours(bool show)
     logMessage("pythonShowContours()");
 
     sceneView()->sceneViewSettings().showContours = show;
-    sceneView()->doInvalidated();
+
+    // sceneView()->doInvalidated();
+    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
 }
 
 // showvectors(show = {True, False})
@@ -910,7 +913,9 @@ void pythonShowVectors(bool show)
     logMessage("pythonShowVectors()");
 
     sceneView()->sceneViewSettings().showVectors = show;
-    sceneView()->doInvalidated();
+
+    // sceneView()->doInvalidated();
+    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
 }
 
 // settimestep(level)
@@ -929,7 +934,7 @@ void pythonSetTimeStep(int timestep)
     if ((timestep < 0) || (timestep > Util::scene()->sceneSolution()->timeStepCount()))
         throw out_of_range(QObject::tr("Time step must be between 0 and %1.").arg(Util::scene()->sceneSolution()->timeStepCount()).toStdString());
 
-    Util::scene()->sceneSolution()->setTimeStep(timestep);
+    Util::scene()->sceneSolution()->setTimeStep(timestep, false);
 }
 
 // timestepcount()
@@ -1123,13 +1128,15 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     return scriptResult;
 }
 
-ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
+ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bool returnValue)
 {
-    logMessage("PythonEngine::runPythonExpression()");
+    runPythonHeader();        
 
-    runPythonHeader();
-
-    QString exp = "result = " + expression;
+    QString exp;
+    if (returnValue)
+        exp = QString("result = %1").arg(expression);
+    else
+        exp = expression;
 
     PyObject *output = PyRun_String(exp.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
@@ -1150,14 +1157,17 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
         else
         {
             // parse result
-            PyObject *result = PyDict_GetItemString(m_dict, "result");
-            if (result)
+            if (returnValue)
             {
-                Py_INCREF(result);
-                PyArg_Parse(result, "d", &expressionResult.value);
-                if (fabs(expressionResult.value) < EPS_ZERO)
-                    expressionResult.value = 0.0;
-                Py_DECREF(result);
+                PyObject *result = PyDict_GetItemString(m_dict, "result");
+                if (result)
+                {
+                    Py_INCREF(result);
+                    PyArg_Parse(result, "d", &expressionResult.value);
+                    if (fabs(expressionResult.value) < EPS_ZERO)
+                        expressionResult.value = 0.0;
+                    Py_DECREF(result);
+                }
             }
         }
     }

@@ -21,28 +21,28 @@
 #include "mesh.h"
 #include "../quadrature/quad_all.h"
 #include "../../../hermes_common/matrix.h"
+  
+H1ShapesetJacobi CurvMap::ref_map_shapeset;
+PrecalcShapeset CurvMap::ref_map_pss(&ref_map_shapeset);
 
-// defined in refmap.cpp
-extern H1ShapesetJacobi ref_map_shapeset;
-extern PrecalcShapeset ref_map_pss;
+double** CurvMap::edge_proj_matrix;
+double** CurvMap::bubble_proj_matrix_tri;
+double** CurvMap::bubble_proj_matrix_quad;
 
-static double** edge_proj_matrix = NULL;  //projection matrix for each edge is the same
-static double** bubble_proj_matrix_tri = NULL; //projection matrix for triangle bubbles
-static double** bubble_proj_matrix_quad = NULL; //projection matrix for quad bubbles
+double* CurvMap::edge_p;
+double* CurvMap::bubble_tri_p;
+double* CurvMap::bubble_quad_p;
 
-static double* edge_p = NULL;  // diagonal vector in cholesky factorization
-static double* bubble_tri_p = NULL; // diagonal vector in cholesky factorization
-static double* bubble_quad_p = NULL; // diagonal vector in cholesky factorization
+Quad1DStd CurvMap::quad1d;
+Quad2DStd CurvMap::quad2d;
 
-static Quad1DStd quad1d;
-static Quad2DStd quad2d; // fixme: g_quad_2d_std
-
-static Trf ctm;
+Trf CurvMap::ctm;
 
 //// NURBS //////////////////////////////////////////////////////////////////////////////////////////
-
 // recursive calculation of the basis function N_i,k
-double nurbs_basis_fn(int i, int k, double t, double* knot)
+bool CurvMap::warning_issued = false;
+
+double CurvMap::nurbs_basis_fn(int i, int k, double t, double* knot)
 {
   _F_
   if (k == 0)
@@ -67,80 +67,214 @@ double nurbs_basis_fn(int i, int k, double t, double* knot)
   }
 }
 
-
-// nurbs curve: t goes from -1 to 1, function returns x, y coordinates in plane
-void nurbs_edge(Element* e, Nurbs* nurbs, int edge, double t, double& x, double& y)
+// Nurbs curve: t goes from -1 to 1, function returns x, y coordinates in plane
+// as well as the unit normal and unit tangential vectors. This is done using 
+// the Wikipedia page http://en.wikipedia.org/wiki/Non-uniform_rational_B-spline.
+void CurvMap::nurbs_edge(Element* e, Nurbs* nurbs, int edge, double t, double& x, 
+                         double& y, double& n_x, double& n_y, double& t_x, double& t_y)
 {
   _F_
-  t = (t + 1) / 2.0; // nurbs curves are parametrized from 0 to 1
+  // Nurbs curves are parametrized from 0 to 1.
+  t = (t + 1.0) / 2.0;
+
+  // Start point A, end point B.
+  double2 A, B;
+  A[0] = e->vn[edge]->x;
+  A[1] = e->vn[edge]->y;
+  B[0] = e->vn[e->next_vert(edge)]->x;
+  B[1] = e->vn[e->next_vert(edge)]->y;
+
+  // Vector pointing from A to B.
+  double2 v;
+  v[0] = B[0] - A[0];
+  v[1] = B[1] - A[1];
+  double abs_v = sqrt(sqr(v[0]) + sqr(v[1]));
+
+  // Straight line.
   if (nurbs == NULL)
   {
-    double2 v;
-    v[0] = e->vn[e->next_vert(edge)]->x - e->vn[edge]->x;
-    v[1] = e->vn[e->next_vert(edge)]->y - e->vn[edge]->y;
-    x = e->vn[edge]->x + t * v[0];
-    y = e->vn[edge]->y + t * v[1];
+    x = A[0] + t * v[0];
+    y = A[1] + t * v[1];
+    t_x = v[0] / abs_v;
+    t_y = v[1] / abs_v;
+    n_x = t_y;
+    n_y = -t_x;
   }
-  else
-  {
-    double3* cp = nurbs->pt;
-    x = y = 0.0;
-    double sum = 0.0;  // sum of basis fns and weights
+  else {
+    // Circular arc.
+    if (nurbs->arc == true) {
+      double3* cp = nurbs->pt;
+      x = y = 0.0;
+      double sum = 0.0;  // sum of basis fns and weights
 
-    for (int i = 0; i < nurbs->np; i++)
-    {
-      double basis = nurbs_basis_fn(i, nurbs->degree, t, nurbs->kv);
-      sum += cp[i][2] * basis;
-      x   += cp[i][2] * basis * cp[i][0];
-      y   += cp[i][2] * basis * cp[i][1];
+      for (int i = 0; i < nurbs->np; i++)
+      {
+        double basis = nurbs_basis_fn(i, nurbs->degree, t, nurbs->kv);
+        sum += cp[i][2] * basis;
+        double x_i = cp[i][0];
+        double y_i = cp[i][1];
+        double w_i = cp[i][2];
+        x   += w_i * basis * x_i;
+        y   += w_i * basis * y_i;
+      }
+
+      x /= sum;
+      y /= sum;
+
+      // Normal and tangential vectors.
+      // FIXME; This calculation is artificial and it assumes that 
+      // the NURBS is a circular arc. This should be done in the 
+      // same way for all NURBS.
+
+      // End points, midpoint.
+      double2 M;
+      M[0] = (A[0] + B[0]) / 2.;
+      M[1] = (A[1] + B[1]) / 2.;
+      //printf("***** A = %g %g\n", A[0], A[1]);
+      //printf("***** B = %g %g\n", B[0], B[1]);
+      //printf("***** M = %g %g\n", M[0], M[1]);
+      
+      // Unit vector from M to center of circle S.
+      double2 w;
+      w[0] = -v[1] / abs_v;
+      w[1] = v[0] / abs_v;
+
+      // Distance L between M and center of circle S
+      // can be calculated using a right-angle triangle
+      // whose one angle is alpha/2.
+      double alpha_rad = nurbs->angle * M_PI / 180.;
+      double L = 0.5 * abs_v / tan(0.5 * alpha_rad);
+      //printf("***** L = %g\n", L);
+    
+      // Center of circle.
+      double2 S;
+      S[0] = M[0] + w[0] * L;
+      S[1] = M[1] + w[1] * L;
+      //printf("***** S = %g %g\n", S[0], S[1]);
+
+      // Calculation of radius and test.
+      double2 SA, SB;
+      SA[0] = A[0] - S[0];
+      SA[1] = A[1] - S[1];
+      SB[0] = B[0] - S[0];
+      SB[1] = B[1] - S[1];
+      double R = sqrt(sqr(SA[0]) + sqr(SA[1]));
+      double R2 = sqrt(sqr(SB[0]) + sqr(SB[1]));
+      if (std::abs(R - R2) > 1e-6) 
+        error("Internal error in nurbs_edge() - bad radius R.");
+
+      // Normal vectors to circular arc at edge end points A, B.
+      double2 normal_A, normal_B;
+      normal_A[0] = SA[0] / R;
+      normal_A[1] = SA[1] / R;
+      normal_B[0] = SB[0] / R;
+      normal_B[1] = SB[1] / R;
+      //printf("***** normal_A = %g %g\n", normal_A[0], normal_A[1]);
+      //printf("***** normal_B = %g %g\n", normal_B[0], normal_B[1]);
+
+      // Calculate rotational matrix that transforms AS_ref = (R, 0) -> SA
+      // and SB_ref -> SB.
+      double2 SB_ref;
+      SB_ref[0] = R * cos(alpha_rad);
+      SB_ref[1] = R * sin(alpha_rad);
+      // First we need to invert the matrix [(R 0)^T, SB_ref^T].
+      double m_11, m_12, m_21, m_22;
+      m_11 = R;
+      m_12 = SB_ref[0];
+      m_21 = 0;
+      m_22 = SB_ref[1];
+      double m_det = m_11 * m_22 - m_12 * m_21;
+      double inv_11, inv_12, inv_21, inv_22;
+      inv_11 = m_22 / m_det;
+      inv_12 = -m_12 / m_det;
+      inv_21 = -m_21 / m_det;
+      inv_22 = m_11 / m_det;
+      double s_11, s_12, s_21, s_22;
+      s_11 = SA[0];
+      s_12 = SB[0];
+      s_21 = SA[1];
+      s_22 = SB[1];
+      //Rotation matrix.
+      double r_11, r_12, r_21, r_22;
+      r_11 = s_11 * inv_11 + s_12 * inv_21;
+      r_12 = s_11 * inv_12 + s_12 * inv_22;
+      r_21 = s_21 * inv_11 + s_22 * inv_21;
+      r_22 = s_21 * inv_12 + s_22 * inv_22;
+      // The desired normal vector in reference coordinates.
+      double n_x_ref = cos(alpha_rad * t);
+      double n_y_ref = sin(alpha_rad * t);
+      // Rotate it.
+      n_x = r_11 * n_x_ref + r_12 * n_y_ref;
+      n_y = r_21 * n_x_ref + r_22 * n_y_ref;
+
+      /*
+      // Calculate normal at point corresponding to the 
+      // position of parameter 't' between 0 and 1. 
+      n_x = normal_A[0] + t * (normal_B[0] - normal_A[0]);
+      n_y = normal_A[1] + t * (normal_B[1] - normal_A[1]);
+      double size_n = sqrt(sqr(n_x) + sqr(n_y));
+      n_x /= size_n;
+      n_y /= size_n;
+      */
+
+      // Calculate tangential vectors.
+      t_x = -n_y;
+      t_y = n_x;
+
+      // Correcting sign so that the normal points outside 
+      // if the angle is negative.
+      if (nurbs->angle < 0) {
+        n_x *= -1;
+        n_y *= -1;
+        t_x *= -1;
+        t_y *= -1;
+      }
     }
+    // General NURBS. 
+    // FIXME - calculation of normal and tangential vectors needs to be added.
+    else {
+      double3* cp = nurbs->pt;
+      x = y = 0.0;
+      double sum = 0.0;  // sum of basis fns and weights
 
-    sum = 1.0 / sum;
-    x *= sum;
-    y *= sum;
+      for (int i = 0; i < nurbs->np; i++)
+      {
+        double basis = nurbs_basis_fn(i, nurbs->degree, t, nurbs->kv);
+        sum += cp[i][2] * basis;
+        double x_i = cp[i][0];
+        double y_i = cp[i][1];
+        double w_i = cp[i][2];
+        x   += w_i * basis * x_i;
+        y   += w_i * basis * y_i;
+      }
+
+      x /= sum;
+      y /= sum;
+
+      if(!warning_issued) {
+        printf("FIXME: IMPLEMENT CALCULATION OF n_x, n_y, t_x, t_y in nurbs_edge() !!!\n");
+        warning_issued = true;
+      }
+      n_x = 0;
+      n_y = 0;
+      t_x = 0;
+      t_y = 0;
+    }
   }
 }
 
-
-
 //// non-polynomial reference map //////////////////////////////////////////////////////////////////////////////////
-
-// definition of vertex basis functions for triangle
-static double lambda_0(double x, double y) { return -0.5 * (x + y); }
-static double lambda_1(double x, double y) { return  0.5 * (x + 1); }
-static double lambda_2(double x, double y) { return  0.5 * (y + 1); }
-
-static double (*lambda[3])(double, double) = { lambda_0, lambda_1, lambda_2 };
-
-// 1D Lobatto functions
-static double lob0(double x)  { return l0(x); }
-static double lob1(double x)  { return l1(x); }
-static double lob2(double x)  { return l2(x); }
-static double lob3(double x)  { return l3(x); }
-static double lob4(double x)  { return l4(x); }
-static double lob5(double x)  { return l5(x); }
-static double lob6(double x)  { return l6(x); }
-static double lob7(double x)  { return l7(x); }
-static double lob8(double x)  { return l8(x); }
-static double lob9(double x)  { return l9(x); }
-static double lob10(double x) { return l10(x); }
-static double lob11(double x) { return l11(x); }
-
-static double (*lob[12])(double) = { lob0, lob1, lob2, lob3, lob4, lob5, lob6, lob7, lob8, lob9, lob10, lob11 };
-
-static double2 ref_vert[2][4] =
-{
-  { { -1.0, -1.0 }, { 1.0, -1.0 }, { -1.0, 1.0 }, {  0.0, 0.0 } },
-  { { -1.0, -1.0 }, { 1.0, -1.0 }, {  1.0, 1.0 }, { -1.0, 1.0 } }
-};
-
+const double2 CurvMap::ref_vert[2][4] = {
+    { { -1.0, -1.0 }, { 1.0, -1.0 }, { -1.0, 1.0 }, {  0.0, 0.0 } },
+    { { -1.0, -1.0 }, { 1.0, -1.0 }, {  1.0, 1.0 }, { -1.0, 1.0 } }
+  };
 
 // subtraction of straight edge and nurbs curve
-static void nurbs_edge_0(Element* e, Nurbs* nurbs, int edge, double t, double& x, double& y)
+void CurvMap::nurbs_edge_0(Element* e, Nurbs* nurbs, int edge, double t, double& x, double& y, double& n_x, double& n_y, double& t_x, double& t_y)
 {
   int va = edge;
   int vb = e->next_vert(edge);
-  nurbs_edge(e, nurbs, edge, t, x, y);
+  nurbs_edge(e, nurbs, edge, t, x, y, n_x, n_y, t_x, t_y);
 
   x -= 0.5 * ((1-t) * (e->vn[va]->x) + (1+t) * (e->vn[vb]->x));
   y -= 0.5 * ((1-t) * (e->vn[va]->y) + (1+t) * (e->vn[vb]->y));
@@ -150,9 +284,8 @@ static void nurbs_edge_0(Element* e, Nurbs* nurbs, int edge, double t, double& x
   y *= k;
 }
 
-
 // calculation of nonpolynomial reference mapping on curved element
-static void calc_ref_map_tri(Element* e, Nurbs** nurbs, double xi_1, double xi_2, double& x, double& y)
+void CurvMap::calc_ref_map_tri(Element* e, Nurbs** nurbs, double xi_1, double xi_2, double& x, double& y)
 {
   _F_
   double  fx,  fy;
@@ -162,8 +295,31 @@ static void calc_ref_map_tri(Element* e, Nurbs** nurbs, double xi_1, double xi_2
   {
     int va = j;
     int vb = e->next_vert(j);
-    double l_a = lambda[va](xi_1, xi_2);
-    double l_b = lambda[vb](xi_1, xi_2);
+    double l_a = 0;
+    double l_b = 0;
+    switch(va) {
+    case 0:
+      l_a = lambda_0(xi_1, xi_2);
+      break;
+    case 1:
+      l_a = lambda_1(xi_1, xi_2);
+      break;
+    case 2:
+      l_a = lambda_2(xi_1, xi_2);
+      break;
+    }
+
+    switch(vb) {
+    case 0:
+      l_b = lambda_0(xi_1, xi_2);
+      break;
+    case 1:
+      l_b = lambda_1(xi_1, xi_2);
+      break;
+    case 2:
+      l_b = lambda_2(xi_1, xi_2);
+      break;
+    }
 
     // vertex part
     x += e->vn[j]->x * l_a;
@@ -174,7 +330,8 @@ static void calc_ref_map_tri(Element* e, Nurbs** nurbs, double xi_1, double xi_2
     {
       // edge part
       double t = l_b - l_a;
-      nurbs_edge_0(e, nurbs[j], j, t, fx, fy);
+      double n_x, n_y, t_x, t_y;
+      nurbs_edge_0(e, nurbs[j], j, t, fx, fy, n_x, n_y, t_x, t_y);
       x += fx * l_a  * l_b;
       y += fy * l_a  * l_b;
     }
@@ -182,16 +339,17 @@ static void calc_ref_map_tri(Element* e, Nurbs** nurbs, double xi_1, double xi_2
 }
 
 
-static void calc_ref_map_quad(Element* e, Nurbs** nurbs, double xi_1, double xi_2,
+void CurvMap::calc_ref_map_quad(Element* e, Nurbs** nurbs, double xi_1, double xi_2,
                               double& x, double& y)
 {
   _F_
   double ex[4], ey[4];
 
-  nurbs_edge(e, nurbs[0], 0,  xi_1, ex[0], ey[0]);
-  nurbs_edge(e, nurbs[1], 1,  xi_2, ex[1], ey[1]);
-  nurbs_edge(e, nurbs[2], 2, -xi_1, ex[2], ey[2]);
-  nurbs_edge(e, nurbs[3], 3, -xi_2, ex[3], ey[3]);
+  double n_x, n_y, t_x, t_y;
+  nurbs_edge(e, nurbs[0], 0,  xi_1, ex[0], ey[0], n_x, n_y, t_x, t_y);
+  nurbs_edge(e, nurbs[1], 1,  xi_2, ex[1], ey[1], n_x, n_y, t_x, t_y);
+  nurbs_edge(e, nurbs[2], 2, -xi_1, ex[2], ey[2], n_x, n_y, t_x, t_y);
+  nurbs_edge(e, nurbs[3], 3, -xi_2, ex[3], ey[3], n_x, n_y, t_x, t_y);
 
   x = (1-xi_2)/2.0 * ex[0] + (1+xi_1)/2.0 * ex[1] +
       (1+xi_2)/2.0 * ex[2] + (1-xi_1)/2.0 * ex[3] -
@@ -205,7 +363,7 @@ static void calc_ref_map_quad(Element* e, Nurbs** nurbs, double xi_1, double xi_
 }
 
 
-static void calc_ref_map(Element* e, Nurbs** nurbs, double xi_1, double xi_2, double2& f)
+void CurvMap::calc_ref_map(Element* e, Nurbs** nurbs, double xi_1, double xi_2, double2& f)
 {
   _F_
   if (e->get_mode() == HERMES_MODE_QUAD)
@@ -218,7 +376,7 @@ static void calc_ref_map(Element* e, Nurbs** nurbs, double xi_1, double xi_2, do
 //// projection based interpolation ////////////////////////////////////////////////////////////////
 
 // preparation of projection matrices, Cholesky factorization
-static void precalculate_cholesky_projection_matrix_edge()
+void CurvMap::precalculate_cholesky_projection_matrix_edge()
 {
   _F_
   int order = ref_map_shapeset.get_max_order();
@@ -235,9 +393,85 @@ static void precalculate_cholesky_projection_matrix_edge()
       double val = 0.0;
       for (int k = 0; k < quad1d.get_num_points(o); k++)
       {
+        double fi = 0;
+        double fj = 0;
         double x = pt[k][0];
-        double fi = lob[i+2](x);
-        double fj = lob[j+2](x);
+        switch(i+2) {
+        case 0:
+          fi = lob0(x);
+          break;
+        case 1:
+          fi = lob1(x);
+          break;
+        case 2:
+          fi = lob2(x);
+          break;
+        case 3:
+          fi = lob3(x);
+          break;
+        case 4:
+          fi = lob4(x);
+          break;
+        case 5:
+          fi = lob5(x);
+          break;
+        case 6:
+          fi = lob6(x);
+          break;
+        case 7:
+          fi = lob7(x);
+          break;
+        case 8:
+          fi = lob8(x);
+          break;
+        case 9:
+          fi = lob9(x);
+          break;
+        case 10:
+          fi = lob10(x);
+          break;
+        case 11:
+          fi = lob11(x);
+          break;
+        }
+        switch(j+2) {
+        case 0:
+          fj = lob0(x);
+          break;
+        case 1:
+          fj = lob1(x);
+          break;
+        case 2:
+          fj = lob2(x);
+          break;
+        case 3:
+          fj = lob3(x);
+          break;
+        case 4:
+          fj = lob4(x);
+          break;
+        case 5:
+          fj = lob5(x);
+          break;
+        case 6:
+          fj = lob6(x);
+          break;
+        case 7:
+          fj = lob7(x);
+          break;
+        case 8:
+          fj = lob8(x);
+          break;
+        case 9:
+          fj = lob9(x);
+          break;
+        case 10:
+          fj = lob10(x);
+          break;
+        case 11:
+          fj = lob11(x);
+          break;
+        }
         val += pt[k][1] * (fi * fj);
       }
       edge_proj_matrix[i][j] = edge_proj_matrix[j][i] = val;
@@ -250,7 +484,7 @@ static void precalculate_cholesky_projection_matrix_edge()
 }
 
 // calculate the H1 seminorm products (\phi_i, \phi_j) for all 0 <= i,j < n, n is the number of bubble functions
-static double** calculate_bubble_projection_matrix(int nb, int* indices)
+double** CurvMap::calculate_bubble_projection_matrix(int nb, int* indices)
 {
   _F_
   double** mat = new_matrix<double>(nb, nb);
@@ -284,7 +518,7 @@ static double** calculate_bubble_projection_matrix(int nb, int* indices)
 }
 
 
-static void precalculate_cholesky_projection_matrices_bubble()
+void CurvMap::precalculate_cholesky_projection_matrices_bubble()
 {
   _F_
   // *** triangles ***
@@ -319,7 +553,7 @@ static void precalculate_cholesky_projection_matrices_bubble()
 //// edge part of projection based interpolation ///////////////////////////////////////////////////
 
 // compute point (x,y) in reference element, edge vector (v1, v2)
-static void edge_coord(Element* e, int edge, double t, double2& x, double2& v)
+void CurvMap::edge_coord(Element* e, int edge, double t, double2& x, double2& v)
 {
   _F_
   int mode = e->get_mode();
@@ -338,7 +572,7 @@ static void edge_coord(Element* e, int edge, double t, double2& x, double2& v)
   v[0] /= lenght; v[1] /= lenght;
 }
 
-static void calc_edge_projection(Element* e, int edge, Nurbs** nurbs, int order, double2* proj)
+void CurvMap::calc_edge_projection(Element* e, int edge, Nurbs** nurbs, int order, double2* proj)
 {
   _F_
   ref_map_pss.set_active_element(e);
@@ -387,7 +621,45 @@ static void calc_edge_projection(Element* e, int edge, Nurbs** nurbs, int order,
       for (j = 0; j < np; j++)
       {
         double t = pt[j][0];
-        double fi = lob[i+2](t);
+        double fi = 0;
+        switch(i+2) {
+        case 0:
+          fi = lob0(t);
+          break;
+        case 1:
+          fi = lob1(t);
+          break;
+        case 2:
+          fi = lob2(t);
+          break;
+        case 3:
+          fi = lob3(t);
+          break;
+        case 4:
+          fi = lob4(t);
+          break;
+        case 5:
+          fi = lob5(t);
+          break;
+        case 6:
+          fi = lob6(t);
+          break;
+        case 7:
+          fi = lob7(t);
+          break;
+        case 8:
+          fi = lob8(t);
+          break;
+        case 9:
+          fi = lob9(t);
+          break;
+        case 10:
+          fi = lob10(t);
+          break;
+        case 11:
+          fi = lob11(t);
+          break;
+        }
         rhside[k][i] += pt[j][1] * (fi * fn[j][k]);
       }
     }
@@ -400,7 +672,7 @@ static void calc_edge_projection(Element* e, int edge, Nurbs** nurbs, int order,
 
 //// bubble part of projection based interpolation /////////////////////////////////////////////////
 
-static void old_projection(Element* e, int order, double2* proj, double* old[2])
+void CurvMap::old_projection(Element* e, int order, double2* proj, double* old[2])
 {
   _F_
   int mo2 = quad2d.get_max_order();
@@ -435,7 +707,7 @@ static void old_projection(Element* e, int order, double2* proj, double* old[2])
   }
 }
 
-static void calc_bubble_projection(Element* e, Nurbs** nurbs, int order, double2* proj)
+void CurvMap::calc_bubble_projection(Element* e, Nurbs** nurbs, int order, double2* proj)
 {
   _F_
   ref_map_pss.set_active_element(e);
@@ -446,8 +718,8 @@ static void calc_bubble_projection(Element* e, Nurbs** nurbs, int order, double2
   int qo = e->is_quad() ? H2D_MAKE_QUAD_ORDER(order, order) : order;
   int nb = ref_map_shapeset.get_num_bubbles(qo);
 
-  AUTOLA_OR(double2, fn, np);
-  memset(fn, 0, sizeof(double2) * np);
+  double2* fn = new double2[np];
+  memset(fn, 0, np * sizeof(double2));
 
   double* rhside[2];
   double* old[2];
@@ -501,12 +773,13 @@ static void calc_bubble_projection(Element* e, Nurbs** nurbs, int order, double2
     delete [] rhside[i];
     delete [] old[i];
   }
+  delete [] fn;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static void ref_map_projection(Element* e, Nurbs** nurbs, int order, double2* proj)
+void CurvMap::ref_map_projection(Element* e, Nurbs** nurbs, int order, double2* proj)
 {
   _F_
   // vertex part

@@ -27,19 +27,20 @@ struct HermesMagnetic : public HermesField
 {
     Q_OBJECT
 public:
-    HermesMagnetic() { m_physicField = PhysicField_Magnetic; }
-    virtual ~HermesMagnetic() {}
+    PhysicField physicField() const { return PhysicField_Magnetic; }
 
-    int numberOfSolution();
-    bool hasHarmonic() { return true; }
-    bool hasTransient() { return true; }
+    int numberOfSolution() const;
+    inline bool hasSteadyState() const { return true; }
+    inline bool hasHarmonic() const { return true; }
+    inline bool hasTransient() const { return true; }
+    inline bool hasNonlinearity() const { return false; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
-    LocalPointValue *localPointValue(Point point);
+    LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
 
     SurfaceIntegralValue *surfaceIntegralValue();
@@ -76,14 +77,15 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Magnetic_Velocity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Magnetic_LorentzForce); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+    virtual void updateTimeFunctions(double time);
 
     PhysicFieldVariable contourPhysicFieldVariable();
     PhysicFieldVariable scalarPhysicFieldVariable();
@@ -130,7 +132,7 @@ public:
     double pj;
     double wm;
 
-    LocalPointValueMagnetic(Point &point);
+    LocalPointValueMagnetic(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
@@ -143,6 +145,7 @@ protected:
 public:
     double forceMaxwellX;
     double forceMaxwellY;
+    double torque;
 
     SurfaceIntegralValueMagnetic();
     QStringList variables();
@@ -188,20 +191,20 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeMagneticMarker : public SceneEdgeMarker
+class SceneBoundaryMagnetic : public SceneBoundary
 {
 public:
     Value value_real;
     Value value_imag;
 
-    SceneEdgeMagneticMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
+    SceneBoundaryMagnetic(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelMagneticMarker : public SceneLabelMarker
+class SceneMaterialMagnetic : public SceneMaterial
 {
 public:
     Value permeability;
@@ -214,7 +217,7 @@ public:
     Value velocity_y;
     Value velocity_angular;
 
-    SceneLabelMagneticMarker(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity,
+    SceneMaterialMagnetic(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity,
                              Value remanence, Value remanence_angle, Value velocity_x, Value velocity_y, Value velocity_angular);
 
     QString script();
@@ -222,13 +225,12 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeMagneticMarker : public DSceneEdgeMarker
+class SceneEdgeMagneticDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    DSceneEdgeMagneticMarker(SceneEdgeMagneticMarker *edgeMagneticMarker, QWidget *parent);
-    ~DSceneEdgeMagneticMarker();
+    SceneEdgeMagneticDialog(SceneBoundaryMagnetic *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -237,18 +239,21 @@ protected:
     bool save();
 
 private:
+    QLabel *lblValueUnit;
     QComboBox *cmbType;
-    SLineEditValue *txtValueReal;
-    SLineEditValue *txtValueImag;
+    ValueLineEdit *txtValueReal;
+    ValueLineEdit *txtValueImag;
+
+private slots:
+    void doTypeChanged(int index);
 };
 
-class DSceneLabelMagneticMarker : public DSceneLabelMarker
+class SceneMaterialMagneticDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    DSceneLabelMagneticMarker(QWidget *parent, SceneLabelMagneticMarker *labelMagneticMarker);
-    ~DSceneLabelMagneticMarker();
+    SceneMaterialMagneticDialog(QWidget *parent, SceneMaterialMagnetic *material);
 
 protected:
     void createContent();
@@ -257,15 +262,15 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtPermeability;
-    SLineEditValue *txtConductivity;
-    SLineEditValue *txtCurrentDensityReal;
-    SLineEditValue *txtCurrentDensityImag;
-    SLineEditValue *txtRemanence;
-    SLineEditValue *txtRemanenceAngle;
-    SLineEditValue *txtVelocityX;
-    SLineEditValue *txtVelocityY;
-    SLineEditValue *txtVelocityAngular;
+    ValueLineEdit *txtPermeability;
+    ValueLineEdit *txtConductivity;
+    ValueLineEdit *txtCurrentDensityReal;
+    ValueLineEdit *txtCurrentDensityImag;
+    ValueLineEdit *txtRemanence;
+    ValueLineEdit *txtRemanenceAngle;
+    ValueLineEdit *txtVelocityX;
+    ValueLineEdit *txtVelocityY;
+    ValueLineEdit *txtVelocityAngular;
 };
 
 #endif // MAGNETIC_H

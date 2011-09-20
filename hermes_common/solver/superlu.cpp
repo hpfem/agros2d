@@ -113,7 +113,7 @@ scalar SuperLUMatrix::get(unsigned int m, unsigned int n)
   if (mid < 0) return 0.0;
   // Otherwise, add offset to the n-th column and return the value.
   if (mid >= 0) mid += Ap[n];
-#if !defined(H1D_COMPLEX) && !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+#ifndef HERMES_COMMON_COMPLEX
   return Ax[mid];
 #else
   return cplx(Ax[mid].r, Ax[mid].i);
@@ -138,7 +138,7 @@ void SuperLUMatrix::add(unsigned int m, unsigned int n, scalar v)
       error("Sparse matrix entry not found");
     // Add offset to the n-th column.
     pos += Ap[n];
-#if !defined(H1D_COMPLEX) && !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+#ifndef HERMES_COMMON_COMPLEX
     Ax[pos] += v;
 #else
     Ax[pos].r += v.real();
@@ -177,7 +177,7 @@ bool SuperLUMatrix::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt
       fprintf(file, "%% Size: %dx%d\n%% Nonzeros: %d\ntemp = zeros(%d, 3);\ntemp = [\n", size, size, Ap[size], Ap[size]);
       for (unsigned int j = 0; j < size; j++)
         for (unsigned int i = Ap[j]; i < Ap[j + 1]; i++)
-#if !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)          
+#ifndef HERMES_COMMON_COMPLEX          
           fprintf(file, "%d %d " SCALAR_FMT "\n", Ai[i] + 1, j + 1, SUPERLU_SCALAR(Ax[i]));
 #else          
         fprintf(file, "%d %d %lf+%lfi\n", Ai[i] + 1, j + 1, SUPERLU_SCALAR(Ax[i]));
@@ -188,7 +188,7 @@ bool SuperLUMatrix::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt
       
     case DF_HERMES_BIN: 
     {
-      hermes_fwrite("H3DX\001\000\000\000", 1, 8, file);
+      hermes_fwrite("HERMESX\001", 1, 8, file);
       int ssize = sizeof(scalar);
       hermes_fwrite(&ssize, sizeof(int), 1, file);
       hermes_fwrite(&size, sizeof(int), 1, file);
@@ -229,6 +229,117 @@ double SuperLUMatrix::get_fill_in() const
   return nnz / (double) (size * size);
 }
 
+void SuperLUMatrix::add_matrix(SuperLUMatrix* mat){
+  _F_
+  add_as_block(0,0,mat);
+}
+
+void SuperLUMatrix::add_to_diagonal_blocks(int num_stages, SuperLUMatrix* mat){
+  _F_
+  int ndof = mat->get_size();
+  if (this->get_size() != (unsigned int) num_stages * ndof) 
+    error("Incompatible matrix sizes in PetscMatrix::add_to_diagonal_blocks()");
+
+  for (int i = 0; i < num_stages; i++) {
+    this->add_as_block(ndof*i, ndof*i, mat);
+  }
+}
+
+void SuperLUMatrix::add_as_block(unsigned int i, unsigned int j, SuperLUMatrix* mat){
+  _F_
+  int idx;
+  for (unsigned int col=0;col<mat->get_size();col++){
+    for (unsigned int n=mat->Ap[col];n<mat->Ap[col+1];n++){
+      idx=find_position(Ai + Ap[col+j], Ap[col + 1 + j] - Ap[col+j],mat->Ai[n]+i);
+      if (idx<0)
+        error("Sparse matrix entry not found");
+      idx += Ap[col+j];
+#ifndef HERMES_COMMON_COMPLEX
+      Ax[idx]+=mat->Ax[n];
+#else
+      Ax[idx].r+=mat->Ax[n].r;
+      Ax[idx].i+=mat->Ax[n].i;
+#endif
+    }
+  }
+}
+
+  // Applies the matrix to vector_in and saves result to vector_out.
+void SuperLUMatrix::multiply_with_vector(scalar* vector_in, scalar* vector_out){
+  _F_
+  for(unsigned int i=0;i<size;i++){
+    vector_out[i]=0;
+  }
+  scalar a;
+  for (unsigned int c=0;c<size;c++){
+    for (unsigned int i=Ap[c];i<Ap[c+1];i++){
+#ifndef HERMES_COMMON_COMPLEX
+      a=Ax[i];
+#else
+      a=cplx(Ax[i].r,Ax[i].i);
+#endif
+      vector_out[c]+=vector_in[Ai[i]]*a;
+    }
+  }
+}
+  // Multiplies matrix with a scalar.
+void SuperLUMatrix::multiply_with_scalar(scalar value){
+  _F_
+  int n=nnz;
+  scalar a;
+  for(int i=0;i<n;i++){
+#ifndef HERMES_COMMON_COMPLEX
+    Ax[i]=Ax[i]*value;
+#else
+    a=cplx(Ax[i].r,Ax[i].i);
+    a=a*value;
+    Ax[i].r=a.real();
+    Ax[i].i=a.imag();
+#endif
+  }
+}
+  // Creates matrix using size, nnz, and the three arrays.
+void SuperLUMatrix::create(unsigned int size, unsigned int nnz, int* ap, int* ai, scalar* ax){
+  _F_
+  this->nnz = nnz;
+  this->size = size;
+  this->Ap = new unsigned int[size+1]; assert(this->Ap != NULL);
+  this->Ai = new int[nnz];    assert(this->Ai != NULL);
+  this->Ax = new slu_scalar[nnz]; assert(this->Ax != NULL);
+
+  for (unsigned int i = 0; i < size+1; i++){
+    this->Ap[i] = ap[i];
+  }
+  for (unsigned int i = 0; i < nnz; i++) {
+#ifndef HERMES_COMMON_COMPLEX
+    this->Ax[i] = ax[i]; 
+#else
+    this->Ax[i].r=ax[i].real();
+    this->Ax[i].i=ax[i].imag();
+#endif
+    this->Ai[i] = ai[i];
+  } 
+}
+  // Duplicates a matrix (including allocation).
+SuperLUMatrix* SuperLUMatrix::duplicate(){
+  _F_
+  SuperLUMatrix * nmat=new SuperLUMatrix();
+
+  nmat->nnz = nnz;
+  nmat->size = size;
+  nmat->Ap = new unsigned int[size+1]; assert(nmat->Ap != NULL);
+  nmat->Ai = new int[nnz];    assert(nmat->Ai != NULL);
+  nmat->Ax = new slu_scalar[nnz]; assert(nmat->Ax != NULL);
+  for (unsigned int i = 0;i<nnz;i++){
+    nmat->Ai[i]=Ai[i];
+    nmat->Ax[i]=Ax[i];
+  }
+  for (unsigned int i = 0;i<size+1;i++){
+    nmat->Ap[i]=Ap[i];
+  }
+  return nmat;
+}
+
 // SuperLUVector /////////////////////////////////////////////////////////////////////////////////////
 
 SuperLUVector::SuperLUVector()
@@ -262,7 +373,7 @@ void SuperLUVector::zero()
 void SuperLUVector::change_sign()
 {
   _F_
-#if !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+#ifndef HERMES_COMMON_COMPLEX
   for (unsigned int i = 0; i < size; i++) v[i] *= -1.;
 #else
   for (unsigned int i = 0; i < size; i++) {
@@ -282,7 +393,7 @@ void SuperLUVector::free()
 void SuperLUVector::set(unsigned int idx, scalar y)
 {
   _F_
-#if !defined(H1D_COMPLEX) && !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+#ifndef HERMES_COMMON_COMPLEX
   v[idx] = y;
 #else
   v[idx].r = y.real();
@@ -293,7 +404,7 @@ void SuperLUVector::set(unsigned int idx, scalar y)
 void SuperLUVector::add(unsigned int idx, scalar y)
 {
   _F_
-#if !defined(H1D_COMPLEX) && !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+#ifndef HERMES_COMMON_COMPLEX
   v[idx] += y;
 #else
   v[idx].r += y.real();
@@ -305,7 +416,7 @@ void SuperLUVector::add(unsigned int n, unsigned int *idx, scalar *y)
 {
   _F_
   for (unsigned int i = 0; i < n; i++) {
-#if !defined(H1D_COMPLEX) && !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+#ifndef HERMES_COMMON_COMPLEX
     v[idx[i]] += y[i];
 #else
     v[idx[i]].r += y[i].real();
@@ -335,7 +446,7 @@ bool SuperLUVector::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt
       
     case DF_HERMES_BIN: 
     {
-      hermes_fwrite("H3DR\001\000\000\000", 1, 8, file);
+      hermes_fwrite("HERMESR\001", 1, 8, file);
       int ssize = sizeof(scalar);
       hermes_fwrite(&ssize, sizeof(int), 1, file);
       hermes_fwrite(&size, sizeof(int), 1, file);
@@ -607,7 +718,7 @@ bool SuperLUSolver::solve()
     slu_scalar *sol = (slu_scalar*) ((DNformat*) X.Store)->nzval; 
     
     for (unsigned int i = 0; i < rhs->size; i++)
-#if !defined(H1D_COMPLEX) && !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)      
+#ifndef HERMES_COMMON_COMPLEX      
       sln[i] = sol[i];
 #else
       sln[i] = cplx(sol[i].r, sol[i].i);

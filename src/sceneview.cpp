@@ -35,10 +35,11 @@ SceneView *sceneView()
     return m_sceneView;
 }
 
-static inline double* computeNormal(double p0x, double p0y, double p0z, double p1x, double p1y, double p1z, double p2x, double p2y, double p2z)
+static void computeNormal(double p0x, double p0y, double p0z,
+                          double p1x, double p1y, double p1z,
+                          double p2x, double p2y, double p2z,
+                          double* normal)
 {
-    logMessage("computeNormal()");
-
     double ax = (p1x - p0x);
     double ay = (p1y - p0y);
     double az = (p1z - p0z);
@@ -47,17 +48,13 @@ static inline double* computeNormal(double p0x, double p0y, double p0z, double p
     double by = (p2y - p0y);
     double bz = (p2z - p0z);
 
-    double nx = ay * bz - az * by;
-    double ny = az * bx - ax * bz;
-    double nz = ax * by - ay * bx;
+    normal[0] = ay * bz - az * by;
+    normal[1] = az * bx - ax * bz;
+    normal[2] = ax * by - ay * bx;
 
     // normalize
     // double l = 1.0 / sqrt(sqr(nx) + sqr(ny) + sqr(nz));
     // double p[3] = { nx*l, ny*l, nz*l };
-
-    double p[3] = { nx, ny, nz };
-
-    return p;
 }
 
 // *******************************************************************************************************
@@ -73,8 +70,8 @@ void SceneViewSettings::defaultValues()
 {
     logMessage("SceneViewSettings::defaultValues()");
 
-    scalarRangeMin =  CONST_DOUBLE;
-    scalarRangeMax = -CONST_DOUBLE;
+    scalarRangeMin =  numeric_limits<double>::max();
+    scalarRangeMax = -numeric_limits<double>::max();
 
     // visible objects
     showGeometry = true;
@@ -160,6 +157,7 @@ void SceneView::createActions()
     connect(actSceneZoomOut, SIGNAL(triggered()), this, SLOT(doZoomOut()));
 
     actSceneZoomBestFit = new QAction(icon("zoom-original"), tr("Zoom best fit"), this);
+    actSceneZoomBestFit->setShortcut(tr("Ctrl+0"));
     actSceneZoomBestFit->setStatusTip(tr("Best fit"));
     connect(actSceneZoomBestFit, SIGNAL(triggered()), this, SLOT(doZoomBestFit()));
 
@@ -214,6 +212,19 @@ void SceneView::createActions()
     actSceneModeGroup->addAction(actSceneModePostprocessor);
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doSceneModeSet(QAction *)));
 
+    // projection
+    actSetProjectionXY = new QAction(tr("Projection to %1%2").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelY()), this);
+    actSetProjectionXY->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelY()));
+    connect(actSetProjectionXY, SIGNAL(triggered()), this, SLOT(doSetProjectionXY()));
+
+    actSetProjectionXZ = new QAction(tr("Projection to %1%2").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelZ()), this);
+    actSetProjectionXZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelZ()));
+    connect(actSetProjectionXZ, SIGNAL(triggered()), this, SLOT(doSetProjectionXZ()));
+
+    actSetProjectionYZ = new QAction(tr("Projection to %1%2").arg(Util::scene()->problemInfo()->labelY()).arg(Util::scene()->problemInfo()->labelZ()), this);
+    actSetProjectionYZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::scene()->problemInfo()->labelY()).arg(Util::scene()->problemInfo()->labelZ()));
+    connect(actSetProjectionYZ, SIGNAL(triggered()), this, SLOT(doSetProjectionYZ()));
+
     // material
     actMaterialGroup = new QActionGroup(this);
     connect(actMaterialGroup, SIGNAL(triggered(QAction *)), this, SLOT(doMaterialGroup(QAction *)));
@@ -250,13 +261,14 @@ void SceneView::createActions()
     actPostprocessorModeVolumeIntegral->setCheckable(true);
 
     actPostprocessorModeGroup = new QActionGroup(this);
-    connect(actPostprocessorModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doPostprocessorModeGroup(QAction*)));
     actPostprocessorModeGroup->addAction(actPostprocessorModeLocalPointValue);
     actPostprocessorModeGroup->addAction(actPostprocessorModeSurfaceIntegral);
     actPostprocessorModeGroup->addAction(actPostprocessorModeVolumeIntegral);
+    connect(actPostprocessorModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doPostprocessorModeGroup(QAction*)));
 
     // object properties
     actSceneObjectProperties = new QAction(icon("scene-properties"), tr("Object properties"), this);
+    actSceneObjectProperties->setShortcut(Qt::Key_Space);
     connect(actSceneObjectProperties, SIGNAL(triggered()), this, SLOT(doSceneObjectProperties()));
 
     // select region
@@ -273,28 +285,30 @@ void SceneView::createMenu()
 {
     logMessage("SceneView::createMenu()");
 
-    mnuInfo = new QMenu(this);
+    mnuScene = new QMenu(this);
 
-    QMenu *mnuModeGroup = new QMenu(tr("Set mode"), this);
+    /*
+    QMenu *mnuModeGroup = new QMenu(tr("Mode"), this);
     mnuModeGroup->addAction(actSceneModeNode);
     mnuModeGroup->addAction(actSceneModeEdge);
     mnuModeGroup->addAction(actSceneModeLabel);
     mnuModeGroup->addAction(actSceneModePostprocessor);
+    */
 
-    mnuInfo->addAction(m_scene->actNewNode);
-    mnuInfo->addAction(m_scene->actNewEdge);
-    mnuInfo->addAction(m_scene->actNewLabel);
-    mnuInfo->addSeparator();
-    mnuInfo->addAction(m_scene->actNewEdgeMarker);
-    mnuInfo->addAction(m_scene->actNewLabelMarker);
-    mnuInfo->addSeparator();
-    mnuInfo->addAction(actSceneViewSelectRegion);
-    mnuInfo->addAction(m_scene->actTransform);
-    mnuInfo->addSeparator();
-    mnuInfo->addMenu(mnuModeGroup);
-    mnuInfo->addSeparator();
-    mnuInfo->addAction(actSceneObjectProperties);
-    mnuInfo->addAction(m_scene->actProblemProperties);
+    mnuScene->addAction(m_scene->actNewNode);
+    mnuScene->addAction(m_scene->actNewEdge);
+    mnuScene->addAction(m_scene->actNewLabel);
+    mnuScene->addSeparator();
+    mnuScene->addAction(m_scene->actNewBoundary);
+    mnuScene->addAction(m_scene->actNewMaterial);
+    mnuScene->addSeparator();
+    mnuScene->addAction(actSceneViewSelectRegion);
+    mnuScene->addAction(m_scene->actTransform);
+    //mnuScene->addSeparator();
+    //mnuScene->addMenu(mnuModeGroup);
+    mnuScene->addSeparator();
+    mnuScene->addAction(actSceneObjectProperties);
+    //mnuScene->addAction(m_scene->actProblemProperties);
 }
 
 void SceneView::initializeGL()
@@ -321,14 +335,12 @@ void SceneView::resizeGL(int w, int h)
     }
 }
 
-void SceneView::loadProjection2d(bool setScene)
+void SceneView::loadProjection2d(bool setScene) const
 {
-    logMessage("SceneView::loadProjection2d()");
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glOrtho(3.0, contextWidth()-6.0, contextHeight()-6.0, 3.0, -10.0, -10.0);
+    glOrtho(-0.5, 0.5, -0.5, 0.5, -10.0, -10.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -341,41 +353,27 @@ void SceneView::loadProjection2d(bool setScene)
     }
 }
 
-void SceneView::loadProjection3d(bool setScene)
+void SceneView::loadProjection3d(bool setScene) const
 {
-    logMessage("SceneView::loadProjection3d()");
-
-    int fov = 50.0;
-    double znear = 0.001;
-    double zfar = 100.0;
-
-    double right = znear * tan((double) fov / 2.0 / 180.0 * M_PI);
-    double top = (double) contextHeight() / contextWidth() * right;
-    double left = -right;
-    double bottom = -top;
-    double offsx = (right - left) / contextWidth();
-    double offsy = (top - bottom) / contextHeight();
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    // glFrustum(left - offsx, right - offsx, bottom - offsy, top - offsy, znear, zfar);
-    glOrtho(3.0, contextWidth()-6.0, contextHeight()-6.0, 3.0, -10.0, -10.0);
+    glOrtho(-0.5, 0.5, -0.5, 0.5, 4.0, 15.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     if (setScene)
     {
-        glScaled(1.0/aspect(), 1.0, 1.0);
+        glScaled(1.0/aspect(), 1.0, 0.1);
 
         // move to origin
-        RectPoint rect = Util::scene()->boundingBox();
-        glTranslated(-m_offset3d.x, -m_offset3d.y, 0.0);
+        glTranslated(-m_offset3d.x, -m_offset3d.y, 1.0);
 
         glRotated(m_rotation3d.x, 1.0, 0.0, 0.0);
         glRotated(m_rotation3d.z, 0.0, 1.0, 0.0);
         glRotated(m_rotation3d.y, 0.0, 0.0, 1.0);
 
+        RectPoint rect = Util::scene()->boundingBox();
         if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D)
         {
             glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
@@ -428,8 +426,6 @@ void SceneView::paintGL()
 
     if (is3DMode())
     {
-        glClear(GL_DEPTH_BUFFER_BIT);
-
         if (m_scene->sceneSolution()->isMeshed() && (m_sceneMode == SceneMode_Postprocessor))
         {
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model) paintScalarField3DSolid();
@@ -604,79 +600,75 @@ void SceneView::paintGrid()
 
     glDisable(GL_DEPTH_TEST);
 
-    int step = (((int) ((cornerMax - cornerMin).x / Util::config()->gridStep) + 1) / 5);
-    if (step > 0.0)
+    // heavy line
+    int heavyLine = 5;
+
+    glLineWidth(1.0);
+    glEnable(GL_LINE_STIPPLE);
+    glLineStipple(1, 0x1C47);
+    glBegin(GL_LINES);
+
+    if ((((cornerMax.x-cornerMin.x)/Util::config()->gridStep + (cornerMin.y-cornerMax.y)/Util::config()->gridStep) < 200) &&
+            ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
     {
-        glColor3d(Util::config()->colorGrid.redF(),
-                  Util::config()->colorGrid.greenF(),
-                  Util::config()->colorGrid.blueF());
-        glLineWidth(1.0);
-        glEnable(GL_LINE_STIPPLE);
-        glLineStipple(1, 0x1C47);
-        glBegin(GL_LINES);
-
-        if ((((cornerMax.x-cornerMin.x)/Util::config()->gridStep + (cornerMin.y-cornerMax.y)/Util::config()->gridStep) < 200) &&
-                ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
+        // vertical lines
+        for (int i = 0; i<cornerMax.x/Util::config()->gridStep; i++)
         {
-            // vertical lines
-            for (int i = 0; i<cornerMax.x/Util::config()->gridStep; i++)
-            {
-                if ((step > 0) && i % step == 0)
-                    glColor3d(Util::config()->colorCross.redF(),
-                              Util::config()->colorCross.greenF(),
-                              Util::config()->colorCross.blueF());
-                else
-                    glColor3d(Util::config()->colorGrid.redF(),
-                              Util::config()->colorGrid.greenF(),
-                              Util::config()->colorGrid.blueF());
-                glVertex2d(i*Util::config()->gridStep, cornerMin.y);
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y);
-            }
-            for (int i = 0; i>cornerMin.x/Util::config()->gridStep; i--)
-            {
-                if ((step > 0) && i % step == 0)
-                    glColor3d(Util::config()->colorCross.redF(),
-                              Util::config()->colorCross.greenF(),
-                              Util::config()->colorCross.blueF());
-                else
-                    glColor3d(Util::config()->colorGrid.redF(),
-                              Util::config()->colorGrid.greenF(),
-                              Util::config()->colorGrid.blueF());
-                glVertex2d(i*Util::config()->gridStep, cornerMin.y);
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y);
-            }
-
-            // horizontal lines
-            for (int i = 0; i<cornerMin.y/Util::config()->gridStep; i++)
-            {
-                if ((step > 0) && i % step == 0)
-                    glColor3d(Util::config()->colorCross.redF(),
-                              Util::config()->colorCross.greenF(),
-                              Util::config()->colorCross.blueF());
-                else
-                    glColor3d(Util::config()->colorGrid.redF(),
-                              Util::config()->colorGrid.greenF(),
-                              Util::config()->colorGrid.blueF());
-                glVertex2d(cornerMin.x, i*Util::config()->gridStep);
-                glVertex2d(cornerMax.x, i*Util::config()->gridStep);
-            }
-            for (int i = 0; i>cornerMax.y/Util::config()->gridStep; i--)
-            {
-                if ((step > 0) && i % step == 0)
-                    glColor3d(Util::config()->colorCross.redF(),
-                              Util::config()->colorCross.greenF(),
-                              Util::config()->colorCross.blueF());
-                else
-                    glColor3d(Util::config()->colorGrid.redF(),
-                              Util::config()->colorGrid.greenF(),
-                              Util::config()->colorGrid.blueF());
-                glVertex2d(cornerMin.x, i*Util::config()->gridStep);
-                glVertex2d(cornerMax.x, i*Util::config()->gridStep);
-            }
+            if (i % heavyLine == 0)
+                glColor3d(Util::config()->colorCross.redF(),
+                          Util::config()->colorCross.greenF(),
+                          Util::config()->colorCross.blueF());
+            else
+                glColor3d(Util::config()->colorGrid.redF(),
+                          Util::config()->colorGrid.greenF(),
+                          Util::config()->colorGrid.blueF());
+            glVertex2d(i*Util::config()->gridStep, cornerMin.y);
+            glVertex2d(i*Util::config()->gridStep, cornerMax.y);
         }
-        glEnd();
-        glDisable(GL_LINE_STIPPLE);
+        for (int i = 0; i>cornerMin.x/Util::config()->gridStep; i--)
+        {
+            if (i % heavyLine == 0)
+                glColor3d(Util::config()->colorCross.redF(),
+                          Util::config()->colorCross.greenF(),
+                          Util::config()->colorCross.blueF());
+            else
+                glColor3d(Util::config()->colorGrid.redF(),
+                          Util::config()->colorGrid.greenF(),
+                          Util::config()->colorGrid.blueF());
+            glVertex2d(i*Util::config()->gridStep, cornerMin.y);
+            glVertex2d(i*Util::config()->gridStep, cornerMax.y);
+        }
+
+        // horizontal lines
+        for (int i = 0; i<cornerMin.y/Util::config()->gridStep; i++)
+        {
+            if (i % heavyLine == 0)
+                glColor3d(Util::config()->colorCross.redF(),
+                          Util::config()->colorCross.greenF(),
+                          Util::config()->colorCross.blueF());
+            else
+                glColor3d(Util::config()->colorGrid.redF(),
+                          Util::config()->colorGrid.greenF(),
+                          Util::config()->colorGrid.blueF());
+            glVertex2d(cornerMin.x, i*Util::config()->gridStep);
+            glVertex2d(cornerMax.x, i*Util::config()->gridStep);
+        }
+        for (int i = 0; i>cornerMax.y/Util::config()->gridStep; i--)
+        {
+            if (i % heavyLine == 0)
+                glColor3d(Util::config()->colorCross.redF(),
+                          Util::config()->colorCross.greenF(),
+                          Util::config()->colorCross.blueF());
+            else
+                glColor3d(Util::config()->colorGrid.redF(),
+                          Util::config()->colorGrid.greenF(),
+                          Util::config()->colorGrid.blueF());
+            glVertex2d(cornerMin.x, i*Util::config()->gridStep);
+            glVertex2d(cornerMax.x, i*Util::config()->gridStep);
+        }
     }
+    glEnd();
+    glDisable(GL_LINE_STIPPLE);
 
     if (m_scene->problemInfo()->problemType == ProblemType_Axisymmetric)
     {
@@ -813,7 +805,7 @@ void SceneView::paintGeometry()
     foreach (SceneEdge *edge, m_scene->edges)
     {
         // edge with marker
-        if (m_sceneMode == SceneMode_OperateOnEdges && edge->marker->type == PhysicFieldBC_None)
+        if (m_sceneMode == SceneMode_OperateOnEdges && edge->boundary->type == PhysicFieldBC_None)
         {
             glEnable(GL_LINE_STIPPLE);
             glLineStipple(1, 0x8FFF);
@@ -838,7 +830,7 @@ void SceneView::paintGeometry()
             glLineWidth(Util::config()->edgeWidth + 2.0);
         }
 
-        if (edge->angle == 0)
+        if (fabs(edge->angle) < EPS_ZERO)
         {
             glBegin(GL_LINES);
             glVertex2d(edge->nodeStart->point.x, edge->nodeStart->point.y);
@@ -945,10 +937,10 @@ void SceneView::paintGeometry()
                 glColor3d(0.1, 0.1, 0.1);
 
                 Point point;
-                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(label->marker->name)/m_scale2d/2.0;
+                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(label->material->name)/m_scale2d/2.0;
                 point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale2d;
 
-                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, label->marker->name, false);
+                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, label->material->name, false);
             }
 
             // area size
@@ -1020,7 +1012,7 @@ void SceneView::paintSolutionMesh()
     glLineWidth(1.3);
 
     // triangles
-    qDebug() << m_scene->sceneSolution()->linSolutionMeshView().get_num_edges();
+    // qDebug() << m_scene->sceneSolution()->linSolutionMeshView().get_num_edges();
     glBegin(GL_LINES);
     for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_edges(); i++)
     {
@@ -1126,7 +1118,7 @@ void SceneView::paintOrderColorBar()
 {
     logMessage("SceneView::paintOrderColorBar()");
 
-    if (!m_isSolutionPrepared) return;
+    if (!m_isSolutionPrepared || !Util::config()->showOrderScale) return;
 
     // order scalar view
     m_scene->sceneSolution()->ordView()->lock_data();
@@ -1200,6 +1192,8 @@ void SceneView::paintOrderColorBar()
 void SceneView::paintScalarFieldColorBar(double min, double max)
 {
     logMessage("SceneView::paintScalarFieldColorBar()");
+
+    if (!Util::config()->showScalarScale) return;
 
     loadProjection2d();
 
@@ -1398,8 +1392,6 @@ void SceneView::paintScalarField3D()
 
     if (m_listScalarField3D == -1)
     {
-        // qDebug() << "SceneView::paintScalarField3D(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
-
         m_listScalarField3D = glGenLists(1);
         glNewList(m_listScalarField3D, GL_COMPILE);
 
@@ -1424,13 +1416,17 @@ void SceneView::paintScalarField3D()
 
         double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
 
-        if (!Util::config()->scalarView3DLighting)
+        if (Util::config()->scalarView3DLighting)
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        else
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
         glPushMatrix();
-        glScaled(1.0, 1.0, max/4.0 * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
+        glScaled(1.0, 1.0, max / Util::config()->scalarView3DHeight * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
 
         initLighting();
+        // init normal
+        double *normal = new double[3];
 
         // set texture for coloring
         glEnable(GL_TEXTURE_1D);
@@ -1466,9 +1462,11 @@ void SceneView::paintScalarField3D()
 
             if (Util::config()->scalarView3DLighting)
             {
-                double* normal = computeNormal(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin),
-                                               point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin),
-                                               point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin));
+                computeNormal(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin),
+                              point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin),
+                              point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin),
+                              normal);
+
                 glNormal3d(normal[0], normal[1], normal[2]);
             }
             for (int j = 0; j < 3; j++)
@@ -1478,6 +1476,9 @@ void SceneView::paintScalarField3D()
             }
         }
         glEnd();
+
+        // remove normal
+        delete [] normal;
 
         glDisable(GL_TEXTURE_1D);
         glDisable(GL_LIGHTING);
@@ -1516,7 +1517,7 @@ void SceneView::paintScalarField3D()
                       Util::config()->colorEdges.blueF());
             glLineWidth(Util::config()->edgeWidth);
 
-            if (edge->angle == 0)
+            if (edge->isStraight())
             {
                 glBegin(GL_LINES);
                 glVertex3d(edge->nodeStart->point.x, edge->nodeStart->point.y, 0.0);
@@ -1567,8 +1568,6 @@ void SceneView::paintScalarField3DSolid()
 
     if (m_listScalarField3DSolid == -1)
     {
-        // qDebug() << "SceneView::paintScalarField3DSolid(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
-
         m_listScalarField3DSolid = glGenLists(1);
         glNewList(m_listScalarField3DSolid, GL_COMPILE);
 
@@ -1580,7 +1579,7 @@ void SceneView::paintScalarField3DSolid()
 
         RectPoint rect = m_scene->boundingBox();
         double max = qMax(rect.width(), rect.height());
-        double depth = max / 4.0;
+        double depth = max / Util::config()->scalarView3DHeight;
 
         // range
         double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
@@ -1599,7 +1598,6 @@ void SceneView::paintScalarField3DSolid()
         int3* linEdges = m_scene->sceneSolution()->linScalarView().get_edges();
         Point point[3];
         double value[3];
-        double *normal;
 
         glPushMatrix();
 
@@ -1608,7 +1606,7 @@ void SceneView::paintScalarField3DSolid()
         {
             glEnable(GL_TEXTURE_1D);
             glBindTexture(GL_TEXTURE_1D, 1);
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
             // set texture transformation matrix
             glMatrixMode(GL_TEXTURE);
@@ -1616,8 +1614,15 @@ void SceneView::paintScalarField3DSolid()
             glTranslated(m_texShift, 0.0, 0.0);
             glScaled(m_texScale, 0.0, 0.0);
         }
+        else
+        {
+            glColor3d(0.7, 0.7, 0.7);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        }
 
         initLighting();
+        // init normals
+        double* normal = new double[3];
 
         if (m_scene->problemInfo()->problemType == ProblemType_Planar)
         {
@@ -1639,8 +1644,14 @@ void SceneView::paintScalarField3DSolid()
                 }
 
                 // z = - depth / 2.0
-                normal = computeNormal(point[0].x, point[0].y, -depth/2.0, point[1].x, point[1].y, -depth/2.0, point[2].x, point[2].y, -depth/2.0);
-                glNormal3d(normal[0], normal[1], normal[2]);
+                if (Util::config()->scalarView3DLighting || isModel)
+                {
+                    computeNormal(point[0].x, point[0].y, -depth/2.0,
+                                  point[1].x, point[1].y, -depth/2.0,
+                                  point[2].x, point[2].y, -depth/2.0,
+                                  normal);
+                    glNormal3d(normal[0], normal[1], normal[2]);
+                }
 
                 for (int j = 0; j < 3; j++)
                 {
@@ -1649,8 +1660,14 @@ void SceneView::paintScalarField3DSolid()
                 }
 
                 // z = + depth / 2.0
-                normal = computeNormal(point[0].x, point[0].y, depth/2.0, point[1].x, point[1].y, depth/2.0, point[2].x, point[2].y, depth/2.0);
-                glNormal3d(normal[0], normal[1], normal[2]);
+                if (Util::config()->scalarView3DLighting || isModel)
+                {
+                    computeNormal(point[0].x, point[0].y, depth/2.0,
+                                  point[1].x, point[1].y, depth/2.0,
+                                  point[2].x, point[2].y, depth/2.0,
+                                  normal);
+                    glNormal3d(normal[0], normal[1], normal[2]);
+                }
 
                 for (int j = 0; j < 3; j++)
                 {
@@ -1681,8 +1698,14 @@ void SceneView::paintScalarField3DSolid()
                         continue;
                 }
 
-                normal = computeNormal(point[0].x, point[0].y, -depth/2.0, point[1].x, point[1].y, -depth/2.0, point[1].x, point[1].y,  depth/2.0);
-                glNormal3d(normal[0], normal[1], normal[2]);
+                if (Util::config()->scalarView3DLighting || isModel)
+                {
+                    computeNormal(point[0].x, point[0].y, -depth/2.0,
+                                  point[1].x, point[1].y, -depth/2.0,
+                                  point[1].x, point[1].y,  depth/2.0,
+                                  normal);
+                    glNormal3d(normal[0], normal[1], normal[2]);
+                }
 
                 if (!isModel) glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
                 glVertex3d(point[0].x, point[0].y, -depth/2.0);
@@ -1717,10 +1740,14 @@ void SceneView::paintScalarField3DSolid()
 
                 for (int j = 0; j < 2; j++)
                 {
-                    normal = computeNormal(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI),
-                                           point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI),
-                                           point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI));
-                    glNormal3d(normal[0], normal[1], normal[2]);
+                    if (Util::config()->scalarView3DLighting || isModel)
+                    {
+                        computeNormal(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI),
+                                      point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI),
+                                      point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI),
+                                      normal);
+                        glNormal3d(normal[0], normal[1], normal[2]);
+                    }
 
                     glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
                     glVertex3d(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI));
@@ -1757,10 +1784,15 @@ void SceneView::paintScalarField3DSolid()
                 double step = phi/count;
                 for (int j = 0; j < count; j++)
                 {
-                    normal = computeNormal(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI),
-                                           point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI),
-                                           point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI));
-                    glNormal3d(normal[0], normal[1], normal[2]);
+                    if (Util::config()->scalarView3DLighting || isModel)
+                    {
+
+                        computeNormal(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI),
+                                      point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI),
+                                      point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI),
+                                      normal);
+                        glNormal3d(normal[0], normal[1], normal[2]);
+                    }
 
                     if (!isModel) glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
                     glVertex3d(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI));
@@ -1774,6 +1806,9 @@ void SceneView::paintScalarField3DSolid()
             }
             glEnd();
         }
+
+        // remove normals
+        delete [] normal;
 
         glDisable(GL_POLYGON_OFFSET_FILL);
         glDisable(GL_LIGHTING);
@@ -1796,11 +1831,12 @@ void SceneView::paintScalarField3DSolid()
                       Util::config()->colorEdges.blueF());
             glLineWidth(Util::config()->edgeWidth);
 
+            // top and bottom
             foreach (SceneEdge *edge, m_scene->edges)
             {
                 for (int j = 0; j < 2; j++)
                 {
-                    if (edge->angle == 0)
+                    if (edge->isStraight())
                     {
                         glBegin(GL_LINES);
                         glVertex3d(edge->nodeStart->point.x, edge->nodeStart->point.y, - depth/2.0 + j*depth);
@@ -1829,6 +1865,16 @@ void SceneView::paintScalarField3DSolid()
                     }
                 }
             }
+
+            // side
+            glBegin(GL_LINES);
+            foreach (SceneNode *node, m_scene->nodes)
+            {
+                glVertex3d(node->point.x, node->point.y,  depth/2.0);
+                glVertex3d(node->point.x, node->point.y, -depth/2.0);
+            }
+            glEnd();
+
             glLineWidth(1.0);
         }
         else
@@ -1839,11 +1885,12 @@ void SceneView::paintScalarField3DSolid()
                       Util::config()->colorEdges.blueF());
             glLineWidth(Util::config()->edgeWidth);
 
+            // top
             foreach (SceneEdge *edge, m_scene->edges)
             {
                 for (int j = 0; j < 2; j++)
                 {
-                    if (edge->angle == 0)
+                    if (edge->isStraight())
                     {
                         glBegin(GL_LINES);
                         glVertex3d(edge->nodeStart->point.x * cos(j*phi/180.0*M_PI), edge->nodeStart->point.y, edge->nodeStart->point.x * sin(j*phi/180.0*M_PI));
@@ -1872,6 +1919,22 @@ void SceneView::paintScalarField3DSolid()
                     }
                 }
             }
+
+            // side
+            foreach (SceneNode *node, m_scene->nodes)
+            {
+                int count = 30;
+                double step = phi/count;
+
+                glBegin(GL_LINE_STRIP);
+                for (int j = 0; j < count; j++)
+                {
+                    glVertex3d(node->point.x * cos((j+0)*step/180.0*M_PI), node->point.y, node->point.x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(node->point.x * cos((j+1)*step/180.0*M_PI), node->point.y, node->point.x * sin((j+1)*step/180.0*M_PI));
+                }
+                glEnd();
+            }
+
             glLineWidth(1.0);
         }
 
@@ -1910,8 +1973,8 @@ void SceneView::paintContours()
         int3* tris = m_scene->sceneSolution()->linContourView().get_triangles();
 
         // transform variable
-        double rangeMin =  CONST_DOUBLE;
-        double rangeMax = -CONST_DOUBLE;
+        double rangeMin =  numeric_limits<double>::max();
+        double rangeMax = -numeric_limits<double>::max();
 
         double3* vert = new double3[m_scene->sceneSolution()->linContourView().get_num_vertices()];
         for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_vertices(); i++)
@@ -2309,9 +2372,37 @@ void SceneView::paintChartLine()
               Util::config()->colorSelected.blueF());
     glLineWidth(3.0);
 
+    QList<Point> points = m_chartLine.getPoints();
+
     glBegin(GL_LINES);
-    glVertex2d(m_chartLine.start.x, m_chartLine.start.y);
-    glVertex2d(m_chartLine.end.x, m_chartLine.end.y);
+    for (int i = 0; i < points.length() - 1; i++)
+    {
+        glVertex2d(points.at(i).x, points.at(i).y);
+        glVertex2d(points.at(i+1).x, points.at(i+1).y);
+    }
+    glEnd();
+
+    // angle
+    glBegin(GL_TRIANGLES);
+    if (points.length() > 1)
+    {
+        double angle = atan2(points.at(points.length() - 1).y - points.at(points.length() - 2).y,
+                             points.at(points.length() - 1).x - points.at(points.length() - 2).x);
+
+        RectPoint rect = m_scene->boundingBox();
+        double dm = (rect.width() + rect.height()) / 40.0;
+
+        // head of an arrow
+        double vh1x = points.at(points.length() - 1).x - dm/5.0 * cos(angle - M_PI/2.0) - dm * cos(angle);
+        double vh1y = points.at(points.length() - 1).y - dm/5.0 * sin(angle - M_PI/2.0) - dm * sin(angle);
+        double vh2x = points.at(points.length() - 1).x - dm/5.0 * cos(angle + M_PI/2.0) - dm * cos(angle);
+        double vh2y = points.at(points.length() - 1).y - dm/5.0 * sin(angle + M_PI/2.0) - dm * sin(angle);
+        double vh3x = points.at(points.length() - 1).x;
+        double vh3y = points.at(points.length() - 1).y;
+        glVertex2d(vh1x, vh1y);
+        glVertex2d(vh2x, vh2y);
+        glVertex2d(vh3x, vh3y);
+    }
     glEnd();
 }
 
@@ -2350,7 +2441,7 @@ void SceneView::paintEdgeLine()
     }
 }
 
-const double* SceneView::paletteColor(double x)
+const double* SceneView::paletteColor(double x) const
 {
     logMessage("SceneView::paletteColor()");
 
@@ -2363,15 +2454,6 @@ const double* SceneView::paletteColor(double x)
         x *= numPalEntries;
         int n = (int) x;
         return paletteDataJet[n];
-    }
-        break;
-    case Palette_Autumn:
-    {
-        if (x < 0.0) x = 0.0;
-        else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
-        int n = (int) x;
-        return paletteDataAutumn[n];
     }
         break;
     case Palette_Copper:
@@ -2401,6 +2483,69 @@ const double* SceneView::paletteColor(double x)
         return paletteDataCool[n];
     }
         break;
+    case Palette_Bone:
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataBone[n];
+    }
+        break;
+    case Palette_Pink:
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataPink[n];
+    }
+        break;
+    case Palette_Spring:
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataSpring[n];
+    }
+        break;
+    case Palette_Summer:
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataSummer[n];
+    }
+        break;
+    case Palette_Autumn:
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataAutumn[n];
+    }
+        break;
+    case Palette_Winter:
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataWinter[n];
+    }
+        break;
+    case Palette_HSV:
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataHSV[n];
+    }
+        break;
     case Palette_BWAsc:
     {
         static double color[3];
@@ -2421,7 +2566,7 @@ const double* SceneView::paletteColor(double x)
     }
 }
 
-const double* SceneView::paletteColorOrder(int n)
+const double* SceneView::paletteColorOrder(int n) const
 {
     logMessage("SceneView::paletteColorOrder()");
 
@@ -2431,6 +2576,26 @@ const double* SceneView::paletteColorOrder(int n)
         return paletteOrderHermes[n];
     case PaletteOrder_Jet:
         return paletteOrderJet[n];
+    case PaletteOrder_Copper:
+        return paletteOrderCopper[n];
+    case PaletteOrder_Hot:
+        return paletteOrderHot[n];
+    case PaletteOrder_Cool:
+        return paletteOrderCool[n];
+    case PaletteOrder_Bone:
+        return paletteOrderBone[n];
+    case PaletteOrder_Pink:
+        return paletteOrderPink[n];
+    case PaletteOrder_Spring:
+        return paletteOrderSpring[n];
+    case PaletteOrder_Summer:
+        return paletteOrderSummer[n];
+    case PaletteOrder_Autumn:
+        return paletteOrderAutumn[n];
+    case PaletteOrder_Winter:
+        return paletteOrderWinter[n];
+    case PaletteOrder_HSV:
+        return paletteOrderHSV[n];
     case PaletteOrder_BWAsc:
         return paletteOrderBWAsc[n];
     case PaletteOrder_BWDesc:
@@ -2496,65 +2661,40 @@ void SceneView::initLighting()
 
     if (Util::config()->scalarView3DLighting || m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model)
     {
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        // environment
+        float light_specular[] = {  1.0f, 1.0f, 1.0f, 1.0f };
+        float light_ambient[]  = {  0.7f, 0.7f, 0.7f, 1.0f };
+        float light_diffuse[]  = {  1.0f, 1.0f, 1.0f, 1.0f };
+        float light_position[] = {  1.0f, 0.0f, 1.0f, 0.0f };
 
-        float light_specular[] = {  0.3f, 0.3f, 0.3f, 1.0f };
-        float light_ambient[]  = {  0.1f, 0.1f, 0.1f, 1.0f };
-        float light_diffuse[]  = {  0.8f, 0.8f, 0.8f, 0.9f };
-        float light_position[] = {  0.0f, 10.0f, 0.0f, 1.0f };
-
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
         glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-        glLightfv(GL_LIGHT0, GL_AMBIENT,  light_ambient);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE,  light_diffuse);
-        // glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+        glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-        float material_specular[] = { 0.5f, 0.5f, 0.5f, 0.5f };
+        // material
         float material_ambient[]  = { 0.5f, 0.5f, 0.5f, 1.0f };
-        float material_diffuse[]  = { 0.8f, 0.8f, 0.8f, 1.0f };
+        float material_diffuse[]  = { 0.5f, 0.5f, 0.5f, 1.0f };
+        float material_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material_ambient);
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material_diffuse);
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 8);
-        glDisable(GL_COLOR_MATERIAL);
+        glMaterialf(GL_FRONT, GL_SHININESS, 128.0);
 
-        glShadeModel(GL_SMOOTH);
-        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
+        // glEnable(GL_COLOR_MATERIAL);
 #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
         glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 #endif
-
-        /*
-        double light_specular[] = {  0.1f, 0.1f, 0.1f, 1.0f };
-        double light_ambient[]  = {  0.1f, 0.1f, 0.1f, 1.0f };
-        double light_diffuse[]  = {  0.8f, 0.8f, 0.8f, 0.9f };
-        double light_position[] = {  -100.0f, -60.0f, 10.0f, 0.0f };
-
+        glShadeModel(GL_SMOOTH);
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
-        glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-        glLightfv(GL_LIGHT0, GL_AMBIENT,  light_ambient);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE,  light_diffuse);
-        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-        double material_ambient[]  = { 0.5f, 0.5f, 0.5f, 1.0f };
-        double material_diffuse[]  = { 0.8f, 0.8f, 0.8f, 0.8f };
-        double material_specular[] = { 0.5f, 0.5f, 0.5f, 0.5f };
-
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material_ambient);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material_diffuse);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 8);
-        glDisable(GL_COLOR_MATERIAL);
-
-        glShadeModel(GL_SMOOTH);
-        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-        #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
-            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-        #endif
-        */
+    }
+    else
+    {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
     }
 }
 
@@ -2768,11 +2908,11 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 // select volume integral area
                 if (actPostprocessorModeVolumeIntegral->isChecked())
                 {
-                    int index = m_scene->sceneSolution()->findTriangleInMesh(m_scene->sceneSolution()->meshInitial(), p);
+                    int index = m_scene->sceneSolution()->findElementInMesh(m_scene->sceneSolution()->meshInitial(), p);
                     if (index != -1)
                     {
                         //  find label marker
-                        int labelIndex = m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker;
+                        int labelIndex = atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker).c_str());
 
                         m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
                         updateGL();
@@ -2845,11 +2985,11 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     {
                         if (node != m_nodeLast)
                         {
-                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->edgeMarkers[0], 0, 0);
+                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->boundaries[0], 0, 0);
                             SceneEdge *edgeAdded = m_scene->addEdge(edge);
                             if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                                                                       edge->nodeEnd->point,
-                                                                                                      edge->marker->name,
+                                                                                                      edge->boundary->name,
                                                                                                       edge->angle,
                                                                                                       edge->refineTowardsEdge));
                         }
@@ -2873,10 +3013,10 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 }
                 else
                 {
-                    SceneLabel *label = new SceneLabel(p, m_scene->labelMarkers[0], 0, 0);
+                    SceneLabel *label = new SceneLabel(p, m_scene->materials[0], 0, 0);
                     SceneLabel *labelAdded = m_scene->addLabel(label);
                     if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point,
-                                                                                                 label->marker->name,
+                                                                                                 label->material->name,
                                                                                                  label->area,
                                                                                                  label->polynomialOrder));
                     updateGL();
@@ -3141,10 +3281,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                arg(edge->nodeStart->point.y, 0, 'g', 3).
                                arg(edge->nodeEnd->point.x, 0, 'g', 3).
                                arg(edge->nodeEnd->point.y, 0, 'g', 3).
-                               arg(edge->marker->name).
+                               arg(edge->boundary->name).
                                arg(edge->angle, 0, 'f', 0).
                                arg(m_scene->edges.indexOf(edge)).
-                               arg(edge->marker->html()));
+                               arg(edge->boundary->html()));
                     updateGL();
                 }
             }
@@ -3159,11 +3299,11 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle area: %4 m<sup>2</sup><br/>Polynomial order: %5<br/>Index: %6 %7").
                                arg(label->point.x, 0, 'g', 3).
                                arg(label->point.y, 0, 'g', 3).
-                               arg(label->marker->name).
+                               arg(label->material->name).
                                arg(label->area, 0, 'g', 3).
                                arg(label->polynomialOrder).
                                arg(m_scene->labels.indexOf(label)).
-                               arg(label->marker->html()));
+                               arg(label->material->html()));
                     updateGL();
                 }
             }
@@ -3374,7 +3514,7 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
         actSceneObjectProperties->setEnabled(m_scene->selectedCount() > 0);
 
 
-    mnuInfo->exec(event->globalPos());
+    mnuScene->exec(event->globalPos());
 }
 
 void SceneView::closeEvent(QCloseEvent *event)
@@ -3457,13 +3597,12 @@ void SceneView::doShowRulers()
     doInvalidated();
 }
 
-void SceneView::doSetChartLine(const Point &start, const Point &end)
+void SceneView::doSetChartLine(const ChartLine &chartLine)
 {
     logMessage("SceneView::doSetChartLine()");
 
     // set line for chart
-    m_chartLine.start = start;
-    m_chartLine.end = end;
+    m_chartLine = chartLine;
 
     updateGL();
 }
@@ -3490,8 +3629,7 @@ void SceneView::doDefaultValues()
     m_rotation3d.y = -35.0;
     m_rotation3d.z = 0.0;
 
-    m_chartLine.start = Point();
-    m_chartLine.end = Point();
+    m_chartLine = ChartLine();
 
     m_sceneViewSettings.defaultValues();
 
@@ -3543,6 +3681,10 @@ void SceneView::doInvalidated()
     actSceneSnapToGrid->setEnabled(m_sceneMode != SceneMode_Postprocessor);
     actSceneShowRulers->setChecked(Util::config()->showRulers);
 
+    actSetProjectionXY->setEnabled(is3DMode());
+    actSetProjectionXZ->setEnabled(is3DMode());
+    actSetProjectionYZ->setEnabled(is3DMode());
+
     setSceneFont();
 
     emit mousePressed();
@@ -3557,17 +3699,10 @@ void SceneView::timeStepChanged(bool showViewProgress)
 
     if (!Util::scene()->sceneSolution()->isSolving())
     {
-        if (showViewProgress)
-        {
-            ProgressDialog progressDialog;
-            progressDialog.appendProgressItem(new ProgressItemProcessView());
-            progressDialog.run();
-        }
-        else
-        {
-            ProgressItemProcessView progressItemProcessView;
-            progressItemProcessView.run();
-        }
+        QTime time;
+        time.start();
+
+        Util::scene()->sceneSolution()->processView(showViewProgress);
     }
 
     clearGLLists();
@@ -3588,16 +3723,16 @@ void SceneView::doMaterialGroup(QAction *action)
 {
     logMessage("SceneView::doMaterialGroup()");
 
-    if (SceneLabelMarker *labelMarker = action->data().value<SceneLabelMarker *>())
-        m_scene->setLabelLabelMarker(labelMarker);
+    if (SceneMaterial *material = action->data().value<SceneMaterial *>())
+        m_scene->setMaterial(material);
 }
 
 void SceneView::doBoundaryGroup(QAction *action)
 {
     logMessage("SceneView::doBoundaryGroup()");
 
-    if (SceneEdgeMarker *edgeMarker = action->data().value<SceneEdgeMarker *>())
-        m_scene->setEdgeEdgeMarker(edgeMarker);
+    if (SceneBoundary *boundary = action->data().value<SceneBoundary *>())
+        m_scene->setBoundary(boundary);
 }
 
 void SceneView::doShowGroup(QAction *action)
@@ -3615,6 +3750,13 @@ void SceneView::doPostprocessorModeGroup(QAction *action)
 {
     logMessage("SceneView::doPostprocessorModeGroup()");
 
+    if (actPostprocessorModeLocalPointValue->isChecked())
+        emit postprocessorModeGroupChanged(SceneModePostprocessor_LocalValue);
+    if (actPostprocessorModeSurfaceIntegral->isChecked())
+        emit postprocessorModeGroupChanged(SceneModePostprocessor_SurfaceIntegral);
+    if (actPostprocessorModeVolumeIntegral->isChecked())
+        emit postprocessorModeGroupChanged(SceneModePostprocessor_VolumeIntegral);
+
     m_scene->selectNone();
     updateGL();
 }
@@ -3627,8 +3769,8 @@ void SceneView::doSceneObjectProperties()
     {
         if (m_scene->selectedCount() > 1)
         {
-            EdgeMarkerDialog edgeMarkerDialog(this);
-            edgeMarkerDialog.exec();
+            SceneBoundarySelectDialog boundaryDialog(this);
+            boundaryDialog.exec();
         }
         if (m_scene->selectedCount() == 1)
         {
@@ -3643,8 +3785,8 @@ void SceneView::doSceneObjectProperties()
     {
         if (m_scene->selectedCount() > 1)
         {
-            LabelMarkerDialog labelMarkerDialog(this);
-            labelMarkerDialog.exec();
+            SceneMaterialSelectDialog materialDialog(this);
+            materialDialog.exec();
         }
         if (m_scene->selectedCount() == 1)
         {
@@ -3789,7 +3931,7 @@ SceneNode *SceneView::findClosestNode(const Point &point)
 
     SceneNode *nodeClosest = NULL;
 
-    double distance = CONST_DOUBLE;
+    double distance = numeric_limits<double>::max();
     foreach (SceneNode *node, m_scene->nodes)
     {
         double nodeDistance = node->distance(point);
@@ -3809,7 +3951,7 @@ SceneEdge *SceneView::findClosestEdge(const Point &point)
 
     SceneEdge *edgeClosest = NULL;
 
-    double distance = CONST_DOUBLE;
+    double distance = numeric_limits<double>::max();
     foreach (SceneEdge *edge, m_scene->edges)
     {
         double edgeDistance = edge->distance(point);
@@ -3829,7 +3971,7 @@ SceneLabel *SceneView::findClosestLabel(const Point &point)
 
     SceneLabel *labelClosest = NULL;
 
-    double distance = CONST_DOUBLE;
+    double distance = numeric_limits<double>::max();
     foreach (SceneLabel *label, m_scene->labels)
     {
         double labelDistance = label->distance(point);
@@ -3843,7 +3985,7 @@ SceneLabel *SceneView::findClosestLabel(const Point &point)
     return labelClosest;
 }
 
-void SceneView::drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments)
+void SceneView::drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const
 {
     logMessage("SceneView::drawArc()");
 
@@ -3862,7 +4004,7 @@ void SceneView::drawArc(const Point &point, double r, double startAngle, double 
     glEnd();
 }
 
-void SceneView::drawBlend(Point start, Point end, double red, double green, double blue, double alpha)
+void SceneView::drawBlend(Point start, Point end, double red, double green, double blue, double alpha) const
 {
     logMessage("SceneView::drawBlend()");
 
@@ -3930,21 +4072,30 @@ void SceneView::paintPostprocessorSelectedVolume()
               0.5);
 
     // triangles
-    glBegin(GL_TRIANGLES);
     for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
         Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
-        if (m_scene->labels[element->marker]->isSelected)
+        if (m_scene->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).c_str())]->isSelected)
         {
             if (element->is_triangle())
             {
+                glBegin(GL_TRIANGLES);
                 glVertex2d(element->vn[0]->x, element->vn[0]->y);
                 glVertex2d(element->vn[1]->x, element->vn[1]->y);
                 glVertex2d(element->vn[2]->x, element->vn[2]->y);
+                glEnd();
+            }
+            else
+            {
+                glBegin(GL_QUADS);
+                glVertex2d(element->vn[0]->x, element->vn[0]->y);
+                glVertex2d(element->vn[1]->x, element->vn[1]->y);
+                glVertex2d(element->vn[2]->x, element->vn[2]->y);
+                glVertex2d(element->vn[3]->x, element->vn[3]->y);
+                glEnd();
             }
         }
     }
-    glEnd();
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
@@ -3976,7 +4127,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_triangles(); i++)
     {
-        if (m_scene->labels[element->marker]->isSelected)
+        if (m_scene->labels[element->marker - 1]->isSelected)
         {
             glVertex2d(linVert[linTris[i][0]][0], linVert[linTris[i][0]][1]);
             glVertex2d(linVert[linTris[i][1]][0], linVert[linTris[i][1]][1]);
@@ -4003,7 +4154,7 @@ void SceneView::paintPostprocessorSelectedSurface()
 
         if (edge->isSelected)
         {
-            if (edge->angle == 0)
+            if (edge->isStraight())
             {
                 glBegin(GL_LINES);
                 glVertex2d(edge->nodeStart->point.x, edge->nodeStart->point.y);
@@ -4195,4 +4346,24 @@ void SceneView::setSceneFont()
     logMessage("SceneView::setSceneFont()");
 
     setFont(Util::config()->sceneFont);
+}
+
+void SceneView::doSetProjectionXY()
+{
+    m_rotation3d.x = m_rotation3d.y = m_rotation3d.z = 0.0;
+    updateGL();
+}
+
+void SceneView::doSetProjectionXZ()
+{
+    m_rotation3d.y = m_rotation3d.z = 0.0;
+    m_rotation3d.x = 90.0;
+    updateGL();
+}
+
+void SceneView::doSetProjectionYZ()
+{
+    m_rotation3d.x = m_rotation3d.y = 90.0;
+    m_rotation3d.z = 0.0;
+    updateGL();
 }

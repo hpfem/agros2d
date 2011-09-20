@@ -118,7 +118,7 @@ void Mesh::regularize_triangle(Element* e)
 
 void Mesh::regularize_quad(Element* e)
 {
-  int i, k, k1, k2, k3, n, m;
+  int i, k = 0, k1, k2, k3, n = 0, m = 0;
  Node *v4, *v5;
   Element* t[4];
 
@@ -245,7 +245,7 @@ void Mesh::flatten()
     if (node->elem[1] != NULL) node->elem[1] = (Element*) (node->elem[1]->id + 1);
   }
 
-  AUTOLA_OR(int, idx, elements.get_size()+1);
+  int* idx = new int[elements.get_size()+1];
   Array<Element> new_elements;
   Element* e;
   for_all_active_elements(e, this)

@@ -24,11 +24,16 @@
 #include "hermes2d.h"
 
 class Scene;
-class SceneLabelMarker;
+class SceneMaterial;
 
 class ViewScalarFilter;
 
 struct SolutionArray;
+
+class ProgressDialog;
+class ProgressItemMesh;
+class ProgressItemSolve;
+class ProgressItemProcessView;
 
 class SceneSolution : public QObject
 {
@@ -36,6 +41,7 @@ class SceneSolution : public QObject
 
 public:
     SceneSolution();
+    ~SceneSolution();
 
     void clear();
     void loadMeshInitial(QDomElement *element);
@@ -43,20 +49,27 @@ public:
     void loadSolution(QDomElement *element);
     void saveSolution(QDomDocument *doc, QDomElement *element);
 
+    // solve
     void solve(SolverMode solverMode);
+
+    // mesh
     inline Mesh *meshInitial() { return m_meshInitial; }
-    inline void setMeshInitial(Mesh *meshInitial) { if (m_meshInitial) { delete m_meshInitial; } m_meshInitial = meshInitial; }
+    void setMeshInitial(Mesh *meshInitial);
+
+    // solution
     Solution *sln(int i = -1);
     void setSolutionArrayList(QList<SolutionArray *> solutionArrayList);
     inline QList<SolutionArray *> solutionArrayList() { return m_solutionArrayList; }
-    void setTimeStep(int timeStep, bool showViewProgress = true);
-    inline int timeStep() { return m_timeStep; }
-    int timeStepCount();
-    double time();
 
-    bool isSolved() { return (m_timeStep != -1); }
-    bool isMeshed() { return m_meshInitial; }
-    bool isSolving() { return m_isSolving; }
+    // time
+    void setTimeStep(int timeStep, bool showViewProgress = true);
+    inline int timeStep() const { return m_timeStep; }
+    int timeStepCount() const;
+    double time() const;
+
+    bool isSolved() const { return (m_timeStep != -1); }
+    bool isMeshed()  const { return m_meshInitial; }
+    bool isSolving() const { return m_isSolving; }
 
     // mesh
     inline Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
@@ -81,19 +94,23 @@ public:
     // order view
     Orderizer *ordView();
 
-    inline int timeElapsed() { return m_timeElapsed; }
+    inline int timeElapsed() const { return m_timeElapsed; }
     double adaptiveError();
     int adaptiveSteps();
     inline void setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
 
-    int findTriangleInMesh(Mesh *mesh, const Point &point);
-    int findTriangleInVectorizer(const Vectorizer &vecVectorView, const Point &point);
+    int findElementInMesh(Mesh *mesh, const Point &point) const;
+    int findElementInVectorizer(const Vectorizer &vecVectorView, const Point &point) const;
 
     // process
+    void processView(bool showViewProgress);
     void processSolutionMesh();
     void processRangeContour();
     void processRangeScalar();
     void processRangeVector();
+
+    // progress dialog
+    ProgressDialog *progressDialog();
 
 signals:
     void timeStepChanged(bool showViewProgress = true);
@@ -131,6 +148,12 @@ private:
     Vectorizer m_vecVectorView; // vectorizer for vector view
 
     Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
+
+    // progress dialog
+    ProgressDialog *m_progressDialog;
+    ProgressItemMesh *m_progressItemMesh;
+    ProgressItemSolve *m_progressItemSolve;
+    ProgressItemProcessView *m_progressItemProcessView;
 };
 
 #endif // SCENESOLUTION_H

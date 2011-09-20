@@ -22,17 +22,17 @@
 #include "scene.h"
 #include "gui.h"
 
-SceneEdgeMarker::SceneEdgeMarker(const QString &name, PhysicFieldBC type)
+SceneBoundary::SceneBoundary(const QString &name, PhysicFieldBC type)
 {
-    logMessage("SceneEdgeMarker::SceneEdgeMarker()");
+    logMessage("SceneBoundary::SceneBoundary()");
 
     this->name = name;
     this->type = type;
 }
 
-QString SceneEdgeMarker::html()
+QString SceneBoundary::html()
 {
-    logMessage("SceneEdgeMarker::html()");
+    logMessage("SceneBoundary::html()");
 
     QString out;
     out += "<h4>" + physicFieldString(Util::scene()->problemInfo()->physicField()) + "</h4>";
@@ -50,33 +50,33 @@ QString SceneEdgeMarker::html()
     return out;
 }
 
-QVariant SceneEdgeMarker::variant()
+QVariant SceneBoundary::variant()
 {
-    logMessage("SceneEdgeMarker::variant()");
+    logMessage("SceneBoundary::variant()");
 
     QVariant v;
     v.setValue(this);
     return v;
 }
 
-SceneEdgeMarkerNone::SceneEdgeMarkerNone() : SceneEdgeMarker("none", PhysicFieldBC_None)
+SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary("none", PhysicFieldBC_None)
 {
-    logMessage("SceneEdgeMarker::SceneEdgeMarkerNone()");
+    logMessage("SceneBoundary::SceneBoundaryNone()");
 
 }
 
 // *************************************************************************************************************************************
 
-SceneLabelMarker::SceneLabelMarker(const QString &name)
+SceneMaterial::SceneMaterial(const QString &name)
 {
-    logMessage("SceneLabelMarker::SceneLabelMarker()");
+    logMessage("SceneMaterial::SceneMaterial()");
 
     this->name = name;
 }
 
-QString SceneLabelMarker::html()
+QString SceneMaterial::html()
 {
-    logMessage("SceneLabelMarker::html()");
+    logMessage("SceneMaterial::html()");
 
     QString out;
     out += "<h4>" + physicFieldString(Util::scene()->problemInfo()->physicField()) + "</h4>";
@@ -94,43 +94,40 @@ QString SceneLabelMarker::html()
     return out;
 }
 
-QVariant SceneLabelMarker::variant()
+QVariant SceneMaterial::variant()
 {
-    logMessage("SceneLabelMarker::variant()");
+    logMessage("SceneMaterial::variant()");
 
     QVariant v;
     v.setValue(this);
     return v;
 }
 
-SceneLabelMarkerNone::SceneLabelMarkerNone() : SceneLabelMarker("none")
+SceneMaterialNone::SceneMaterialNone() : SceneMaterial("none")
 {
-    logMessage("SceneLabelMarker::SceneLabelMarkerNone()");
+    logMessage("SceneMaterial::SceneMaterialNone()");
 
 }
 
 
 // *************************************************************************************************************************************
 
-DSceneEdgeMarker::DSceneEdgeMarker(QWidget *parent) : QDialog(parent)
+SceneBoundaryDialog::SceneBoundaryDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("DSceneEdgeMarker::DSceneEdgeMarker()");
+    logMessage("SceneBoundaryDialog::SceneBoundaryDialog()");
+
+    setWindowIcon(icon("scene-edgemarker"));
+    setWindowTitle(tr("Boundary condition"));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
+    lblEquation = new QLabel(tr("Equation:"));
+    lblEquationImage = new QLabel(this);
 }
 
-DSceneEdgeMarker::~DSceneEdgeMarker()
+void SceneBoundaryDialog::createDialog()
 {
-    logMessage("DSceneEdgeMarker::~DSceneEdgeMarker()");
-
-    delete layout;
-    delete txtName;
-}
-
-void DSceneEdgeMarker::createDialog()
-{
-    logMessage("DSceneEdgeMarker::createDialog()");
+    logMessage("SceneBoundaryDialog::createDialog()");
 
     // dialog buttons
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -138,227 +135,246 @@ void DSceneEdgeMarker::createDialog()
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
     layout->addWidget(new QLabel(tr("Name:")), 0, 0);
-    layout->addWidget(txtName, 0, 1);
+    layout->addWidget(txtName, 0, 2);
+    layout->addWidget(lblEquation, 5, 0);
+    layout->addWidget(lblEquationImage, 5, 2);
 
     // content
     createContent();
 
-    layout->addWidget(buttonBox, 100, 0, 1, 2);
+    layout->addWidget(buttonBox, 100, 0, 1, 3);
+    layout->setRowStretch(99, 1);
 
     txtName->setFocus();
 
     setLayout(layout);
 }
 
-void DSceneEdgeMarker::load()
+void SceneBoundaryDialog::load()
 {
-    logMessage("DSceneEdgeMarker::load()");
+    logMessage("SceneBoundaryDialog::load()");
 
-    txtName->setText(m_edgeMarker->name);
+    txtName->setText(m_boundary->name);
 }
 
-bool DSceneEdgeMarker::save()
+bool SceneBoundaryDialog::save()
 {
-    logMessage("DSceneEdgeMarker::save()");
+    logMessage("SceneBoundaryDialog::save()");
 
     // find name duplicities
-    foreach (SceneEdgeMarker *edgeMarker, Util::scene()->edgeMarkers)
+    foreach (SceneBoundary *boundary, Util::scene()->boundaries)
     {
-        if (edgeMarker->name == txtName->text())
+        if (boundary->name == txtName->text())
         {
-            if (m_edgeMarker == edgeMarker)
+            if (m_boundary == boundary)
                 continue;
 
             QMessageBox::warning(this, tr("Boundary marker"), tr("Boundary marker name already exists."));
             return false;
         }
     }
-    m_edgeMarker->name = txtName->text();
+    m_boundary->name = txtName->text();
     return true;
 }
 
-void DSceneEdgeMarker::setSize()
+void SceneBoundaryDialog::setSize()
 {
-    logMessage("DSceneEdgeMarker::setSize()");
-
-    setWindowIcon(icon("scene-edgemarker"));
-    setWindowTitle(tr("Boundary condition"));
+    logMessage("SceneBoundaryDialog::setSize()");
 
     setMinimumSize(sizeHint());
-    setMaximumSize(sizeHint());
 }
 
-void DSceneEdgeMarker::doAccept()
+void SceneBoundaryDialog::doAccept()
 {
-    logMessage("DSceneEdgeMarker::doAccept()");
+    logMessage("SceneBoundaryDialog::doAccept()");
 
     if (save())
         accept();    
 }
 
-void DSceneEdgeMarker::doReject()
+void SceneBoundaryDialog::doReject()
 {
-    logMessage("DSceneEdgeMarker::doReject()");
+    logMessage("SceneBoundaryDialog::doReject()");
 
     reject();
 }
 
-void DSceneEdgeMarker::evaluated(bool isError)
+void SceneBoundaryDialog::evaluated(bool isError)
 {
-    logMessage("DSceneEdgeMarker::evaluated()");
+    logMessage("SceneBoundaryDialog::evaluated()");
 
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
 
+void SceneBoundaryDialog::readEquation(QLabel *lblEquation, PhysicFieldBC type)
+{
+    QString fileName = QString(":/images/equations/%1/%2_%3.png")
+            .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField()))
+            .arg(physicFieldBCToStringKey(type))
+            .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
+
+    if (QFile::exists(fileName))
+        // analysis dependand
+        readPixmap(lblEquation, fileName);
+    else
+        // general form
+        readPixmap(lblEquation, QString(":/images/equations/%1/%2.png")
+                   .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField()))
+                   .arg(physicFieldBCToStringKey(type)));
+}
+
 // *************************************************************************************************************************************
 
-DSceneLabelMarker::DSceneLabelMarker(QWidget *parent) : QDialog(parent)
+SceneMaterialDialog::SceneMaterialDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("DSceneLabelMarker::DSceneLabelMarker()");
+    logMessage("DSceneMaterial::DSceneMaterial()");
+
+    setWindowIcon(icon("scene-labelmarker"));
+    setWindowTitle(tr("Material"));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
+    lblEquation = new QLabel(tr("Equation:"));
+    lblEquationImage = new QLabel(this);
 }
 
-DSceneLabelMarker::~DSceneLabelMarker()
+void SceneMaterialDialog::createDialog()
 {
-    logMessage("DSceneLabelMarker::~DSceneLabelMarker()");
-
-    delete layout;
-    delete txtName;
-}
-
-void DSceneLabelMarker::createDialog()
-{
-    logMessage("DSceneLabelMarker::createDialog()");
+    logMessage("DSceneMaterial::createDialog()");
 
     // dialog buttons
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
-    layout->addWidget(new QLabel(tr("Name:")), 0, 0);
-    layout->addWidget(txtName, 0, 1);
+    // name
+    layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
+    layout->addWidget(txtName, 0, 2);
+
+    // equation
+    layout->addWidget(lblEquation, 1, 0, 1, 2);
+    layout->addWidget(lblEquationImage, 1, 2);
+    readPixmap(lblEquationImage,
+               QString(":/images/equations/%1/%1_%2.png")
+               .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField()))
+               .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)));
 
     // content
     createContent();
 
-    layout->addWidget(buttonBox, 100, 0, 1, 2);
+    layout->addWidget(buttonBox, 100, 0, 1, 3);
+    layout->setRowStretch(99, 1);
 
     txtName->setFocus();
 
     setLayout(layout);
 }
 
-void DSceneLabelMarker::setSize()
+void SceneMaterialDialog::setSize()
 {
-    logMessage("DSceneLabelMarker::setSize()");
-
-    setWindowIcon(icon("scene-labelmarker"));
-    setWindowTitle(tr("Material"));
+    logMessage("DSceneMaterial::setSize()");
 
     setMinimumSize(sizeHint());
-    setMaximumSize(sizeHint());
 }
 
-void DSceneLabelMarker::load()
+void SceneMaterialDialog::load()
 {
-    logMessage("DSceneLabelMarker::load()");
+    logMessage("DSceneMaterial::load()");
 
-    txtName->setText(m_labelMarker->name);
+    txtName->setText(m_material->name);
 }
 
-bool DSceneLabelMarker::save()
+bool SceneMaterialDialog::save()
 {
-    logMessage("DSceneLabelMarker::save()");
+    logMessage("DSceneMaterial::save()");
 
     // find name duplicities
-    foreach (SceneLabelMarker *labelMarker, Util::scene()->labelMarkers)
+    foreach (SceneMaterial *material, Util::scene()->materials)
     {
-        if (labelMarker->name == txtName->text())
+        if (material->name == txtName->text())
         {
-            if (m_labelMarker == labelMarker)
+            if (m_material == material)
                 continue;
 
             QMessageBox::warning(this, tr("Material marker"), tr("Material marker name already exists."));
             return false;
         }
     }
-    m_labelMarker->name = txtName->text();
+    m_material->name = txtName->text();
     return true;
 }
 
-void DSceneLabelMarker::doAccept()
+void SceneMaterialDialog::doAccept()
 {
-    logMessage("DSceneLabelMarker::doAccept()");
+    logMessage("DSceneMaterial::doAccept()");
 
     if (save())
         accept();
 }
 
-void DSceneLabelMarker::doReject()
+void SceneMaterialDialog::doReject()
 {
-    logMessage("DSceneLabelMarker::doReject()");
+    logMessage("DSceneMaterial::doReject()");
 
     reject();
 }
 
-void DSceneLabelMarker::evaluated(bool isError)
+void SceneMaterialDialog::evaluated(bool isError)
 {
-    logMessage("DSceneLabelMarker::evaluated()");
+    logMessage("DSceneMaterial::evaluated()");
 
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
 
 // ***********************************************************************************************************
 
-EdgeMarkerDialog::EdgeMarkerDialog(QWidget *parent) : QDialog(parent)
+SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("EdgeMarkerDialog::EdgeMarkerDialog()");
+    logMessage("SceneBoundarySelectDialog::SceneBoundarySelectDialog()");
 
-    setWindowTitle(tr("Edge marker"));
+    setWindowTitle(tr("Boundary condition"));
     setWindowIcon(icon("scene-edge"));
     setModal(true);
 
     // fill combo
-    cmbMarker = new QComboBox(this);
-    for (int i = 0; i<Util::scene()->edgeMarkers.count(); i++)
+    cmbBoundary = new QComboBox(this);
+    for (int i = 0; i<Util::scene()->boundaries.count(); i++)
     {
-        cmbMarker->addItem(Util::scene()->edgeMarkers[i]->name, Util::scene()->edgeMarkers[i]->variant());
+        cmbBoundary->addItem(Util::scene()->boundaries[i]->name, Util::scene()->boundaries[i]->variant());
     }
 
     // select marker
-    cmbMarker->setCurrentIndex(-1);
-    SceneEdgeMarker *marker = NULL;
+    cmbBoundary->setCurrentIndex(-1);
+    SceneBoundary *boundary = NULL;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
         if (Util::scene()->edges[i]->isSelected)
         {
-            if (!marker)
+            if (!boundary)
             {
-                marker = Util::scene()->edges[i]->marker;
+                boundary = Util::scene()->edges[i]->boundary;
             }
-            if (marker != Util::scene()->edges[i]->marker)
+            if (boundary != Util::scene()->edges[i]->boundary)
             {
-                marker = NULL;
+                boundary = NULL;
                 break;
             }
         }
     }
-    if (marker)
-        cmbMarker->setCurrentIndex(cmbMarker->findData(marker->variant()));
+    if (boundary)
+        cmbBoundary->setCurrentIndex(cmbBoundary->findData(boundary->variant()));
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    QHBoxLayout *layoutMarker = new QHBoxLayout();
-    layoutMarker->addWidget(new QLabel(tr("Edge marker:")));
-    layoutMarker->addWidget(cmbMarker);
+    QHBoxLayout *layoutBoundary = new QHBoxLayout();
+    layoutBoundary->addWidget(new QLabel(tr("Boundary:")));
+    layoutBoundary->addWidget(cmbBoundary);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutMarker);
+    layout->addLayout(layoutBoundary);
     layout->addStretch();
     layout->addWidget(buttonBox);
 
@@ -367,23 +383,16 @@ EdgeMarkerDialog::EdgeMarkerDialog(QWidget *parent) : QDialog(parent)
     setMaximumSize(sizeHint());
 }
 
-EdgeMarkerDialog::~EdgeMarkerDialog()
+void SceneBoundarySelectDialog::doAccept()
 {
-    logMessage("EdgeMarkerDialog::~EdgeMarkerDialog()");
+    logMessage("SceneBoundarySelectDialog::doAccept()");
 
-    delete cmbMarker;
-}
-
-void EdgeMarkerDialog::doAccept()
-{
-    logMessage("EdgeMarkerDialog::doAccept()");
-
-    if (marker())
+    if (boundary())
     {
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
             if (Util::scene()->edges[i]->isSelected)
-                Util::scene()->edges[i]->marker = marker();
+                Util::scene()->edges[i]->boundary = boundary();
         }
     }
     accept();
@@ -391,33 +400,33 @@ void EdgeMarkerDialog::doAccept()
 
 // *************************************************************************************************************************************
 
-LabelMarkerDialog::LabelMarkerDialog(QWidget *parent) : QDialog(parent)
+SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("LabelMarkerDialog::LabelMarkerDialog()");
+    logMessage("SceneMaterialSelectDialog::SceneMaterialSelectDialog()");
 
-    setWindowTitle(tr("Label marker"));
+    setWindowTitle(tr("Material"));
     setWindowIcon(icon("scene-label"));
     setModal(true);
 
     // fill combo
-    cmbMarker = new QComboBox(this);
-    for (int i = 0; i<Util::scene()->labelMarkers.count(); i++)
+    cmbMaterial = new QComboBox(this);
+    for (int i = 0; i<Util::scene()->materials.count(); i++)
     {
-        cmbMarker->addItem(Util::scene()->labelMarkers[i]->name, Util::scene()->labelMarkers[i]->variant());
+        cmbMaterial->addItem(Util::scene()->materials[i]->name, Util::scene()->materials[i]->variant());
     }
 
     // select marker
-    cmbMarker->setCurrentIndex(-1);
-    SceneLabelMarker *marker = NULL;
+    cmbMaterial->setCurrentIndex(-1);
+    SceneMaterial *marker = NULL;
     for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
         if (Util::scene()->labels[i]->isSelected)
         {
             if (!marker)
             {
-                marker = Util::scene()->labels[i]->marker;
+                marker = Util::scene()->labels[i]->material;
             }
-            if (marker != Util::scene()->labels[i]->marker)
+            if (marker != Util::scene()->labels[i]->material)
             {
                 marker = NULL;
                 break;
@@ -425,19 +434,19 @@ LabelMarkerDialog::LabelMarkerDialog(QWidget *parent) : QDialog(parent)
         }
     }
     if (marker)
-        cmbMarker->setCurrentIndex(cmbMarker->findData(marker->variant()));
+        cmbMaterial->setCurrentIndex(cmbMaterial->findData(marker->variant()));
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    QHBoxLayout *layoutMarker = new QHBoxLayout();
-    layoutMarker->addWidget(new QLabel(tr("Label marker:")));
-    layoutMarker->addWidget(cmbMarker);
+    QHBoxLayout *layoutMaterial = new QHBoxLayout();
+    layoutMaterial->addWidget(new QLabel(tr("Material:")));
+    layoutMaterial->addWidget(cmbMaterial);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutMarker);
+    layout->addLayout(layoutMaterial);
     layout->addStretch();
     layout->addWidget(buttonBox);
 
@@ -446,23 +455,16 @@ LabelMarkerDialog::LabelMarkerDialog(QWidget *parent) : QDialog(parent)
     setMaximumSize(sizeHint());
 }
 
-LabelMarkerDialog::~LabelMarkerDialog()
+void SceneMaterialSelectDialog::doAccept()
 {
-    logMessage("LabelMarkerDialog::~LabelMarkerDialog()");
-
-    delete cmbMarker;
-}
-
-void LabelMarkerDialog::doAccept()
-{
-    logMessage("LabelMarkerDialog::doAccept()");
+    logMessage("SceneMaterialSelectDialog::doAccept()");
 
     if (marker())
     {
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
             if (Util::scene()->labels[i]->isSelected)
-                Util::scene()->labels[i]->marker = marker();
+                Util::scene()->labels[i]->material = marker();
         }
     }
     accept();

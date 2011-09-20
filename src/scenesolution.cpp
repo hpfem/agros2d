@@ -28,6 +28,11 @@ SceneSolution::SceneSolution()
 {
     logMessage("SceneSolution::SceneSolution()");
 
+    m_progressDialog = new ProgressDialog();
+    m_progressItemMesh = new ProgressItemMesh();
+    m_progressItemSolve = new ProgressItemSolve();
+    m_progressItemProcessView = new ProgressItemProcessView();
+
     m_timeStep = -1;
     m_isSolving = false;
 
@@ -36,6 +41,14 @@ SceneSolution::SceneSolution()
     m_slnScalarView = NULL;
     m_slnVectorXView = NULL;
     m_slnVectorYView = NULL;   
+}
+
+SceneSolution::~SceneSolution()
+{
+    delete m_progressDialog;
+    delete m_progressItemMesh;
+    delete m_progressItemSolve;
+    delete m_progressItemProcessView;
 }
 
 void SceneSolution::clear()
@@ -90,6 +103,8 @@ void SceneSolution::clear()
         delete m_slnVectorYView;
         m_slnVectorYView = NULL;
     }
+
+    m_progressDialog->clear();
 }
 
 void SceneSolution::solve(SolverMode solverMode)
@@ -103,20 +118,23 @@ void SceneSolution::solve(SolverMode solverMode)
 
     m_isSolving = true;
 
+    // open indicator progress
+    Indicator::openProgress();
+
     // save problem
     ErrorResult result = Util::scene()->writeToFile(tempProblemFileName() + ".a2d");
     if (result.isError())
         result.showDialog();
 
-    ProgressDialog progressDialog;
-    progressDialog.appendProgressItem(new ProgressItemMesh());
+    m_progressDialog->clear();
+    m_progressDialog->appendProgressItem(m_progressItemMesh);
     if (solverMode == SolverMode_MeshAndSolve)
     {
-        progressDialog.appendProgressItem(new ProgressItemSolve());
-        progressDialog.appendProgressItem(new ProgressItemProcessView());
+        m_progressDialog->appendProgressItem(m_progressItemSolve);
+        m_progressDialog->appendProgressItem(m_progressItemProcessView);
     }
 
-    if (progressDialog.run())
+    if (m_progressDialog->run())
     {
         Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStepCount() - 1);
         emit meshed();
@@ -137,6 +155,9 @@ void SceneSolution::solve(SolverMode solverMode)
         Util::scene()->problemInfo()->fileName = "";
     }
 
+    // close indicator progress
+    Indicator::closeProgress();
+
     m_isSolving = false;
 }
 
@@ -152,7 +173,7 @@ void SceneSolution::loadMeshInitial(QDomElement *element)
     content.append(text.nodeValue());
     writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
 
-    Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
+    Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");    
     // refineMesh(mesh, true, true);
 
     setMeshInitial(mesh);
@@ -271,7 +292,7 @@ int SceneSolution::adaptiveSteps()
     return (isSolved()) ? m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveSteps : 0.0;
 }
 
-int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &point)
+int SceneSolution::findElementInVectorizer(const Vectorizer &vec, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInVectorizer()");
 
@@ -280,65 +301,69 @@ int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &
 
     for (int i = 0; i < vec.get_num_triangles(); i++)
     {
-        bool inTriangle = true;
+        bool inElement = true;
 
-        int k;
-        double z;
+        // triangle element
         for (int l = 0; l < 3; l++)
         {
-            k = l + 1;
+            int k = l + 1;
             if (k == 3)
                 k = 0;
 
-            z = (vecVert[vecTris[i][k]][0] - vecVert[vecTris[i][l]][0]) * (point.y - vecVert[vecTris[i][l]][1]) -
-                (vecVert[vecTris[i][k]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
+            double z = (vecVert[vecTris[i][k]][0] - vecVert[vecTris[i][l]][0]) * (point.y - vecVert[vecTris[i][l]][1]) -
+                    (vecVert[vecTris[i][k]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
 
             if (z < 0)
             {
-                inTriangle = false;
+                inElement = false;
                 break;
             }
         }
 
-        if (inTriangle)
+        if (inElement)
             return i;
     }
 
     return -1;
 }
 
-int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point)
+#define sign(x) (( x > 0 ) - ( x < 0 ))
+
+int SceneSolution::findElementInMesh(Mesh *mesh, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInMesh()");
 
     for (int i = 0; i < mesh->get_num_active_elements(); i++)
     {
-        bool inTriangle = true;
-        
         Element *element = mesh->get_element_fast(i);
-        
-        int k;
-        double z;
-        for (int l = 0; l < 3; l++)
-        {
-            k = l + 1;
-            if (k == 3)
-                k = 0;
-            
-            z = (element->vn[k]->x - element->vn[l]->x) * (point.y - element->vn[l]->y) - (element->vn[k]->y - element->vn[l]->y) * (point.x - element->vn[l]->x);
-            
-            if (z < 0)
-            {
-                inTriangle = false;
-                break;
-            }
+
+        bool inElement = false;
+        int j;
+        int npol = (element->is_triangle()) ? 3 : 4;
+
+        for (int i = 0, j = npol-1; i < npol; j = i++) {
+            if ((((element->vn[i]->y <= point.y) && (point.y < element->vn[j]->y)) ||
+                 ((element->vn[j]->y <= point.y) && (point.y < element->vn[i]->y))) &&
+                    (point.x < (element->vn[j]->x - element->vn[i]->x) * (point.y - element->vn[i]->y)
+                     / (element->vn[j]->y - element->vn[i]->y) + element->vn[i]->x))
+                inElement = !inElement;
         }
-        
-        if (inTriangle)
+
+        if (inElement)
             return i;
     }
     
     return -1;
+}
+
+void SceneSolution::setMeshInitial(Mesh *meshInitial)
+{
+    if (m_meshInitial)
+    {
+        delete m_meshInitial;
+    }
+
+    m_meshInitial = meshInitial;
 }
 
 void SceneSolution::setSolutionArrayList(QList<SolutionArray *> solutionArrayList)
@@ -368,14 +393,14 @@ void SceneSolution::setTimeStep(int timeStep, bool showViewProgress)
     emit timeStepChanged(showViewProgress);
 }
 
-int SceneSolution::timeStepCount()
+int SceneSolution::timeStepCount() const
 {
     logMessage("SceneSolution::timeStepCount()");
 
     return (!m_solutionArrayList.isEmpty()) ? m_solutionArrayList.count() / Util::scene()->problemInfo()->hermes()->numberOfSolution() : 0;
 }
 
-double SceneSolution::time()
+double SceneSolution::time() const
 {
     logMessage("SceneSolution::time()");
 
@@ -398,7 +423,7 @@ void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
     }
     
     m_slnContourView = slnScalarView;
-    m_linContourView.process_solution(m_slnContourView);
+    m_linContourView.process_solution(m_slnContourView, H2D_FN_VAL_0, Util::config()->linearizerQuality);
 
     // deformed shape
     if (Util::config()->deformContour)
@@ -416,7 +441,10 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
     }
     
     m_slnScalarView = slnScalarView;
-    m_linScalarView.process_solution(m_slnScalarView, H2D_FN_VAL_0);
+    // QTime time;
+    // time.start();
+    m_linScalarView.process_solution(m_slnScalarView, H2D_FN_VAL_0, Util::config()->linearizerQuality);
+    // qDebug() << "linScalarView.process_solution: " << time.elapsed();
 
     // deformed shape
     if (Util::config()->deformScalar)
@@ -448,6 +476,21 @@ void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScala
         Util::scene()->problemInfo()->hermes()->deformShape(m_vecVectorView.get_vertices(), m_vecVectorView.get_num_vertices());
 }
 
+void SceneSolution::processView(bool showViewProgress)
+{
+    if (showViewProgress)
+    {
+        m_progressDialog->clear();
+        m_progressDialog->appendProgressItem(m_progressItemProcessView);
+        m_progressDialog->run(showViewProgress);
+    }
+    else
+    {
+        m_progressItemProcessView->setSteps();
+        m_progressItemProcessView->run(true);
+    }
+}
+
 void SceneSolution::processSolutionMesh()
 {
     logMessage("SceneSolution::processSolutionMesh()");
@@ -471,10 +514,10 @@ void SceneSolution::processRangeContour()
         ViewScalarFilter *viewScalarFilter;
         if (isPhysicFieldVariableScalar(sceneView()->sceneViewSettings().contourPhysicFieldVariable))
             viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
-                                                                                                          PhysicFieldVariableComp_Scalar);
+                                                                                        PhysicFieldVariableComp_Scalar);
         else
             viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
-                                                                                                          PhysicFieldVariableComp_Magnitude);
+                                                                                        PhysicFieldVariableComp_Magnitude);
 
         setSlnContourView(viewScalarFilter);
         emit processedRangeContour();
@@ -489,6 +532,7 @@ void SceneSolution::processRangeScalar()
     {
         ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().scalarPhysicFieldVariable,
                                                                                                       sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
+
         setSlnScalarView(viewScalarFilter);
         emit processedRangeScalar();
     }
@@ -509,4 +553,9 @@ void SceneSolution::processRangeVector()
         setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
         emit processedRangeVector();
     }
+}
+
+ProgressDialog *SceneSolution::progressDialog()
+{
+    return m_progressDialog;
 }

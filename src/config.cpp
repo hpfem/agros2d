@@ -39,18 +39,26 @@ void Config::load()
 
     QSettings settings;
 
+    // experimental features
+    showExperimentalFeatures = settings.value("SceneViewSettings/ExperimentalFeatures", false).toBool();
+
     // general
     guiStyle = settings.value("General/GUIStyle").toString();
     language = settings.value("General/Language", QLocale::system().name()).toString();
     defaultPhysicField = (PhysicField) settings.value("General/DefaultPhysicField", PhysicField_Electrostatic).toInt();
     if (defaultPhysicField == PhysicField_Undefined) defaultPhysicField = PhysicField_Electrostatic;
 
+    collaborationServerURL = settings.value("General/CollaborationServerURL", QString("http://agros2d.org/collaboration/")).toString();
+
     checkVersion = settings.value("General/CheckVersion", true).toBool();
     showConvergenceChart = settings.value("General/ShowConvergenceChart", true).toBool();
     enabledApplicationLog = settings.value("General/EnabledApplicationLog", true).toBool();
     enabledProgressLog = settings.value("General/EnabledProgressLog", true).toBool();
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
-    saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
+    if (showExperimentalFeatures)
+        saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
+    else
+        saveProblemWithSolution = false;
 
     // zoom
     zoomToMouse = settings.value("Geometry/ZoomToMouse", true).toBool();
@@ -79,38 +87,34 @@ void Config::load()
     labelSize = settings.value("SceneViewSettings/LabelSize", 6.0).toDouble();
 
     // font
-#ifdef Q_WS_X11
-    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Monospace", 9)).value<QFont>();
-#endif
-#ifdef Q_WS_WIN
-    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Courier New", 9)).value<QFont>();
-#endif
-#ifdef Q_WS_MAC
-    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Monaco", 12)).value<QFont>();
-#endif
+    sceneFont = settings.value("SceneViewSettings/SceneFont", FONT).value<QFont>();
 
     // mesh
     angleSegmentsCount = settings.value("SceneViewSettings/AngleSegmentsCount", 3).toInt();
     curvilinearElements = settings.value("SceneViewSettings/CurvilinearElements", true).toBool();
 
     // grid
-    showGrid = settings.value("SceneViewSettings/ShowGrid", true).toBool();
-    gridStep = settings.value("SceneViewSettings/GridStep", 0.05).toDouble();
+    showGrid = settings.value("SceneViewSettings/ShowGrid", SHOWGRID).toBool();
+    gridStep = settings.value("SceneViewSettings/GridStep", GRIDSTEP).toDouble();
     // rulers
-    showRulers = settings.value("SceneViewSettings/ShowRulers", false).toBool();
+    showRulers = settings.value("SceneViewSettings/ShowRulers", SHOWRULERS).toBool();
     // snap to grid
-    snapToGrid = settings.value("SceneViewSettings/SnapToGrid", false).toBool();
+    snapToGrid = settings.value("SceneViewSettings/SnapToGrid", SNAPTOGRID).toBool();
 
     // axes
-    showAxes = settings.value("SceneViewSettings/ShowAxes", true).toBool();
+    showAxes = settings.value("SceneViewSettings/ShowAxes", SHOWAXES).toBool();
 
     // label
-    showLabel = settings.value("SceneViewSettings/ShowLabel", true).toBool();
+    showLabel = settings.value("SceneViewSettings/ShowLabel", SHOWLABEL).toBool();
+
+    // linearizer quality
+    linearizerQuality = settings.value("SceneViewSettings/LinearizerQuality", LINEARIZER_QUALITY).toDouble();
 
     // countour
     contoursCount = settings.value("SceneViewSettings/ContoursCount", CONTOURSCOUNT).toInt();
 
     // scalar view
+    showScalarScale = settings.value("SceneViewSettings/ShowScalarScale", true).toBool();
     paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", PALETTETYPE).toInt();
     paletteFilter = settings.value("SceneViewSettings/PaletteFilter", PALETTEFILTER).toBool();
     paletteSteps = settings.value("SceneViewSettings/PaletteSteps", PALETTESTEPS).toInt();
@@ -125,8 +129,9 @@ void Config::load()
     vectorScale = settings.value("SceneViewSettings/VectorScale", VECTORSCALE).toDouble();
 
     // order view
-    orderLabel = settings.value("SceneViewSettings/OrderLabel", ORDERLABEL).toBool();
+    showOrderScale = settings.value("SceneViewSettings/ShowOrderScale", true).toBool();
     orderPaletteOrderType = (PaletteOrderType) settings.value("SceneViewSettings/OrderPaletteOrderType", ORDERPALETTEORDERTYPE).toInt();
+    orderLabel = settings.value("SceneViewSettings/OrderLabel", ORDERLABEL).toBool();
 
     // deformations
     deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
@@ -137,8 +142,10 @@ void Config::load()
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
     scalarView3DAngle = settings.value("SceneViewSettings/ScalarView3DAngle", 270).toDouble();
     scalarView3DBackground = settings.value("SceneViewSettings/ScalarView3DBackground", true).toBool();
+    scalarView3DHeight = settings.value("SceneViewSettings/ScalarView3DHeight", 4.0).toDouble();
 
     // adaptivity
+    maxDofs = settings.value("Adaptivity/MaxDofs", MAX_DOFS).toInt();
     isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).toBool();
     convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).toDouble();
     threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).toDouble();
@@ -148,6 +155,9 @@ void Config::load()
 
     // command argument
     commandTriangle = settings.value("Commands/Triangle", COMMANDS_TRIANGLE).toString();
+    // add quadratic elements (added points on the middle of edge used by rough triangle division)
+    if (!commandTriangle.contains("-o2"))
+        commandTriangle = COMMANDS_TRIANGLE;
     commandFFmpeg = settings.value("Commands/FFmpeg", COMMANDS_FFMPEG).toString();
 
     // global script
@@ -160,17 +170,25 @@ void Config::save()
 
     QSettings settings;
 
+    // experimental features
+    settings.setValue("SceneViewSettings/ExperimentalFeatures", showExperimentalFeatures);
+
     // general
     settings.setValue("General/GUIStyle", guiStyle);
     settings.setValue("General/Language", language);
     settings.setValue("General/DefaultPhysicField", defaultPhysicField);
+
+    settings.setValue("General/CollaborationServerURL", collaborationServerURL);
 
     settings.setValue("General/CheckVersion", checkVersion);
     settings.setValue("General/ShowConvergenceChart", showConvergenceChart);
     settings.setValue("General/EnabledApplicationLog", enabledApplicationLog);
     settings.setValue("General/EnabledProgressLog", enabledProgressLog);
     settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
-    settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
+    if (showExperimentalFeatures)
+        settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
+    else
+        saveProblemWithSolution = false;
 
     // zoom
     settings.setValue("General/ZoomToMouse", zoomToMouse);
@@ -209,6 +227,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/ShowGrid", showGrid);
     settings.setValue("SceneViewSettings/GridStep", gridStep);
 
+    // scene font
     settings.setValue("SceneViewSettings/SceneFont", sceneFont);
 
     // rulers
@@ -222,10 +241,14 @@ void Config::save()
     // label
     settings.setValue("SceneViewSettings/ShowLabel", showLabel);
 
+    // linearizer quality
+    settings.setValue("SceneViewSettings/LinearizerQuality", linearizerQuality);
+
     // countour
     settings.setValue("SceneViewSettings/ContoursCount", contoursCount);
 
     // scalar view
+    settings.setValue("SceneViewSettings/ShowScalarScale", showScalarScale);
     settings.setValue("SceneViewSettings/PaletteType", paletteType);
     settings.setValue("SceneViewSettings/PaletteFilter", paletteFilter);
     settings.setValue("SceneViewSettings/PaletteSteps", paletteSteps);
@@ -240,8 +263,9 @@ void Config::save()
     settings.setValue("SceneViewSettings/VectorScale", vectorScale);
 
     // order view
-    settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
+    settings.setValue("SceneViewSettings/ShowOrderScale", showOrderScale);
     settings.setValue("SceneViewSettings/OrderPaletteOrderType", orderPaletteOrderType);
+    settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
 
     // deformations
     settings.setValue("SceneViewSettings/DeformScalar", deformScalar);
@@ -252,8 +276,10 @@ void Config::save()
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
     settings.setValue("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
     settings.setValue("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
+    settings.setValue("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
 
     // adaptivity
+    settings.setValue("Adaptivity/MaxDofs", maxDofs);
     settings.setValue("Adaptivity/IsoOnly", isoOnly);
     settings.setValue("Adaptivity/ConvExp", convExp);
     settings.setValue("Adaptivity/Threshold", threshold);
