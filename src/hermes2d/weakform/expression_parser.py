@@ -103,7 +103,7 @@ class NumericStringParser(object):
             item = expression_list.pop()                                           
             if (type(item) is list):                    
                 string.append('\\left(' + self.translate_to_latex(item) + '\\right)')                
-            else:
+            else:                                    
                 try:
                     float(item)                                        
                     if not(item == item.replace('E','\\cdot 10^{')):
