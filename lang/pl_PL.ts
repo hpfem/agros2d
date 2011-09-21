@@ -2808,12 +2808,12 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="245"/>
         <source>Copy image to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj obraz do schowka</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="247"/>
         <source>Copy image from workspace to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj widok do schowka.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="383"/>
@@ -3571,7 +3571,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="27"/>
         <source>View Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Widok</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="367"/>
@@ -5622,7 +5622,7 @@
     <message>
         <location filename="../src/util.cpp" line="965"/>
         <source>Surface current</source>
-        <translation type="unfinished"></translation>
+        <translation>Prąd powierzchniowy</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="991"/>
@@ -5931,7 +5931,7 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="379"/>
         <source>Maximum DOFs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna liczba zmiennych:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="434"/>
@@ -6237,7 +6237,7 @@
     <message>
         <location filename="../src/scene.cpp" line="1349"/>
         <source>For opening file &apos;%1&apos; is required Agros2D version 2.0 or higher.</source>
-        <translation type="unfinished"></translation>
+        <translation>Do otwarcia pliku &apos;%1&apos; wymagany jest Agros2D w wersji 2.0 lub wyższej.</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1725"/>
@@ -6258,22 +6258,22 @@
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1215"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ WB:</translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1259"/>
         <source>&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (Pa)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (Pa)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1266"/>
         <source>&lt;i&gt;a&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (m/s&lt;sup&gt;2&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;a&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (m/s&lt;sup&gt;2&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1273"/>
         <source>&lt;i&gt;Z&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (PaÂ·s/m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;Z&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (PaÂ·s/m)</translation>
     </message>
 </context>
 <context>
@@ -6281,17 +6281,17 @@
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="694"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ WB:</translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="738"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (V)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (V)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="745"/>
         <source>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (A/m&lt;sup&gt;2&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (A/m&lt;sup&gt;2&lt;/sup&gt;)</translation>
     </message>
 </context>
 <context>
@@ -6299,27 +6299,27 @@
     <message>
         <location filename="../src/scenemarker.cpp" line="124"/>
         <source>Equation:</source>
-        <translation type="unfinished">Równanie:</translation>
+        <translation>Równanie:</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="137"/>
         <source>Name:</source>
-        <translation type="unfinished">Nazwa:</translation>
+        <translation>Nazwa:</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="172"/>
         <source>Boundary marker</source>
-        <translation type="unfinished">Znacznik brzegu</translation>
+        <translation>Znacznik brzegu</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="172"/>
         <source>Boundary marker name already exists.</source>
-        <translation type="unfinished">Istnieje już znacznik brzegu o takiej nazwie.</translation>
+        <translation>Istnieje już znacznik brzegu o takiej nazwie.</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="120"/>
         <source>Boundary condition</source>
-        <translation type="unfinished">Warunek brzegowy</translation>
+        <translation>Warunek brzegowy</translation>
     </message>
 </context>
 <context>
@@ -6328,43 +6328,43 @@
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1128"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1130"/>
         <source>Equation:</source>
-        <translation type="unfinished">Równanie:</translation>
+        <translation>Równanie:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1153"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1169"/>
         <source>BC Type:</source>
-        <translation type="unfinished">Typ WB:</translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1157"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1173"/>
         <source>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N/m&lt;sup&gt;2&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N/m&lt;sup&gt;2&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1158"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1174"/>
         <source>Force</source>
-        <translation type="unfinished">Siła</translation>
+        <translation>Siła</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1160"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1176"/>
         <source>&lt;i&gt;u&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;u&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (m)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1161"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1177"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Przesunięcie</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1164"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1180"/>
         <source>Direction %1</source>
-        <translation type="unfinished">Kierunek %1</translation>
+        <translation>Kierunek %1</translation>
     </message>
 </context>
 <context>
@@ -6372,17 +6372,17 @@
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="721"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ WB:</translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="765"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (V)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (V)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="772"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (C/m&lt;sup&gt;2&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N/m&lt;sup&gt;2&lt;/sup&gt;)</translation>
     </message>
 </context>
 <context>
@@ -6390,17 +6390,17 @@
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="608"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ WB:</translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="652"/>
         <source>&lt;i&gt;u&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;u&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="659"/>
         <source>&lt;i&gt;g&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;g&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (-)</translation>
     </message>
 </context>
 <context>
@@ -6408,47 +6408,47 @@
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="958"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ WB:</translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="960"/>
         <source>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="961"/>
         <source>Temperature</source>
-        <translation type="unfinished">Temperatura</translation>
+        <translation>Temperatura</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="963"/>
         <source>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (W/m&lt;sup&gt;2&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (W/m&lt;sup&gt;2&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="964"/>
         <source>Heat flux</source>
-        <translation type="unfinished">Strumień ciepła</translation>
+        <translation>Strumień ciepła</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="966"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (W/m&lt;sup&gt;2&lt;/sup&gt;Â·K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (W/m&lt;sup&gt;2&lt;/sup&gt;Â·K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="967"/>
         <source>Heat transfer coef.</source>
-        <translation type="unfinished">Współ. przenik. cieplnej</translation>
+        <translation>Współ. przenik. cieplnej</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="969"/>
         <source>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="970"/>
         <source>External temperature</source>
-        <translation type="unfinished">Zewnętrzna temperatura</translation>
+        <translation>Zewnętrzna temperatura</translation>
     </message>
 </context>
 <context>
@@ -6456,48 +6456,48 @@
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1586"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ WB:</translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1590"/>
         <source>Mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodzaj:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1682"/>
         <source>&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt;</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1685"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1696"/>
         <source> + j </source>
-        <translation type="unfinished"></translation>
+        <translation> + j </translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1693"/>
         <source>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1711"/>
         <source>&lt;i&gt;P&lt;/i&gt; (W):</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;P&lt;/i&gt; (W):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1712"/>
         <source>Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Moc</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1714"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (Â°):</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (Â°):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1715"/>
         <source>Phase</source>
-        <translation type="unfinished"></translation>
+        <translation>Faza</translation>
     </message>
 </context>
 <context>
@@ -6509,12 +6509,12 @@
     <message>
         <location filename="../src/scenemarker.cpp" line="335"/>
         <source>Boundary condition</source>
-        <translation type="unfinished">Warunek brzegowy</translation>
+        <translation>Warunek brzegowy</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="373"/>
         <source>Boundary:</source>
-        <translation type="unfinished"></translation>
+        <translation>Brzeg:</translation>
     </message>
 </context>
 <context>
@@ -6522,47 +6522,47 @@
     <message>
         <location filename="../src/scenebasic.cpp" line="358"/>
         <source>Edge</source>
-        <translation type="unfinished">Krawędź</translation>
+        <translation>Krawędź</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="392"/>
         <source>Start point:</source>
-        <translation type="unfinished">Punkt początkowy:</translation>
+        <translation>Punkt początkowy:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="393"/>
         <source>End point:</source>
-        <translation type="unfinished">Punkt końcowy:</translation>
+        <translation>Punkt końcowy:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="394"/>
         <source>Angle (deg.):</source>
-        <translation type="unfinished">Kąt (stopnie):</translation>
+        <translation>Kąt (stopnie):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="396"/>
         <source>Coordinates</source>
-        <translation type="unfinished">Współrzędne</translation>
+        <translation>Współrzędne</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="415"/>
         <source>Refine towards edge:</source>
-        <translation type="unfinished">Zagęść przy krawędzi:</translation>
+        <translation>Zagęść przy krawędzi:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="417"/>
         <source>Mesh parameters</source>
-        <translation type="unfinished">Parametry siatki</translation>
+        <translation>Parametry siatki</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="422"/>
         <source>Boundary condition:</source>
-        <translation type="unfinished">Warunek brzegowy:</translation>
+        <translation>Warunek brzegowy:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="425"/>
         <source>Length:</source>
-        <translation type="unfinished">Długość:</translation>
+        <translation>Długość:</translation>
     </message>
 </context>
 <context>
@@ -6570,17 +6570,17 @@
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1025"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ WB:</translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1077"/>
         <source>&lt;i&gt;A&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (Wb/m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;A&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (Wb/m)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1085"/>
         <source>&lt;i&gt;K&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (A/m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;K&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (A/m)</translation>
     </message>
 </context>
 <context>
@@ -6678,7 +6678,7 @@
     <message>
         <location filename="../src/sceneinfoview.cpp" line="191"/>
         <source>Adaptivity: </source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptacja:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="194"/>
@@ -6738,37 +6738,37 @@
     <message>
         <location filename="../src/scenebasic.cpp" line="582"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykieta</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="621"/>
         <source>Coordinates</source>
-        <translation type="unfinished">Współrzędne</translation>
+        <translation>Współrzędne</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="636"/>
         <source>Global order is %1.</source>
-        <translation type="unfinished">Globalny stopień %1.</translation>
+        <translation>Globalny stopień %1.</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="648"/>
         <source>Triangle area (m):</source>
-        <translation type="unfinished">Powierzchnia trójkąta (m):</translation>
+        <translation>Powierzchnia trójkąta (m):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="649"/>
         <source>Polynomial order (-):</source>
-        <translation type="unfinished">Stopień wielomianu (-):</translation>
+        <translation>Stopień wielomianu (-):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="651"/>
         <source>Mesh parameters</source>
-        <translation type="unfinished">Parametry siatki</translation>
+        <translation>Parametry siatki</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="655"/>
         <source>Material:</source>
-        <translation type="unfinished">Materiał:</translation>
+        <translation>Materiał:</translation>
     </message>
 </context>
 <context>
@@ -6794,22 +6794,22 @@
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1308"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (kg/m&lt;sup&gt;3&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (kg/m&lt;sup&gt;3&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1309"/>
         <source>Mass density</source>
-        <translation type="unfinished">Gęstość</translation>
+        <translation>Gęstość</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1311"/>
         <source>&lt;i&gt;c&lt;/i&gt; (m/s)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;c&lt;/i&gt; (m/s)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1312"/>
         <source>Speed of sound</source>
-        <translation type="unfinished">Prędkość dźwięku</translation>
+        <translation>Prędkość dźwięku</translation>
     </message>
 </context>
 <context>
@@ -6817,12 +6817,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="772"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (S/m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (S/m)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="773"/>
         <source>Conductivity</source>
-        <translation type="unfinished">Konduktywność</translation>
+        <translation>Konduktywność</translation>
     </message>
 </context>
 <context>
@@ -6830,27 +6830,27 @@
     <message>
         <location filename="../src/scenemarker.cpp" line="237"/>
         <source>Equation:</source>
-        <translation type="unfinished">Równanie:</translation>
+        <translation>Równanie:</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="251"/>
         <source>Name:</source>
-        <translation type="unfinished">Nazwa:</translation>
+        <translation>Nazwa:</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="233"/>
         <source>Material</source>
-        <translation type="unfinished">Materiał</translation>
+        <translation>Materiał</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="299"/>
         <source>Material marker</source>
-        <translation type="unfinished">Znacznik materiału</translation>
+        <translation>Znacznik materiału</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="299"/>
         <source>Material marker name already exists.</source>
-        <translation type="unfinished">Istnieje już taki znacznik materiału.</translation>
+        <translation>Istnieje już taki znacznik materiału.</translation>
     </message>
 </context>
 <context>
@@ -6859,78 +6859,78 @@
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1304"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1307"/>
         <source>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N/m&lt;sup&gt;3&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N/m&lt;sup&gt;3&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1305"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1308"/>
         <source>Force</source>
-        <translation type="unfinished">Siła</translation>
+        <translation>Siła</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1311"/>
         <source>Volumetric forces</source>
-        <translation type="unfinished">Siły w objętości</translation>
+        <translation>Siły w objętości</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1316"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;T&lt;/sub&gt; (1/K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;T&lt;/sub&gt; (1/K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1317"/>
         <source>Thermal exp. coef.</source>
-        <translation type="unfinished">Wsp. rozsz. ciepl.</translation>
+        <translation>Wsp. rozsz. ciepl.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1319"/>
         <source>&lt;i&gt;T&lt;/i&gt; (K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;T&lt;/i&gt; (K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1320"/>
         <source>Temperature</source>
-        <translation type="unfinished">Temperatura</translation>
+        <translation>Temperatura</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1322"/>
         <source>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt; (K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt; (K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1323"/>
         <source>Ref. temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperatura odniesienia</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1326"/>
         <source>Thermal expansion</source>
-        <translation type="unfinished">Rozszerzalność cieplna</translation>
+        <translation>Rozszerzalność cieplna</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1330"/>
         <source>Lame&apos;s coefficients:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stałe Lamego:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1337"/>
         <source>&lt;i&gt;E&lt;/i&gt; (Pa)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;E&lt;/i&gt; (Pa)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1338"/>
         <source>Young modulus</source>
-        <translation type="unfinished">Moduł Younga</translation>
+        <translation>Moduł Younga</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1340"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1341"/>
         <source>Poisson number</source>
-        <translation type="unfinished">Liczba Poissona</translation>
+        <translation>Liczba Poissona</translation>
     </message>
 </context>
 <context>
@@ -6938,22 +6938,22 @@
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="801"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="802"/>
         <source>Permittivity</source>
-        <translation type="unfinished">Przenikalność</translation>
+        <translation>Przenikalność</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="804"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (C/m&lt;sup&gt;3&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (C/m&lt;sup&gt;3&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="805"/>
         <source>Charge density</source>
-        <translation type="unfinished">Gęstość ładunku</translation>
+        <translation>Gęstość ładunku</translation>
     </message>
 </context>
 <context>
@@ -6961,22 +6961,22 @@
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="693"/>
         <source>&lt;i&gt;c&lt;/i&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;c&lt;/i&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="694"/>
         <source>Constant</source>
-        <translation type="unfinished">Stała</translation>
+        <translation>Stała</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="696"/>
         <source>&lt;i&gt;r&lt;/i&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;r&lt;/i&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="697"/>
         <source>Rightside</source>
-        <translation type="unfinished">Prawa strona</translation>
+        <translation>Prawa strona</translation>
     </message>
 </context>
 <context>
@@ -6984,42 +6984,42 @@
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1092"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (W/mÂ·K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (W/mÂ·K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1093"/>
         <source>Thermal conductivity</source>
-        <translation type="unfinished">Przewodność cieplna</translation>
+        <translation>Przewodność cieplna</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1095"/>
         <source>&lt;i&gt;Q&lt;/i&gt; (W/m&lt;sup&gt;3&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;Q&lt;/i&gt; (W/m&lt;sup&gt;3&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1096"/>
         <source>Volume heat</source>
-        <translation type="unfinished">Źródło cieplne</translation>
+        <translation>Źródło cieplne</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1098"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (kg/m&lt;sup&gt;3&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (kg/m&lt;sup&gt;3&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1099"/>
         <source>Mass density</source>
-        <translation type="unfinished">Gęstość</translation>
+        <translation>Gęstość</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1101"/>
         <source>&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;p&lt;/sub&gt; (J/kgÂ·K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;p&lt;/sub&gt; (J/kgÂ·K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1102"/>
         <source>Specific heat</source>
-        <translation type="unfinished">Źródło cieplne</translation>
+        <translation>Źródło cieplne</translation>
     </message>
 </context>
 <context>
@@ -7027,80 +7027,80 @@
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1138"/>
         <source>&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (T)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (T)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1139"/>
         <source>Rem. flux dens.</source>
-        <translation type="unfinished">Remanencja</translation>
+        <translation>Remanencja</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1141"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (deg.)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (deg.)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1142"/>
         <source>Direction of rem.</source>
-        <translation type="unfinished">Kierunek remanencji</translation>
+        <translation>Kierunek remanencji</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1145"/>
         <source>Permanent magnet</source>
-        <translation type="unfinished">Magnes trwały</translation>
+        <translation>Magnes trwały</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1150"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1153"/>
         <source>&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (m/s)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (m/s)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1151"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1154"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1160"/>
         <source>Velocity</source>
-        <translation type="unfinished">Prędkość</translation>
+        <translation>Prędkość</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1156"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (rad/s)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (rad/s)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1157"/>
         <source>Velocity angular</source>
-        <translation type="unfinished">Prędkość kątowa</translation>
+        <translation>Prędkość kątowa</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1163"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1164"/>
         <source>Permeability</source>
-        <translation type="unfinished">Przenikalność mag.</translation>
+        <translation>Przenikalność mag.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1166"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (S/m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (S/m)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1167"/>
         <source>Conductivity</source>
-        <translation type="unfinished">Konduktywność</translation>
+        <translation>Konduktywność</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1169"/>
         <source>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (A/m&lt;sup&gt;2&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (A/m&lt;sup&gt;2&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1170"/>
         <source>Current density</source>
-        <translation type="unfinished">Gęstość prądu</translation>
+        <translation>Gęstość prądu</translation>
     </message>
 </context>
 <context>
@@ -7109,37 +7109,37 @@
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1754"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1757"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1755"/>
         <source>Permittivity</source>
-        <translation type="unfinished">Przenikalność</translation>
+        <translation>Przenikalność</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1758"/>
         <source>Permeability</source>
-        <translation type="unfinished">Przenikalność mag.</translation>
+        <translation>Przenikalność mag.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1760"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (S/m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (S/m)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1761"/>
         <source>Conductivity</source>
-        <translation type="unfinished">Konduktywność</translation>
+        <translation>Konduktywność</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1764"/>
         <source>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (A/m&lt;sup&gt;2&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (A/m&lt;sup&gt;2&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1765"/>
         <source>Current density</source>
-        <translation type="unfinished">Gęstość prądu</translation>
+        <translation>Gęstość prądu</translation>
     </message>
 </context>
 <context>
@@ -7151,12 +7151,12 @@
     <message>
         <location filename="../src/scenemarker.cpp" line="407"/>
         <source>Material</source>
-        <translation type="unfinished">Materiał</translation>
+        <translation>Materiał</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="445"/>
         <source>Material:</source>
-        <translation type="unfinished">Materiał:</translation>
+        <translation>Materiał:</translation>
     </message>
 </context>
 <context>
@@ -7299,14 +7299,14 @@
         <location filename="../src/sceneview.cpp" line="220"/>
         <location filename="../src/sceneview.cpp" line="224"/>
         <source>Projection to %1%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Rzut na %1%2</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="217"/>
         <location filename="../src/sceneview.cpp" line="221"/>
         <location filename="../src/sceneview.cpp" line="225"/>
         <source>Projection to %1%2 plane.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rzut na płaszczyznę %1%2.</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="237"/>
@@ -7688,7 +7688,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="444"/>
         <source>&amp;Keyword List</source>
-        <translation type="unfinished"></translation>
+        <translation>Słowa &amp;kluczowe</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="453"/>
@@ -7904,12 +7904,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/collaboration.cpp" line="169"/>
         <source>Download from server</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobierz z serwera</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="214"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
+        <translation>Login</translation>
     </message>
     <message>
         <source>Find</source>
@@ -7926,7 +7926,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/collaboration.cpp" line="216"/>
         <source>Close</source>
-        <translation type="unfinished">Zamknij</translation>
+        <translation>Zamknij</translation>
     </message>
 </context>
 <context>
@@ -7934,27 +7934,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/collaboration.cpp" line="34"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
+        <translation>Logowanie</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="75"/>
         <source>Remember password</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapamiętaj hasło</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="78"/>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Użytkownik:</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="79"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hasło:</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="98"/>
         <source>Anonymous user</source>
-        <translation type="unfinished"></translation>
+        <translation>Użytkownik anonimowy</translation>
     </message>
 </context>
 <context>
@@ -7962,42 +7962,42 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/collaboration.cpp" line="298"/>
         <source>Upload to the server</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyślij na serwer</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="341"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowy</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="343"/>
         <source>Existing</source>
-        <translation type="unfinished"></translation>
+        <translation>Istniejący</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="348"/>
         <source>Document:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokument:</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="351"/>
         <source>Name:</source>
-        <translation type="unfinished">Nazwa:</translation>
+        <translation>Nazwa:</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="354"/>
         <source>Physic field:</source>
-        <translation type="unfinished">Pole fizyczne:</translation>
+        <translation>Pole fizyczne:</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="359"/>
         <source>Upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyślij</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="361"/>
         <source>Close</source>
-        <translation type="unfinished">Zamknij</translation>
+        <translation>Zamknij</translation>
     </message>
     <message>
         <source>unnamed</source>
@@ -8006,17 +8006,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/collaboration.cpp" line="429"/>
         <source>Colaboration server could not be connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd połączenia z serwerem współpracy</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="494"/>
         <source>Upload to server</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyślij na serwer</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="494"/>
         <source>Problem &apos;%1&apos; was uploaded to the server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem &apos;%1&apos; został wysłany na serwer.</translation>
     </message>
 </context>
 <context>
@@ -8274,67 +8274,67 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/value.cpp" line="232"/>
         <source>Time function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkcja w czasie</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="274"/>
         <source>select a preset...</source>
-        <translation type="unfinished"></translation>
+        <translation>wybierz ustawienia...</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="275"/>
         <source>constant</source>
-        <translation type="unfinished"></translation>
+        <translation>stała</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="276"/>
         <source>step</source>
-        <translation type="unfinished"></translation>
+        <translation>krok</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="277"/>
         <source>sine wave</source>
-        <translation type="unfinished"></translation>
+        <translation>sinus</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="278"/>
         <source>exp. step</source>
-        <translation type="unfinished"></translation>
+        <translation>krok wykład.</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="287"/>
         <source>time</source>
-        <translation type="unfinished"></translation>
+        <translation>czas</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="289"/>
         <source>value</source>
-        <translation type="unfinished"></translation>
+        <translation>wartość</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="314"/>
         <source>Function:</source>
-        <translation type="unfinished">Funkcja:</translation>
+        <translation>Funkcja:</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="318"/>
         <source>Total time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Całkowity czas:</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="320"/>
         <source>Error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd:</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="326"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>Ok</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="329"/>
         <source>Close</source>
-        <translation type="unfinished">Zamknij</translation>
+        <translation>Zamknij</translation>
     </message>
 </context>
 <context>
