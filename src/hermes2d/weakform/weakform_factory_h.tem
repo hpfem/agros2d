@@ -46,6 +46,11 @@
 <includes>#include "./weakform/general_weakform.h"
 </includes>
 
+<condition_exact_solution>
+        if ((problemId == "class_name")&amp;&amp;(i == row_index))
+            return new namespace::FunctionName&lt;double&gt;(mesh, boundary);
+</condition_exact_solution>
+
 <condition_matrix_vol>
         if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index))
             return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, sym, material);
@@ -65,6 +70,15 @@
         if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->type == "boundary_type"))
             return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, boundary);
 </condition_vector_surf>
+
+<CustomEssentialFormSurf>
+template &lt;typename Scalar&gt;
+Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt; *factoryExactSolution(const std::string &amp;problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
+{
+    //conditions 
+    return NULL;
+}
+</CustomEssentialFormSurf>
 
 <CustomMatrixFormVol>
 template &lt;typename Scalar&gt;

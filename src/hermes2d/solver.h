@@ -64,7 +64,7 @@ private:
     double timeTotal;
     double timeStep;
     double initialCondition;
-
+    ProblemType problemType;
     AnalysisType analysisType;
 
     double nonlinearTolerance;

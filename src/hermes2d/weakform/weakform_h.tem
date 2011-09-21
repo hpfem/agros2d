@@ -108,6 +108,24 @@ private:
     unsigned int j;
 };</custom_vector_form_surf>
 
+<custom_essential_form_surf>template&lt;typename Scalar&gt;
+class CustomEssentialFormSurf : public Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt;
+{
+public:
+    CustomEssentialFormSurf(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
+
+    double value(double x, double y);
+    void derivatives (double x, double y, double&amp; dx, double&amp; dy);
+
+    Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y)
+    {
+        return Hermes::Ord(Hermes::Ord::get_max_order());
+    }
+private:
+    Boundary *m_boundary;  
+    //variable_declaration	
+};</custom_essential_form_surf>
+
 <footer> }
 #endif </footer>	
 </weakform_h>

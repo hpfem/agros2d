@@ -68,10 +68,10 @@ class XmlParser:
                 factory_code_str += string
 
         weakform_temps = ['CustomMatrixFormVol','CustomVectorFormVol',
-                           'CustomMatrixFormSurf','CustomVectorFormSurf']                    
+                           'CustomMatrixFormSurf','CustomVectorFormSurf', 'CustomEssentialFormSurf']                    
         for weakform_temp in weakform_temps:                            
             weakform_string = ''
-            for condition in conditions:                
+            for condition in conditions:                            
                 if condition[0] == weakform_temp:
                     weakform_string += condition[1]            
             node = self.templates[key].getElementsByTagName(weakform_temp)[0]                          
@@ -103,7 +103,7 @@ class XmlParser:
         analysis_types = ['harmonic', 'transient', 'steadystate']
         coordinate_types  = ['axi', 'planar']        
         weakform_types = ['matrix', 'vector']
-        
+        boundary_types = ['matrix', 'vector', 'essential']
         
         # opens file and initializes xml parser    
         fread = open(Config.modules_dir + filename, 'r')
@@ -161,7 +161,7 @@ class XmlParser:
                                 weakform = WeakForm()                            
                                 weakform.coordinate_type = coordinate_type                            
                                 weakform.analysis_type = analysis_type                                   
-                                weakform.type = subsubnode.nodeName                                
+                                weakform.type = subsubnode.nodeName                                                         
                                 weakform.integral_type = 'vol'    
                                 weakform.expression = \
                                     str(subsubnode.attributes[coordinate_type].value)                            
@@ -194,14 +194,14 @@ class XmlParser:
                         boundary.name = subsubnode.attributes['name'].value                                                              
                         boundary.id = subsubnode.attributes['id'].value                                                                                                              
                         for element in  subsubnode.childNodes:                                               
-                            if element.nodeName in weakform_types:                                                         
+                            if element.nodeName in boundary_types:                                                         
                                 boundary_type = element.nodeName                                                                                                                                                              
-                                if boundary_type in weakform_types :                                          
+                                if boundary_type in boundary_types :                                          
                                     for i in range(element.attributes.length):                                                                            
                                         coordinate_type = str(element.attributes.item(i).name)                                                                        
                                         if coordinate_type in coordinate_types:                                                                                        
                                             weakform = WeakForm()                                                                                            
-                                            weakform.type = boundary_type
+                                            weakform.type = boundary_type                                                
                                             weakform.i = int(element.attributes['i'].value)
                                             if element.hasAttribute('j'):                                        
                                                 weakform.j = int(element.attributes['j'].value)
@@ -260,7 +260,9 @@ class WeakForm:
         return function_name    
 
     def get_factory_code(self, factory_template):
-        if (self.type == 'vector'):
+        if (self.type == 'essential'):
+            string = factory_template.getElementsByTagName('condition_exact_solution')[0].childNodes[0].nodeValue                                
+        elif (self.type == 'vector'):
             if(self.integral_type == 'vol'):
                 string = factory_template.getElementsByTagName('condition_vector_vol')[0].childNodes[0].nodeValue
             else:    
@@ -270,6 +272,7 @@ class WeakForm:
                 string = factory_template.getElementsByTagName('condition_matrix_vol')[0].childNodes[0].nodeValue
             else:
                 string = factory_template.getElementsByTagName('condition_matrix_surf')[0].childNodes[0].nodeValue
+        
                      
         string = string.replace('class_name', self.id)
         string = string.replace('axi', 'axisymmetric')                        
@@ -291,7 +294,7 @@ class WeakForm:
         variable_def_temp = node.childNodes[0].nodeValue                                                                                                                     
         for node in h_template.getElementsByTagName(self.get_function_name()):                        
             string = node.childNodes[0].nodeValue                                                                                                                                                                                  
-            name = self.get_temp_class_name() 
+            name = self.get_temp_class_name()             
             variable_defs = ''
             replaced_string = string.replace(name, name + '_' + self.boundary_type + '_' + str(self.i) \
                 + '_'  + str(self.j))            
@@ -308,7 +311,7 @@ class WeakForm:
         return h_code 
     
     def get_cpp_code(self, cpp_template):                                
-        function_types = ['','_value', '_ord']
+        function_types = ['','_value', '_ord', '_derivatives']
         cpp_code = ''        
         for function_type in function_types:         
             node = cpp_template.getElementsByTagName('variable_definition')[0]
@@ -332,7 +335,7 @@ class WeakForm:
                 if function_type == '_ord':
                     expression = self.parse_expression(self.expression, True, '')                     
                 else:
-                    expression = self.parse_expression(self.expression, False, '')                                                                                                                    
+                    expression = self.parse_expression(self.expression, False, '')                                                                                                                                                                  
                 if self.expression =='':               
                     replaced_string = ''
                 else:                    
@@ -419,7 +422,7 @@ class WeakForm:
                 parsed_exp = parser.translate_to_cpp(expression_list)                             
             else:
                 parsed_exp =''
-            parsed_exp = 'result += wt[i] * (' + parsed_exp + ');'                                          
+            parsed_exp = '(' + parsed_exp + ');'                                          
         return parsed_exp
 
 class Material:

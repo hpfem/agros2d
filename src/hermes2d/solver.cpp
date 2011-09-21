@@ -26,6 +26,7 @@
 #include "scenesolution.h"
 #include "progressdialog.h"
 #include "weakform_parser.h"
+#include "weakform_factory.h"
 
 template <typename Scalar>
 SolutionArray<Scalar>::SolutionArray()
@@ -127,6 +128,7 @@ void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
 template <typename Scalar>
 SolverAgros<Scalar>::SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf)
 {
+    problemType = Util::scene()->problemInfo()->problemType;
     analysisType = Util::scene()->problemInfo()->analysisType;
     polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -185,12 +187,14 @@ void SolverAgros<Scalar>::createSpace()
                 // compiled form
                 if (weakFormsType == WeakFormsType_Compiled)
                 {
-                    /*
-                custom_form = factoryMatrixFormEssential<Scalar>(problemId,
-                                                            form->i - 1, form->j - 1,
-                                                            QString::number(i + 1).toStdString(),
-                                                            boundary);
-                */
+
+                    string problemId = Util::scene()->problemInfo()->module()->id + "_" +
+                            analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
+                            problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
+
+                    Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
+                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
+                                                                                           function);
                 }
 
                 if (!custom_form && weakFormsType == WeakFormsType_Compiled)
