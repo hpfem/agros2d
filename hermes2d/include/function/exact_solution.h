@@ -58,12 +58,12 @@ namespace Hermes
       virtual void derivatives (double x, double y, Scalar& dx, Scalar& dy) = 0;
 
       /// Function returning the value and derivatives.
-      Scalar exact_function (double x, double y, Scalar& dx, Scalar& dy)  {
+      Scalar exact_function (double x, double y, Scalar& dx, Scalar& dy) {
         derivatives (x, y, dx, dy);
         return value (x, y);
       };
 
-      /// Function returning the integration order that 
+      /// Function returning the integration order that
       /// should be used when integrating the function.
       virtual Hermes::Ord ord(Hermes::Ord x, Hermes::Ord y) = 0;
     };
@@ -89,7 +89,7 @@ namespace Hermes
         return value (x, y);
       };
 
-      /// Function returning the integration order that 
+      /// Function returning the integration order that
       /// should be used when integrating the function.
       virtual Hermes::Ord ord(Hermes::Ord x, Hermes::Ord y) const = 0;
     };
@@ -100,11 +100,11 @@ namespace Hermes
     public:
       ConstantSolution(Mesh* mesh, Scalar constant);
 
-      virtual Scalar value (double x, double y) ;
+      virtual Scalar value (double x, double y) const;
 
-      virtual void derivatives (double x, double y, double& dx, double& dy) ;
+      virtual void derivatives (double x, double y, double& dx, double& dy) const;
 
-      virtual Ord ord(Ord x, Ord y) ;
+      virtual Ord ord(Ord x, Ord y) const;
     protected:
       Scalar constant;
     };
@@ -114,7 +114,7 @@ namespace Hermes
     public:
       ZeroSolution(Mesh* mesh);
 
-      virtual double value (double x, double y);
+      virtual double value (double x, double y) ;
 
       virtual void derivatives (double x, double y, double& dx, double& dy);
 

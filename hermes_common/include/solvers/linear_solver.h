@@ -46,17 +46,17 @@ namespace Hermes
     using namespace Hermes::Preconditioners;
     /// \ brief Options for matrix factorization reuse.
     ///
-    /// Reusing the information computed during previous solution of a similar problem 
-    /// significantly improves efficiency of the solver. 
+    /// Reusing the information computed during previous solution of a similar problem
+    /// significantly improves efficiency of the solver.
     ///
-    /// <b>Usage:</b> 
-    /// Each solver which allows factorization reuse should perform complete factorization 
-    /// from scratch for the first time it is invoked, keep the precomputed structures 
-    /// according to the current factorization reuse stratregy and use them for next 
+    /// <b>Usage:</b>
+    /// Each solver which allows factorization reuse should perform complete factorization
+    /// from scratch for the first time it is invoked, keep the precomputed structures
+    /// according to the current factorization reuse stratregy and use them for next
     /// factorization.
-    /// 
+    ///
     /// <b>Enabled solvers:</b>
-    ///   -\c SuperLU - performs reordering, scaling and factorization separately. When the 
+    ///   -\c SuperLU - performs reordering, scaling and factorization separately. When the
     ///                 multithreaded version is used, scaling is performed during the factorization
     ///                 phase (if neccessary) and thus \c HERMES_REUSE_MATRIX_REORDERING_AND_SCALING
     ///                 and \c HERMES_REUSE_MATRIX_REORDERING have the same effect.
@@ -65,18 +65,18 @@ namespace Hermes
     ///                 \c HERMES_REUSE_MATRIX_REORDERING (saves the preceding symbolic analysis step).
     ///   -\c MUMPS   - If \c HERMES_REUSE_MATRIX_REORDERING_AND_SCALING is set, scaling is performed
     ///                 during analysis and only factorization is repeated during each solve.
-    ///                 If \c HERMES_REUSE_MATRIX_REORDERING is set, scaling is performed during 
+    ///                 If \c HERMES_REUSE_MATRIX_REORDERING is set, scaling is performed during
     ///                 the factorization phase. This may be less efficient, but more reliable,
     ///                 especially for highly non-symmetric matrices.
     ///   -\c AMESOS  - Behaves like UMFPack.
     ///   -\c PETSc   - Factorization reuse applies to the construction of PETSc preconditioner.
-    ///                 Both \c HERMES_REUSE_MATRIX_REORDERING_AND_SCALING and 
+    ///                 Both \c HERMES_REUSE_MATRIX_REORDERING_AND_SCALING and
     ///                 \c HERMES_REUSE_MATRIX_REORDERING allow to reuse the non-zero pattern of the
     ///                 previously created preconditioner, \c HERMES_REUSE_FACTORIZATION_COMPLETELY
     ///                 indicates that the preconditioner may be reused completely for future solves.
     ///
     /// <b>Typical scenario:</b>
-    /// When \c rhsonly was set to \c true for the assembly phase, 
+    /// When \c rhsonly was set to \c true for the assembly phase,
     /// \c HERMES_REUSE_FACTORIZATION_COMPLETELY should be set for the following solution phase.
     enum FactorizationScheme
     {
@@ -84,7 +84,7 @@ namespace Hermes
       ///< existing factorization data.
       HERMES_REUSE_MATRIX_REORDERING,             ///< Factorize matrix with the same sparsity
       ///< pattern as the one already factorized.
-      HERMES_REUSE_MATRIX_REORDERING_AND_SCALING, ///< Factorize matrix with the same sparsity 
+      HERMES_REUSE_MATRIX_REORDERING_AND_SCALING, ///< Factorize matrix with the same sparsity
       ///< pattern and similar numerical values
       ///< as the one already factorized.
       HERMES_REUSE_FACTORIZATION_COMPLETELY       ///< Completely reuse the already performed
@@ -96,11 +96,12 @@ namespace Hermes
     ///\todo Adjust interface to support faster update of matrix and rhs
     ///
     template <typename Scalar>
-    class LinearSolver {
+    class LinearSolver
+    {
     public:
-      LinearSolver() { sln = NULL; time = -1.0; }
+      LinearSolver();
 
-      virtual ~LinearSolver() { if (sln != NULL) delete [] sln; }
+      virtual ~LinearSolver();
 
       /// Solve.
       /// @return true on succes
@@ -108,23 +109,20 @@ namespace Hermes
 
       /// Get solution vector.
       /// @return solution vector ( #sln )
-      Scalar *get_sln_vector() { return sln; }
+      Scalar *get_sln_vector();
 
       /// @return #error
-      int get_error() { return error; }
+      int get_error();
       /// Get time spent on solving.
       /// @return time spent on solving in secs ( #time )
-      double get_time() { return time; }
+      double get_time();
 
       /// Set factorization scheme.
       /// @param[in] reuse_scheme factoriztion scheme to set
       virtual void set_factorization_scheme(FactorizationScheme reuse_scheme) { };
 
       /// Set factorization scheme to default.
-      virtual void set_factorization_scheme() 
-      {
-        set_factorization_scheme(HERMES_REUSE_FACTORIZATION_COMPLETELY); 
-      }
+      virtual void set_factorization_scheme();
 
     protected:
       /// Solution vector.
@@ -141,13 +139,11 @@ namespace Hermes
     class DirectSolver : virtual public LinearSolver<Scalar>
     {
     public:
-      DirectSolver(unsigned int factorization_scheme = HERMES_FACTORIZE_FROM_SCRATCH) 
+      DirectSolver(unsigned int factorization_scheme = HERMES_FACTORIZE_FROM_SCRATCH)
         : LinearSolver<Scalar>(), factorization_scheme(factorization_scheme) {};
 
     protected:
-      virtual void set_factorization_scheme(FactorizationScheme reuse_scheme) { 
-        factorization_scheme = reuse_scheme;
-      }
+      virtual void set_factorization_scheme(FactorizationScheme reuse_scheme);
 
       unsigned int factorization_scheme;
     };
@@ -165,17 +161,11 @@ namespace Hermes
 
       /// Set the convergence tolerance.
       /// @param[in] tol - the tolerance to set
-      void set_tolerance(double tol)
-      {
-        this->tolerance = tol;
-      }
+      void set_tolerance(double tol);
 
       /// Set maximum number of iterations to perform.
       /// @param[in] iters - number of iterations
-      void set_max_iters(int iters)
-      {
-        this->max_iters = iters; 
-      }
+      void set_max_iters(int iters);
 
       virtual void set_precond(const char *name) = 0;
 
@@ -183,9 +173,9 @@ namespace Hermes
       virtual void set_precond(Teuchos::RCP<Precond<Scalar> > &pc) = 0;
 #else
       virtual void set_precond(Precond<Scalar> *pc) = 0;
-#endif            
+#endif
 
-    protected:    
+    protected:
       int max_iters;          ///< Maximum number of iterations.
       double tolerance;       ///< Convergence tolerance.
       bool precond_yes;
@@ -196,8 +186,8 @@ namespace Hermes
     /// @param[in] matrix matrix
     /// @param[in] rhs right hand side vector
     /// @return created linear solver
-    template<typename Scalar> 
-    HERMES_API LinearSolver<Scalar>*  
+    template<typename Scalar>
+    HERMES_API LinearSolver<Scalar>*
       create_linear_solver(Hermes::MatrixSolverType matrix_solver_type, Matrix<Scalar>* matrix, Vector<Scalar>* rhs);
 
   }

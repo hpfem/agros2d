@@ -28,15 +28,11 @@ namespace Hermes
       H2D_GIP2D_W = 2  ///< A weight.
     };
 
-#define H2D_GIP1D_X 0
-#define H2D_GIP1D_W 1
+    static int H2D_GIP1D_X = 0;
+    static int H2D_GIP1D_W = 1;
 
-#ifdef EXTREME_QUAD
-    const int g_max_quad = 99;
-#else
     const int g_max_quad = 24;
     const int g_max_tri = 20;
-#endif
 
     /// Quad1D is a base class for all 1D quadrature points.
     ///
@@ -44,11 +40,11 @@ namespace Hermes
     {
     public:
 
-      double2* get_points(int order) const { return tables[order]; }
-      int get_num_points(int order) const { return np[order]; };
+      inline double2* get_points(int order) const { return tables[order]; }
+      inline int get_num_points(int order) const { return np[order]; };
 
-      int get_max_order() const { return max_order; }
-      double get_ref_vertex(int n) const { return ref_vert[n]; }
+      inline int get_max_order() const { return max_order; }
+      inline double get_ref_vertex(int n) const { return ref_vert[n]; }
 
     protected:
 
@@ -71,16 +67,16 @@ namespace Hermes
       void set_mode(int mode) { this->mode = mode; }
       int  get_mode() const { return mode; }
 
-      int get_num_points(int order)  const { return np[mode][order]; };
-      double3* get_points(int order) const { assert(order < num_tables[mode]); return tables[mode][order]; }
-      int get_edge_points(int edge)  const { return max_order[mode]+1 + (3*(1-mode) + 4*mode)*max_order[mode] + edge; }
-      int get_edge_points(int edge, int order) {return  max_order[mode]+1 + (3*(1-mode) + 4*mode)*order + edge;}
+      inline int get_num_points(int order)  const { return np[mode][order]; };
+      inline double3* get_points(int order) const { assert(order < num_tables[mode]); return tables[mode][order]; }
+      inline int get_edge_points(int edge)  const { return max_order[mode]+1 + (3*(1-mode) + 4*mode)*max_order[mode] + edge; }
+      inline int get_edge_points(int edge, int order) {return  max_order[mode]+1 + (3*(1-mode) + 4*mode)*order + edge;}
 
-      int get_max_order() const { return max_order[mode]; }
-      int get_safe_max_order() const { return safe_max_order[mode]; }
-      int get_num_tables() const { return num_tables[mode]; }
+      inline int get_max_order() const { return max_order[mode]; }
+      inline int get_safe_max_order() const { return safe_max_order[mode]; }
+      inline int get_num_tables() const { return num_tables[mode]; }
 
-      double2* get_ref_vertex(int n) { return &ref_vert[mode][n]; }
+      inline double2* get_ref_vertex(int n) { return &ref_vert[mode][n]; }
 
     protected:
 

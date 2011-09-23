@@ -22,7 +22,7 @@ namespace Hermes
     template<typename Scalar> double*  H1Space<Scalar>::h1_chol_p   = NULL;
     template<typename Scalar> int      H1Space<Scalar>::h1_proj_ref = 0;
 
-    template<typename Scalar> 
+    template<typename Scalar>
     void H1Space<Scalar>::init(Shapeset* shapeset, Ord2 p_init)
     {
       if (shapeset == NULL)
@@ -128,7 +128,7 @@ namespace Hermes
     void H1Space<Scalar>::load(const char *filename, Mesh* mesh, Shapeset* shapeset)
     {
       _F_;
-      
+
       this->mesh = mesh;
 
       if (shapeset == NULL)
@@ -166,7 +166,7 @@ namespace Hermes
         int order = this->get_element_order(e->id);
         if (order > 0)
         {
-          for (unsigned int i = 0; i < e->nvert; i++)
+          for (unsigned int i = 0; i < e->get_num_surf(); i++)
           {
             // vertex dofs
             Node* vn = e->vn[i];
@@ -200,17 +200,17 @@ namespace Hermes
                   if(this->essential_bcs != NULL)
                     if(this->essential_bcs->get_boundary_condition(this->mesh->get_boundary_markers_conversion().get_user_marker(e->en[i]->marker).marker) != NULL)
                       nd->dof = this->H2D_CONSTRAINED_DOF;
-                    else 
+                    else
                     {
                       nd->dof = this->next_dof;
                       this->next_dof += ndofs * this->stride;
                     }
-                  else 
+                  else
                   {
                     nd->dof = this->next_dof;
                     this->next_dof += ndofs * this->stride;
                   }
-                else 
+                else
                 {
                   nd->dof = this->next_dof;
                   this->next_dof += ndofs * this->stride;
@@ -269,13 +269,13 @@ namespace Hermes
         {
           int ori = (e->vn[surf_num]->id < e->vn[e->next_vert(surf_num)]->id) ? 0 : 1;
           for (int j = 0, dof = nd->dof; j < nd->n; j++, dof += this->stride)
-            al->add_triplet(this->shapeset->get_edge_index(surf_num, ori, j+2), dof, 1.0);
+            al->add_triplet(this->shapeset->get_edge_index(surf_num, ori, j + 2), dof, 1.0);
         }
         else
         {
           for (int j = 0; j < nd->n; j++)
           {
-            al->add_triplet(this->shapeset->get_edge_index(surf_num, 0, j+2), -1, nd->edge_bc_proj[j+2]);
+            al->add_triplet(this->shapeset->get_edge_index(surf_num, 0, j + 2), -1, nd->edge_bc_proj[j + 2]);
           }
         }
       }
@@ -283,11 +283,11 @@ namespace Hermes
       {
         int part = nd->part;
         int ori = part < 0 ? 1 : 0;
-        if (part < 0) part ^= ~0;
+        if (part < 0) part ^=  ~0;
 
         nd = &this->ndata[nd->base->id];
         for (int j = 0, dof = nd->dof; j < nd->n; j++, dof += this->stride)
-          al->add_triplet(this->shapeset->get_constrained_edge_index(surf_num, j+2, ori, part), dof, 1.0);
+          al->add_triplet(this->shapeset->get_constrained_edge_index(surf_num, j + 2, ori, part), dof, 1.0);
       }
     }
 
@@ -309,14 +309,14 @@ namespace Hermes
       else if (bc->get_value_type() == EssentialBoundaryCondition<Scalar>::BC_FUNCTION)
       {
         surf_pos->t = surf_pos->lo;
-        // Find out the (x,y) coordinates for the first endpoint.
+        // Find out the (x, y) coordinates for the first endpoint.
         double x, y, n_x, n_y, t_x, t_y;
         Nurbs* nurbs = surf_pos->base->is_curved() ? surf_pos->base->cm->nurbs[surf_pos->surf_num] : NULL;
         CurvMap::nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y, n_x, n_y, t_x, t_y);
         // Calculate.
         proj[0] = bc->value(x, y, n_x, n_y, t_x, t_y);
         surf_pos->t = surf_pos->hi;
-        // Find out the (x,y) coordinates for the second endpoint.
+        // Find out the (x, y) coordinates for the second endpoint.
         CurvMap::nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y, n_x, n_y, t_x, t_y);
         // Calculate.
         proj[1] = bc->value(x, y, n_x, n_y, t_x, t_y);
@@ -333,7 +333,7 @@ namespace Hermes
         for (int i = 0; i < order; i++)
         {
           rhs[i] = 0.0;
-          int ii = this->shapeset->get_edge_index(0, 0, i+2);
+          int ii = this->shapeset->get_edge_index(0, 0, i + 2);
           for (int j = 0; j < quad1d.get_num_points(mo); j++)
           {
             double t = (pt[j][0] + 1) * 0.5, s = 1.0 - t;
@@ -349,7 +349,7 @@ namespace Hermes
             // If the BC is not constant.
             else if (bc->get_value_type() == EssentialBoundaryCondition<Scalar>::BC_FUNCTION)
             {
-              // Find out the (x,y) coordinate.
+              // Find out the (x, y) coordinate.
               double x, y, n_x, n_y, t_x, t_y;
               Nurbs* nurbs = surf_pos->base->is_curved() ? surf_pos->base->cm->nurbs[surf_pos->surf_num] : NULL;
               CurvMap::nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y, n_x, n_y, t_x, t_y);
@@ -385,7 +385,7 @@ namespace Hermes
         edge_dofs = current;
 
         // (reserve space only if the edge dofs are not in the list yet)
-        if (this->ndata[edge->id].dof != min->dof) 
+        if (this->ndata[edge->id].dof != min->dof)
         {
           current += this->ndata[edge->id].n;
         }
@@ -470,14 +470,14 @@ namespace Hermes
       // on non-refined elements all we have to do is update edge nodes lying on constrained edges
       if (e->active)
       {
-        for (unsigned int i = 0; i < e->nvert; i++)
+        for (unsigned int i = 0; i < e->get_num_surf(); i++)
         {
           if (ei[i] != NULL)
           {
             nd = &this->ndata[e->en[i]->id];
             nd->base = ei[i]->node;
             nd->part = ei[i]->part;
-            if (ei[i]->ori) nd->part ^= ~0;
+            if (ei[i]->ori) nd->part ^=  ~0;
           }
         }
       }
@@ -486,7 +486,7 @@ namespace Hermes
       {
         // create new edge infos where we don't have them yet
         EdgeInfo ei_data[4];
-        for (unsigned int i = 0; i < e->nvert; i++)
+        for (unsigned int i = 0; i < e->get_num_surf(); i++)
         {
           if (ei[i] == NULL)
           {
@@ -509,7 +509,7 @@ namespace Hermes
         }
 
         // create a baselist for each mid-edge vertex node
-        for (unsigned int i = 0; i < e->nvert; i++)
+        for (unsigned int i = 0; i < e->get_num_surf(); i++)
         {
           if (ei[i] == NULL) continue;
           j = e->next_vert(i);
@@ -552,7 +552,7 @@ namespace Hermes
           for (k = 0; k < nd->n; k++, edge_dofs++)
           {
             edge_dofs->dof = nd->dof + k*this->stride;
-            edge_dofs->coef = this->shapeset->get_fn_value(this->shapeset->get_edge_index(0, ei[i]->ori, k+2), mid, -1.0, 0);
+            edge_dofs->coef = this->shapeset->get_fn_value(this->shapeset->get_edge_index(0, ei[i]->ori, k + 2), mid, -1.0, 0);
           }
 
           //dump_baselist(ndata[mid_vn->id]);
@@ -561,7 +561,7 @@ namespace Hermes
         // create edge infos for half-edges
         EdgeInfo  half_ei_data[4][2];
         EdgeInfo* half_ei[4][2];
-        for (unsigned int i = 0; i < e->nvert; i++)
+        for (unsigned int i = 0; i < e->get_num_surf(); i++)
         {
           if (ei[i] == NULL)
           {

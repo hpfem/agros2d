@@ -31,8 +31,8 @@ namespace Hermes
     {
       // you can define NOGLUT to turn off all OpenGL stuff in Hermes2D
 #ifndef NOGLUT
-
-#define H2DV_MAX_VIEWABLE_ORDER 10 ///< Maximum viewable order.
+      
+      static const int H2DV_MAX_VIEWABLE_ORDER = 10; ///< Maximum viewable order.
 
       /// \brief Displays the polynomial degrees of elements.
       ///
@@ -57,9 +57,9 @@ namespace Hermes
         bool b_orders;
 
         int num_boxes, order_min;
-        const char* box_names[H2DV_MAX_VIEWABLE_ORDER+1]; ///< Pointers to order names. Pointers point inside OrderView::text_buffer.
+        const char* box_names[H2DV_MAX_VIEWABLE_ORDER + 1]; ///< Pointers to order names. Pointers point inside OrderView::text_buffer.
         char text_buffer[H2DV_MAX_VIEWABLE_ORDER*4]; ///< Text buffer which contains all order names.
-        float order_colors[H2DV_MAX_VIEWABLE_ORDER+1][3]; ///< Order colors. Maximum order has to be accessible.
+        float order_colors[H2DV_MAX_VIEWABLE_ORDER + 1][3]; ///< Order colors. Maximum order has to be accessible.
 
         void init_order_palette(double3* vert); ///< Initializes the palette from supplied vertices.
 

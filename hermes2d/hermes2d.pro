@@ -35,6 +35,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/c99_functions.cpp \
                 ../hermes_common/src/ord.cpp \
                 ../hermes_common/src/hermes_function.cpp \
+                ../hermes_common/src/exceptions.cpp \
                 ../hermes_common/src/third_party_codes/trilinos-teuchos/Teuchos_stacktrace.cpp \
                 ../hermes_common/src/solvers/dp_interface.cpp \
                 ../hermes_common/src/solvers/linear_solver.cpp \
@@ -128,12 +129,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/discrete_problem.cpp \
                 src/runge_kutta.cpp \
                 src/spline.cpp
-
-#                src/weakform_library/weakforms_elasticity.cpp \
-#                src/weakform_library/weakforms_h1.cpp \
-#                src/weakform_library/weakforms_hcurl.cpp \
-#                src/weakform_library/weakforms_maxwell.cpp \
-#                src/weakform_library/weakforms_neutronics.cpp \
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS

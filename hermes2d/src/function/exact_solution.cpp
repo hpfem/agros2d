@@ -31,7 +31,7 @@ namespace Hermes
     {
       this->num_components = 1;
     }
-    
+
     template<typename Scalar>
     unsigned int ExactSolutionScalar<Scalar>::get_dimension() const
     {
@@ -43,7 +43,7 @@ namespace Hermes
     {
       this->num_components = 2;
     }
-    
+
     template<typename Scalar>
     unsigned int ExactSolutionVector<Scalar>::get_dimension() const
     {
@@ -54,25 +54,25 @@ namespace Hermes
     ConstantSolution<Scalar>::ConstantSolution(Mesh* mesh, Scalar constant) : ExactSolutionScalar<Scalar>(mesh), constant(constant) {};
 
     template<typename Scalar>
-    Scalar ConstantSolution<Scalar>::value (double x, double y)  {
+    Scalar ConstantSolution<Scalar>::value (double x, double y) const {
       return constant;
     };
 
     template<typename Scalar>
-    void ConstantSolution<Scalar>::derivatives (double x, double y, double& dx, double& dy)  {
+    void ConstantSolution<Scalar>::derivatives (double x, double y, double& dx, double& dy) const {
       dx = 0;
       dy = 0;
     };
 
     template<typename Scalar>
-    Ord ConstantSolution<Scalar>::ord(Ord x, Ord y)  {
+    Ord ConstantSolution<Scalar>::ord(Ord x, Ord y) const {
       return Ord(0);
     }
 
     ZeroSolution::ZeroSolution(Mesh* mesh) : ExactSolutionScalar<double>(mesh) {};
 
     double ZeroSolution::value (double x, double y)  {
-      return 0.0; 
+      return 0.0;
     };
 
     void ZeroSolution::derivatives (double x, double y, double& dx, double& dy)  {

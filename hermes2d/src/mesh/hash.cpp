@@ -27,6 +27,11 @@ namespace Hermes
       nqueries = ncollisions = 0;
     }
 
+    HashTable::~HashTable()
+    {
+      free(); 
+    }
+
     void HashTable::init(int size)
     {
       v_table = e_table = NULL;
@@ -56,14 +61,31 @@ namespace Hermes
       *ptr = NULL;
     }
 
+    Node* HashTable::get_node(int id) const 
+    {
+      return &(nodes[id]); 
+    }
+
+    /// Returns the total number of nodes stored.
+    int HashTable::get_num_nodes() const 
+    {
+      return nodes.get_num_items(); 
+    }
+
+    /// Returns the maximum node id number plus one.
+    int HashTable::get_max_node_id() const 
+    {
+      return nodes.get_size(); 
+    }
+
     void HashTable::copy(const HashTable* ht)
     {
       free();
       nodes.copy(ht->nodes);
       mask = ht->mask;
 
-      v_table = new Node*[mask+1];
-      e_table = new Node*[mask+1];
+      v_table = new Node*[mask + 1];
+      e_table = new Node*[mask + 1];
       for (int i = 0; i <= mask; i++)
       {
         copy_list(v_table + i, ht->v_table[i]);
@@ -73,8 +95,8 @@ namespace Hermes
 
     void HashTable::rebuild()
     {
-      memset(v_table, 0, (mask+1) * sizeof(Node*));
-      memset(e_table, 0, (mask+1) * sizeof(Node*));
+      memset(v_table, 0, (mask + 1) * sizeof(Node*));
+      memset(e_table, 0, (mask + 1) * sizeof(Node*));
 
       Node* node;
       for_all_nodes(node, this)
@@ -114,9 +136,9 @@ namespace Hermes
 
     void HashTable::dump_hash_stat()
     {
-      if (ncollisions > 2*nqueries) 
+      if (ncollisions > 2*nqueries)
       {
-        warn("Hashtable: nqueries=%d ncollisions=%d", nqueries, ncollisions);
+        warn("Hashtable: nqueries = %d ncollisions = %d", nqueries, ncollisions);
       }
     }
 

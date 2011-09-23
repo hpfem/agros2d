@@ -110,7 +110,7 @@ namespace Hermes
         /// If 'high_quality' is true, an anti-aliased frame is rendered and saved.
         void save_screenshot(const char* bmpname, bool high_quality = false);
         /// Like save_screenshot(), but forms the file name in printf-style using the 'number'
-        /// parameter, e.g., format="screen%03d.bmp" and number=5 gives the file name "screen005.bmp".
+        /// parameter, e.g., format = "screen%03d.bmp" and number = 5 gives the file name "screen005.bmp".
         void save_numbered_screenshot(const char* format, int number, bool high_quality = false);
 
         void set_palette(ViewPaletteType type);
@@ -196,10 +196,10 @@ namespace Hermes
         virtual void get_palette_color(double x, float* gl_color); ///< Fills gl_color with palette color. Assumes that gl_color points to a vector of three components (RGB).
 
       protected: //internal functions
-        double transform_x(double x) { return (x * scale + trans_x) + center_x; }
-        double transform_y(double y) { return center_y - (y * scale + trans_y); }
-        double untransform_x(double x) { return (x - center_x - trans_x) / scale; }
-        double untransform_y(double y) { return (center_y - y - trans_y) / scale; }
+        inline double transform_x(double x) { return (x * scale + trans_x) + center_x; }
+        inline double transform_y(double y) { return center_y - (y * scale + trans_y); }
+        inline double untransform_x(double x) { return (x - center_x - trans_x) / scale; }
+        inline double untransform_y(double y) { return (center_y - y - trans_y) / scale; }
 
         virtual void clear_background(); ///< Clears background.
         void pre_display();
@@ -222,7 +222,7 @@ namespace Hermes
         void update_tex_adjust();
 
         void draw_help();
-        virtual const char* get_help_text() const { return ""; }
+        virtual const char* get_help_text() const = 0;
 
         friend void on_display_stub(void);
         friend void on_reshape_stub(int, int);

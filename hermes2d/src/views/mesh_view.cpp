@@ -58,7 +58,7 @@ namespace Hermes
         if(lin != NULL)
           delete this->lin;
       }
-      
+
       void MeshView::show(Mesh* mesh)
       {
         ZeroSolution sln(mesh);
@@ -78,7 +78,7 @@ namespace Hermes
         int i;
 
         if (elems != NULL) delete [] elems;
-        ne = mesh->get_max_element_id()+1;
+        ne = mesh->get_max_element_id() + 1;
         elems = new ObjInfo[ne];
         for (i = 0; i < ne; i++)
           elems[i].id = -1;
@@ -92,13 +92,13 @@ namespace Hermes
           oi->id = e->id;
           oi->type = e->marker;
           oi->x = oi->y = 0.0;
-          for (unsigned i = 0; i < e->nvert; i++) 
+          for (unsigned i = 0; i < e->get_num_surf(); i++)
           {
             oi->x += e->vn[i]->x;
             oi->y += e->vn[i]->y;
           }
-          oi->x /= e->nvert;
-          oi->y /= e->nvert;
+          oi->x /= e->get_num_surf();
+          oi->y /= e->get_num_surf();
         }
 
         create();
@@ -250,9 +250,9 @@ namespace Hermes
           return edgecol;
         else if (marker > 0 && marker < 8)
           return mc[marker];
-        else 
+        else
         {
-          srand(marker+2);
+          srand(marker + 2);
           randcol[0] = (float) rand() / RAND_MAX;
           randcol[1] = (float) rand() / RAND_MAX;
           randcol[2] = (float) rand() / RAND_MAX;

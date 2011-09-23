@@ -34,6 +34,117 @@ namespace Hermes
       set_quad_2d(&g_quad_2d_std); // default quadrature
     }
 
+    RefMap::~RefMap() { free(); }
+
+    /// Sets the quadrature points in which the reference map will be evaluated.
+    /// \param quad_2d [in] The quadrature points.
+    void set_quad_2d(Quad2D* quad_2d);
+
+    /// Returns the current quadrature points.
+    Quad2D* RefMap::get_quad_2d() const 
+    { 
+      return quad_2d;
+    }
+
+    /// Returns the 1D quadrature for use in surface integrals.
+    const Quad1D* RefMap::get_quad_1d() const 
+    {
+      return &quad_1d; 
+    }
+
+    /// Returns true if the jacobian of the reference map is constant (which
+    /// is the case for non-curvilinear triangular elements), false otherwise.
+    bool RefMap::is_jacobian_const() const 
+    {
+      return is_const; 
+    }
+
+    /// Returns the increase in the integration order due to the reference map.
+    int RefMap::get_inv_ref_order() const 
+    {
+      return inv_ref_order; 
+    }
+
+    /// If the jacobian of the reference map is constant, this is the fast
+    /// way to obtain it.
+    double RefMap::get_const_jacobian() const 
+    {
+      return const_jacobian; 
+    }
+
+    /// If the reference map is constant, this is the fast way to obtain
+    /// its inverse matrix.
+    double2x2* RefMap::get_const_inv_ref_map()
+    {
+      return &const_inv_ref_map; 
+    }
+
+    /// Returns the jacobian of the reference map precalculated at the integration
+    /// points of the specified order. Intended for non-constant jacobian elements.
+    double* RefMap::get_jacobian(int order)
+    {
+      if (cur_node->inv_ref_map[order] == NULL)
+        calc_inv_ref_map(order);
+      return cur_node->jacobian[order];
+    }
+
+    /// Returns the inverse matrices of the reference map precalculated at the
+    /// integration points of the specified order. Intended for non-constant
+    /// jacobian elements.
+    double2x2* RefMap::get_inv_ref_map(int order)
+    {
+      if (cur_node->inv_ref_map[order] == NULL) calc_inv_ref_map(order);
+      return cur_node->inv_ref_map[order];
+    }
+
+    /// Returns coefficients for weak forms with second derivatives.
+    double3x2* RefMap::get_second_ref_map(int order)
+    {
+      if (cur_node->second_ref_map[order] == NULL) calc_second_ref_map(order);
+      return cur_node->second_ref_map[order];
+    }
+
+    /// Returns the x-coordinates of the integration points transformed to the
+    /// physical domain of the element. Intended for integrals containing spatial
+    /// variables.
+    double* RefMap::get_phys_x(int order)
+    {
+      if (cur_node->phys_x[order] == NULL) calc_phys_x(order);
+      return cur_node->phys_x[order];
+    }
+
+    /// Returns he y-coordinates of the integration points transformed to the
+    /// physical domain of the element. Intended for integrals containing spatial
+    /// variables.
+    double* RefMap::get_phys_y(int order)
+    {
+      if (cur_node->phys_y[order] == NULL) calc_phys_y(order);
+      return cur_node->phys_y[order];
+    }
+
+    /// Returns the triples [x, y, norm] of the tangent to the specified (possibly
+    /// curved) edge at the 1D integration points along the edge. The maximum
+    /// 1D quadrature rule is used by default, but the user may specify his own
+    /// order. In this case, the edge pseudo-order is expected (as returned by
+    /// Quad2D::get_edge_points).
+    double3* RefMap::get_tangent(int edge, int order)
+    {
+      if(quad_2d == NULL)
+        error("2d quadrature wasn't set.");
+      if (order == -1)
+        order = quad_2d->get_edge_points(edge);
+
+      // NOTE: Hermes::Order-based caching of geometric data is already employed in DiscreteProblem.
+      if(cur_node->tan[edge] != NULL)
+      {
+        delete[] cur_node->tan[edge];
+        cur_node->tan[edge] = NULL;
+      }
+      calc_tangent(edge, order);
+
+      return cur_node->tan[edge];
+    }
+
     void RefMap::set_quad_2d(Quad2D* quad_2d)
     {
       free();
@@ -61,24 +172,24 @@ namespace Hermes
 
       // prepare the shapes and coefficients of the reference map
       int j, k = 0;
-      for (unsigned int i = 0; i < e->nvert; i++)
+      for (unsigned int i = 0; i < e->get_num_surf(); i++)
         indices[k++] = ref_map_shapeset.get_vertex_index(i);
 
       // straight-edged element
       if (e->cm == NULL)
       {
-        for (unsigned int i = 0; i < e->nvert; i++)
+        for (unsigned int i = 0; i < e->get_num_surf(); i++)
         {
           lin_coeffs[i][0] = e->vn[i]->x;
           lin_coeffs[i][1] = e->vn[i]->y;
         }
         coeffs = lin_coeffs;
-        nc = e->nvert;
+        nc = e->get_num_surf();
       }
       else // curvilinear element - edge and bubble shapes
       {
         int o = e->cm->order;
-        for (unsigned int i = 0; i < e->nvert; i++)
+        for (unsigned int i = 0; i < e->get_num_surf(); i++)
           for (j = 2; j <= o; j++)
             indices[k++] = ref_map_shapeset.get_edge_index(i, 0, j);
 
@@ -148,8 +259,8 @@ namespace Hermes
       {
         jac[i] = (m[i][0][0] * m[i][1][1] - m[i][0][1] * m[i][1][0]);
         double ij = 1.0 / jac[i];
-        error_if(!finite(ij), "1/jac[%d] is infinity when calculating inv. ref. map for order %d (jac=%g)", i, order);
-        assert_msg(ij == ij, "1/jac[%d] is NaN when calculating inv. ref. map for order %d (jac=%g)", i, order);
+        error_if(!finite(ij), "1/jac[%d] is infinity when calculating inv. ref. map for order %d (jac = %g)", i, order);
+        assert_msg(ij == ij, "1/jac[%d] is NaN when calculating inv. ref. map for order %d (jac = %g)", i, order);
 
         // invert and transpose the matrix
         irm[i][0][0] =  m[i][1][1] * ij;
@@ -301,7 +412,7 @@ namespace Hermes
         tan[0][2] *= (edge == 0 || edge == 2) ? ctm->m[0] : ctm->m[1];
 
         for (i = 1; i < np; i++)
-          memcpy(tan+i, tan, sizeof(double3));
+          memcpy(tan + i, tan, sizeof(double3));
       }
       else
       {
@@ -328,6 +439,7 @@ namespace Hermes
         // multiply them by the vector of the reference edge
         double2* v1 = ref_map_shapeset.get_ref_vertex(a);
         double2* v2 = ref_map_shapeset.get_ref_vertex(b);
+
         double ex = (*v2)[0] - (*v1)[0];
         double ey = (*v2)[1] - (*v1)[1];
         for (i = 0; i < np; i++)
@@ -358,7 +470,7 @@ namespace Hermes
           error("Element #%d is concave or badly oriented.", element->id);
 
       // next, estimate the "exact" value of the typical integral int_grad_u_grad_v
-      // (with grad_u == grad_v == (1,1)) using the maximum integration rule
+      // (with grad_u == grad_v == (1, 1)) using the maximum integration rule
       double exact1 = 0.0;
       double exact2 = 0.0;
       for (i = 0; i < quad->get_num_points(mo); i++, m++)
@@ -382,7 +494,7 @@ namespace Hermes
         if ((fabs((exact1 - result1) / exact1) < 1e-8) &&
           (fabs((exact2 - result2) / exact2) < 1e-8)) break;
       }
-      if (o >= 10) 
+      if (o >= 10)
       {
         warn("Element #%d is too distorted (iro ~ %d).", element->id, o);
       }
@@ -432,7 +544,7 @@ namespace Hermes
         dxx = ref_map_shapeset.get_dxx_value(indices[i], xi1, xi2, 0);
         dxy = ref_map_shapeset.get_dxy_value(indices[i], xi1, xi2, 0);
         dyy = ref_map_shapeset.get_dxy_value(indices[i], xi1, xi2, 0);
-        
+
         k[0][0] += coeffs[i][0] * dxx;
         k[0][1] += coeffs[i][1] * dxx;
         k[1][0] += coeffs[i][0] * dxy;
@@ -534,7 +646,7 @@ namespace Hermes
       for (it = nodes.begin(); it != nodes.end(); it++)
         free_node(it->second);
       nodes.clear();
-      if (overflow != NULL) 
+      if (overflow != NULL)
       {
         free_node(overflow); overflow = NULL;
       }

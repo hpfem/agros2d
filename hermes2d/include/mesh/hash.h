@@ -33,16 +33,16 @@ namespace Hermes
     public:
 
       HashTable();
-      ~HashTable() { free(); }
+      ~HashTable();
 
       /// Retrieves a node by its id number.
-      Node* get_node(int id) const { return &(nodes[id]); }
+      Node* get_node(int id) const;
 
       /// Returns the total number of nodes stored.
-      int get_num_nodes() const { return nodes.get_num_items(); }
+      int get_num_nodes() const;
 
       /// Returns the maximum node id number plus one.
-      int get_max_node_id() const { return nodes.get_size(); }
+      int get_max_node_id() const;
 
       /// Returns a vertex node with parent id's p1 and p2 if it exists, NULL otherwise.
       Node* peek_vertex_node(int p1, int p2);
@@ -59,7 +59,7 @@ namespace Hermes
       /// numbers of its parents. If the edge node does not exist, it is
       /// created first.
       Node* get_edge_node(int p1, int p2);
-      
+
       static const int H2D_DEFAULT_HASH_SIZE = 0x8000; // 32K entries
 
       // The following functions are used by the derived class Mesh:

@@ -60,7 +60,7 @@ namespace Hermes
       g_order_table = (mode == HERMES_MODE_TRIANGLE) ? g_order_table_tri : g_order_table_quad;
     }
 
-    HERMES_API void reset_warn_order() 
+    HERMES_API void reset_warn_order()
     {
       warned_order = false;
     }
@@ -72,6 +72,23 @@ namespace Hermes
         warn("Not enough integration rules for exact integration.");
         warned_order = true;
       }
+    }
+
+    HERMES_API void limit_order(int& o)
+    {
+      if (o > g_safe_max_order) 
+      { 
+        o = g_safe_max_order;
+        warn_order();
+      }
+      o = g_order_table[o];
+    }
+
+    HERMES_API void limit_order_nowarn(int& o)
+    {
+      if (o > g_safe_max_order)
+        o = g_safe_max_order;
+      o = g_order_table[o];
     }
   }
 }

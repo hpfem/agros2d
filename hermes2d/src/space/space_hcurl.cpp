@@ -104,7 +104,7 @@ namespace Hermes
     void HcurlSpace<Scalar>::load(const char *filename, Mesh* mesh, EssentialBCs<Scalar>* essential_bcs, Shapeset* shapeset)
     {
       _F_;
-      
+
       this->mesh = mesh;
 
       if (shapeset == NULL)
@@ -115,7 +115,7 @@ namespace Hermes
       else
         this->shapeset = shapeset;
 
-      if (this->shapeset->get_num_components() < 2) 
+      if (this->shapeset->get_num_components() < 2)
         error("HcurlSpace requires a vector shapeset.");
 
       if (!hcurl_proj_ref++)
@@ -141,7 +141,7 @@ namespace Hermes
       else
         this->shapeset = shapeset;
 
-      if (this->shapeset->get_num_components() < 2) 
+      if (this->shapeset->get_num_components() < 2)
         error("HcurlSpace requires a vector shapeset.");
 
       if (!hcurl_proj_ref++)
@@ -197,7 +197,7 @@ namespace Hermes
       Node* en;
       for_all_edge_nodes(en, this->mesh)
       {
-        if (en->ref > 1 || en->bnd || this->mesh->peek_vertex_node(en->p1, en->p2) != NULL) 
+        if (en->ref > 1 || en->bnd || this->mesh->peek_vertex_node(en->p1, en->p2) != NULL)
         {
           int ndofs = this->get_edge_order_internal(en) + 1;
           this->ndata[en->id].n = ndofs;
@@ -205,17 +205,17 @@ namespace Hermes
             if(this->essential_bcs != NULL)
               if(this->essential_bcs->get_boundary_condition(this->mesh->get_boundary_markers_conversion().get_user_marker(en->marker).marker) != NULL)
                 this->ndata[en->id].dof = this->H2D_CONSTRAINED_DOF;
-              else 
+              else
               {
                 this->ndata[en->id].dof = this->next_dof;
                 this->next_dof += ndofs * this->stride;
               }
-            else 
+            else
             {
               this->ndata[en->id].dof = this->next_dof;
               this->next_dof += ndofs * this->stride;
             }
-          else 
+          else
           {
             this->ndata[en->id].dof = this->next_dof;
             this->next_dof += ndofs * this->stride;
@@ -267,7 +267,7 @@ namespace Hermes
       {
         int part = nd->part;
         int ori = part < 0 ? 1 : 0;
-        if (part < 0) part ^= ~0;
+        if (part < 0) part ^=  ~0;
 
         nd = &this->ndata[nd->base->id]; // ccc
         for (int j = 0, dof = nd->dof; j < nd->n; j++, dof += this->stride)
@@ -315,7 +315,7 @@ namespace Hermes
           // If the BC is not constant.
           else if (bc->get_value_type() == EssentialBoundaryCondition<Scalar>::BC_FUNCTION)
           {
-            // Find out the (x,y) coordinate.
+            // Find out the (x, y) coordinate.
             double x, y, n_x, n_y, t_x, t_y;
             Nurbs* nurbs = surf_pos->base->is_curved() ? surf_pos->base->cm->nurbs[surf_pos->surf_num] : NULL;
             CurvMap::nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y, n_x, n_y, t_x, t_y);
@@ -353,14 +353,14 @@ namespace Hermes
       // on non-refined elements all we have to do is update edge nodes lying on constrained edges
       if (e->active)
       {
-        for (unsigned int i = 0; i < e->nvert; i++)
+        for (unsigned int i = 0; i < e->get_num_surf(); i++)
         {
           if (ei[i] != NULL)
           {
             nd = &this->ndata[e->en[i]->id];
             nd->base = ei[i]->node;
             nd->part = ei[i]->part;
-            if (ei[i]->ori) nd->part ^= ~0;
+            if (ei[i]->ori) nd->part ^=  ~0;
           }
         }
       }
@@ -370,7 +370,7 @@ namespace Hermes
 
         // create new edge infos where we don't have them yet
         EdgeInfo ei_data[4];
-        for (unsigned int i = 0; i < e->nvert; i++)
+        for (unsigned int i = 0; i < e->get_num_surf(); i++)
         {
           if (ei[i] == NULL)
           {
@@ -395,7 +395,7 @@ namespace Hermes
         // create edge infos for half-edges
         EdgeInfo  half_ei_data[4][2];
         EdgeInfo* half_ei[4][2];
-        for (unsigned int i = 0; i < e->nvert; i++)
+        for (unsigned int i = 0; i < e->get_num_surf(); i++)
         {
           if (ei[i] == NULL)
           {

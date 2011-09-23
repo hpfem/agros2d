@@ -25,6 +25,31 @@ namespace Hermes
   namespace Hermes2D
   {
     template<typename Scalar>
+    WeakForm<Scalar>::WeakForm(unsigned int neq, bool mat_free)
+    {
+      _F_;
+
+      this->neq = neq;
+      this->seq = 0;
+      this->is_matfree = mat_free;
+    }
+
+    template<typename Scalar>
+    WeakForm<Scalar>::~WeakForm()
+    {
+      delete_all();
+    }
+    
+    template<typename Scalar>
+    void WeakForm<Scalar>::delete_all()
+    {
+      mfvol.clear();
+      mfsurf.clear();
+      vfvol.clear();
+      vfsurf.clear();
+    };
+
+    template<typename Scalar>
     Form<Scalar>::Form(std::string area, Hermes::vector<MeshFunction<Scalar>*> ext,
       double scaling_factor, int u_ext_offset) :
     ext(ext), scaling_factor(scaling_factor), u_ext_offset(u_ext_offset)
@@ -283,20 +308,6 @@ namespace Hermes
       return NULL;
     }
 
-    template<typename Scalar>
-    WeakForm<Scalar>::WeakForm(unsigned int neq, bool mat_free)
-    {
-      _F_;
-
-      this->neq = neq;
-      this->seq = 0;
-      this->is_matfree = mat_free;
-    }
-
-    template<typename Scalar>
-    WeakForm<Scalar>::~WeakForm()
-    {
-    }
 
     template<typename Scalar>
     void WeakForm<Scalar>::add_matrix_form(MatrixFormVol<Scalar>* form)
@@ -309,7 +320,7 @@ namespace Hermes
         error("\"sym\" must be -1, 0 or 1.");
       if (form->sym < 0 && form->i == form->j)
         error("Only off-diagonal forms can be antisymmetric.");
-      if (mfvol.size() > 100) 
+      if (mfvol.size() > 100)
       {
         warn("Large number of forms (> 100). Is this the intent?");
       }
@@ -359,7 +370,7 @@ namespace Hermes
     {
       _F_;
 
-      for(unsigned int form_i = 0; form_i < form->coordinates.size(); form_i++) 
+      for(unsigned int form_i = 0; form_i < form->coordinates.size(); form_i++)
       {
         if(form->coordinates.at(form_i).first >= neq || form->coordinates.at(form_i).second >= neq)
           error("Invalid equation number.");
@@ -434,12 +445,12 @@ namespace Hermes
       unsigned int i;
       stages.clear();
 
-      if (want_matrix || want_vector) 
+      if (want_matrix || want_vector)
       {
         // This is because of linear problems where
         // matrix terms with the Dirichlet lift go to rhs.
         // Process volume matrix forms.
-        for (i = 0; i < mfvol.size(); i++) 
+        for (i = 0; i < mfvol.size(); i++)
         {
           unsigned int ii = mfvol[i]->i, jj = mfvol[i]->j;
           Mesh* m1 = spaces[ii]->get_mesh();
@@ -449,7 +460,7 @@ namespace Hermes
         }
 
         // Process surface matrix forms.
-        for (i = 0; i < mfsurf.size(); i++) 
+        for (i = 0; i < mfsurf.size(); i++)
         {
           unsigned int ii = mfsurf[i]->i, jj = mfsurf[i]->j;
           Mesh* m1 = spaces[ii]->get_mesh();
@@ -459,10 +470,10 @@ namespace Hermes
         }
 
         // Multi component forms.
-        for (unsigned i = 0; i < mfvol_mc.size(); i++) 
+        for (unsigned i = 0; i < mfvol_mc.size(); i++)
         {
           Mesh* the_one_mesh = spaces[mfvol_mc.at(i)->coordinates.at(0).first]->get_mesh();
-          for(unsigned int form_i = 0; form_i < mfvol_mc.at(i)->coordinates.size(); form_i++) 
+          for(unsigned int form_i = 0; form_i < mfvol_mc.at(i)->coordinates.size(); form_i++)
           {
             if(spaces[mfvol_mc.at(i)->coordinates.at(form_i).first]->get_mesh()->get_seq() != the_one_mesh->get_seq())
               error("When using multi-component forms, the Meshes have to be identical.");
@@ -473,10 +484,10 @@ namespace Hermes
           Stage<Scalar>* s = find_stage(stages, mfvol_mc.at(i)->coordinates, the_one_mesh, the_one_mesh, mfvol_mc[i]->ext, u_ext, one_stage);
           s->mfvol_mc.push_back(mfvol_mc[i]);
         }
-        for (unsigned i = 0; i < mfsurf_mc.size(); i++) 
+        for (unsigned i = 0; i < mfsurf_mc.size(); i++)
         {
           Mesh* the_one_mesh = spaces[mfsurf_mc.at(i)->coordinates.at(0).first]->get_mesh();
-          for(unsigned int form_i = 0; form_i < mfsurf_mc.at(i)->coordinates.size(); form_i++) 
+          for(unsigned int form_i = 0; form_i < mfsurf_mc.at(i)->coordinates.size(); form_i++)
           {
             if(spaces[mfsurf_mc.at(i)->coordinates.at(form_i).first]->get_mesh()->get_seq() != the_one_mesh->get_seq())
               error("When using multi-component forms, the Meshes have to be identical.");
@@ -488,10 +499,10 @@ namespace Hermes
           s->mfsurf_mc.push_back(mfsurf_mc[i]);
         }
       }
-      if (want_vector) 
+      if (want_vector)
       {
         // Process volume vector forms.
-        for (unsigned i = 0; i < vfvol.size(); i++) 
+        for (unsigned i = 0; i < vfvol.size(); i++)
         {
           unsigned int ii = vfvol[i]->i;
           Mesh *m = spaces[ii]->get_mesh();
@@ -500,7 +511,7 @@ namespace Hermes
         }
 
         // Process surface vector forms.
-        for (unsigned i = 0; i < vfsurf.size(); i++) 
+        for (unsigned i = 0; i < vfsurf.size(); i++)
         {
           unsigned int ii = vfsurf[i]->i;
           Mesh *m = spaces[ii]->get_mesh();
@@ -509,7 +520,7 @@ namespace Hermes
         }
 
         // Multi component forms.
-        for (unsigned i = 0; i < vfvol_mc.size(); i++) 
+        for (unsigned i = 0; i < vfvol_mc.size(); i++)
         {
           Mesh* the_one_mesh = spaces[vfvol_mc.at(i)->coordinates.at(0)]->get_mesh();
           for(unsigned int form_i = 0; form_i < vfvol_mc.at(i)->coordinates.size(); form_i++)
@@ -520,7 +531,7 @@ namespace Hermes
           s->vfvol_mc.push_back(vfvol_mc[i]);
         }
 
-        for (unsigned i = 0; i < vfsurf_mc.size(); i++) 
+        for (unsigned i = 0; i < vfsurf_mc.size(); i++)
         {
           Mesh* the_one_mesh = spaces[vfsurf_mc.at(i)->coordinates.at(0)]->get_mesh();
           for(unsigned int form_i = 0; form_i < vfsurf_mc.at(i)->coordinates.size(); form_i++)
@@ -569,7 +580,7 @@ namespace Hermes
     template<typename Scalar>
     Stage<Scalar>* WeakForm<Scalar>::find_stage(Hermes::vector<Stage<Scalar> >& stages, int ii, int jj,
       Mesh* m1, Mesh* m2,
-      Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext, bool one_stage) 
+      Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext, bool one_stage)
     {
 
       _F_;
@@ -578,15 +589,15 @@ namespace Hermes
       seq.insert(m1->get_seq());
       seq.insert(m2->get_seq());
       Mesh *mmm;
-      for (unsigned i = 0; i < ext.size(); i++) 
+      for (unsigned i = 0; i < ext.size(); i++)
       {
         mmm = ext[i]->get_mesh();
         if (mmm == NULL) error("NULL Mesh pointer detected in ExtData during assembling.\n  Have you initialized all external functions?");
         seq.insert(mmm->get_seq());
       }
-      for (unsigned i = 0; i < u_ext.size(); i++) 
+      for (unsigned i = 0; i < u_ext.size(); i++)
       {
-        if (u_ext[i] != NULL) 
+        if (u_ext[i] != NULL)
         {
           mmm = u_ext[i]->get_mesh();
           if (mmm == NULL) error("NULL Mesh pointer detected in u_ext during assembling.");
@@ -601,14 +612,14 @@ namespace Hermes
 
       for (unsigned i = 0; i < stages.size(); i++)
         if (seq.size() == stages[i].seq_set.size() &&
-          equal(seq.begin(), seq.end(), stages[i].seq_set.begin())) 
+          equal(seq.begin(), seq.end(), stages[i].seq_set.begin()))
         {
           s = &stages[i];
           break;
         }
 
         // create a new stage if not found
-        if (s == NULL) 
+        if (s == NULL)
         {
           if(stages.size() > 0 && one_stage)
           {
@@ -647,7 +658,7 @@ namespace Hermes
     template<typename Scalar>
     Stage<Scalar>* WeakForm<Scalar>::find_stage(Hermes::vector<Stage<Scalar> >& stages, Hermes::vector<std::pair<unsigned int, unsigned int> > coordinates,
       Mesh* m1, Mesh* m2,
-      Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext, bool one_stage) 
+      Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext, bool one_stage)
     {
 
       _F_;
@@ -656,15 +667,15 @@ namespace Hermes
       seq.insert(m1->get_seq());
       seq.insert(m2->get_seq());
       Mesh *mmm;
-      for (unsigned i = 0; i < ext.size(); i++) 
+      for (unsigned i = 0; i < ext.size(); i++)
       {
         mmm = ext[i]->get_mesh();
         if (mmm == NULL) error("NULL Mesh pointer detected in ExtData during assembling.\n  Have you initialized all external functions?");
         seq.insert(mmm->get_seq());
       }
-      for (unsigned i = 0; i < u_ext.size(); i++) 
+      for (unsigned i = 0; i < u_ext.size(); i++)
       {
-        if (u_ext[i] != NULL) 
+        if (u_ext[i] != NULL)
         {
           mmm = u_ext[i]->get_mesh();
           if (mmm == NULL) error("NULL Mesh pointer detected in u_ext during assembling.");
@@ -678,14 +689,14 @@ namespace Hermes
         assert(stages.size() <= 1);
       for (unsigned i = 0; i < stages.size(); i++)
         if (seq.size() == stages[i].seq_set.size() &&
-          equal(seq.begin(), seq.end(), stages[i].seq_set.begin())) 
+          equal(seq.begin(), seq.end(), stages[i].seq_set.begin()))
         {
           s = &stages[i];
           break;
         }
 
         // create a new stage if not found
-        if (s == NULL) 
+        if (s == NULL)
         {
           if(stages.size() > 0 && one_stage)
           {
@@ -717,7 +728,7 @@ namespace Hermes
           if (u_ext[i] != NULL)
             s->ext_set.insert(u_ext[i]);
 
-        for(unsigned int ii = 0; ii < coordinates.size(); ii++) 
+        for(unsigned int ii = 0; ii < coordinates.size(); ii++)
         {
           s->idx_set.insert(coordinates.at(ii).first);
           s->idx_set.insert(coordinates.at(ii).second);
@@ -728,7 +739,7 @@ namespace Hermes
     template<typename Scalar>
     Stage<Scalar>* WeakForm<Scalar>::find_stage(Hermes::vector<Stage<Scalar> >& stages, Hermes::vector<unsigned int> coordinates,
       Mesh* m1, Mesh* m2,
-      Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext, bool one_stage) 
+      Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext, bool one_stage)
     {
 
       _F_;
@@ -737,15 +748,15 @@ namespace Hermes
       seq.insert(m1->get_seq());
       seq.insert(m2->get_seq());
       Mesh *mmm;
-      for (unsigned i = 0; i < ext.size(); i++) 
+      for (unsigned i = 0; i < ext.size(); i++)
       {
         mmm = ext[i]->get_mesh();
         if (mmm == NULL) error("NULL Mesh pointer detected in ExtData during assembling.\n  Have you initialized all external functions?");
         seq.insert(mmm->get_seq());
       }
-      for (unsigned i = 0; i < u_ext.size(); i++) 
+      for (unsigned i = 0; i < u_ext.size(); i++)
       {
-        if (u_ext[i] != NULL) 
+        if (u_ext[i] != NULL)
         {
           mmm = u_ext[i]->get_mesh();
           if (mmm == NULL) error("NULL Mesh pointer detected in u_ext during assembling.");
@@ -757,14 +768,14 @@ namespace Hermes
       Stage<Scalar>* s = NULL;
       for (unsigned i = 0; i < stages.size(); i++)
         if (seq.size() == stages[i].seq_set.size() &&
-          equal(seq.begin(), seq.end(), stages[i].seq_set.begin())) 
+          equal(seq.begin(), seq.end(), stages[i].seq_set.begin()))
         {
           s = &stages[i];
           break;
         }
 
         // create a new stage if not found
-        if (s == NULL) 
+        if (s == NULL)
         {
           if(stages.size() > 0 && one_stage)
           {
@@ -802,18 +813,18 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    bool** WeakForm<Scalar>::get_blocks(bool force_diagonal_blocks) 
+    bool** WeakForm<Scalar>::get_blocks(bool force_diagonal_blocks)
     {
       _F_;
       bool** blocks = new_matrix<bool>(neq, neq);
-      for (unsigned int i = 0; i < neq; i++) 
+      for (unsigned int i = 0; i < neq; i++)
       {
         for (unsigned int j = 0; j < neq; j++)
           blocks[i][j] = false;
         if (force_diagonal_blocks)
           blocks[i][i] = true;
       }
-      for (unsigned i = 0; i < mfvol.size(); i++) 
+      for (unsigned i = 0; i < mfvol.size(); i++)
       {
         if (fabs(mfvol[i]->scaling_factor) > 1e-12)
           blocks[mfvol[i]->i][mfvol[i]->j] = true;
@@ -822,7 +833,7 @@ namespace Hermes
             blocks[mfvol[i]->j][mfvol[i]->i] = true;
       }
 
-      for (unsigned i = 0; i < mfvol_mc.size(); i++) 
+      for (unsigned i = 0; i < mfvol_mc.size(); i++)
       {
         if (fabs(mfvol_mc[i]->scaling_factor) > 1e-12)
           for(unsigned int component_i = 0; component_i < mfvol_mc[i]->coordinates.size(); component_i++)
@@ -852,7 +863,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    double WeakForm<Scalar>::get_current_time() const 
+    double WeakForm<Scalar>::get_current_time() const
     {
       return current_time;
     }

@@ -24,7 +24,7 @@ namespace Hermes
   {
     namespace Views
     {
-      /// \brief "Vectorizer" is a Linearizer for vector solutions. 
+      /// \brief "Vectorizer" is a Linearizer for vector solutions.
       /// The only difference is that linearized vertices are vector-valued. Also, regularization of the
       /// resulting mesh is not attempted. The class can handle different meshes in
       /// both X and Y components.
@@ -37,10 +37,10 @@ namespace Hermes
         ~Vectorizer();
 
         void process_solution(MeshFunction<double>* xsln, MeshFunction<double>* ysln, int xitem, int yitem, double eps);
-        
+
         int get_num_vertices();
         double4* get_vertices();
-        
+
         int2* get_dashes();
         int get_num_dashes();
 
@@ -52,7 +52,7 @@ namespace Hermes
         MeshFunction<double>*xsln, *ysln;
         int xitem, component_x, value_type_x;
         int yitem, component_y, value_type_y;
-        
+
         double4* verts;  ///< vertices: (x, y, xvalue, yvalue) quadruples
         int2* dashes;
 
@@ -63,36 +63,13 @@ namespace Hermes
         int create_vertex(double x, double y, double xvalue, double yvalue);
         void process_dash(int iv1, int iv2);
 
-        int add_vertex()
-        {
-          if (this->vertex_count >= this->vertex_size)
-          {
-            this->vertex_size *= 2;
-            verts = (double4*) realloc(verts, sizeof(double4) * this->vertex_size);
-            this->info = (int4*) realloc(this->info, sizeof(int4) * this->vertex_size);
-            verbose("Vectorizer::add_vertex(): realloc to %d", this->vertex_size);
-          }
-          return this->vertex_count++;
-        }
+        int add_vertex();
 
-        void add_dash(int iv1, int iv2)
-        {
-          if (dashes_count >= dashes_size) dashes = (int2*) realloc(dashes, sizeof(int2) * (dashes_size = dashes_size * 3 / 2));
-          dashes[dashes_count][0] = iv1;
-          dashes[dashes_count++][1] = iv2;
-        }
+        void add_dash(int iv1, int iv2);
 
-        void push_transform(int son)
-        {
-          xsln->push_transform(son);
-          if (ysln != xsln) ysln->push_transform(son);
-        }
+        void push_transform(int son);
 
-        void pop_transform()
-        {
-          xsln->pop_transform();
-          if (ysln != xsln) ysln->pop_transform();
-        }
+        void pop_transform();
 
         void process_triangle(int iv0, int iv1, int iv2, int level,
           double* xval, double* yval, double* phx, double* phy, int* indices);

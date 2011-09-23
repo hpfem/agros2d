@@ -47,6 +47,40 @@ namespace Hermes
       { H2D_IDENTIFY_TRF }              // identity
     };
 
+    Transformable::Transformable()
+    {
+      memset(stack, 0, sizeof(stack));
+      reset_transform();
+      element = NULL;
+    }
+
+    Transformable::~Transformable() {}
+
+    Element* Transformable::get_active_element() const { return element; }
+
+    void Transformable::pop_transform()
+    {
+      assert(top > 0);
+      ctm = stack + (--top);
+      sub_idx = (sub_idx - 1) >> 3;
+    }
+
+    uint64_t Transformable::get_transform() const { return sub_idx; }
+
+    void Transformable::reset_transform()
+    {
+      stack[0].m[0] = stack[0].m[1] = 1.0;
+      stack[0].t[0] = stack[0].t[1] = 0.0;
+      ctm = stack;
+      sub_idx = top = 0;
+    }
+
+    void Transformable::set_active_element(Element* e)
+    {
+      _F_
+        if (e==NULL) throw Exceptions::NullException(1);
+      element = e;
+    }
 
     void Transformable::set_transform(uint64_t idx)
     {
@@ -65,7 +99,7 @@ namespace Hermes
     void Transformable::push_transform(int son)
     {
       assert(element != NULL);
-      if (top >= H2D_MAX_TRN_LEVEL) 
+      if (top >= H2D_MAX_TRN_LEVEL)
         error("Too deep transform.");
 
       Trf* mat = stack + (++top);

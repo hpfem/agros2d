@@ -111,7 +111,7 @@ void SurfaceIntegralValue::calculate()
         {
             for_all_active_elements(e, mesh)
             {
-                for (unsigned edge = 0; edge < e->nvert; edge++)
+                for (unsigned edge = 0; edge < e->get_num_surf(); edge++)
                 {
                     bool integrate = false;
                     bool boundary = false;

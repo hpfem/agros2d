@@ -29,7 +29,7 @@ namespace Hermes
   namespace Hermes2D
   {
     namespace Views
-    {  
+    {
       const double HERMES_EPS_LOW      = 0.007;
       const double HERMES_EPS_NORMAL   = 0.0004;
       const double HERMES_EPS_HIGH     = 0.0001;
@@ -65,14 +65,7 @@ namespace Hermes
       class Quad2DLin : public Quad2D
       {
       public:
-        Quad2DLin()
-        {
-          mode = HERMES_MODE_TRIANGLE;
-          max_order[0]  = max_order[1]  = 1;
-          num_tables[0] = num_tables[1] = 2;
-          tables = lin_tables;
-          np = lin_np;
-        };
+        Quad2DLin();
       };
 
       extern HERMES_API Quad2DLin g_quad_lin;
@@ -87,20 +80,20 @@ namespace Hermes
         double get_min_value() const;
         double get_max_value() const;
 
-        void lock_data() const { pthread_mutex_lock(&data_mutex); }
-        void unlock_data() const { pthread_mutex_unlock(&data_mutex); }
+        void lock_data() const;
+        void unlock_data() const;
 
         int3* get_triangles();
         int get_num_triangles();
         int3* get_edges();
         int get_num_edges();
-      
+
       protected:
         LinearizerBase(bool auto_max = true);
         ~LinearizerBase();
 
         void process_edge(int iv1, int iv2, int marker);
-        
+
         double max;
 
         bool auto_max;
@@ -108,7 +101,7 @@ namespace Hermes
         int3* tris;      ///< triangles: vertex index triplets
         int3* edges;     ///< edges: pairs of vertex indices
         int* hash_table; ///< hash table
-        int4 * info; ///< info[0]=p1, info[1]=p2, info[2]=next vertex in hash
+        int4 * info; ///< info[0] = p1, info[1] = p2, info[2] = next vertex in hash
 
         int vertex_count, triangle_count, edges_count; ///< Real numbers of vertices, triangles and edges
         int vertex_size, triangle_size, edges_size; ///< Size of arrays of vertices, triangles and edges
@@ -127,7 +120,7 @@ namespace Hermes
         int hash(int p1, int p2);
 
         mutable pthread_mutex_t data_mutex;
-        
+
         /// Calculates AABB from an array of X-axis and Y-axis coordinates. The distance between values in the array is stride bytes.
         static void calc_aabb(double* x, double* y, int stride, int num, double* min_x, double* max_x, double* min_y, double* max_y);
       };

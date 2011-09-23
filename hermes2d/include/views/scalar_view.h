@@ -67,23 +67,16 @@ namespace Hermes
 
         void show_linearizer_data(double eps = HERMES_EPS_NORMAL, int item = H2D_FN_VAL_0);
 
-        void show_mesh(bool show = true) { show_edges = show; refresh(); }
-        void show_bounding_box(bool show = true) { show_aabb = show; refresh(); }
+        inline void show_mesh(bool show = true) { show_edges = show; refresh(); }
+        inline void show_bounding_box(bool show = true) { show_aabb = show; refresh(); }
         void show_contours(double step, double orig = 0.0);
-        void hide_contours() { contours = false; refresh(); }
-        void set_3d_mode(bool enable = true) { mode3d = enable; refresh(); }
+        inline void hide_contours() { contours = false; refresh(); }
+        inline void set_3d_mode(bool enable = true) { mode3d = enable; refresh(); }
         void set_vertical_scaling(double sc);  ///< Sets the scaling on the vertical axis programmatically.
         void set_min_max_range(double min, double max);  ///< Sets the limits on displayed values.
 
 
       public:
-        void export_mesh_edges_svg(const char* filename, float width_mm = 100.0f); ///< Exports mesh edges to SVG format. Height is calculated from input vertices. Function locks data.
-
-#define SVG_HEADER "<?xml version=\"1.0\" standalone=\"no\"?>\n"\
-  "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" "\
-  "\"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
-#define SVG_UNIT_MM 3.543307 /* size of 1 mm in SVG px */
-
         Linearizer* lin;
 
       protected:
@@ -155,7 +148,7 @@ namespace Hermes
 
         bool lin_updated; ///< true, if lin now contains new values
 
-        unsigned int gl_coord_buffer; ///< Vertex coordinate buffer. (x,y,t)
+        unsigned int gl_coord_buffer; ///< Vertex coordinate buffer. (x, y, t)
         unsigned int gl_index_buffer; ///< Index data buffer.
         unsigned int gl_edge_inx_buffer; ///< A buffer for edge indices. The side of the buffer is H2DV_GL_MAX_EDGE_BUFFER pairs of indids.
         int max_gl_verts; ///< A maximum allocated number of vertices
@@ -178,16 +171,8 @@ namespace Hermes
 
         typedef void (*DrawSingleEdgeCallback)(int inx_vert_a, int inx_vert_b, ScalarView* viewer, void* param); ///< A callback function that draws edge using specified vertex indices. Param is user supplied parameter.
 
-        struct SVGExportParams
-        {
-          FILE* fout; ///< Output file.
-          double x_min, y_min; ///< Minimum of vertices.
-          double scale; ///< Scale coefficient that converts from mesh scale to SVG scale.
-        };
-
         void calculate_mesh_aabb(double* x_min, double* x_max, double* y_min, double* y_max); ///< Calculates AABB from edges.
 
-        static void draw_svg_edge(int inx_vert_a, int inx_vert_b, ScalarView* viewer, void* param); ///< Draws edge specified by edge into SVG file given as parameter (type: SVGExportParams*). Functions assumes that data are locked.
         static void draw_gl_edge(int inx_vert_a, int inx_vert_b, ScalarView* viewer, void* param); ///< Draws edge specified by edge indices using GL. Functions assumes that data are locked.
         void draw_edges(DrawSingleEdgeCallback draw_single_edge, void* param, bool boundary_only); ///< Draws edges of elements and boundary of mesh. Functions assumes that data are locked.
         void draw_aabb(); ///< Draws the axes-aligned bounding box of the model. Assumes a model/view matrix to be the current matrix on the OpenGL stack.
@@ -213,7 +198,7 @@ namespace Hermes
 
         double3* normals;
 
-        
+
         /// This function calculates the distance that the model (3D plot of the solution over the whole solution domain) must be
         /// translated along the z-axis of the eye coordinate system, so that it fills the actual viewport without being clipped.
         /// The only case when the model will be clipped is when the user defines his own vertical range limits - unfortunately,

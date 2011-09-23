@@ -23,9 +23,9 @@
 #include "../integrals/hcurl.h"
 #include "../integrals/hdiv.h"
 #include "../integrals/l2.h"
-#include "../ogprojection.h"
 #include "../mesh/element_to_refine.h"
 #include "../refinement_selectors/selector.h"
+#include "exceptions.h"
 
 namespace Hermes
 {
@@ -45,23 +45,6 @@ namespace Hermes
     *
     */
 
-#define H2D_MAX_COMPONENTS 10 ///< A maximum number of components.
-
-    /// Constant used by Adapt::calc_eror().
-#define HERMES_TOTAL_ERROR_REL  0x00  ///< A flag which defines interpretation of the total error. \ingroup g_adapt
-    ///  The total error is divided by the norm and therefore it should be in a range [0, 1].
-    ///  \note Used by Adapt::calc_errors_internal().. This flag is mutually exclusive with ::H2D_TOTAL_ERROR_ABS.
-#define HERMES_TOTAL_ERROR_ABS  0x01  ///< A flag which defines interpretation of the total error. \ingroup g_adapt
-    ///  The total error is absolute, i.e., it is an integral over squares of differencies.
-    ///  \note Used by Adapt::calc_errors_internal(). This flag is mutually exclusive with ::HERMES_TOTAL_ERROR_REL.
-#define HERMES_ELEMENT_ERROR_REL 0x00 ///< A flag which defines interpretation of an error of an element. \ingroup g_adapt
-    ///  An error of an element is a square of an error divided by a square of a norm of a corresponding component.
-    ///  When norms of 2 components are very different (e.g. microwave heating), it can help.
-    ///  Navier-stokes on different meshes work only when absolute error (see ::H2D_ELEMENT_ERROR_ABS) is used.
-    ///  \note Used by Adapt::calc_errors_internal(). This flag is mutually exclusive with ::H2D_ELEMENT_ERROR_ABS.
-#define HERMES_ELEMENT_ERROR_ABS 0x10 ///< A flag which defines interpretation of of an error of an element. \ingroup g_adapt
-    ///  An error of an element is a square of an asolute error, i.e., it is an integral over squares of differencies.
-    ///  \note Used by Adapt::calc_errors_internal(). This flag is mutually exclusive with ::HERMES_ELEMENT_ERROR_REL.
 
     /// Evaluation of an error between a (coarse) solution and a reference solution and adaptivity. \ingroup g_adapt
     /** The class provides basic functionality necessary to adaptively refine elements.
@@ -88,18 +71,18 @@ namespace Hermes
         /// Error bilinear form callback function.
         virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[],
           Func<Scalar> *u, Func<Scalar> *v, Geom<double> *e,
-          ExtData<Scalar> *ext);
+          ExtData<Scalar> *ext) const;
 
         /// Error bilinear form to estimate order of a function.
         virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[],
           Func<Hermes::Ord> *u, Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e,
-          ExtData<Hermes::Ord> *ext);
+          ExtData<Hermes::Ord> *ext) const;
 
-      
+
       protected:
         /// Norm used.
         ProjNormType projNormType;
-        
+
         /// L2 error form.
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         static SolFunctionDomain l2_error_form(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<SolFunctionDomain> *u,
@@ -135,7 +118,7 @@ namespace Hermes
       *  \param[in] bi_ord A bilinear form which calculates order. */
       void set_error_form(int i, int j, MatrixFormVolError* form);
       void set_error_form(MatrixFormVolError* form);   ///< i = j = 0
-      
+
       void set_norm_form(int i, int j, MatrixFormVolError* form);
       void set_norm_form(MatrixFormVolError* form);   ///< i = j = 0
 
@@ -243,7 +226,7 @@ namespace Hermes
       *  \param[in] mesh A mesh that contains the element.
       *  \param[in] e A point to the element.
       *  \param[in] refined True if a refinement of the element was found.
-      *  \param[in,out] elem_ref The proposed refinement. Change a value of this parameter to select a different refinement.
+      *  \param[in, out] elem_ref The proposed refinement. Change a value of this parameter to select a different refinement.
       *  \return True if the element should not be refined using the refinement. */
       virtual bool can_refine_element(Mesh* mesh, Element* e, bool refined, ElementToRefine& elem_ref) const;
 
@@ -280,7 +263,7 @@ namespace Hermes
 
       MatrixFormVolError* error_form[H2D_MAX_COMPONENTS][H2D_MAX_COMPONENTS]; ///< Bilinear forms to calculate error.
       MatrixFormVolError* norm_form[H2D_MAX_COMPONENTS][H2D_MAX_COMPONENTS];  ///< Bilinear forms to calculate norm (set to error_form by default).
-      
+
       /// Calculates error between a coarse solution and a reference solution and sorts components according to the error.
       /** If overridden, this method has to initialize errors (Array::errors), sum of errors (Array::error_sum), norms of components (Array::norm), number of active elements (Array::num_act_elems). Also, it has to fill the regular queue through the method fill_regular_queue().
       *  \param[in] error_flags Flags which calculates the error. It can be a combination of ::HERMES_TOTAL_ERROR_REL, ::HERMES_TOTAL_ERROR_ABS, ::HERMES_ELEMENT_ERROR_REL, ::HERMES_ELEMENT_ERROR_ABS.
@@ -333,7 +316,7 @@ namespace Hermes
 
     private:
       /// A functor that compares elements accoring to their error. Used by std::sort().
-      class CompareElements 
+      class CompareElements
       {
       private:
         double** errors; ///< A 2D array of squared errors: the first index is an index of component, the second index is an element ID.
@@ -343,7 +326,7 @@ namespace Hermes
         /** \param[in] e1 A reference to the first element.
         *  \param[in] e1 A reference to the second element.
         *  \return True if a squared error of the first element is greater than a squared error of the second element. */
-        bool operator ()(const ElementReference& e1,const ElementReference& e2) const;
+        bool operator ()(const ElementReference& e1, const ElementReference& e2) const;
       };
     };
   }

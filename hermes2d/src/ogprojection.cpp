@@ -38,14 +38,14 @@ namespace Hermes
       unsigned int n = spaces.size();
 
       // sanity checks
-      for (unsigned int i = 0; i < n; i++) 
-        if(spaces[i] == NULL) 
+      for (unsigned int i = 0; i < n; i++)
+        if(spaces[i] == NULL)
           error("this->spaces[%d] == NULL in project_internal().", i);
 
       // Initialize DiscreteProblem.
       DiscreteProblem<Scalar> dp(wf, spaces);
 
-      // Initial coefficient vector for the Newton's method.  
+      // Initial coefficient vector for the Newton's method.
       Scalar* coeff_vec = new Scalar[ndof];
       memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
@@ -53,13 +53,12 @@ namespace Hermes
       NewtonSolver<Scalar> newton(&dp, matrix_solver_type);
       // No output for the Newton's loop.
       newton.set_verbose_output(false);
-      if (!newton.solve(coeff_vec)) 
-        error("Newton's iteration failed.");
+      newton.solve(coeff_vec);
 
       delete [] coeff_vec;
 
       if (target_vec != NULL)
-        for (int i = 0; i < ndof; i++) 
+        for (int i = 0; i < ndof; i++)
           target_vec[i] = newton.get_sln_vector()[i];
     }
 
@@ -69,7 +68,11 @@ namespace Hermes
     {
       _F_;
       int n = spaces.size();
-      
+
+      if (n!=source_meshfns.size()) throw Exceptions::LengthException(1, 2, n, source_meshfns.size());
+      if (target_vec==NULL) throw Exceptions::NullException(3);
+      if (!proj_norms.empty() && n!=proj_norms.size()) throw Exceptions::LengthException(1, 5, n, proj_norms.size());
+
       // this is needed since spaces may have their DOFs enumerated only locally.
       ndof = Space<Scalar>::assign_dofs(spaces);
       int ndof_start_running = 0;
@@ -106,19 +109,19 @@ namespace Hermes
 
       // define temporary projection weak form
       WeakForm<Scalar>* proj_wf = new WeakForm<Scalar>(n);
-      
+
       // For error detection.
       bool* found = new bool[n];
-      for (int i = 0; i < n; i++) 
+      for (int i = 0; i < n; i++)
         found[i] = false;
 
       for (int i = 0; i < n; i++)
       {
         ProjNormType norm = HERMES_UNSET_NORM;
-        if (proj_norms == Hermes::vector<ProjNormType>()) 
+        if (proj_norms == Hermes::vector<ProjNormType>())
         {
           SpaceType space_type = spaces[i]->get_type();
-          switch (space_type) 
+          switch (space_type)
           {
           case HERMES_H1_SPACE: norm = HERMES_H1_NORM; break;
           case HERMES_HCURL_SPACE: norm = HERMES_HCURL_NORM; break;
@@ -137,7 +140,7 @@ namespace Hermes
         // Residual.
         proj_wf->add_vector_form(new ProjectionVectorFormVol(i, source_meshfns[i], norm));
       }
-      for (int i=0; i < n; i++)
+      for (int i = 0; i < n; i++)
       {
         if (!found[i])
         {
@@ -147,7 +150,7 @@ namespace Hermes
       }
 
       project_internal(spaces, proj_wf, target_vec, matrix_solver_type);
-      
+
       delete proj_wf;
     }
 
@@ -190,7 +193,7 @@ namespace Hermes
       OGProjection<Scalar>::project_global(spaces, ref_slns_mf, target_vec, matrix_solver_type, proj_norms);
 
       if(delete_old_meshes)
-        for(unsigned int i = 0; i < sols_src.size(); i++) 
+        for(unsigned int i = 0; i < sols_src.size(); i++)
         {
           delete sols_src[i]->get_mesh();
           sols_src[i]->own_mesh = false;
@@ -233,24 +236,25 @@ namespace Hermes
       unsigned int n_biforms = custom_projection_jacobian.size();
       if (n_biforms == 0)
         error("Please use the simpler version of project_global with the argument Hermes::vector<ProjNormType> proj_norms if you do not provide your own projection norm.");
-      if (n_biforms != custom_projection_residual.size())
-        error("Mismatched numbers of projection forms in project_global().");
+
       if (n != n_biforms)
-        error("Mismatched numbers of projected functions and projection forms in project_global().");
+        throw Exceptions::LengthException(1, 2, n);
+      if (n_biforms != custom_projection_residual.size())
+        throw Exceptions::LengthException(2, 3, n_biforms, custom_projection_residual.size());
 
       // Define local projection weak form.
       WeakForm<Scalar>* proj_wf = new WeakForm<Scalar>(n);
-      for (unsigned int i = 0; i < n; i++) 
+      for (unsigned int i = 0; i < n; i++)
       {
         proj_wf->add_matrix_form(custom_projection_jacobian[i]);
         proj_wf->add_vector_form(custom_projection_residual[i]);
       }
 
       project_internal(spaces, proj_wf, target_vec, matrix_solver_type);
-      
+
       delete proj_wf;
     }
-    
+
     template<typename Scalar>
     void OGProjection<Scalar>::project_global(Hermes::vector<Space<Scalar> *> spaces,
                                               Hermes::vector<MatrixFormVol<Scalar> *> custom_projection_jacobian,
@@ -273,20 +277,20 @@ namespace Hermes
       _F_
       Hermes::vector<Space<Scalar>*> space_vector;
       space_vector.push_back(space);
-      
+
       Hermes::vector<MatrixFormVol<Scalar>*> custom_projection_jacobian_vector;
       custom_projection_jacobian_vector.push_back(custom_projection_jacobian);
-      
+
       Hermes::vector<VectorFormVol<Scalar>*> custom_projection_residual_vector;
       custom_projection_residual_vector.push_back(custom_projection_residual);
-      
+
       Hermes::vector<Solution<Scalar>*> sol_dest_vector;
       sol_dest_vector.push_back(sol_dest);
-      
+
       project_global(space_vector,
                      custom_projection_jacobian_vector,
                      custom_projection_residual_vector,
-                     sol_dest_vector, 
+                     sol_dest_vector,
                      matrix_solver);
     }
 

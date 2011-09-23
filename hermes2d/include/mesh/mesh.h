@@ -49,22 +49,22 @@ namespace Hermes
 
       union
       {
-        struct // vertex node variant:
+        struct
         {
           double x, y; ///< vertex node coordinates
         };
-        struct // edge node variant:
-        {// \todo review pointer sizes for 64-bits !!!
+        struct
+        {
           int marker;       ///< edge marker
           Element* elem[2]; ///< elements sharing the edge node
-          Nurbs* nurbs;     ///< temporary curved edge ptr (only for loading the mesh)
         };
       };
 
       int p1, p2; ///< parent id numbers
       Node* next_hash; ///< next node in hash synonym list
 
-      bool is_constrained_vertex() const { assert(type == HERMES_TYPE_VERTEX); return ref <= 3 && !bnd; }
+      /// Returns true if the (vertex) node is constrained.
+      bool is_constrained_vertex() const;
 
       void ref_element(Element* e = NULL);
       void unref_element(HashTable* ht, Element* e = NULL);
@@ -94,10 +94,9 @@ namespace Hermes
     class HERMES_API Element
     {
     public:
-      Element() : visited(false) {};
+      Element();
 
       int id;            ///< element id number
-      unsigned nvert:30; ///< number of vertices (3 or 4)
       unsigned active:1; ///< 0 = active, no sons; 1 = inactive (refined), has sons
       unsigned used:1;   ///< array item usage flag
       int marker;        ///< element marker
@@ -114,19 +113,19 @@ namespace Hermes
 
       CurvMap* cm; ///< curved mapping, NULL if not curvilinear
 
-      bool is_triangle() const { return nvert == 3; }
-      bool is_quad() const { return nvert == 4; }
-      bool is_curved() const { return cm != NULL; }
-      int  get_mode() const { return is_triangle() ? HERMES_MODE_TRIANGLE : HERMES_MODE_QUAD; }
-      int get_num_surf() {return nvert; }
+      bool is_triangle() const;
+      bool is_quad() const;
+      bool is_curved() const;
+      int  get_mode() const;
+      int get_num_surf();
 
       // helper functions to obtain the index of the next or previous vertex/edge
-      int next_vert(int i) const { return (i < (int)nvert-1) ? i+1 : 0; }
-      int prev_vert(int i) const { return (i > 0) ? i-1 : nvert-1; }
+      int next_vert(int i) const;
+      int prev_vert(int i) const;
 
-      bool hsplit() const { assert(!active); return sons[0] != NULL; }
-      bool vsplit() const { assert(!active); return sons[2] != NULL; }
-      bool bsplit() const { assert(!active); return sons[0] != NULL && sons[2] != NULL; }
+      bool hsplit() const;
+      bool vsplit() const;
+      bool bsplit() const;
 
       /// Returns a pointer to the neighboring element across the edge 'ie', or
       /// NULL if it does not exist or is across an irregular edge.
@@ -141,12 +140,14 @@ namespace Hermes
       double get_diameter() const;
 
       // returns the edge orientation. This works for the unconstrained edges.
-      int get_edge_orientation(int ie) {
-          return (this->vn[ie]->id < this->vn[this->next_vert(ie)]->id) ? 0 : 1;
-      }
+      int get_edge_orientation(int ie) const;
 
       void ref_all_nodes();
       void unref_all_nodes(HashTable* ht);
+    private:
+      unsigned nvert:30; ///< number of vertices (3 or 4)
+
+      friend class Mesh;
     };
 
     /// \brief Represents a finite element mesh.
@@ -184,28 +185,16 @@ namespace Hermes
       Element* get_element(int id) const;
 
       /// Returns the total number of elements stored.
-      int get_num_elements() const {
-        if (this == NULL) error("this == NULL in Mesh::get_num_elements().");
-        return elements.get_num_items();
-      }
+      int get_num_elements() const;
 
       /// Returns the number of coarse mesh elements.
-      int get_num_base_elements() const {
-        if (this == NULL) error("this == NULL in Mesh::get_num_base_elements().");
-        return nbase;
-      }
+      int get_num_base_elements() const;
 
       /// Returns the current number of active elements in the mesh.
-      int get_num_active_elements() const {
-        if (this == NULL) error("this == NULL in Mesh::get_num_active_elements().");
-        return nactive;
-      }
+      int get_num_active_elements() const;
 
       /// Returns the maximum node id number plus one.
-      int get_max_element_id() const {
-        if (this == NULL) error("this == NULL in Mesh::get_max_element_id().");
-        return elements.get_size();
-      }
+      int get_max_element_id() const;
 
       /// Refines an element.
       /// \param id [in] Element id number.
@@ -264,13 +253,13 @@ namespace Hermes
       int get_edge_sons(Element* e, int edge, int& son1, int& son2);
 
       /// For internal use.
-      unsigned get_seq() const { return seq; }
+      unsigned get_seq() const;
 
       /// For internal use.
-      void set_seq(unsigned seq) { this->seq = seq; }
+      void set_seq(unsigned seq);
 
       /// For internal use.
-      Element* get_element_fast(int id) const { return &(elements[id]);}
+      Element* get_element_fast(int id) const;
 
       /// Refines all triangle elements to quads.
       /// It can refine a triangle element into three quadrilaterals.
@@ -294,9 +283,9 @@ namespace Hermes
       void refine_quad_to_triangles(Element* e);
 
       /// Refines one quad element into four quad elements.
-      /// The difference between refine_quad_to_quads() and refine_quad() 
-      /// is that all the internal edges of the former's son elements are  
-      /// straight edges. 
+      /// The difference between refine_quad_to_quads() and refine_quad()
+      /// is that all the internal edges of the former's son elements are
+      /// straight edges.
       void refine_quad_to_quads(Element* e, int refinement = 0);
 
       void convert_element_to_base_id(int id);
@@ -333,7 +322,7 @@ namespace Hermes
       class HERMES_API MarkersConversion
       {
       public:
-        MarkersConversion() : min_marker_unused(1) {};
+        MarkersConversion();
 
         /// Info about the maximum marker used so far, used in determining
         /// of the internal marker for a user-supplied std::string identification for
@@ -348,8 +337,8 @@ namespace Hermes
         /// Struct for return type of get_user_marker().
         struct StringValid
         {
-          StringValid() {};
-          StringValid(std::string marker, bool valid) : marker(marker), valid(valid) {};
+          StringValid();
+          StringValid(std::string marker, bool valid);
           std::string marker;
           bool valid;
         };
@@ -357,8 +346,8 @@ namespace Hermes
         /// Struct for return type of get_internal_marker().
         struct IntValid
         {
-          IntValid() {};
-          IntValid(int marker, bool valid) : marker(marker), valid(valid) {};
+          IntValid();
+          IntValid(int marker, bool valid);
           int marker;
           bool valid;
         };
@@ -385,7 +374,7 @@ namespace Hermes
         /// Inverse tables, so that it is possible to search using either
         /// the internal representation, or the user std::string value.
         std::map<std::string, int> conversion_table_inverse;
-        
+
         friend class Space<double>;
         friend class Space<std::complex<double> >;
         friend class Mesh;
@@ -394,15 +383,15 @@ namespace Hermes
       class ElementMarkersConversion : public MarkersConversion
       {
       public:
-        ElementMarkersConversion() {};
-        virtual MarkersConversionType get_type() { return HERMES_ELEMENT_MARKERS_CONVERSION; };
+        ElementMarkersConversion();
+        virtual MarkersConversionType get_type();
       };
 
       class BoundaryMarkersConversion : public MarkersConversion
       {
       public:
-        BoundaryMarkersConversion() {};
-        virtual MarkersConversionType get_type() { return HERMES_BOUNDARY_MARKERS_CONVERSION; };
+        BoundaryMarkersConversion();
+        virtual MarkersConversionType get_type();
       };
 
       ElementMarkersConversion element_markers_conversion;
@@ -422,9 +411,9 @@ namespace Hermes
       friend class KellyTypeAdapt<std::complex<double> >;
 
     public:
-      ElementMarkersConversion &get_element_markers_conversion() { return element_markers_conversion; };
-      BoundaryMarkersConversion &get_boundary_markers_conversion() { return boundary_markers_conversion; };
-  
+      ElementMarkersConversion &get_element_markers_conversion();
+      BoundaryMarkersConversion &get_boundary_markers_conversion();
+
       /*  node and son numbering on a triangle:
 
         -Triangle to triangles refinement
@@ -454,11 +443,11 @@ namespace Hermes
 
                         vn[2]                                     vn[2]
 
-                          *                                        *                                 
-                          / \                                      / \                                   
-                        /   \                                    /   \    
-                        /     \                                  /     \  
-                      /       \                          vn[3] * son[2]* vn[1]    
+                          *                                        *
+                          / \                                      / \
+                        /   \                                    /   \
+                        /     \                                  /     \
+                      /       \                          vn[3] * son[2]* vn[1]
                       /         \                       vn[3] *  \     /  * vn[2]
             en[2]   *           *   en[1]                   / \  \   /  / \
                     /             \                         /   \ vn[0] /   \
@@ -466,9 +455,9 @@ namespace Hermes
                   /                 \                     /       \   /       \
                 /         *         \                   /   vn[2] * * vn[3]   \
                 /                     \                 /          | |          \
-              /                       \               /  son[0]   | |  son[1]   \      
-              /                         \             /            | |            \           
-            *-------------*-------------*           *-------------* *-------------*          
+              /                       \               /  son[0]   | |  son[1]   \
+              /                         \             /            | |            \
+            *-------------*-------------*           *-------------* *-------------*
                                                   vn[0]      vn[1]   vn[0]        vn[1]
         vn[0]           en[0]           vn[1]
 
@@ -525,11 +514,11 @@ namespace Hermes
       /// Vector for storing refinements in order to be able to save/load meshes with identical element IDs.
       /// Refinement "-1" stands for unrefinement.
       Hermes::vector<std::pair<unsigned int, int> > refinements;
-  
-      /// Refines a quad element into four quads, or two quads (horizontally or 
+
+      /// Refines a quad element into four quads, or two quads (horizontally or
       /// vertically. If mesh != NULL, the new elements are incorporated into
-      /// the mesh. The option mesh == NULL is used to perform adaptive numerical 
-      /// quadrature. If sons_out != NULL, pointers to the new elements will be 
+      /// the mesh. The option mesh == NULL is used to perform adaptive numerical
+      /// quadrature. If sons_out != NULL, pointers to the new elements will be
       /// saved there.
       void refine_quad(Element* e, int refinement, Element** sons_out = NULL);
       void refine_triangle_to_triangles(Element* e, Element** sons = NULL);

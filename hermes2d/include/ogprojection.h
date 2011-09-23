@@ -59,18 +59,18 @@ namespace Hermes
         Hermes::vector<MatrixFormVol<Scalar> *> custom_projection_jacobian,
         Hermes::vector<VectorFormVol<Scalar> *> custom_projection_residual,
         Scalar* target_vec, Hermes::MatrixSolverType matrix_solver = SOLVER_UMFPACK);
-        
+
       static void project_global(Hermes::vector<Space<Scalar> *> spaces,
                                  Hermes::vector<MatrixFormVol<Scalar> *> custom_projection_jacobian,
                                  Hermes::vector<VectorFormVol<Scalar> *> custom_projection_residual,
-                                 Hermes::vector<Solution<Scalar> *> sols_dest, 
+                                 Hermes::vector<Solution<Scalar> *> sols_dest,
                                  Hermes::MatrixSolverType matrix_solver = Hermes::SOLVER_UMFPACK);
-                                
+
       static void project_global(Space<Scalar>* space,
                                  MatrixFormVol<Scalar>* custom_projection_jacobian,
                                  VectorFormVol<Scalar>* custom_projection_residual,
-                                 Solution<Scalar>* sol_dest, 
-                                 Hermes::MatrixSolverType matrix_solver = Hermes::SOLVER_UMFPACK);  
+                                 Solution<Scalar>* sol_dest,
+                                 Hermes::MatrixSolverType matrix_solver = Hermes::SOLVER_UMFPACK);
 
       // Underlying function for global orthogonal projection.
       // Not intended for the user. NOTE: the weak form here must be
@@ -253,32 +253,32 @@ namespace Hermes
 
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         SolFunctionDomain h1_projection_residual(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<TestFunctionDomain> *v,
-          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext)
+          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext) const
         {
           _F_
             SolFunctionDomain result = SolFunctionDomain(0);
           for (int i = 0; i < n; i++)
-            result += wt[i] * ((u_ext[this->i]->val[i] - ext->fn[0]->val[i]) * v->val[i] 
-          + (u_ext[this->i]->dx[i] - ext->fn[0]->dx[i]) * v->dx[i] 
+            result += wt[i] * ((u_ext[this->i]->val[i] - ext->fn[0]->val[i]) * v->val[i]
+          + (u_ext[this->i]->dx[i] - ext->fn[0]->dx[i]) * v->dx[i]
           + (u_ext[this->i]->dy[i] - ext->fn[0]->dy[i]) * v->dy[i]);
           return result;
         }
 
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         SolFunctionDomain h1_semi_projection_residual(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<TestFunctionDomain> *v,
-          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext)
+          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext) const
         {
           _F_
             SolFunctionDomain result = SolFunctionDomain(0);
           for (int i = 0; i < n; i++)
-            result += wt[i] * ((u_ext[this->i]->dx[i] - ext->fn[0]->dx[i]) * v->dx[i] 
+            result += wt[i] * ((u_ext[this->i]->dx[i] - ext->fn[0]->dx[i]) * v->dx[i]
           + (u_ext[this->i]->dy[i] - ext->fn[0]->dy[i]) * v->dy[i]);
           return result;
         }
 
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         SolFunctionDomain l2_projection_residual(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<TestFunctionDomain> *v,
-          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext)
+          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext) const
         {
           _F_
             SolFunctionDomain result = SolFunctionDomain(0);
@@ -289,7 +289,7 @@ namespace Hermes
 
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         SolFunctionDomain hcurl_projection_residual(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<TestFunctionDomain> *v,
-          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext)
+          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext) const
         {
           _F_
             SolFunctionDomain result = SolFunctionDomain(0);
@@ -304,7 +304,7 @@ namespace Hermes
 
         template<typename TestFunctionDomain, typename SolFunctionDomain>
         SolFunctionDomain hdiv_projection_residual(int n, double *wt, Func<SolFunctionDomain> *u_ext[], Func<TestFunctionDomain> *v,
-          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext)
+          Geom<TestFunctionDomain> *e, ExtData<SolFunctionDomain> *ext) const
         {
           _F_
             SolFunctionDomain result = SolFunctionDomain(0);

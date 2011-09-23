@@ -60,7 +60,7 @@ namespace Hermes
         {
           for (k = 0; k <= 10; k++)
           {
-            np[mode][k] = n = mode ? sqr(k+1) : (k+1)*(k+2)/2;
+            np[mode][k] = n = mode ? sqr(k + 1) : (k + 1)*(k + 2)/2;
             tables[mode][k] = pt = new double3[n];
 
             for (i = k, m = 0; i >= 0; i--)
@@ -165,7 +165,7 @@ namespace Hermes
       space = sln->space;
       space_type = sln->get_space_type();
       space_seq = sln->get_space_seq();
-      
+
       own_mesh = sln->own_mesh;
       sln->own_mesh = false;
 
@@ -208,7 +208,7 @@ namespace Hermes
         mono_coeffs = new Scalar[num_coeffs];
         memcpy(mono_coeffs, sln->mono_coeffs, sizeof(Scalar) * num_coeffs);
 
-        for (int l = 0; l < this->num_components; l++) 
+        for (int l = 0; l < this->num_components; l++)
         {
           elem_coeffs[l] = new int[num_elems];
           memcpy(elem_coeffs[l], sln->elem_coeffs[l], sizeof(int) * num_elems);
@@ -239,9 +239,9 @@ namespace Hermes
     {
       for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-          if(tables[i][j] != NULL) 
+          if(tables[i][j] != NULL)
           {
-            for(typename std::map<uint64_t, LightArray<struct Function<Scalar>::Node*>*>::iterator it = tables[i][j]->begin(); it != tables[i][j]->end(); it++) 
+            for(typename std::map<uint64_t, LightArray<struct Function<Scalar>::Node*>*>::iterator it = tables[i][j]->begin(); it != tables[i][j]->end(); it++)
             {
               for(unsigned int l = 0; l < it->second->get_size(); l++)
                 if(it->second->present(l))
@@ -323,14 +323,14 @@ namespace Hermes
     {
       int i, j, k, l, m, row;
       double x, y, xn, yn;
-      int n = this->mode ? sqr(o+1) : (o+1)*(o+2)/2;
+      int n = this->mode ? sqr(o + 1) : (o + 1)*(o + 2)/2;
 
       // loop through all chebyshev points
       double** mat = new_matrix<double>(n, n);
-      for (k = o, row = 0; k >= 0; k--) 
+      for (k = o, row = 0; k >= 0; k--)
       {
         y = o ? cos(k * M_PI / o) : 1.0;
-        for (l = o; l >= (this->mode ? 0 : o-k); l--, row++) 
+        for (l = o; l >= (this->mode ? 0 : o-k); l--, row++)
         {
           x = o ? cos(l * M_PI / o) : 1.0;
 
@@ -350,15 +350,17 @@ namespace Hermes
     template<typename Scalar>
     void Solution<Scalar>::set_coeff_vector(Space<Scalar>* space, Vector<Scalar>* vec, bool add_dir_lift)
     {
+      _F_
       // sanity check
-      if (space == NULL) error("Space == NULL in Solutin::set_coeff_vector().");
+      if (space == NULL) throw Exceptions::NullException(1);
+      if (vec == NULL) throw Exceptions::NullException(2);
 
       space_type = space->get_type();
       Scalar* coeffs = new Scalar [vec->length()];
       vec->extract(coeffs);
       // debug
       //printf("coeffs:\n");
-      //for (int i=0; i<9; i++) printf("%g ", coeffs[i]);
+      //for (int i = 0; i<9; i++) printf("%g ", coeffs[i]);
       //printf("\n");
       this->set_coeff_vector(space, coeffs, add_dir_lift);
       delete [] coeffs;
@@ -367,14 +369,15 @@ namespace Hermes
     template<typename Scalar>
     void Solution<Scalar>::set_coeff_vector(Space<Scalar>* space, Scalar* coeffs, bool add_dir_lift)
     {
+      _F_
       // sanity check
-      if (space == NULL) error("Space == NULL in Solutin::set_coeff_vector().");
+      if (space == NULL) throw Exceptions::NullException(1);
 
       // initialize precalc shapeset using the space's shapeset
       Shapeset *shapeset = space->get_shapeset();
-      if (space->get_shapeset() == NULL) error("Space->shapeset == NULL in Solution<Scalar>::set_coeff_vector().");
+      if (space->get_shapeset() == NULL) throw Exceptions::Exception("Space->shapeset == NULL in Solution<Scalar>::set_coeff_vector().");
       PrecalcShapeset *pss = new PrecalcShapeset(shapeset);
-      if (pss == NULL) error("PrecalcShapeset could not be allocated in Solution<Scalar>::set_coeff_vector().");
+      if (pss == NULL) throw Exceptions::Exception("PrecalcShapeset could not be allocated in Solution<Scalar>::set_coeff_vector().");
 
       set_coeff_vector(space, pss, coeffs, add_dir_lift);
 
@@ -384,17 +387,19 @@ namespace Hermes
     template<typename Scalar>
     void Solution<Scalar>::set_coeff_vector(Space<Scalar>* space, PrecalcShapeset* pss, Scalar* coeffs, bool add_dir_lift)
     {
+      _F_
       int o;
 
       // some sanity checks
-      if (space == NULL) error("Space == NULL in Solution<Scalar>::set_coeff_vector().");
-      if (space->get_mesh() == NULL) error("Mesh == NULL in Solution<Scalar>::set_coeff_vector().");
-      if (pss == NULL) error("PrecalcShapeset == NULL in Solution<Scalar>::set_coeff_vector().");
-      if (coeffs == NULL) error("Coefficient vector == NULL in Solution<Scalar>::set_coeff_vector().");
+      if (space == NULL) throw Exceptions::NullException(1);
+      if (space->get_mesh() == NULL) throw Exceptions::Exception("Mesh == NULL in Solution<Scalar>::set_coeff_vector().");
+      if (pss == NULL) throw Exceptions::NullException(2);
+      if (coeffs == NULL) throw Exceptions::NullException(3);
+      if (coeffs == NULL) throw Exceptions::Exception("Coefficient vector == NULL in Solution<Scalar>::set_coeff_vector().");
       if (!space->is_up_to_date())
-        error("Provided 'space' is not up to date.");
+        throw Exceptions::Exception("Provided 'space' is not up to date.");
       if (space->get_shapeset() != pss->get_shapeset())
-        error("Provided 'space' and 'pss' must have the same shapesets.");
+        throw Exceptions::Exception("Provided 'space' and 'pss' must have the same shapesets.");
 
       free();
 
@@ -421,7 +426,7 @@ namespace Hermes
         delete [] elem_orders;
       elem_orders = new int[num_elems];
       memset(elem_orders, 0, sizeof(int) * num_elems);
-      for (int l = 0; l < this->num_components; l++) 
+      for (int l = 0; l < this->num_components; l++)
       {
         if(elem_coeffs[l] != NULL)
           delete [] elem_coeffs[l];
@@ -437,7 +442,7 @@ namespace Hermes
         this->mode = e->get_mode();
         o = space->get_element_order(e->id);
         o = std::max(H2D_GET_H_ORDER(o), H2D_GET_V_ORDER(o));
-        for (unsigned int k = 0; k < e->nvert; k++) 
+        for (unsigned int k = 0; k < e->get_num_surf(); k++)
         {
           int eo = space->get_edge_order(e, k);
           if (eo > o) o = eo;
@@ -446,7 +451,7 @@ namespace Hermes
         // Hcurl: actual order of functions is one higher than element order
         if ((space->get_shapeset())->get_num_components() == 2) o++;
 
-        num_coeffs += this->mode ? sqr(o+1) : (o+1)*(o+2)/2;
+        num_coeffs += this->mode ? sqr(o + 1) : (o + 1)*(o + 2)/2;
         elem_orders[e->id] = o;
       }
       num_coeffs *= this->num_components;
@@ -506,7 +511,10 @@ namespace Hermes
       Hermes::vector<Solution<Scalar>*> solutions,
       Hermes::vector<bool> add_dir_lift)
     {
-      assert(spaces.size() == solutions.size());
+      _F_
+      if (solution_vector==NULL) throw Exceptions::NullException(1);
+      if (spaces.size() != solutions.size()) throw Exceptions::LengthException(2, 3, spaces.size(), solutions.size());
+
       for(unsigned int i = 0; i < solutions.size(); i++)
         if(add_dir_lift == Hermes::vector<bool>())
           solutions[i]->set_coeff_vector(spaces[i], solution_vector, true);
@@ -520,6 +528,11 @@ namespace Hermes
     void Solution<Scalar>::vector_to_solution(Scalar* solution_vector, Space<Scalar>* space,
       Solution<Scalar>* solution, bool add_dir_lift)
     {
+      _F_
+      if (solution_vector==NULL) throw Exceptions::NullException(1);
+      if (space==NULL) throw Exceptions::NullException(2);
+      if (solution==NULL) throw Exceptions::NullException(3);
+
       Hermes::vector<Space<Scalar>*> spaces_to_pass;
       spaces_to_pass.push_back(space);
 
@@ -537,7 +550,10 @@ namespace Hermes
       Hermes::vector<Solution<Scalar>*> solutions,
       Hermes::vector<bool> add_dir_lift)
     {
-      assert(spaces.size() == solutions.size());
+      _F_
+      if (solution_vector==NULL) throw Exceptions::NullException(1);
+      if (spaces.size() != solutions.size()) throw Exceptions::LengthException(2, 3, spaces.size(), solutions.size());
+
       for(unsigned int i = 0; i < solutions.size(); i++)
         if(add_dir_lift == Hermes::vector<bool>())
           solutions[i]->set_coeff_vector(spaces[i], solution_vector, true);
@@ -551,6 +567,11 @@ namespace Hermes
     void Solution<Scalar>::vector_to_solution(Vector<Scalar>* solution_vector, Space<Scalar>* space,
       Solution<Scalar>* solution, bool add_dir_lift)
     {
+      _F_
+      if (solution_vector==NULL) throw Exceptions::NullException(1);
+      if (space==NULL) throw Exceptions::NullException(2);
+      if (solution==NULL) throw Exceptions::NullException(3);
+
       Hermes::vector<Space<Scalar>*> spaces_to_pass;
       spaces_to_pass.push_back(space);
 
@@ -569,7 +590,10 @@ namespace Hermes
       Hermes::vector<PrecalcShapeset *> pss,
       Hermes::vector<bool> add_dir_lift)
     {
-      assert(spaces.size() == solutions.size());
+      _F_
+      if (solution_vector==NULL) throw Exceptions::NullException(1);
+      if (spaces.size() != solutions.size()) throw Exceptions::LengthException(2, 3, spaces.size(), solutions.size());
+
       for(unsigned int i = 0; i < solutions.size(); i++)
         if(add_dir_lift == Hermes::vector<bool>())
           solutions[i]->set_coeff_vector(spaces[i], pss[i], solution_vector, true);
@@ -583,6 +607,12 @@ namespace Hermes
     void Solution<Scalar>::vector_to_solution(Scalar* solution_vector, Space<Scalar>* space, Solution<Scalar>* solution,
       PrecalcShapeset* pss, bool add_dir_lift)
     {
+      _F_
+      if (solution_vector==NULL) throw Exceptions::NullException(1);
+      if (space==NULL) throw Exceptions::NullException(2);
+      if (solution==NULL) throw Exceptions::NullException(3);
+      if (pss==NULL) throw Exceptions::NullException(4);
+
       Hermes::vector<Space<Scalar>*> spaces_to_pass;
       spaces_to_pass.push_back(space);
 
@@ -635,11 +665,11 @@ namespace Hermes
     {
       int i, j, k;
       for (i = 0; i <= o; i++) {
-        *result++ = 0.0;
+        *result++= 0.0;
         k = mode ? o : i;
         for (j = 0; j < k; j++)
-          *result++ = (Scalar) (k-j) * mono[j];
-        mono += k+1;
+          *result++= (Scalar) (k-j) * mono[j];
+        mono += k + 1;
       }
     }
 
@@ -649,16 +679,16 @@ namespace Hermes
       int i, j;
       if (mode) {
         for (j = 0; j <= o; j++)
-          *result++ = 0.0;
+          *result++= 0.0;
         for (i = 0; i < o; i++)
           for (j = 0; j <= o; j++)
-            *result++ = (Scalar) (o-i) * (*mono++);
+            *result++= (Scalar) (o-i) * (*mono++);
       }
       else {
         for (i = 0; i <= o; i++) {
-          *result++ = 0.0;
+          *result++= 0.0;
           for (j = 0; j < i; j++)
-            *result++ = (Scalar) (o+1-i) * (*mono++);
+            *result++= (Scalar) (o + 1-i) * (*mono++);
         }
       }
     }
@@ -666,7 +696,7 @@ namespace Hermes
     template<typename Scalar>
     void Solution<Scalar>::init_dxdy_buffer()
     {
-      if (dxdy_buffer != NULL) 
+      if (dxdy_buffer != NULL)
       {
         delete [] dxdy_buffer;
         dxdy_buffer = NULL;
@@ -689,9 +719,9 @@ namespace Hermes
       // if not found, free the oldest one and use its slot
       if (cur_elem >= 4)
       {
-        if(tables[this->cur_quad][oldest[this->cur_quad]] != NULL) 
+        if(tables[this->cur_quad][oldest[this->cur_quad]] != NULL)
         {
-          for(typename std::map<uint64_t, LightArray<struct Function<Scalar>::Node*>*>::iterator it = tables[this->cur_quad][oldest[this->cur_quad]]->begin(); it != tables[this->cur_quad][oldest[this->cur_quad]]->end(); it++) 
+          for(typename std::map<uint64_t, LightArray<struct Function<Scalar>::Node*>*>::iterator it = tables[this->cur_quad][oldest[this->cur_quad]]->begin(); it != tables[this->cur_quad][oldest[this->cur_quad]]->end(); it++)
           {
             for(unsigned int l = 0; l < it->second->get_size(); l++)
               if(it->second->present(l))
@@ -715,18 +745,18 @@ namespace Hermes
       if (sln_type == HERMES_SLN)
       {
         int o = this->order = elem_orders[this->element->id];
-        int n = this->mode ? sqr(o+1) : (o+1)*(o+2)/2;
+        int n = this->mode ? sqr(o + 1) : (o + 1)*(o + 2)/2;
 
         for (int i = 0, m = 0; i < this->num_components; i++)
         {
           Scalar* mono = mono_coeffs + elem_coeffs[i][e->id];
           dxdy_coeffs[i][0] = mono;
 
-          make_dx_coeffs(this->mode, o, mono, dxdy_coeffs[i][1] = dxdy_buffer+m);  m += n;
-          make_dy_coeffs(this->mode, o, mono, dxdy_coeffs[i][2] = dxdy_buffer+m);  m += n;
-          make_dx_coeffs(this->mode, o, dxdy_coeffs[i][1], dxdy_coeffs[i][3] = dxdy_buffer+m);  m += n;
-          make_dy_coeffs(this->mode, o, dxdy_coeffs[i][2], dxdy_coeffs[i][4] = dxdy_buffer+m);  m += n;
-          make_dx_coeffs(this->mode, o, dxdy_coeffs[i][2], dxdy_coeffs[i][5] = dxdy_buffer+m);  m += n;
+          make_dx_coeffs(this->mode, o, mono, dxdy_coeffs[i][1] = dxdy_buffer + m);  m += n;
+          make_dy_coeffs(this->mode, o, mono, dxdy_coeffs[i][2] = dxdy_buffer + m);  m += n;
+          make_dx_coeffs(this->mode, o, dxdy_coeffs[i][1], dxdy_coeffs[i][3] = dxdy_buffer + m);  m += n;
+          make_dy_coeffs(this->mode, o, dxdy_coeffs[i][2], dxdy_coeffs[i][4] = dxdy_buffer + m);  m += n;
+          make_dx_coeffs(this->mode, o, dxdy_coeffs[i][2], dxdy_coeffs[i][5] = dxdy_buffer + m);  m += n;
         }
       }
       else if (sln_type == HERMES_EXACT)
@@ -792,7 +822,7 @@ namespace Hermes
 
             node->values[0][3][i] = sqr((*m)[0][0])*vxx + 2*(*m)[0][1]*(*m)[0][0]*vxy + sqr((*m)[0][1])*vyy + (*mm)[0][0]*vx + (*mm)[0][1]*vy;   // dxx
             node->values[0][4][i] = sqr((*m)[1][0])*vxx + 2*(*m)[1][1]*(*m)[1][0]*vxy + sqr((*m)[1][1])*vyy + (*mm)[2][0]*vx + (*mm)[2][1]*vy;   // dyy
-            node->values[0][5][i] = (*m)[0][0]*(*m)[1][0]*vxx + ((*m)[0][0]*(*m)[1][1]+(*m)[1][0]*(*m)[0][1])*vxy + (*m)[0][1]*(*m)[1][1]*vyy + (*mm)[1][0]*vx + (*mm)[1][1]*vy;   //dxy
+            node->values[0][5][i] = (*m)[0][0]*(*m)[1][0]*vxx + ((*m)[0][0]*(*m)[1][1] + (*m)[1][0]*(*m)[0][1])*vxy + (*m)[0][1]*(*m)[1][1]*vyy + (*mm)[1][0]*vx + (*mm)[1][1]*vy;   //dxy
           }
         }
 #endif
@@ -998,7 +1028,7 @@ namespace Hermes
           {
             Scalar2<Scalar> dx (0.0, 0.0 ), dy ( 0.0, 0.0 );
             Scalar2<Scalar> val = (static_cast<ExactSolutionVector<Scalar>*>(this))->exact_function(x[i], y[i], dx, dy);
-            for (j = 0; j < 2; j++) 
+            for (j = 0; j < 2; j++)
             {
               node->values[j][0][i] = val[j] * (static_cast<ExactSolutionVector<Scalar>*>(this))->exact_multiplicator;
               node->values[j][1][i] = dx[j] * (static_cast<ExactSolutionVector<Scalar>*>(this))->exact_multiplicator;
@@ -1014,7 +1044,7 @@ namespace Hermes
           "the solution on its right-hand side.");
       }
 
-      if(this->nodes->present(order)) 
+      if(this->nodes->present(order))
       {
         assert(this->nodes->get(order) == this->cur_node);
         ::free(this->nodes->get(order));
@@ -1026,9 +1056,9 @@ namespace Hermes
     template<>
     void Solution<double>::save(const char* filename) const
     {
-      if (sln_type == HERMES_EXACT) 
+      if (sln_type == HERMES_EXACT)
         error("Exact solution cannot be saved to a file.");
-      if (sln_type == HERMES_UNDEF) 
+      if (sln_type == HERMES_UNDEF)
         error("Cannot save -- uninitialized solution.");
 
       try
@@ -1051,7 +1081,7 @@ namespace Hermes
 
         for(unsigned int sln_coeff_i = 0; sln_coeff_i < this->num_dofs; sln_coeff_i++)
           xmlsolution.sln_vector().sln_coeff().push_back(XMLSolution::sln_coeff(sln_coeff_i, this->sln_vector[sln_coeff_i]));
-        
+
         std::string solution_schema_location(H2D_XML_SCHEMAS_DIRECTORY);
         solution_schema_location.append("/solution_h2d_xml.xsd");
         ::xml_schema::namespace_info namespace_info_solution("XMLSolution", solution_schema_location);
@@ -1074,9 +1104,9 @@ namespace Hermes
     template<>
     void Solution<std::complex<double> >::save(const char* filename) const
     {
-      if (sln_type == HERMES_EXACT) 
+      if (sln_type == HERMES_EXACT)
         error("Exact solution cannot be saved to a file.");
-      if (sln_type == HERMES_UNDEF) 
+      if (sln_type == HERMES_UNDEF)
         error("Cannot save -- uninitialized solution.");
 
       try
@@ -1099,13 +1129,13 @@ namespace Hermes
           for(unsigned int elems_i = 0; elems_i < this->num_elems; elems_i++)
             xmlsolution.component().back().elem_coeffs().push_back(XMLSolution::elem_coeffs(elems_i, elem_coeffs[component_i][elems_i]));
         }
-        
+
         for(unsigned int sln_coeff_i = 0; sln_coeff_i < this->num_dofs; sln_coeff_i++)
         {
           xmlsolution.sln_vector().sln_coeff().push_back(XMLSolution::sln_coeff(sln_coeff_i, this->sln_vector[sln_coeff_i].real()));
           xmlsolution.sln_vector().sln_coeff().back().imaginary() = this->sln_vector[sln_coeff_i].imag();
         }
-        
+
         std::string solution_schema_location(H2D_XML_SCHEMAS_DIRECTORY);
         solution_schema_location.append("/solution_h2d_xml.xsd");
         ::xml_schema::namespace_info namespace_info_solution("XMLSolution", solution_schema_location);
@@ -1145,10 +1175,10 @@ namespace Hermes
 
         for(unsigned int component_i = 0; component_i < num_components; component_i++)
           elem_coeffs[component_i] = new int[num_elems];
-        
+
         this->elem_orders = new int[num_elems];
         this->sln_vector = new double[num_dofs];
-        
+
 
         for (unsigned int coeffs_i = 0; coeffs_i < num_coeffs; coeffs_i++)
           this->mono_coeffs[parsed_xml_solution->mono_coeffs().at(coeffs_i).id()] = parsed_xml_solution->mono_coeffs().at(coeffs_i).real();
@@ -1189,10 +1219,10 @@ namespace Hermes
         this->num_components = parsed_xml_solution->num_components();
 
         this->mono_coeffs = new std::complex<double>[num_coeffs];
-        
+
         for(unsigned int component_i = 0; component_i < num_components; component_i++)
           elem_coeffs[component_i] = new int[num_elems];
-        
+
         this->elem_orders = new int[num_elems];
         this->sln_vector = new std::complex<double>[num_dofs];
 
@@ -1222,6 +1252,8 @@ namespace Hermes
     template<typename Scalar>
     Scalar Solution<Scalar>::get_ref_value(Element* e, double xi1, double xi2, int component, int item)
     {
+      _F_
+      if (e==NULL) throw Exceptions::NullException(1);
       set_active_element(e);
 
       int o = elem_orders[e->id];
@@ -1252,7 +1284,8 @@ namespace Hermes
     template<typename Scalar>
     Scalar Solution<Scalar>::get_ref_value_transformed(Element* e, double xi1, double xi2, int a, int b)
     {
-
+      _F_
+      if (e==NULL) throw Exceptions::NullException(1);
       if (this->num_components == 1)
       {
         if (b == 0)
@@ -1287,7 +1320,7 @@ namespace Hermes
           if (b == 4)
             return sqr(mat[1][0])*vxx + 2*mat[1][1]*mat[1][0]*vxy + sqr(mat[1][1])*vyy + mat2[2][0]*vx + mat2[2][1]*vy;   // dyy
           if (b == 5)
-            return mat[0][0]*mat[1][0]*vxx + (mat[0][0]*mat[1][1]+mat[1][0]*mat[0][1])*vxy + mat[0][1]*mat[1][1]*vyy + mat2[1][0]*vx + mat2[1][1]*vy;   //dxy
+            return mat[0][0]*mat[1][0]*vxx + (mat[0][0]*mat[1][1] + mat[1][0]*mat[0][1])*vxy + mat[0][1]*mat[1][1]*vyy + mat2[1][0]*vx + mat2[1][1]*vy;   //dxy
 #endif
         }
       }
@@ -1353,10 +1386,10 @@ namespace Hermes
       {
         Element* elem[5];
         elem[0] = e_last;
-        for (unsigned int i = 1; i <= e_last->nvert; i++)
+        for (unsigned int i = 1; i <= e_last->get_num_surf(); i++)
           elem[i] = e_last->get_neighbor(i-1);
 
-        for (unsigned int i = 0; i <= e_last->nvert; i++)
+        for (unsigned int i = 0; i <= e_last->get_num_surf(); i++)
           if (elem[i] != NULL)
           {
             this->refmap->set_active_element(elem[i]);

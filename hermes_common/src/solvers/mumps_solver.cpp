@@ -28,11 +28,11 @@
 
 using namespace Hermes::Error;
 
-namespace Hermes 
+namespace Hermes
 {
-  namespace Algebra 
+  namespace Algebra
   {
-    extern "C" 
+    extern "C"
     {
       extern void dmumps_c(DMUMPS_STRUC_C *mumps_param_ptr);
       extern void zmumps_c(ZMUMPS_STRUC_C *mumps_param_ptr);
@@ -43,18 +43,18 @@ namespace Hermes
 
     /// Binary search for the location of a particular CSC/CSR matrix entry.
     ///
-    /// Typically, we search for the index into Ax that corresponds to a given 
-    /// row (CSC) or column (CSR) ('idx') among indices of nonzero values in 
+    /// Typically, we search for the index into Ax that corresponds to a given
+    /// row (CSC) or column (CSR) ('idx') among indices of nonzero values in
     /// a particular column (CSC) or row (CSR) ('Ai').
     ///
-    static int find_position(int *Ai, int Alen, int idx) 
+    static int find_position(int *Ai, int Alen, int idx)
     {
       _F_;
       assert (idx >= 0);
 
       register int lo = 0, hi = Alen - 1, mid;
 
-      while (1) 
+      while (1)
       {
         mid = (lo + hi) >> 1;
 
@@ -62,9 +62,10 @@ namespace Hermes
         else if (idx > Ai[mid]) lo = mid + 1;
         else break;
 
-        // Sparse matrix entry not found (raise an error when trying to add 
+        // Sparse matrix entry not found (raise an error when trying to add
         // value to this position, return 0 when obtaining value there).
-        if (lo > hi){
+        if (lo > hi)
+        {
           mid = -1;
           break;
         }
@@ -107,7 +108,7 @@ namespace Hermes
 
       // sort the indices and remove duplicities, insert into Ai
       unsigned int i, pos = 0;
-      for (i = 0; i < this->size; i++) 
+      for (i = 0; i < this->size; i++)
       {
         Ap[i] = pos;
         pos += sort_and_store_indices(this->pages[i], Ai + pos, Ai + aisize);
@@ -128,7 +129,7 @@ namespace Hermes
       {
         irn[i] = 1;
         jcn[i] = 1;
-      }  
+      }
     }
 
     template<typename Scalar>
@@ -143,8 +144,15 @@ namespace Hermes
       delete[] jcn; jcn = NULL;
     }
 
-    inline double mumps_to_Scalar(double x){return x;}
-    inline std::complex<double> mumps_to_Scalar(ZMUMPS_COMPLEX x){return std::complex<double>(x.r,x.i);}
+    inline double mumps_to_Scalar(double x)
+    {
+      return x;
+    }
+
+    inline std::complex<double> mumps_to_Scalar(ZMUMPS_COMPLEX x)
+    {
+      return std::complex<double>(x.r, x.i);
+    }
 
     template<typename Scalar>
     Scalar MumpsMatrix<Scalar>::get(unsigned int m, unsigned int n)
@@ -166,10 +174,10 @@ namespace Hermes
       memset(Ax, 0, sizeof(Scalar) * Ap[this->size]);
     }
 
-    inline ZMUMPS_COMPLEX& operator+=(ZMUMPS_COMPLEX &a,std::complex<double> b)
+    inline ZMUMPS_COMPLEX& operator +=(ZMUMPS_COMPLEX &a, std::complex<double> b)
     {
-      a.r+=b.real();
-      a.i+=b.imag();
+      a.r +=b.real();
+      a.i +=b.imag();
       return a;
     }
 
@@ -182,7 +190,7 @@ namespace Hermes
       // Find m-th row in the n-th column.
       int pos = find_position(Ai + Ap[n], Ap[n + 1] - Ap[n], m);
       // Make sure we are adding to an existing non-zero entry.
-      if (pos < 0) 
+      if (pos < 0)
         error("Sparse matrix entry not found");
       // Add offset to the n-th column.
       pos += Ap[n];
@@ -204,9 +212,9 @@ namespace Hermes
     /// Add a number to each diagonal entry.
 
     template<typename Scalar>
-    void MumpsMatrix<Scalar>::add_to_diagonal(Scalar v) 
+    void MumpsMatrix<Scalar>::add_to_diagonal(Scalar v)
     {
-      for (unsigned int i = 0; i < this->size; i++) 
+      for (unsigned int i = 0; i < this->size; i++)
       {
         add(i, i, v);
       }
@@ -219,7 +227,7 @@ namespace Hermes
     {
       _F_;
       // TODO
-      switch (fmt) 
+      switch (fmt)
       {
       case DF_NATIVE:
       case DF_PLAIN_ASCII:
@@ -228,7 +236,7 @@ namespace Hermes
         for (unsigned int i = 0; i < nnz; i++)
         {
           fprintf(file, "%d %d ", irn[i], jcn[i]);
-          Hermes::Helpers::fprint_num(file,mumps_to_Scalar(Ax[i]));
+          Hermes::Helpers::fprint_num(file, mumps_to_Scalar(Ax[i]));
           fprintf(file, "\n");
         }
         return true;
@@ -246,7 +254,7 @@ namespace Hermes
 
           return true;
 
-      case DF_HERMES_BIN: 
+      case DF_HERMES_BIN:
         {
           hermes_fwrite("HERMESX\001", 1, 8, file);
           int ssize = sizeof(Scalar);
@@ -290,7 +298,7 @@ namespace Hermes
     void MumpsMatrix<Scalar>::add_matrix(MumpsMatrix<Scalar>* mat)
     {
       _F_;
-      add_as_block(0,0,mat);
+      add_as_block(0, 0, mat);
     };
 
     template<typename Scalar>
@@ -298,19 +306,25 @@ namespace Hermes
     {
       _F_;
       int ndof = mat->get_size();
-      if (this->get_size() != (unsigned int) num_stages * ndof) 
+      if (this->get_size() != (unsigned int) num_stages * ndof)
         error("Incompatible matrix sizes in PetscMatrix<Scalar>::add_to_diagonal_blocks()");
 
-      for (int i = 0; i < num_stages; i++) 
+      for (int i = 0; i < num_stages; i++)
       {
         this->add_as_block(ndof*i, ndof*i, mat);
       }
     }
 
-    inline ZMUMPS_COMPLEX& operator+=(ZMUMPS_COMPLEX &a,ZMUMPS_COMPLEX b)
+    template<typename Scalar>
+    void MumpsMatrix<Scalar>::add_sparse_to_diagonal_blocks(int num_stages, SparseMatrix<Scalar>* mat)
     {
-      a.r+=b.r;
-      a.i+=b.i;
+      add_to_diagonal_blocks(num_stages, dynamic_cast<MumpsMatrix*>(mat));
+    }
+
+    inline ZMUMPS_COMPLEX& operator +=(ZMUMPS_COMPLEX &a, ZMUMPS_COMPLEX b)
+    {
+      a.r +=b.r;
+      a.i +=b.i;
       return a;
     }
 
@@ -319,15 +333,15 @@ namespace Hermes
     {
       _F_;
       int idx;
-      for (unsigned int col=0;col<mat->get_size();col++)
+      for (unsigned int col = 0;col<mat->get_size();col++)
       {
-        for (unsigned int n=mat->Ap[col];n<mat->Ap[col+1];n++)
+        for (unsigned int n = mat->Ap[col];n<mat->Ap[col + 1];n++)
         {
-          idx=find_position(Ai + Ap[col+j], Ap[col + 1 + j] - Ap[col+j],mat->Ai[n]+i);
+          idx = find_position(Ai + Ap[col + j], Ap[col + 1 + j] - Ap[col + j], mat->Ai[n] + i);
           if (idx<0)
             error("Sparse matrix entry not found");
-          idx+=Ap[col+j];
-          Ax[idx]+=mat->Ax[n];
+          idx +=Ap[col + j];
+          Ax[idx] +=mat->Ax[n];
         }
       }
     }
@@ -337,15 +351,15 @@ namespace Hermes
     void MumpsMatrix<Scalar>::multiply_with_vector(Scalar* vector_in, Scalar* vector_out)
     {
       _F_;
-      for(unsigned int i=0;i<this->size;i++)
+      for(unsigned int i = 0;i<this->size;i++)
       {
-        vector_out[i]=0;
+        vector_out[i] = 0;
       }
       Scalar a;
-      for (unsigned int i=0;i<nnz;i++)
+      for (unsigned int i = 0;i<nnz;i++)
       {
-        a=mumps_to_Scalar(Ax[i]);
-        vector_out[jcn[i]-1]+=vector_in[irn[i]-1]*a;
+        a = mumps_to_Scalar(Ax[i]);
+        vector_out[jcn[i]-1] +=vector_in[irn[i]-1]*a;
       }
     }
     // Multiplies matrix with a Scalar.
@@ -353,10 +367,10 @@ namespace Hermes
     void MumpsMatrix<double>::multiply_with_Scalar(double value)
     {
       _F_;
-      int n=nnz;
-      for(int i=0;i<n;i++)
+      int n = nnz;
+      for(int i = 0;i<n;i++)
       {
-        Ax[i]=Ax[i]*value;
+        Ax[i] = Ax[i]*value;
       }
     }
 
@@ -364,26 +378,26 @@ namespace Hermes
     void MumpsMatrix<std::complex<double> >::multiply_with_Scalar(std::complex<double> value)
     {
       _F_;
-      int n=nnz;
+      int n = nnz;
       std::complex<double> a;
-      for(int i=0;i<n;i++)
+      for(int i = 0;i<n;i++)
       {
-        a=std::complex<double>(Ax[i].r,Ax[i].i);
-        a=a*value;
-        Ax[i].r=a.real();
-        Ax[i].i=a.imag();
+        a = std::complex<double>(Ax[i].r, Ax[i].i);
+        a = a*value;
+        Ax[i].r = a.real();
+        Ax[i].i = a.imag();
       }
     }
 
-    inline void mumps_assign_Scalar(ZMUMPS_COMPLEX & a,std::complex<double> b)
+    inline void mumps_assign_Scalar(ZMUMPS_COMPLEX & a, std::complex<double> b)
     {
-      a.r=b.real();
-      a.i=b.imag();
+      a.r = b.real();
+      a.i = b.imag();
     }
 
-    inline void mumps_assign_Scalar(double & a,double b)
+    inline void mumps_assign_Scalar(double & a, double b)
     {
-      a=b;
+      a = b;
     }
 
     // Creates matrix using size, nnz, and the three arrays.
@@ -392,48 +406,48 @@ namespace Hermes
     {
       this->nnz = nnz;
       this->size = size;
-      this->Ap = new unsigned int[this->size+1]; assert(this->Ap != NULL);
+      this->Ap = new unsigned int[this->size + 1]; assert(this->Ap != NULL);
       this->Ai = new int[nnz];    assert(this->Ai != NULL);
       this->Ax = new typename mumps_type<Scalar>::mumps_Scalar[nnz]; assert(this->Ax != NULL);
-      irn=new int[nnz];           assert(this->irn !=NULL);     // Row indices.
-      jcn=new int[nnz];           assert(this->jcn !=NULL);     // Column indices.
+      irn = new int[nnz];           assert(this->irn !=NULL);     // Row indices.
+      jcn = new int[nnz];           assert(this->jcn !=NULL);     // Column indices.
 
       for (unsigned int i = 0; i < this->size; i++)
       {
         this->Ap[i] = ap[i];
-        for (int j=ap[i];j<ap[i+1];j++) jcn[j]=i;
+        for (int j = ap[i];j<ap[i + 1];j++) jcn[j] = i;
       }
-      this->Ap[this->size]=ap[this->size];
-      for (unsigned int i = 0; i < nnz; i++) 
+      this->Ap[this->size] = ap[this->size];
+      for (unsigned int i = 0; i < nnz; i++)
       {
-        mumps_assign_Scalar(this->Ax[i],ax[i]);
+        mumps_assign_Scalar(this->Ax[i], ax[i]);
         this->Ai[i] = ai[i];
-        irn[i]=ai[i];
-      } 
+        irn[i] = ai[i];
+      }
     }
     // Duplicates a matrix (including allocation).
     template<typename Scalar>
     MumpsMatrix<Scalar>* MumpsMatrix<Scalar>::duplicate()
     {
-      MumpsMatrix<Scalar> * nmat=new MumpsMatrix<Scalar>();
+      MumpsMatrix<Scalar> * nmat = new MumpsMatrix<Scalar>();
 
       nmat->nnz = nnz;
       nmat->size = this->size;
-      nmat->Ap = new unsigned int[this->size+1]; assert(nmat->Ap != NULL);
+      nmat->Ap = new unsigned int[this->size + 1]; assert(nmat->Ap != NULL);
       nmat->Ai = new int[nnz];    assert(nmat->Ai != NULL);
       nmat->Ax = new typename mumps_type<Scalar>::mumps_Scalar[nnz]; assert(nmat->Ax != NULL);
-      nmat->irn=new int[nnz];           assert(nmat->irn !=NULL);     // Row indices.
-      nmat->jcn=new int[nnz];           assert(nmat->jcn !=NULL);     // Column indices.
+      nmat->irn = new int[nnz];           assert(nmat->irn !=NULL);     // Row indices.
+      nmat->jcn = new int[nnz];           assert(nmat->jcn !=NULL);     // Column indices.
       for (unsigned int i = 0;i<nnz;i++)
       {
-        nmat->Ai[i]=Ai[i];
-        nmat->Ax[i]=Ax[i];
-        nmat->irn[i]=irn[i];
-        nmat->jcn[i]=jcn[i];
+        nmat->Ai[i] = Ai[i];
+        nmat->Ax[i] = Ax[i];
+        nmat->irn[i] = irn[i];
+        nmat->jcn[i] = jcn[i];
       }
-      for (unsigned int i = 0;i<this->size+1;i++)
+      for (unsigned int i = 0;i<this->size + 1;i++)
       {
-        nmat->Ap[i]=Ap[i];
+        nmat->Ap[i] = Ap[i];
       }
       return nmat;
     }
@@ -506,17 +520,42 @@ namespace Hermes
     void MumpsVector<Scalar>::add(unsigned int n, unsigned int *idx, Scalar *y)
     {
       _F_;
-      for (unsigned int i = 0; i < n; i++) 
+      for (unsigned int i = 0; i < n; i++)
       {
         v[idx[i]] += y[i];
       }
     }
 
     template<typename Scalar>
+    Scalar MumpsVector<Scalar>::get(unsigned int idx) 
+    { 
+      return v[idx]; 
+    }
+
+    template<typename Scalar>
+    void MumpsVector<Scalar>::extract(Scalar *v) const 
+    { 
+      memcpy(v, this->v, this->size * sizeof(Scalar)); 
+    }
+
+    template<typename Scalar>
+    void MumpsVector<Scalar>::add_vector(Vector<Scalar>* vec)
+    {
+      assert(this->length() == vec->length());
+      for (unsigned int i = 0; i < this->length(); i++) this->add(i, vec->get(i));
+    }
+
+    template<typename Scalar>
+    void MumpsVector<Scalar>::add_vector(Scalar* vec)
+    {
+      for (unsigned int i = 0; i < this->length(); i++) this->add(i, vec[i]);
+    }
+
+    template<typename Scalar>
     bool MumpsVector<Scalar>::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt)
     {
       _F_;
-      switch (fmt) 
+      switch (fmt)
       {
       case DF_NATIVE:
       case DF_PLAIN_ASCII:
@@ -538,7 +577,7 @@ namespace Hermes
         fprintf(file, " ];\n");
         return true;
 
-      case DF_HERMES_BIN: 
+      case DF_HERMES_BIN:
         {
           hermes_fwrite("HERMESR\001", 1, 8, file);
           int ssize = sizeof(Scalar);
@@ -562,7 +601,7 @@ namespace Hermes
   {
     /// Macros allowing to use indices according to the Fortran documentation to index C arrays.
 #define ICNTL(I)            icntl[(I)-1]
-#define MUMPS_INFO(param,I) (param).infog[(I)-1]
+#define MUMPS_INFO(param, I) (param).infog[(I)-1]
 #define INFOG(I)            infog[(I)-1]
 
     /// Job definitions according to MUMPS documentation.
@@ -589,7 +628,7 @@ namespace Hermes
     bool MumpsSolver<Scalar>::check_status()
     {
       _F_;
-      switch (param.INFOG(1)) 
+      switch (param.INFOG(1))
       {
       case 0: return true; // no error
       case -1: warning("Error occured on processor %d", MUMPS_INFO(param, 2)); break;
@@ -605,7 +644,7 @@ namespace Hermes
       _F_;
       if (inited)
       {
-        // If there is already an instance of MUMPS running, 
+        // If there is already an instance of MUMPS running,
         // terminate it.
         param.job = JOB_END;
         mumps_c(&param);
@@ -614,7 +653,7 @@ namespace Hermes
       param.job = JOB_INIT;
       param.par = 1; // host also performs calculations
       param.sym = 0; // 0 = unsymmetric
-      param.comm_fortran=USE_COMM_WORLD;
+      param.comm_fortran = USE_COMM_WORLD;
 
       mumps_c(&param);
       inited = check_status();
@@ -652,7 +691,7 @@ namespace Hermes
       // Initial values for some fields of the MUMPS_STRUC structure that may be accessed
       // before MUMPS has been initialized.
       param.rhs = NULL;
-      param.INFOG(33) = -999; // see the case HERMES_REUSE_MATRIX_REORDERING_AND_SCALING 
+      param.INFOG(33) = -999; // see the case HERMES_REUSE_MATRIX_REORDERING_AND_SCALING
       // in setup_factorization()
     }
 
@@ -680,13 +719,12 @@ namespace Hermes
 
       Hermes::TimePeriod tmr;
 
-      // Prepare the MUMPS data structure with input for the solver driver 
+      // Prepare the MUMPS data structure with input for the solver driver
       // (according to the chosen factorization reuse strategy), as well as
       // the system matrix.
       if ( !setup_factorization() )
       {
-        warning("LU factorization could not be completed.");
-        return false;
+        throw Exceptions::LinearSolverException("LU factorization could not be completed.");
       }
 
       // Specify the right-hand side (will be replaced by the solution).
@@ -698,7 +736,7 @@ namespace Hermes
 
       ret = check_status();
 
-      if (ret) 
+      if (ret)
       {
         delete [] this->sln;
         this->sln = new Scalar[m->size];
@@ -720,16 +758,16 @@ namespace Hermes
     {
       _F_;
       // When called for the first time, all three phases (analysis, factorization,
-      // solution) must be performed. 
+      // solution) must be performed.
       int eff_fact_scheme = this->factorization_scheme;
       if (!inited)
-        if( this->factorization_scheme == HERMES_REUSE_MATRIX_REORDERING || 
+        if( this->factorization_scheme == HERMES_REUSE_MATRIX_REORDERING ||
           this->factorization_scheme == HERMES_REUSE_FACTORIZATION_COMPLETELY )
           eff_fact_scheme = HERMES_FACTORIZE_FROM_SCRATCH;
 
       switch (eff_fact_scheme)
       {
-      case HERMES_FACTORIZE_FROM_SCRATCH: 
+      case HERMES_FACTORIZE_FROM_SCRATCH:
         // (Re)initialize new instance.
         reinit();
 
@@ -740,18 +778,18 @@ namespace Hermes
 
         break;
       case HERMES_REUSE_MATRIX_REORDERING:
-        // Let MUMPS reuse results of the symbolic analysis and perform 
-        // scaling during each factorization (values 1-8 may be set here, 
-        // corresponding to different scaling algorithms during factorization; 
+        // Let MUMPS reuse results of the symbolic analysis and perform
+        // scaling during each factorization (values 1-8 may be set here,
+        // corresponding to different scaling algorithms during factorization;
         // see the MUMPS documentation for details).
-        param.ICNTL(8) = 7; 
+        param.ICNTL(8) = 7;
         param.job = JOB_FACTORIZE_SOLVE;
 
         break;
       case HERMES_REUSE_MATRIX_REORDERING_AND_SCALING:
         // Perform scaling along with reordering during the symbolic analysis phase
         // and then reuse it during subsequent factorizations. New instance of MUMPS
-        // has to be created before the analysis phase. 
+        // has to be created before the analysis phase.
         if (param.INFOG(33) != -2)
         {
           reinit();

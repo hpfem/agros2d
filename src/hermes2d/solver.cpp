@@ -312,24 +312,27 @@ bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space
     int ndof = Hermes::Hermes2D::Space<double>::get_num_dofs(spaceParam);
 
     // Initial coefficient vector for the Newton's method.
-    double* coeff_vec = new double[ndof];
-    memset(coeff_vec, 0, ndof*sizeof(double));
+    Scalar* coeff_vec = new Scalar[ndof];
+    memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
     // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
     Hermes::Hermes2D::NewtonSolver<double> newton(&dp, Hermes::SOLVER_UMFPACK);
-    if (!newton.solve(coeff_vec, nonlinearTolerance, nonlinearSteps))
+    try
     {
-        m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed"), true);
-        return false;
-    }
-    else
-    {
+        newton.solve(coeff_vec);
+
         Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), spaceParam, solutionParam);
 
         m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
                                          arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
         m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
                                          arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
+    }
+    catch(Hermes::Exceptions::Exception e)
+    {
+        QString error = QString(e.getMsg());
+        m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed: ") + error, true);
+        return false;
     }
 
     //delete coeff_vec; //TODO nebo se to dela v resici???

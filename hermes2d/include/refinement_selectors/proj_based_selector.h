@@ -28,11 +28,7 @@ namespace Hermes
       /// Error of an element of a candidate for various permutations of orders. \ingroup g_selectors
       /** If not noted otherwise, the first index is the horizontal order, the second index is the vertical order.
       *  The maximum allowed order is ::H2DRS_MAX_ORDER + 1. */
-      typedef double CandElemProjError[H2DRS_MAX_ORDER+2][H2DRS_MAX_ORDER+2];
-
-# define H2DRS_DEFAULT_ERR_WEIGHT_H 2.0 ///< A default multiplicative coefficient of an error of a H-candidate. \ingroup g_selectors
-# define H2DRS_DEFAULT_ERR_WEIGHT_P 1.0 ///< A default multiplicative coefficient of an error of a P-candidate. \ingroup g_selectors
-# define H2DRS_DEFAULT_ERR_WEIGHT_ANISO 1.414214 ///< A default multiplicative coefficient of an error of a ANISO-candidate. \ingroup g_selectors
+      typedef double CandElemProjError[H2DRS_MAX_ORDER + 2][H2DRS_MAX_ORDER + 2];
 
       /// A general projection-based selector. \ingroup g_selectors
       /** Calculates an error of a candidate as a combination of errors of
@@ -64,9 +60,9 @@ namespace Hermes
         *  \param[in] weight_aniso An error weight of ANISO-candidate. The default value is ::H2DRS_DEFAULT_ERR_WEIGHT_ANISO. */
         void set_error_weights(double weight_h = H2DRS_DEFAULT_ERR_WEIGHT_H, double weight_p = H2DRS_DEFAULT_ERR_WEIGHT_P, double weight_aniso = H2DRS_DEFAULT_ERR_WEIGHT_ANISO);
 
-        double get_error_weight_h() { return error_weight_h; };
-        double get_error_weight_p() { return error_weight_p; };
-        double get_error_weight_aniso() { return error_weight_aniso; };
+        double get_error_weight_h() const;
+        double get_error_weight_p() const;
+        double get_error_weight_aniso() const;
 
       protected: //evaluated shape basis
         /// A transform shaped function expansions.
@@ -85,42 +81,32 @@ namespace Hermes
           double** values; ///< Values. The first index is index of a functions expansion, the second index is an index of a an integration point.
         public:
           /// A default contructor. Creates an empty instance.
-          TrfShapeExp() : num_gip(0), num_expansion(0), values(NULL) {};
+          TrfShapeExp();
 
           /// Desructor.
-          virtual ~TrfShapeExp() { delete[] values; };
+          virtual ~TrfShapeExp();
 
           /// Allocates a space for function expansions.
           /** \param[in] num_expansion A number of expansions.
           *  \param[in] num_gip A number of itegration points. */
-          void allocate(int num_expansion, int num_gip) {
-            delete[] values;
-            values = new_matrix<double>(num_expansion, num_gip);
-            this->num_expansion = num_expansion;
-            this->num_gip = num_gip;
-          };
+          void allocate(int num_expansion, int num_gip);
 
           /// Operator for accessing of contents.
           /** \param[in] inx_expansion An index of a function expansion.
           *  \return A pointer to an array of values of a function expansion at integration points. The returned pointer should not be stored outside the calling method or deallocated. */
-          inline double* operator[](int inx_expansion) {
-            assert_msg(values != NULL, "Function expansions not allocated.");
-            assert_msg(inx_expansion < num_expansion, "Index (%d) of an expansion out of range [0, %d]", inx_expansion, num_expansion-1);
-            return values[inx_expansion];
-          };
+          inline double* operator[](int inx_expansion);
 
           /// Returns true if the instance is empty, i.e., the method allocate() was not called yet.
           /** \return True if the instance is empty, i.e., the method allocate() was not called yet. */
-          inline bool empty() { return values == NULL; };
+          inline bool empty() const;
 
           /// Assignment operator. Prevent unauthorized copying of the pointer.
-          /** This method prevents a user from copying allocated internal structures
-          *  because C++ does not support garbage collection. */
-          const TrfShapeExp& operator=(const TrfShapeExp& other) {
+          const TrfShapeExp& operator = (const TrfShapeExp& other)
+          {
             delete[] values; values = NULL;
             error_if(other.values != NULL, "Unable to assign a non-empty values. Use references instead.");
             return *this;
-          };
+          }
         };
 
         /// Evaluated shapes for all possible transformations for all points. The first index is a transformation, the second index is an index of a shape function.
@@ -187,9 +173,10 @@ namespace Hermes
         bool warn_uniform_orders;
 
       protected: //error evaluation
-#define H2DRS_VALCACHE_INVALID 0 ///< State of value cache: item contains undefined or invalid value. \ingroup g_selectors
-#define H2DRS_VALCACHE_VALID 1 ///< State of value cache: item contains a valid value. \ingroup g_selectors
-#define H2DRS_VALCACHE_USER 2 ///< State of value cache: the first state ID which can be used by the user. \ingroup g_selectors
+        static const int H2DRS_VALCACHE_INVALID = 0; ///< State of value cache: item contains undefined or invalid value. \ingroup g_selectors
+        static const int H2DRS_VALCACHE_VALID = 1; ///< State of value cache: item contains a valid value. \ingroup g_selectors
+        static const int H2DRS_VALCACHE_USER = 2; ///< State of value cache: the first state ID which can be used by the user. \ingroup g_selectors
+
         /// An item of a value cache.
         template<typename T>
         struct ValueCacheItem {
@@ -220,7 +207,7 @@ namespace Hermes
         };
         /// A projection matrix cache type.
         /** Defines a cache of projection matrices for all possible permutations of orders. */
-        typedef double** ProjMatrixCache[H2DRS_MAX_ORDER+2][H2DRS_MAX_ORDER+2];
+        typedef double** ProjMatrixCache[H2DRS_MAX_ORDER + 2][H2DRS_MAX_ORDER + 2];
 
         /// An array of projection matrices.
         /** The first index is the mode (see the enum ElementMode2D). The second and the third index

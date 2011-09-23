@@ -25,8 +25,6 @@
 #include "common.h"
 #include "error.h"
 
-#define HERMES_TINY 1.0e-20
-
 using namespace Hermes::Error;
 
 namespace Hermes
@@ -67,10 +65,11 @@ namespace Hermes
       /// Copies a matrix. Both matrices has to be equal to or larger than provided sizes.
       /// Size compatibility check is not done.
       template<typename T>
-      void copy_matrix(T** dest, T** src, unsigned int m, unsigned int n = 0) 
+      void copy_matrix(T** dest, T** src, unsigned int m, unsigned int n = 0)
       {
         if (n == 0) n = m;
-        for(unsigned int i = 0; i < m; i++) {
+        for(unsigned int i = 0; i < m; i++)
+        {
           memcpy(dest[i], src[i], n*sizeof(T));
         }
       }
@@ -82,7 +81,7 @@ namespace Hermes
       /// \param[in] n A number of columns of the matrix. If zero, it is assumed to be equal to m.
       /// \param[in] filename An output filename. If not specified, matrix_name will be used by concatenating it with a suffix '.mat'.
       template<typename T>
-      void save_matrix_octave(const std::string& matrix_name, T** matrix, unsigned int m, unsigned int n = 0, const std::string& filename = std::string()) 
+      void save_matrix_octave(const std::string& matrix_name, T** matrix, unsigned int m, unsigned int n = 0, const std::string& filename = std::string())
       {
         if (n == 0) n = m;
 
@@ -93,7 +92,8 @@ namespace Hermes
 
         //open file
         std::ofstream fout(fname.c_str());
-        if (!fout.is_open()) {
+        if (!fout.is_open())
+        {
           error("Unable to save a matrix to a file \"%s\"", fname.c_str());
           return;
         }
@@ -105,7 +105,8 @@ namespace Hermes
         fout << std::string("# columns: ") << n << std::endl;
 
         //write contents
-        for(unsigned int i = 0; i < m; i++) {
+        for(unsigned int i = 0; i < m; i++)
+        {
           for(unsigned int k = 0; k < n; k++)
             fout << ' ' << matrix[i][k];
           fout << std::endl;
@@ -117,8 +118,8 @@ namespace Hermes
 
       /// Saves MxM sparse matrix to a octave file format.
       template<typename T>
-      void save_sparse_matrix_octave(const std::string& matrix_name, const T* Ax, const int* Ap, const int* Ai, 
-        unsigned int m, const std::string& filename = std::string()) 
+      void save_sparse_matrix_octave(const std::string& matrix_name, const T* Ax, const int* Ap, const int* Ai,
+        unsigned int m, const std::string& filename = std::string())
       {
         // create filename
         std::string fname = filename;
@@ -127,7 +128,8 @@ namespace Hermes
 
         // open file
         std::ofstream fout(fname.c_str());
-        if (!fout.is_open()) {
+        if (!fout.is_open())
+        {
           error("Unable to save a matrix to a file \"%s\"", fname.c_str());
           return;
         }
@@ -141,8 +143,8 @@ namespace Hermes
 
         // write contents
         for (int j = 0; j < m; j++)
-          for (int i = Ap[j]; i < Ap[j+1]; i++)
-            fout << j+1 << " " << Ai[i]+1 << " " << Ax[i] << std::endl;
+          for (int i = Ap[j]; i < Ap[j + 1]; i++)
+            fout << j + 1 << " " << Ai[i] + 1 << " " << Ax[i] << std::endl;
 
         // finish
         fout.close();
@@ -151,11 +153,11 @@ namespace Hermes
       /// Transposes an m by n matrix. If m != n, the array matrix in fact has to be
       /// a square matrix of the size max(m, n) in order for the transpose to fit inside it.
       template<typename T>
-      void transpose(T **matrix, unsigned int m, unsigned int n) 
+      void transpose(T **matrix, unsigned int m, unsigned int n)
       {
         unsigned int min = std::min(m, n);
         for (unsigned int i = 0; i < min; i++)
-          for (unsigned int j = i+1; j < min; j++)
+          for (unsigned int j = i + 1; j < min; j++)
             std::swap(matrix[i][j], matrix[j][i]);
 
         if (m < n)
@@ -170,7 +172,7 @@ namespace Hermes
 
       /// Changes the sign of a matrix
       template<typename T>
-      void chsgn(T **matrix, unsigned int m, unsigned int n) 
+      void chsgn(T **matrix, unsigned int m, unsigned int n)
       {
         for (unsigned int i = 0; i < m; i++)
           for (unsigned int j = 0; j < n; j++)
@@ -193,25 +195,27 @@ namespace Hermes
       /// into account the possibility that b will begin with many zero elements, so it is efficient for use
       /// in matrix inversion.
       template<typename T>
-      void lubksb(double **a, int n, int *indx, T *b) 
+      void lubksb(double **a, int n, int *indx, T *b)
       {
         int i, ip, j;
         T sum;
 
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < n; i++)
+        {
           ip = indx[i];
           sum = b[ip];
           b[ip] = b[i];
           for (j = 0; j < i; j++) sum -= a[i][j]*b[j];
           b[i] = sum;
         }
-        for (i = n-1; i >= 0; i--) {
+        for (i = n-1; i >= 0; i--)
+        {
           sum = b[i];
-          for (j = i+1; j < n; j++) sum -= a[i][j]*b[j];
+          for (j = i + 1; j < n; j++) sum -= a[i][j]*b[j];
           b[i] = sum / a[i][i];
         }
       }
-      
+
       /// Given a positive-definite symmetric matrix a[n][n], this routine constructs its Cholesky
       /// decomposition, A = L*L^T . On input, only the upper triangle of a need be given; it is not
       /// modified. The Cholesky factor L is returned in the lower triangle of a, except for its diagonal
@@ -226,19 +230,21 @@ namespace Hermes
       /// x in the calling sequence, which is allowed. The right-hand side b can be complex, in which case
       /// the solution x is also complex.
       template<typename T>
-      void cholsl(double **a, int n, double p[], T b[], T x[]) 
+      void cholsl(double **a, int n, double p[], T b[], T x[])
       {
         int i, k;
         T sum;
 
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < n; i++)
+        {
           sum = b[i];
           k = i;
           while (--k >= 0) sum -= a[i][k] * x[k];
           x[i] = sum / p[i];
         }
 
-        for (i = n-1; i >= 0; i--) {
+        for (i = n-1; i >= 0; i--)
+        {
           sum = x[i];
           k = i;
           while (++k < n) sum -= a[k][i] * x[k];
@@ -248,24 +254,25 @@ namespace Hermes
     }
 
     /// Format of file matrix and vector output
-    enum EMatrixDumpFormat 
+    enum EMatrixDumpFormat
     {
       DF_MATLAB_SPARSE, ///< matlab file
       /// \brief plain ascii file
       /// first line is matrix size
       /// second line in number of nonzero values
       /// next lines contains row column and value
-      DF_PLAIN_ASCII, 
+      DF_PLAIN_ASCII,
       /// \brief Hermes binary format
-      /// 
+      ///
       DF_HERMES_BIN,
-      DF_NATIVE,	 ///< native format for the linear solver,
+      DF_NATIVE, 	 ///< native format for the linear solver,
       DF_MATRIX_MARKET ///< Matrix Market which can be read by pysparse library
     };
 
     /// \brief General (abstract) matrix representation in Hermes.
     template<typename Scalar>
-    class HERMES_API Matrix {
+    class HERMES_API Matrix
+    {
     public:
       /// get size of matrix
       /// @return size of matrix
@@ -357,17 +364,17 @@ namespace Hermes
 
       /// Add matrix
       /// @param mat matrix to add
-      virtual void add_sparse_matrix(SparseMatrix* mat) 
-      { 
+      virtual void add_sparse_matrix(SparseMatrix* mat)
+      {
         error("add_sparse_matrix() undefined.");
       };
 
       /// Add matrix to diagonal
       /// Matrices must be the same type of solver
       /// @param[in] num_stages matrix is added to num_stages positions. num_stages * size(added matrix) = size(target matrix)
-      /// @param[in] mat added matrix 
+      /// @param[in] mat added matrix
       virtual void add_sparse_to_diagonal_blocks(int num_stages, SparseMatrix<Scalar>* mat)
-      { 
+      {
         error("add_sparse_to_diagonal_blocks() undefined.");
       };
 
@@ -384,8 +391,8 @@ namespace Hermes
       /// @param[out] n_entries - number of nonzero entries extracted.
       /// @param[out] vals - extracted values for this row.
       /// @param[out] idxs - extracted global column indices for the corresponding values.
-      virtual void extract_row_copy(unsigned int row, unsigned int len, 
-        unsigned int &n_entries, double *vals, 
+      virtual void extract_row_copy(unsigned int row, unsigned int len,
+        unsigned int &n_entries, double *vals,
         unsigned int *idxs) { }
 
       /// Return the number of entries in a specified column
@@ -401,12 +408,12 @@ namespace Hermes
       /// @param[out] n_entries - number of nonzero entries extracted.
       /// @param[out] vals - extracted values for this column.
       /// @param[out] idxs - extracted global row indices for the corresponding values.
-      virtual void extract_col_copy(unsigned int col, unsigned int len, 
-        unsigned int &n_entries, double *vals, 
+      virtual void extract_col_copy(unsigned int col, unsigned int len,
+        unsigned int &n_entries, double *vals,
         unsigned int *idxs) { }
 
-      /// Multiply with a vector.    
-      virtual void multiply_with_vector(Scalar* vector_in, Scalar* vector_out) { 
+      /// Multiply with a vector.
+      virtual void multiply_with_vector(Scalar* vector_in, Scalar* vector_out) {
         error("multiply_with_vector() undefined.");
       };
 
@@ -432,7 +439,7 @@ namespace Hermes
       }
 
     protected:
-      /// Size of page (max number of indices stored in one page). 
+      /// Size of page (max number of indices stored in one page).
       static const int PAGE_SIZE = 62;
 
       /// Structure for storing indices in sparse matrix
@@ -525,7 +532,7 @@ namespace Hermes
       /// @param[in] var_name name of variable (will be written to output file)
       /// @param[in] fmt output file format
       /// @return true on succes
-      virtual bool dump(FILE *file, const char *var_name, 
+      virtual bool dump(FILE *file, const char *var_name,
         EMatrixDumpFormat fmt = DF_MATLAB_SPARSE) = 0;
 
     protected:
@@ -536,13 +543,13 @@ namespace Hermes
     /// \brief Function returning a vector according to the users's choice.
     /// @param[in] matrix_solver_type the choice of solver, an element of enum Hermes::MatrixSolverType.
     /// @return created vector
-    template<typename Scalar> HERMES_API 
+    template<typename Scalar> HERMES_API
       Vector<Scalar>* create_vector(Hermes::MatrixSolverType matrix_solver_type);
 
     /// \brief Function returning a matrix according to the users's choice.
     /// @param[in] matrix_solver_type the choice of solver, an element of enum Hermes::MatrixSolverType.
     /// @return created matrix
-    template<typename Scalar> HERMES_API 
+    template<typename Scalar> HERMES_API
       SparseMatrix<Scalar>*  create_matrix(Hermes::MatrixSolverType matrix_solver_type);
 
   }
