@@ -2052,12 +2052,12 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="245"/>
         <source>Copy image to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkopírovat obrázek do schránky</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="247"/>
         <source>Copy image from workspace to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkopírovat obrázek ze scény do schránky.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="251"/>
@@ -2715,7 +2715,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="27"/>
         <source>View Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení scény</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="367"/>
@@ -6607,7 +6607,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="444"/>
         <source>&amp;Keyword List</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Klávesové zkratky</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="455"/>
