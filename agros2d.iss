@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "1.9.1.812"
-#define AppDate "2011-05-23"
+#define AppVersion "1.9.5.892"
+#define AppDate "2011-09-26"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}
@@ -14,7 +14,7 @@ LicenseFile=COPYING
 AppId=Agros2D
 AppPublisher=hpfem.org
 AppCopyright=hpfem.org
-AppPublisherURL=http://www.hpfem.org/agros2d
+AppPublisherURL=http://agros2d.org
 AppMutex=Agros2D
 OutputDir=setup
 DefaultDirName={pf}\Agros2D
@@ -38,7 +38,7 @@ Source: data\*.a2d; DestDir: {app}/data
 Source: data\scripts\*.py; DestDir: {app}/data/scripts
 Source: data\scripts\test\*.py; DestDir: {app}/data/scripts/test
 Source: lang\*.qm; DestDir: {app}/lang
-Source: doc\web\*; DestDir: {app}/doc/web; Flags: ignoreversion recursesubdirs 
+Source: doc\help\*; DestDir: {app}/doc/help; Flags: ignoreversion recursesubdirs 
 Source: doc\report\default.css; DestDir: {app}/doc/report
 Source: doc\report\default.html; DestDir: {app}/doc/report
 Source: ..\agros2d_windows_install\runtime\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
@@ -64,7 +64,7 @@ Root: HKCR; SubKey: Agros2D.Data\Shell\Open\Command; ValueType: string; ValueDat
 Root: HKCR; Subkey: Agros2D.Data\DefaultIcon; ValueType: string; ValueData: {app}\Agros2D.ico; Flags: uninsdeletevalue
 
 [INI]
-Filename: {app}\Agros2D.url; Section: InternetShortcut; Key: URL; String: http://www.hpfem.org/agros2d
+Filename: {app}\Agros2D.url; Section: InternetShortcut; Key: URL; String: http://agros2d.org
 
 [UninstallDelete]
 Type: files; Name: {app}\Agros2D.url
