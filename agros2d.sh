@@ -96,7 +96,10 @@ case "$1" in
 		echo "Run 'dput ppa:pkarban/agros2dunstable *.changes' for upload unstable"
 		echo "Run 'dput ppa:pkarban/agros2d *.changes' for upload"
 		;;
+	commits )
+		git log --pretty=format:'' | wc -l
+		;;
 	* )
-		echo "Usage: agros2d.sh\n  [help - build and generate documentation]\n  [lang release - release language files]\n  [lang update - update language files]\n  [comp - compile]\n  [build binary - build binary package]\n  [build source - build source package]\n  [upload - prepare package for upload]"
+		echo "Usage: agros2d.sh\n  [help - build and generate documentation]\n  [lang release - release language files]\n  [lang update - update language files]\n  [comp - compile]\n  [build binary - build binary package]\n  [build source - build source package]\n  [upload - prepare package for upload]\n  [commits - number of commits of git repository]"
 		;;
 esac

@@ -13,7 +13,6 @@ Introduction
    :maxdepth: 1
 
    ./introduction/about_agros2d.rst
-   ./compilation/windows.rst
 
 Getting Started
 ^^^^^^^^^^^^^^^
