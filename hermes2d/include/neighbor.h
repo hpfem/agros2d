@@ -276,6 +276,7 @@ namespace Hermes
       /// Transformations of an element to one of its neighbors.
       struct Transformations
       {
+      private:
         static const int max_level = Transformable::H2D_MAX_TRN_LEVEL; ///< Number of allowed transformations (or equiv. number of neighbors
                                                                        ///< in a go-down neighborhood) - see Transformable::push_transform.
 
@@ -299,6 +300,13 @@ namespace Hermes
         void apply_on(Transformable* tr) const;
 
         void apply_on(const Hermes::vector<Transformable*>& tr) const;
+        
+        template<typename T> friend class NeighborSearch;
+        template<typename T> friend class KellyTypeAdapt;
+        template<typename T> friend class Adapt;
+        template<typename T> friend class Func;
+        template<typename T> friend class DiscontinuousFunc;
+        template<typename T> friend class DiscreteProblem;
       };
 
 
@@ -410,8 +418,11 @@ namespace Hermes
       int central_quad_order;  ///< Quadrature data of the active edge with respect to the central element.
       int neighb_quad_order;   ///< Quadrature data of the active edge with respect to the element on the other side.
 
-      friend class DiscreteProblem<Scalar>;
-      friend class KellyTypeAdapt<Scalar>;
+      template<typename T> friend class KellyTypeAdapt;
+      template<typename T> friend class Adapt;
+      template<typename T> friend class Func;
+      template<typename T> friend class DiscontinuousFunc;
+      template<typename T> friend class DiscreteProblem;
     };
   }
 }

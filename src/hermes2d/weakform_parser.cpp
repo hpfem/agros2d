@@ -430,7 +430,7 @@ CustomExactSolution<Scalar>::CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, s
 }
 
 template <typename Scalar>
-double CustomExactSolution<Scalar>::value(double x, double y)
+Scalar CustomExactSolution<Scalar>::value(double x, double y)
 {
     double result = 0;
 
@@ -450,7 +450,7 @@ double CustomExactSolution<Scalar>::value(double x, double y)
 }
 
 template <typename Scalar>
-void CustomExactSolution<Scalar>::derivatives (double x, double y, double& dx, double& dy)
+void CustomExactSolution<Scalar>::derivatives (double x, double y, Scalar& dx, Scalar& dy)
 {
 }
 

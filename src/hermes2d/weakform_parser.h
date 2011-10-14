@@ -185,8 +185,8 @@ class CustomExactSolution : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
 public:
     CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, std::string expression, Boundary *boundary);
 
-    double value(double x, double y);
-    void derivatives (double x, double y, double& dx, double& dy);
+    Scalar value(double x, double y);
+    void derivatives (double x, double y, Scalar& dx, Scalar& dy);
 
     Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y)
     {

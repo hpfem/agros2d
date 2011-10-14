@@ -337,8 +337,66 @@ namespace Hermes
 
     ComplexFilter::ComplexFilter(MeshFunction<std::complex<double> >* solution, int item) : Filter<double>()
     {
-      this->num = 1;
+      this->num = 0;
+      this->unimesh = false;
       this->sln_complex = solution;
+      this->num_components = solution->get_num_components();
+      this->mesh = solution->get_mesh();
+      set_quad_2d(&g_quad_2d_std);
+    }
+
+    void ComplexFilter::free()
+    {
+      for(std::map<uint64_t, LightArray<struct Filter<double>::Node*>*>::iterator it = tables[this->cur_quad].begin(); it != tables[this->cur_quad].end(); it++)
+      {
+        for(unsigned int l = 0; l < it->second->get_size(); l++)
+          if(it->second->present(l))
+            ::free(it->second->get(l));
+        delete it->second;
+      }
+      tables[this->cur_quad].clear();
+    }
+
+    void ComplexFilter::set_quad_2d(Quad2D* quad_2d)
+    {
+      MeshFunction<double>::set_quad_2d(quad_2d);
+      this->sln_complex->set_quad_2d(quad_2d);
+    }
+
+    void ComplexFilter::set_active_element(Element* e)
+    {
+      MeshFunction<double>::set_active_element(e);
+     
+      this->sln_complex->set_active_element(e);
+      
+      memset(sln_sub, 0, sizeof(sln_sub));
+
+      for(std::map<uint64_t, LightArray<struct Filter<double>::Node*>*>::iterator it = tables[this->cur_quad].begin(); it != tables[this->cur_quad].end(); it++)
+      {
+        for(unsigned int l = 0; l < it->second->get_size(); l++)
+          if(it->second->present(l))
+            ::free(it->second->get(l));
+        delete it->second;
+      }
+      tables[this->cur_quad].clear();
+
+      this->sub_tables = &tables[this->cur_quad];
+      
+      this->update_nodes_ptr();
+
+      this->order = 20; // fixme
+    }
+
+    void ComplexFilter::push_transform(int son)
+    {
+      MeshFunction<double>::push_transform(son);
+      this->sln_complex->push_transform(son);
+    }
+
+    void ComplexFilter::pop_transform()
+    {
+      MeshFunction<double>::pop_transform();
+      this->sln_complex->pop_transform();
     }
 
     void ComplexFilter::precalculate(int order, int mask)
@@ -350,35 +408,19 @@ namespace Hermes
       int np = quad->get_num_points(order);
       struct Function<double>::Node* node = this->new_node(H2D_FN_VAL, np);
 
-      // precalculate solution
-      this->sln_complex->set_quad_order(order, this->item);
+      this->sln_complex->set_quad_order(order, H2D_FN_VAL);
 
-      for (int j = 0; j < this->num_components; j++)
-      {
-        // obtain corresponding tables
-        int a = 0, b = 0, mask = item;
-        if (mask >= 0x40)
-        {
-          a = 1;
-          mask >>= 6;
-        }
-        while (!(mask & 1))
-        {
-          mask >>= 1;
-          b++;
-        }
-        std::complex<double>* tab = this->sln_complex->get_values(this->num_components == 1 ? a : j, b);
-
-        // apply the filter
-        filter_fn(np, tab, node->values[j][0]);
-      }
+      // obtain corresponding tables
+      filter_fn(np, this->sln_complex->get_values(0, 0), node->values[0][0]);
+      if(num_components > 1)
+        filter_fn(np, this->sln_complex->get_values(1, 0), node->values[1][0]);
 
       if(this->nodes->present(order))
       {
         assert(this->nodes->get(order) == this->cur_node);
         ::free(this->nodes->get(order));
       }
-      this->nodes->add(node, order);
+      
       this->cur_node = node;
     }
 
@@ -472,7 +514,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Scalar DXDYFilter<Scalar>::get_pt_value(double x, double y, int item)
+    Scalar DXDYFilter<Scalar>::get_pt_value(double x, double y, int item) 
     {
       return 0;
     }
@@ -552,6 +594,32 @@ namespace Hermes
         error("SquareFilter only supports one MeshFunction.");
     };
 
+    void AbsFilter::filter_fn(int n, Hermes::vector<double*> v1, double * result)
+    {
+      for (int i = 0; i < n; i++)
+        result[i] = std::abs(v1.at(0)[i]);
+    };
+
+    AbsFilter::AbsFilter(Hermes::vector<MeshFunction<double>*> solutions, Hermes::vector<int> items)
+      : SimpleFilter<double>(solutions, items)
+    {
+      if (solutions.size() > 1)
+        error("AbsFilter only supports one MeshFunction.");
+    };
+
+    AbsFilter::AbsFilter(MeshFunction<double>* solution)
+      : SimpleFilter<double>()
+    {
+      this->num = 1;
+      this->sln[0] = solution;
+      
+      this->item[0] =	H2D_FN_VAL;
+
+      this->init();
+      init_components();
+
+    };
+
 
     void RealFilter::filter_fn(int n, std::complex<double>* values, double* result)
     {
@@ -576,19 +644,16 @@ namespace Hermes
     {
     };
 
-    void AbsFilter::filter_fn(int n, Hermes::vector<std::complex<double>*> v1, double* result)
+    void ComplexAbsFilter::filter_fn(int n, std::complex<double>* values, double* result)
     {
       for (int i = 0; i < n; i++)
-        result[i] = sqrt(sqr(v1.at(0)[i].real()) + sqr(v1.at(0)[i].imag()));
+        result[i] = sqrt(sqr(values[i].real()) + sqr(values[i].imag()));
     };
 
-    AbsFilter::AbsFilter(Hermes::vector<MeshFunction<std::complex<double> >*> solutions, Hermes::vector<int> items)
-      : SimpleFilter<std::complex<double> >(solutions, items)
+    ComplexAbsFilter::ComplexAbsFilter(MeshFunction<std::complex<double> >* solution, int item)
+      : ComplexFilter(solution, item)
     {
-      if (solutions.size() > 1)
-        error("RealFilter only supports one MeshFunction.");
     };
-
 
     void AngleFilter::filter_fn(int n, Hermes::vector<std::complex<double>*> v1, double* result)
     {

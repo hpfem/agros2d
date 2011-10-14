@@ -103,16 +103,8 @@ namespace Hermes
       /// Adds multicomponent surface vector form.
       void add_multicomponent_vector_form_surf(MultiComponentVectorFormSurf<Scalar>* vfs);
 
-      void set_ext_fns(void* fn, Hermes::vector<MeshFunction<Scalar>*> ext = Hermes::vector<MeshFunction<Scalar>*>());
-
       /// Returns the number of equations.
       unsigned int get_neq() { return neq; }
-
-      /// Deletes all volumetric and surface forms.
-      void delete_all();
-
-      /// Internal. Used by DiscreteProblem to detect changes in the weakform.
-      int get_seq() const { return seq; }
 
       bool is_matrix_free() { return is_matfree; }
 
@@ -120,6 +112,22 @@ namespace Hermes
       void set_current_time(double time);
 
       virtual double get_current_time() const;
+
+      Hermes::vector<MatrixFormVol<Scalar> *> get_mfvol();
+      Hermes::vector<MatrixFormSurf<Scalar> *> get_mfsurf();
+      Hermes::vector<VectorFormVol<Scalar> *> get_vfvol();
+      Hermes::vector<VectorFormSurf<Scalar> *> get_vfsurf();
+      Hermes::vector<MultiComponentMatrixFormVol<Scalar> *> get_mfvol_mc();
+      Hermes::vector<MultiComponentMatrixFormSurf<Scalar> *> get_mfsurf_mc();
+      Hermes::vector<MultiComponentVectorFormVol<Scalar> *> get_vfvol_mc();
+      Hermes::vector<MultiComponentVectorFormSurf<Scalar> *> get_vfsurf_mc();
+
+      /// Deletes all volumetric and surface forms.
+      void delete_all();
+
+    protected:
+      /// Internal. Used by DiscreteProblem to detect changes in the weakform.
+      int get_seq() const { return seq; }
 
       void get_stages(Hermes::vector<Space<Scalar>*> spaces, Hermes::vector<Solution<Scalar>*>& u_ext,
         Hermes::vector<Stage<Scalar> >& stages, bool want_matrix, bool want_vector, bool one_stage = false);
@@ -158,7 +166,6 @@ namespace Hermes
       /// Holds multicomponent surface vector forms.
       Hermes::vector<MultiComponentVectorFormSurf<Scalar> *> vfsurf_mc;
 
-    protected:
       Stage<Scalar>* find_stage(Hermes::vector<Stage<Scalar> >& stages, int ii, int jj, Mesh* m1, Mesh* m2,
         Hermes::vector<MeshFunction<Scalar>*>& ext, Hermes::vector<Solution<Scalar>*>& u_ext, bool one_stage = false);
 

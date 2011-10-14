@@ -49,43 +49,43 @@ mkdir hermes_common/include/third_party_codes/trilinos-teuchos
 mkdir hermes_common/include/python_API
 
 
-cp ../hermes-dev/hermes2d/src/*.cpp hermes2d/src
-cp ../hermes-dev/hermes2d/src/adapt/*.cpp hermes2d/src/adapt
-cp ../hermes-dev/hermes2d/src/boundary_conditions/*.cpp hermes2d/src/boundary_conditions
-cp ../hermes-dev/hermes2d/src/function/*.cpp hermes2d/src/function
-cp ../hermes-dev/hermes2d/src/mesh/*.cpp hermes2d/src/mesh
-cp ../hermes-dev/hermes2d/src/quadrature/*.cpp hermes2d/src/quadrature
-cp ../hermes-dev/hermes2d/src/refinement_selectors/*.cpp hermes2d/src/refinement_selectors
-cp ../hermes-dev/hermes2d/src/shapeset/*.cpp hermes2d/src/shapeset
-cp ../hermes-dev/hermes2d/src/space/*.cpp hermes2d/src/space
-cp ../hermes-dev/hermes2d/src/views/*.cpp hermes2d/src/views
-cp ../hermes-dev/hermes2d/src/weakform/*.cpp hermes2d/src/weakform
-cp ../hermes-dev/hermes2d/src/weakform_library/*.cpp hermes2d/src/weakform_library
+cp ../hermes/hermes2d/src/*.cpp hermes2d/src
+cp ../hermes/hermes2d/src/adapt/*.cpp hermes2d/src/adapt
+cp ../hermes/hermes2d/src/boundary_conditions/*.cpp hermes2d/src/boundary_conditions
+cp ../hermes/hermes2d/src/function/*.cpp hermes2d/src/function
+cp ../hermes/hermes2d/src/mesh/*.cpp hermes2d/src/mesh
+cp ../hermes/hermes2d/src/quadrature/*.cpp hermes2d/src/quadrature
+cp ../hermes/hermes2d/src/refinement_selectors/*.cpp hermes2d/src/refinement_selectors
+cp ../hermes/hermes2d/src/shapeset/*.cpp hermes2d/src/shapeset
+cp ../hermes/hermes2d/src/space/*.cpp hermes2d/src/space
+cp ../hermes/hermes2d/src/views/*.cpp hermes2d/src/views
+cp ../hermes/hermes2d/src/weakform/*.cpp hermes2d/src/weakform
+cp ../hermes/hermes2d/src/weakform_library/*.cpp hermes2d/src/weakform_library
 
-cp ../hermes-dev/hermes2d/include/*.h hermes2d/include
-cp ../hermes-dev/hermes2d/include/adapt/*.h hermes2d/include/adapt
-cp ../hermes-dev/hermes2d/include/boundary_conditions/*.h hermes2d/include/boundary_conditions
-cp ../hermes-dev/hermes2d/include/function/*.h hermes2d/include/function
-cp ../hermes-dev/hermes2d/include/integrals/*.h hermes2d/include/integrals
-cp ../hermes-dev/hermes2d/include/mesh/*.h hermes2d/include/mesh
-cp ../hermes-dev/hermes2d/include/quadrature/*.h hermes2d/include/quadrature
-cp ../hermes-dev/hermes2d/include/refinement_selectors/*.h hermes2d/include/refinement_selectors
-cp ../hermes-dev/hermes2d/include/shapeset/*.h hermes2d/include/shapeset
-cp ../hermes-dev/hermes2d/include/space/*.h hermes2d/include/space
-cp ../hermes-dev/hermes2d/include/views/*.h hermes2d/include/views
-cp ../hermes-dev/hermes2d/include/weakform/*.h hermes2d/include/weakform
-cp ../hermes-dev/hermes2d/include/weakform_library/*.h hermes2d/include/weakform_library
+cp ../hermes/hermes2d/include/*.h hermes2d/include
+cp ../hermes/hermes2d/include/adapt/*.h hermes2d/include/adapt
+cp ../hermes/hermes2d/include/boundary_conditions/*.h hermes2d/include/boundary_conditions
+cp ../hermes/hermes2d/include/function/*.h hermes2d/include/function
+cp ../hermes/hermes2d/include/integrals/*.h hermes2d/include/integrals
+cp ../hermes/hermes2d/include/mesh/*.h hermes2d/include/mesh
+cp ../hermes/hermes2d/include/quadrature/*.h hermes2d/include/quadrature
+cp ../hermes/hermes2d/include/refinement_selectors/*.h hermes2d/include/refinement_selectors
+cp ../hermes/hermes2d/include/shapeset/*.h hermes2d/include/shapeset
+cp ../hermes/hermes2d/include/space/*.h hermes2d/include/space
+cp ../hermes/hermes2d/include/views/*.h hermes2d/include/views
+cp ../hermes/hermes2d/include/weakform/*.h hermes2d/include/weakform
+cp ../hermes/hermes2d/include/weakform_library/*.h hermes2d/include/weakform_library
 
 
-cp ../hermes-dev/hermes_common/src/*.cpp hermes_common/src/
-cp ../hermes-dev/hermes_common/src/solvers/*.cpp hermes_common/src/solvers/
-cp ../hermes-dev/hermes_common/src/third_party_codes/trilinos-teuchos/* hermes_common/src/third_party_codes/trilinos-teuchos/
-cp ../hermes-dev/hermes_common/src/python_API/*.* hermes_common/src/python_API/
+cp ../hermes/hermes_common/src/*.cpp hermes_common/src/
+cp ../hermes/hermes_common/src/solvers/*.cpp hermes_common/src/solvers/
+cp ../hermes/hermes_common/src/third_party_codes/trilinos-teuchos/* hermes_common/src/third_party_codes/trilinos-teuchos/
+cp ../hermes/hermes_common/src/python_API/*.* hermes_common/src/python_API/
 
-cp ../hermes-dev/hermes_common/include/*.h hermes_common/include/
-cp ../hermes-dev/hermes_common/include/solvers/*.h hermes_common/include/solvers/
-cp ../hermes-dev/hermes_common/include/third_party_codes/trilinos-teuchos/* hermes_common/include/third_party_codes/trilinos-teuchos/
-cp ../hermes-dev/hermes_common/include/python_API/*.* hermes_common/include/python_API/
+cp ../hermes/hermes_common/include/*.h hermes_common/include/
+cp ../hermes/hermes_common/include/solvers/*.h hermes_common/include/solvers/
+cp ../hermes/hermes_common/include/third_party_codes/trilinos-teuchos/* hermes_common/include/third_party_codes/trilinos-teuchos/
+cp ../hermes/hermes_common/include/python_API/*.* hermes_common/include/python_API/
 
 # restore
 # cp hermes2d/src/config.h.backup hermes2d/src/config.h

@@ -1,5 +1,5 @@
-// #define HAVE_FMEMOPEN
-// #define HAVE_LOG2
+#define HAVE_FMEMOPEN
+#define HAVE_LOG2
 /* #undef EXTREME_QUAD */
 
 #define WITH_UMFPACK
@@ -10,27 +10,23 @@
 /* #undef WITH_EXODUSII */
 /* #undef WITH_MPI */
 
-/* #undef WITH_PYTHON */
-
 // stacktrace
-// #define HAVE_TEUCHOS_LINK
+#define HAVE_TEUCHOS_LINK
 /* #undef HAVE_TEUCHOS_BFD */
-// #define HAVE_EXECINFO
-// #define HAVE_VASPRINTF
-// #define HAVE_CXXABI
+#define HAVE_EXECINFO
+#define HAVE_VASPRINTF
+#define HAVE_CXXABI
 
 // trilinos
-/*
-#define WITH_TRILINOS
-#define HAVE_AMESOS
-#define HAVE_AZTECOO
-#define HAVE_TEUCHOS
-#define HAVE_EPETRA
-#define HAVE_IFPACK
-#define HAVE_ML
-#define HAVE_NOX
-#define HAVE_KOMPLEX
-*/
+/* #undef WITH_TRILINOS */
+/* #undef HAVE_AMESOS */
+/* #undef HAVE_AZTECOO */
+/* #undef HAVE_TEUCHOS */
+/* #undef HAVE_EPETRA */
+/* #undef HAVE_IFPACK */
+/* #undef HAVE_ML */
+/* #undef HAVE_NOX */
+/* #undef HAVE_KOMPLEX */
 
 /* #undef TRACING */
 /* #undef DEBUG */

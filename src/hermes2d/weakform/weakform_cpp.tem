@@ -32,7 +32,9 @@
 <namespaces>using namespace general_weakform;
 </namespaces>			
   		
-<custom_matrix_form_vol>template &lt;typename Scalar&gt;
+<custom_matrix_form_vol>
+
+template &lt;typename Scalar&gt;
 CustomMatrixFormVol&lt;Scalar&gt;::CustomMatrixFormVol(unsigned int i, unsigned int j,
                                                  std::string area,
                                                  Hermes::Hermes2D::SymFlag sym,
@@ -40,7 +42,9 @@ CustomMatrixFormVol&lt;Scalar&gt;::CustomMatrixFormVol(unsigned int i, unsigned 
     : Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt;(i, j, area, sym), m_material(material)
 {
     //variable_definition	
-}</custom_matrix_form_vol>
+}
+
+</custom_matrix_form_vol>
 
 <variable_definition> variable_short = m_material->get_value("variable");
 </variable_definition>
@@ -50,7 +54,9 @@ CustomMatrixFormVol&lt;Scalar&gt;::CustomMatrixFormVol(unsigned int i, unsigned 
 </comment_separator>
 
 
-<custom_matrix_form_vol_value> template &lt;typename Scalar&gt;
+<custom_matrix_form_vol_value> 
+
+template &lt;typename Scalar&gt;
 Scalar CustomMatrixFormVol&lt;Scalar&gt;::value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *u,
                                           Hermes::Hermes2D::Func&lt;double&gt; *v, Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext)
 {
@@ -61,7 +67,9 @@ Scalar CustomMatrixFormVol&lt;Scalar&gt;::value(int n, double *wt, Hermes::Herme
        result += wt[i] * //expression
     }
     return result;
-}</custom_matrix_form_vol_value>
+}
+
+</custom_matrix_form_vol_value>
 
 <custom_matrix_form_vol_ord>template &lt;typename Scalar&gt;
 Hermes::Ord CustomMatrixFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u,
@@ -77,6 +85,7 @@ Hermes::Ord CustomMatrixFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::He
 }</custom_matrix_form_vol_ord>
 
 <custom_vector_form_vol>
+
 template &lt;typename Scalar&gt;
 CustomVectorFormVol&lt;Scalar&gt;::CustomVectorFormVol(unsigned int i, unsigned int j,
                                                  std::string area, 
@@ -84,9 +93,13 @@ CustomVectorFormVol&lt;Scalar&gt;::CustomVectorFormVol(unsigned int i, unsigned 
     : Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt;(i, area), m_material(material), j(j)
 {
            //variable_definition	
-}</custom_vector_form_vol>
+}
 
-<custom_vector_form_vol_value>template &lt;typename Scalar&gt;
+</custom_vector_form_vol>
+
+<custom_vector_form_vol_value>
+
+template &lt;typename Scalar&gt;
 Scalar CustomVectorFormVol&lt;Scalar&gt;::value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *v,
                                           Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext)
 {
@@ -98,9 +111,13 @@ Scalar CustomVectorFormVol&lt;Scalar&gt;::value(int n, double *wt, Hermes::Herme
         result += wt[i] * //expression
     }
     return result;
-}</custom_vector_form_vol_value>
+}
 
-<custom_vector_form_vol_ord>template &lt;typename Scalar&gt;
+</custom_vector_form_vol_value>
+
+<custom_vector_form_vol_ord>
+
+template &lt;typename Scalar&gt;
 Hermes::Ord CustomVectorFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
                                              Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext)
 {
@@ -111,20 +128,28 @@ Hermes::Ord CustomVectorFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::He
        result += wt[i] * //expression
     }	
     return result;
-}</custom_vector_form_vol_ord>
+}
+
+</custom_vector_form_vol_ord>
 
 
-<custom_matrix_form_surf>template &lt;typename Scalar&gt;
+<custom_matrix_form_surf>
+
+template &lt;typename Scalar&gt;
 CustomMatrixFormSurf&lt;Scalar&gt;::CustomMatrixFormSurf(unsigned int i, unsigned int j,
                                                    std::string area, 
                                                    Boundary *boundary)
     : Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt;(i, j, area), m_boundary(boundary)
 {
     //variable_definition
-}</custom_matrix_form_surf>
+}
+
+</custom_matrix_form_surf>
 
 
-<custom_matrix_form_surf_value>template &lt;typename Scalar&gt;
+<custom_matrix_form_surf_value>
+
+template &lt;typename Scalar&gt;
 Scalar CustomMatrixFormSurf&lt;Scalar&gt;::value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *u, Hermes::Hermes2D::Func&lt;double&gt; *v,
                                            Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext)
 {
@@ -135,9 +160,13 @@ Scalar CustomMatrixFormSurf&lt;Scalar&gt;::value(int n, double *wt, Hermes::Herm
         result += wt[i] * //expression
     }
     return result;
-}</custom_matrix_form_surf_value>
+}
 
-<custom_matrix_form_surf_ord>template &lt;typename Scalar&gt;
+</custom_matrix_form_surf_value>
+
+<custom_matrix_form_surf_ord>
+
+template &lt;typename Scalar&gt;
 Hermes::Ord CustomMatrixFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
                                               Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext)
 {
@@ -149,9 +178,13 @@ Hermes::Ord CustomMatrixFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::H
     }	
     return result;
 
-}</custom_matrix_form_surf_ord>
+}
 
-<custom_vector_form_surf>template &lt;typename Scalar&gt;
+</custom_matrix_form_surf_ord>
+
+<custom_vector_form_surf>
+
+template &lt;typename Scalar&gt;
 CustomVectorFormSurf&lt;Scalar&gt;::CustomVectorFormSurf(unsigned int i, unsigned int j,
                                                    std::string area, 
                                                    Boundary *boundary)
@@ -159,9 +192,13 @@ CustomVectorFormSurf&lt;Scalar&gt;::CustomVectorFormSurf(unsigned int i, unsigne
     : Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt;(i, area), m_boundary(boundary), j(j)
 {
     //variable_definition
-}</custom_vector_form_surf>
+}
 
-<custom_vector_form_surf_value>template &lt;typename Scalar&gt;
+</custom_vector_form_surf>
+
+<custom_vector_form_surf_value>
+
+template &lt;typename Scalar&gt;
 Scalar CustomVectorFormSurf&lt;Scalar&gt;::value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *v,
                                            Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext)
 {
@@ -172,9 +209,12 @@ Scalar CustomVectorFormSurf&lt;Scalar&gt;::value(int n, double *wt, Hermes::Herm
         result += wt[i] * //expression
     }
     return result;
-}</custom_vector_form_surf_value>
+}
+
+</custom_vector_form_surf_value>
 
 <custom_vector_form_surf_ord>
+
 template &lt;typename Scalar&gt;
 Hermes::Ord CustomVectorFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
                                               Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext)
@@ -187,32 +227,40 @@ Hermes::Ord CustomVectorFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::H
     }	
     return result;
 
-}</custom_vector_form_surf_ord>
+}
+
+</custom_vector_form_surf_ord>
 
 <custom_essential_form_surf>
+
 template &lt;typename Scalar&gt;
 CustomEssentialFormSurf&lt;Scalar&gt;::CustomEssentialFormSurf(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
     : Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt;(mesh), m_boundary(boundary)
 {
      //variable_definition
 }
+
 </custom_essential_form_surf>
 
 <custom_essential_form_surf_value>
+
 template &lt;typename Scalar&gt;
-double CustomEssentialFormSurf&lt;Scalar&gt;::value(double x, double y)
+Scalar CustomEssentialFormSurf&lt;Scalar&gt;::value(double x, double y)
 {
     double result = //expression
     return result;
 }
+
 </custom_essential_form_surf_value>
 
 <custom_essential_form_surf_derivatives>
+
 template &lt;typename Scalar&gt;
-void CustomEssentialFormSurf&lt;Scalar&gt;::derivatives (double x, double y, double&amp; dx, double&amp; dy)
+void CustomEssentialFormSurf&lt;Scalar&gt;::derivatives (double x, double y, Scalar&amp; dx, Scalar&amp; dy)
 {
 
 }
+
 </custom_essential_form_surf_derivatives>
 
 <footer>

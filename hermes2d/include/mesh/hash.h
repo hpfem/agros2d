@@ -23,6 +23,16 @@ namespace Hermes
   namespace Hermes2D
   {
     struct Node;
+
+    namespace Views
+    {
+      class MeshView;
+      class ScalarView;
+      class Linearizer;
+      class Vectorizer;
+      class Orderizer;
+    };
+
     /// \brief Stores and searches node tables.
     ///
     /// HashTable is a base class for Mesh. It serves as a container for all nodes
@@ -31,18 +41,19 @@ namespace Hermes
     class HERMES_API HashTable
     {
     public:
+        /// Returns the total number of nodes stored.
+        int get_num_nodes() const;
+
+        /// Retrieves a node by its id number.
+        Node* get_node(int id) const;
+
+        /// Returns the maximum node id number plus one.
+        int get_max_node_id() const;
+
+    protected:
 
       HashTable();
       ~HashTable();
-
-      /// Retrieves a node by its id number.
-      Node* get_node(int id) const;
-
-      /// Returns the total number of nodes stored.
-      int get_num_nodes() const;
-
-      /// Returns the maximum node id number plus one.
-      int get_max_node_id() const;
 
       /// Returns a vertex node with parent id's p1 and p2 if it exists, NULL otherwise.
       Node* peek_vertex_node(int p1, int p2);
@@ -62,8 +73,6 @@ namespace Hermes
 
       static const int H2D_DEFAULT_HASH_SIZE = 0x8000; // 32K entries
 
-      // The following functions are used by the derived class Mesh:
-    protected:
       Array<Node> nodes; ///< Array storing all nodes
 
       /// Initializes the hash table.
@@ -109,6 +118,14 @@ namespace Hermes
 
       friend struct Node;
       friend class MeshReaderH2D;
+      template<typename Scalar> friend class NeighborSearch;
+      template<typename Scalar> friend class Space;
+      template<typename Scalar> friend class H1Space;
+      template<typename Scalar> friend class L2Space;
+      template<typename Scalar> friend class HcurlSpace;
+      template<typename Scalar> friend class HdivSpace;
+      friend class Views::ScalarView;
+      friend class Views::Linearizer;
     };
   }
 }

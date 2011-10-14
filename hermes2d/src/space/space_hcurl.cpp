@@ -165,32 +165,6 @@ namespace Hermes
         error("Wrong shapeset type in HcurlSpace<Scalar>::set_shapeset()");
     }
 
-    // Sets element order and updates enumeration of dofs. Intended for
-    // the user.
-    template<typename Scalar>
-    void HcurlSpace<Scalar>::set_element_order(int id, int order)
-    {
-      set_element_order_internal(id, order);
-
-      // since space changed, call assign_dofs()
-      this->assign_dofs();
-    }
-
-    // Sets element order without updating the enumeration of dofs. For internal use.
-    template<typename Scalar>
-    void HcurlSpace<Scalar>::set_element_order_internal(int id, int order)
-    {
-      assert_msg(this->mesh->get_element(id)->is_quad() || H2D_GET_V_ORDER(order) == 0, "Element #%d is triangle but vertical order is not zero", id);
-      if (id < 0 || id >= this->mesh->get_max_element_id())
-        error("Invalid element id.");
-
-      this->resize_tables();
-      this->edata[id].order = order;
-      this->seq++;
-    }
-
-    //// dof assignment ////////////////////////////////////////////////////////////////////////////////
-
     template<typename Scalar>
     void HcurlSpace<Scalar>::assign_edge_dofs()
     {
@@ -331,18 +305,6 @@ namespace Hermes
       return proj;
     }
 
-
-
-    //// hanging nodes /////////////////////////////////////////////////////////////////////////////////
-
-    static Node* get_mid_edge_vertex_node(Element* e, int i, int j)
-    {
-      if (e->is_triangle()) return e->sons[3]->vn[e->prev_vert(i)];
-      else if (e->sons[2] == NULL) return i == 1 ? e->sons[0]->vn[2] : i == 3 ? e->sons[0]->vn[3] : NULL;
-      else if (e->sons[0] == NULL) return i == 0 ? e->sons[2]->vn[1] : i == 2 ? e->sons[2]->vn[2] : NULL;
-      else return e->sons[i]->vn[j];
-    }
-
     template<typename Scalar>
     void HcurlSpace<Scalar>::update_constrained_nodes(Element* e, EdgeInfo* ei0, EdgeInfo* ei1, EdgeInfo* ei2, EdgeInfo* ei3)
     {
@@ -375,7 +337,7 @@ namespace Hermes
           if (ei[i] == NULL)
           {
             j = e->next_vert(i);
-            Node* mid_vn = get_mid_edge_vertex_node(e, i, j);
+            Node* mid_vn = this->get_mid_edge_vertex_node(e, i, j);
             if (mid_vn != NULL && mid_vn->is_constrained_vertex())
             {
               Node* mid_en = this->mesh->peek_edge_node(e->vn[i]->id, e->vn[j]->id);

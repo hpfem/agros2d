@@ -157,7 +157,7 @@ void SceneSolution<Scalar>::solve(SolverMode solverMode)
 
     if (isMeshed())
     {
-        InitialCondition initial(m_meshInitial, 0.0);
+        InitialCondition<double> initial(m_meshInitial, 0.0);
         m_linInitialMeshView.process_solution(&initial);
     }
 
@@ -554,7 +554,7 @@ void SceneSolution<Scalar>::processSolutionMesh()
 
     if (isSolved())
     {
-        InitialCondition initial(sln()->get_mesh(), 0.0);
+        InitialCondition<double> initial(sln()->get_mesh(), 0.0);
         m_linSolutionMeshView.process_solution(&initial);
 
         emit processedSolutionMesh();

@@ -114,8 +114,8 @@ class CustomEssentialFormSurf : public Hermes::Hermes2D::ExactSolutionScalar&lt;
 public:
     CustomEssentialFormSurf(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 
-    double value(double x, double y);
-    void derivatives (double x, double y, double&amp; dx, double&amp; dy);
+    Scalar value(double x, double y);
+    void derivatives (double x, double y, Scalar&amp; dx, Scalar&amp; dy);
 
     Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y)
     {

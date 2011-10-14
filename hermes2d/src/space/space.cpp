@@ -74,6 +74,15 @@ namespace Hermes
       if (nsize) { ::free(ndata); ndata = NULL; }
       if (esize) { ::free(edata); edata = NULL; }
     }
+    
+    template<typename Scalar>
+    Node* Space<Scalar>::get_mid_edge_vertex_node(Element* e, int i, int j)
+    {
+      if (e->is_triangle()) return e->sons[3]->vn[e->prev_vert(i)];
+      else if (e->sons[2] == NULL) return i == 1 ? e->sons[0]->vn[2] : i == 3 ? e->sons[0]->vn[3] : NULL;
+      else if (e->sons[0] == NULL) return i == 0 ? e->sons[2]->vn[1] : i == 2 ? e->sons[2]->vn[2] : NULL;
+      else return e->sons[i]->vn[j];
+    }
 
     template<typename Scalar>
     void Space<Scalar>::resize_tables()
@@ -110,6 +119,12 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    Shapeset* Space<Scalar>::get_shapeset()
+    {
+      return this->shapeset;
+    }
+
+    template<typename Scalar>
     int Space<Scalar>::get_num_dofs()
     {
       return ndof;
@@ -119,12 +134,6 @@ namespace Hermes
     int Space<Scalar>::get_max_dof() const
     {
       return next_dof - stride;
-    }
-
-    template<typename Scalar>
-    Shapeset* Space<Scalar>::get_shapeset() const
-    {
-      return shapeset;
     }
 
     template<typename Scalar>
@@ -336,15 +345,6 @@ namespace Hermes
           ed->order = H2D_MAKE_QUAD_ORDER(elem_orders_[counter], elem_orders_[counter]);
         counter++;
       }
-    }
-
-    template<typename Scalar>
-    void Space<Scalar>::set_default_order(int tri_order, int quad_order)
-    {
-      _F_;
-      if (quad_order == -1) quad_order = H2D_MAKE_QUAD_ORDER(tri_order, tri_order);
-      default_tri_order = tri_order;
-      default_quad_order = quad_order;
     }
 
     template<typename Scalar>

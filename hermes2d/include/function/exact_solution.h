@@ -35,9 +35,10 @@ namespace Hermes
 
       /// Dimension of result - either 1 or 2.
       virtual unsigned int get_dimension() const = 0;
-
+    protected:
       /// For scaling of the solution.
       Scalar exact_multiplicator;
+      template<typename T> friend class Solution;
     };
 
     /// These classes are abstract (pure virtual destructor).
@@ -58,7 +59,7 @@ namespace Hermes
       virtual void derivatives (double x, double y, Scalar& dx, Scalar& dy) = 0;
 
       /// Function returning the value and derivatives.
-      Scalar exact_function (double x, double y, Scalar& dx, Scalar& dy) {
+      Scalar exact_function (double x, double y, Scalar& dx, Scalar& dy)  {
         derivatives (x, y, dx, dy);
         return value (x, y);
       };
@@ -102,7 +103,7 @@ namespace Hermes
 
       virtual Scalar value (double x, double y) const;
 
-      virtual void derivatives (double x, double y, double& dx, double& dy) const;
+      virtual void derivatives (double x, double y, Scalar& dx, Scalar& dy) const;
 
       virtual Ord ord(Ord x, Ord y) const;
     protected:
@@ -114,11 +115,39 @@ namespace Hermes
     public:
       ZeroSolution(Mesh* mesh);
 
-      virtual double value (double x, double y) ;
+      virtual double value (double x, double y);
 
       virtual void derivatives (double x, double y, double& dx, double& dy);
 
       virtual Ord ord(Ord x, Ord y);
+    };
+
+    template<typename Scalar>
+    class HERMES_API ConstantSolutionVector : public ExactSolutionVector<Scalar>
+    {
+    public:
+      ConstantSolutionVector(Mesh* mesh, Scalar constantX, Scalar constantY);
+
+      virtual Scalar2<Scalar> value (double x, double y) const;
+
+      virtual void derivatives (double x, double y, Scalar2<Scalar>& dx, Scalar2<Scalar>& dy) const;
+
+      virtual Ord ord(Ord x, Ord y) const;
+    protected:
+      Scalar constantX;
+      Scalar constantY;
+    };
+
+    class HERMES_API ZeroSolutionVector : public ExactSolutionVector<double>
+    {
+    public:
+      ZeroSolutionVector(Mesh* mesh);
+
+      virtual Scalar2<double> value (double x, double y) const;
+
+      virtual void derivatives (double x, double y, Scalar2<double>& dx, Scalar2<double>& dy) const;
+
+      virtual Ord ord(Ord x, Ord y) const;
     };
   }
 }

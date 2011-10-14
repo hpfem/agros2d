@@ -76,16 +76,25 @@ namespace Hermes
         *  an error will be issued. Assigning an empty instance will cause
         *  deallocation of the internal structures. */
         class TrfShapeExp {
-          int num_gip; ///< A number of integration points.
-          int num_expansion; ///< A number of expansions.
-          double** values; ///< Values. The first index is index of a functions expansion, the second index is an index of a an integration point.
         public:
           /// A default contructor. Creates an empty instance.
           TrfShapeExp();
 
           /// Desructor.
           virtual ~TrfShapeExp();
-
+          
+          /// Assignment operator. Prevent unauthorized copying of the pointer.
+          const TrfShapeExp& operator = (const TrfShapeExp& other)
+          {
+            delete[] values; values = NULL;
+            error_if(other.values != NULL, "Unable to assign a non-empty values. Use references instead.");
+            return *this;
+          }
+        private:
+          int num_gip; ///< A number of integration points.
+          int num_expansion; ///< A number of expansions.
+          double** values; ///< Values. The first index is index of a functions expansion, the second index is an index of a an integration point.
+          
           /// Allocates a space for function expansions.
           /** \param[in] num_expansion A number of expansions.
           *  \param[in] num_gip A number of itegration points. */
@@ -100,13 +109,11 @@ namespace Hermes
           /** \return True if the instance is empty, i.e., the method allocate() was not called yet. */
           inline bool empty() const;
 
-          /// Assignment operator. Prevent unauthorized copying of the pointer.
-          const TrfShapeExp& operator = (const TrfShapeExp& other)
-          {
-            delete[] values; values = NULL;
-            error_if(other.values != NULL, "Unable to assign a non-empty values. Use references instead.");
-            return *this;
-          }
+          template<typename T> friend class ProjBasedSelector;
+          template<typename T> friend class L2ProjBasedSelector;
+          template<typename T> friend class H1ProjBasedSelector;
+          friend class HcurlProjBasedSelector;
+          template<typename T> friend class Adapt;
         };
 
         /// Evaluated shapes for all possible transformations for all points. The first index is a transformation, the second index is an index of a shape function.
@@ -160,9 +167,9 @@ namespace Hermes
         *  \param[in] conv_exp A conversion exponent, see evaluate_cands_score().
         *  \param[in] max_order A maximum order which considered. If ::H2DRS_DEFAULT_ORDER, a maximum order supported by the selector is used.
         *  \param[in] shapeset A shapeset. It cannot be NULL.
-        *  \param[in] vertex_order A range of orders for vertex functions. Use an empty range (i.e. Range<int>()) to skip vertex functions.
-        *  \param[in] edge_bubble_order A range of orders for edge and bubble functions. Use an empty range (i.e. Range<int>()) to skip edge and bubble functions. */
-        ProjBasedSelector(CandList cand_list, double conv_exp, int max_order, Shapeset* shapeset, const Range<int>& vertex_order, const Range<int>& edge_bubble_order);
+        *  \param[in] vertex_order A range of orders for vertex functions. Use an empty range (i.e. Range()) to skip vertex functions.
+        *  \param[in] edge_bubble_order A range of orders for edge and bubble functions. Use an empty range (i.e. Range()) to skip edge and bubble functions. */
+        ProjBasedSelector(CandList cand_list, double conv_exp, int max_order, Shapeset* shapeset, const typename OptimumSelector<Scalar>::Range& vertex_order, const typename OptimumSelector<Scalar>::Range& edge_bubble_order);
 
       protected: //internal logic
         /// True if the selector has already warned about possible inefficiency.

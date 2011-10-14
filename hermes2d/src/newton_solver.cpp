@@ -18,14 +18,13 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "newton_solver.h"
 #include "hermes_common.h"
-#include "../../src/alter_newton_solver.h"
 
 namespace Hermes
 {
   namespace Hermes2D
   {
     template<typename Scalar>
-    double NewtonSolver<Scalar>::max_allowed_residual_norm = 1E12;
+    double NewtonSolver<Scalar>::max_allowed_residual_norm = 1E9;
 
     template<typename Scalar>
     NewtonSolver<Scalar>::NewtonSolver(DiscreteProblem<Scalar>* dp) : NonlinearSolver<Scalar>(dp), kept_jacobian(NULL)

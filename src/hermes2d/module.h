@@ -45,18 +45,19 @@ class ParserFormEssential;
 
 class ProgressItemSolve;
 
-class InitialCondition : public Hermes::Hermes2D::ExactSolutionScalar<double>
+template<typename Scalar>
+class InitialCondition : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
 {
 public:
     InitialCondition(Hermes::Hermes2D::Mesh *mesh, double constant_value) : Hermes::Hermes2D::ExactSolutionScalar<double>(mesh),
         constant_value(constant_value) {}
 
-    virtual double value(double x, double y)
+    virtual Scalar value(double x, double y)
     {
         return constant_value;
     }
 
-    virtual void derivatives(double x, double y, double& dx, double& dy)
+    virtual void derivatives(double x, double y, Scalar& dx, Scalar& dy)
     {
         dx = 0;
         dy = 0;

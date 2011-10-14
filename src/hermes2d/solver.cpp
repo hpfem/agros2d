@@ -418,7 +418,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
         if (analysisType == AnalysisType_Transient)
         {
             // constant initial solution
-            InitialCondition *initial = new InitialCondition(mesh, initialCondition);
+            InitialCondition<double> *initial = new InitialCondition<double>(mesh, initialCondition);
             solutionArrayList.push_back(solutionArray(initial, space.at(i)));
         }
     }
@@ -562,8 +562,8 @@ SolutionArray<Scalar> *SolverAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solu
 
     assert(space);
     //solution->space = new Hermes::Hermes2D::Space<Scalar>();
-    solution->space = space->dup(space->get_mesh());
-
+    // solution->space = space->dup(space->get_mesh());
+    solution->space = space;
 
     solution->adaptiveError = adaptiveError;
     solution->adaptiveSteps = adaptiveSteps;

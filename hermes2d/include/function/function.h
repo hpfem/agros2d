@@ -24,6 +24,26 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    struct SurfPos;
+    class PrecalcShapeset;
+    namespace RefinementSelectors{
+      template<typename Scalar> class Selector;
+      template<typename Scalar> class HOnlySelector;
+      template<typename Scalar> class POnlySelector;
+      template<typename Scalar> class OptimumSelector;
+      template<typename Scalar> class ProjBasedSelector;
+      template<typename Scalar> class L2ProjBasedSelector;
+      template<typename Scalar> class H1ProjBasedSelector;
+      class HcurlProjBasedSelector;
+    };
+    template<typename Scalar> class Geom;
+
+    namespace Views{
+      class Orderizer;
+      class Linearizer;
+      class Vectorizer;
+    };
+
     /// Precalculation masks
     enum
     {
@@ -81,23 +101,8 @@ namespace Hermes
       /// Default constructor.
       Function();
 
-      /// \brief Returns the polynomial degree of the function being represented by the class.
-      int get_fn_order() const;
-
-      /// \brief Returns the polynomial degree of the function at given edge. To be overridden in derived classes.
-      /// \param edge [in] Edge at which the order should be evaluated. (0-3)
-      virtual int get_edge_fn_order(int edge) const;
-
       /// \brief Returns the number of components of the function being represented by the class.
       int get_num_components() const;
-
-      /// Activates an integration rule of the specified order. Subsequent calls to
-      /// get_values(), get_dx_values() etc. will be returning function values at these points.
-      /// \param order [in] Integration rule order.
-      /// \param mask [in] A combination of one or more of the constants H2D_FN_VAL, H2D_FN_DX, H2D_FN_DY,
-      ///   H2D_FN_DXX, H2D_FN_DYY, H2D_FN_DXY specifying the values which should be precalculated. The default is
-      ///   H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY. You can also use H2D_FN_ALL to precalculate everything.
-      void set_quad_order(unsigned int order, int mask = H2D_FN_DEFAULT);
 
       /// \brief Returns function values.
       /// \param component [in] The component of the function (0 or 1).
@@ -135,19 +140,30 @@ namespace Hermes
       /// \param component [in] The component of the function (0 or 1).
       /// \return The second mixed derivative of the function at all points of the current integration rule.
       Scalar* get_dxy_values(int component = 0);
+      
+      /// \brief Returns the current quadrature points.
+      Quad2D* get_quad_2d() const;
 
-      /// For internal use.
+      /// Activates an integration rule of the specified order. Subsequent calls to
+      /// get_values(), get_dx_values() etc. will be returning function values at these points.
+      /// \param order [in] Integration rule order.
+      /// \param mask [in] A combination of one or more of the constants H2D_FN_VAL, H2D_FN_DX, H2D_FN_DY,
+      ///   H2D_FN_DXX, H2D_FN_DYY, H2D_FN_DXY specifying the values which should be precalculated. The default is
+      ///   H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY. You can also use H2D_FN_ALL to precalculate everything.
+      void set_quad_order(unsigned int order, int mask = H2D_FN_DEFAULT);
+      
       Scalar* get_values(int a, int b);
 
+      /// \brief Returns the polynomial degree of the function being represented by the class.
+      int get_fn_order() const;
+
+    protected:
       /// \brief Selects the quadrature points in which the function will be evaluated.
       /// \details It is possible to switch back and forth between different quadrature
       /// points: no precalculated values are freed. The standard quadrature is
       /// always selected by default already.
       /// \param quad_2d [in] The quadrature points.
       virtual void set_quad_2d(Quad2D* quad_2d);
-
-      /// \brief Returns the current quadrature points.
-      Quad2D* get_quad_2d() const;
 
       /// \brief Frees all precalculated tables.
       virtual void free() = 0;
@@ -168,7 +184,9 @@ namespace Hermes
         Node& operator=(const Node& other) { return *this; }; ///< Assignment is not allowed.
       };
 
-    protected:
+      /// \brief Returns the polynomial degree of the function at given edge. To be overridden in derived classes.
+      /// \param edge [in] Edge at which the order should be evaluated. (0-3)
+      virtual int get_edge_fn_order(int edge) const;
 
       /// precalculates the current function at the current integration points.
       virtual void precalculate(int order, int mask) = 0;
@@ -212,7 +230,36 @@ namespace Hermes
 
       void check_order(Quad2D* quad, int order);
 
+      static void check_params(int component, Node* cur_node, int num_components);
+    
+      static void check_table(int component, Node* cur_node, int n, const char* msg);
+
       static int idx2mask[6][2];  ///< index to mask table
+      template<typename T> friend class KellyTypeAdapt;
+      template<typename T> friend class RefinementSelectors::H1ProjBasedSelector;
+      template<typename T> friend class RefinementSelectors::L2ProjBasedSelector;
+      friend class RefinementSelectors::HcurlProjBasedSelector;
+      template<typename T> friend class Adapt;
+      friend class Views::Orderizer;
+      friend class Views::Vectorizer;
+      friend class Views::Linearizer;
+      
+      template<typename T> friend class DiscontinuousFunc;
+      template<typename T> friend class DiscreteProblem;
+      template<typename T> friend class Global;
+      friend class CurvMap;
+
+      template<typename T> friend class Func;
+      template<typename T> friend class Geom;
+      template<typename T> friend class Filter;
+      template<typename T> friend class SimpleFilter;
+      template<typename T> friend class DXDYFilter;
+      friend class ComplexFilter;
+      friend class VonMisesFilter;
+      friend HERMES_API Geom<double>* init_geom_vol(RefMap *rm, const int order);
+      friend HERMES_API Geom<double>* init_geom_surf(RefMap *rm, SurfPos* surf_pos, const int order);
+      friend HERMES_API Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order);
+      template<typename T> friend HERMES_API Func<T>* init_fn(MeshFunction<T>*fu, const int order);
     };
   }
 }

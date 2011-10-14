@@ -69,7 +69,7 @@ namespace Hermes
 
       template<typename Scalar>
       Scalar DefaultMatrixFormVol<Scalar>::value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-        Geom<double> *e, ExtData<Scalar> *ext)
+        Geom<double> *e, ExtData<Scalar> *ext) const
       {
         Scalar result = 0;
         if (gt == HERMES_PLANAR) {
