@@ -1,6 +1,6 @@
 
 /* Define the Fortran name mangling to be used for the BLAS */
-#define F77_BLAS_MANGLE(name,NAME) name ## _
+#define F77_BLAS_MANGLE(name, NAME) name ## _
 
 /* Define to dummy `main' function (if any) required to link to the Fortran
    libraries. */
@@ -8,10 +8,10 @@
 
 /* Define to a macro mangling the given C identifier (in lower and upper
    case), which must not contain underscores, for linking with Fortran. */
-#define F77_FUNC(name,NAME) name ## _
+#define F77_FUNC(name, NAME) name ## _
 
 /* As F77_FUNC, but for C identifiers containing underscores. */
-#define F77_FUNC_(name,NAME) name ## _
+#define F77_FUNC_(name, NAME) name ## _
 
 /* Define if F77 and FC dummy `main' functions are identical. */
 /* #undef FC_DUMMY_MAIN_EQ_F77 */
@@ -20,9 +20,7 @@
 /* #undef HAVE_FPU_CONTROL_H */
 
 /* define if the compiler supports abi::__cxa_demangle(...) */
-#ifdef HAVE_CXXABI
-#define HAVE_GCC_ABI_DEMANGLE
-#endif
+//#define HAVE_GCC_ABI_DEMANGLE
 
 /* define if we want to use MPI */
 /* #undef HAVE_MPI */
@@ -117,6 +115,6 @@
 #  endif
 #endif
 
-#define HAVE_TEUCHOS_LINK
+// #define HAVE_TEUCHOS_LINK
 
-#define HAVE_TEUCHOS_BFD
+// #define HAVE_TEUCHOS_BFD

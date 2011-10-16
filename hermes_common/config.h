@@ -12,7 +12,7 @@
 
 // stacktrace
 /* #define HAVE_TEUCHOS_LINK */
-/* #undef HAVE_TEUCHOS_BFD */
+#undef HAVE_TEUCHOS_BFD
 /* #define HAVE_EXECINFO */
 /* #define HAVE_VASPRINTF */
 /* #define HAVE_CXXABI */

@@ -1,3 +1,9 @@
+agros2d (1.9-5ubuntu48) oneiric; urgency=low
+
+  * reworked postprocessor panel 
+
+ -- Pavel Karban <pkarban@gmail.com>  Wen, 15 Oct 2011 12:40:00 +0200
+
 agros2d (1.9-ubuntu43) natty; urgency=low
 
   * added quad element support
