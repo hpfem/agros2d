@@ -1218,11 +1218,7 @@ void Solution::save(const char* filename, bool compress)
   // write the mesh
   mesh->save_raw(f);
 
-#ifdef Q_WS_WIN
-  if (compress) _pclose(f); else fclose(f);
-#else
   if (compress) pclose(f); else fclose(f);
-#endif
 }
 
 
@@ -1320,11 +1316,7 @@ void Solution::load(const char* filename)
   //printf("Loading mesh from file and setting own_mesh = true.\n");
   own_mesh = true;
 
-#ifdef Q_WS_WIN
-  if (compressed) _pclose(f); else fclose(f);
-#else
   if (compressed) pclose(f); else fclose(f);
-#endif
 
   init_dxdy_buffer();
 }

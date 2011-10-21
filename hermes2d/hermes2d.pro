@@ -34,31 +34,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             ../hermes_common/solver/umfpack_solver.cpp \
             ../hermes_common/python/python_api.cpp \
             ../hermes_common/python/python_engine.cpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_any.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_ConstTypeTraits.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_Exceptions.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_NullIteratorTraits.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_RCPDecl.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_stacktrace.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_TypeNameTraits.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_Assert.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_dyn_cast.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_getBaseObjVoidPtr.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_PtrDecl.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_RCP.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_TestForException.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_ConfigDefs.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_ENull.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_map.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_Ptr.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_RCPNode.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_toString.hpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_dyn_cast.cpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_Ptr.cpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_RCPNode.cpp \
             ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_stacktrace.cpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_TestForException.cpp \
-            ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_TypeNameTraits.cpp \
             src/discrete_problem.cpp \
             src/graph.cpp \
             src/hermes2d.cpp \

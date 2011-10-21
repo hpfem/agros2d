@@ -440,6 +440,10 @@ void ScriptEditorDialog::createActions()
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
     actHelp->setShortcut(QKeySequence::HelpContents);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
+
+    actHelpKeywordList = new QAction(icon("help-contents"), tr("&Keyword List"), this);
+    actHelpKeywordList->setShortcut(QKeySequence::HelpContents);
+    connect(actHelpKeywordList, SIGNAL(triggered()), this, SLOT(doHelpKeywordList()));
 }
 
 void ScriptEditorDialog::createControls()
@@ -488,6 +492,7 @@ void ScriptEditorDialog::createControls()
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
+    mnuHelp->addAction(actHelpKeywordList);
 
 #ifdef Q_WS_MAC
     int iconHeight = 24;
@@ -947,7 +952,14 @@ void ScriptEditorDialog::doHelp()
 {
     logMessage("ScriptEditorDialog::doHelp()");
 
-    showPage("scripting/scripting.html");
+    showPage("scripting/commands.html");
+}
+
+void ScriptEditorDialog::doHelpKeywordList()
+{
+    logMessage("ScriptEditorDialog::doHelpKeywordList()");
+
+    showPage("scripting/keyword_list.html");
 }
 
 void ScriptEditorDialog::doCloseTab(int index)

@@ -4,14 +4,19 @@ Processing Results
 Viewing of Results
 ------------------
 
-You can display your results using various pre-defined ways. All options can be set using the panel "Postprocessor properties".
+You can display your results using various pre-defined ways. All options can be set using the panel "View Properties".
 
-.. image:: ./postprocessor_properties.png
+.. image:: ./view_properties-basic.png
    :align: center
    :scale: 50%
-   :alt: Postprocessor properties
+   :alt: View properties - basic
 
-Fig. 1.: Postprocessor properties panel
+.. image:: ./view_properties-advanced.png
+   :align: center
+   :scale: 50%
+   :alt: View properties
+
+Fig. 1.: View Properties panel
 
 Calculation of Field Quantity
 -----------------------------

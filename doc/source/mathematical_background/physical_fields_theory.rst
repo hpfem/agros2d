@@ -222,48 +222,48 @@ Harmonic magnetic field can be described by partial differential equation
 
 .. math::
 
-   \curl \frac{1}{\mu}\, \left( \curl \vecfaz{A} - \vec{B}_\mathrm{r} \right) + \sigma \vec{v} \times \curl \vecfaz{A} + \mj \omega \sigma \vecfaz{A} = \vecfaz{J}_\mathrm{ext},
+   \curl \frac{1}{\mu}\, \left( \curl \vecphas{A} - \vec{B}_\mathrm{r} \right) + \sigma \vec{v} \times \curl \vecphas{A} + \mj \omega \sigma \vecphas{A} = \vecphas{J}_\mathrm{ext},
 
-where $\mu$ is permeability of the material, $\faz{A} = ( \faz{A}_z\,\mathrm{or}\,\faz{A}_{\varphi} )$ is component of the magnetic vector potential, $\omega = 2 \pi f$ is frequency, $\sigma$ is electric conductivity, $\vec{v}$ is velocity and finally $\faz{J}_\mathrm{ext} = ( \faz{J}_z\,\mathrm{or}\,\faz{J}_{\varphi} )$ is component of source current density. Magnetic flux density is given by form
+where $\mu$ is permeability of the material, $\phas{A} = ( \phas{A}_z\,\mathrm{or}\,\phas{A}_{\varphi} )$ is component of the magnetic vector potential, $\omega = 2 \pi f$ is frequency, $\sigma$ is electric conductivity, $\vec{v}$ is velocity and finally $\phas{J}_\mathrm{ext} = ( \phas{J}_z\,\mathrm{or}\,\phas{J}_{\varphi} )$ is component of source current density. Magnetic flux density is given by form
 
 .. math::
 
-   \vecfaz{B} = \curl \vecfaz{A},
+   \vecphas{B} = \curl \vecphas{A},
 
 magnetic field is
 
 .. math::
 
-   \vecfaz{H} = \frac{\vecfaz{B}}{\mu},
+   \vecphas{H} = \frac{\vecphas{B}}{\mu},
 
 eddy current density is
 
 .. math::
 
-   \vecfaz{J}_\mathrm{trans} = \mj \omega \sigma \vecfaz{A},
+   \vecphas{J}_\mathrm{trans} = \mj \omega \sigma \vecphas{A},
 
 velocity current density is 
 
 .. math::
-  
-   \vecfaz{J}_\mathrm{vel} = \sigma \vec{v} \times \vecfaz{B} = \sigma \vec{v} \times \curl \vecfaz{A},
+
+   \vecphas{J}_\mathrm{vel} = \sigma \vec{v} \times \vecphas{B} = \sigma \vec{v} \times \curl \vecphas{A},
 
 and total current density is
 
 .. math::
 
-   \vecfaz{J}_\mathrm{tot} = \vecfaz{J}_\mathrm{ext} + \vecfaz{J}_\mathrm{trans} + \vecfaz{J}_\mathrm{vel}.
+   \vecphas{J}_\mathrm{tot} = \vecphas{J}_\mathrm{ext} + \vecphas{J}_\mathrm{trans} + \vecphas{J}_\mathrm{vel}.
 
 Boundary conditions
 ^^^^^^^^^^^^^^^^^^^
 
 * Dirichlet BC
 
-  Component of the magnetic vector potential $\faz{A} = \faz{f}$ on the boundary is known.
+  Component of the magnetic vector potential $\phas{A} = \phas{f}$ on the boundary is known.
 
 * Neumann BC
 
-  Normal derivative of magnetic vector potential $\frac{\partial \faz{A}}{\partial n} = \faz{g}$ on the boundary is known.
+  Normal derivative of magnetic vector potential $\frac{\partial \phas{A}}{\partial n} = \phas{g}$ on the boundary is known.
 
 Subdomain integrals
 ^^^^^^^^^^^^^^^^^^^
@@ -272,43 +272,43 @@ External current:
 
 .. math::
 
-   \faz{I}_\mathrm{ext} = \int_S \vecfaz{J}_\mathrm{ext} \dif S\,\,\,\mathrm{(A)}
+   \phas{I}_\mathrm{ext} = \int_S \vecphas{J}_\mathrm{ext} \dif S\,\,\,\mathrm{(A)}
 
 Eddy current:
 
 .. math::
 
-   \faz{I}_\mathrm{trans} = \int_S \vecfaz{J}_\mathrm{trans} \dif S\,\,\,\mathrm{(A)}
+   \phas{I}_\mathrm{trans} = \int_S \vecphas{J}_\mathrm{trans} \dif S\,\,\,\mathrm{(A)}
 
 Velocity current:
 
 .. math::
 
-   \faz{I}_\mathrm{vel} = \int_S \vecfaz{J}_\mathrm{vel} \dif S\,\,\,\mathrm{(A)}
+   \phas{I}_\mathrm{vel} = \int_S \vecphas{J}_\mathrm{vel} \dif S\,\,\,\mathrm{(A)}
 
 Total current: 
 
 .. math::
 
-   \faz{I}_\mathrm{tot} = \faz{I}_\mathrm{ext} + \faz{I}_\mathrm{trans} + \faz{I}_\mathrm{vel}
+   \phas{I}_\mathrm{tot} = \phas{I}_\mathrm{ext} + \phas{I}_\mathrm{trans} + \phas{I}_\mathrm{vel}
 
 Power losses:
 
 .. math::
 
-   P = \int_V \frac{\left( \vecfaz{J}_\mathrm{tot} \cdot \vecfaz{J}_\mathrm{tot}^* \right)}{\sigma} \dif V\,\,\,\mathrm{(W)}
+   P = \int_V \frac{\left( \vecphas{J}_\mathrm{tot} \cdot \vecphas{J}_\mathrm{tot}^* \right)}{\sigma} \dif V\,\,\,\mathrm{(W)}
 
 Lorentz force:
 
 .. math::
 
-   F_\mathrm{L} = \int_V \vecfaz{J}_\mathrm{tot} \times \vecfaz{B} \dif V\,\,\,\mathrm{(N)}
+   F_\mathrm{L} = \int_V \vecphas{J}_\mathrm{tot} \times \vecphas{B} \dif V\,\,\,\mathrm{(N)}
 
 Average energy:
 
 .. math::
 
-   W_\mathrm{m} = \int_V \frac{1}{2} \vecfaz{H} \vecfaz{B} \dif V\,\,\,\mathrm{(N)}
+   W_\mathrm{m} = \int_V \frac{1}{2} \vecphas{H} \vecphas{B} \dif V\,\,\,\mathrm{(N)}
 
 Heat Transfer
 -------------

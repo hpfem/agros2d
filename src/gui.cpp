@@ -743,6 +743,7 @@ QWidget *AboutDialog::createAgros2D()
                                          "</p>")
                                       .arg(QApplication::applicationVersion()));
     labelContent->setWordWrap(true);
+    labelContent->setOpenExternalLinks(true);
 
 
     QLabel *labelIcon = new QLabel();
@@ -790,6 +791,7 @@ QWidget *AboutDialog::createHermes2D()
                                          "</p>"
                                          ));
     labelContent->setWordWrap(true);
+    labelContent->setOpenExternalLinks(true);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(labelContent);
@@ -812,6 +814,7 @@ QWidget *AboutDialog::createLibraries()
                                          "<b>FFmpeg:</b> FFmpeg group (<a href=\"http://ffmpeg.org/\">FFmpeg</a>)<br/>"
                                          ));
     labelContent->setWordWrap(true);
+    labelContent->setOpenExternalLinks(true);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(labelContent);
@@ -829,6 +832,7 @@ QWidget *AboutDialog::createLicense()
                                          "<p>Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Agros2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>."
                                          ));
     labelContent->setWordWrap(true);
+    labelContent->setOpenExternalLinks(true);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(labelContent);

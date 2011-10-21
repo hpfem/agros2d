@@ -71,7 +71,9 @@ Changes in Agros2D
 
   * reworked postprocessor settings
 
-1.8.1.xxx (xx.xx.2011)
+1.9.5.894 (30.09.2011)
 ----------------------
 
-  * 
+  * collaboration features
+  * redesigned view panel, config dialog and menus
+  * other small fixes

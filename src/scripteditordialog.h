@@ -109,7 +109,9 @@ public slots:
     void doReplace();
 
     void doDataChanged();
+
     void doHelp();
+    void doHelpKeywordList();
 
     void doCloseTab(int index);
 
@@ -161,6 +163,7 @@ private:
     QAction *actCreateFromModel;
 
     QAction *actHelp;
+    QAction *actHelpKeywordList;
 
     QTabWidget *tabWidget;
 

@@ -1,3 +1,5 @@
+.. _`electrostatic-axisymmetric-sparkgap`:
+
 Electrostatic Axisymmetric Sparkgap
 ===================================
 

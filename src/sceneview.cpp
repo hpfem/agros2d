@@ -161,7 +161,7 @@ void SceneView::createActions()
     actSceneZoomBestFit->setStatusTip(tr("Best fit"));
     connect(actSceneZoomBestFit, SIGNAL(triggered()), this, SLOT(doZoomBestFit()));
 
-    actSceneZoomRegion = new QAction(icon("zoom-best-fit"), tr("Zoom region"), this);
+    actSceneZoomRegion = new QAction(icon("zoom-fit-best"), tr("Zoom region"), this);
     actSceneZoomRegion->setStatusTip(tr("Zoom region"));
     actSceneZoomRegion->setCheckable(true);
 
@@ -287,16 +287,13 @@ void SceneView::createMenu()
 
     mnuScene = new QMenu(this);
 
+    /*
     QMenu *mnuModeGroup = new QMenu(tr("Mode"), this);
     mnuModeGroup->addAction(actSceneModeNode);
     mnuModeGroup->addAction(actSceneModeEdge);
     mnuModeGroup->addAction(actSceneModeLabel);
     mnuModeGroup->addAction(actSceneModePostprocessor);
-
-    QMenu *mnuProjectionGroup = new QMenu(tr("Projection"), this);
-    mnuProjectionGroup->addAction(actSetProjectionXY);
-    mnuProjectionGroup->addAction(actSetProjectionXZ);
-    mnuProjectionGroup->addAction(actSetProjectionYZ);
+    */
 
     mnuScene->addAction(m_scene->actNewNode);
     mnuScene->addAction(m_scene->actNewEdge);
@@ -307,12 +304,11 @@ void SceneView::createMenu()
     mnuScene->addSeparator();
     mnuScene->addAction(actSceneViewSelectRegion);
     mnuScene->addAction(m_scene->actTransform);
-    mnuScene->addSeparator();
-    mnuScene->addMenu(mnuModeGroup);
-    mnuScene->addMenu(mnuProjectionGroup);
+    //mnuScene->addSeparator();
+    //mnuScene->addMenu(mnuModeGroup);
     mnuScene->addSeparator();
     mnuScene->addAction(actSceneObjectProperties);
-    mnuScene->addAction(m_scene->actProblemProperties);
+    //mnuScene->addAction(m_scene->actProblemProperties);
 }
 
 void SceneView::initializeGL()

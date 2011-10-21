@@ -7,11 +7,11 @@ QT += opengl \
 
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=9
-DEFINES += VERSION_SUB=2
-DEFINES += VERSION_GIT=823
+DEFINES += VERSION_SUB=5
+DEFINES += VERSION_GIT=899
 DEFINES += VERSION_YEAR=2011
-DEFINES += VERSION_MONTH=5
-DEFINES += VERSION_DAY=23
+DEFINES += VERSION_MONTH=9
+DEFINES += VERSION_DAY=26
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -34,6 +34,7 @@ CONFIG += warn_off
 # QMAKE_CXXFLAGS += -w
 # QMAKE_CXXFLAGS_DEBUG += -Wuninitialized
 # QMAKE_CXXFLAGS += -Wuninitialized
+QMAKE_CXXFLAGS += -fpermissive
 OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
@@ -149,7 +150,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
-    INCLUDEPATH += /usr/include/python2.6
+    INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
     INCLUDEPATH += ../hermes2d/src
     LIBS += -L../hermes2d/lib

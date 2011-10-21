@@ -22,13 +22,6 @@
 
 #include "config.h"
 
-// RCP
-#ifndef WITH_TRILINOS
-#include "../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_RCP.hpp"
-#else
-#include "Teuchos_RCP.hpp"
-#endif
-
 // hermes_common solvers
 #include "../hermes_common/solver/amesos.h"
 #include "../hermes_common/solver/aztecoo.h"
@@ -48,7 +41,7 @@
 #include "boundaryconditions/essential_bcs.h"
 
 // Eigensolver
-#include "../hermes_common/solver/eigensolver.h"
+// #include "../hermes_common/solver/eigensolver.h"
 
 #include "hermes_logging.h"
 
