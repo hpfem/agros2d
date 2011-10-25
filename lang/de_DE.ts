@@ -151,7 +151,7 @@
     <message>
         <location filename="../src/chartdialog.cpp" line="219"/>
         <source>Angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Winkel</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="223"/>
@@ -458,7 +458,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="473"/>
         <source>Decimal places:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dezimalstellen:</translation>
     </message>
     <message>
         <source>Jet</source>
@@ -495,7 +495,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="461"/>
         <source>Log. scale</source>
-        <translation type="unfinished">Log. Skala</translation>
+        <translation>Log. Skala</translation>
     </message>
     <message>
         <source>Palette:</source>
@@ -508,7 +508,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="470"/>
         <source>Base:</source>
-        <translation type="unfinished">Grund des Logarithmus:</translation>
+        <translation>Grund des Logarithmus:</translation>
     </message>
     <message>
         <source>Number of decimal places:</source>
@@ -517,7 +517,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="476"/>
         <source>Scalar view</source>
-        <translation type="unfinished">Skalare Darstellung</translation>
+        <translation>Skalare Darstellung</translation>
     </message>
     <message>
         <source>Contours count:</source>
@@ -567,7 +567,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="497"/>
         <source>Height:</source>
-        <translation type="unfinished">Höhe:</translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="501"/>
@@ -848,22 +848,22 @@
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>Delete</source>
-        <translation type="unfinished">Löschen</translation>
+        <translation>Löschen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>Are you sure that you want to permanently delete the application logfile?</source>
-        <translation type="unfinished">Sind Sie sicher, dass Sie den Datensatz der Applikation ständig entfernen wollen?</translation>
+        <translation>Sind Sie sicher, dass Sie den Datensatz der Applikation ständig entfernen wollen?</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Ja</translation>
+        <translation>&amp;Ja</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Nein</translation>
+        <translation>&amp;Nein</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="792"/>
@@ -1493,17 +1493,17 @@
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="388"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="413"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished">Die Randbedingung &apos;%1&apos; existiert nicht.</translation>
+        <translation>Die Randbedingung &apos;%1&apos; existiert nicht.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="472"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>neue Randbedingung</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="533"/>
         <source>new material</source>
-        <translation type="unfinished">neues Material</translation>
+        <translation>neues Material</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="618"/>
@@ -1515,7 +1515,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="622"/>
         <source>Density:</source>
-        <translation type="unfinished">Dichte:</translation>
+        <translation>Dichte:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="623"/>
@@ -1532,21 +1532,21 @@
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="679"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="698"/>
         <source>real:</source>
-        <translation type="unfinished">Realkomponente:</translation>
+        <translation>Realkomponente:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="633"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="680"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="699"/>
         <source>imag:</source>
-        <translation type="unfinished">Imaginäre Komponente:</translation>
+        <translation>Imaginäre Komponente:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="634"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="681"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="700"/>
         <source>magnitude:</source>
-        <translation type="unfinished">Größe:</translation>
+        <translation>Größe:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="636"/>
@@ -1563,7 +1563,7 @@
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="676"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="695"/>
         <source>Pressure</source>
-        <translation type="unfinished">Druck</translation>
+        <translation>Druck</translation>
     </message>
 </context>
 <context>
@@ -1933,13 +1933,13 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="375"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="388"/>
         <source>K</source>
-        <translation type="unfinished"></translation>
+        <translation>K</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="360"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="361"/>
         <source>K/m</source>
-        <translation type="unfinished">K/m</translation>
+        <translation>K/m</translation>
     </message>
     <message>
         <source>deg.</source>
@@ -2302,17 +2302,17 @@
         <location filename="../src/hermes2d/hermes_rf.cpp" line="442"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="468"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished">Die Randbedingung &apos;%1&apos; existiert nicht.</translation>
+        <translation>Die Randbedingung &apos;%1&apos; existiert nicht.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="538"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>neue Randbedingung</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="615"/>
         <source>new material</source>
-        <translation type="unfinished">neues Material</translation>
+        <translation>neues Material</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="707"/>
@@ -2324,37 +2324,37 @@
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="711"/>
         <source>Permittivity:</source>
-        <translation type="unfinished">Permitivität:</translation>
+        <translation>Permitivität:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="712"/>
         <source>Permeability:</source>
-        <translation type="unfinished">Permeabilität:</translation>
+        <translation>Permeabilität:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="713"/>
         <source>Conductivity:</source>
-        <translation type="unfinished">Leitfähigkeit:</translation>
+        <translation>Leitfähigkeit:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="732"/>
         <source>Flux density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetische Induktion - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="741"/>
         <source>Flux density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetische Induktion - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="756"/>
         <source>Magnetic field - real</source>
-        <translation type="unfinished">Magnetisches Feld - Realkomponente</translation>
+        <translation>Magnetisches Feld - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="765"/>
         <source>Magnetic field - imag</source>
-        <translation type="unfinished">Magnetisches Feld - imag. Komponente</translation>
+        <translation>Magnetisches Feld - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="774"/>
@@ -2365,40 +2365,40 @@
         <location filename="../src/hermes2d/hermes_rf.cpp" line="777"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="778"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation>P</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="779"/>
         <source>P:</source>
-        <translation type="unfinished"></translation>
+        <translation>P:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="783"/>
         <source>Current density</source>
-        <translation type="unfinished">Stromdichte</translation>
+        <translation>Stromdichte</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="717"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Elektrisches Feld</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="720"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="786"/>
         <source>real:</source>
-        <translation type="unfinished">Realkomponente:</translation>
+        <translation>Realkomponente:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="721"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="787"/>
         <source>imag:</source>
-        <translation type="unfinished">Imaginäre Komponente:</translation>
+        <translation>Imaginäre Komponente:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="722"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="788"/>
         <source>magnitude:</source>
-        <translation type="unfinished">Größe:</translation>
+        <translation>Größe:</translation>
     </message>
 </context>
 <context>
@@ -6789,7 +6789,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="802"/>
         <source>Permittivity</source>
-        <translation type="unfinished">Permitivität</translation>
+        <translation>Permitivität</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="804"/>
