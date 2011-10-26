@@ -26,7 +26,7 @@
     <message>
         <location filename="../src/gui.cpp" line="705"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Lizenz</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="707"/>
@@ -151,7 +151,7 @@
     <message>
         <location filename="../src/chartdialog.cpp" line="219"/>
         <source>Angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Winkel</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="223"/>
@@ -166,7 +166,7 @@
     <message>
         <location filename="../src/chartdialog.cpp" line="250"/>
         <source>Reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>umgekehrt</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="258"/>
@@ -458,7 +458,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="473"/>
         <source>Decimal places:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dezimalstellen:</translation>
     </message>
     <message>
         <source>Jet</source>
@@ -495,7 +495,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="461"/>
         <source>Log. scale</source>
-        <translation type="unfinished">Log. Skala</translation>
+        <translation>Log. Skala</translation>
     </message>
     <message>
         <source>Palette:</source>
@@ -508,7 +508,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="470"/>
         <source>Base:</source>
-        <translation type="unfinished">Grund des Logarithmus:</translation>
+        <translation>Grund des Logarithmus:</translation>
     </message>
     <message>
         <source>Number of decimal places:</source>
@@ -517,7 +517,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="476"/>
         <source>Scalar view</source>
-        <translation type="unfinished">Skalare Darstellung</translation>
+        <translation>Skalare Darstellung</translation>
     </message>
     <message>
         <source>Contours count:</source>
@@ -567,7 +567,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="497"/>
         <source>Height:</source>
-        <translation type="unfinished">Höhe:</translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="501"/>
@@ -848,22 +848,22 @@
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>Delete</source>
-        <translation type="unfinished">Löschen</translation>
+        <translation>Löschen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>Are you sure that you want to permanently delete the application logfile?</source>
-        <translation type="unfinished">Sind Sie sicher, dass Sie den Datensatz der Applikation ständig entfernen wollen?</translation>
+        <translation>Sind Sie sicher, dass Sie den Datensatz der Applikation ständig entfernen wollen?</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Ja</translation>
+        <translation>&amp;Ja</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Nein</translation>
+        <translation>&amp;Nein</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="792"/>
@@ -1493,29 +1493,29 @@
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="388"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="413"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished">Die Randbedingung &apos;%1&apos; existiert nicht.</translation>
+        <translation>Die Randbedingung &apos;%1&apos; existiert nicht.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="472"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>neue Randbedingung</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="533"/>
         <source>new material</source>
-        <translation type="unfinished">neues Material</translation>
+        <translation>neues Material</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="618"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="671"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="690"/>
         <source>Acoustic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Akustisches Feld</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="622"/>
         <source>Density:</source>
-        <translation type="unfinished">Dichte:</translation>
+        <translation>Dichte:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="623"/>
@@ -1525,28 +1525,28 @@
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="629"/>
         <source>Acoustic pressure</source>
-        <translation type="unfinished"></translation>
+        <translation>Akustischen Druck</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="632"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="679"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="698"/>
         <source>real:</source>
-        <translation type="unfinished">Realkomponente:</translation>
+        <translation>Realkomponente:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="633"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="680"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="699"/>
         <source>imag:</source>
-        <translation type="unfinished">Imaginäre Komponente:</translation>
+        <translation>Imaginäre Komponente:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="634"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="681"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="700"/>
         <source>magnitude:</source>
-        <translation type="unfinished">Größe:</translation>
+        <translation>Größe:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="636"/>
@@ -1557,13 +1557,13 @@
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="661"/>
         <source>Acoustic pressure:</source>
-        <translation type="unfinished"></translation>
+        <translation>Akustischen Druck:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="676"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="695"/>
         <source>Pressure</source>
-        <translation type="unfinished">Druck</translation>
+        <translation>Druck</translation>
     </message>
 </context>
 <context>
@@ -1933,13 +1933,13 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="375"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="388"/>
         <source>K</source>
-        <translation type="unfinished"></translation>
+        <translation>K</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="360"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="361"/>
         <source>K/m</source>
-        <translation type="unfinished">K/m</translation>
+        <translation>K/m</translation>
     </message>
     <message>
         <source>deg.</source>
@@ -2302,17 +2302,17 @@
         <location filename="../src/hermes2d/hermes_rf.cpp" line="442"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="468"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished">Die Randbedingung &apos;%1&apos; existiert nicht.</translation>
+        <translation>Die Randbedingung &apos;%1&apos; existiert nicht.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="538"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>neue Randbedingung</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="615"/>
         <source>new material</source>
-        <translation type="unfinished">neues Material</translation>
+        <translation>neues Material</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="707"/>
@@ -2324,81 +2324,81 @@
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="711"/>
         <source>Permittivity:</source>
-        <translation type="unfinished">Permitivität:</translation>
+        <translation>Permitivität:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="712"/>
         <source>Permeability:</source>
-        <translation type="unfinished">Permeabilität:</translation>
+        <translation>Permeabilität:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="713"/>
         <source>Conductivity:</source>
-        <translation type="unfinished">Leitfähigkeit:</translation>
+        <translation>Leitfähigkeit:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="732"/>
         <source>Flux density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetische Induktion - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="741"/>
         <source>Flux density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetische Induktion - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="756"/>
         <source>Magnetic field - real</source>
-        <translation type="unfinished">Magnetisches Feld - Realkomponente</translation>
+        <translation>Magnetisches Feld - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="765"/>
         <source>Magnetic field - imag</source>
-        <translation type="unfinished">Magnetisches Feld - imag. Komponente</translation>
+        <translation>Magnetisches Feld - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="774"/>
         <source>Poynting vector</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="777"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="778"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation>P</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="779"/>
         <source>P:</source>
-        <translation type="unfinished"></translation>
+        <translation>P:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="783"/>
         <source>Current density</source>
-        <translation type="unfinished">Stromdichte</translation>
+        <translation>Stromdichte</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="717"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Elektrisches Feld</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="720"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="786"/>
         <source>real:</source>
-        <translation type="unfinished">Realkomponente:</translation>
+        <translation>Realkomponente:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="721"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="787"/>
         <source>imag:</source>
-        <translation type="unfinished">Imaginäre Komponente:</translation>
+        <translation>Imaginäre Komponente:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="722"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="788"/>
         <source>magnitude:</source>
-        <translation type="unfinished">Größe:</translation>
+        <translation>Größe:</translation>
     </message>
 </context>
 <context>
@@ -2646,12 +2646,12 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="167"/>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Shift+O</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="168"/>
         <source>Download from server...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="171"/>
@@ -2826,7 +2826,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="245"/>
         <source>Copy image to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild ins Clipboard kopieren</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="247"/>
@@ -2918,7 +2918,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="287"/>
         <source>Alt+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+W</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="288"/>
@@ -3033,7 +3033,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="339"/>
         <source>Import/Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Import/Export</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="349"/>
@@ -3294,7 +3294,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="202"/>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Basic</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="203"/>
@@ -3314,12 +3314,12 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="233"/>
         <source>Initial mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Anfangsnetz</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="240"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Nichts</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="241"/>
@@ -3349,12 +3349,12 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="235"/>
         <source>Vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektoren</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="237"/>
         <source>Solution mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Gelöstes Netz</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="262"/>
@@ -3390,12 +3390,12 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="309"/>
         <source>Minimum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="313"/>
         <source>Maximum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="318"/>
@@ -3420,94 +3420,94 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="367"/>
         <source>Show grid</source>
-        <translation type="unfinished">Raster anzeigen</translation>
+        <translation>Raster anzeigen</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="369"/>
         <source>Snap to grid</source>
-        <translation type="unfinished">Ins Raster fangen</translation>
+        <translation>Ins Raster fangen</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="372"/>
         <source>Grid step:</source>
-        <translation type="unfinished">Schritt des Rasters:</translation>
+        <translation>Schritt des Rasters:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="377"/>
         <source>Grid</source>
-        <translation type="unfinished">Raster</translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="382"/>
         <source>Set font</source>
-        <translation type="unfinished">Schrift einstellen</translation>
+        <translation>Schrift einstellen</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="389"/>
         <source>Scene font</source>
-        <translation type="unfinished">Schrift in der Szene</translation>
+        <translation>Schrift in der Szene</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="393"/>
         <source>Show rulers</source>
-        <translation type="unfinished">Lineal anzeigen</translation>
+        <translation>Lineal anzeigen</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="394"/>
         <source>Show axes</source>
-        <translation type="unfinished">Achsen anzeigen</translation>
+        <translation>Achsen anzeigen</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="395"/>
         <source>Show label</source>
-        <translation type="unfinished">Gebietzeichen zeigen</translation>
+        <translation>Gebietzeichen zeigen</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="402"/>
         <source>Other</source>
-        <translation type="unfinished">Andere</translation>
+        <translation>Andere</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="425"/>
         <location filename="../src/postprocessorview.cpp" line="539"/>
         <source>Bone</source>
-        <translation type="unfinished"></translation>
+        <translation>Knochen</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="426"/>
         <location filename="../src/postprocessorview.cpp" line="540"/>
         <source>Pink</source>
-        <translation type="unfinished"></translation>
+        <translation>Rosa</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="427"/>
         <location filename="../src/postprocessorview.cpp" line="541"/>
         <source>Spring</source>
-        <translation type="unfinished"></translation>
+        <translation>Frühling</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="428"/>
         <location filename="../src/postprocessorview.cpp" line="542"/>
         <source>Summer</source>
-        <translation type="unfinished"></translation>
+        <translation>Sommer</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="430"/>
         <location filename="../src/postprocessorview.cpp" line="544"/>
         <source>Winter</source>
-        <translation type="unfinished"></translation>
+        <translation>Winter</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="431"/>
         <location filename="../src/postprocessorview.cpp" line="545"/>
         <source>HSV</source>
-        <translation type="unfinished"></translation>
+        <translation>HSV</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="452"/>
         <location filename="../src/postprocessorview.cpp" line="549"/>
         <source>Show scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala anzeigen</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="488"/>
@@ -3536,7 +3536,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="27"/>
         <source>View Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstellung anzeigen</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="422"/>
@@ -3565,27 +3565,27 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="436"/>
         <source>Extremely coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>Extrem grobes</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="437"/>
         <source>Extra coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>Extra grob</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="438"/>
         <source>Coarser</source>
-        <translation type="unfinished"></translation>
+        <translation>Gröbere</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="439"/>
         <source>Coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>Grob</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="440"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="441"/>
@@ -3610,7 +3610,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="465"/>
         <source>Quality:</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualität:</translation>
     </message>
     <message>
         <source>Log. scale</source>
@@ -3676,7 +3676,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="550"/>
         <source>Show order labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenden der Zehnerpotenz darstellen</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="598"/>
@@ -3769,7 +3769,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="173"/>
         <source>Linearity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linearität:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="181"/>
@@ -3779,7 +3779,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="184"/>
         <source>Harmonic analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmonische Analyse</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="191"/>
@@ -3804,12 +3804,12 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="200"/>
         <source>Transient analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Einschwingvorgang Analyse</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="207"/>
         <source>Mesh type:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Typ </translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="214"/>
@@ -6789,7 +6789,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="802"/>
         <source>Permittivity</source>
-        <translation type="unfinished">Permitivität</translation>
+        <translation>Permitivität</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="804"/>
