@@ -126,7 +126,7 @@ namespace Hermes
 
       /// Returns space type.
       inline SpaceType get_space_type() const { return space_type; };
-      
+
       /// In case there is a space this solution belongs to, this returns the seq number of the space.
       /// This is used to check if the pointer returned by get_space() points to the same space, or if the space has changed.
       int get_space_seq();
@@ -141,34 +141,37 @@ namespace Hermes
 
       /// Passes solution components calculated from solution vector as Solutions.
       static void vector_to_solutions(Scalar* solution_vector, Hermes::vector<Space<Scalar> *> spaces,
-        Hermes::vector<Solution<Scalar>*> solutions,
-        Hermes::vector<bool> add_dir_lift = Hermes::vector<bool>());
+          Hermes::vector<Solution<Scalar>*> solutions, 
+          Hermes::vector<bool> add_dir_lift = Hermes::vector<bool>(),
+          Hermes::vector<int> start_indices = Hermes::vector<int>());
 
       static void vector_to_solution(Scalar* solution_vector, Space<Scalar>* space, Solution<Scalar>* solution,
-        bool add_dir_lift = true);
+          bool add_dir_lift = true, int start_index = 0);
 
       static void vector_to_solutions(Vector<Scalar>* vec, Hermes::vector<Space<Scalar> *> spaces,
-        Hermes::vector<Solution<Scalar>*> solutions,
-        Hermes::vector<bool> add_dir_lift = Hermes::vector<bool>());
+          Hermes::vector<Solution<Scalar>*> solutions, 
+          Hermes::vector<bool> add_dir_lift = Hermes::vector<bool>(),
+          Hermes::vector<int> start_indices = Hermes::vector<int>());
 
       static void vector_to_solution(Vector<Scalar>* vec, Space<Scalar>* space, Solution<Scalar>* solution,
-        bool add_dir_lift = true);
+          bool add_dir_lift = true, int start_index = 0);
 
       static void vector_to_solutions(Scalar* solution_vector, Hermes::vector<Space<Scalar> *> spaces,
-        Hermes::vector<Solution<Scalar>*> solutions, Hermes::vector<PrecalcShapeset *> pss,
-        Hermes::vector<bool> add_dir_lift = Hermes::vector<bool>());
+          Hermes::vector<Solution<Scalar>*> solutions, Hermes::vector<PrecalcShapeset *> pss, 
+          Hermes::vector<bool> add_dir_lift = Hermes::vector<bool>(),
+          Hermes::vector<int> start_indices = Hermes::vector<int>());
 
       static void vector_to_solution(Scalar* solution_vector, Space<Scalar>* space, Solution<Scalar>* solution,
-        PrecalcShapeset* pss, bool add_dir_lift = true);
-      
+          PrecalcShapeset* pss, bool add_dir_lift = true, int start_index = 0);
+
       /// If this is set to true, the mesh was created by this instance of this class.
       bool own_mesh;
-      
+
       /// Internal.
       virtual void set_active_element(Element* e);
     protected:
       virtual int get_edge_fn_order(int edge) { return MeshFunction<Scalar>::get_edge_fn_order(edge); }
-      
+
       /// Enables or disables transformation of the solution derivatives (H1 case)
       /// or values (vector (Hcurl) case). This means H2D_FN_DX_0 and H2D_FN_DY_0 or
       /// H2D_FN_VAL_0 and H2D_FN_VAL_1 will or will not be returned premultiplied by the reference
@@ -183,11 +186,11 @@ namespace Hermes
       Scalar* sln_vector;
 
       /// Converts a coefficient vector into a Solution.
-      virtual void set_coeff_vector(Space<Scalar>* space, Vector<Scalar>* vec, bool add_dir_lift);
+      virtual void set_coeff_vector(Space<Scalar>* space, Vector<Scalar>* vec, bool add_dir_lift, int start_index);
 
-      virtual void set_coeff_vector(Space<Scalar>* space, PrecalcShapeset* pss, Scalar* coeffs, bool add_dir_lift);
+      virtual void set_coeff_vector(Space<Scalar>* space, PrecalcShapeset* pss, Scalar* coeffs, bool add_dir_lift, int start_index);
 
-      virtual void set_coeff_vector(Space<Scalar>* space, Scalar* coeffs, bool add_dir_lift);
+      virtual void set_coeff_vector(Space<Scalar>* space, Scalar* coeffs, bool add_dir_lift, int start_index);
 
       SolutionType sln_type;
       SpaceType space_type;
@@ -237,6 +240,7 @@ namespace Hermes
 
       friend class RefMap;
       template<typename T> friend class KellyTypeAdapt;
+      template<typename T> friend class Continuity;
       template<typename T> friend class OGProjection;
       template<typename T> friend class OGProjectionNOX;
       template<typename T> friend class Adapt;

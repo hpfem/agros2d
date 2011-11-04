@@ -72,12 +72,12 @@ namespace Hermes
         /// Error bilinear form callback function.
         virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[],
           Func<Scalar> *u, Func<Scalar> *v, Geom<double> *e,
-          ExtData<Scalar> *ext);
+          ExtData<Scalar> *ext) const;
 
         /// Error bilinear form to estimate order of a function.
         virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[],
           Func<Hermes::Ord> *u, Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e,
-          ExtData<Hermes::Ord> *ext);
+          ExtData<Hermes::Ord> *ext) const;
 
 
       protected:

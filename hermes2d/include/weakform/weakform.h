@@ -124,7 +124,6 @@ namespace Hermes
 
       /// Deletes all volumetric and surface forms.
       void delete_all();
-
     protected:
       /// Internal. Used by DiscreteProblem to detect changes in the weakform.
       int get_seq() const { return seq; }
@@ -241,10 +240,10 @@ namespace Hermes
       int sym;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-        Geom<double> *e, ExtData<Scalar> *ext);
+        Geom<double> *e, ExtData<Scalar> *ext) const;
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
-        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext);
+        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
     };
 
     template<typename Scalar>
@@ -266,10 +265,10 @@ namespace Hermes
       unsigned int i, j;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-        Geom<double> *e, ExtData<Scalar> *ext);
+        Geom<double> *e, ExtData<Scalar> *ext) const;
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
-        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext);
+        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
     };
 
     template<typename Scalar>
@@ -291,10 +290,10 @@ namespace Hermes
       unsigned int i;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-        Geom<double> *e, ExtData<Scalar> *ext);
+        Geom<double> *e, ExtData<Scalar> *ext) const;
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e,
-        ExtData<Hermes::Ord> *ext);
+        ExtData<Hermes::Ord> *ext) const;
     };
 
     template<typename Scalar>
@@ -316,10 +315,10 @@ namespace Hermes
       unsigned int i;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-        Geom<double> *e, ExtData<Scalar> *ext);
+        Geom<double> *e, ExtData<Scalar> *ext) const;
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
-        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext);
+        Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
     };
 
     /// Multi-component forms.

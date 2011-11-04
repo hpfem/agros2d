@@ -73,34 +73,34 @@ struct ParserFormVector
 class ParserForm
 {
 public:
-    Parser *parser;
+    mutable Parser *parser;
 
     // coordinates
-    double px;
-    double py;
+    mutable double px;
+    mutable double py;
 
     // current solution
-    double puval;
-    double pudx;
-    double pudy;
+    mutable double puval;
+    mutable double pudx;
+    mutable double pudy;
 
     // test function
-    double pvval;
-    double pvdx;
-    double pvdy;
+    mutable double pvval;
+    mutable double pvdx;
+    mutable double pvdy;
 
     // previous solution (in Newton method)
-    double pupval;
-    double pupdx;
-    double pupdy;
+    mutable double pupval;
+    mutable double pupdx;
+    mutable double pupdy;
 
     // solution from the previous time level
-    double puptval;
-    double puptdx;
-    double puptdy;
+    mutable double puptval;
+    mutable double puptdx;
+    mutable double puptdy;
 
     // time step
-    double pdeltat;
+    mutable double pdeltat;
 
     ParserForm();
     ~ParserForm();
@@ -121,9 +121,9 @@ public:
                               Material *material);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
-                         Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext);
+                         Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
-                            Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext);
+                            Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
 private:
     Material *m_material;
 };
@@ -137,9 +137,9 @@ public:
                               Material *material);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
-                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext);
+                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext);
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
 private:
     Material *m_material;
     unsigned int j;
@@ -156,9 +156,9 @@ public:
                                Boundary *boundary);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
-                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext);
+                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext);
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
 };
 
 template<typename Scalar>
@@ -170,9 +170,9 @@ public:
                                Boundary *boundary);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
-                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext);
+                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext);
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
 private:
     unsigned int j;
 };
@@ -185,10 +185,10 @@ class CustomExactSolution : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
 public:
     CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, std::string expression, Boundary *boundary);
 
-    Scalar value(double x, double y);
-    void derivatives (double x, double y, Scalar& dx, Scalar& dy);
+    Scalar value(double x, double y) const;
+    void derivatives (double x, double y, Scalar& dx, Scalar& dy) const;
 
-    Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y)
+    Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y) const
     {
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }

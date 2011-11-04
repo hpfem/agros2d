@@ -16,26 +16,31 @@
 #include <typeinfo>
 #include "runge_kutta.h"
 #include "discrete_problem.h"
-#include "ogprojection.h"
+#include "projections/ogprojection.h"
+#include "projections/localprojection.h"
 #include "weakform_library/weakforms_hcurl.h"
 namespace Hermes
 {
   namespace Hermes2D
   {
     template<typename Scalar>
-    RungeKutta<Scalar>::RungeKutta(DiscreteProblem<Scalar>* dp, ButcherTable* bt, Hermes::MatrixSolverType matrix_solver_type, bool start_from_zero_K_vector, bool residual_as_vector)
+    RungeKutta<Scalar>::RungeKutta(DiscreteProblem<Scalar>* dp, ButcherTable* bt, 
+        Hermes::MatrixSolverType matrix_solver, bool start_from_zero_K_vector, bool residual_as_vector)
       : dp(dp), bt(bt), num_stages(bt->get_size()), stage_wf_right(bt->get_size() * dp->get_spaces().size()),
-      stage_wf_left(dp->get_spaces().size()), start_from_zero_K_vector(start_from_zero_K_vector), residual_as_vector(residual_as_vector), iteration(0) , matrix_solver_type(matrix_solver_type)
+      stage_wf_left(dp->get_spaces().size()), start_from_zero_K_vector(start_from_zero_K_vector), 
+      residual_as_vector(residual_as_vector), iteration(0) , matrix_solver(matrix_solver)
     {
       _F_
       if (dp==NULL) throw Exceptions::NullException(1);
       if (bt==NULL) throw Exceptions::NullException(2);
 
-      matrix_right = create_matrix<Scalar>(matrix_solver_type);
-      matrix_left = create_matrix<Scalar>(matrix_solver_type);
-      vector_right = create_vector<Scalar>(matrix_solver_type);
+      do_global_projections = true;
+
+      matrix_right = create_matrix<Scalar>(matrix_solver);
+      matrix_left = create_matrix<Scalar>(matrix_solver);
+      vector_right = create_vector<Scalar>(matrix_solver);
       // Create matrix solver.
-      solver = create_linear_solver(matrix_solver_type, matrix_right, vector_right);
+      solver = create_linear_solver(matrix_solver, matrix_right, vector_right);
 
       // Vector K_vector of length num_stages * ndof. will represent
       // the 'K_i' vectors in the usual R-K notation.
@@ -58,6 +63,18 @@ namespace Hermes
       delete [] K_vector;
       delete [] u_ext_vec;
       delete [] vector_left;
+    }
+
+    template<typename Scalar>
+    void RungeKutta<Scalar>::use_global_projections()
+    {
+      do_global_projections = true;
+    }
+
+    template<typename Scalar>
+    void RungeKutta<Scalar>::use_local_projections()
+    {
+      do_global_projections = false;
     }
 
     template<typename Scalar>
@@ -166,6 +183,15 @@ namespace Hermes
         // Prepare vector h\sum_{j = 1}^s a_{ij} K_j.
         prepare_u_ext_vec(time_step);
 
+        // Reinitialize filters.
+        if(this->filters_to_reinit.size() > 0)
+        {
+          Solution<Scalar>::vector_to_solutions(u_ext_vec, dp->get_spaces(), slns_time_new);
+        
+          for(unsigned int filters_i = 0; filters_i < this->filters_to_reinit.size(); filters_i++)
+            filters_to_reinit.at(filters_i)->reinit();
+        }
+
         // Residual corresponding to the stage derivatives k_i in the equation k_i - f(...) = 0.
         multiply_as_diagonal_block_matrix(matrix_left, num_stages, K_vector, vector_left);
 
@@ -255,10 +281,18 @@ namespace Hermes
       // Project previous time level solution on the stage space,
       // to be able to add them together. The result of the projection
       // will be stored in the vector coeff_vec.
-      // FIXME - this projection is slow and it is not needed when the
-      //         spaces are the same (if spatial adaptivity does not take place).
+      // FIXME - this projection is not needed when the
+      //         spaces are the same (if spatial adaptivity is not used).
       Scalar* coeff_vec = new Scalar[ndof];
-      OGProjection<Scalar>::project_global(dp->get_spaces(), slns_time_prev, coeff_vec);
+      if (do_global_projections)
+        OGProjection<Scalar>::project_global(dp->get_spaces(), slns_time_prev, coeff_vec);
+      else 
+        LocalProjection<Scalar>::project_local(dp->get_spaces(), slns_time_prev, coeff_vec);
+
+      if (do_global_projections)
+        OGProjection<Scalar>::project_global(dp->get_spaces(), slns_time_prev, coeff_vec);
+      else 
+        LocalProjection<Scalar>::project_local(dp->get_spaces(), slns_time_prev, coeff_vec);
 
       // Calculate new time level solution in the stage space (u_{n + 1} = u_n + h \sum_{j = 1}^s b_j k_j).
       for (int i = 0; i < ndof; i++)
@@ -325,6 +359,13 @@ namespace Hermes
       return rk_time_step_newton(current_time, time_step, slns_time_prev, slns_time_new,
                           error_fns, freeze_jacobian, block_diagonal_jacobian, verbose, newton_tol,
                           newton_max_iter, newton_damping_coeff, newton_max_allowed_residual_norm);
+    }
+
+    template<typename Scalar>
+    void RungeKutta<Scalar>::set_filters_to_reinit(Hermes::vector<Filter<Scalar>*> filters_to_reinit)
+    {
+      for(int i = 0; i < filters_to_reinit.size(); i++)
+        this->filters_to_reinit.push_back(filters_to_reinit.at(i));
     }
 
     template<typename Scalar>

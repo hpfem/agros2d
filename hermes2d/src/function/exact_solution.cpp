@@ -71,16 +71,16 @@ namespace Hermes
 
     ZeroSolution::ZeroSolution(Mesh* mesh) : ExactSolutionScalar<double>(mesh) {};
 
-    double ZeroSolution::value (double x, double y)  {
+    double ZeroSolution::value (double x, double y) const {
       return 0.0;
     };
 
-    void ZeroSolution::derivatives (double x, double y, double& dx, double& dy)  {
+    void ZeroSolution::derivatives (double x, double y, double& dx, double& dy) const {
       dx = 0;
       dy = 0;
     };
 
-    Ord ZeroSolution::ord(Ord x, Ord y)  {
+    Ord ZeroSolution::ord(Ord x, Ord y) const {
       return Ord(0);
     }
 

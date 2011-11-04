@@ -85,6 +85,9 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/mesh/refmap.cpp \
                 src/quadrature/limit_order.cpp \
                 src/quadrature/quad_std.cpp \
+                src/projections/localprojection.cpp \
+                src/projections/ogprojection.cpp \
+                src/projections/ogprojection_nox.cpp \
                 src/refinement_selectors/selector.cpp  \
                 src/refinement_selectors/order_permutator.cpp  \
                 src/refinement_selectors/optimum_selector.cpp  \
@@ -124,7 +127,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/weakform/weakform.cpp  \
                 src/neighbor.cpp \
                 src/graph.cpp \
-                src/ogprojection.cpp \
                 src/hermes2d_common_defs.cpp   \
                 src/discrete_problem.cpp \
                 src/runge_kutta.cpp \

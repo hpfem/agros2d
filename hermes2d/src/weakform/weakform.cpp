@@ -96,7 +96,7 @@ namespace Hermes
 
     template<typename Scalar>
     Scalar MatrixFormVol<Scalar>::value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-      Geom<double> *e, ExtData<Scalar> *ext)
+      Geom<double> *e, ExtData<Scalar> *ext) const
     {
       error("MatrixFormVol<Scalar>::value must be overrided.");
       return 0.0;
@@ -104,7 +104,7 @@ namespace Hermes
 
     template<typename Scalar>
     Hermes::Ord MatrixFormVol<Scalar>::ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
-      Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext)
+      Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const
     {
       error("MatrixFormVol<Scalar>::ord must be overrided.");
       return Hermes::Ord();
@@ -133,7 +133,7 @@ namespace Hermes
 
     template<typename Scalar>
     Scalar MatrixFormSurf<Scalar>::value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-      Geom<double> *e, ExtData<Scalar> *ext)
+      Geom<double> *e, ExtData<Scalar> *ext) const
     {
       error("MatrixFormSurf<Scalar>::value must be overrided.");
       return 0.0;
@@ -141,7 +141,7 @@ namespace Hermes
 
     template<typename Scalar>
     Hermes::Ord MatrixFormSurf<Scalar>::ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
-      Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext)
+      Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const
     {
       error("MatrixFormSurf<Scalar>::ord must be overrided.");
       return Hermes::Ord();
@@ -170,7 +170,7 @@ namespace Hermes
 
     template<typename Scalar>
     Scalar VectorFormVol<Scalar>::value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-      Geom<double> *e, ExtData<Scalar> *ext)
+      Geom<double> *e, ExtData<Scalar> *ext) const
     {
       error("VectorFormVol<Scalar>::value must be overrided.");
       return 0.0;
@@ -178,7 +178,7 @@ namespace Hermes
 
     template<typename Scalar>
     Hermes::Ord VectorFormVol<Scalar>::ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
-      Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext)
+      Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const
     {
       error("VectorFormVol<Scalar>::ord must be overrided.");
       return Hermes::Ord();
@@ -208,7 +208,7 @@ namespace Hermes
 
     template<typename Scalar>
     Scalar VectorFormSurf<Scalar>::value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-      Geom<double> *e, ExtData<Scalar> *ext)
+      Geom<double> *e, ExtData<Scalar> *ext) const
     {
       error("VectorFormSurf<Scalar>::value must be overrided.");
       return 0.0;
@@ -216,7 +216,7 @@ namespace Hermes
 
     template<typename Scalar>
     Hermes::Ord VectorFormSurf<Scalar>::ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
-      Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext)
+      Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const
     {
       error("VectorFormSurf<Scalar>::ord must be overrided.");
       return Hermes::Ord();

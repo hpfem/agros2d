@@ -42,7 +42,7 @@ namespace Hermes
     ///
     /// The Space class represents a finite element space over a domain defined by 'mesh', spanned
     /// by basis functions constructed using 'shapeset'. It serves as a base class for H1Space,
-    /// HcurlSpace, HhivSpace and L2Space, since most of the functionality is common for all these spaces.
+    /// HcurlSpace, HdivSpace and L2Space, since most of the functionality is common for all these spaces.
     ///
     /// There are four main functions the Space class provides:
     /// <ol>
@@ -198,7 +198,6 @@ namespace Hermes
       /// \brief Returns the DOF number of the last basis function.
       int get_max_dof() const;
       
-
       /// Returns true if the space is ready for computation, false otherwise.
       bool is_up_to_date() const;
       
@@ -352,6 +351,7 @@ namespace Hermes
 
       template<typename T> friend class OGProjection;
       template<typename T> friend class OGProjectionNOX;
+      template<typename T> friend class LocalProjection;
       template<typename T> friend class Solution;
       template<typename T> friend class RungeKutta;
       template<typename T> friend class ExactSolution;

@@ -153,7 +153,7 @@ namespace Hermes
       void set_quad_order(unsigned int order, int mask = H2D_FN_DEFAULT);
       
       Scalar* get_values(int a, int b);
-
+      
       /// \brief Returns the polynomial degree of the function being represented by the class.
       int get_fn_order() const;
 
@@ -183,6 +183,7 @@ namespace Hermes
 
         Node& operator=(const Node& other) { return *this; }; ///< Assignment is not allowed.
       };
+
 
       /// \brief Returns the polynomial degree of the function at given edge. To be overridden in derived classes.
       /// \param edge [in] Edge at which the order should be evaluated. (0-3)

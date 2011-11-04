@@ -74,15 +74,14 @@ namespace Hermes
       *  - updating orders of a mesh shared among components. */
       template<typename Scalar>
       class HERMES_API Selector {
-        public:
+      public:
+          /// Destructor.
           virtual ~Selector() {};
-
       protected:
         const int max_order; ///< A maximum allowed order.
         /// Constructor
         /** \param[in] max_order A maximum order used by this selector. If it is ::H2DRS_DEFAULT_ORDER, a maximum supported order is used. */
         Selector(int max_order = H2DRS_DEFAULT_ORDER) : max_order(max_order) {};
-        /// Destructor.
 
         /// Selects a refinement.
         /** This methods has to be implemented.
@@ -109,9 +108,8 @@ namespace Hermes
       template<typename Scalar>
       class HERMES_API HOnlySelector : public Selector<Scalar> {
       public:
-        /// Constructor.
-        HOnlySelector() : Selector<Scalar>() {};
-
+          /// Constructor.
+          HOnlySelector() : Selector<Scalar>() {};
       protected:
         /// Selects a refinement.
         /** Selects a H-refienements. For details, see Selector::select_refinement. */

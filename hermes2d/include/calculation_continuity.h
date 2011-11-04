@@ -71,6 +71,7 @@ namespace Hermes
 
         /// Saves the time step length.
         void save_time_step_length(double time_step_length_to_save);
+        void save_time_step_length_n_minus_one(double time_step_length_to_save);
 
         /// Saves the spatial error estimate.
         void save_error(double error);
@@ -91,12 +92,13 @@ namespace Hermes
         void load_space(Space<Scalar>* space, SpaceType space_type, Mesh* mesh, EssentialBCs<Scalar>* essential_bcs = NULL, Shapeset* shapeset = NULL);
 
         /// Loads vector of solutions.
-        void load_solutions(Hermes::vector<Solution<Scalar>*> solutions, Hermes::vector<Mesh*> meshes);
+        void load_solutions(Hermes::vector<Solution<Scalar>*> solutions, Hermes::vector<Space<Scalar>*> spaces);
         /// Loads one solution.
-        void load_solution(Solution<Scalar>* solution, Mesh* mesh);
+        void load_solution(Solution<Scalar>* solution, Space<Scalar>* space);
 
         /// Loads the time step length.
         void load_time_step_length(double & time_step_length);
+        void load_time_step_length_n_minus_one(double & time_step_length);
 
         /// Loads the spatial error estimate.
         void load_error(double & error);
@@ -154,6 +156,7 @@ namespace Hermes
       static std::string spaceFileName;
       static std::string solutionFileName;
       static std::string timeStepFileName;
+      static std::string timeStepNMinusOneFileName;
       static std::string errorFileName;
 
       /// Setting of the names for the file stored.
