@@ -2,157 +2,174 @@
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
     <general id="acoustic" name="Acoustic">
         <description>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids, and solids.</description>
-        <properties steadystate="0" harmonic="2" transient="0"></properties>    
+        <properties steadystate="0" harmonic="2" transient="0" />
+        <analyses>
+            <analysis id="harmonic" type="harmonic" name="Harmonic" />
+        </analyses>
     </general>
 
     <constants>
-        <item id="P0" value="20e-6"></item>
+        <constant id="P0" value="20e-6" />
     </constants>
 
-    <material>
-        <item id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3"></item>
-        <item id="acoustic_speed" name="Speed of sound" shortname="vel" unit="m/s"></item>  
+    <macros>
+        <macro id="" expression="" />
+    </macros>
+
+    <volume>
+        <quantity id="acoustic_density" shortname="rho" />
+        <quantity id="acoustic_speed" shortname="vel" />
         
-    	<harmonic>
-            <material id="acoustic_density"></material>
-            <material id="acoustic_speed"></material>
+        <weakforms>
+            <weakform analysistype="harmonic">
 
-            <matrix i="1" j="1" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * vel * vel) * uval * vval" axi="1 / rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * uval * vval" symmetric="0"></matrix>
-            <matrix i="2" j="2" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * vel * vel) * uval * vval" axi="1 / rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * uval * vval" symmetric="0"></matrix>
-            <vector i="1" j="1" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * vel * vel) * upval * vval" axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * upval * vval"></vector>
-            <vector i="2" j="2" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho *vel * vel) * upval * vval" axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * upval * vval"></vector>
+                <quantity id="acoustic_density" />
+                <quantity id="acoustic_speed" />
 
-        </harmonic>
-    </material>
+                <matrix i="1" j="1" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * vel * vel) * uval * vval"
+                                    axi="1 / rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * uval * vval" symmetric="1" />
+                <matrix i="2" j="2" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * vel * vel) * uval * vval"
+                                    axi="1 / rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * uval * vval" symmetric="1" />
+                <vector i="1" j="1" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * vel * vel) * upval * vval"
+                                    axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * upval * vval" />
+                <vector i="2" j="2" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho *vel * vel) * upval * vval"
+                                    axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * upval * vval" />
+            </weakform>
+        </weakforms>
+    </volume>
 
-    <boundary>
-    	<item id="acoustic_pressure_real" name="Pressure - real" shortname="pr" unit="Pa"></item>
-    	<item id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" unit="Pa"></item>
-    	<item id="acoustic_normal_acceleration_real" name="Normal acceleration - real" shortname="anr" unit="m/s2"></item>
-    	<item id="acoustic_normal_acceleration_imag" name="Normal acceleration - imag" shortname="ani" unit="m/s2"></item>
-    	<item id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" unit="Pa·s/m"></item>
+    <surface>
+        <quantity id="acoustic_pressure_real" shortname="pr" />
+        <quantity id="acoustic_pressure_imag" shortname="pi" />
+        <quantity id="acoustic_normal_acceleration_real" shortname="anr" />
+        <quantity id="acoustic_normal_acceleration_imag" shortname="ani" />
+        <quantity id="acoustic_impedance" shortname="Z0" />
  
-        <harmonic default="acoustic_pressure">
-            <boundary id="acoustic_pressure" name="Pressure">
-                <item id="acoustic_pressure_real"></item>
-                <item id="acoustic_pressure_imag"></item>
+        <weakforms>
+            <weakform analysistype="harmonic" default="acoustic_pressure">
+                <boundary id="acoustic_pressure" name="Pressure">
+                    <quantity id="acoustic_pressure_real" />
+                    <quantity id="acoustic_pressure_imag" />
 
-                <essential i="1" planar="pr" axi="pr"></essential>
-                <essential i="2" planar="pi" axi="pi"></essential>
-            </boundary>
+                    <essential i="1" planar="pr"
+                                     axi="pr" />
+                    <essential i="2" planar="pi"
+                                     axi="pi" />
+                </boundary>
 
-            <boundary id="acoustic_normal_acceleration" name="Normal acceleration">
-                <item id="acoustic_normal_acceleration_real"></item>
-                <item id="acoustic_normal_acceleration_imag"></item>
+                <boundary id="acoustic_normal_acceleration" name="Normal acceleration">
+                    <quantity id="acoustic_normal_acceleration_real" />
+                    <quantity id="acoustic_normal_acceleration_imag" />
 
-                <vector i="1" j="1" planar="- anr * vval" axi="- anr * r * vval"></vector>
-                <vector i="2" j="2" planar="- ani * vval" axi="- ani * r * vval"></vector>
-            </boundary>
+                    <vector i="1" j="1" planar="- anr * vval"
+                                        axi="- anr * r * vval" />
+                    <vector i="2" j="2" planar="- ani * vval"
+                                        axi="- ani * r * vval" />
+                </boundary>
 
-            <boundary id="acoustic_impedance" name="Impedance boundary condition">
-                <item id="acoustic_impedance"></item>
+                <boundary id="acoustic_impedance" name="Impedance boundary condition">
+                    <quantity id="acoustic_impedance" />
 
-                <matrix i="1" j="2" planar="- 2 * PI * f / Z0 * uval * vval" axi="- r * 2 * PI * f / Z0 * uval * vval"></matrix>
-                <matrix i="2" j="1" planar="2 * PI * f / Z0 * uval * vval" axi="r * 2 * PI * f / Z0 * uval * vval"></matrix>
-                <vector i="1" j="2" planar="- 2 * PI * f / Z0 * upval * vval" axi="- r * 2 * PI * f / Z0 * upval * vval"></vector>
-                <vector i="2" j="1" planar="2 * PI * f / Z0 * upval * vval" axi="r * 2 * PI * f / Z0 * upval * vval"></vector>
-            </boundary>
-        </harmonic>
-    </boundary>	    
+                    <matrix i="1" j="2" planar="- 2 * PI * f / Z0 * uval * vval"
+                                        axi="- r * 2 * PI * f / Z0 * uval * vval" symmetric="1" />
+                    <matrix i="2" j="1" planar="2 * PI * f / Z0 * uval * vval"
+                                        axi="r * 2 * PI * f / Z0 * uval * vval" symmetric="1" />
+                    <vector i="1" j="2" planar="- 2 * PI * f / Z0 * upval * vval"
+                                        axi="- r * 2 * PI * f / Z0 * upval * vval" />
+                    <vector i="2" j="1" planar="2 * PI * f / Z0 * upval * vval"
+                                        axi="r * 2 * PI * f / Z0 * upval * vval" />
+                </boundary>
+             </weakform>
+        </weakforms>
+    </surface>
 
-    <localvariable>
-        <item id="acoustic_pressure" name="Pressure" shortname="p" unit="Pa" scalar="1">
-            <harmonic planar_scalar="sqrt(value1^2 + value2^2)" axi_scalar="sqrt(value1^2 + value2^2)"></harmonic>
-            <transient></transient>
-        </item>
-        <item id="acoustic_pressure_real" name="Pressure - real" shortname="pr" unit="Pa" scalar="1">
-            <harmonic planar_scalar="value1" axi_scalar="value1"></harmonic>
-            <transient></transient>
-        </item>
-        <item id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" unit="Pa" scalar="1">
-            <harmonic planar_scalar="value2" axi_scalar="value2"></harmonic>
-            <transient></transient>
-        </item>
-        <item id="acoustic_pressure_level" name="Pressure level" shortname="SPL" unit="dB" scalar="1">
-            <harmonic planar_scalar="20 * log10(sqrt(value1^2 + value2^2) / P0)" axi_scalar="20 * log10(sqrt(value1^2 + value2^2) / P0)"></harmonic>
-            <transient></transient>
-        </item>
-        <item id="acoustic_local_acceleration_real" name="Local acceleration - real" shortname="ar" unit="m/s2">
-            <harmonic planar_comp_x="- dx1 / rho" planar_comp_y="- dy1 / rho" axi_comp_r="- dr1 / rho" axi_comp_z="- dz1 / rho"></harmonic>
-            <transient></transient>
-        </item>
-        <item id="acoustic_local_acceleration_imag" name="Local acceleration - imag" shortname="ai" unit="m/s2">
-            <harmonic planar_comp_x="- dx2 / rho" planar_comp_y="- dy2 / rho" axi_comp_r="- dr2 / rho" axi_comp_z="- dz2 / rho"></harmonic>
-            <transient></transient>
-        </item>
-        <item id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" scalar="1">
-            <harmonic planar_scalar="rho" axi_scalar="rho"></harmonic>
-            <transient></transient>
-        </item>
-        <item id="acoustic_speed" name="Speed of sound" shortname="vel" unit="m/s" scalar="1">
-            <harmonic planar_scalar="vel" axi_scalar="vel"></harmonic>
-            <transient></transient>
-        </item>
-    </localvariable>
+    <preprocessor>
+        <volume>
+            <group>
+                <quantity id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" unit_html="kg.m<sup>-3</sup>" unit_latex="kg \cdot m^{-3}" />
+                <quantity id="acoustic_speed" name="Speed of sound" shortname="vel" unit="m/s" unit_html="m.s<sup>-1</sup>" unit_latex="m \cdot s^{-1}" />
+            </group>
+        </volume>
+        <surface>
+            <group>
+                <quantity id="acoustic_pressure_real" name="Pressure - real" shortname="pr" unit="Pa" />
+                <quantity id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" unit="Pa" />
+                <quantity id="acoustic_normal_acceleration_real" name="Normal acceleration - real" shortname="anr" unit="m/s2" unit_html="m.s<sup>-2</sup>" unit_latex="m \cdot s^{-2}" />
+                <quantity id="acoustic_normal_acceleration_imag" name="Normal acceleration - imag" shortname="ani" unit="m/s2" unit_html="m.s<sup>-2</sup>" unit_latex="m \cdot s^{-2}" />
+                <quantity id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" unit="Pa·s/m" unit_html="Pa.s.m<sup>-1</sup>" unit_latex="Pa \cdot s \cdot m^{-1}" />
+            </group>
+        </surface>
+    </preprocessor>
 
-    <view>
-        <scalarvariable>
-            <harmonic default="acoustic_pressure_real">
-                <item id="acoustic_pressure"></item>
-                <item id="acoustic_pressure_real"></item>
-                <item id="acoustic_pressure_imag"></item>
-                <item id="acoustic_local_acceleration"></item>
-                <item id="acoustic_local_acceleration_real"></item>
-                <item id="acoustic_local_acceleration_imag"></item>
-                <item id="acoustic_pressure_level"></item>
-                <item id="acoustic_density"></item>
-                <item id="acoustic_speed"></item>
-            </harmonic>
-            <transient></transient>
-        </scalarvariable>
+    <postprocessor>
+        <localvariables>
+            <localvariable id="acoustic_pressure" name="Pressure" shortname="p" unit="Pa" type="scalar">
+                <expression analysistype="harmonic" planar="sqrt(value1^2 + value2^2)"
+                                                    axi="sqrt(value1^2 + value2^2)" />
+            </localvariable>
+            <localvariable id="acoustic_pressure_real" name="Pressure - real" shortname="pr" unit="Pa" type="scalar">
+                <expression analysistype="harmonic" planar="value1"
+                                                    axi="value1" />
+            </localvariable>
+            <localvariable id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" unit="Pa" type="scalar">
+                <expression analysistype="harmonic" planar="value2"
+                                                    axi="value2" />
+            </localvariable>
+            <localvariable id="acoustic_pressure_level" name="Pressure level" shortname="SPL" unit="dB" type="scalar">
+                <expression analysistype="harmonic" planar="20 * log10(sqrt(value1^2 + value2^2) / P0)"
+                                                    axi="20 * log10(sqrt(value1^2 + value2^2) / P0)" />
+            </localvariable>
+            <localvariable id="acoustic_local_acceleration_real" name="Local acceleration - real" shortname="ar" unit="m/s2" unit_html="m.s<sup>-2</sup>" unit_latex="m \cdot s^{-2}" type="vector">
+                <expression analysistype="harmonic" planar_x="- dx1 / rho"
+                                                    planar_y="- dy1 / rho"
+                                                    axi_r="- dr1 / rho"
+                                                    axi_z="- dz1 / rho" />
+            </localvariable>
+            <localvariable id="acoustic_local_acceleration_imag" name="Local acceleration - imag" shortname="ai" unit="m/s2" unit_html="m.s<sup>-2</sup>" unit_latex="m \cdot s^{-2}" type="vector">
+                <expression analysistype="harmonic" planar_x="- dx2 / rho"
+                                                    planar_y="- dy2 / rho"
+                                                    axi_r="- dr2 / rho"
+                                                    axi_z="- dz2 / rho" />
+            </localvariable>
+            <localvariable id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" unit_html="kg.m<sup>-3</sup>" unit_latex="kg \cdot m^{-3}" type="scalar">
+                <expression analysistype="harmonic" planar="rho"
+                                                    axi="rho" />
+            </localvariable>
+            <localvariable id="acoustic_speed" name="Speed of sound" shortname="vel" unit="m/s" unit_html="m.s<sup>-1</sup>" unit_latex="m \cdot s^{-1}" type="scalar">
+                <expression analysistype="harmonic" planar="vel"
+                                                    axi="vel" />
+            </localvariable>
+        </localvariables>
 
-        <vectorvariable>
-            <harmonic default="acoustic_local_acceleration_real">
-                <item id="acoustic_local_acceleration_real"></item>
-            </harmonic>
-            <transient></transient>
-        </vectorvariable>
-    </view>
+        <view>
+            <scalar>
+                <default analysistype ="harmonic" id="acoustic_pressure_real" />
+            </scalar>
+            <vector>
+                <default analysistype ="harmonic" id="acoustic_local_acceleration_real" />
+            </vector>
+        </view>
 
-    <pointvalue>
-        <harmonic>
-            <item id="acoustic_pressure"></item>
-            <item id="acoustic_pressure_real"></item>
-            <item id="acoustic_pressure_imag"></item>
-            <item id="acoustic_local_acceleration"></item>
-            <item id="acoustic_local_acceleration_real"></item>
-            <item id="acoustic_local_acceleration_imag"></item>
-            <item id="acoustic_pressure_level"></item>
-            <item id="acoustic_density"></item>
-            <item id="acoustic_speed"></item>
-        </harmonic>
-        <transient></transient>
-    </pointvalue>
+        <volumeintegrals>
+            <volumeintegral id="acoustic_volume" name="Volume" shortname="V" unit="m3" unit_html="m<sup>3</sup>" unit_latex="m^{3}">
+                <expression analysistype="harmonic" planar="1.0"
+                                                    axi="2.0 * PI * r" />
+            </volumeintegral>
+            <volumeintegral id="acoustic_cross_section" name="Cross section" shortname="S" unit="m2" unit_html="m<sup>2</sup>" unit_latex="m^{2}">
+                <expression analysistype="harmonic" planar="1.0"
+                                                    axi="1.0" />
+            </volumeintegral>
+        </volumeintegrals>
 
-    <volumeintegral>
-        <item id="volume" name="Volume" shortname="V" unit="m3">
-            <harmonic planar="1.0" axi="2.0 * PI * r"></harmonic>
-            <transient></transient>
-        </item>
-        <item id="surface" name="Cross section" shortname="S" unit="m2">
-            <harmonic planar="1.0" axi="1.0"></harmonic>
-            <transient></transient>
-        </item>
-    </volumeintegral>
-
-    <surfaceintegral>
-        <item id="length" name="Length" shortname="l" unit="m">
-            <harmonic planar="1.0" axi="1.0"></harmonic>
-            <transient></transient>
-        </item>
-        <item id="surface" name="Surface" shortname="S" unit="m2">
-            <harmonic planar="1.0" axi="2.0 * PI * r"></harmonic>
-            <transient></transient>
-        </item>
-    </surfaceintegral>
-</module>
+        <surfaceintegrals>
+            <surfaceintegral id="acoustic_length" name="Length" shortname="l" unit="m">
+                <expression analysistype="harmonic" planar="1.0"
+                                                    axi="1.0" />
+            </surfaceintegral>
+            <surfaceintegral id="acoustic_surface" name="Surface" shortname="S" unit="m2" unit_html="m<sup>2</sup>" unit_latex="m^{2}">
+                <expression analysistype="harmonic" planar="1.0"
+                                                    axi="2.0 * PI * r" />
+            </surfaceintegral>
+        </surfaceintegrals>
+    </postprocessor>
+ </module>
