@@ -144,6 +144,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/python2.7
     LIBS += -lumfpack
     LIBS += -lxerces-c
+    LIBS += -lstdc++
     # LIBS += -ldmumps_seq
     # LIBS += -lsuperlu
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")

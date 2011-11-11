@@ -172,9 +172,12 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->j]->val[i]; //TODO PK this->j
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
+        if (1 == 1)
+        {
+            pupval = u_ext[this->j]->val[i]; //TODO PK this->j
+            pupdx = u_ext[this->j]->dx[i];
+            pupdy = u_ext[this->j]->dy[i];
+        }
 
         /*
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
@@ -248,9 +251,12 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->j]->val[i];  //TODO PK this->i
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
+        if (1 == 1)
+        {
+            pupval = u_ext[this->j]->val[i];  //TODO PK this->i
+            pupdx = u_ext[this->j]->dx[i];
+            pupdy = u_ext[this->j]->dy[i];
+        }
 
         /*
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
@@ -329,9 +335,12 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->j]->val[i];
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
+        if (1 == 1)
+        {
+            pupval = u_ext[this->j]->val[i];
+            pupdx = u_ext[this->j]->dx[i];
+            pupdy = u_ext[this->j]->dy[i];
+        }
 
         try
         {
@@ -388,9 +397,12 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->j]->val[i];
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
+        if (1 == 1)
+        {
+            pupval = u_ext[this->j]->val[i];
+            pupdx = u_ext[this->j]->dx[i];
+            pupdy = u_ext[this->j]->dy[i];
+        }
 
         try
         {
