@@ -52,8 +52,8 @@ class SolverAgros
 public:
     SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
 
-    Hermes::vector<SolutionArray<Scalar> *> solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space = Hermes::vector<Hermes::Hermes2D::Space<Scalar> *>(),
-                                                  Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution = Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
+    Hermes::vector<SolutionArray<Scalar> *> solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceParam = Hermes::vector<Hermes::Hermes2D::Space<Scalar> *>(),
+                                                  Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionParam = Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
 private:
     int polynomialOrder;
     AdaptivityType adaptivityType;
@@ -67,6 +67,7 @@ private:
     ProblemType problemType;
     AnalysisType analysisType;
 
+    LinearityType linearityType;
     double nonlinearTolerance;
     int nonlinearSteps;
 
@@ -103,12 +104,9 @@ private:
 
 
 
-    SolutionArray<Scalar> *solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
-
-    bool solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar> *dp,
-                     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
-                     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
-                     Hermes::Solvers::LinearSolver<Scalar> *solver, SparseMatrix<Scalar> *matrix, Vector<Scalar> *rhs);
+    SolutionArray<Scalar> *solutionArray(Hermes::Hermes2D::Solution<Scalar> *solutionParam,
+                                         Hermes::Hermes2D::Space<Scalar> *spaceParam = NULL,
+                                         double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
 };
 
 #endif // SOLVER_H
