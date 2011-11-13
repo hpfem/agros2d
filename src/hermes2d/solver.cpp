@@ -345,7 +345,7 @@ bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space
         Scalar* coeff_vec = new Scalar[ndof];
         memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
-        newton.solve(coeff_vec);
+        newton.solve(coeff_vec, nonlinearTolerance, nonlinearSteps);
 
         Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), spaceParam, solutionParam);
 

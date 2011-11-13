@@ -215,7 +215,7 @@ void DataTable::init_spline()
     }
 
     //std::cout << "init spline" << std::endl;
-    m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0);
+    m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, false, false, false, false);
 }
 
 int DataTable::size()

@@ -111,7 +111,8 @@ void LocalPointValue::calculate()
 
             // set material variables
             // FIXME
-            parser->setParserVariables(tmpMaterial, NULL);
+            parser->setParserVariables(tmpMaterial, NULL,
+                                       pvalue[0], pdx[0], pdy[0]);
 
             // parse expression
             for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module()->local_point.begin();

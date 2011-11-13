@@ -41,6 +41,7 @@ private slots:
     void doPhysicFieldChanged(int index);
     void doAdaptivityChanged(int index);
     void doAnalysisTypeChanged(int index);
+    void doLinearityTypeChanged(int index);
     void doTransientChanged();
     void doShowEquation();
     void doAccept();
@@ -58,6 +59,7 @@ private:
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     SLineEditDouble *txtAdaptivityTolerance;
+    QComboBox *cmbLinearityType;
     QComboBox *cmbMatrixSolver;
 
     // mesh

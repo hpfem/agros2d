@@ -89,6 +89,7 @@ void ProblemInfo::clear()
     weakFormsType = WeakFormsType_Compiled;
 
     // linearity
+    linearityType = LinearityType_Linear;
     nonlinearTolerance = 1e-3;
     nonlinearSteps = 10;
 }
@@ -1417,6 +1418,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->initialCondition.setText(eleProblem.toElement().attribute("initialcondition", "0"));
 
     // linearity
+    m_problemInfo->linearityType = linearityTypeFromStringKey(eleProblem.toElement().attribute("linearity",
+                                                                                                   linearityTypeToStringKey(LinearityType_Linear)));
     m_problemInfo->nonlinearSteps = eleProblem.toElement().attribute("nonlinearsteps", "10").toInt();
     m_problemInfo->nonlinearTolerance = eleProblem.toElement().attribute("nonlineartolerance", "1e-3").toDouble();
 
@@ -1652,6 +1655,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text());
     eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text());
     // linearity
+    eleProblem.setAttribute("linearity", linearityTypeToStringKey(m_problemInfo->linearityType));
     eleProblem.setAttribute("nonlinearsteps", m_problemInfo->nonlinearSteps);
     eleProblem.setAttribute("nonlineartolerance", m_problemInfo->nonlinearTolerance);
 

@@ -149,6 +149,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     cmbWeakForms = new QComboBox();
 
     // linearity
+    cmbLinearityType = new QComboBox();
     txtNonlinearSteps = new QSpinBox(this);
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
@@ -160,6 +161,8 @@ QWidget *ProblemDialog::createControlsGeneral()
     connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
+
+    connect(cmbLinearityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doLinearityTypeChanged(int)));
 
     // fill combobox
     fillComboBox();
@@ -240,10 +243,12 @@ QWidget *ProblemDialog::createControlsGeneral()
     QGridLayout *layoutLinearity = new QGridLayout();
     layoutLinearity->setColumnMinimumWidth(0, minWidth);
     layoutLinearity->setColumnStretch(1, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Tolerance (%):")), 0, 0);
-    layoutLinearity->addWidget(txtNonlinearTolerance, 0, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Steps:")), 1, 0);
-    layoutLinearity->addWidget(txtNonlinearSteps, 1, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Linearity:")), 0, 0);
+    layoutLinearity->addWidget(cmbLinearityType, 0, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Tolerance (%):")), 1, 0);
+    layoutLinearity->addWidget(txtNonlinearTolerance, 1, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Steps:")), 2, 0);
+    layoutLinearity->addWidget(txtNonlinearSteps, 2, 1);
 
     QGroupBox *grpLinearity = new QGroupBox(tr("Newton solver"));
     grpLinearity->setLayout(layoutLinearity);
@@ -387,6 +392,7 @@ void ProblemDialog::load()
     txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
 
     // linearity
+    cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_problemInfo->linearityType));
     txtNonlinearSteps->setValue(m_problemInfo->nonlinearSteps);
     txtNonlinearTolerance->setValue(m_problemInfo->nonlinearTolerance);
 
@@ -514,6 +520,7 @@ bool ProblemDialog::save()
     m_problemInfo->description = txtDescription->toPlainText();
     m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
 
+    m_problemInfo->linearityType = (LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt();
     m_problemInfo->nonlinearSteps = txtNonlinearSteps->value();
     m_problemInfo->nonlinearTolerance = txtNonlinearTolerance->value();
 
@@ -588,6 +595,16 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     if (cmbAnalysisType->currentIndex() == -1) cmbAnalysisType->setCurrentIndex(0);
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 
+    // nonlinearity
+    cmbLinearityType->clear();
+    cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
+    // if (hermesField->hasNonlinearity())
+    {
+        cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
+        cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
+    }
+    doLinearityTypeChanged(cmbLinearityType->currentIndex());
+
     delete module;
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
@@ -599,6 +616,14 @@ void ProblemDialog::doAdaptivityChanged(int index)
 
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+}
+
+void ProblemDialog::doLinearityTypeChanged(int index)
+{
+    logMessage("ProblemDialog::doLinearityTypeChanged()");
+
+    txtNonlinearSteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    txtNonlinearTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 }
 
 void ProblemDialog::doAnalysisTypeChanged(int index)

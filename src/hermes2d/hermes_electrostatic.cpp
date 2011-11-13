@@ -127,7 +127,7 @@ SceneMaterialElectrostaticDialog::SceneMaterialElectrostaticDialog(SceneMaterial
 
 void SceneMaterialElectrostaticDialog::createContent()
 {
-    txtPermittivity = new ValueLineEdit(this);
+    txtPermittivity = new ValueLineEdit(this, false, true);
     txtPermittivity->setMinimumSharp(0.0);
     txtChargeDensity = new ValueLineEdit(this);
     connect(txtPermittivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

@@ -69,6 +69,7 @@ public:
     QString description;
 
     // linearity
+    LinearityType linearityType;
     double nonlinearTolerance; // percent
     int nonlinearSteps;
 

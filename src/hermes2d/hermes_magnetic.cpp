@@ -164,7 +164,7 @@ SceneMaterialMagneticDialog::SceneMaterialMagneticDialog(SceneMaterial *material
 
 void SceneMaterialMagneticDialog::createContent()
 {
-    txtPermeability = new ValueLineEdit(this);
+    txtPermeability = new ValueLineEdit(this, false, true);
     txtConductivity = new ValueLineEdit(this);
     txtCurrentDensityReal = new ValueLineEdit(this, true);
     txtCurrentDensityImag = new ValueLineEdit(this, true);
@@ -261,12 +261,12 @@ bool SceneMaterialMagneticDialog::save() {
         return false;
 
     if (txtCurrentDensityReal->evaluate())
-        m_material->values["magnetic_current_denstity_external_real"] = txtCurrentDensityReal->value();
+        m_material->values["magnetic_current_density_external_real"] = txtCurrentDensityReal->value();
     else
         return false;
 
     if (txtCurrentDensityImag->evaluate())
-        m_material->values["magnetic_current_denstity_external_imag"] = txtCurrentDensityImag->value();
+        m_material->values["magnetic_current_density_external_imag"] = txtCurrentDensityImag->value();
     else
         return false;
 

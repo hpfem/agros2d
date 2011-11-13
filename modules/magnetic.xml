@@ -30,18 +30,11 @@
             <material id="magnetic_velocity_angular" />
             <material id="magnetic_current_density_external_real" />
 
-            <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
-                                        gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
-                                axi="1 / (mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
-                                     gamma * uval * vy * vdz" />
-            <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
-                                  gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy) -
-                                  Jer * vval -
-                                  Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdx + cos((Bra/180*PI)) * vdy)"
-                                axi="1 / (mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) -
-                                    gamma * upval * vy * vdz -
-                                    Jer * vval +
-                                    Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdr + cos((Bra/180*PI)) * vdz)" />
+            <matrix i="1" j="1" planar="((sqrt(updx*updx + updy*updy) > 1e-6 && abs(dmur) > 10) ? (dmur / sqrt(updx*updx + updy*updy) * (updx * udx + updy * udy) * (updx * vdx + updy * vdy)) : 0)
+                                        + mur * (udx * vdx + udy * vdy)"
+                                axi="" />
+            <vector i="1" j="1" planar="mur * (updx * vdx + updy * vdy) - Jer * vval"
+                                axi="" />
         </steadystate>
 
         <transient>

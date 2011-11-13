@@ -382,7 +382,8 @@ public:
 
     void initParserBoundaryVariables(Boundary *boundary);
     void initParserMaterialVariables();
-    void setParserVariables(Material *material, Boundary *boundary);
+    void setParserVariables(Material *material, Boundary *boundary,
+                            double value = 0.0, double dx = 0.0, double dy = 0.0);
 };
 
 template <typename Scalar>

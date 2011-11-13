@@ -1124,7 +1124,7 @@ Parser::~Parser()
     parser.clear();
 }
 
-void Parser::setParserVariables(Material *material, Boundary *boundary)
+void Parser::setParserVariables(Material *material, Boundary *boundary, double value, double dx, double dy)
 {
     if (material)
     {
@@ -1132,8 +1132,8 @@ void Parser::setParserVariables(Material *material, Boundary *boundary)
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
             Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-            parser_variables[variable->shortname] = material->values[variable->id].value(0.0);
-            parser_variables["d" + variable->shortname] = 0.0;
+            parser_variables[variable->shortname] = material->get_value(variable->id).value(value);
+            parser_variables["d" + variable->shortname] = material->get_value(variable->id).derivative(value);
             // qDebug() << "Parser::setParserVariables: " << parser_variables[variable->shortname];
         }
     }
@@ -1239,6 +1239,8 @@ double ViewScalarFilter<Scalar>::get_pt_value(double x, double y, int item)
 template <typename Scalar>
 void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 {
+    bool isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear);
+
     Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
     int np = quad->get_num_points(order);
     node = Hermes::Hermes2D::Function<Scalar>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
@@ -1261,7 +1263,8 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
     Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
 
     SceneMaterial *material = Util::scene()->labels[atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str())]->material;
-    parser->setParserVariables(material, NULL);
+    if (isLinear)
+        parser->setParserVariables(material, NULL);
 
     for (int i = 0; i < np; i++)
     {
@@ -1274,6 +1277,11 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
             pdx[k] = dudx[k][i];
             pdy[k] = dudy[k][i];
         }
+
+        // FIXME
+        if (!isLinear)
+            parser->setParserVariables(material, NULL,
+                                       pvalue[0], pdx[0], pdy[0]);
 
         // parse expression
         try
