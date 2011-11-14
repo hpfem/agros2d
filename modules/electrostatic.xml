@@ -3,121 +3,143 @@
     <general id="electrostatic" name="Electrostatic field">
         <description>Electrostatics is the branch of science that deals with the phenomena and properties of stationary or slow-moving (without acceleration) electric charges.</description>
         <properties steadystate="1" harmonic="0" transient="0" />
+        <analyses>
+            <analysis id="steadystate" type="steadystate" name="Steady state" />
+        </analyses>
     </general>
 
     <constants>
         <item id="EPS0" value="8.854e-12" />
     </constants>
 
-    <material>
-        <item id="electrostatic_permittivity" name="Permittivity" shortname="epsr" unit="F/m" default="1" />
-        <item id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" />
+    <macros>
+        <macro id="" expression="" />
+    </macros>
+
+    <volume>
+        <quantity id="electrostatic_permittivity" shortname="epsr" />
+        <quantity id="electrostatic_charge_density" shortname="rho" />
         
-        <steadystate>
-            <material id="electrostatic_permittivity" />
-            <material id="electrostatic_charge_density" />
+        <weakforms>
+            <weakform analysistype="steadystate">
+                <quantity id="electrostatic_permittivity" />
+                <quantity id="electrostatic_charge_density" />
 
-            <matrix i="1" j="1" planar="epsr * EPS0 * (udx * vdx + udy * vdy)"
-                                axi="epsr * EPS0 * r * (udr * vdr + udz * vdz)" symmetric="1" />
-            <vector i="1" j="1" planar="epsr * EPS0 * (updx * vdx + updy * vdy) - rho * vval"
-                                axi="epsr * EPS0 * r * (updr * vdr + updz * vdz) - rho * r * vval" />
-         </steadystate>
-    </material>
+                <matrix i="1" j="1" planar="epsr * EPS0 * (udx * vdx + udy * vdy)"
+                                    axi="epsr * EPS0 * r * (udr * vdr + udz * vdz)" symmetric="1" />
+                <vector i="1" j="1" planar="epsr * EPS0 * (updx * vdx + updy * vdy) - rho * vval"
+                                    axi="epsr * EPS0 * r * (updr * vdr + updz * vdz) - rho * r * vval" />
+            </weakform>
+        </weakforms>
+    </volume>
 
-    <boundary>
-        <item id="electrostatic_potential" name="Fixed voltage" shortname="V" unit="V" />
-        <item id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" unit="C/m2" />
+    <surface>
+        <quantity id="electrostatic_potential" shortname="V" />
+        <quantity id="electrostatic_surface_charge_density" shortname="sigma" />
     	
-        <steadystate default="electrostatic_potential">
-            <boundary id="electrostatic_potential" name="Fixed voltage">
-                <item id="electrostatic_potential" />
+        <weakforms>
+            <weakform analysistype="steadystate" default="electrostatic_potential">
+                <boundary id="electrostatic_potential" name="Fixed voltage">
+                    <quantity id="electrostatic_potential" />
 
-                <essential i="1" planar="V"
-                                 axi="V" />
-            </boundary>
+                    <essential i="1" planar="V"
+                                     axi="V" />
+                </boundary>
 
-            <boundary id="electrostatic_surface_charge_density" name="Surface charge density">
-                <item id="electrostatic_surface_charge_density" />
+                <boundary id="electrostatic_surface_charge_density" name="Surface charge density">
+                    <quantity id="electrostatic_surface_charge_density" />
 
-                <vector i="1" j="1" planar="sigma * vval" axi="sigma * r * vval" />
-            </boundary>
-        </steadystate>
-    </boundary>
-      
-    <localvariable>
-        <item id="electrostatic_potential" name="Scalar potential" shortname="V" unit="V" scalar="1">
-            <steadystate planar_scalar="value1" axi_scalar="value1" />
-        </item>
-        <item id="electrostatic_electric_field" name="Electric field" shortname="E" unit="V/m" scalar="0">
-            <steadystate planar_comp_x="- dx1" planar_comp_y="- dy1"
-                         axi_comp_r="- dr1" axi_comp_z="- dz1" />
-        </item>
-        <item id="electrostatic_displacement" name="Displacement" shortname="D" unit="C/m2" scalar="0">
-            <steadystate planar_comp_x="- epsr * EPS0 * dx1" planar_comp_y="- epsr * EPS0 * dy1" axi_comp_r="- epsr * EPS0 * dr1" axi_comp_z="- epsr * EPS0 * dz1" />
-        </item>
-        <item id="electrostatic_energy_density" name="Energy density" shortname="we" unit="J/m3" scalar="1">
-            <steadystate planar_scalar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" axi_scalar="0.5 * epsr * EPS0 * (dr1 * dr1 + dz1 * dz1)" />
-        </item>
-        <item id="electrostatic_permittivity" name="Permittivity" shortname="epsr" unit="-" scalar="1">
-            <steadystate planar_scalar="epsr" axi_scalar="epsr" />
-        </item>
-        <item id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" scalar="1">
-            <steadystate planar_scalar="rho" axi_scalar="rho" />
-        </item>
-    </localvariable>
+                    <vector i="1" j="1" planar="sigma * vval"
+                                        axi="sigma * r * vval" />
+                </boundary>
+            </weakform>
+        </weakforms>
+    </surface>
 
-    <view>
-        <scalarvariable>
-            <steadystate default="electrostatic_potential">
-                <item id="electrostatic_potential" />
-                <item id="electrostatic_electric_field" />
-                <item id="electrostatic_displacement" />
-                <item id="electrostatic_energy_density" />
-                <item id="electrostatic_permittivity" />
-                <item id="electrostatic_charge_density" />
-            </steadystate>
-        </scalarvariable>
+    <preprocessor>
+        <volume>
+            <group>
+                <quantity id="electrostatic_permittivity" name="Permittivity" shortname="epsr" unit="F/m" unit_html="F.m<sup>-1</sup>" unit_latex="F \cdot m^{-1}" />
+                <quantity id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" unit_html="C.m<sup>-3</sup>" unit_latex="C \cdot m^{-3}" />
+            </group>
+        </volume>
+        <surface>
+            <group>
+                <quantity id="electrostatic_potential" name="Fixed voltage" shortname="V" unit="V" />
+                <quantity id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" unit="C/m2" unit_html="C.m<sup>-2</sup>" unit_latex="C \cdot m^{-2}" />
+            </group>
+        </surface>
+    </preprocessor>
 
-        <vectorvariable>
-            <steadystate default="electrostatic_electric_field">
-               <item id="electrostatic_electric_field" />
-               <item id="electrostatic_displacement" />
-           </steadystate>
-        </vectorvariable>
-    </view>
+    <postprocessor>
+        <localvariables>
+            <localvariable id="electrostatic_potential" name="Scalar potential" shortname="V" unit="V" type="scalar">
+                <expression analysistype="steadystate" planar="value1"
+                                                       axi="value1" />
+            </localvariable>
+            <localvariable id="electrostatic_electric_field" name="Electric field" shortname="E" unit="V/m" unit_html="V.m<sup>-1</sup>" unit_latex="V \cdot m^{-1}" type="vector">
+                <expression analysistype="steadystate" planar_x="- dx1"
+                                                       planar_y="- dy1"
+                                                       axi_r="- dr1"
+                                                       axi_z="- dz1" />
+            </localvariable>
+            <localvariable id="electrostatic_displacement" name="Displacement" shortname="D" unit="C/m2" unit_html="C.m<sup>-2</sup>" unit_latex="C \cdot m^{-2}" type="vector">
+                <expression analysistype="steadystate" planar_x="- epsr * EPS0 * dx1"
+                                                       planar_y="- epsr * EPS0 * dy1"
+                                                       axi_r="- epsr * EPS0 * dr1"
+                                                       axi_z="- epsr * EPS0 * dz1" />
+            </localvariable>
+            <localvariable id="electrostatic_energy_density" name="Energy density" shortname="we" unit="J/m3" unit_html="J.m<sup>-3</sup>" unit_latex="J \cdot m^{-3}" type="scalar">
+                <expression analysistype="steadystate" planar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)"
+                                                       axi="0.5 * epsr * EPS0 * (dr1 * dr1 + dz1 * dz1)" />
+            </localvariable>
+            <localvariable id="electrostatic_permittivity" name="Permittivity" shortname="epsr" unit="-" type="scalar">
+                <expression analysistype="steadystate" planar="epsr"
+                                                       axi="epsr" />
+            </localvariable>
+            <localvariable id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" unit_html="C.m<sup>-3</sup>" unit_latex="C \cdot m^{-3}" type="scalar">
+                <expression analysistype="steadystate" planar="rho"
+                                                       axi="rho" />
+            </localvariable>
+        </localvariables>
 
-    <pointvalue>
-        <steadystate>
-            <item id="electrostatic_potential" />
-            <item id="electrostatic_electric_field" />
-            <item id="electrostatic_displacement" />
-            <item id="electrostatic_energy_density" />
-            <item id="electrostatic_permittivity" />
-            <item id="electrostatic_charge_density" />
-        </steadystate>
-    </pointvalue>
+        <view>
+            <scalar>
+                <default analysistype="steadystate" id="electrostatic_potential">
+            </scalar>
+            <vector>
+                <sdefault analysistype="steadystate" id="electrostatic_electric_field">
+            </vector>
+        </view>
 
-    <volumeintegral>
-        <item id="volume" name="Volume" shortname="V" unit="m3">
-            <steadystate planar="1.0" axi="2.0 * PI * r" />
-        </item>
-        <item id="surface" name="Cross section" shortname="S" unit="m2">
-            <steadystate planar="1.0" axi="1.0" />
-        </item>
-        <item id="electrostatic_energy" name="Energy" shortname="We" unit="J">
-            <steadystate planar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" axi="2.0 * PI * r * 0.5 * epsr * EPS0 * (dr1 * dr1 + dz1 * dz1)" />
-        </item>
-    </volumeintegral>
+        <volumeintegrals>
+            <volumeintegral id="volume" name="Volume" shortname="V" unit="m3" unit_html="m<sup>3</sup>" unit_latex="m^{3}">
+                <expression analysistype="steadystate" planar="1.0"
+                                                      axi="2.0 * PI * r" />
+            </volumeintegral>
+            <volumeintegral id="surface" name="Cross section" shortname="S" unit="m2" unit_html="m<sup>2</sup>" unit_latex="m^{2}">
+                <expression analysistype="steadystate" planar="1.0"
+                                                      axi="1.0" />
+            </volumeintegral>
+            <volumeintegral id="electrostatic_energy" name="Energy" shortname="We" unit="J">
+                <expression analysistype="steadystate" planar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)"
+                                                      axi="2.0 * PI * r * 0.5 * epsr * EPS0 * (dr1 * dr1 + dz1 * dz1)" />
+            </volumeintegral>
+        </volumeintegrals>
 
-    <surfaceintegral>
-        <item id="length" name="Length" shortname="l" unit="m">
-            <steadystate planar="1.0" axi="1.0" />
-        </item>
-        <item id="surface" name="Surface" shortname="S" unit="m2">
-            <steadystate planar="1.0" axi="2.0 * PI * r" />
-        </item>
-        <item id="electrostatic_charge" name="Charge" shortname="Q" unit="C">
-            <steadystate planar="epsr * EPS0 * (tany * dx1 - tanx * dy1)" axi="2.0 * PI * r * epsr * EPS0 * (tanz * dr1 - tanr * dz1)" />
-        </item>
-    </surfaceintegral>
+        <surfaceintegrals>
+            <surfaceintegral id="length" name="Length" shortname="l" unit="m">
+                <expression analysistype="steadystate" planar="1.0"
+                                                      axi="1.0" />
+            </surfaceintegral>
+            <surfaceintegral id="surface" name="Surface" shortname="S" unit="m2" unit_html="m<sup>2</sup>" unit_latex="m^{2}">
+                <expression analysistype="steadystate" planar="1.0"
+                                                      axi="2.0 * PI * r" />
+            </surfaceintegral>
+            <surfaceintegral id="electrostatic_charge" name="Charge" shortname="Q" unit="C">
+                <expression analysistype="steadystate" planar="epsr * EPS0 * (tany * dx1 - tanx * dy1)"
+                                                      axi="2.0 * PI * r * epsr * EPS0 * (tanz * dr1 - tanr * dz1)" />
+            </surfaceintegral>
+        </surfaceintegrals>
+    </postprocessor>
 </module>

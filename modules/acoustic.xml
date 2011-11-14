@@ -22,7 +22,6 @@
         
         <weakforms>
             <weakform analysistype="harmonic">
-
                 <quantity id="acoustic_density" />
                 <quantity id="acoustic_speed" />
 
@@ -79,7 +78,7 @@
                     <vector i="2" j="1" planar="2 * PI * f / Z0 * upval * vval"
                                         axi="r * 2 * PI * f / Z0 * upval * vval" />
                 </boundary>
-             </weakform>
+            </weakform>
         </weakforms>
     </surface>
 
