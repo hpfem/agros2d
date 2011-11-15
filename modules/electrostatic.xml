@@ -2,7 +2,6 @@
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
     <general id="electrostatic" name="Electrostatic field">
         <description>Electrostatics is the branch of science that deals with the phenomena and properties of stationary or slow-moving (without acceleration) electric charges.</description>
-        <properties steadystate="1" harmonic="0" transient="0" />
         <analyses>
             <analysis id="steadystate" type="steadystate" name="Steady state" />
         </analyses>

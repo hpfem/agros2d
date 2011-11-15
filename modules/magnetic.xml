@@ -2,7 +2,6 @@
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
     <general id ="magnetic" name="Magnetic field">
         <description>Magnetic field ...</description>
-        <properties steadystate="1" harmonic="2" transient="1" />
         <analyses>
             <analysis id="steadystate" type="steadystate" name="Steady state" />
             <analysis id="harmonic" type="harmonic" name="Harmonic" />
