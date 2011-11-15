@@ -11,7 +11,7 @@
     </general>
 
     <constants>
-        <item id="MU0" value="1.2566371e-06" />
+        <constant id="MU0" value="1.2566371e-06" />
     </constants>
 
     <macros>
