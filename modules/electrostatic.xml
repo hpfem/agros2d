@@ -105,10 +105,10 @@
 
         <view>
             <scalar>
-                <default analysistype="steadystate" id="electrostatic_potential">
+                <default analysistype="steadystate" id="electrostatic_potential" />
             </scalar>
             <vector>
-                <sdefault analysistype="steadystate" id="electrostatic_electric_field">
+                <sdefault analysistype="steadystate" id="electrostatic_electric_field" />
             </vector>
         </view>
 

@@ -98,10 +98,10 @@
 
         <view>
             <scalar>
-                <default analysistype="steadystate" id="current_potential"/>
+                <default analysistype="steadystate" id="current_potential" />
             </scalar>
             <vector>
-                <default analysistype="steadystate" id="current_current_density"/>
+                <default analysistype="steadystate" id="current_current_density" />
             </vector>
         </view>
 

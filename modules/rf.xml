@@ -194,7 +194,7 @@
 
         <view>
             <scalar>
-                <default analysistype="harmonic" default="rf_electric_field_real">
+                <default analysistype="harmonic" default="rf_electric_field_real"/>
             </scalar>
             <vector>
                 <default analysistype="harmonic" default="rf_magnetic_field_real"/>

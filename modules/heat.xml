@@ -6,11 +6,7 @@
     </general>
 
     <constants>
-<<<<<<< HEAD
-        <item id="SIGMA0" value="5.670373e-8" />
-=======
-        <constant id="" value="" />
->>>>>>> finished changes of acoustic xml module + fix heat xml
+        <constant id="SIGMA0" value="5.670373e-8" />
     </constants>
 
     <material>

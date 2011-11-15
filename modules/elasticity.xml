@@ -51,7 +51,6 @@
                                             + (((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udy * vdy)"
                                     axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * udz * vdz +
                                          r * (E / (2.0*(1.0 + nu))) * (udr * vdr + 2 * udz * vdz)" symmetric="1" />
-
                 <vector i="1" j="1" planar="(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updx * vdx)
                                             + (E / (2.0*(1.0 + nu))) * (updy * vdy)
                                             - fx * vval  - ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdx"
@@ -83,45 +82,47 @@
         <quantity id="elasticity_force_y" shortname="fy" />
 
         <weakforms>
-            <steadystate default="elasticity_fixed_fixed">
+            <weakform analysistype="steadystate" default="elasticity_fixed_fixed">
                 <boundary id="elasticity_fixed_fixed" name="Fixed - fixed">
-                        <item id="elasticity_displacement_x" />
-                        <item id="elasticity_displacement_y" />
+                    <quantity id="elasticity_displacement_x" />
+                    <quantity id="elasticity_displacement_y" />
 
-                        <essential i="1" planar="dx"
-                                         axi="dx" />
-                        <essential i="2" planar="dy"
-                                         axi="dy" />
+                    <essential i="1" planar="dx"
+                                     axi="dx" />
+                    <essential i="2" planar="dy"
+                                     axi="dy" />
                 </boundary>
 
                 <boundary id="elasticity_fixed_free" name="Fixed - free">
-                        <item id="elasticity_displacement_x" />
-                        <item id="elasticity_force_y" />
+                    <quantity id="elasticity_displacement_x" />
+                    <quantity id="elasticity_force_y" />
 
-                        <essential i="1" planar="dx"
-                                         axi="dx" />
-                        <vector i="2" j="2" planar="-fy * vval"
-                                            axi="-fy * r * vval" />
+                    <essential i="1" planar="dx"
+                                     axi="dx" />
+                    <vector i="2" j="2" planar="-fy * vval"
+                                        axi="-fy * r * vval" />
                 </boundary>
 
                 <boundary id="elasticity_free_fixed" name="Free - fixed">
-                        <item id="elasticity_force_x" />
-                        <item id="elasticity_displacement_y" />
+                    <quantity id="elasticity_force_x" />
+                    <quantity id="elasticity_displacement_y" />
 
-                        <vector i="1" j="1" planar="-fx * vval"
-                                            axi="-fx * r * vval" />
-                        <essential i="2" planar="dy"
-                                         axi="dy" />
+                    <vector i="1" j="1" planar="-fx * vval"
+                                        axi="-fx * r * vval" />
+                    <essential i="2" planar="dy"
+                                     axi="dy" />
                 </boundary>
 
                 <boundary id="elasticity_free_free" name="Free - Free">
-                        <item id="elasticity_force_x" />
-                        <item id="elasticity_force_y" />
+                    <quantity id="elasticity_force_x" />
+                    <quantity id="elasticity_force_y" />
 
-                        <vector i="1" j="1" planar="-fx * vval" axi="-fx * r * vval" />
-                        <vector i="2" j="2" planar="-fy * vval" axi="-fy * r * vval" />
+                    <vector i="1" j="1" planar="-fx * vval"
+                                        axi="-fx * r * vval" />
+                    <vector i="2" j="2" planar="-fy * vval"
+                                        axi="-fy * r * vval" />
                 </boundary>
-            </steadystate>
+            </weakform>
         </weakforms>
     </surface>
 
@@ -130,9 +131,9 @@
             <group>
                 <quantity id="elasticity_young_modulus" name="Young modulus" shortname="E" unit="Pa" />
                 <quantity id="elasticity_poisson_ratio" name="Poisson ratio" shortname="nu" unit="-" />
-                <quantity id="elasticity_force_x" name="Force - x" shortname="fx" unit="N/m3" />
-                <quantity id="elasticity_force_y" name="Force - y" shortname="fy" unit="N/m3" />
-                <quantity id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/m" />
+                <quantity id="elasticity_force_x" name="Force - x" shortname="fx" unit="N/m3" unit_html="N.m<sup>-3</sup>" unit_latex="N \cdot m^{-3}" />
+                <quantity id="elasticity_force_y" name="Force - y" shortname="fy" unit="N/m3" unit_html="N.m<sup>-3</sup>" unit_latex="N \cdot m^{-3}" />
+                <quantity id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/m" unit_html="m<sup>-1</sup>" unit_latex="m^{-1}" />
                 <quantity id="elasticity_temperature" name="Temperature" shortname="T" unit="K" />
                 <quantity id="elasticity_temperature_reference" name="Reference emperature" shortname="Tr" unit="K" />
             </group>
@@ -141,83 +142,79 @@
             <group>
                 <quantity id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
                 <quantity id="elasticity_displacement_y" name="Fixed - y" shortname="dy" unit="m" />
-                <quantity id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" />
-                <quantity id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" />
+                <quantity id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" unit_html="N.m<sup>-2</sup>" unit_latex="N \cdot m^{-2}" />
+                <quantity id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" unit_html="N.m<sup>-2</sup>" unit_latex="N \cdot m^{-2}" />
             </group>
         </surface>
     </preprocessor>
 
-    <localvariable>
-        <item id="elasticity_displacement" name="Displacement" shortname="d" unit="m" scalar="0">
-            <steadystate planar_comp_x="value1" planar_comp_y="value2" axi_comp_r="value1" axi_comp_z="value2" />
-        </item>
-        <item id="elasticity_young_modulus" name="Young modulus" shortname="E" unit="Pa" scalar="1">
-            <steadystate planar_scalar="E" axi_scalar="E" />
-        </item>
-        <item id="elasticity_poisson_ratio" name="Poisson ratio" shortname="nu" unit="-" scalar="1">
-            <steadystate planar_scalar="nu" axi_scalar="nu" />
-        </item>
-        <item id="elasticity_inner_force" name="Inner force" shortname="f" unit="N" scalar="0">
-            <steadystate planar_comp_x="fx" planar_comp_y="fy" axi_comp_r="fx" axi_comp_z="fy" />
-        </item>
-        <item id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/K" scalar="1">
-            <steadystate planar_scalar="alpha" axi_scalar="alpha" />
-        </item>
-        <item id="elasticity_temperature" name="Temperature" shortname="T" unit="K" scalar="1">
-            <steadystate planar_scalar="T" axi_scalar="T" />
-        </item>
-        <item id="elasticity_temperature_reference" name="Reference temperature" shortname="Tr" unit="K" scalar="1">
-            <steadystate planar_scalar="Tr" axi_scalar="Tr" />
-        </item>
-    </localvariable>
+    <postprocessor>
+        <localvariables>
+            <localvariable id="elasticity_displacement" name="Displacement" shortname="d" unit="m" type="vector">
+                <expression analysistype="steadystate" planar_x="value1"
+                                                       planar_y="value2"
+                                                       axi_r="value1"
+                                                       axi_z="value2" />
+            </localvariable>
+            <localvariable id="elasticity_young_modulus" name="Young modulus" shortname="E" unit="Pa" type="scalar">
+                <expression analysistype="steadystate" planar="E"
+                                                       axi="E" />
+            </localvariable>
+            <localvariable id="elasticity_poisson_ratio" name="Poisson ratio" shortname="nu" unit="-" type="scalar">
+                <expression analysistype="steadystate" planar_scalar="nu"
+                                                       axi_scalar="nu" />
+            </localvariable>
+            <localvariable id="elasticity_inner_force" name="Inner force" shortname="f" unit="N" type="vector">
+                <expression analysistype="steadystate" planar_x="fx"
+                                                       planar_y="fy"
+                                                       axi_r="fx"
+                                                       axi_z="fy" />
+            </localvariable>
+            <localvariable id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/K" type="scalar">
+                <expression analysistype="steadystate" planar_scalar="alpha"
+                                                       axi_scalar="alpha" />
+            </localvariable>
+            <localvariable id="elasticity_temperature" name="Temperature" shortname="T" unit="K" type="scalar">
+                <expression analysistype="steadystate" planar_scalar="T"
+                                                       axi_scalar="T" />
+            </localvariable>
+            <localvariable id="elasticity_temperature_reference" name="Reference temperature" shortname="Tr" unit="K" type="scalar">
+                <expression analysistype="steadystate" planar_scalar="Tr"
+                                                       axi_scalar="Tr" />
+            </localvariable>
+        </localvariables>
 
-    <view>
-        <scalarvariable>
-            <steadystate default="elasticity_displacement">
-                <item id="elasticity_displacement" />
-                <item id="elasticity_young_modulus" />
-                <item id="elasticity_poisson_number" />
-                <item id="elasticity_inner_force" />
-                <item id="elasticity_temperature" />
-            </steadystate>
-        </scalarvariable>
+        <view>
+            <scalar>
+                <default analysistype="steadystate" id="elasticity_displacement" />
+            </scalar>
+            <vector>
+                <default analysistype="steadystate" id="elasticity_displacement" />
+            </vector>
+        </view>
 
-        <vectorvariable>
-            <steadystate default="elasticity_displacement">
-                <item id="elasticity_displacement" />
-            </steadystate>
-        </vectorvariable>
-    </view>
+        <volumeintegrals>
+            <volumeintegral id="elasticity_volume" name="Volume" shortname="V" unit="m3">
+                <expression analysistype="steadystate" planar="1.0"
+                                                       axi="2.0 * PI * r" />
+            </volumeintegral>
+            <volumeintegral id="elasticity_cross_section" name="Cross section" shortname="S" unit="m2">
+                <expression analysistype="steadystate" planar="1.0"
+                                                       axi="1.0" />
+            </volumeintegral>
+        </volumeintegrals>
 
-    <pointvalue>
-        <steadystate>
-            <item id="elasticity_displacement" />
-            <item id="elasticity_young_modulus" />
-            <item id="elasticity_poisson_ratio" />
-            <item id="elasticity_inner_force" />
-            <item id="elasticity_alpha" />
-            <item id="elasticity_temperature" />
-            <item id="elasticity_temperature_reference" />
-        </steadystate>
-    </pointvalue>
-
-    <volumeintegral>
-        <item id="volume" name="Volume" shortname="V" unit="m3">
-            <steadystate planar="1.0" axi="2.0 * PI * r" />
-        </item>
-        <item id="surface" name="Cross section" shortname="S" unit="m2">
-            <steadystate planar="1.0" axi="1.0" />
-        </item>
-    </volumeintegral>
-
-    <surfaceintegral>
-        <item id="length" name="Length" shortname="l" unit="m">
-            <steadystate planar="1.0" axi="1.0" />
-        </item>
-        <item id="surface" name="Surface" shortname="S" unit="m2">
-            <steadystate planar="1.0" axi="2.0 * PI * r" />
-        </item>
-    </surfaceintegral>
+        <surfaceintegrals>
+            <surfaceintegral id="elasticity_length" name="Length" shortname="l" unit="m">
+                <expression analysistype="steadystate" planar="1.0"
+                                                       axi="1.0" />
+            </surfaceintegral>
+            <surfaceintegral id="elasticity_surface" name="Surface" shortname="S" unit="m2">
+                <expression analysistype="steadystate" planar="1.0"
+                                                       axi="2.0 * PI * r" />
+            </surfaceintegral>
+        </surfaceintegrals>
+    </postprocessor>
 </module>
 
 
