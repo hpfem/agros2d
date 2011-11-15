@@ -9,7 +9,7 @@
     </general>
 
     <constants>
-        <item id="EPS0" value="8.854e-12" />
+        <constant id="EPS0" value="8.854e-12" />
     </constants>
 
     <macros>
