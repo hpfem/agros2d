@@ -2,7 +2,6 @@
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
     <general id ="elasticity" name="Structural analysis">
         <description>Structural analysis is the determination of the effects of loads on physical structures and their components.</description>
-        <properties steadystate="2" harmonic="0" transient="0" />
         <analyses>
             <analysis id="steadystate" type="steadystate" name="Steady state" />
         </analyses>

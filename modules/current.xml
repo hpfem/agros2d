@@ -2,7 +2,6 @@
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
     <general id ="current" name="Current field">
         <description>Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.</description>
-        <properties steadystate="1" harmonic="0" transient="0" />
         <analyses>
             <analysis id="steadystate" type="steadystate" name="Steady state" />
         </analyses>
