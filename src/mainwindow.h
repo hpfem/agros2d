@@ -69,6 +69,13 @@ private slots:
     void doExportVTKScalar();
     void doExportVTKOrder();
 
+    void doViewQuick2DNone();
+    void doViewQuick2DOrder();
+    void doViewQuick2DScalarView();
+    void doViewQuick3DScalarView();
+    void doViewQuick3DScalarViewSolid();
+    void doViewQuick3DModel();
+    void doViewQuick(SceneViewPostprocessorShow show);
     void doSceneMouseMoved(const QPointF &position);
     void doMouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
@@ -159,6 +166,13 @@ private:
     QAction *actChart;
     QAction *actFullScreen;
     QAction *actPostprocessorView;
+
+    QAction *actViewQuick2DNone;
+    QAction *actViewQuick2DOrder;
+    QAction *actViewQuick2DScalarView;
+    QAction *actViewQuick3DScalarView;
+    QAction *actViewQuick3DScalarViewSolid;
+    QAction *actViewQuick3DModel;
 
     QAction *actScriptEditor;
     QAction *actScriptEditorRunScript;

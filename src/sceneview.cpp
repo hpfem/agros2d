@@ -163,7 +163,7 @@ void SceneView::createActions()
     actSceneZoomBestFit->setStatusTip(tr("Best fit"));
     connect(actSceneZoomBestFit, SIGNAL(triggered()), this, SLOT(doZoomBestFit()));
 
-    actSceneZoomRegion = new QAction(icon("zoom-best-fit"), tr("Zoom region"), this);
+    actSceneZoomRegion = new QAction(icon("zoom-fit-best"), tr("Zoom region"), this);
     actSceneZoomRegion->setStatusTip(tr("Zoom region"));
     actSceneZoomRegion->setCheckable(true);
 

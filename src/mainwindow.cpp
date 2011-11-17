@@ -344,6 +344,30 @@ void MainWindow::createActions()
     actApplicationLog = new QAction(icon("log"), tr("Application &log"), this);
     actApplicationLog->setStatusTip(tr("Show application log"));
     connect(actApplicationLog, SIGNAL(triggered()), this, SLOT(doApplicationLog()));
+
+    actViewQuick2DNone = new QAction(icon(""), tr("2D: None"), this);
+    actViewQuick2DNone->setShortcut(QKeySequence(tr("Ctrl+1")));
+    connect(actViewQuick2DNone, SIGNAL(triggered()), this, SLOT(doViewQuick2DNone()));
+
+    actViewQuick2DOrder = new QAction(icon(""), tr("2D: Polynomial order"), this);
+    actViewQuick2DOrder->setShortcut(QKeySequence(tr("Ctrl+2")));
+    connect(actViewQuick2DOrder, SIGNAL(triggered()), this, SLOT(doViewQuick2DOrder()));
+
+    actViewQuick2DScalarView = new QAction(icon(""), tr("2D: Scalar view"), this);
+    actViewQuick2DScalarView->setShortcut(QKeySequence(tr("Ctrl+3")));
+    connect(actViewQuick2DScalarView, SIGNAL(triggered()), this, SLOT(doViewQuick2DScalarView()));
+
+    actViewQuick3DScalarView = new QAction(icon(""), tr("3D: Scalar view"), this);
+    actViewQuick3DScalarView->setShortcut(QKeySequence(tr("Ctrl+4")));
+    connect(actViewQuick3DScalarView, SIGNAL(triggered()), this, SLOT(doViewQuick3DScalarView()));
+
+    actViewQuick3DScalarViewSolid = new QAction(icon(""), tr("3D: Scalar view - solid"), this);
+    actViewQuick3DScalarViewSolid->setShortcut(QKeySequence(tr("Ctrl+5")));
+    connect(actViewQuick3DScalarViewSolid, SIGNAL(triggered()), this, SLOT(doViewQuick3DScalarViewSolid()));
+
+    actViewQuick3DModel = new QAction(icon(""), tr("3D: Model"), this);
+    actViewQuick3DModel->setShortcut(QKeySequence(tr("Ctrl+6")));
+    connect(actViewQuick3DModel, SIGNAL(triggered()), this, SLOT(doViewQuick3DModel()));
 }
 
 void MainWindow::createMenus()
@@ -413,6 +437,15 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneView->actSceneZoomOut);
     mnuView->addAction(sceneView->actSceneZoomRegion);
     mnuView->addMenu(mnuProjection);
+    mnuView->addSeparator();
+    QMenu *mnuViewQuickView = new QMenu(tr("Quick view"), this);
+    mnuViewQuickView->addAction(actViewQuick2DNone);
+    mnuViewQuickView->addAction(actViewQuick2DOrder);
+    mnuViewQuickView->addAction(actViewQuick2DScalarView);
+    mnuViewQuickView->addAction(actViewQuick3DScalarView);
+    mnuViewQuickView->addAction(actViewQuick3DScalarViewSolid);
+    mnuViewQuickView->addAction(actViewQuick3DModel);
+    mnuView->addMenu(mnuViewQuickView);
     mnuView->addSeparator();
     mnuView->addAction(actCopy);
     mnuView->addAction(actLoadBackground);
@@ -1229,6 +1262,13 @@ void MainWindow::doInvalidated()
     if (Util::config()->showExperimentalFeatures)
         actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
+    actViewQuick2DNone->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick2DOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick2DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick3DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick3DScalarViewSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick3DModel->setEnabled(Util::scene()->sceneSolution()->isSolved());
+
     actSolveAdaptiveStep->setEnabled(Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->analysisType != AnalysisType_Transient); // FIXME: timedep
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient));
@@ -1462,6 +1502,61 @@ void MainWindow::doLoadBackground()
                                        imageLoaderDialog.position().height());
         sceneView->refresh();
     }
+}
+
+
+void MainWindow::doViewQuick(SceneViewPostprocessorShow show)
+{
+    sceneView->sceneViewSettings().postprocessorShow = show;
+
+    // time step
+    QApplication::processEvents();
+    Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
+
+    // switch to the postprocessor
+    if (Util::scene()->sceneSolution()->isSolved())
+        sceneView->actSceneModePostprocessor->trigger();
+
+    doInvalidated();
+    sceneView->doInvalidated();
+}
+
+void MainWindow::doViewQuick2DNone()
+{
+    sceneView->sceneViewSettings().showInitialMesh = false;
+    sceneView->sceneViewSettings().showSolutionMesh = false;
+    doViewQuick(SceneViewPostprocessorShow_None);
+}
+
+void MainWindow::doViewQuick2DOrder()
+{
+    sceneView->sceneViewSettings().showInitialMesh = true;
+    sceneView->sceneViewSettings().showSolutionMesh = true;
+    doViewQuick(SceneViewPostprocessorShow_Order);
+}
+
+void MainWindow::doViewQuick2DScalarView()
+{
+    sceneView->sceneViewSettings().showInitialMesh = false;
+    sceneView->sceneViewSettings().showSolutionMesh = false;
+    doViewQuick(SceneViewPostprocessorShow_ScalarView);
+}
+
+void MainWindow::doViewQuick3DScalarView()
+{
+    sceneView->sceneViewSettings().showInitialMesh = false;
+    sceneView->sceneViewSettings().showSolutionMesh = false;
+    doViewQuick(SceneViewPostprocessorShow_ScalarView3D);
+}
+
+void MainWindow::doViewQuick3DScalarViewSolid()
+{
+    doViewQuick(SceneViewPostprocessorShow_ScalarView3DSolid);
+}
+
+void MainWindow::doViewQuick3DModel()
+{
+    doViewQuick(SceneViewPostprocessorShow_Model);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
