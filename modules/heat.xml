@@ -1,194 +1,207 @@
 <?xml version="1.0"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
+<module>
     <general id ="heat" name="Heat transfer">
         <description>Heat transfer is a discipline of thermal engineering that concerns the exchange of thermal energy from one physical system to another. Heat transfer is classified into various mechanisms, such as heat conduction, convection and thermal radiation.</description>
         <properties steadystate="1" harmonic="0" transient="1" />
-        <analyses>
-            <analysis id="steadystate" type="steadystate" name="Steady state" />
-            <analysis id="transient" type="transient" name="Transient" />
-        </analyses>
     </general>
 
-    <constants />
+    <constants>
+        <item id="SIGMA0" value="5.670373e-8" />
+    </constants>
 
-    <macros>
-        <macro id="" expression="" />
-    </macros>
-
-    <volume>
-        <quantity id="heat_conductivity" shortname="lambda" />
-        <quantity id="heat_volume_heat" shortname="p" />
-        <quantity id="heat_density" shortname="rho" />
-        <quantity id="heat_specific_heat" shortname="cp" />
+    <material>
+        <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="W/m.K" default="385" />
+        <item id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" />
+        <item id="heat_density" name="Density" shortname="rho" unit="kg/m3" default="7800" />
+        <item id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" default="400" />
         
-        <weakforms>
-            <weakform analysistype="steadystate">
-                <quantity id="heat_conductivity" />
-                <quantity id="heat_volume_heat" />
+    	<steadystate>
+            <material id="heat_conductivity" />
+            <material id="heat_volume_heat" />
 
-                <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
-                                    axi="0.0 * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz)" symmetric="1" />
-                <vector i="1" j="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval"
-                                    axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval" />
-            </weakform>
-
-            <weakform analysistype="transient">
-                <quantity id="heat_conductivity" />
-                <quantity id="heat_volume_heat" />
-                <quantity id="heat_density" />
-                <quantity id="heat_specific_heat" />
-
-                <matrix i="1" j="1" planar="0.0 * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy) + 0 * uval * upval * vval / deltat + rho * cp * uval * vval / deltat"
-                                    axi="0.0 * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz) + 0 * r * uval * upval * vval / deltat + r * rho * cp * uval * vval / deltat" symmetric="1" />
-                <vector i="1" j="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval + rho * cp * (upval - uptval) * vval / deltat"
-                                    axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval + r * rho * cp * (upval - uptval) * vval / deltat" />
-            </weakform>
-        </weakforms>
-    </volume>
-
-    <surface>
-        <quantity id="heat_temperature" shortname="T" />
-        <quantity id="heat_heat_flux" shortname="f" />
-        <quantity id="heat_heat_transfer_coefficient" shortname="h"/>
-        <quantity id="heat_external_temperature" shortname="Te" />
-    	
-        <weakforms>
-            <weakform analysistype="steadystate" default="heat_temperature">
-                <boundary id="heat_temperature" name="Temperature">
-                    <quantity id="heat_temperature" />
-
-                    <essential i="1" planar="T"
-                                     axi="T" />
-                </boundary>
-
-                <boundary id="heat_heat_flux" name="Heat flux">
-                    <quantity id="heat_heat_flux" />
-                    <quantity id="heat_heat_transfer_coefficient" />
-                    <quantity id="heat_external_temperature" />
-
-                    <matrix i="1" j="1" planar="h * uval * vval"
-                                        axi="h * r * uval * vval" symmetric="1" />
-                    <vector i="1" j="1" planar="((- f - h * Te) + h * upval) * vval"
-                                        axi="r * ((- f - h * Te) + h * upval) * vval" />
-                </boundary>
-            </weakform>
+            <matrix i="1" j="1" planar="dlambda * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
+                                axi="dlambda * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz)" symmetric="1" />
+            <vector i="1" j="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval"
+                                axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval" />
+        </steadystate>
         
-            <weakform analysistype="transient" default="heat_temperature">
-                <boundary id="heat_temperature" name="Temperature">
-                    <quantity id="heat_temperature" />
+    	<transient>
+            <material id="heat_conductivity" />
+            <material id="heat_volume_heat" />
+            <material id="heat_density" />
+            <material id="heat_specific_heat" />
 
-                    <essential i="1" planar="T"
-                                     axi="T" />
-                </boundary>
+            <matrix i="1" j="1" planar="dlambda * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy) + dlambda * uval * upval * vval / deltat + rho * cp * uval * vval / deltat"
+                                axi="dlambda * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz) + dlambda * r * uval * upval * vval / deltat + r * rho * cp * uval * vval / deltat" symmetric="1" />
+            <vector i="1" j="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval + rho * cp * (upval - uptval) * vval / deltat"
+                                axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval + r * rho * cp * (upval - uptval) * vval / deltat" />
+        </transient>        
+    </material>
 
-                <boundary id="heat_heat_flux" name="Heat flux">
-                    <quantity id="heat_heat_flux" />
-                    <quantity id="heat_heat_transfer_coefficient" />
-                    <quantity id="heat_external_temperature" />
+    <boundary>
+        <item id="heat_temperature" name="Temperature" shortname="T" unit="K" />
+    	<item id="heat_heat_flux" name="Heat flux" shortname="f" unit="W/m2" />
+        <item id="heat_convection_heat_transfer_coefficient" name="Heat transfer coefficient" shortname="h" unit="W/m2.K" default="5" />
+        <item id="heat_convection_external_temperature" name="Convection - external temperature" shortname="Te" unit="K" default="20" />
+        <item id="heat_radiation_emissivity" name="Emissivity" shortname="eps" unit="-" default="0.7" />
+        <item id="heat_radiation_ambient_temperature" name="Radiation - ambient temperature" shortname="Ta" unit="K" default="20" />
 
-                    <matrix i="1" j="1" planar="h * uval * vval"
-                                        axi="h * r * uval * vval" symmetric="1" />
-                    <vector i="1" j="1" planar="((-f - h * Te) + h * upval) * vval"
-                                        axi="r * ((-f - h * Te) + h * upval) * vval" />
-                </boundary>
-            </weakform>
-        </weakforms>
-    </surface>
+        <steadystate default="heat_temperature">
+            <boundary id="heat_temperature" name="Temperature">
+                <item id="heat_temperature" />
 
-    <preprocessor>
-        <volume>
-            <group>
-                <quantity id="heat_conductivity" name="Thermal conductivity" unit="W/m.K" default="385" condition="value > 0" />
-                <quantity id="heat_volume_heat" name="Volume heat" unit="W/m3" condition="value >= 0" />
-                <quantity id="heat_density" name="Density" condition="value >= 0" unit="kg/m3" />
-                <quantity id="heat_specific_heat" name="Specific heat" unit="J/kg.K" condition="value >= 0" />
-            </group>
-        </volume>
-        <surface>
-            <group>
-                <quantity id="heat_temperature" name="Temperature" unit="K" />
-                <quantity id="heat_heat_flux" name="Heat flux" unit="W/m2" unit_html="W.m<sup>-2</sup>" unit_latex="W \cdot m^{-2}" />
-                <quantity id="heat_heat_transfer_coefficient" name="Heat transfer coefficient" unit="W/m2.K" default="5" condition="value >= 0" />
-                <quantity id="heat_external_temperature" name="External temperature" unit="K" default="20" />
-            </group>
-        </surface>
-    </preprocessor>
+                <essential i="1" planar="T"
+                                 axi="T" />
+            </boundary>
 
-    <postprocessor>
-        <localvariables>
-            <localvariable id="heat_temperature" name="Temperature" shortname="T" unit="K" type="scalar">
-                <expression analysistype="steadystate" planar="value1" axi="value1"/>
-                <expression analysistype="transient" planar="value1" axi="value1"/>
-            </localvariable>
-            <localvariable id="heat_heat_flux" name="Heat flux" shortname="F" unit="W/m2" unit_html="W.m<sup>-2</sup>" unit_latex="W \cdot m^{-2}" format="%5.3e" type="vector">
-                <expression analysistype="steadystate" planar_x="- lambda * dx1" planar_y="- lambda * dy1" axi_r="- lambda * dr1" axi_z="- lambda * dz1" />
-                <expression analysistype="transient" planar_x="- lambda * dx1" planar_y="- lambda * dy1" axi_r="- lambda * dr1" axi_z="- lambda * dz1" />
-            </localvariable>
-            <localvariable id="heat_temperature_gradient" name="Temperature gradient" shortname="G" unit="K/m" type="vector">
-                <expression analysistype="steadystate" planar_x="- dx1" planar_y="- dy1" axi_r="- dr1" axi_z="- dz1" />
-                <expression analysistype="transient" planar_x="- dx1" planar_y="- dy1" axi_r="- dr1" axi_z="- dz1" />
-            </localvariable>
-            <localvariable id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="W/m.K" type="scalar">
-                <expression analysistype="steadystate" planar="lambda" axi="lambda" />
-                <expression analysistype="transient" planar="lambda" axi="lambda" />
-            </localvariable>
-            <localvariable id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" type="scalar">
-                <expression analysistype="steadystate" planar="p" axi="p" />
-                <expression analysistype="transient" planar="p" axi="p" />
-            </localvariable>
-            <localvariable id="heat_density" name="Density" shortname="rho" unit="kg/m3" type="scalar">
-                <expression analysistype="transient" planar="rho" axi="rho" />
-            </localvariable>
-            <localvariable id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" type="scalar">
-                <expression analysistype="transient" planar="cp" axi="cp" />
-            </localvariable>
-        </localvariables>
+            <boundary id="heat_heat_flux" name="Heat flux">
+                <item id="heat_heat_flux" />
+                <item id="heat_convection_heat_transfer_coefficient" />
+                <item id="heat_convection_external_temperature" />
+                <item id="heat_radiation_emissivity" />
+                <item id="heat_radiation_ambient_temperature" />
 
-        <view>
-            <scalar>
-                <default analysistype="steadystate" id="heat_temperature" />
-                <default analysistype="transient" id="heat_temperature" />
-            </scalar>
-            <vector>
-                <default analysistype="steadystate" id="heat_heat_flux" />
-                <default analysistype="transient" id="heat_heat_flux" />
-            </vector>
-        </view>
+                <matrix i="1" j="1" planar="h * uval * vval + SIGMA0 * eps * uval*uval*uval*uval * vval"
+                                    axi="h * r * uval * vval" symmetric="1" />
+                <vector i="1" j="1" planar="((- f - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval"
+                                    axi="r * ((- f - h * Te) + h * upval) * vval" />
+            </boundary>
+        </steadystate>
+        
+        <transient default="heat_temperature">
+            <boundary id="heat_temperature" name="Temperature">
+                <item id="heat_temperature" />
 
-        <volumeintegrals>
-            <volumeintegral id="heat_volume" name="Volume" shortname="V" unit="m3">
-                <expression analysistype="steadystate" planar="1.0" axi="2.0 * PI * r" />
-                <expression analysistype="transient" planar="1.0" axi="2.0 * PI * r" />
-            </volumeintegral>
-            <volumeintegral id="heat_cross_section" name="Cross section" shortname="S" unit="m2">
-                <expression analysistype="steadystate" planar="1.0" axi="1.0" />
-                <expression analysistype="transient" planar="1.0" axi="1.0" />
-            </volumeintegral>
-            <volumeintegral id="heat_temperature" name="Temperature" shortname="T" unit="T.m3">
-                <expression analysistype="steadystate" planar="value1" axi="2.0 * PI * r * value1" />
-                <expression analysistype="transient" planar="value1" axi="2.0 * PI * r * value1" />
-            </volumeintegral>
-        </volumeintegrals>
+                <essential i="1" planar="T"
+                                 axi="T" />
+            </boundary>
 
-        <surfaceintegrals>
-            <surfaceintegral id="heat_length" name="Length" shortname="l" unit="m">
-                <expression analysistype="steadystate" planar="1.0" axi="1.0" />
-                <expression analysistype="transient" planar="1.0" axi="1.0" />
-            </surfaceintegral>
-            <surfaceintegral id="heat_surface" name="Surface" shortname="S" unit="m2">
-                <expression analysistype="steadystate" planar="1.0" axi="2.0 * PI * r" />
-                <expression analysistype="transient" planar="1.0" axi="2.0 * PI * r" />
-            </surfaceintegral>
-            <surfaceintegral id="heat_temperature" name="Temperature" shortname="T" unit="T.m2">
-                <expression analysistype="steadystate" planar="value1" axi="2.0 * PI * r * value1" />
-                <expression analysistype="transient" planar="value1" axi="2.0 * PI * r * value1" />
-            </surfaceintegral>
-            <surfaceintegral id="heat_heat_flux" name="Heat flux" shortname="f" unit="W">
-                <expression analysistype="steadystate" planar="- lambda * (tany * dx1 - tanx * dy1)"
-                             axi="- 2.0 * PI * r * lambda * (tanz * dr1 - tanr * dz1)" />
-                <expression analysistype="transient" planar="- lambda * (tany * dx1 - tanx * dy1)"
-                            axi="- 2.0 * PI * r * lambda * (tanz * dr1 - tanr * dz1)" />
-            </surfaceintegral>
-        </surfaceintegrals>
-    </postprocessor>
+            <boundary id="heat_heat_flux" name="Heat flux">
+                <item id="heat_heat_flux" />
+                <item id="heat_heat_transfer_coefficient" />
+                <item id="heat_external_temperature" />
+
+                <matrix i="1" j="1" planar="h * uval * vval"
+                                    axi="h * r * uval * vval" symmetric="1" />
+                <vector i="1" j="1" planar="((-f - h * Te) + h * upval) * vval"
+                                    axi="r * ((-f - h * Te) + h * upval) * vval" />
+            </boundary>
+        </transient>        
+    </boundary>
+
+    <localvariable>
+        <item id="heat_temperature" name="Temperature" shortname="T" unit="K" scalar="1">
+            <steadystate planar_scalar="value1" axi_scalar="value1" />
+            <transient planar_scalar="value1" axi_scalar="value1" />
+        </item>
+        <item id="heat_heat_flux" name="Heat flux" shortname="F" unit="W/m2" scalar="0">
+            <steadystate planar_comp_x="- lambda * dx1" planar_comp_y="- lambda * dy1" axi_comp_r="- lambda * dr1" axi_comp_z="- lambda * dz1" />
+            <transient planar_comp_x="- lambda * dx1" planar_comp_y="- lambda * dy1" axi_comp_r="- lambda * dr1" axi_comp_z="- lambda * dz1" />
+        </item>
+        <item id="heat_temperature_gradient" name="Temperature gradient" shortname="G" unit="K/m" scalar="0">
+            <steadystate planar_comp_x="- dx1" planar_comp_y="- dy1" axi_comp_r="- dr1" axi_comp_z="- dz1" />
+            <transient planar_comp_x="- dx1" planar_comp_y="- dy1" axi_comp_r="- dr1" axi_comp_z="- dz1" />
+        </item>
+        <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="W/m.K" scalar="1">
+            <steadystate planar_scalar="lambda" axi_scalar="lambda" />
+            <transient planar_scalar="lambda" axi_scalar="lambda" />
+        </item>
+        <item id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" scalar="1">
+            <steadystate planar_scalar="p" axi_scalar="p" />
+            <transient planar_scalar="p" axi_scalar="p" />
+        </item>
+        <item id="heat_density" name="Density" shortname="rho" unit="kg/m3" scalar="1">
+            <transient planar_scalar="rho" axi_scalar="rho" />
+        </item>
+        <item id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" scalar="1">
+            <transient planar_scalar="cp" axi_scalar="cp" />
+        </item>
+    </localvariable>
+
+    <view>
+        <scalarvariable>
+            <steadystate default="heat_temperature">
+                <item id="heat_temperature" />
+                <item id="heat_heat_flux" />
+                <item id="heat_temperature_gradient" />
+                <item id="heat_conductivity" />
+                <item id="heat_volume_heat" />
+            </steadystate>
+            <transient default="heat_temperature">
+                <item id="heat_temperature" />
+                <item id="heat_heat_flux" />
+                <item id="heat_temperature_gradient" />
+                <item id="heat_conductivity" />
+                <item id="heat_volume_heat" />
+                <item id="heat_density" />
+                <item id="heat_specific_heat" />
+            </transient>
+        </scalarvariable>
+
+        <vectorvariable>
+            <steadystate default="heat_heat_flux">
+                <item id="heat_temperature_gradient" />
+                <item id="heat_heat_flux" />
+            </steadystate>
+            <transient default="heat_heat_flux">
+                <item id="heat_temperature_gradient" />
+                <item id="heat_heat_flux" />
+            </transient>
+        </vectorvariable>
+    </view>
+
+    <pointvalue>
+        <steadystate>
+            <item id="heat_temperature" />
+            <item id="heat_heat_flux" />
+            <item id="heat_temperature_gradient" />
+            <item id="heat_conductivity" />
+            <item id="heat_volume_heat" />
+        </steadystate>
+        <transient>
+            <item id="heat_temperature" />
+            <item id="heat_heat_flux" />
+            <item id="heat_temperature_gradient" />
+            <item id="heat_conductivity" />
+            <item id="heat_volume_heat" />
+            <item id="heat_density" />
+            <item id="heat_specific_heat" />
+        </transient>
+    </pointvalue>
+
+    <volumeintegral>
+        <item id="volume" name="Volume" shortname="V" unit="m3">
+            <steadystate planar="1.0" axi="2.0 * PI * r" />
+            <transient planar="1.0" axi="2.0 * PI * r" />
+        </item>
+        <item id="surface" name="Cross section" shortname="S" unit="m2">
+            <steadystate planar="1.0" axi="1.0" />
+            <transient planar="1.0" axi="1.0" />
+        </item>
+        <item id="heat_temperature" name="Temperature" shortname="T" unit="T.m3">
+            <steadystate planar="value1" axi="2.0 * PI * r * value1" />
+            <transient planar="value1" axi="2.0 * PI * r * value1" />
+        </item>
+    </volumeintegral>
+
+    <surfaceintegral>
+        <item id="length" name="Length" shortname="l" unit="m">
+            <steadystate planar="1.0" axi="1.0" />
+            <transient planar="1.0" axi="1.0" />
+        </item>
+        <item id="surface" name="Surface" shortname="S" unit="m2">
+            <steadystate planar="1.0" axi="2.0 * PI * r" />
+            <transient planar="1.0" axi="2.0 * PI * r" />
+        </item>
+        <item id="heat_temperature" name="Temperature" shortname="T" unit="T.m2">
+            <steadystate planar="value1" axi="2.0 * PI * r * value1" />
+            <transient planar="value1" axi="2.0 * PI * r * value1" />
+        </item>
+        <item id="heat_heat_flux" name="Heat flux" shortname="f" unit="W">
+            <steadystate planar="- lambda * (tany * dx1 - tanx * dy1)"
+                         axi="- 2.0 * PI * r * lambda * (tanz * dr1 - tanr * dz1)" />
+            <transient planar="- lambda * (tany * dx1 - tanx * dy1)"
+                        axi="- 2.0 * PI * r * lambda * (tanz * dr1 - tanr * dz1)" />
+        </item>
+    </surfaceintegral>
 </module>

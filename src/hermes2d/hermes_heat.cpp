@@ -54,13 +54,17 @@ void SceneBoundaryHeatDialog::createContent()
 
     txtHeatFlux = new ValueLineEdit(this);
     txtTemperature = new ValueLineEdit(this);
-    txtHeatTransferCoefficient = new ValueLineEdit(this);
-    txtExternalTemperature = new ValueLineEdit(this);
+    txtConvectionHeatTransferCoefficient = new ValueLineEdit(this);
+    txtConvectionExternalTemperature = new ValueLineEdit(this);
+    txtRadiationEmissivity = new ValueLineEdit(this);
+    txtRadiationAmbientTemperature = new ValueLineEdit(this);
 
     connect(txtHeatFlux, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtTemperature, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    connect(txtHeatTransferCoefficient, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    connect(txtExternalTemperature, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtConvectionHeatTransferCoefficient, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtConvectionExternalTemperature, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtRadiationEmissivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtRadiationAmbientTemperature, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     // set active marker
     doTypeChanged(cmbType->currentIndex());
@@ -74,10 +78,16 @@ void SceneBoundaryHeatDialog::createContent()
     layout->addWidget(txtHeatFlux, 12, 2);
     layout->addWidget(createLabel(tr("<i>%1</i> (W/m<sup>2</sup>·K)").arg(QString::fromUtf8("α")),
                                   tr("Heat transfer coef.")), 13, 0);
-    layout->addWidget(txtHeatTransferCoefficient, 13, 2);
+    layout->addWidget(txtConvectionHeatTransferCoefficient, 13, 2);
     layout->addWidget(createLabel(tr("<i>T</i><sub>ext</sub> (K)"),
                                   tr("External temperature")), 14, 0);
-    layout->addWidget(txtExternalTemperature, 14, 2);
+    layout->addWidget(txtConvectionExternalTemperature, 14, 2);
+    layout->addWidget(createLabel(tr("<i>%1</i> (-)").arg(QString::fromUtf8("ε")),
+                                  tr("Emissivity")), 15, 0);
+    layout->addWidget(txtRadiationEmissivity, 15, 2);
+    layout->addWidget(createLabel(tr("<i>T</i><sub>amb</sub> (K)"),
+                                  tr("Ambient temperature")), 16, 0);
+    layout->addWidget(txtRadiationAmbientTemperature, 16, 2);
 
 }
 
@@ -93,8 +103,10 @@ void SceneBoundaryHeatDialog::load()
     else if (m_boundary->type == "heat_heat_flux")
     {
         txtHeatFlux->setValue(m_boundary->get_value("heat_heat_flux"));
-        txtHeatTransferCoefficient->setValue(m_boundary->get_value("heat_heat_transfer_coefficient"));
-        txtExternalTemperature->setValue(m_boundary->get_value("heat_external_temperature"));
+        txtConvectionHeatTransferCoefficient->setValue(m_boundary->get_value("heat_convection_heat_transfer_coefficient"));
+        txtConvectionExternalTemperature->setValue(m_boundary->get_value("heat_convection_external_temperature"));
+        txtRadiationEmissivity->setValue(m_boundary->get_value("heat_radiation_emissivity"));
+        txtRadiationAmbientTemperature->setValue(m_boundary->get_value("heat_radiation_ambient_temperature"));
     }
 }
 
@@ -116,12 +128,20 @@ bool SceneBoundaryHeatDialog::save() {
             m_boundary->values["heat_heat_flux"] = txtHeatFlux->value();
         else
             return false;
-        if (txtHeatTransferCoefficient->evaluate())
-            m_boundary->values["heat_heat_transfer_coefficient"] = txtHeatTransferCoefficient->value();
+        if (txtConvectionHeatTransferCoefficient->evaluate())
+            m_boundary->values["heat_convection_heat_transfer_coefficient"] = txtConvectionHeatTransferCoefficient->value();
         else
             return false;
-        if (txtExternalTemperature->evaluate())
-            m_boundary->values["heat_external_temperature"] = txtExternalTemperature->value();
+        if (txtConvectionExternalTemperature->evaluate())
+            m_boundary->values["heat_convection_external_temperature"] = txtConvectionExternalTemperature->value();
+        else
+            return false;
+        if (txtRadiationEmissivity->evaluate())
+            m_boundary->values["heat_radiation_emissivity"] = txtRadiationEmissivity->value();
+        else
+            return false;
+        if (txtRadiationAmbientTemperature->evaluate())
+            m_boundary->values["heat_radiation_ambient_temperature"] = txtRadiationAmbientTemperature->value();
         else
             return false;
     }
@@ -133,8 +153,10 @@ void SceneBoundaryHeatDialog::doTypeChanged(int index)
 {
     txtTemperature->setEnabled(false);
     txtHeatFlux->setEnabled(false);
-    txtHeatTransferCoefficient->setEnabled(false);
-    txtExternalTemperature->setEnabled(false);
+    txtConvectionHeatTransferCoefficient->setEnabled(false);
+    txtConvectionExternalTemperature->setEnabled(false);
+    txtRadiationEmissivity->setEnabled(false);
+    txtRadiationAmbientTemperature->setEnabled(false);
 
     // read equation
     readEquation(lblEquationImage, cmbType->itemData(index).toString());
@@ -147,8 +169,10 @@ void SceneBoundaryHeatDialog::doTypeChanged(int index)
     else if (cmbType->itemData(index) == "heat_heat_flux")
     {
         txtHeatFlux->setEnabled(true);
-        txtHeatTransferCoefficient->setEnabled(true);
-        txtExternalTemperature->setEnabled(true);
+        txtConvectionHeatTransferCoefficient->setEnabled(true);
+        txtConvectionExternalTemperature->setEnabled(true);
+        txtRadiationEmissivity->setEnabled(true);
+        txtRadiationAmbientTemperature->setEnabled(true);
     }
 
     setMinimumSize(sizeHint());

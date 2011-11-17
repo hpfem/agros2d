@@ -223,8 +223,8 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin) :
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     layout->addWidget(txtLineEdit, 1);
+    layout->addWidget(lblInfo, 1);
     layout->addWidget(lblValue, 0, Qt::AlignRight);
-    layout->addWidget(lblInfo, 0, Qt::AlignRight);
     layout->addWidget(btnEditTimeDep, 0, Qt::AlignRight);
     layout->addWidget(btnDataTableDelete, 0, Qt::AlignRight);
     layout->addWidget(btnDataTableDialog, 0, Qt::AlignRight);

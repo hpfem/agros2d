@@ -415,9 +415,9 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
             space.push_back(spaceParam[i]->dup(mesh));
     }
 
-    qDebug() << "nodes: " << mesh->get_num_nodes();
-    qDebug() << "elements: " << mesh->get_num_elements();
-    qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(space));
+    // qDebug() << "nodes: " << mesh->get_num_nodes();
+    // qDebug() << "elements: " << mesh->get_num_elements();
+    // qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(space));
 
     // create solutions
     for (int i = 0; i < numberOfSolution; i++)

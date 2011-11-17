@@ -30,7 +30,7 @@
     	<item id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" unit="Pa"></item>
     	<item id="acoustic_normal_acceleration_real" name="Normal acceleration - real" shortname="anr" unit="m/s2"></item>
     	<item id="acoustic_normal_acceleration_imag" name="Normal acceleration - imag" shortname="ani" unit="m/s2"></item>
-    	<item id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" unit="Pa·s/m"></item>
+    	<item id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" unit="Pa.s/m"></item>
  
         <harmonic default="acoustic_pressure">
             <boundary id="acoustic_pressure" name="Pressure">

@@ -67,8 +67,10 @@ private:
     QComboBox *cmbType;
     ValueLineEdit *txtTemperature;
     ValueLineEdit *txtHeatFlux;
-    ValueLineEdit *txtHeatTransferCoefficient;
-    ValueLineEdit *txtExternalTemperature;
+    ValueLineEdit *txtConvectionHeatTransferCoefficient;
+    ValueLineEdit *txtConvectionExternalTemperature;
+    ValueLineEdit *txtRadiationEmissivity;
+    ValueLineEdit *txtRadiationAmbientTemperature;
 
 private slots:
     void doTypeChanged(int index);

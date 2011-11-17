@@ -50,6 +50,7 @@
 // physical constants
 #define EPS0 8.854e-12
 #define MU0 4*M_PI*1e-7
+#define SIGMA0 5.670373e-8
 #define PRESSURE_MIN_AIR 20e-6
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)
