@@ -28,6 +28,16 @@ template <typename Scalar>
 class WeakFormAgros;
 
 template <typename Scalar>
+Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> castConst(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space)
+{
+    Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> out;
+    for (int i = 0; i < space.size(); i++)
+        out.push_back(const_cast<const Hermes::Hermes2D::Space<Scalar> *>(space.at(i)));
+
+    return out;
+}
+
+template <typename Scalar>
 struct SolutionArray
 {
     double time;
@@ -52,7 +62,7 @@ class SolverAgros
 public:
     SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
 
-    Hermes::vector<SolutionArray<Scalar> *> solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceParam = Hermes::vector<Hermes::Hermes2D::Space<Scalar> *>(),
+    Hermes::vector<SolutionArray<Scalar> *> solve(Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> spaceParam = Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *>(),
                                                   Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionParam = Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
 private:
     int polynomialOrder;

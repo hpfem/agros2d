@@ -44,6 +44,8 @@
 #include "newton_solver.h"
 #include "picard_solver.h"
 
+#include "solver.h"
+
 #include <dirent.h>
 
 double actualTime;
@@ -948,7 +950,7 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solveAdaptiveSte
 
     SolverAgros<double> solutionAgros(progressItemSolve, &wf);
 
-    Hermes::vector<Hermes::Hermes2D::Space<double> *> space;
+    Hermes::vector<const Hermes::Hermes2D::Space<double> *> space;
     Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution;
 
     for (int i = 0; i < Util::scene()->problemInfo()->module()->number_of_solution(); i++)

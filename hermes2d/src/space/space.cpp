@@ -119,13 +119,13 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Shapeset* Space<Scalar>::get_shapeset()
+    Shapeset* Space<Scalar>::get_shapeset() const
     {
       return this->shapeset;
     }
 
     template<typename Scalar>
-    int Space<Scalar>::get_num_dofs()
+    int Space<Scalar>::get_num_dofs() const
     {
       return ndof;
     }
@@ -201,7 +201,7 @@ namespace Hermes
 
       if(same_meshes)
         for (unsigned int i = 0; i < coarse.size(); i++)
-          ref_spaces->at(i)->get_mesh()->set_seq(same_seq);
+          ref_spaces->at(i)->set_mesh_seq(same_seq);
       return ref_spaces;
     }
 
@@ -239,7 +239,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    int Space<Scalar>::get_num_dofs(Hermes::vector<Space<Scalar>*> spaces)
+    int Space<Scalar>::get_num_dofs(Hermes::vector<const Space<Scalar>*> spaces)
     {
       _F_;
       int ndof = 0;
@@ -250,7 +250,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    int Space<Scalar>::get_num_dofs(Space<Scalar>* space)
+    int Space<Scalar>::get_num_dofs(const Space<Scalar>* space)
     {
       return space->get_num_dofs();
     }
@@ -567,7 +567,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    int Space<Scalar>::get_edge_order(Element* e, int edge)
+    int Space<Scalar>::get_edge_order(Element* e, int edge) const
     {
       _F_;
       Node* en = e->en[edge];
@@ -580,7 +580,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    int Space<Scalar>::get_edge_order_internal(Node* en)
+    int Space<Scalar>::get_edge_order_internal(Node* en) const
     {
       _F_;
       assert(en->type == HERMES_TYPE_EDGE);
@@ -616,10 +616,19 @@ namespace Hermes
       if (this->mesh == mesh) return;
       free();
       this->mesh = mesh;
+      this->mesh_seq = mesh->get_seq();
       seq = g_space_seq++;
 
       // since space changed, enumerate basis functions
       this->assign_dofs();
+    }
+
+    template<typename Scalar>
+    void Space<Scalar>::set_mesh_seq(int seq)
+    {
+      _F_;
+      this->mesh_seq = seq;
+      this->mesh->set_seq(seq);
     }
 
     template<typename Scalar>
@@ -734,7 +743,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void Space<Scalar>::get_element_assembly_list(Element* e, AsmList<Scalar>* al)
+    void Space<Scalar>::get_element_assembly_list(Element* e, AsmList<Scalar>* al, unsigned int first_dof) const
     {
       _F_;
       // some checks
@@ -752,10 +761,13 @@ namespace Hermes
       for (unsigned int i = 0; i < e->get_num_surf(); i++)
         get_boundary_assembly_list_internal(e, i, al);
       get_bubble_assembly_list(e, al);
+      for(unsigned int i = 0; i < al->cnt; i++)
+        if(al->dof[i] >= 0)
+          al->dof[i] += first_dof;
     }
 
     template<typename Scalar>
-    void Space<Scalar>::get_boundary_assembly_list(Element* e, int surf_num, AsmList<Scalar>* al)
+    void Space<Scalar>::get_boundary_assembly_list(Element* e, int surf_num, AsmList<Scalar>* al, unsigned int first_dof) const
     {
       _F_;
       al->cnt = 0;
@@ -763,10 +775,13 @@ namespace Hermes
       get_vertex_assembly_list(e, surf_num, al);
       get_vertex_assembly_list(e, e->next_vert(surf_num), al);
       get_boundary_assembly_list_internal(e, surf_num, al);
+      for(unsigned int i = 0; i < al->cnt; i++)
+        if(al->dof[i] >= 0)
+          al->dof[i] += first_dof;
     }
 
     template<typename Scalar>
-    void Space<Scalar>::get_bubble_assembly_list(Element* e, AsmList<Scalar>* al)
+    void Space<Scalar>::get_bubble_assembly_list(Element* e, AsmList<Scalar>* al) const
     {
       _F_;
       ElementData* ed = &edata[e->id];

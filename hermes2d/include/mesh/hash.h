@@ -41,16 +41,16 @@ namespace Hermes
     class HERMES_API HashTable
     {
     public:
-        /// Retrieves a node by its id number.
-        Node* get_node(int id) const;
+      /// Retrieves a node by its id number.
+      Node* get_node(int id) const;
 
-        /// Returns the total number of nodes stored.
-        int get_num_nodes() const;
+      /// Returns the total number of nodes stored.
+      int get_num_nodes() const;
 
-        /// Returns the maximum node id number plus one.
-        int get_max_node_id() const;
+      /// Returns the maximum node id number plus one.
+      int get_max_node_id() const;
+
     protected:
-
       HashTable();
       ~HashTable();
 

@@ -40,7 +40,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/solvers/dp_interface.cpp \
                 ../hermes_common/src/solvers/linear_solver.cpp \
                 ../hermes_common/src/solvers/nonlinear_solver.cpp \
-                ../hermes_common/src/solvers/nox_solver.cpp \
                 ../hermes_common/src/solvers/epetra.cpp \
                 ../hermes_common/src/solvers/aztecoo_solver.cpp \
                 ../hermes_common/src/solvers/amesos_solver.cpp \
@@ -53,7 +52,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/solvers/precond_ml.cpp \
                 ../hermes_common/src/solvers/precond_ifpack.cpp \
           src/forms.cpp \
-                src/range.cpp \
                 src/asmlist.cpp \
                 src/newton_solver.cpp \
                 src/picard_solver.cpp \

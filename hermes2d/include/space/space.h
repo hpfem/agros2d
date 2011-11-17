@@ -125,7 +125,7 @@ namespace Hermes
       /// Recursively removes all son elements of the given element and
       /// makes it active. Also handles element orders.
       void unrefine_all_mesh_elements(bool keep_initial_refinements = true);
-
+      
       /// Updates element orders when the underlying mesh has been refined.
       void update_element_orders_after_refinement();
 
@@ -138,17 +138,21 @@ namespace Hermes
       void copy_orders(const Space<Scalar>* space, int inc = 0);
 
       /// \brief Returns the number of basis functions contained in the space.
-      int get_num_dofs();
+      int get_num_dofs() const;
 
       /// \brief Returns the number of basis functions contained in the spaces.
-      static int get_num_dofs(Hermes::vector<Space<Scalar>*> spaces);
+      static int get_num_dofs(Hermes::vector<const Space<Scalar>*> spaces);
       
       /// \brief Returns the number of basis functions contained in the space.
-      static int get_num_dofs(Space<Scalar>* space);
+      static int get_num_dofs(const Space<Scalar>* space);
 
       Mesh* get_mesh() const;
 
+      /// \brief Sets a (new) mesh and calls assign_dofs().
       void set_mesh(Mesh* mesh);
+
+      /// \brief Sets a (new) mesh seq, and mesh_seq.
+      void set_mesh_seq(int seq);
       
       /// Sets the boundary condition.
       void set_essential_bcs(EssentialBCs<Scalar>* essential_bcs);
@@ -163,9 +167,9 @@ namespace Hermes
       virtual Scalar* get_bc_projection(SurfPos* surf_pos, int order) = 0;
       
       /// Obtains an assembly list for the given element.
-      virtual void get_element_assembly_list(Element* e, AsmList<Scalar>* al);
+      virtual void get_element_assembly_list(Element* e, AsmList<Scalar>* al, unsigned int first_dof = 0) const;
 
-      Shapeset* get_shapeset();
+      Shapeset* get_shapeset() const;
       
       /// Sets element polynomial order. This version does not call assign_dofs() and is
       /// intended primarily for internal use.
@@ -193,7 +197,7 @@ namespace Hermes
       void distribute_orders(Mesh* mesh, int* parents);
 
       /// Internal. Obtains the order of an edge, according to the minimum rule.
-      virtual int get_edge_order(Element* e, int edge);
+      virtual int get_edge_order(Element* e, int edge) const;
 
       /// \brief Returns the DOF number of the last basis function.
       int get_max_dof() const;
@@ -202,7 +206,7 @@ namespace Hermes
       bool is_up_to_date() const;
       
       /// Obtains an edge assembly list (contains shape functions that are nonzero on the specified edge).
-      void get_boundary_assembly_list(Element* e, int surf_num, AsmList<Scalar>* al);
+      void get_boundary_assembly_list(Element* e, int surf_num, AsmList<Scalar>* al, unsigned int first_dof = 0) const;
 
       /// Sets the same polynomial order for all elements in the mesh. Does not
       /// call assign_dofs(). For internal use.
@@ -277,7 +281,7 @@ namespace Hermes
       int nsize, ndata_allocated; ///< number of items in ndata, allocated space
       int esize;
 
-      virtual int get_edge_order_internal(Node* en);
+      virtual int get_edge_order_internal(Node* en) const;
 
       /// \brief Updates internal node and element tables.
       /// \details Since meshes only contain geometric information, the Space class keeps two
@@ -295,9 +299,9 @@ namespace Hermes
       virtual void assign_edge_dofs() = 0;
       virtual void assign_bubble_dofs() = 0;
 
-      virtual void get_vertex_assembly_list(Element* e, int iv, AsmList<Scalar>* al) = 0;
-      virtual void get_boundary_assembly_list_internal(Element* e, int surf_num, AsmList<Scalar>* al) = 0;
-      virtual void get_bubble_assembly_list(Element* e, AsmList<Scalar>* al);
+      virtual void get_vertex_assembly_list(Element* e, int iv, AsmList<Scalar>* al) const = 0;
+      virtual void get_boundary_assembly_list_internal(Element* e, int surf_num, AsmList<Scalar>* al) const = 0;
+      virtual void get_bubble_assembly_list(Element* e, AsmList<Scalar>* al) const;
 
       double** proj_mat;
       double*  chol_p;
