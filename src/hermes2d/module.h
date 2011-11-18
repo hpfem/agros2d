@@ -140,20 +140,15 @@ struct LocalVariable
 // material property
 struct MaterialTypeVariable
 {
-    MaterialTypeVariable() : id(""), name(""), shortname(""), unit(""), default_value(0) {}
-    MaterialTypeVariable(std::string id, std::string name,
-                         std::string shortname, std::string unit,
+    MaterialTypeVariable() : id(""), shortname(""), default_value(0) {}
+    MaterialTypeVariable(std::string id, std::string shortname,
                          double default_value = 0);
     MaterialTypeVariable(rapidxml::xml_node<> *node);
 
     // id
     std::string id;
-    // name
-    std::string name;
     // short name
     std::string shortname;
-    // unit
-    std::string unit;
     // default value
     double default_value;
 };
@@ -161,20 +156,15 @@ struct MaterialTypeVariable
 // boundary condition type variable
 struct BoundaryTypeVariable
 {
-    BoundaryTypeVariable() : id(""), name(""), shortname(""), unit(""), default_value(0) {}
-    BoundaryTypeVariable(std::string id, std::string name,
-                         std::string shortname, std::string unit,
+    BoundaryTypeVariable() : id(""), shortname(""), default_value(0) {}
+    BoundaryTypeVariable(std::string id, std::string shortname,
                          double default_value = 0);
     BoundaryTypeVariable(rapidxml::xml_node<> *node);
 
     // id
     std::string id;
-    // name
-    std::string name;
     // short name
     std::string shortname;
-    // unit
-    std::string unit;
     // default value
     double default_value;
 };
@@ -242,12 +232,17 @@ struct Module
     // description
     std::string description;
 
+    // analyses
+    std::map<std::string, std::string> analyses;
     int steady_state_solutions;
     int harmonic_solutions;
     int transient_solutions;
 
     // constants
     std::map<std::string, double> constants;
+
+    // macros
+    std::map<std::string, std::string> macros;
 
     // material type
     Hermes::vector<MaterialTypeVariable *> material_type_variables;

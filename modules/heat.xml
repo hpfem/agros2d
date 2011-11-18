@@ -3,8 +3,11 @@
     <general id ="heat" name="Heat transfer">
         <description>Heat transfer is a discipline of thermal engineering that concerns the exchange of thermal energy from one physical system to another. Heat transfer is classified into various mechanisms, such as heat conduction, convection and thermal radiation.</description>
 <<<<<<< HEAD
+<<<<<<< HEAD
         <properties steadystate="1" harmonic="0" transient="1" />
 =======
+=======
+>>>>>>> work on modules parser
         <analyses>
             <analysis id="steadystate" type="steadystate" name="Steady state" />
             <analysis id="transient" type="transient" name="Transient" />
@@ -16,6 +19,7 @@
         <constant id="SIGMA0" value="5.670373e-8" />
     </constants>
 
+<<<<<<< HEAD
     <material>
         <item id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="W/m.K" default="385" />
         <item id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" />
@@ -25,6 +29,11 @@
     	<steadystate>
             <material id="heat_conductivity" />
             <material id="heat_volume_heat" />
+=======
+    <macros>
+        <macro id="example" expression="1+1" />
+    </macros>
+>>>>>>> work on modules parser
 
             <matrix i="1" j="1" planar="dlambda * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
                                 axi="dlambda * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz)" symmetric="1" />

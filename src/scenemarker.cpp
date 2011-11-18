@@ -77,9 +77,9 @@ QString SceneBoundary::html()
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
             
             out += "<tr>";
-            out += QString("<td>%1 (%2):</td>").
-                    arg(QString::fromStdString(variable->name)).
-                    arg(QString::fromStdString(variable->unit));
+//            out += QString("<td>%1 (%2):</td>").
+//                    arg(QString::fromStdString(variable->name)).
+//                    arg(QString::fromStdString(variable->unit));
             out += QString("<td>%1</td>").
                     arg(values[variable->id].text());
             out += "</tr>";
@@ -160,9 +160,9 @@ QString SceneMaterial::html()
         Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
         
         out += "<tr>";
-        out += QString("<td>%1 (%2)</td>").
-                arg(QString::fromStdString(material->name)).
-                arg(QString::fromStdString(material->unit));
+//        out += QString("<td>%1 (%2)</td>").
+//                arg(QString::fromStdString(material->name)).
+//                arg(QString::fromStdString(material->unit));
         // FIXME - add value
         out += QString("<td>%1</td>").
                 arg(QString::fromStdString("FIXME"));

@@ -65,13 +65,13 @@ void SceneBoundaryCustomDialog::createContent()
             ids.append(QString::fromStdString(variable->id));
             
             // label
-            lblLabel.append(new QLabel((QString::fromStdString(variable->shortname + " (" + variable->unit + "):"))));
-            lblLabel.at(lblLabel.count() - 1)->setToolTip((QString::fromStdString(variable->name)));
+            //lblLabel.append(new QLabel((QString::fromStdString(variable->shortname + " (" + variable->unit + "):"))));
+            //lblLabel.at(lblLabel.count() - 1)->setToolTip((QString::fromStdString(variable->name)));
             lblLabel.at(lblLabel.count() - 1)->setMinimumWidth(100);
             
             // text edit
             txtVariable.append(new ValueLineEdit(this));
-            txtVariable.at(txtVariable.count() - 1)->setToolTip((QString::fromStdString(variable->name)));
+            //txtVariable.at(txtVariable.count() - 1)->setToolTip((QString::fromStdString(variable->name)));
             txtVariable.at(txtVariable.count() - 1)->setValue(Value(QString::number(variable->default_value)));
             
             layout->addWidget(lblLabel.at(txtVariable.count() - 1), i, 0);
@@ -160,8 +160,8 @@ void SceneMaterialCustomDialog::createContent()
         ids.append(QString::fromStdString(variable->id));
         
         // label
-        lblLabel.append(new QLabel((QString::fromStdString(variable->shortname + " (" + variable->unit + "):"))));
-        lblLabel.at(lblLabel.count() - 1)->setToolTip((QString::fromStdString(variable->name)));
+        //lblLabel.append(new QLabel((QString::fromStdString(variable->shortname + " (" + variable->unit + "):"))));
+        //lblLabel.at(lblLabel.count() - 1)->setToolTip((QString::fromStdString(variable->name)));
         lblLabel.at(lblLabel.count() - 1)->setMinimumWidth(100);
         
         // text edit

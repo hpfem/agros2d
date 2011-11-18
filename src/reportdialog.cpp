@@ -439,9 +439,9 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
                 ctemplate::TemplateDictionary *material_key_dict = material_dict->AddSectionDictionary("MATERIAL_KEY_SECTION");
 
-                material_key_dict->SetValue("MATERIAL_KEY", variable->name);
+                //material_key_dict->SetValue("MATERIAL_KEY", variable->name);
                 material_key_dict->SetValue("MATERIAL_KEY_VALUE", marker->get_value(variable->id).toString().toStdString());
-                material_key_dict->SetValue("MATERIAL_KEY_UNIT", variable->unit);
+                //material_key_dict->SetValue("MATERIAL_KEY_UNIT", variable->unit);
             }
         }
 
@@ -461,9 +461,9 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
                     Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
                     ctemplate::TemplateDictionary *boundary_key_dict = boundary_dict->AddSectionDictionary("BOUNDARY_KEY_SECTION");
 
-                    boundary_key_dict->SetValue("BOUNDARY_KEY", variable->name);
+                    //boundary_key_dict->SetValue("BOUNDARY_KEY", variable->name);
                     boundary_key_dict->SetValue("BOUNDARY_KEY_VALUE", marker->get_value(variable->id).toString().toStdString());
-                    boundary_key_dict->SetValue("BOUNDARY_KEY_UNIT", variable->unit);
+                    //boundary_key_dict->SetValue("BOUNDARY_KEY_UNIT", variable->unit);
                 }
             }
         }
