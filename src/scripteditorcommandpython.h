@@ -70,7 +70,7 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
                        double adaptivitysteps, double adaptivitytolerance,
                        double frequency,
                        char *analysistype, double timestep, double totaltime, double initialcondition,
-                       double nonlineartolerance, int nonlinearsteps);
+                       char *linearitytype, double nonlineartolerance, int nonlinearsteps);
 void pythonOpenDocument(char *str);
 void pythonSaveDocument(char *str);
 void pythonCloseDocument();

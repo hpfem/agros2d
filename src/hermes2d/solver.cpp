@@ -193,25 +193,18 @@ void SolverAgros<Scalar>::createSpace()
                             analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
                             problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
 
-                    Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
-                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
-                                                                                           function);
+                    Hermes::Hermes2D::ExactSolutionScalar<double> *function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
+                    if (function)
+                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
+                                                                                               function);
                 }
 
                 if (!custom_form && weakFormsType == WeakFormsType_Compiled)
-                    qDebug() << "Cannot find compiled VectorFormEssential().";
+                    qDebug() << "Cannot find compiled EssentialBoundaryCondition().";
 
                 // interpreted form
                 if (!custom_form || weakFormsType == WeakFormsType_Interpreted)
-                {
-                    /*
-                if (form->expression == "")
-                {
-                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCConst<double>(form->i - 1,
-                                                                                        boundary->values[it->second->id].number());
-                }
-                else
-                */
+                {     
                     {
                         CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
                                                                                                 form->expression,
@@ -240,7 +233,6 @@ void SolverAgros<Scalar>::createSpace()
                 space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,
                                                QString::number(j).toStdString());
     }
-
 }
 
 template <typename Scalar>

@@ -104,13 +104,14 @@ void pythonQuit()
     QApplication::exit(0);
 }
 
-// newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition)
+// newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance,
+// frequency, analysistype, timestep, totaltime, initialcondition, linearitytype, nonlineartolerance, nonlinearsteps)
 void pythonNewDocument(char *name, char *type, char *physicfield,
                        int numberofrefinements, int polynomialorder, char *adaptivitytype,
                        double adaptivitysteps, double adaptivitytolerance,
                        double frequency,
                        char *analysistype, double timestep, double totaltime, double initialcondition,
-                       double nonlineartolerance, int nonlinearsteps)
+                       char *linearitytype, double nonlineartolerance, int nonlinearsteps)
 {
     logMessage("pythonNewDocument()");
 
@@ -200,6 +201,11 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
         Util::scene()->problemInfo()->nonlinearSteps = nonlinearsteps;
     else
         throw out_of_range(QObject::tr("Number of nonlinear steps '%1' must be positive.").arg(nonlinearsteps).toStdString());
+
+    // linearity type
+    Util::scene()->problemInfo()->linearityType = linearityTypeFromStringKey(QString(linearitytype));
+    if (Util::scene()->problemInfo()->linearityType == LinearityType_Undefined)
+        throw invalid_argument(QObject::tr("Linearity type '%1' is not implemented").arg(QString(linearitytype)).toStdString());
 
     // transient initial condition
     Util::scene()->problemInfo()->initialCondition = Value(QString::number(initialcondition));
