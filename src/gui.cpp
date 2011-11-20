@@ -25,6 +25,7 @@
 #include "util.h"
 
 #include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
 #include "hermes2d/solver.h"
 
 void readPixmap(QLabel *lblEquation, const QString &name)

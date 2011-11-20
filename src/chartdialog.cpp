@@ -24,7 +24,7 @@
 #include "scenesolution.h"
 #include "hermes2d/localpoint.h"
 #include "hermes2d/module.h"
-
+#include "hermes2d/module_agros.h"
 
 QList<Point> ChartLine::getPoints()
 {

@@ -22,8 +22,10 @@
 #include "scenebasic.h"
 #include "scenemarker.h"
 #include "scenesolution.h"
+
 #include "hermes2d.h"
 #include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
 
 VolumeIntegralValue::VolumeIntegralValue()
 {

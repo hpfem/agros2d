@@ -18,16 +18,9 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "module.h"
+#include "module_agros.h"
 
-#include "hermes_custom.h"
-#include "hermes_electrostatic.h"
-#include "hermes_magnetic.h"
-#include "hermes_heat.h"
-#include "hermes_current.h"
-#include "hermes_elasticity.h"
-#include "hermes_rf.h"
-#include "hermes_acoustic.h"
-// #include "hermes_flow.h"
+#include "dialog.h"
 
 #include "weakform_factory.h"
 
@@ -49,91 +42,6 @@
 #include <dirent.h>
 
 double actualTime;
-
-Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type,
-                                           std::string filename_custom)
-{
-    // std::cout << filename_custom << std::endl;
-
-    Hermes::Module::ModuleAgros *module = NULL;
-    if (id == "elasticity")
-        module = new ModuleElasticity(problem_type, analysis_type);
-    else if (id == "heat")
-        module = new ModuleHeat(problem_type, analysis_type);
-    else if (id == "magnetic")
-        module = new ModuleMagnetic(problem_type, analysis_type);
-    else
-        module = new Hermes::Module::ModuleAgros(problem_type, analysis_type);
-
-    // try to open custom module
-    if (id == "custom")
-    {
-        ifstream ifile_custom(filename_custom.c_str());
-        if (!ifile_custom)
-            module->read(datadir().toStdString() + "/resources/custom.xml");
-        else
-            module->read(filename_custom);
-
-        return module;
-    }
-
-    // open default module
-    std::string filename_default = (datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString();
-    ifstream ifile_default(filename_default.c_str());
-    if (ifile_default)
-    {
-        module->read(filename_default);
-        return module;
-    }
-
-    std::cout << "Module doesn't exists." << std::endl;
-    return NULL;
-}
-
-// boundary dialog factory
-SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidget *parent)
-{
-    if (Util::scene()->problemInfo()->module()->id == "custom")
-        return new SceneBoundaryCustomDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "electrostatic")
-        return new SceneBoundaryElectrostaticDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "current")
-        return new SceneBoundaryCurrentDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "magnetic")
-        return new SceneBoundaryMagneticDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-        return new SceneBoundaryAcousticDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "elasticity")
-        return new SceneBoundaryElasticityDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "heat")
-        return new SceneBoundaryHeatDialog(scene_boundary, parent);
-    if (Util::scene()->problemInfo()->module()->id == "rf")
-        return new SceneBoundaryRFDialog(scene_boundary, parent);
-
-    return NULL;
-}
-// material dialog factory
-SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidget *parent)
-{
-    if (Util::scene()->problemInfo()->module()->id == "custom")
-        return new SceneMaterialCustomDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "electrostatic")
-        return new SceneMaterialElectrostaticDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "current")
-        return new SceneMaterialCurrentDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "magnetic")
-        return new SceneMaterialMagneticDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "acoustic")
-        return new SceneMaterialAcousticDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "elasticity")
-        return new SceneMaterialElasticityDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "heat")
-        return new SceneMaterialHeatDialog(scene_material, parent);
-    if (Util::scene()->problemInfo()->module()->id == "rf")
-        return new SceneMaterialRFDialog(scene_material, parent);
-
-    return NULL;
-}
 
 std::map<std::string, std::string> availableModules()
 {
@@ -359,40 +267,40 @@ Hermes::Module::LocalVariable::Expression::Expression(rapidxml::xml_node<> *node
 {
     if (problemType == ProblemType_Planar)
     {
-        if (node->first_attribute("planar_scalar"))
-            scalar = node->first_attribute("planar_scalar")->value();
-        if (node->first_attribute("planar_comp_x"))
-            comp_x = node->first_attribute("planar_comp_x")->value();
-        if (node->first_attribute("planar_comp_y"))
-            comp_y = node->first_attribute("planar_comp_y")->value();
+        if (node->first_attribute("planar"))
+            scalar = node->first_attribute("planar")->value();
+        if (node->first_attribute("planar_x"))
+            comp_x = node->first_attribute("planar_x")->value();
+        if (node->first_attribute("planar_y"))
+            comp_y = node->first_attribute("planar_y")->value();
     }
     else
     {
-        if (node->first_attribute("planar_scalar"))
-            scalar = node->first_attribute("axi_scalar")->value();
-        if (node->first_attribute("axi_comp_r"))
-            comp_x = node->first_attribute("axi_comp_r")->value();
-        if (node->first_attribute("axi_comp_z"))
-            comp_y = node->first_attribute("axi_comp_z")->value();
+        if (node->first_attribute("axi"))
+            scalar = node->first_attribute("axi")->value();
+        if (node->first_attribute("axi_r"))
+            comp_x = node->first_attribute("axi_r")->value();
+        if (node->first_attribute("axi_z"))
+            comp_y = node->first_attribute("axi_z")->value();
     }
 }
 
 // ***********************************************************************************************
 
-Hermes::Module::LocalVariable::LocalVariable(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType)
+Hermes::Module::LocalVariable::LocalVariable(rapidxml::xml_node<> *node,
+                                             ProblemType problemType, AnalysisType analysisType)
 {
     id = node->first_attribute("id")->value();
-    name = QObject::tr(node->first_attribute("name")->value()).toStdString();
+    name = node->first_attribute("name")->value();
     shortname = node->first_attribute("shortname")->value();
     unit = node->first_attribute("unit")->value();
 
-    if (node->first_attribute("scalar"))
-        is_scalar = atoi(node->first_attribute("scalar")->value());
-    else
-        is_scalar = false;
+    is_scalar = (std::string(node->first_attribute("type")->value()) == "scalar");
 
-    if (node->first_node(analysis_type_tostring(analysisType).c_str()))
-        expression = Expression(node->first_node(analysis_type_tostring(analysisType).c_str()), problemType);
+    for (rapidxml::xml_node<> *expr = node->first_node("expression");
+         expr; expr = expr->next_sibling())
+        if (expr->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(analysisType))
+            expression = Expression(expr, problemType);
 }
 
 // ***********************************************************************************************
@@ -444,9 +352,9 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     name = QObject::tr(node->first_attribute("name")->value()).toStdString();
 
     // variables
-    for (rapidxml::xml_node<> *variable = node->first_node("item");
+    for (rapidxml::xml_node<> *variable = node->first_node("quantity");
          variable; variable = variable->next_sibling())
-        if (std::string(variable->name()) == "item")
+        if (std::string(variable->name()) == "quantity")
             for (Hermes::vector<Hermes::Module::BoundaryTypeVariable>::iterator it = boundary_type_variables.begin();
                  it < boundary_type_variables.end(); ++it )
             {
@@ -530,7 +438,56 @@ Hermes::Module::Integral::Integral(rapidxml::xml_node<> *node, ProblemType probl
     shortname = node->first_attribute("shortname")->value();
     unit = node->first_attribute("unit")->value();
 
-    expression = Expression(node->first_node(analysis_type_tostring(analysisType).c_str()), problemType);
+    for (rapidxml::xml_node<> *expr = node->first_node("expression");
+         expr; expr = expr->next_sibling())
+        if (expr->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(analysisType))
+            expression = Expression(expr, problemType);
+}
+
+// ***********************************************************************************************
+
+// dialog row UI
+Hermes::Module::DialogUI::Row::Row(rapidxml::xml_node<> *quantity)
+{
+    id = quantity->first_attribute("id")->value();
+
+    nonlin = (quantity->first_attribute("nonlin")) ? atoi(quantity->first_attribute("nonlin")->value()) : false;
+    timedep = (quantity->first_attribute("timedep")) ? atoi(quantity->first_attribute("timedep")->value()) : false;
+
+    shortname = quantity->first_attribute("shortname")->value();
+    shortname_html = (quantity->first_attribute("shortname_html")) ? quantity->first_attribute("shortname_html")->value() : "";
+    name = quantity->first_attribute("name")->value();
+
+    unit = quantity->first_attribute("unit")->value();
+    unit_html = (quantity->first_attribute("unit_html")) ? quantity->first_attribute("unit_html")->value() : "";
+    unit_latex = (quantity->first_attribute("unit_latex")) ? quantity->first_attribute("unit_latex")->value() : "";
+
+    default_value = (quantity->first_attribute("default")) ? atof(quantity->first_attribute("default")->value()) : 0.0;
+    condition = (quantity->first_attribute("condition")) ? quantity->first_attribute("condition")->value() : "";
+}
+
+// dialog UI
+Hermes::Module::DialogUI::DialogUI(rapidxml::xml_node<> *node)
+{
+    for (rapidxml::xml_node<> *group = node->first_node("group");
+         group; group = group->next_sibling())
+    {
+        // group name
+        std::string name = (group->first_attribute("name")) ? group->first_attribute("name")->value() : "";
+
+        Hermes::vector<DialogUI::Row> materials;
+        for (rapidxml::xml_node<> *quantity = group->first_node("quantity");
+             quantity; quantity = quantity->next_sibling())
+            // append material
+            materials.push_back(DialogUI::Row(quantity));
+
+        groups[name] = materials;
+    }
+}
+
+void Hermes::Module::DialogUI::clear()
+{
+    groups.clear();
 }
 
 // ***********************************************************************************************
@@ -570,35 +527,33 @@ void Hermes::Module::Module::read(std::string filename)
         rapidxml::xml_node<> *general = doc.first_node("module")->first_node("general");
         id = general->first_attribute("id")->value();
         name = QObject::tr(general->first_attribute("name")->value()).toStdString(); // FIXME - Qt dependence
+        deformed_shape = general->first_attribute("deformed_shape") ? atoi(general->first_attribute("deformed_shape")->value()) : 0;
         description = general->first_node("description")->value();
 
         // analyses
+        steady_state_solutions = 0;
+        harmonic_solutions = 0;
+        transient_solutions = 0;
         for (rapidxml::xml_node<> *analysis = doc.first_node("module")->first_node("general")->first_node("analyses")->first_node("analysis");
              analysis; analysis = analysis->next_sibling())
         {
             // FIXME
-            //analyses[analysis->first_attribute("id")->value()] = analysis->first_attribute("type")->value();
+            analyses[analysis->first_attribute("id")->value()] = analysis->first_attribute("type")->value();
 
-            if (analysis->first_attribute("type")->value() == QString("steadystate").toStdString())
-                steady_state_solutions = 1;
-            else
-                transient_solutions = 0;
-            if (analysis->first_attribute("type")->value() == QString("harmonic").toStdString())
-                harmonic_solutions = 2;
-            else
-                harmonic_solutions = 0;
-            if (analysis->first_attribute("type")->value() == QString("transient").toStdString())
-                transient_solutions = 1;
-            else
-                transient_solutions = 0;
+            if (std::string(analysis->first_attribute("type")->value()) == QString("steadystate").toStdString())
+                steady_state_solutions = atoi(analysis->first_attribute("solutions")->value());
+
+            if (std::string(analysis->first_attribute("type")->value()) == QString("harmonic").toStdString())
+                harmonic_solutions = atoi(analysis->first_attribute("solutions")->value());
+
+            if (std::string(analysis->first_attribute("type")->value()) == QString("transient").toStdString())
+                transient_solutions = atoi(analysis->first_attribute("solutions")->value());
         }
 
-        //std::cout << steady_state_solutions << "; " << harmonic_solutions << "; " << transient_solutions << std::endl << std::flush;
-
         // constants
-        for (rapidxml::xml_node<> *conastant = doc.first_node("module")->first_node("constants")->first_node("constant");
-             conastant; conastant = conastant->next_sibling())
-            constants[conastant->first_attribute("id")->value()] = atof(conastant->first_attribute("value")->value());
+        for (rapidxml::xml_node<> *constant = doc.first_node("module")->first_node("constants")->first_node("constant");
+             constant; constant = constant->next_sibling())
+            constants[constant->first_attribute("id")->value()] = atof(constant->first_attribute("value")->value());
 
         // macros
         for (rapidxml::xml_node<> *macro = doc.first_node("module")->first_node("macros")->first_node("macro");
@@ -632,92 +587,88 @@ void Hermes::Module::Module::read(std::string filename)
             if (std::string(quantity->name()) == "quantity")
                 material_type_variables_tmp.push_back(Hermes::Module::MaterialTypeVariable(quantity));
 
-//        for (rapidxml::xml_node<> *weakform = doc.first_node("module")->first_node("volume")->first_node("weakforms")->first_node("weakform");
-//             weakform; weakform = weakform->next_sibling())
-//        {
-//            if (weakform->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
-//            {
-//                // quantities
-//                for (rapidxml::xml_node<> *quantity = weakform->first_node("quantity");
-//                     quantity; quantity = quantity->next_sibling())
-//                {
-//                    for(Hermes::vector<Hermes::Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
-//                        it < material_type_variables_tmp.end(); ++it )
-//                    {
-//                        Hermes::Module::MaterialTypeVariable old = (Hermes::Module::MaterialTypeVariable) *it;
-//                        if (old.id == quantity->first_attribute("id")->value())
-//                        {
-//                            Hermes::Module::MaterialTypeVariable *var = new Hermes::Module::MaterialTypeVariable(
-//                                        old.id, old.shortname, old.default_value);
-//                            material_type_variables.push_back(var);
-//                        }
-//                    }
-//                }
-//                material_type_variables_tmp.clear();
+        for (rapidxml::xml_node<> *weakform = doc.first_node("module")->first_node("volume")->first_node("weakforms")->first_node("weakform");
+             weakform; weakform = weakform->next_sibling())
+        {
+            if (weakform->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
+            {
+                // quantities
+                for (rapidxml::xml_node<> *quantity = weakform->first_node("quantity");
+                     quantity; quantity = quantity->next_sibling())
+                {
+                    if (std::string(quantity->name()) == "quantity")
+                        for (Hermes::vector<Hermes::Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
+                             it < material_type_variables_tmp.end(); ++it )
+                        {
+                            Hermes::Module::MaterialTypeVariable old = (Hermes::Module::MaterialTypeVariable) *it;
+                            if (old.id == quantity->first_attribute("id")->value())
+                            {
+                                Hermes::Module::MaterialTypeVariable *var = new Hermes::Module::MaterialTypeVariable(
+                                            old.id, old.shortname, old.default_value);
+                                material_type_variables.push_back(var);
+                            }
+                        }
+                }
+                material_type_variables_tmp.clear();
 
-//                // weakforms
-//                for (rapidxml::xml_node<> *matrix = weakform->first_node("matrix");
-//                     matrix; matrix = matrix->next_sibling())
-//                {
-//                    if (std::string(matrix->name()) == "matrix")
-//                        weakform_matrix_volume.push_back(new ParserFormMatrix(matrix, m_problemType));
-//                }
+                // weakforms
+                for (rapidxml::xml_node<> *matrix = weakform->first_node("matrix");
+                     matrix; matrix = matrix->next_sibling())
+                {
+                    if (std::string(matrix->name()) == "matrix")
+                        weakform_matrix_volume.push_back(new ParserFormMatrix(matrix, m_problemType));
+                }
 
-//                for (rapidxml::xml_node<> *vector = weakform->first_node("vector");
-//                     vector; vector = vector->next_sibling())
-//                    if (std::string(vector->name()) == "vector")
-//                        weakform_vector_volume.push_back(new ParserFormVector(vector, m_problemType));
-//            }
-//        }
+                for (rapidxml::xml_node<> *vector = weakform->first_node("vector");
+                     vector; vector = vector->next_sibling())
+                    if (std::string(vector->name()) == "vector")
+                        weakform_vector_volume.push_back(new ParserFormVector(vector, m_problemType));
+            }
+        }
 
         // local variables
         for (rapidxml::xml_node<> *localvariable = doc.first_node("module")->first_node("postprocessor")->first_node("localvariables")->first_node("localvariable");
              localvariable; localvariable = localvariable->next_sibling())
         {
-            for (rapidxml::xml_node<> *expression = localvariable->first_node("expression");
-                 expression; expression = expression->next_sibling())
-            {
-                if (expression->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
+            // HACK
+            for (rapidxml::xml_node<> *expr = localvariable->first_node("expression");
+                 expr; expr = expr->next_sibling())
+                if (expr->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(m_analysisType))
                 {
-                    LocalVariable *variable = get_variable(localvariable->first_attribute("id")->value());
-                    // FIXME - not implemented now localvariable structure
-                    //if (variable)
-                    //    variables.push_back(new LocalVariable(variable, m_problemType, m_analysisType));
+                    Hermes::Module::LocalVariable *var = new Hermes::Module::LocalVariable(localvariable, m_problemType, m_analysisType);
+                    variables.push_back(var);
+
+                    // HACK - local point
+                    local_point.push_back(var);
+                    // HACK - scalar view
+                    view_scalar_variables.push_back(var);
+                    // HACK - vector view
+                    if (!var->is_scalar)
+                        view_vector_variables.push_back(var);
                 }
-            }
         }
 
         // custom local variable
-        LocalVariable *customLocalVariable = new LocalVariable("custom", "Custom", "custom", "-");
+        Hermes::Module::LocalVariable *customLocalVariable = new Hermes::Module::LocalVariable("custom", "Custom", "custom", "-");
         customLocalVariable->expression.scalar = "value1";
-        variables.push_back(customLocalVariable);
+        view_scalar_variables.push_back(customLocalVariable);
 
-        // view
+        // scalar variables
         rapidxml::xml_node<> *view = doc.first_node("module")->first_node("postprocessor")->first_node("view");
 
         // scalar variables default
         rapidxml::xml_node<> *view_scalar = view->first_node("scalar");
-
-        // default scalar variable
         for (rapidxml::xml_node<> *view_scalar_default = view_scalar->first_node("default");
              view_scalar_default; view_scalar_default = view_scalar_default->next_sibling())
             if (view_scalar_default->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
                 view_default_scalar_variable = get_variable(view_scalar_default->first_attribute("id")->value());
 
-        // custom
-        view_scalar_variables.push_back(get_variable("custom"));
-
         // vector variables default
-        rapidxml::xml_node<> *view_vector = view->first_node("scalar");
-
-        // default scalar variable
+        rapidxml::xml_node<> *view_vector = view->first_node("vector");
         for (rapidxml::xml_node<> *view_vector_default = view_vector->first_node("default");
              view_vector_default; view_vector_default = view_vector_default->next_sibling())
             if (view_vector_default->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
-                view_default_scalar_variable = get_variable(view_vector_default->first_attribute("id")->value());
-
-        // custom
-        view_vector_variables.push_back(get_variable("custom"));
+                view_default_vector_variable = get_variable(view_vector_default->first_attribute("id")->value());
 
         // volume integral
         for (rapidxml::xml_node<> *volumeintegral = doc.first_node("module")->first_node("postprocessor")->first_node("volumeintegrals")->first_node("volumeintegral");
@@ -729,7 +680,11 @@ void Hermes::Module::Module::read(std::string filename)
              surfaceintegral; surfaceintegral = surfaceintegral->next_sibling())
             surface_integral.push_back(new Hermes::Module::Integral(surfaceintegral, m_problemType, m_analysisType));
 
-        std::cout << "reading finished" << std::endl << std::flush;
+        // preprocessor
+        rapidxml::xml_node<> *materialui = doc.first_node("module")->first_node("preprocessor")->first_node("volume");
+        material_ui = Hermes::Module::DialogUI(materialui);
+        rapidxml::xml_node<> *boundaryui = doc.first_node("module")->first_node("preprocessor")->first_node("surface");
+        boundary_ui = Hermes::Module::DialogUI(boundaryui);
 
         // set system locale
         setlocale(LC_NUMERIC, plocale);
@@ -791,6 +746,9 @@ void Hermes::Module::Module::clear()
     for (Hermes::vector<ParserFormVector *>::iterator it = weakform_vector_volume.begin(); it < weakform_vector_volume.end(); ++it)
         delete *it;
     weakform_vector_volume.clear();
+
+    material_ui.clear();
+    boundary_ui.clear();
 }
 
 Hermes::Module::LocalVariable *Hermes::Module::Module::get_variable(std::string id)
@@ -968,61 +926,6 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solveAdaptiveSte
 
     Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(space, solution);
     return solutionArrayList;
-}
-
-// ***********************************************************************************************
-
-void Hermes::Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
-{
-    fillComboBox(cmbFieldVariable, view_scalar_variables);
-}
-
-void Hermes::Module::ModuleAgros::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
-{
-    fillComboBox(cmbFieldVariable, view_vector_variables);
-}
-
-void Hermes::Module::ModuleAgros::fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<Hermes::Module::LocalVariable *> list)
-{
-    for(Hermes::vector<LocalVariable *>::iterator it = list.begin(); it < list.end(); ++it )
-    {
-        Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-        cmbFieldVariable->addItem(QString::fromStdString(variable->name),
-                                  QString::fromStdString(variable->id));
-    }
-}
-
-void Hermes::Module::ModuleAgros::fillComboBoxBoundaryCondition(QComboBox *cmbFieldVariable)
-{
-    for(Hermes::vector<Hermes::Module::BoundaryType *>::iterator it = boundary_types.begin(); it < boundary_types.end(); ++it )
-    {
-        Hermes::Module::BoundaryType *boundary = ((Hermes::Module::BoundaryType *) *it);
-        cmbFieldVariable->addItem(QString::fromStdString(boundary->name),
-                                  QString::fromStdString(boundary->id));
-    }
-}
-
-void Hermes::Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable)
-{
-    for(Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = material_type_variables.begin(); it < material_type_variables.end(); ++it )
-    {
-        Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
-//        cmbFieldVariable->addItem(QString::fromStdString(material->name),
-//                                  QString::fromStdString(material->id));
-        cmbFieldVariable->addItem(QString::fromStdString(material->id),
-                                          QString::fromStdString(material->id));
-    }
-}
-
-SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()
-{
-    return new SceneBoundary(tr("new boundary").toStdString(),
-                             Util::scene()->problemInfo()->module()->boundary_type_default->id);
-}
-
-SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
-{
-    return new SceneMaterial(tr("new material").toStdString());
 }
 
 // ***********************************************************************************************

@@ -19,6 +19,7 @@
 
 #include "material.h"
 #include "module.h"
+#include "module_agros.h"
 #include "scene.h"
 #include "util.h"
 

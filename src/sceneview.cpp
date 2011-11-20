@@ -27,7 +27,7 @@
 
 #include "scenebasic.h"
 #include "hermes2d/module.h"
-
+#include "hermes2d/module_agros.h"
 
 // scene view
 static SceneView *m_sceneView = NULL;

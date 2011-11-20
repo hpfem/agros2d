@@ -22,6 +22,7 @@
 #include "util.h"
 #include "hermes2d.h"
 #include "module.h"
+#include "module_agros.h"
 #include "material.h"
 
 // **************************************************************************

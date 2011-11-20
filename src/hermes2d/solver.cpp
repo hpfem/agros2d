@@ -20,6 +20,8 @@
 #include "solver.h"
 
 #include "module.h"
+#include "module_agros.h"
+
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenemarker.h"
@@ -606,6 +608,4 @@ SolutionArray<Scalar> *SolverAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solu
 }
 
 template class SolverAgros<double>;
-
 template class SolutionArray<double>;
-

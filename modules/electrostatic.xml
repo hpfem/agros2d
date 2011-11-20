@@ -3,7 +3,7 @@
     <general id="electrostatic" name="Electrostatic field">
         <description>Electrostatics is the branch of science that deals with the phenomena and properties of stationary or slow-moving (without acceleration) electric charges.</description>
         <analyses>
-            <analysis id="steadystate" type="steadystate" name="Steady state" />
+            <analysis id="steadystate" type="steadystate" name="Steady state" solutions="1" />
         </analyses>
     </general>
 
@@ -58,14 +58,22 @@
     <preprocessor>
         <volume>
             <group>
-                <quantity id="electrostatic_permittivity" name="Permittivity" shortname="epsr" unit="F/m" unit_html="F.m<sup>-1</sup>" unit_latex="F \cdot m^{-1}" />
-                <quantity id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" unit_html="C.m<sup>-3</sup>" unit_latex="C \cdot m^{-3}" />
+                <quantity id="electrostatic_permittivity" name="Permittivity"
+                shortname="epsr" shortname_html="&lt;i&gt;&epsilon;&lt;/i&gt;"
+                unit="F/m" unit_html="F.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="F \cdot m^{-1}" />
+                <quantity id="electrostatic_charge_density" name="Charge density"
+                shortname="rho" shortname_html="&lt;i&gt;&rho;&lt;/i&gt;"
+                unit="C/m3" unit_html="C.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="C \cdot m^{-3}" />
             </group>
         </volume>
         <surface>
             <group>
-                <quantity id="electrostatic_potential" name="Fixed voltage" shortname="V" unit="V" />
-                <quantity id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" unit="C/m2" unit_html="C.m<sup>-2</sup>" unit_latex="C \cdot m^{-2}" />
+                <quantity id="electrostatic_potential" name="Fixed voltage"
+                shortname="V" shortname_html="&lt;i&gt;&phi;&lt;/i&gt;"
+                unit="V" unit_html="V" />
+                <quantity id="electrostatic_surface_charge_density" name="Surface charge density"
+                shortname="sigma" shortname_html="&lt;i&gt;&sigma;&lt;/i&gt;"
+                unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="C \cdot m^{-2}" />
             </group>
         </surface>
     </preprocessor>
@@ -76,19 +84,19 @@
                 <expression analysistype="steadystate" planar="value1"
                                                        axi="value1" />
             </localvariable>
-            <localvariable id="electrostatic_electric_field" name="Electric field" shortname="E" unit="V/m" unit_html="V.m<sup>-1</sup>" unit_latex="V \cdot m^{-1}" type="vector">
+            <localvariable id="electrostatic_electric_field" name="Electric field" shortname="E" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="V \cdot m^{-1}" type="vector">
                 <expression analysistype="steadystate" planar_x="- dx1"
                                                        planar_y="- dy1"
                                                        axi_r="- dr1"
                                                        axi_z="- dz1" />
             </localvariable>
-            <localvariable id="electrostatic_displacement" name="Displacement" shortname="D" unit="C/m2" unit_html="C.m<sup>-2</sup>" unit_latex="C \cdot m^{-2}" type="vector">
+            <localvariable id="electrostatic_displacement" name="Displacement" shortname="D" unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="C \cdot m^{-2}" type="vector">
                 <expression analysistype="steadystate" planar_x="- epsr * EPS0 * dx1"
                                                        planar_y="- epsr * EPS0 * dy1"
                                                        axi_r="- epsr * EPS0 * dr1"
                                                        axi_z="- epsr * EPS0 * dz1" />
             </localvariable>
-            <localvariable id="electrostatic_energy_density" name="Energy density" shortname="we" unit="J/m3" unit_html="J.m<sup>-3</sup>" unit_latex="J \cdot m^{-3}" type="scalar">
+            <localvariable id="electrostatic_energy_density" name="Energy density" shortname="we" unit="J/m3" unit_html="J.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="J \cdot m^{-3}" type="scalar">
                 <expression analysistype="steadystate" planar="0.5 * epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)"
                                                        axi="0.5 * epsr * EPS0 * (dr1 * dr1 + dz1 * dz1)" />
             </localvariable>
@@ -96,7 +104,7 @@
                 <expression analysistype="steadystate" planar="epsr"
                                                        axi="epsr" />
             </localvariable>
-            <localvariable id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" unit_html="C.m<sup>-3</sup>" unit_latex="C \cdot m^{-3}" type="scalar">
+            <localvariable id="electrostatic_charge_density" name="Charge density" shortname="rho" unit="C/m3" unit_html="C.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="C \cdot m^{-3}" type="scalar">
                 <expression analysistype="steadystate" planar="rho"
                                                        axi="rho" />
             </localvariable>
@@ -107,16 +115,16 @@
                 <default analysistype="steadystate" id="electrostatic_potential" />
             </scalar>
             <vector>
-                <sdefault analysistype="steadystate" id="electrostatic_electric_field" />
+                <default analysistype="steadystate" id="electrostatic_electric_field" />
             </vector>
         </view>
 
         <volumeintegrals>
-            <volumeintegral id="volume" name="Volume" shortname="V" unit="m3" unit_html="m<sup>3</sup>" unit_latex="m^{3}">
+            <volumeintegral id="volume" name="Volume" shortname="V" unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
                 <expression analysistype="steadystate" planar="1.0"
                                                       axi="2.0 * PI * r" />
             </volumeintegral>
-            <volumeintegral id="surface" name="Cross section" shortname="S" unit="m2" unit_html="m<sup>2</sup>" unit_latex="m^{2}">
+            <volumeintegral id="surface" name="Cross section" shortname="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="steadystate" planar="1.0"
                                                       axi="1.0" />
             </volumeintegral>
@@ -131,7 +139,7 @@
                 <expression analysistype="steadystate" planar="1.0"
                                                       axi="1.0" />
             </surfaceintegral>
-            <surfaceintegral id="surface" name="Surface" shortname="S" unit="m2" unit_html="m<sup>2</sup>" unit_latex="m^{2}">
+            <surfaceintegral id="surface" name="Surface" shortname="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="steadystate" planar="1.0"
                                                       axi="2.0 * PI * r" />
             </surfaceintegral>

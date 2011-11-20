@@ -19,6 +19,8 @@
 
 #include "scenemarker.h"
 #include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
+#include "hermes2d/dialog.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "gui.h"
@@ -32,7 +34,7 @@ SceneBoundary::SceneBoundary(std::string name, std::string type,
 
 int SceneBoundary::showDialog(QWidget *parent)
 {
-    SceneBoundaryDialog *dialog = boundaryDialogFactory(this, parent);
+    SceneBoundaryDialog *dialog = new SceneBoundaryCustomDialog(this, parent);
     if (dialog)
         return dialog->exec();
     else
@@ -114,7 +116,7 @@ SceneMaterial::SceneMaterial(std::string name,
 
 int SceneMaterial::showDialog(QWidget *parent)
 {
-    SceneMaterialDialog *dialog = materialDialogFactory(this, parent);
+    SceneMaterialDialog *dialog = new SceneMaterialCustomDialog(this, parent);
     if (dialog)
         return dialog->exec();
     else

@@ -1,15 +1,15 @@
-<document>
+<document version="2.0">
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="RF_waveguide_R100" date="2011-04-13" polynomialorder="5" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="16000000000" matrix_solver="umfpack" type="rf" timetotal="1.0">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.001" linearity="newton" name="RF_waveguide_R100" date="2011-04-13" polynomialorder="4" weakforms="interpreted" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" numberofrefinements="0" frequency="16000000000" matrix_solver="umfpack" type="rf" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
-                <edge value_imag="0" type="rf_electric_field" id="1" name="Perfect electric conductor" value_real="0"/>
-                <edge type="rf_magnetic_field" id="2" name="Matched boundary"/>
-                <edge value_imag="0" type="rf_electric_field" id="3" name="Surface current" value_real="1"/>
+                <edge rf_electric_field_real="0" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_electric_field" rf_port_phase="0" rf_surface_current_real="0" id="1" rf_magnetic_field_imag="0" name="Perfect electric conductor"/>
+                <edge rf_electric_field_real="0" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_magnetic_field" rf_port_phase="0" rf_surface_current_real="0" id="2" rf_magnetic_field_imag="0" name="Matched boundary"/>
+                <edge rf_electric_field_real="1" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_electric_field" rf_port_phase="0" rf_surface_current_real="0" id="3" rf_magnetic_field_imag="0" name="Surface current"/>
             </edges>
             <labels>
-                <label current_density_real="0" conductivity="0" id="1" name="Air" current_density_imag="0" permeability="1" permittivity="1"/>
+                <label rf_current_density_external_imag="0" rf_permittivity="0" rf_conductivity="0" id="1" name="Air" rf_current_density_external_real="0" rf_permeability="0"/>
             </labels>
         </problem>
     </problems>

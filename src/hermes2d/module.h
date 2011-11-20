@@ -72,6 +72,7 @@ private:
     double constant_value;
 };
 
+
 //template <typename Scalar>
 //class ViewScalarFilter;
 
@@ -119,7 +120,7 @@ struct LocalVariable
 
     LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "")
         : id(id), name(name), shortname(shortname), unit(unit), is_scalar(true), expression(Expression()) {}
-    LocalVariable(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
+    LocalVariable(rapidxml::xml_node<> *variable, ProblemType problemType, AnalysisType analysisType);
 
     // id
     std::string id;
@@ -222,6 +223,44 @@ struct Integral
     Expression expression;    
 };
 
+// dialog UI
+struct DialogUI
+{
+    DialogUI() {}
+    DialogUI(rapidxml::xml_node<> *node);
+
+    struct Row
+    {
+        Row(std::string id, bool nonlin, bool timedep, std::string name, std::string shortname, std::string shortname_html,
+                 std::string unit, std::string unit_html, std::string unit_latex,
+                 double default_value, std::string condition)
+            : id(id), nonlin(nonlin), timedep(timedep), name(name), shortname(shortname), shortname_html(shortname_html),
+              unit(unit), unit_html(unit_html), unit_latex(unit_latex),
+              default_value(default_value), condition(condition) {}
+        Row(rapidxml::xml_node<> *quantity);
+
+        std::string id;
+
+        bool nonlin;
+        bool timedep;
+
+        std::string name;
+        std::string shortname;
+        std::string shortname_html;
+
+        std::string unit;
+        std::string unit_html;
+        std::string unit_latex;
+
+        double default_value;
+        std::string condition;
+    };
+
+    std::map<std::string, Hermes::vector<Row> > groups;
+
+    void clear();
+};
+
 // basic module
 struct Module
 {
@@ -229,6 +268,8 @@ struct Module
     std::string id;
     // name
     std::string name;
+    // deformed shape
+    bool deformed_shape;
     // description
     std::string description;
 
@@ -286,6 +327,10 @@ struct Module
     // volume integrals
     Hermes::vector<Integral *> volume_integral;
 
+    // material and boundary UI
+    DialogUI material_ui;
+    DialogUI boundary_ui;
+
     // default contructor
     Module(ProblemType problemType, AnalysisType analysisType);
     ~Module();
@@ -331,36 +376,8 @@ private:
     AnalysisType m_analysisType;
 };
 
-struct ModuleAgros : public QObject, public Module
-{
-    Q_OBJECT
-public:
-    ModuleAgros(ProblemType problemType, AnalysisType analysisType) : Module(problemType, analysisType) {}
-
-    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
-    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
-    void fillComboBoxBoundaryCondition(QComboBox *cmbFieldVariable);
-    void fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable);
-
-    SceneBoundary *newBoundary();
-    SceneMaterial *newMaterial();
-
-private:
-    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<Hermes::Module::LocalVariable *> list);
-};
-
 }
 }
-
-// module factory
-Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type,
-                                           std::string filename_custom = "");
-
-// boundary dialog factory
-SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidget *parent);
-
-// material dialog factory
-SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidget *parent);
 
 // available modules
 std::map<std::string, std::string> availableModules();

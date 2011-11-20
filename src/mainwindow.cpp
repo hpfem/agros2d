@@ -42,6 +42,7 @@
 #include "materialbrowserdialog.h"
 #include "datatabledialog.h"
 #include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {

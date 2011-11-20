@@ -32,7 +32,7 @@
 #include "hermes2d/volumeintegral.h"
 #include "hermes2d/localpoint.h"
 #include "hermes2d/module.h"
-
+#include "hermes2d/module_agros.h"
 
 // version()
 char *pythonVersion()

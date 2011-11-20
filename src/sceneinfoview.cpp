@@ -26,7 +26,7 @@
 #include "scenemarker.h"
 #include "scripteditordialog.h"
 #include "hermes2d/module.h"
-
+#include "hermes2d/module_agros.h"
 
 SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget(tr("Problem"), parent)
 {

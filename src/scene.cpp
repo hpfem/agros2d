@@ -35,6 +35,7 @@
 #include "scripteditordialog.h"
 
 #include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
 
 void ProblemInfo::clear()
 {

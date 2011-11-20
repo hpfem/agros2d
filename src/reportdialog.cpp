@@ -17,6 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "ctemplate/template.h"
+
 #include "reportdialog.h"
 #include "scene.h"
 #include "scenebasic.h"
@@ -25,7 +27,7 @@
 #include "scenemarker.h"
 #include "scripteditordialog.h"
 #include "hermes2d/module.h"
-#include "ctemplate/template.h"
+#include "hermes2d/module_agros.h"
 
 ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {

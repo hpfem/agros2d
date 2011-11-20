@@ -1,6 +1,6 @@
 <document version="2.0">
     <problems>
-        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0" adaptivitysteps="1" nonlineartolerance="0.001" linearity="linear" name="Heat Transfer Planar Building Detail" date="2011-07-18" polynomialorder="2" weakforms="compiled" meshtype="triangle" timestep="0" problemtype="planar" adaptivitytype="disabled" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="heat" timetotal="0">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0" adaptivitysteps="1" nonlineartolerance="0.001" linearity="newton" name="Heat Transfer Planar Building Detail" date="2011-07-18" polynomialorder="2" weakforms="interpreted" meshtype="triangle" timestep="0" problemtype="planar" adaptivitytype="disabled" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="heat" timetotal="0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>

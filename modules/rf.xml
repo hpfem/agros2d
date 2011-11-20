@@ -3,7 +3,7 @@
     <general id ="rf" name="RF">
         <description>Solving TE waves in RF field.</description>
         <analyses>
-            <analysis id="harmonic" type="harmonic" name="Harmonic" />
+            <analysis id="harmonic" type="harmonic" name="Harmonic" solutions="2" />
         </analyses>
     </general>
 
@@ -100,21 +100,25 @@
     <preprocessor>
         <volume>
             <group>
-                <quantity id="rf_permittivity" name="Permittivity" shortname="epsr" unit="-" />
-                <quantity id="rf_permeability" name="Permeability" shortname="mur" unit="-" />
-                <quantity id="rf_conductivity" name="Conductivity" shortname="gamma" unit="S/m" unit_html="S.m<sup>-1</sup>" unit_latex="S \cdot m^{-1}"/>
-                <quantity id="rf_current_density_external_real" name="Current dens. - ext. - real" shortname="Jer" unit="A/m2" unit_html="A.m<sup>-2</sup>" unit_latex="A \cdot m^{-2}"/>
-                <quantity id="rf_current_density_external_imag" name="Current dens. - ext. - imag" shortname="Jei" unit="A/m2" unit_html="A.m<sup>-2</sup>" unit_latex="A \cdot m^{-2}"/>
+                <quantity id="rf_permittivity" name="Permittivity"
+                shortname="epsr" shortname_html="&lt;i&gt;&epsilon;&lt;/i&gt;"
+                unit="F/m" unit_html="F.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="F \cdot m^{-1}" />
+                <quantity id="rf_permeability" name="Permeability"
+                shortname="mur" shortname_html="&lt;i&gt;&mu;&lt;/i&gt;"
+                unit="H/m" unit_html="H.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="H \cdot m^{-1}" />
+                <quantity id="rf_conductivity" name="Conductivity" shortname="gamma" unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}"/>
+                <quantity id="rf_current_density_external_real" name="Current dens. - ext. - real" shortname="Jer" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}"/>
+                <quantity id="rf_current_density_external_imag" name="Current dens. - ext. - imag" shortname="Jei" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}"/>
             </group>
         </volume>
         <surface>
             <group>
-                <quantity id="rf_electric_field_real" name="Electric field - real" shortname="Er" unit="V/m" unit_html="V.m<sup>-1</sup>" unit_latex="V \cdot m^{-1}"/>
-                <quantity id="rf_electric_field_imag" name="Electric field - imag" shortname="Ei" unit="V/m" unit_html="V.m<sup>-1</sup>" unit_latex="V \cdot m^{-1}"/>
-                <quantity id="rf_magnetic_field_real" name="Magnetic field - real" shortname="Hr" unit="A/m" unit_html="A.m<sup>-1</sup>" unit_latex="A \cdot m^{-1}"/>
-                <quantity id="rf_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" unit="A/m" unit_html="A.m<sup>-1</sup>" unit_latex="A \cdot m^{-1}" />
-                <quantity id="rf_surface_current_real" name="Surface current - real" shortname="Jr" unit="A/m2" unit_html="A.m<sup>-2</sup>" unit_latex="A \cdot m^{-2}"/>
-                <quantity id="rf_surface_current_imag" name="Surface current - imag" shortname="Ji" unit="A/m2" unit_html="A.m<sup>-2</sup>" unit_latex="A \cdot m^{-2}"/>
+                <quantity id="rf_electric_field_real" name="Electric field - real" shortname="Er" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="V \cdot m^{-1}"/>
+                <quantity id="rf_electric_field_imag" name="Electric field - imag" shortname="Ei" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="V \cdot m^{-1}"/>
+                <quantity id="rf_magnetic_field_real" name="Magnetic field - real" shortname="Hr" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}"/>
+                <quantity id="rf_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" />
+                <quantity id="rf_surface_current_real" name="Surface current - real" shortname="Jr" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}"/>
+                <quantity id="rf_surface_current_imag" name="Surface current - imag" shortname="Ji" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}"/>
                 <quantity id="rf_port_power" name="Power" shortname="P" unit="W" />
                 <quantity id="rf_port_phase" name="Phase" shortname="alpha" unit="deg." />
             </group>
@@ -123,37 +127,37 @@
 
     <postprocessor>
         <localvariables>
-            <localvariable id="rf_electric_field_real" name="Electric field - real" shortname="Er" unit="V/m" unit_html="V.m<sup>-1</sup>" unit_latex="V \cdot m^{-1}" type="scalar">
+            <localvariable id="rf_electric_field_real" name="Electric field - real" shortname="Er" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="V \cdot m^{-1}" type="scalar">
                 <expression analysistype="harmonic" planar_scalar="value1"
                                                     axi_scalar="value1" />
             </localvariable>
-            <localvariable id="rf_electric_field_imag" name="Electric field - imag" shortname="Ei" unit="V/m" unit_html="V.m<sup>-1</sup>" unit_latex="V \cdot m^{-1}" type="scalar">
+            <localvariable id="rf_electric_field_imag" name="Electric field - imag" shortname="Ei" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="V \cdot m^{-1}" type="scalar">
                 <expression analysistype="harmonic" planar_scalar="value2"
                                                     axi_scalar="value2" />
             </localvariable>
-            <localvariable id="rf_displacement_real" name="Displacement - real" shortname="Dr" unit="C/m2" unit_html="C.m<sup>-2</sup>" unit_latex="C \cdot m^{-2}" type="scalar">
+            <localvariable id="rf_displacement_real" name="Displacement - real" shortname="Dr" unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="C \cdot m^{-2}" type="scalar">
                 <expression analysistype="harmonic" planar_scalar="epsr * EPS0 * value1"
                                                     axi_scalar="epsr * EPS0 * value1" />
             </localvariable>
-            <localvariable id="rf_displacement_imag" name="Displacement - imag" shortname="Di" unit="C/m2" unit_html="C.m<sup>-2</sup>" unit_latex="C \cdot m^{-2}" type="scalar">
+            <localvariable id="rf_displacement_imag" name="Displacement - imag" shortname="Di" unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="C \cdot m^{-2}" type="scalar">
                 <expression analysistype="harmonic" planar_scalar="epsr * EPS0 * value2"
                                                     axi_scalar="epsr * EPS0 * value2" />
             </localvariable>
-            <localvariable id="rf_surface_current_real" name="Current density - real" shortname="Jr" unit="A/m2" unit_html="A.m<sup>-2</sup>" unit_latex="A \cdot m^{-2}" type="scalar">
+            <localvariable id="rf_surface_current_real" name="Current density - real" shortname="Jr" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
                 <expression analysistype="harmonic" planar_scalar="gamma * value1"
                                                     axi_scalar="gamma * value1" />
             </localvariable>
-            <localvariable id="rf_surface_current_imag" name="Current density - imag" shortname="Ji" unit="A/m2" unit_html="A.m<sup>-2</sup>" unit_latex="A \cdot m^{-2}" type="scalar">
+            <localvariable id="rf_surface_current_imag" name="Current density - imag" shortname="Ji" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
                 <expression analysistype="harmonic" planar_scalar="gamma * value2"
                                                     axi_scalar="gamma * value2" />
             </localvariable>
-            <localvariable id="rf_magnetic_field_real" name="Magnetic field - real" shortname="Hr" unit="A/m" unit_html="A.m<sup>-1</sup>" unit_latex="A \cdot m^{-1}" type="vector">
+            <localvariable id="rf_magnetic_field_real" name="Magnetic field - real" shortname="Hr" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" type="vector">
                 <expression analysistype="harmonic" planar_x="- 1.0 / (2.0 * PI * f * mur * MU0) * dy2"
                                                     planar_y="1.0 / (2.0 * PI * f * mur * MU0) * dx2"
                                                     axi_r="- 1.0 / (2.0 * PI * f * mur * MU0) * dz2"
                                                     axi_z="1.0 / (2.0 * PI * f * mur * MU0) * dr2" />
             </localvariable>
-            <localvariable id="rf_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" unit="A/m" unit_html="A.m<sup>-1</sup>" unit_latex="A \cdot m^{-1}" type="vector">
+            <localvariable id="rf_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" type="vector">
                 <expression analysistype="harmonic" planar_comp_x="1.0 / (2.0 * PI * f * mur * MU0) * dy1"
                                                     planar_comp_y="1.0 / (2.0 * PI * f * mur * MU0) * dx1"
                                                     axi_comp_r="1.0 / (2.0 * PI * f * mur * MU0) * dz1"
@@ -171,7 +175,7 @@
                                                     axi_comp_r="1.0 / (2.0 * PI * f) * dz1"
                                                     axi_comp_z="1.0 / (2.0 * PI * f) * dr1" />
             </localvariable>
-            <localvariable id="rf_poynting_vector" name="Poyting vector" shortname="N" unit="W/m2" unit_html="W.m<sup>-2</sup>" unit_latex="W \cdot m^{-2}" type="vector">
+            <localvariable id="rf_poynting_vector" name="Poyting vector" shortname="N" unit="W/m2" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="W \cdot m^{-2}" type="vector">
                 <expression analysistype="harmonic" planar_comp_x="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dx1 - value1 * dx2)"
                                                     planar_comp_y="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dy1 - value1 * dy2)"
                                                     axi_comp_r="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dr1 - value1 * dr2)"
@@ -185,7 +189,7 @@
                 <expression analysistype="harmonic" planar_scalar="mur"
                                                     axi_scalar="mur" />
             </localvariable>
-            <localvariable id="rf_conductivity" name="Conductivity" shortname="gamma" unit="S/m" unit_html="S.m<sup>-1</sup>" unit_latex="S \cdot m^{-1}" type="scalar">
+            <localvariable id="rf_conductivity" name="Conductivity" shortname="gamma" unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}" type="scalar">
                 <expression analysistype="harmonic" planar_scalar="gamma"
                                                     axi_scalar="gamma" />
             </localvariable>
@@ -193,19 +197,19 @@
 
         <view>
             <scalar>
-                <default analysistype="harmonic" default="rf_electric_field_real"/>
+                <default analysistype="harmonic" id="rf_electric_field_real"/>
             </scalar>
             <vector>
-                <default analysistype="harmonic" default="rf_magnetic_field_real"/>
+                <default analysistype="harmonic" id="rf_magnetic_field_real"/>
             </vector>
         </view>
 
         <volumeintegrals>
-            <volumeintegral id="rf_volume" name="Volume" shortname="V" unit="m3" unit_html="m<sup>3</sup>" unit_latex="m^{3}">
+            <volumeintegral id="rf_volume" name="Volume" shortname="V" unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="2.0 * PI * r" />
             </volumeintegral>
-            <volumeintegral id="rf_cross_section" name="Cross section" shortname="S" unit="m2" unit_html="m<sup>2</sup>" unit_latex="m^{2}">
+            <volumeintegral id="rf_cross_section" name="Cross section" shortname="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="1.0" />
             </volumeintegral>
@@ -216,7 +220,7 @@
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="1.0" />
             </surfaceintegral>
-            <surfaceintegral id="rf_surface" name="Surface" shortname="S" unit="m2" unit_html="m<sup>2</sup>" unit_latex="m^{2}">
+            <surfaceintegral id="rf_surface" name="Surface" shortname="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="2.0 * PI * r" />
             </surfaceintegral>
