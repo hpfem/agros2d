@@ -29,6 +29,8 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 
+#include "../lib/gl2ps/gl2ps.h"
+
 // scene view
 static SceneView *m_sceneView = NULL;
 
@@ -4194,6 +4196,52 @@ void SceneView::loadBackgroundImage(const QString &fileName, double x, double y,
         m_backgroundTexture = bindTexture(m_backgroundImage, GL_TEXTURE_2D, GL_RGBA);
         m_backgroundPosition = QRectF(x, y, w, h);
     }
+}
+
+ErrorResult SceneView::saveGeometryToFile(const QString &fileName, int format)
+{
+    logMessage("SceneView::saveImageToFile()");
+
+    // store old value
+    SceneMode sceneMode = m_sceneMode;
+    m_sceneMode == SceneMode_OperateOnNodes;
+    actSceneModeNode->trigger();
+
+    makeCurrent();
+    int state = GL2PS_OVERFLOW;
+    int buffsize = 0;
+    GLint options = GL2PS_DRAW_BACKGROUND | GL2PS_USE_CURRENT_VIEWPORT;
+
+    FILE *fp = fopen(fileName.toStdString().c_str(), "wb");
+    while (state == GL2PS_OVERFLOW)
+    {
+        buffsize += 1024*1024;
+        gl2psBeginPage("Agros2D", "Agros2D - export", NULL, format,
+                       GL2PS_BSP_SORT, options,
+                       GL_RGBA, 0, NULL, 0, 0, 0, buffsize, fp, "xxx.pdf");
+
+        glClearColor(Util::config()->colorBackground.redF(),
+                     Util::config()->colorBackground.greenF(),
+                     Util::config()->colorBackground.blueF(), 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // paintSolutionMesh();
+        // paintInitialMesh();
+
+        paintGeometry();
+
+        state = gl2psEndPage();
+    }
+    fclose(fp);
+
+    // restore viewport
+    m_sceneMode = sceneMode;
+    if (m_sceneMode == SceneMode_OperateOnNodes) actSceneModeNode->trigger();
+    if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeEdge->trigger();
+    if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeLabel->trigger();
+    if (m_sceneMode == SceneMode_Postprocessor) actSceneModePostprocessor->trigger();
+
+    return ErrorResult();
 }
 
 ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)

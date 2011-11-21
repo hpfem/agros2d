@@ -44,6 +44,8 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 
+#include "../lib/gl2ps/gl2ps.h"
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     logMessage("MainWindow::MainWindow()");
@@ -223,6 +225,10 @@ void MainWindow::createActions()
     actDocumentSaveImage->setStatusTip(tr("Export image to file"));
     connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
 
+    actDocumentSaveGeometry = new QAction(tr("Export geometry..."), this);
+    actDocumentSaveGeometry->setStatusTip(tr("Export geometry to file"));
+    connect(actDocumentSaveGeometry, SIGNAL(triggered()), this, SLOT(doDocumentSaveGeometry()));
+
     actCreateVideo = new QAction(icon("video"), tr("Create &video..."), this);
     actCreateVideo->setStatusTip(tr("Create video"));
     connect(actCreateVideo, SIGNAL(triggered()), this, SLOT(doCreateVideo()));
@@ -382,6 +388,7 @@ void MainWindow::createMenus()
     mnuFileImportExport->addSeparator();
     mnuFileImportExport->addAction(actDocumentExportMeshFile);
     mnuFileImportExport->addAction(actDocumentSaveImage);
+    mnuFileImportExport->addAction(actDocumentSaveGeometry);
     mnuFileImportExport->addSeparator();
     mnuFileImportExport->addAction(actExportVTKScalar);
     mnuFileImportExport->addAction(actExportVTKOrder);
@@ -1045,6 +1052,49 @@ void MainWindow::doDocumentSaveImage()
         if (fileInfo.suffix().toLower() != "png") fileName += ".png";
 
         ErrorResult result = sceneView->saveImageToFile(fileName);
+        if (result.isError())
+            result.showDialog();
+
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+    }
+}
+
+void MainWindow::doDocumentSaveGeometry()
+{
+    logMessage("MainWindow::doDocumentSaveGeometry()");
+
+    QSettings settings;
+    QString dir = settings.value("General/LastImageDir").toString();
+
+
+    QString selected;
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export geometry to file"), dir,
+                                                    tr("PDF files (*.pdf);;EPS files (*.eps);;SVG files (*.svg)"),
+                                                    &selected);
+
+    if (!fileName.isEmpty())
+    {
+        int format = GL2PS_PDF;
+        QFileInfo fileInfo(fileName);
+
+        if (selected == "PDF files (*.pdf)")
+        {
+            if (fileInfo.suffix().toLower() != "pdf") fileName += ".pdf";
+            format = GL2PS_PDF;
+        }
+        if (selected == "EPS files (*.eps)")
+        {
+            if (fileInfo.suffix().toLower() != "eps") fileName += ".eps";
+            format = GL2PS_EPS;
+        }
+        if (selected == "SVG files (*.svg)")
+        {
+            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";
+            format = GL2PS_SVG;
+        }
+
+        ErrorResult result = sceneView->saveGeometryToFile(fileName, format);
         if (result.isError())
             result.showDialog();
 

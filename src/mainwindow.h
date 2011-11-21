@@ -65,6 +65,7 @@ private slots:
     void doDocumentExportDXF();
     void doDocumentExportMeshFile();
     void doDocumentSaveImage();
+    void doDocumentSaveGeometry();
     void doLoadBackground();
     void doExportVTKScalar();
     void doExportVTKOrder();
@@ -150,6 +151,7 @@ private:
     QAction *actExportVTKScalar;
     QAction *actExportVTKOrder;
     QAction *actDocumentSaveImage;
+    QAction *actDocumentSaveGeometry;
     QAction *actExit;
     QAction *actLoadBackground;
     QActionGroup *actDocumentOpenRecentGroup;
