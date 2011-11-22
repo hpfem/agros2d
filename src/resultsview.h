@@ -25,6 +25,8 @@
 #include "scenemarkerselectdialog.h"
 #include "scenebasicselectdialog.h"
 
+#include <QtWebKit>
+
 class ValueLineEdit;
 class SceneMaterial;
 class Solution;
@@ -52,7 +54,7 @@ private:
     Point m_point;
 
     QPushButton *btnPoint;
-    QTextEdit *txtView;
+    QWebView *webView;
     QAction *actPoint;
 
     void createActions();
