@@ -41,56 +41,57 @@ SceneMarkerSelectDialog::SceneMarkerSelectDialog(SceneView *sceneView, QWidget *
 
 void SceneMarkerSelectDialog::createControls()
 {
-    logMessage("SceneMarkerSelectDialog::createControls()");
+    assert(0); //TODO
+//    logMessage("SceneMarkerSelectDialog::createControls()");
 
-    // surface
-    lstSurface = new QListWidget(this);
-    for (int i = 1; i < Util::scene()->boundaries.count(); i++)
-    {
-        QListWidgetItem *item = new QListWidgetItem(lstSurface);
-        item->setText(QString::fromStdString(Util::scene()->boundaries[i]->name));
-        item->setCheckState(Qt::Unchecked);
-        lstSurface->addItem(item);
-    }
+//    // surface
+//    lstSurface = new QListWidget(this);
+//    for (int i = 1; i < Util::scene()->boundaries.count(); i++)
+//    {
+//        QListWidgetItem *item = new QListWidgetItem(lstSurface);
+//        item->setText(QString::fromStdString(Util::scene()->boundaries[i]->name));
+//        item->setCheckState(Qt::Unchecked);
+//        lstSurface->addItem(item);
+//    }
 
-    QGridLayout *layoutSurface = new QGridLayout();
-    layoutSurface->addWidget(lstSurface);
+//    QGridLayout *layoutSurface = new QGridLayout();
+//    layoutSurface->addWidget(lstSurface);
 
-    widSurface = new QWidget();
-    widSurface->setLayout(layoutSurface);
+//    widSurface = new QWidget();
+//    widSurface->setLayout(layoutSurface);
 
-    // volume
-    lstVolume = new QListWidget(this);
-    for (int i = 1; i < Util::scene()->materials.count(); i++)
-    {
-        QListWidgetItem *item = new QListWidgetItem(lstVolume);
-        item->setText(QString::fromStdString(Util::scene()->materials[i]->name));
-        item->setCheckState(Qt::Unchecked);
-        lstVolume->addItem(item);
-    }
+//    // volume
+//    lstVolume = new QListWidget(this);
+//    for (int i = 1; i < Util::scene()->materials.count(); i++)
+//    {
+//        QListWidgetItem *item = new QListWidgetItem(lstVolume);
+//        item->setText(QString::fromStdString(Util::scene()->materials[i]->name));
+//        item->setCheckState(Qt::Unchecked);
+//        lstVolume->addItem(item);
+//    }
 
-    QGridLayout *layoutVolume = new QGridLayout();
-    layoutVolume->addWidget(lstVolume);
+//    QGridLayout *layoutVolume = new QGridLayout();
+//    layoutVolume->addWidget(lstVolume);
 
-    widVolume = new QWidget();
-    widVolume->setLayout(layoutVolume);
+//    widVolume = new QWidget();
+//    widVolume->setLayout(layoutVolume);
 
-    // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+//    // dialog buttons
+//    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+//    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+//    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
-    // tab widget
-    tabWidget = new QTabWidget(this);
-    tabWidget->addTab(widSurface, icon(""), tr("Surface"));
-    tabWidget->addTab(widVolume, icon(""), tr("Volume"));
+//    // tab widget
+//    tabWidget = new QTabWidget(this);
+//    tabWidget->addTab(widSurface, icon(""), tr("Surface"));
+//    tabWidget->addTab(widVolume, icon(""), tr("Volume"));
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tabWidget, 1);
-    layout->addStretch();
-    layout->addWidget(buttonBox);
+//    QVBoxLayout *layout = new QVBoxLayout();
+//    layout->addWidget(tabWidget, 1);
+//    layout->addStretch();
+//    layout->addWidget(buttonBox);
 
-    setLayout(layout);
+//    setLayout(layout);
 }
 
 void SceneMarkerSelectDialog::doAccept()

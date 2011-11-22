@@ -33,6 +33,8 @@
 #include <cmath>
 #include <limits>
 #include <vector>
+#include <tr1/memory>
+
 
 #include <locale.h>
 #include <stdlib.h>
@@ -57,6 +59,7 @@
 #define rad2deg(radians) (radians*180.0/M_PI)
 
 using namespace std;
+using std::tr1::shared_ptr;
 
 // verbose
 void setVerbose(bool verb);

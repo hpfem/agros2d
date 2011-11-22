@@ -25,9 +25,10 @@
 #include "scenebasic.h"
 #include "gui.h"
 
-SceneBoundary::SceneBoundary(std::string name, std::string type,
-                             std::map<std::string, Value> values)
-    : Boundary(name, type, values)
+SceneBoundary::SceneBoundary(std::string name)
+                             //std::string type,
+                             //std::map<std::string, Value> values)
+    : MultiBoundary(name)
 {
     logMessage("SceneBoundary::SceneBoundary()");
 }
@@ -43,53 +44,55 @@ int SceneBoundary::showDialog(QWidget *parent)
 
 QString SceneBoundary::script()
 {
+    // TODO
     // value
-    QString val = "{";
-    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
-    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-    {
-        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text() + ", ";
-    }
+//    QString val = "{";
+//    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+//    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+//    {
+//        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+//        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text() + ", ";
+//    }
 
-    if (val.length() > 1)
-        val = val.left(val.length() - 2);
-    val += "}";
+//    if (val.length() > 1)
+//        val = val.left(val.length() - 2);
+//    val += "}";
 
-    QString str;
+//    QString str;
 
-    str += QString("addboundary(\"%1\", \"%2\", %3)").
-            arg(QString::fromStdString(name)).
-            arg(QString::fromStdString(type)).
-            arg(val);
+//    str += QString("addboundary(\"%1\", \"%2\", %3)").
+//            arg(QString::fromStdString(name)).
+//            arg(QString::fromStdString(type)).
+//            arg(val);
 
-    return str;
+//    return str;
 }
 
 QString SceneBoundary::html()
 {
-    QString out;
-    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
-    out += "<table>";
+//    TODO
+//    QString out;
+//    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
+//    out += "<table>";
     
-    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
-    if (boundary_type)
-        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-        {
-            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+//    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+//    if (boundary_type)
+//        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+//        {
+//            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
             
-            out += "<tr>";
-//            out += QString("<td>%1 (%2):</td>").
-//                    arg(QString::fromStdString(variable->name)).
-//                    arg(QString::fromStdString(variable->unit));
-            out += QString("<td>%1</td>").
-                    arg(values[variable->id].text());
-            out += "</tr>";
-        }
+//            out += "<tr>";
+////            out += QString("<td>%1 (%2):</td>").
+////                    arg(QString::fromStdString(variable->name)).
+////                    arg(QString::fromStdString(variable->unit));
+//            out += QString("<td>%1</td>").
+//                    arg(values[variable->id].text());
+//            out += "</tr>";
+//        }
     
-    out += "</table>";
+//    out += "</table>";
     
-    return out;
+//    return out;
 }
 
 QVariant SceneBoundary::variant()
@@ -234,7 +237,7 @@ void SceneBoundaryDialog::load()
 {
     logMessage("SceneBoundaryDialog::load()");
     
-    txtName->setText(QString::fromStdString(m_boundary->name));
+    txtName->setText(QString::fromStdString(m_boundary->getName()));
 }
 
 bool SceneBoundaryDialog::save()
@@ -244,7 +247,7 @@ bool SceneBoundaryDialog::save()
     // find name duplicities
     foreach (SceneBoundary *boundary, Util::scene()->boundaries)
     {
-        if (QString::fromStdString(boundary->name) == txtName->text())
+        if (QString::fromStdString(boundary->getName()) == txtName->text())
         {
             if (m_boundary == boundary)
                 continue;
@@ -253,7 +256,7 @@ bool SceneBoundaryDialog::save()
             return false;
         }
     }
-    m_boundary->name = txtName->text().toStdString();
+    m_boundary->setName(txtName->text().toStdString());
     return true;
 }
 
@@ -410,57 +413,58 @@ void SceneMaterialDialog::evaluated(bool isError)
 
 SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("SceneBoundarySelectDialog::SceneBoundarySelectDialog()");
+    assert(0); //TODO
+//    logMessage("SceneBoundarySelectDialog::SceneBoundarySelectDialog()");
     
-    setWindowTitle(tr("Boundary condition"));
-    setWindowIcon(icon("scene-edge"));
-    setModal(true);
+//    setWindowTitle(tr("Boundary condition"));
+//    setWindowIcon(icon("scene-edge"));
+//    setModal(true);
     
-    // fill combo
-    cmbBoundary = new QComboBox(this);
-    for (int i = 0; i<Util::scene()->boundaries.count(); i++)
-    {
-        cmbBoundary->addItem(QString::fromStdString(Util::scene()->boundaries[i]->name), Util::scene()->boundaries[i]->variant());
-    }
+//    // fill combo
+//    cmbBoundary = new QComboBox(this);
+//    for (int i = 0; i<Util::scene()->boundaries.count(); i++)
+//    {
+//        cmbBoundary->addItem(QString::fromStdString(Util::scene()->boundaries[i]->name), Util::scene()->boundaries[i]->variant());
+//    }
     
-    // select marker
-    cmbBoundary->setCurrentIndex(-1);
-    SceneBoundary *boundary = NULL;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        if (Util::scene()->edges[i]->isSelected)
-        {
-            if (!boundary)
-            {
-                boundary = Util::scene()->edges[i]->boundary;
-            }
-            if (boundary != Util::scene()->edges[i]->boundary)
-            {
-                boundary = NULL;
-                break;
-            }
-        }
-    }
-    if (boundary)
-        cmbBoundary->setCurrentIndex(cmbBoundary->findData(boundary->variant()));
+//    // select marker
+//    cmbBoundary->setCurrentIndex(-1);
+//    SceneBoundary *boundary = NULL;
+//    for (int i = 0; i<Util::scene()->edges.count(); i++)
+//    {
+//        if (Util::scene()->edges[i]->isSelected)
+//        {
+//            if (!boundary)
+//            {
+//                boundary = Util::scene()->edges[i]->boundary;
+//            }
+//            if (boundary != Util::scene()->edges[i]->boundary)
+//            {
+//                boundary = NULL;
+//                break;
+//            }
+//        }
+//    }
+//    if (boundary)
+//        cmbBoundary->setCurrentIndex(cmbBoundary->findData(boundary->variant()));
     
-    // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+//    // dialog buttons
+//    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+//    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+//    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     
-    QHBoxLayout *layoutBoundary = new QHBoxLayout();
-    layoutBoundary->addWidget(new QLabel(tr("Boundary:")));
-    layoutBoundary->addWidget(cmbBoundary);
+//    QHBoxLayout *layoutBoundary = new QHBoxLayout();
+//    layoutBoundary->addWidget(new QLabel(tr("Boundary:")));
+//    layoutBoundary->addWidget(cmbBoundary);
     
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutBoundary);
-    layout->addStretch();
-    layout->addWidget(buttonBox);
+//    QVBoxLayout *layout = new QVBoxLayout();
+//    layout->addLayout(layoutBoundary);
+//    layout->addStretch();
+//    layout->addWidget(buttonBox);
     
-    setLayout(layout);
+//    setLayout(layout);
     
-    setMaximumSize(sizeHint());
+//    setMaximumSize(sizeHint());
 }
 
 void SceneBoundarySelectDialog::doAccept()

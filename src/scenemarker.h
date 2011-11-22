@@ -30,14 +30,15 @@ class ValueLineEdit;
 class SceneBoundary;
 class SceneMaterial;
 
-Q_DECLARE_METATYPE(SceneBoundary *);
-Q_DECLARE_METATYPE(SceneMaterial *);
+Q_DECLARE_METATYPE(SceneBoundary *)
+Q_DECLARE_METATYPE(SceneMaterial *)
 
-class SceneBoundary : public Boundary
+class SceneBoundary : public MultiBoundary
 {
 public:
-    SceneBoundary(std::string name, std::string type = "",
-                  std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    SceneBoundary(std::string name);
+                  //std::string type = "",
+                  //std::map<std::string, Value> values = (std::map<std::string, Value>()));
 
     int showDialog(QWidget *parent);
 

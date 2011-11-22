@@ -322,7 +322,7 @@ void Scene::removeNode(SceneNode *node)
     {
         if ((edge->nodeStart == node) || (edge->nodeEnd == node))
         {
-            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, QString::fromStdString(edge->boundary->name),
+            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, QString::fromStdString(edge->boundary->getName()),
                                                          edge->angle, edge->refineTowardsEdge));
             removeEdge(edge);
         }
@@ -502,7 +502,7 @@ SceneBoundary *Scene::getBoundary(const QString &name)
 
     for (int i = 0; i<boundaries.count(); i++)
     {
-        if (boundaries[i]->name == name.toStdString())
+        if (boundaries[i]->getName() == name.toStdString())
             return boundaries[i];
     }
     return NULL;
@@ -514,7 +514,7 @@ bool Scene::setBoundary(const QString &name, SceneBoundary *boundary)
 
     for (int i = 1; i<boundaries.count(); i++)
     {
-        if (boundaries[i]->name == name.toStdString())
+        if (boundaries[i]->getName() == name.toStdString())
         {
             SceneBoundary *markerTemp = boundaries[i];
 
@@ -539,7 +539,7 @@ bool Scene::setBoundary(const QString &name, SceneBoundary *boundary)
 void Scene::replaceBoundary(SceneBoundary *boundary)
 {
     // store original name
-    std::string name = boundary->name;
+    std::string name = boundary->getName();
 
     // add new marker
     SceneBoundary *markerNew = Util::scene()->problemInfo()->module()->newBoundary();
@@ -559,7 +559,7 @@ void Scene::replaceBoundary(SceneBoundary *boundary)
     Util::scene()->removeBoundary(boundary);
 
     // set original name
-    markerNew->name = name;
+    markerNew->setName(name);
 }
 
 void Scene::addMaterial(SceneMaterial *material)
@@ -771,7 +771,7 @@ void Scene::deleteSelected()
     {
         if (edge->isSelected)
         {
-            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, QString::fromStdString(edge->boundary->name),
+            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, QString::fromStdString(edge->boundary->getName()),
                                                          edge->angle, edge->refineTowardsEdge));
             removeEdge(edge);
         }
@@ -1039,7 +1039,7 @@ void Scene::doNewEdge()
         if (edgeAdded == edge)
             m_undoStack->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                       edge->nodeEnd->point,
-                                                      QString::fromStdString(edge->boundary->name),
+                                                      QString::fromStdString(edge->boundary->getName()),
                                                       edge->angle,
                                                       edge->refineTowardsEdge));
     }
@@ -1463,13 +1463,14 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         }
         else
         {
-            // read marker
-            SceneBoundary *boundary = new SceneBoundary(name.toStdString(), type.toStdString());
-            for (std::map<std::string, Value>::iterator it = boundary->values.begin(); it != boundary->values.end(); ++it)
-            {
-                boundary->values[it->first] = Value(element.toElement().attribute(QString::fromStdString(it->first), "0"));
-            }
-            Util::scene()->addBoundary(boundary);
+            assert(0); //TODO
+//            // read marker
+//            SceneBoundary *boundary = new SceneBoundary(name.toStdString()); //type.toStdString());
+//            for (std::map<std::string, Value>::iterator it = boundary->getValues().begin(); it != boundary->getValues().end(); ++it)
+//            {
+//                boundary->values[it->first] = Value(element.toElement().attribute(QString::fromStdString(it->first), "0"));
+//            }
+//            Util::scene()->addBoundary(boundary);
         }
 
         n = n.nextSibling();
@@ -1584,233 +1585,234 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
 ErrorResult Scene::writeToFile(const QString &fileName)
 {
-    logMessage("Scene::writeToFile()");
+    assert(0); //TODO
+//    logMessage("Scene::writeToFile()");
 
-    QSettings settings;
+//    QSettings settings;
 
-    // custom form
-    /*
-    if (m_problemInfo->module()->id == "custom")
-        if (!QFile::exists(m_problemInfo->fileName.left(m_problemInfo->fileName.size() - 4) + ".xml"))
-        {
-            QFile::remove(fileName.left(fileName.size() - 4) + ".xml");
-            QFile::copy(m_problemInfo->fileName.left(m_problemInfo->fileName.size() - 4) + ".xml",
-                        fileName.left(fileName.size() - 4) + ".xml");
-        }
-    */
+//    // custom form
+//    /*
+//    if (m_problemInfo->module()->id == "custom")
+//        if (!QFile::exists(m_problemInfo->fileName.left(m_problemInfo->fileName.size() - 4) + ".xml"))
+//        {
+//            QFile::remove(fileName.left(fileName.size() - 4) + ".xml");
+//            QFile::copy(m_problemInfo->fileName.left(m_problemInfo->fileName.size() - 4) + ".xml",
+//                        fileName.left(fileName.size() - 4) + ".xml");
+//        }
+//    */
 
-    if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
-    {
-        QFileInfo fileInfo(fileName);
-        if (fileInfo.absoluteDir() != tempProblemDir())
-        {
-            settings.setValue("General/LastProblemDir", fileInfo.absoluteFilePath());
-            m_problemInfo->fileName = fileName;
-        }
-    }
+//    if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
+//    {
+//        QFileInfo fileInfo(fileName);
+//        if (fileInfo.absoluteDir() != tempProblemDir())
+//        {
+//            settings.setValue("General/LastProblemDir", fileInfo.absoluteFilePath());
+//            m_problemInfo->fileName = fileName;
+//        }
+//    }
 
-    // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
+//    // save current locale
+//    char *plocale = setlocale (LC_NUMERIC, "");
+//    setlocale (LC_NUMERIC, "C");
 
-    QDomDocument doc;
+//    QDomDocument doc;
 
-    // main document
-    QDomElement eleDoc = doc.createElement("document");
-    doc.appendChild(eleDoc);
-    eleDoc.setAttribute("version", "2.0");
+//    // main document
+//    QDomElement eleDoc = doc.createElement("document");
+//    doc.appendChild(eleDoc);
+//    eleDoc.setAttribute("version", "2.0");
 
-    // problems
-    QDomNode eleProblems = doc.createElement("problems");
-    eleDoc.appendChild(eleProblems);
-    // first problem
-    QDomElement eleProblem = doc.createElement("problem");
-    eleProblems.appendChild(eleProblem);
-    // id
-    eleProblem.setAttribute("id", 0);
-    // name
-    eleProblem.setAttribute("name", m_problemInfo->name);
-    // date
-    eleProblem.setAttribute("date", m_problemInfo->date.toString(Qt::ISODate));
-    // problem type
-    eleProblem.toElement().setAttribute("problemtype", problemTypeToStringKey(m_problemInfo->problemType));
-    // analysis type
-    eleProblem.setAttribute("analysistype", analysisTypeToStringKey(m_problemInfo->analysisType));
-    // type
-    eleProblem.setAttribute("type", QString::fromStdString(m_problemInfo->module()->id));
-    // number of refinements
-    eleProblem.setAttribute("numberofrefinements", m_problemInfo->numberOfRefinements);
-    // polynomial order
-    eleProblem.setAttribute("polynomialorder", m_problemInfo->polynomialOrder);
-    // mesh type
-    eleProblem.setAttribute("meshtype", meshTypeToStringKey(m_problemInfo->meshType));
-    // adaptivity
-    eleProblem.setAttribute("adaptivitytype", adaptivityTypeToStringKey(m_problemInfo->adaptivityType));
-    eleProblem.setAttribute("adaptivitysteps", m_problemInfo->adaptivitySteps);
-    eleProblem.setAttribute("adaptivitytolerance", m_problemInfo->adaptivityTolerance);
-    eleProblem.setAttribute("maxdofs", Util::config()->maxDofs);
-    // harmonic magnetic
-    eleProblem.setAttribute("frequency", m_problemInfo->frequency);
-    // transient
-    eleProblem.setAttribute("timestep", m_problemInfo->timeStep.text());
-    eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text());
-    eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text());
-    // linearity
-    eleProblem.setAttribute("linearity", linearityTypeToStringKey(m_problemInfo->linearityType));
-    eleProblem.setAttribute("nonlinearsteps", m_problemInfo->nonlinearSteps);
-    eleProblem.setAttribute("nonlineartolerance", m_problemInfo->nonlinearTolerance);
+//    // problems
+//    QDomNode eleProblems = doc.createElement("problems");
+//    eleDoc.appendChild(eleProblems);
+//    // first problem
+//    QDomElement eleProblem = doc.createElement("problem");
+//    eleProblems.appendChild(eleProblem);
+//    // id
+//    eleProblem.setAttribute("id", 0);
+//    // name
+//    eleProblem.setAttribute("name", m_problemInfo->name);
+//    // date
+//    eleProblem.setAttribute("date", m_problemInfo->date.toString(Qt::ISODate));
+//    // problem type
+//    eleProblem.toElement().setAttribute("problemtype", problemTypeToStringKey(m_problemInfo->problemType));
+//    // analysis type
+//    eleProblem.setAttribute("analysistype", analysisTypeToStringKey(m_problemInfo->analysisType));
+//    // type
+//    eleProblem.setAttribute("type", QString::fromStdString(m_problemInfo->module()->id));
+//    // number of refinements
+//    eleProblem.setAttribute("numberofrefinements", m_problemInfo->numberOfRefinements);
+//    // polynomial order
+//    eleProblem.setAttribute("polynomialorder", m_problemInfo->polynomialOrder);
+//    // mesh type
+//    eleProblem.setAttribute("meshtype", meshTypeToStringKey(m_problemInfo->meshType));
+//    // adaptivity
+//    eleProblem.setAttribute("adaptivitytype", adaptivityTypeToStringKey(m_problemInfo->adaptivityType));
+//    eleProblem.setAttribute("adaptivitysteps", m_problemInfo->adaptivitySteps);
+//    eleProblem.setAttribute("adaptivitytolerance", m_problemInfo->adaptivityTolerance);
+//    eleProblem.setAttribute("maxdofs", Util::config()->maxDofs);
+//    // harmonic magnetic
+//    eleProblem.setAttribute("frequency", m_problemInfo->frequency);
+//    // transient
+//    eleProblem.setAttribute("timestep", m_problemInfo->timeStep.text());
+//    eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text());
+//    eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text());
+//    // linearity
+//    eleProblem.setAttribute("linearity", linearityTypeToStringKey(m_problemInfo->linearityType));
+//    eleProblem.setAttribute("nonlinearsteps", m_problemInfo->nonlinearSteps);
+//    eleProblem.setAttribute("nonlineartolerance", m_problemInfo->nonlinearTolerance);
 
-    // matrix solver
-    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(m_problemInfo->matrixSolver));
+//    // matrix solver
+//    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(m_problemInfo->matrixSolver));
 
-    // weakforms
-    eleProblem.setAttribute("weakforms", weakFormsTypeToStringKey(m_problemInfo->weakFormsType));
+//    // weakforms
+//    eleProblem.setAttribute("weakforms", weakFormsTypeToStringKey(m_problemInfo->weakFormsType));
 
-    // startup script
-    QDomElement eleScriptStartup = doc.createElement("scriptstartup");
-    eleScriptStartup.appendChild(doc.createTextNode(m_problemInfo->scriptStartup));
-    eleProblem.appendChild(eleScriptStartup);
+//    // startup script
+//    QDomElement eleScriptStartup = doc.createElement("scriptstartup");
+//    eleScriptStartup.appendChild(doc.createTextNode(m_problemInfo->scriptStartup));
+//    eleProblem.appendChild(eleScriptStartup);
 
-    // description
-    QDomElement eleDescription = doc.createElement("description");
-    eleDescription.appendChild(doc.createTextNode(m_problemInfo->description));
-    eleProblem.appendChild(eleDescription);
+//    // description
+//    QDomElement eleDescription = doc.createElement("description");
+//    eleDescription.appendChild(doc.createTextNode(m_problemInfo->description));
+//    eleProblem.appendChild(eleDescription);
 
-    // geometry
-    QDomNode eleGeometry = doc.createElement("geometry");
-    eleDoc.appendChild(eleGeometry);
+//    // geometry
+//    QDomNode eleGeometry = doc.createElement("geometry");
+//    eleDoc.appendChild(eleGeometry);
 
-    // geometry ***************************************************************************************************************
+//    // geometry ***************************************************************************************************************
 
-    // nodes
-    QDomNode eleNodes = doc.createElement("nodes");
-    eleGeometry.appendChild(eleNodes);
-    for (int i = 0; i<nodes.length(); i++)
-    {
-        QDomElement eleNode = doc.createElement("node");
+//    // nodes
+//    QDomNode eleNodes = doc.createElement("nodes");
+//    eleGeometry.appendChild(eleNodes);
+//    for (int i = 0; i<nodes.length(); i++)
+//    {
+//        QDomElement eleNode = doc.createElement("node");
 
-        eleNode.setAttribute("id", i);
-        eleNode.setAttribute("x", nodes[i]->point.x);
-        eleNode.setAttribute("y", nodes[i]->point.y);
+//        eleNode.setAttribute("id", i);
+//        eleNode.setAttribute("x", nodes[i]->point.x);
+//        eleNode.setAttribute("y", nodes[i]->point.y);
 
-        eleNodes.appendChild(eleNode);
-    }
+//        eleNodes.appendChild(eleNode);
+//    }
 
-    // edges
-    QDomNode eleEdges = doc.createElement("edges");
-    eleGeometry.appendChild(eleEdges);
-    for (int i = 0; i<edges.length(); i++)
-    {
-        QDomElement eleEdge = doc.createElement("edge");
+//    // edges
+//    QDomNode eleEdges = doc.createElement("edges");
+//    eleGeometry.appendChild(eleEdges);
+//    for (int i = 0; i<edges.length(); i++)
+//    {
+//        QDomElement eleEdge = doc.createElement("edge");
 
-        eleEdge.setAttribute("id", i);
-        eleEdge.setAttribute("start", nodes.indexOf(edges[i]->nodeStart));
-        eleEdge.setAttribute("end", nodes.indexOf(edges[i]->nodeEnd));
-        eleEdge.setAttribute("angle", edges[i]->angle);
-        eleEdge.setAttribute("refine_towards", edges[i]->refineTowardsEdge);
-        eleEdge.setAttribute("marker", boundaries.indexOf(edges[i]->boundary));
+//        eleEdge.setAttribute("id", i);
+//        eleEdge.setAttribute("start", nodes.indexOf(edges[i]->nodeStart));
+//        eleEdge.setAttribute("end", nodes.indexOf(edges[i]->nodeEnd));
+//        eleEdge.setAttribute("angle", edges[i]->angle);
+//        eleEdge.setAttribute("refine_towards", edges[i]->refineTowardsEdge);
+//        eleEdge.setAttribute("marker", boundaries.indexOf(edges[i]->boundary));
 
-        eleEdges.appendChild(eleEdge);
-    }
+//        eleEdges.appendChild(eleEdge);
+//    }
 
-    // labels
-    QDomNode eleLabels = doc.createElement("labels");
-    eleGeometry.appendChild(eleLabels);
-    for (int i = 0; i<labels.length(); i++)
-    {
-        QDomElement eleLabel = doc.createElement("label");
+//    // labels
+//    QDomNode eleLabels = doc.createElement("labels");
+//    eleGeometry.appendChild(eleLabels);
+//    for (int i = 0; i<labels.length(); i++)
+//    {
+//        QDomElement eleLabel = doc.createElement("label");
 
-        eleLabel.setAttribute("id", i);
-        eleLabel.setAttribute("x", labels[i]->point.x);
-        eleLabel.setAttribute("y", labels[i]->point.y);
-        eleLabel.setAttribute("area", labels[i]->area);
-        eleLabel.setAttribute("polynomialorder", labels[i]->polynomialOrder);
-        eleLabel.setAttribute("marker", materials.indexOf(labels[i]->material));
+//        eleLabel.setAttribute("id", i);
+//        eleLabel.setAttribute("x", labels[i]->point.x);
+//        eleLabel.setAttribute("y", labels[i]->point.y);
+//        eleLabel.setAttribute("area", labels[i]->area);
+//        eleLabel.setAttribute("polynomialorder", labels[i]->polynomialOrder);
+//        eleLabel.setAttribute("marker", materials.indexOf(labels[i]->material));
 
-        eleLabels.appendChild(eleLabel);
-    }
+//        eleLabels.appendChild(eleLabel);
+//    }
 
-    // markers ***************************************************************************************************************
+//    // markers ***************************************************************************************************************
 
-    // edge markers
-    QDomNode eleBoundaries = doc.createElement("edges");
-    eleProblem.appendChild(eleBoundaries);
-    for (int i = 1; i<boundaries.length(); i++)
-    {
-        QDomElement eleBoundary = doc.createElement("edge");
+//    // edge markers
+//    QDomNode eleBoundaries = doc.createElement("edges");
+//    eleProblem.appendChild(eleBoundaries);
+//    for (int i = 1; i<boundaries.length(); i++)
+//    {
+//        QDomElement eleBoundary = doc.createElement("edge");
 
-        eleBoundary.setAttribute("id", i);
-        eleBoundary.setAttribute("name", QString::fromStdString(boundaries[i]->name));
-        if (boundaries[i]->type == "")
-            eleBoundary.setAttribute("type", "none");
+//        eleBoundary.setAttribute("id", i);
+//        eleBoundary.setAttribute("name", QString::fromStdString(boundaries[i]->name));
+//        if (boundaries[i]->getType() == "")
+//            eleBoundary.setAttribute("type", "none");
 
-        if (i > 0)
-        {
-            // write marker
-            eleBoundary.setAttribute("type", QString::fromStdString(boundaries[i]->type));
+//        if (i > 0)
+//        {
+//            // write marker
+//            eleBoundary.setAttribute("type", QString::fromStdString(boundaries[i]->getType()));
 
-            for (std::map<std::string, Value>::iterator it = boundaries[i]->values.begin(); it != boundaries[i]->values.end(); ++it)
-                eleBoundary.setAttribute(QString::fromStdString(it->first), it->second.toString());
-        }
+//            for (std::map<std::string, Value>::iterator it = boundaries[i]->getValues().begin(); it != boundaries[i]->getValues().end(); ++it)
+//                eleBoundary.setAttribute(QString::fromStdString(it->first), it->second.toString());
+//        }
 
-        eleBoundaries.appendChild(eleBoundary);
-    }
+//        eleBoundaries.appendChild(eleBoundary);
+//    }
 
-    // label markers
-    QDomNode eleMaterials = doc.createElement("labels");
-    eleProblem.appendChild(eleMaterials);
-    for (int i = 1; i<materials.length(); i++)
-    {
-        QDomElement eleMaterial = doc.createElement("label");
+//    // label markers
+//    QDomNode eleMaterials = doc.createElement("labels");
+//    eleProblem.appendChild(eleMaterials);
+//    for (int i = 1; i<materials.length(); i++)
+//    {
+//        QDomElement eleMaterial = doc.createElement("label");
 
-        eleMaterial.setAttribute("id", i);
-        eleMaterial.setAttribute("name", QString::fromStdString(materials[i]->name));
+//        eleMaterial.setAttribute("id", i);
+//        eleMaterial.setAttribute("name", QString::fromStdString(materials[i]->name));
 
-        if (i > 0)
-        {
-            // write marker
-            for (std::map<std::string, Value>::iterator it = materials[i]->values.begin(); it != materials[i]->values.end(); ++it)
-                eleMaterial.setAttribute(QString::fromStdString(it->first), it->second.toString());
-        }
+//        if (i > 0)
+//        {
+//            // write marker
+//            for (std::map<std::string, Value>::iterator it = materials[i]->values.begin(); it != materials[i]->values.end(); ++it)
+//                eleMaterial.setAttribute(QString::fromStdString(it->first), it->second.toString());
+//        }
 
-        eleMaterials.appendChild(eleMaterial);
-    }
+//        eleMaterials.appendChild(eleMaterial);
+//    }
 
-    if (settings.value("Solver/SaveProblemWithSolution", false).value<bool>())
-    {
-        // mesh
-        QDomNode eleMesh = doc.createElement("mesh");
-        Util::scene()->sceneSolution()->saveMeshInitial(&doc, eleMesh.toElement());
-        eleDoc.appendChild(eleMesh);
+//    if (settings.value("Solver/SaveProblemWithSolution", false).value<bool>())
+//    {
+//        // mesh
+//        QDomNode eleMesh = doc.createElement("mesh");
+//        Util::scene()->sceneSolution()->saveMeshInitial(&doc, eleMesh.toElement());
+//        eleDoc.appendChild(eleMesh);
 
-        // solution
-        QDomNode eleSolutions = doc.createElement("solutions");
-        Util::scene()->sceneSolution()->saveSolution(&doc, eleSolutions.toElement());
-        eleDoc.appendChild(eleSolutions);
-    }
+//        // solution
+//        QDomNode eleSolutions = doc.createElement("solutions");
+//        Util::scene()->sceneSolution()->saveSolution(&doc, eleSolutions.toElement());
+//        eleDoc.appendChild(eleSolutions);
+//    }
 
-    // save to file
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly))
-        return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved (%2).").
-                           arg(fileName).
-                           arg(file.errorString()));
+//    // save to file
+//    QFile file(fileName);
+//    if (!file.open(QIODevice::WriteOnly))
+//        return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved (%2).").
+//                           arg(fileName).
+//                           arg(file.errorString()));
 
-    QTextStream out(&file);
-    doc.save(out, 4);
+//    QTextStream out(&file);
+//    doc.save(out, 4);
 
-    file.waitForBytesWritten(0);
-    file.close();
+//    file.waitForBytesWritten(0);
+//    file.close();
 
-    if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
-        emit fileNameChanged(QFileInfo(fileName).absoluteFilePath());
+//    if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
+//        emit fileNameChanged(QFileInfo(fileName).absoluteFilePath());
 
-    emit invalidated();
+//    emit invalidated();
 
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
+//    // set system locale
+//    setlocale(LC_NUMERIC, plocale);
 
-    return ErrorResult();
+//    return ErrorResult();
 }
 
 void Scene::convertA2DFile(const QString &fileName)

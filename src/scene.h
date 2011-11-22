@@ -207,7 +207,7 @@ public:
     void transformScale(const Point &point, double scaleFactor, bool copy);
 
     inline ProblemInfo *problemInfo() { return m_problemInfo; }
-    void setProblemInfo(ProblemInfo *problemInfo) { clear(); delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
+    void setProblemInfo(ProblemInfo *problemInfo) { clear(); /*delete m_problemInfo; m_problemInfo = problemInfo;*/ emit defaultValues(); }
 
     inline void refresh() { emit invalidated(); }
     inline SceneSolution<double> *sceneSolution() const { return m_sceneSolution; } //TODO PK <double>
@@ -223,7 +223,9 @@ public:
 
 private:
     QUndoStack *m_undoStack;
-    ProblemInfo *m_problemInfo;
+
+    ProblemInfo* m_problemInfo;
+//    map<string, ProblemInfo*>  m_problemInfo;
 
     // scene solution
     SceneSolution<double> *m_sceneSolution;  //TODO PK <double>

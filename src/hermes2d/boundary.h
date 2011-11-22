@@ -22,28 +22,63 @@
 
 #include "util.h"
 
-namespace Hermes
-{
-    namespace Module
-    {
-        struct BoundaryTypeVariable;
-    }
-}
-
 class Boundary
 {
 public:
-    std::string name;
-    std::string type;
-
-    // variables
-    std::map<std::string, Value> values;
-
-    Boundary(std::string name, std::string type = "",
+    Boundary(std::string type = "",
              std::map<std::string, Value> values = (std::map<std::string, Value>()));
     ~Boundary();
 
-    Value get_value(std::string id);
+    /// value of one individual variable
+    const Value get_value(std::string id);
+
+    /// get all values
+    const map<string, Value> getValues() const;
+
+    /// get type
+    const std::string getType() const {return type;}
+
+    /// set type
+    void setType(string p_type) { type = p_type; }
+
+    void addValue(string name, Value value) { values[name] = value; }
+
+private:
+    /// type of boundary condition, taken from respective module
+    std::string type;
+
+    /// variables - the way to customize boundary "template", given by the type parameter
+    std::map<std::string, Value> values;
+
+};
+
+/// Holds Boudnary conditions for individual fields
+class MultiBoundary
+{
+public:
+    /// creates object with given name
+    MultiBoundary(std::string name) : name(name) {}
+
+    /// return name
+    std::string getName() {return name; }
+
+    /// set name
+    void setName(string paramName) {name = paramName; }
+
+    /// compares map of boundaries with parameter fields
+    /// if boundary for some fields is missing, creates it (calling implicit ctor)
+    /// if there is extra boundary not mentioned in fields, destroy it
+    void syncBoundaries(vector<string> fields);
+
+    /// return boundary for given field
+    shared_ptr<Boundary> getBoundary(string field) { return boundaries.at(field); }
+
+private:
+    void addBoundary(std::string field, shared_ptr<Boundary>);
+    void removeBoundary(std::string field);
+
+    std::string name;
+    std::map<string, shared_ptr<Boundary> > boundaries;
 };
 
 #endif // BOUNDARY_H

@@ -69,8 +69,9 @@ void Hermes::Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbF
 
 SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()
 {
-    return new SceneBoundary(tr("new boundary").toStdString(),
-                             Util::scene()->problemInfo()->module()->boundary_type_default->id);
+    assert(0); //TODO
+//    return new SceneBoundary(tr("new boundary").toStdString(),
+//                             Util::scene()->problemInfo()->module()->boundary_type_default->id);
 }
 
 SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()

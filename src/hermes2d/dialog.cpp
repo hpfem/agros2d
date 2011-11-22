@@ -188,27 +188,29 @@ void SceneTabWidgetBoundary::doTypeChanged(int index)
 
 void SceneTabWidgetBoundary::load()
 {
-    // load type
-    comboBox->setCurrentIndex(comboBox->findData(QString::fromStdString(boundary->type)));
+    assert(0); //TODO
+//    // load type
+//    comboBox->setCurrentIndex(comboBox->findData(QString::fromStdString(boundary->type)));
 
-    // load variables
-    for (int i = 0; i < ids.count(); i++)
-        values.at(i)->setValue(boundary->get_value(ids.at(i).toStdString()));
+//    // load variables
+//    for (int i = 0; i < ids.count(); i++)
+//        values.at(i)->setValue(boundary->get_value(ids.at(i).toStdString()));
 }
 
 bool SceneTabWidgetBoundary::save()
 {
-    // save type
-    boundary->type = comboBox->itemData(comboBox->currentIndex()).toString().toStdString();
+    assert(0); //TODO
+//    // save type
+//    boundary->type = comboBox->itemData(comboBox->currentIndex()).toString().toStdString();
 
-    // save variables
-    for (int i = 0; i < ids.count(); i++)
-        if (values.at(i)->evaluate())
-            boundary->values[ids.at(i).toStdString()] = values.at(i)->value();
-        else
-            return false;
+//    // save variables
+//    for (int i = 0; i < ids.count(); i++)
+//        if (values.at(i)->evaluate())
+//            boundary->values[ids.at(i).toStdString()] = values.at(i)->value();
+//        else
+//            return false;
 
-    return true;
+//    return true;
 }
 
 // *************************************************************************************************************************************

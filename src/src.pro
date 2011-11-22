@@ -51,7 +51,7 @@ SOURCES += util.cpp \
     hermes2d/material.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
-#    hermes2d/hermes_flow.cpp \
+###    hermes2d/hermes_flow.cpp \
     main.cpp \
     scripteditordialog.cpp \
     scripteditorcommandpython.cpp \
@@ -59,7 +59,7 @@ SOURCES += util.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenebasic.cpp \
-#    scenefunction.cpp \
+###    scenefunction.cpp \
     sceneinfoview.cpp \
     sceneview.cpp \
     progressdialog.cpp \

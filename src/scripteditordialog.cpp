@@ -173,9 +173,10 @@ QString createPythonFromModel()
                     arg(Util::scene()->edges[i]->nodeEnd->point.x).
                     arg(Util::scene()->edges[i]->nodeEnd->point.y);
 
-            if (Util::scene()->edges[i]->boundary->name != "none")
-                str += QString(", boundary=\"%1\"").
-                        arg(QString::fromStdString(Util::scene()->edges[i]->boundary->name));
+            assert(0);
+//             if (Util::scene()->edges[i]->boundary->name != "none")
+//                str += QString(", boundary=\"%1\"").
+//                        arg(QString::fromStdString(Util::scene()->edges[i]->boundary->name));
 
             if (Util::scene()->edges[i]->angle > 0.0)
                 str += ", angle=" + QString::number(Util::scene()->edges[i]->angle);

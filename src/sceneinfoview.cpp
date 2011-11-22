@@ -309,7 +309,7 @@ void SceneInfoView::doInvalidated()
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
 
-        item->setText(0, QString::fromStdString(Util::scene()->boundaries[i]->name));
+        item->setText(0, QString::fromStdString(Util::scene()->boundaries[i]->getName()));
         item->setIcon(0, icon("scene-edgemarker"));
         item->setData(0, Qt::UserRole, Util::scene()->boundaries[i]->variant());
 

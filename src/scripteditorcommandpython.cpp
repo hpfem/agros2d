@@ -383,7 +383,8 @@ static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
             }
         }
 
-        Util::scene()->addBoundary(new SceneBoundary(name, type, values));
+        assert(0); //TODO
+        //Util::scene()->addBoundary(new SceneBoundary(name, type, values));
         Py_RETURN_NONE;
     }
 
@@ -404,28 +405,30 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
             if (Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type))
             {
                 // boundary type
-                boundary->type = type;
 
-                // variables
-                PyObject *key, *value;
-                Py_ssize_t pos = 0;
+                assert(0);
+//                boundary->type = type;
 
-                while (PyDict_Next(dict, &pos, &key, &value))
-                {
-                    double val;
-                    char *str;
+//                // variables
+//                PyObject *key, *value;
+//                Py_ssize_t pos = 0;
 
-                    // key
-                    PyArg_Parse(key, "s", &str);
-                    PyArg_Parse(value, "d", &val);
+//                while (PyDict_Next(dict, &pos, &key, &value))
+//                {
+//                    double val;
+//                    char *str;
 
-                    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-                    {
-                        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-                        if (variable->shortname == std::string(str))
-                            boundary->values[variable->id] = Value(QString::number(val));
-                    }
-                }
+//                    // key
+//                    PyArg_Parse(key, "s", &str);
+//                    PyArg_Parse(value, "d", &val);
+
+//                    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+//                    {
+//                        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+//                        if (variable->shortname == std::string(str))
+//                            boundary->values[variable->id] = Value(QString::number(val));
+//                    }
+//                }
 
                 Py_RETURN_NONE;
             }
