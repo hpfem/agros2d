@@ -172,8 +172,8 @@ void SceneInfoView::showInfo()
     // stylesheet
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", FONT.family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(FONT.pointSize())).toStdString());
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
     ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
@@ -182,7 +182,7 @@ void SceneInfoView::showInfo()
     ctemplate::TemplateDictionary problem("info");
 
     problem.SetValue("STYLESHEET", style);
-    problem.SetValue("BASIC_INFORMATION_LABEL", tr("Basic information").toStdString());
+    problem.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
     problem.SetValue("NAME_LABEL", tr("Name:").toStdString());
     problem.SetValue("NAME", Util::scene()->problemInfo()->name.toStdString());
@@ -223,8 +223,8 @@ void SceneInfoView::showInfo()
         problem.ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
     }
 
-    //problem.SetValue("WEAK_FORMS_TYPE_LABEL", tr("Weak forms").toStdString());
-    //problem.SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(Util::scene()->problemInfo()->weakFormsType).toStdString());
+    problem.SetValue("WEAK_FORMS_TYPE_LABEL", tr("Weak forms:").toStdString());
+    problem.SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(Util::scene()->problemInfo()->weakFormsType).toStdString());
 
     problem.SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
     problem.SetValue("MESH_TYPE", meshTypeString(Util::scene()->problemInfo()->meshType).toStdString());
@@ -246,8 +246,7 @@ void SceneInfoView::showInfo()
 
     if (Util::scene()->sceneSolution()->isMeshed())
     {
-        problem.SetValue("SOLUTION_INFORMATION_LABEL", tr("Mesh and solution information").toStdString());
-        problem.SetValue("SOLUTION_INFORMATION_LABEL", tr("Mesh and solution information").toStdString());
+        problem.SetValue("SOLUTION_INFORMATION_LABEL", tr("Mesh and solution informations").toStdString());
 
         problem.SetValue("INITIAL_MESH_LABEL", tr("Initial mesh").toStdString());
         problem.SetValue("INITIAL_MESH_NODES_LABEL", tr("Nodes:").toStdString());

@@ -296,9 +296,9 @@ QString linearityTypeString(LinearityType linearityType)
     case LinearityType_Linear:
         return QObject::tr("Linear");
     case LinearityType_Picard:
-        return QObject::tr("Picard’s method");
+        return QObject::tr("Picard's method");
     case LinearityType_Newton:
-        return QObject::tr("Newton’s method");
+        return QObject::tr("Newton's method");
     default:
         std::cerr << "Linearity type '" + QString::number(linearityType).toStdString() + "' is not implemented. linearityTypeString(LinearityType linearityType)" << endl;
         throw;

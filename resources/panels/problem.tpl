@@ -58,7 +58,7 @@
 <h4>{{SOLUTION_INFORMATION_LABEL}}</h4>
 <div class="section">
 <table class="maintable">
-	<tr><td><h5>{{INITIAL_MESH_LABEL}}</h5></td></tr>
+	<tr><td colspan=2><h5>{{INITIAL_MESH_LABEL}}</h5></td></tr>
 	<tr><td colspan=2><div class="subsection">
 		<table>
 			<tr><td><b>{{INITIAL_MESH_NODES_LABEL}}</b></td><td>{{INITIAL_MESH_NODES}}</td></tr>
@@ -69,14 +69,14 @@
 	<tr><td><b>{{ELAPSED_TIME_LABEL}}</b></td><td>{{ELAPSED_TIME}}</td></tr>
 	<tr><td><b>{{DOFS_LABEL}}</b></td><td>{{DOFS}}</td></tr>
 	{{#ADAPTIVITY_SECTION}}
-	<tr><td><h5>{{ADAPTIVITY_LABEL}}</h5></td></tr>
+	<tr><td colspan=2><h5>{{ADAPTIVITY_LABEL}}</h5></td></tr>
 	<tr><td colspan=2><div class="subsection">
 		<table>
 			<tr><td><b>{{ADAPTIVITY_ERROR_LABEL}}</b></td><td>{{ADAPTIVITY_ERROR}}</td></tr>
 			<tr><td><b>{{ADAPTIVITY_TOLERANCE_LABEL}}</b></td><td>{{ADAPTIVITY_TOLERANCE}}</td></tr>
 		</table>
 	</div></td></tr>
-	<tr><td><h5>{{SOLUTION_MESH_LABEL}}</h5></td></tr>
+	<tr><td colspan=2><h5>{{SOLUTION_MESH_LABEL}}</h5></td></tr>
 	<tr><td colspan=2><div class="subsection">
 		<table>
 			<tr><td><b>{{SOLUTION_MESH_NODES_LABEL}}</b></td><td>{{SOLUTION_MESH_NODES}}</td></tr>

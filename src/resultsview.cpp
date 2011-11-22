@@ -118,8 +118,8 @@ void ResultsView::doShowVolumeIntegral()
     // stylesheet
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", FONT.family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(FONT.pointSize())).toStdString());
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
     ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
@@ -128,7 +128,7 @@ void ResultsView::doShowVolumeIntegral()
     ctemplate::TemplateDictionary volumeIntegrals("results");
 
     volumeIntegrals.SetValue("STYLESHEET", style);
-    volumeIntegrals.SetValue("LABEL", tr("Volume integral").toStdString());
+    volumeIntegrals.SetValue("LABEL", tr("Volume integrals").toStdString());
 
     VolumeIntegralValue volumeIntegralValue;
     for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue.values.begin();
@@ -156,8 +156,8 @@ void ResultsView::doShowSurfaceIntegral()
     // stylesheet
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", FONT.family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(FONT.pointSize())).toStdString());
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
     ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
@@ -166,7 +166,7 @@ void ResultsView::doShowSurfaceIntegral()
     ctemplate::TemplateDictionary surfaceIntegrals("results");
 
     surfaceIntegrals.SetValue("STYLESHEET", style);
-    surfaceIntegrals.SetValue("LABEL", tr("Surface integral").toStdString());
+    surfaceIntegrals.SetValue("LABEL", tr("Surface integrals").toStdString());
 
     SurfaceIntegralValue surfaceIntegralValue;
     for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue.values.begin();
@@ -191,8 +191,8 @@ void ResultsView::doShowPoint()
     // stylesheet
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", FONT.family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(FONT.pointSize())).toStdString());
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
     ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 

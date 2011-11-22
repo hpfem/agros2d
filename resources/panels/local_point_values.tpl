@@ -9,15 +9,19 @@
 </head>
 <body>
 <h4>{{LABEL}}</h4>
-
-<table>
-	<tr><td>Point<td><td>{{LABELX}}<td><td>{{LABELY}}<td><td></td></tr>
+<div class="section">
+<table class="maintable">
+	<tr><td><b>Point</b><td><td><b>{{LABELX}}</b><td><td><b>{{LABELY}}<b><td><td></td></tr>
 	<tr><td><td><td>{{POINTX}}<td><td>{{POINTY}}<td><td></td></tr>
 </table>
-<table>
+</div>
+
+<div class="section">
+<table class="maintable">
 	{{#ITEM}}
-	<tr><td>{{NAME}}</td><td>{{SHORTNAME}}<sub>{{PART}}</sub></td><td>{{VALUE}}</td><td>{{UNIT}}</td></tr>
+	<tr><td><b>{{NAME}}<b></td><td>{{SHORTNAME}}<sub>{{PART}}</sub></td><td>{{VALUE}}</td><td>{{UNIT}}</td></tr>
 	{{/ITEM}}
 </table>
+</div>
 </body>
 </html>

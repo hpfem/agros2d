@@ -1,27 +1,26 @@
 body, h1, h2, h3, h4, h5, table {
-	font-family: {{FONTFAMILY}};
+	font-family: {{FONTFAMILY}}, sans-serif;
 	font-size: {{FONTSIZE}}pt;
-	color: rgb(0, 0, 0);
-	margin: 0;
-	padding: 0;
 }
 
 body {
-	padding: 5pt;
+	padding: 2pt;
+	margin: 0;
 }
 
 h4 {
-	font-weight: bold;
-	color: rgb(0, 0, 0);
+	padding: 2;
+	margin: 0;
 }
 
 h5 {
-	font-weight: bold;
-	color: rgb(66, 66, 66);
+	padding: 0;
+	margin: 0;
 }
 
 table, tr, td {
 	text-align: left;
+	/*border: 1pt solid black;*/
 }
 
 .maintable {
@@ -29,10 +28,11 @@ table, tr, td {
 }
 
 .section {
-	padding-top: 5pt;
-	padding-bottom: 5pt;
+	padding: 2pt 0pt 2pt 2pt;
+	margin: 0;
 }
 
 .subsection {
-	padding-left: 10pt;
+	padding: 1pt 0pt 1pt 4pt;
+	margin: 0;
 }
