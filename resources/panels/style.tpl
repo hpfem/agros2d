@@ -20,7 +20,19 @@ h5 {
 	color: rgb(66, 66, 66);
 }
 
-table {
-	padding-top: 10pt;
+table, tr, td {
+	text-align: left;
+}
+
+.maintable {
 	width: 100%;
+}
+
+.section {
+	padding-top: 5pt;
+	padding-bottom: 5pt;
+}
+
+.subsection {
+	padding-left: 10pt;
 }
