@@ -118,8 +118,8 @@ struct LocalVariable
         std::string comp_y;
     };
 
-    LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "")
-        : id(id), name(name), shortname(shortname), unit(unit), is_scalar(true), expression(Expression()) {}
+    LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "", std::string unit_html = "")
+        : id(id), name(name), shortname(shortname), unit(unit), unit_html(unit), is_scalar(true), expression(Expression()) {}
     LocalVariable(rapidxml::xml_node<> *variable, ProblemType problemType, AnalysisType analysisType);
 
     // id
@@ -128,8 +128,10 @@ struct LocalVariable
     std::string name;
     // short name
     std::string shortname;
+    std::string shortname_html;
     // unit
     std::string unit;
+    std::string unit_html;
 
     // is scalar variable
     bool is_scalar;
@@ -207,7 +209,7 @@ struct Integral
         std::string scalar;
     };
 
-    Integral() : id(""), name(""), shortname(""), unit(""), expression(Expression()) {}
+    Integral() : id(""), name(""), shortname(""), shortname_html(""), unit(""), unit_html(""), expression(Expression()) {}
     Integral(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
 
     // id
@@ -216,11 +218,13 @@ struct Integral
     std::string name;
     // short name
     std::string shortname;
+    std::string shortname_html;
     // unit
     std::string unit;
+    std::string unit_html;
 
     // expressions
-    Expression expression;    
+    Expression expression;
 };
 
 // dialog UI
@@ -401,7 +405,7 @@ public:
 template <typename Scalar>
 class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>
 {
-public:  
+public:
     ViewScalarFilter(Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
                      std::string expression);
     ~ViewScalarFilter();

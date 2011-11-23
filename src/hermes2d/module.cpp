@@ -293,7 +293,9 @@ Hermes::Module::LocalVariable::LocalVariable(rapidxml::xml_node<> *node,
     id = node->first_attribute("id")->value();
     name = node->first_attribute("name")->value();
     shortname = node->first_attribute("shortname")->value();
+    shortname_html = (node->first_attribute("shortname_html")) ? node->first_attribute("shortname_html")->value() : shortname;
     unit = node->first_attribute("unit")->value();
+    unit_html = (node->first_attribute("unit_html")) ? node->first_attribute("unit_html")->value() : unit;
 
     is_scalar = (std::string(node->first_attribute("type")->value()) == "scalar");
 
@@ -436,7 +438,9 @@ Hermes::Module::Integral::Integral(rapidxml::xml_node<> *node, ProblemType probl
     id = node->first_attribute("id")->value();
     name = QObject::tr(node->first_attribute("name")->value()).toStdString();
     shortname = node->first_attribute("shortname")->value();
+    shortname_html = (node->first_attribute("shortname_html")) ? node->first_attribute("shortname_html")->value() : shortname;
     unit = node->first_attribute("unit")->value();
+    unit_html = (node->first_attribute("unit_html")) ? node->first_attribute("unit_html")->value() : unit;
 
     for (rapidxml::xml_node<> *expr = node->first_node("expression");
          expr; expr = expr->next_sibling())

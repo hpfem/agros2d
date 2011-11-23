@@ -136,9 +136,9 @@ void ResultsView::doShowVolumeIntegral()
     {
         ctemplate::TemplateDictionary *item = volumeIntegrals.AddSectionDictionary("ITEM");
         item->SetValue("NAME", it->first->name);
-        item->SetValue("SHORTNAME", it->first->shortname);
+        item->SetValue("SHORTNAME", it->first->shortname_html);
         item->SetValue("VALUE", QString("%1").arg(it->second, 0, 'e', 3).toStdString());
-        item->SetValue("UNIT", it->first->unit);
+        item->SetValue("UNIT", it->first->unit_html);
     }
 
     // expand template
@@ -174,9 +174,9 @@ void ResultsView::doShowSurfaceIntegral()
     {
         ctemplate::TemplateDictionary *item = surfaceIntegrals.AddSectionDictionary("ITEM");
         item->SetValue("NAME", it->first->name);
-        item->SetValue("SHORTNAME", it->first->shortname);
+        item->SetValue("SHORTNAME", it->first->shortname_html);
         item->SetValue("VALUE", QString("%1").arg(it->second, 0, 'e', 3).toStdString());
-        item->SetValue("UNIT", it->first->unit);
+        item->SetValue("UNIT", it->first->unit_html);
     }
 
     // expand template
@@ -217,28 +217,28 @@ void ResultsView::doShowPoint()
             // scalar variable
             ctemplate::TemplateDictionary *item = localPointValues.AddSectionDictionary("ITEM");
             item->SetValue("NAME", it->first->name);
-            item->SetValue("SHORTNAME", it->first->shortname);
+            item->SetValue("SHORTNAME", it->first->shortname_html);
             item->SetValue("VALUE", QString("%1").arg(it->second.scalar, 0, 'e', 3).toStdString());
-            item->SetValue("UNIT", it->first->unit);
+            item->SetValue("UNIT", it->first->unit_html);
         }
         else
         {
             // vector variable
             ctemplate::TemplateDictionary *itemMagnitude = localPointValues.AddSectionDictionary("ITEM");
             itemMagnitude->SetValue("NAME", it->first->name);
-            itemMagnitude->SetValue("SHORTNAME", it->first->shortname);
+            itemMagnitude->SetValue("SHORTNAME", it->first->shortname_html);
             itemMagnitude->SetValue("VALUE", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3).toStdString());
-            itemMagnitude->SetValue("UNIT", it->first->unit);
+            itemMagnitude->SetValue("UNIT", it->first->unit_html);
             ctemplate::TemplateDictionary *itemX = localPointValues.AddSectionDictionary("ITEM");
-            itemX->SetValue("SHORTNAME", it->first->shortname);
+            itemX->SetValue("SHORTNAME", it->first->shortname_html);
             itemX->SetValue("PART", Util::scene()->problemInfo()->labelX().toLower().toStdString());
             itemX->SetValue("VALUE", QString("%1").arg(it->second.vector.x, 0, 'e', 3).toStdString());
-            itemX->SetValue("UNIT", it->first->unit);
+            itemX->SetValue("UNIT", it->first->unit_html);
             ctemplate::TemplateDictionary *itemY = localPointValues.AddSectionDictionary("ITEM");
-            itemY->SetValue("SHORTNAME", it->first->shortname);
+            itemY->SetValue("SHORTNAME", it->first->shortname_html);
             itemY->SetValue("PART", Util::scene()->problemInfo()->labelY().toLower().toStdString());
             itemY->SetValue("VALUE", QString("%1").arg(it->second.vector.y, 0, 'e', 3).toStdString());
-            itemY->SetValue("UNIT", it->first->unit);
+            itemY->SetValue("UNIT", it->first->unit_html);
         }
     }
 
