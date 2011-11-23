@@ -8,7 +8,7 @@
 	</style>
 </head>
 <body>
-<h4>{{LABEL}}</h4>
+<h1>{{LABEL}}</h1>
 <div class="section">
 <table class="maintable">
 	{{#ITEM}}

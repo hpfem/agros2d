@@ -1,6 +1,7 @@
 body, h1, h2, h3, h4, h5, table {
 	font-family: {{FONTFAMILY}}, sans-serif;
 	font-size: {{FONTSIZE}}pt;
+	color: rgb(50, 50, 50);
 }
 
 body {
@@ -8,13 +9,14 @@ body {
 	margin: 0;
 }
 
-h4 {
-	padding: 2;
+h1 {
+	padding: 2pt;
 	margin: 0;
+	color: rgb(0, 0, 0);
 }
 
-h5 {
-	padding: 0;
+h2 {
+	padding: 1pt;
 	margin: 0;
 }
 
@@ -28,7 +30,7 @@ table, tr, td {
 }
 
 .section {
-	padding: 2pt 0pt 2pt 2pt;
+	padding: 2pt 0pt 10pt 2pt;
 	margin: 0;
 }
 

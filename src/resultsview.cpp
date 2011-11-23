@@ -207,6 +207,7 @@ void ResultsView::doShowPoint()
     localPointValues.SetValue("LABELY", Util::scene()->problemInfo()->labelY().toLower().toStdString());
     localPointValues.SetValue("POINTX", (QString("%1").arg(m_point.x, 0, 'e', 3)).toStdString());
     localPointValues.SetValue("POINTY", (QString("%1").arg(m_point.y, 0, 'e', 3)).toStdString());
+    localPointValues.SetValue("POINT_UNIT", "m");
 
     LocalPointValue value(m_point);
     for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin();

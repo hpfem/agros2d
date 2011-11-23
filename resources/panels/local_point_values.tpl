@@ -8,16 +8,17 @@
 	</style>
 </head>
 <body>
-<h4>{{LABEL}}</h4>
+<h1>{{LABEL}}</h1>
 <div class="section">
 <table class="maintable">
-	<tr><td><b>Point</b><td><td><b>{{LABELX}}</b><td><td><b>{{LABELY}}<b><td><td></td></tr>
-	<tr><td><td><td>{{POINTX}}<td><td>{{POINTY}}<td><td></td></tr>
+
 </table>
 </div>
 
 <div class="section">
 <table class="maintable">
+	<tr><td><b>Point</b></td><td>{{LABELX}}</td><td>{{POINTX}}</td><td>{{POINT_UNIT}}</td></tr>
+	<tr><td></td><td>{{LABELY}}</td><td>{{POINTY}}</td><td>{{POINT_UNIT}}</td></tr>
 	{{#ITEM}}
 	<tr><td><b>{{NAME}}<b></td><td>{{SHORTNAME}}<sub>{{PART}}</sub></td><td>{{VALUE}}</td><td>{{UNIT}}</td></tr>
 	{{/ITEM}}
