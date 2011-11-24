@@ -19,6 +19,8 @@
 
 #include "scenemarker.h"
 #include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
+#include "hermes2d/dialog.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "gui.h"
@@ -32,7 +34,7 @@ SceneBoundary::SceneBoundary(std::string name, std::string type,
 
 int SceneBoundary::showDialog(QWidget *parent)
 {
-    SceneBoundaryDialog *dialog = boundaryDialogFactory(this, parent);
+    SceneBoundaryDialog *dialog = new SceneBoundaryCustomDialog(this, parent);
     if (dialog)
         return dialog->exec();
     else
@@ -77,9 +79,9 @@ QString SceneBoundary::html()
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
             
             out += "<tr>";
-            out += QString("<td>%1 (%2):</td>").
-                    arg(QString::fromStdString(variable->name)).
-                    arg(QString::fromStdString(variable->unit));
+//            out += QString("<td>%1 (%2):</td>").
+//                    arg(QString::fromStdString(variable->name)).
+//                    arg(QString::fromStdString(variable->unit));
             out += QString("<td>%1</td>").
                     arg(values[variable->id].text());
             out += "</tr>";
@@ -114,7 +116,7 @@ SceneMaterial::SceneMaterial(std::string name,
 
 int SceneMaterial::showDialog(QWidget *parent)
 {
-    SceneMaterialDialog *dialog = materialDialogFactory(this, parent);
+    SceneMaterialDialog *dialog = new SceneMaterialCustomDialog(this, parent);
     if (dialog)
         return dialog->exec();
     else
@@ -160,9 +162,9 @@ QString SceneMaterial::html()
         Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
         
         out += "<tr>";
-        out += QString("<td>%1 (%2)</td>").
-                arg(QString::fromStdString(material->name)).
-                arg(QString::fromStdString(material->unit));
+//        out += QString("<td>%1 (%2)</td>").
+//                arg(QString::fromStdString(material->name)).
+//                arg(QString::fromStdString(material->unit));
         // FIXME - add value
         out += QString("<td>%1</td>").
                 arg(QString::fromStdString("FIXME"));

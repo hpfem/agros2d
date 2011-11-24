@@ -52,7 +52,7 @@ namespace Hermes
 
       /// Represents a function prescribed on the boundary. Gets the boundary point coordinate as well as the 
       /// normal and tangential vectors.
-      virtual Scalar value(double x, double y, double n_x, double n_y, double t_x, double t_y) = 0;
+      virtual Scalar value(double x, double y, double n_x, double n_y, double t_x, double t_y) const = 0;
       
       /// Sets the current time for time-dependent boundary conditions.
       void set_current_time(double time);
@@ -84,7 +84,7 @@ namespace Hermes
       DefaultEssentialBCConst(Hermes::vector<std::string> markers, Scalar value_const);
       DefaultEssentialBCConst(std::string marker, Scalar value_const);
 
-      virtual Scalar value(double x, double y, double n_x, double n_y, double t_x, double t_y);
+      virtual Scalar value(double x, double y, double n_x, double n_y, double t_x, double t_y) const;
 
       /// Function giving info that u_Essential is a constant.
       inline typename EssentialBoundaryCondition<Scalar>::EssentialBCValueType get_value_type() const { return EssentialBoundaryCondition<Scalar>::BC_CONST; }
@@ -102,7 +102,7 @@ namespace Hermes
 
       ~DefaultEssentialBCNonConst() {};
 
-      virtual Scalar value(double x, double y, double n_x, double n_y, double t_x, double t_y);
+      virtual Scalar value(double x, double y, double n_x, double n_y, double t_x, double t_y) const;
 
       /// Function giving info that u_Essential is a non-constant function.
       inline typename EssentialBoundaryCondition<Scalar>::EssentialBCValueType get_value_type() const { return EssentialBoundaryCondition<Scalar>::BC_FUNCTION; }

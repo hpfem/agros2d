@@ -22,6 +22,8 @@
 #include "util.h"
 #include "hermes2d.h"
 #include "module.h"
+#include "module_agros.h"
+#include "material.h"
 
 // **************************************************************************
 
@@ -152,7 +154,7 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
 
 template <typename Scalar>
 Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
-                                                Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
+                                                Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
 {
     double result = 0;
 
@@ -172,19 +174,32 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->j]->val[i]; //TODO PK this->j
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
-
-        /*
-        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
-        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+        if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
         {
-            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-            parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(u->val[i]);
-            parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(u->val[i]);
+            pupval = u_ext[this->i]->val[i]; //TODO PK this->j
+            pupdx = u_ext[this->i]->dx[i];
+            pupdy = u_ext[this->i]->dy[i];
+
+            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+            {
+                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+                parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(pupval);
+                parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(pupval);
+
+                // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
+                // parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(sqrt(pupdx*pupdx + pupdy*pupdy));
+
+                // if (variable->shortname == "mur")
+                //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
+            }
         }
-        */
+        else
+        {
+            pupval = 0.0;
+            pupdx = 0.0;
+            pupdy = 0.0;
+        }
 
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         {
@@ -208,7 +223,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
 template <typename Scalar>
 Hermes::Ord CustomParserMatrixFormVol<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
-                                                   Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
+                                                   Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
     return Hermes::Ord(20);
     Hermes::Ord result;
@@ -232,7 +247,7 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, uns
 
 template <typename Scalar>
 Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
-                                                Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
+                                                Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
 {
     double result = 0;
 
@@ -248,18 +263,30 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->j]->val[i];  //TODO PK this->i
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
-
-        /*
-        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
-        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+        if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
         {
-            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-            parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(ext->fn[this->i]->val[i]);
+            pupval = u_ext[this->j]->val[i];  //TODO PK this->i
+            pupdx = u_ext[this->j]->dx[i];
+            pupdy = u_ext[this->j]->dy[i];
+
+            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+            {
+                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+                parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(pupval);
+
+                // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
+
+                // if (variable->shortname == "epsr")
+                //     qDebug() << parser->parser_variables[variable->shortname];
+            }
         }
-        */
+        else
+        {
+            pupval = 0.0;
+            pupdx = 0.0;
+            pupdy = 0.0;
+        }
 
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         {
@@ -283,7 +310,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
 template <typename Scalar>
 Hermes::Ord CustomParserVectorFormVol<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                                                   Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
+                                                   Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
     return Hermes::Ord(20);
     Hermes::Ord result;
@@ -309,7 +336,7 @@ CustomParserMatrixFormSurf<Scalar>::CustomParserMatrixFormSurf(unsigned int i, u
 
 template <typename Scalar>
 Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
-                                                 Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
+                                                 Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
 {
     double result = 0;
 
@@ -329,9 +356,18 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->j]->val[i];
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
+        if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
+        {
+            pupval = u_ext[this->j]->val[i];
+            pupdx = u_ext[this->j]->dx[i];
+            pupdy = u_ext[this->j]->dy[i];
+        }
+        else
+        {
+            pupval = 0.0;
+            pupdx = 0.0;
+            pupdy = 0.0;
+        }
 
         try
         {
@@ -348,7 +384,7 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 
 template <typename Scalar>
 Hermes::Ord CustomParserMatrixFormSurf<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
+                                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
     return Hermes::Ord(20);
     Hermes::Ord result;
@@ -372,7 +408,7 @@ CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i, u
 
 template <typename Scalar>
 Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
-                                                 Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext)
+                                                 Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
 {
     double result = 0;
 
@@ -388,9 +424,18 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        pupval = u_ext[this->j]->val[i];
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
+        if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
+        {
+            pupval = u_ext[this->j]->val[i];
+            pupdx = u_ext[this->j]->dx[i];
+            pupdy = u_ext[this->j]->dy[i];
+        }
+        else
+        {
+            pupval = 0.0;
+            pupdx = 0.0;
+            pupdy = 0.0;
+        }
 
         try
         {
@@ -407,7 +452,7 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 
 template <typename Scalar>
 Hermes::Ord CustomParserVectorFormSurf<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
-                                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext)
+                                                    Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
     return Hermes::Ord(20);
     Hermes::Ord result;
@@ -430,7 +475,7 @@ CustomExactSolution<Scalar>::CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, s
 }
 
 template <typename Scalar>
-Scalar CustomExactSolution<Scalar>::value(double x, double y)
+Scalar CustomExactSolution<Scalar>::value(double x, double y) const
 {
     double result = 0;
 
@@ -450,7 +495,7 @@ Scalar CustomExactSolution<Scalar>::value(double x, double y)
 }
 
 template <typename Scalar>
-void CustomExactSolution<Scalar>::derivatives (double x, double y, Scalar& dx, Scalar& dy)
+void CustomExactSolution<Scalar>::derivatives (double x, double y, Scalar& dx, Scalar& dy) const
 {
 }
 

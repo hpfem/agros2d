@@ -634,7 +634,8 @@ namespace XMLSubdomains
   class subdomain;
   class vertices;
   class elements;
-  class edges;
+  class boundary_edges;
+  class inner_edges;
 }
 
 
@@ -2581,9 +2582,9 @@ namespace XMLSubdomains
     //@}
 
     /**
-     * @name edges
+     * @name boundary_edges
      *
-     * @brief Accessor and modifier functions for the %edges
+     * @brief Accessor and modifier functions for the %boundary_edges
      * optional element.
      */
     //@{
@@ -2591,17 +2592,17 @@ namespace XMLSubdomains
     /**
      * @brief Element type.
      */
-    typedef ::XMLSubdomains::edges edges_type;
+    typedef ::XMLSubdomains::boundary_edges boundary_edges_type;
 
     /**
      * @brief Element optional container type.
      */
-    typedef ::xsd::cxx::tree::optional< edges_type > edges_optional;
+    typedef ::xsd::cxx::tree::optional< boundary_edges_type > boundary_edges_optional;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< edges_type, char > edges_traits;
+    typedef ::xsd::cxx::tree::traits< boundary_edges_type, char > boundary_edges_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -2609,16 +2610,16 @@ namespace XMLSubdomains
      *
      * @return A constant reference to the optional container.
      */
-    const edges_optional&
-    edges () const;
+    const boundary_edges_optional&
+    boundary_edges () const;
 
     /**
      * @brief Return a read-write reference to the element container.
      *
      * @return A reference to the optional container.
      */
-    edges_optional&
-    edges ();
+    boundary_edges_optional&
+    boundary_edges ();
 
     /**
      * @brief Set the element value.
@@ -2629,7 +2630,7 @@ namespace XMLSubdomains
      * the new value of the element.
      */
     void
-    edges (const edges_type& x);
+    boundary_edges (const boundary_edges_type& x);
 
     /**
      * @brief Set the element value.
@@ -2641,7 +2642,7 @@ namespace XMLSubdomains
      * Otherwise the element container is set the 'not present' state.
      */
     void
-    edges (const edges_optional& x);
+    boundary_edges (const boundary_edges_optional& x);
 
     /**
      * @brief Set the element value without copying.
@@ -2652,7 +2653,83 @@ namespace XMLSubdomains
      * of making a copy.
      */
     void
-    edges (::std::auto_ptr< edges_type > p);
+    boundary_edges (::std::auto_ptr< boundary_edges_type > p);
+
+    //@}
+
+    /**
+     * @name inner_edges
+     *
+     * @brief Accessor and modifier functions for the %inner_edges
+     * optional element.
+     */
+    //@{
+
+    /**
+     * @brief Element type.
+     */
+    typedef ::XMLSubdomains::inner_edges inner_edges_type;
+
+    /**
+     * @brief Element optional container type.
+     */
+    typedef ::xsd::cxx::tree::optional< inner_edges_type > inner_edges_optional;
+
+    /**
+     * @brief Element traits type.
+     */
+    typedef ::xsd::cxx::tree::traits< inner_edges_type, char > inner_edges_traits;
+
+    /**
+     * @brief Return a read-only (constant) reference to the element
+     * container.
+     *
+     * @return A constant reference to the optional container.
+     */
+    const inner_edges_optional&
+    inner_edges () const;
+
+    /**
+     * @brief Return a read-write reference to the element container.
+     *
+     * @return A reference to the optional container.
+     */
+    inner_edges_optional&
+    inner_edges ();
+
+    /**
+     * @brief Set the element value.
+     *
+     * @param x A new value to set.
+     *
+     * This function makes a copy of its argument and sets it as
+     * the new value of the element.
+     */
+    void
+    inner_edges (const inner_edges_type& x);
+
+    /**
+     * @brief Set the element value.
+     *
+     * @param x An optional container with the new value to set.
+     *
+     * If the value is present in @a x then this function makes a copy 
+     * of this value and sets it as the new value of the element.
+     * Otherwise the element container is set the 'not present' state.
+     */
+    void
+    inner_edges (const inner_edges_optional& x);
+
+    /**
+     * @brief Set the element value without copying.
+     *
+     * @param p A new value to use.
+     *
+     * This function will try to use the passed value directly instead
+     * of making a copy.
+     */
+    void
+    inner_edges (::std::auto_ptr< inner_edges_type > p);
 
     //@}
 
@@ -2862,7 +2939,8 @@ namespace XMLSubdomains
     protected:
     vertices_optional vertices_;
     elements_optional elements_;
-    edges_optional edges_;
+    boundary_edges_optional boundary_edges_;
+    inner_edges_optional inner_edges_;
     refinements_optional refinements_;
     ::xsd::cxx::tree::one< name_type > name_;
 
@@ -3164,11 +3242,11 @@ namespace XMLSubdomains
   };
 
   /**
-   * @brief Class corresponding to the %edges schema type.
+   * @brief Class corresponding to the %boundary_edges schema type.
    *
    * @nosubgrouping
    */
-  class edges: public ::xml_schema::type
+  class boundary_edges: public ::xml_schema::type
   {
     public:
     /**
@@ -3244,7 +3322,7 @@ namespace XMLSubdomains
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    edges ();
+    boundary_edges ();
 
     /**
      * @brief Create an instance from a DOM element.
@@ -3254,9 +3332,9 @@ namespace XMLSubdomains
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    edges (const ::xercesc::DOMElement& e,
-           ::xml_schema::flags f = 0,
-           ::xml_schema::container* c = 0);
+    boundary_edges (const ::xercesc::DOMElement& e,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -3267,9 +3345,9 @@ namespace XMLSubdomains
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    edges (const edges& x,
-           ::xml_schema::flags f = 0,
-           ::xml_schema::container* c = 0);
+    boundary_edges (const boundary_edges& x,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -3282,7 +3360,7 @@ namespace XMLSubdomains
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual edges*
+    virtual boundary_edges*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -3292,7 +3370,154 @@ namespace XMLSubdomains
      * @brief Destructor.
      */
     virtual 
-    ~edges ();
+    ~boundary_edges ();
+
+    // Implementation.
+    //
+
+    //@cond
+
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    i_sequence i_;
+
+    //@endcond
+  };
+
+  /**
+   * @brief Class corresponding to the %inner_edges schema type.
+   *
+   * @nosubgrouping
+   */
+  class inner_edges: public ::xml_schema::type
+  {
+    public:
+    /**
+     * @name i
+     *
+     * @brief Accessor and modifier functions for the %i
+     * sequence element.
+     */
+    //@{
+
+    /**
+     * @brief Element type.
+     */
+    typedef ::xml_schema::integer i_type;
+
+    /**
+     * @brief Element sequence container type.
+     */
+    typedef ::xsd::cxx::tree::sequence< i_type > i_sequence;
+
+    /**
+     * @brief Element iterator type.
+     */
+    typedef i_sequence::iterator i_iterator;
+
+    /**
+     * @brief Element constant iterator type.
+     */
+    typedef i_sequence::const_iterator i_const_iterator;
+
+    /**
+     * @brief Element traits type.
+     */
+    typedef ::xsd::cxx::tree::traits< i_type, char > i_traits;
+
+    /**
+     * @brief Return a read-only (constant) reference to the element
+     * sequence.
+     *
+     * @return A constant reference to the sequence container.
+     */
+    const i_sequence&
+    i () const;
+
+    /**
+     * @brief Return a read-write reference to the element sequence.
+     *
+     * @return A reference to the sequence container.
+     */
+    i_sequence&
+    i ();
+
+    /**
+     * @brief Copy elements from a given sequence.
+     *
+     * @param s A sequence to copy elements from.
+     *
+     * For each element in @a s this function makes a copy and adds it 
+     * to the sequence. Note that this operation completely changes the 
+     * sequence and all old elements will be lost.
+     */
+    void
+    i (const i_sequence& s);
+
+    //@}
+
+    /**
+     * @name Constructors
+     */
+    //@{
+
+    /**
+     * @brief Create an instance from the ultimate base and
+     * initializers for required elements and attributes.
+     */
+    inner_edges ();
+
+    /**
+     * @brief Create an instance from a DOM element.
+     *
+     * @param e A DOM element to extract the data from.
+     * @param f Flags to create the new instance with.
+     * @param c A pointer to the object that will contain the new
+     * instance.
+     */
+    inner_edges (const ::xercesc::DOMElement& e,
+                 ::xml_schema::flags f = 0,
+                 ::xml_schema::container* c = 0);
+
+    /**
+     * @brief Copy constructor.
+     *
+     * @param x An instance to make a copy of.
+     * @param f Flags to create the copy with.
+     * @param c A pointer to the object that will contain the copy.
+     *
+     * For polymorphic object models use the @c _clone function instead.
+     */
+    inner_edges (const inner_edges& x,
+                 ::xml_schema::flags f = 0,
+                 ::xml_schema::container* c = 0);
+
+    /**
+     * @brief Copy the instance polymorphically.
+     *
+     * @param f Flags to create the copy with.
+     * @param c A pointer to the object that will contain the copy.
+     * @return A pointer to the dynamically allocated copy.
+     *
+     * This function ensures that the dynamic type of the instance is
+     * used for copying and should be used for polymorphic object
+     * models instead of the copy constructor.
+     */
+    virtual inner_edges*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    //@}
+
+    /**
+     * @brief Destructor.
+     */
+    virtual 
+    ~inner_edges ();
 
     // Implementation.
     //
@@ -3349,7 +3574,10 @@ namespace XMLSubdomains
   operator<< (::std::ostream&, const elements&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const edges&);
+  operator<< (::std::ostream&, const boundary_edges&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const inner_edges&);
 }
 
 #include <iosfwd>
@@ -3817,7 +4045,10 @@ namespace XMLSubdomains
   operator<< (::xercesc::DOMElement&, const elements&);
 
   void
-  operator<< (::xercesc::DOMElement&, const edges&);
+  operator<< (::xercesc::DOMElement&, const boundary_edges&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const inner_edges&);
 }
 
 #include <xsd/cxx/post.hxx>

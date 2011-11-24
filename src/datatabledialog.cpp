@@ -182,6 +182,7 @@ void DataTableDialog::createControls()
     chartValueCurveDots->attach(chartValue);
 
     chartDerivative = new Chart(this);
+    chartDerivative->setVisible(false);
     // axis labels
     text.setFont(QFont("Helvetica", 10, QFont::Normal));
     text.setText("x");

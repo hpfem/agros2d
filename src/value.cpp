@@ -69,7 +69,7 @@ double Value::value(double key)
 {
     // FIXME
     // if (m_isLinear == -1)
-    m_isLinear = false; // (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
+    m_isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
 
     if (m_isLinear || table->size() == 0)
         return number();
@@ -89,7 +89,7 @@ double Value::derivative(double key)
 {
     // FIXME
     // if (m_isLinear == -1)
-    m_isLinear = false; // (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
+    m_isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
 
     if (m_isLinear || table->size() == 0)
         return 0.0;
@@ -223,8 +223,8 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin) :
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     layout->addWidget(txtLineEdit, 1);
+    layout->addWidget(lblInfo, 1);
     layout->addWidget(lblValue, 0, Qt::AlignRight);
-    layout->addWidget(lblInfo, 0, Qt::AlignRight);
     layout->addWidget(btnEditTimeDep, 0, Qt::AlignRight);
     layout->addWidget(btnDataTableDelete, 0, Qt::AlignRight);
     layout->addWidget(btnDataTableDialog, 0, Qt::AlignRight);

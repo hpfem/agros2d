@@ -24,6 +24,7 @@
 #include "hermes2d/volumeintegral.h"
 #include "hermes2d/surfaceintegral.h"
 #include "hermes2d/module.h"
+#include "ctemplate/template.h"
 
 ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), parent)
 {
@@ -34,9 +35,7 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
 
     createActions();
 
-    txtView = new QTextEdit(this);
-    txtView->setReadOnly(true);
-    txtView->setMinimumSize(160, 160);
+    webView = new QWebView(this);
 
     btnPoint = new QPushButton();
     btnPoint->setText(actPoint->text());
@@ -52,7 +51,7 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
 
     // main widget
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(txtView);
+    layout->addWidget(webView);
     layout->addLayout(btnLayout);
     layout->setContentsMargins(0, 0, 0, 7);
 
@@ -85,7 +84,6 @@ void ResultsView::doPoint()
 void ResultsView::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
 {
     m_sceneModePostprocessor = sceneModePostprocessor;
-    txtView->clear();
 
     btnPoint->setEnabled(m_sceneModePostprocessor == SceneModePostprocessor_LocalValue);
     btnSelectMarker->setEnabled(Util::scene()->sceneSolution()->isSolved() && m_sceneModePostprocessor != SceneModePostprocessor_LocalValue);
@@ -117,28 +115,35 @@ void ResultsView::doShowVolumeIntegral()
     if (!Util::scene()->sceneSolution()->isSolved())
         return;
 
-    // template
-    QString content = readFileContent(datadir() + "/resources/report/dock.html");
+    // stylesheet
+    std::string style;
+    ctemplate::TemplateDictionary stylesheet("style");
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    QString html = "<h4>" + tr("Volume integral") + "</h4>"
-            "<table width=\"100%\">";
+    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+
+    // template
+    std::string results;
+    ctemplate::TemplateDictionary volumeIntegrals("results");
+
+    volumeIntegrals.SetValue("STYLESHEET", style);
+    volumeIntegrals.SetValue("LABEL", tr("Volume integrals").toStdString());
 
     VolumeIntegralValue volumeIntegralValue;
     for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue.values.begin();
          it != volumeIntegralValue.values.end(); ++it)
     {
-        html += "<tr>"
-                "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
-                "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
-                "<td align=\"right\">" + QString("%1").arg(it->second, 0, 'e', 3) + "</td>"
-                "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
-                "</tr>";
+        ctemplate::TemplateDictionary *item = volumeIntegrals.AddSectionDictionary("ITEM");
+        item->SetValue("NAME", it->first->name);
+        item->SetValue("SHORTNAME", it->first->shortname_html);
+        item->SetValue("VALUE", QString("%1").arg(it->second, 0, 'e', 3).toStdString());
+        item->SetValue("UNIT", it->first->unit_html);
     }
 
-    html += "</table>";
-
-    content.replace("[Body]", html);
-    txtView->setText(content);
+    // expand template
+    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/integrals.tpl", ctemplate::DO_NOT_STRIP, &volumeIntegrals, &results);
+    webView->setHtml(QString::fromStdString(results));
 }
 
 void ResultsView::doShowSurfaceIntegral()
@@ -148,95 +153,99 @@ void ResultsView::doShowSurfaceIntegral()
     if (!Util::scene()->sceneSolution()->isSolved())
         return;
 
-    // template
-    QString content = readFileContent(datadir() + "/resources/report/dock.html");
+    // stylesheet
+    std::string style;
+    ctemplate::TemplateDictionary stylesheet("style");
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    QString html = "<h4>" + tr("Surface integral") + "</h4>"
-            "<table width=\"100%\">";
+    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+
+    // template
+    std::string results;
+    ctemplate::TemplateDictionary surfaceIntegrals("results");
+
+    surfaceIntegrals.SetValue("STYLESHEET", style);
+    surfaceIntegrals.SetValue("LABEL", tr("Surface integrals").toStdString());
 
     SurfaceIntegralValue surfaceIntegralValue;
-    for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue.values.begin(); it != surfaceIntegralValue.values.end(); ++it)
+    for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue.values.begin();
+         it != surfaceIntegralValue.values.end(); ++it)
     {
-        html += "<tr>"
-                "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
-                "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
-                "<td align=\"right\">" + QString("%1").arg(it->second, 0, 'e', 3) + "</td>"
-                "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
-                "</tr>";
+        ctemplate::TemplateDictionary *item = surfaceIntegrals.AddSectionDictionary("ITEM");
+        item->SetValue("NAME", it->first->name);
+        item->SetValue("SHORTNAME", it->first->shortname_html);
+        item->SetValue("VALUE", QString("%1").arg(it->second, 0, 'e', 3).toStdString());
+        item->SetValue("UNIT", it->first->unit_html);
     }
 
-    html += "</table>";
-
-    content.replace("[Body]", html);
-    txtView->setText(content);
+    // expand template
+    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/integrals.tpl", ctemplate::DO_NOT_STRIP, &surfaceIntegrals, &results);
+    webView->setHtml(QString::fromStdString(results));
 }
 
 void ResultsView::doShowPoint()
 {
     logMessage("ResultsView::doShowPoint()");
 
+    // stylesheet
+    std::string style;
+    ctemplate::TemplateDictionary stylesheet("style");
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
+
+    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+
     // template
-    QString content = readFileContent(datadir() + "/resources/report/dock.html");
+    std::string results;
+    ctemplate::TemplateDictionary localPointValues("results");
 
-    QString html = "<h4>" + tr("Local point values") + "</h4>"
-            "<table width=\"100%\">";
-    html += "<tr>"
-            "<td><b>Point</b></td>"
-            "<td><i>" + Util::scene()->problemInfo()->labelX().toLower() + "</i></td>"
-            "<td align=\"right\">" + QString("%1").arg(m_point.x, 0, 'e', 3) + "</td>"
-            "<td></td>"
-            "</tr>";
-    html += "<tr>"
-            "<td></td>"
-            "<td><i>" + Util::scene()->problemInfo()->labelY().toLower() + "</i></td>"
-            "<td align=\"right\">" + QString("%1").arg(m_point.y, 0, 'e', 3) + "</td>"
-            "<td></td>"
-            "</tr>";
+    localPointValues.SetValue("STYLESHEET", style);
+    localPointValues.SetValue("LABEL", tr("Local point values").toStdString());
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    localPointValues.SetValue("LABELX", Util::scene()->problemInfo()->labelX().toLower().toStdString());
+    localPointValues.SetValue("LABELY", Util::scene()->problemInfo()->labelY().toLower().toStdString());
+    localPointValues.SetValue("POINTX", (QString("%1").arg(m_point.x, 0, 'e', 3)).toStdString());
+    localPointValues.SetValue("POINTY", (QString("%1").arg(m_point.y, 0, 'e', 3)).toStdString());
+    localPointValues.SetValue("POINT_UNIT", "m");
+
+    LocalPointValue value(m_point);
+    for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin();
+         it != value.values.end(); ++it)
     {
-        LocalPointValue value(m_point);
-        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin(); it != value.values.end(); ++it)
+        if (it->first->is_scalar)
         {
-            if (it->first->is_scalar)
-            {
-                // scalar variable
-                html += "<tr>"
-                        "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
-                        "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
-                        "<td align=\"right\">" + QString("%1").arg(it->second.scalar, 0, 'e', 3) + "</td>"
-                        "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
-                        "</tr>";
-            }
-            else
-            {
-                // vector variable
-                html += "<tr>"
-                        "<td><b>" + QString::fromStdString(it->first->name) + "</b></td>"
-                        "<td><i>" + QString::fromStdString(it->first->shortname) + "</i></td>"
-                        "<td align=\"right\">" + QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3) + "</td>"
-                        "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
-                        "</tr>";
-                html += "<tr>"
-                        "<td>&nbsp;</td>"
-                        "<td><i>" + QString::fromStdString(it->first->shortname) + "</i><sub>" + Util::scene()->problemInfo()->labelX().toLower() + "</sub></td>"
-                        "<td align=\"right\">" + QString("%1").arg(it->second.vector.x, 0, 'e', 3) + "</td>"
-                        "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
-                        "</tr>";
-                html += "<tr>"
-                        "<td>&nbsp;</td>"
-                        "<td><i>" + QString::fromStdString(it->first->shortname) + "</i><sub>" + Util::scene()->problemInfo()->labelY().toLower() + "</sub></td>"
-                        "<td align=\"right\">" + QString("%1").arg(it->second.vector.y, 0, 'e', 3) + "</td>"
-                        "<td>" + unitToHTML(QString::fromStdString(it->first->unit)) + "</td>"
-                        "</tr>";
-            }
+            // scalar variable
+            ctemplate::TemplateDictionary *item = localPointValues.AddSectionDictionary("ITEM");
+            item->SetValue("NAME", it->first->name);
+            item->SetValue("SHORTNAME", it->first->shortname_html);
+            item->SetValue("VALUE", QString("%1").arg(it->second.scalar, 0, 'e', 3).toStdString());
+            item->SetValue("UNIT", it->first->unit_html);
+        }
+        else
+        {
+            // vector variable
+            ctemplate::TemplateDictionary *itemMagnitude = localPointValues.AddSectionDictionary("ITEM");
+            itemMagnitude->SetValue("NAME", it->first->name);
+            itemMagnitude->SetValue("SHORTNAME", it->first->shortname_html);
+            itemMagnitude->SetValue("VALUE", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3).toStdString());
+            itemMagnitude->SetValue("UNIT", it->first->unit_html);
+            ctemplate::TemplateDictionary *itemX = localPointValues.AddSectionDictionary("ITEM");
+            itemX->SetValue("SHORTNAME", it->first->shortname_html);
+            itemX->SetValue("PART", Util::scene()->problemInfo()->labelX().toLower().toStdString());
+            itemX->SetValue("VALUE", QString("%1").arg(it->second.vector.x, 0, 'e', 3).toStdString());
+            itemX->SetValue("UNIT", it->first->unit_html);
+            ctemplate::TemplateDictionary *itemY = localPointValues.AddSectionDictionary("ITEM");
+            itemY->SetValue("SHORTNAME", it->first->shortname_html);
+            itemY->SetValue("PART", Util::scene()->problemInfo()->labelY().toLower().toStdString());
+            itemY->SetValue("VALUE", QString("%1").arg(it->second.vector.y, 0, 'e', 3).toStdString());
+            itemY->SetValue("UNIT", it->first->unit_html);
         }
     }
 
-    html += "</table>";
-
-    content.replace("[Body]", html);
-    txtView->setText(content);
+    // expand template
+    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/local_point_values.tpl", ctemplate::DO_NOT_STRIP, &localPointValues, &results);
+    webView->setHtml(QString::fromStdString(results));
 }
 
 LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDialog(parent)

@@ -20,6 +20,8 @@
 #include "solver.h"
 
 #include "module.h"
+#include "module_agros.h"
+
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenemarker.h"
@@ -140,6 +142,7 @@ SolverAgros<Scalar>::SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormA
     timeStep = Util::scene()->problemInfo()->timeStep.number();
     initialCondition = Util::scene()->problemInfo()->initialCondition.number();
 
+    linearityType = Util::scene()->problemInfo()->linearityType;
     nonlinearTolerance = Util::scene()->problemInfo()->nonlinearTolerance;
     nonlinearSteps = Util::scene()->problemInfo()->nonlinearSteps;
 
@@ -192,25 +195,18 @@ void SolverAgros<Scalar>::createSpace()
                             analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
                             problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
 
-                    Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
-                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
-                                                                                           function);
+                    Hermes::Hermes2D::ExactSolutionScalar<double> *function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
+                    if (function)
+                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
+                                                                                               function);
                 }
 
                 if (!custom_form && weakFormsType == WeakFormsType_Compiled)
-                    qDebug() << "Cannot find compiled VectorFormEssential().";
+                    qDebug() << "Cannot find compiled EssentialBoundaryCondition().";
 
                 // interpreted form
                 if (!custom_form || weakFormsType == WeakFormsType_Interpreted)
-                {
-                    /*
-                if (form->expression == "")
-                {
-                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCConst<double>(form->i - 1,
-                                                                                        boundary->values[it->second->id].number());
-                }
-                else
-                */
+                {     
                     {
                         CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
                                                                                                 form->expression,
@@ -233,13 +229,12 @@ void SolverAgros<Scalar>::createSpace()
     {
         space.push_back(new Hermes::Hermes2D::H1Space<Scalar>(mesh, bcs[i], polynomialOrder));
 
-        // set order by element
+        // set order by element        
         for (int j = 0; j < Util::scene()->labels.count(); j++)
             if (Util::scene()->labels[j]->material != Util::scene()->materials[0])
                 space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,
                                                QString::number(j).toStdString());
     }
-
 }
 
 template <typename Scalar>
@@ -307,41 +302,79 @@ bool SolverAgros<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space
                                           Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> &solutionParam)
 {
     // Initialize the FE problem.
-    Hermes::Hermes2D::DiscreteProblem<double> dp(m_wf, spaceParam);
+    Hermes::Hermes2D::DiscreteProblem<Scalar> dp(m_wf, castConst(spaceParam));
 
-    int ndof = Hermes::Hermes2D::Space<double>::get_num_dofs(spaceParam);
-
-    // Initial coefficient vector for the Newton's method.
-    Scalar* coeff_vec = new Scalar[ndof];
-    memset(coeff_vec, 0, ndof*sizeof(Scalar));
-
-    // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
-    Hermes::Hermes2D::NewtonSolver<double> newton(&dp, Hermes::SOLVER_UMFPACK);
-    try
+    // Linear solver
+    if (linearityType == LinearityType_Linear)
     {
-        newton.solve(coeff_vec);
+        // set up the solver, matrix, and rhs according to the solver selection.
+        Hermes::Algebra::SparseMatrix<Scalar> *matrix = create_matrix<Scalar>(Hermes::SOLVER_UMFPACK);
+        Hermes::Algebra::Vector<Scalar> *rhs = create_vector<Scalar>(Hermes::SOLVER_UMFPACK);
+        Hermes::Algebra::LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(Hermes::SOLVER_UMFPACK, matrix, rhs);
 
-        Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), spaceParam, solutionParam);
+        // assemble the linear problem.
+        dp.assemble(matrix, rhs);
 
-        m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
-                                         arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
-        m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
-                                         arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
+        if (solver->solve())
+        {
+            Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(solver->get_sln_vector(), castConst(spaceParam), solutionParam);
+
+            Hermes::Hermes2D::Views::Linearizer lin;
+            bool mode_3D = true;
+            lin.save_solution_vtk(solutionParam[0], "sln.vtk", "SLN", mode_3D);
+        }
+        else
+        {
+            m_progressItemSolve->emitMessage(QObject::tr("Linear solver failed."), true);
+            return false;
+        }
+
+        delete matrix;
+        delete rhs;
+        delete solver;
     }
-    catch(Hermes::Exceptions::Exception e)
+
+    // Nonlinear solver
+    if (linearityType == LinearityType_Newton)
     {
-        QString error = QString(e.getMsg());
-        m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed: ") + error, true);
-        return false;
+        // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
+        Hermes::Hermes2D::NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
+        try
+        {
+            int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(spaceParam));
+
+            // Initial coefficient vector for the Newton's method.
+            Scalar* coeff_vec = new Scalar[ndof];
+            memset(coeff_vec, 0, ndof*sizeof(Scalar));
+
+            newton.solve(coeff_vec, nonlinearTolerance, nonlinearSteps);
+
+            Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(spaceParam), solutionParam);
+
+            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
+                                             arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
+            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
+                                             arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
+
+            //delete coeff_vec; //TODO nebo se to dela v resici???
+        }
+        catch(Hermes::Exceptions::Exception e)
+        {
+            QString error = QString(e.getMsg());
+            m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed: ") + error, true);
+            return false;
+        }
     }
 
-    //delete coeff_vec; //TODO nebo se to dela v resici???
+    if (linearityType == LinearityType_Picard)
+    {
+    }
 
     return true;
 }
 
 template <typename Scalar>
-Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceParam,
+Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> spaceParam,
                                                                    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionParam)
 {
     QTime time;
@@ -376,9 +409,9 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
             space.push_back(spaceParam[i]->dup(mesh));
     }
 
-    qDebug() << "nodes: " << mesh->get_num_nodes();
-    qDebug() << "elements: " << mesh->get_num_elements();
-    qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(space);
+    // qDebug() << "nodes: " << mesh->get_num_nodes();
+    // qDebug() << "elements: " << mesh->get_num_elements();
+    // qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(space));
 
     // create solutions
     for (int i = 0; i < numberOfSolution; i++)
@@ -402,7 +435,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
     initSelectors();
 
     // check for DOFs
-    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) == 0)
+    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(space)) == 0)
     {
         m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
         cleanup();
@@ -466,7 +499,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
                 }
 
                 // project the fine mesh solution onto the coarse mesh.
-                Hermes::Hermes2D::OGProjection<Scalar>::project_global(space, solutionReference, solution, matrixSolver);
+                Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(space), solutionReference, solution, matrixSolver);
 
                 // calculate element errors and total error estimate.
                 Hermes::Hermes2D::Adapt<Scalar> adaptivity(space, projNormType);
@@ -479,12 +512,12 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
                                                  arg(error, 0, 'f', 3).
                                                  arg(i + 1).
                                                  arg(maxAdaptivitySteps).
-                                                 arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
-                                                 arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
+                                                 arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(space))).
+                                                 arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(spaceReference))), false, 1);
                 // add error to the list
-                m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
+                m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(space)));
 
-                if (error < adaptivityTolerance || Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) >= adaptivityMaxDOFs)
+                if (error < adaptivityTolerance || Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(space)) >= adaptivityMaxDOFs)
                 {
                     break;
                 }
@@ -545,25 +578,27 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
 
 
 template <typename Scalar>
-SolutionArray<Scalar> *SolverAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solution<Scalar> *sln, Hermes::Hermes2D::Space<Scalar> *space, double adaptiveError, double adaptiveSteps, double time)
+SolutionArray<Scalar> *SolverAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solution<Scalar> *solutionParam,
+                                                          Hermes::Hermes2D::Space<Scalar> *spaceParam,
+                                                          double adaptiveError, double adaptiveSteps, double time)
 {
     SolutionArray<Scalar> *solution = new SolutionArray<Scalar>();
 
-    assert(sln);
-    if (sln->get_type() == Hermes::Hermes2D::HERMES_EXACT)
+    assert(solutionParam);
+    if (solutionParam->get_type() == Hermes::Hermes2D::HERMES_EXACT)
     {
-        solution->sln = sln;
+        solution->sln = solutionParam;
     }
     else
     {
         solution->sln = new Hermes::Hermes2D::Solution<Scalar>();
-        solution->sln->copy(sln);
+        solution->sln->copy(solutionParam);
     }
 
-    assert(space);
+    assert(spaceParam);
     //solution->space = new Hermes::Hermes2D::Space<Scalar>();
     // solution->space = space->dup(space->get_mesh());
-    solution->space = space;
+    solution->space = spaceParam;
 
     solution->adaptiveError = adaptiveError;
     solution->adaptiveSteps = adaptiveSteps;
@@ -573,6 +608,4 @@ SolutionArray<Scalar> *SolverAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solu
 }
 
 template class SolverAgros<double>;
-
 template class SolutionArray<double>;
-

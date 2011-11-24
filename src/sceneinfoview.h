@@ -22,6 +22,8 @@
 
 #include "util.h"
 
+#include <QWebView>
+
 class SceneView;
 
 class SceneInfoView : public QDockWidget
@@ -44,7 +46,7 @@ private:
     SceneView *m_sceneView;
 
     QTreeWidget *trvWidget;
-    QTextEdit *txtView;
+    QWebView *webView;
 
     QSplitter *splitter;
 

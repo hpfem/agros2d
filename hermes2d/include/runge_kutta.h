@@ -18,13 +18,13 @@
 
 #include "hermes2d_common_defs.h"
 #include "weakform/weakform.h"
+#include "function/filter.h"
 #include "exceptions.h"
 namespace Hermes
 {
   namespace Hermes2D
   {
     // TODO LIST:
-    //
     //
     // (1) With explicit and diagonally implicit methods, the matrix is treated
     //     in the same way as with fully implicit ones. To make this more
@@ -76,7 +76,18 @@ namespace Hermes
       /// Constructor.
       /// Parameter start_from_zero_K_vector: if set to true, the last K_vector will NOT be used
       /// as an initial guess for the Newton's method, instead zero vector will be used.
-      RungeKutta(DiscreteProblem<Scalar>* dp, ButcherTable* bt, MatrixSolverType matrix_solver = SOLVER_UMFPACK, bool start_from_zero_K_vector = false, bool residual_as_vector = true);
+      RungeKutta(const WeakForm<Scalar>* wf, Hermes::vector<Space<Scalar> *> spaces, ButcherTable* bt, MatrixSolverType matrix_solver = SOLVER_UMFPACK, 
+          bool start_from_zero_K_vector = false, bool residual_as_vector = true);
+
+      /// Constructor for one equation.
+      RungeKutta(const WeakForm<Scalar>* wf, Space<Scalar>* space, ButcherTable* bt, MatrixSolverType matrix_solver = SOLVER_UMFPACK, 
+          bool start_from_zero_K_vector = false, bool residual_as_vector = true);
+
+      /// Projections will be global orthogonal (default)
+      void use_global_projections();
+
+      /// Projections will be local (projection-based).
+      void use_local_projections();
 
       /// Destructor.
       ~RungeKutta();
@@ -126,7 +137,18 @@ namespace Hermes
                         double newton_tol = 1e-6, int newton_max_iter = 20, double newton_damping_coeff = 1.0,
                         double newton_max_allowed_residual_norm = 1e10);
 
+      /**
+       \fn  void RungeKutta::set_filters_to_reinit(Hermes::vector<Filter<Scalar>*> filters_to_reinit);
+      
+       \brief Sets the filters to reinitialize.
+      
+       \author  Lk
+       \date  10/29/2011
+      
+       \param [in]  filters_to_reinit the filters to reinitialize.
+       */
 
+      void set_filters_to_reinit(Hermes::vector<Filter<Scalar>*> filters_to_reinit);
     protected:
       /// Creates an augmented weak formulation for the multi-stage Runge-Kutta problem.
       /// The original discretized equation is M\dot{Y} = F(t, Y) where M is the mass
@@ -150,8 +172,12 @@ namespace Hermes
       /// Matrix solver.
       LinearSolver<Scalar>* solver;
 
-      /// DiscreteProblem.
-      DiscreteProblem<Scalar>* dp;
+      /// Weak formulation.
+      const WeakForm<Scalar>* wf;
+
+      /// Space instances for all equations in the system.
+      Hermes::vector<const Space<Scalar>*> spaces;
+      Hermes::vector<Space<Scalar>*> spaces_mutable;
 
       /// ButcherTable.
       ButcherTable* bt;
@@ -183,8 +209,12 @@ namespace Hermes
 
       /// Number of previous calls to rk_time_step_newton().
       unsigned int iteration;
+
+      ///< The filters to reinitialize in every Newton's loop
+      Hermes::vector<Filter<Scalar>*> filters_to_reinit;
     private:
-      MatrixSolverType matrix_solver_type;
+      bool do_global_projections;
+      MatrixSolverType matrix_solver;
     };
   }
 }

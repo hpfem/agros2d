@@ -240,7 +240,8 @@ namespace Hermes
       {
         mat_it.get_current_position(mat_i, mat_j, mat_val);
         bool found = this_it.move_to_position(mat_i + offset_i, mat_j + offset_j);
-        if (!found) error ("Nonzero matrix entry at %d, %d not found in CSCMatrix<Scalar>::add_as_block().",
+        if (!found) 
+          error ("Nonzero matrix entry at %d, %d not found in CSCMatrix<Scalar>::add_as_block().",
           mat_i + offset_i, mat_j + offset_j);
         this_it.add_to_current_position(mat_val);
         mat_not_finished = mat_it.move_ptr();
@@ -938,6 +939,12 @@ namespace Hermes
     {
       _F_;
       free_factorization_data();
+    }
+
+    template<typename Scalar>
+    int UMFPackLinearSolver<Scalar>::get_matrix_size()
+    {
+      return m->get_size();
     }
 
     template<>

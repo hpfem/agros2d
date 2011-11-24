@@ -29,7 +29,8 @@ SOURCES += dxflib/dl_writer_ascii.cpp \
     ctemplate/template_modifiers.cc \
     ctemplate/template_namelist.cc \
     ctemplate/template_pathops.cc \
-    ctemplate/template_string.cc
+    ctemplate/template_string.cc \
+    gl2ps/gl2ps.c
 
 # HEADERS = +=
 

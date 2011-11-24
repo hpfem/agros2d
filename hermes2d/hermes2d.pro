@@ -40,7 +40,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/solvers/dp_interface.cpp \
                 ../hermes_common/src/solvers/linear_solver.cpp \
                 ../hermes_common/src/solvers/nonlinear_solver.cpp \
-                ../hermes_common/src/solvers/nox_solver.cpp \
                 ../hermes_common/src/solvers/epetra.cpp \
                 ../hermes_common/src/solvers/aztecoo_solver.cpp \
                 ../hermes_common/src/solvers/amesos_solver.cpp \
@@ -53,7 +52,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/solvers/precond_ml.cpp \
                 ../hermes_common/src/solvers/precond_ifpack.cpp \
           src/forms.cpp \
-                src/range.cpp \
                 src/asmlist.cpp \
                 src/newton_solver.cpp \
                 src/picard_solver.cpp \
@@ -85,6 +83,9 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/mesh/refmap.cpp \
                 src/quadrature/limit_order.cpp \
                 src/quadrature/quad_std.cpp \
+                src/projections/localprojection.cpp \
+                src/projections/ogprojection.cpp \
+                src/projections/ogprojection_nox.cpp \
                 src/refinement_selectors/selector.cpp  \
                 src/refinement_selectors/order_permutator.cpp  \
                 src/refinement_selectors/optimum_selector.cpp  \
@@ -124,7 +125,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/weakform/weakform.cpp  \
                 src/neighbor.cpp \
                 src/graph.cpp \
-                src/ogprojection.cpp \
                 src/hermes2d_common_defs.cpp   \
                 src/discrete_problem.cpp \
                 src/runge_kutta.cpp \
@@ -142,6 +142,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/python2.7
     LIBS += -lumfpack
     LIBS += -lxerces-c
+    LIBS += -lstdc++
     # LIBS += -ldmumps_seq
     # LIBS += -lsuperlu
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")

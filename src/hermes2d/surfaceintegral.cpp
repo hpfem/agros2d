@@ -22,8 +22,10 @@
 #include "scenebasic.h"
 #include "scenemarker.h"
 #include "surfaceintegral.h"
+
 #include "hermes2d.h"
 #include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
 
 SurfaceIntegralValue::SurfaceIntegralValue()
 {
@@ -161,7 +163,9 @@ void SurfaceIntegralValue::calculate()
 
                         SceneMaterial *material = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str())]->material;
                         parser->initParserMaterialVariables();
-                        parser->setParserVariables(material, NULL);
+                        // FIXME
+                        parser->setParserVariables(material, NULL,
+                                                   pvalue[0], pdx[0], pdy[0]);
 
                         // parse expression
                         int n = 0;

@@ -42,6 +42,9 @@
 #include "materialbrowserdialog.h"
 #include "datatabledialog.h"
 #include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
+
+#include "../lib/gl2ps/gl2ps.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -222,6 +225,10 @@ void MainWindow::createActions()
     actDocumentSaveImage->setStatusTip(tr("Export image to file"));
     connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
 
+    actDocumentSaveGeometry = new QAction(tr("Export geometry..."), this);
+    actDocumentSaveGeometry->setStatusTip(tr("Export geometry to file"));
+    connect(actDocumentSaveGeometry, SIGNAL(triggered()), this, SLOT(doDocumentSaveGeometry()));
+
     actCreateVideo = new QAction(icon("video"), tr("Create &video..."), this);
     actCreateVideo->setStatusTip(tr("Create video"));
     connect(actCreateVideo, SIGNAL(triggered()), this, SLOT(doCreateVideo()));
@@ -344,6 +351,30 @@ void MainWindow::createActions()
     actApplicationLog = new QAction(icon("log"), tr("Application &log"), this);
     actApplicationLog->setStatusTip(tr("Show application log"));
     connect(actApplicationLog, SIGNAL(triggered()), this, SLOT(doApplicationLog()));
+
+    actViewQuick2DNone = new QAction(icon(""), tr("2D: None"), this);
+    actViewQuick2DNone->setShortcut(QKeySequence(tr("Ctrl+1")));
+    connect(actViewQuick2DNone, SIGNAL(triggered()), this, SLOT(doViewQuick2DNone()));
+
+    actViewQuick2DOrder = new QAction(icon(""), tr("2D: Polynomial order"), this);
+    actViewQuick2DOrder->setShortcut(QKeySequence(tr("Ctrl+2")));
+    connect(actViewQuick2DOrder, SIGNAL(triggered()), this, SLOT(doViewQuick2DOrder()));
+
+    actViewQuick2DScalarView = new QAction(icon(""), tr("2D: Scalar view"), this);
+    actViewQuick2DScalarView->setShortcut(QKeySequence(tr("Ctrl+3")));
+    connect(actViewQuick2DScalarView, SIGNAL(triggered()), this, SLOT(doViewQuick2DScalarView()));
+
+    actViewQuick3DScalarView = new QAction(icon(""), tr("3D: Scalar view"), this);
+    actViewQuick3DScalarView->setShortcut(QKeySequence(tr("Ctrl+4")));
+    connect(actViewQuick3DScalarView, SIGNAL(triggered()), this, SLOT(doViewQuick3DScalarView()));
+
+    actViewQuick3DScalarViewSolid = new QAction(icon(""), tr("3D: Scalar view - solid"), this);
+    actViewQuick3DScalarViewSolid->setShortcut(QKeySequence(tr("Ctrl+5")));
+    connect(actViewQuick3DScalarViewSolid, SIGNAL(triggered()), this, SLOT(doViewQuick3DScalarViewSolid()));
+
+    actViewQuick3DModel = new QAction(icon(""), tr("3D: Model"), this);
+    actViewQuick3DModel->setShortcut(QKeySequence(tr("Ctrl+6")));
+    connect(actViewQuick3DModel, SIGNAL(triggered()), this, SLOT(doViewQuick3DModel()));
 }
 
 void MainWindow::createMenus()
@@ -357,6 +388,7 @@ void MainWindow::createMenus()
     mnuFileImportExport->addSeparator();
     mnuFileImportExport->addAction(actDocumentExportMeshFile);
     mnuFileImportExport->addAction(actDocumentSaveImage);
+    mnuFileImportExport->addAction(actDocumentSaveGeometry);
     mnuFileImportExport->addSeparator();
     mnuFileImportExport->addAction(actExportVTKScalar);
     mnuFileImportExport->addAction(actExportVTKOrder);
@@ -413,6 +445,15 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneView->actSceneZoomOut);
     mnuView->addAction(sceneView->actSceneZoomRegion);
     mnuView->addMenu(mnuProjection);
+    mnuView->addSeparator();
+    QMenu *mnuViewQuickView = new QMenu(tr("Quick view"), this);
+    mnuViewQuickView->addAction(actViewQuick2DNone);
+    mnuViewQuickView->addAction(actViewQuick2DOrder);
+    mnuViewQuickView->addAction(actViewQuick2DScalarView);
+    mnuViewQuickView->addAction(actViewQuick3DScalarView);
+    mnuViewQuickView->addAction(actViewQuick3DScalarViewSolid);
+    mnuViewQuickView->addAction(actViewQuick3DModel);
+    mnuView->addMenu(mnuViewQuickView);
     mnuView->addSeparator();
     mnuView->addAction(actCopy);
     mnuView->addAction(actLoadBackground);
@@ -1019,6 +1060,49 @@ void MainWindow::doDocumentSaveImage()
     }
 }
 
+void MainWindow::doDocumentSaveGeometry()
+{
+    logMessage("MainWindow::doDocumentSaveGeometry()");
+
+    QSettings settings;
+    QString dir = settings.value("General/LastImageDir").toString();
+
+
+    QString selected;
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export geometry to file"), dir,
+                                                    tr("PDF files (*.pdf);;EPS files (*.eps);;SVG files (*.svg)"),
+                                                    &selected);
+
+    if (!fileName.isEmpty())
+    {
+        int format = GL2PS_PDF;
+        QFileInfo fileInfo(fileName);
+
+        if (selected == "PDF files (*.pdf)")
+        {
+            if (fileInfo.suffix().toLower() != "pdf") fileName += ".pdf";
+            format = GL2PS_PDF;
+        }
+        if (selected == "EPS files (*.eps)")
+        {
+            if (fileInfo.suffix().toLower() != "eps") fileName += ".eps";
+            format = GL2PS_EPS;
+        }
+        if (selected == "SVG files (*.svg)")
+        {
+            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";
+            format = GL2PS_SVG;
+        }
+
+        ErrorResult result = sceneView->saveGeometryToFile(fileName, format);
+        if (result.isError())
+            result.showDialog();
+
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+    }
+}
+
 void MainWindow::doCreateVideo()
 {
     logMessage("MainWindow::doCreateVideo()");
@@ -1228,6 +1312,13 @@ void MainWindow::doInvalidated()
 
     if (Util::config()->showExperimentalFeatures)
         actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
+
+    actViewQuick2DNone->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick2DOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick2DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick3DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick3DScalarViewSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick3DModel->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
     actSolveAdaptiveStep->setEnabled(Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->analysisType != AnalysisType_Transient); // FIXME: timedep
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
@@ -1462,6 +1553,61 @@ void MainWindow::doLoadBackground()
                                        imageLoaderDialog.position().height());
         sceneView->refresh();
     }
+}
+
+
+void MainWindow::doViewQuick(SceneViewPostprocessorShow show)
+{
+    sceneView->sceneViewSettings().postprocessorShow = show;
+
+    // time step
+    QApplication::processEvents();
+    Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
+
+    // switch to the postprocessor
+    if (Util::scene()->sceneSolution()->isSolved())
+        sceneView->actSceneModePostprocessor->trigger();
+
+    doInvalidated();
+    sceneView->doInvalidated();
+}
+
+void MainWindow::doViewQuick2DNone()
+{
+    sceneView->sceneViewSettings().showInitialMesh = false;
+    sceneView->sceneViewSettings().showSolutionMesh = false;
+    doViewQuick(SceneViewPostprocessorShow_None);
+}
+
+void MainWindow::doViewQuick2DOrder()
+{
+    sceneView->sceneViewSettings().showInitialMesh = true;
+    sceneView->sceneViewSettings().showSolutionMesh = true;
+    doViewQuick(SceneViewPostprocessorShow_Order);
+}
+
+void MainWindow::doViewQuick2DScalarView()
+{
+    sceneView->sceneViewSettings().showInitialMesh = false;
+    sceneView->sceneViewSettings().showSolutionMesh = false;
+    doViewQuick(SceneViewPostprocessorShow_ScalarView);
+}
+
+void MainWindow::doViewQuick3DScalarView()
+{
+    sceneView->sceneViewSettings().showInitialMesh = false;
+    sceneView->sceneViewSettings().showSolutionMesh = false;
+    doViewQuick(SceneViewPostprocessorShow_ScalarView3D);
+}
+
+void MainWindow::doViewQuick3DScalarViewSolid()
+{
+    doViewQuick(SceneViewPostprocessorShow_ScalarView3DSolid);
+}
+
+void MainWindow::doViewQuick3DModel()
+{
+    doViewQuick(SceneViewPostprocessorShow_Model);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

@@ -1,26 +1,26 @@
 <document version="2.0">
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Heat Transfer Planar Building Detail" date="2011-07-18" polynomialorder="2" meshtype="triangle" timestep="0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="heat" timetotal="0">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0" adaptivitysteps="1" nonlineartolerance="0.001" linearity="newton" name="Heat Transfer Planar Building Detail" date="2011-07-18" polynomialorder="2" weakforms="interpreted" meshtype="triangle" timestep="0" problemtype="planar" adaptivitytype="disabled" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="heat" timetotal="0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge heat_heat_transfer_coefficient="25" heat_external_temperature="-15" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Exterior"/>
-                <edge heat_heat_transfer_coefficient="4" heat_external_temperature="21" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Interior"/>
-                <edge heat_heat_transfer_coefficient="0" heat_external_temperature="0" type="heat_heat_flux" heat_heat_flux="0" id="3" name="Border"/>
+                <edge heat_convection_external_temperature="-15" heat_convection_heat_transfer_coefficient="25" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Exterior" heat_radiation_ambient_temperature="0"/>
+                <edge heat_convection_external_temperature="21" heat_convection_heat_transfer_coefficient="4" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Interior" heat_radiation_ambient_temperature="0"/>
+                <edge heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="3" name="Neumann" heat_radiation_ambient_temperature="0"/>
             </edges>
             <labels>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="0.418" heat_specific_heat="0" id="1" name="Zdici prvky SENDWIX tl. 240 kontakt"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="0.042" heat_specific_heat="0" id="2" name="Izolace Rockwool Fasrock L"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="0.036" heat_specific_heat="0" id="3" name="Flexibilni pena"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="1.01" heat_specific_heat="0" id="4" name="Naslapna vrstva podlahy"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="0.037" heat_specific_heat="0" id="5" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="1.58" heat_specific_heat="0" id="6" name="Stropní konstrukce Rector tl. 200 mm"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="0.671" heat_specific_heat="0" id="7" name="Vapenopiskovy preklad Sendwix 2DF"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="0.57" heat_specific_heat="0" id="8" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="0.57" heat_specific_heat="0" id="9" name="Tenkovrstva silikonova omitka Cermix 2 mm"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="0.47" heat_specific_heat="0" id="10" name="Jednovrstva omitka Cemix 073 tl. 8 mm"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="0.14" heat_specific_heat="0" id="11" name="Sklo"/>
-                <label heat_volume_heat="0" heat_density="0" heat_conductivity="1.23" heat_specific_heat="0" id="12" name="Betonovy zaklad"/>
+                <label heat_volume_heat="0" heat_conductivity="0.418" id="1" name="Zdici prvky SENDWIX tl. 240 kontakt"/>
+                <label heat_volume_heat="0" heat_conductivity="0.042" id="2" name="Izolace Rockwool Fasrock L"/>
+                <label heat_volume_heat="0" heat_conductivity="0.036" id="3" name="Flexibilni pena"/>
+                <label heat_volume_heat="0" heat_conductivity="1.01" id="4" name="Naslapna vrstva podlahy"/>
+                <label heat_volume_heat="0" heat_conductivity="0.037" id="5" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm"/>
+                <label heat_volume_heat="0" heat_conductivity="1.58" id="6" name="Stropní konstrukce Rector tl. 200 mm"/>
+                <label heat_volume_heat="0" heat_conductivity="0.671" id="7" name="Vapenopiskovy preklad Sendwix 2DF"/>
+                <label heat_volume_heat="0" heat_conductivity="0.57" id="8" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm"/>
+                <label heat_volume_heat="0" heat_conductivity="0.57" id="9" name="Tenkovrstva silikonova omitka Cermix 2 mm"/>
+                <label heat_volume_heat="0" heat_conductivity="0.47" id="10" name="Jednovrstva omitka Cemix 073 tl. 8 mm"/>
+                <label heat_volume_heat="0" heat_conductivity="0.14" id="11" name="Sklo"/>
+                <label heat_volume_heat="0" heat_conductivity="1.23" id="12" name="Betonovy zaklad"/>
             </labels>
         </problem>
     </problems>

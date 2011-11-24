@@ -38,7 +38,7 @@ class XmlParser:
     def process(self):                              
         for module_file in self.module_files:        
             self.parse_xml_file(module_file)
-            
+
         # remove pri file
         try:
             os.remove(Config.weakform_dir + Config.project_file)
@@ -399,16 +399,20 @@ class WeakForm:
                    'vdr', 'vdz', 'vdx', 'vdy', 'updr', 'updx', 'updy', 'updz',
                    'uval', 'vval', 'upval', 'deltat', 'uptval', 'PI']
                            
-        variables = []               
+        variables = []
+        variables_derivatives = []
         for variable in self.variables:        
             symbols.append(variable.short_name)
+            symbols.append("d" + variable.short_name)
             variables.append(variable.short_name)
+            variables_derivatives.append("d" + variable.short_name)
              
         for const in self.constants:
             symbols.append(const.id)        
         if output == 'latex':            
             if not(expression.replace(' ','') == ''):
                 parser = NumericStringParser(symbols, latex_replaces, variables, 
+											 variables_derivatives,
 											 without_variables)                        
                 expression_list = parser.parse(expression).asList()                                  
                 parsed_exp = parser.translate_to_latex(expression_list)
@@ -416,6 +420,7 @@ class WeakForm:
                 parsed_exp =''                             
         else:
             parser = NumericStringParser(symbols, replaces, variables, 
+										 variables_derivatives,
 										 without_variables)                        
             if not(expression.replace(' ','') == ''):
                 expression_list = parser.parse(expression).asList()                                  
@@ -617,7 +622,7 @@ class Module:
                 string = string.replace('general_weakform', filename)
                 string = string.replace('_', '')
                 file_strings[file_string_name] += string
-            
+                    
                 class_names = set([])                            
                
                 for weakform in part_module.weakforms:                                     
@@ -639,6 +644,7 @@ class Module:
                 if key == '.h':       
                     string = node.childNodes[0].nodeValue                                     
                     file_strings[file_string_name] += string                                                                  
+
         return file_strings , factory_codes
        
                                        

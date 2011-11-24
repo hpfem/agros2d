@@ -18,6 +18,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "newton_solver.h"
 #include "hermes_common.h"
+#include "../src/alter_newton_solver.h"
 
 namespace Hermes
 {
@@ -61,31 +62,26 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void NewtonSolver<Scalar>::solve(Scalar* coeff_vec)
-    {
-      solve(coeff_vec, 1E-8, 100, false);
-    }
-
-    template<typename Scalar>
-    void NewtonSolver<Scalar>::solve(Scalar* coeff_vec, bool residual_as_function)
-    {
-      solve(coeff_vec, 1E-8, 100, residual_as_function);
-    }
-
-    template<typename Scalar>
     void NewtonSolver<Scalar>::solve(Scalar* coeff_vec, double newton_tol, int newton_max_iter, bool residual_as_function)
     {
       _F_
-      if(coeff_vec==NULL) throw Exceptions::NullException(1);
+      // Obtain the number of degrees of freedom.
+      int ndof = this->dp->get_num_dofs();
+
+      // If coeff_vec == NULL then create a zero vector.
+      bool delete_coeff_vec = false;
+      if(coeff_vec == NULL) 
+      {
+        coeff_vec = new Scalar[ndof];
+        memset(coeff_vec, 0, ndof*sizeof(Scalar));
+        delete_coeff_vec = true;
+      }
       // Delete the old solution vector, if there is any.
       if(this->sln_vector != NULL)
       {
         delete [] this->sln_vector;
         this->sln_vector = NULL;
       }
-
-      // Obtain the number of degrees of freedom.
-      int ndof = this->dp->get_num_dofs();
 
       // The Newton's loop.
       double residual_norm;
@@ -101,11 +97,9 @@ namespace Hermes
       this->timer->tick();
       setup_time += this->timer->last();
 
-      while (1)
+      while (true)
       {
         // Assemble just the residual vector.
-        if(it > 1)
-          static_cast<DiscreteProblem<Scalar>*>(this->dp)->temp_disable_adaptivity_cache();
         this->dp->assemble(coeff_vec, residual);
 
         this->timer->tick();
@@ -121,7 +115,9 @@ namespace Hermes
             solutions.push_back(new Solution<Scalar>());
             dir_lift_false.push_back(false);
           }
-          Solution<Scalar>::vector_to_solutions(residual, static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces(), solutions, dir_lift_false);
+
+          Solution<Scalar>::vector_to_solutions(residual, 
+              static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces(), solutions, dir_lift_false);
 
           // Calculate the norm.
           residual_norm = Global<Scalar>::calc_norms(solutions);
@@ -153,7 +149,8 @@ namespace Hermes
 
         // If residual norm is within tolerance, return 'true'.
         // This is the only correct way of ending.
-        if (residual_norm < newton_tol && it > 1) {
+        if (residual_norm < newton_tol && it > 1) 
+        {
           // We want to return the solution in a different structure.
           this->sln_vector = new Scalar[ndof];
           for (int i = 0; i < ndof; i++)
@@ -168,7 +165,11 @@ namespace Hermes
             this->timer = NULL;
           }
 
-          static_cast<DiscreteProblem<Scalar>*>(this->dp)->temp_enable_adaptivity_cache();
+          if (delete_coeff_vec) 
+	        {
+            delete [] coeff_vec;
+            coeff_vec = NULL;
+	        }
 
           return;
         }
@@ -216,21 +217,25 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void NewtonSolver<Scalar>::solve_keep_jacobian(Scalar* coeff_vec, bool residual_as_function)
-    {
-      solve_keep_jacobian(coeff_vec, 1E-8, 100, residual_as_function);
-    }
-
-    template<typename Scalar>
-    void NewtonSolver<Scalar>::solve_keep_jacobian(Scalar* coeff_vec, double newton_tol, int newton_max_iter, bool residual_as_function)
+    void NewtonSolver<Scalar>::solve_keep_jacobian(Scalar* coeff_vec, double newton_tol, 
+        int newton_max_iter, bool residual_as_function)
     {
       // Obtain the number of degrees of freedom.
       int ndof = this->dp->get_num_dofs();
 
+      // If coeff_vec == NULL then create a zero vector.
+      bool delete_coeff_vec = false;
+      if(coeff_vec == NULL) 
+      {
+        coeff_vec = new Scalar[ndof];
+        memset(coeff_vec, 0, ndof*sizeof(Scalar));
+        delete_coeff_vec = true;
+      }
+
       // The Newton's loop.
       double residual_norm;
       int it = 1;
-      while (1)
+      while (true)
       {
         // Assemble the residual vector.
         this->dp->assemble(coeff_vec, residual);
@@ -239,13 +244,14 @@ namespace Hermes
         if (residual_as_function)
         {
           // Prepare solutions for measuring residual norm.
-          Hermes::vector<Solution<Scalar>*> solutions;
+          Hermes::vector<Solution<Scalar>* > solutions;
           Hermes::vector<bool> dir_lift_false;
           for (unsigned int i = 0; i < static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces().size(); i++) {
             solutions.push_back(new Solution<Scalar>());
             dir_lift_false.push_back(false);
           }
-          Solution<Scalar>::vector_to_solutions(residual, static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces(), solutions, dir_lift_false);
+          Solution<Scalar>::vector_to_solutions(residual, 
+              static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces(), solutions, dir_lift_false);
 
           // Calculate the norm.
           residual_norm = Global<Scalar>::calc_norms(solutions);
@@ -259,6 +265,11 @@ namespace Hermes
           // Calculate the l2-norm of residual vector, this is the traditional way.
           residual_norm = Global<Scalar>::get_l2_norm(residual);
         }
+
+        // Debug.
+        //printf("\n=================================\n");
+        //for (int d = 0; d < ndof; d++) printf("%g ", residual->get(d));
+        //exit(0);
 
         // Info for the user.
         if(it == 1)
@@ -283,6 +294,12 @@ namespace Hermes
           this->sln_vector = new Scalar[ndof];
           for (int i = 0; i < ndof; i++)
             this->sln_vector[i] = coeff_vec[i];
+
+          if (delete_coeff_vec) 
+	  {
+            delete [] coeff_vec;
+            coeff_vec = NULL;
+	  }
 
           return;
         }

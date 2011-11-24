@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
-    <general id ="elasticity" name="Structural analysis">
+    <general id ="elasticity" name="Structural analysis" deformed_shape="1">
         <description>Structural analysis is the determination of the effects of loads on physical structures and their components.</description>
         <analyses>
-            <analysis id="steadystate" type="steadystate" name="Steady state" />
+            <analysis id="steadystate" type="steadystate" name="Steady state" solutions="2" />
         </analyses>
     </general>
 
-    <constants>
-        <constant id="" value="" />
-    </constants>
+    <constants />
 
     <macros>
         <macro id="" expression="" />
@@ -128,11 +126,15 @@
     <preprocessor>
         <volume>
             <group>
-                <quantity id="elasticity_young_modulus" name="Young modulus" shortname="E" unit="Pa" />
-                <quantity id="elasticity_poisson_ratio" name="Poisson ratio" shortname="nu" unit="-" />
-                <quantity id="elasticity_force_x" name="Force - x" shortname="fx" unit="N/m3" unit_html="N.m<sup>-3</sup>" unit_latex="N \cdot m^{-3}" />
-                <quantity id="elasticity_force_y" name="Force - y" shortname="fy" unit="N/m3" unit_html="N.m<sup>-3</sup>" unit_latex="N \cdot m^{-3}" />
-                <quantity id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/m" unit_html="m<sup>-1</sup>" unit_latex="m^{-1}" />
+                <quantity id="elasticity_young_modulus" name="Young modulus"
+                shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;"
+                unit="Pa" unit_html="Pa" />
+                <quantity id="elasticity_poisson_ratio" name="Poisson ratio"
+                shortname="nu" shortname_html="&lt;i&gt;&nu;&lt;/i&gt;"
+                unit="-" unit_html="-" />
+                <quantity id="elasticity_force_x" name="Force - x" shortname="fx" unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="N \cdot m^{-3}" />
+                <quantity id="elasticity_force_y" name="Force - y" shortname="fy" unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="N \cdot m^{-3}" />
+                <quantity id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/m" unit_html="m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m^{-1}" />
                 <quantity id="elasticity_temperature" name="Temperature" shortname="T" unit="K" />
                 <quantity id="elasticity_temperature_reference" name="Reference emperature" shortname="Tr" unit="K" />
             </group>
@@ -141,8 +143,8 @@
             <group>
                 <quantity id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
                 <quantity id="elasticity_displacement_y" name="Fixed - y" shortname="dy" unit="m" />
-                <quantity id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" unit_html="N.m<sup>-2</sup>" unit_latex="N \cdot m^{-2}" />
-                <quantity id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" unit_html="N.m<sup>-2</sup>" unit_latex="N \cdot m^{-2}" />
+                <quantity id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="N \cdot m^{-2}" />
+                <quantity id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="N \cdot m^{-2}" />
             </group>
         </surface>
     </preprocessor>

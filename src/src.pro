@@ -19,8 +19,8 @@ DEFINES += WEAKFORM_FACTORY
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
-linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
-linux-g++:CONFIG(release) system(lrelease ../lang/*.ts)
+linux-g++|linux-g++-64|linux-g++-32 :CONFIG(release) system(cython python/agros2d.pyx)
+linux-g++|linux-g++-64|linux-g++-32 :CONFIG(release) system(lrelease ../lang/*.ts)
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/pl_PL.ts \
     lang/de_DE.ts
@@ -51,13 +51,6 @@ SOURCES += util.cpp \
     hermes2d/material.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
-    hermes2d/hermes_electrostatic.cpp \
-    hermes2d/hermes_heat.cpp \
-    hermes2d/hermes_magnetic.cpp \
-    hermes2d/hermes_current.cpp \
-    hermes2d/hermes_elasticity.cpp \
-    hermes2d/hermes_rf.cpp \
-    hermes2d/hermes_acoustic.cpp \
 #    hermes2d/hermes_flow.cpp \
     main.cpp \
     scripteditordialog.cpp \
@@ -96,7 +89,8 @@ SOURCES += util.cpp \
     materialbrowserdialog.cpp \
     conf.cpp \
     confdialog.cpp \
-    hermes2d/hermes_custom.cpp
+    hermes2d/module_agros.cpp \
+    hermes2d/dialog.cpp
 
 HEADERS += util.h \
     value.h \
@@ -108,13 +102,6 @@ HEADERS += util.h \
     hermes2d/boundary.h \
     hermes2d/material.h \
     hermes2d/module.h \
-    hermes2d/hermes_electrostatic.h \
-    hermes2d/hermes_heat.h \
-    hermes2d/hermes_magnetic.h \
-    hermes2d/hermes_current.h \
-    hermes2d/hermes_elasticity.h \
-    hermes2d/hermes_rf.h \
-    hermes2d/hermes_acoustic.h \
     #hermes2d/hermes_flow.h \
     mainwindow.h \
     scripteditordialog.h \
@@ -154,7 +141,8 @@ HEADERS += util.h \
     conf.h \
     confdialog.h \
     hermes2d/solver.h \
-    hermes2d/hermes_custom.h
+    hermes2d/module_agros.h \
+    hermes2d/dialog.h
 
 INCLUDEPATH += . \
     ../lib \

@@ -11,7 +11,7 @@ class NumericStringParser(object):
         if toks and toks[0]=='-': 
             self.exprStack.append( 'unary -' )
 
-    def __init__(self, symbols, replaces, variables, without_variables):
+    def __init__(self, symbols, replaces, variables, variables_derivatives, without_variables):
         
         self.greek_letters = ('alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 
                          'eta', 'theta', 'iota', 'kappa', 'lambda', 'mu', 'nu', 
@@ -23,6 +23,7 @@ class NumericStringParser(object):
         self.string = ''            
         self.replaces = replaces
         self.variables = variables
+        self.variables_derivatives = variables_derivatives
         self.without_variables = without_variables         
         point = Literal( "." )
         e = CaselessLiteral( "E" )
@@ -81,12 +82,17 @@ class NumericStringParser(object):
                     if self.without_variables:
                         string.append('1')
                     else:
-                        string.append(item + '.value()')                    
+                        string.append(item + '.value(u_ext[this->i]->val[i])')
+                elif item in self.variables_derivatives:                   
+                    if self.without_variables:
+                        string.append('1')
+                    else:
+                        string.append(item[1:] + '.derivative(u_ext[this->i]->val[i])')                    
                 else:    
                     if item in self.replaces.iterkeys(): 
                         string.append(self.replaces[item])
                     else:
-                        string.append(item)      
+                        string.append(item)     
             i += 1                                    
         
         result = ""

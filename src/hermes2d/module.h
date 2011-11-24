@@ -52,18 +52,18 @@ public:
     InitialCondition(Hermes::Hermes2D::Mesh *mesh, double constant_value) : Hermes::Hermes2D::ExactSolutionScalar<double>(mesh),
         constant_value(constant_value) {}
 
-    virtual Scalar value(double x, double y)
+    virtual Scalar value(double x, double y) const
     {
         return constant_value;
     }
 
-    virtual void derivatives(double x, double y, Scalar& dx, Scalar& dy)
+    virtual void derivatives(double x, double y, Scalar& dx, Scalar& dy) const
     {
         dx = 0;
         dy = 0;
     }
 
-    virtual Hermes::Ord ord(Hermes::Ord x, Hermes::Ord y)
+    virtual Hermes::Ord ord(Hermes::Ord x, Hermes::Ord y) const
     {
         return Hermes::Ord(0);
     }
@@ -71,6 +71,7 @@ public:
 private:
     double constant_value;
 };
+
 
 //template <typename Scalar>
 //class ViewScalarFilter;
@@ -117,9 +118,9 @@ struct LocalVariable
         std::string comp_y;
     };
 
-    LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "")
-        : id(id), name(name), shortname(shortname), unit(unit), is_scalar(true), expression(Expression()) {}
-    LocalVariable(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
+    LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "", std::string unit_html = "")
+        : id(id), name(name), shortname(shortname), unit(unit), unit_html(unit), is_scalar(true), expression(Expression()) {}
+    LocalVariable(rapidxml::xml_node<> *variable, ProblemType problemType, AnalysisType analysisType);
 
     // id
     std::string id;
@@ -127,8 +128,10 @@ struct LocalVariable
     std::string name;
     // short name
     std::string shortname;
+    std::string shortname_html;
     // unit
     std::string unit;
+    std::string unit_html;
 
     // is scalar variable
     bool is_scalar;
@@ -140,20 +143,15 @@ struct LocalVariable
 // material property
 struct MaterialTypeVariable
 {
-    MaterialTypeVariable() : id(""), name(""), shortname(""), unit(""), default_value(0) {}
-    MaterialTypeVariable(std::string id, std::string name,
-                         std::string shortname, std::string unit,
+    MaterialTypeVariable() : id(""), shortname(""), default_value(0) {}
+    MaterialTypeVariable(std::string id, std::string shortname,
                          double default_value = 0);
     MaterialTypeVariable(rapidxml::xml_node<> *node);
 
     // id
     std::string id;
-    // name
-    std::string name;
     // short name
     std::string shortname;
-    // unit
-    std::string unit;
     // default value
     double default_value;
 };
@@ -161,20 +159,15 @@ struct MaterialTypeVariable
 // boundary condition type variable
 struct BoundaryTypeVariable
 {
-    BoundaryTypeVariable() : id(""), name(""), shortname(""), unit(""), default_value(0) {}
-    BoundaryTypeVariable(std::string id, std::string name,
-                         std::string shortname, std::string unit,
+    BoundaryTypeVariable() : id(""), shortname(""), default_value(0) {}
+    BoundaryTypeVariable(std::string id, std::string shortname,
                          double default_value = 0);
     BoundaryTypeVariable(rapidxml::xml_node<> *node);
 
     // id
     std::string id;
-    // name
-    std::string name;
     // short name
     std::string shortname;
-    // unit
-    std::string unit;
     // default value
     double default_value;
 };
@@ -216,7 +209,7 @@ struct Integral
         std::string scalar;
     };
 
-    Integral() : id(""), name(""), shortname(""), unit(""), expression(Expression()) {}
+    Integral() : id(""), name(""), shortname(""), shortname_html(""), unit(""), unit_html(""), expression(Expression()) {}
     Integral(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
 
     // id
@@ -225,11 +218,51 @@ struct Integral
     std::string name;
     // short name
     std::string shortname;
+    std::string shortname_html;
     // unit
     std::string unit;
+    std::string unit_html;
 
     // expressions
-    Expression expression;    
+    Expression expression;
+};
+
+// dialog UI
+struct DialogUI
+{
+    DialogUI() {}
+    DialogUI(rapidxml::xml_node<> *node);
+
+    struct Row
+    {
+        Row(std::string id, bool nonlin, bool timedep, std::string name, std::string shortname, std::string shortname_html,
+                 std::string unit, std::string unit_html, std::string unit_latex,
+                 double default_value, std::string condition)
+            : id(id), nonlin(nonlin), timedep(timedep), name(name), shortname(shortname), shortname_html(shortname_html),
+              unit(unit), unit_html(unit_html), unit_latex(unit_latex),
+              default_value(default_value), condition(condition) {}
+        Row(rapidxml::xml_node<> *quantity);
+
+        std::string id;
+
+        bool nonlin;
+        bool timedep;
+
+        std::string name;
+        std::string shortname;
+        std::string shortname_html;
+
+        std::string unit;
+        std::string unit_html;
+        std::string unit_latex;
+
+        double default_value;
+        std::string condition;
+    };
+
+    std::map<std::string, Hermes::vector<Row> > groups;
+
+    void clear();
 };
 
 // basic module
@@ -239,15 +272,22 @@ struct Module
     std::string id;
     // name
     std::string name;
+    // deformed shape
+    bool deformed_shape;
     // description
     std::string description;
 
+    // analyses
+    std::map<std::string, std::string> analyses;
     int steady_state_solutions;
     int harmonic_solutions;
     int transient_solutions;
 
     // constants
     std::map<std::string, double> constants;
+
+    // macros
+    std::map<std::string, std::string> macros;
 
     // material type
     Hermes::vector<MaterialTypeVariable *> material_type_variables;
@@ -290,6 +330,10 @@ struct Module
 
     // volume integrals
     Hermes::vector<Integral *> volume_integral;
+
+    // material and boundary UI
+    DialogUI material_ui;
+    DialogUI boundary_ui;
 
     // default contructor
     Module(ProblemType problemType, AnalysisType analysisType);
@@ -336,36 +380,8 @@ private:
     AnalysisType m_analysisType;
 };
 
-struct ModuleAgros : public QObject, public Module
-{
-    Q_OBJECT
-public:
-    ModuleAgros(ProblemType problemType, AnalysisType analysisType) : Module(problemType, analysisType) {}
-
-    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
-    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
-    void fillComboBoxBoundaryCondition(QComboBox *cmbFieldVariable);
-    void fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable);
-
-    SceneBoundary *newBoundary();
-    SceneMaterial *newMaterial();
-
-private:
-    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<Hermes::Module::LocalVariable *> list);
-};
-
 }
 }
-
-// module factory
-Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type,
-                                           std::string filename_custom = "");
-
-// boundary dialog factory
-SceneBoundaryDialog *boundaryDialogFactory(SceneBoundary *scene_boundary, QWidget *parent);
-
-// material dialog factory
-SceneMaterialDialog *materialDialogFactory(SceneMaterial *scene_material, QWidget *parent);
 
 // available modules
 std::map<std::string, std::string> availableModules();
@@ -382,13 +398,14 @@ public:
 
     void initParserBoundaryVariables(Boundary *boundary);
     void initParserMaterialVariables();
-    void setParserVariables(Material *material, Boundary *boundary);
+    void setParserVariables(Material *material, Boundary *boundary,
+                            double value = 0.0, double dx = 0.0, double dy = 0.0);
 };
 
 template <typename Scalar>
 class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>
 {
-public:  
+public:
     ViewScalarFilter(Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
                      std::string expression);
     ~ViewScalarFilter();

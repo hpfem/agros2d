@@ -36,6 +36,7 @@ static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList
 static QHash<WeakFormsType, QString> weakFormsTypeList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
+static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MeshType, QString> meshTypeList;
 static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
 
@@ -59,6 +60,9 @@ SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+
+QString linearityTypeToStringKey(LinearityType linearityType) { return linearityTypeList[linearityType]; }
+LinearityType linearityTypeFromStringKey(const QString &linearityType) { return linearityTypeList.key(linearityType); }
 
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
@@ -133,6 +137,12 @@ void initLists()
     matrixSolverTypeList.insert(Hermes::SOLVER_SUPERLU, "superlu");
     matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
     matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
+
+    // LinearityType
+    linearityTypeList.insert(LinearityType_Undefined, "");
+    linearityTypeList.insert(LinearityType_Linear, "linear");
+    linearityTypeList.insert(LinearityType_Picard, "picard");
+    linearityTypeList.insert(LinearityType_Newton, "newton");
 }
 
 QString analysisTypeString(AnalysisType analysisType)
@@ -273,6 +283,24 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
         return QObject::tr("Trilinos/AztecOO");
     default:
         std::cerr << "Matrix solver type '" + QString::number(matrixSolverType).toStdString() + "' is not implemented. matrixSolverTypeString(MatrixSolverType matrixSolverType)" << endl;
+        throw;
+    }
+}
+
+QString linearityTypeString(LinearityType linearityType)
+{
+    logMessage("linearityTypeString()");
+
+    switch (linearityType)
+    {
+    case LinearityType_Linear:
+        return QObject::tr("Linear");
+    case LinearityType_Picard:
+        return QObject::tr("Picard's method");
+    case LinearityType_Newton:
+        return QObject::tr("Newton's method");
+    default:
+        std::cerr << "Linearity type '" + QString::number(linearityType).toStdString() + "' is not implemented. linearityTypeString(LinearityType linearityType)" << endl;
         throw;
     }
 }

@@ -23,8 +23,9 @@
 #include "scenemarker.h"
 #include "sceneview.h"
 #include "progressdialog.h"
-#include "hermes2d/module.h"
 #include "hermes2d/solver.h"
+#include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
 
 template <typename Scalar>
 SceneSolution<Scalar>::SceneSolution()

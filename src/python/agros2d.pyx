@@ -22,7 +22,7 @@ cdef extern from "../scripteditorcommandpython.h":
                            double adaptivitysteps, double adaptivitytolerance,
                            double frequency,
                            char *analysistype, double timestep, double totaltime, double initialcondition,
-                           double nonlineartolerance, int nonlinearsteps) except +
+                           char *linearitytype, double nonlineartolerance, int nonlinearsteps) except +
     void pythonOpenDocument(char *str) except +
     void pythonSaveDocument(char *str) except +
     void pythonCloseDocument()
@@ -100,13 +100,13 @@ def newdocument(char *name, char *type, char *physicfield,
                double adaptivitysteps = 1, double adaptivitytolerance = 0,
                double frequency = 0,
                char *analysistype = "steadystate", double timestep = 0, double totaltime = 0, double initialcondition = 0,
-               nonlineartolerance = 0.01, nonlinearsteps = 10):
+               char *linearitytype = "newton", nonlineartolerance = 0.01, nonlinearsteps = 10):
     pythonNewDocument(name, type, physicfield,
                        numberofrefinements, polynomialorder, adaptivitytype,
                        adaptivitysteps, adaptivitytolerance,
                        frequency,
                        analysistype, timestep, totaltime, initialcondition,
-                       nonlineartolerance, nonlinearsteps)
+                       linearitytype, nonlineartolerance, nonlinearsteps)
 
 def opendocument(char *str):
     pythonOpenDocument(str)

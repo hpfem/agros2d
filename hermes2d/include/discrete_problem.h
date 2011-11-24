@@ -61,19 +61,16 @@ namespace Hermes
     {
     public:
       /// Constructor for multiple components / equations.
-      DiscreteProblem(WeakForm<Scalar>* wf, Hermes::vector<Space<Scalar>*> spaces);
+      DiscreteProblem(const WeakForm<Scalar>* wf, Hermes::vector<const Space<Scalar> *> spaces);
 
       /// Constructor for one equation.
-      DiscreteProblem(WeakForm<Scalar>* wf, Space<Scalar>* space);
+      DiscreteProblem(const WeakForm<Scalar>* wf, const Space<Scalar>* space);
 
       /// Non-parameterized constructor (currently used only in KellyTypeAdapt to gain access to NeighborSearch methods).
       DiscreteProblem();
 
       /// Destuctor.
       virtual ~DiscreteProblem();
-
-      /// Sets the storing of the previous matrix in adaptivity.
-      void set_adaptivity_cache();
 
       /// Assembling.
       /// General assembling procedure for nonlinear problems. coeff_vec is the
@@ -108,9 +105,9 @@ namespace Hermes
       /// Set this problem to Finite Volume.
       void set_fvm();
       
-      void set_spaces(Hermes::vector<Space<Scalar>*> spaces);
+      void set_spaces(Hermes::vector<const Space<Scalar>*> spaces);
 
-      void set_spaces(Space<Scalar>* space);
+      void set_spaces(const Space<Scalar>* space);
 
     protected:
       /// Get the number of unknowns.
@@ -121,19 +118,16 @@ namespace Hermes
 
       // GET functions.
       /// Get pointer to n-th space.
-      Space<Scalar>* get_space(int n);
+      const Space<Scalar>* get_space(int n);
 
       /// Get the weak forms.
-      WeakForm<Scalar>* get_weak_formulation();
+      const WeakForm<Scalar>* get_weak_formulation();
 
       /// Get all spaces as a Hermes::vector.
-      Hermes::vector<Space<Scalar>*> get_spaces();
+      Hermes::vector<const Space<Scalar>*> get_spaces();
 
       /// This is different from H3D.
       PrecalcShapeset* get_pss(int n);
-
-      void temp_enable_adaptivity_cache();
-      void temp_disable_adaptivity_cache();
 
       /// Preassembling.
       /// Precalculate matrix sparse structure.
@@ -149,10 +143,6 @@ namespace Hermes
       /// Check whether it is sane to assemble.
       /// Throws errors if not.
       void assemble_sanity_checks(Table* block_weights);
-
-      /// Converts coeff_vec to u_ext.
-      /// If the supplied coeff_vec is NULL, it supplies the appropriate number of NULL pointers.
-      void convert_coeff_vec(Scalar* coeff_vec, Hermes::vector<Solution<Scalar>*> & u_ext, bool add_dir_lift);
 
       /// Initializes psss.
       void initialize_psss(Hermes::vector<PrecalcShapeset*>& spss);
@@ -281,9 +271,6 @@ namespace Hermes
 
       void free();
 
-      bool cache_for_adaptivity;
-      bool temp_cache_for_adaptivity;
-
       DiscontinuousFunc<Hermes::Ord>* init_ext_fn_ord(NeighborSearch<Scalar>* ns, MeshFunction<Scalar>* fu);
 
       /// Main function for the evaluation of volumetric matrix forms.
@@ -303,7 +290,7 @@ namespace Hermes
         PrecalcShapeset* fu, PrecalcShapeset* fv, RefMap* ru, RefMap* rv);
 
       /// Elementary function used in eval_form() in adaptive mode for volumetric matrix forms.
-      Scalar eval_form_subelement(int order, MatrixFormVol<Scalar>* mfv,
+      Scalar eval_form_value(int order, MatrixFormVol<Scalar>* mfv,
         Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fu, PrecalcShapeset* fv,
         RefMap* ru, RefMap* rv);
@@ -320,7 +307,7 @@ namespace Hermes
       int calc_order_vector_form_vol(MultiComponentVectorFormVol<Scalar>* mfv, Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fv, RefMap* rv);
 
-      Scalar eval_form_subelement(int order, VectorFormVol<Scalar>* vfv,
+      Scalar eval_form_value(int order, VectorFormVol<Scalar>* vfv,
         Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fv, RefMap* rv);
 
@@ -342,7 +329,7 @@ namespace Hermes
         PrecalcShapeset* fu, PrecalcShapeset* fv,
         RefMap* ru, RefMap* rv, SurfPos* surf_pos);
 
-      Scalar eval_form_subelement(int order, MatrixFormSurf<Scalar>* mfs, Hermes::vector<Solution<Scalar>*> u_ext,
+      Scalar eval_form_value(int order, MatrixFormSurf<Scalar>* mfs, Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fu, PrecalcShapeset* fv, RefMap* ru, RefMap* rv, SurfPos* surf_pos);
 
       /// Vector<Scalar> surface forms. The functions provide the same functionality as the
@@ -359,7 +346,7 @@ namespace Hermes
       int calc_order_vector_form_surf(MultiComponentVectorFormSurf<Scalar>* vfs, Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fv, RefMap* rv, SurfPos* surf_pos);
 
-      Scalar eval_form_subelement(int order, VectorFormSurf<Scalar>* vfs, Hermes::vector<Solution<Scalar>*> u_ext,
+      Scalar eval_form_value(int order, VectorFormSurf<Scalar>* vfs, Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fv, RefMap* rv, SurfPos* surf_pos);
 
       /// Calculates integration order for DG matrix forms.
@@ -476,13 +463,14 @@ namespace Hermes
       unsigned int min_dg_mesh_seq;
 
       /// Weak formulation.
-      WeakForm<Scalar>* wf;
+      const WeakForm<Scalar>* wf;
 
       /// Seq number of the WeakForm.
       int wf_seq;
 
       /// Space instances for all equations in the system.
-      Hermes::vector<Space<Scalar>*> spaces;
+      Hermes::vector<const Space<Scalar>*> spaces;
+      Hermes::vector<unsigned int> spaces_first_dofs;
 
       /// Seq numbers of Space instances in spaces.
       int* sp_seq;
@@ -602,105 +590,11 @@ namespace Hermes
         /// PrecalcShapeset stored values for Elements with non-constant jacobian of the reference mapping for quads.
         std::map<KeyNonConst, Func<double>* , CompareNonConst> cache_fn_quads;
 
-        /// For caching of values calculated on the previous reference space during adaptivity.
-        /// Contains true if the matrix entry for the Element has already been recalculated, and the value
-        /// saved is therefore not possible to use.
-        bool** element_reassembled_matrix;
-        /// For caching of values calculated on the previous reference space during adaptivity.
-        /// Contains pair<Element id, true> if the vector entry for the Element has already been recalculated, and the value
-        /// saved is therefore not possible to use.
-        bool** element_reassembled_vector;
-
-        /// For caching of values calculated on the previous reference space during adaptivity.
-        /// The matrix cache, coordinates are : [Space_1][Space_2][Element id on Space_1][DOF on Space_1][DOF on Space_2].
-        Scalar***** previous_reference_dp_cache_matrix;
-
-        /// For caching of values calculated on the previous reference space during adaptivity.
-        /// The vector cache, coordinates are : [Space][Element id on Space][DOF on Space].
-        Scalar*** previous_reference_dp_cache_vector;
-
-        /// For caching of values calculated on the previous reference space during adaptivity.
-        /// Current size of the [Element id on Space_1] dimension in previous_reference_dp_cache_matrix.
-        unsigned int** cache_matrix_size;
-
-        /// For caching of values calculated on the previous reference space during adaptivity.
-        /// Current size of the [Element id on Space] dimension in previous_reference_dp_cache_vector.
-        unsigned int* cache_vector_size;
-
-        /// For caching of values calculated on the previous reference space during adaptivity.
-        /// Previous spaces (incl. mesh) to be able to determine the previous element assembly lists etc.
-        Hermes::vector<Space<Scalar>*> stored_spaces_for_adaptivity;
-
         LightArray<Func<Hermes::Ord>*> cache_fn_ord;
       };
 
       /// An AssemblingCaches instance for this instance of DiscreteProblem.
       AssemblingCaches assembling_caches;
-
-      /// Class used for profiling of DiscreteProblem (assembling).
-      class Profiling
-      {
-      private:
-        Profiling();
-
-        /// Utility time measurement.
-        /// For measuring parts of assembling in methods "assemble_*".
-        /// Also for initialization parts.
-        Hermes::TimePeriod assemble_util_time;
-
-        /// Utility time measurement.
-        /// For measuring parts of assembling in methods "eval_*_form".
-        /// Except for numerical integration.
-        Hermes::TimePeriod eval_util_time;
-
-        /// Total time measurement.
-        /// For measuring the whole assembling.
-        Hermes::TimePeriod total_time;
-
-        /// Integration time measurement.
-        /// For measuring the numerical integration.
-        /// Also, the numerical integration when calculating the integration order is counted.
-        Hermes::TimePeriod integration_time;
-
-        /// One record stores information about one matrix assembling.
-        class Record
-        {
-        public:
-          Record();
-          void reset();
-
-          double total;
-          double create_sparse_structure;
-          double initialization;
-          double state_init;
-          /// In assemble_* methods.
-          double form_preparation_assemble;
-          /// In eval_*_form methods.
-          double form_preparation_eval;
-          double form_evaluation;
-        };
-
-        /// The Record instance that is currently being filled.
-        Record current_record;
-
-        /// Stores all Records.
-        Hermes::vector<Record> profile;
-
-        /// Returns the profiling info.
-        void get_profiling_output(std::ostream & out, unsigned int order);
-
-        friend class DiscreteProblem<Scalar>;
-      };
-
-      /// A Profiling instance for this instance of DiscreteProblem.
-      Profiling profiling;
-
-    public:
-      /// Returns all profiling info.
-      void get_all_profiling_output(std::ostream & out);
-
-      /// Returns the profiling info from the last call to assemble().
-      void get_last_profiling_output(std::ostream & out);
 
       template<typename T> friend class KellyTypeAdapt;
       template<typename T> friend class NewtonSolver;

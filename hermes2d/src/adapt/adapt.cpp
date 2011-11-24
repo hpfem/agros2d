@@ -355,7 +355,8 @@ namespace Hermes
         have_errors = true; // space without changes
 
       // since space changed, assign dofs:
-      Space<Scalar>::assign_dofs(this->spaces);
+      for(unsigned int i = 0; i < this->spaces.size(); i++)
+        this->spaces[i]->assign_dofs();
 
       return done;
     }
@@ -436,7 +437,7 @@ namespace Hermes
     template<typename Scalar>
     Scalar Adapt<Scalar>::MatrixFormVolError::value(int n, double *wt, Func<Scalar> *u_ext[],
       Func<Scalar> *u, Func<Scalar> *v, Geom<double> *e,
-      ExtData<Scalar> *ext)
+      ExtData<Scalar> *ext) const
     {
       switch (projNormType)
       {
@@ -459,7 +460,7 @@ namespace Hermes
     template<typename Scalar>
     Hermes::Ord Adapt<Scalar>::MatrixFormVolError::ord(int n, double *wt, Func<Hermes::Ord> *u_ext[],
       Func<Hermes::Ord> *u, Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e,
-      ExtData<Hermes::Ord> *ext)
+      ExtData<Hermes::Ord> *ext) const
     {
       switch (projNormType)
       {
@@ -843,10 +844,7 @@ namespace Hermes
     template<typename Scalar>
     void Adapt<Scalar>::set_error_form(typename Adapt<Scalar>::MatrixFormVolError* form)
     {
-      if(own_forms[0][0] && error_form[0][0] != NULL)
-        delete error_form[0][0];
       set_error_form(0, 0, form);
-      own_forms[0][0] = false;
     }
 
     template<typename Scalar>

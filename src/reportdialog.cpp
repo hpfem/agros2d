@@ -17,6 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "ctemplate/template.h"
+
 #include "reportdialog.h"
 #include "scene.h"
 #include "scenebasic.h"
@@ -25,7 +27,7 @@
 #include "scenemarker.h"
 #include "scripteditordialog.h"
 #include "hermes2d/module.h"
-#include "ctemplate/template.h"
+#include "hermes2d/module_agros.h"
 
 ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
@@ -439,9 +441,9 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
                 ctemplate::TemplateDictionary *material_key_dict = material_dict->AddSectionDictionary("MATERIAL_KEY_SECTION");
 
-                material_key_dict->SetValue("MATERIAL_KEY", variable->name);
+                //material_key_dict->SetValue("MATERIAL_KEY", variable->name);
                 material_key_dict->SetValue("MATERIAL_KEY_VALUE", marker->get_value(variable->id).toString().toStdString());
-                material_key_dict->SetValue("MATERIAL_KEY_UNIT", variable->unit);
+                //material_key_dict->SetValue("MATERIAL_KEY_UNIT", variable->unit);
             }
         }
 
@@ -461,9 +463,9 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
                     Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
                     ctemplate::TemplateDictionary *boundary_key_dict = boundary_dict->AddSectionDictionary("BOUNDARY_KEY_SECTION");
 
-                    boundary_key_dict->SetValue("BOUNDARY_KEY", variable->name);
+                    //boundary_key_dict->SetValue("BOUNDARY_KEY", variable->name);
                     boundary_key_dict->SetValue("BOUNDARY_KEY_VALUE", marker->get_value(variable->id).toString().toStdString());
-                    boundary_key_dict->SetValue("BOUNDARY_KEY_UNIT", variable->unit);
+                    //boundary_key_dict->SetValue("BOUNDARY_KEY_UNIT", variable->unit);
                 }
             }
         }

@@ -32,7 +32,7 @@
 <namespaces>namespace general_weakform
 {</namespaces>			
   		
-<variable_declaration> Value variable_short;
+<variable_declaration> mutable Value variable_short;
 </variable_declaration>
 
 <custom_matrix_form_vol>template&lt;typename Scalar&gt;
@@ -45,9 +45,9 @@ public:
                               Material *material);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *u,
-                         Hermes::Hermes2D::Func&lt;double&gt; *v, Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext);
+                         Hermes::Hermes2D::Func&lt;double&gt; *v, Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u,
-                            Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v, Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
+                            Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v, Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;
 private:
     Material *m_material;	
     //variable_declaration	    	
@@ -63,10 +63,10 @@ public:
                               Material *material);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *v,
-                         Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext);
+                         Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
 
-                            Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
+                            Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;
 private:		
     Material *m_material;
     //variable_declaration
@@ -82,9 +82,9 @@ public:
                                Boundary *boundary);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *u, Hermes::Hermes2D::Func&lt;double&gt; *v,
-                         Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext);
+                         Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
-                            Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
+                            Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;
 private:
     Boundary *m_boundary;
     //variable_declaration	
@@ -99,9 +99,9 @@ public:
                                Boundary *boundary);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *v,
-                         Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext);
+                         Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
-                            Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext);
+                            Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;
 private:
     Boundary *m_boundary;
     //variable_declaration
@@ -114,10 +114,10 @@ class CustomEssentialFormSurf : public Hermes::Hermes2D::ExactSolutionScalar&lt;
 public:
     CustomEssentialFormSurf(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 
-    Scalar value(double x, double y);
-    void derivatives (double x, double y, Scalar&amp; dx, Scalar&amp; dy);
+    Scalar value(double x, double y) const;
+    void derivatives (double x, double y, Scalar&amp; dx, Scalar&amp; dy) const;
 
-    Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y)
+    Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y) const
     {
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }

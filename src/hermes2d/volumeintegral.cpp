@@ -22,8 +22,10 @@
 #include "scenebasic.h"
 #include "scenemarker.h"
 #include "scenesolution.h"
+
 #include "hermes2d.h"
 #include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
 
 VolumeIntegralValue::VolumeIntegralValue()
 {
@@ -104,7 +106,9 @@ void VolumeIntegralValue::calculate()
         if (Util::scene()->labels[i]->isSelected)
         {
             SceneMaterial *material = Util::scene()->labels[i]->material;
-            parser->setParserVariables(material, NULL);
+            // FIXME
+            parser->setParserVariables(material, NULL,
+                                       pvalue[0], pdx[0], pdy[0]);
 
             for_all_active_elements(e, mesh)
             {

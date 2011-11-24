@@ -50,6 +50,7 @@
 // physical constants
 #define EPS0 8.854e-12
 #define MU0 4*M_PI*1e-7
+#define SIGMA0 5.670373e-8
 #define PRESSURE_MIN_AIR 20e-6
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)
@@ -350,6 +351,14 @@ enum AdaptivityType
     AdaptivityType_HP = 0
 };
 
+enum LinearityType
+{
+    LinearityType_Undefined,
+    LinearityType_Linear,
+    LinearityType_Picard,
+    LinearityType_Newton
+};
+
 enum WeakFormsType
 {
     WeakFormsType_Undefined,
@@ -459,6 +468,7 @@ QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
 QString weakFormsTypeString(WeakFormsType weakFormsType);
 QString meshTypeString(MeshType meshType);
+QString linearityTypeString(LinearityType linearityType);
 QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
 
 inline QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
@@ -510,6 +520,9 @@ AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
 
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
+
+QString linearityTypeToStringKey(LinearityType linearityType);
+LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
 // constants
 const QColor COLORBACKGROUND = QColor::fromRgb(255, 255, 255);

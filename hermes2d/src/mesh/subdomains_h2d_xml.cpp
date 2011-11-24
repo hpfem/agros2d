@@ -539,34 +539,64 @@ namespace XMLSubdomains
     this->elements_.set (x);
   }
 
-  const subdomain::edges_optional& subdomain::
-  edges () const
+  const subdomain::boundary_edges_optional& subdomain::
+  boundary_edges () const
   {
-    return this->edges_;
+    return this->boundary_edges_;
   }
 
-  subdomain::edges_optional& subdomain::
-  edges ()
+  subdomain::boundary_edges_optional& subdomain::
+  boundary_edges ()
   {
-    return this->edges_;
-  }
-
-  void subdomain::
-  edges (const edges_type& x)
-  {
-    this->edges_.set (x);
+    return this->boundary_edges_;
   }
 
   void subdomain::
-  edges (const edges_optional& x)
+  boundary_edges (const boundary_edges_type& x)
   {
-    this->edges_ = x;
+    this->boundary_edges_.set (x);
   }
 
   void subdomain::
-  edges (::std::auto_ptr< edges_type > x)
+  boundary_edges (const boundary_edges_optional& x)
   {
-    this->edges_.set (x);
+    this->boundary_edges_ = x;
+  }
+
+  void subdomain::
+  boundary_edges (::std::auto_ptr< boundary_edges_type > x)
+  {
+    this->boundary_edges_.set (x);
+  }
+
+  const subdomain::inner_edges_optional& subdomain::
+  inner_edges () const
+  {
+    return this->inner_edges_;
+  }
+
+  subdomain::inner_edges_optional& subdomain::
+  inner_edges ()
+  {
+    return this->inner_edges_;
+  }
+
+  void subdomain::
+  inner_edges (const inner_edges_type& x)
+  {
+    this->inner_edges_.set (x);
+  }
+
+  void subdomain::
+  inner_edges (const inner_edges_optional& x)
+  {
+    this->inner_edges_ = x;
+  }
+
+  void subdomain::
+  inner_edges (::std::auto_ptr< inner_edges_type > x)
+  {
+    this->inner_edges_.set (x);
   }
 
   const subdomain::refinements_optional& subdomain::
@@ -668,22 +698,44 @@ namespace XMLSubdomains
   }
 
 
-  // edges
+  // boundary_edges
   // 
 
-  const edges::i_sequence& edges::
+  const boundary_edges::i_sequence& boundary_edges::
   i () const
   {
     return this->i_;
   }
 
-  edges::i_sequence& edges::
+  boundary_edges::i_sequence& boundary_edges::
   i ()
   {
     return this->i_;
   }
 
-  void edges::
+  void boundary_edges::
+  i (const i_sequence& s)
+  {
+    this->i_ = s;
+  }
+
+
+  // inner_edges
+  // 
+
+  const inner_edges::i_sequence& inner_edges::
+  i () const
+  {
+    return this->i_;
+  }
+
+  inner_edges::i_sequence& inner_edges::
+  i ()
+  {
+    return this->i_;
+  }
+
+  void inner_edges::
   i (const i_sequence& s)
   {
     this->i_ = s;
@@ -1571,7 +1623,8 @@ namespace XMLSubdomains
   : ::xml_schema::type (),
     vertices_ (::xml_schema::flags (), this),
     elements_ (::xml_schema::flags (), this),
-    edges_ (::xml_schema::flags (), this),
+    boundary_edges_ (::xml_schema::flags (), this),
+    inner_edges_ (::xml_schema::flags (), this),
     refinements_ (::xml_schema::flags (), this),
     name_ (name, ::xml_schema::flags (), this)
   {
@@ -1584,7 +1637,8 @@ namespace XMLSubdomains
   : ::xml_schema::type (x, f, c),
     vertices_ (x.vertices_, f, this),
     elements_ (x.elements_, f, this),
-    edges_ (x.edges_, f, this),
+    boundary_edges_ (x.boundary_edges_, f, this),
+    inner_edges_ (x.inner_edges_, f, this),
     refinements_ (x.refinements_, f, this),
     name_ (x.name_, f, this)
   {
@@ -1597,7 +1651,8 @@ namespace XMLSubdomains
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     vertices_ (f, this),
     elements_ (f, this),
-    edges_ (f, this),
+    boundary_edges_ (f, this),
+    inner_edges_ (f, this),
     refinements_ (f, this),
     name_ (f, this)
   {
@@ -1646,16 +1701,30 @@ namespace XMLSubdomains
         }
       }
 
-      // edges
+      // boundary_edges
       //
-      if (n.name () == "edges" && n.namespace_ ().empty ())
+      if (n.name () == "boundary_edges" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< edges_type > r (
-          edges_traits::create (i, f, this));
+        ::std::auto_ptr< boundary_edges_type > r (
+          boundary_edges_traits::create (i, f, this));
 
-        if (!this->edges_)
+        if (!this->boundary_edges_)
         {
-          this->edges_.set (r);
+          this->boundary_edges_.set (r);
+          continue;
+        }
+      }
+
+      // inner_edges
+      //
+      if (n.name () == "inner_edges" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< inner_edges_type > r (
+          inner_edges_traits::create (i, f, this));
+
+        if (!this->inner_edges_)
+        {
+          this->inner_edges_.set (r);
           continue;
         }
       }
@@ -1847,29 +1916,29 @@ namespace XMLSubdomains
   {
   }
 
-  // edges
+  // boundary_edges
   //
 
-  edges::
-  edges ()
+  boundary_edges::
+  boundary_edges ()
   : ::xml_schema::type (),
     i_ (::xml_schema::flags (), this)
   {
   }
 
-  edges::
-  edges (const edges& x,
-         ::xml_schema::flags f,
-         ::xml_schema::container* c)
+  boundary_edges::
+  boundary_edges (const boundary_edges& x,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     i_ (x.i_, f, this)
   {
   }
 
-  edges::
-  edges (const ::xercesc::DOMElement& e,
-         ::xml_schema::flags f,
-         ::xml_schema::container* c)
+  boundary_edges::
+  boundary_edges (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     i_ (f, this)
   {
@@ -1880,7 +1949,7 @@ namespace XMLSubdomains
     }
   }
 
-  void edges::
+  void boundary_edges::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -1902,15 +1971,82 @@ namespace XMLSubdomains
     }
   }
 
-  edges* edges::
+  boundary_edges* boundary_edges::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class edges (*this, f, c);
+    return new class boundary_edges (*this, f, c);
   }
 
-  edges::
-  ~edges ()
+  boundary_edges::
+  ~boundary_edges ()
+  {
+  }
+
+  // inner_edges
+  //
+
+  inner_edges::
+  inner_edges ()
+  : ::xml_schema::type (),
+    i_ (::xml_schema::flags (), this)
+  {
+  }
+
+  inner_edges::
+  inner_edges (const inner_edges& x,
+               ::xml_schema::flags f,
+               ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    i_ (x.i_, f, this)
+  {
+  }
+
+  inner_edges::
+  inner_edges (const ::xercesc::DOMElement& e,
+               ::xml_schema::flags f,
+               ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    i_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void inner_edges::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // i
+      //
+      if (n.name () == "i" && n.namespace_ ().empty ())
+      {
+        this->i_.push_back (i_traits::create (i, f, this));
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  inner_edges* inner_edges::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class inner_edges (*this, f, c);
+  }
+
+  inner_edges::
+  ~inner_edges ()
   {
   }
 }
@@ -2056,9 +2192,14 @@ namespace XMLSubdomains
       o << ::std::endl << "elements: " << *i.elements ();
     }
 
-    if (i.edges ())
+    if (i.boundary_edges ())
     {
-      o << ::std::endl << "edges: " << *i.edges ();
+      o << ::std::endl << "boundary_edges: " << *i.boundary_edges ();
+    }
+
+    if (i.inner_edges ())
+    {
+      o << ::std::endl << "inner_edges: " << *i.inner_edges ();
     }
 
     if (i.refinements ())
@@ -2097,9 +2238,22 @@ namespace XMLSubdomains
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const edges& i)
+  operator<< (::std::ostream& o, const boundary_edges& i)
   {
-    for (edges::i_const_iterator
+    for (boundary_edges::i_const_iterator
+         b (i.i ().begin ()), e (i.i ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "i: " << *b;
+    }
+
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const inner_edges& i)
+  {
+    for (inner_edges::i_const_iterator
          b (i.i ().begin ()), e (i.i ().end ());
          b != e; ++b)
     {
@@ -2910,16 +3064,28 @@ namespace XMLSubdomains
       s << *i.elements ();
     }
 
-    // edges
+    // boundary_edges
     //
-    if (i.edges ())
+    if (i.boundary_edges ())
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "edges",
+          "boundary_edges",
           e));
 
-      s << *i.edges ();
+      s << *i.boundary_edges ();
+    }
+
+    // inner_edges
+    //
+    if (i.inner_edges ())
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "inner_edges",
+          e));
+
+      s << *i.inner_edges ();
     }
 
     // refinements
@@ -2987,13 +3153,33 @@ namespace XMLSubdomains
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const edges& i)
+  operator<< (::xercesc::DOMElement& e, const boundary_edges& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
     // i
     //
-    for (edges::i_const_iterator
+    for (boundary_edges::i_const_iterator
+         b (i.i ().begin ()), n (i.i ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "i",
+          e));
+
+      s << *b;
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const inner_edges& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // i
+    //
+    for (inner_edges::i_const_iterator
          b (i.i ().begin ()), n (i.i ().end ());
          b != n; ++b)
     {

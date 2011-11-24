@@ -36,9 +36,7 @@ namespace Hermes
       : IterSolver<Scalar>(), m(m), rhs(rhs)
     {
       _F_;
-#ifndef HAVE_TEUCHOS
       pc = NULL;
-#endif
     }
 
     template<typename Scalar>
@@ -78,11 +76,8 @@ namespace Hermes
     }
 
     template<typename Scalar>
-#ifdef HAVE_TEUCHOS
-    void AztecOOSolver<Scalar>::set_precond(Teuchos::RCP<Precond<Scalar> > &pc)
-#else
+    
     void AztecOOSolver<Scalar>::set_precond(Precond<Scalar> *pc)
-#endif
     {
       this->precond_yes = true; 
       this->pc = pc; 
@@ -120,6 +115,12 @@ namespace Hermes
       aztec.SetAztecParam(param, value);
     }
 
+    template<typename Scalar>
+    int AztecOOSolver<Scalar>::get_matrix_size()
+    {
+      return m->size;
+    }
+
     template<>
     bool AztecOOSolver<double>::solve()
     {
@@ -139,11 +140,7 @@ namespace Hermes
       Epetra_Vector x(*rhs->std_map);
       aztec.SetLHS(&x);
 
-#ifdef HAVE_TEUCHOS
-      if (!pc.is_null())
-#else
       if (pc != NULL)
-#endif
       {
         Epetra_Operator *op = pc->get_obj();
         assert(op != NULL);		// can work only with Epetra_Operators

@@ -1,11 +1,11 @@
 <document version="2.0">
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="15" id="0" analysistype="transient" initialcondition="20" linearitysteps="10" adaptivitysteps="5" linearity="linear" name="Heat Transfer Axisymmetric Actuator" date="2011-07-18" polynomialorder="1" meshtype="triangle" timestep="500" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" linearitytolerance="0.001" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="heat" timetotal="15e3">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="15" id="0" analysistype="transient" initialcondition="20" adaptivitysteps="5" nonlineartolerance="0.001" linearity="linear" name="Heat Transfer Axisymmetric Actuator" date="2011-07-18" polynomialorder="1" weakforms="compiled" meshtype="triangle" timestep="500" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="heat" timetotal="15e3">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge heat_heat_transfer_coefficient="0" heat_external_temperature="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Neumann"/>
-                <edge heat_heat_transfer_coefficient="10" heat_external_temperature="20" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection"/>
+                <edge heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Neumann" heat_radiation_ambient_temperature="0"/>
+                <edge heat_convection_external_temperature="20" heat_convection_heat_transfer_coefficient="5" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection" heat_radiation_ambient_temperature="0"/>
             </edges>
             <labels>
                 <label heat_volume_heat="0" heat_conductivity="0.02" heat_density="1.2" heat_specific_heat="0" id="1" name="Air"/>
