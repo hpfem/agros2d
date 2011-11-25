@@ -228,6 +228,10 @@ Scene::Scene()
     connect(m_sceneSolution, SIGNAL(solved()), this, SLOT(doInvalidated()));
 
     clear();
+
+    //TODO temporary
+    fields.push_back("heat");
+    fields.push_back("elasticity");
 }
 
 Scene::~Scene()

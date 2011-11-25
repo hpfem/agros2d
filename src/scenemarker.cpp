@@ -25,10 +25,9 @@
 #include "scenebasic.h"
 #include "gui.h"
 
-SceneBoundary::SceneBoundary(std::string name)
-                             //std::string type,
-                             //std::map<std::string, Value> values)
-    : MultiBoundary(name)
+SceneBoundary::SceneBoundary(std::string name, std::string type,
+                             std::map<std::string, Value> values)
+    : Boundary(name, type, values)
 {
     logMessage("SceneBoundary::SceneBoundary()");
 }

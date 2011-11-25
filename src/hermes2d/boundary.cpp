@@ -23,15 +23,16 @@
 #include "scene.h"
 #include "util.h"
 
-Boundary::Boundary(std::string type,
+Boundary::Boundary(std::string name, std::string type,
                    std::map<std::string, Value> values)
 {
     // name and type
+    this->name = name;
     this->type = type;
     this->values = values;
 
     // set values
-    if (type != "none")
+    if (name != "none")
     {
         if (this->values.size() == 0)
         {
@@ -50,7 +51,7 @@ Boundary::~Boundary()
     values.clear();
 }
 
-const Value Boundary::get_value(std::string id)
+const Value Boundary::getValue(std::string id)
 {
     if (id != "")
         return values[id];

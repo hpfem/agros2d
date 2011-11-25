@@ -25,12 +25,12 @@
 class Boundary
 {
 public:
-    Boundary(std::string type = "",
+    Boundary(std::string name= "", std::string type = "",
              std::map<std::string, Value> values = (std::map<std::string, Value>()));
     ~Boundary();
 
     /// value of one individual variable
-    const Value get_value(std::string id);
+    const Value getValue(std::string id);
 
     /// get all values
     const map<string, Value> getValues() const;
@@ -43,7 +43,15 @@ public:
 
     void addValue(string name, Value value) { values[name] = value; }
 
+    /// return name
+    std::string getName() {return name; }
+
+    /// set name
+    void setName(string paramName) {name = paramName; }
+
 private:
+    std::string name;
+
     /// type of boundary condition, taken from respective module
     std::string type;
 
@@ -52,33 +60,13 @@ private:
 
 };
 
-/// Holds Boudnary conditions for individual fields
-class MultiBoundary
+
+class BoundaryContainer
 {
 public:
-    /// creates object with given name
-    MultiBoundary(std::string name) : name(name) {}
-
-    /// return name
-    std::string getName() {return name; }
-
-    /// set name
-    void setName(string paramName) {name = paramName; }
-
-    /// compares map of boundaries with parameter fields
-    /// if boundary for some fields is missing, creates it (calling implicit ctor)
-    /// if there is extra boundary not mentioned in fields, destroy it
-    void syncBoundaries(vector<string> fields);
-
-    /// return boundary for given field
-    shared_ptr<Boundary> getBoundary(string field) { return boundaries.at(field); }
 
 private:
-    void addBoundary(std::string field, shared_ptr<Boundary>);
-    void removeBoundary(std::string field);
-
-    std::string name;
-    std::map<string, shared_ptr<Boundary> > boundaries;
+    map<string, vector<shared_ptr<Boundary> > > data;
 };
 
 #endif // BOUNDARY_H

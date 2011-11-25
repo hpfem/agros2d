@@ -181,7 +181,7 @@ Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> SolverAgros<Scalar>::createSpa
 
         if (boundary && boundary != Util::scene()->boundaries[0])
         {
-            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->getBoundary("TODO")->getType());
+            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->getType());
 
             for (Hermes::vector<ParserFormEssential *>::iterator it = boundary_type->essential.begin();
                  it < boundary_type->essential.end(); ++it)
@@ -198,8 +198,12 @@ Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> SolverAgros<Scalar>::createSpa
                             analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
                             problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
 
+<<<<<<< HEAD
                     Hermes::Hermes2D::ExactSolutionScalar<double> *function = factoryExactSolution<double>(problemId, form->i-1,
                                                                                                            meshParam, boundary->getBoundary("TODO").get());
+=======
+                    Hermes::Hermes2D::ExactSolutionScalar<double> *function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
+>>>>>>> back to single boundaries
                     if (function)
                         custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
                                                                                                function);
@@ -210,12 +214,23 @@ Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> SolverAgros<Scalar>::createSpa
 
                 // interpreted form
                 if (!custom_form || weakFormsType == WeakFormsType_Interpreted)
+<<<<<<< HEAD
                 {
                     CustomExactSolution<double> *function = new CustomExactSolution<double>(meshParam,
                                                                                             form->expression,
                                                                                             boundary->getBoundary("TODO").get());
                     custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
                                                                                            function);
+=======
+                {     
+                    {
+                        CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
+                                                                                                form->expression,
+                                                                                                boundary);
+                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
+                                                                                               function);
+                    }
+>>>>>>> back to single boundaries
                 }
 
                 if (custom_form)
