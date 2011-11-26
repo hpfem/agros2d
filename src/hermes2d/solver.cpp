@@ -206,14 +206,12 @@ void SolverAgros<Scalar>::createSpace()
 
                 // interpreted form
                 if (!custom_form || weakFormsType == WeakFormsType_Interpreted)
-                {     
-                    {
-                        CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
-                                                                                                form->expression,
-                                                                                                boundary);
-                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
-                                                                                               function);
-                    }
+                {
+                    CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
+                                                                                            form->expression,
+                                                                                            boundary);
+                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
+                                                                                           function);
                 }
 
                 if (custom_form)
@@ -229,7 +227,7 @@ void SolverAgros<Scalar>::createSpace()
     {
         space.push_back(new Hermes::Hermes2D::H1Space<Scalar>(mesh, bcs[i], polynomialOrder));
 
-        // set order by element        
+        // set order by element
         for (int j = 0; j < Util::scene()->labels.count(); j++)
             if (Util::scene()->labels[j]->material != Util::scene()->materials[0])
                 space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,

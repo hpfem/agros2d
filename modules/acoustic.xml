@@ -3,7 +3,7 @@
     <general id="acoustic" name="Acoustic">
         <description>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids, and solids.</description>
         <analyses>
-            <analysis id="harmonic" type="harmonic" name="Harmonic" solutions="1" />
+            <analysis id="harmonic" type="harmonic" name="Harmonic" solutions="2" />
         </analyses>
     </general>
 
