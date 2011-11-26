@@ -105,6 +105,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     if (settings.value("General/CheckVersion", true).value<bool>())
         checkForNewVersion(true);
 
+    processParameters();
+}
+
+MainWindow::~MainWindow()
+{
+    logMessage("MainWindow::~MainWindow()");
+
+    QSettings settings;
+    settings.setValue("MainWindow/Geometry", saveGeometry());
+    settings.setValue("MainWindow/State", saveState());
+    settings.setValue("MainWindow/RecentFiles", recentFiles);
+
+    // remove temp files
+    removeDirectory(tempProblemDir());
+}
+
+void MainWindow::processParameters()
+{
     // parameters
     QStringList args = QCoreApplication::arguments();
     for (int i = 1; i < args.count(); i++)
@@ -127,19 +145,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         QString fileName = args[i];
         open(fileName);
     }
-}
-
-MainWindow::~MainWindow()
-{
-    logMessage("MainWindow::~MainWindow()");
-
-    QSettings settings;
-    settings.setValue("MainWindow/Geometry", saveGeometry());
-    settings.setValue("MainWindow/State", saveState());
-    settings.setValue("MainWindow/RecentFiles", recentFiles);
-
-    // remove temp files
-    removeDirectory(tempProblemDir());
 }
 
 void MainWindow::open(const QString &fileName)

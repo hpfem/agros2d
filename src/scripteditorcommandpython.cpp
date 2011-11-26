@@ -115,7 +115,10 @@ void pythonQuit()
 {
     logMessage("pythonQuit()");
 
-    QApplication::exit(0);
+    // doesn't work without main event loop (run from script)
+    // QApplication::exit(0);
+
+    exit(0);
 }
 
 // newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition)

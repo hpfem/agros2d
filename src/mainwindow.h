@@ -47,6 +47,7 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void processParameters();
     void open(const QString &fileName);
 
 private slots:
