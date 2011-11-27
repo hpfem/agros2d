@@ -37,7 +37,6 @@ solve()
 
 # point value
 point = pointresult(1.369034, 0.04259)
-print(point)
 #testVonMises = test("Von Mises stress", point["mises"], 1.69779e5)
 # testTresca = test("Tresca stress", point["tresca"], 1.235475e5)
 testd = test("Displacement", point["d"], 6.154748e-6)
