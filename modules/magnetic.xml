@@ -43,6 +43,7 @@
                                            gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
                                     axi="1 / (mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
                                         gamma * uval * vy * vdz" />
+
                 <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
                                            gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy) -
                                            Jer * vval -
@@ -78,15 +79,15 @@
             </weakform>
 
             <weakform analysistype="harmonic">
-                <material id="magnetic_permeability" />
-                <material id="magnetic_conductivity" />
-                <material id="magnetic_remanence" />
-                <material id="magnetic_remanence_angle" />
-                <material id="magnetic_velocity_x" />
-                <material id="magnetic_velocity_y" />
-                <material id="magnetic_velocity_angular" />
-                <material id="magnetic_current_density_external_real" />
-                <material id="magnetic_current_density_external_imag" />
+                <quantity id="magnetic_permeability" />
+                <quantity id="magnetic_conductivity" />
+                <quantity id="magnetic_remanence" />
+                <quantity id="magnetic_remanence_angle" />
+                <quantity id="magnetic_velocity_x" />
+                <quantity id="magnetic_velocity_y" />
+                <quantity id="magnetic_velocity_angular" />
+                <quantity id="magnetic_current_density_external_real" />
+                <quantity id="magnetic_current_density_external_imag" />
 
                 <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                             gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
@@ -489,15 +490,17 @@
             </volumeintegral>
             <volumeintegral id="magnetic_energy" name="Energy" shortname="Wm" unit="J">
                 <expression analysistype="steadystate" planar="0.5 / (mur * MU0) * (dx1 * dx1 + dy1 * dy1)"
-                                                       axi="2.0 * PI * r * 0.5 / (mur * MU0) * (dz1^2 + (dr1 + (r > 0.0) ? value1 / r : 0.0)^2)" />
+                                                       axi="2.0 * PI * r * 0.5 / (mur * MU0) * (dz1^2 + (dr1 + value1 / (r + 1e-12))^2)" />
                 <expression analysistype="harmonic" planar="0.25 * ((dx1^2 + dy1^2) + (dx2^2 + dy2^2)) / (mur * MU0)"
-                                                    axi="2 * PI * r * 0.25 / (mur * MU0) * (((sqrt((dz1^2 + dr1^2) + ((r > 0.0) ? value1 / r : 0.0)))^2) + (2 * PI * r * 0.25 * (sqrt((dr1^2 + dz1^2) + ((r > 0.0) ? value2 / r : 0.0)))^2))" />
+                                                    axi="2 * PI * r * 0.25 / (mur * MU0) * ((dz1^2 + (dr1 + value1 / (r + 1e-12))^2) +
+                                                                                            (dz2^2 + (dr2 + value2 / (r + 1e-12))^2))" />
             </volumeintegral>
             <volumeintegral id="magnetic_losses" name="Power losses" shortname="Pj" unit="W">
                 <expression analysistype="steadystate" planar="(gamma > 0.0) ? 1.0 / gamma * (Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1))^2 : 0.0"
                                                        axi="(gamma > 0.0) ? 1.0 / gamma * (Jer - gamma * (vy * dz1))^2 : 0.0" />
-            <expression analysistype="harmonic" planar="(gamma > 0.0) ? 0.5 / gamma * ((Jei - gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2) - 2 * PI * f * gamma * value1)^2 + (Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1) + 2 * PI * f * gamma * value2)^2) : 0.0"
-                                                axi="(gamma > 0.0) ? 2 * PI * r * 0.5 / gamma * ((Jei - gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2) - 2 * PI * f * gamma * value1)^2 + (Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1) + 2 * PI * f * gamma * value2)^2) : 0.0)" />
+                <expression analysistype="harmonic" planar="(gamma > 0.0) ? 0.5 / gamma * ((Jei - gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2) - 2 * PI * f * gamma * value1)^2 + (Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1) + 2 * PI * f * gamma * value2)^2) : 0.0"
+                                                    axi="(gamma > 0.0) ? 2 * PI * r * 0.5 / gamma * ((Jei - gamma * ((vx - va * z) * dr2 + (vy + va * r) * dz2) - 2 * PI * f * gamma * value1)^2 +
+                                                                                                     (Jer - gamma * ((vx - va * z) * dr1 + (vy + va * r) * dz1) + 2 * PI * f * gamma * value2)^2) : 0.0" />
             </volumeintegral>
         </volumeintegrals>
 
