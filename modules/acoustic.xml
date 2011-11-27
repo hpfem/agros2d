@@ -84,8 +84,12 @@
     <preprocessor>
         <volume>
             <group>
-                <quantity id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" />
-                <quantity id="acoustic_speed" name="Speed of sound" shortname="vel" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
+                <quantity id="acoustic_density" name="Mass density"
+                shortname="rho" shortname_html="&lt;i&gt;&rho;&lt;/i&gt;" shortname_html="\rho"
+                unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" />
+                <quantity id="acoustic_speed" name="Speed of sound"
+                shortname="vel" shortname_html="&lt;i&gt;c&lt;/i&gt;" shortname_html="c"
+                unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
             </group>
         </volume>
         <surface>

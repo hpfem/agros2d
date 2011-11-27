@@ -59,7 +59,7 @@
         <volume>
             <group>
                 <quantity id="electrostatic_permittivity" name="Permittivity"
-                          shortname="epsr" shortname_html="&lt;i&gt;&epsilon;&lt;/i&gt;" shortname_latex="\varepsilon_{r}"
+                          shortname="epsr" shortname_html="&lt;i&gt;&epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="\varepsilon_{r}"
                           unit="F/m" unit_html="F.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="F \cdot m^{-1}" />
                 <quantity id="electrostatic_charge_density" name="Charge density"
                           shortname="rho" shortname_html="&lt;i&gt;&rho;&lt;/i&gt;" shortname_html="\rho"
