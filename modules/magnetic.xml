@@ -42,7 +42,7 @@
                 <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                            gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
                                     axi="1 / (mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
-                                        gamma * uval * vy * vdz" symmetric="1" />
+                                        gamma * uval * vy * vdz" />
                 <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
                                            gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy) -
                                            Jer * vval -
@@ -91,7 +91,7 @@
                 <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                             gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
                                     axi="1 / (mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
-                                         gamma * uval * vy * vdz" symmetric="1" />
+                                         gamma * uval * vy * vdz" />
                 <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
                                             gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy)
                                               - Jer * vval
@@ -104,7 +104,7 @@
                 <matrix i="2" j="2" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
                                             gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
                                     axi="1 / (mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
-                                         gamma * uval * vy * vdz" symmetric="1" />
+                                         gamma * uval * vy * vdz" />
                 <vector i="2" j="2" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
                                             gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy)
                                             - Jei * vval"
@@ -113,9 +113,9 @@
                                             - Jei * vval" />
 
                 <matrix i="1" j="2" planar="- 2 * PI * f * gamma * uval * vval"
-                                    axi="- 2 * PI * f * gamma * uval * vval" symmetric="1" />
+                                    axi="- 2 * PI * f * gamma * uval * vval" />
                 <matrix i="2" j="1" planar="2 * PI * f * gamma * uval * vval"
-                                    axi="2 * PI * f * gamma * uval * vval" symmetric="1" />
+                                    axi="2 * PI * f * gamma * uval * vval" />
                 <vector i="1" j="2" planar="- 2 * PI * f * gamma * upval * vval"
                                     axi="- 2 * PI * f * gamma * upval * vval" />
                 <vector i="2" j="1" planar="2 * PI * f * gamma * upval * vval"
@@ -187,24 +187,56 @@
 
     <preprocessor>
         <volume>
-            <group>
-                <quantity id="magnetic_permeability" name="Permeability" shortname="mur" unit="-" />
-                <quantity id="magnetic_conductivity" name="Electrical conductivity" shortname="gamma" unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}"/>
-                <quantity id="magnetic_remanence" name="Remanent flux density" shortname="Brm" unit="T" />
-                <quantity id="magnetic_remanence_angle" name="Remanent flux density - angle" shortname="Bra" unit="deg." />
-                <quantity id="magnetic_velocity_x" name="Velocity - x" shortname="vx" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
-                <quantity id="magnetic_velocity_y" name="Velocity - y" shortname="vy" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
-                <quantity id="magnetic_velocity_angular" name="Velocity - angular" shortname="va" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
-                <quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real" shortname="Jer" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" />
-                <quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" shortname="Jei" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" />
+            <group name="Material properties">
+                <quantity id="magnetic_permeability" name="Permeability"
+                shortname="mur" shortname_html="&lt;i&gt;&mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                unit="H/m" unit_html="H.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="H \cdot m^{-1}" />
+                <quantity id="magnetic_conductivity" name="Electrical conductivity"
+                shortname="gamma" unit="S/m" shortname_html="&lt;i&gt;&gamma;&lt;/i&gt;"
+                unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}"/>
+            </group>
+            <group name="Source">
+                <quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real"
+                shortname="Jer" unit="A/m2" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;r,ext&lt;/sub&gt;"
+                unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}"/>
+                <quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag"
+                shortname="Jei" unit="A/m2" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i,ext&lt;/sub&gt;"
+                unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}"/>
+            </group>
+            <group name="Permanent magnet">
+                <quantity id="magnetic_remanence" name="Remanent flux density"
+                shortname="Brm" shortname_html="&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;rm&lt;/sub&gt;"
+                unit="T" />
+                <quantity id="magnetic_remanence_angle" name="Remanent flux density - angle"
+                shortname="Bra" shortname_html="&lt;i&gt;&alpha;&lt;/i&gt;&lt;sub&gt;rm&lt;/sub&gt;"
+                unit="deg." />
+            </group>
+            <group name="Velocity">
+                <quantity id="magnetic_velocity_x" name="Velocity - x"
+                shortname="vx" shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
+                unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
+                <quantity id="magnetic_velocity_y" name="Velocity - y"
+                shortname="vy" shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;"
+                unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
+                <quantity id="magnetic_velocity_angular" name="Velocity - angular"
+                shortname="va" shortname_html="&lt;i&gt;&omega;&lt;/i&gt;"
+                unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
             </group>
         </volume>
         <surface>
             <group>
-                <quantity id="magnetic_potential_real" name="Vector potential - real" shortname="Ar" unit="Wb/m" unit_html="Wb.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Wb \cdot m^{-1}" />
-                <quantity id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" unit="Wb/m" unit_html="Wb.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Wb \cdot m^{-1}"/>
-                <quantity id="magnetic_surface_current_real" name="Surface current - real" shortname="Jr" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" />
-                <quantity id="magnetic_surface_current_imag" name="Surface current - imag" shortname="Ji" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" />
+                <quantity id="magnetic_potential_real" name="Vector potential - real"
+                shortname="Ar" shortname_html="&lt;i&gt;A&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                unit="Wb/m" unit_html="Wb.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Wb \cdot m^{-1}" />
+                <quantity id="magnetic_potential_imag" name="Vector potential - imag"
+                shortname="Ai" shortname_html="&lt;i&gt;A&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
+                unit="Wb/m" unit_html="Wb.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Wb \cdot m^{-1}"/>
+                <quantity id="magnetic_surface_current_real" name="Surface current - real"
+                shortname="Jr" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" />
+                <quantity id="magnetic_surface_current_imag" name="Surface current - imag"
+                shortname="Ji" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
+                unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" />
             </group>
         </surface>
     </preprocessor>
@@ -212,15 +244,15 @@
     <postprocessor>
         <localvariables>
             <localvariable id="magnetic_potential" name="Vector potential" shortname="A" unit="Wb/m" unit_html="Wb.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Wb \cdot m^{-1}" type="scalar">
-                <expression analysistype="steadystate" planar="value1"
-                                                       axi="value1" />
                 <expression analysistype="harmonic" planar="sqrt(value1^2 + value2^2)"
                                                     axi="sqrt(value1^2 + value2^2)" />
-                <expression analysistype="transient" planar="value1"
-                axi="value1" />
             </localvariable>
             <localvariable id="magnetic_potential_real" name="Vector potential - real" shortname="Ar" unit="Wb/m" unit_html="Wb.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Wb \cdot m^{-1}" type="scalar">
+                <expression analysistype="steadystate" planar="value1"
+                                                       axi="value1" />
                 <expression analysistype="harmonic" planar="value1"
+                                                    axi="value1" />
+                <expression analysistype="transient" planar="value1"
                                                     axi="value1" />
             </localvariable>
             <localvariable id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" unit="Wb/m" unit_html="Wb.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Wb \cdot m^{-1}" type="scalar">
@@ -338,16 +370,16 @@
                                                     axi="Jei" />
             </localvariable>
             <localvariable id="magnetic_current_density_induced_velocity" name="Current dens. - ind. velocity" shortname="Jiv" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="steadystate" planar="- gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                       axi="- gamma * (vy * dz1)" />
                 <expression analysistype="harmonic" planar="sqrt((- gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1))^2+(- gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2))^2)"
                                                     axi="sqrt((- gamma * (vy * dz1))^2+(- gamma * (vy * dz2))^2)" />
-                <expression analysistype="transient" planar="- gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                     axi="- gamma * (vy * dz1)" />
             </localvariable>
             <localvariable id="magnetic_current_density_induced_velocity_real" name="Current dens. - ind. velocity - real" shortname="Jivr" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
+                <expression analysistype="steadystate" planar="- gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
+                                                       axi="- gamma * (vy * dz1)" />
                 <expression analysistype="harmonic" planar="- gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
                                                     axi="- gamma * (vy * dz1)" />
+                <expression analysistype="transient" planar="- gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
+                                                     axi="- gamma * (vy * dz1)" />
             </localvariable>
             <localvariable id="magnetic_current_density_induced_velocity_imag" name="Current dens. - ind. velocity - imag" shortname="Jivi" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
                 <expression analysistype="harmonic" planar="- gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2)"
@@ -366,16 +398,16 @@
                                                     axi="- 2 * PI * f * gamma * value1" />
             </localvariable>
             <localvariable id="magnetic_current_density_total" name="Current dens. - total" shortname="J" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="steadystate" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                       axi="Jer - gamma * (vy * dz1)" />
                 <expression analysistype="harmonic" planar="sqrt((Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1) + 2 * PI * f * gamma * value2)^2+(Jei - gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2) - 2 * PI * f * gamma * value1)^2)"
                                                     axi="sqrt((Jer - gamma * (vy * dz1) + 2 * PI * f * gamma * value2)^2+(Jei - gamma * (vy * dz2) - 2 * PI * f * gamma * value1)^2)" />
-                <expression analysistype="transient" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                     axi="Jer - gamma * (vy * dz1)" />
             </localvariable>
             <localvariable id="magnetic_current_density_total_real" name="Current dens. - total - real" shortname="Jr" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
+                <expression analysistype="steadystate" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
+                                                       axi="Jer - gamma * (vy * dz1)" />
                 <expression analysistype="harmonic" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1) + 2 * PI * f * gamma * value2"
                                                     axi="Jer - gamma * (vy * dz1) + 2 * PI * f * gamma * value2" />
+                <expression analysistype="transient" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
+                                                     axi="Jer - gamma * (vy * dz1)" />
             </localvariable>
             <localvariable id="magnetic_current_density_total_imag" name="Current dens. - total - imag" shortname="Ji" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
                 <expression analysistype="harmonic" planar="Jei - gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2) - 2 * PI * f * gamma * value1"
