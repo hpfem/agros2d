@@ -855,7 +855,10 @@ ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Mod
 {
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
     for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
-        sln.push_back(Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->module()->number_of_solution())));
+    {
+        sln.push_back(Util::scene()->sceneSolution()->sln(
+                          k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->module()->number_of_solution())));
+    }
 
     return new ViewScalarFilter<double>(sln, get_expression(physicFieldVariable, physicFieldVariableComp));//TODO PK <double>
 }
@@ -1049,7 +1052,6 @@ void Parser::setParserVariables(Material *material, Boundary *boundary, double v
             Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
             parser_variables[variable->shortname] = material->get_value(variable->id).value(value);
             parser_variables["d" + variable->shortname] = material->get_value(variable->id).derivative(value);
-            // qDebug() << "Parser::setParserVariables: " << parser_variables[variable->shortname];
         }
     }
 
@@ -1186,7 +1188,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
         px = x[i];
         py = y[i];
 
-        for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)   //TODO PK proc se vsude musi davat ten kvalifikator u zdedenych polozek?
+        for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
         {
             pvalue[k] = value[k][i];
             pdx[k] = dudx[k][i];

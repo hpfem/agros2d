@@ -59,11 +59,9 @@ SceneSolution<Scalar>::~SceneSolution()
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::clear()
+void SceneSolution<Scalar>::clear(bool all)
 {
     logMessage("SceneSolution::clear()");
-
-    m_timeStep = -1;
 
     // m_linInitialMeshView.free();
     // m_linSolutionMeshView.free();
@@ -72,15 +70,20 @@ void SceneSolution<Scalar>::clear()
     // m_vecVectorView.free();
 
     // solution array
-    for (int i = 0; i < m_solutionArrayList.size(); i++)
-        delete m_solutionArrayList.at(i);
-    m_solutionArrayList.clear();
-
-    // mesh
-    if (m_meshInitial)
+    if (all)
     {
-        delete m_meshInitial;
-        m_meshInitial = NULL;
+        m_timeStep = -1;
+
+        for (int i = 0; i < m_solutionArrayList.size(); i++)
+            delete m_solutionArrayList.at(i);
+        m_solutionArrayList.clear();
+
+        // mesh
+        if (m_meshInitial)
+        {
+            delete m_meshInitial;
+            m_meshInitial = NULL;
+        }
     }
 
     // countour
@@ -119,11 +122,10 @@ void SceneSolution<Scalar>::solve(SolverMode solverMode)
 
     if (isSolving()) return;
 
-    // clear problem
-    if (solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve)
-        clear();
-
     m_isSolving = true;
+
+    // clear problem
+    clear(solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve);
 
     // open indicator progress
     Indicator::openProgress();
@@ -482,13 +484,6 @@ void SceneSolution<Scalar>::setSlnScalarView(ViewScalarFilter<Scalar> *slnScalar
     m_linScalarView.process_solution(m_slnScalarView,
                                      Hermes::Hermes2D::H2D_FN_VAL_0,
                                      Util::config()->linearizerQuality);
-    /*
-    m_linScalarView.save_solution_vtk(m_slnScalarView, "/home/karban/xxx.vtk", "xxx");
-    m_linScalarView.process_solution(m_slnScalarView,
-                                     Hermes::Hermes2D::H2D_FN_VAL_0,
-                                     0.000001);
-    */
-    // qDebug() << "linScalarView.process_solution: " << time.elapsed();
 
     // deformed shape
     if (Util::config()->deformScalar)
@@ -521,7 +516,8 @@ void SceneSolution<Scalar>::setSlnVectorView(ViewScalarFilter<Scalar> *slnVector
 
     // deformed shape
     if (Util::config()->deformVector)
-        Util::scene()->problemInfo()->module()->deform_shape(m_vecVectorView.get_vertices(), m_vecVectorView.get_num_vertices());
+        Util::scene()->problemInfo()->module()->deform_shape(m_vecVectorView.get_vertices(),
+                                                             m_vecVectorView.get_num_vertices());
 }
 
 template <typename Scalar>
@@ -620,8 +616,8 @@ void SceneSolution<Scalar>::processOrder()
 {
     logMessage("SceneSolution::processOrder()");
 
-    setOrderView(m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
-    // emit processedRangeVector();
+    if (isSolved())
+        setOrderView(m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
 }
 
 template <typename Scalar>

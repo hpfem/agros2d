@@ -487,6 +487,7 @@ void MainWindow::createMenus()
     mnuProblem->addSeparator();
     mnuProblem->addAction(actCreateMesh);
     mnuProblem->addAction(actSolve);
+    mnuProblem->addAction(actSolveAdaptiveStep);
     mnuProblem->addAction(Util::scene()->actClearSolution);
     mnuProblem->addSeparator();
     mnuProblem->addAction(Util::scene()->actProblemProperties);

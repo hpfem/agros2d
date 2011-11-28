@@ -87,14 +87,11 @@ private:
     // error
     bool isError;
 
-    // mesh file
-    Hermes::Hermes2D::Mesh *mesh;
-
     // weak form
     WeakFormAgros<Scalar> *m_wf;
     ProgressItemSolve *m_progressItemSolve;
 
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space;
+    // solution
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution;
 
     // adaptivity
@@ -103,8 +100,8 @@ private:
     Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
-    void readMesh();
-    void createSpace();
+    Hermes::Hermes2D::Mesh *readMesh();
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> createSpace(Hermes::Hermes2D::Mesh *meshParam);
     void initSelectors();
 
     void cleanup();

@@ -52,6 +52,7 @@ cdef extern from "../scripteditorcommandpython.h":
 
     void pythonMesh()
     void pythonSolve()
+    void pythonSolveAdaptiveStep()
 
     void pythonZoomBestFit()
     void pythonZoomIn()
@@ -181,6 +182,9 @@ def mesh():
 def solve():
     pythonSolve()
 
+def solveadaptivestep():
+    pythonSolveAdaptiveStep()
+
 # postprocessor
     
 def zoombestfit():
@@ -201,7 +205,7 @@ def mode(char *str):
 def postprocessormode(char *str):
     pythonPostprocessorMode(str)
 
-def showscalar(char *type, char *variable, char *component, double rangemin = -123456, double rangemax = -123456):
+def showscalar(char *type, char *variable = "default", char *component = "default", double rangemin = -123456, double rangemax = -123456):
     pythonShowScalar(type, variable, component, rangemin, rangemax)
 
 def showgrid(int show):
