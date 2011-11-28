@@ -123,12 +123,13 @@ bool SceneTabWidgetMaterial::save()
 
 void SceneTabWidgetMaterial::refresh()
 {
-    // read equation
-    QString fileName = QString(":/images/equations/%1/%1_%2.png")
-            .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
-            .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
+    assert(0); //TODO
+//    // read equation
+//    QString fileName = QString(":/images/equations/%1/%1_%2.png")
+//            .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
+//            .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
 
-    readPixmap(equationImage, fileName);
+//    readPixmap(equationImage, fileName);
 }
 
 // *************************************************************************************************************************************
@@ -141,7 +142,7 @@ SceneTabWidgetBoundary::SceneTabWidgetBoundary(Hermes::Module::DialogUI ui, Scen
 void SceneTabWidgetBoundary::addCustomWidget(QVBoxLayout *layout)
 {
     comboBox = new QComboBox(this);
-    Util::scene()->problemInfo()->module()->fillComboBoxBoundaryCondition(comboBox);
+    Util::scene()->fieldInfo("TODO")->module()->fillComboBoxBoundaryCondition(comboBox);
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     QFormLayout *layoutForm = new QFormLayout();
@@ -164,7 +165,7 @@ void SceneTabWidgetBoundary::doTypeChanged(int index)
     for (int i = 0; i < ids.count(); i++)
         values.at(i)->setEnabled(false);
 
-    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(comboBox->itemData(index).toString().toStdString());
+    Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(comboBox->itemData(index).toString().toStdString());
     for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
     {
         Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
@@ -177,7 +178,7 @@ void SceneTabWidgetBoundary::doTypeChanged(int index)
 
     // read equation
     QString fileName = QString(":/images/equations/%1/%2.png")
-            .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
+            .arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->id))
             .arg(comboBox->itemData(index).toString());
 
     readPixmap(equationImage, fileName);
@@ -232,11 +233,11 @@ void SceneBoundaryCustomDialog::createContent()
     lblEquationImage->setVisible(false);
 
     tabModules = new QTabWidget(this);
-    SceneTabWidgetBoundary *wid = new SceneTabWidgetBoundary(Util::scene()->problemInfo()->module()->boundary_ui, m_boundary, this);
+    SceneTabWidgetBoundary *wid = new SceneTabWidgetBoundary(Util::scene()->fieldInfo("TODO")->module()->boundary_ui, m_boundary, this);
     wid->createContent();
     wid->setMinimumSize(sizeHint());
 
-    tabModules->addTab(wid, icon(""), QString::fromStdString(Util::scene()->problemInfo()->module()->name));
+    tabModules->addTab(wid, icon(""), QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->name));
 
     layout->addWidget(tabModules, 10, 0, 1, 3);
 }
@@ -284,11 +285,11 @@ void SceneMaterialCustomDialog::createContent()
     lblEquationImage->setVisible(false);
 
     tabModules = new QTabWidget(this);
-    SceneTabWidgetMaterial *wid = new SceneTabWidgetMaterial(Util::scene()->problemInfo()->module()->material_ui, m_material, this);
+    SceneTabWidgetMaterial *wid = new SceneTabWidgetMaterial(Util::scene()->fieldInfo("TODO")->module()->material_ui, m_material, this);
     wid->createContent();
     wid->setMinimumSize(sizeHint());
 
-    tabModules->addTab(wid, icon(""), QString::fromStdString(Util::scene()->problemInfo()->module()->name));
+    tabModules->addTab(wid, icon(""), QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->name));
 
     layout->addWidget(tabModules, 10, 0, 1, 3);
 }

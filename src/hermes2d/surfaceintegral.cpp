@@ -42,10 +42,10 @@ SurfaceIntegralValue::~SurfaceIntegralValue()
 
 void SurfaceIntegralValue::initParser()
 {
-    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module()->surface_integral.begin();
-         it < Util::scene()->problemInfo()->module()->surface_integral.end(); ++it )
+    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->fieldInfo("TODO")->module()->surface_integral.begin();
+         it < Util::scene()->fieldInfo("TODO")->module()->surface_integral.end(); ++it )
     {
-        mu::Parser *pars = Util::scene()->problemInfo()->module()->get_parser();
+        mu::Parser *pars = Util::scene()->fieldInfo("TODO")->module()->get_parser();
 
         pars->SetExpr(((Hermes::Module::Integral *) *it)->expression.scalar);
 
@@ -66,13 +66,13 @@ void SurfaceIntegralValue::calculate()
     double py;
     double ptanx;
     double ptany;
-    double *pvalue = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
-    double *pdx = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
-    double *pdy = new double[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double *pvalue = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
+    double *pdx = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
+    double *pdy = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
 
-    double **value = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
-    double **dudx = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
-    double **dudy = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+    double **value = new double*[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
+    double **dudx = new double*[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
+    double **dudy = new double*[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
 
     for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
     {
@@ -81,7 +81,7 @@ void SurfaceIntegralValue::calculate()
         ((mu::Parser *) *it)->DefineVar("tan" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &ptanx);
         ((mu::Parser *) *it)->DefineVar("tan" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &ptany);
 
-        for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+        for (int k = 0; k < Util::scene()->fieldInfo("TODO")->module()->number_of_solution(); k++)
         {
             std::stringstream number;
             number << (k+1);
@@ -98,9 +98,9 @@ void SurfaceIntegralValue::calculate()
 
     Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
 
-    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+    for (int k = 0; k < Util::scene()->fieldInfo("TODO")->module()->number_of_solution(); k++)
     {
-        sln.push_back(Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->module()->number_of_solution())));
+        sln.push_back(Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())));
 
         sln[k]->set_quad_2d(quad);
     }
@@ -138,7 +138,7 @@ void SurfaceIntegralValue::calculate()
                     {
                         Hermes::Hermes2D::update_limit_table(e->get_mode());
 
-                        for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+                        for (int k = 0; k < Util::scene()->fieldInfo("TODO")->module()->number_of_solution(); k++)
                             sln[k]->set_active_element(e);
 
                         Hermes::Hermes2D::RefMap* ru = sln[0]->get_refmap();
@@ -148,7 +148,7 @@ void SurfaceIntegralValue::calculate()
                         double3 *pt = quad2d->get_points(eo);
                         double3 *tan = ru->get_tangent(edge);
 
-                        for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+                        for (int k = 0; k < Util::scene()->fieldInfo("TODO")->module()->number_of_solution(); k++)
                         {
                             sln[k]->set_quad_order(eo, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
                             // value
@@ -169,8 +169,8 @@ void SurfaceIntegralValue::calculate()
 
                         // parse expression
                         int n = 0;
-                        for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->problemInfo()->module()->surface_integral.begin();
-                             it < Util::scene()->problemInfo()->module()->surface_integral.end(); ++it )
+                        for (Hermes::vector<Hermes::Module::Integral *>::iterator it = Util::scene()->fieldInfo("TODO")->module()->surface_integral.begin();
+                             it < Util::scene()->fieldInfo("TODO")->module()->surface_integral.end(); ++it )
                         {
                             double result = 0.0;
 
@@ -183,7 +183,7 @@ void SurfaceIntegralValue::calculate()
                                     ptanx = tan[i][0];
                                     ptany = tan[i][1];
 
-                                    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+                                    for (int k = 0; k < Util::scene()->fieldInfo("TODO")->module()->number_of_solution(); k++)
                                     {
                                         pvalue[k] = value[k][i];
                                         pdx[k] = dudx[k][i];

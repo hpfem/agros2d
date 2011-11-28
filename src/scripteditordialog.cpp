@@ -91,125 +91,126 @@ PythonEngine *currentPythonEngine()
 
 QString createPythonFromModel()
 {
-    logMessage("createPythonFromModel()");
+    assert(0); //TODO
+//    logMessage("createPythonFromModel()");
 
-    QString str;
+//    QString str;
 
-    // model
-    str += "# model\n";
-    str += QString("newdocument(name=\"%1\", type=\"%2\",\n"
-                   "            physicfield=\"%3\", analysistype=\"%4\",\n"
-                   "            numberofrefinements=%5, polynomialorder=%6,\n"
-                   "            nonlineartolerance=%7, nonlinearsteps=%8").
-            arg(Util::scene()->problemInfo()->name).
-            arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
-            arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id)).
-            arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
-            arg(Util::scene()->problemInfo()->numberOfRefinements).
-            arg(Util::scene()->problemInfo()->polynomialOrder).
-            arg(Util::scene()->problemInfo()->nonlinearTolerance).
-            arg(Util::scene()->problemInfo()->nonlinearSteps);
+//    // model
+//    str += "# model\n";
+//    str += QString("newdocument(name=\"%1\", type=\"%2\",\n"
+//                   "            physicfield=\"%3\", analysistype=\"%4\",\n"
+//                   "            numberofrefinements=%5, polynomialorder=%6,\n"
+//                   "            nonlineartolerance=%7, nonlinearsteps=%8").
+//            arg(Util::scene()->problemInfo()->name).
+//            arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
+//            arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id)).
+//            arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
+//            arg(Util::scene()->problemInfo()->numberOfRefinements).
+//            arg(Util::scene()->problemInfo()->polynomialOrder).
+//            arg(Util::scene()->problemInfo()->nonlinearTolerance).
+//            arg(Util::scene()->problemInfo()->nonlinearSteps);
 
-    if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
-        str += QString(",\n"
-                       "            adaptivitytype=\"%1\", adaptivitysteps=%2, adaptivitytolerance=%3").
-                arg(adaptivityTypeToStringKey(Util::scene()->problemInfo()->adaptivityType)).
-                arg(Util::scene()->problemInfo()->adaptivitySteps).
-                arg(Util::scene()->problemInfo()->adaptivityTolerance);
+//    if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
+//        str += QString(",\n"
+//                       "            adaptivitytype=\"%1\", adaptivitysteps=%2, adaptivitytolerance=%3").
+//                arg(adaptivityTypeToStringKey(Util::scene()->problemInfo()->adaptivityType)).
+//                arg(Util::scene()->problemInfo()->adaptivitySteps).
+//                arg(Util::scene()->problemInfo()->adaptivityTolerance);
 
-    if (Util::scene()->problemInfo()->frequency > 0.0)
-        str += QString(",\n"
-                       "            frequency=%1").
-                arg(Util::scene()->problemInfo()->frequency);
+//    if (Util::scene()->problemInfo()->frequency > 0.0)
+//        str += QString(",\n"
+//                       "            frequency=%1").
+//                arg(Util::scene()->problemInfo()->frequency);
 
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-        str += QString(",\n"
-                       "            adaptivitytype=%1, adaptivitysteps=%2, adaptivitytolerance=%3").
-                arg(Util::scene()->problemInfo()->timeStep.text()).
-                arg(Util::scene()->problemInfo()->timeTotal.text()).
-                arg(Util::scene()->problemInfo()->initialCondition.text());
+//    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//        str += QString(",\n"
+//                       "            adaptivitytype=%1, adaptivitysteps=%2, adaptivitytolerance=%3").
+//                arg(Util::scene()->problemInfo()->timeStep.text()).
+//                arg(Util::scene()->problemInfo()->timeTotal.text()).
+//                arg(Util::scene()->problemInfo()->initialCondition.text());
 
-    str += ")\n\n";
+//    str += ")\n\n";
 
-    // startup script
-    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
-    {
-        str += "# startup script\n";
-        str += Util::scene()->problemInfo()->scriptStartup;
-        str += "\n\n";
-    }
+//    // startup script
+//    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
+//    {
+//        str += "# startup script\n";
+//        str += Util::scene()->problemInfo()->scriptStartup;
+//        str += "\n\n";
+//    }
 
-    // boundaries
-    if (Util::scene()->boundaries.count() > 1)
-    {
-        str += "# boundaries\n";
-        for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-        {
-            str += Util::scene()->boundaries[i]->script() + "\n";
-        }
-        str += "\n";
-    }
+//    // boundaries
+//    if (Util::scene()->boundaries.count() > 1)
+//    {
+//        str += "# boundaries\n";
+//        for (int i = 1; i<Util::scene()->boundaries.count(); i++)
+//        {
+//            str += Util::scene()->boundaries[i]->script() + "\n";
+//        }
+//        str += "\n";
+//    }
 
-    // materials
-    if (Util::scene()->materials.count() > 1)
-    {
-        str += "# materials\n";
-        for (int i = 1; i<Util::scene()->materials.count(); i++)
-        {
-            str += Util::scene()->materials[i]->script() + "\n";
-        }
-        str += "\n";
-    }
+//    // materials
+//    if (Util::scene()->materials.count() > 1)
+//    {
+//        str += "# materials\n";
+//        for (int i = 1; i<Util::scene()->materials.count(); i++)
+//        {
+//            str += Util::scene()->materials[i]->script() + "\n";
+//        }
+//        str += "\n";
+//    }
 
-    // edges
-    if (Util::scene()->edges.count() > 0)
-    {
-        str += "# edges\n";
-        for (int i = 0; i<Util::scene()->edges.count(); i++)
-        {
-            str += QString("addedge(%1, %2, %3, %4").
-                    arg(Util::scene()->edges[i]->nodeStart->point.x).
-                    arg(Util::scene()->edges[i]->nodeStart->point.y).
-                    arg(Util::scene()->edges[i]->nodeEnd->point.x).
-                    arg(Util::scene()->edges[i]->nodeEnd->point.y);
+//    // edges
+//    if (Util::scene()->edges.count() > 0)
+//    {
+//        str += "# edges\n";
+//        for (int i = 0; i<Util::scene()->edges.count(); i++)
+//        {
+//            str += QString("addedge(%1, %2, %3, %4").
+//                    arg(Util::scene()->edges[i]->nodeStart->point.x).
+//                    arg(Util::scene()->edges[i]->nodeStart->point.y).
+//                    arg(Util::scene()->edges[i]->nodeEnd->point.x).
+//                    arg(Util::scene()->edges[i]->nodeEnd->point.y);
 
-            assert(0);
-//             if (Util::scene()->edges[i]->boundary->name != "none")
-//                str += QString(", boundary=\"%1\"").
-//                        arg(QString::fromStdString(Util::scene()->edges[i]->boundary->name));
+//            assert(0);
+////             if (Util::scene()->edges[i]->boundary->name != "none")
+////                str += QString(", boundary=\"%1\"").
+////                        arg(QString::fromStdString(Util::scene()->edges[i]->boundary->name));
 
-            if (Util::scene()->edges[i]->angle > 0.0)
-                str += ", angle=" + QString::number(Util::scene()->edges[i]->angle);
+//            if (Util::scene()->edges[i]->angle > 0.0)
+//                str += ", angle=" + QString::number(Util::scene()->edges[i]->angle);
 
-            if (Util::scene()->edges[i]->refineTowardsEdge > 0)
-                str += ", refine=" + QString::number(Util::scene()->edges[i]->refineTowardsEdge);
+//            if (Util::scene()->edges[i]->refineTowardsEdge > 0)
+//                str += ", refine=" + QString::number(Util::scene()->edges[i]->refineTowardsEdge);
 
-            str += ")\n";
-        }
-        str += "\n";
-    }
+//            str += ")\n";
+//        }
+//        str += "\n";
+//    }
 
-    // labels
-    if (Util::scene()->labels.count() > 0)
-    {
-        str += "# labels\n";
-        for (int i = 0; i<Util::scene()->labels.count(); i++)
-        {
-            str += QString("addlabel(%1, %2, material=\"%3\"").
-                    arg(Util::scene()->labels[i]->point.x).
-                    arg(Util::scene()->labels[i]->point.y).
-                    arg(QString::fromStdString(Util::scene()->labels[i]->material->name));
+//    // labels
+//    if (Util::scene()->labels.count() > 0)
+//    {
+//        str += "# labels\n";
+//        for (int i = 0; i<Util::scene()->labels.count(); i++)
+//        {
+//            str += QString("addlabel(%1, %2, material=\"%3\"").
+//                    arg(Util::scene()->labels[i]->point.x).
+//                    arg(Util::scene()->labels[i]->point.y).
+//                    arg(QString::fromStdString(Util::scene()->labels[i]->material->name));
 
-            if (Util::scene()->labels[i]->area > 0.0)
-                str += ", area=" + QString::number(Util::scene()->labels[i]->area);
-            if (Util::scene()->labels[i]->polynomialOrder > 0)
-                str += ", order=" + QString::number(Util::scene()->labels[i]->polynomialOrder);
+//            if (Util::scene()->labels[i]->area > 0.0)
+//                str += ", area=" + QString::number(Util::scene()->labels[i]->area);
+//            if (Util::scene()->labels[i]->polynomialOrder > 0)
+//                str += ", order=" + QString::number(Util::scene()->labels[i]->polynomialOrder);
 
-            str += ")\n";
-        }
+//            str += ")\n";
+//        }
 
-    }
-    return str;
+//    }
+//    return str;
 }
 
 ScriptEngineRemote::ScriptEngineRemote()

@@ -880,14 +880,15 @@ ProgressItemSolve::ProgressItemSolve() : ProgressItem()
 
 void ProgressItemSolve::setSteps()
 {
-    m_steps = 1;
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-    {
-        Util::scene()->problemInfo()->timeTotal.evaluate();
-        Util::scene()->problemInfo()->timeStep.evaluate();
+    assert(0); //TODO
+//    m_steps = 1;
+//    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//    {
+//        Util::scene()->problemInfo()->timeTotal.evaluate();
+//        Util::scene()->problemInfo()->timeStep.evaluate();
 
-        m_steps += floor(Util::scene()->problemInfo()->timeTotal.number() / Util::scene()->problemInfo()->timeStep.number());
-    }
+//        m_steps += floor(Util::scene()->problemInfo()->timeTotal.number() / Util::scene()->problemInfo()->timeStep.number());
+//    }
 }
 
 bool ProgressItemSolve::run(bool quiet)
@@ -903,40 +904,41 @@ bool ProgressItemSolve::run(bool quiet)
 
 void ProgressItemSolve::solve()
 {
-    logMessage("ProgressItemSolve::solve()");
+    assert(0); //TODO
+//    logMessage("ProgressItemSolve::solve()");
 
-    m_adaptivityError.clear();
-    m_adaptivityDOF.clear();
-    m_nonlinearError.clear();
+//    m_adaptivityError.clear();
+//    m_adaptivityDOF.clear();
+//    m_nonlinearError.clear();
 
-    if (!QFile::exists(tempProblemFileName() + ".xml"))
-        return;
+//    if (!QFile::exists(tempProblemFileName() + ".xml"))
+//        return;
 
-    // benchmark
-    QTime time;
-    time.start();
+//    // benchmark
+//    QTime time;
+//    time.start();
 
-    emit message(tr("Problem analysis: %1 (%2, %3)").
-                 arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)).
-                 arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
-                 arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false, 1);
+//    emit message(tr("Problem analysis: %1 (%2, %3)").
+//                 arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)).
+//                 arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
+//                 arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false, 1);
 
-    emit message(tr("Solver was started: %1 ").arg(matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver)), false, 1);
+//    emit message(tr("Solver was started: %1 ").arg(matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver)), false, 1);
 
-    Hermes::vector<SolutionArray<double> *> solutionArrayList = Util::scene()->problemInfo()->module()->solve(this);  //TODO PK <double>
+//    Hermes::vector<SolutionArray<double> *> solutionArrayList = Util::scene()->problemInfo()->module()->solve(this);  //TODO PK <double>
 
-    if (solutionArrayList.size() > 0)
-    {
-        emit message(tr("Problem was solved"), false, 2);
-        Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
-    }
-    else
-    {
-        emit message(tr("Problem was not solved"), true, 0);
-        Util::scene()->sceneSolution()->setTimeElapsed(0);
-    }
+//    if (solutionArrayList.size() > 0)
+//    {
+//        emit message(tr("Problem was solved"), false, 2);
+//        Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
+//    }
+//    else
+//    {
+//        emit message(tr("Problem was not solved"), true, 0);
+//        Util::scene()->sceneSolution()->setTimeElapsed(0);
+//    }
 
-    Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
+//    Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
 }
 
 // *********************************************************************************************
@@ -950,33 +952,34 @@ ProgressItemSolveAdaptiveStep::ProgressItemSolveAdaptiveStep() : ProgressItemSol
 
 void ProgressItemSolveAdaptiveStep::solve()
 {
-    logMessage("ProgressItemSolveAdaptive::solve()");
+    assert(0); //TODO
+//    logMessage("ProgressItemSolveAdaptive::solve()");
 
-    // benchmark
-    QTime time;
-    time.start();
+//    // benchmark
+//    QTime time;
+//    time.start();
 
-    emit message(tr("Problem analysis: %1 (%2, %3)").
-                 arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)).
-                 arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
-                 arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false, 1);
+//    emit message(tr("Problem analysis: %1 (%2, %3)").
+//                 arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)).
+//                 arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
+//                 arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false, 1);
 
-    emit message(tr("Solver was started: %1 ").arg(matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver)), false, 1);
+//    emit message(tr("Solver was started: %1 ").arg(matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver)), false, 1);
 
-    Hermes::vector<SolutionArray<double> *> solutionArrayList = Util::scene()->problemInfo()->module()->solveAdaptiveStep(this);  //TODO PK <double>
+//    Hermes::vector<SolutionArray<double> *> solutionArrayList = Util::scene()->problemInfo()->module()->solveAdaptiveStep(this);  //TODO PK <double>
 
-    if (solutionArrayList.size() > 0)
-    {
-        emit message(tr("Problem was solved"), false, 2);
-        Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
-    }
-    else
-    {
-        emit message(tr("Problem was not solved"), true, 0);
-        Util::scene()->sceneSolution()->setTimeElapsed(0);
-    }
+//    if (solutionArrayList.size() > 0)
+//    {
+//        emit message(tr("Problem was solved"), false, 2);
+//        Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
+//    }
+//    else
+//    {
+//        emit message(tr("Problem was not solved"), true, 0);
+//        Util::scene()->sceneSolution()->setTimeElapsed(0);
+//    }
 
-    Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
+//    Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
 }
 
 // *********************************************************************************************
@@ -1400,61 +1403,63 @@ void ProgressDialog::appendProgressItem(ProgressItem *progressItem)
 
 bool ProgressDialog::run(bool showViewProgress)
 {
-    logMessage("ProgressDialog::run()");
+    assert(0); //TODO
+//    logMessage("ProgressDialog::run()");
 
-    // current widget
-    tabType->setCurrentWidget(controlsProgress);
+//    // current widget
+//    tabType->setCurrentWidget(controlsProgress);
 
-    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
-    {
-        controlsConvergenceErrorChart->setEnabled(false);
-        controlsConvergenceDOFChart->setEnabled(false);
-        controlsConvergenceErrorDOFChart->setEnabled(false);
-    }
+//    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
+//    {
+//        controlsConvergenceErrorChart->setEnabled(false);
+//        controlsConvergenceDOFChart->setEnabled(false);
+//        controlsConvergenceErrorDOFChart->setEnabled(false);
+//    }
 
-    m_showViewProgress = showViewProgress;
-    QTimer::singleShot(0, this, SLOT(start()));
+//    m_showViewProgress = showViewProgress;
+//    QTimer::singleShot(0, this, SLOT(start()));
 
-    return exec();
+//    return exec();
 }
 
 void ProgressDialog::start()
 {
-    logMessage("ProgressDialog::start()");
+    assert(0); //TODO
+//    logMessage("ProgressDialog::start()");
 
-    lstMessage->clear();
+//    lstMessage->clear();
 
-    progressBar->setRange(0, progressSteps());
-    progressBar->setValue(0);
+//    progressBar->setRange(0, progressSteps());
+//    progressBar->setValue(0);
 
-    for (int i = 0; i < m_progressItem.count(); i++)
-    {
-        m_currentProgressItem = m_progressItem.at(i);
+//    for (int i = 0; i < m_progressItem.count(); i++)
+//    {
+//        m_currentProgressItem = m_progressItem.at(i);
 
-        if (!m_currentProgressItem->run())
-        {
-            // error
-            finished();
-            clear();
-            return;
-        }
-    }
+//        if (!m_currentProgressItem->run())
+//        {
+//            // error
+//            finished();
+//            clear();
+//            return;
+//        }
+//    }
 
-    // successfull run
-    if ((Util::config()->showConvergenceChart
-         && Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None
-         && curveError->dataSize() > 0)
-            || (Util::config()->showNonlinearChart && curveNonlinear->dataSize() > 0))
-    {
-        btnCancel->setEnabled(false);
-        btnSaveImage->setEnabled(false);
-        btnSaveData->setEnabled(false);
-    }
-    else
-    {
-        clear();
-        close();
-    }
+//    // successfull run
+//    if ((Util::config()->showConvergenceChart
+//         && Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None
+//         && curveError->dataSize() > 0)
+//            || (Util::config()->showNonlinearChart && curveNonlinear->dataSize() > 0))
+//    {
+//        btnCancel->setEnabled(false);
+//        btnSaveImage->setEnabled(false);
+//        btnSaveData->setEnabled(false);
+//    }
+//    else
+//    {
+//        clear();
+//        close();
+//    }
 }
 
 void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
@@ -1495,176 +1500,177 @@ void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
 
 void ProgressDialog::itemChanged()
 {
-    logMessage("ProgressDialog::itemChanged()");
+    assert(0); //TODO
+//    logMessage("ProgressDialog::itemChanged()");
 
-    if (m_progressItem.count() == 0)
-        return;
+//    if (m_progressItem.count() == 0)
+//        return;
 
-    ProgressItemSolve *itemSolve = dynamic_cast<ProgressItemSolve *>(m_currentProgressItem);
-    if (itemSolve)
-    {
-        // adaptivity error
-        int adaptivityCount = itemSolve->adaptivityError().count();
-        if (adaptivityCount > 0)
-        {
-            double *xval = new double[adaptivityCount];
-            double *yvalError = new double[adaptivityCount];
-            double *yvalDOF = new double[adaptivityCount];
+//    ProgressItemSolve *itemSolve = dynamic_cast<ProgressItemSolve *>(m_currentProgressItem);
+//    if (itemSolve)
+//    {
+//        // adaptivity error
+//        int adaptivityCount = itemSolve->adaptivityError().count();
+//        if (adaptivityCount > 0)
+//        {
+//            double *xval = new double[adaptivityCount];
+//            double *yvalError = new double[adaptivityCount];
+//            double *yvalDOF = new double[adaptivityCount];
 
-            double minDOF = numeric_limits<double>::max();
-            double maxDOF = numeric_limits<double>::min();
+//            double minDOF = numeric_limits<double>::max();
+//            double maxDOF = numeric_limits<double>::min();
 
-            for (int i = 0; i<adaptivityCount; i++)
-            {
-                xval[i] = i+1;
-                yvalError[i] = itemSolve->adaptivityError().at(i);
-                yvalDOF[i] = itemSolve->adaptivityDOF().at(i);
+//            for (int i = 0; i<adaptivityCount; i++)
+//            {
+//                xval[i] = i+1;
+//                yvalError[i] = itemSolve->adaptivityError().at(i);
+//                yvalDOF[i] = itemSolve->adaptivityDOF().at(i);
 
-                minDOF = min(minDOF, yvalDOF[i]);
-                maxDOF = max(maxDOF, yvalDOF[i]);
-            }
+//                minDOF = min(minDOF, yvalDOF[i]);
+//                maxDOF = max(maxDOF, yvalDOF[i]);
+//            }
 
-            // max error
-            double *xvalErrorMax = new double[2];
-            double *yvalErrorMax = new double[2];
-            xvalErrorMax[0] = 1;
-            xvalErrorMax[1] = adaptivityCount;
-            yvalErrorMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
-            yvalErrorMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
+//            // max error
+//            double *xvalErrorMax = new double[2];
+//            double *yvalErrorMax = new double[2];
+//            xvalErrorMax[0] = 1;
+//            xvalErrorMax[1] = adaptivityCount;
+//            yvalErrorMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
+//            yvalErrorMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
 
-            // plot error
-            bool doReplotError = chartError->autoReplot();
-            chartError->setAutoReplot(false);
+//            // plot error
+//            bool doReplotError = chartError->autoReplot();
+//            chartError->setAutoReplot(false);
 
-            curveError->setData(xval, yvalError, adaptivityCount);
-            curveErrorMax->setData(xvalErrorMax, yvalErrorMax, 2);
+//            curveError->setData(xval, yvalError, adaptivityCount);
+//            curveErrorMax->setData(xvalErrorMax, yvalErrorMax, 2);
 
-            chartError->setAutoReplot(doReplotError);
-            chartError->replot();
+//            chartError->setAutoReplot(doReplotError);
+//            chartError->replot();
 
-            // plot dof
-            bool doReplotDOF = chartDOF->autoReplot();
-            chartDOF->setAutoReplot(false);
+//            // plot dof
+//            bool doReplotDOF = chartDOF->autoReplot();
+//            chartDOF->setAutoReplot(false);
 
-            curveDOF->setData(xval, yvalDOF, adaptivityCount);
+//            curveDOF->setData(xval, yvalDOF, adaptivityCount);
 
-            chartDOF->setAutoReplot(doReplotDOF);
-            chartDOF->replot();
+//            chartDOF->setAutoReplot(doReplotDOF);
+//            chartDOF->replot();
 
-            // max error
-            double *xvalErrorDOFMax = new double[2];
-            double *yvalErrorDOFMax = new double[2];
-            xvalErrorDOFMax[0] = minDOF;
-            xvalErrorDOFMax[1] = maxDOF;
-            yvalErrorDOFMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
-            yvalErrorDOFMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
+//            // max error
+//            double *xvalErrorDOFMax = new double[2];
+//            double *yvalErrorDOFMax = new double[2];
+//            xvalErrorDOFMax[0] = minDOF;
+//            xvalErrorDOFMax[1] = maxDOF;
+//            yvalErrorDOFMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
+//            yvalErrorDOFMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
 
-            // plot conv. chart
-            bool doReplotErrorDOF = chartErrorDOF->autoReplot();
-            chartErrorDOF->setAutoReplot(false);
+//            // plot conv. chart
+//            bool doReplotErrorDOF = chartErrorDOF->autoReplot();
+//            chartErrorDOF->setAutoReplot(false);
 
-            curveErrorDOF->setData(yvalDOF, yvalError, adaptivityCount);
-            curveErrorDOFMax->setData(xvalErrorDOFMax, yvalErrorDOFMax, 2);
+//            curveErrorDOF->setData(yvalDOF, yvalError, adaptivityCount);
+//            curveErrorDOFMax->setData(xvalErrorDOFMax, yvalErrorDOFMax, 2);
 
-            chartErrorDOF->setAutoReplot(doReplotErrorDOF);
-            chartErrorDOF->replot();
+//            chartErrorDOF->setAutoReplot(doReplotErrorDOF);
+//            chartErrorDOF->replot();
 
-            // save data
-            QFile fileErr(tempProblemDir() + "/adaptivity_error.csv");
-            QTextStream outErr(&fileErr);
-            if (fileErr.open(QIODevice::WriteOnly | QIODevice::Text))
-            {
-                for (unsigned i = 0; i < curveError->data().size(); i++)
-                    outErr << curveError->data().x(i) << ";" << curveError->data().y(i) << endl;
-            }
-            fileErr.close();
+//            // save data
+//            QFile fileErr(tempProblemDir() + "/adaptivity_error.csv");
+//            QTextStream outErr(&fileErr);
+//            if (fileErr.open(QIODevice::WriteOnly | QIODevice::Text))
+//            {
+//                for (unsigned i = 0; i < curveError->data().size(); i++)
+//                    outErr << curveError->data().x(i) << ";" << curveError->data().y(i) << endl;
+//            }
+//            fileErr.close();
 
-            QFile fileDOF(tempProblemDir() + "/adaptivity_dof.csv");
-            QTextStream outDOF(&fileDOF);
-            if (fileDOF.open(QIODevice::WriteOnly | QIODevice::Text))
-            {
-                for (unsigned i = 0; i < curveDOF->data().size(); i++)
-                    outDOF << curveDOF->data().x(i) << ";" << curveDOF->data().y(i) << endl;
-            }
-            fileDOF.close();
+//            QFile fileDOF(tempProblemDir() + "/adaptivity_dof.csv");
+//            QTextStream outDOF(&fileDOF);
+//            if (fileDOF.open(QIODevice::WriteOnly | QIODevice::Text))
+//            {
+//                for (unsigned i = 0; i < curveDOF->data().size(); i++)
+//                    outDOF << curveDOF->data().x(i) << ";" << curveDOF->data().y(i) << endl;
+//            }
+//            fileDOF.close();
 
-            QFile fileErrDOF(tempProblemDir() + "/adaptivity_conv.csv");
-            QTextStream outErrDOF(&fileErrDOF);
-            if (fileErrDOF.open(QIODevice::WriteOnly | QIODevice::Text))
-            {
-                for (unsigned i = 0; i < curveErrorDOF->data().size(); i++)
-                    outErrDOF << curveErrorDOF->data().x(i) << ";" << curveErrorDOF->data().y(i) << endl;
-            }
-            fileErrDOF.close();
+//            QFile fileErrDOF(tempProblemDir() + "/adaptivity_conv.csv");
+//            QTextStream outErrDOF(&fileErrDOF);
+//            if (fileErrDOF.open(QIODevice::WriteOnly | QIODevice::Text))
+//            {
+//                for (unsigned i = 0; i < curveErrorDOF->data().size(); i++)
+//                    outErrDOF << curveErrorDOF->data().x(i) << ";" << curveErrorDOF->data().y(i) << endl;
+//            }
+//            fileErrDOF.close();
 
-            // save images
-            QFile::remove(tempProblemDir() + "/adaptivity_error.png");
-            QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
-            QFile::remove(tempProblemDir() + "/adaptivity_conv.png");
+//            // save images
+//            QFile::remove(tempProblemDir() + "/adaptivity_error.png");
+//            QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
+//            QFile::remove(tempProblemDir() + "/adaptivity_conv.png");
 
-            chartError->saveImage(tempProblemDir() + "/adaptivity_error.png");
-            chartDOF->saveImage(tempProblemDir() + "/adaptivity_dof.png");
-            chartErrorDOF->saveImage(tempProblemDir() + "/adaptivity_conv.png");
+//            chartError->saveImage(tempProblemDir() + "/adaptivity_error.png");
+//            chartDOF->saveImage(tempProblemDir() + "/adaptivity_dof.png");
+//            chartErrorDOF->saveImage(tempProblemDir() + "/adaptivity_conv.png");
 
-            delete[] xval;
-            delete[] yvalError;
-            delete[] xvalErrorMax;
-            delete[] yvalErrorMax;
-            delete[] yvalDOF;
-            delete[] xvalErrorDOFMax;
-            delete[] yvalErrorDOFMax;
-        }
+//            delete[] xval;
+//            delete[] yvalError;
+//            delete[] xvalErrorMax;
+//            delete[] yvalErrorMax;
+//            delete[] yvalDOF;
+//            delete[] xvalErrorDOFMax;
+//            delete[] yvalErrorDOFMax;
+//        }
 
-        // nonlinearity
-        int nonlinearErrorCount = itemSolve->nonlinearError().count();
-        if (nonlinearErrorCount > 0)
-        {
-            double *xval = new double[nonlinearErrorCount];
-            double *yvalError = new double[nonlinearErrorCount];
+//        // nonlinearity
+//        int nonlinearErrorCount = itemSolve->nonlinearError().count();
+//        if (nonlinearErrorCount > 0)
+//        {
+//            double *xval = new double[nonlinearErrorCount];
+//            double *yvalError = new double[nonlinearErrorCount];
 
-            for (int i = 0; i<nonlinearErrorCount; i++)
-            {
-                xval[i] = i+1;
-                yvalError[i] = itemSolve->nonlinearError().at(i);
-            }
+//            for (int i = 0; i<nonlinearErrorCount; i++)
+//            {
+//                xval[i] = i+1;
+//                yvalError[i] = itemSolve->nonlinearError().at(i);
+//            }
 
-            // max error
-            double *xvalErrorMax = new double[2];
-            double *yvalErrorMax = new double[2];
-            xvalErrorMax[0] = 1;
-            xvalErrorMax[1] = nonlinearErrorCount;
-            yvalErrorMax[0] = Util::scene()->problemInfo()->nonlinearTolerance;
-            yvalErrorMax[1] = Util::scene()->problemInfo()->nonlinearTolerance;
+//            // max error
+//            double *xvalErrorMax = new double[2];
+//            double *yvalErrorMax = new double[2];
+//            xvalErrorMax[0] = 1;
+//            xvalErrorMax[1] = nonlinearErrorCount;
+//            yvalErrorMax[0] = Util::scene()->problemInfo()->nonlinearTolerance;
+//            yvalErrorMax[1] = Util::scene()->problemInfo()->nonlinearTolerance;
 
-            // plot error
-            bool doReplotError = chartNonlinear->autoReplot();
-            chartNonlinear->setAutoReplot(false);
+//            // plot error
+//            bool doReplotError = chartNonlinear->autoReplot();
+//            chartNonlinear->setAutoReplot(false);
 
-            curveNonlinear->setData(xval, yvalError, nonlinearErrorCount);
-            curveNonlinearMax->setData(xvalErrorMax, yvalErrorMax, 2);
+//            curveNonlinear->setData(xval, yvalError, nonlinearErrorCount);
+//            curveNonlinearMax->setData(xvalErrorMax, yvalErrorMax, 2);
 
-            chartNonlinear->setAutoReplot(doReplotError);
-            chartNonlinear->replot();
+//            chartNonlinear->setAutoReplot(doReplotError);
+//            chartNonlinear->replot();
 
-            // save data
-            QFile fileErr(tempProblemDir() + "/nonlinear_error.csv");
-            QTextStream outErr(&fileErr);
-            if (fileErr.open(QIODevice::WriteOnly | QIODevice::Text))
-            {
-                for (int i = 0; i < curveNonlinear->data().size(); i++)
-                    outErr << curveNonlinear->data().x(i) << ";" << curveNonlinear->data().y(i) << endl;
-            }
-            fileErr.close();
+//            // save data
+//            QFile fileErr(tempProblemDir() + "/nonlinear_error.csv");
+//            QTextStream outErr(&fileErr);
+//            if (fileErr.open(QIODevice::WriteOnly | QIODevice::Text))
+//            {
+//                for (int i = 0; i < curveNonlinear->data().size(); i++)
+//                    outErr << curveNonlinear->data().x(i) << ";" << curveNonlinear->data().y(i) << endl;
+//            }
+//            fileErr.close();
 
-            // save image
-            chartNonlinear->saveImage(tempProblemDir() + "/nonlinear_error.png");
+//            // save image
+//            chartNonlinear->saveImage(tempProblemDir() + "/nonlinear_error.png");
 
-            delete[] xval;
-            delete[] yvalError;
-            delete[] xvalErrorMax;
-            delete[] yvalErrorMax;
-        }
-    }
+//            delete[] xval;
+//            delete[] yvalError;
+//            delete[] xvalErrorMax;
+//            delete[] yvalErrorMax;
+//        }
+//    }
 }
 
 void ProgressDialog::finished()

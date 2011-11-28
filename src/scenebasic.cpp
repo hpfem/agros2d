@@ -591,74 +591,75 @@ SceneLabelDialog::SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNe
 
 QLayout* SceneLabelDialog::createContent()
 {
-    logMessage("DSceneLabel::createContent()");
+    assert(0); //TODO
+//    logMessage("DSceneLabel::createContent()");
 
-    txtPointX = new ValueLineEdit();
-    txtPointY = new ValueLineEdit();
-    connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    cmbMaterial = new QComboBox();
-    connect(cmbMaterial, SIGNAL(currentIndexChanged(int)), this, SLOT(doMaterialChanged(int)));
-    btnMaterial = new QPushButton(icon("three-dots"), "");
-    btnMaterial->setMaximumSize(btnMaterial->sizeHint());
-    connect(btnMaterial, SIGNAL(clicked()), this, SLOT(doMaterialClicked()));
-    txtArea = new ValueLineEdit();
-    txtArea->setMinimum(0.0);
-    connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    txtPolynomialOrder = new QSpinBox(this);
-    txtPolynomialOrder->setMinimum(0);
-    txtPolynomialOrder->setMaximum(10);
+//    txtPointX = new ValueLineEdit();
+//    txtPointY = new ValueLineEdit();
+//    connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+//    connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+//    cmbMaterial = new QComboBox();
+//    connect(cmbMaterial, SIGNAL(currentIndexChanged(int)), this, SLOT(doMaterialChanged(int)));
+//    btnMaterial = new QPushButton(icon("three-dots"), "");
+//    btnMaterial->setMaximumSize(btnMaterial->sizeHint());
+//    connect(btnMaterial, SIGNAL(clicked()), this, SLOT(doMaterialClicked()));
+//    txtArea = new ValueLineEdit();
+//    txtArea->setMinimum(0.0);
+//    connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+//    txtPolynomialOrder = new QSpinBox(this);
+//    txtPolynomialOrder->setMinimum(0);
+//    txtPolynomialOrder->setMaximum(10);
 
-    // coordinates must be greater then or equal to 0 (axisymmetric case)
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-        txtPointX->setMinimum(0.0);
+//    // coordinates must be greater then or equal to 0 (axisymmetric case)
+//    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+//        txtPointX->setMinimum(0.0);
 
-    // coordinates
-    QFormLayout *layoutCoordinates = new QFormLayout();
-    layoutCoordinates->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
-    layoutCoordinates->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
+//    // coordinates
+//    QFormLayout *layoutCoordinates = new QFormLayout();
+//    layoutCoordinates->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
+//    layoutCoordinates->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
 
-    QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
-    grpCoordinates->setLayout(layoutCoordinates);
+//    QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
+//    grpCoordinates->setLayout(layoutCoordinates);
 
-    // marker
-    QHBoxLayout *layoutMaterial = new QHBoxLayout();
-    layoutMaterial->addWidget(cmbMaterial);
-    layoutMaterial->addWidget(btnMaterial);
+//    // marker
+//    QHBoxLayout *layoutMaterial = new QHBoxLayout();
+//    layoutMaterial->addWidget(cmbMaterial);
+//    layoutMaterial->addWidget(btnMaterial);
 
-    // order
-    chkPolynomialOrder = new QCheckBox();
-    connect(chkPolynomialOrder, SIGNAL(stateChanged(int)), this, SLOT(doPolynomialOrder(int)));
+//    // order
+//    chkPolynomialOrder = new QCheckBox();
+//    connect(chkPolynomialOrder, SIGNAL(stateChanged(int)), this, SLOT(doPolynomialOrder(int)));
 
-    QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
-    layoutPolynomialOrder->addWidget(chkPolynomialOrder);
-    layoutPolynomialOrder->addWidget(txtPolynomialOrder);
-    layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::scene()->problemInfo()->polynomialOrder)));
+//    QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
+//    layoutPolynomialOrder->addWidget(chkPolynomialOrder);
+//    layoutPolynomialOrder->addWidget(txtPolynomialOrder);
+//    layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::scene()->problemInfo()->polynomialOrder)));
 
-    // area
-    chkArea = new QCheckBox();
-    connect(chkArea, SIGNAL(stateChanged(int)), this, SLOT(doArea(int)));
+//    // area
+//    chkArea = new QCheckBox();
+//    connect(chkArea, SIGNAL(stateChanged(int)), this, SLOT(doArea(int)));
 
-    QHBoxLayout *layoutArea = new QHBoxLayout();
-    layoutArea->addWidget(chkArea);
-    layoutArea->addWidget(txtArea);
+//    QHBoxLayout *layoutArea = new QHBoxLayout();
+//    layoutArea->addWidget(chkArea);
+//    layoutArea->addWidget(txtArea);
 
-    // mesh
-    QFormLayout *layoutMeshParameters = new QFormLayout();
-    layoutMeshParameters->addRow(tr("Triangle area (m):"), layoutArea);
-    layoutMeshParameters->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
+//    // mesh
+//    QFormLayout *layoutMeshParameters = new QFormLayout();
+//    layoutMeshParameters->addRow(tr("Triangle area (m):"), layoutArea);
+//    layoutMeshParameters->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
 
-    QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
-    grpMeshParameters->setLayout(layoutMeshParameters);
+//    QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
+//    grpMeshParameters->setLayout(layoutMeshParameters);
 
-    QFormLayout *layout = new QFormLayout();
-    layout->addRow(tr("Material:"), layoutMaterial);
-    layout->addRow(grpCoordinates);
-    layout->addRow(grpMeshParameters);
+//    QFormLayout *layout = new QFormLayout();
+//    layout->addRow(tr("Material:"), layoutMaterial);
+//    layout->addRow(grpCoordinates);
+//    layout->addRow(grpMeshParameters);
 
-    fillComboBox();
+//    fillComboBox();
 
-    return layout;
+//    return layout;
 }
 
 void SceneLabelDialog::fillComboBox()

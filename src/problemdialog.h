@@ -23,6 +23,7 @@
 #include "util.h"
 
 class ProblemInfo;
+class FieldInfo;
 class ScriptEditor;
 
 class SLineEditDouble;

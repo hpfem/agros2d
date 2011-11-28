@@ -128,53 +128,55 @@ int SceneMaterial::showDialog(QWidget *parent)
 
 QString SceneMaterial::script()
 {
-    // value
-    QString val = "{";
-    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
-    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-    {
-        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text() + ", ";
-    }
+    assert(0); //TODO
+//    // value
+//    QString val = "{";
+//    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+//    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+//    {
+//        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+//        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text() + ", ";
+//    }
 
-    if (val.length() > 1)
-        val = val.left(val.length() - 2);
-    val += "}";
+//    if (val.length() > 1)
+//        val = val.left(val.length() - 2);
+//    val += "}";
 
-    QString str;
+//    QString str;
 
-    str += QString("addmaterial(\"%1\", %2)").
-            arg(QString::fromStdString(name)).
-            arg(val);
+//    str += QString("addmaterial(\"%1\", %2)").
+//            arg(QString::fromStdString(name)).
+//            arg(val);
 
-    return str;
+//    return str;
 }
 
 QString SceneMaterial::html()
 {
-    logMessage("SceneMaterial::html()");
+    assert(0); //TODO
+//    logMessage("SceneMaterial::html()");
     
-    QString out;
-    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
-    out += "<table>";
+//    QString out;
+//    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
+//    out += "<table>";
     
-    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::scene()->problemInfo()->module()->material_type_variables.begin();
-         it < Util::scene()->problemInfo()->module()->material_type_variables.end(); ++it )
-    {
-        Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
+//    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::scene()->problemInfo()->module()->material_type_variables.begin();
+//         it < Util::scene()->problemInfo()->module()->material_type_variables.end(); ++it )
+//    {
+//        Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
         
-        out += "<tr>";
-//        out += QString("<td>%1 (%2)</td>").
-//                arg(QString::fromStdString(material->name)).
-//                arg(QString::fromStdString(material->unit));
-        // FIXME - add value
-        out += QString("<td>%1</td>").
-                arg(QString::fromStdString("FIXME"));
-        out += "</tr>";
-    }
-    out += "</table>";
+//        out += "<tr>";
+////        out += QString("<td>%1 (%2)</td>").
+////                arg(QString::fromStdString(material->name)).
+////                arg(QString::fromStdString(material->unit));
+//        // FIXME - add value
+//        out += QString("<td>%1</td>").
+//                arg(QString::fromStdString("FIXME"));
+//        out += "</tr>";
+//    }
+//    out += "</table>";
     
-    return out;
+//    return out;
 }
 
 QVariant SceneMaterial::variant()
@@ -290,19 +292,20 @@ void SceneBoundaryDialog::evaluated(bool isError)
 
 void SceneBoundaryDialog::readEquation(QLabel *lblEquation, const QString &type)
 {
-    QString fileName = QString(":/images/equations/%1/%2_%3.png")
-            .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name))
-            .arg(type)
-            .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
+    assert(0); //TODO
+//    QString fileName = QString(":/images/equations/%1/%2_%3.png")
+//            .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name))
+//            .arg(type)
+//            .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
     
-    if (QFile::exists(fileName))
-        // analysis dependand
-        readPixmap(lblEquation, fileName);
-    else
-        // general form
-        readPixmap(lblEquation, QString(":/images/equations/%1/%2.png")
-                   .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
-                   .arg(type));
+//    if (QFile::exists(fileName))
+//        // analysis dependand
+//        readPixmap(lblEquation, fileName);
+//    else
+//        // general form
+//        readPixmap(lblEquation, QString(":/images/equations/%1/%2.png")
+//                   .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
+//                   .arg(type));
 }
 
 // *************************************************************************************************************************************
@@ -322,34 +325,35 @@ SceneMaterialDialog::SceneMaterialDialog(QWidget *parent) : QDialog(parent)
 
 void SceneMaterialDialog::createDialog()
 {
-    logMessage("DSceneMaterial::createDialog()");
+    assert(0); //TODO
+//    logMessage("DSceneMaterial::createDialog()");
     
-    // dialog buttons
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+//    // dialog buttons
+//    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+//    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+//    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
     
-    // name
-    layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
-    layout->addWidget(txtName, 0, 2);
+//    // name
+//    layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
+//    layout->addWidget(txtName, 0, 2);
     
-    // equation
-    layout->addWidget(lblEquation, 1, 0, 1, 2);
-    layout->addWidget(lblEquationImage, 1, 2);
-    readPixmap(lblEquationImage,
-               QString(":/images/equations/%1/%1_%2.png")
-               .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
-               .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)));
+//    // equation
+//    layout->addWidget(lblEquation, 1, 0, 1, 2);
+//    layout->addWidget(lblEquationImage, 1, 2);
+//    readPixmap(lblEquationImage,
+//               QString(":/images/equations/%1/%1_%2.png")
+//               .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
+//               .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)));
     
-    // content
-    createContent();
+//    // content
+//    createContent();
     
-    layout->addWidget(buttonBox, 100, 0, 1, 3);
-    layout->setRowStretch(99, 1);
+//    layout->addWidget(buttonBox, 100, 0, 1, 3);
+//    layout->setRowStretch(99, 1);
     
-    txtName->setFocus();
+//    txtName->setFocus();
     
-    setLayout(layout);
+//    setLayout(layout);
 }
 
 void SceneMaterialDialog::setSize()

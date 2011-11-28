@@ -72,28 +72,29 @@ SceneViewSettings::SceneViewSettings()
 
 void SceneViewSettings::defaultValues()
 {
-    logMessage("SceneViewSettings::defaultValues()");
+    assert(0); //TODO
+//    logMessage("SceneViewSettings::defaultValues()");
 
-    scalarRangeMin =  numeric_limits<double>::max();
-    scalarRangeMax = -numeric_limits<double>::max();
+//    scalarRangeMin =  numeric_limits<double>::max();
+//    scalarRangeMax = -numeric_limits<double>::max();
 
-    // visible objects
-    showGeometry = true;
-    showInitialMesh = false;
+//    // visible objects
+//    showGeometry = true;
+//    showInitialMesh = false;
 
-    postprocessorShow = SceneViewPostprocessorShow_ScalarView;
+//    postprocessorShow = SceneViewPostprocessorShow_ScalarView;
 
-    showContours = false;
-    showVectors = false;
-    showSolutionMesh = false;
+//    showContours = false;
+//    showVectors = false;
+//    showSolutionMesh = false;
 
-    contourPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
+//    contourPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
 
-    scalarPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
-    scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module()->view_default_scalar_variable_comp();
-    scalarRangeAuto = true;
+//    scalarPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
+//    scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module()->view_default_scalar_variable_comp();
+//    scalarRangeAuto = true;
 
-    vectorPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_vector_variable->id;
+//    vectorPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_vector_variable->id;
 }
 
 // *******************************************************************************************************
@@ -1195,108 +1196,109 @@ void SceneView::paintOrderColorBar()
 
 void SceneView::paintScalarFieldColorBar(double min, double max)
 {
-    logMessage("SceneView::paintScalarFieldColorBar()");
+    assert(0); //TODO
+//    logMessage("SceneView::paintScalarFieldColorBar()");
 
-    if (!Util::config()->showScalarScale) return;
+//    if (!Util::config()->showScalarScale) return;
 
-    loadProjection2d();
+//    loadProjection2d();
 
-    glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
-    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
+//    glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
+//    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
 
-    // dimensions
-    int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
-    int textHeight = fontMetrics().height();
-    Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
-    Point scaleBorder = Point(10.0, 10.0);
-    double scaleLeft = (contextWidth() - (45.0 + textWidth));
-    int numTicks = 11;
+//    // dimensions
+//    int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
+//    int textHeight = fontMetrics().height();
+//    Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
+//    Point scaleBorder = Point(10.0, 10.0);
+//    double scaleLeft = (contextWidth() - (45.0 + textWidth));
+//    int numTicks = 11;
 
-    // blended rectangle
-    drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
-              0.91, 0.91, 0.91);
+//    // blended rectangle
+//    drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
+//              0.91, 0.91, 0.91);
 
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//    glDisable(GL_DEPTH_TEST);
+//    glEnable(GL_POLYGON_OFFSET_FILL);
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    // palette border
-    glColor3d(0.0, 0.0, 0.0);
-    glBegin(GL_QUADS);
-    glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 50.0);
-    glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 50.0);
-    glVertex2d(scaleLeft + 10.0, scaleBorder.y + 10.0);
-    glVertex2d(scaleLeft + 30.0, scaleBorder.y + 10.0);
-    glEnd();
+//    // palette border
+//    glColor3d(0.0, 0.0, 0.0);
+//    glBegin(GL_QUADS);
+//    glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 50.0);
+//    glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 50.0);
+//    glVertex2d(scaleLeft + 10.0, scaleBorder.y + 10.0);
+//    glVertex2d(scaleLeft + 30.0, scaleBorder.y + 10.0);
+//    glEnd();
 
-    glDisable(GL_POLYGON_OFFSET_FILL);
+//    glDisable(GL_POLYGON_OFFSET_FILL);
 
-    // palette
-    glEnable(GL_TEXTURE_1D);
-    glBindTexture(GL_TEXTURE_1D, 1);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+//    // palette
+//    glEnable(GL_TEXTURE_1D);
+//    glBindTexture(GL_TEXTURE_1D, 1);
+//    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
-    glBegin(GL_QUADS);
-    if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) > EPS_ZERO)
-        glTexCoord1d(m_texScale + m_texShift);
-    else
-        glTexCoord1d(m_texShift);
-    glVertex2d(scaleLeft + 28.0, scaleBorder.y + scaleSize.y - 52.0);
-    glVertex2d(scaleLeft + 12.0, scaleBorder.y + scaleSize.y - 52.0);
-    glTexCoord1d(m_texShift);
-    glVertex2d(scaleLeft + 12.0, scaleBorder.y + 12.0);
-    glVertex2d(scaleLeft + 28.0, scaleBorder.y + 12.0);
-    glEnd();
+//    glBegin(GL_QUADS);
+//    if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) > EPS_ZERO)
+//        glTexCoord1d(m_texScale + m_texShift);
+//    else
+//        glTexCoord1d(m_texShift);
+//    glVertex2d(scaleLeft + 28.0, scaleBorder.y + scaleSize.y - 52.0);
+//    glVertex2d(scaleLeft + 12.0, scaleBorder.y + scaleSize.y - 52.0);
+//    glTexCoord1d(m_texShift);
+//    glVertex2d(scaleLeft + 12.0, scaleBorder.y + 12.0);
+//    glVertex2d(scaleLeft + 28.0, scaleBorder.y + 12.0);
+//    glEnd();
 
-    glDisable(GL_TEXTURE_1D);
+//    glDisable(GL_TEXTURE_1D);
 
-    // ticks
-    glLineWidth(1.0);
-    glBegin(GL_LINES);
-    for (int i = 1; i < numTicks+1; i++)
-    {
-        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
+//    // ticks
+//    glLineWidth(1.0);
+//    glBegin(GL_LINES);
+//    for (int i = 1; i < numTicks+1; i++)
+//    {
+//        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
-        glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
-        glVertex2d(scaleLeft + 15.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
-        glVertex2d(scaleLeft + 25.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
-        glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
-    }
-    glEnd();
+//        glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+//        glVertex2d(scaleLeft + 15.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+//        glVertex2d(scaleLeft + 25.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+//        glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+//    }
+//    glEnd();
 
-    // labels
-    for (int i = 1; i < numTicks+1; i++)
-    {
-        double value = 0.0;
-        if (!Util::config()->scalarRangeLog)
-            value = min + (double) (i-1) / (numTicks-1) * (max - min);
-        else
-            value = min + (double) pow(Util::config()->scalarRangeBase, ((i-1) / (numTicks-1)))/Util::config()->scalarRangeBase * (max - min);
+//    // labels
+//    for (int i = 1; i < numTicks+1; i++)
+//    {
+//        double value = 0.0;
+//        if (!Util::config()->scalarRangeLog)
+//            value = min + (double) (i-1) / (numTicks-1) * (max - min);
+//        else
+//            value = min + (double) pow(Util::config()->scalarRangeBase, ((i-1) / (numTicks-1)))/Util::config()->scalarRangeBase * (max - min);
 
-        if (fabs(value) < EPS_ZERO) value = 0.0;
-        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
+//        if (fabs(value) < EPS_ZERO) value = 0.0;
+//        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
-        renderText(scaleLeft + 33.0 + ((value >= 0.0) ? fontMetrics().width("-") : 0.0),
-                   scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
-                   0.0,
-                   QString::number(value, '+e', Util::config()->scalarDecimalPlace));
-    }
+//        renderText(scaleLeft + 33.0 + ((value >= 0.0) ? fontMetrics().width("-") : 0.0),
+//                   scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
+//                   0.0,
+//                   QString::number(value, '+e', Util::config()->scalarDecimalPlace));
+//    }
 
-    // variable
-    QString str = QString("%1 (%2)").
-            arg(QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable != "" ? Util::scene()->problemInfo()->module()->get_variable(m_sceneViewSettings.scalarPhysicFieldVariable)->shortname : "")).
-            arg(QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable != "" ? Util::scene()->problemInfo()->module()->get_variable(m_sceneViewSettings.scalarPhysicFieldVariable)->unit : ""));
+//    // variable
+//    QString str = QString("%1 (%2)").
+//            arg(QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable != "" ? Util::scene()->problemInfo()->module()->get_variable(m_sceneViewSettings.scalarPhysicFieldVariable)->shortname : "")).
+//            arg(QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable != "" ? Util::scene()->problemInfo()->module()->get_variable(m_sceneViewSettings.scalarPhysicFieldVariable)->unit : ""));
 
-    renderText(scaleLeft + scaleSize.x / 2.0 - fontMetrics().width(str) / 2.0,
-               scaleBorder.y + scaleSize.y - 20.0,
-               0.0,
-               str);
-    // line
-    glLineWidth(1.0);
-    glBegin(GL_LINES);
-    glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
-    glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
-    glEnd();
+//    renderText(scaleLeft + scaleSize.x / 2.0 - fontMetrics().width(str) / 2.0,
+//               scaleBorder.y + scaleSize.y - 20.0,
+//               0.0,
+//               str);
+//    // line
+//    glLineWidth(1.0);
+//    glBegin(GL_LINES);
+//    glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
+//    glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
+//    glEnd();
 }
 
 void SceneView::paintScalarField()
@@ -2257,70 +2259,71 @@ void SceneView::paintVectors()
 
 void SceneView::paintSceneModeLabel()
 {
-    logMessage("SceneView::paintSceneModeLabel()");
+    assert(0); //TODO
+//    logMessage("SceneView::paintSceneModeLabel()");
 
-    QString text = "";
+//    QString text = "";
 
-    switch (m_sceneMode)
-    {
-    case SceneMode_OperateOnNodes:
-        text = tr("Operate on nodes");
-        break;
-    case SceneMode_OperateOnEdges:
-        text = tr("Operate on edges");
-        break;
-    case SceneMode_OperateOnLabels:
-        text = tr("Operate on labels");
-        break;
-    case SceneMode_Postprocessor:
-        switch (m_sceneViewSettings.postprocessorShow)
-        {
-        case SceneViewPostprocessorShow_ScalarView:
-        case SceneViewPostprocessorShow_ScalarView3D:
-        case SceneViewPostprocessorShow_ScalarView3DSolid:
-            text = QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable != "" ? Util::scene()->problemInfo()->module()->get_variable(m_sceneViewSettings.scalarPhysicFieldVariable)->name : "");
-            if (m_sceneViewSettings.scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar)
-                text += " - " + physicFieldVariableCompString(m_sceneViewSettings.scalarPhysicFieldVariableComp);
-            break;
-        case SceneViewPostprocessorShow_Model:
-            text = tr("Model");
-            break;
-        case SceneViewPostprocessorShow_Order:
-            text = tr("Polynomial order");
-            break;
-        default:
-            text = tr("Postprocessor");
-        }
-        break;
-    }
+//    switch (m_sceneMode)
+//    {
+//    case SceneMode_OperateOnNodes:
+//        text = tr("Operate on nodes");
+//        break;
+//    case SceneMode_OperateOnEdges:
+//        text = tr("Operate on edges");
+//        break;
+//    case SceneMode_OperateOnLabels:
+//        text = tr("Operate on labels");
+//        break;
+//    case SceneMode_Postprocessor:
+//        switch (m_sceneViewSettings.postprocessorShow)
+//        {
+//        case SceneViewPostprocessorShow_ScalarView:
+//        case SceneViewPostprocessorShow_ScalarView3D:
+//        case SceneViewPostprocessorShow_ScalarView3DSolid:
+//            text = QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable != "" ? Util::scene()->problemInfo()->module()->get_variable(m_sceneViewSettings.scalarPhysicFieldVariable)->name : "");
+//            if (m_sceneViewSettings.scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar)
+//                text += " - " + physicFieldVariableCompString(m_sceneViewSettings.scalarPhysicFieldVariableComp);
+//            break;
+//        case SceneViewPostprocessorShow_Model:
+//            text = tr("Model");
+//            break;
+//        case SceneViewPostprocessorShow_Order:
+//            text = tr("Polynomial order");
+//            break;
+//        default:
+//            text = tr("Postprocessor");
+//        }
+//        break;
+//    }
 
-    loadProjection2d();
+//    loadProjection2d();
 
-    glLoadIdentity();
+//    glLoadIdentity();
 
-    glScaled(2.0/contextWidth(), 2.0/contextHeight(), 1.0);
-    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
+//    glScaled(2.0/contextWidth(), 2.0/contextHeight(), 1.0);
+//    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
 
-    glDisable(GL_DEPTH_TEST);
+//    glDisable(GL_DEPTH_TEST);
 
-    // render viewport label
-    QFont fontLabel = font();
-    fontLabel.setPointSize(fontLabel.pointSize() + 1);
+//    // render viewport label
+//    QFont fontLabel = font();
+//    fontLabel.setPointSize(fontLabel.pointSize() + 1);
 
-    Point posText = Point((contextWidth()-QFontMetrics(fontLabel).width(text)) / 2.0,
-                          (contextHeight() - QFontMetrics(fontLabel).height() / 1.3));
+//    Point posText = Point((contextWidth()-QFontMetrics(fontLabel).width(text)) / 2.0,
+//                          (contextHeight() - QFontMetrics(fontLabel).height() / 1.3));
 
-    // blended rectangle
-    double xs = posText.x - QFontMetrics(fontLabel).width(" ");
-    double ys = posText.y - QFontMetrics(fontLabel).height() / 3.0;
-    double xe = xs + QFontMetrics(fontLabel).width(text + "  ");
-    double ye = contextHeight();
+//    // blended rectangle
+//    double xs = posText.x - QFontMetrics(fontLabel).width(" ");
+//    double ys = posText.y - QFontMetrics(fontLabel).height() / 3.0;
+//    double xe = xs + QFontMetrics(fontLabel).width(text + "  ");
+//    double ye = contextHeight();
 
-    drawBlend(Point(xs, ys), Point(xe, ye), 0.8, 0.8, 0.8, 0.93);
+//    drawBlend(Point(xs, ys), Point(xe, ye), 0.8, 0.8, 0.8, 0.93);
 
-    // text
-    glColor3d(0.0, 0.0, 0.0);
-    renderText(posText.x, posText.y, 0.0, text, fontLabel);
+//    // text
+//    glColor3d(0.0, 0.0, 0.0);
+//    renderText(posText.x, posText.y, 0.0, text, fontLabel);
 }
 
 void SceneView::paintZoomRegion()
@@ -4259,145 +4262,146 @@ ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)
 
 void SceneView::saveImagesForReport(const QString &path, bool showGrid, bool showRulers, bool showAxes, bool showLabel, int w, int h)
 {
-    logMessage("SceneView::saveImagesForReport()");
+    assert(0); //TODO
+//    logMessage("SceneView::saveImagesForReport()");
 
-    // store sceneview settings
-    SceneViewSettings sceneViewSettingsCopy = m_sceneViewSettings;
-    SceneMode sceneModeCopy = m_sceneMode;
-    double scale2dCopy = m_scale2d;
-    Point offset2dCopy = m_offset2d;
-    Point offset3dCopy = m_offset3d;
-    Point3 rotation3dCopy = m_rotation3d;
+//    // store sceneview settings
+//    SceneViewSettings sceneViewSettingsCopy = m_sceneViewSettings;
+//    SceneMode sceneModeCopy = m_sceneMode;
+//    double scale2dCopy = m_scale2d;
+//    Point offset2dCopy = m_offset2d;
+//    Point offset3dCopy = m_offset3d;
+//    Point3 rotation3dCopy = m_rotation3d;
 
-    bool showRulersCopy = Util::config()->showRulers;
-    bool showGridCopy = Util::config()->showGrid;
-    bool showAxesCopy = Util::config()->showAxes;
-    bool showLabelCopy = Util::config()->showLabel;
+//    bool showRulersCopy = Util::config()->showRulers;
+//    bool showGridCopy = Util::config()->showGrid;
+//    bool showAxesCopy = Util::config()->showAxes;
+//    bool showLabelCopy = Util::config()->showLabel;
 
-    Util::config()->showRulers = showRulers;
-    Util::config()->showGrid = showGrid;
-    Util::config()->showAxes = showAxes;
-    Util::config()->showLabel = showLabel;
+//    Util::config()->showRulers = showRulers;
+//    Util::config()->showGrid = showGrid;
+//    Util::config()->showAxes = showAxes;
+//    Util::config()->showLabel = showLabel;
 
-    // remove old files
-    QFile::remove(path + "/geometry.png");
-    QFile::remove(path + "/mesh.png");
-    QFile::remove(path + "/order.png");
-    QFile::remove(path + "/scalarview.png");
+//    // remove old files
+//    QFile::remove(path + "/geometry.png");
+//    QFile::remove(path + "/mesh.png");
+//    QFile::remove(path + "/order.png");
+//    QFile::remove(path + "/scalarview.png");
 
-    doZoomBestFit();
+//    doZoomBestFit();
 
-    m_sceneViewSettings.showGeometry = true;
-    m_sceneViewSettings.showContours = false;
-    m_sceneViewSettings.showVectors = false;
-    m_sceneViewSettings.showInitialMesh = false;
-    m_sceneViewSettings.showSolutionMesh = false;
+//    m_sceneViewSettings.showGeometry = true;
+//    m_sceneViewSettings.showContours = false;
+//    m_sceneViewSettings.showVectors = false;
+//    m_sceneViewSettings.showInitialMesh = false;
+//    m_sceneViewSettings.showSolutionMesh = false;
 
-    // geometry
-    actSceneModeLabel->trigger();
-    ErrorResult resultGeometry = saveImageToFile(path + "/geometry.png", w, h);
-    if (resultGeometry.isError())
-        resultGeometry.showDialog();
+//    // geometry
+//    actSceneModeLabel->trigger();
+//    ErrorResult resultGeometry = saveImageToFile(path + "/geometry.png", w, h);
+//    if (resultGeometry.isError())
+//        resultGeometry.showDialog();
 
-    // mesh
-    if (m_scene->sceneSolution()->isMeshed())
-    {
-        // show only initial mesh
-        actSceneModeLabel->trigger();
+//    // mesh
+//    if (m_scene->sceneSolution()->isMeshed())
+//    {
+//        // show only initial mesh
+//        actSceneModeLabel->trigger();
 
-        m_sceneViewSettings.showInitialMesh = true;
-        m_sceneViewSettings.showSolutionMesh = true;
-        ErrorResult resultMesh1 = saveImageToFile(path + "/mesh.png", w, h);
-        if (resultMesh1.isError())
-            resultMesh1.showDialog();
-        m_sceneViewSettings.showInitialMesh = false;
-        m_sceneViewSettings.showSolutionMesh = false;
-    }
+//        m_sceneViewSettings.showInitialMesh = true;
+//        m_sceneViewSettings.showSolutionMesh = true;
+//        ErrorResult resultMesh1 = saveImageToFile(path + "/mesh.png", w, h);
+//        if (resultMesh1.isError())
+//            resultMesh1.showDialog();
+//        m_sceneViewSettings.showInitialMesh = false;
+//        m_sceneViewSettings.showSolutionMesh = false;
+//    }
 
-    if (m_scene->sceneSolution()->isSolved())
-    {
-        // when solved show both meshes
-        actSceneModePostprocessor->trigger();
+//    if (m_scene->sceneSolution()->isSolved())
+//    {
+//        // when solved show both meshes
+//        actSceneModePostprocessor->trigger();
 
-        m_scene->sceneSolution()->processSolutionMesh();
-        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
-        updateGL();
+//        m_scene->sceneSolution()->processSolutionMesh();
+//        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
+//        updateGL();
 
-        m_sceneViewSettings.showInitialMesh = true;
-        m_sceneViewSettings.showSolutionMesh = true;
-        ErrorResult resultMesh2 = saveImageToFile(path + "/mesh.png", w, h);
-        if (resultMesh2.isError())
-            resultMesh2.showDialog();
-        m_sceneViewSettings.showInitialMesh = false;
-        m_sceneViewSettings.showSolutionMesh = false;
+//        m_sceneViewSettings.showInitialMesh = true;
+//        m_sceneViewSettings.showSolutionMesh = true;
+//        ErrorResult resultMesh2 = saveImageToFile(path + "/mesh.png", w, h);
+//        if (resultMesh2.isError())
+//            resultMesh2.showDialog();
+//        m_sceneViewSettings.showInitialMesh = false;
+//        m_sceneViewSettings.showSolutionMesh = false;
 
-        // contours
-        m_scene->sceneSolution()->processRangeContour();
-        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
-        m_sceneViewSettings.showContours = true;
-        updateGL();
-        ErrorResult resultContourView = saveImageToFile(path + "/contourview.png", w, h);
-        if (resultContourView.isError())
-            resultContourView.showDialog();
-        m_sceneViewSettings.showContours = false;
+//        // contours
+//        m_scene->sceneSolution()->processRangeContour();
+//        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
+//        m_sceneViewSettings.showContours = true;
+//        updateGL();
+//        ErrorResult resultContourView = saveImageToFile(path + "/contourview.png", w, h);
+//        if (resultContourView.isError())
+//            resultContourView.showDialog();
+//        m_sceneViewSettings.showContours = false;
 
-        // vectors
-        m_scene->sceneSolution()->processRangeVector();
-        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
-        m_sceneViewSettings.showVectors = true;
-        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module()->view_default_vector_variable->id;
-        updateGL();
-        ErrorResult resultVectorView = saveImageToFile(path + "/vectorview.png", w, h);
-        if (resultVectorView.isError())
-            resultVectorView.showDialog();
-        m_sceneViewSettings.showVectors = false;
+//        // vectors
+//        m_scene->sceneSolution()->processRangeVector();
+//        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
+//        m_sceneViewSettings.showVectors = true;
+//        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module()->view_default_vector_variable->id;
+//        updateGL();
+//        ErrorResult resultVectorView = saveImageToFile(path + "/vectorview.png", w, h);
+//        if (resultVectorView.isError())
+//            resultVectorView.showDialog();
+//        m_sceneViewSettings.showVectors = false;
 
-        // order
-        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_Order;
-        updateGL();
-        ErrorResult resultOrder = saveImageToFile(path + "/order.png", w, h);
-        if (resultOrder.isError())
-            resultOrder.showDialog();
+//        // order
+//        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_Order;
+//        updateGL();
+//        ErrorResult resultOrder = saveImageToFile(path + "/order.png", w, h);
+//        if (resultOrder.isError())
+//            resultOrder.showDialog();
 
-        actSceneModePostprocessor->trigger();
+//        actSceneModePostprocessor->trigger();
 
-        // last step
-        if (m_scene->problemInfo()->module()->transient_solutions)
-            m_scene->sceneSolution()->setTimeStep(m_scene->sceneSolution()->timeStepCount() - 1);
+//        // last step
+//        if (m_scene->problemInfo()->module()->transient_solutions)
+//            m_scene->sceneSolution()->setTimeStep(m_scene->sceneSolution()->timeStepCount() - 1);
 
-        // scalar field
-        m_scene->sceneSolution()->processRangeScalar();
-        m_sceneViewSettings.scalarRangeAuto = true;
-        m_sceneViewSettings.scalarPhysicFieldVariable = m_scene->problemInfo()->module()->view_default_scalar_variable->id;
-        m_sceneViewSettings.scalarPhysicFieldVariableComp = m_scene->problemInfo()->module()->view_default_scalar_variable_comp();
-        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module()->view_default_vector_variable->id;
+//        // scalar field
+//        m_scene->sceneSolution()->processRangeScalar();
+//        m_sceneViewSettings.scalarRangeAuto = true;
+//        m_sceneViewSettings.scalarPhysicFieldVariable = m_scene->problemInfo()->module()->view_default_scalar_variable->id;
+//        m_sceneViewSettings.scalarPhysicFieldVariableComp = m_scene->problemInfo()->module()->view_default_scalar_variable_comp();
+//        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module()->view_default_vector_variable->id;
 
-        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_ScalarView;
-        updateGL();
-        ErrorResult resultScalarView = saveImageToFile(path + "/scalarview.png", w, h);
-        if (resultScalarView.isError())
-            resultScalarView.showDialog();
-    }
+//        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_ScalarView;
+//        updateGL();
+//        ErrorResult resultScalarView = saveImageToFile(path + "/scalarview.png", w, h);
+//        if (resultScalarView.isError())
+//            resultScalarView.showDialog();
+//    }
 
-    // restore sceneview settings
-    m_sceneViewSettings = sceneViewSettingsCopy;
-    m_sceneMode = sceneModeCopy;
-    m_scale2d = scale2dCopy;
-    m_offset2d = offset2dCopy;
-    m_offset3d = offset3dCopy;
-    m_rotation3d = rotation3dCopy;
+//    // restore sceneview settings
+//    m_sceneViewSettings = sceneViewSettingsCopy;
+//    m_sceneMode = sceneModeCopy;
+//    m_scale2d = scale2dCopy;
+//    m_offset2d = offset2dCopy;
+//    m_offset3d = offset3dCopy;
+//    m_rotation3d = rotation3dCopy;
 
-    Util::config()->showRulers = showRulersCopy;
-    Util::config()->showGrid = showGridCopy;
-    Util::config()->showAxes = showAxesCopy;
-    Util::config()->showLabel = showLabelCopy;
+//    Util::config()->showRulers = showRulersCopy;
+//    Util::config()->showGrid = showGridCopy;
+//    Util::config()->showAxes = showAxesCopy;
+//    Util::config()->showLabel = showLabelCopy;
 
-    if (m_sceneMode == SceneMode_OperateOnNodes) actSceneModeNode->trigger();
-    if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeEdge->isChecked();
-    if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeLabel->isChecked();
-    if (m_sceneMode == SceneMode_Postprocessor) actSceneModePostprocessor->isChecked();
+//    if (m_sceneMode == SceneMode_OperateOnNodes) actSceneModeNode->trigger();
+//    if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeEdge->isChecked();
+//    if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeLabel->isChecked();
+//    if (m_sceneMode == SceneMode_Postprocessor) actSceneModePostprocessor->isChecked();
 
-    refresh();
+//    refresh();
 }
 
 void SceneView::setSceneFont()

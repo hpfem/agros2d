@@ -161,7 +161,7 @@ bool Value::evaluate(double time, bool quiet)
 bool Value::isTimeDep() const
 {
     // FIXME - do it better
-    return Util::scene()->problemInfo()->analysisType == AnalysisType_Transient
+    return Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient
             && m_text.contains("time");
 }
 
@@ -282,7 +282,7 @@ bool ValueLineEdit::evaluate(bool quiet)
     if (!m_hasNonlin || m_table->size() == 0)
     {
         Value val = value();
-        btnEditTimeDep->setVisible(m_hasTimeDep && Util::scene()->problemInfo()->analysisType == AnalysisType_Transient);
+        btnEditTimeDep->setVisible(m_hasTimeDep && Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient);
 
         if (val.evaluate(quiet))
         {

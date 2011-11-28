@@ -64,7 +64,8 @@ void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 
     // clear combo
     cmbFieldVariable->clear();
-    Util::scene()->problemInfo()->module()->fillComboBoxScalarVariable(cmbFieldVariable);
+    assert(0); //TODO
+//    Util::scene()->fieldInfo("TODO")->module()->fillComboBoxScalarVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
@@ -80,7 +81,7 @@ void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 
     // clear combo
     cmbFieldVariable->clear();
-    Util::scene()->problemInfo()->module()->fillComboBoxVectorVariable(cmbFieldVariable);
+    Util::scene()->fieldInfo("TODO")->module()->fillComboBoxVectorVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
@@ -99,11 +100,11 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
     // clear combo
     cmbFieldVariable->clear();
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+    if (Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient)
     {
         for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
         {
-            cmbFieldVariable->addItem(QString::number(Util::scene()->sceneSolution()->solutionArrayList().at(i * Util::scene()->problemInfo()->module()->number_of_solution())->time, 'e', 2), i);
+            cmbFieldVariable->addItem(QString::number(Util::scene()->sceneSolution()->solutionArrayList().at(i * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())->time, 'e', 2), i);
         }
     }
     else

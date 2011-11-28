@@ -116,106 +116,107 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
                        char *analysistype, double timestep, double totaltime, double initialcondition,
                        char *linearitytype, double nonlineartolerance, int nonlinearsteps)
 {
-    logMessage("pythonNewDocument()");
+    assert(0); //TODO
+//    logMessage("pythonNewDocument()");
 
-    Util::scene()->clear();
-    Util::scene()->problemInfo()->name = QString(name);
+//    Util::scene()->clear();
+//    Util::scene()->problemInfo()->name = QString(name);
 
-    // type
-    Util::scene()->problemInfo()->problemType = problemTypeFromStringKey(QString(type));
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Undefined)
-        throw invalid_argument(QObject::tr("Problem type '%1' is not implemented.").arg(QString(type)).toStdString());
+//    // type
+//    Util::scene()->problemInfo()->problemType = problemTypeFromStringKey(QString(type));
+//    if (Util::scene()->problemInfo()->problemType == ProblemType_Undefined)
+//        throw invalid_argument(QObject::tr("Problem type '%1' is not implemented.").arg(QString(type)).toStdString());
 
-    // analysis type
-    Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Undefined)
-        throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
+//    // analysis type
+//    Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
+//    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Undefined)
+//        throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
 
-    // physicfield
-    QString field = physicfield;
-    if (field != "")
-    {
-        Util::scene()->problemInfo()->setModule(moduleFactory(field.toStdString(),
-                                                              problemTypeFromStringKey(QString(type)),
-                                                              analysisTypeFromStringKey(QString(analysistype)),
-                                                              ""));
-    }
-    else
-        throw invalid_argument(QObject::tr("Physic field '%1' is not implemented.").arg(QString(physicfield)).toStdString());
+//    // physicfield
+//    QString field = physicfield;
+//    if (field != "")
+//    {
+//        Util::scene()->problemInfo()->setModule(moduleFactory(field.toStdString(),
+//                                                              problemTypeFromStringKey(QString(type)),
+//                                                              analysisTypeFromStringKey(QString(analysistype)),
+//                                                              ""));
+//    }
+//    else
+//        throw invalid_argument(QObject::tr("Physic field '%1' is not implemented.").arg(QString(physicfield)).toStdString());
 
-    // numberofrefinements
-    if (numberofrefinements >= 0)
-        Util::scene()->problemInfo()->numberOfRefinements = numberofrefinements;
-    else
-        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(numberofrefinements).toStdString());
+//    // numberofrefinements
+//    if (numberofrefinements >= 0)
+//        Util::scene()->problemInfo()->numberOfRefinements = numberofrefinements;
+//    else
+//        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(numberofrefinements).toStdString());
 
-    // polynomialorder
-    if (polynomialorder >= 1 && polynomialorder <= 10)
-        Util::scene()->problemInfo()->polynomialOrder = polynomialorder;
-    else
-        throw out_of_range(QObject::tr("Polynomial order '%1' is out of range.").arg(polynomialorder).toStdString());
+//    // polynomialorder
+//    if (polynomialorder >= 1 && polynomialorder <= 10)
+//        Util::scene()->problemInfo()->polynomialOrder = polynomialorder;
+//    else
+//        throw out_of_range(QObject::tr("Polynomial order '%1' is out of range.").arg(polynomialorder).toStdString());
 
-    // adaptivitytype
-    Util::scene()->problemInfo()->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivitytype));
-    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_Undefined)
-        throw invalid_argument(QObject::tr("Adaptivity type '%1' is not implemented.").arg(QString(adaptivitytype)).toStdString());
+//    // adaptivitytype
+//    Util::scene()->problemInfo()->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivitytype));
+//    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_Undefined)
+//        throw invalid_argument(QObject::tr("Adaptivity type '%1' is not implemented.").arg(QString(adaptivitytype)).toStdString());
 
-    // adaptivitysteps
-    if (adaptivitysteps >= 0)
-        Util::scene()->problemInfo()->adaptivitySteps = adaptivitysteps;
-    else
-        throw out_of_range(QObject::tr("Adaptivity step '%1' is out of range.").arg(adaptivitysteps).toStdString());
+//    // adaptivitysteps
+//    if (adaptivitysteps >= 0)
+//        Util::scene()->problemInfo()->adaptivitySteps = adaptivitysteps;
+//    else
+//        throw out_of_range(QObject::tr("Adaptivity step '%1' is out of range.").arg(adaptivitysteps).toStdString());
 
-    // adaptivitytolerance
-    if (adaptivitytolerance >= 0)
-        Util::scene()->problemInfo()->adaptivityTolerance = adaptivitytolerance;
-    else
-        throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
+//    // adaptivitytolerance
+//    if (adaptivitytolerance >= 0)
+//        Util::scene()->problemInfo()->adaptivityTolerance = adaptivitytolerance;
+//    else
+//        throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
 
-    // frequency
-    if (Util::scene()->problemInfo()->module()->harmonic_solutions)
-    {
-        if (frequency >= 0)
-            Util::scene()->problemInfo()->frequency = frequency;
-        else
-            throw invalid_argument(QObject::tr("The frequency can not be used for this problem.").toStdString());
-    }
+//    // frequency
+//    if (Util::scene()->problemInfo()->module()->harmonic_solutions)
+//    {
+//        if (frequency >= 0)
+//            Util::scene()->problemInfo()->frequency = frequency;
+//        else
+//            throw invalid_argument(QObject::tr("The frequency can not be used for this problem.").toStdString());
+//    }
 
-    // transient timestep
-    if (timestep > 0)
-        Util::scene()->problemInfo()->timeStep = Value(QString::number(timestep));
-    else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-        throw out_of_range(QObject::tr("Time step must be positive.").toStdString());
+//    // transient timestep
+//    if (timestep > 0)
+//        Util::scene()->problemInfo()->timeStep = Value(QString::number(timestep));
+//    else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//        throw out_of_range(QObject::tr("Time step must be positive.").toStdString());
 
-    // transient timetotal
-    if (totaltime > 0)
-        Util::scene()->problemInfo()->timeTotal = Value(QString::number(totaltime));
-    else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-        throw out_of_range(QObject::tr("Total time must be positive.").toStdString());
+//    // transient timetotal
+//    if (totaltime > 0)
+//        Util::scene()->problemInfo()->timeTotal = Value(QString::number(totaltime));
+//    else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//        throw out_of_range(QObject::tr("Total time must be positive.").toStdString());
 
-    // nonlineartolerance
-    if (nonlineartolerance >= 0)
-        Util::scene()->problemInfo()->nonlinearTolerance = nonlineartolerance;
-    else
-        throw out_of_range(QObject::tr("Nonlinear tolerance '%1' is out of range.").arg(nonlineartolerance).toStdString());
+//    // nonlineartolerance
+//    if (nonlineartolerance >= 0)
+//        Util::scene()->problemInfo()->nonlinearTolerance = nonlineartolerance;
+//    else
+//        throw out_of_range(QObject::tr("Nonlinear tolerance '%1' is out of range.").arg(nonlineartolerance).toStdString());
 
-    // nonlinearsteps
-    if (nonlinearsteps >= 0)
-        Util::scene()->problemInfo()->nonlinearSteps = nonlinearsteps;
-    else
-        throw out_of_range(QObject::tr("Number of nonlinear steps '%1' must be positive.").arg(nonlinearsteps).toStdString());
+//    // nonlinearsteps
+//    if (nonlinearsteps >= 0)
+//        Util::scene()->problemInfo()->nonlinearSteps = nonlinearsteps;
+//    else
+//        throw out_of_range(QObject::tr("Number of nonlinear steps '%1' must be positive.").arg(nonlinearsteps).toStdString());
 
-    // linearity type
-    Util::scene()->problemInfo()->linearityType = linearityTypeFromStringKey(QString(linearitytype));
-    if (Util::scene()->problemInfo()->linearityType == LinearityType_Undefined)
-        throw invalid_argument(QObject::tr("Linearity type '%1' is not implemented").arg(QString(linearitytype)).toStdString());
+//    // linearity type
+//    Util::scene()->problemInfo()->linearityType = linearityTypeFromStringKey(QString(linearitytype));
+//    if (Util::scene()->problemInfo()->linearityType == LinearityType_Undefined)
+//        throw invalid_argument(QObject::tr("Linearity type '%1' is not implemented").arg(QString(linearitytype)).toStdString());
 
-    // transient initial condition
-    Util::scene()->problemInfo()->initialCondition = Value(QString::number(initialcondition));
+//    // transient initial condition
+//    Util::scene()->problemInfo()->initialCondition = Value(QString::number(initialcondition));
 
-    // invalidate
-    sceneView()->doDefaultValues();
-    Util::scene()->refresh();
+//    // invalidate
+//    sceneView()->doDefaultValues();
+//    Util::scene()->refresh();
 }
 
 // opendocument(filename)
@@ -348,65 +349,66 @@ void pythonDeleteLabelPoint(double x, double y)
 // addboundary(name, type, value, ...)
 static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
 {
-    logMessage("pythonAddBoundary()");
+    assert(0); //TODO
+//    logMessage("pythonAddBoundary()");
 
-    PyObject *dict;
-    char *name, *type;
-    if (PyArg_ParseTuple(args, "ssO", &name, &type, &dict))
-    {
-        // check name
-        if (Util::scene()->getBoundary(name))
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary already exists.").toStdString().c_str());
-            return NULL;
-        }
+//    PyObject *dict;
+//    char *name, *type;
+//    if (PyArg_ParseTuple(args, "ssO", &name, &type, &dict))
+//    {
+//        // check name
+//        if (Util::scene()->getBoundary(name))
+//        {
+//            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary already exists.").toStdString().c_str());
+//            return NULL;
+//        }
 
-        PyObject *key, *value;
-        Py_ssize_t pos = 0;
+//        PyObject *key, *value;
+//        Py_ssize_t pos = 0;
 
-        std::map<std::string, Value> values;
-        while (PyDict_Next(dict, &pos, &key, &value))
-        {
-            double val;
-            char *str;
+//        std::map<std::string, Value> values;
+//        while (PyDict_Next(dict, &pos, &key, &value))
+//        {
+//            double val;
+//            char *str;
 
-            // key
-            PyArg_Parse(key, "s", &str);
-            PyArg_Parse(value, "d", &val);
+//            // key
+//            PyArg_Parse(key, "s", &str);
+//            PyArg_Parse(value, "d", &val);
 
-            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
-            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-            {
-                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-                if (variable->shortname == std::string(str))
-                    values[variable->id] = Value(QString::number(val));
-            }
-        }
+//            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+//            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+//            {
+//                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+//                if (variable->shortname == std::string(str))
+//                    values[variable->id] = Value(QString::number(val));
+//            }
+//        }
 
-        assert(0); //TODO
-        //Util::scene()->addBoundary(new SceneBoundary(name, type, values));
-        Py_RETURN_NONE;
-    }
+//        assert(0); //TODO
+//        //Util::scene()->addBoundary(new SceneBoundary(name, type, values));
+//        Py_RETURN_NONE;
+//    }
 
-    return NULL;
+//    return NULL;
 }
 
 // modifyBoundary(name, type, value, ...)
 static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 {
-    logMessage("pythonModifyBoundary()");
+    assert(0); //TODO
+//    logMessage("pythonModifyBoundary()");
 
-    PyObject *dict;
-    char *name, *type;
-    if (PyArg_ParseTuple(args, "ssO", &name, &type, &dict))
-    {
-        if (SceneBoundary *boundary = Util::scene()->getBoundary(name))
-        {
-            if (Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type))
-            {
+//    PyObject *dict;
+//    char *name, *type;
+//    if (PyArg_ParseTuple(args, "ssO", &name, &type, &dict))
+//    {
+//        if (SceneBoundary *boundary = Util::scene()->getBoundary(name))
+//        {
+//            if (Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type))
+//            {
                 // boundary type
 
-                assert(0);
 //                boundary->type = type;
 
 //                // variables
@@ -430,112 +432,114 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 //                    }
 //                }
 
-                Py_RETURN_NONE;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
-                return NULL;
-            }
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary with name '%1' doesn't exists.").arg(name).toStdString().c_str());
-            return NULL;
-        }
-    }
+//                Py_RETURN_NONE;
+//            }
+//            else
+//            {
+//                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+//                return NULL;
+//            }
+//        }
+//        else
+//        {
+//            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+//            return NULL;
+//        }
+//    }
 
-    return NULL;
+//    return NULL;
 }
 
 // addmaterial(name, type, value, ...)
 static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
 {
-    logMessage("pythonAddMaterial()");
+    assert(0); //TODO
+//    logMessage("pythonAddMaterial()");
 
-    PyObject *dict;
-    char *name;
-    if (PyArg_ParseTuple(args, "sO", &name, &dict))
-    {
-        // check name
-        if (Util::scene()->getMaterial(name))
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker already exists.").toStdString().c_str());
-            return NULL;
-        }
+//    PyObject *dict;
+//    char *name;
+//    if (PyArg_ParseTuple(args, "sO", &name, &dict))
+//    {
+//        // check name
+//        if (Util::scene()->getMaterial(name))
+//        {
+//            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker already exists.").toStdString().c_str());
+//            return NULL;
+//        }
 
-        PyObject *key, *value;
-        Py_ssize_t pos = 0;
+//        PyObject *key, *value;
+//        Py_ssize_t pos = 0;
 
-        std::map<std::string, Value> values;
-        while (PyDict_Next(dict, &pos, &key, &value))
-        {
-            double val;
-            char *str;
+//        std::map<std::string, Value> values;
+//        while (PyDict_Next(dict, &pos, &key, &value))
+//        {
+//            double val;
+//            char *str;
 
-            // key
-            PyArg_Parse(key, "s", &str);
-            PyArg_Parse(value, "d", &val);
+//            // key
+//            PyArg_Parse(key, "s", &str);
+//            PyArg_Parse(value, "d", &val);
 
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
-            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-            {
-                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-                if (variable->shortname == std::string(str))
-                    values[variable->id] = Value(QString::number(val));
-            }
-        }
+//            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+//            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+//            {
+//                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+//                if (variable->shortname == std::string(str))
+//                    values[variable->id] = Value(QString::number(val));
+//            }
+//        }
 
-        Util::scene()->addMaterial(new SceneMaterial(name, values));
-        Py_RETURN_NONE;
-    }
+//        Util::scene()->addMaterial(new SceneMaterial(name, values));
+//        Py_RETURN_NONE;
+//    }
 
-    return NULL;
+//    return NULL;
 }
 
 // modifymaterial(name, type, value, ...)
 static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 {
-    logMessage("pythonModifyMaterial()");
+    assert(0); //TODO
+//    logMessage("pythonModifyMaterial()");
 
-    PyObject *dict;
-    char *name, *type;
-    if (PyArg_ParseTuple(args, "sO", &name, &dict))
-    {
-        if (SceneMaterial *material = Util::scene()->getMaterial(name))
-        {
-            // variables
-            PyObject *key, *value;
-            Py_ssize_t pos = 0;
+//    PyObject *dict;
+//    char *name, *type;
+//    if (PyArg_ParseTuple(args, "sO", &name, &dict))
+//    {
+//        if (SceneMaterial *material = Util::scene()->getMaterial(name))
+//        {
+//            // variables
+//            PyObject *key, *value;
+//            Py_ssize_t pos = 0;
 
-            while (PyDict_Next(dict, &pos, &key, &value))
-            {
-                double val;
-                char *str;
+//            while (PyDict_Next(dict, &pos, &key, &value))
+//            {
+//                double val;
+//                char *str;
 
-                // key
-                PyArg_Parse(key, "s", &str);
-                PyArg_Parse(value, "d", &val);
+//                // key
+//                PyArg_Parse(key, "s", &str);
+//                PyArg_Parse(value, "d", &val);
 
-                Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
-                for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-                {
-                    Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-                    if (variable->shortname == std::string(str))
-                        material->values[variable->id] = Value(QString::number(val));
-                }
-            }
+//                Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+//                for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+//                {
+//                    Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+//                    if (variable->shortname == std::string(str))
+//                        material->values[variable->id] = Value(QString::number(val));
+//                }
+//            }
 
-            Py_RETURN_NONE;
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Material with name '%1' doesn't exists.").arg(name).toStdString().c_str());
-            return NULL;
-        }
-    }
+//            Py_RETURN_NONE;
+//        }
+//        else
+//        {
+//            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Material with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+//            return NULL;
+//        }
+//    }
 
-    return NULL;
+//    return NULL;
 }
 
 // selectnone()
@@ -624,41 +628,42 @@ void pythonSelectNodePoint(double x, double y)
 // selectedge(list)
 static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
 {
-    logMessage("pythonSelectEdge()");
+    assert(0); //TODO
+//    logMessage("pythonSelectEdge()");
 
-    PyObject *list;
-    if (PyArg_ParseTuple(args, "O", &list))
-    {
-        sceneView()->actSceneModeEdge->trigger();
-        Util::scene()->selectNone();
+//    PyObject *list;
+//    if (PyArg_ParseTuple(args, "O", &list))
+//    {
+//        sceneView()->actSceneModeEdge->trigger();
+//        Util::scene()->selectNone();
 
-        Py_ssize_t size = PyList_Size(list);
-        for (int i = 0; i < size; i++)
-        {
-            PyObject *value = PyList_GetItem(list, i);
+//        Py_ssize_t size = PyList_Size(list);
+//        for (int i = 0; i < size; i++)
+//        {
+//            PyObject *value = PyList_GetItem(list, i);
 
-            int index;
-            PyArg_Parse(value, "i", &index);
+//            int index;
+//            PyArg_Parse(value, "i", &index);
 
-            if ((index >= 0) && index < Util::scene()->edges.count())
-            {
-                Util::scene()->edges[index]->isSelected = true;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
-                return NULL;
-            }
-        }
+//            if ((index >= 0) && index < Util::scene()->edges.count())
+//            {
+//                Util::scene()->edges[index]->isSelected = true;
+//            }
+//            else
+//            {
+//                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
+//                return NULL;
+//            }
+//        }
 
-        sceneView()->doInvalidated();
-        Py_RETURN_NONE;
-    }
-    else
-    {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
-    }
-    return NULL;
+//        sceneView()->doInvalidated();
+//        Py_RETURN_NONE;
+//    }
+//    else
+//    {
+//        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
+//    }
+//    return NULL;
 }
 
 // selectedgepoint(x, y)
@@ -1195,20 +1200,21 @@ void pythonShowVectors(bool show)
 // settimestep(level)
 void pythonSetTimeStep(int timestep)
 {
-    logMessage("pythonSetTimeStep()");
+    assert(0); //TODO
+//    logMessage("pythonSetTimeStep()");
 
-    if (Util::scene()->sceneSolution()->isSolved())
-        sceneView()->actSceneModePostprocessor->trigger();
-    else
-        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+//    if (Util::scene()->sceneSolution()->isSolved())
+//        sceneView()->actSceneModePostprocessor->trigger();
+//    else
+//        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
-    if (Util::scene()->problemInfo()->analysisType != AnalysisType_Transient)
-        throw invalid_argument(QObject::tr("Solved problem is not transient.").toStdString());
+//    if (Util::scene()->problemInfo()->analysisType != AnalysisType_Transient)
+//        throw invalid_argument(QObject::tr("Solved problem is not transient.").toStdString());
 
-    if ((timestep < 0) || (timestep > Util::scene()->sceneSolution()->timeStepCount()))
-        throw out_of_range(QObject::tr("Time step must be between 0 and %1.").arg(Util::scene()->sceneSolution()->timeStepCount()).toStdString());
+//    if ((timestep < 0) || (timestep > Util::scene()->sceneSolution()->timeStepCount()))
+//        throw out_of_range(QObject::tr("Time step must be between 0 and %1.").arg(Util::scene()->sceneSolution()->timeStepCount()).toStdString());
 
-    Util::scene()->sceneSolution()->setTimeStep(timestep, false);
+//    Util::scene()->sceneSolution()->setTimeStep(timestep, false);
 }
 
 // timestepcount()
@@ -1320,15 +1326,16 @@ void PythonEngine::doPrintStdout(const QString &message)
 
 void PythonEngine::runPythonHeader()
 {
-    logMessage("PythonEngine::runPythonHeader()");
+    assert(0); //TODO
+//    logMessage("PythonEngine::runPythonHeader()");
 
-    // global script
-    if (!Util::config()->globalScript.isEmpty())
-        PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+//    // global script
+//    if (!Util::config()->globalScript.isEmpty())
+//        PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
-    // startup script
-    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
-        PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+//    // startup script
+//    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
+//        PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
 ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)

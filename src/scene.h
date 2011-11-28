@@ -59,6 +59,40 @@ public:
     QDate date;
     QString fileName;
     ProblemType problemType;
+
+    // harmonic
+    double frequency;
+
+    // transient
+    Value timeStep;
+    Value timeTotal;
+
+    //TODO move to FieldInfo
+    // linearity
+    LinearityType linearityType;
+    double nonlinearTolerance; // percent
+    int nonlinearSteps;
+
+
+    inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
+    inline QString labelY() { return ((problemType == ProblemType_Planar) ? "Y" : "Z");  }
+    inline QString labelZ() { return ((problemType == ProblemType_Planar) ? "Z" : "a");  }
+
+    void clear();
+};
+
+class FieldInfo
+{
+public:
+    QString name() { return m_parent->name; }
+    QDate date() { return m_parent->date; }
+    QString fileName() { return m_parent->fileName; }
+    ProblemType problemType() { return m_parent->problemType; }
+    double frequency() { return m_parent->frequency; }
+    Value timeStep() {return m_parent->timeStep; }
+    Value timeTotal() {return m_parent->timeTotal; }
+
+
     int numberOfRefinements;
     int polynomialOrder;
     MeshType meshType;
@@ -68,18 +102,8 @@ public:
     QString scriptStartup;
     QString description;
 
-    // linearity
-    LinearityType linearityType;
-    double nonlinearTolerance; // percent
-    int nonlinearSteps;
-
-    // harmonic
-    double frequency;
-
     // transient
     AnalysisType analysisType;
-    Value timeStep;
-    Value timeTotal;
     Value initialCondition;
 
     // matrix solver
@@ -88,13 +112,14 @@ public:
     // weakforms
     WeakFormsType weakFormsType;
 
-    ProblemInfo()
+    FieldInfo(ProblemInfo* parent)
     {
         m_module = NULL;
+        m_parent = parent;
         clear();
     }
 
-    ~ProblemInfo()
+    ~FieldInfo()
     {
         if (m_module) delete m_module;
     }
@@ -104,13 +129,12 @@ public:
     void setModule(Hermes::Module::ModuleAgros *module);
     inline Hermes::Module::ModuleAgros *module() const { return m_module; }
 
-    inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
-    inline QString labelY() { return ((problemType == ProblemType_Planar) ? "Y" : "Z");  }
-    inline QString labelZ() { return ((problemType == ProblemType_Planar) ? "Z" : "a");  }
-
 private:
-    // module
+    /// module
     Hermes::Module::ModuleAgros *m_module;
+
+    /// pointer to problem info, whose this object is a "subfield"
+    ProblemInfo *m_parent;
 };
 
 class DxfFilter : public DL_CreationAdapter
@@ -146,9 +170,6 @@ signals:
     void fileNameChanged(const QString &fileName);
 
 public:
-
-    //TODO temporary
-    vector<std::string> fields;
 
     QList<SceneNode *> nodes;
     QList<SceneEdge *> edges;
@@ -213,6 +234,11 @@ public:
     inline ProblemInfo *problemInfo() { return m_problemInfo; }
     void setProblemInfo(ProblemInfo *problemInfo) { clear(); delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
 
+    inline FieldInfo *fieldInfo(QString name) { return m_fieldInfos[name]; }
+    inline FieldInfo *fieldInfo(std::string name) { return fieldInfo(QString::fromStdString(name)); }
+    inline FieldInfo *fieldInfo(const char* name) { return fieldInfo(QString::fromAscii(name)); }
+    void addField(QString name, FieldInfo *field) { m_fieldInfos[name] = field; }
+
     inline void refresh() { emit invalidated(); }
     inline SceneSolution<double> *sceneSolution() const { return m_sceneSolution; } //TODO PK <double>
 
@@ -229,7 +255,7 @@ private:
     QUndoStack *m_undoStack;
 
     ProblemInfo* m_problemInfo;
-//    map<string, ProblemInfo*>  m_problemInfo;
+    QMap<QString, FieldInfo*>  m_fieldInfos;
 
     // scene solution
     SceneSolution<double> *m_sceneSolution;  //TODO PK <double>

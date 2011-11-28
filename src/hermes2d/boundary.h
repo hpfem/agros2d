@@ -50,6 +50,8 @@ public:
     void setName(string paramName) {name = paramName; }
 
 private:
+    QString field;
+
     std::string name;
 
     /// type of boundary condition, taken from respective module

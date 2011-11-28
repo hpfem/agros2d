@@ -100,42 +100,43 @@ ParserForm::~ParserForm()
 
 void ParserForm::initParser(Material *material, Boundary *boundary)
 {
-    parser->parser.push_back(Util::scene()->problemInfo()->module()->get_parser());
+    assert(0); //TODO
+//    parser->parser.push_back(Util::scene()->problemInfo()->module()->get_parser());
 
-    // atan2 for muparser
-    parser->parser[0]->DefineFun("atan2", mu_atan2, false);
+//    // atan2 for muparser
+//    parser->parser[0]->DefineFun("atan2", mu_atan2, false);
 
-    // coordinates
-    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
-    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
+//    // coordinates
+//    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
+//    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
 
-    // current solution
-    parser->parser[0]->DefineVar("uval", &puval);
-    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelX().toLower().toStdString() , &pudx);
-    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pudy);
+//    // current solution
+//    parser->parser[0]->DefineVar("uval", &puval);
+//    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelX().toLower().toStdString() , &pudx);
+//    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pudy);
 
-    // test function
-    parser->parser[0]->DefineVar("vval", &pvval);
-    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pvdx);
-    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pvdy);
+//    // test function
+//    parser->parser[0]->DefineVar("vval", &pvval);
+//    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pvdx);
+//    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pvdy);
 
-    // previous solution
-    parser->parser[0]->DefineVar("upval", &pupval);
-    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pupdx);
-    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pupdy);
+//    // previous solution
+//    parser->parser[0]->DefineVar("upval", &pupval);
+//    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pupdx);
+//    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pupdy);
 
-    // solution from previous time level
-    parser->parser[0]->DefineVar("uptval", &puptval);
-    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &puptdx);
-    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &puptdy);
+//    // solution from previous time level
+//    parser->parser[0]->DefineVar("uptval", &puptval);
+//    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &puptdx);
+//    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &puptdy);
 
-    // time step
-    parser->parser[0]->DefineVar("deltat", &pdeltat);
+//    // time step
+//    parser->parser[0]->DefineVar("deltat", &pdeltat);
 
-    parser->setParserVariables(material, boundary);
+//    parser->setParserVariables(material, boundary);
 
-    for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
-        parser->parser[0]->DefineVar(it->first, &it->second);
+//    for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
+//        parser->parser[0]->DefineVar(it->first, &it->second);
 }
 
 // **********************************************************************************************
@@ -157,75 +158,76 @@ template <typename Scalar>
 Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                                                 Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
 {
-    double result = 0;
+    assert(0); //TODO
+//    double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep.number();
+//    pdeltat = Util::scene()->problemInfo()->timeStep.number();
 
-    for (int i = 0; i < n; i++)
-    {
-        px = e->x[i];
-        py = e->y[i];
+//    for (int i = 0; i < n; i++)
+//    {
+//        px = e->x[i];
+//        py = e->y[i];
 
-        puval = u->val[i];
-        pudx = u->dx[i];
-        pudy = u->dy[i];
+//        puval = u->val[i];
+//        pudx = u->dx[i];
+//        pudy = u->dy[i];
 
-        pvval = v->val[i];
-        pvdx = v->dx[i];
-        pvdy = v->dy[i];
+//        pvval = v->val[i];
+//        pvdx = v->dx[i];
+//        pvdy = v->dy[i];
 
-        // previous solution
-        if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
-        {
-            pupval = u_ext[this->i]->val[i]; //TODO PK this->j
-            pupdx = u_ext[this->i]->dx[i];
-            pupdy = u_ext[this->i]->dy[i];
+//        // previous solution
+//        if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
+//        {
+//            pupval = u_ext[this->i]->val[i]; //TODO PK this->j
+//            pupdx = u_ext[this->i]->dx[i];
+//            pupdy = u_ext[this->i]->dy[i];
 
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
-            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-            {
-                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-                Value value = m_material->get_value(variable->id);
+//            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+//            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+//            {
+//                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+//                Value value = m_material->get_value(variable->id);
 
-                // table
-                if (value.table->size() > 0)
-                {
-                    parser->parser_variables[variable->shortname] = value.value(pupval);
-                    parser->parser_variables["d" + variable->shortname] = value.derivative(pupval);
-                }
+//                // table
+//                if (value.table->size() > 0)
+//                {
+//                    parser->parser_variables[variable->shortname] = value.value(pupval);
+//                    parser->parser_variables["d" + variable->shortname] = value.derivative(pupval);
+//                }
 
-                // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
-                // parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(sqrt(pupdx*pupdx + pupdy*pupdy));
+//                // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
+//                // parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(sqrt(pupdx*pupdx + pupdy*pupdy));
 
-                // if (variable->shortname == "mur")
-                //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
-            }
-        }
-        else
-        {
-            pupval = 0.0;
-            pupdx = 0.0;
-            pupdy = 0.0;
-        }
+//                // if (variable->shortname == "mur")
+//                //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
+//            }
+//        }
+//        else
+//        {
+//            pupval = 0.0;
+//            pupdx = 0.0;
+//            pupdy = 0.0;
+//        }
 
-        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-        {
-            puptval = ext->fn[this->j]->val[i];
-            puptdx = ext->fn[this->j]->dx[i];
-            puptdy = ext->fn[this->j]->dy[i];
-        }
+//        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//        {
+//            puptval = ext->fn[this->j]->val[i];
+//            puptdx = ext->fn[this->j]->dx[i];
+//            puptdy = ext->fn[this->j]->dy[i];
+//        }
 
-        try
-        {
-            result += wt[i] * parser->parser[0]->Eval();
-        }
-        catch (mu::Parser::exception_type &e)
-        {
-            std::cout << "CustomParserMatrixFormVol: " << parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
-        }
-    }
+//        try
+//        {
+//            result += wt[i] * parser->parser[0]->Eval();
+//        }
+//        catch (mu::Parser::exception_type &e)
+//        {
+//            std::cout << "CustomParserMatrixFormVol: " << parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
+//        }
+//    }
 
-    return result;
+//    return result;
 }
 
 template <typename Scalar>
@@ -256,69 +258,70 @@ template <typename Scalar>
 Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                                                 Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
 {
-    double result = 0;
+    assert(0); //TODO
+//    double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep.number();
+//    pdeltat = Util::scene()->problemInfo()->timeStep.number();
 
-    for (int i = 0; i < n; i++)
-    {
-        px = e->x[i];
-        py = e->y[i];
+//    for (int i = 0; i < n; i++)
+//    {
+//        px = e->x[i];
+//        py = e->y[i];
 
-        pvval = v->val[i];
-        pvdx = v->dx[i];
-        pvdy = v->dy[i];
+//        pvval = v->val[i];
+//        pvdx = v->dx[i];
+//        pvdy = v->dy[i];
 
-        // previous solution
-        if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
-        {
-            pupval = u_ext[this->j]->val[i];  //TODO PK this->i
-            pupdx = u_ext[this->j]->dx[i];
-            pupdy = u_ext[this->j]->dy[i];
+//        // previous solution
+//        if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
+//        {
+//            pupval = u_ext[this->j]->val[i];  //TODO PK this->i
+//            pupdx = u_ext[this->j]->dx[i];
+//            pupdy = u_ext[this->j]->dy[i];
 
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
-            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-            {
-                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-                Value value = m_material->get_value(variable->id);
+//            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+//            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+//            {
+//                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+//                Value value = m_material->get_value(variable->id);
 
-                // table
-                if (value.table->size() > 0)
-                {
-                    parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(pupval);
-                }
+//                // table
+//                if (value.table->size() > 0)
+//                {
+//                    parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(pupval);
+//                }
 
-                // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
+//                // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
 
-                // if (variable->shortname == "epsr")
-                //     qDebug() << parser->parser_variables[variable->shortname];
-            }
-        }
-        else
-        {
-            pupval = 0.0;
-            pupdx = 0.0;
-            pupdy = 0.0;
-        }
+//                // if (variable->shortname == "epsr")
+//                //     qDebug() << parser->parser_variables[variable->shortname];
+//            }
+//        }
+//        else
+//        {
+//            pupval = 0.0;
+//            pupdx = 0.0;
+//            pupdy = 0.0;
+//        }
 
-        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-        {
-            puptval = ext->fn[this->j]->val[i];
-            puptdx = ext->fn[this->j]->dx[i];
-            puptdy = ext->fn[this->j]->dy[i];
-        }
+//        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//        {
+//            puptval = ext->fn[this->j]->val[i];
+//            puptdx = ext->fn[this->j]->dx[i];
+//            puptdy = ext->fn[this->j]->dy[i];
+//        }
 
-        try
-        {
-            result += wt[i] * parser->parser[0]->Eval();
-        }
-        catch (mu::Parser::exception_type &e)
-        {
-            std::cout << "CustomParserVectorFormVol: " << parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
-        }
-    }
+//        try
+//        {
+//            result += wt[i] * parser->parser[0]->Eval();
+//        }
+//        catch (mu::Parser::exception_type &e)
+//        {
+//            std::cout << "CustomParserVectorFormVol: " << parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
+//        }
+//    }
 
-    return result;
+//    return result;
 }
 
 template <typename Scalar>

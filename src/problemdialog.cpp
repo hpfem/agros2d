@@ -370,167 +370,169 @@ void ProblemDialog::fillComboBox()
 
 void ProblemDialog::load()
 {
-    logMessage("ProblemDialog::load()");
+    assert(0); //TODO
+//    logMessage("ProblemDialog::load()");
 
-    // main
-    if (!m_isNewProblem) cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(QString::fromStdString(m_problemInfo->module()->id)));
-    txtName->setText(m_problemInfo->name);
-    cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_problemInfo->problemType));
-    dtmDate->setDate(m_problemInfo->date);
-    cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_problemInfo->adaptivityType));
-    txtAdaptivitySteps->setValue(m_problemInfo->adaptivitySteps);
-    txtAdaptivityTolerance->setValue(m_problemInfo->adaptivityTolerance);
-    //mesh
-    txtNumberOfRefinements->setValue(m_problemInfo->numberOfRefinements);
-    txtPolynomialOrder->setValue(m_problemInfo->polynomialOrder);
-    cmbMeshType->setCurrentIndex(cmbMeshType->findData(m_problemInfo->meshType));
-    // harmonic magnetic
-    txtFrequency->setValue(m_problemInfo->frequency);
-    // transient
-    cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(m_problemInfo->analysisType));
-    txtTransientTimeStep->setValue(m_problemInfo->timeStep);
-    txtTransientTimeTotal->setValue(m_problemInfo->timeTotal);
-    txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
+//    // main
+//    if (!m_isNewProblem) cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(QString::fromStdString(m_problemInfo->module()->id)));
+//    txtName->setText(m_problemInfo->name);
+//    cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_problemInfo->problemType));
+//    dtmDate->setDate(m_problemInfo->date);
+//    cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_problemInfo->adaptivityType));
+//    txtAdaptivitySteps->setValue(m_problemInfo->adaptivitySteps);
+//    txtAdaptivityTolerance->setValue(m_problemInfo->adaptivityTolerance);
+//    //mesh
+//    txtNumberOfRefinements->setValue(m_problemInfo->numberOfRefinements);
+//    txtPolynomialOrder->setValue(m_problemInfo->polynomialOrder);
+//    cmbMeshType->setCurrentIndex(cmbMeshType->findData(m_problemInfo->meshType));
+//    // harmonic magnetic
+//    txtFrequency->setValue(m_problemInfo->frequency);
+//    // transient
+//    cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(m_problemInfo->analysisType));
+//    txtTransientTimeStep->setValue(m_problemInfo->timeStep);
+//    txtTransientTimeTotal->setValue(m_problemInfo->timeTotal);
+//    txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
 
-    // linearity
-    cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_problemInfo->linearityType));
-    txtNonlinearSteps->setValue(m_problemInfo->nonlinearSteps);
-    txtNonlinearTolerance->setValue(m_problemInfo->nonlinearTolerance);
+//    // linearity
+//    cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_problemInfo->linearityType));
+//    txtNonlinearSteps->setValue(m_problemInfo->nonlinearSteps);
+//    txtNonlinearTolerance->setValue(m_problemInfo->nonlinearTolerance);
 
-    // matrix solver
-    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_problemInfo->matrixSolver));
+//    // matrix solver
+//    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_problemInfo->matrixSolver));
 
-    // weakforms
-    cmbWeakForms->setCurrentIndex(cmbWeakForms->findData(m_problemInfo->weakFormsType));
+//    // weakforms
+//    cmbWeakForms->setCurrentIndex(cmbWeakForms->findData(m_problemInfo->weakFormsType));
 
-    // startup
-    txtStartupScript->setPlainText(m_problemInfo->scriptStartup);
+//    // startup
+//    txtStartupScript->setPlainText(m_problemInfo->scriptStartup);
 
-    // description
-    txtDescription->setPlainText(m_problemInfo->description);
+//    // description
+//    txtDescription->setPlainText(m_problemInfo->description);
 
-    doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
-    doTransientChanged();
+//    doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
+//    doTransientChanged();
 }
 
 bool ProblemDialog::save()
 {
-    logMessage("ProblemDialog::save()");
+    assert(0); //TODO
+//    logMessage("ProblemDialog::save()");
 
-    // physical field type
-    if (Util::scene()->problemInfo()->module()->id !=
-            cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString())
-    {
-        if (!this->m_isNewProblem)
-        {
-            if (Util::scene()->boundaries.count() != 1 || Util::scene()->materials.count() != 1)
-            {
-                if (QMessageBox::question(this, tr("Change physical field type"), tr("Are you sure change physical field type?"), tr("&Yes"), tr("&No")) == 1)
-                    return false;
-            }
-        }
+//    // physical field type
+//    if (Util::scene()->problemInfo()->module()->id !=
+//            cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString())
+//    {
+//        if (!this->m_isNewProblem)
+//        {
+//            if (Util::scene()->boundaries.count() != 1 || Util::scene()->materials.count() != 1)
+//            {
+//                if (QMessageBox::question(this, tr("Change physical field type"), tr("Are you sure change physical field type?"), tr("&Yes"), tr("&No")) == 1)
+//                    return false;
+//            }
+//        }
 
-        if (Util::scene()->sceneSolution()->isSolved())
-            Util::scene()->doClearSolution();
+//        if (Util::scene()->sceneSolution()->isSolved())
+//            Util::scene()->doClearSolution();
 
-        m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
-                                               (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
-                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt(),
-                                               (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
-                                                ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString()));
+//        m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
+//                                               (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
+//                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt(),
+//                                               (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
+//                                                ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString()));
 
-        for (int i = 1; i < Util::scene()->boundaries.count(); i++)
-        {
-            Util::scene()->replaceBoundary(Util::scene()->boundaries[1]);
-        }
+//        for (int i = 1; i < Util::scene()->boundaries.count(); i++)
+//        {
+//            Util::scene()->replaceBoundary(Util::scene()->boundaries[1]);
+//        }
 
-        for (int i = 1; i < Util::scene()->materials.count(); i++)
-        {
-            Util::scene()->replaceMaterial(Util::scene()->materials[1]);
-        }
-    }
-    else
-    {
-        m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
-                                               (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
-                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt(),
-                                               (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
-                                                ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString()));
-    }
+//        for (int i = 1; i < Util::scene()->materials.count(); i++)
+//        {
+//            Util::scene()->replaceMaterial(Util::scene()->materials[1]);
+//        }
+//    }
+//    else
+//    {
+//        m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
+//                                               (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
+//                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt(),
+//                                               (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
+//                                                ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString()));
+//    }
 
-    // check values
-    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Harmonic)
-    {
-        if (txtFrequency->value() < 0)
-        {
-            QMessageBox::critical(this, tr("Error"), tr("Frequency cannot be negative."));
-            return false;
-        }
-    }
-    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Transient)
-    {
-        txtTransientTimeStep->evaluate(false);
-        if (txtTransientTimeStep->number() <= 0.0)
-        {
-            QMessageBox::critical(this, tr("Error"), tr("Time step must be positive."));
-            return false;
-        }
-        txtTransientTimeTotal->evaluate(false);
-        if (txtTransientTimeTotal->number() <= 0.0)
-        {
-            QMessageBox::critical(this, tr("Error"), tr("Total time must be positive."));
-            return false;
-        }
-        txtTransientTimeStep->evaluate(false);
-        if (txtTransientTimeStep->number() > txtTransientTimeTotal->number())
-        {
-            QMessageBox::critical(this, tr("Error"), tr("Time step is greater then total time."));
-            return false;
-        }
-    }
+//    // check values
+//    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Harmonic)
+//    {
+//        if (txtFrequency->value() < 0)
+//        {
+//            QMessageBox::critical(this, tr("Error"), tr("Frequency cannot be negative."));
+//            return false;
+//        }
+//    }
+//    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Transient)
+//    {
+//        txtTransientTimeStep->evaluate(false);
+//        if (txtTransientTimeStep->number() <= 0.0)
+//        {
+//            QMessageBox::critical(this, tr("Error"), tr("Time step must be positive."));
+//            return false;
+//        }
+//        txtTransientTimeTotal->evaluate(false);
+//        if (txtTransientTimeTotal->number() <= 0.0)
+//        {
+//            QMessageBox::critical(this, tr("Error"), tr("Total time must be positive."));
+//            return false;
+//        }
+//        txtTransientTimeStep->evaluate(false);
+//        if (txtTransientTimeStep->number() > txtTransientTimeTotal->number())
+//        {
+//            QMessageBox::critical(this, tr("Error"), tr("Time step is greater then total time."));
+//            return false;
+//        }
+//    }
 
-    // run and check startup script
-    if (!txtStartupScript->toPlainText().isEmpty())
-    {
-        ScriptResult scriptResult = runPythonScript(txtStartupScript->toPlainText());
-        if (scriptResult.isError)
-        {
-            QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
-            return false;
-        }
-    }
+//    // run and check startup script
+//    if (!txtStartupScript->toPlainText().isEmpty())
+//    {
+//        ScriptResult scriptResult = runPythonScript(txtStartupScript->toPlainText());
+//        if (scriptResult.isError)
+//        {
+//            QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
+//            return false;
+//        }
+//    }
 
-    // save properties
-    m_problemInfo->problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
-    m_problemInfo->name = txtName->text();
-    m_problemInfo->date = dtmDate->date();
-    m_problemInfo->numberOfRefinements = txtNumberOfRefinements->value();
-    m_problemInfo->polynomialOrder = txtPolynomialOrder->value();
-    m_problemInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();
-    m_problemInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
-    m_problemInfo->adaptivitySteps = txtAdaptivitySteps->value();
-    m_problemInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
+//    // save properties
+//    m_problemInfo->problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
+//    m_problemInfo->name = txtName->text();
+//    m_problemInfo->date = dtmDate->date();
+//    m_problemInfo->numberOfRefinements = txtNumberOfRefinements->value();
+//    m_problemInfo->polynomialOrder = txtPolynomialOrder->value();
+//    m_problemInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();
+//    m_problemInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
+//    m_problemInfo->adaptivitySteps = txtAdaptivitySteps->value();
+//    m_problemInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
 
-    m_problemInfo->frequency = txtFrequency->value();
+//    m_problemInfo->frequency = txtFrequency->value();
 
-    m_problemInfo->analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
-    m_problemInfo->timeStep = txtTransientTimeStep->value();
-    m_problemInfo->timeTotal = txtTransientTimeTotal->value();
-    m_problemInfo->initialCondition = txtTransientInitialCondition->value();
+//    m_problemInfo->analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
+//    m_problemInfo->timeStep = txtTransientTimeStep->value();
+//    m_problemInfo->timeTotal = txtTransientTimeTotal->value();
+//    m_problemInfo->initialCondition = txtTransientInitialCondition->value();
 
-    m_problemInfo->description = txtDescription->toPlainText();
-    m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
+//    m_problemInfo->description = txtDescription->toPlainText();
+//    m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
 
-    m_problemInfo->linearityType = (LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt();
-    m_problemInfo->nonlinearSteps = txtNonlinearSteps->value();
-    m_problemInfo->nonlinearTolerance = txtNonlinearTolerance->value();
+//    m_problemInfo->linearityType = (LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt();
+//    m_problemInfo->nonlinearSteps = txtNonlinearSteps->value();
+//    m_problemInfo->nonlinearTolerance = txtNonlinearTolerance->value();
 
-    // matrix solver
-    m_problemInfo->matrixSolver = (Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
+//    // matrix solver
+//    m_problemInfo->matrixSolver = (Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
 
-    m_problemInfo->weakFormsType = (WeakFormsType) cmbWeakForms->itemData(cmbWeakForms->currentIndex()).toInt();
+//    m_problemInfo->weakFormsType = (WeakFormsType) cmbWeakForms->itemData(cmbWeakForms->currentIndex()).toInt();
 
-    return true;
+//    return true;
 }
 
 void ProblemDialog::doAccept()

@@ -1309,38 +1309,39 @@ void MainWindow::doTimeStepChanged(int index)
 
 void MainWindow::doInvalidated()
 {
-    logMessage("MainWindow::doInvalidated()");
+    assert(0); //TODO
+//    logMessage("MainWindow::doInvalidated()");
 
-    if (Util::config()->showExperimentalFeatures)
-        actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    if (Util::config()->showExperimentalFeatures)
+//        actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
-    actViewQuick2DNone->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actViewQuick2DOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actViewQuick2DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actViewQuick3DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actViewQuick3DScalarViewSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actViewQuick3DModel->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    actViewQuick2DNone->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    actViewQuick2DOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    actViewQuick2DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    actViewQuick3DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    actViewQuick3DScalarViewSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    actViewQuick3DModel->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
-    actSolveAdaptiveStep->setEnabled(Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->analysisType != AnalysisType_Transient); // FIXME: timedep
-    actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient));
-    tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    fillComboBoxTimeStep(cmbTimeStep);
+//    actSolveAdaptiveStep->setEnabled(Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->analysisType != AnalysisType_Transient); // FIXME: timedep
+//    actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient));
+//    tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    fillComboBoxTimeStep(cmbTimeStep);
 
-    lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)));
-    lblProblemType->setText(tr("Problem Type: %1").arg(problemTypeString(Util::scene()->problemInfo()->problemType)));
-    lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)));
+//    lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)));
+//    lblProblemType->setText(tr("Problem Type: %1").arg(problemTypeString(Util::scene()->problemInfo()->problemType)));
+//    lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)));
 
-    actExportVTKScalar->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actExportVTKOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    actExportVTKScalar->setEnabled(Util::scene()->sceneSolution()->isSolved());
+//    actExportVTKOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
-    postprocessorView->updateControls();
+//    postprocessorView->updateControls();
 
-    // set current timestep
-    cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
+//    // set current timestep
+//    cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
 
-    //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
-    //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
+//    //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
+//    //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
 }
 
 void MainWindow::doSceneModeChanged(SceneMode sceneMode)
@@ -1464,66 +1465,68 @@ void MainWindow::doDocumentExportMeshFile()
 
 void MainWindow::doExportVTKScalar()
 {
-    logMessage("MainWindow::doDocumentExportVTKScalar()");
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        QSettings settings;
-        QString dir = settings.value("General/LastVTKDir").toString();
+    assert(0); //TODO
+//    logMessage("MainWindow::doDocumentExportVTKScalar()");
+//    if (Util::scene()->sceneSolution()->isSolved())
+//    {
+//        QSettings settings;
+//        QString dir = settings.value("General/LastVTKDir").toString();
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
-        if (fileName.isEmpty())
-            return;
+//        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+//        if (fileName.isEmpty())
+//            return;
 
-        if (!fileName.endsWith(".vtk"))
-            fileName.append(".vtk");
+//        if (!fileName.endsWith(".vtk"))
+//            fileName.append(".vtk");
 
-        // remove existing file
-        if (QFile::exists(fileName))
-            QFile::remove(fileName);
+//        // remove existing file
+//        if (QFile::exists(fileName))
+//            QFile::remove(fileName);
 
-        Util::scene()->sceneSolution()->linScalarView().save_solution_vtk(Util::scene()->sceneSolution()->sln(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
-                                                                          fileName.toStdString().c_str(),
-                                                                          sceneView->sceneViewSettings().scalarPhysicFieldVariable.c_str(),
-                                                                          true);
+//        Util::scene()->sceneSolution()->linScalarView().save_solution_vtk(Util::scene()->sceneSolution()->sln(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
+//                                                                          fileName.toStdString().c_str(),
+//                                                                          sceneView->sceneViewSettings().scalarPhysicFieldVariable.c_str(),
+//                                                                          true);
 
-        if (!fileName.isEmpty())
-        {
-            QFileInfo fileInfo(fileName);
-            if (fileInfo.absoluteDir() != tempProblemDir())
-                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
-        }
-    }
+//        if (!fileName.isEmpty())
+//        {
+//            QFileInfo fileInfo(fileName);
+//            if (fileInfo.absoluteDir() != tempProblemDir())
+//                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+//        }
+//    }
 }
 
 void MainWindow::doExportVTKOrder()
 {
-    logMessage("MainWindow::doDocumentExportVTKOrder()");
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        QSettings settings;
-        QString dir = settings.value("General/LastVTKDir").toString();
+    assert(0);
+//    logMessage("MainWindow::doDocumentExportVTKOrder()");
+//    if (Util::scene()->sceneSolution()->isSolved())
+//    {
+//        QSettings settings;
+//        QString dir = settings.value("General/LastVTKDir").toString();
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
-        if (fileName.isEmpty())
-            return;
+//        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+//        if (fileName.isEmpty())
+//            return;
 
-        if (!fileName.endsWith(".vtk"))
-            fileName.append(".vtk");
+//        if (!fileName.endsWith(".vtk"))
+//            fileName.append(".vtk");
 
-        // remove existing file
-        if (QFile::exists(fileName))
-            QFile::remove(fileName);
+//        // remove existing file
+//        if (QFile::exists(fileName))
+//            QFile::remove(fileName);
 
-        Util::scene()->sceneSolution()->ordView().save_orders_vtk(Util::scene()->sceneSolution()->space(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
-                                                                  fileName.toStdString().c_str());
+//        Util::scene()->sceneSolution()->ordView().save_orders_vtk(Util::scene()->sceneSolution()->space(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
+//                                                                  fileName.toStdString().c_str());
 
-        if (!fileName.isEmpty())
-        {
-            QFileInfo fileInfo(fileName);
-            if (fileInfo.absoluteDir() != tempProblemDir())
-                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
-        }
-    }
+//        if (!fileName.isEmpty())
+//        {
+//            QFileInfo fileInfo(fileName);
+//            if (fileInfo.absoluteDir() != tempProblemDir())
+//                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+//        }
+//    }
 }
 
 void MainWindow::doProgressLog()

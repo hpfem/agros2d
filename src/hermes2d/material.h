@@ -33,6 +33,8 @@ namespace Hermes
 class Material
 {
 public:
+    QString field;
+
     std::string name;
 
     // variables

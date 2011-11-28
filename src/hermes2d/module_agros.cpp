@@ -116,13 +116,13 @@ void deformShapeTemplate(T linVert, int count)
 
 void Hermes::Module::ModuleAgros::deform_shape(double3* linVert, int count)
 {
-    if (Util::scene()->problemInfo()->module()->deformed_shape)
+    if (Util::scene()->fieldInfo("TODO")->module()->deformed_shape)
         deformShapeTemplate<double3 *>(linVert, count);
 }
 
 void Hermes::Module::ModuleAgros::deform_shape(double4* linVert, int count)
 {
-    if (Util::scene()->problemInfo()->module()->deformed_shape)
+    if (Util::scene()->fieldInfo("TODO")->module()->deformed_shape)
         deformShapeTemplate<double4 *>(linVert, count);
 }
 

@@ -214,25 +214,26 @@ void ReportDialog::defaultValues()
 
 void ReportDialog::setControls()
 {
-    logMessage("ReportDialog::setControls()");
+    assert(0); //TODO
+//    logMessage("ReportDialog::setControls()");
 
-    chkDescription->setDisabled(Util::scene()->problemInfo()->description.isEmpty());
-    chkDescription->setChecked(!Util::scene()->problemInfo()->description.isEmpty());
-    chkStartupScript->setDisabled(Util::scene()->problemInfo()->scriptStartup.isEmpty());
-    chkStartupScript->setChecked(!Util::scene()->problemInfo()->scriptStartup.isEmpty());
+//    chkDescription->setDisabled(Util::scene()->problemInfo()->description.isEmpty());
+//    chkDescription->setChecked(!Util::scene()->problemInfo()->description.isEmpty());
+//    chkStartupScript->setDisabled(Util::scene()->problemInfo()->scriptStartup.isEmpty());
+//    chkStartupScript->setChecked(!Util::scene()->problemInfo()->scriptStartup.isEmpty());
 
-    chkMeshAndSolution->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-    chkMeshAndSolution->setChecked(Util::scene()->sceneSolution()->isSolved());
-    chkFigureMesh->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-    chkFigureMesh->setChecked(Util::scene()->sceneSolution()->isSolved());
-    chkFigureOrder->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-    chkFigureOrder->setChecked(Util::scene()->sceneSolution()->isSolved());
-    chkFigureScalarView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-    chkFigureScalarView->setChecked(Util::scene()->sceneSolution()->isSolved());
-    chkFigureContourView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-    chkFigureContourView->setChecked(Util::scene()->sceneSolution()->isSolved());
-    chkFigureVectorView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-    chkFigureVectorView->setChecked(Util::scene()->sceneSolution()->isSolved());
+//    chkMeshAndSolution->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+//    chkMeshAndSolution->setChecked(Util::scene()->sceneSolution()->isSolved());
+//    chkFigureMesh->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+//    chkFigureMesh->setChecked(Util::scene()->sceneSolution()->isSolved());
+//    chkFigureOrder->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+//    chkFigureOrder->setChecked(Util::scene()->sceneSolution()->isSolved());
+//    chkFigureScalarView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+//    chkFigureScalarView->setChecked(Util::scene()->sceneSolution()->isSolved());
+//    chkFigureContourView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+//    chkFigureContourView->setChecked(Util::scene()->sceneSolution()->isSolved());
+//    chkFigureVectorView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+//    chkFigureVectorView->setChecked(Util::scene()->sceneSolution()->isSolved());
 }
 
 void ReportDialog::resetControls()
