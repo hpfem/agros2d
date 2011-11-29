@@ -264,9 +264,9 @@ void WeakFormAgros<Scalar>::registerForms()
 
 // ***********************************************************************************************
 
-Hermes::Module::LocalVariable::Expression::Expression(rapidxml::xml_node<> *node, ProblemType problemType)
+Hermes::Module::LocalVariable::Expression::Expression(rapidxml::xml_node<> *node, CoordinateType problemType)
 {
-    if (problemType == ProblemType_Planar)
+    if (problemType == CoordinateType_Planar)
     {
         if (node->first_attribute("planar"))
             scalar = node->first_attribute("planar")->value();
@@ -289,7 +289,7 @@ Hermes::Module::LocalVariable::Expression::Expression(rapidxml::xml_node<> *node
 // ***********************************************************************************************
 
 Hermes::Module::LocalVariable::LocalVariable(rapidxml::xml_node<> *node,
-                                             ProblemType problemType, AnalysisType analysisType)
+                                             CoordinateType problemType, AnalysisType analysisType)
 {
     id = node->first_attribute("id")->value();
     name = node->first_attribute("name")->value();
@@ -308,11 +308,11 @@ Hermes::Module::LocalVariable::LocalVariable(rapidxml::xml_node<> *node,
 
 // ***********************************************************************************************
 
-Hermes::Module::Integral::Expression::Expression(rapidxml::xml_node<> *node, ProblemType problemType)
+Hermes::Module::Integral::Expression::Expression(rapidxml::xml_node<> *node, CoordinateType problemType)
 {
     if (node)
     {
-        if (problemType == ProblemType_Planar)
+        if (problemType == CoordinateType_Planar)
         {
             if (node->first_attribute("planar"))
                 scalar = node->first_attribute("planar")->value();
@@ -349,7 +349,7 @@ Hermes::Module::MaterialTypeVariable::MaterialTypeVariable(std::string id, std::
 
 Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> boundary_type_variables,
                                            rapidxml::xml_node<> *node,
-                                           ProblemType problem_type)
+                                           CoordinateType problem_type)
 {
     id = node->first_attribute("id")->value();
     name = QObject::tr(node->first_attribute("name")->value()).toStdString();
@@ -434,7 +434,7 @@ Hermes::Module::BoundaryType::~BoundaryType()
 
 // ***********************************************************************************************
 
-Hermes::Module::Integral::Integral(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType)
+Hermes::Module::Integral::Integral(rapidxml::xml_node<> *node, CoordinateType problemType, AnalysisType analysisType)
 {
     id = node->first_attribute("id")->value();
     name = QObject::tr(node->first_attribute("name")->value()).toStdString();
@@ -497,7 +497,7 @@ void Hermes::Module::DialogUI::clear()
 
 // ***********************************************************************************************
 
-Hermes::Module::Module::Module(ProblemType problemType, AnalysisType analysisType)
+Hermes::Module::Module::Module(CoordinateType problemType, AnalysisType analysisType)
 {
     m_problemType = problemType;
     m_analysisType = analysisType;
@@ -1025,9 +1025,9 @@ void refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowa
 }
 
 // return geom type
-Hermes::Hermes2D::GeomType convertProblemType(ProblemType problemType)
+Hermes::Hermes2D::GeomType convertProblemType(CoordinateType problemType)
 {
-    return (problemType == ProblemType_Planar ? Hermes::Hermes2D::HERMES_PLANAR : Hermes::Hermes2D::HERMES_AXISYM_Y);
+    return (problemType == CoordinateType_Planar ? Hermes::Hermes2D::HERMES_PLANAR : Hermes::Hermes2D::HERMES_AXISYM_Y);
 }
 
 // *********************************************************************************************************************************************

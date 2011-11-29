@@ -32,7 +32,7 @@ class Material;
 struct ParserFormEssential
 {
     ParserFormEssential() : i(0), expression("") {}
-    ParserFormEssential(rapidxml::xml_node<> *node, ProblemType problem_type);
+    ParserFormEssential(rapidxml::xml_node<> *node, CoordinateType problem_type);
 
     // position
     int i;
@@ -44,7 +44,7 @@ struct ParserFormEssential
 struct ParserFormMatrix
 {
     ParserFormMatrix() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), expression("") {}
-    ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType problem_type);
+    ParserFormMatrix(rapidxml::xml_node<> *node, CoordinateType problem_type);
 
     // position
     int i;
@@ -60,7 +60,7 @@ struct ParserFormMatrix
 struct ParserFormVector
 {
     ParserFormVector() : i(0), expression("") {}
-    ParserFormVector(rapidxml::xml_node<> *node, ProblemType problem_type);
+    ParserFormVector(rapidxml::xml_node<> *node, CoordinateType problem_type);
 
     // position
     int i;

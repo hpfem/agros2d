@@ -330,11 +330,11 @@ enum SolverMode
     SolverMode_SolveAdaptiveStep
 };
 
-enum ProblemType
+enum CoordinateType
 {
-    ProblemType_Undefined,
-    ProblemType_Planar,
-    ProblemType_Axisymmetric
+    CoordinateType_Undefined,
+    CoordinateType_Planar,
+    CoordinateType_Axisymmetric
 };
 
 enum AnalysisType
@@ -467,7 +467,7 @@ enum SceneViewPostprocessorShow
 QString analysisTypeString(AnalysisType analysisType);
 QString teModeString(Mode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
-QString problemTypeString(ProblemType problemType);
+QString problemTypeString(CoordinateType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
 QString weakFormsTypeString(WeakFormsType weakFormsType);
 QString meshTypeString(MeshType meshType);
@@ -497,8 +497,8 @@ inline QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
 // keys
 void initLists();
 
-inline QString problemTypeToStringKey(ProblemType problemType) { return ((problemType == ProblemType_Planar) ? "planar" : "axisymmetric"); }
-inline ProblemType problemTypeFromStringKey(const QString &problemType) { if (problemType == "planar") return ProblemType_Planar; else if (problemType == "axisymmetric") return ProblemType_Axisymmetric; else return ProblemType_Undefined; }
+inline QString problemTypeToStringKey(CoordinateType problemType) { return ((problemType == CoordinateType_Planar) ? "planar" : "axisymmetric"); }
+inline CoordinateType problemTypeFromStringKey(const QString &problemType) { if (problemType == "planar") return CoordinateType_Planar; else if (problemType == "axisymmetric") return CoordinateType_Axisymmetric; else return CoordinateType_Undefined; }
 
 QString analysisTypeToStringKey(AnalysisType analysisType);
 AnalysisType analysisTypeFromStringKey(const QString &analysisType);

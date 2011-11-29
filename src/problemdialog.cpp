@@ -338,8 +338,8 @@ void ProblemDialog::fillComboBox()
     logMessage("ProblemDialog::fillComboBox()");
 
     cmbProblemType->clear();
-    cmbProblemType->addItem(problemTypeString(ProblemType_Planar), ProblemType_Planar);
-    cmbProblemType->addItem(problemTypeString(ProblemType_Axisymmetric), ProblemType_Axisymmetric);
+    cmbProblemType->addItem(problemTypeString(CoordinateType_Planar), CoordinateType_Planar);
+    cmbProblemType->addItem(problemTypeString(CoordinateType_Axisymmetric), CoordinateType_Axisymmetric);
 
     fillComboBoxPhysicField(cmbPhysicField);
     //cmbPhysicField->setEnabled(m_isNewProblem);
@@ -581,7 +581,7 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     logMessage("ProblemDialog::doPhysicFieldChanged()");
 
     Hermes::Module::ModuleAgros *module = moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
-                                                        ProblemType_Planar, AnalysisType_SteadyState,
+                                                        CoordinateType_Planar, AnalysisType_SteadyState,
                                                         (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
                                                          ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString());
     // analysis type

@@ -110,7 +110,7 @@ struct LocalVariable
     {
         Expression(std::string scalar = "", std::string comp_x = "", std::string comp_y = "")
             : scalar(scalar), comp_x(comp_x), comp_y(comp_y) {}
-        Expression(rapidxml::xml_node<> *node, ProblemType problem_type);
+        Expression(rapidxml::xml_node<> *node, CoordinateType problem_type);
 
         // expressions
         std::string scalar;
@@ -178,7 +178,7 @@ struct BoundaryType
     BoundaryType() : id(""), name("") {}
     BoundaryType(Hermes::vector<BoundaryTypeVariable> boundary_type_variables,
                  rapidxml::xml_node<> *node,
-                 ProblemType problem_type);
+                 CoordinateType problem_type);
     ~BoundaryType();
 
     // id
@@ -203,7 +203,7 @@ struct Integral
     struct Expression
     {
         Expression() : scalar("") {}
-        Expression(rapidxml::xml_node<> *node, ProblemType problem_type);
+        Expression(rapidxml::xml_node<> *node, CoordinateType problem_type);
 
         // expressions
         std::string scalar;
@@ -336,7 +336,7 @@ struct Module
     DialogUI boundary_ui;
 
     // default contructor
-    Module(ProblemType problemType, AnalysisType analysisType);
+    Module(CoordinateType problemType, AnalysisType analysisType);
     ~Module();
 
     // read form xml
@@ -344,7 +344,7 @@ struct Module
     // clear
     void clear();
 
-    inline ProblemType get_problem_type() const { return m_problemType; }
+    inline CoordinateType get_problem_type() const { return m_problemType; }
     inline AnalysisType get_analysis_type() const { return m_analysisType; }
 
     // variable by name
@@ -376,7 +376,7 @@ struct Module
     virtual inline void deform_shape(double4* linVert, int count) {}
 
 private:
-    ProblemType m_problemType;
+    CoordinateType m_problemType;
     AnalysisType m_analysisType;
 };
 
@@ -437,6 +437,6 @@ void writeMeshFromFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh);
 void refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge);
 
 // return geom type
-Hermes::Hermes2D::GeomType convertProblemType(ProblemType problemType);
+Hermes::Hermes2D::GeomType convertProblemType(CoordinateType problemType);
 
 #endif // HERMES_FIELD_H

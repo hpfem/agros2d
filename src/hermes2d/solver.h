@@ -74,7 +74,7 @@ private:
     double timeTotal;
     double timeStep;
     double initialCondition;
-    ProblemType problemType;
+    CoordinateType problemType;
     AnalysisType analysisType;
 
     LinearityType linearityType;

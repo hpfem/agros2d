@@ -39,7 +39,7 @@
 
 void ProblemInfo::clear()
 {
-    problemType = ProblemType_Planar;
+    coordinateType = CoordinateType_Planar;
     name = QObject::tr("unnamed");
     date = QDate::currentDate();
     fileName = "";

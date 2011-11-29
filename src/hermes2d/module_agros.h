@@ -38,7 +38,7 @@ struct ModuleAgros : public QObject, public Module
 {
     Q_OBJECT
 public:
-    ModuleAgros(ProblemType problemType, AnalysisType analysisType) : Module(problemType, analysisType) {}
+    ModuleAgros(CoordinateType problemType, AnalysisType analysisType) : Module(problemType, analysisType) {}
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
@@ -59,7 +59,7 @@ private:
 }
 
 // module factory
-Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type,
+Hermes::Module::ModuleAgros *moduleFactory(std::string id, CoordinateType problem_type, AnalysisType analysis_type,
                                            std::string filename_custom = "");
 
 
@@ -67,7 +67,7 @@ struct ModuleMagnetic : public Hermes::Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    ModuleMagnetic(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
+    ModuleMagnetic(CoordinateType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
     void update_time_functions(double time);
 };
@@ -76,7 +76,7 @@ struct ModuleHeat : public Hermes::Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    ModuleHeat(ProblemType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
+    ModuleHeat(CoordinateType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
 
     void update_time_functions(double time);
 };

@@ -58,7 +58,7 @@ public:
     QString name;
     QDate date;
     QString fileName;
-    ProblemType problemType;
+    CoordinateType coordinateType;
 
     // harmonic
     double frequency;
@@ -67,16 +67,15 @@ public:
     Value timeStep;
     Value timeTotal;
 
-    //TODO move to FieldInfo
-    // linearity
-    LinearityType linearityType;
-    double nonlinearTolerance; // percent
-    int nonlinearSteps;
+    // matrix solver
+    Hermes::MatrixSolverType matrixSolver;
 
+    QString scriptStartup;
+    QString description;
 
-    inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
-    inline QString labelY() { return ((problemType == ProblemType_Planar) ? "Y" : "Z");  }
-    inline QString labelZ() { return ((problemType == ProblemType_Planar) ? "Z" : "a");  }
+    inline QString labelX() { return ((coordinateType == CoordinateType_Planar) ? "X" : "R");  }
+    inline QString labelY() { return ((coordinateType == CoordinateType_Planar) ? "Y" : "Z");  }
+    inline QString labelZ() { return ((coordinateType == CoordinateType_Planar) ? "Z" : "a");  }
 
     void clear();
 };
@@ -87,11 +86,16 @@ public:
     QString name() { return m_parent->name; }
     QDate date() { return m_parent->date; }
     QString fileName() { return m_parent->fileName; }
-    ProblemType problemType() { return m_parent->problemType; }
+    CoordinateType problemType() { return m_parent->coordinateType; }
     double frequency() { return m_parent->frequency; }
     Value timeStep() {return m_parent->timeStep; }
     Value timeTotal() {return m_parent->timeTotal; }
 
+
+    // linearity
+    LinearityType linearityType;
+    double nonlinearTolerance; // percent
+    int nonlinearSteps;
 
     int numberOfRefinements;
     int polynomialOrder;
@@ -99,15 +103,10 @@ public:
     AdaptivityType adaptivityType;
     int adaptivitySteps;
     double adaptivityTolerance; // percent
-    QString scriptStartup;
-    QString description;
 
     // transient
     AnalysisType analysisType;
     Value initialCondition;
-
-    // matrix solver
-    Hermes::MatrixSolverType matrixSolver;
 
     // weakforms
     WeakFormsType weakFormsType;

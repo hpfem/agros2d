@@ -69,7 +69,7 @@ double Value::value(double key)
 {
     // FIXME
     // if (m_isLinear == -1)
-    m_isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
+    m_isLinear = (Util::scene()->fieldInfo("TODO")->linearityType == LinearityType_Linear) ? 1 : 0;
 
     if (m_isLinear || table->size() == 0)
         return number();
@@ -89,7 +89,7 @@ double Value::derivative(double key)
 {
     // FIXME
     // if (m_isLinear == -1)
-    m_isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
+    m_isLinear = (Util::scene()->fieldInfo("TODO")->linearityType == LinearityType_Linear) ? 1 : 0;
 
     if (m_isLinear || table->size() == 0)
         return 0.0;

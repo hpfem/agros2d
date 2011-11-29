@@ -150,7 +150,7 @@ void ModuleHeat::update_time_functions(double time)
 
 // ****************************************************************************************************
 
-Hermes::Module::ModuleAgros *moduleFactory(std::string id, ProblemType problem_type, AnalysisType analysis_type,
+Hermes::Module::ModuleAgros *moduleFactory(std::string id, CoordinateType problem_type, AnalysisType analysis_type,
                                            std::string filename_custom)
 {
     // std::cout << filename_custom << std::endl;

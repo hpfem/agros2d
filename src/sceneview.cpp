@@ -385,7 +385,7 @@ void SceneView::loadProjection3d(bool setScene) const
         }
         else
         {
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+            if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
             {
                 glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
             }
@@ -675,7 +675,7 @@ void SceneView::paintGrid()
     glEnd();
     glDisable(GL_LINE_STIPPLE);
 
-    if (m_scene->problemInfo()->problemType == ProblemType_Axisymmetric)
+    if (m_scene->problemInfo()->coordinateType == CoordinateType_Axisymmetric)
     {
         drawBlend(cornerMin,
                   Point(0, cornerMax.y),
@@ -694,7 +694,7 @@ void SceneView::paintGrid()
     glVertex2d(0, cornerMin.y);
     glVertex2d(0, cornerMax.y);
     // x axis
-    glVertex2d(((m_scene->problemInfo()->problemType == ProblemType_Axisymmetric) ? 0 : cornerMin.x), 0);
+    glVertex2d(((m_scene->problemInfo()->coordinateType == CoordinateType_Axisymmetric) ? 0 : cornerMin.x), 0);
     glVertex2d(cornerMax.x, 0);
     glEnd();
 }
@@ -1631,7 +1631,7 @@ void SceneView::paintScalarField3DSolid()
         // init normals
         double* normal = new double[3];
 
-        if (m_scene->problemInfo()->problemType == ProblemType_Planar)
+        if (m_scene->problemInfo()->coordinateType == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
             for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
@@ -1831,7 +1831,7 @@ void SceneView::paintScalarField3DSolid()
         }
 
         // geometry
-        if (m_scene->problemInfo()->problemType == ProblemType_Planar)
+        if (m_scene->problemInfo()->coordinateType == CoordinateType_Planar)
         {
             glColor3d(Util::config()->colorEdges.redF(),
                       Util::config()->colorEdges.greenF(),
@@ -2964,7 +2964,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 }
 
                 // coordinates must be greater then or equal to 0 (axisymmetric case)
-                if ((Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric) &&
+                if ((Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric) &&
                         (pointNode.x < 0))
                 {
                     QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
@@ -3013,7 +3013,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             if (m_sceneMode == SceneMode_OperateOnLabels)
             {
                 // coordinates must be greater then or equal to 0 (axisymmetric case)
-                if ((Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric) &&
+                if ((Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric) &&
                         (p.x < 0))
                 {
                     QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));

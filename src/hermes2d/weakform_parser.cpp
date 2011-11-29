@@ -31,11 +31,11 @@
 // atan2 for muparser
 mu::value_type mu_atan2(mu::value_type y, mu::value_type x) { return atan2(y, x); }
 
-ParserFormEssential::ParserFormEssential(rapidxml::xml_node<> *node, ProblemType problem_type) : expression("")
+ParserFormEssential::ParserFormEssential(rapidxml::xml_node<> *node, CoordinateType problem_type) : expression("")
 {
     i = atoi(node->first_attribute("i")->value());
 
-    if (problem_type == ProblemType_Planar)
+    if (problem_type == CoordinateType_Planar)
     {
         if (node->first_attribute("planar"))
             expression = node->first_attribute("planar")->value();
@@ -49,7 +49,7 @@ ParserFormEssential::ParserFormEssential(rapidxml::xml_node<> *node, ProblemType
 
 
 
-ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType problem_type)
+ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, CoordinateType problem_type)
 {
     i = atoi(node->first_attribute("i")->value());
     j = atoi(node->first_attribute("j")->value());
@@ -59,7 +59,7 @@ ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType probl
         if (atoi(node->first_attribute("symmetric")->value()))
             sym = Hermes::Hermes2D::HERMES_SYM;
 
-    if (problem_type == ProblemType_Planar)
+    if (problem_type == CoordinateType_Planar)
     {
         if (node->first_attribute("planar"))
             expression = node->first_attribute("planar")->value();
@@ -71,12 +71,12 @@ ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, ProblemType probl
     }
 }
 
-ParserFormVector::ParserFormVector(rapidxml::xml_node<> *node, ProblemType problem_type)
+ParserFormVector::ParserFormVector(rapidxml::xml_node<> *node, CoordinateType problem_type)
 {
     i = atoi(node->first_attribute("i")->value());
     j = atoi(node->first_attribute("j")->value());
 
-    if (problem_type == ProblemType_Planar)
+    if (problem_type == CoordinateType_Planar)
     {
         if (node->first_attribute("planar"))
             expression = node->first_attribute("planar")->value();
