@@ -107,14 +107,14 @@ SceneTabWidgetMaterial::SceneTabWidgetMaterial(Hermes::Module::DialogUI ui, Scen
 void SceneTabWidgetMaterial::load()
 {
     for (int j = 0; j < ids.count(); j++)
-        values.at(j)->setValue(material->get_value(ids.at(j).toStdString()));
+        values.at(j)->setValue(material->getValue(ids.at(j).toStdString()));
 }
 
 bool SceneTabWidgetMaterial::save()
 {
     for (int j = 0; j < ids.count(); j++)
         if (values.at(j)->evaluate())
-            material->values[ids.at(j).toStdString()] = values.at(j)->value();
+            material->addValue(ids.at(j).toStdString(), values.at(j)->value());
         else
             return false;
 

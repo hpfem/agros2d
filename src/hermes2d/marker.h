@@ -17,30 +17,46 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef BOUNDARY_H
-#define BOUNDARY_H
+#ifndef MARKER_H
+#define MARKER_H
 
 #include "util.h"
-#include "marker.h"
 
-class Boundary : public Marker
+class Marker
 {
 public:
-    Boundary(std::string name= "", std::string type = "",
-             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+//    Marker(std::string name= "",
+//             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    ~Marker();
 
-    /// get type
-    const std::string getType() const {return type;}
+    /// value of one individual variable
+    const Value getValue(std::string id);
 
-    /// set type
-    void setType(string p_type) { type = p_type; }
+    /// get all values
+    const map<string, Value> getValues() const;
+
+    void addValue(string name, Value value) { values[name] = value; }
+
+    /// return name
+    std::string getName() {return name; }
+
+    /// set name
+    void setName(string paramName) {name = paramName; }
+
+    /// ????
+    void evaluate(std::string id, double time);
+
 
 private:
-    /// type of boundary condition, taken from respective module
-    std::string type;
+    std::string name;
 
+protected:
+    std::string field;
+
+    /// variables - the way to customize boundary "template", given by the type parameter
+    std::map<std::string, Value> values;
 
 };
 
 
-#endif // BOUNDARY_H
+#endif // MARKER_H

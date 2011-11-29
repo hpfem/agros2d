@@ -20,7 +20,7 @@
 #include "scenesolution.h"
 
 #include "scene.h"
-#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 #include "sceneview.h"
 #include "progressdialog.h"
 #include "hermes2d/solver.h"

@@ -24,7 +24,7 @@
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneview.h"
-#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 #include "scripteditorhighlighter.h"
 #include "terminalview.h"
 #include "scripteditorcommandpython.h"

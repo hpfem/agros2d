@@ -20,7 +20,7 @@
 #include "scenesolution.h"
 #include "scene.h"
 #include "scenebasic.h"
-#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 #include "surfaceintegral.h"
 
 #include "hermes2d.h"

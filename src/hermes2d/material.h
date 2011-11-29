@@ -21,31 +21,13 @@
 #define MATERIAL_H
 
 #include "util.h"
+#include "marker.h"
 
-namespace Hermes
-{
-    namespace Module
-    {
-        struct MaterialTypeVariable;
-    }
-}
-
-class Material
+class Material : public Marker
 {
 public:
-    QString field;
-
-    std::string name;
-
-    // variables
-    std::map<std::string, Value> values;
-
     Material(std::string name,
              std::map<std::string, Value> values = (std::map<std::string, Value>()));
-    ~Material();
-
-    Value get_value(std::string id);
-    void evaluate(std::string id, double time);
 };
 
 #endif // MATERIAL_H

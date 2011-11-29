@@ -22,7 +22,7 @@
 
 #include "util.h"
 #include "scenebasic.h"
-#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 #include "scenefunction.h"
 #include "scenesolution.h"
 
@@ -581,7 +581,7 @@ bool Scene::setMaterial(const QString &name, SceneMaterial *material)
 
     for (int i = 1; i<materials.count(); i++)
     {
-        if (materials[i]->name == name.toStdString())
+        if (materials[i]->getName() == name.toStdString())
         {
             SceneMaterial *markerTemp = materials[i];
 
@@ -609,7 +609,7 @@ SceneMaterial *Scene::getMaterial(const QString &name)
 
     for (int i = 0; i<materials.count(); i++)
     {
-        if (materials[i]->name == name.toStdString())
+        if (materials[i]->getName() == name.toStdString())
             return materials[i];
     }
     return NULL;
@@ -634,7 +634,7 @@ void Scene::removeMaterial(SceneMaterial *material)
 void Scene::replaceMaterial(SceneMaterial *material)
 {
     // store original name
-    std::string name = material->name;
+    std::string name = material->getName();
 
     // add new marker
     SceneMaterial *markerNew = Util::scene()->fieldInfo("TODO")->module()->newMaterial();
@@ -654,7 +654,7 @@ void Scene::replaceMaterial(SceneMaterial *material)
     Util::scene()->removeMaterial(material);
 
     // set original name
-    markerNew->name = name;
+    markerNew->setName(name);
 }
 
 void Scene::clear()
@@ -786,7 +786,7 @@ void Scene::deleteSelected()
     {
         if (label->isSelected)
         {
-            m_undoStack->push(new SceneLabelCommandRemove(label->point, QString::fromStdString(label->material->name), label->area, label->polynomialOrder));
+            m_undoStack->push(new SceneLabelCommandRemove(label->point, QString::fromStdString(label->material->getName()), label->area, label->polynomialOrder));
             removeLabel(label);
         }
     }
@@ -884,7 +884,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
             {
                 SceneLabel *labelNew = new SceneLabel(pointNew, label->material, label->area, label->polynomialOrder);
                 SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->material->name), labelNew->area, label->polynomialOrder));
+                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->material->getName()), labelNew->area, label->polynomialOrder));
             }
         }
     }
@@ -946,7 +946,7 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
             {
                 SceneLabel *labelNew = new SceneLabel(pointNew, label->material, label->area, label->polynomialOrder);
                 SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->material->name), labelNew->area, labelNew->polynomialOrder));
+                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->material->getName()), labelNew->area, labelNew->polynomialOrder));
             }
         }
 
@@ -1001,7 +1001,7 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
             {
                 SceneLabel *labelNew = new SceneLabel(pointNew, label->material, label->area, label->polynomialOrder);
                 SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->material->name), labelNew->area, labelNew->polynomialOrder));
+                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->material->getName()), labelNew->area, labelNew->polynomialOrder));
             }
         }
 
@@ -1061,7 +1061,7 @@ void Scene::doNewLabel(const Point &point)
     {
         SceneLabel *labelAdded = addLabel(label);
         if (labelAdded == label) m_undoStack->push(new SceneLabelCommandAdd(label->point,
-                                                                            QString::fromStdString(label->material->name),
+                                                                            QString::fromStdString(label->material->getName()),
                                                                             label->area,
                                                                             label->polynomialOrder));
     }

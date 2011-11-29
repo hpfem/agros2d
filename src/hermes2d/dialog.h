@@ -21,7 +21,7 @@
 #define CUSTOM_H
 
 #include "util.h"
-#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 #include "module.h"
 
 template <class T>

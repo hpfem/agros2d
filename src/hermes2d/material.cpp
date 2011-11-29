@@ -27,7 +27,7 @@ Material::Material(std::string name,
                    std::map<std::string, Value> values)
 {
     // name and type
-    this->name = name;
+    setName(name);
     this->values = values;
 
     // set values
@@ -43,22 +43,4 @@ Material::Material(std::string name,
             }
         }
     }
-}
-
-Material::~Material()
-{
-    values.clear();
-}
-
-Value Material::get_value(std::string id)
-{
-    if (id != "")
-        return values[id];
-
-    return Value();
-}
-
-void Material::evaluate(std::string id, double time)
-{
-    values[id].evaluate(time);
 }

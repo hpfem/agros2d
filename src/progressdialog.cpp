@@ -23,7 +23,7 @@
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneview.h"
-#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 #include "scenesolution.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"

@@ -17,30 +17,27 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef BOUNDARY_H
-#define BOUNDARY_H
-
-#include "util.h"
 #include "marker.h"
+#include "module.h"
+#include "module_agros.h"
+#include "scene.h"
+#include "util.h"
 
-class Boundary : public Marker
+
+Marker::~Marker()
 {
-public:
-    Boundary(std::string name= "", std::string type = "",
-             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    values.clear();
+}
 
-    /// get type
-    const std::string getType() const {return type;}
+const Value Marker::getValue(std::string id)
+{
+    if (id != "")
+        return values[id];
 
-    /// set type
-    void setType(string p_type) { type = p_type; }
+    return Value();
+}
 
-private:
-    /// type of boundary condition, taken from respective module
-    std::string type;
-
-
-};
-
-
-#endif // BOUNDARY_H
+void Marker::evaluate(std::string id, double time)
+{
+    values[id].evaluate(time);
+}
