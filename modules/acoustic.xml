@@ -85,10 +85,10 @@
         <volume>
             <group>
                 <quantity id="acoustic_density" name="Mass density"
-                shortname="rho" shortname_html="&lt;i&gt;&rho;&lt;/i&gt;" shortname_html="\rho"
+                shortname="rho" shortname_html="&lt;i&gt;\amp;rho;&lt;/i&gt;" shortname_latex="\rho"
                 unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" />
                 <quantity id="acoustic_speed" name="Speed of sound"
-                shortname="vel" shortname_html="&lt;i&gt;c&lt;/i&gt;" shortname_html="c"
+                shortname="vel" shortname_html="&lt;i&gt;c&lt;/i&gt;" shortname_latex="c"
                 unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
             </group>
         </volume>

@@ -190,10 +190,10 @@
         <volume>
             <group name="Material properties">
                 <quantity id="magnetic_permeability" name="Permeability"
-                shortname="mur" shortname_html="&lt;i&gt;&mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                shortname="mur" shortname_html="&lt;i&gt;&amp;mu&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
                 unit="H/m" unit_html="H.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="H \cdot m^{-1}" />
                 <quantity id="magnetic_conductivity" name="Electrical conductivity"
-                shortname="gamma" unit="S/m" shortname_html="&lt;i&gt;&gamma;&lt;/i&gt;"
+                shortname="gamma" unit="S/m" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;"
                 unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}"/>
             </group>
             <group name="Source">
@@ -209,7 +209,7 @@
                 shortname="Brm" shortname_html="&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;rm&lt;/sub&gt;"
                 unit="T" />
                 <quantity id="magnetic_remanence_angle" name="Remanent flux density - angle"
-                shortname="Bra" shortname_html="&lt;i&gt;&alpha;&lt;/i&gt;&lt;sub&gt;rm&lt;/sub&gt;"
+                shortname="Bra" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;&lt;sub&gt;rm&lt;/sub&gt;"
                 unit="deg." />
             </group>
             <group name="Velocity">
@@ -220,7 +220,7 @@
                 shortname="vy" shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;"
                 unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
                 <quantity id="magnetic_velocity_angular" name="Velocity - angular"
-                shortname="va" shortname_html="&lt;i&gt;&omega;&lt;/i&gt;"
+                shortname="va" shortname_html="&lt;i&gt;&amp;omega;&lt;/i&gt;"
                 unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
             </group>
         </volume>
