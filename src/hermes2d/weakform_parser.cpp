@@ -372,7 +372,7 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
+        if (Util::scene()->fieldInfo("TODO")->linearityType != LinearityType_Linear)
         {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];
@@ -440,7 +440,7 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
+        if (Util::scene()->fieldInfo("TODO")->linearityType != LinearityType_Linear)
         {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];

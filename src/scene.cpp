@@ -43,6 +43,11 @@ void ProblemInfo::clear()
     name = QObject::tr("unnamed");
     date = QDate::currentDate();
     fileName = "";
+    scriptStartup = "";
+    description = "";
+
+    // matrix solver
+    matrixSolver = Hermes::SOLVER_UMFPACK;
 
     // harmonic
     frequency = 0.0;
@@ -50,12 +55,6 @@ void ProblemInfo::clear()
     // transient
     timeStep = Value("1.0", false);
     timeTotal = Value("1.0", false);
-
-    // linearity
-    linearityType = LinearityType_Linear;
-    nonlinearTolerance = 1e-3;
-    nonlinearSteps = 10;
-
 }
 
 void FieldInfo::clear()
@@ -83,8 +82,6 @@ void FieldInfo::clear()
 
     setModule(moduleFactory(defaultPhysicField.toStdString(), problemType(), analysisType));
 
-    scriptStartup = "";
-    description = "";
     numberOfRefinements = 1;
     polynomialOrder = 2;
     meshType = MeshType_Triangle;
@@ -94,11 +91,13 @@ void FieldInfo::clear()
 
     initialCondition = Value("0.0", false);
 
-    // matrix solver
-    matrixSolver = Hermes::SOLVER_UMFPACK;
-
     // weakforms
     weakFormsType = WeakFormsType_Compiled;
+
+    // linearity
+    linearityType = LinearityType_Linear;
+    nonlinearTolerance = 1e-3;
+    nonlinearSteps = 10;
 }
 
 void FieldInfo::setModule(Hermes::Module::ModuleAgros *module)
