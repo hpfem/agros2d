@@ -527,7 +527,7 @@ void SceneSolution<Scalar>::setSlnVectorView(ViewScalarFilter<Scalar> *slnVector
 //    // deformed shape
 //    if (Util::config()->deformVector)
 //        Util::scene()->problemInfo()->module()->deform_shape(m_vecVectorView.get_vertices(),
-                                                             m_vecVectorView.get_num_vertices());
+//                                                             m_vecVectorView.get_num_vertices());
 }
 
 template <typename Scalar>

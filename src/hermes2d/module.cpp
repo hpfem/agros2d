@@ -434,7 +434,7 @@ Hermes::Module::BoundaryType::~BoundaryType()
 
 // ***********************************************************************************************
 
-Hermes::Module::Integral::Integral(rapidxml::xml_node<> *node, CoordinateType problemType, AnalysisType analysisType)
+Hermes::Module::Integral::Integral(rapidxml::xml_node<> *node, CoordinateType coordinateType, AnalysisType analysisType)
 {
     id = node->first_attribute("id")->value();
     name = QObject::tr(node->first_attribute("name")->value()).toStdString();
@@ -446,7 +446,7 @@ Hermes::Module::Integral::Integral(rapidxml::xml_node<> *node, CoordinateType pr
     for (rapidxml::xml_node<> *expr = node->first_node("expression");
          expr; expr = expr->next_sibling())
         if (expr->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(analysisType))
-            expression = Expression(expr, problemType);
+            expression = Expression(expr, coordinateType);
 }
 
 // ***********************************************************************************************

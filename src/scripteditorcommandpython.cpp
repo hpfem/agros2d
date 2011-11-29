@@ -120,23 +120,23 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
 //    logMessage("pythonNewDocument()");
 
 //    Util::scene()->clear();
-//    Util::scene()->problemInfo()->name = QString(name);
+//    Util::scene()->fieldInfo("TODO")->name = QString(name);
 
 //    // type
-//    Util::scene()->problemInfo()->problemType = problemTypeFromStringKey(QString(type));
-//    if (Util::scene()->problemInfo()->problemType == ProblemType_Undefined)
+//    Util::scene()->fieldInfo("TODO")->problemType = problemTypeFromStringKey(QString(type));
+//    if (Util::scene()->fieldInfo("TODO")->problemType == ProblemType_Undefined)
 //        throw invalid_argument(QObject::tr("Problem type '%1' is not implemented.").arg(QString(type)).toStdString());
 
 //    // analysis type
-//    Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
-//    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Undefined)
+//    Util::scene()->fieldInfo("TODO")->analysisType = analysisTypeFromStringKey(QString(analysistype));
+//    if (Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Undefined)
 //        throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
 
 //    // physicfield
 //    QString field = physicfield;
 //    if (field != "")
 //    {
-//        Util::scene()->problemInfo()->setModule(moduleFactory(field.toStdString(),
+//        Util::scene()->fieldInfo("TODO")->setModule(moduleFactory(field.toStdString(),
 //                                                              problemTypeFromStringKey(QString(type)),
 //                                                              analysisTypeFromStringKey(QString(analysistype)),
 //                                                              ""));
@@ -146,73 +146,73 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
 
 //    // numberofrefinements
 //    if (numberofrefinements >= 0)
-//        Util::scene()->problemInfo()->numberOfRefinements = numberofrefinements;
+//        Util::scene()->fieldInfo("TODO")->numberOfRefinements = numberofrefinements;
 //    else
 //        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(numberofrefinements).toStdString());
 
 //    // polynomialorder
 //    if (polynomialorder >= 1 && polynomialorder <= 10)
-//        Util::scene()->problemInfo()->polynomialOrder = polynomialorder;
+//        Util::scene()->fieldInfo("TODO")->polynomialOrder = polynomialorder;
 //    else
 //        throw out_of_range(QObject::tr("Polynomial order '%1' is out of range.").arg(polynomialorder).toStdString());
 
 //    // adaptivitytype
-//    Util::scene()->problemInfo()->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivitytype));
-//    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_Undefined)
+//    Util::scene()->fieldInfo("TODO")->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivitytype));
+//    if (Util::scene()->fieldInfo("TODO")->adaptivityType == AdaptivityType_Undefined)
 //        throw invalid_argument(QObject::tr("Adaptivity type '%1' is not implemented.").arg(QString(adaptivitytype)).toStdString());
 
 //    // adaptivitysteps
 //    if (adaptivitysteps >= 0)
-//        Util::scene()->problemInfo()->adaptivitySteps = adaptivitysteps;
+//        Util::scene()->fieldInfo("TODO")->adaptivitySteps = adaptivitysteps;
 //    else
 //        throw out_of_range(QObject::tr("Adaptivity step '%1' is out of range.").arg(adaptivitysteps).toStdString());
 
 //    // adaptivitytolerance
 //    if (adaptivitytolerance >= 0)
-//        Util::scene()->problemInfo()->adaptivityTolerance = adaptivitytolerance;
+//        Util::scene()->fieldInfo("TODO")->adaptivityTolerance = adaptivitytolerance;
 //    else
 //        throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
 
 //    // frequency
-//    if (Util::scene()->problemInfo()->module()->harmonic_solutions)
+//    if (Util::scene()->fieldInfo("TODO")->module()->harmonic_solutions)
 //    {
 //        if (frequency >= 0)
-//            Util::scene()->problemInfo()->frequency = frequency;
+//            Util::scene()->fieldInfo("TODO")->frequency = frequency;
 //        else
 //            throw invalid_argument(QObject::tr("The frequency can not be used for this problem.").toStdString());
 //    }
 
 //    // transient timestep
 //    if (timestep > 0)
-//        Util::scene()->problemInfo()->timeStep = Value(QString::number(timestep));
-//    else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//        Util::scene()->fieldInfo("TODO")->timeStep = Value(QString::number(timestep));
+//    else if (Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient)
 //        throw out_of_range(QObject::tr("Time step must be positive.").toStdString());
 
 //    // transient timetotal
 //    if (totaltime > 0)
-//        Util::scene()->problemInfo()->timeTotal = Value(QString::number(totaltime));
-//    else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//        Util::scene()->fieldInfo("TODO")->timeTotal = Value(QString::number(totaltime));
+//    else if (Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient)
 //        throw out_of_range(QObject::tr("Total time must be positive.").toStdString());
 
 //    // nonlineartolerance
 //    if (nonlineartolerance >= 0)
-//        Util::scene()->problemInfo()->nonlinearTolerance = nonlineartolerance;
+//        Util::scene()->fieldInfo("TODO")->nonlinearTolerance = nonlineartolerance;
 //    else
 //        throw out_of_range(QObject::tr("Nonlinear tolerance '%1' is out of range.").arg(nonlineartolerance).toStdString());
 
 //    // nonlinearsteps
 //    if (nonlinearsteps >= 0)
-//        Util::scene()->problemInfo()->nonlinearSteps = nonlinearsteps;
+//        Util::scene()->fieldInfo("TODO")->nonlinearSteps = nonlinearsteps;
 //    else
 //        throw out_of_range(QObject::tr("Number of nonlinear steps '%1' must be positive.").arg(nonlinearsteps).toStdString());
 
 //    // linearity type
-//    Util::scene()->problemInfo()->linearityType = linearityTypeFromStringKey(QString(linearitytype));
-//    if (Util::scene()->problemInfo()->linearityType == LinearityType_Undefined)
+//    Util::scene()->fieldInfo("TODO")->linearityType = linearityTypeFromStringKey(QString(linearitytype));
+//    if (Util::scene()->fieldInfo("TODO")->linearityType == LinearityType_Undefined)
 //        throw invalid_argument(QObject::tr("Linearity type '%1' is not implemented").arg(QString(linearitytype)).toStdString());
 
 //    // transient initial condition
-//    Util::scene()->problemInfo()->initialCondition = Value(QString::number(initialcondition));
+//    Util::scene()->fieldInfo("TODO")->initialCondition = Value(QString::number(initialcondition));
 
 //    // invalidate
 //    sceneView()->doDefaultValues();
@@ -376,7 +376,7 @@ static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
 //            PyArg_Parse(key, "s", &str);
 //            PyArg_Parse(value, "d", &val);
 
-//            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+//            Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(type);
 //            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
 //            {
 //                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
@@ -405,7 +405,7 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 //    {
 //        if (SceneBoundary *boundary = Util::scene()->getBoundary(name))
 //        {
-//            if (Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type))
+//            if (Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(type))
 //            {
                 // boundary type
 
@@ -480,7 +480,7 @@ static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
 //            PyArg_Parse(key, "s", &str);
 //            PyArg_Parse(value, "d", &val);
 
-//            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+//            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo("TODO")->module()->material_type_variables;
 //            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
 //            {
 //                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
@@ -521,7 +521,7 @@ static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 //                PyArg_Parse(key, "s", &str);
 //                PyArg_Parse(value, "d", &val);
 
-//                Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+//                Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo("TODO")->module()->material_type_variables;
 //                for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
 //                {
 //                    Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
@@ -795,8 +795,8 @@ void pythonSolveAdaptiveStep()
     logMessage("pythonSolveAdaptiveStep()");
 
     // store adaptivity steps
-    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
-    Util::scene()->problemInfo()->adaptivitySteps = 1;
+    int adaptivitySteps = Util::scene()->fieldInfo("TODO")->adaptivitySteps;
+    Util::scene()->fieldInfo("TODO")->adaptivitySteps = 1;
 
     // solve
     if (Util::scene()->sceneSolution()->isSolved())
@@ -812,7 +812,7 @@ void pythonSolveAdaptiveStep()
     }
 
     // restore adaptivity steps
-    Util::scene()->problemInfo()->adaptivitySteps = adaptivitySteps;
+    Util::scene()->fieldInfo("TODO")->adaptivitySteps = adaptivitySteps;
 }
 
 // zoombestfit()
@@ -1086,13 +1086,13 @@ void pythonShowScalar(char *type, char *variable, char *component, double rangem
     // variable
     if (QString(variable) == "default")
     {
-        sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
+        sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->view_default_scalar_variable->id;
     }
     else
     {
         bool ok = false;
-        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module()->variables.begin();
-             it < Util::scene()->problemInfo()->module()->variables.end(); ++it )
+        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->fieldInfo("TODO")->module()->variables.begin();
+             it < Util::scene()->fieldInfo("TODO")->module()->variables.end(); ++it )
         {
             Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
             if (QString::fromStdString(var->id) == QString(variable))
@@ -1103,7 +1103,7 @@ void pythonShowScalar(char *type, char *variable, char *component, double rangem
                 // variable component
                 if (QString(component) == "default")
                 {
-                    sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module()->view_default_scalar_variable_comp();
+                    sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->fieldInfo("TODO")->module()->view_default_scalar_variable_comp();
                 }
                 else
                 {
@@ -1208,7 +1208,7 @@ void pythonSetTimeStep(int timestep)
 //    else
 //        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
-//    if (Util::scene()->problemInfo()->analysisType != AnalysisType_Transient)
+//    if (Util::scene()->fieldInfo("TODO")->analysisType != AnalysisType_Transient)
 //        throw invalid_argument(QObject::tr("Solved problem is not transient.").toStdString());
 
 //    if ((timestep < 0) || (timestep > Util::scene()->sceneSolution()->timeStepCount()))
@@ -1334,8 +1334,8 @@ void PythonEngine::runPythonHeader()
 //        PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
 //    // startup script
-//    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
-//        PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+//    if (!Util::scene()->fieldInfo("TODO")->scriptStartup.isEmpty())
+//        PyRun_String(Util::scene()->fieldInfo("TODO")->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
 ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)

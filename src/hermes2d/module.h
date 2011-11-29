@@ -120,7 +120,7 @@ struct LocalVariable
 
     LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "", std::string unit_html = "")
         : id(id), name(name), shortname(shortname), unit(unit), unit_html(unit), is_scalar(true), expression(Expression()) {}
-    LocalVariable(rapidxml::xml_node<> *variable, ProblemType problemType, AnalysisType analysisType);
+    LocalVariable(rapidxml::xml_node<> *variable, CoordinateType problemType, AnalysisType analysisType);
 
     // id
     std::string id;
@@ -210,7 +210,7 @@ struct Integral
     };
 
     Integral() : id(""), name(""), shortname(""), shortname_html(""), unit(""), unit_html(""), expression(Expression()) {}
-    Integral(rapidxml::xml_node<> *node, ProblemType problemType, AnalysisType analysisType);
+    Integral(rapidxml::xml_node<> *node, CoordinateType coordinateType, AnalysisType analysisType);
 
     // id
     std::string id;
