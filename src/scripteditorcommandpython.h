@@ -100,6 +100,7 @@ void pythonDeleteSelection();
 
 void pythonMesh();
 void pythonSolve();
+void pythonSolveAdaptiveStep();
 
 void pythonZoomBestFit();
 void pythonZoomIn();

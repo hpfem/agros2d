@@ -41,8 +41,12 @@ void SceneTabWidget::createContent()
 
     // equation
     equationImage = new QLabel();
-    QFormLayout *layoutEquation = new QFormLayout();
-    layoutEquation->addRow(tr("Equation:"), equationImage);
+    equationImage->setMinimumHeight(fontMetrics().height()*2.2);
+    equationImage->setMinimumWidth(250);
+
+    QGridLayout *layoutEquation = new QGridLayout();
+    layoutEquation->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    layoutEquation->addWidget(equationImage, 0, 1, 1, 1, Qt::AlignRight);
     layout->addLayout(layoutEquation);
 
     for (std::map<std::string, Hermes::vector<Hermes::Module::DialogUI::Row> >::iterator it = ui.groups.begin(); it != ui.groups.end(); ++it)

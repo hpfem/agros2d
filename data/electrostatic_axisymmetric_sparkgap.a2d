@@ -1,6 +1,6 @@
 <document version="2.0">
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="10" id="0" analysistype="steadystate" initialcondition="0" linearitysteps="10" adaptivitysteps="10" linearity="linear" name="Electrostatic Axisymmetric Sparkgap" date="2011-07-18" polynomialorder="2" meshtype="triangle" timestep="0" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="0">
+        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="0" id="0" analysistype="steadystate" initialcondition="0" adaptivitysteps="1" nonlineartolerance="0.001" linearity="newton" name="Electrostatic Axisymmetric Sparkgap" date="2011-07-18" polynomialorder="1" weakforms="interpreted" meshtype="triangle" timestep="0" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>

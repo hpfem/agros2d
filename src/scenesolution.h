@@ -62,7 +62,7 @@ public:
     SceneSolution();
     ~SceneSolution();
 
-    void clear();
+    void clear(bool all = true);
     void loadMeshInitial(QDomElement element);
     void saveMeshInitial(QDomDocument *doc, QDomElement element);
     void loadSolution(QDomElement element);
