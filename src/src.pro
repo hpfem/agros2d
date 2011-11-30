@@ -48,8 +48,6 @@ SOURCES += util.cpp \
     hermes2d/volumeintegral.cpp \
     hermes2d/surfaceintegral.cpp \
     hermes2d/marker.cpp \
-    hermes2d/boundary.cpp \
-    hermes2d/material.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
 ###    hermes2d/hermes_flow.cpp \
@@ -102,8 +100,6 @@ HEADERS += util.h \
     hermes2d/volumeintegral.h \
     hermes2d/surfaceintegral.h \
     hermes2d/marker.h \
-    hermes2d/boundary.h \
-    hermes2d/material.h \
     hermes2d/module.h \
     #hermes2d/hermes_flow.h \
     mainwindow.h \

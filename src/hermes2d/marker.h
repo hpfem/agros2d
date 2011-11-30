@@ -59,4 +59,32 @@ protected:
 };
 
 
+class Boundary : public Marker
+{
+public:
+    Boundary(std::string name= "", std::string type = "",
+             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+
+    /// get type
+    const std::string getType() const {return type;}
+
+    /// set type
+    void setType(string p_type) { type = p_type; }
+
+private:
+    /// type of boundary condition, taken from respective module
+    std::string type;
+
+
+};
+
+
+class Material : public Marker
+{
+public:
+    Material(std::string name,
+             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+};
+
+
 #endif // MARKER_H
