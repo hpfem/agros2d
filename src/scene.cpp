@@ -1479,7 +1479,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         else
         {
             // read marker
-            SceneBoundary *boundary = new SceneBoundary(name.toStdString(), type.toStdString());
+            SceneBoundary *boundary = new SceneBoundary("TODO", name.toStdString(), type.toStdString());
 
             Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(type.toStdString());
             for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin();
@@ -1530,15 +1530,15 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             //            }
 
             // read marker
-            SceneMaterial *material = new SceneMaterial(name.toStdString());
+            SceneMaterial *material = new SceneMaterial("TODO", name.toStdString());
             Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo("TODO")->module()->material_type_variables;
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
 
-                material->values[variable->id] =
+                material->setValue(variable->id,
                         Value(element.toElement().attribute(QString::fromStdString(variable->id),
-                                                            QString::number(variable->default_value)));
+                                                            QString::number(variable->default_value))));
             }
             Util::scene()->addMaterial(material);
         }

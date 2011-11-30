@@ -36,7 +36,7 @@ Q_DECLARE_METATYPE(SceneMaterial *)
 class SceneBoundary : public Boundary
 {
 public:
-    SceneBoundary(std::string name = "", std::string type = "",
+    SceneBoundary(std::string field, std::string name = "", std::string type = "",
                   std::map<std::string, Value> values = (std::map<std::string, Value>()));
 
     int showDialog(QWidget *parent);
@@ -75,7 +75,7 @@ private:
 class SceneMaterial : public Material
 {
 public:
-    SceneMaterial(std::string name,
+    SceneMaterial(std::string field, std::string name,
                   std::map<std::string, Value> values = (std::map<std::string, Value>()));
 
     int showDialog(QWidget *parent);

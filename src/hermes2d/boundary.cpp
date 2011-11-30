@@ -23,20 +23,19 @@
 #include "scene.h"
 #include "util.h"
 
-Boundary::Boundary(std::string name, std::string type,
-                   std::map<std::string, Value> values) : Marker()
+Boundary::Boundary(std::string field, std::string name, std::string type,
+                   std::map<std::string, Value> values) : Marker(field, name)
 {
-    // name and type
-    setName(name);
+    // type and values
     setType(type);
     this->values = values;
 
     // set values
-    if (name != "none")
+    if (field != "" && name != "none")
     {
         if (this->values.size() == 0)
         {
-            Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(type);
+            Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo(field)->module()->get_boundary_type(type);
             for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
             {
                 Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);

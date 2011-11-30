@@ -114,7 +114,7 @@ bool SceneTabWidgetMaterial::save()
 {
     for (int j = 0; j < ids.count(); j++)
         if (values.at(j)->evaluate())
-            material->addValue(ids.at(j).toStdString(), values.at(j)->value());
+            material->setValue(ids.at(j).toStdString(), values.at(j)->value());
         else
             return false;
 

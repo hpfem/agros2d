@@ -23,6 +23,11 @@
 #include "scene.h"
 #include "util.h"
 
+Marker::Marker(std::string field, std::string name)
+{
+    this->field = field;
+    this->name = name;
+}
 
 Marker::~Marker()
 {
@@ -35,6 +40,11 @@ const Value Marker::getValue(std::string id)
         return values[id];
 
     return Value();
+}
+
+const map<string, Value> Marker::getValues() const
+{
+    return values;
 }
 
 void Marker::evaluate(std::string id, double time)

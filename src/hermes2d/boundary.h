@@ -26,36 +26,16 @@
 class Boundary : public Marker
 {
 public:
-    Boundary(std::string name= "", std::string type = "",
-             std::map<std::string, Value> values = (std::map<std::string, Value>()));
-    ~Boundary();
+    Boundary(std::string field, std::string name = "", std::string type = "",
+             std::map<std::string, Value> values = (std::map<std::string, Value>()));    
 
-    /// value of one individual variable
-    const Value getValue(std::string id);
-
-    /// get all values
-    const map<string, Value> getValues() const
-    {
-        //TODO - TEMP
-        return values;
-    }
-
-    /// get type
-    const std::string getType() const {return type;}
+    /// return type
+    std::string getType() { return type; }
 
     /// set type
-    void setType(string p_type) { type = p_type; }
-
-    void setValue(string name, Value value) { values[name] = value; }
-
-    /// return name
-    std::string getName() {return name; }
-
-    /// set name
-    void setName(string paramName) {name = paramName; }
+    void setType(string paramType) { type = paramType; }
 
 private:
-    /// type of boundary condition, taken from respective module
     std::string type;
 };
 

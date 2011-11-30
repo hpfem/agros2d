@@ -23,15 +23,14 @@
 #include "scene.h"
 #include "util.h"
 
-Material::Material(std::string name,
-                   std::map<std::string, Value> values)
+Material::Material(std::string field, std::string name,
+                   std::map<std::string, Value> values) : Marker(field, name)
 {
-    // name and type
-    setName(name);
+    // values
     this->values = values;
 
     // set values
-    if (name != "none")
+    if (field != "" && name != "none")
     {
         if (this->values.size() == 0)
         {

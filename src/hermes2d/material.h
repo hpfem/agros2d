@@ -26,8 +26,8 @@
 class Material : public Marker
 {
 public:
-    Material(std::string name,
-             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    Material(std::string field, std::string name,
+             std::map<std::string, Value> values);
 };
 
 #endif // MATERIAL_H

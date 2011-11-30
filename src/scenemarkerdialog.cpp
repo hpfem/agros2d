@@ -25,9 +25,9 @@
 #include "scenebasic.h"
 #include "gui.h"
 
-SceneBoundary::SceneBoundary(std::string name, std::string type,
+SceneBoundary::SceneBoundary(std::string field, std::string name, std::string type,
                              std::map<std::string, Value> values)
-    : Boundary(name, type, values)
+    : Boundary(field, name, type, values)
 {
     logMessage("SceneBoundary::SceneBoundary()");
 }
@@ -103,15 +103,15 @@ QVariant SceneBoundary::variant()
     return v;
 }
 
-SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary("none")
+SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary("", "none")
 {
     logMessage("SceneBoundary::SceneBoundaryNone()");
 }
 
 // *************************************************************************************************************************************
 
-SceneMaterial::SceneMaterial(std::string name,
-                             std::map<std::string, Value> values) : Material(name, values)
+SceneMaterial::SceneMaterial(std::string field, std::string name,
+                             std::map<std::string, Value> values) : Material(field, name, values)
 {
     logMessage("SceneMaterial::SceneMaterial()");
 }
@@ -188,7 +188,7 @@ QVariant SceneMaterial::variant()
     return v;
 }
 
-SceneMaterialNone::SceneMaterialNone() : SceneMaterial("none")
+SceneMaterialNone::SceneMaterialNone() : SceneMaterial("", "none")
 {
     logMessage("SceneMaterial::SceneMaterialNone()");
 }

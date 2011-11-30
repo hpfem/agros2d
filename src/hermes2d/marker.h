@@ -25,8 +25,7 @@
 class Marker
 {
 public:
-//    Marker(std::string name= "",
-//             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    Marker(std::string field, std::string name);
     ~Marker();
 
     /// value of one individual variable
@@ -35,13 +34,19 @@ public:
     /// get all values
     const map<string, Value> getValues() const;
 
-    void addValue(string name, Value value) { values[name] = value; }
+    void setValue(string name, Value value) { values[name] = value; }
 
     /// return name
-    std::string getName() {return name; }
+    std::string getName() { return name; }
 
     /// set name
-    void setName(string paramName) {name = paramName; }
+    void setName(string paramName) { name = paramName; }
+
+    /// return field
+    std::string getField() { return field; }
+
+    /// set field
+    void setField(string paramField) {field = paramField; }
 
     /// ????
     void evaluate(std::string id, double time);
