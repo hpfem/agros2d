@@ -37,6 +37,13 @@ class SceneBoundary;
 class SceneMaterial;
 struct SceneViewSettings;
 
+class SceneNodeContainer;
+class SceneEdgeContainer;
+class SceneLabelContainer;
+
+class SceneBoundaryContainer;
+class SceneMaterialContainer;
+
 template <typename Scalar> class SceneSolution;
 
 class ScriptEngineRemote;
@@ -170,9 +177,12 @@ signals:
 
 public:
 
-    QList<SceneNode *> nodes;
-    QList<SceneEdge *> edges;
-    QList<SceneLabel *> labels;
+    SceneNodeContainer* nodes;
+    SceneEdgeContainer* edges;
+    SceneLabelContainer* labels;
+
+    SceneBoundaryContainer *boundaries2;
+    SceneMaterialContainer *materials2;
 
     QList<SceneBoundary *> boundaries;
     QList<SceneMaterial *> materials;
@@ -206,15 +216,11 @@ public:
     void removeBoundary(SceneBoundary *boundary);
     void setBoundary(SceneBoundary *boundary); // set edge marker to selected edges
     SceneBoundary *getBoundary(const QString &name);
-    bool setBoundary(const QString &name, SceneBoundary *boundary);
-    void replaceBoundary(SceneBoundary *boundary);
 
     void addMaterial(SceneMaterial *material);
     void removeMaterial(SceneMaterial *material);
     void setMaterial(SceneMaterial *material); // set label marker to selected labels
     SceneMaterial *getMaterial(const QString &name);
-    bool setMaterial(const QString &name, SceneMaterial *material);
-    void replaceMaterial(SceneMaterial *material);
 
     void clear();
 

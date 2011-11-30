@@ -102,11 +102,11 @@ void VolumeIntegralValue::calculate()
     Hermes::Hermes2D::Mesh *mesh = sln[0]->get_mesh();
     Hermes::Hermes2D::Element *e;
 
-    for (int i = 0; i<Util::scene()->labels.length(); i++)
+    for (int i = 0; i<Util::scene()->labels->all().length(); i++)
     {
-        if (Util::scene()->labels[i]->isSelected)
+        if (Util::scene()->labels->all()[i]->isSelected)
         {
-            SceneMaterial *material = Util::scene()->labels[i]->material;
+            SceneMaterial *material = Util::scene()->labels->all()[i]->marker;
             // FIXME
             parser->setParserVariables(material, NULL,
                                        pvalue[0], pdx[0], pdy[0]);

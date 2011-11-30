@@ -476,10 +476,10 @@ void SceneBoundarySelectDialog::doAccept()
     
     if (boundary())
     {
-        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        for (int i = 0; i<Util::scene()->edges->all().count(); i++)
         {
-            if (Util::scene()->edges[i]->isSelected)
-                Util::scene()->edges[i]->boundary = boundary();
+            if (Util::scene()->edges->all()[i]->isSelected)
+                Util::scene()->edges->all()[i]->marker = boundary();
         }
     }
     accept();
@@ -506,15 +506,15 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
     // select marker
     cmbMaterial->setCurrentIndex(-1);
     SceneMaterial *marker = NULL;
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    for (int i = 0; i<Util::scene()->labels->all().count(); i++)
     {
-        if (Util::scene()->labels[i]->isSelected)
+        if (Util::scene()->labels->all()[i]->isSelected)
         {
             if (!marker)
             {
-                marker = Util::scene()->labels[i]->material;
+                marker = Util::scene()->labels->all()[i]->marker;
             }
-            if (marker != Util::scene()->labels[i]->material)
+            if (marker != Util::scene()->labels->all()[i]->marker)
             {
                 marker = NULL;
                 break;
@@ -549,10 +549,10 @@ void SceneMaterialSelectDialog::doAccept()
     
     if (marker())
     {
-        for (int i = 0; i<Util::scene()->labels.count(); i++)
+        for (int i = 0; i<Util::scene()->labels->all().count(); i++)
         {
-            if (Util::scene()->labels[i]->isSelected)
-                Util::scene()->labels[i]->material = marker();
+            if (Util::scene()->labels->all()[i]->isSelected)
+                Util::scene()->labels->all()[i]->marker = marker();
         }
     }
     accept();

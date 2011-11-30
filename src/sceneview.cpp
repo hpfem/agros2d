@@ -807,10 +807,10 @@ void SceneView::paintGeometry()
     loadProjection2d(true);
 
     // edges
-    foreach (SceneEdge *edge, m_scene->edges)
+    foreach (SceneEdge *edge, m_scene->edges->all())
     {
         // edge with marker
-        if (m_sceneMode == SceneMode_OperateOnEdges && edge->boundary->getType() == "")
+        if (m_sceneMode == SceneMode_OperateOnEdges && edge->marker->getType() == "")
         {
             glEnable(GL_LINE_STIPPLE);
             glLineStipple(1, 0x8FFF);
@@ -858,7 +858,7 @@ void SceneView::paintGeometry()
     // nodes
     if (!(m_sceneMode == SceneMode_Postprocessor))
     {
-        foreach (SceneNode *node, m_scene->nodes)
+        foreach (SceneNode *node, m_scene->nodes->all())
         {
             glColor3d(Util::config()->colorNodes.redF(),
                       Util::config()->colorNodes.greenF(),
@@ -901,7 +901,7 @@ void SceneView::paintGeometry()
     // labels
     if (!(m_sceneMode == SceneMode_Postprocessor))
     {
-        foreach (SceneLabel *label, m_scene->labels)
+        foreach (SceneLabel *label, m_scene->labels->all())
         {
             glColor3d(Util::config()->colorLabels.redF(),
                       Util::config()->colorLabels.greenF(),
@@ -942,10 +942,10 @@ void SceneView::paintGeometry()
                 glColor3d(0.1, 0.1, 0.1);
 
                 Point point;
-                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(QString::fromStdString(label->material->getName()))/m_scale2d/2.0;
+                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(QString::fromStdString(label->marker->getName()))/m_scale2d/2.0;
                 point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale2d;
 
-                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, QString::fromStdString(label->material->getName()), false);
+                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, QString::fromStdString(label->marker->getName()), false);
             }
 
             // area size
@@ -1516,7 +1516,7 @@ void SceneView::paintScalarField3D()
         glDisable(GL_POLYGON_OFFSET_FILL);
 
         // geometry - edges
-        foreach (SceneEdge *edge, m_scene->edges)
+        foreach (SceneEdge *edge, m_scene->edges->all())
         {
 
             glColor3d(Util::config()->colorEdges.redF(),
@@ -1839,7 +1839,7 @@ void SceneView::paintScalarField3DSolid()
             glLineWidth(Util::config()->edgeWidth);
 
             // top and bottom
-            foreach (SceneEdge *edge, m_scene->edges)
+            foreach (SceneEdge *edge, m_scene->edges->all())
             {
                 for (int j = 0; j < 2; j++)
                 {
@@ -1875,7 +1875,7 @@ void SceneView::paintScalarField3DSolid()
 
             // side
             glBegin(GL_LINES);
-            foreach (SceneNode *node, m_scene->nodes)
+            foreach (SceneNode *node, m_scene->nodes->all())
             {
                 glVertex3d(node->point.x, node->point.y,  depth/2.0);
                 glVertex3d(node->point.x, node->point.y, -depth/2.0);
@@ -1893,7 +1893,7 @@ void SceneView::paintScalarField3DSolid()
             glLineWidth(Util::config()->edgeWidth);
 
             // top
-            foreach (SceneEdge *edge, m_scene->edges)
+            foreach (SceneEdge *edge, m_scene->edges->all())
             {
                 for (int j = 0; j < 2; j++)
                 {
@@ -1928,7 +1928,7 @@ void SceneView::paintScalarField3DSolid()
             }
 
             // side
-            foreach (SceneNode *node, m_scene->nodes)
+            foreach (SceneNode *node, m_scene->nodes->all())
             {
                 int count = 30;
                 double step = phi/count;
@@ -2922,7 +2922,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                         //  find label marker
                         int labelIndex = atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker).marker.c_str());
 
-                        m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
+                        m_scene->labels->all()[labelIndex]->isSelected = !m_scene->labels->all()[labelIndex]->isSelected;
                         updateGL();
                     }
                     emit mousePressed();
@@ -2997,7 +2997,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                             SceneEdge *edgeAdded = m_scene->addEdge(edge);
                             if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                                                                       edge->nodeEnd->point,
-                                                                                                      QString::fromStdString(edge->boundary->getName()),
+                                                                                                      QString::fromStdString(edge->marker->getName()),
                                                                                                       edge->angle,
                                                                                                       edge->refineTowardsEdge));
                         }
@@ -3024,7 +3024,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     SceneLabel *label = new SceneLabel(p, m_scene->materials[0], 0, 0);
                     SceneLabel *labelAdded = m_scene->addLabel(label);
                     if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point,
-                                                                                                 QString::fromStdString(label->material->getName()),
+                                                                                                 QString::fromStdString(label->marker->getName()),
                                                                                                  label->area,
                                                                                                  label->polynomialOrder));
                     updateGL();
@@ -3272,7 +3272,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     setToolTip(tr("<h3>Node</h3>Point: [%1; %2]<br/>Index: %3").
                                arg(node->point.x, 0, 'g', 3).
                                arg(node->point.y, 0, 'g', 3).
-                               arg(m_scene->nodes.indexOf(node)));
+                               arg(m_scene->nodes->all().indexOf(node)));
                     updateGL();
                 }
             }
@@ -3289,10 +3289,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                arg(edge->nodeStart->point.y, 0, 'g', 3).
                                arg(edge->nodeEnd->point.x, 0, 'g', 3).
                                arg(edge->nodeEnd->point.y, 0, 'g', 3).
-                               arg(QString::fromStdString(edge->boundary->getName())).
+                               arg(QString::fromStdString(edge->marker->getName())).
                                arg(edge->angle, 0, 'f', 0).
-                               arg(m_scene->edges.indexOf(edge)).
-                               arg(edge->boundary->html()));
+                               arg(m_scene->edges->all().indexOf(edge)).
+                               arg(edge->marker->html()));
                     updateGL();
                 }
             }
@@ -3307,11 +3307,11 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle area: %4 m<sup>2</sup><br/>Polynomial order: %5<br/>Index: %6 %7").
                                arg(label->point.x, 0, 'g', 3).
                                arg(label->point.y, 0, 'g', 3).
-                               arg(QString::fromStdString(label->material->getName())).
+                               arg(QString::fromStdString(label->marker->getName())).
                                arg(label->area, 0, 'g', 3).
                                arg(label->polynomialOrder).
-                               arg(m_scene->labels.indexOf(label)).
-                               arg(label->material->html()));
+                               arg(m_scene->labels->all().indexOf(label)).
+                               arg(label->marker->html()));
                     updateGL();
                 }
             }
@@ -3380,7 +3380,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                 {
                     if (fabs(len.x) > Util::config()->gridStep)
                     {
-                        foreach (SceneNode *node, m_scene->nodes)
+                        foreach (SceneNode *node, m_scene->nodes->all())
                             if (node->isSelected)
                                 node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                         len.x = 0;
@@ -3389,7 +3389,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
                     if (fabs(len.y) > Util::config()->gridStep)
                     {
-                        foreach (SceneNode *node, m_scene->nodes)
+                        foreach (SceneNode *node, m_scene->nodes->all())
                             if (node->isSelected)
                                 node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                         len.y = 0;
@@ -3412,13 +3412,13 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                 {
                     if (fabs(len.x) > Util::config()->gridStep)
                     {
-                        foreach (SceneEdge *edge, m_scene->edges)
+                        foreach (SceneEdge *edge, m_scene->edges->all())
                             if (edge->isSelected)
                             {
                                 edge->nodeStart->isSelected = true;
                                 edge->nodeEnd->isSelected = true;
                             }
-                        foreach (SceneNode *node, m_scene->nodes)
+                        foreach (SceneNode *node, m_scene->nodes->all())
                             if (node->isSelected)
                                 node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
 
@@ -3428,14 +3428,14 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
                     if (fabs(len.y) > Util::config()->gridStep)
                     {
-                        foreach (SceneEdge *edge, m_scene->edges)
-                            foreach (SceneEdge *edge, m_scene->edges)
+                        foreach (SceneEdge *edge, m_scene->edges->all())
+                            foreach (SceneEdge *edge, m_scene->edges->all())
                                 if (edge->isSelected)
                                 {
                                     edge->nodeStart->isSelected = true;
                                     edge->nodeEnd->isSelected = true;
                                 }
-                        foreach (SceneNode *node, m_scene->nodes)
+                        foreach (SceneNode *node, m_scene->nodes->all())
                             if (node->isSelected)
                                 node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
 
@@ -3782,10 +3782,10 @@ void SceneView::doSceneObjectProperties()
         }
         if (m_scene->selectedCount() == 1)
         {
-            for (int i = 0; i < m_scene->edges.count(); i++)
+            for (int i = 0; i < m_scene->edges->all().count(); i++)
             {
-                if (m_scene->edges[i]->isSelected)
-                    m_scene->edges[i]->showDialog(this);
+                if (m_scene->edges->all()[i]->isSelected)
+                    m_scene->edges->all()[i]->showDialog(this);
             }
         }
     }
@@ -3798,10 +3798,10 @@ void SceneView::doSceneObjectProperties()
         }
         if (m_scene->selectedCount() == 1)
         {
-            for (int i = 0; i < m_scene->labels.count(); i++)
+            for (int i = 0; i < m_scene->labels->all().count(); i++)
             {
-                if (m_scene->labels[i]->isSelected)
-                    m_scene->labels[i]->showDialog(this);
+                if (m_scene->labels->all()[i]->isSelected)
+                    m_scene->labels->all()[i]->showDialog(this);
             }
         }
     }
@@ -3915,18 +3915,18 @@ void SceneView::selectRegion(const Point &start, const Point &end)
     switch (m_sceneMode)
     {
     case SceneMode_OperateOnNodes:
-        foreach (SceneNode *node, m_scene->nodes)
+        foreach (SceneNode *node, m_scene->nodes->all())
             if (node->point.x >= start.x && node->point.x <= end.x && node->point.y >= start.y && node->point.y <= end.y)
                 node->isSelected = true;
         break;
     case SceneMode_OperateOnEdges:
-        foreach (SceneEdge *edge, m_scene->edges)
+        foreach (SceneEdge *edge, m_scene->edges->all())
             if (edge->nodeStart->point.x >= start.x && edge->nodeStart->point.x <= end.x && edge->nodeStart->point.y >= start.y && edge->nodeStart->point.y <= end.y &&
                     edge->nodeEnd->point.x >= start.x && edge->nodeEnd->point.x <= end.x && edge->nodeEnd->point.y >= start.y && edge->nodeEnd->point.y <= end.y)
                 edge->isSelected = true;
         break;
     case SceneMode_OperateOnLabels:
-        foreach (SceneLabel *label, m_scene->labels)
+        foreach (SceneLabel *label, m_scene->labels->all())
             if (label->point.x >= start.x && label->point.x <= end.x && label->point.y >= start.y && label->point.y <= end.y)
                 label->isSelected = true;
         break;
@@ -3940,7 +3940,7 @@ SceneNode *SceneView::findClosestNode(const Point &point)
     SceneNode *nodeClosest = NULL;
 
     double distance = numeric_limits<double>::max();
-    foreach (SceneNode *node, m_scene->nodes)
+    foreach (SceneNode *node, m_scene->nodes->all())
     {
         double nodeDistance = node->distance(point);
         if (node->distance(point) < distance)
@@ -3960,7 +3960,7 @@ SceneEdge *SceneView::findClosestEdge(const Point &point)
     SceneEdge *edgeClosest = NULL;
 
     double distance = numeric_limits<double>::max();
-    foreach (SceneEdge *edge, m_scene->edges)
+    foreach (SceneEdge *edge, m_scene->edges->all())
     {
         double edgeDistance = edge->distance(point);
         if (edge->distance(point) < distance)
@@ -3980,7 +3980,7 @@ SceneLabel *SceneView::findClosestLabel(const Point &point)
     SceneLabel *labelClosest = NULL;
 
     double distance = numeric_limits<double>::max();
-    foreach (SceneLabel *label, m_scene->labels)
+    foreach (SceneLabel *label, m_scene->labels->all())
     {
         double labelDistance = label->distance(point);
         if (label->distance(point) < distance)
@@ -4083,7 +4083,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
         Hermes::Hermes2D::Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
-        if (m_scene->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str())]->isSelected)
+        if (m_scene->labels->all()[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str())]->isSelected)
         {
             if (element->is_triangle())
             {
@@ -4156,7 +4156,7 @@ void SceneView::paintPostprocessorSelectedSurface()
     logMessage("SceneView::paintPostprocessorSelectedSurface()");
 
     // edges
-    foreach (SceneEdge *edge, m_scene->edges) {
+    foreach (SceneEdge *edge, m_scene->edges->all()) {
         glColor3d(Util::config()->colorSelected.redF(), Util::config()->colorSelected.greenF(), Util::config()->colorSelected.blueF());
         glLineWidth(3.0);
 

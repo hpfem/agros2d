@@ -264,9 +264,9 @@ void pythonDeleteNode(int index)
 {
     logMessage("pythonDeleteNode()");
 
-    if (index < 0 || index >= Util::scene()->nodes.count())
+    if (index < 0 || index >= Util::scene()->nodes->all().count())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->removeNode(Util::scene()->nodes[index]);
+    Util::scene()->removeNode(Util::scene()->nodes->all()[index]);
 }
 
 void pythonDeleteNodePoint(double x, double y)
@@ -303,9 +303,9 @@ void pythonDeleteEdge(int index)
 {
     logMessage("pythonDeleteEdge()");
 
-    if (index < 0 || index >= Util::scene()->edges.count())
+    if (index < 0 || index >= Util::scene()->edges->all().count())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->removeEdge(Util::scene()->edges[index]);
+    Util::scene()->removeEdge(Util::scene()->edges->all()[index]);
 }
 
 void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
@@ -334,9 +334,9 @@ void pythonDeleteLabel(int index)
 {
     logMessage("pythonDeleteLabel()");
 
-    if (index < 0 || index >= Util::scene()->labels.count())
+    if (index < 0 || index >= Util::scene()->labels->all().count())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->removeLabel(Util::scene()->labels[index]);
+    Util::scene()->removeLabel(Util::scene()->labels->all()[index]);
 }
 
 void pythonDeleteLabelPoint(double x, double y)
@@ -591,13 +591,13 @@ static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
             int index;
             PyArg_Parse(value, "i", &index);
 
-            if ((index >= 0) && index < Util::scene()->nodes.count())
+            if ((index >= 0) && index < Util::scene()->nodes->all().count())
             {
-                Util::scene()->nodes[index]->isSelected = true;
+                Util::scene()->nodes->all()[index]->isSelected = true;
             }
             else
             {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->edges->all().count()-1).toStdString().c_str());
                 return NULL;
             }
         }
@@ -698,13 +698,13 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
             int index;
             PyArg_Parse(value, "i", &index);
 
-            if ((index >= 0) && index < Util::scene()->labels.count())
+            if ((index >= 0) && index < Util::scene()->labels->all().count())
             {
-                Util::scene()->labels[index]->isSelected = true;
+                Util::scene()->labels->all()[index]->isSelected = true;
             }
             else
             {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->edges->all().count()-1).toStdString().c_str());
                 return NULL;
             }
         }
@@ -978,13 +978,13 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
                 int index;
                 PyArg_Parse(value, "i", &index);
 
-                if ((index >= 0) && index < Util::scene()->edges.count())
+                if ((index >= 0) && index < Util::scene()->edges->all().count())
                 {
-                    Util::scene()->edges[index]->isSelected = true;
+                    Util::scene()->edges->all()[index]->isSelected = true;
                 }
                 else
                 {
-                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges->all().count()-1).toStdString().c_str());
                     return NULL;
                 }
             }
@@ -1036,13 +1036,13 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
                 int index;
                 PyArg_Parse(value, "i", &index);
 
-                if ((index >= 0) && index < Util::scene()->labels.count())
+                if ((index >= 0) && index < Util::scene()->labels->all().count())
                 {
-                    Util::scene()->labels[index]->isSelected = true;
+                    Util::scene()->labels->all()[index]->isSelected = true;
                 }
                 else
                 {
-                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels.count()-1).toStdString().c_str());
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels->all().count()-1).toStdString().c_str());
                     return NULL;
                 }
             }
