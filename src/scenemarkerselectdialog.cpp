@@ -107,10 +107,10 @@ void SceneMarkerSelectDialog::doAccept()
         {
             if (lstSurface->item(i)->checkState() == Qt::Checked)
             {
-                for (int j = 0; j < Util::scene()->edges.count(); j++)
+                for (int j = 0; j < Util::scene()->edges->all().count(); j++)
                 {
-                    if (Util::scene()->edges[j]->boundary == Util::scene()->boundaries[i+1])
-                        Util::scene()->edges[j]->isSelected = true;
+                    if (Util::scene()->edges->all()[j]->marker == Util::scene()->boundaries[i+1])
+                        Util::scene()->edges->all()[j]->isSelected = true;
                 }
             }
         }
@@ -126,10 +126,10 @@ void SceneMarkerSelectDialog::doAccept()
         {
             if (lstVolume->item(i)->checkState() == Qt::Checked)
             {
-                for (int j = 0; j < Util::scene()->labels.count(); j++)
+                for (int j = 0; j < Util::scene()->labels->all().count(); j++)
                 {
-                    if (Util::scene()->labels[j]->material == Util::scene()->materials[i+1])
-                        Util::scene()->labels[j]->isSelected = true;
+                    if (Util::scene()->labels->all()[j]->marker == Util::scene()->materials[i+1])
+                        Util::scene()->labels->all()[j]->isSelected = true;
                 }
             }
         }

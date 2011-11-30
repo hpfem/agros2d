@@ -51,3 +51,51 @@ void Marker::evaluate(std::string id, double time)
 {
     values[id].evaluate(time);
 }
+
+
+Boundary::Boundary(std::string name, std::string type,
+                   std::map<std::string, Value> values) : Marker()
+{
+    // name and type
+    setName(name);
+    setType(type);
+    this->values = values;
+
+    // set values
+    if (name != "none")
+    {
+        if (this->values.size() == 0)
+        {
+            Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(type);
+            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+            {
+                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+                this->values[variable->id] = Value(QString::number(variable->default_value));
+            }
+        }
+    }
+}
+
+
+
+Material::Material(std::string name,
+                   std::map<std::string, Value> values)
+{
+    // name and type
+    setName(name);
+    this->values = values;
+
+    // set values
+    if (name != "none")
+    {
+        if (this->values.size() == 0)
+        {
+            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo(field)->module()->material_type_variables;
+            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+            {
+                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+                this->values[variable->id] = Value(QString::number(variable->default_value));
+            }
+        }
+    }
+}

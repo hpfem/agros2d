@@ -28,9 +28,11 @@ class ValueLineEdit;
 struct Point;
 
 class SceneBasic;
+template <typename MarkerType> class MarkedSceneBasic;
 class SceneNode;
 class SceneEdge;
 class SceneLabel;
+class Marker;
 
 class SceneBoundary;
 class SceneMaterial;
@@ -54,6 +56,21 @@ public:
     QVariant variant();
 };
 
+template <typename BasicType>
+class SceneBasicContainer
+{
+public:
+    /// all() should be removed step by step from the code.
+    /// more methods operating with list data should be defined here
+    QList<BasicType*> all() { return data; }
+
+    QList<BasicType*> selected();
+    QList<BasicType*> highlited();
+
+private:
+    QList<BasicType*> data;
+};
+
 // *************************************************************************************************************************************
 
 class SceneNode : public SceneBasic 
@@ -68,18 +85,35 @@ public:
     int showDialog(QWidget *parent, bool isNew = false);
 };
 
+class SceneNodeContainer : public SceneBasicContainer<SceneNode>
+{
+
+};
+
 // *************************************************************************************************************************************
 
-class SceneEdge : public SceneBasic
+template <typename MarkerType>
+class MarkedSceneBasic : public SceneBasic
 {
 public:
-    SceneBoundary *boundary;
+    MarkerType *marker;
+};
+
+template <typename MarkerType>
+class MarkedSceneBasicContainer : public SceneBasicContainer<MarkerType>
+{
+
+};
+
+class SceneEdge : public MarkedSceneBasic<SceneBoundary>
+{
+public:
     SceneNode *nodeStart;
     SceneNode *nodeEnd;
     double angle;
     int refineTowardsEdge;
 
-    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *boundary, double angle, int refineTowardsEdge);
+    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *marker, double angle, int refineTowardsEdge);
 
     Point center() const;
     double radius() const;
@@ -91,23 +125,35 @@ public:
     int showDialog(QWidget *parent, bool isNew = false);
 };
 
+class SceneEdgeContainer : public MarkedSceneBasicContainer<SceneEdge>
+{
+
+};
+
 // *************************************************************************************************************************************
 
-class SceneLabel : public SceneBasic 
+class SceneLabel : public MarkedSceneBasic<SceneMaterial>
 {
 public:
-    SceneMaterial *material;
     Point point;
     double area;
     int polynomialOrder;
 
-    SceneLabel(const Point &point, SceneMaterial *material, double area, int polynomialOrder);
+    SceneLabel(const Point &point, SceneMaterial *marker, double area, int polynomialOrder);
 
     double distance(const Point &point) const;
 
     int showDialog(QWidget *parent, bool isNew = false);
 };
 
+class SceneLabelContainer : public MarkedSceneBasicContainer<SceneLabel>
+{
+
+};
+
+
+
+// *************************************************************************************************************************************
 // *************************************************************************************************************************************
 
 class DSceneBasic: public QDialog

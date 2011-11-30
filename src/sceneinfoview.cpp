@@ -337,16 +337,16 @@ void SceneInfoView::doInvalidated()
     // geometry
     // nodes
     QList<QTreeWidgetItem *> listNodes;
-    for (int i = 0; i<Util::scene()->nodes.count(); i++)
+    for (int i = 0; i<Util::scene()->nodes->all().count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, QString("%1 - [%2; %3]").
                       arg(i).
-                      arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).
-                      arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2));
+                      arg(Util::scene()->nodes->all()[i]->point.x, 0, 'e', 2).
+                      arg(Util::scene()->nodes->all()[i]->point.y, 0, 'e', 2));
         item->setIcon(0, icon("scene-node"));
-        item->setData(0, Qt::UserRole, Util::scene()->nodes[i]->variant());
+        item->setData(0, Qt::UserRole, Util::scene()->nodes->all()[i]->variant());
 
         listNodes.append(item);
     }
@@ -354,17 +354,17 @@ void SceneInfoView::doInvalidated()
 
     // edges
     QList<QTreeWidgetItem *> listEdges;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    for (int i = 0; i<Util::scene()->edges->all().count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, QString("%1 - %2 m").
                       arg(i).
-                      arg((Util::scene()->edges[i]->angle < EPS_ZERO) ?
-                              sqrt(Hermes::sqr(Util::scene()->edges[i]->nodeEnd->point.x - Util::scene()->edges[i]->nodeStart->point.x) + Hermes::sqr(Util::scene()->edges[i]->nodeEnd->point.y - Util::scene()->edges[i]->nodeStart->point.y)) :
-                              Util::scene()->edges[i]->radius() * Util::scene()->edges[i]->angle / 180.0 * M_PI, 0, 'e', 2));
+                      arg((Util::scene()->edges->all()[i]->angle < EPS_ZERO) ?
+                              sqrt(Hermes::sqr(Util::scene()->edges->all()[i]->nodeEnd->point.x - Util::scene()->edges->all()[i]->nodeStart->point.x) + Hermes::sqr(Util::scene()->edges->all()[i]->nodeEnd->point.y - Util::scene()->edges->all()[i]->nodeStart->point.y)) :
+                              Util::scene()->edges->all()[i]->radius() * Util::scene()->edges->all()[i]->angle / 180.0 * M_PI, 0, 'e', 2));
         item->setIcon(0, icon("scene-edge"));
-        item->setData(0, Qt::UserRole, Util::scene()->edges[i]->variant());
+        item->setData(0, Qt::UserRole, Util::scene()->edges->all()[i]->variant());
 
         listEdges.append(item);
     }
@@ -372,16 +372,16 @@ void SceneInfoView::doInvalidated()
 
     // labels
     QList<QTreeWidgetItem *> listLabels;
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    for (int i = 0; i<Util::scene()->labels->all().count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, QString("%1 - [%2; %3]").
                       arg(i).
-                      arg(Util::scene()->labels[i]->point.x, 0, 'e', 2).
-                      arg(Util::scene()->labels[i]->point.y, 0, 'e', 2));
+                      arg(Util::scene()->labels->all()[i]->point.x, 0, 'e', 2).
+                      arg(Util::scene()->labels->all()[i]->point.y, 0, 'e', 2));
         item->setIcon(0, icon("scene-label"));
-        item->setData(0, Qt::UserRole, Util::scene()->labels[i]->variant());
+        item->setData(0, Qt::UserRole, Util::scene()->labels->all()[i]->variant());
 
         listLabels.append(item);
     }
@@ -482,10 +482,10 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         {
             // select all edges
             m_sceneView->actSceneModeEdge->trigger();
-            for (int i = 0; i<Util::scene()->edges.count(); i++)
+            for (int i = 0; i<Util::scene()->edges->all().count(); i++)
             {
-                if (Util::scene()->edges[i]->boundary == objectBoundary)
-                    Util::scene()->edges[i]->isSelected = true;
+                if (Util::scene()->edges->all()[i]->marker == objectBoundary)
+                    Util::scene()->edges->all()[i]->isSelected = true;
             }
             m_sceneView->refresh();
             m_sceneView->setFocus();
@@ -499,10 +499,10 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         {
             // select all labels
             m_sceneView->actSceneModeLabel->trigger();
-            for (int i = 0; i<Util::scene()->labels.count(); i++)
+            for (int i = 0; i<Util::scene()->labels->all().count(); i++)
             {
-                if (Util::scene()->labels[i]->material == objectMaterial)
-                    Util::scene()->labels[i]->isSelected = true;
+                if (Util::scene()->labels->all()[i]->marker == objectMaterial)
+                    Util::scene()->labels->all()[i]->isSelected = true;
             }
             m_sceneView->refresh();
             m_sceneView->setFocus();

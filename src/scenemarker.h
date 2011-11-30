@@ -20,4 +20,33 @@
 #ifndef SCENEMAR_H
 #define SCENEMAR_H
 
+#include "util.h"
+
+class SceneBoundary;
+class SceneMaterial;
+
+template <typename MarkerType>
+class MarkerContainer
+{
+public:
+    void add(MarkerType *marker);
+    void remove(MarkerType *marker);
+    MarkerType *get(const QString &name);
+
+private:
+
+    QList<MarkerType* > data;
+    MarkerType* noneMarker;
+};
+
+class SceneBoundaryContainer : public MarkerContainer<SceneBoundary>
+{
+
+};
+
+class SceneMaterialContainer : public MarkerContainer<SceneMaterial>
+{
+
+};
+
 #endif // SCENEMARKER_H

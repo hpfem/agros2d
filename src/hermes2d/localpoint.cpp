@@ -70,7 +70,7 @@ void LocalPointValue::calculate()
         {
             // find marker
             Hermes::Hermes2D::Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
-            SceneMaterial *tmpMaterial = Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str())]->material;
+            SceneMaterial *tmpMaterial = Util::scene()->labels->all()[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str())]->marker;
 
             // set variables
             double px = point.x;
