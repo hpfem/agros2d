@@ -816,12 +816,10 @@ mu::Parser *Hermes::Module::Module::get_parser()
     parser->DefineConst("PI", M_PI);
 
     // frequency
-    if (Util::scene()->fieldInfo(id)->analysisType == AnalysisType_Harmonic)
-        parser->DefineConst("f", Util::scene()->problemInfo()->frequency);
+    parser->DefineConst("f", Util::scene()->problemInfo()->frequency);
 
     // timestep
-    if (Util::scene()->fieldInfo(id)->analysisType == AnalysisType_Transient)
-        parser->DefineConst("dt", Util::scene()->problemInfo()->timeStep.number());
+    parser->DefineConst("dt", Util::scene()->problemInfo()->timeStep.number());
 
     for (std::map<std::string, double>::iterator it = constants.begin(); it != constants.end(); ++it)
         parser->DefineConst(it->first, it->second);
@@ -1075,34 +1073,32 @@ void Parser::setParserVariables(Material *material, Boundary *boundary, double v
 
 void Parser::initParserMaterialVariables()
 {
-    assert(0); //TODO
-//    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
-//    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-//    {
-//        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-//        parser_variables[variable->shortname] = 0.0;
-//    }
+    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo("TODO")->module()->material_type_variables;
+    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+    {
+        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+        parser_variables[variable->shortname] = 0.0;
+    }
 
-//    // set material variables
-//    for (std::map<std::string, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
-//        for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
-//            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
+    // set material variables
+    for (std::map<std::string, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
+        for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
+            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
 }
 
 void Parser::initParserBoundaryVariables(Boundary *boundary)
 {
-    assert(0); //TODO
-//    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->type);
-//    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-//    {
-//        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-//        parser_variables[variable->shortname] = 0.0;
-//    }
+    Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(boundary->getType());
+    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+    {
+        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+        parser_variables[variable->shortname] = 0.0;
+    }
 
-//    // set material variables
-//    for (std::map<std::string, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
-//        for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
-//            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
+    // set material variables
+    for (std::map<std::string, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
+        for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
+            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
 }
 
 // *********************************************************************************************************************************************

@@ -200,11 +200,11 @@ QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariabl
     }
 }
 
-QString problemTypeString(CoordinateType problemType)
+QString coordinateTypeString(CoordinateType coordinateType)
 {
     logMessage("problemTypeString()");
 
-    return ((problemType == CoordinateType_Planar) ? QObject::tr("Planar") : QObject::tr("Axisymmetric"));
+    return ((coordinateType == CoordinateType_Planar) ? QObject::tr("Planar") : QObject::tr("Axisymmetric"));
 }
 
 QString adaptivityTypeString(AdaptivityType adaptivityType)

@@ -1326,16 +1326,15 @@ void PythonEngine::doPrintStdout(const QString &message)
 
 void PythonEngine::runPythonHeader()
 {
-    assert(0); //TODO
-//    logMessage("PythonEngine::runPythonHeader()");
+    logMessage("PythonEngine::runPythonHeader()");
 
-//    // global script
-//    if (!Util::config()->globalScript.isEmpty())
-//        PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    // global script
+    if (!Util::config()->globalScript.isEmpty())
+        PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
-//    // startup script
-//    if (!Util::scene()->fieldInfo("TODO")->scriptStartup.isEmpty())
-//        PyRun_String(Util::scene()->fieldInfo("TODO")->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    // startup script
+    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
+        PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
 ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)

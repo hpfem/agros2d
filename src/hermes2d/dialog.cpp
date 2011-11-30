@@ -123,13 +123,12 @@ bool SceneTabWidgetMaterial::save()
 
 void SceneTabWidgetMaterial::refresh()
 {
-    assert(0); //TODO
-//    // read equation
-//    QString fileName = QString(":/images/equations/%1/%1_%2.png")
-//            .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
-//            .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
+    // read equation
+    QString fileName = QString(":/images/equations/%1/%1_%2.png")
+            .arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->id))
+            .arg(analysisTypeToStringKey(Util::scene()->fieldInfo("TODO")->analysisType));
 
-//    readPixmap(equationImage, fileName);
+    readPixmap(equationImage, fileName);
 }
 
 // *************************************************************************************************************************************
@@ -189,29 +188,27 @@ void SceneTabWidgetBoundary::doTypeChanged(int index)
 
 void SceneTabWidgetBoundary::load()
 {
-    assert(0); //TODO
-//    // load type
-//    comboBox->setCurrentIndex(comboBox->findData(QString::fromStdString(boundary->type)));
+    // load type
+    comboBox->setCurrentIndex(comboBox->findData(QString::fromStdString(boundary->getType())));
 
-//    // load variables
-//    for (int i = 0; i < ids.count(); i++)
-//        values.at(i)->setValue(boundary->get_value(ids.at(i).toStdString()));
+    // load variables
+    for (int i = 0; i < ids.count(); i++)
+        values.at(i)->setValue(boundary->getValue(ids.at(i).toStdString()));
 }
 
 bool SceneTabWidgetBoundary::save()
 {
-    assert(0); //TODO
-//    // save type
-//    boundary->type = comboBox->itemData(comboBox->currentIndex()).toString().toStdString();
+    // save type
+    boundary->setType(comboBox->itemData(comboBox->currentIndex()).toString().toStdString());
 
-//    // save variables
-//    for (int i = 0; i < ids.count(); i++)
-//        if (values.at(i)->evaluate())
-//            boundary->values[ids.at(i).toStdString()] = values.at(i)->value();
-//        else
-//            return false;
+    // save variables
+    for (int i = 0; i < ids.count(); i++)
+        if (values.at(i)->evaluate())
+            boundary->setValue(ids.at(i).toStdString(), values.at(i)->value());
+        else
+            return false;
 
-//    return true;
+    return true;
 }
 
 // *************************************************************************************************************************************

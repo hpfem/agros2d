@@ -72,29 +72,31 @@ SceneViewSettings::SceneViewSettings()
 
 void SceneViewSettings::defaultValues()
 {
-    assert(0); //TODO
-//    logMessage("SceneViewSettings::defaultValues()");
+    logMessage("SceneViewSettings::defaultValues()");
 
-//    scalarRangeMin =  numeric_limits<double>::max();
-//    scalarRangeMax = -numeric_limits<double>::max();
+    scalarRangeMin =  numeric_limits<double>::max();
+    scalarRangeMax = -numeric_limits<double>::max();
 
-//    // visible objects
-//    showGeometry = true;
-//    showInitialMesh = false;
+    // visible objects
+    showGeometry = true;
+    showInitialMesh = false;
 
-//    postprocessorShow = SceneViewPostprocessorShow_ScalarView;
+    postprocessorShow = SceneViewPostprocessorShow_ScalarView;
 
-//    showContours = false;
-//    showVectors = false;
-//    showSolutionMesh = false;
+    showContours = false;
+    showVectors = false;
+    showSolutionMesh = false;
 
-//    contourPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
+    if (Util::scene()->fieldInfo("TODO"))
+    {
+        contourPhysicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->view_default_scalar_variable->id;
 
-//    scalarPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
-//    scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module()->view_default_scalar_variable_comp();
-//    scalarRangeAuto = true;
+        scalarPhysicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->view_default_scalar_variable->id;
+        scalarPhysicFieldVariableComp = Util::scene()->fieldInfo("TODO")->module()->view_default_scalar_variable_comp();
+        scalarRangeAuto = true;
 
-//    vectorPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_vector_variable->id;
+        vectorPhysicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->view_default_vector_variable->id;
+    }
 }
 
 // *******************************************************************************************************
@@ -2259,71 +2261,70 @@ void SceneView::paintVectors()
 
 void SceneView::paintSceneModeLabel()
 {
-    assert(0); //TODO
-//    logMessage("SceneView::paintSceneModeLabel()");
+    logMessage("SceneView::paintSceneModeLabel()");
 
-//    QString text = "";
+    QString text = "";
 
-//    switch (m_sceneMode)
-//    {
-//    case SceneMode_OperateOnNodes:
-//        text = tr("Operate on nodes");
-//        break;
-//    case SceneMode_OperateOnEdges:
-//        text = tr("Operate on edges");
-//        break;
-//    case SceneMode_OperateOnLabels:
-//        text = tr("Operate on labels");
-//        break;
-//    case SceneMode_Postprocessor:
-//        switch (m_sceneViewSettings.postprocessorShow)
-//        {
-//        case SceneViewPostprocessorShow_ScalarView:
-//        case SceneViewPostprocessorShow_ScalarView3D:
-//        case SceneViewPostprocessorShow_ScalarView3DSolid:
-//            text = QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable != "" ? Util::scene()->problemInfo()->module()->get_variable(m_sceneViewSettings.scalarPhysicFieldVariable)->name : "");
-//            if (m_sceneViewSettings.scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar)
-//                text += " - " + physicFieldVariableCompString(m_sceneViewSettings.scalarPhysicFieldVariableComp);
-//            break;
-//        case SceneViewPostprocessorShow_Model:
-//            text = tr("Model");
-//            break;
-//        case SceneViewPostprocessorShow_Order:
-//            text = tr("Polynomial order");
-//            break;
-//        default:
-//            text = tr("Postprocessor");
-//        }
-//        break;
-//    }
+    switch (m_sceneMode)
+    {
+    case SceneMode_OperateOnNodes:
+        text = tr("Operate on nodes");
+        break;
+    case SceneMode_OperateOnEdges:
+        text = tr("Operate on edges");
+        break;
+    case SceneMode_OperateOnLabels:
+        text = tr("Operate on labels");
+        break;
+    case SceneMode_Postprocessor:
+        switch (m_sceneViewSettings.postprocessorShow)
+        {
+        case SceneViewPostprocessorShow_ScalarView:
+        case SceneViewPostprocessorShow_ScalarView3D:
+        case SceneViewPostprocessorShow_ScalarView3DSolid:
+            text = QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable != "" ? Util::scene()->fieldInfo("TODO")->module()->get_variable(m_sceneViewSettings.scalarPhysicFieldVariable)->name : "");
+            if (m_sceneViewSettings.scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar)
+                text += " - " + physicFieldVariableCompString(m_sceneViewSettings.scalarPhysicFieldVariableComp);
+            break;
+        case SceneViewPostprocessorShow_Model:
+            text = tr("Model");
+            break;
+        case SceneViewPostprocessorShow_Order:
+            text = tr("Polynomial order");
+            break;
+        default:
+            text = tr("Postprocessor");
+        }
+        break;
+    }
 
-//    loadProjection2d();
+    loadProjection2d();
 
-//    glLoadIdentity();
+    glLoadIdentity();
 
-//    glScaled(2.0/contextWidth(), 2.0/contextHeight(), 1.0);
-//    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
+    glScaled(2.0/contextWidth(), 2.0/contextHeight(), 1.0);
+    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
 
-//    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_DEPTH_TEST);
 
-//    // render viewport label
-//    QFont fontLabel = font();
-//    fontLabel.setPointSize(fontLabel.pointSize() + 1);
+    // render viewport label
+    QFont fontLabel = font();
+    fontLabel.setPointSize(fontLabel.pointSize() + 1);
 
-//    Point posText = Point((contextWidth()-QFontMetrics(fontLabel).width(text)) / 2.0,
-//                          (contextHeight() - QFontMetrics(fontLabel).height() / 1.3));
+    Point posText = Point((contextWidth()-QFontMetrics(fontLabel).width(text)) / 2.0,
+                          (contextHeight() - QFontMetrics(fontLabel).height() / 1.3));
 
-//    // blended rectangle
-//    double xs = posText.x - QFontMetrics(fontLabel).width(" ");
-//    double ys = posText.y - QFontMetrics(fontLabel).height() / 3.0;
-//    double xe = xs + QFontMetrics(fontLabel).width(text + "  ");
-//    double ye = contextHeight();
+    // blended rectangle
+    double xs = posText.x - QFontMetrics(fontLabel).width(" ");
+    double ys = posText.y - QFontMetrics(fontLabel).height() / 3.0;
+    double xe = xs + QFontMetrics(fontLabel).width(text + "  ");
+    double ye = contextHeight();
 
-//    drawBlend(Point(xs, ys), Point(xe, ye), 0.8, 0.8, 0.8, 0.93);
+    drawBlend(Point(xs, ys), Point(xe, ye), 0.8, 0.8, 0.8, 0.93);
 
-//    // text
-//    glColor3d(0.0, 0.0, 0.0);
-//    renderText(posText.x, posText.y, 0.0, text, fontLabel);
+    // text
+    glColor3d(0.0, 0.0, 0.0);
+    renderText(posText.x, posText.y, 0.0, text, fontLabel);
 }
 
 void SceneView::paintZoomRegion()

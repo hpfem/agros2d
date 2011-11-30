@@ -214,7 +214,7 @@ void ReportDialog::defaultValues()
 
 void ReportDialog::setControls()
 {
-    assert(0); //TODO
+//    assert(0); //TODO
 //    logMessage("ReportDialog::setControls()");
 
 //    chkDescription->setDisabled(Util::scene()->problemInfo()->description.isEmpty());

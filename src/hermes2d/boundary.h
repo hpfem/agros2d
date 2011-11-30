@@ -33,7 +33,11 @@ public:
     const Value getValue(std::string id);
 
     /// get all values
-    const map<string, Value> getValues() const;
+    const map<string, Value> getValues() const
+    {
+        //TODO - TEMP
+        return values;
+    }
 
     /// get type
     const std::string getType() const {return type;}
@@ -41,7 +45,7 @@ public:
     /// set type
     void setType(string p_type) { type = p_type; }
 
-    void addValue(string name, Value value) { values[name] = value; }
+    void setValue(string name, Value value) { values[name] = value; }
 
     /// return name
     std::string getName() {return name; }

@@ -64,8 +64,7 @@ void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 
     // clear combo
     cmbFieldVariable->clear();
-    assert(0); //TODO
-//    Util::scene()->fieldInfo("TODO")->module()->fillComboBoxScalarVariable(cmbFieldVariable);
+    Util::scene()->fieldInfo("TODO")->module()->fillComboBoxScalarVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)

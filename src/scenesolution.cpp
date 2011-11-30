@@ -277,20 +277,19 @@ void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement element)
 template <typename Scalar>
 SolutionArray<Scalar> *SceneSolution<Scalar>::solutionArray(int i)
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::solutionArray()");
+    logMessage("SceneSolution::solutionArray()");
 
-//    int currentTimeStep = i;
-//    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->problemInfo()->module()->number_of_solution())
-//    {
-//        // default
-//        if (currentTimeStep == -1)
-//            currentTimeStep = m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution();
+    int currentTimeStep = i;
+    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())
+    {
+        // default
+        if (currentTimeStep == -1)
+            currentTimeStep = m_timeStep * Util::scene()->fieldInfo("TODO")->module()->number_of_solution();
 
-//        if (m_solutionArrayList.at(currentTimeStep))
-//            return m_solutionArrayList.at(currentTimeStep);
-//    }
-//    return NULL;
+        if (m_solutionArrayList.at(currentTimeStep))
+            return m_solutionArrayList.at(currentTimeStep);
+    }
+    return NULL;
 }
 
 template <typename Scalar>
@@ -433,10 +432,9 @@ void SceneSolution<Scalar>::setTimeStep(int timeStep, bool showViewProgress)
 template <typename Scalar>
 int SceneSolution<Scalar>::timeStepCount() const
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::timeStepCount()");
+    logMessage("SceneSolution::timeStepCount()");
 
-//    return (m_solutionArrayList.size() > 0) ? m_solutionArrayList.size() / Util::scene()->problemInfo()->module()->number_of_solution() : 0;
+    return (m_solutionArrayList.size() > 0) ? m_solutionArrayList.size() / Util::scene()->fieldInfo("TODO")->module()->number_of_solution() : 0;
 }
 
 template <typename Scalar>

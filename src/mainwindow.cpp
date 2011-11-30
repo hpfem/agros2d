@@ -1309,39 +1309,41 @@ void MainWindow::doTimeStepChanged(int index)
 
 void MainWindow::doInvalidated()
 {
-    assert(0); //TODO
-//    logMessage("MainWindow::doInvalidated()");
+    if (!Util::scene()->fieldInfo("TODO"))
+        return;
 
-//    if (Util::config()->showExperimentalFeatures)
-//        actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    logMessage("MainWindow::doInvalidated()");
 
-//    actViewQuick2DNone->setEnabled(Util::scene()->sceneSolution()->isSolved());
-//    actViewQuick2DOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
-//    actViewQuick2DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
-//    actViewQuick3DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
-//    actViewQuick3DScalarViewSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
-//    actViewQuick3DModel->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    if (Util::config()->showExperimentalFeatures)
+        actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
-//    actSolveAdaptiveStep->setEnabled(Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->analysisType != AnalysisType_Transient); // FIXME: timedep
-//    actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
-//    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient));
-//    tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
-//    fillComboBoxTimeStep(cmbTimeStep);
+    actViewQuick2DNone->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick2DOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick2DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick3DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick3DScalarViewSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick3DModel->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
-//    lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)));
-//    lblProblemType->setText(tr("Problem Type: %1").arg(problemTypeString(Util::scene()->problemInfo()->problemType)));
-//    lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)));
+    actSolveAdaptiveStep->setEnabled(Util::scene()->sceneSolution()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType != AnalysisType_Transient); // FIXME: timedep
+    actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient));
+    tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    fillComboBoxTimeStep(cmbTimeStep);
 
-//    actExportVTKScalar->setEnabled(Util::scene()->sceneSolution()->isSolved());
-//    actExportVTKOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->name)));
+    lblProblemType->setText(tr("Problem Type: %1").arg(coordinateTypeString(Util::scene()->problemInfo()->coordinateType)));
+    lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->fieldInfo("TODO")->analysisType)));
 
-//    postprocessorView->updateControls();
+    actExportVTKScalar->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actExportVTKOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
-//    // set current timestep
-//    cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
+    postprocessorView->updateControls();
 
-//    //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
-//    //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
+    // set current timestep
+    cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
+
+    //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
+    //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
 }
 
 void MainWindow::doSceneModeChanged(SceneMode sceneMode)

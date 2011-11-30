@@ -339,6 +339,9 @@ struct Module
     Module(CoordinateType problemType, AnalysisType analysisType);
     ~Module();
 
+    // parser
+    mu::Parser *get_parser();
+
     // read form xml
     void read(std::string filename);
     // clear
@@ -352,9 +355,6 @@ struct Module
     BoundaryType *get_boundary_type(std::string id);
     BoundaryTypeVariable *get_boundary_type_variable(std::string id);
     MaterialTypeVariable *get_material_type_variable(std::string id);
-
-    // parser
-    mu::Parser *get_parser();
 
     // expression
     std::string get_expression(LocalVariable *physicFieldVariable,

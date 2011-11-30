@@ -86,7 +86,7 @@ public:
     QString name() { return m_parent->name; }
     QDate date() { return m_parent->date; }
     QString fileName() { return m_parent->fileName; }
-    CoordinateType problemType() { return m_parent->coordinateType; }
+    CoordinateType coordinateType() { return m_parent->coordinateType; }
     double frequency() { return m_parent->frequency; }
     Value timeStep() {return m_parent->timeStep; }
     Value timeTotal() {return m_parent->timeTotal; }
@@ -254,7 +254,7 @@ private:
     QUndoStack *m_undoStack;
 
     ProblemInfo* m_problemInfo;
-    QMap<QString, FieldInfo*>  m_fieldInfos;
+    QMap<QString, FieldInfo *>  m_fieldInfos;
 
     // scene solution
     SceneSolution<double> *m_sceneSolution;  //TODO PK <double>

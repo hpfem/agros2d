@@ -44,6 +44,9 @@ LocalPointValue::~LocalPointValue()
 
 void LocalPointValue::initParser()
 {
+    if (!Util::scene()->fieldInfo("TODO"))
+        return;
+
     // parser variables
     parser->parser.push_back(Util::scene()->fieldInfo("TODO")->module()->get_parser());
 

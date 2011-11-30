@@ -338,8 +338,8 @@ void ProblemDialog::fillComboBox()
     logMessage("ProblemDialog::fillComboBox()");
 
     cmbProblemType->clear();
-    cmbProblemType->addItem(problemTypeString(CoordinateType_Planar), CoordinateType_Planar);
-    cmbProblemType->addItem(problemTypeString(CoordinateType_Axisymmetric), CoordinateType_Axisymmetric);
+    cmbProblemType->addItem(coordinateTypeString(CoordinateType_Planar), CoordinateType_Planar);
+    cmbProblemType->addItem(coordinateTypeString(CoordinateType_Axisymmetric), CoordinateType_Axisymmetric);
 
     fillComboBoxPhysicField(cmbPhysicField);
     //cmbPhysicField->setEnabled(m_isNewProblem);

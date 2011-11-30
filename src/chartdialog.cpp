@@ -648,7 +648,7 @@ void ChartDialog::doPlot()
 
 void ChartDialog::doFieldVariable(int index)
 {
-    assert(0); //TODO
+//    assert(0); //TODO
 
 //    logMessage("ChartDialog::doFieldVariable()");
 
