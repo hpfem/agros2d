@@ -47,6 +47,7 @@ SOURCES += util.cpp \
     hermes2d/localpoint.cpp \
     hermes2d/volumeintegral.cpp \
     hermes2d/surfaceintegral.cpp \
+    hermes2d/marker.cpp \
     hermes2d/boundary.cpp \
     hermes2d/material.cpp \
     hermes2d/module.cpp \
@@ -58,6 +59,7 @@ SOURCES += util.cpp \
     scripteditorhighlighter.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
+    scenemarkerdialog.cpp \
     scenebasic.cpp \
 ###    scenefunction.cpp \
     sceneinfoview.cpp \
@@ -99,6 +101,7 @@ HEADERS += util.h \
     hermes2d/localpoint.h \
     hermes2d/volumeintegral.h \
     hermes2d/surfaceintegral.h \
+    hermes2d/marker.h \
     hermes2d/boundary.h \
     hermes2d/material.h \
     hermes2d/module.h \
@@ -110,6 +113,7 @@ HEADERS += util.h \
     scenebasic.h \
     sceneinfoview.h \
     scenemarker.h \
+    scenemarkerdialog.h \
 #    scenefunction.h \
     sceneview_data.h \
     sceneview.h \

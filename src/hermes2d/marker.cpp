@@ -17,17 +17,27 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef MATERIAL_H
-#define MATERIAL_H
-
-#include "util.h"
 #include "marker.h"
+#include "module.h"
+#include "module_agros.h"
+#include "scene.h"
+#include "util.h"
 
-class Material : public Marker
+
+Marker::~Marker()
 {
-public:
-    Material(std::string name,
-             std::map<std::string, Value> values = (std::map<std::string, Value>()));
-};
+    values.clear();
+}
 
-#endif // MATERIAL_H
+const Value Marker::getValue(std::string id)
+{
+    if (id != "")
+        return values[id];
+
+    return Value();
+}
+
+void Marker::evaluate(std::string id, double time)
+{
+    values[id].evaluate(time);
+}

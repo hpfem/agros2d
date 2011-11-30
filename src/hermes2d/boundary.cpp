@@ -24,11 +24,11 @@
 #include "util.h"
 
 Boundary::Boundary(std::string name, std::string type,
-                   std::map<std::string, Value> values)
+                   std::map<std::string, Value> values) : Marker()
 {
     // name and type
-    this->name = name;
-    this->type = type;
+    setName(name);
+    setType(type);
     this->values = values;
 
     // set values
@@ -46,15 +46,3 @@ Boundary::Boundary(std::string name, std::string type,
     }
 }
 
-Boundary::~Boundary()
-{
-    values.clear();
-}
-
-const Value Boundary::getValue(std::string id)
-{
-    if (id != "")
-        return values[id];
-
-    return Value();
-}

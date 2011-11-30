@@ -21,7 +21,7 @@
 
 #include "scene.h"
 #include "scenebasic.h"
-#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 #include "sceneview.h"
 
 SceneMarkerSelectDialog::SceneMarkerSelectDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)

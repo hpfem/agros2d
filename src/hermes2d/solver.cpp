@@ -24,7 +24,7 @@
 
 #include "scene.h"
 #include "scenebasic.h"
-#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 #include "scenesolution.h"
 #include "progressdialog.h"
 #include "weakform_parser.h"

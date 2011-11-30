@@ -17,17 +17,46 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef MATERIAL_H
-#define MATERIAL_H
+#ifndef MARKER_H
+#define MARKER_H
 
 #include "util.h"
-#include "marker.h"
 
-class Material : public Marker
+class Marker
 {
 public:
-    Material(std::string name,
-             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+//    Marker(std::string name= "",
+//             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    ~Marker();
+
+    /// value of one individual variable
+    const Value getValue(std::string id);
+
+    /// get all values
+    const map<string, Value> getValues() const;
+
+    void addValue(string name, Value value) { values[name] = value; }
+
+    /// return name
+    std::string getName() {return name; }
+
+    /// set name
+    void setName(string paramName) {name = paramName; }
+
+    /// ????
+    void evaluate(std::string id, double time);
+
+
+private:
+    std::string name;
+
+protected:
+    std::string field;
+
+    /// variables - the way to customize boundary "template", given by the type parameter
+    std::map<std::string, Value> values;
+
 };
 
-#endif // MATERIAL_H
+
+#endif // MARKER_H

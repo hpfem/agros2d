@@ -23,7 +23,7 @@
 #include "scenebasic.h"
 #include "sceneview.h"
 #include "scenesolution.h"
-#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 #include "scripteditordialog.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
@@ -326,7 +326,7 @@ void SceneInfoView::doInvalidated()
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
-        item->setText(0, QString::fromStdString(Util::scene()->materials[i]->name));
+        item->setText(0, QString::fromStdString(Util::scene()->materials[i]->getName()));
         item->setIcon(0, icon("scene-labelmarker"));
         item->setData(0, Qt::UserRole, Util::scene()->materials[i]->variant());
 

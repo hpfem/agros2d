@@ -21,8 +21,9 @@
 #define BOUNDARY_H
 
 #include "util.h"
+#include "marker.h"
 
-class Boundary
+class Boundary : public Marker
 {
 public:
     Boundary(std::string name= "", std::string type = "",
@@ -54,25 +55,9 @@ public:
     void setName(string paramName) {name = paramName; }
 
 private:
-    QString field;
-
-    std::string name;
-
     /// type of boundary condition, taken from respective module
     std::string type;
-
-    /// variables - the way to customize boundary "template", given by the type parameter
-    std::map<std::string, Value> values;
-
 };
 
-
-class BoundaryContainer
-{
-public:
-
-private:
-    map<string, vector<shared_ptr<Boundary> > > data;
-};
 
 #endif // BOUNDARY_H

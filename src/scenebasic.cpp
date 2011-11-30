@@ -22,7 +22,7 @@
 #include "gui.h"
 
 #include "scene.h"
-#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 
 SceneBasic::SceneBasic()
 {
@@ -670,7 +670,7 @@ void SceneLabelDialog::fillComboBox()
     cmbMaterial->clear();
     for (int i = 0; i<Util::scene()->materials.count(); i++)
     {
-        cmbMaterial->addItem(QString::fromStdString(Util::scene()->materials[i]->name),
+        cmbMaterial->addItem(QString::fromStdString(Util::scene()->materials[i]->getName()),
                              Util::scene()->materials[i]->variant());
     }
 }
@@ -752,7 +752,7 @@ void SceneLabelDialog::doMaterialClicked()
     SceneMaterial *marker = cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>();
     if (marker->showDialog(this) == QDialog::Accepted)
     {
-        cmbMaterial->setItemText(cmbMaterial->currentIndex(), QString::fromStdString(marker->name));
+        cmbMaterial->setItemText(cmbMaterial->currentIndex(), QString::fromStdString(marker->getName()));
         Util::scene()->refresh();
     }
 }
