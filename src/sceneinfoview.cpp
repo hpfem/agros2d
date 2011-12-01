@@ -462,68 +462,69 @@ void SceneInfoView::doContextMenu(const QPoint &pos)
 
 void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
 {
-    logMessage("SceneInfoView::doItemSelected()");
+    assert(0); //TODO
+//    logMessage("SceneInfoView::doItemSelected()");
 
-    actProperties->setEnabled(false);
-    actDelete->setEnabled(false);
+//    actProperties->setEnabled(false);
+//    actDelete->setEnabled(false);
 
-    if (item != NULL)
-    {
-        Util::scene()->selectNone();
-        Util::scene()->highlightNone();
+//    if (item != NULL)
+//    {
+//        Util::scene()->selectNone();
+//        Util::scene()->highlightNone();
 
-        // geometry
-        if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
-        {
-            if (dynamic_cast<SceneNode *>(objectBasic))
-                m_sceneView->actSceneModeNode->trigger();
-            if (dynamic_cast<SceneEdge *>(objectBasic))
-                m_sceneView->actSceneModeEdge->trigger();
-            if (dynamic_cast<SceneLabel *>(objectBasic))
-                m_sceneView->actSceneModeLabel->trigger();
+//        // geometry
+//        if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
+//        {
+//            if (dynamic_cast<SceneNode *>(objectBasic))
+//                m_sceneView->actSceneModeNode->trigger();
+//            if (dynamic_cast<SceneEdge *>(objectBasic))
+//                m_sceneView->actSceneModeEdge->trigger();
+//            if (dynamic_cast<SceneLabel *>(objectBasic))
+//                m_sceneView->actSceneModeLabel->trigger();
 
-            objectBasic->isSelected = true;
-            m_sceneView->refresh();
-            m_sceneView->setFocus();
+//            objectBasic->isSelected = true;
+//            m_sceneView->refresh();
+//            m_sceneView->setFocus();
 
-            actProperties->setEnabled(true);
-            actDelete->setEnabled(true);
-        }
+//            actProperties->setEnabled(true);
+//            actDelete->setEnabled(true);
+//        }
 
-        // edge marker
-        if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
-        {
-            // select all edges
-            m_sceneView->actSceneModeEdge->trigger();
-            for (int i = 0; i<Util::scene()->edges->length(); i++)
-            {
-                if (Util::scene()->edges->at(i)->marker == objectBoundary)
-                    Util::scene()->edges->at(i)->isSelected = true;
-            }
-            m_sceneView->refresh();
-            m_sceneView->setFocus();
+//        // edge marker
+//        if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
+//        {
+//            // select all edges
+//            m_sceneView->actSceneModeEdge->trigger();
+//            for (int i = 0; i<Util::scene()->edges->length(); i++)
+//            {
+//                if (Util::scene()->edges->at(i)->marker == objectBoundary)
+//                    Util::scene()->edges->at(i)->isSelected = true;
+//            }
+//            m_sceneView->refresh();
+//            m_sceneView->setFocus();
 
-            actProperties->setEnabled(true);
-            actDelete->setEnabled(true);
-        }
+//            actProperties->setEnabled(true);
+//            actDelete->setEnabled(true);
+//        }
 
-        // label marker
-        if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
-        {
-            // select all labels
-            m_sceneView->actSceneModeLabel->trigger();
-            for (int i = 0; i<Util::scene()->labels->length(); i++)
-            {
-                if (Util::scene()->labels->at(i)->marker == objectMaterial)
-                    Util::scene()->labels->at(i)->isSelected = true;
-            }
-            m_sceneView->refresh();
-            m_sceneView->setFocus();
+//        // label marker
+//        if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
+//        {
+//            // select all labels
+//            m_sceneView->actSceneModeLabel->trigger();
+//            for (int i = 0; i<Util::scene()->labels->length(); i++)
+//            {
+//                if (Util::scene()->labels->at(i)->marker == objectMaterial)
+//                    Util::scene()->labels->at(i)->isSelected = true;
+//            }
+//            m_sceneView->refresh();
+//            m_sceneView->setFocus();
 
-            actProperties->setEnabled(true);
-            actDelete->setEnabled(true);
-        }
-    }
+//            actProperties->setEnabled(true);
+//            actDelete->setEnabled(true);
+//        }
+//    }
 }
 
 void SceneInfoView::doItemDoubleClicked(QTreeWidgetItem *item, int role)

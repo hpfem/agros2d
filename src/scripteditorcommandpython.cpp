@@ -279,24 +279,25 @@ void pythonDeleteNodePoint(double x, double y)
 // addedge(x1, y1, x2, y2, angle = 0, marker = "none")
 void pythonAddEdge(double x1, double y1, double x2, double y2, char *boundary, double angle, int refine)
 {
-    logMessage("pythonAddEdge()");
+    assert(0); //TODO
+//    logMessage("pythonAddEdge()");
 
-    if (angle > 180.0 || angle < 0.0)
-        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+//    if (angle > 180.0 || angle < 0.0)
+//        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 
-    if (refine < 0)
-        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
+//    if (refine < 0)
+//        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
 
-    SceneBoundary *scene_boundary = Util::scene()->getBoundary(QString(boundary));
-    if (!scene_boundary)
-        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(boundary).toStdString());
+//    SceneBoundary *scene_boundary = Util::scene()->getBoundary(QString(boundary));
+//    if (!scene_boundary)
+//        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(boundary).toStdString());
 
-    // start node
-    SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
-    // end node
-    SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
+//    // start node
+//    SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
+//    // end node
+//    SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
 
-    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, scene_boundary, angle, refine));
+//    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, scene_boundary, angle, refine));
 }
 
 void pythonDeleteEdge(int index)
@@ -318,16 +319,17 @@ void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double an
 // addlabel(x, y, area = 0, marker = "none", polynomialorder = 0)
 void pythonAddLabel(double x, double y, char *material, double area, int order)
 {
-    logMessage("pythonAddLabel()");
+    assert(0); //TODO
+//    logMessage("pythonAddLabel()");
 
-    if (order < 0)
-        throw out_of_range(QObject::tr("Polynomial order '%1' is out of range.").arg(order).toStdString());
+//    if (order < 0)
+//        throw out_of_range(QObject::tr("Polynomial order '%1' is out of range.").arg(order).toStdString());
 
-    SceneMaterial *scene_material = Util::scene()->getMaterial(QString(material));
-    if (!scene_material)
-        throw invalid_argument(QObject::tr("Material '%1' is not defined.").arg(material).toStdString());
+//    SceneMaterial *scene_material = Util::scene()->getMaterial(QString(material));
+//    if (!scene_material)
+//        throw invalid_argument(QObject::tr("Material '%1' is not defined.").arg(material).toStdString());
 
-    Util::scene()->addLabel(new SceneLabel(Point(x, y), scene_material, area, order));
+//    Util::scene()->addLabel(new SceneLabel(Point(x, y), scene_material, area, order));
 }
 
 void pythonDeleteLabel(int index)

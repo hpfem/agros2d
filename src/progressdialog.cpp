@@ -203,211 +203,212 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
 
 bool ProgressItemMesh::writeToTriangle()
 {
-    logMessage("ProgressItemMesh::writeToTriangle()");
+    assert(0); //TODO
+//    logMessage("ProgressItemMesh::writeToTriangle()");
 
-    // basic check
-    if (Util::scene()->nodes->length() < 3)
-    {
-        emit message(tr("Invalid number of nodes (%1 < 3)").arg(Util::scene()->nodes->length()), true, 0);
-        return false;
-    }
-    if (Util::scene()->edges->length() < 3)
-    {
-        emit message(tr("Invalid number of edges (%1 < 3)").arg(Util::scene()->edges->length()), true, 0);
-        return false;
-    }
-    else
-    {
-        // at least one boundary condition has to be assigned
-        int count = 0;
-        for (int i = 0; i<Util::scene()->edges->length(); i++)
-            if (Util::scene()->boundaries->items().indexOf(Util::scene()->edges->at(i)->marker) > 0)
-                count++;
+//    // basic check
+//    if (Util::scene()->nodes->length() < 3)
+//    {
+//        emit message(tr("Invalid number of nodes (%1 < 3)").arg(Util::scene()->nodes->length()), true, 0);
+//        return false;
+//    }
+//    if (Util::scene()->edges->length() < 3)
+//    {
+//        emit message(tr("Invalid number of edges (%1 < 3)").arg(Util::scene()->edges->length()), true, 0);
+//        return false;
+//    }
+//    else
+//    {
+//        // at least one boundary condition has to be assigned
+//        int count = 0;
+//        for (int i = 0; i<Util::scene()->edges->length(); i++)
+//            if (Util::scene()->boundaries->items().indexOf(Util::scene()->edges->at(i)->marker) > 0)
+//                count++;
 
-        if (count == 0)
-        {
-            emit message(tr("At least one boundary condition has to be assigned"), true, 0);
-            return false;
-        }
-    }
-    if (Util::scene()->labels->length() < 1)
-    {
-        emit message(tr("Invalid number of labels (%1 < 1)").arg(Util::scene()->labels->length()), true, 0);
-        return false;
-    }
-    else
-    {
-        // at least one material has to be assigned
-        int count = 0;
-        for (int i = 0; i<Util::scene()->labels->length(); i++)
-            if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) > 0)
-                count++;
+//        if (count == 0)
+//        {
+//            emit message(tr("At least one boundary condition has to be assigned"), true, 0);
+//            return false;
+//        }
+//    }
+//    if (Util::scene()->labels->length() < 1)
+//    {
+//        emit message(tr("Invalid number of labels (%1 < 1)").arg(Util::scene()->labels->length()), true, 0);
+//        return false;
+//    }
+//    else
+//    {
+//        // at least one material has to be assigned
+//        int count = 0;
+//        for (int i = 0; i<Util::scene()->labels->length(); i++)
+//            if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) > 0)
+//                count++;
 
-        if (count == 0)
-        {
-            emit message(tr("At least one material has to be assigned"), true, 0);
-            return false;
-        }
-    }
-    if (Util::scene()->boundaries->length() < 2) // + none marker
-    {
-        emit message(tr("Invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries->length()), true, 0);
-        return false;
-    }
-    if (Util::scene()->materials->length() < 2) // + none marker
-    {
-        emit message(tr("Invalid number of materials (%1 < 1)").arg(Util::scene()->materials->length()), true, 0);
-        return false;
-    }
+//        if (count == 0)
+//        {
+//            emit message(tr("At least one material has to be assigned"), true, 0);
+//            return false;
+//        }
+//    }
+//    if (Util::scene()->boundaries->length() < 2) // + none marker
+//    {
+//        emit message(tr("Invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries->length()), true, 0);
+//        return false;
+//    }
+//    if (Util::scene()->materials->length() < 2) // + none marker
+//    {
+//        emit message(tr("Invalid number of materials (%1 < 1)").arg(Util::scene()->materials->length()), true, 0);
+//        return false;
+//    }
 
-    // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
+//    // save current locale
+//    char *plocale = setlocale (LC_NUMERIC, "");
+//    setlocale (LC_NUMERIC, "C");
 
-    QDir dir;
-    dir.mkdir(QDir::temp().absolutePath() + "/agros2d");
-    QFile file(tempProblemFileName() + ".poly");
+//    QDir dir;
+//    dir.mkdir(QDir::temp().absolutePath() + "/agros2d");
+//    QFile file(tempProblemFileName() + ".poly");
 
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        emit message(tr("Could not create Triangle poly mesh file (%1)").arg(file.errorString()), true, 0);
-        return false;
-    }
-    QTextStream out(&file);
+//    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+//    {
+//        emit message(tr("Could not create Triangle poly mesh file (%1)").arg(file.errorString()), true, 0);
+//        return false;
+//    }
+//    QTextStream out(&file);
 
 
-    // nodes
-    QString outNodes;
-    int nodesCount = 0;
-    for (int i = 0; i<Util::scene()->nodes->length(); i++)
-    {
-        outNodes += QString("%1  %2  %3  %4\n").
-                arg(i).
-                arg(Util::scene()->nodes->at(i)->point.x, 0, 'f', 10).
-                arg(Util::scene()->nodes->at(i)->point.y, 0, 'f', 10).
-                arg(0);
-        nodesCount++;
-    }
+//    // nodes
+//    QString outNodes;
+//    int nodesCount = 0;
+//    for (int i = 0; i<Util::scene()->nodes->length(); i++)
+//    {
+//        outNodes += QString("%1  %2  %3  %4\n").
+//                arg(i).
+//                arg(Util::scene()->nodes->at(i)->point.x, 0, 'f', 10).
+//                arg(Util::scene()->nodes->at(i)->point.y, 0, 'f', 10).
+//                arg(0);
+//        nodesCount++;
+//    }
 
-    // edges
-    QString outEdges;
-    int edgesCount = 0;
-    for (int i = 0; i<Util::scene()->edges->length(); i++)
-    {
-        if (Util::scene()->edges->at(i)->angle == 0)
-        {
-            // line
-            outEdges += QString("%1  %2  %3  %4\n").
-                    arg(edgesCount).
-                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart)).
-                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd)).
-                    arg(i+1);
-            edgesCount++;
-        }
-        else
-        {
-            // arc
-            // add pseudo nodes
-            Point center = Util::scene()->edges->at(i)->center();
-            double radius = Util::scene()->edges->at(i)->radius();
-            double startAngle = atan2(center.y - Util::scene()->edges->at(i)->nodeStart->point.y,
-                                      center.x - Util::scene()->edges->at(i)->nodeStart->point.x) - M_PI;
+//    // edges
+//    QString outEdges;
+//    int edgesCount = 0;
+//    for (int i = 0; i<Util::scene()->edges->length(); i++)
+//    {
+//        if (Util::scene()->edges->at(i)->angle == 0)
+//        {
+//            // line
+//            outEdges += QString("%1  %2  %3  %4\n").
+//                    arg(edgesCount).
+//                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart)).
+//                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd)).
+//                    arg(i+1);
+//            edgesCount++;
+//        }
+//        else
+//        {
+//            // arc
+//            // add pseudo nodes
+//            Point center = Util::scene()->edges->at(i)->center();
+//            double radius = Util::scene()->edges->at(i)->radius();
+//            double startAngle = atan2(center.y - Util::scene()->edges->at(i)->nodeStart->point.y,
+//                                      center.x - Util::scene()->edges->at(i)->nodeStart->point.x) - M_PI;
 
-            int segments = Util::scene()->edges->at(i)->segments();
-            double theta = deg2rad(Util::scene()->edges->at(i)->angle) / double(segments);
+//            int segments = Util::scene()->edges->at(i)->segments();
+//            double theta = deg2rad(Util::scene()->edges->at(i)->angle) / double(segments);
 
-            int nodeStartIndex = 0;
-            int nodeEndIndex = 0;
-            for (int j = 0; j < segments; j++)
-            {
-                double arc = startAngle + j*theta;
+//            int nodeStartIndex = 0;
+//            int nodeEndIndex = 0;
+//            for (int j = 0; j < segments; j++)
+//            {
+//                double arc = startAngle + j*theta;
 
-                double x = radius * cos(arc);
-                double y = radius * sin(arc);
+//                double x = radius * cos(arc);
+//                double y = radius * sin(arc);
 
-                nodeEndIndex = nodesCount+1;
-                if (j == 0)
-                {
-                    nodeStartIndex = Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart);
-                    nodeEndIndex = nodesCount;
-                }
-                if (j == segments - 1)
-                {
-                    nodeEndIndex = Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd);
-                }
-                if ((j > 0) && (j < segments))
-                {
-                    outNodes += QString("%1  %2  %3  %4\n").
-                            arg(nodesCount).
-                            arg(center.x + x, 0, 'f', 10).
-                            arg(center.y + y, 0, 'f', 10).
-                            arg(0);
-                    nodesCount++;
-                }
-                outEdges += QString("%1  %2  %3  %4\n").
-                        arg(edgesCount).
-                        arg(nodeStartIndex).
-                        arg(nodeEndIndex).
-                        arg(i+1);
-                edgesCount++;
-                nodeStartIndex = nodeEndIndex;
-            }
-        }
-    }
+//                nodeEndIndex = nodesCount+1;
+//                if (j == 0)
+//                {
+//                    nodeStartIndex = Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart);
+//                    nodeEndIndex = nodesCount;
+//                }
+//                if (j == segments - 1)
+//                {
+//                    nodeEndIndex = Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd);
+//                }
+//                if ((j > 0) && (j < segments))
+//                {
+//                    outNodes += QString("%1  %2  %3  %4\n").
+//                            arg(nodesCount).
+//                            arg(center.x + x, 0, 'f', 10).
+//                            arg(center.y + y, 0, 'f', 10).
+//                            arg(0);
+//                    nodesCount++;
+//                }
+//                outEdges += QString("%1  %2  %3  %4\n").
+//                        arg(edgesCount).
+//                        arg(nodeStartIndex).
+//                        arg(nodeEndIndex).
+//                        arg(i+1);
+//                edgesCount++;
+//                nodeStartIndex = nodeEndIndex;
+//            }
+//        }
+//    }
 
-    // holes
-    int holesCount = 0;
-    for (int i = 0; i<Util::scene()->labels->length(); i++)
-        if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) == 0)
-            holesCount++;
+//    // holes
+//    int holesCount = 0;
+//    for (int i = 0; i<Util::scene()->labels->length(); i++)
+//        if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) == 0)
+//            holesCount++;
 
-    QString outHoles = QString("%1\n").arg(holesCount);
-    for (int i = 0; i<Util::scene()->labels->length(); i++)
-    {
-        if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) == 0)
-        {
-            outHoles += QString("%1  %2  %3\n").
-                    arg(i).
-                    arg(Util::scene()->labels->at(i)->point.x, 0, 'f', 10).
-                    arg(Util::scene()->labels->at(i)->point.y, 0, 'f', 10);
-        }
-    }
+//    QString outHoles = QString("%1\n").arg(holesCount);
+//    for (int i = 0; i<Util::scene()->labels->length(); i++)
+//    {
+//        if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) == 0)
+//        {
+//            outHoles += QString("%1  %2  %3\n").
+//                    arg(i).
+//                    arg(Util::scene()->labels->at(i)->point.x, 0, 'f', 10).
+//                    arg(Util::scene()->labels->at(i)->point.y, 0, 'f', 10);
+//        }
+//    }
 
-    // labels
-    QString outLabels;
-    int labelsCount = 0;
-    for(int i = 0; i<Util::scene()->labels->length(); i++)
-    {
-        if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) > 0)
-        {
-            outLabels += QString("%1  %2  %3  %4  %5\n").
-                    arg(labelsCount).
-                    arg(Util::scene()->labels->at(i)->point.x, 0, 'f', 10).
-                    arg(Util::scene()->labels->at(i)->point.y, 0, 'f', 10).
-                    arg(i + 1). // triangle returns zero region number for areas without marker, markers must start from 1
-                    arg(Util::scene()->labels->at(i)->area);
-            labelsCount++;
-        }
-    }
+//    // labels
+//    QString outLabels;
+//    int labelsCount = 0;
+//    for(int i = 0; i<Util::scene()->labels->length(); i++)
+//    {
+//        if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) > 0)
+//        {
+//            outLabels += QString("%1  %2  %3  %4  %5\n").
+//                    arg(labelsCount).
+//                    arg(Util::scene()->labels->at(i)->point.x, 0, 'f', 10).
+//                    arg(Util::scene()->labels->at(i)->point.y, 0, 'f', 10).
+//                    arg(i + 1). // triangle returns zero region number for areas without marker, markers must start from 1
+//                    arg(Util::scene()->labels->at(i)->area);
+//            labelsCount++;
+//        }
+//    }
 
-    outNodes.insert(0, QString("%1 2 0 1\n").
-                    arg(nodesCount)); // + additional Util::scene()->nodes
-    out << outNodes;
-    outEdges.insert(0, QString("%1 1\n").
-                    arg(edgesCount)); // + additional edges
-    out << outEdges;
-    out << outHoles;
-    outLabels.insert(0, QString("%1 1\n").
-                     arg(labelsCount)); // - holes
-    out << outLabels;
+//    outNodes.insert(0, QString("%1 2 0 1\n").
+//                    arg(nodesCount)); // + additional Util::scene()->nodes
+//    out << outNodes;
+//    outEdges.insert(0, QString("%1 1\n").
+//                    arg(edgesCount)); // + additional edges
+//    out << outEdges;
+//    out << outHoles;
+//    outLabels.insert(0, QString("%1 1\n").
+//                     arg(labelsCount)); // - holes
+//    out << outLabels;
 
-    file.waitForBytesWritten(0);
-    file.close();
+//    file.waitForBytesWritten(0);
+//    file.close();
 
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
+//    // set system locale
+//    setlocale(LC_NUMERIC, plocale);
 
-    return true;
+//    return true;
 }
 
 bool ProgressItemMesh::triangleToHermes2D()

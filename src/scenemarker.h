@@ -34,8 +34,8 @@ public:
     /// more methods operating with list data should be defined here
     QList<MarkerType*> items() { return data; }
 
-    /// add marker
-    void add(MarkerType *marker);
+    /// add marker.
+    virtual void add(MarkerType *marker);
 
     /// remove marker
     void remove(MarkerType *marker);
@@ -55,13 +55,25 @@ public:
     /// checks if array is empty
     inline int isEmpty() { return data.isEmpty(); }
 
+    /// bool if contains given marker (pointer)
+    bool contains(MarkerType* marker) {return data.contains(marker);}
+
     /// clear and delete data
     void clear();
 
 private:
 
     QList<MarkerType* > data;
-    MarkerType* noneMarker;
+
+    static MarkerType* noneMarker;
+};
+
+template <typename MarkerType>
+class UniqueMarkerContainer : public MarkerContainer<MarkerType>
+{
+public:
+    /// If container allready contains marker corresponding to the same field, it is replaced, not added
+    virtual void add(MarkerType *marker);
 };
 
 class SceneBoundaryContainer : public MarkerContainer<SceneBoundary>

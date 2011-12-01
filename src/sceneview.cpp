@@ -805,166 +805,169 @@ void SceneView::paintRulers()
 
 void SceneView::paintGeometry()
 {
-    logMessage("SceneView::paintGeometry()");
+    assert(0); //TODO
 
-    loadProjection2d(true);
+//    logMessage("SceneView::paintGeometry()");
 
-    // edges
-    foreach (SceneEdge *edge, m_scene->edges->items())
-    {
-        // edge with marker
-        if (m_sceneMode == SceneMode_OperateOnEdges && edge->marker->getType() == "")
-        {
-            glEnable(GL_LINE_STIPPLE);
-            glLineStipple(1, 0x8FFF);
-        }
+//    loadProjection2d(true);
 
-        glColor3d(Util::config()->colorEdges.redF(),
-                  Util::config()->colorEdges.greenF(),
-                  Util::config()->colorEdges.blueF());
-        glLineWidth(Util::config()->edgeWidth);
-        if (edge->isHighlighted)
-        {
-            glColor3d(Util::config()->colorHighlighted.redF(),
-                      Util::config()->colorHighlighted.greenF(),
-                      Util::config()->colorHighlighted.blueF());
-            glLineWidth(Util::config()->edgeWidth + 2.0);
-        }
-        if (edge->isSelected)
-        {
-            glColor3d(Util::config()->colorSelected.redF(),
-                      Util::config()->colorSelected.greenF(),
-                      Util::config()->colorSelected.blueF());
-            glLineWidth(Util::config()->edgeWidth + 2.0);
-        }
+//    // edges
+//    foreach (SceneEdge *edge, m_scene->edges->items())
+//    {
+//        //TODO kdy ma byt hrana prerusovana?
+////        // edge with marker
+////        if (m_sceneMode == SceneMode_OperateOnEdges && edge->marker->getType() == "")
+////        {
+////            glEnable(GL_LINE_STIPPLE);
+////            glLineStipple(1, 0x8FFF);
+////        }
 
-        if (fabs(edge->angle) < EPS_ZERO)
-        {
-            glBegin(GL_LINES);
-            glVertex2d(edge->nodeStart->point.x, edge->nodeStart->point.y);
-            glVertex2d(edge->nodeEnd->point.x, edge->nodeEnd->point.y);
-            glEnd();
-        }
-        else
-        {
-            Point center = edge->center();
-            double radius = edge->radius();
-            double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+//        glColor3d(Util::config()->colorEdges.redF(),
+//                  Util::config()->colorEdges.greenF(),
+//                  Util::config()->colorEdges.blueF());
+//        glLineWidth(Util::config()->edgeWidth);
+//        if (edge->isHighlighted)
+//        {
+//            glColor3d(Util::config()->colorHighlighted.redF(),
+//                      Util::config()->colorHighlighted.greenF(),
+//                      Util::config()->colorHighlighted.blueF());
+//            glLineWidth(Util::config()->edgeWidth + 2.0);
+//        }
+//        if (edge->isSelected)
+//        {
+//            glColor3d(Util::config()->colorSelected.redF(),
+//                      Util::config()->colorSelected.greenF(),
+//                      Util::config()->colorSelected.blueF());
+//            glLineWidth(Util::config()->edgeWidth + 2.0);
+//        }
 
-            drawArc(center, radius, startAngle, edge->angle, edge->angle/2.0);
-        }
+//        if (fabs(edge->angle) < EPS_ZERO)
+//        {
+//            glBegin(GL_LINES);
+//            glVertex2d(edge->nodeStart->point.x, edge->nodeStart->point.y);
+//            glVertex2d(edge->nodeEnd->point.x, edge->nodeEnd->point.y);
+//            glEnd();
+//        }
+//        else
+//        {
+//            Point center = edge->center();
+//            double radius = edge->radius();
+//            double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
 
-        glDisable(GL_LINE_STIPPLE);
-        glLineWidth(1.0);
-    }
+//            drawArc(center, radius, startAngle, edge->angle, edge->angle/2.0);
+//        }
 
-    // nodes
-    if (!(m_sceneMode == SceneMode_Postprocessor))
-    {
-        foreach (SceneNode *node, m_scene->nodes->items())
-        {
-            glColor3d(Util::config()->colorNodes.redF(),
-                      Util::config()->colorNodes.greenF(),
-                      Util::config()->colorNodes.blueF());
-            glPointSize(Util::config()->nodeSize);
+//        glDisable(GL_LINE_STIPPLE);
+//        glLineWidth(1.0);
+//    }
 
-            glBegin(GL_POINTS);
-            glVertex2d(node->point.x, node->point.y);
-            glEnd();
+//    // nodes
+//    if (!(m_sceneMode == SceneMode_Postprocessor))
+//    {
+//        foreach (SceneNode *node, m_scene->nodes->items())
+//        {
+//            glColor3d(Util::config()->colorNodes.redF(),
+//                      Util::config()->colorNodes.greenF(),
+//                      Util::config()->colorNodes.blueF());
+//            glPointSize(Util::config()->nodeSize);
 
-            glColor3d(Util::config()->colorBackground.redF(),
-                      Util::config()->colorBackground.greenF(),
-                      Util::config()->colorBackground.blueF());
-            glPointSize(Util::config()->nodeSize - 2.0);
+//            glBegin(GL_POINTS);
+//            glVertex2d(node->point.x, node->point.y);
+//            glEnd();
 
-            glBegin(GL_POINTS);
-            glVertex2d(node->point.x, node->point.y);
-            glEnd();
+//            glColor3d(Util::config()->colorBackground.redF(),
+//                      Util::config()->colorBackground.greenF(),
+//                      Util::config()->colorBackground.blueF());
+//            glPointSize(Util::config()->nodeSize - 2.0);
 
-            if ((node->isSelected) || (node->isHighlighted))
-            {
-                if (node->isHighlighted)
-                    glColor3d(Util::config()->colorHighlighted.redF(),
-                              Util::config()->colorHighlighted.greenF(),
-                              Util::config()->colorHighlighted.blueF());
-                if (node->isSelected)
-                    glColor3d(Util::config()->colorSelected.redF(),
-                              Util::config()->colorSelected.greenF(),
-                              Util::config()->colorSelected.blueF());
+//            glBegin(GL_POINTS);
+//            glVertex2d(node->point.x, node->point.y);
+//            glEnd();
 
-                glPointSize(Util::config()->nodeSize - 2.0);
-                glBegin(GL_POINTS);
-                glVertex2d(node->point.x, node->point.y);
-                glEnd();
-            }
-        }
+//            if ((node->isSelected) || (node->isHighlighted))
+//            {
+//                if (node->isHighlighted)
+//                    glColor3d(Util::config()->colorHighlighted.redF(),
+//                              Util::config()->colorHighlighted.greenF(),
+//                              Util::config()->colorHighlighted.blueF());
+//                if (node->isSelected)
+//                    glColor3d(Util::config()->colorSelected.redF(),
+//                              Util::config()->colorSelected.greenF(),
+//                              Util::config()->colorSelected.blueF());
 
-        glLineWidth(1.0);
-    }
-    // labels
-    if (!(m_sceneMode == SceneMode_Postprocessor))
-    {
-        foreach (SceneLabel *label, m_scene->labels->items())
-        {
-            glColor3d(Util::config()->colorLabels.redF(),
-                      Util::config()->colorLabels.greenF(),
-                      Util::config()->colorLabels.blueF());
-            glPointSize(Util::config()->labelSize);
-            glBegin(GL_POINTS);
-            glVertex2d(label->point.x, label->point.y);
-            glEnd();
+//                glPointSize(Util::config()->nodeSize - 2.0);
+//                glBegin(GL_POINTS);
+//                glVertex2d(node->point.x, node->point.y);
+//                glEnd();
+//            }
+//        }
 
-            glColor3d(Util::config()->colorBackground.redF(),
-                      Util::config()->colorBackground.greenF(),
-                      Util::config()->colorBackground.blueF());
-            glPointSize(Util::config()->labelSize - 2.0);
-            glBegin(GL_POINTS);
-            glVertex2d(label->point.x, label->point.y);
-            glEnd();
+//        glLineWidth(1.0);
+//    }
+//    // labels
+//    if (!(m_sceneMode == SceneMode_Postprocessor))
+//    {
+//        foreach (SceneLabel *label, m_scene->labels->items())
+//        {
+//            glColor3d(Util::config()->colorLabels.redF(),
+//                      Util::config()->colorLabels.greenF(),
+//                      Util::config()->colorLabels.blueF());
+//            glPointSize(Util::config()->labelSize);
+//            glBegin(GL_POINTS);
+//            glVertex2d(label->point.x, label->point.y);
+//            glEnd();
 
-            if ((label->isSelected) || (label->isHighlighted))
-            {
-                if (label->isHighlighted)
-                    glColor3d(Util::config()->colorHighlighted.redF(),
-                              Util::config()->colorHighlighted.greenF(),
-                              Util::config()->colorHighlighted.blueF());
-                if (label->isSelected)
-                    glColor3d(Util::config()->colorSelected.redF(),
-                              Util::config()->colorSelected.greenF(),
-                              Util::config()->colorSelected.blueF());
+//            glColor3d(Util::config()->colorBackground.redF(),
+//                      Util::config()->colorBackground.greenF(),
+//                      Util::config()->colorBackground.blueF());
+//            glPointSize(Util::config()->labelSize - 2.0);
+//            glBegin(GL_POINTS);
+//            glVertex2d(label->point.x, label->point.y);
+//            glEnd();
 
-                glPointSize(Util::config()->labelSize - 2.0);
-                glBegin(GL_POINTS);
-                glVertex2d(label->point.x, label->point.y);
-                glEnd();
-            }
-            glLineWidth(1.0);
+//            if ((label->isSelected) || (label->isHighlighted))
+//            {
+//                if (label->isHighlighted)
+//                    glColor3d(Util::config()->colorHighlighted.redF(),
+//                              Util::config()->colorHighlighted.greenF(),
+//                              Util::config()->colorHighlighted.blueF());
+//                if (label->isSelected)
+//                    glColor3d(Util::config()->colorSelected.redF(),
+//                              Util::config()->colorSelected.greenF(),
+//                              Util::config()->colorSelected.blueF());
 
-            if (m_sceneMode == SceneMode_OperateOnLabels)
-            {
-                glColor3d(0.1, 0.1, 0.1);
+//                glPointSize(Util::config()->labelSize - 2.0);
+//                glBegin(GL_POINTS);
+//                glVertex2d(label->point.x, label->point.y);
+//                glEnd();
+//            }
+//            glLineWidth(1.0);
 
-                Point point;
-                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(QString::fromStdString(label->marker->getName()))/m_scale2d/2.0;
-                point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale2d;
+//            if (m_sceneMode == SceneMode_OperateOnLabels)
+//            {
+//                glColor3d(0.1, 0.1, 0.1);
 
-                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, QString::fromStdString(label->marker->getName()), false);
-            }
+//                Point point;
+//                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(QString::fromStdString(label->marker->getName()))/m_scale2d/2.0;
+//                point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale2d;
 
-            // area size
-            if ((m_sceneMode == SceneMode_OperateOnLabels) || (m_sceneViewSettings.showInitialMesh))
-            {
-                double radius = sqrt(label->area/M_PI);
-                glColor3d(0, 0.95, 0.9);
-                glBegin(GL_LINE_LOOP);
-                for (int i = 0; i<360; i = i + 10)
-                {
-                    glVertex2d(label->point.x + radius*cos(i/180.0*M_PI), label->point.y + radius*sin(i/180.0*M_PI));
-                }
-                glEnd();
-            }
-        }
-    }
+//                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, QString::fromStdString(label->marker->getName()), false);
+//            }
+
+//            // area size
+//            if ((m_sceneMode == SceneMode_OperateOnLabels) || (m_sceneViewSettings.showInitialMesh))
+//            {
+//                double radius = sqrt(label->area/M_PI);
+//                glColor3d(0, 0.95, 0.9);
+//                glBegin(GL_LINE_LOOP);
+//                for (int i = 0; i<360; i = i + 10)
+//                {
+//                    glVertex2d(label->point.x + radius*cos(i/180.0*M_PI), label->point.y + radius*sin(i/180.0*M_PI));
+//                }
+//                glEnd();
+//            }
+//        }
+//    }
 }
 
 void SceneView::paintInitialMesh()
@@ -2995,11 +2998,11 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     {
                         if (node != m_nodeLast)
                         {
-                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->boundaries->get("none"), 0, 0); //TODO - do it better
+                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, 0, 0); //TODO - do it better
                             SceneEdge *edgeAdded = m_scene->addEdge(edge);
                             if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                                                                       edge->nodeEnd->point,
-                                                                                                      QString::fromStdString(edge->marker->getName()),
+                                                                                                      "TODO",
                                                                                                       edge->angle,
                                                                                                       edge->refineTowardsEdge));
                         }
@@ -3023,10 +3026,10 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 }
                 else
                 {
-                    SceneLabel *label = new SceneLabel(p, m_scene->materials->get("none"), 0, 0); //TODO - do it better
+                    SceneLabel *label = new SceneLabel(p, 0, 0); //TODO - do it better
                     SceneLabel *labelAdded = m_scene->addLabel(label);
                     if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point,
-                                                                                                 QString::fromStdString(label->marker->getName()),
+                                                                                                 "TODO",
                                                                                                  label->area,
                                                                                                  label->polynomialOrder));
                     updateGL();
@@ -3291,10 +3294,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                arg(edge->nodeStart->point.y, 0, 'g', 3).
                                arg(edge->nodeEnd->point.x, 0, 'g', 3).
                                arg(edge->nodeEnd->point.y, 0, 'g', 3).
-                               arg(QString::fromStdString(edge->marker->getName())).
+                               arg("TODO").
                                arg(edge->angle, 0, 'f', 0).
                                arg(m_scene->edges->items().indexOf(edge)).
-                               arg(edge->marker->html()));
+                               arg("TODO"));
                     updateGL();
                 }
             }
@@ -3309,11 +3312,11 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle area: %4 m<sup>2</sup><br/>Polynomial order: %5<br/>Index: %6 %7").
                                arg(label->point.x, 0, 'g', 3).
                                arg(label->point.y, 0, 'g', 3).
-                               arg(QString::fromStdString(label->marker->getName())).
+                               arg("TODO").
                                arg(label->area, 0, 'g', 3).
                                arg(label->polynomialOrder).
                                arg(m_scene->labels->items().indexOf(label)).
-                               arg(label->marker->html()));
+                               arg("TODO"));
                     updateGL();
                 }
             }

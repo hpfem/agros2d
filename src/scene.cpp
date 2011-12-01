@@ -124,7 +124,7 @@ void DxfFilter::addLine(const DL_LineData &l)
     SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(l.x2, l.y2)));
 
     // edge
-    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, m_scene->boundaries->get("none"), 0, 0)); //TODO - do it better
+    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd,  0, 0)); //TODO - do it better
 }
 
 void DxfFilter::addArc(const DL_ArcData& a)
@@ -145,7 +145,7 @@ void DxfFilter::addArc(const DL_ArcData& a)
     SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(angle2/180*M_PI), a.cy + a.radius*sin(angle2/180*M_PI))));
 
     // edge
-    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, m_scene->boundaries->get("none"), (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1, 0)); //TODO - do it better
+    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1, 0)); //TODO - do it better
 }
 
 void DxfFilter::addCircle(const DL_CircleData& c)
@@ -159,10 +159,10 @@ void DxfFilter::addCircle(const DL_CircleData& c)
     SceneNode *node4 = m_scene->addNode(new SceneNode(Point(c.cx, c.cy - c.radius)));
 
     // edges
-    m_scene->addEdge(new SceneEdge(node1, node2, m_scene->boundaries->get("none"), 90, 0)); // do it better
-    m_scene->addEdge(new SceneEdge(node2, node3, m_scene->boundaries->get("none"), 90, 0));
-    m_scene->addEdge(new SceneEdge(node3, node4, m_scene->boundaries->get("none"), 90, 0));
-    m_scene->addEdge(new SceneEdge(node4, node1, m_scene->boundaries->get("none"), 90, 0));
+    m_scene->addEdge(new SceneEdge(node1, node2, 90, 0)); // do it better
+    m_scene->addEdge(new SceneEdge(node2, node3, 90, 0));
+    m_scene->addEdge(new SceneEdge(node3, node4, 90, 0));
+    m_scene->addEdge(new SceneEdge(node4, node1, 90, 0));
 }
 
 // ************************************************************************************************************************
@@ -331,15 +331,7 @@ void Scene::removeNode(SceneNode *node)
     m_sceneSolution->clear();
 
     // remove all edges connected to this node
-    foreach (SceneEdge *edge, edges->items())
-    {
-        if ((edge->nodeStart == node) || (edge->nodeEnd == node))
-        {
-            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, QString::fromStdString(edge->marker->getName()),
-                                                         edge->angle, edge->refineTowardsEdge));
-            edges->remove(edge);
-        }
-    }
+    edges->removeConnectedToNode(node);
 
     nodes->remove(node);
     // delete node;
@@ -473,13 +465,9 @@ void Scene::removeBoundary(SceneBoundary *boundary)
 {
     logMessage("Scene::removeBoundary()");
 
-    // set none marker
-    foreach (SceneEdge *edge, edges->items())
-    {
-        if (edge->marker == boundary)
-            edge->marker = boundaries->get("none"); //TODO - do it better
-    }
-    this->boundaries->remove(boundary);
+    //TODO instead of setting NoneBoundary we now remove... rething
+    edges->removeMarkerFromAll(boundary);
+    boundaries->remove(boundary);
     // delete boundary;
 
     emit invalidated();
@@ -489,11 +477,7 @@ void Scene::setBoundary(SceneBoundary *boundary)
 {
     logMessage("setEdgeBoundary()");
 
-    for (int i = 0; i<edges->length(); i++)
-    {
-        if (edges->at(i)->isSelected)
-            edges->at(i)->marker = boundary;
-    }
+    edges->selected().addMarkerToAll(boundary);
     selectNone();
 }
 
@@ -524,12 +508,8 @@ void Scene::removeMaterial(SceneMaterial *material)
 {
     logMessage("Scene::removeMaterial()");
 
-    // set none marker
-    foreach (SceneLabel *label, labels->items())
-    {
-        if (label->marker == material)
-            label->marker = materials->get("none"); //TODO - do it better
-    }
+    //TODO instead of setting NoneMaterial we now remove... rething
+    labels->removeMarkerFromAll(material);
     this->materials->remove(material);
     // delete material;
 
@@ -540,11 +520,7 @@ void Scene::setMaterial(SceneMaterial *material)
 {
     logMessage("Scene::setLabelMaterial()");
 
-    for (int i = 0; i<labels->length(); i++)
-    {
-        if (labels->at(i)->isSelected)
-            labels->at(i)->marker = material;
-    }
+    labels->selected().addMarkerToAll(material);
     selectNone();
 }
 
@@ -658,6 +634,7 @@ void Scene::deleteSelected()
 
     m_undoStack->beginMacro(tr("Delete selected"));
 
+    //TODO move the code to the container
     foreach (SceneNode *node, nodes->items())
     {
         if (node->isSelected)
@@ -669,21 +646,23 @@ void Scene::deleteSelected()
         }
     }
 
+    //TODO move the code to the container
     foreach (SceneEdge *edge, edges->items())
     {
         if (edge->isSelected)
         {
-            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, QString::fromStdString(edge->marker->getName()),
+            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, "TODO",
                                                          edge->angle, edge->refineTowardsEdge));
             edges->remove(edge);
         }
     }
 
+    //TODO move the code to the container
     foreach (SceneLabel *label, labels->items())
     {
         if (label->isSelected)
         {
-            m_undoStack->push(new SceneLabelCommandRemove(label->point, QString::fromStdString(label->marker->getName()), label->area, label->polynomialOrder));
+            m_undoStack->push(new SceneLabelCommandRemove(label->point, "TODO", label->area, label->polynomialOrder));
             labels->remove(label);
         }
     }
@@ -726,185 +705,188 @@ void Scene::highlightNone()
 
 void Scene::transformTranslate(const Point &point, bool copy)
 {
-    logMessage("Scene::transformTranslate()");
+    assert(0); //TODO
+//    logMessage("Scene::transformTranslate()");
 
-    // clear solution
-    m_sceneSolution->clear();
+//    // clear solution
+//    m_sceneSolution->clear();
 
-    m_undoStack->beginMacro(tr("Translation"));
+//    m_undoStack->beginMacro(tr("Translation"));
 
-    foreach (SceneEdge *edge, edges->items())
-    {
-        if (edge->isSelected)
-        {
-            edge->nodeStart->isSelected = true;
-            edge->nodeEnd->isSelected = true;
-        }
-    }
+//    foreach (SceneEdge *edge, edges->items())
+//    {
+//        if (edge->isSelected)
+//        {
+//            edge->nodeStart->isSelected = true;
+//            edge->nodeEnd->isSelected = true;
+//        }
+//    }
 
-    foreach (SceneNode *node, nodes->items())
-    {
-        if (node->isSelected)
-        {
-            Point pointNew = node->point + point;
-            if (!copy)
-            {
-                if (!getNode(pointNew))
-                {
-                    m_undoStack->push(new SceneNodeCommandEdit(node->point, pointNew));
-                    node->point = pointNew;
-                }
-            }
-            else
-            {
-                SceneNode *nodeNew = new SceneNode(pointNew);
-                SceneNode *nodeAdded = addNode(nodeNew);
-                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
-            }
-        }
-    }
+//    foreach (SceneNode *node, nodes->items())
+//    {
+//        if (node->isSelected)
+//        {
+//            Point pointNew = node->point + point;
+//            if (!copy)
+//            {
+//                if (!getNode(pointNew))
+//                {
+//                    m_undoStack->push(new SceneNodeCommandEdit(node->point, pointNew));
+//                    node->point = pointNew;
+//                }
+//            }
+//            else
+//            {
+//                SceneNode *nodeNew = new SceneNode(pointNew);
+//                SceneNode *nodeAdded = addNode(nodeNew);
+//                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
+//            }
+//        }
+//    }
 
-    foreach (SceneLabel *label, labels->items())
-    {
-        if (label->isSelected)
-        {
-            Point pointNew = label->point + point;
-            if (!copy)
-            {
-                if (!getLabel(pointNew))
-                {
-                    m_undoStack->push(new SceneLabelCommandEdit(label->point, pointNew));
-                    label->point = pointNew;
-                }
-            }
-            else
-            {
-                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
-                SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, label->polynomialOrder));
-            }
-        }
-    }
+//    foreach (SceneLabel *label, labels->items())
+//    {
+//        if (label->isSelected)
+//        {
+//            Point pointNew = label->point + point;
+//            if (!copy)
+//            {
+//                if (!getLabel(pointNew))
+//                {
+//                    m_undoStack->push(new SceneLabelCommandEdit(label->point, pointNew));
+//                    label->point = pointNew;
+//                }
+//            }
+//            else
+//            {
+//                SceneLabel *labelNew = new SceneLabel(pointNew, label->area, label->polynomialOrder);
+//                SceneLabel *labelAdded = addLabel(labelNew);
+//                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, label->polynomialOrder));
+//            }
+//        }
+//    }
 
-    m_undoStack->endMacro();
+//    m_undoStack->endMacro();
 
-    emit invalidated();
+//    emit invalidated();
 }
 
 void Scene::transformRotate(const Point &point, double angle, bool copy)
 {
-    logMessage("Scene::transformRotate()");
+    assert(0); //TODO
+//    logMessage("Scene::transformRotate()");
 
-    // clear solution
-    m_sceneSolution->clear();
+//    // clear solution
+//    m_sceneSolution->clear();
 
-    m_undoStack->beginMacro(tr("Rotation"));
+//    m_undoStack->beginMacro(tr("Rotation"));
 
-    foreach (SceneEdge *edge, edges->items())
-    {
-        if (edge->isSelected)
-        {
-            edge->nodeStart->isSelected = true;
-            edge->nodeEnd->isSelected = true;
-        }
-    }
+//    foreach (SceneEdge *edge, edges->items())
+//    {
+//        if (edge->isSelected)
+//        {
+//            edge->nodeStart->isSelected = true;
+//            edge->nodeEnd->isSelected = true;
+//        }
+//    }
 
-    foreach (SceneNode *node, nodes->items())
-        if (node->isSelected)
-        {
-            double distanceNode = (node->point - point).magnitude();
-            double angleNode = (node->point - point).angle()/M_PI*180;
+//    foreach (SceneNode *node, nodes->items())
+//        if (node->isSelected)
+//        {
+//            double distanceNode = (node->point - point).magnitude();
+//            double angleNode = (node->point - point).angle()/M_PI*180;
 
-            Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
-            if (!copy)
-            {
-                node->point = pointNew;
-            }
-            else
-            {
-                SceneNode *nodeNew = new SceneNode(pointNew);
-                SceneNode *nodeAdded = addNode(nodeNew);
-                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
-            }
-        }
+//            Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
+//            if (!copy)
+//            {
+//                node->point = pointNew;
+//            }
+//            else
+//            {
+//                SceneNode *nodeNew = new SceneNode(pointNew);
+//                SceneNode *nodeAdded = addNode(nodeNew);
+//                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
+//            }
+//        }
 
-    foreach (SceneLabel *label, labels->items())
-        if (label->isSelected)
-        {
-            double distanceNode = (label->point - point).magnitude();
-            double angleNode = (label->point - point).angle()/M_PI*180;
+//    foreach (SceneLabel *label, labels->items())
+//        if (label->isSelected)
+//        {
+//            double distanceNode = (label->point - point).magnitude();
+//            double angleNode = (label->point - point).angle()/M_PI*180;
 
-            Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
-            if (!copy)
-            {
-                label->point = pointNew;
-            }
-            else
-            {
-                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
-                SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, labelNew->polynomialOrder));
-            }
-        }
+//            Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
+//            if (!copy)
+//            {
+//                label->point = pointNew;
+//            }
+//            else
+//            {
+//                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
+//                SceneLabel *labelAdded = addLabel(labelNew);
+//                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, labelNew->polynomialOrder));
+//            }
+//        }
 
-    m_undoStack->endMacro();
+//    m_undoStack->endMacro();
 
-    emit invalidated();
+//    emit invalidated();
 }
 
 void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 {
-    logMessage("Scene::transformScale()");
+    assert(0); //TODO
+//    logMessage("Scene::transformScale()");
 
-    // clear solution
-    m_sceneSolution->clear();
+//    // clear solution
+//    m_sceneSolution->clear();
 
-    m_undoStack->beginMacro(tr("Scale"));
+//    m_undoStack->beginMacro(tr("Scale"));
 
-    foreach (SceneEdge *edge, edges->items())
-    {
-        if (edge->isSelected)
-        {
-            edge->nodeStart->isSelected = true;
-            edge->nodeEnd->isSelected = true;
-        }
-    }
+//    foreach (SceneEdge *edge, edges->items())
+//    {
+//        if (edge->isSelected)
+//        {
+//            edge->nodeStart->isSelected = true;
+//            edge->nodeEnd->isSelected = true;
+//        }
+//    }
 
-    foreach (SceneNode *node, nodes->items())
-        if (node->isSelected)
-        {
-            Point pointNew = point + (node->point - point) * scaleFactor;
-            if (!copy)
-            {
-                node->point = pointNew;
-            }
-            else
-            {
-                SceneNode *nodeNew = new SceneNode(pointNew);
-                SceneNode *nodeAdded = addNode(nodeNew);
-                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
-            }
-        }
+//    foreach (SceneNode *node, nodes->items())
+//        if (node->isSelected)
+//        {
+//            Point pointNew = point + (node->point - point) * scaleFactor;
+//            if (!copy)
+//            {
+//                node->point = pointNew;
+//            }
+//            else
+//            {
+//                SceneNode *nodeNew = new SceneNode(pointNew);
+//                SceneNode *nodeAdded = addNode(nodeNew);
+//                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
+//            }
+//        }
 
-    foreach (SceneLabel *label, labels->items())
-        if (label->isSelected)
-        {
-            Point pointNew = point + (label->point - point) * scaleFactor;
-            if (!copy)
-            {
-                label->point = pointNew;
-            }
-            else
-            {
-                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
-                SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, labelNew->polynomialOrder));
-            }
-        }
+//    foreach (SceneLabel *label, labels->items())
+//        if (label->isSelected)
+//        {
+//            Point pointNew = point + (label->point - point) * scaleFactor;
+//            if (!copy)
+//            {
+//                label->point = pointNew;
+//            }
+//            else
+//            {
+//                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
+//                SceneLabel *labelAdded = addLabel(labelNew);
+//                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, labelNew->polynomialOrder));
+//            }
+//        }
 
-    m_undoStack->endMacro();
+//    m_undoStack->endMacro();
 
-    emit invalidated();
+//    emit invalidated();
 }
 
 void Scene::doInvalidated()
@@ -934,14 +916,14 @@ void Scene::doNewEdge()
 {
     logMessage("Scene::doNewEdge()");
 
-    SceneEdge *edge = new SceneEdge(nodes->at(0), nodes->at(1), boundaries->get("none"), 0, 0); //TODO - do it better
+    SceneEdge *edge = new SceneEdge(nodes->at(0), nodes->at(1), 0, 0); //TODO - do it better
     if (edge->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         SceneEdge *edgeAdded = addEdge(edge);
         if (edgeAdded == edge)
             m_undoStack->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                       edge->nodeEnd->point,
-                                                      QString::fromStdString(edge->marker->getName()),
+                                                      "TODO",
                                                       edge->angle,
                                                       edge->refineTowardsEdge));
     }
@@ -953,12 +935,12 @@ void Scene::doNewLabel(const Point &point)
 {
     logMessage("Scene::doNewLabel()");
 
-    SceneLabel *label = new SceneLabel(point, materials->get("none"), 0.0, 0); //TODO - do it better
+    SceneLabel *label = new SceneLabel(point, 0.0, 0); //TODO - do it better
     if (label->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         SceneLabel *labelAdded = addLabel(label);
         if (labelAdded == label) m_undoStack->push(new SceneLabelCommandAdd(label->point,
-                                                                            QString::fromStdString(label->marker->getName()),
+                                                                            "TODO",
                                                                             label->area,
                                                                             label->polynomialOrder));
     }
@@ -1447,7 +1429,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         double angle = element.attribute("angle", "0").toDouble();
         int refineTowardsEdge = element.attribute("refine_towards", "0").toInt();
 
-        addEdge(new SceneEdge(nodeFrom, nodeTo, marker, angle, refineTowardsEdge));
+        addEdge(new SceneEdge(nodeFrom, nodeTo, angle, refineTowardsEdge));
+        //TODO nacist marker
         n = n.nextSibling();
     }
 
@@ -1462,7 +1445,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         double area = element.attribute("area", "0").toDouble();
         int polynomialOrder = element.attribute("polynomialorder", "0").toInt();
 
-        addLabel(new SceneLabel(point, marker, area, polynomialOrder));
+        addLabel(new SceneLabel(point, area, polynomialOrder));
+        //TODO nacist marker
         n = n.nextSibling();
     }
 
