@@ -26,6 +26,100 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 
+FieldSelectDialog::FieldSelectDialog(QWidget *parent) : QDialog(parent)
+{
+    logMessage("FieldSelectDialog::FieldSelectDialog()");
+
+    setWindowTitle(tr("Select field"));
+    setModal(true);
+
+    m_fieldId = "";
+
+    lstFields = new QListWidget(this);
+
+    std::map<std::string, std::string> modules = availableModules();
+    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
+    {
+        // add only missing fields
+        if (!Util::scene()->fieldInfo(it->first))
+        {
+            QListWidgetItem *item = new QListWidgetItem(lstFields);
+            item->setText(QString::fromStdString(it->second));
+            item->setData(Qt::UserRole, QString::fromStdString(it->first));
+
+            lstFields->addItem(item);
+        }
+    }
+
+    connect(lstFields, SIGNAL(itemDoubleClicked(QListWidgetItem *)),
+            this, SLOT(doItemDoubleClicked(QListWidgetItem *)));
+    connect(lstFields, SIGNAL(itemActivated(QListWidgetItem *)),
+            this, SLOT(doItemSelected(QListWidgetItem *)));
+    connect(lstFields, SIGNAL(itemPressed(QListWidgetItem *)),
+            this, SLOT(doItemSelected(QListWidgetItem *)));
+
+
+    QGridLayout *layoutSurface = new QGridLayout();
+    layoutSurface->addWidget(lstFields);
+
+    QWidget *widget = new QWidget();
+    widget->setLayout(layoutSurface);
+
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(widget, 1);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+    if (lstFields->count() > 0)
+    {
+        lstFields->setCurrentRow(0);
+        doItemSelected(lstFields->currentItem());
+    }
+}
+
+void FieldSelectDialog::doAccept()
+{
+    logMessage("FieldSelectDialog::doAccept()");
+
+    accept();
+}
+
+void FieldSelectDialog::doReject()
+{
+    logMessage("FieldSelectDialog::doReject()");
+
+    reject();
+}
+
+int FieldSelectDialog::showDialog()
+{
+    return exec();
+}
+
+void FieldSelectDialog::doItemSelected(QListWidgetItem *item)
+{
+    m_fieldId = item->data(Qt::UserRole).toString();
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+}
+
+void FieldSelectDialog::doItemDoubleClicked(QListWidgetItem *item)
+{
+    if (lstFields->currentItem())
+    {
+        m_fieldId = lstFields->currentItem()->data(Qt::UserRole).toString();
+        accept();
+    }
+}
+
+// ********************************************************************************************************
+
 FieldWidget::FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, QWidget *parent)
     : QWidget(parent), problemInfo(problemInfo), fieldInfo(fieldInfo)
 {
@@ -354,13 +448,13 @@ void ProblemDialog::createControls()
     tabType->addTab(createControlsDescription(), icon(""), tr("Description"));
 
     // dialog buttons
-    QPushButton *btnOpenXML = new QPushButton(tr("Open module"));
-    btnOpenXML->setDefault(false);
-    btnOpenXML->setVisible(false);
-    connect(btnOpenXML, SIGNAL(clicked()), this, SLOT(doOpenXML()));
+    QPushButton *btnAddField = new QPushButton(tr("Add field"));
+    btnAddField->setDefault(false);
+    btnAddField->setVisible(false);
+    connect(btnAddField, SIGNAL(clicked()), this, SLOT(doAddField()));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    // buttonBox->addButton(btnOpenXML, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(btnAddField, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -369,7 +463,9 @@ void ProblemDialog::createControls()
     layout->addStretch();
     layout->addWidget(buttonBox);
 
-    setLayout(layout);
+    setLayout(layout);   
+
+    refresh();
 }
 
 QWidget *ProblemDialog::createControlsGeneral()
@@ -460,9 +556,6 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     // fields
     tabFields = new QTabWidget(this);
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-        tabFields->addTab(new FieldWidget(m_problemInfo, fieldInfo, tabFields),
-                          QString::fromStdString(fieldInfo->module()->name));
 
     QGridLayout *layoutFields = new QGridLayout();
     layoutFields->setColumnMinimumWidth(0, minWidth);
@@ -522,6 +615,18 @@ void ProblemDialog::fillComboBox()
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
 }
 
+void ProblemDialog::refresh()
+{
+    tabFields->clear();
+
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        tabFields->addTab(new FieldWidget(m_problemInfo, fieldInfo, tabFields),
+                          QString::fromStdString(fieldInfo->module()->name));
+
+    setMinimumSize(sizeHint());
+    resize(sizeHint());
+}
+
 void ProblemDialog::load()
 {
     logMessage("ProblemDialog::load()");
@@ -541,8 +646,6 @@ void ProblemDialog::load()
     txtStartupScript->setPlainText(m_problemInfo->scriptStartup);
     // description
     txtDescription->setPlainText(m_problemInfo->description);
-
-    // if (!m_isNewProblem) cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(QString::fromStdString(m_fieldInfos["TODO"]->module()->id)));
 
     doTransientChanged();
 }
@@ -722,3 +825,16 @@ void ProblemDialog::doTransientChanged()
         lblTransientSteps->setText(QString("%1").arg(floor(txtTransientTimeTotal->number()/txtTransientTimeStep->number())));
     }
 }
+
+void ProblemDialog::doAddField()
+{
+    FieldSelectDialog *dialog = new FieldSelectDialog(this);
+    if (dialog->showDialog() == QDialog::Accepted)
+    {
+        qDebug() << dialog->fieldId();
+        Util::scene()->addField(dialog->fieldId(), new FieldInfo(m_problemInfo));
+
+        refresh();
+    }
+}
+

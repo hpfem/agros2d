@@ -537,7 +537,8 @@ void SceneInfoView::doProperties()
 {
     logMessage("SceneInfoView::doProperties()");
 
-    if (trvWidget->currentItem() != NULL) {
+    if (trvWidget->currentItem())
+    {
         // geometry
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
         {

@@ -31,6 +31,30 @@ class ValueLineEdit;
 
 class FieldInfo;
 
+class FieldSelectDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    FieldSelectDialog(QWidget *parent);
+
+    int showDialog();
+    inline QString fieldId() { return m_fieldId; }
+
+private slots:
+    void doAccept();
+    void doReject();
+
+    void doItemSelected(QListWidgetItem *item);
+    void doItemDoubleClicked(QListWidgetItem *item);
+
+private:
+    QListWidget *lstFields;
+    QString m_fieldId;
+
+    QDialogButtonBox *buttonBox;
+};
+
+
 class FieldWidget : public QWidget
 {
     Q_OBJECT
@@ -106,6 +130,7 @@ private slots:
     void doAccept();
     void doReject();
     void doOpenXML();
+    void doAddField();
 
 private:
     bool m_isNewProblem;
@@ -135,11 +160,11 @@ private:
 
     void createControls();
     QWidget *createControlsGeneral();
-    QWidget *createControlsStartupScript();
-    // QWidget *createControlsCustomForms();
+    QWidget *createControlsStartupScript();    
     QWidget *createControlsDescription();
 
     void fillComboBox();
+    void refresh();
 
     void load();
     bool save();

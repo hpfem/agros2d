@@ -79,7 +79,7 @@ std::map<std::string, std::string> availableModules()
     }
 
     // custom module
-    modules["custom"] = "Custom field";
+    // modules["custom"] = "Custom field";
 
     return modules;
 }
