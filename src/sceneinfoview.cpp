@@ -334,7 +334,7 @@ void SceneInfoView::doInvalidated()
         fieldMaterialsNode->setExpanded(true);
 
         QList<QTreeWidgetItem *> listMaterials;
-        foreach (SceneMaterial *material, Util::scene()->fieldInfo("TODO")->module()->materials().items())
+        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(fieldMaterialsNode);
 

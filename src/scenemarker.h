@@ -36,6 +36,7 @@ public:
 
     void add(MarkerType *marker);
     void remove(MarkerType *marker);
+    MarkerType *at(int i);
     MarkerType *get(const QString &name);
     inline int length() { return data.length(); }
     inline int isEmpty() { return data.isEmpty(); }

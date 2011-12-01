@@ -44,16 +44,22 @@ template void MarkerContainer<SceneBoundary>::remove(SceneBoundary *marker);
 template void MarkerContainer<SceneMaterial>::remove(SceneMaterial *marker);
 
 template <typename MarkerType>
+MarkerType *MarkerContainer<MarkerType>::at(int i)
+{
+    return data.at(i);
+}
+
+template SceneBoundary *MarkerContainer<SceneBoundary>::at(int i);
+template SceneMaterial *MarkerContainer<SceneMaterial>::at(int i);
+
+template <typename MarkerType>
 MarkerType* MarkerContainer<MarkerType>::get(const QString &name)
 {
     logMessage("MarkerContainer::get()");
 
-    QList<MarkerType *> data;
     foreach (MarkerType *item, data)
-    {
         if (item->getName() == name.toStdString())
             return item;
-    }
 
     return NULL;
 }

@@ -1443,7 +1443,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
         SceneNode *nodeFrom = nodes->at(element.attribute("start").toInt());
         SceneNode *nodeTo = nodes->at(element.attribute("end").toInt());
-        SceneBoundary *marker = boundaries->get(element.attribute("marker"));
+        SceneBoundary *marker = boundaries->at(element.attribute("marker").toInt());
         double angle = element.attribute("angle", "0").toDouble();
         int refineTowardsEdge = element.attribute("refine_towards", "0").toInt();
 
@@ -1458,7 +1458,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     {
         element = n.toElement();
         Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
-        SceneMaterial *marker = materials->get(element.attribute("marker"));
+        SceneMaterial *marker = materials->at(element.attribute("marker").toInt());
         double area = element.attribute("area", "0").toDouble();
         int polynomialOrder = element.attribute("polynomialorder", "0").toInt();
 

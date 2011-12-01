@@ -43,55 +43,55 @@ int SceneBoundary::showDialog(QWidget *parent)
 
 QString SceneBoundary::script()
 {
-    // TODO
+    //TODO
     // value
-//    QString val = "{";
-//    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
-//    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-//    {
-//        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-//        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text() + ", ";
-//    }
+    //    QString val = "{";
+    //    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+    //    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+    //    {
+    //        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+    //        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text() + ", ";
+    //    }
 
-//    if (val.length() > 1)
-//        val = val.left(val.length() - 2);
-//    val += "}";
+    //    if (val.length() > 1)
+    //        val = val.left(val.length() - 2);
+    //    val += "}";
 
-//    QString str;
+    //    QString str;
 
-//    str += QString("addboundary(\"%1\", \"%2\", %3)").
-//            arg(QString::fromStdString(name)).
-//            arg(QString::fromStdString(type)).
-//            arg(val);
+    //    str += QString("addboundary(\"%1\", \"%2\", %3)").
+    //            arg(QString::fromStdString(name)).
+    //            arg(QString::fromStdString(type)).
+    //            arg(val);
 
-//    return str;
+    //    return str;
 }
 
 QString SceneBoundary::html()
 {
-//    TODO
-//    QString out;
-//    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
-//    out += "<table>";
+    //TODO
+    QString out;
+    //    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
+    //    out += "<table>";
     
-//    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
-//    if (boundary_type)
-//        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-//        {
-//            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-            
-//            out += "<tr>";
-////            out += QString("<td>%1 (%2):</td>").
-////                    arg(QString::fromStdString(variable->name)).
-////                    arg(QString::fromStdString(variable->unit));
-//            out += QString("<td>%1</td>").
-//                    arg(values[variable->id].text());
-//            out += "</tr>";
-//        }
+    //    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+    //    if (boundary_type)
+    //        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+    //        {
+    //            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+
+    //            out += "<tr>";
+    ////            out += QString("<td>%1 (%2):</td>").
+    ////                    arg(QString::fromStdString(variable->name)).
+    ////                    arg(QString::fromStdString(variable->unit));
+    //            out += QString("<td>%1</td>").
+    //                    arg(values[variable->id].text());
+    //            out += "</tr>";
+    //        }
     
-//    out += "</table>";
+    //    out += "</table>";
     
-//    return out;
+    return out;
 }
 
 QVariant SceneBoundary::variant()
@@ -129,54 +129,53 @@ int SceneMaterial::showDialog(QWidget *parent)
 QString SceneMaterial::script()
 {
     assert(0); //TODO
-//    // value
-//    QString val = "{";
-//    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
-//    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-//    {
-//        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-//        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text() + ", ";
-//    }
+    //    // value
+    //    QString val = "{";
+    //    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+    //    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+    //    {
+    //        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+    //        val += "\"" + QString::fromStdString(variable->shortname) + "\" : " + values[variable->id].text() + ", ";
+    //    }
 
-//    if (val.length() > 1)
-//        val = val.left(val.length() - 2);
-//    val += "}";
+    //    if (val.length() > 1)
+    //        val = val.left(val.length() - 2);
+    //    val += "}";
 
-//    QString str;
+    //    QString str;
 
-//    str += QString("addmaterial(\"%1\", %2)").
-//            arg(QString::fromStdString(name)).
-//            arg(val);
+    //    str += QString("addmaterial(\"%1\", %2)").
+    //            arg(QString::fromStdString(name)).
+    //            arg(val);
 
-//    return str;
+    //    return str;
 }
 
 QString SceneMaterial::html()
 {
-    assert(0); //TODO
-//    logMessage("SceneMaterial::html()");
+    //TODO
+    QString out;
     
-//    QString out;
-//    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
-//    out += "<table>";
+    //    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
+    //    out += "<table>";
     
-//    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::scene()->problemInfo()->module()->material_type_variables.begin();
-//         it < Util::scene()->problemInfo()->module()->material_type_variables.end(); ++it )
-//    {
-//        Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
-        
-//        out += "<tr>";
-////        out += QString("<td>%1 (%2)</td>").
-////                arg(QString::fromStdString(material->name)).
-////                arg(QString::fromStdString(material->unit));
-//        // FIXME - add value
-//        out += QString("<td>%1</td>").
-//                arg(QString::fromStdString("FIXME"));
-//        out += "</tr>";
-//    }
-//    out += "</table>";
+    //    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::scene()->problemInfo()->module()->material_type_variables.begin();
+    //         it < Util::scene()->problemInfo()->module()->material_type_variables.end(); ++it )
+    //    {
+    //        Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
+
+    //        out += "<tr>";
+    ////        out += QString("<td>%1 (%2)</td>").
+    ////                arg(QString::fromStdString(material->name)).
+    ////                arg(QString::fromStdString(material->unit));
+    //        // FIXME - add value
+    //        out += QString("<td>%1</td>").
+    //                arg(QString::fromStdString("FIXME"));
+    //        out += "</tr>";
+    //    }
+    //    out += "</table>";
     
-//    return out;
+    return out;
 }
 
 QVariant SceneMaterial::variant()
@@ -273,7 +272,7 @@ void SceneBoundaryDialog::doAccept()
     logMessage("SceneBoundaryDialog::doAccept()");
     
     if (save())
-        accept();    
+        accept();
 }
 
 void SceneBoundaryDialog::doReject()
@@ -293,19 +292,19 @@ void SceneBoundaryDialog::evaluated(bool isError)
 void SceneBoundaryDialog::readEquation(QLabel *lblEquation, const QString &type)
 {
     assert(0); //TODO
-//    QString fileName = QString(":/images/equations/%1/%2_%3.png")
-//            .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name))
-//            .arg(type)
-//            .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
+    //    QString fileName = QString(":/images/equations/%1/%2_%3.png")
+    //            .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name))
+    //            .arg(type)
+    //            .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
     
-//    if (QFile::exists(fileName))
-//        // analysis dependand
-//        readPixmap(lblEquation, fileName);
-//    else
-//        // general form
-//        readPixmap(lblEquation, QString(":/images/equations/%1/%2.png")
-//                   .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
-//                   .arg(type));
+    //    if (QFile::exists(fileName))
+    //        // analysis dependand
+    //        readPixmap(lblEquation, fileName);
+    //    else
+    //        // general form
+    //        readPixmap(lblEquation, QString(":/images/equations/%1/%2.png")
+    //                   .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
+    //                   .arg(type));
 }
 
 // *************************************************************************************************************************************
@@ -325,35 +324,34 @@ SceneMaterialDialog::SceneMaterialDialog(QWidget *parent) : QDialog(parent)
 
 void SceneMaterialDialog::createDialog()
 {
-    assert(0); //TODO
-//    logMessage("DSceneMaterial::createDialog()");
+    logMessage("DSceneMaterial::createDialog()");
     
-//    // dialog buttons
-//    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-//    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-//    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+    // dialog buttons
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
     
-//    // name
-//    layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
-//    layout->addWidget(txtName, 0, 2);
+    // name
+    layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
+    layout->addWidget(txtName, 0, 2);
     
-//    // equation
-//    layout->addWidget(lblEquation, 1, 0, 1, 2);
-//    layout->addWidget(lblEquationImage, 1, 2);
-//    readPixmap(lblEquationImage,
-//               QString(":/images/equations/%1/%1_%2.png")
-//               .arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id))
-//               .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)));
+    // equation
+    layout->addWidget(lblEquation, 1, 0, 1, 2);
+    layout->addWidget(lblEquationImage, 1, 2);
+    readPixmap(lblEquationImage,
+               QString(":/images/equations/%1/%1_%2.png")
+               .arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->id))
+               .arg(analysisTypeToStringKey(Util::scene()->fieldInfo("TODO")->analysisType)));
     
-//    // content
-//    createContent();
+    // content
+    createContent();
     
-//    layout->addWidget(buttonBox, 100, 0, 1, 3);
-//    layout->setRowStretch(99, 1);
+    layout->addWidget(buttonBox, 100, 0, 1, 3);
+    layout->setRowStretch(99, 1);
     
-//    txtName->setFocus();
+    txtName->setFocus();
     
-//    setLayout(layout);
+    setLayout(layout);
 }
 
 void SceneMaterialDialog::setSize()
@@ -417,57 +415,57 @@ void SceneMaterialDialog::evaluated(bool isError)
 SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(parent)
 {
     assert(0); //TODO
-//    logMessage("SceneBoundarySelectDialog::SceneBoundarySelectDialog()");
+    //    logMessage("SceneBoundarySelectDialog::SceneBoundarySelectDialog()");
     
-//    setWindowTitle(tr("Boundary condition"));
-//    setWindowIcon(icon("scene-edge"));
-//    setModal(true);
+    //    setWindowTitle(tr("Boundary condition"));
+    //    setWindowIcon(icon("scene-edge"));
+    //    setModal(true);
     
-//    // fill combo
-//    cmbBoundary = new QComboBox(this);
-//    for (int i = 0; i<Util::scene()->boundaries.count(); i++)
-//    {
-//        cmbBoundary->addItem(QString::fromStdString(Util::scene()->boundaries[i]->name), Util::scene()->boundaries[i]->variant());
-//    }
+    //    // fill combo
+    //    cmbBoundary = new QComboBox(this);
+    //    for (int i = 0; i<Util::scene()->boundaries.count(); i++)
+    //    {
+    //        cmbBoundary->addItem(QString::fromStdString(Util::scene()->boundaries[i]->name), Util::scene()->boundaries[i]->variant());
+    //    }
     
-//    // select marker
-//    cmbBoundary->setCurrentIndex(-1);
-//    SceneBoundary *boundary = NULL;
-//    for (int i = 0; i<Util::scene()->edges.count(); i++)
-//    {
-//        if (Util::scene()->edges[i]->isSelected)
-//        {
-//            if (!boundary)
-//            {
-//                boundary = Util::scene()->edges[i]->boundary;
-//            }
-//            if (boundary != Util::scene()->edges[i]->boundary)
-//            {
-//                boundary = NULL;
-//                break;
-//            }
-//        }
-//    }
-//    if (boundary)
-//        cmbBoundary->setCurrentIndex(cmbBoundary->findData(boundary->variant()));
+    //    // select marker
+    //    cmbBoundary->setCurrentIndex(-1);
+    //    SceneBoundary *boundary = NULL;
+    //    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    //    {
+    //        if (Util::scene()->edges[i]->isSelected)
+    //        {
+    //            if (!boundary)
+    //            {
+    //                boundary = Util::scene()->edges[i]->boundary;
+    //            }
+    //            if (boundary != Util::scene()->edges[i]->boundary)
+    //            {
+    //                boundary = NULL;
+    //                break;
+    //            }
+    //        }
+    //    }
+    //    if (boundary)
+    //        cmbBoundary->setCurrentIndex(cmbBoundary->findData(boundary->variant()));
     
-//    // dialog buttons
-//    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-//    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-//    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    //    // dialog buttons
+    //    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    //    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    //    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     
-//    QHBoxLayout *layoutBoundary = new QHBoxLayout();
-//    layoutBoundary->addWidget(new QLabel(tr("Boundary:")));
-//    layoutBoundary->addWidget(cmbBoundary);
+    //    QHBoxLayout *layoutBoundary = new QHBoxLayout();
+    //    layoutBoundary->addWidget(new QLabel(tr("Boundary:")));
+    //    layoutBoundary->addWidget(cmbBoundary);
     
-//    QVBoxLayout *layout = new QVBoxLayout();
-//    layout->addLayout(layoutBoundary);
-//    layout->addStretch();
-//    layout->addWidget(buttonBox);
+    //    QVBoxLayout *layout = new QVBoxLayout();
+    //    layout->addLayout(layoutBoundary);
+    //    layout->addStretch();
+    //    layout->addWidget(buttonBox);
     
-//    setLayout(layout);
+    //    setLayout(layout);
     
-//    setMaximumSize(sizeHint());
+    //    setMaximumSize(sizeHint());
 }
 
 void SceneBoundarySelectDialog::doAccept()
