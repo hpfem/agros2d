@@ -68,6 +68,20 @@ template SceneBoundary* MarkerContainer<SceneBoundary>::get(const QString &name)
 template SceneMaterial* MarkerContainer<SceneMaterial>::get(const QString &name);
 
 template <typename MarkerType>
+MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(const QString &field)
+{
+    MarkerContainer<MarkerType> items;
+    foreach (MarkerType *item, data)
+        if (item->getField() == field.toStdString())
+            items.add(item);
+
+    return items;
+}
+
+template MarkerContainer<SceneBoundary> MarkerContainer<SceneBoundary>::filter(const QString &field);
+template MarkerContainer<SceneMaterial> MarkerContainer<SceneMaterial>::filter(const QString &field);
+
+template <typename MarkerType>
 void MarkerContainer<MarkerType>::clear()
 {
     foreach (MarkerType* item, data)

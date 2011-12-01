@@ -81,24 +81,26 @@ SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
 
 SceneBoundaryContainer Hermes::Module::ModuleAgros::boundaries()
 {
-    SceneBoundaryContainer boundaries;
-    foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
-    {
-        if (boundary->getField() == "TODO")
-            boundaries.add(boundary);
-    }
-    return boundaries;
+    //TODO - how to cast???
+    MarkerContainer<SceneBoundary> boundaries = Util::scene()->boundaries->filter("TODO");
+
+    SceneBoundaryContainer boundaryContainer;
+    foreach (SceneBoundary *boundary, boundaries.items())
+        boundaryContainer.add(boundary);
+
+    return boundaryContainer;
 }
 
 SceneMaterialContainer Hermes::Module::ModuleAgros::materials()
 {
-    SceneMaterialContainer materials;
-    foreach (SceneMaterial *material, Util::scene()->materials->items())
-    {
-        if (material->getField() == "TODO")
-            materials.add(material);
-    }
-    return materials;
+    //TODO - how to cast???
+    MarkerContainer<SceneMaterial> materials = Util::scene()->materials->filter("TODO");
+
+    SceneMaterialContainer materialContainer;
+    foreach (SceneMaterial *material, materials.items())
+        materialContainer.add(material);
+
+    return materialContainer;
 }
 
 template <class T>

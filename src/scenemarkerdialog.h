@@ -32,6 +32,14 @@ class SceneMaterial;
 Q_DECLARE_METATYPE(SceneBoundary *)
 Q_DECLARE_METATYPE(SceneMaterial *)
 
+namespace Hermes
+{
+namespace Module
+{
+class DialogUI;
+}
+}
+
 class SceneBoundary : public Boundary
 {
 public:
@@ -67,6 +75,71 @@ protected slots:
 
 private:
     QComboBox *cmbBoundary;
+};
+
+template <class T>
+void deformShapeTemplate(T linVert, int count);
+
+// ************************************************************************************************
+
+class SceneTabWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    SceneTabWidget(Hermes::Module::DialogUI *ui, QWidget *parent);
+
+    Hermes::Module::DialogUI *ui;
+
+    // layout
+    QVBoxLayout *layout;
+
+    // equation
+    QLabel *equationImage;
+
+    // quantities
+    QList<QString> ids;
+    QList<QLabel *> labels;
+    QList<ValueLineEdit *> values;
+
+    void createContent();
+
+    virtual void addCustomWidget(QVBoxLayout *layout) = 0;
+    virtual void refresh() = 0;
+    virtual void load() = 0;
+    virtual bool save() = 0;
+};
+
+class SceneTabWidgetMaterial : public SceneTabWidget
+{
+    Q_OBJECT
+public:
+    SceneMaterial *material;
+
+    SceneTabWidgetMaterial(Hermes::Module::DialogUI *ui, SceneMaterial *material, QWidget *parent);
+
+    void addCustomWidget(QVBoxLayout *layout) {}
+    void refresh();
+    void load();
+    bool save();
+};
+
+class SceneTabWidgetBoundary : public SceneTabWidget
+{
+    Q_OBJECT
+public:
+    SceneBoundary *boundary;
+
+    SceneTabWidgetBoundary(Hermes::Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent);
+
+    QComboBox *comboBox;
+
+    void addCustomWidget(QVBoxLayout *layout);
+    void refresh();
+    void load();
+    bool save();
+
+private slots:
+    void doTypeChanged(int index);
 };
 
 // *************************************************************************************************************************************
@@ -116,7 +189,7 @@ class SceneBoundaryDialog: public QDialog
     Q_OBJECT
 
 public:
-    SceneBoundaryDialog(QWidget *parent);
+    SceneBoundaryDialog(SceneBoundary *boundary, QWidget *parent);
 
 protected:
     QGridLayout *layout;
@@ -127,11 +200,14 @@ protected:
     QLabel *lblEquationImage;
     SceneBoundary *m_boundary;
 
-    virtual void createContent() = 0;
+    QTabWidget* tabModules;
+
+    void createContent();
     void createDialog();
 
-    virtual void load();
-    virtual bool save();
+    void load();
+    bool save();
+
     void setSize();
 
 protected slots:
@@ -148,7 +224,7 @@ class SceneMaterialDialog: public QDialog
     Q_OBJECT
 
 public:
-    SceneMaterialDialog(QWidget *parent);
+    SceneMaterialDialog(SceneMaterial *material, QWidget *parent);
 
 protected:
     QGridLayout *layout;
@@ -159,12 +235,15 @@ protected:
     QLabel *lblEquationImage;
     SceneMaterial *m_material;
 
-    virtual void createContent() = 0;
-    void createDialog();
-    void setSize();
+    QTabWidget* tabModules;
 
-    virtual void load();
-    virtual bool save();
+    void createContent();
+    void createDialog();
+
+    void load();
+    bool save();
+
+    void setSize();
 
 protected slots:
     void evaluated(bool isError);

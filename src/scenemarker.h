@@ -34,12 +34,28 @@ public:
     /// more methods operating with list data should be defined here
     QList<MarkerType*> items() { return data; }
 
+    /// add marker
     void add(MarkerType *marker);
+
+    /// remove marker
     void remove(MarkerType *marker);
+
+    /// get marker at position i
     MarkerType *at(int i);
+
+    /// get marker by name
     MarkerType *get(const QString &name);
+
+    /// filter field
+    MarkerContainer<MarkerType> filter(const QString &field);
+
+    /// length of the array
     inline int length() { return data.length(); }
+
+    /// checks if array is empty
     inline int isEmpty() { return data.isEmpty(); }
+
+    /// clear and delete data
     void clear();
 
 private:

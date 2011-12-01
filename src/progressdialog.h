@@ -25,11 +25,11 @@
 //class Solution;
 class Linearizer;
 class Vectorizer;
+
 namespace Hermes{
 namespace Hermes2D{
 namespace Views{
 class Orderizer;
-
 }
 }
 }

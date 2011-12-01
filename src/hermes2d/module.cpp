@@ -20,8 +20,6 @@
 #include "module.h"
 #include "module_agros.h"
 
-#include "dialog.h"
-
 #include "weakform_factory.h"
 
 #include "progressdialog.h"
