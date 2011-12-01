@@ -29,9 +29,6 @@ void MarkerContainer<MarkerType>::add(MarkerType *marker)
     data.append(marker);
 }
 
-template void MarkerContainer<SceneBoundary>::add(SceneBoundary *marker);
-template void MarkerContainer<SceneMaterial>::add(SceneMaterial *marker);
-
 template <typename MarkerType>
 void MarkerContainer<MarkerType>::remove(MarkerType *marker)
 {
@@ -40,17 +37,11 @@ void MarkerContainer<MarkerType>::remove(MarkerType *marker)
     data.removeOne(marker);
 }
 
-template void MarkerContainer<SceneBoundary>::remove(SceneBoundary *marker);
-template void MarkerContainer<SceneMaterial>::remove(SceneMaterial *marker);
-
 template <typename MarkerType>
 MarkerType *MarkerContainer<MarkerType>::at(int i)
 {
     return data.at(i);
 }
-
-template SceneBoundary *MarkerContainer<SceneBoundary>::at(int i);
-template SceneMaterial *MarkerContainer<SceneMaterial>::at(int i);
 
 template <typename MarkerType>
 MarkerType* MarkerContainer<MarkerType>::get(const QString &name)
@@ -64,9 +55,6 @@ MarkerType* MarkerContainer<MarkerType>::get(const QString &name)
     return NULL;
 }
 
-template SceneBoundary* MarkerContainer<SceneBoundary>::get(const QString &name);
-template SceneMaterial* MarkerContainer<SceneMaterial>::get(const QString &name);
-
 template <typename MarkerType>
 MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(const QString &field)
 {
@@ -78,9 +66,6 @@ MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(const QString &f
     return items;
 }
 
-template MarkerContainer<SceneBoundary> MarkerContainer<SceneBoundary>::filter(const QString &field);
-template MarkerContainer<SceneMaterial> MarkerContainer<SceneMaterial>::filter(const QString &field);
-
 template <typename MarkerType>
 void MarkerContainer<MarkerType>::clear()
 {
@@ -90,5 +75,14 @@ void MarkerContainer<MarkerType>::clear()
     data.clear();
 }
 
-template void MarkerContainer<SceneBoundary>::clear();
-template void MarkerContainer<SceneMaterial>::clear();
+template <typename MarkerType>
+void UniqueMarkerContainer<MarkerType>::add(MarkerType *marker)
+{
+    assert(0); //TODO
+}
+
+template class MarkerContainer<SceneBoundary>;
+template class MarkerContainer<SceneMaterial>;
+
+template class UniqueMarkerContainer<SceneBoundary>;
+template class UniqueMarkerContainer<SceneMaterial>;

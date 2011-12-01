@@ -29,6 +29,7 @@ struct Point;
 
 class SceneBasic;
 template <typename MarkerType> class MarkedSceneBasic;
+template <typename MarkerType> class UniqueMarkerContainer;
 class SceneNode;
 class SceneEdge;
 class SceneLabel;
@@ -71,10 +72,7 @@ public:
     inline int isEmpty() { return data.isEmpty(); }
     void clear();
 
-    QList<BasicType*> selected();
-    QList<BasicType*> highlited();
-
-private:
+protected:
     QList<BasicType*> data;
 };
 
@@ -99,17 +97,34 @@ class SceneNodeContainer : public SceneBasicContainer<SceneNode>
 
 // *************************************************************************************************************************************
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//TODO zamyslet se nad porovnavanim markeru
+//TODO opravdu chci porovnavat ukazatele?
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 template <typename MarkerType>
 class MarkedSceneBasic : public SceneBasic
 {
 public:
-    MarkerType *marker;
+    UniqueMarkerContainer<MarkerType> *markers;
+    //MarkerType *marker;
 };
 
-template <typename MarkerType>
-class MarkedSceneBasicContainer : public SceneBasicContainer<MarkerType>
-{
 
+template <typename MarkerType, typename MarkedSceneBasicType>
+class MarkedSceneBasicContainer : public SceneBasicContainer<MarkedSceneBasicType>
+{
+public:
+    UniqueMarkerContainer<MarkerType> allMarkers();
+    void removeMarkerFromAll(MarkerType* marker);
+    void addMarkerToAll(MarkerType* marker);
+
+    //TODO unfortunately, those had to be moved here from SceneBasicContainer
+    //TODO if they returned SceneBasicContainer, One would have to cast to use methods of this class to return value...
+    //TODO it might be possible to do it differently...
+    MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> selected();
+    MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> highlited();
 };
 
 class SceneEdge : public MarkedSceneBasic<SceneBoundary>
@@ -120,7 +135,7 @@ public:
     double angle;
     int refineTowardsEdge;
 
-    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *marker, double angle, int refineTowardsEdge);
+    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int refineTowardsEdge);
 
     Point center() const;
     double radius() const;
@@ -132,9 +147,10 @@ public:
     int showDialog(QWidget *parent, bool isNew = false);
 };
 
-class SceneEdgeContainer : public MarkedSceneBasicContainer<SceneEdge>
+class SceneEdgeContainer : public MarkedSceneBasicContainer<SceneBoundary, SceneEdge>
 {
-
+public:
+    void removeConnectedToNode(SceneNode* node);
 };
 
 // *************************************************************************************************************************************
@@ -146,14 +162,14 @@ public:
     double area;
     int polynomialOrder;
 
-    SceneLabel(const Point &point, SceneMaterial *marker, double area, int polynomialOrder);
+    SceneLabel(const Point &point, double area, int polynomialOrder);
 
     double distance(const Point &point) const;
 
     int showDialog(QWidget *parent, bool isNew = false);
 };
 
-class SceneLabelContainer : public MarkedSceneBasicContainer<SceneLabel>
+class SceneLabelContainer : public MarkedSceneBasicContainer<SceneMaterial, SceneLabel>
 {
 
 };

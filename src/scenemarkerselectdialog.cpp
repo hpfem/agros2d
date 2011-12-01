@@ -97,47 +97,48 @@ void SceneMarkerSelectDialog::createControls()
 
 void SceneMarkerSelectDialog::doAccept()
 {
-    logMessage("SceneMarkerSelectDialog::doAccept()");
+    assert(0); //TODO
+//    logMessage("SceneMarkerSelectDialog::doAccept()");
 
-    if (tabWidget->currentWidget() == widSurface)
-    {
-        Util::scene()->selectNone();
-        m_sceneView->actSceneModePostprocessor->trigger();
-        m_sceneView->actPostprocessorModeSurfaceIntegral->trigger();
-        for (int i = 0; i < lstSurface->count(); i++)
-        {
-            if (lstSurface->item(i)->checkState() == Qt::Checked)
-            {
-                for (int j = 0; j < Util::scene()->edges->length(); j++)
-                {
-                    if (Util::scene()->edges->at(j)->marker == Util::scene()->boundaries->items().at(i+1))
-                        Util::scene()->edges->at(j)->isSelected = true;
-                }
-            }
-        }
-        m_sceneView->doInvalidated();
-    }
+//    if (tabWidget->currentWidget() == widSurface)
+//    {
+//        Util::scene()->selectNone();
+//        m_sceneView->actSceneModePostprocessor->trigger();
+//        m_sceneView->actPostprocessorModeSurfaceIntegral->trigger();
+//        for (int i = 0; i < lstSurface->count(); i++)
+//        {
+//            if (lstSurface->item(i)->checkState() == Qt::Checked)
+//            {
+//                for (int j = 0; j < Util::scene()->edges->length(); j++)
+//                {
+//                    if (Util::scene()->edges->at(j)->marker == Util::scene()->boundaries->items().at(i+1))
+//                        Util::scene()->edges->at(j)->isSelected = true;
+//                }
+//            }
+//        }
+//        m_sceneView->doInvalidated();
+//    }
 
-    if (tabWidget->currentWidget() == widVolume)
-    {
-        Util::scene()->selectNone();
-        m_sceneView->actSceneModePostprocessor->trigger();
-        m_sceneView->actPostprocessorModeVolumeIntegral->trigger();
-        for (int i = 0; i < lstVolume->count(); i++)
-        {
-            if (lstVolume->item(i)->checkState() == Qt::Checked)
-            {
-                for (int j = 0; j < Util::scene()->labels->length(); j++)
-                {
-                    if (Util::scene()->labels->at(j)->marker == Util::scene()->materials->items().at(i+1))
-                        Util::scene()->labels->at(j)->isSelected = true;
-                }
-            }
-        }
-        m_sceneView->doInvalidated();
-    }
+//    if (tabWidget->currentWidget() == widVolume)
+//    {
+//        Util::scene()->selectNone();
+//        m_sceneView->actSceneModePostprocessor->trigger();
+//        m_sceneView->actPostprocessorModeVolumeIntegral->trigger();
+//        for (int i = 0; i < lstVolume->count(); i++)
+//        {
+//            if (lstVolume->item(i)->checkState() == Qt::Checked)
+//            {
+//                for (int j = 0; j < Util::scene()->labels->length(); j++)
+//                {
+//                    if (Util::scene()->labels->at(j)->marker == Util::scene()->materials->items().at(i+1))
+//                        Util::scene()->labels->at(j)->isSelected = true;
+//                }
+//            }
+//        }
+//        m_sceneView->doInvalidated();
+//    }
 
-    accept();
+//    accept();
 }
 
 void SceneMarkerSelectDialog::doReject()

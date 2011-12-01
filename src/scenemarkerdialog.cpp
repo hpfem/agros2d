@@ -670,21 +670,26 @@ SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(
     // select marker
     cmbBoundary->setCurrentIndex(-1);
     SceneBoundary *boundary = NULL;
-    foreach (SceneEdge *edge, Util::scene()->edges->items())
-    {
-        if (edge->isSelected)
-        {
-            if (!boundary)
-            {
-                boundary = edge->marker;
-            }
-            if (boundary != edge->marker)
-            {
-                boundary = NULL;
-                break;
-            }
-        }
-    }
+//    foreach (SceneEdge *edge, Util::scene()->edges->items())
+//    {
+//        if (edge->isSelected)
+//        {
+//            if (!boundary)
+//            {
+//                boundary = edge->marker;
+//            }
+//            if (boundary != edge->marker)
+//            {
+//                boundary = NULL;
+//                break;
+//            }
+//        }
+//    }
+
+    MarkerContainer<SceneBoundary> bds = Util::scene()->edges->selected().allMarkers();
+    if(bds.length() == 1)
+        boundary = bds.at(0);
+
     if (boundary)
         cmbBoundary->setCurrentIndex(cmbBoundary->findData(boundary->variant()));
     
@@ -713,11 +718,7 @@ void SceneBoundarySelectDialog::doAccept()
     
     if (boundary())
     {
-        for (int i = 0; i<Util::scene()->edges->length(); i++)
-        {
-            if (Util::scene()->edges->at(i)->isSelected)
-                Util::scene()->edges->at(i)->marker = boundary();
-        }
+        Util::scene()->edges->selected().addMarkerToAll(boundary());
     }
     accept();
 }
@@ -742,24 +743,14 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
     
     // select marker
     cmbMaterial->setCurrentIndex(-1);
-    SceneMaterial *marker = NULL;
-    for (int i = 0; i<Util::scene()->labels->length(); i++)
-    {
-        if (Util::scene()->labels->at(i)->isSelected)
-        {
-            if (!marker)
-            {
-                marker = Util::scene()->labels->at(i)->marker;
-            }
-            if (marker != Util::scene()->labels->at(i)->marker)
-            {
-                marker = NULL;
-                break;
-            }
-        }
-    }
-    if (marker)
-        cmbMaterial->setCurrentIndex(cmbMaterial->findData(marker->variant()));
+
+    SceneMaterial *material = NULL;
+    MarkerContainer<SceneMaterial> mats = Util::scene()->labels->selected().allMarkers();
+    if(mats.length() == 1)
+        material = mats.at(0);
+
+    if (material)
+        cmbMaterial->setCurrentIndex(cmbMaterial->findData(material->variant()));
     
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -786,11 +777,7 @@ void SceneMaterialSelectDialog::doAccept()
     
     if (marker())
     {
-        for (int i = 0; i<Util::scene()->labels->length(); i++)
-        {
-            if (Util::scene()->labels->at(i)->isSelected)
-                Util::scene()->labels->at(i)->marker = marker();
-        }
+        Util::scene()->labels->selected().addMarkerToAll(marker());
     }
     accept();
 }
