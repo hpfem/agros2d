@@ -47,11 +47,11 @@ void SceneBasicSelectDialog::createControls()
 
     // edge
     lstEdges = new QListWidget(this);
-    for (int i = 1; i < Util::scene()->edges->all().count(); i++)
+    for (int i = 1; i < Util::scene()->edges->length(); i++)
     {
         QListWidgetItem *item = new QListWidgetItem(lstEdges);
         item->setText(QString::number(i)); // Util::scene()->edges[i]->
-        if (Util::scene()->edges->all()[i]->isSelected)
+        if (Util::scene()->edges->at(i)->isSelected)
             item->setCheckState(Qt::Checked);
         else
             item->setCheckState(Qt::Unchecked);
@@ -87,7 +87,7 @@ void SceneBasicSelectDialog::doAccept()
     Util::scene()->selectNone();
     for (int i = 0; i < lstEdges->count(); i++)
     {
-        Util::scene()->edges->all()[i]->isSelected = (lstEdges->item(i)->checkState() == Qt::Checked);
+        Util::scene()->edges->at(i)->isSelected = (lstEdges->item(i)->checkState() == Qt::Checked);
     }
     m_sceneView->doInvalidated();
     accept();

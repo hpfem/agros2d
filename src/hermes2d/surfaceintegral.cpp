@@ -106,9 +106,9 @@ void SurfaceIntegralValue::calculate()
     }
 
     Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
-    for (int i = 0; i<Util::scene()->edges->all().length(); i++)
+    for (int i = 0; i<Util::scene()->edges->length(); i++)
     {
-        SceneEdge *sceneEdge = Util::scene()->edges->all()[i];
+        SceneEdge *sceneEdge = Util::scene()->edges->at(i);
         if (sceneEdge->isSelected)
         {
             for_all_active_elements(e, mesh)
@@ -161,7 +161,7 @@ void SurfaceIntegralValue::calculate()
                         double *x = ru->get_phys_x(eo);
                         double *y = ru->get_phys_y(eo);
 
-                        SceneMaterial *material = Util::scene()->labels->all()[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str())]->marker;
+                        SceneMaterial *material = Util::scene()->labels->at(atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()))->marker;
                         parser->initParserMaterialVariables();
                         // FIXME
                         parser->setParserVariables(material, NULL,

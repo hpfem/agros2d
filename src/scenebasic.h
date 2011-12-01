@@ -60,9 +60,16 @@ template <typename BasicType>
 class SceneBasicContainer
 {
 public:
-    /// all() should be removed step by step from the code.
+    /// items() should be removed step by step from the code.
     /// more methods operating with list data should be defined here
-    QList<BasicType*> all() { return data; }
+    QList<BasicType*> items() { return data; }
+
+    bool add(BasicType *item);
+    bool remove(BasicType *item);
+    BasicType *at(int i);
+    inline int length() { return data.length(); }
+    inline int isEmpty() { return data.isEmpty(); }
+    void clear();
 
     QList<BasicType*> selected();
     QList<BasicType*> highlited();

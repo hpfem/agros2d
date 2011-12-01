@@ -22,6 +22,7 @@
 #include "gui.h"
 
 #include "scene.h"
+#include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
 SceneBasic::SceneBasic()
@@ -188,8 +189,9 @@ template <typename BasicType>
 QList<BasicType*> SceneBasicContainer<BasicType>::selected()
 {
     QList<BasicType*> list;
-    foreach(BasicType* item, list){
-        if(item->isSelected)
+    foreach (BasicType* item, list)
+    {
+        if (item->isSelected)
             list.push_back(item);
     }
 
@@ -200,14 +202,60 @@ template <typename BasicType>
 QList<BasicType*> SceneBasicContainer<BasicType>::highlited()
 {
     QList<BasicType*> list;
-    foreach(BasicType* item, list){
-        if(item->isHighlited)
+    foreach (BasicType* item, list)
+    {
+        if (item->isHighlited)
             list.push_back(item);
     }
 
     return list;
 }
 
+template <typename BasicType>
+bool SceneBasicContainer<BasicType>::add(BasicType *item)
+{
+    //TODO add check
+    data.append(item);
+
+    return true;
+}
+
+template bool SceneBasicContainer<SceneNode>::add(SceneNode *item);
+template bool SceneBasicContainer<SceneEdge>::add(SceneEdge *item);
+template bool SceneBasicContainer<SceneLabel>::add(SceneLabel *item);
+
+template <typename BasicType>
+bool SceneBasicContainer<BasicType>::remove(BasicType *item)
+{
+    return data.removeOne(item);
+}
+
+template bool SceneBasicContainer<SceneNode>::remove(SceneNode *item);
+template bool SceneBasicContainer<SceneEdge>::remove(SceneEdge *item);
+template bool SceneBasicContainer<SceneLabel>::remove(SceneLabel *item);
+
+template <typename BasicType>
+BasicType *SceneBasicContainer<BasicType>::at(int i)
+{
+    return data.at(i);
+}
+
+template SceneNode *SceneBasicContainer<SceneNode>::at(int i);
+template SceneEdge *SceneBasicContainer<SceneEdge>::at(int i);
+template SceneLabel *SceneBasicContainer<SceneLabel>::at(int i);
+
+template <typename BasicType>
+void SceneBasicContainer<BasicType>::clear()
+{
+    foreach (BasicType* item, data)
+        delete item;
+
+    data.clear();
+}
+
+template void SceneBasicContainer<SceneNode>::clear();
+template void SceneBasicContainer<SceneEdge>::clear();
+template void SceneBasicContainer<SceneLabel>::clear();
 
 // *************************************************************************************************************************************
 // *************************************************************************************************************************************
@@ -463,26 +511,25 @@ void SceneEdgeDialog::fillComboBox()
     // start and end nodes
     cmbNodeStart->clear();
     cmbNodeEnd->clear();
-    for (int i = 0; i<Util::scene()->nodes->all().count(); i++)
+    for (int i = 0; i<Util::scene()->nodes->length(); i++)
     {
         cmbNodeStart->addItem(QString("%1 - [%2; %3]").
                               arg(i).
-                              arg(Util::scene()->nodes->all()[i]->point.x, 0, 'e', 2).
-                              arg(Util::scene()->nodes->all()[i]->point.y, 0, 'e', 2),
-                              Util::scene()->nodes->all()[i]->variant());
+                              arg(Util::scene()->nodes->at(i)->point.x, 0, 'e', 2).
+                              arg(Util::scene()->nodes->at(i)->point.y, 0, 'e', 2),
+                              Util::scene()->nodes->at(i)->variant());
         cmbNodeEnd->addItem(QString("%1 - [%2; %3]").
                             arg(i).
-                            arg(Util::scene()->nodes->all()[i]->point.x, 0, 'e', 2).
-                            arg(Util::scene()->nodes->all()[i]->point.y, 0, 'e', 2),
-                            Util::scene()->nodes->all()[i]->variant());
+                            arg(Util::scene()->nodes->at(i)->point.x, 0, 'e', 2).
+                            arg(Util::scene()->nodes->at(i)->point.y, 0, 'e', 2),
+                            Util::scene()->nodes->at(i)->variant());
     }
 
     // markers
     cmbBoundary->clear();
-    for (int i = 0; i<Util::scene()->boundaries.count(); i++)
-    {
-        cmbBoundary->addItem(QString::fromStdString(Util::scene()->boundaries[i]->getName()), Util::scene()->boundaries[i]->variant());
-    }
+    foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
+        cmbBoundary->addItem(QString::fromStdString(boundary->getName()),
+                             boundary->variant());
 }
 
 bool SceneEdgeDialog::load()
@@ -584,7 +631,7 @@ void SceneEdgeDialog::doNodeChanged()
         else
         {
             // arc
-            SceneEdge edge(nodeStart, nodeEnd, Util::scene()->boundaries[0], txtAngle->number(), 0);
+            SceneEdge edge(nodeStart, nodeEnd, Util::scene()->boundaries->get("none"), txtAngle->number(), 0); //TODO - do it better
             lblLength->setText(QString("%1 m").arg(edge.radius() * edge.angle / 180.0 * M_PI));
         }
     }
@@ -695,11 +742,9 @@ void SceneLabelDialog::fillComboBox()
 
     // markers
     cmbMaterial->clear();
-    for (int i = 0; i<Util::scene()->materials.count(); i++)
-    {
-        cmbMaterial->addItem(QString::fromStdString(Util::scene()->materials[i]->getName()),
-                             Util::scene()->materials[i]->variant());
-    }
+    foreach (SceneMaterial *material, Util::scene()->materials->items())
+        cmbMaterial->addItem(QString::fromStdString(material->getName()),
+                             material->variant());    
 }
 
 bool SceneLabelDialog::load()
@@ -816,7 +861,7 @@ void SceneNodeCommandAdd::undo()
     SceneNode *node = Util::scene()->getNode(m_point);
     if (node)
     {
-        Util::scene()->removeNode(node);
+        Util::scene()->nodes->remove(node);
     }
 }
 
@@ -848,7 +893,7 @@ void SceneNodeCommandRemove::redo()
     SceneNode *node = Util::scene()->getNode(m_point);
     if (node)
     {
-        Util::scene()->removeNode(node);
+        Util::scene()->nodes->remove(node);
     }
 }
 
@@ -900,7 +945,7 @@ void SceneLabelCommandAdd::undo()
 {
     logMessage("SceneLabelCommandAdd::undo()");
 
-    Util::scene()->removeLabel(Util::scene()->getLabel(m_point));
+    Util::scene()->labels->remove(Util::scene()->getLabel(m_point));
 }
 
 void SceneLabelCommandAdd::redo()
@@ -908,7 +953,7 @@ void SceneLabelCommandAdd::redo()
     logMessage("SceneLabelCommandAdd::redo()");
 
     SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
-    if (material == NULL) material = Util::scene()->materials[0];
+    if (material == NULL) material = Util::scene()->materials->get("none"); //TODO - do it better
     Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
 }
 
@@ -927,7 +972,7 @@ void SceneLabelCommandRemove::undo()
     logMessage("SceneLabelCommandRemove::undo()");
 
     SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
-    if (material == NULL) material = Util::scene()->materials[0];
+    if (material == NULL) material = Util::scene()->materials->get("none"); //TODO - do it better
     Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
 }
 
@@ -935,7 +980,7 @@ void SceneLabelCommandRemove::redo()
 {
     logMessage("SceneLabelCommandRemove::redo()");
 
-    Util::scene()->removeLabel(Util::scene()->getLabel(m_point));
+    Util::scene()->labels->remove(Util::scene()->getLabel(m_point));
 }
 
 SceneLabelCommandEdit::SceneLabelCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
@@ -988,7 +1033,7 @@ void SceneEdgeCommandAdd::undo()
 {
     logMessage("SceneEdgeCommandAdd::undo()");
 
-    Util::scene()->removeEdge(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
+    Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
 }
 
 void SceneEdgeCommandAdd::redo()
@@ -996,7 +1041,7 @@ void SceneEdgeCommandAdd::redo()
     logMessage("SceneEdgeCommandAdd::redo()");
 
     SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
-    if (boundary == NULL) boundary = Util::scene()->boundaries[0];
+    if (boundary == NULL) boundary = Util::scene()->boundaries->get("none"); //TODO - do it better
     Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
                                          Util::scene()->addNode(new SceneNode(m_pointEnd)),
                                          boundary,
@@ -1021,7 +1066,7 @@ void SceneEdgeCommandRemove::undo()
     logMessage("SceneEdgeCommandRemove::undo()");
 
     SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
-    if (boundary == NULL) boundary = Util::scene()->boundaries[0];
+    if (boundary == NULL) boundary = Util::scene()->boundaries->get("none"); //TODO - do it better
     Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
                                          Util::scene()->addNode(new SceneNode(m_pointEnd)),
                                          boundary,
@@ -1033,7 +1078,7 @@ void SceneEdgeCommandRemove::redo()
 {
     logMessage("SceneEdgeCommandRemove::redo()");
 
-    Util::scene()->removeEdge(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
+    Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
 }
 
 SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,

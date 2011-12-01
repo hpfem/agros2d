@@ -34,7 +34,6 @@ class ProblemDialog: public QDialog
     Q_OBJECT
 public:
     ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidget *parent = 0);
-    ~ProblemDialog();
 
     int showDialog();
 

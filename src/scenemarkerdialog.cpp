@@ -246,7 +246,7 @@ bool SceneBoundaryDialog::save()
     logMessage("SceneBoundaryDialog::save()");
     
     // find name duplicities
-    foreach (SceneBoundary *boundary, Util::scene()->boundaries)
+    foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
     {
         if (QString::fromStdString(boundary->getName()) == txtName->text())
         {
@@ -375,7 +375,7 @@ bool SceneMaterialDialog::save()
     logMessage("DSceneMaterial::save()");
     
     // find name duplicities
-    foreach (SceneMaterial *material, Util::scene()->materials)
+    foreach (SceneMaterial *material, Util::scene()->materials->items())
     {
         if (material->getName() == txtName->text().toStdString())
         {
@@ -476,10 +476,10 @@ void SceneBoundarySelectDialog::doAccept()
     
     if (boundary())
     {
-        for (int i = 0; i<Util::scene()->edges->all().count(); i++)
+        for (int i = 0; i<Util::scene()->edges->length(); i++)
         {
-            if (Util::scene()->edges->all()[i]->isSelected)
-                Util::scene()->edges->all()[i]->marker = boundary();
+            if (Util::scene()->edges->at(i)->isSelected)
+                Util::scene()->edges->at(i)->marker = boundary();
         }
     }
     accept();
@@ -497,24 +497,24 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
     
     // fill combo
     cmbMaterial = new QComboBox(this);
-    for (int i = 0; i<Util::scene()->materials.count(); i++)
+    foreach (SceneMaterial *material, Util::scene()->materials->items())
     {
-        cmbMaterial->addItem(QString::fromStdString(Util::scene()->materials[i]->getName()),
-                             Util::scene()->materials[i]->variant());
+        cmbMaterial->addItem(QString::fromStdString(material->getName()),
+                             material->variant());
     }
     
     // select marker
     cmbMaterial->setCurrentIndex(-1);
     SceneMaterial *marker = NULL;
-    for (int i = 0; i<Util::scene()->labels->all().count(); i++)
+    for (int i = 0; i<Util::scene()->labels->length(); i++)
     {
-        if (Util::scene()->labels->all()[i]->isSelected)
+        if (Util::scene()->labels->at(i)->isSelected)
         {
             if (!marker)
             {
-                marker = Util::scene()->labels->all()[i]->marker;
+                marker = Util::scene()->labels->at(i)->marker;
             }
-            if (marker != Util::scene()->labels->all()[i]->marker)
+            if (marker != Util::scene()->labels->at(i)->marker)
             {
                 marker = NULL;
                 break;
@@ -549,10 +549,10 @@ void SceneMaterialSelectDialog::doAccept()
     
     if (marker())
     {
-        for (int i = 0; i<Util::scene()->labels->all().count(); i++)
+        for (int i = 0; i<Util::scene()->labels->length(); i++)
         {
-            if (Util::scene()->labels->all()[i]->isSelected)
-                Util::scene()->labels->all()[i]->marker = marker();
+            if (Util::scene()->labels->at(i)->isSelected)
+                Util::scene()->labels->at(i)->marker = marker();
         }
     }
     accept();

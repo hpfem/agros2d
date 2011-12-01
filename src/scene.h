@@ -181,11 +181,8 @@ public:
     SceneEdgeContainer* edges;
     SceneLabelContainer* labels;
 
-    SceneBoundaryContainer *boundaries2;
-    SceneMaterialContainer *materials2;
-
-    QList<SceneBoundary *> boundaries;
-    QList<SceneMaterial *> materials;
+    SceneBoundaryContainer *boundaries;
+    SceneMaterialContainer *materials;
 
     QAction *actNewNode;
     QAction *actNewEdge;
@@ -200,6 +197,7 @@ public:
     Scene();
     ~Scene();
 
+    // OBSOLETE - DO NOT USE *************************************************************
     SceneNode *addNode(SceneNode *node);
     void removeNode(SceneNode *node);
     SceneNode *getNode(const Point &point);
@@ -221,6 +219,7 @@ public:
     void removeMaterial(SceneMaterial *material);
     void setMaterial(SceneMaterial *material); // set label marker to selected labels
     SceneMaterial *getMaterial(const QString &name);
+    // OBSOLETE - DO NOT USE *************************************************************
 
     void clear();
 
@@ -239,6 +238,7 @@ public:
     inline ProblemInfo *problemInfo() { return m_problemInfo; }
     void setProblemInfo(ProblemInfo *problemInfo) { clear(); delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
 
+    inline QMap<QString, FieldInfo *> fieldInfos() const { return m_fieldInfos; }
     inline FieldInfo *fieldInfo(QString name) { return m_fieldInfos[name]; }
     inline FieldInfo *fieldInfo(std::string name) { return fieldInfo(QString::fromStdString(name)); }
     inline FieldInfo *fieldInfo(const char* name) { return fieldInfo(QString::fromAscii(name)); }

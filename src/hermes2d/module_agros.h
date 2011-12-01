@@ -26,6 +26,8 @@
 
 class SceneBoundary;
 class SceneMaterial;
+class SceneBoundaryContainer;
+class SceneMaterialContainer;
 
 namespace Hermes
 {
@@ -47,6 +49,9 @@ public:
 
     SceneBoundary *newBoundary();
     SceneMaterial *newMaterial();
+
+    SceneBoundaryContainer boundaries();
+    SceneMaterialContainer materials();
 
     void deform_shape(double3* linVert, int count);
     void deform_shape(double4* linVert, int count);

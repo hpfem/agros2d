@@ -24,14 +24,22 @@
 
 class SceneBoundary;
 class SceneMaterial;
+class Marker;
 
 template <typename MarkerType>
 class MarkerContainer
 {
 public:
+    /// items() should be removed step by step from the code.
+    /// more methods operating with list data should be defined here
+    QList<MarkerType*> items() { return data; }
+
     void add(MarkerType *marker);
     void remove(MarkerType *marker);
     MarkerType *get(const QString &name);
+    inline int length() { return data.length(); }
+    inline int isEmpty() { return data.isEmpty(); }
+    void clear();
 
 private:
 

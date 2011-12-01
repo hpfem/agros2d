@@ -182,7 +182,7 @@ Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> SolverAgros<Scalar>::createSpa
 //    {
 //        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
-//        if (boundary && boundary != Util::scene()->boundaries[0])
+//        if (boundary && boundary != Util::scene()->boundaries->get("none")) //TODO - do it better
 //        {
 //            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->getType());
 

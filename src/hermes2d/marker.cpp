@@ -53,11 +53,10 @@ void Marker::evaluate(std::string id, double time)
 }
 
 
-Boundary::Boundary(std::string name, std::string type,
-                   std::map<std::string, Value> values) : Marker()
+Boundary::Boundary(std::string field, std::string name, std::string type,
+                   std::map<std::string, Value> values) : Marker(field, name)
 {
     // name and type
-    setName(name);
     setType(type);
     this->values = values;
 
@@ -78,11 +77,10 @@ Boundary::Boundary(std::string name, std::string type,
 
 
 
-Material::Material(std::string name,
-                   std::map<std::string, Value> values)
+Material::Material(std::string field, std::string name,
+                   std::map<std::string, Value> values) : Marker(field, name)
 {
     // name and type
-    setName(name);
     this->values = values;
 
     // set values

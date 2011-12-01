@@ -101,7 +101,7 @@ void WeakFormAgros<Scalar>::registerForms()
 //    {
 //        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
-//        if (boundary && boundary != Util::scene()->boundaries[0])
+//        if (boundary && boundary != Util::scene()->boundaries->get("none")) //TODO - do it better
 //        {
 //            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->getBoundary("TODO")->getType());
 

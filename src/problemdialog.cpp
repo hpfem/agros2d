@@ -43,33 +43,6 @@ ProblemDialog::ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidge
     setMaximumSize(sizeHint());
 }
 
-ProblemDialog::~ProblemDialog()
-{
-    logMessage("ProblemDialog::~ProblemDialog()");
-
-    delete txtName;
-    delete cmbProblemType;
-    if (m_isNewProblem) delete cmbPhysicField;
-    delete dtmDate;
-    delete txtNumberOfRefinements;
-    delete txtPolynomialOrder;
-    delete txtAdaptivitySteps;
-    delete txtAdaptivityTolerance;
-    delete cmbAdaptivityType;
-
-    // harmonic
-    delete txtFrequency;
-
-    // transient
-    delete txtTransientTimeStep;
-    delete txtTransientTimeTotal;
-    delete txtTransientInitialCondition;
-    delete lblTransientSteps;
-
-    delete txtStartupScript;
-    delete txtDescription;
-}
-
 int ProblemDialog::showDialog()
 {
     logMessage("ProblemDialog::showDialog()");

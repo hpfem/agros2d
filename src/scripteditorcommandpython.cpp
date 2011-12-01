@@ -264,16 +264,16 @@ void pythonDeleteNode(int index)
 {
     logMessage("pythonDeleteNode()");
 
-    if (index < 0 || index >= Util::scene()->nodes->all().count())
+    if (index < 0 || index >= Util::scene()->nodes->length())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->removeNode(Util::scene()->nodes->all()[index]);
+    Util::scene()->nodes->remove(Util::scene()->nodes->at(index));
 }
 
 void pythonDeleteNodePoint(double x, double y)
 {
     logMessage("pythonDeleteNodePoint()");
 
-    Util::scene()->removeNode(Util::scene()->getNode(Point(x, y)));
+    Util::scene()->nodes->remove(Util::scene()->getNode(Point(x, y)));
 }
 
 // addedge(x1, y1, x2, y2, angle = 0, marker = "none")
@@ -303,16 +303,16 @@ void pythonDeleteEdge(int index)
 {
     logMessage("pythonDeleteEdge()");
 
-    if (index < 0 || index >= Util::scene()->edges->all().count())
+    if (index < 0 || index >= Util::scene()->edges->length())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->removeEdge(Util::scene()->edges->all()[index]);
+    Util::scene()->edges->remove(Util::scene()->edges->at(index));
 }
 
 void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
 {
     logMessage("pythonDeleteEdgePoint()");
 
-    Util::scene()->removeEdge(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
+    Util::scene()->edges->remove(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
 }
 
 // addlabel(x, y, area = 0, marker = "none", polynomialorder = 0)
@@ -334,16 +334,16 @@ void pythonDeleteLabel(int index)
 {
     logMessage("pythonDeleteLabel()");
 
-    if (index < 0 || index >= Util::scene()->labels->all().count())
+    if (index < 0 || index >= Util::scene()->labels->length())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->removeLabel(Util::scene()->labels->all()[index]);
+    Util::scene()->labels->remove(Util::scene()->labels->at(index));
 }
 
 void pythonDeleteLabelPoint(double x, double y)
 {
     logMessage("pythonDeleteLabelPoint()");
 
-    Util::scene()->removeLabel(Util::scene()->getLabel(Point(x, y)));
+    Util::scene()->labels->remove(Util::scene()->getLabel(Point(x, y)));
 }
 
 // addboundary(name, type, value, ...)
@@ -591,13 +591,13 @@ static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
             int index;
             PyArg_Parse(value, "i", &index);
 
-            if ((index >= 0) && index < Util::scene()->nodes->all().count())
+            if ((index >= 0) && index < Util::scene()->nodes->length())
             {
-                Util::scene()->nodes->all()[index]->isSelected = true;
+                Util::scene()->nodes->at(index)->isSelected = true;
             }
             else
             {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->edges->all().count()-1).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString().c_str());
                 return NULL;
             }
         }
@@ -698,13 +698,13 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
             int index;
             PyArg_Parse(value, "i", &index);
 
-            if ((index >= 0) && index < Util::scene()->labels->all().count())
+            if ((index >= 0) && index < Util::scene()->labels->length())
             {
-                Util::scene()->labels->all()[index]->isSelected = true;
+                Util::scene()->labels->at(index)->isSelected = true;
             }
             else
             {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->edges->all().count()-1).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString().c_str());
                 return NULL;
             }
         }
@@ -978,13 +978,13 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
                 int index;
                 PyArg_Parse(value, "i", &index);
 
-                if ((index >= 0) && index < Util::scene()->edges->all().count())
+                if ((index >= 0) && index < Util::scene()->edges->length())
                 {
-                    Util::scene()->edges->all()[index]->isSelected = true;
+                    Util::scene()->edges->at(index)->isSelected = true;
                 }
                 else
                 {
-                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges->all().count()-1).toStdString().c_str());
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString().c_str());
                     return NULL;
                 }
             }
@@ -1036,13 +1036,13 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
                 int index;
                 PyArg_Parse(value, "i", &index);
 
-                if ((index >= 0) && index < Util::scene()->labels->all().count())
+                if ((index >= 0) && index < Util::scene()->labels->length())
                 {
-                    Util::scene()->labels->all()[index]->isSelected = true;
+                    Util::scene()->labels->at(index)->isSelected = true;
                 }
                 else
                 {
-                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels->all().count()-1).toStdString().c_str());
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels->length()-1).toStdString().c_str());
                     return NULL;
                 }
             }

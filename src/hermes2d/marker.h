@@ -67,7 +67,7 @@ protected:
 class Boundary : public Marker
 {
 public:
-    Boundary(std::string name= "", std::string type = "",
+    Boundary(std::string field, std::string name = "", std::string type = "",
              std::map<std::string, Value> values = (std::map<std::string, Value>()));
 
     /// get type
@@ -87,7 +87,7 @@ private:
 class Material : public Marker
 {
 public:
-    Material(std::string name,
+    Material(std::string field, std::string name,
              std::map<std::string, Value> values = (std::map<std::string, Value>()));
 };
 

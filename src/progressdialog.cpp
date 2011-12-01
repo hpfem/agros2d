@@ -23,6 +23,7 @@
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneview.h"
+#include "scenemarker.h"
 #include "scenemarkerdialog.h"
 #include "scenesolution.h"
 #include "hermes2d/module.h"
@@ -205,22 +206,22 @@ bool ProgressItemMesh::writeToTriangle()
     logMessage("ProgressItemMesh::writeToTriangle()");
 
     // basic check
-    if (Util::scene()->nodes->all().count() < 3)
+    if (Util::scene()->nodes->length() < 3)
     {
-        emit message(tr("Invalid number of nodes (%1 < 3)").arg(Util::scene()->nodes->all().count()), true, 0);
+        emit message(tr("Invalid number of nodes (%1 < 3)").arg(Util::scene()->nodes->length()), true, 0);
         return false;
     }
-    if (Util::scene()->edges->all().count() < 3)
+    if (Util::scene()->edges->length() < 3)
     {
-        emit message(tr("Invalid number of edges (%1 < 3)").arg(Util::scene()->edges->all().count()), true, 0);
+        emit message(tr("Invalid number of edges (%1 < 3)").arg(Util::scene()->edges->length()), true, 0);
         return false;
     }
     else
     {
         // at least one boundary condition has to be assigned
         int count = 0;
-        for (int i = 0; i<Util::scene()->edges->all().count(); i++)
-            if (Util::scene()->boundaries.indexOf(Util::scene()->edges->all()[i]->marker) > 0)
+        for (int i = 0; i<Util::scene()->edges->length(); i++)
+            if (Util::scene()->boundaries->items().indexOf(Util::scene()->edges->at(i)->marker) > 0)
                 count++;
 
         if (count == 0)
@@ -229,17 +230,17 @@ bool ProgressItemMesh::writeToTriangle()
             return false;
         }
     }
-    if (Util::scene()->labels->all().count() < 1)
+    if (Util::scene()->labels->length() < 1)
     {
-        emit message(tr("Invalid number of labels (%1 < 1)").arg(Util::scene()->labels->all().count()), true, 0);
+        emit message(tr("Invalid number of labels (%1 < 1)").arg(Util::scene()->labels->length()), true, 0);
         return false;
     }
     else
     {
         // at least one material has to be assigned
         int count = 0;
-        for (int i = 0; i<Util::scene()->labels->all().count(); i++)
-            if (Util::scene()->materials.indexOf(Util::scene()->labels->all()[i]->marker) > 0)
+        for (int i = 0; i<Util::scene()->labels->length(); i++)
+            if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) > 0)
                 count++;
 
         if (count == 0)
@@ -248,14 +249,14 @@ bool ProgressItemMesh::writeToTriangle()
             return false;
         }
     }
-    if (Util::scene()->boundaries.count() < 2) // + none marker
+    if (Util::scene()->boundaries->length() < 2) // + none marker
     {
-        emit message(tr("Invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries.count()), true, 0);
+        emit message(tr("Invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries->length()), true, 0);
         return false;
     }
-    if (Util::scene()->materials.count() < 2) // + none marker
+    if (Util::scene()->materials->length() < 2) // + none marker
     {
-        emit message(tr("Invalid number of materials (%1 < 1)").arg(Util::scene()->materials.count()), true, 0);
+        emit message(tr("Invalid number of materials (%1 < 1)").arg(Util::scene()->materials->length()), true, 0);
         return false;
     }
 
@@ -278,12 +279,12 @@ bool ProgressItemMesh::writeToTriangle()
     // nodes
     QString outNodes;
     int nodesCount = 0;
-    for (int i = 0; i<Util::scene()->nodes->all().count(); i++)
+    for (int i = 0; i<Util::scene()->nodes->length(); i++)
     {
         outNodes += QString("%1  %2  %3  %4\n").
                 arg(i).
-                arg(Util::scene()->nodes->all()[i]->point.x, 0, 'f', 10).
-                arg(Util::scene()->nodes->all()[i]->point.y, 0, 'f', 10).
+                arg(Util::scene()->nodes->at(i)->point.x, 0, 'f', 10).
+                arg(Util::scene()->nodes->at(i)->point.y, 0, 'f', 10).
                 arg(0);
         nodesCount++;
     }
@@ -291,15 +292,15 @@ bool ProgressItemMesh::writeToTriangle()
     // edges
     QString outEdges;
     int edgesCount = 0;
-    for (int i = 0; i<Util::scene()->edges->all().count(); i++)
+    for (int i = 0; i<Util::scene()->edges->length(); i++)
     {
-        if (Util::scene()->edges->all()[i]->angle == 0)
+        if (Util::scene()->edges->at(i)->angle == 0)
         {
             // line
             outEdges += QString("%1  %2  %3  %4\n").
                     arg(edgesCount).
-                    arg(Util::scene()->nodes->all().indexOf(Util::scene()->edges->all()[i]->nodeStart)).
-                    arg(Util::scene()->nodes->all().indexOf(Util::scene()->edges->all()[i]->nodeEnd)).
+                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart)).
+                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd)).
                     arg(i+1);
             edgesCount++;
         }
@@ -307,13 +308,13 @@ bool ProgressItemMesh::writeToTriangle()
         {
             // arc
             // add pseudo nodes
-            Point center = Util::scene()->edges->all()[i]->center();
-            double radius = Util::scene()->edges->all()[i]->radius();
-            double startAngle = atan2(center.y - Util::scene()->edges->all()[i]->nodeStart->point.y,
-                                      center.x - Util::scene()->edges->all()[i]->nodeStart->point.x) - M_PI;
+            Point center = Util::scene()->edges->at(i)->center();
+            double radius = Util::scene()->edges->at(i)->radius();
+            double startAngle = atan2(center.y - Util::scene()->edges->at(i)->nodeStart->point.y,
+                                      center.x - Util::scene()->edges->at(i)->nodeStart->point.x) - M_PI;
 
-            int segments = Util::scene()->edges->all()[i]->segments();
-            double theta = deg2rad(Util::scene()->edges->all()[i]->angle) / double(segments);
+            int segments = Util::scene()->edges->at(i)->segments();
+            double theta = deg2rad(Util::scene()->edges->at(i)->angle) / double(segments);
 
             int nodeStartIndex = 0;
             int nodeEndIndex = 0;
@@ -327,12 +328,12 @@ bool ProgressItemMesh::writeToTriangle()
                 nodeEndIndex = nodesCount+1;
                 if (j == 0)
                 {
-                    nodeStartIndex = Util::scene()->nodes->all().indexOf(Util::scene()->edges->all()[i]->nodeStart);
+                    nodeStartIndex = Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart);
                     nodeEndIndex = nodesCount;
                 }
                 if (j == segments - 1)
                 {
-                    nodeEndIndex = Util::scene()->nodes->all().indexOf(Util::scene()->edges->all()[i]->nodeEnd);
+                    nodeEndIndex = Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd);
                 }
                 if ((j > 0) && (j < segments))
                 {
@@ -356,32 +357,35 @@ bool ProgressItemMesh::writeToTriangle()
 
     // holes
     int holesCount = 0;
-    for (int i = 0; i<Util::scene()->labels->all().count(); i++) if (Util::scene()->materials.indexOf(Util::scene()->labels->all()[i]->marker) == 0) holesCount++;
+    for (int i = 0; i<Util::scene()->labels->length(); i++)
+        if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) == 0)
+            holesCount++;
+
     QString outHoles = QString("%1\n").arg(holesCount);
-    for (int i = 0; i<Util::scene()->labels->all().count(); i++)
+    for (int i = 0; i<Util::scene()->labels->length(); i++)
     {
-        if (Util::scene()->materials.indexOf(Util::scene()->labels->all()[i]->marker) == 0)
+        if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) == 0)
         {
             outHoles += QString("%1  %2  %3\n").
                     arg(i).
-                    arg(Util::scene()->labels->all()[i]->point.x, 0, 'f', 10).
-                    arg(Util::scene()->labels->all()[i]->point.y, 0, 'f', 10);
+                    arg(Util::scene()->labels->at(i)->point.x, 0, 'f', 10).
+                    arg(Util::scene()->labels->at(i)->point.y, 0, 'f', 10);
         }
     }
 
     // labels
     QString outLabels;
     int labelsCount = 0;
-    for(int i = 0; i<Util::scene()->labels->all().count(); i++)
+    for(int i = 0; i<Util::scene()->labels->length(); i++)
     {
-        if (Util::scene()->materials.indexOf(Util::scene()->labels->all()[i]->marker) > 0)
+        if (Util::scene()->materials->items().indexOf(Util::scene()->labels->at(i)->marker) > 0)
         {
             outLabels += QString("%1  %2  %3  %4  %5\n").
                     arg(labelsCount).
-                    arg(Util::scene()->labels->all()[i]->point.x, 0, 'f', 10).
-                    arg(Util::scene()->labels->all()[i]->point.y, 0, 'f', 10).
+                    arg(Util::scene()->labels->at(i)->point.x, 0, 'f', 10).
+                    arg(Util::scene()->labels->at(i)->point.y, 0, 'f', 10).
                     arg(i + 1). // triangle returns zero region number for areas without marker, markers must start from 1
-                    arg(Util::scene()->labels->all()[i]->area);
+                    arg(Util::scene()->labels->at(i)->area);
             labelsCount++;
         }
     }

@@ -69,7 +69,7 @@ namespace Hermes
     /// Returns the total number of nodes stored.
     int HashTable::get_num_nodes() const 
     {
-      return nodes.get_num_items(); 
+      return nodes.get_num_items();
     }
 
     /// Returns the maximum node id number plus one.

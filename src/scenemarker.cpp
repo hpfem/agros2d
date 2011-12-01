@@ -19,6 +19,8 @@
 
 #include "scenemarker.h"
 
+#include "scenemarkerdialog.h"
+
 template <typename MarkerType>
 void MarkerContainer<MarkerType>::add(MarkerType *marker)
 {
@@ -27,24 +29,46 @@ void MarkerContainer<MarkerType>::add(MarkerType *marker)
     data.append(marker);
 }
 
+template void MarkerContainer<SceneBoundary>::add(SceneBoundary *marker);
+template void MarkerContainer<SceneMaterial>::add(SceneMaterial *marker);
+
 template <typename MarkerType>
 void MarkerContainer<MarkerType>::remove(MarkerType *marker)
 {
     logMessage("MarkerContainer::remove()");
 
-    this->data.removeOne(marker);
+    data.removeOne(marker);
 }
+
+template void MarkerContainer<SceneBoundary>::remove(SceneBoundary *marker);
+template void MarkerContainer<SceneMaterial>::remove(SceneMaterial *marker);
 
 template <typename MarkerType>
 MarkerType* MarkerContainer<MarkerType>::get(const QString &name)
 {
     logMessage("MarkerContainer::get()");
 
-    for (int i = 0; i<data.count(); i++)
+    QList<MarkerType *> data;
+    foreach (MarkerType *item, data)
     {
-        if (data[i]->getName() == name.toStdString())
-            return data[i];
+        if (item->getName() == name.toStdString())
+            return item;
     }
+
     return NULL;
 }
 
+template SceneBoundary* MarkerContainer<SceneBoundary>::get(const QString &name);
+template SceneMaterial* MarkerContainer<SceneMaterial>::get(const QString &name);
+
+template <typename MarkerType>
+void MarkerContainer<MarkerType>::clear()
+{
+    foreach (MarkerType* item, data)
+        delete item;
+
+    data.clear();
+}
+
+template void MarkerContainer<SceneBoundary>::clear();
+template void MarkerContainer<SceneMaterial>::clear();

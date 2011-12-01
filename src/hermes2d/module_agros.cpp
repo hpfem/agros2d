@@ -23,6 +23,7 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "scenebasic.h"
+#include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
 void Hermes::Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
@@ -78,6 +79,28 @@ SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
     return new SceneMaterial("TODO", tr("new material").toStdString());
 }
 
+SceneBoundaryContainer Hermes::Module::ModuleAgros::boundaries()
+{
+    SceneBoundaryContainer boundaries;
+    foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
+    {
+        if (boundary->getField() == "TODO")
+            boundaries.add(boundary);
+    }
+    return boundaries;
+}
+
+SceneMaterialContainer Hermes::Module::ModuleAgros::materials()
+{
+    SceneMaterialContainer materials;
+    foreach (SceneMaterial *material, Util::scene()->materials->items())
+    {
+        if (material->getField() == "TODO")
+            materials.add(material);
+    }
+    return materials;
+}
+
 template <class T>
 void deformShapeTemplate(T linVert, int count)
 {
@@ -130,21 +153,15 @@ void Hermes::Module::ModuleAgros::deform_shape(double4* linVert, int count)
 void ModuleMagnetic::update_time_functions(double time)
 {
     // update materials
-    for (int i = 1; i<Util::scene()->materials.count(); i++)
-    {
-        SceneMaterial *material = Util::scene()->materials[i];
+    foreach (SceneMaterial *material, Util::scene()->materials->items())
         material->evaluate("magnetic_current_density_external_real", time);
-    }
 }
 
 void ModuleHeat::update_time_functions(double time)
 {
     // update materials
-    for (int i = 1; i<Util::scene()->materials.count(); i++)
-    {
-        SceneMaterial *material = dynamic_cast<SceneMaterial *>(Util::scene()->materials[i]);
+    foreach (SceneMaterial *material, Util::scene()->materials->items())
         material->evaluate("heat_volume_heat", time);
-    }
 }
 
 // ****************************************************************************************************
