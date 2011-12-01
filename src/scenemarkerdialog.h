@@ -231,8 +231,6 @@ protected:
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
-    QLabel *lblEquation;
-    QLabel *lblEquationImage;
     SceneMaterial *m_material;
 
     QTabWidget* tabModules;

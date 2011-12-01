@@ -554,15 +554,7 @@ void SceneMaterialDialog::createDialog()
     // name
     layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
     layout->addWidget(txtName, 0, 2);
-    
-    // equation
-    layout->addWidget(lblEquation, 1, 0, 1, 2);
-    layout->addWidget(lblEquationImage, 1, 2);
-    readPixmap(lblEquationImage,
-               QString(":/images/equations/%1/%1_%2.png")
-               .arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->id))
-               .arg(analysisTypeToStringKey(Util::scene()->fieldInfo("TODO")->analysisType)));
-    
+        
     // content
     createContent();
     
@@ -576,9 +568,6 @@ void SceneMaterialDialog::createDialog()
 
 void SceneMaterialDialog::createContent()
 {
-    lblEquation->setVisible(false);
-    lblEquationImage->setVisible(false);
-
     tabModules = new QTabWidget(this);
     SceneTabWidgetMaterial *wid = new SceneTabWidgetMaterial(&Util::scene()->fieldInfo("TODO")->module()->material_ui, m_material, this);
     wid->createContent();
@@ -666,58 +655,56 @@ void SceneMaterialDialog::evaluated(bool isError)
 
 SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(parent)
 {
-    assert(0); //TODO
-    //    logMessage("SceneBoundarySelectDialog::SceneBoundarySelectDialog()");
+    logMessage("SceneBoundarySelectDialog::SceneBoundarySelectDialog()");
     
-    //    setWindowTitle(tr("Boundary condition"));
-    //    setWindowIcon(icon("scene-edge"));
-    //    setModal(true);
+    setWindowTitle(tr("Boundary condition"));
+    setWindowIcon(icon("scene-edge"));
+    setModal(true);
     
-    //    // fill combo
-    //    cmbBoundary = new QComboBox(this);
-    //    for (int i = 0; i<Util::scene()->boundaries.count(); i++)
-    //    {
-    //        cmbBoundary->addItem(QString::fromStdString(Util::scene()->boundaries[i]->name), Util::scene()->boundaries[i]->variant());
-    //    }
+    // fill combo
+    cmbBoundary = new QComboBox(this);
+    foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
+        cmbBoundary->addItem(QString::fromStdString(boundary->getName()),
+                             boundary->variant());
+
+    // select marker
+    cmbBoundary->setCurrentIndex(-1);
+    SceneBoundary *boundary = NULL;
+    foreach (SceneEdge *edge, Util::scene()->edges->items())
+    {
+        if (edge->isSelected)
+        {
+            if (!boundary)
+            {
+                boundary = edge->marker;
+            }
+            if (boundary != edge->marker)
+            {
+                boundary = NULL;
+                break;
+            }
+        }
+    }
+    if (boundary)
+        cmbBoundary->setCurrentIndex(cmbBoundary->findData(boundary->variant()));
     
-    //    // select marker
-    //    cmbBoundary->setCurrentIndex(-1);
-    //    SceneBoundary *boundary = NULL;
-    //    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    //    {
-    //        if (Util::scene()->edges[i]->isSelected)
-    //        {
-    //            if (!boundary)
-    //            {
-    //                boundary = Util::scene()->edges[i]->boundary;
-    //            }
-    //            if (boundary != Util::scene()->edges[i]->boundary)
-    //            {
-    //                boundary = NULL;
-    //                break;
-    //            }
-    //        }
-    //    }
-    //    if (boundary)
-    //        cmbBoundary->setCurrentIndex(cmbBoundary->findData(boundary->variant()));
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     
-    //    // dialog buttons
-    //    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    //    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    //    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    QHBoxLayout *layoutBoundary = new QHBoxLayout();
+    layoutBoundary->addWidget(new QLabel(tr("Boundary:")));
+    layoutBoundary->addWidget(cmbBoundary);
     
-    //    QHBoxLayout *layoutBoundary = new QHBoxLayout();
-    //    layoutBoundary->addWidget(new QLabel(tr("Boundary:")));
-    //    layoutBoundary->addWidget(cmbBoundary);
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutBoundary);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
     
-    //    QVBoxLayout *layout = new QVBoxLayout();
-    //    layout->addLayout(layoutBoundary);
-    //    layout->addStretch();
-    //    layout->addWidget(buttonBox);
+    setLayout(layout);
     
-    //    setLayout(layout);
-    
-    //    setMaximumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 void SceneBoundarySelectDialog::doAccept()
