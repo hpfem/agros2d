@@ -812,7 +812,8 @@ void MainWindow::doDocumentNew()
     logMessage("MainWindow::doDocumentNew()");
 
     ProblemInfo *problemInfo = new ProblemInfo();
-    ProblemDialog problemDialog(problemInfo, true, this);
+    ProblemDialog problemDialog(problemInfo, QMap<QString, FieldInfo *>(),
+                                true, this);
     if (problemDialog.showDialog() == QDialog::Accepted)
     {
         Util::scene()->clear();

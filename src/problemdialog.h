@@ -29,38 +29,39 @@ class ScriptEditor;
 class SLineEditDouble;
 class ValueLineEdit;
 
-class ProblemDialog: public QDialog
+class FieldInfo;
+
+class FieldWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidget *parent = 0);
+    FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, QWidget *parent);
 
-    int showDialog();
+    // equation
+    QLabel *equationImage;
 
-private slots:
-    void doPhysicFieldChanged(int index);
-    void doAdaptivityChanged(int index);
-    void doAnalysisTypeChanged(int index);
-    void doLinearityTypeChanged(int index);
-    void doTransientChanged();
-    void doShowEquation();
-    void doAccept();
-    void doReject();
-    void doOpenXML();
+    void createContent();
+
+    void load();
+    bool save();
+
+    void refresh();
 
 private:
-    bool m_isNewProblem;
-    ProblemInfo *m_problemInfo;
+    QString fieldId;
 
-    QLineEdit *txtName;
-    QComboBox *cmbProblemType;
-    QComboBox *cmbPhysicField;
-    QDateTimeEdit *dtmDate;
+    // problem info
+    const ProblemInfo *problemInfo;
+    FieldInfo *fieldInfo;
+
+    // main
+    QComboBox *cmbAnalysisType;
+
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     SLineEditDouble *txtAdaptivityTolerance;
+
     QComboBox *cmbLinearityType;
-    QComboBox *cmbMatrixSolver;
 
     // mesh
     QComboBox *cmbMeshType;
@@ -71,14 +72,59 @@ private:
     QSpinBox *txtNonlinearSteps;
     SLineEditDouble *txtNonlinearTolerance;
 
+    // transient
+    ValueLineEdit *txtTransientInitialCondition;
+
+    // weak forms
+    QComboBox *cmbWeakForms;
+
+    // equation
+    QLabel *lblEquationPixmap;
+
+    void fillComboBox();
+
+private slots:
+    void doAnalysisTypeChanged(int index);
+    void doAdaptivityChanged(int index);
+    void doLinearityTypeChanged(int index);
+    void doShowEquation();
+};
+
+class ProblemDialog: public QDialog
+{
+    Q_OBJECT
+public:
+    ProblemDialog(ProblemInfo *problemInfo,
+                  QMap<QString, FieldInfo *> fieldInfos,
+                  bool isNewProblem, QWidget *parent = 0);
+
+    int showDialog();
+
+private slots:
+    void doPhysicFieldChanged(int index);
+    void doTransientChanged();
+    void doAccept();
+    void doReject();
+    void doOpenXML();
+
+private:
+    bool m_isNewProblem;
+    ProblemInfo *m_problemInfo;
+    QMap<QString, FieldInfo *>  m_fieldInfos;
+
+    QTabWidget *tabFields;
+
+    QLineEdit *txtName;
+    QComboBox *cmbCoordinateType;
+    QDateTimeEdit *dtmDate;
+    QComboBox *cmbMatrixSolver;
+
     // harmonic
     SLineEditDouble *txtFrequency;
 
     // transient
-    QComboBox *cmbAnalysisType;
     ValueLineEdit *txtTransientTimeStep;
     ValueLineEdit *txtTransientTimeTotal;
-    ValueLineEdit *txtTransientInitialCondition;
     QLabel *lblTransientSteps;
 
     // startup script
@@ -86,14 +132,6 @@ private:
 
     // description
     QTextEdit *txtDescription;
-
-    // equation
-    QLabel *lblEquationPixmap;
-
-    // weak forms
-    QComboBox *cmbWeakForms;
-
-    QTabWidget *tabType;
 
     void createControls();
     QWidget *createControlsGeneral();

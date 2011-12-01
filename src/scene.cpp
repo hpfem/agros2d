@@ -1027,7 +1027,7 @@ void Scene::doProblemProperties()
     scalarComp = sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp;
     vector = QString::fromStdString(sceneView()->sceneViewSettings().vectorPhysicFieldVariable);
 
-    ProblemDialog problemDialog(m_problemInfo, false, QApplication::activeWindow());
+    ProblemDialog problemDialog(m_problemInfo, m_fieldInfos, false, QApplication::activeWindow());
     // if (problemDialog.showDialog() == QDialog::Accepted)
 
     problemDialog.showDialog();
