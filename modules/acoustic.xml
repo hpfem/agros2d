@@ -115,7 +115,7 @@
         <localvariables>
             <localvariable id="acoustic_pressure" name="Pressure" type="scalar"
                            shortname="p" shortname_html="&lt;i&gt;p&lt;/i&gt;" shortname_latex="p"
-                           unit="Pa" unit="Pa" unit="Pa">
+                           unit="Pa" unit_html="Pa" unit_latex="Pa">
                 <expression analysistype="harmonic" planar="sqrt(value1^2 + value2^2)"
                                                     axi="sqrt(value1^2 + value2^2)" />
             </localvariable>
@@ -178,13 +178,13 @@
 
         <volumeintegrals>
             <volumeintegral id="acoustic_volume" name="Volume"
-                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;"" shortname_latex="V"
+                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
                             unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="2.0 * PI * r" />
             </volumeintegral>
             <volumeintegral id="acoustic_cross_section" name="Cross section"
-                            shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"" shortname_latex="S"
+                            shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
                             unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="1.0" />
@@ -193,13 +193,13 @@
 
         <surfaceintegrals>
             <surfaceintegral id="acoustic_length" name="Length"
-                             shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"" shortname_latex="l"
+                             shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;" shortname_latex="l"
                              unit="m" unit_html="m" unit_latex="m">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="1.0" />
             </surfaceintegral>
             <surfaceintegral id="acoustic_surface" name="Surface"
-                             shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"" shortname_latex="S"
+                             shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
                              unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="2.0 * PI * r" />

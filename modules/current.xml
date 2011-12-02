@@ -114,13 +114,13 @@
 
         <volumeintegrals>
             <volumeintegral id="current_volume" name="Volume"
-                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;"" shortname_latex="V"
+                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
                             unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="2.0 * PI * r" />
             </volumeintegral>
             <volumeintegral id="current_cross_section" name="Cross section"
-                            shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"" shortname_latex="S"
+                            shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
                             unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="1.0" />
@@ -135,19 +135,19 @@
 
         <surfaceintegrals>
             <surfaceintegral id="current_length" name="Length"
-                             shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"" shortname_latex="l"
+                             shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;" shortname_latex="l"
                              unit="m" unit_html="m" unit_latex="m">
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="1.0" />
             </surfaceintegral>
             <surfaceintegral id="current_surface" name="Surface"
-                             shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"" shortname_latex="S"
+                             shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
                              unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="2.0 * PI * r" />
             </surfaceintegral>
             <surfaceintegral id="current_current" name="Current"
-                             shortname="I" shortname_html="&lt;i&gt;I&lt;/i&gt;"" shortname_latex="I"
+                             shortname="I" shortname_html="&lt;i&gt;I&lt;/i&gt;" shortname_latex="I"
                              unit="A" unit_html="A" unit_latex="A">
                 <expression analysistype="steadystate" planar="gamma * (tanx * dy1 - tany * dx1)"
                                                        axi="2.0 * PI * r * gamma * (tanr * dz1 - tanz * dr1)" />
