@@ -23,6 +23,8 @@
 #include "util.h"
 #include "scenebasic.h"
 
+class SceneLabelCommandRemove;
+
 class SceneLabel : public MarkedSceneBasic<SceneMaterial>
 {
 public:
@@ -34,6 +36,8 @@ public:
 
     double distance(const Point &point) const;
 
+    SceneLabelCommandRemove* getRemoveCommand();
+
     int showDialog(QWidget *parent, bool isNew = false);
 };
 
@@ -41,7 +45,8 @@ class SceneLabelContainer : public MarkedSceneBasicContainer<SceneMaterial, Scen
 {
 public:
     /// if container contains the same label, returns it. Otherwise returns NULL
-    SceneLabel* get(SceneLabel* label);
+    SceneLabel* get(SceneLabel* label) const;
+    SceneLabel* get(const Point& point) const;
 
 };
 

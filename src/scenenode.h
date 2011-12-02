@@ -23,26 +23,38 @@
 #include "util.h"
 #include "scenebasic.h"
 
+class SceneNodeCommandRemove;
+
 class SceneNode : public SceneBasic
 {
 public:
-    Point point;
-
     SceneNode(const Point &point);
 
     double distance(const Point &point) const;
 
     int showDialog(QWidget *parent, bool isNew = false);
+
+    SceneNodeCommandRemove* getRemoveCommand();
+
+public: //TODO
+    Point point;
 };
 
 class SceneNodeContainer : public SceneBasicContainer<SceneNode>
 {
 public:
     /// if container contains object with the same coordinates as node, returns it. Otherwise returns NULL
-    SceneNode* get(SceneNode* node);
+    SceneNode* get(SceneNode* node) const;
 
     /// returns node with given coordinates or NULL
-    SceneNode* get(const Point& point);
+    SceneNode* get(const Point& point) const;
+
+    /// returns bounding box, assumes container not empty
+    RectPoint boundingBox() const;
+
+    //TODO should be in SceneBasicContainer, but I would have to cast the result....
+    SceneNodeContainer selected();
+
 };
 
 

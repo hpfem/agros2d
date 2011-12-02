@@ -112,6 +112,11 @@ int SceneEdge::showDialog(QWidget *parent, bool isNew)
     return dialog->exec();
 }
 
+SceneEdgeCommandRemove* SceneEdge::getRemoveCommand()
+{
+    return new SceneEdgeCommandRemove(nodeStart->point, nodeEnd->point, "TODO", angle, refineTowardsEdge);
+}
+
 //************************************************************************************************
 
 void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
@@ -128,9 +133,9 @@ void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
 
 }
 
-SceneEdge* SceneEdgeContainer::get(SceneEdge* edge)
+SceneEdge* SceneEdgeContainer::get(SceneEdge* edge) const
 {
-    foreach (SceneEdge *edgeCheck, this->items())
+    foreach (SceneEdge *edgeCheck, data)
     {
         if (((((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) &&
               (fabs(edgeCheck->angle - edge->angle) < EPS_ZERO)) ||
@@ -144,9 +149,9 @@ SceneEdge* SceneEdgeContainer::get(SceneEdge* edge)
     return NULL;
 }
 
-SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEnd, double angle)
+SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEnd, double angle) const
 {
-    foreach (SceneEdge *edgeCheck, this->items())
+    foreach (SceneEdge *edgeCheck, data)
     {
         if (((edgeCheck->nodeStart->point == pointStart) && (edgeCheck->nodeEnd->point == pointEnd)) && (edgeCheck->angle == angle))
             return edgeCheck;

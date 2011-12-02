@@ -48,11 +48,17 @@ int SceneLabel::showDialog(QWidget *parent, bool isNew)
     return dialog->exec();
 }
 
+SceneLabelCommandRemove* SceneLabel::getRemoveCommand()
+{
+    return new SceneLabelCommandRemove(point, "TODO", area, polynomialOrder);
+}
+
+
 //****************************************************************************************************
 
-SceneLabel* SceneLabelContainer::get(SceneLabel *label)
+SceneLabel* SceneLabelContainer::get(SceneLabel *label) const
 {
-    foreach (SceneLabel *labelCheck, this->items())
+    foreach (SceneLabel *labelCheck, data)
     {
         if (labelCheck->point == label->point)
         {
@@ -63,6 +69,16 @@ SceneLabel* SceneLabelContainer::get(SceneLabel *label)
     return NULL;
 }
 
+SceneLabel* SceneLabelContainer::get(const Point& point) const
+{
+    foreach (SceneLabel *labelCheck, data)
+    {
+        if (labelCheck->point == point)
+            return labelCheck;
+    }
+
+    return NULL;
+}
 
 // *************************************************************************************************************************************
 

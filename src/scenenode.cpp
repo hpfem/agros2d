@@ -31,30 +31,6 @@ SceneNode::SceneNode(const Point &point) : SceneBasic()
     this->point = point;
 }
 
-SceneNode* SceneNodeContainer::get(SceneNode *node)
-{
-    foreach (SceneNode *nodeCheck, this->items())
-    {
-        if (nodeCheck->point == node->point)
-        {
-            return nodeCheck;
-        }
-    }
-
-    return NULL;
-}
-
-SceneNode* SceneNodeContainer::get(const Point &point)
-{
-    foreach (SceneNode *nodeCheck, this->items())
-    {
-        if (nodeCheck->point == point)
-            return nodeCheck;
-    }
-
-    return NULL;
-}
-
 double SceneNode::distance(const Point &point) const
 {
     logMessage("SceneNode::distance()");
@@ -68,6 +44,66 @@ int SceneNode::showDialog(QWidget *parent, bool isNew)
 
     DSceneNode *dialog = new DSceneNode(this, parent, isNew);
     return dialog->exec();
+}
+
+SceneNodeCommandRemove* SceneNode::getRemoveCommand()
+{
+    return new SceneNodeCommandRemove(this->point);
+}
+
+
+// *************************************************************************************************************************************
+
+SceneNode* SceneNodeContainer::get(SceneNode *node) const
+{
+    foreach (SceneNode *nodeCheck, data)
+    {
+        if (nodeCheck->point == node->point)
+        {
+            return nodeCheck;
+        }
+    }
+
+    return NULL;
+}
+
+SceneNode* SceneNodeContainer::get(const Point &point) const
+{
+    foreach (SceneNode *nodeCheck, data)
+    {
+        if (nodeCheck->point == point)
+            return nodeCheck;
+    }
+
+    return NULL;
+}
+
+RectPoint SceneNodeContainer::boundingBox() const
+{
+    Point min( numeric_limits<double>::max(),  numeric_limits<double>::max());
+    Point max(-numeric_limits<double>::max(), -numeric_limits<double>::max());
+
+    foreach (SceneNode *node, data)
+    {
+        min.x = qMin(min.x, node->point.x);
+        max.x = qMax(max.x, node->point.x);
+        min.y = qMin(min.y, node->point.y);
+        max.y = qMax(max.y, node->point.y);
+    }
+
+    return RectPoint(min, max);
+}
+
+SceneNodeContainer SceneNodeContainer::selected()
+{
+    SceneNodeContainer list;
+    foreach (SceneNode* item, this->data)
+    {
+        if (item->isSelected)
+            list.data.push_back(item);
+    }
+
+    return list;
 }
 
 

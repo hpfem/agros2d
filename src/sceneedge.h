@@ -23,6 +23,8 @@
 #include "util.h"
 #include "scenebasic.h"
 
+class SceneEdgeCommandRemove;
+
 class SceneEdge : public MarkedSceneBasic<SceneBoundary>
 {
 public:
@@ -40,6 +42,8 @@ public:
     double length() const;
     bool isStraight() const { return (fabs(angle) < EPS_ZERO); }
 
+    SceneEdgeCommandRemove* getRemoveCommand();
+
     int showDialog(QWidget *parent, bool isNew = false);
 };
 
@@ -51,10 +55,10 @@ public:
     void removeConnectedToNode(SceneNode* node);
 
     /// if container contains the same edge, returns it. Otherwise returns NULL
-    SceneEdge* get(SceneEdge* edge);
+    SceneEdge* get(SceneEdge* edge) const;
 
     /// returns corresponding edge or NULL
-    SceneEdge* get(const Point &pointStart, const Point &pointEnd, double angle);
+    SceneEdge* get(const Point &pointStart, const Point &pointEnd, double angle) const;
 
 };
 

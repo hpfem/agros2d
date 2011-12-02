@@ -52,6 +52,7 @@ public:
 
     SceneBasic();
     void setSelected(bool value = true) { isSelected = value; }
+    void setHighlighted(bool value = true) { isHighlighted = value; }
 
     virtual int showDialog(QWidget *parent, bool isNew = false) = 0;
 
@@ -75,6 +76,11 @@ public:
 
     /// selects or unselects all items
     void setSelected(bool value = true);
+
+    /// highlights or unhighlights all items
+    void setHighlighted(bool value = true);
+
+    void deleteWithUndo(QString message);
 
 protected:
     QList<BasicType*> data;

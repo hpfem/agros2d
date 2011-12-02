@@ -103,6 +103,26 @@ void SceneBasicContainer<BasicType>::setSelected(bool value)
         item->setSelected(value);
 }
 
+template <typename BasicType>
+void SceneBasicContainer<BasicType>::setHighlighted(bool value)
+{
+    foreach (BasicType* item, data)
+        item->setHighlighted(value);
+}
+
+template <typename BasicType>
+void SceneBasicContainer<BasicType>::deleteWithUndo(QString message)
+{
+    foreach (BasicType *node, data)
+    {
+        Util::scene()->undoStack()->beginMacro(message);
+        Util::scene()->undoStack()->push(node->getRemoveCommand());
+        this->remove(node);
+        Util::scene()->undoStack()->endMacro();
+    }
+}
+
+
 template class SceneBasicContainer<SceneNode>;
 template class SceneBasicContainer<SceneEdge>;
 template class SceneBasicContainer<SceneLabel>;
