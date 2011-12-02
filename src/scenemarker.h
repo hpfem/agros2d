@@ -52,6 +52,9 @@ public:
     /// length of the array
     inline int length() { return data.length(); }
 
+    /// if contains exactly one element, return it. Otherwise return NULL
+    MarkerType* getSingleOrNull();
+
     /// checks if array is empty
     inline int isEmpty() { return data.isEmpty(); }
 

@@ -76,6 +76,16 @@ void MarkerContainer<MarkerType>::clear()
 }
 
 template <typename MarkerType>
+MarkerType* MarkerContainer<MarkerType>::getSingleOrNull()
+{
+    if(this->data.size() == 1)
+        return data.at(0);
+    else
+        return NULL;
+}
+
+
+template <typename MarkerType>
 void UniqueMarkerContainer<MarkerType>::add(MarkerType *marker)
 {
     assert(0); //TODO

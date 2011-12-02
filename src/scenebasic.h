@@ -51,6 +51,8 @@ public:
     bool isHighlighted;
 
     SceneBasic();
+    void setSelected(bool value = true) { isSelected = value; }
+    void setHighlighted(bool value = true) { isHighlighted = value; }
 
     virtual int showDialog(QWidget *parent, bool isNew = false) = 0;
 
@@ -72,30 +74,21 @@ public:
     inline int isEmpty() { return data.isEmpty(); }
     void clear();
 
+    /// selects or unselects all items
+    void setSelected(bool value = true);
+
+    /// highlights or unhighlights all items
+    void setHighlighted(bool value = true);
+
+    void deleteWithUndo(QString message);
+
 protected:
     QList<BasicType*> data;
 };
 
 // *************************************************************************************************************************************
 
-class SceneNode : public SceneBasic 
-{
-public:
-    Point point;
 
-    SceneNode(const Point &point);
-
-    double distance(const Point &point) const;
-
-    int showDialog(QWidget *parent, bool isNew = false);
-};
-
-class SceneNodeContainer : public SceneBasicContainer<SceneNode>
-{
-
-};
-
-// *************************************************************************************************************************************
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //TODO zamyslet se nad porovnavanim markeru
@@ -107,8 +100,20 @@ template <typename MarkerType>
 class MarkedSceneBasic : public SceneBasic
 {
 public:
+    MarkedSceneBasic() { markers = new UniqueMarkerContainer<MarkerType>; }
+    ~MarkedSceneBasic() { delete markers; }
+
+    /// gets marker that corresponds to the given field
+    MarkerType* getMarker(QString field);
+
+    /// adds marker. If there exists marker with the same field, is overwritten
+    void addMarker(MarkerType* marker);
+
+    /// true if has given marker
+    bool hasMarker(MarkerType* marker) {return markers->contains(marker); }
+
+public:
     UniqueMarkerContainer<MarkerType> *markers;
-    //MarkerType *marker;
 };
 
 
@@ -120,63 +125,20 @@ public:
     void removeMarkerFromAll(MarkerType* marker);
     void addMarkerToAll(MarkerType* marker);
 
+    /// Filters for elements that has given marker
+    MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> haveMarker(MarkerType *marker);
+
     //TODO unfortunately, those had to be moved here from SceneBasicContainer
     //TODO if they returned SceneBasicContainer, One would have to cast to use methods of this class to return value...
     //TODO it might be possible to do it differently...
+    /// Filters for selected
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> selected();
+
+    /// Filters for highlighted
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> highlited();
 };
 
-class SceneEdge : public MarkedSceneBasic<SceneBoundary>
-{
-public:
-    SceneNode *nodeStart;
-    SceneNode *nodeEnd;
-    double angle;
-    int refineTowardsEdge;
 
-    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int refineTowardsEdge);
-
-    Point center() const;
-    double radius() const;
-    double distance(const Point &point) const;
-    int segments() const; // needed by mesh generator
-    double length() const;
-    bool isStraight() const { return (fabs(angle) < EPS_ZERO); }
-
-    int showDialog(QWidget *parent, bool isNew = false);
-};
-
-class SceneEdgeContainer : public MarkedSceneBasicContainer<SceneBoundary, SceneEdge>
-{
-public:
-    void removeConnectedToNode(SceneNode* node);
-};
-
-// *************************************************************************************************************************************
-
-class SceneLabel : public MarkedSceneBasic<SceneMaterial>
-{
-public:
-    Point point;
-    double area;
-    int polynomialOrder;
-
-    SceneLabel(const Point &point, double area, int polynomialOrder);
-
-    double distance(const Point &point) const;
-
-    int showDialog(QWidget *parent, bool isNew = false);
-};
-
-class SceneLabelContainer : public MarkedSceneBasicContainer<SceneMaterial, SceneLabel>
-{
-
-};
-
-
-
-// *************************************************************************************************************************************
 // *************************************************************************************************************************************
 
 class DSceneBasic: public QDialog
@@ -211,230 +173,5 @@ private slots:
 
 // *************************************************************************************************************************************
 
-class DSceneNode : public DSceneBasic
-{
-    Q_OBJECT
-
-public:
-    DSceneNode(SceneNode *node, QWidget *parent, bool isNew = false);
-    ~DSceneNode();
-
-protected:
-    QLayout *createContent();
-
-    bool load();
-    bool save();
-
-private:
-    ValueLineEdit *txtPointX;
-    ValueLineEdit *txtPointY;
-    QLabel *lblDistance;
-    QLabel *lblAngle;
-
-private slots:
-    void doEditingFinished();
-};
-
-// *************************************************************************************************************************************
-
-class SceneEdgeDialog : public DSceneBasic
-{
-    Q_OBJECT
-
-public:
-    SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew);
-
-protected:
-    QLayout *createContent();
-
-    bool load();
-    bool save();
-
-private:
-    QLabel *lblEquation;
-    QComboBox *cmbNodeStart;
-    QComboBox *cmbNodeEnd;
-    QComboBox *cmbBoundary;
-    QPushButton *btnBoundary;
-    ValueLineEdit *txtAngle;
-    QLabel *lblLength;
-    QCheckBox *chkRefineTowardsEdge;
-    QSpinBox *txtRefineTowardsEdge;
-
-    void fillComboBox();
-
-private slots:
-    void doBoundaryChanged(int index);
-    void doBoundaryClicked();
-    void doNodeChanged();
-    void doRefineTowardsEdge(int state);
-};
-
-// *************************************************************************************************************************************
-
-class SceneLabelDialog : public DSceneBasic
-{
-    Q_OBJECT
-
-public:
-    SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew = false);
-
-protected:
-    QLayout *createContent();
-
-    bool load();
-    bool save();
-
-private:
-    ValueLineEdit *txtPointX;
-    ValueLineEdit *txtPointY;
-    QComboBox *cmbMaterial;
-    QPushButton *btnMaterial;
-    ValueLineEdit *txtArea;
-    QSpinBox *txtPolynomialOrder;
-    QCheckBox *chkArea;
-    QCheckBox *chkPolynomialOrder;
-
-    void fillComboBox();
-
-private slots:
-    void doMaterialChanged(int index);
-    void doMaterialClicked();
-    void doArea(int);
-    void doPolynomialOrder(int);
-};
-
-// undo framework *******************************************************************************************************************
-
-// Node
-
-class SceneNodeCommandAdd : public QUndoCommand
-{
-public:
-    SceneNodeCommandAdd(const Point &point, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
-
-private:
-    Point m_point;
-};
-
-class SceneNodeCommandRemove : public QUndoCommand
-{
-public:
-    SceneNodeCommandRemove(const Point &point, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
-
-private:
-    Point m_point;
-};
-
-class SceneNodeCommandEdit : public QUndoCommand
-{
-public:
-    SceneNodeCommandEdit(const Point &point, const Point &pointNew,  QUndoCommand *parent = 0);
-    void undo();
-    void redo();
-
-private:
-    Point m_point;
-    Point m_pointNew;
-};
-
-// Label
-
-class SceneLabelCommandAdd : public QUndoCommand
-{
-public:
-    SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
-
-private:
-    Point m_point;
-    QString m_markerName;
-    double m_area;
-    int m_polynomialOrder;
-};
-
-class SceneLabelCommandRemove : public QUndoCommand
-{
-public:
-    SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
-
-private:
-    Point m_point;
-    QString m_markerName;
-    double m_area;
-    int m_polynomialOrder;
-};
-
-class SceneLabelCommandEdit : public QUndoCommand
-{
-public:
-    SceneLabelCommandEdit(const Point &point, const Point &pointNew,  QUndoCommand *parent = 0);
-    void undo();
-    void redo();
-
-private:
-    Point m_point;
-    Point m_pointNew;
-};
-
-// Edge
-
-class SceneEdgeCommandAdd : public QUndoCommand
-{
-public:
-    SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QString &markerName,
-                        double angle, int refineTowardsEdge, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
-
-private:
-    Point m_pointStart;
-    Point m_pointEnd;
-    QString m_markerName;
-    double m_angle;
-    int m_refineTowardsEdge;
-};
-
-class SceneEdgeCommandRemove : public QUndoCommand
-{
-public:
-    SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName,
-                           double angle, int refineTowardsEdge, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
-
-private:
-    Point m_pointStart;
-    Point m_pointEnd;
-    QString m_markerName;
-    double m_angle;
-    int m_refineTowardsEdge;
-};
-
-class SceneEdgeCommandEdit : public QUndoCommand
-{
-public:
-    SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,
-                         double angle, double angleNew, int refineTowardsEdge, int refineTowardsEdgeNew, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
-
-private:
-    Point m_pointStart;
-    Point m_pointEnd;
-    Point m_pointStartNew;
-    Point m_pointEndNew;
-    double m_angle;
-    double m_angleNew;
-    int m_refineTowardsEdge;
-    int m_refineTowardsEdgeNew;
-};
 
 #endif // SCENEBASIC_H

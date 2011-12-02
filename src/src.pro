@@ -89,7 +89,10 @@ SOURCES += util.cpp \
     materialbrowserdialog.cpp \
     conf.cpp \
     confdialog.cpp \
-    hermes2d/module_agros.cpp
+    hermes2d/module_agros.cpp \
+    sceneedge.cpp \
+    scenelabel.cpp \
+    scenenode.cpp
 
 HEADERS += util.h \
     value.h \
@@ -140,7 +143,10 @@ HEADERS += util.h \
     conf.h \
     confdialog.h \
     hermes2d/solver.h \
-    hermes2d/module_agros.h
+    hermes2d/module_agros.h \
+    sceneedge.h \
+    scenelabel.h \
+    scenenode.h
 
 INCLUDEPATH += . \
     ../lib \
@@ -256,3 +262,9 @@ win32-msvc2008 {
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
 }
+
+
+
+
+
+

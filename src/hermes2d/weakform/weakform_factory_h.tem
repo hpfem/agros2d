@@ -37,8 +37,7 @@
 #include &lt;rapidxml.cpp&gt;
 #include &lt;rapidxml_utils.cpp&gt;
 
-#include "material.h"
-#include "boundary.h"
+#include "marker.h"
 #include "localpoint.h"
 #include "weakform_parser.h"
 </head>

@@ -22,6 +22,8 @@
 #include "gui.h"
 #include "scene.h"
 #include "scenebasic.h"
+#include "sceneedge.h"
+#include "scenelabel.h"
 #include "sceneview.h"
 #include "hermes2d/module.h"
 
