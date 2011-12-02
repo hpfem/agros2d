@@ -74,6 +74,12 @@ MarkerType* MarkedSceneBasic<MarkerType>::getMarker(QString field)
     return this->markers->filter(field).getSingleOrNull();
 }
 
+template <typename MarkerType>
+void MarkedSceneBasic<MarkerType>::addMarker(MarkerType* marker)
+{
+    this->markers->add(marker);
+}
+
 template class MarkedSceneBasic<SceneBoundary>;
 template class MarkedSceneBasic<SceneMaterial>;
 
@@ -596,67 +602,67 @@ void SceneEdgeDialog::fillComboBox()
 
 bool SceneEdgeDialog::load()
 {
-    assert(0);//TODO
-//    logMessage("DSceneEdge::load()");
+    //assert(0);//TODO
+    logMessage("DSceneEdge::load()");
 
-//    SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
+    SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
-//    cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart->variant()));
-//    cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd->variant()));
-//    cmbBoundary->setCurrentIndex(cmbBoundary->findData(sceneEdge->marker->variant()));
-//    txtAngle->setNumber(sceneEdge->angle);
-//    chkRefineTowardsEdge->setChecked(sceneEdge->refineTowardsEdge > 0.0);
-//    txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
-//    txtRefineTowardsEdge->setValue(sceneEdge->refineTowardsEdge);
+    cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart->variant()));
+    cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd->variant()));
+    cmbBoundary->setCurrentIndex(cmbBoundary->findData(sceneEdge->getMarker("TODO")->variant()));
+    txtAngle->setNumber(sceneEdge->angle);
+    chkRefineTowardsEdge->setChecked(sceneEdge->refineTowardsEdge > 0.0);
+    txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
+    txtRefineTowardsEdge->setValue(sceneEdge->refineTowardsEdge);
 
-//    doNodeChanged();
+    doNodeChanged();
 
-//    return true;
+    return true;
 }
 
 bool SceneEdgeDialog::save()
 {
-    assert(0); //TODO
-//    logMessage("DSceneEdge::save()");
+//    assert(0); //TODO
+    logMessage("DSceneEdge::save()");
 
-//    if (!txtAngle->evaluate(false)) return false;
+    if (!txtAngle->evaluate(false)) return false;
 
-//    SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
+    SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
-//    SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
-//    SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
+    SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
+    SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
 
-//    // check if edge doesn't exists
-//    SceneEdge *edgeCheck = Util::scene()->getEdge(nodeStart->point, nodeEnd->point, txtAngle->number());
-//    if ((edgeCheck) && ((sceneEdge != edgeCheck) || isNew))
-//    {
-//        QMessageBox::warning(this, "Edge", "Edge already exists.");
-//        return false;
-//    }
+    // check if edge doesn't exists
+    SceneEdge *edgeCheck = Util::scene()->getEdge(nodeStart->point, nodeEnd->point, txtAngle->number());
+    if ((edgeCheck) && ((sceneEdge != edgeCheck) || isNew))
+    {
+        QMessageBox::warning(this, "Edge", "Edge already exists.");
+        return false;
+    }
 
-//    if (nodeStart == nodeEnd)
-//    {
-//        QMessageBox::warning(this, "Edge", "Start and end node are same.");
-//        return false;
-//    }
+    if (nodeStart == nodeEnd)
+    {
+        QMessageBox::warning(this, "Edge", "Start and end node are same.");
+        return false;
+    }
 
-//    if (!isNew)
-//    {
-//        if ((sceneEdge->nodeStart != nodeStart) || (sceneEdge->nodeEnd != nodeEnd) || (sceneEdge->angle != txtAngle->number()))
-//        {
-//            Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point, nodeStart->point, nodeEnd->point,
-//                                                                      sceneEdge->angle, txtAngle->number(),
-//                                                                      sceneEdge->refineTowardsEdge, txtRefineTowardsEdge->value()));
-//        }
-//    }
+    if (!isNew)
+    {
+        if ((sceneEdge->nodeStart != nodeStart) || (sceneEdge->nodeEnd != nodeEnd) || (sceneEdge->angle != txtAngle->number()))
+        {
+            Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point, nodeStart->point, nodeEnd->point,
+                                                                      sceneEdge->angle, txtAngle->number(),
+                                                                      sceneEdge->refineTowardsEdge, txtRefineTowardsEdge->value()));
+        }
+    }
 
-//    sceneEdge->nodeStart = nodeStart;
-//    sceneEdge->nodeEnd = nodeEnd;
-//    sceneEdge->marker = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
-//    sceneEdge->angle = txtAngle->number();
-//    sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
+    sceneEdge->nodeStart = nodeStart;
+    sceneEdge->nodeEnd = nodeEnd;
+    sceneEdge->addMarker(cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>());
+    sceneEdge->angle = txtAngle->number();
+    sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
 
-//    return true;
+    return true;
 }
 
 void SceneEdgeDialog::doBoundaryChanged(int index)
@@ -729,75 +735,77 @@ SceneLabelDialog::SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNe
 
 QLayout* SceneLabelDialog::createContent()
 {
-    assert(0); //TODO
-//    logMessage("DSceneLabel::createContent()");
+    logMessage("DSceneLabel::createContent()");
 
-//    txtPointX = new ValueLineEdit();
-//    txtPointY = new ValueLineEdit();
-//    connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-//    connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-//    cmbMaterial = new QComboBox();
-//    connect(cmbMaterial, SIGNAL(currentIndexChanged(int)), this, SLOT(doMaterialChanged(int)));
-//    btnMaterial = new QPushButton(icon("three-dots"), "");
-//    btnMaterial->setMaximumSize(btnMaterial->sizeHint());
-//    connect(btnMaterial, SIGNAL(clicked()), this, SLOT(doMaterialClicked()));
-//    txtArea = new ValueLineEdit();
-//    txtArea->setMinimum(0.0);
-//    connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-//    txtPolynomialOrder = new QSpinBox(this);
-//    txtPolynomialOrder->setMinimum(0);
-//    txtPolynomialOrder->setMaximum(10);
+    txtPointX = new ValueLineEdit();
+    txtPointY = new ValueLineEdit();
+    connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    cmbMaterial = new QComboBox();
+    connect(cmbMaterial, SIGNAL(currentIndexChanged(int)), this, SLOT(doMaterialChanged(int)));
+    btnMaterial = new QPushButton(icon("three-dots"), "");
+    btnMaterial->setMaximumSize(btnMaterial->sizeHint());
+    connect(btnMaterial, SIGNAL(clicked()), this, SLOT(doMaterialClicked()));
+    txtArea = new ValueLineEdit();
+    txtArea->setMinimum(0.0);
+    connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    txtPolynomialOrder = new QSpinBox(this);
+    txtPolynomialOrder->setMinimum(0);
+    txtPolynomialOrder->setMaximum(10);
 
-//    // coordinates must be greater then or equal to 0 (axisymmetric case)
-//    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-//        txtPointX->setMinimum(0.0);
+    // coordinates must be greater then or equal to 0 (axisymmetric case)
+    if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric)
+        txtPointX->setMinimum(0.0);
 
-//    // coordinates
-//    QFormLayout *layoutCoordinates = new QFormLayout();
-//    layoutCoordinates->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
-//    layoutCoordinates->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
+    // coordinates
+    QFormLayout *layoutCoordinates = new QFormLayout();
+    layoutCoordinates->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
+    layoutCoordinates->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
 
-//    QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
-//    grpCoordinates->setLayout(layoutCoordinates);
+    QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
+    grpCoordinates->setLayout(layoutCoordinates);
 
-//    // marker
-//    QHBoxLayout *layoutMaterial = new QHBoxLayout();
-//    layoutMaterial->addWidget(cmbMaterial);
-//    layoutMaterial->addWidget(btnMaterial);
+    // marker
+    QHBoxLayout *layoutMaterial = new QHBoxLayout();
+    layoutMaterial->addWidget(cmbMaterial);
+    layoutMaterial->addWidget(btnMaterial);
 
-//    // order
-//    chkPolynomialOrder = new QCheckBox();
-//    connect(chkPolynomialOrder, SIGNAL(stateChanged(int)), this, SLOT(doPolynomialOrder(int)));
+    // order
+    chkPolynomialOrder = new QCheckBox();
+    connect(chkPolynomialOrder, SIGNAL(stateChanged(int)), this, SLOT(doPolynomialOrder(int)));
 
-//    QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
-//    layoutPolynomialOrder->addWidget(chkPolynomialOrder);
-//    layoutPolynomialOrder->addWidget(txtPolynomialOrder);
-//    layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::scene()->problemInfo()->polynomialOrder)));
+    QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
+    layoutPolynomialOrder->addWidget(chkPolynomialOrder);
+    layoutPolynomialOrder->addWidget(txtPolynomialOrder);
 
-//    // area
-//    chkArea = new QCheckBox();
-//    connect(chkArea, SIGNAL(stateChanged(int)), this, SLOT(doArea(int)));
+    //TODO
+    //layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::scene()->problemInfo()->polynomialOrder)));
+    layoutPolynomialOrder->addWidget(new QLabel(tr("Global order TODO is %1.").arg(1)));
 
-//    QHBoxLayout *layoutArea = new QHBoxLayout();
-//    layoutArea->addWidget(chkArea);
-//    layoutArea->addWidget(txtArea);
+    // area
+    chkArea = new QCheckBox();
+    connect(chkArea, SIGNAL(stateChanged(int)), this, SLOT(doArea(int)));
 
-//    // mesh
-//    QFormLayout *layoutMeshParameters = new QFormLayout();
-//    layoutMeshParameters->addRow(tr("Triangle area (m):"), layoutArea);
-//    layoutMeshParameters->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
+    QHBoxLayout *layoutArea = new QHBoxLayout();
+    layoutArea->addWidget(chkArea);
+    layoutArea->addWidget(txtArea);
 
-//    QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
-//    grpMeshParameters->setLayout(layoutMeshParameters);
+    // mesh
+    QFormLayout *layoutMeshParameters = new QFormLayout();
+    layoutMeshParameters->addRow(tr("Triangle area (m):"), layoutArea);
+    layoutMeshParameters->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
 
-//    QFormLayout *layout = new QFormLayout();
-//    layout->addRow(tr("Material:"), layoutMaterial);
-//    layout->addRow(grpCoordinates);
-//    layout->addRow(grpMeshParameters);
+    QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
+    grpMeshParameters->setLayout(layoutMeshParameters);
 
-//    fillComboBox();
+    QFormLayout *layout = new QFormLayout();
+    layout->addRow(tr("Material:"), layoutMaterial);
+    layout->addRow(grpCoordinates);
+    layout->addRow(grpMeshParameters);
 
-//    return layout;
+    fillComboBox();
+
+    return layout;
 }
 
 void SceneLabelDialog::fillComboBox()
@@ -813,67 +821,65 @@ void SceneLabelDialog::fillComboBox()
 
 bool SceneLabelDialog::load()
 {
-    assert(0); //TODO
-//    logMessage("DSceneLabel::load()");
+    logMessage("DSceneLabel::load()");
 
-//    SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
+    SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
-//    txtPointX->setNumber(sceneLabel->point.x);
-//    txtPointY->setNumber(sceneLabel->point.y);
-//    cmbMaterial->setCurrentIndex(cmbMaterial->findData(sceneLabel->marker->variant()));
-//    txtArea->setNumber(sceneLabel->area);
-//    chkArea->setChecked(sceneLabel->area > 0.0);
-//    txtArea->setEnabled(chkArea->isChecked());
-//    txtPolynomialOrder->setValue(sceneLabel->polynomialOrder);
-//    chkPolynomialOrder->setChecked(sceneLabel->polynomialOrder > 0);
-//    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
+    txtPointX->setNumber(sceneLabel->point.x);
+    txtPointY->setNumber(sceneLabel->point.y);
+    cmbMaterial->setCurrentIndex(cmbMaterial->findData(sceneLabel->getMarker("TODO")->variant()));
+    txtArea->setNumber(sceneLabel->area);
+    chkArea->setChecked(sceneLabel->area > 0.0);
+    txtArea->setEnabled(chkArea->isChecked());
+    txtPolynomialOrder->setValue(sceneLabel->polynomialOrder);
+    chkPolynomialOrder->setChecked(sceneLabel->polynomialOrder > 0);
+    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 
-//    return true;
+    return true;
 }
 
 bool SceneLabelDialog::save()
 {
-    assert(0); //TODO
-//    logMessage("DSceneLabel::save()");
+    logMessage("DSceneLabel::save()");
 
-//    if (!txtPointX->evaluate(false)) return false;
-//    if (!txtPointY->evaluate(false)) return false;
-//    if (!txtArea->evaluate(false)) return false;
+    if (!txtPointX->evaluate(false)) return false;
+    if (!txtPointY->evaluate(false)) return false;
+    if (!txtArea->evaluate(false)) return false;
 
-//    SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
+    SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
-//    Point point(txtPointX->number(), txtPointY->number());
+    Point point(txtPointX->number(), txtPointY->number());
 
-//    // check if label doesn't exists
-//    if (Util::scene()->getLabel(point) && ((sceneLabel->point != point) || isNew))
-//    {
-//        QMessageBox::warning(this, "Label", "Label already exists.");
-//        return false;
-//    }
+    // check if label doesn't exists
+    if (Util::scene()->getLabel(point) && ((sceneLabel->point != point) || isNew))
+    {
+        QMessageBox::warning(this, "Label", "Label already exists.");
+        return false;
+    }
 
-//    // area
-//    if (txtArea->value().number() < 0)
-//    {
-//        QMessageBox::warning(this, "Label", "Area must be positive or zero.");
-//        txtArea->setFocus();
-//        return false;
-//    }
+    // area
+    if (txtArea->value().number() < 0)
+    {
+        QMessageBox::warning(this, "Label", "Area must be positive or zero.");
+        txtArea->setFocus();
+        return false;
+    }
 
 
-//    if (!isNew)
-//    {
-//        if (sceneLabel->point != point)
-//        {
-//            Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point, point));
-//        }
-//    }
+    if (!isNew)
+    {
+        if (sceneLabel->point != point)
+        {
+            Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point, point));
+        }
+    }
 
-//    sceneLabel->point = point;
-//    sceneLabel->marker = cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>();
-//    sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
-//    sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
+    sceneLabel->point = point;
+    sceneLabel->addMarker(cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>());
+    sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
+    sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
 
-//    return true;
+    return true;
 }
 
 void SceneLabelDialog::doMaterialChanged(int index)
@@ -1106,16 +1112,18 @@ void SceneEdgeCommandAdd::undo()
 
 void SceneEdgeCommandAdd::redo()
 {
-    assert(0); //TODO
-//    logMessage("SceneEdgeCommandAdd::redo()");
+    //assert(0); //TODO
+    logMessage("SceneEdgeCommandAdd::redo()");
 
-//    SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
-//    if (boundary == NULL) boundary = Util::scene()->boundaries->get("none"); //TODO - do it better
-//    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
-//                                         Util::scene()->addNode(new SceneNode(m_pointEnd)),
-//                                         boundary,
-//                                         m_angle,
-//                                         m_refineTowardsEdge));
+    //TODO
+    SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
+    if (boundary == NULL) boundary = Util::scene()->boundaries->get("none"); //TODO - do it better
+    //TODO
+
+    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
+                                         Util::scene()->addNode(new SceneNode(m_pointEnd)),
+                                         m_angle,
+                                         m_refineTowardsEdge));
 }
 
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName,

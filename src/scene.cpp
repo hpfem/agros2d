@@ -251,6 +251,13 @@ Scene::~Scene()
 
     delete m_sceneSolution;
     delete m_undoStack;
+
+    // TODO write destructors or use shared_ptrs...
+    delete boundaries;
+    delete materials;
+    delete nodes;
+    delete edges;
+    delete labels;
 }
 
 void Scene::createActions()

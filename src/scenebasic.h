@@ -111,8 +111,14 @@ template <typename MarkerType>
 class MarkedSceneBasic : public SceneBasic
 {
 public:
+    MarkedSceneBasic() { markers = new UniqueMarkerContainer<MarkerType>; }
+    ~MarkedSceneBasic() { delete markers; }
+
     /// gets marker that corresponds to the given field
     MarkerType* getMarker(QString field);
+
+    /// adds marker. If there exists marker with the same field, is overwritten
+    void addMarker(MarkerType* marker);
 
     /// true if has given marker
     bool hasMarker(MarkerType* marker) {return markers->contains(marker); }
