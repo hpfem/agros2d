@@ -11,9 +11,7 @@
         <constant id="P0" value="20e-6" />
     </constants>
 
-    <macros>
-        <macro id="" expression="" />
-    </macros>
+    <macros />
 
     <volume>
         <quantity id="acoustic_density" shortname="rho" />
@@ -85,59 +83,85 @@
         <volume>
             <group>
                 <quantity id="acoustic_density" name="Mass density"
-                shortname="rho" shortname_html="&lt;i&gt;\amp;rho;&lt;/i&gt;" shortname_latex="\rho"
-                unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" />
+                    shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;" shortname_latex="\rho"
+                    unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" />
                 <quantity id="acoustic_speed" name="Speed of sound"
-                shortname="vel" shortname_html="&lt;i&gt;c&lt;/i&gt;" shortname_latex="c"
-                unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
+                    shortname="vel" shortname_html="&lt;i&gt;c&lt;/i&gt;" shortname_latex="c"
+                    unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
             </group>
         </volume>
         <surface>
             <group>
-                <quantity id="acoustic_pressure_real" name="Pressure - real" shortname="pr" unit="Pa" />
-                <quantity id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" unit="Pa" />
-                <quantity id="acoustic_normal_acceleration_real" name="Normal acceleration - real" shortname="anr" unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}" />
-                <quantity id="acoustic_normal_acceleration_imag" name="Normal acceleration - imag" shortname="ani" unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}" />
-                <quantity id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" unit="Pa·s/m" unit_html="Pa.s.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Pa \cdot s \cdot m^{-1}" />
+                <quantity id="acoustic_pressure_real" name="Pressure - real"
+                    shortname="pr" shortname_html="&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="p_{r}"
+                    unit="Pa" unit_html="Pa" unit_latex="Pa" />
+                <quantity id="acoustic_pressure_imag" name="Pressure - imag"
+                    shortname="pi" shortname_html="&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;" shortname_latex="p_{i}"
+                    unit="Pa" unit_html="Pa" unit_latex="Pa" />
+                <quantity id="acoustic_normal_acceleration_real" name="Normal acceleration - real"
+                    shortname="anr" shortname_html="&lt;i&gt;an&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="an_{r}"
+                    unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}" />
+                <quantity id="acoustic_normal_acceleration_imag" name="Normal acceleration - imag"
+                    shortname="ani" shortname_html="&lt;i&gt;an&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;" shortname_latex="an_{i}"
+                    unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}" />
+                <quantity id="acoustic_impedance" name="Impedance boundary condition"
+                    shortname="Z0" shortname_html="&lt;i&gt;Z&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;" shortname_latex="Z_{0}"
+                    unit="Pa·s/m" unit_html="Pa.s.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Pa \cdot s \cdot m^{-1}" />
             </group>
         </surface>
     </preprocessor>
 
     <postprocessor>
         <localvariables>
-            <localvariable id="acoustic_pressure" name="Pressure" shortname="p" unit="Pa" type="scalar">
+            <localvariable id="acoustic_pressure" name="Pressure" type="scalar"
+                           shortname="p" shortname_html="&lt;i&gt;p&lt;/i&gt;" shortname_latex="p"
+                           unit="Pa" unit="Pa" unit="Pa">
                 <expression analysistype="harmonic" planar="sqrt(value1^2 + value2^2)"
                                                     axi="sqrt(value1^2 + value2^2)" />
             </localvariable>
-            <localvariable id="acoustic_pressure_real" name="Pressure - real" shortname="pr" unit="Pa" type="scalar">
+            <localvariable id="acoustic_pressure_real" name="Pressure - real" type="scalar"
+                           shortname="pr" shortname_html="&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="p_{r}"
+                           unit="Pa" unit_html="Pa" unit_latex="Pa">
                 <expression analysistype="harmonic" planar="value1"
                                                     axi="value1" />
             </localvariable>
-            <localvariable id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" unit="Pa" type="scalar">
+            <localvariable id="acoustic_pressure_imag" name="Pressure - imag" type="scalar"
+                           shortname="pi" shortname_html="&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;" shortname_latex="p_{i}"
+                           unit="Pa" unit_html="Pa" unit_latex="Pa">
                 <expression analysistype="harmonic" planar="value2"
                                                     axi="value2" />
             </localvariable>
-            <localvariable id="acoustic_pressure_level" name="Pressure level" shortname="SPL" unit="dB" type="scalar">
+            <localvariable id="acoustic_pressure_level" name="Pressure level" type="scalar"
+                           shortname="SPL" shortname_html="&lt;i&gt;SPL&lt;/i&gt;" shortname_latex="SPL"
+                           unit="dB" unit_html="dB" unit_latex="dB">
                 <expression analysistype="harmonic" planar="20 * log10(sqrt(value1^2 + value2^2) / P0)"
                                                     axi="20 * log10(sqrt(value1^2 + value2^2) / P0)" />
             </localvariable>
-            <localvariable id="acoustic_local_acceleration_real" name="Local acceleration - real" shortname="ar" unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}" type="vector">
+            <localvariable id="acoustic_local_acceleration_real" name="Local acceleration - real" type="vector"
+                           shortname="ar" shortname_html="&lt;i&gt;a&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="a_{r}"
+                           unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}">
                 <expression analysistype="harmonic" planar_x="- dx1 / rho"
                                                     planar_y="- dy1 / rho"
                                                     axi_r="- dr1 / rho"
                                                     axi_z="- dz1 / rho" />
             </localvariable>
-            <localvariable id="acoustic_local_acceleration_imag" name="Local acceleration - imag" shortname="ai" unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}" type="vector">
+            <localvariable id="acoustic_local_acceleration_imag" name="Local acceleration - imag" type="vector"
+                           shortname="ai" shortname_html="&lt;i&gt;a&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;" shortname_latex="a_{i}"
+                           unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}">
                 <expression analysistype="harmonic" planar_x="- dx2 / rho"
                                                     planar_y="- dy2 / rho"
                                                     axi_r="- dr2 / rho"
                                                     axi_z="- dz2 / rho" />
             </localvariable>
-            <localvariable id="acoustic_density" name="Mass density" shortname="rho" unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" type="scalar">
+            <localvariable id="acoustic_density" name="Mass density" type="scalar"
+                           shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;" shortname_latex="\rho"
+                           unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}">
                 <expression analysistype="harmonic" planar="rho"
                                                     axi="rho" />
             </localvariable>
-            <localvariable id="acoustic_speed" name="Speed of sound" shortname="vel" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" type="scalar">
+            <localvariable id="acoustic_speed" name="Speed of sound" type="scalar"
+                           shortname="vel" shortname_html="&lt;i&gt;c&lt;/i&gt;" shortname_latex="c"
+                           unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}">
                 <expression analysistype="harmonic" planar="vel"
                                                     axi="vel" />
             </localvariable>
@@ -153,22 +177,30 @@
         </view>
 
         <volumeintegrals>
-            <volumeintegral id="acoustic_volume" name="Volume" shortname="V" unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
+            <volumeintegral id="acoustic_volume" name="Volume"
+                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;"" shortname_latex="V"
+                            unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="2.0 * PI * r" />
             </volumeintegral>
-            <volumeintegral id="acoustic_cross_section" name="Cross section" shortname="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
+            <volumeintegral id="acoustic_cross_section" name="Cross section"
+                            shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"" shortname_latex="S"
+                            unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="1.0" />
             </volumeintegral>
         </volumeintegrals>
 
         <surfaceintegrals>
-            <surfaceintegral id="acoustic_length" name="Length" shortname="l" unit="m">
+            <surfaceintegral id="acoustic_length" name="Length"
+                             shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"" shortname_latex="l"
+                             unit="m" unit_html="m" unit_latex="m">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="1.0" />
             </surfaceintegral>
-            <surfaceintegral id="acoustic_surface" name="Surface" shortname="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
+            <surfaceintegral id="acoustic_surface" name="Surface"
+                             shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"" shortname_latex="S"
+                             unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="harmonic" planar="1.0"
                                                     axi="2.0 * PI * r" />
             </surfaceintegral>
