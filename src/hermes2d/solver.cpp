@@ -50,6 +50,7 @@ SolutionArray<Scalar>::~SolutionArray()
 
     if (space)
     {
+        delete space->get_mesh();
         delete space;
         space = NULL;
     }
@@ -156,16 +157,18 @@ SolverAgros<Scalar>::SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormA
 }
 
 template <typename Scalar>
-void SolverAgros<Scalar>::readMesh()
+Hermes::Hermes2D::Mesh *SolverAgros<Scalar>::readMesh()
 {
     // load the mesh file
-    mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+    Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
     refineMesh(mesh, true, true);
+
+    return mesh;
 }
 
 
 template <typename Scalar>
-void SolverAgros<Scalar>::createSpace()
+Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> SolverAgros<Scalar>::createSpace(Hermes::Hermes2D::Mesh *meshParam)
 {
     // essential boundary conditions
     Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs; //TODO PK <double>
@@ -195,7 +198,7 @@ void SolverAgros<Scalar>::createSpace()
                             analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
                             problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
 
-                    Hermes::Hermes2D::ExactSolutionScalar<double> *function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
+                    Hermes::Hermes2D::ExactSolutionScalar<double> *function = factoryExactSolution<double>(problemId, form->i-1, meshParam, boundary);
                     if (function)
                         custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
                                                                                                function);
@@ -206,14 +209,12 @@ void SolverAgros<Scalar>::createSpace()
 
                 // interpreted form
                 if (!custom_form || weakFormsType == WeakFormsType_Interpreted)
-                {     
-                    {
-                        CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
-                                                                                                form->expression,
-                                                                                                boundary);
-                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
-                                                                                               function);
-                    }
+                {
+                    CustomExactSolution<double> *function = new CustomExactSolution<double>(meshParam,
+                                                                                            form->expression,
+                                                                                            boundary);
+                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
+                                                                                           function);
                 }
 
                 if (custom_form)
@@ -225,16 +226,19 @@ void SolverAgros<Scalar>::createSpace()
     }
 
     // create space
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaceInt;
     for (int i = 0; i < numberOfSolution; i++)
     {
-        space.push_back(new Hermes::Hermes2D::H1Space<Scalar>(mesh, bcs[i], polynomialOrder));
+        spaceInt.push_back(new Hermes::Hermes2D::H1Space<Scalar>(meshParam, bcs[i], polynomialOrder));
 
-        // set order by element        
+        // set order by element
         for (int j = 0; j < Util::scene()->labels.count(); j++)
             if (Util::scene()->labels[j]->material != Util::scene()->materials[0])
-                space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,
-                                               QString::number(j).toStdString());
+                spaceInt.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,
+                                                  QString::number(j).toStdString());
     }
+
+    return spaceInt;
 }
 
 template <typename Scalar>
@@ -277,9 +281,6 @@ void SolverAgros<Scalar>::cleanup()
 {
     // delete mesh
     //delete mesh;
-
-    // clear space vector (space is deleted in SolutionArray)
-    space.clear();
 
     // delete last solution
     for (unsigned int i = 0; i < solution.size(); i++)
@@ -384,14 +385,19 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
 
     double error = 0.0;
 
+    // mesh
+    Hermes::Hermes2D::Mesh *mesh = NULL;
+    // space
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space;
+
     // new solution
     if (spaceParam.empty())
     {
         // read mesh from file
-        readMesh();
+        mesh = readMesh();
 
         // create essential boundary conditions and space
-        createSpace();
+        space = createSpace(mesh);
     }
     else
     {
@@ -405,6 +411,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
 
         mesh = new Hermes::Hermes2D::Mesh();
         mesh->copy(spaceParam[0]->get_mesh());
+
         for (int i = 0; i < numberOfSolution; i++)
             space.push_back(spaceParam[i]->dup(mesh));
     }
@@ -451,7 +458,7 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
         if (analysisType == AnalysisType_Transient)
         {
             // constant initial solution
-            InitialCondition<double> *initial = new InitialCondition<double>(mesh, initialCondition);
+            InitialCondition<double> *initial = new InitialCondition<double>(space.at(i)->get_mesh(), initialCondition);
             solutionArrayList.push_back(solutionArray(initial, space.at(i)));
         }
     }
@@ -564,6 +571,9 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
             break;
     }
 
+    // clear space vector (space is deleted in SolutionArray)
+    space.clear();
+
     cleanup();
 
     if (isError)
@@ -596,9 +606,8 @@ SolutionArray<Scalar> *SolverAgros<Scalar>::solutionArray(Hermes::Hermes2D::Solu
     }
 
     assert(spaceParam);
-    //solution->space = new Hermes::Hermes2D::Space<Scalar>();
-    // solution->space = space->dup(space->get_mesh());
-    solution->space = spaceParam;
+    solution->space = spaceParam->dup(spaceParam->get_mesh());
+    // solution->space = spaceParam;
 
     solution->adaptiveError = adaptiveError;
     solution->adaptiveSteps = adaptiveSteps;

@@ -101,7 +101,10 @@ void pythonQuit()
 {
     logMessage("pythonQuit()");
 
-    QApplication::exit(0);
+    // doesn't work without main event loop (run from script)
+    // QApplication::exit(0);
+
+    exit(0);
 }
 
 // newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance,
@@ -778,6 +781,32 @@ void pythonSolve()
     }
 }
 
+// solveAdaptiveStep()
+void pythonSolveAdaptiveStep()
+{
+    logMessage("pythonSolveAdaptiveStep()");
+
+    // store adaptivity steps
+    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
+    Util::scene()->problemInfo()->adaptivitySteps = 1;
+
+    // solve
+    if (Util::scene()->sceneSolution()->isSolved())
+        Util::scene()->sceneSolution()->solve(SolverMode_SolveAdaptiveStep);
+    else
+        Util::scene()->sceneSolution()->solve(SolverMode_MeshAndSolve);
+
+    // refresh
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        sceneView()->actSceneModePostprocessor->trigger();
+        Util::scene()->refresh();
+    }
+
+    // restore adaptivity steps
+    Util::scene()->problemInfo()->adaptivitySteps = adaptivitySteps;
+}
+
 // zoombestfit()
 void pythonZoomBestFit()
 {
@@ -1047,24 +1076,43 @@ void pythonShowScalar(char *type, char *variable, char *component, double rangem
         throw invalid_argument(QObject::tr("View type '%1' is not implemented.").arg(QString(type)).toStdString());
 
     // variable
-    // FIXME
-    /*
-    sceneView()->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
-    if (sceneView()->sceneViewSettings().scalarPhysicFieldVariable == PhysicFieldVariable_Undefined)
-        throw invalid_argument(QObject::tr("Physic field variable '%1' is not implemented.").arg(QString(variable)).toStdString());
-    if (!Util::scene()->problemInfo()->module()->physicFieldVariableCheck(sceneView()->sceneViewSettings().scalarPhysicFieldVariable))
-        throw invalid_argument(QObject::tr("Physic field variable '%1' cannot be used with this field.").arg(QString(variable)).toStdString());
-    */
+    if (QString(variable) == "default")
+    {
+        sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
+    }
+    else
+    {
+        bool ok = false;
+        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module()->variables.begin();
+             it < Util::scene()->problemInfo()->module()->variables.end(); ++it )
+        {
+            Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
+            if (QString::fromStdString(var->id) == QString(variable))
+            {
+                sceneView()->sceneViewSettings().scalarPhysicFieldVariable = QString(variable).toStdString();
+                ok = true;
 
-    // variable component
-    /*
-    sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = physicFieldVariableCompFromStringKey(QString(component));
-    if (sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp == PhysicFieldVariableComp_Undefined)
-        throw invalid_argument(QObject::tr("Physic field variable component '%1' is not implemented.").arg(QString(component)).toStdString());
-    if ((isPhysicFieldVariableScalar(sceneView()->sceneViewSettings().scalarPhysicFieldVariable)) &&
-            (sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar))
-        throw invalid_argument(QObject::tr("Physic field variable is scalar variable.").toStdString());
-    */
+                // variable component
+                if (QString(component) == "default")
+                {
+                    sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module()->view_default_scalar_variable_comp();
+                }
+                else
+                {
+                    PhysicFieldVariableComp comp = physicFieldVariableCompFromStringKey(QString(component));
+                    if (comp == PhysicFieldVariableComp_Undefined)
+                        throw invalid_argument(QObject::tr("Physic field variable component '%1' is not implemented.").arg(QString(component)).toStdString());
+                    if (!var->is_scalar && comp == PhysicFieldVariableComp_Scalar)
+                        throw invalid_argument(QObject::tr("Physic field variable is scalar variable.").toStdString());
+
+                    sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = comp;
+                }
+            }
+        }
+
+        if (!ok)
+            throw invalid_argument(QObject::tr("Physic field variable '%1' is not implemented.").arg(QString(variable)).toStdString());
+    }
 
     // range
     if (rangemin != -123456)
@@ -1353,7 +1401,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
 
 ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bool returnValue)
 {
-    runPythonHeader();        
+    runPythonHeader();
 
     QString exp;
     if (returnValue)

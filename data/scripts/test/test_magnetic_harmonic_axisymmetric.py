@@ -81,5 +81,5 @@ print("Test: Magnetic harmonic - axisymmetric: " + str(testA and testA_real and 
                                                        and testB and testBr_real and testBr_imag and testBz_real and testBz_imag
                                                        and testH and testHr_real and testHr_imag and testHz_real and testHz_imag
                                                        and testJit_real and testJit_imag and testJ_real and testJ_imag
-                                                       and testIe_real and testIe_imag and testIit_real and testIit_imag and testIr and testIi
+                                                       and testIe_real and testIe_imag and testIit_real and testIit_imag and testI_real and testI_imag
                                                        and testpj and testwm and testWm and testPj))

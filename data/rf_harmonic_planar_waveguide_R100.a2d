@@ -9,7 +9,7 @@
                 <edge rf_electric_field_real="1" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_electric_field" rf_port_phase="0" rf_surface_current_real="0" id="3" rf_magnetic_field_imag="0" name="Surface current"/>
             </edges>
             <labels>
-                <label rf_current_density_external_imag="0" rf_permittivity="0" rf_conductivity="0" id="1" name="Air" rf_current_density_external_real="0" rf_permeability="0"/>
+                <label rf_current_density_external_imag="0" rf_permittivity="1" rf_conductivity="0" id="1" name="Air" rf_current_density_external_real="0" rf_permeability="1"/>
             </labels>
         </problem>
     </problems>

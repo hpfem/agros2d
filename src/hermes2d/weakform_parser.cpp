@@ -24,6 +24,7 @@
 #include "module.h"
 #include "module_agros.h"
 #include "material.h"
+#include "datatable.h"
 
 // **************************************************************************
 
@@ -184,8 +185,14 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-                parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(pupval);
-                parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(pupval);
+                Value value = m_material->get_value(variable->id);
+
+                // table
+                if (value.table->size() > 0)
+                {
+                    parser->parser_variables[variable->shortname] = value.value(pupval);
+                    parser->parser_variables["d" + variable->shortname] = value.derivative(pupval);
+                }
 
                 // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
                 // parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(sqrt(pupdx*pupdx + pupdy*pupdy));
@@ -273,7 +280,13 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-                parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(pupval);
+                Value value = m_material->get_value(variable->id);
+
+                // table
+                if (value.table->size() > 0)
+                {
+                    parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(pupval);
+                }
 
                 // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
 
