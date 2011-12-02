@@ -105,13 +105,13 @@
         <volume>
             <group>
                 <quantity id="rf_permittivity" name="Permittivity"
-                shortname="epsr" shortname_html="&lt;i&gt;&epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                shortname="epsr" shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
                 unit="F/m" unit_html="F.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="F \cdot m^{-1}" />
                 <quantity id="rf_permeability" name="Permeability"
-                shortname="mur" shortname_html="&lt;i&gt;&mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                shortname="mur" shortname_html="&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
                 unit="H/m" unit_html="H.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="H \cdot m^{-1}" />
                 <quantity id="rf_conductivity" name="Conductivity"
-                shortname="gamma" unit="S/m" shortname_html="&lt;i&gt;&gamma;&lt;/i&gt;"
+                shortname="gamma" unit="S/m" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;"
                 unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}"/>
                 <quantity id="rf_current_density_external_real" name="Current dens. - ext. - real"
                 shortname="Jer" unit="A/m2" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;r,ext&lt;/sub&gt;"

@@ -1,157 +1,296 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="module" type="moduleType"/>
-  <xs:complexType name="propertiesType">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute type="xs:byte" name="steadystate" use="required"/>
-        <xs:attribute type="xs:byte" name="harmonic" use="required"/>
-        <xs:attribute type="xs:byte" name="transient" use="required"/>
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>
-  <xs:complexType name="generalType">
-    <xs:sequence>
-      <xs:element name="description">
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:element>
-      <xs:element type="propertiesType" name="properties"/>
-    </xs:sequence>
-    <xs:attribute type="xs:string" name="id" use="required"/>
-    <xs:attribute type="xs:string" name="name" use="required"/>
-  </xs:complexType>
-  <xs:complexType name="itemType" mixed="true">
-    <xs:choice maxOccurs="unbounded" minOccurs="0">
-      <xs:element type="analysisType" name="harmonic"/>
-	  <xs:element type="analysisType" name="transient"/>
-      <xs:element type="analysisType" name="steadystate"/>
-    </xs:choice>
-    <xs:attribute type="xs:string" name="id" use="required"/>
-    <xs:attribute type="xs:float" name="value" use="optional"/>
-    <xs:attribute type="xs:string" name="name" use="optional"/>
-    <xs:attribute type="xs:string" name="shortname" use="optional"/>
-    <xs:attribute type="xs:string" name="unit" use="optional"/>
-    <xs:attribute type="xs:byte" name="scalar" use="optional"/>
-    <xs:attribute type="xs:short" name="default" use="optional"/>
-  </xs:complexType>
-  <xs:complexType name="constantsType" mixed="true">
-    <xs:sequence>
-      <xs:element type="itemType" name="item" maxOccurs="unbounded" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="materialType" mixed="true">
-    <xs:choice maxOccurs="unbounded" minOccurs="0">
-      <xs:element type="itemType" name="item"/>
-      <xs:element type="analysisType" name="harmonic"/>
-      <xs:element type="analysisType" name="steadystate"/>
-      <xs:element type="analysisType" name="transient"/>
-    </xs:choice>
-    <xs:attribute type="xs:string" name="id" use="optional"/>
-  </xs:complexType>
-  <xs:complexType name="weakformType">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute type="xs:byte" name="i" use="optional"/>
-        <xs:attribute type="xs:byte" name="j" use="optional"/>
-        <xs:attribute type="xs:string" name="planar" use="optional"/>
-        <xs:attribute type="xs:string" name="axi" use="optional"/>
-        <xs:attribute type="xs:byte" name="symmetric" use="optional"/>
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>
-  <xs:complexType name="essentialType">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute type="xs:byte" name="i" use="optional"/>
-        <xs:attribute type="xs:string" name="planar" use="optional"/>
-        <xs:attribute type="xs:string" name="axi" use="optional"/>
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>
-  <xs:complexType name="boundaryType" mixed="true">
-    <xs:choice maxOccurs="unbounded" minOccurs="0">
-      <xs:element type="itemType" name="item"/>
-      <xs:element type="essentialType" name="essential"/>
-      <xs:element type="weakformType" name="matrix"/>
-      <xs:element type="weakformType" name="vector"/>
-      <xs:element type="analysisType" name="harmonic"/>
-      <xs:element type="analysisType" name="steadystate"/>
-      <xs:element type="analysisType" name="transient"/>
-    </xs:choice>
-    <xs:attribute type="xs:string" name="id" use="optional"/>
-    <xs:attribute type="xs:string" name="name" use="optional"/>
-  </xs:complexType>
-  <xs:complexType name="localvariableType">
-    <xs:sequence>
-      <xs:element type="itemType" name="item" maxOccurs="unbounded" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="scalarvariableType">
-    <xs:choice maxOccurs="unbounded" minOccurs="0">
-      <xs:element type="analysisType" name="harmonic"/>
-      <xs:element type="analysisType" name="transient"/>             
-      <xs:element  type="analysisType" name="steadystate"/>
-    </xs:choice>
-  </xs:complexType>
-  <xs:complexType name="vectorvariableType">
-    <xs:choice maxOccurs="unbounded" minOccurs="0">
-      <xs:element type="analysisType" name="harmonic"/>
-      <xs:element type="analysisType" name="transient"/>             
-      <xs:element type="analysisType" name="steadystate"/>
-      <xs:element type="itemType" name="item"/>
-    </xs:choice>
-  </xs:complexType>
-  <xs:complexType name="viewType">
-    <xs:sequence>
-      <xs:element type="scalarvariableType" name="scalarvariable"/>
-      <xs:element type="vectorvariableType" name="vectorvariable"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="pointvalueType">
-    <xs:choice maxOccurs="unbounded" minOccurs="0">
-      <xs:element type="analysisType" name="harmonic"/>
-      <xs:element type="analysisType" name="transient"/>      
-      <xs:element type="analysisType" name="steadystate"/>
-    </xs:choice>
-  </xs:complexType>
-  <xs:complexType name="integralType">
-    <xs:sequence>
-      <xs:element type="itemType" name="item" maxOccurs="unbounded" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="moduleType">
-    <xs:sequence>
-      <xs:element type="generalType" name="general"/>
-      <xs:element type="constantsType" name="constants"/>
-      <xs:element type="materialType" name="material"/>
-      <xs:element type="boundaryType" name="boundary"/>
-      <xs:element type="localvariableType" name="localvariable"/>
-      <xs:element type="viewType" name="view"/>
-      <xs:element type="pointvalueType" name="pointvalue"/>
-      <xs:element type="integralType" name="volumeintegral"/>
-      <xs:element type="integralType" name="surfaceintegral"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="analysisType" mixed="true">
-    <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:element type="materialType" name="material" maxOccurs="unbounded" minOccurs="0"/>
-      <xs:element type="weakformType" name="matrix" maxOccurs="unbounded" minOccurs="0"/>
-      <xs:element type="weakformType" name="vector" maxOccurs="unbounded" minOccurs="0"/>      
-      <xs:element type="boundaryType" name="boundary" maxOccurs="unbounded" minOccurs="0"/>
-      <xs:element type="itemType" name="item" maxOccurs="unbounded" minOccurs="0"/>
-    </xs:choice>
-    <xs:attribute type="xs:string" name="default" use="optional"/>
-    <xs:attribute type="xs:string" name="planar_scalar" use="optional"/>
-    <xs:attribute type="xs:string" name="axi_scalar" use="optional"/>
-    <xs:attribute type="xs:string" name="planar_comp_x" use="optional"/>
-    <xs:attribute type="xs:string" name="planar_comp_y" use="optional"/>
-    <xs:attribute type="xs:string" name="axi_comp_r" use="optional"/>
-    <xs:attribute type="xs:string" name="axi_comp_z" use="optional"/>
-    <xs:attribute type="xs:string" name="planar" use="optional"/>
-    <xs:attribute type="xs:string" name="axi" use="optional"/>
-  </xs:complexType>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <xs:element name="module">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="general"/>
+        <xs:element ref="constants"/>
+        <xs:element ref="macros"/>
+        <xs:element ref="volume"/>
+        <xs:element ref="surface"/>
+        <xs:element ref="preprocessor"/>
+        <xs:element ref="postprocessor"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="general">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="description"/>
+        <xs:element ref="analyses"/>
+      </xs:sequence>
+      <xs:attribute name="deformed_shape" type="xs:integer"/>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="description" type="xs:string"/>
+  <xs:element name="analyses">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="analysis"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="analysis">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="solutions" use="required" type="xs:integer"/>
+      <xs:attribute name="type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="constants">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="constant"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="constant">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="value" use="required" type="xs:double"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="macros">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="macro"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="macro">
+    <xs:complexType>
+      <xs:attribute name="expression" use="required"/>
+      <xs:attribute name="id" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="preprocessor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="volume"/>
+        <xs:element ref="surface"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="postprocessor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="localvariables"/>
+        <xs:element ref="view"/>
+        <xs:element ref="volumeintegrals"/>
+        <xs:element ref="surfaceintegrals"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="localvariables">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="localvariable"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="localvariable">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="expression"/>
+      </xs:sequence>
+      <xs:attribute name="format"/>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="shortname" use="required" type="xs:NCName"/>
+      <xs:attribute name="shortname_html"/>
+      <xs:attribute name="shortname_latex"/>
+      <xs:attribute name="type" use="required" type="xs:NCName"/>
+      <xs:attribute name="unit" use="required"/>
+      <xs:attribute name="unit_html"/>
+      <xs:attribute name="unit_latex"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="view">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="scalar"/>
+        <xs:element ref="vector"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="scalar">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="default"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="volumeintegrals">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="volumeintegral"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="volumeintegral">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="expression"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="shortname" use="required" type="xs:NCName"/>
+      <xs:attribute name="shortname_html"/>
+      <xs:attribute name="shortname_latex"/>
+      <xs:attribute name="unit" use="required" type="xs:NCName"/>
+      <xs:attribute name="unit_html"/>
+      <xs:attribute name="unit_latex"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="surfaceintegrals">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="surfaceintegral"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="surfaceintegral">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="expression"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="shortname" use="required" type="xs:NCName"/>
+      <xs:attribute name="shortname_html"/>
+      <xs:attribute name="unit" use="required" type="xs:NCName"/>
+      <xs:attribute name="unit_html"/>
+      <xs:attribute name="unit_latex"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="volume">
+    <xs:complexType>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" ref="quantity"/>
+          <xs:element ref="weakforms"/>
+        </xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="group"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="surface">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="group"/>
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" ref="quantity"/>
+          <xs:element ref="weakforms"/>
+        </xs:sequence>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="expression">
+    <xs:complexType>
+      <xs:attribute name="analysistype" use="required" type="xs:NCName"/>
+      <xs:attribute name="axi"/>
+      <xs:attribute name="axi_r"/>
+      <xs:attribute name="axi_z"/>
+      <xs:attribute name="planar"/>
+      <xs:attribute name="planar_x"/>
+      <xs:attribute name="planar_y"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="default">
+    <xs:complexType>
+      <xs:attribute name="analysistype" use="required" type="xs:NCName"/>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="vector">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="default"/>
+      </xs:sequence>
+      <xs:attribute name="axi"/>
+      <xs:attribute name="i" type="xs:integer"/>
+      <xs:attribute name="j" type="xs:integer"/>
+      <xs:attribute name="planar"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="quantity">
+    <xs:complexType>
+      <xs:attribute name="condition"/>
+      <xs:attribute name="default" type="xs:decimal"/>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="name"/>
+      <xs:attribute name="nonlin" type="xs:integer"/>
+      <xs:attribute name="shortname"/>
+      <xs:attribute name="shortname_html"/>
+      <xs:attribute name="shortname_latex"/>
+      <xs:attribute name="timedep" type="xs:integer"/>
+      <xs:attribute name="unit"/>
+      <xs:attribute name="unit_html"/>
+      <xs:attribute name="unit_latex"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="weakforms">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="weakform"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="weakform">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element maxOccurs="unbounded" ref="boundary"/>
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" ref="quantity"/>
+          <xs:choice maxOccurs="unbounded">
+            <xs:element ref="matrix"/>
+            <xs:element ref="vector"/>
+          </xs:choice>
+        </xs:sequence>
+      </xs:choice>
+      <xs:attribute name="analysistype" use="required" type="xs:NCName"/>
+      <xs:attribute name="default" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="boundary">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="quantity"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="matrix"/>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="vector"/>
+          <xs:element ref="essential"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="essential">
+    <xs:complexType>
+      <xs:attribute name="axi" use="required" type="xs:NCName"/>
+      <xs:attribute name="i" use="required" type="xs:integer"/>
+      <xs:attribute name="planar" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="group">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="quantity"/>
+      </xs:sequence>
+      <xs:attribute name="name"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="matrix">
+    <xs:complexType>
+      <xs:attribute name="axi" use="required"/>
+      <xs:attribute name="i" use="required" type="xs:integer"/>
+      <xs:attribute name="j" use="required" type="xs:integer"/>
+      <xs:attribute name="planar" use="required"/>
+      <xs:attribute name="symmetric" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

@@ -9,9 +9,7 @@
 
     <constants />
 
-    <macros>
-        <macro id="" expression="" />
-    </macros>
+    <macros />
 
     <volume>
         <quantity id="current_conductivity" shortname="gamma" />
@@ -55,7 +53,7 @@
         <volume>
             <group>
                 <quantity id="current_conductivity" name="Conductivity"
-                          shortname="gamma" shortname_html="&gamma;"
+                          shortname="gamma" shortname_html="&amp;gamma"
                           unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}" />
             </group>
         </volume>
@@ -69,27 +67,37 @@
 
     <postprocessor>
         <localvariables>
-            <localvariable id="current_potential" name="Scalar potential" shortname="V" unit="V" type="scalar">
+            <localvariable id="current_potential" name="Scalar potential" type="scalar"
+                           shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
+                           unit="V" unit_hmtl="V" unit_latex="V">
                 <expression analysistype="steadystate" planar="value1"
                                                        axi="value1" />
             </localvariable>
-            <localvariable id="current_electric_field" name="Electric field" shortname="E" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="V \cdot m^{-1}" type="vector">
+            <localvariable id="current_electric_field" name="Electric field" type="vector"
+                           shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;" shortname_latex="E"
+                           unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="V \cdot m^{-1}">
                 <expression analysistype="steadystate" planar_x="- dx1"
                                                        planar_y="- dy1"
                                                        axi_r="- dr1"
                                                        axi_z="- dz1" />
             </localvariable>
-            <localvariable id="current_current_density" name="Current density" shortname="J" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="vector">
+            <localvariable id="current_current_density" name="Current density" type="vector"
+                           shortname="J" shortname_html="&lt;i&gt;J&lt;/i&gt;" shortname_latex="J"
+                           unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}">
                 <expression analysistype="steadystate" planar_x="- gamma * dx1"
                                                        planar_y="- gamma * dy1"
                                                        axi_r="- gamma * dr1"
                                                        axi_z="- gamma * dz1" />
             </localvariable>
-            <localvariable id="current_joule_losses" name="Joule losses" shortname="pj" unit="W/m3" unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}" type="scalar">
+            <localvariable id="current_joule_losses" name="Joule losses" type="scalar"
+                           shortname="Pj" shortname_html="&lt;i&gt;P&lt;/i&gt;&lt;sub&gt;j&lt;/sub&gt;" shortname_latex="P_{j}"
+                           unit="W/m3" unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}">
                 <expression analysistype="steadystate" planar="gamma * (dx1 * dx1 + dy1 * dy1)"
                                                        axi="gamma * (dr1 * dr1 + dz1 * dz1)" />
             </localvariable>
-            <localvariable id="current_conductivity" name="Conductivity" shortname="gamma" unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}" type="scalar">
+            <localvariable id="current_conductivity" name="Conductivity" type="scalar"
+                           shortname="gamma" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;" shortname_latex="\gamma"
+                           unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}">
                 <expression analysistype="steadystate" planar="gamma"
                                                        axi="gamma" />
             </localvariable>
@@ -105,30 +113,42 @@
         </view>
 
         <volumeintegrals>
-            <volumeintegral id="current_volume" name="Volume" shortname="V" unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
+            <volumeintegral id="current_volume" name="Volume"
+                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;"" shortname_latex="V"
+                            unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="2.0 * PI * r" />
             </volumeintegral>
-            <volumeintegral id="current_cross_section" name="Cross section" shortname="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
+            <volumeintegral id="current_cross_section" name="Cross section"
+                            shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"" shortname_latex="S"
+                            unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="1.0" />
             </volumeintegral>
-            <volumeintegral id="current_joule_losses" name="Joule losses" shortname="Pj" unit="W">
+            <volumeintegral id="current_joule_losses" name="Joule losses"
+                            shortname="Pj" shortname_html="&lt;i&gt;P&lt;/i&gt;&lt;sub&gt;j&lt;/sub&gt;" shortname_latex="P_{j}"
+                            unit="W" unit_html="W" unit_latex="W">
                 <expression analysistype="steadystate" planar="gamma * (dx1 * dx1 + dy1 * dy1)"
                                                        axi="2.0 * PI * r * gamma * (dr1 * dr1 + dz1 * dz1)" />
             </volumeintegral>
         </volumeintegrals>
 
         <surfaceintegrals>
-            <surfaceintegral id="length" name="Length" shortname="l" unit="m">
+            <surfaceintegral id="current_length" name="Length"
+                             shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"" shortname_latex="l"
+                             unit="m" unit_html="m" unit_latex="m">
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="1.0" />
             </surfaceintegral>
-            <surfaceintegral id="surface" name="Surface" shortname="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
+            <surfaceintegral id="current_surface" name="Surface"
+                             shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"" shortname_latex="S"
+                             unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="2.0 * PI * r" />
             </surfaceintegral>
-            <surfaceintegral id="current_current" name="Current" shortname="I" unit="A">
+            <surfaceintegral id="current_current" name="Current"
+                             shortname="I" shortname_html="&lt;i&gt;I&lt;/i&gt;"" shortname_latex="I"
+                             unit="A" unit_html="A" unit_latex="A">
                 <expression analysistype="steadystate" planar="gamma * (tanx * dy1 - tany * dx1)"
                                                        axi="2.0 * PI * r * gamma * (tanr * dz1 - tanz * dr1)" />
             </surfaceintegral>

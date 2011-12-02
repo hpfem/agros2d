@@ -130,7 +130,7 @@
                 shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;"
                 unit="Pa" unit_html="Pa" />
                 <quantity id="elasticity_poisson_ratio" name="Poisson ratio"
-                shortname="nu" shortname_html="&lt;i&gt;&nu;&lt;/i&gt;"
+                shortname="nu" shortname_html="&lt;i&gt;&amp;nu;&lt;/i&gt;"
                 unit="-" unit_html="-" />
                 <quantity id="elasticity_force_x" name="Force - x" shortname="fx" unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="N \cdot m^{-3}" />
                 <quantity id="elasticity_force_y" name="Force - y" shortname="fy" unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="N \cdot m^{-3}" />

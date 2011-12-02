@@ -106,13 +106,13 @@
         <volume>
             <group>
                 <quantity id="heat_conductivity" nonlin="1" name="Thermal conductivity"
-                shortname="lambda" shortname_html="&lt;i&gt;&lambda;&lt;/i&gt;"
+                shortname="lambda" shortname_html="&lt;i&gt;&amp;lambda;&lt;/i&gt;"
                 unit="W/m.K" unit_html="W.m&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="W \cdot m^{-1} \cdot K^{-1}" default="385" condition="value > 0" />
                 <quantity id="heat_volume_heat" timedep="1" name="Volume heat"
                 shortname="p" shortname_html="&lt;i&gt;p&lt;/i&gt;"
                 unit="W/m3" unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}" condition="value >= 0" />
                 <quantity id="heat_density" name="Density"
-                shortname="rho" shortname_html="&lt;i&gt;&rho;&lt;/i&gt;"
+                shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;"
                 unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" condition="value >= 0" />
                 <quantity id="heat_specific_heat" name="Specific heat"
                 shortname="cp" shortname_html="&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;P&lt;/sub&gt;"
