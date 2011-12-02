@@ -28,6 +28,7 @@
 class Parser;
 class Boundary;
 class Material;
+class FieldInfo;
 
 struct ParserFormEssential
 {
@@ -102,10 +103,13 @@ public:
     // time step
     mutable double pdeltat;
 
-    ParserForm();
+    ParserForm(FieldInfo *fieldInfo = NULL);
     ~ParserForm();
 
     void initParser(Material *material, Boundary *boundary);
+
+protected:
+    FieldInfo *fieldInfo;
 };
 
 // **********************************************************************************************

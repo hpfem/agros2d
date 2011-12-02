@@ -1310,7 +1310,8 @@ void MainWindow::doTimeStepChanged(int index)
 
 void MainWindow::doInvalidated()
 {
-    if (!Util::scene()->fieldInfo("TODO"))
+    //TODO
+    if (!Util::scene()->fieldInfos().count() == 0)
         return;
 
     logMessage("MainWindow::doInvalidated()");
@@ -1325,15 +1326,15 @@ void MainWindow::doInvalidated()
     actViewQuick3DScalarViewSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actViewQuick3DModel->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
-    actSolveAdaptiveStep->setEnabled(Util::scene()->sceneSolution()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType != AnalysisType_Transient); // FIXME: timedep
+    actSolveAdaptiveStep->setEnabled(Util::scene()->sceneSolution()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient));
+    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient));
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
     fillComboBoxTimeStep(cmbTimeStep);
 
     lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->name)));
     lblProblemType->setText(tr("Problem Type: %1").arg(coordinateTypeString(Util::scene()->problemInfo()->coordinateType)));
-    lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->fieldInfo("TODO")->analysisType)));
+    lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->fieldInfo("TODO")->analysisType())));
 
     actExportVTKScalar->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actExportVTKOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());

@@ -393,14 +393,14 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //        }
 
 //        // analysis type
-//        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+//        if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Harmonic)
 //        {
 //            dict.SetValue("PROBLEM_FREQUENCY_LABEL", tr("Frequency:").toStdString());
 //            dict.SetFormattedValue("PROBLEM_FREQUENCY", "%f", Util::scene()->problemInfo()->frequency);
 
 //            dict.ShowSection("PROBLEM_HARMONIC_SECTION");
 //        }
-//        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//        if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
 //        {
 //            dict.SetValue("PROBLEM_TIMESTEP_LABEL", tr("Time step:").toStdString());
 //            dict.SetIntValue("PROBLEM_TIMESTEP", Util::scene()->problemInfo()->timeStep.number());

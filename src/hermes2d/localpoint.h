@@ -26,6 +26,7 @@
 class Parser;
 
 class SceneMaterial;
+class FieldInfo;
 
 namespace Hermes
 {
@@ -67,11 +68,14 @@ public:
     // variables
     std::map<Hermes::Module::LocalVariable *, PointValue> values;
 
-    LocalPointValue(const Point &point);
+    LocalPointValue(FieldInfo *fieldInfo, const Point &point);
     ~LocalPointValue();
 
     void initParser();
     void calculate();
+
+private:
+    FieldInfo *fieldInfo;
 };
 
 #endif // LOCALPOINT_H

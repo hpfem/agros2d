@@ -24,6 +24,7 @@
 
 class SceneMaterial;
 class Parser;
+class FieldInfo;
 
 namespace Hermes
 {
@@ -46,8 +47,11 @@ public:
     // variables
     std::map<Hermes::Module::Integral *, double> values;
 
-    SurfaceIntegralValue();
+    SurfaceIntegralValue(FieldInfo *fieldInfo);
     ~SurfaceIntegralValue();
+
+private:
+    FieldInfo *fieldInfo;
 };
 
 #endif // SURFACEINTEGRAL_H

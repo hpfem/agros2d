@@ -38,10 +38,11 @@ FieldSelectDialog::FieldSelectDialog(QWidget *parent) : QDialog(parent)
     lstFields = new QListWidget(this);
 
     std::map<std::string, std::string> modules = availableModules();
-    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
+    for (std::map<std::string, std::string>::iterator it = modules.begin();
+         it != modules.end(); ++it)
     {
         // add only missing fields
-        if (!Util::scene()->fieldInfo(it->first))
+        if (!Util::scene()->fieldInfos().contains(QString::fromStdString(it->first)))
         {
             QListWidgetItem *item = new QListWidgetItem(lstFields);
             item->setText(QString::fromStdString(it->second));
@@ -57,7 +58,6 @@ FieldSelectDialog::FieldSelectDialog(QWidget *parent) : QDialog(parent)
             this, SLOT(doItemSelected(QListWidgetItem *)));
     connect(lstFields, SIGNAL(itemPressed(QListWidgetItem *)),
             this, SLOT(doItemSelected(QListWidgetItem *)));
-
 
     QGridLayout *layoutSurface = new QGridLayout();
     layoutSurface->addWidget(lstFields);
@@ -123,8 +123,6 @@ void FieldSelectDialog::doItemDoubleClicked(QListWidgetItem *item)
 FieldWidget::FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, QWidget *parent)
     : QWidget(parent), problemInfo(problemInfo), fieldInfo(fieldInfo)
 {
-    fieldId = QString::fromStdString(fieldInfo->module()->id);
-
     createContent();
     load();
 }
@@ -266,6 +264,8 @@ void FieldWidget::createContent()
     layoutProblem->addLayout(layoutPanel);
 
     setLayout(layoutProblem);
+
+    setMinimumSize(sizeHint());
 }
 
 void FieldWidget::fillComboBox()
@@ -300,7 +300,7 @@ void FieldWidget::load()
     txtPolynomialOrder->setValue(fieldInfo->polynomialOrder);
     cmbMeshType->setCurrentIndex(cmbMeshType->findData(fieldInfo->meshType));
     // transient
-    cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(fieldInfo->analysisType));
+    cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(fieldInfo->analysisType()));
     txtTransientInitialCondition->setValue(fieldInfo->initialCondition);
     // linearity
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(fieldInfo->linearityType));
@@ -312,12 +312,8 @@ void FieldWidget::load()
 }
 
 bool FieldWidget::save()
-{
-    fieldInfo->setModule(moduleFactory(fieldId.toStdString(),
-                                           (CoordinateType) problemInfo->coordinateType,
-                                           (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt(), ""));
-
-    fieldInfo->analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
+{    
+    fieldInfo->setAnalysisType((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt());
 
     fieldInfo->initialCondition = txtTransientInitialCondition->value();
 
@@ -342,19 +338,9 @@ void FieldWidget::refresh()
     // store analysis type
     AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
 
-    Hermes::Module::ModuleAgros *module = moduleFactory(fieldInfo->module()->id,
-                                                        CoordinateType_Planar, AnalysisType_SteadyState, "");
-    //TODO - customs
-    //                                                    (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
-    //                                                     ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString());
-
-    // analysis type
-    cmbAnalysisType->clear();
-    if (module->steady_state_solutions) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_SteadyState), AnalysisType_SteadyState);
-    if (module->harmonic_solutions) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Harmonic), AnalysisType_Harmonic);
-    if (module->transient_solutions) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Transient), AnalysisType_Transient);
-
-    delete module;
+    std::map<std::string, std::string> analyses = availableAnalyses(fieldInfo->fieldId().toStdString());
+    for (std::map<std::string, std::string>::iterator it = analyses.begin(); it != analyses.end(); ++it)
+        cmbAnalysisType->addItem(QString::fromStdString(it->second), analysisTypeFromStringKey(QString::fromStdString(it->first)));
 
     // restore analysis type
     cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(analysisType));
@@ -387,7 +373,7 @@ void FieldWidget::doShowEquation()
 {
     readPixmap(lblEquationPixmap,
                QString(":/images/equations/%1/%1_%2.png")
-               .arg(QString::fromStdString(fieldInfo->module()->id))
+               .arg(fieldInfo->fieldId())
                .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
 }
 
@@ -427,7 +413,7 @@ ProblemDialog::ProblemDialog(ProblemInfo *problemInfo,
     load();
 
     setMinimumSize(sizeHint());
-    setMaximumSize(sizeHint());
+    // setMaximumSize(sizeHint());
 }
 
 int ProblemDialog::showDialog()
@@ -503,7 +489,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutTable->setColumnStretch(1, 1);
     layoutTable->addWidget(new QLabel(tr("Date:")), 2, 0);
     layoutTable->addWidget(dtmDate, 2, 1);
-    layoutTable->addWidget(new QLabel(tr("Problem type:")), 4, 0);
+    layoutTable->addWidget(new QLabel(tr("Coordinate type:")), 4, 0);
     layoutTable->addWidget(cmbCoordinateType, 4, 1);
     layoutTable->addWidget(new QLabel(tr("Linear solver:")), 8, 0);
     layoutTable->addWidget(cmbMatrixSolver, 8, 1);
@@ -556,16 +542,12 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     // fields
     tabFields = new QTabWidget(this);
-
-    QGridLayout *layoutFields = new QGridLayout();
-    layoutFields->setColumnMinimumWidth(0, minWidth);
-    layoutFields->setColumnStretch(1, 1);
-    layoutFields->addWidget(tabFields, 0, 0);
+    refresh();
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
     layoutProblem->addLayout(layoutName);
     layoutProblem->addLayout(layoutPanel);
-    layoutProblem->addLayout(layoutFields);
+    layoutProblem->addWidget(tabFields);
 
     QWidget *widMain = new QWidget();
     widMain->setLayout(layoutProblem);
@@ -655,7 +637,7 @@ bool ProblemDialog::save()
     logMessage("ProblemDialog::save()");
 
     // physical field type
-    //    if (Util::scene()->problemInfo()->module()->id !=
+    //    if (Util::scene()->problemInfo()->fieldId() !=
     //            cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString())
     //    {
     //        if (!this->m_isNewProblem)
@@ -828,11 +810,10 @@ void ProblemDialog::doTransientChanged()
 
 void ProblemDialog::doAddField()
 {
-    FieldSelectDialog *dialog = new FieldSelectDialog(this);
-    if (dialog->showDialog() == QDialog::Accepted)
+    FieldSelectDialog dialog(this);
+    if (dialog.showDialog() == QDialog::Accepted)
     {
-        qDebug() << dialog->fieldId();
-        Util::scene()->addField(dialog->fieldId(), new FieldInfo(m_problemInfo));
+        Util::scene()->addField(new FieldInfo(m_problemInfo, dialog.fieldId()));
 
         refresh();
     }

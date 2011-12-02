@@ -27,9 +27,9 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 
-LocalPointValue::LocalPointValue(const Point &point) : point(point)
+LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : fieldInfo(fieldInfo), point(point)
 {
-    parser = new Parser();
+    parser = new Parser(fieldInfo);
     initParser();
 
     for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
@@ -45,11 +45,11 @@ LocalPointValue::~LocalPointValue()
 
 void LocalPointValue::initParser()
 {
-    if (!Util::scene()->fieldInfo("TODO"))
+    if (!fieldInfo)
         return;
 
     // parser variables
-    parser->parser.push_back(Util::scene()->fieldInfo("TODO")->module()->get_parser());
+    parser->parser.push_back(fieldInfo->module()->get_parser());
 
     // init material variables
     parser->initParserMaterialVariables();
@@ -61,8 +61,8 @@ void LocalPointValue::calculate()
 
     this->point = point;
     if (Util::scene()->sceneSolution()->isSolved() &&
-            Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient)
-        Util::scene()->fieldInfo("TODO")->module()->update_time_functions(Util::scene()->sceneSolution()->time());
+            fieldInfo->analysisType() == AnalysisType_Transient)
+        fieldInfo->module()->update_time_functions(Util::scene()->sceneSolution()->time());
 
     if (Util::scene()->sceneSolution()->isSolved())
     {
@@ -80,21 +80,21 @@ void LocalPointValue::calculate()
             parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
             parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
 
-            double *pvalue = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
-            double *pdx = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
-            double *pdy = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
-            std::vector<Hermes::Hermes2D::Solution<double> *> sln(Util::scene()->fieldInfo("TODO")->module()->number_of_solution()); //TODO PK <double>
+            double *pvalue = new double[fieldInfo->module()->number_of_solution()];
+            double *pdx = new double[fieldInfo->module()->number_of_solution()];
+            double *pdy = new double[fieldInfo->module()->number_of_solution()];
+            std::vector<Hermes::Hermes2D::Solution<double> *> sln(fieldInfo->module()->number_of_solution()); //TODO PK <double>
 
-            for (int k = 0; k < Util::scene()->fieldInfo("TODO")->module()->number_of_solution(); k++)
+            for (int k = 0; k < fieldInfo->module()->number_of_solution(); k++)
             {
                 // solution
-                sln[k] = Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution()));
+                sln[k] = Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * fieldInfo->module()->number_of_solution()));
 
                 double value;
-                if ((Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient) &&
+                if ((fieldInfo->analysisType() == AnalysisType_Transient) &&
                         Util::scene()->sceneSolution()->timeStep() == 0)
                     // const solution at first time step
-                    value = Util::scene()->fieldInfo("TODO")->initialCondition.number();
+                    value = fieldInfo->initialCondition.number();
                 else
                     value = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
 
@@ -121,8 +121,8 @@ void LocalPointValue::calculate()
                                        pvalue[0], pdx[0], pdy[0]);
 
             // parse expression
-            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->fieldInfo("TODO")->module()->local_point.begin();
-                 it < Util::scene()->fieldInfo("TODO")->module()->local_point.end(); ++it )
+            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = fieldInfo->module()->local_point.begin();
+                 it < fieldInfo->module()->local_point.end(); ++it )
             {
                 try
                 {

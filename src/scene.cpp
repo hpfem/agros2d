@@ -61,30 +61,46 @@ void ProblemInfo::clear()
     timeTotal = Value("1.0", false);
 }
 
+FieldInfo::FieldInfo(ProblemInfo* parent, QString fieldId)
+{
+    m_module = NULL;
+    m_parent = parent;
+
+    if (fieldId.isEmpty())
+    {
+        // default
+        // read default field (Util::config() is not set)
+        QSettings settings;
+        m_fieldId = settings.value("General/DefaultPhysicField", "electrostatic").toString();
+
+        bool check = false;
+        std::map<std::string, std::string> modules = availableModules();
+        for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
+            if (m_fieldId.toStdString() == it->first)
+            {
+                check = true;
+                break;
+            }
+        if (!check)
+            m_fieldId = "electrostatic";
+    }
+    else
+    {
+        m_fieldId = fieldId;
+    }
+
+    clear();
+}
+
+FieldInfo::~FieldInfo()
+{
+    if (m_module) delete m_module;
+}
+
 void FieldInfo::clear()
 {
-    analysisType = AnalysisType_SteadyState;
-
     // module object
-    if (m_module) delete m_module;
-    m_module = NULL;
-
-    // read default field (Util::config() is not set)
-    QSettings settings;
-    QString defaultPhysicField = settings.value("General/DefaultPhysicField", "electrostatic").toString();
-
-    bool check = false;
-    std::map<std::string, std::string> modules = availableModules();
-    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
-        if (defaultPhysicField.toStdString() == it->first)
-        {
-            check = true;
-            break;
-        }
-    if (!check)
-        defaultPhysicField = "electrostatic";
-
-    setModule(moduleFactory(defaultPhysicField.toStdString(), coordinateType(), analysisType));
+    setAnalysisType(AnalysisType_SteadyState);
 
     numberOfRefinements = 1;
     polynomialOrder = 2;
@@ -104,10 +120,14 @@ void FieldInfo::clear()
     nonlinearSteps = 10;
 }
 
-void FieldInfo::setModule(Hermes::Module::ModuleAgros *module)
+void FieldInfo::setAnalysisType(AnalysisType analysisType)
 {
+    m_analysisType = analysisType;
+
     if (m_module) delete m_module;
-    m_module = module;
+    m_module = moduleFactory(m_fieldId.toStdString(),
+                             coordinateType(),
+                             m_analysisType);
 }
 
 DxfFilter::DxfFilter(Scene *scene)
@@ -522,8 +542,8 @@ void Scene::clear()
         delete i.value();
     }
     m_fieldInfos.clear();
-    //TODO
-    m_fieldInfos.insert("TODO", new FieldInfo(m_problemInfo));
+    //TODO - allow "no field"
+    addField(new FieldInfo(m_problemInfo));
 
     // geometry
     nodes->clear();
@@ -624,187 +644,187 @@ void Scene::highlightNone()
 void Scene::transformTranslate(const Point &point, bool copy)
 {
     assert(0); //TODO
-//    logMessage("Scene::transformTranslate()");
+    //    logMessage("Scene::transformTranslate()");
 
-//    // clear solution
-//    m_sceneSolution->clear();
+    //    // clear solution
+    //    m_sceneSolution->clear();
 
-//    m_undoStack->beginMacro(tr("Translation"));
+    //    m_undoStack->beginMacro(tr("Translation"));
 
-//    foreach (SceneEdge *edge, edges->items())
-//    {
-//        if (edge->isSelected)
-//        {
-//            edge->nodeStart->isSelected = true;
-//            edge->nodeEnd->isSelected = true;
-//        }
-//    }
+    //    foreach (SceneEdge *edge, edges->items())
+    //    {
+    //        if (edge->isSelected)
+    //        {
+    //            edge->nodeStart->isSelected = true;
+    //            edge->nodeEnd->isSelected = true;
+    //        }
+    //    }
 
-//    foreach (SceneNode *node, nodes->items())
-//    {
-//        if (node->isSelected)
-//        {
-//            Point pointNew = node->point + point;
-//            if (!copy)
-//            {
-//                if (!getNode(pointNew))
-//                {
-//                    m_undoStack->push(new SceneNodeCommandEdit(node->point, pointNew));
-//                    node->point = pointNew;
-//                }
-//            }
-//            else
-//            {
-//                SceneNode *nodeNew = new SceneNode(pointNew);
-//                SceneNode *nodeAdded = addNode(nodeNew);
-//                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
-//            }
-//        }
-//    }
+    //    foreach (SceneNode *node, nodes->items())
+    //    {
+    //        if (node->isSelected)
+    //        {
+    //            Point pointNew = node->point + point;
+    //            if (!copy)
+    //            {
+    //                if (!getNode(pointNew))
+    //                {
+    //                    m_undoStack->push(new SceneNodeCommandEdit(node->point, pointNew));
+    //                    node->point = pointNew;
+    //                }
+    //            }
+    //            else
+    //            {
+    //                SceneNode *nodeNew = new SceneNode(pointNew);
+    //                SceneNode *nodeAdded = addNode(nodeNew);
+    //                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
+    //            }
+    //        }
+    //    }
 
-//    foreach (SceneLabel *label, labels->items())
-//    {
-//        if (label->isSelected)
-//        {
-//            Point pointNew = label->point + point;
-//            if (!copy)
-//            {
-//                if (!getLabel(pointNew))
-//                {
-//                    m_undoStack->push(new SceneLabelCommandEdit(label->point, pointNew));
-//                    label->point = pointNew;
-//                }
-//            }
-//            else
-//            {
-//                SceneLabel *labelNew = new SceneLabel(pointNew, label->area, label->polynomialOrder);
-//                SceneLabel *labelAdded = addLabel(labelNew);
-//                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, label->polynomialOrder));
-//            }
-//        }
-//    }
+    //    foreach (SceneLabel *label, labels->items())
+    //    {
+    //        if (label->isSelected)
+    //        {
+    //            Point pointNew = label->point + point;
+    //            if (!copy)
+    //            {
+    //                if (!getLabel(pointNew))
+    //                {
+    //                    m_undoStack->push(new SceneLabelCommandEdit(label->point, pointNew));
+    //                    label->point = pointNew;
+    //                }
+    //            }
+    //            else
+    //            {
+    //                SceneLabel *labelNew = new SceneLabel(pointNew, label->area, label->polynomialOrder);
+    //                SceneLabel *labelAdded = addLabel(labelNew);
+    //                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, label->polynomialOrder));
+    //            }
+    //        }
+    //    }
 
-//    m_undoStack->endMacro();
+    //    m_undoStack->endMacro();
 
-//    emit invalidated();
+    //    emit invalidated();
 }
 
 void Scene::transformRotate(const Point &point, double angle, bool copy)
 {
     assert(0); //TODO
-//    logMessage("Scene::transformRotate()");
+    //    logMessage("Scene::transformRotate()");
 
-//    // clear solution
-//    m_sceneSolution->clear();
+    //    // clear solution
+    //    m_sceneSolution->clear();
 
-//    m_undoStack->beginMacro(tr("Rotation"));
+    //    m_undoStack->beginMacro(tr("Rotation"));
 
-//    foreach (SceneEdge *edge, edges->items())
-//    {
-//        if (edge->isSelected)
-//        {
-//            edge->nodeStart->isSelected = true;
-//            edge->nodeEnd->isSelected = true;
-//        }
-//    }
+    //    foreach (SceneEdge *edge, edges->items())
+    //    {
+    //        if (edge->isSelected)
+    //        {
+    //            edge->nodeStart->isSelected = true;
+    //            edge->nodeEnd->isSelected = true;
+    //        }
+    //    }
 
-//    foreach (SceneNode *node, nodes->items())
-//        if (node->isSelected)
-//        {
-//            double distanceNode = (node->point - point).magnitude();
-//            double angleNode = (node->point - point).angle()/M_PI*180;
+    //    foreach (SceneNode *node, nodes->items())
+    //        if (node->isSelected)
+    //        {
+    //            double distanceNode = (node->point - point).magnitude();
+    //            double angleNode = (node->point - point).angle()/M_PI*180;
 
-//            Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
-//            if (!copy)
-//            {
-//                node->point = pointNew;
-//            }
-//            else
-//            {
-//                SceneNode *nodeNew = new SceneNode(pointNew);
-//                SceneNode *nodeAdded = addNode(nodeNew);
-//                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
-//            }
-//        }
+    //            Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
+    //            if (!copy)
+    //            {
+    //                node->point = pointNew;
+    //            }
+    //            else
+    //            {
+    //                SceneNode *nodeNew = new SceneNode(pointNew);
+    //                SceneNode *nodeAdded = addNode(nodeNew);
+    //                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
+    //            }
+    //        }
 
-//    foreach (SceneLabel *label, labels->items())
-//        if (label->isSelected)
-//        {
-//            double distanceNode = (label->point - point).magnitude();
-//            double angleNode = (label->point - point).angle()/M_PI*180;
+    //    foreach (SceneLabel *label, labels->items())
+    //        if (label->isSelected)
+    //        {
+    //            double distanceNode = (label->point - point).magnitude();
+    //            double angleNode = (label->point - point).angle()/M_PI*180;
 
-//            Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
-//            if (!copy)
-//            {
-//                label->point = pointNew;
-//            }
-//            else
-//            {
-//                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
-//                SceneLabel *labelAdded = addLabel(labelNew);
-//                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, labelNew->polynomialOrder));
-//            }
-//        }
+    //            Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
+    //            if (!copy)
+    //            {
+    //                label->point = pointNew;
+    //            }
+    //            else
+    //            {
+    //                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
+    //                SceneLabel *labelAdded = addLabel(labelNew);
+    //                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, labelNew->polynomialOrder));
+    //            }
+    //        }
 
-//    m_undoStack->endMacro();
+    //    m_undoStack->endMacro();
 
-//    emit invalidated();
+    //    emit invalidated();
 }
 
 void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 {
     assert(0); //TODO
-//    logMessage("Scene::transformScale()");
+    //    logMessage("Scene::transformScale()");
 
-//    // clear solution
-//    m_sceneSolution->clear();
+    //    // clear solution
+    //    m_sceneSolution->clear();
 
-//    m_undoStack->beginMacro(tr("Scale"));
+    //    m_undoStack->beginMacro(tr("Scale"));
 
-//    foreach (SceneEdge *edge, edges->items())
-//    {
-//        if (edge->isSelected)
-//        {
-//            edge->nodeStart->isSelected = true;
-//            edge->nodeEnd->isSelected = true;
-//        }
-//    }
+    //    foreach (SceneEdge *edge, edges->items())
+    //    {
+    //        if (edge->isSelected)
+    //        {
+    //            edge->nodeStart->isSelected = true;
+    //            edge->nodeEnd->isSelected = true;
+    //        }
+    //    }
 
-//    foreach (SceneNode *node, nodes->items())
-//        if (node->isSelected)
-//        {
-//            Point pointNew = point + (node->point - point) * scaleFactor;
-//            if (!copy)
-//            {
-//                node->point = pointNew;
-//            }
-//            else
-//            {
-//                SceneNode *nodeNew = new SceneNode(pointNew);
-//                SceneNode *nodeAdded = addNode(nodeNew);
-//                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
-//            }
-//        }
+    //    foreach (SceneNode *node, nodes->items())
+    //        if (node->isSelected)
+    //        {
+    //            Point pointNew = point + (node->point - point) * scaleFactor;
+    //            if (!copy)
+    //            {
+    //                node->point = pointNew;
+    //            }
+    //            else
+    //            {
+    //                SceneNode *nodeNew = new SceneNode(pointNew);
+    //                SceneNode *nodeAdded = addNode(nodeNew);
+    //                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
+    //            }
+    //        }
 
-//    foreach (SceneLabel *label, labels->items())
-//        if (label->isSelected)
-//        {
-//            Point pointNew = point + (label->point - point) * scaleFactor;
-//            if (!copy)
-//            {
-//                label->point = pointNew;
-//            }
-//            else
-//            {
-//                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
-//                SceneLabel *labelAdded = addLabel(labelNew);
-//                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, labelNew->polynomialOrder));
-//            }
-//        }
+    //    foreach (SceneLabel *label, labels->items())
+    //        if (label->isSelected)
+    //        {
+    //            Point pointNew = point + (label->point - point) * scaleFactor;
+    //            if (!copy)
+    //            {
+    //                label->point = pointNew;
+    //            }
+    //            else
+    //            {
+    //                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
+    //                SceneLabel *labelAdded = addLabel(labelNew);
+    //                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, QString::fromStdString(labelNew->marker->getName()), labelNew->area, labelNew->polynomialOrder));
+    //            }
+    //        }
 
-//    m_undoStack->endMacro();
+    //    m_undoStack->endMacro();
 
-//    emit invalidated();
+    //    emit invalidated();
 }
 
 void Scene::doInvalidated()
@@ -875,6 +895,7 @@ void Scene::doDeleteSelected()
 
 void Scene::doNewBoundary()
 {
+    assert(0);
     logMessage("Scene::doNewBoundary()");
 
     SceneBoundary *marker = Util::scene()->fieldInfo("TODO")->module()->newBoundary();
@@ -887,6 +908,7 @@ void Scene::doNewBoundary()
 
 void Scene::doNewMaterial()
 {
+    assert(0);
     logMessage("Scene::doNewMaterial()");
 
     SceneMaterial *marker = Util::scene()->fieldInfo("TODO")->module()->newMaterial();
@@ -922,7 +944,6 @@ void Scene::doProblemProperties()
     PhysicFieldVariableComp scalarComp = PhysicFieldVariableComp_Undefined;
 
     // previous value
-
     scalar = QString::fromStdString(sceneView()->sceneViewSettings().scalarPhysicFieldVariable);
     scalarComp = sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp;
     vector = QString::fromStdString(sceneView()->sceneViewSettings().vectorPhysicFieldVariable);
@@ -932,13 +953,16 @@ void Scene::doProblemProperties()
 
     problemDialog.showDialog();
 
+    //TODO - allow "no field"
+    FieldInfo *fieldInfo = Util::scene()->fieldInfos().values().at(0);
+
     // contour
-    sceneView()->sceneViewSettings().contourPhysicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->view_default_scalar_variable->id;
+    sceneView()->sceneViewSettings().contourPhysicFieldVariable = fieldInfo->module()->view_default_scalar_variable->id;
 
     // scalar view
     // determines whether the selected field exists
-    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->fieldInfo("TODO")->module()->view_scalar_variables.begin();
-         it < Util::scene()->fieldInfo("TODO")->module()->view_scalar_variables.end(); ++it )
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = fieldInfo->module()->view_scalar_variables.begin();
+         it < fieldInfo->module()->view_scalar_variables.end(); ++it )
     {
         Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
         if (variable->id == scalar.toStdString())
@@ -949,21 +973,21 @@ void Scene::doProblemProperties()
     }
     if (sceneView()->sceneViewSettings().scalarPhysicFieldVariable == "")
     {
-        sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->view_default_scalar_variable->id;
-        sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->fieldInfo("TODO")->module()->view_default_scalar_variable_comp();
+        sceneView()->sceneViewSettings().scalarPhysicFieldVariable = fieldInfo->module()->view_default_scalar_variable->id;
+        sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = fieldInfo->module()->view_default_scalar_variable_comp();
         sceneView()->sceneViewSettings().scalarRangeAuto = true;
     }
 
     // vector view
-    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->fieldInfo("TODO")->module()->view_vector_variables.begin();
-         it < Util::scene()->fieldInfo("TODO")->module()->view_vector_variables.end(); ++it )
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = fieldInfo->module()->view_vector_variables.begin();
+         it < fieldInfo->module()->view_vector_variables.end(); ++it )
     {
         Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
         if (variable->id == vector.toStdString())
             sceneView()->sceneViewSettings().vectorPhysicFieldVariable = variable->id;
     }
     if (sceneView()->sceneViewSettings().vectorPhysicFieldVariable == "")
-        sceneView()->sceneViewSettings().vectorPhysicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->view_default_vector_variable->id;
+        sceneView()->sceneViewSettings().vectorPhysicFieldVariable = fieldInfo->module()->view_default_vector_variable->id;
 
     emit invalidated();
 }
@@ -1156,6 +1180,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     setlocale (LC_NUMERIC, "C");
 
     clear();
+    //TODO - allow "no field"
+    m_fieldInfos.clear();
+
     m_problemInfo->fileName = fileName;
     emit fileNameChanged(fileInfo.absoluteFilePath());
 
@@ -1191,26 +1218,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->date = QDate::fromString(eleProblem.toElement().attribute("date", QDate::currentDate().toString(Qt::ISODate)), Qt::ISODate);
     // problem type                                                                                                                                                                                                                             `
     m_problemInfo->coordinateType = coordinateTypeFromStringKey(eleProblem.toElement().attribute("problemtype"));
-    // analysis type
-    m_fieldInfos["TODO"]->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype",
-                                                                                                    analysisTypeToStringKey(AnalysisType_SteadyState)));
-    // physic field
-    m_fieldInfos["TODO"]->setModule(moduleFactory(eleProblem.toElement().attribute("type").toStdString(),
-                                                  coordinateTypeFromStringKey(eleProblem.toElement().attribute("problemtype")),
-                                                  analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(AnalysisType_SteadyState))),
-                                                  (eleProblem.toElement().attribute("type") == "custom"
-                                                   ? fileName.left(fileName.size() - 4) + ".xml" : "").toStdString()));
-    // number of refinements
-    m_fieldInfos["TODO"]->numberOfRefinements = eleProblem.toElement().attribute("numberofrefinements").toInt();
-    // polynomial order
-    m_fieldInfos["TODO"]->polynomialOrder = eleProblem.toElement().attribute("polynomialorder").toInt();
-    // mesh type
-    m_fieldInfos["TODO"]->meshType = meshTypeFromStringKey(eleProblem.toElement().attribute("meshtype",
-                                                                                            meshTypeToStringKey(MeshType_Triangle)));
-    // adaptivity
-    m_fieldInfos["TODO"]->adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
-    m_fieldInfos["TODO"]->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
-    m_fieldInfos["TODO"]->adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
 
     // harmonic
     m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();
@@ -1218,17 +1225,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // transient
     m_problemInfo->timeStep.setText(eleProblem.toElement().attribute("timestep", "1"));
     m_problemInfo->timeTotal.setText(eleProblem.toElement().attribute("timetotal", "1"));
-    m_fieldInfos["TODO"]->initialCondition.setText(eleProblem.toElement().attribute("initialcondition", "0"));
-
-    // linearity
-    m_fieldInfos["TODO"]->linearityType = linearityTypeFromStringKey(eleProblem.toElement().attribute("linearity",
-                                                                                                      linearityTypeToStringKey(LinearityType_Linear)));
-    m_fieldInfos["TODO"]->nonlinearSteps = eleProblem.toElement().attribute("nonlinearsteps", "10").toInt();
-    m_fieldInfos["TODO"]->nonlinearTolerance = eleProblem.toElement().attribute("nonlineartolerance", "1e-3").toDouble();
-
-    // weakforms
-    m_fieldInfos["TODO"]->weakFormsType = weakFormsTypeFromStringKey(eleProblem.toElement().attribute("weakforms",
-                                                                                                      weakFormsTypeToStringKey(WeakFormsType_Compiled)));
 
     // matrix solver
     m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblem.toElement().attribute("matrix_solver",
@@ -1246,6 +1242,41 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // description
     QDomNode eleDescription = eleProblem.toElement().elementsByTagName("description").at(0);
     m_problemInfo->description = eleDescription.toElement().text();
+
+    // field ***************************************************************************************************************
+
+    FieldInfo *field = new FieldInfo(m_problemInfo, eleProblem.toElement().attribute("type"));
+
+    // analysis type
+    field->setAnalysisType(analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype",
+                                                                                      analysisTypeToStringKey(AnalysisType_SteadyState))));
+
+    // number of refinements
+    field->numberOfRefinements = eleProblem.toElement().attribute("numberofrefinements").toInt();
+    // polynomial order
+    field->polynomialOrder = eleProblem.toElement().attribute("polynomialorder").toInt();
+    // mesh type
+    field->meshType = meshTypeFromStringKey(eleProblem.toElement().attribute("meshtype",
+                                                                             meshTypeToStringKey(MeshType_Triangle)));
+    // adaptivity
+    field->adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
+    field->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
+    field->adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
+
+    // initial condition
+    field->initialCondition.setText(eleProblem.toElement().attribute("initialcondition", "0"));
+
+    // linearity
+    field->linearityType = linearityTypeFromStringKey(eleProblem.toElement().attribute("linearity",
+                                                                                       linearityTypeToStringKey(LinearityType_Linear)));
+    field->nonlinearSteps = eleProblem.toElement().attribute("nonlinearsteps", "10").toInt();
+    field->nonlinearTolerance = eleProblem.toElement().attribute("nonlineartolerance", "1e-3").toDouble();
+
+    // weakforms
+    field->weakFormsType = weakFormsTypeFromStringKey(eleProblem.toElement().attribute("weakforms",
+                                                                                       weakFormsTypeToStringKey(WeakFormsType_Compiled)));
+
+    addField(field);
 
     // markers ***************************************************************************************************************
 
@@ -1266,9 +1297,11 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         else
         {
             // read marker
-            SceneBoundary *boundary = new SceneBoundary("TODO", name.toStdString(), type.toStdString());
+            SceneBoundary *boundary = new SceneBoundary(field,
+                                                        name.toStdString(),
+                                                        type.toStdString());
 
-            Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(type.toStdString());
+            Hermes::Module::BoundaryType *boundary_type = field->module()->get_boundary_type(type.toStdString());
             for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin();
                  it < boundary_type->variables.end(); ++it)
             {
@@ -1300,15 +1333,16 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         else
         {
             // read marker
-            SceneMaterial *material = new SceneMaterial("TODO", name.toStdString());
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo("TODO")->module()->material_type_variables;
+            SceneMaterial *material = new SceneMaterial(field,
+                                                        name.toStdString());
+            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = field->module()->material_type_variables;
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
 
                 material->setValue(variable->id,
-                        Value(element.toElement().attribute(QString::fromStdString(variable->id),
-                                                            QString::number(variable->default_value))));
+                                   Value(element.toElement().attribute(QString::fromStdString(variable->id),
+                                                                       QString::number(variable->default_value))));
             }
             Util::scene()->addMaterial(material);
         }
@@ -1407,7 +1441,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
     //    // custom form
     //    /*
-    //    if (m_problemInfo->module()->id == "custom")
+    //    if (m_problemInfo->fieldId() == "custom")
     //        if (!QFile::exists(m_problemInfo->fileName.left(m_problemInfo->fileName.size() - 4) + ".xml"))
     //        {
     //            QFile::remove(fileName.left(fileName.size() - 4) + ".xml");
@@ -1454,7 +1488,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     //    // analysis type
     //    eleProblem.setAttribute("analysistype", analysisTypeToStringKey(m_problemInfo->analysisType));
     //    // type
-    //    eleProblem.setAttribute("type", QString::fromStdString(m_problemInfo->module()->id));
+    //    eleProblem.setAttribute("type", QString::fromStdString(m_problemInfo->fieldId()));
     //    // number of refinements
     //    eleProblem.setAttribute("numberofrefinements", m_problemInfo->numberOfRefinements);
     //    // polynomial order

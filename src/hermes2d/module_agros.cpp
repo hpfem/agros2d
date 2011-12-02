@@ -70,19 +70,25 @@ void Hermes::Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbF
 
 SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()
 {
-    return new SceneBoundary("TODO", tr("new boundary").toStdString(),
-                             Util::scene()->fieldInfo("TODO")->module()->boundary_type_default->id);
+    //TODO - add dialog
+    FieldInfo *field = Util::scene()->fieldInfos().values().at(0);
+
+    return new SceneBoundary(field, tr("new boundary").toStdString(),
+                             field->module()->boundary_type_default->id);
 }
 
 SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
 {
-    return new SceneMaterial("TODO", tr("new material").toStdString());
+    //TODO - add dialog
+    FieldInfo *field = Util::scene()->fieldInfos().values().at(0);
+
+    return new SceneMaterial(field, tr("new material").toStdString());
 }
 
 SceneBoundaryContainer Hermes::Module::ModuleAgros::boundaries()
 {
     //TODO - how to cast???
-    MarkerContainer<SceneBoundary> boundaries = Util::scene()->boundaries->filter("TODO");
+    MarkerContainer<SceneBoundary> boundaries = Util::scene()->boundaries->filter(QString::fromStdString(fieldid));
 
     SceneBoundaryContainer boundaryContainer;
     foreach (SceneBoundary *boundary, boundaries.items())
@@ -94,7 +100,7 @@ SceneBoundaryContainer Hermes::Module::ModuleAgros::boundaries()
 SceneMaterialContainer Hermes::Module::ModuleAgros::materials()
 {
     //TODO - how to cast???
-    MarkerContainer<SceneMaterial> materials = Util::scene()->materials->filter("TODO");
+    MarkerContainer<SceneMaterial> materials = Util::scene()->materials->filter(QString::fromStdString(fieldid));
 
     SceneMaterialContainer materialContainer;
     foreach (SceneMaterial *material, materials.items())
@@ -140,13 +146,13 @@ void deformShapeTemplate(T linVert, int count)
 
 void Hermes::Module::ModuleAgros::deform_shape(double3* linVert, int count)
 {
-    if (Util::scene()->fieldInfo("TODO")->module()->deformed_shape)
+    if (Util::scene()->fieldInfo(fieldid)->module()->deformed_shape)
         deformShapeTemplate<double3 *>(linVert, count);
 }
 
 void Hermes::Module::ModuleAgros::deform_shape(double4* linVert, int count)
 {
-    if (Util::scene()->fieldInfo("TODO")->module()->deformed_shape)
+    if (Util::scene()->fieldInfo(fieldid)->module()->deformed_shape)
         deformShapeTemplate<double4 *>(linVert, count);
 }
 

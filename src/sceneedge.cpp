@@ -24,6 +24,8 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
+#include "hermes2d/module_agros.h"
+
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int refineTowardsEdge)
     : MarkedSceneBasic()
 {
@@ -54,7 +56,7 @@ double SceneEdge::distance(const Point &point) const
     if (isStraight())
     {
         double t = ((point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y)) /
-                   ((nodeEnd->point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (nodeEnd->point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y));
+                ((nodeEnd->point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (nodeEnd->point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y));
 
         if (t > 1.0) t = 1.0;
         if (t < 0.0) t = 0.0;
@@ -126,7 +128,7 @@ void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
         if ((edge->nodeStart == node) || (edge->nodeEnd == node))
         {
             Util::scene()->undoStack()->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, "TODO",
-                                                         edge->angle, edge->refineTowardsEdge));
+                                                                        edge->angle, edge->refineTowardsEdge));
             remove(edge);
         }
     }
@@ -188,11 +190,6 @@ QLayout* SceneEdgeDialog::createContent()
     cmbNodeEnd = new QComboBox();
     connect(cmbNodeStart, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
     connect(cmbNodeEnd, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
-    cmbBoundary = new QComboBox();
-    connect(cmbBoundary, SIGNAL(currentIndexChanged(int)), this, SLOT(doBoundaryChanged(int)));
-    btnBoundary = new QPushButton(icon("three-dots"), "");
-    btnBoundary->setMaximumSize(btnBoundary->sizeHint());
-    connect(btnBoundary, SIGNAL(clicked()), this, SLOT(doBoundaryClicked()));
     txtAngle = new ValueLineEdit();
     txtAngle->setMinimum(0.0);
     txtAngle->setMaximum(180.0);
@@ -211,11 +208,6 @@ QLayout* SceneEdgeDialog::createContent()
     QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
     grpCoordinates->setLayout(layoutCoordinates);
 
-    // marker
-    QHBoxLayout *layoutBoundary = new QHBoxLayout();
-    layoutBoundary->addWidget(cmbBoundary);
-    layoutBoundary->addWidget(btnBoundary);
-
     // refine towards edge
     chkRefineTowardsEdge = new QCheckBox();
     connect(chkRefineTowardsEdge, SIGNAL(stateChanged(int)), this, SLOT(doRefineTowardsEdge(int)));
@@ -232,9 +224,34 @@ QLayout* SceneEdgeDialog::createContent()
     QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
     grpMeshParameters->setLayout(layoutMeshParameters);
 
+    // markers
+    QFormLayout *layoutBoundaries = new QFormLayout();
+
+    QGroupBox *grpBoundaries = new QGroupBox(tr("Boundary conditions"));
+    grpBoundaries->setLayout(layoutBoundaries);
+
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        QComboBox *cmbBoundary = new QComboBox();
+        connect(cmbBoundary, SIGNAL(currentIndexChanged(int)), this, SLOT(doBoundaryChanged(int)));
+        cmbBoundaries.append(cmbBoundary);
+
+        QPushButton *btnBoundary = new QPushButton(icon("three-dots"), "");
+        btnBoundary->setMaximumSize(btnBoundary->sizeHint());
+        connect(btnBoundary, SIGNAL(clicked()), this, SLOT(doBoundaryClicked()));
+        btnBoundaries.append(btnBoundary);
+
+        QHBoxLayout *layoutBoundary = new QHBoxLayout();
+        layoutBoundary->addWidget(cmbBoundary);
+        layoutBoundary->addWidget(btnBoundary);
+
+        layoutBoundaries->addRow(QString::fromStdString(fieldInfo->module()->name),
+                                 layoutBoundary);
+    }
+
     // layout
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(tr("Boundary condition:"), layoutBoundary);
+    layout->addRow(grpBoundaries);
     layout->addRow(grpCoordinates);
     layout->addRow(grpMeshParameters);
     layout->addRow(tr("Length:"), lblLength);
@@ -266,10 +283,23 @@ void SceneEdgeDialog::fillComboBox()
     }
 
     // markers
-    cmbBoundary->clear();
-    foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
-        cmbBoundary->addItem(QString::fromStdString(boundary->getName()),
-                             boundary->variant());
+    int i = 0;
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        cmbBoundaries[i]->clear();
+
+        // //TODO - do it better - none marker
+        cmbBoundaries[i]->addItem(QString::fromStdString(Util::scene()->boundaries->at(0)->getName()),
+                                  Util::scene()->boundaries->at(0)->variant());
+
+        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
+        {
+            cmbBoundaries[i]->addItem(QString::fromStdString(boundary->getName()),
+                                      boundary->variant());
+        }
+
+        i++;
+    }
 }
 
 bool SceneEdgeDialog::load()
@@ -281,11 +311,18 @@ bool SceneEdgeDialog::load()
 
     cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart->variant()));
     cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd->variant()));
-    cmbBoundary->setCurrentIndex(cmbBoundary->findData(sceneEdge->getMarker("TODO")->variant()));
     txtAngle->setNumber(sceneEdge->angle);
     chkRefineTowardsEdge->setChecked(sceneEdge->refineTowardsEdge > 0.0);
     txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
     txtRefineTowardsEdge->setValue(sceneEdge->refineTowardsEdge);
+
+    int i = 0;
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        cmbBoundaries[i]->setCurrentIndex(cmbBoundaries[i]->findData(sceneEdge->getMarker(fieldInfo->fieldId())->variant()));
+
+        i++;
+    }
 
     doNodeChanged();
 
@@ -294,7 +331,7 @@ bool SceneEdgeDialog::load()
 
 bool SceneEdgeDialog::save()
 {
-//    assert(0); //TODO
+    //    assert(0); //TODO
     logMessage("DSceneEdge::save()");
 
     if (!txtAngle->evaluate(false)) return false;
@@ -330,9 +367,16 @@ bool SceneEdgeDialog::save()
 
     sceneEdge->nodeStart = nodeStart;
     sceneEdge->nodeEnd = nodeEnd;
-    sceneEdge->addMarker(cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>());
     sceneEdge->angle = txtAngle->number();
     sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
+
+    int i = 0;
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        sceneEdge->addMarker(cmbBoundaries[i]->itemData(cmbBoundaries[i]->currentIndex()).value<SceneBoundary *>());
+
+        i++;
+    }
 
     return true;
 }
@@ -341,19 +385,22 @@ void SceneEdgeDialog::doBoundaryChanged(int index)
 {
     logMessage("DSceneEdge::doBoundaryChanged()");
 
-    btnBoundary->setEnabled(cmbBoundary->currentIndex() > 0);
+    for (int i = 0; i < cmbBoundaries.length(); i++)
+        btnBoundaries[i]->setEnabled(cmbBoundaries[i]->currentIndex() > 0);
 }
 
 void SceneEdgeDialog::doBoundaryClicked()
 {
-    logMessage("DSceneEdge::doBoundaryClicked()");
+    //TODO
+    assert(0);
+    //    logMessage("DSceneEdge::doBoundaryClicked()");
 
-    SceneBoundary *marker = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
-    if (marker->showDialog(this) == QDialog::Accepted)
-    {
-        cmbBoundary->setItemText(cmbBoundary->currentIndex(), QString::fromStdString(marker->getName()));
-        Util::scene()->refresh();
-    }
+    //    SceneBoundary *marker = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
+    //    if (marker->showDialog(this) == QDialog::Accepted)
+    //    {
+    //        cmbBoundary->setItemText(cmbBoundary->currentIndex(), QString::fromStdString(marker->getName()));
+    //        Util::scene()->refresh();
+    //    }
 }
 
 void SceneEdgeDialog::doNodeChanged()
@@ -440,15 +487,15 @@ SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Po
 void SceneEdgeCommandRemove::undo()
 {
     assert(0); //TODO
-//    logMessage("SceneEdgeCommandRemove::undo()");
+    //    logMessage("SceneEdgeCommandRemove::undo()");
 
-//    SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
-//    if (boundary == NULL) boundary = Util::scene()->boundaries->get("none"); //TODO - do it better
-//    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
-//                                         Util::scene()->addNode(new SceneNode(m_pointEnd)),
-//                                         boundary,
-//                                         m_angle,
-//                                         m_refineTowardsEdge));
+    //    SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
+    //    if (boundary == NULL) boundary = Util::scene()->boundaries->get("none"); //TODO - do it better
+    //    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
+    //                                         Util::scene()->addNode(new SceneNode(m_pointEnd)),
+    //                                         boundary,
+    //                                         m_angle,
+    //                                         m_refineTowardsEdge));
 }
 
 void SceneEdgeCommandRemove::redo()

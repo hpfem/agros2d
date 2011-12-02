@@ -222,7 +222,7 @@ void SceneSolution<Scalar>::loadSolution(QDomElement element)
 //    Hermes::vector<SolutionArray<Scalar> *> solutionArrayList;
 
 //    // constant solution cannot be saved
-//    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
 //    {
 //        Util::scene()->problemInfo()->initialCondition.evaluate(true);
 
@@ -263,7 +263,7 @@ void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement element)
 //    if (isSolved())
 //    {
 //        // constant solution cannot be saved
-//        int start = (Util::scene()->problemInfo()->analysisType != AnalysisType_Transient) ? 0 : 1;
+//        int start = (Util::scene()->problemInfo()->analysisType() != AnalysisType_Transient) ? 0 : 1;
 
 //        for (int i = start; i < timeStepCount(); i++)
 //        {

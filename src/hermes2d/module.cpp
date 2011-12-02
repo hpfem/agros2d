@@ -84,180 +84,200 @@ std::map<std::string, std::string> availableModules()
     return modules;
 }
 
+std::map<std::string, std::string> availableAnalyses(std::string fieldId)
+{
+    static std::map<std::string, std::string> analyses;
+
+    // read module
+    rapidxml::file<> file_data((datadir().toStdString() + "/modules/" + fieldId + ".xml").c_str());
+
+    // parse xml
+    rapidxml::xml_document<> doc;
+    doc.parse<0>(file_data.data());
+
+    for (rapidxml::xml_node<> *analysis = doc.first_node("module")->first_node("general")->first_node("analyses")->first_node("analysis");
+         analysis; analysis = analysis->next_sibling())
+    {
+        analyses[analysis->first_attribute("id")->value()] = analysis->first_attribute("name")->value();
+    }
+
+    return analyses;
+}
+
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForms()
 {
     assert(0); //TODO
-//    qDebug() << "registerForms";
+    //    qDebug() << "registerForms";
 
-//    string problemId = Util::scene()->problemInfo()->module()->id + "_" +
-//            analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
-//            problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
+    //    string problemId = Util::scene()->problemInfo()->fieldId() + "_" +
+    //            analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
+    //            problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
 
-//    // boundary conditions
-//    for (int i = 0; i<Util::scene()->edges.count(); i++)
-//    {
-//        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
+    //    // boundary conditions
+    //    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    //    {
+    //        SceneBoundary *boundary = Util::scene()->edges[i]->boundary;
 
-//        if (boundary && boundary != Util::scene()->boundaries->get("none")) //TODO - do it better
-//        {
-//            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->getBoundary("TODO")->getType());
+    //        if (boundary && boundary != Util::scene()->boundaries->get("none")) //TODO - do it better
+    //        {
+    //            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->getBoundary("TODO")->getType());
 
-//            for (Hermes::vector<ParserFormMatrix *>::iterator it = boundary_type->weakform_matrix_surface.begin();
-//                 it < boundary_type->weakform_matrix_surface.end(); ++it)
-//            {
-//                ParserFormMatrix *form = ((ParserFormMatrix *) *it);
+    //            for (Hermes::vector<ParserFormMatrix *>::iterator it = boundary_type->weakform_matrix_surface.begin();
+    //                 it < boundary_type->weakform_matrix_surface.end(); ++it)
+    //            {
+    //                ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
-//                Hermes::Hermes2D::MatrixFormSurf<Scalar>* custom_form = NULL;
+    //                Hermes::Hermes2D::MatrixFormSurf<Scalar>* custom_form = NULL;
 
-//                // compiled form
-//                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
-//                {
-//                    custom_form = factoryMatrixFormSurf<Scalar>(problemId,
-//                                                                form->i - 1, form->j - 1,
-//                                                                QString::number(i + 1).toStdString(),
-//                                                                boundary);
-//                }
+    //                // compiled form
+    //                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+    //                {
+    //                    custom_form = factoryMatrixFormSurf<Scalar>(problemId,
+    //                                                                form->i - 1, form->j - 1,
+    //                                                                QString::number(i + 1).toStdString(),
+    //                                                                boundary);
+    //                }
 
-//                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
-//                    qDebug() << "Cannot find compiled MatrixFormSurf().";
+    //                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+    //                    qDebug() << "Cannot find compiled MatrixFormSurf().";
 
-//                // interpreted form
-//                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
-//                {
-//                    custom_form = new CustomParserMatrixFormSurf<Scalar>(form->i - 1, form->j - 1,
-//                                                                         QString::number(i + 1).toStdString(),
-//                                                                         form->expression, boundary);
-//                }
+    //                // interpreted form
+    //                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
+    //                {
+    //                    custom_form = new CustomParserMatrixFormSurf<Scalar>(form->i - 1, form->j - 1,
+    //                                                                         QString::number(i + 1).toStdString(),
+    //                                                                         form->expression, boundary);
+    //                }
 
-//                if (custom_form)
-//                {
-//                    add_matrix_form_surf(custom_form);
-//                }
-//            }
+    //                if (custom_form)
+    //                {
+    //                    add_matrix_form_surf(custom_form);
+    //                }
+    //            }
 
-//            for (Hermes::vector<ParserFormVector *>::iterator it = boundary_type->weakform_vector_surface.begin();
-//                 it < boundary_type->weakform_vector_surface.end(); ++it)
-//            {
-//                ParserFormVector *form = ((ParserFormVector *) *it);
+    //            for (Hermes::vector<ParserFormVector *>::iterator it = boundary_type->weakform_vector_surface.begin();
+    //                 it < boundary_type->weakform_vector_surface.end(); ++it)
+    //            {
+    //                ParserFormVector *form = ((ParserFormVector *) *it);
 
-//                Hermes::Hermes2D::VectorFormSurf<Scalar>* custom_form = NULL;
+    //                Hermes::Hermes2D::VectorFormSurf<Scalar>* custom_form = NULL;
 
-//                // compiled form
-//                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
-//                {
-//                    custom_form = factoryVectorFormSurf<Scalar>(problemId,
-//                                                                form->i - 1, form->j - 1,
-//                                                                QString::number(i + 1).toStdString(),
-//                                                                boundary);
-//                }
+    //                // compiled form
+    //                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+    //                {
+    //                    custom_form = factoryVectorFormSurf<Scalar>(problemId,
+    //                                                                form->i - 1, form->j - 1,
+    //                                                                QString::number(i + 1).toStdString(),
+    //                                                                boundary);
+    //                }
 
-//                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
-//                    qDebug() << "Cannot find compiled VectorFormSurf().";
+    //                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+    //                    qDebug() << "Cannot find compiled VectorFormSurf().";
 
-//                // interpreted form
-//                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
-//                {
-//                    custom_form = new CustomParserVectorFormSurf<Scalar>(form->i - 1, form->j - 1,
-//                                                                         QString::number(i + 1).toStdString(),
-//                                                                         form->expression,
-//                                                                         boundary);
-//                }
+    //                // interpreted form
+    //                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
+    //                {
+    //                    custom_form = new CustomParserVectorFormSurf<Scalar>(form->i - 1, form->j - 1,
+    //                                                                         QString::number(i + 1).toStdString(),
+    //                                                                         form->expression,
+    //                                                                         boundary);
+    //                }
 
-//                if (custom_form)
-//                {
-//                    add_vector_form_surf(custom_form);
-//                }
-//            }
-//        }
-//    }
+    //                if (custom_form)
+    //                {
+    //                    add_vector_form_surf(custom_form);
+    //                }
+    //            }
+    //        }
+    //    }
 
-//    // materials
-//    for (int i = 0; i<Util::scene()->labels.count(); i++)
-//    {
-//        SceneMaterial *material = Util::scene()->labels[i]->material;
+    //    // materials
+    //    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    //    {
+    //        SceneMaterial *material = Util::scene()->labels[i]->material;
 
-//        if (material && material != Util::scene()->materials[0])
-//        {
-//            for (Hermes::vector<ParserFormMatrix *>::iterator it = Util::scene()->problemInfo()->module()->weakform_matrix_volume.begin();
-//                 it < Util::scene()->problemInfo()->module()->weakform_matrix_volume.end(); ++it)
-//            {
-//                ParserFormMatrix *form = ((ParserFormMatrix *) *it);
+    //        if (material && material != Util::scene()->materials[0])
+    //        {
+    //            for (Hermes::vector<ParserFormMatrix *>::iterator it = Util::scene()->problemInfo()->module()->weakform_matrix_volume.begin();
+    //                 it < Util::scene()->problemInfo()->module()->weakform_matrix_volume.end(); ++it)
+    //            {
+    //                ParserFormMatrix *form = ((ParserFormMatrix *) *it);
 
-//                Hermes::Hermes2D::MatrixFormVol<Scalar>* custom_form = NULL;
+    //                Hermes::Hermes2D::MatrixFormVol<Scalar>* custom_form = NULL;
 
-//                // compiled form
-//                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
-//                {
-//                    custom_form = factoryMatrixFormVol<Scalar>(problemId, form->i - 1, form->j - 1,
-//                                                               QString::number(i).toStdString(),
-//                                                               form->sym,
-//                                                               material);
-//                }
+    //                // compiled form
+    //                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+    //                {
+    //                    custom_form = factoryMatrixFormVol<Scalar>(problemId, form->i - 1, form->j - 1,
+    //                                                               QString::number(i).toStdString(),
+    //                                                               form->sym,
+    //                                                               material);
+    //                }
 
-//                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
-//                    qDebug() << "Cannot find compiled MatrixFormVol().";
+    //                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+    //                    qDebug() << "Cannot find compiled MatrixFormVol().";
 
-//                // interpreted form
-//                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
-//                {
-//                    custom_form = new CustomParserMatrixFormVol<Scalar>(form->i - 1, form->j - 1,
-//                                                                        QString::number(i).toStdString(),
-//                                                                        form->sym,
-//                                                                        form->expression,
-//                                                                        material);
-//                }
+    //                // interpreted form
+    //                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
+    //                {
+    //                    custom_form = new CustomParserMatrixFormVol<Scalar>(form->i - 1, form->j - 1,
+    //                                                                        QString::number(i).toStdString(),
+    //                                                                        form->sym,
+    //                                                                        form->expression,
+    //                                                                        material);
+    //                }
 
-//                if (custom_form)
-//                {
-//                    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-//                        for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
-//                            custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
+    //                if (custom_form)
+    //                {
+    //                    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
+    //                        for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
+    //                            custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
 
 
-//                    add_matrix_form(custom_form);
-//                }
-//            }
+    //                    add_matrix_form(custom_form);
+    //                }
+    //            }
 
-//            for (Hermes::vector<ParserFormVector *>::iterator it = Util::scene()->problemInfo()->module()->weakform_vector_volume.begin();
-//                 it < Util::scene()->problemInfo()->module()->weakform_vector_volume.end(); ++it)
-//            {
-//                ParserFormVector *form = ((ParserFormVector *) *it);
+    //            for (Hermes::vector<ParserFormVector *>::iterator it = Util::scene()->problemInfo()->module()->weakform_vector_volume.begin();
+    //                 it < Util::scene()->problemInfo()->module()->weakform_vector_volume.end(); ++it)
+    //            {
+    //                ParserFormVector *form = ((ParserFormVector *) *it);
 
-//                Hermes::Hermes2D::VectorFormVol<Scalar>* custom_form = NULL;
+    //                Hermes::Hermes2D::VectorFormVol<Scalar>* custom_form = NULL;
 
-//                // compiled form
-//                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
-//                {
-//                    custom_form = factoryVectorFormVol<Scalar>(problemId, form->i - 1, form->j - 1,
-//                                                               QString::number(i).toStdString(),
-//                                                               material);
-//                }
+    //                // compiled form
+    //                if (Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+    //                {
+    //                    custom_form = factoryVectorFormVol<Scalar>(problemId, form->i - 1, form->j - 1,
+    //                                                               QString::number(i).toStdString(),
+    //                                                               material);
+    //                }
 
-//                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
-//                    qDebug() << "Cannot find compiled VectorFormVol().";
+    //                if (!custom_form && Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Compiled)
+    //                    qDebug() << "Cannot find compiled VectorFormVol().";
 
-//                // interpreted form
-//                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
-//                {
-//                    custom_form = new CustomParserVectorFormVol<Scalar>(form->i - 1, form->j - 1,
-//                                                                        QString::number(i).toStdString(),
-//                                                                        form->expression,
-//                                                                        material);
-//                }
+    //                // interpreted form
+    //                if (!custom_form || Util::scene()->problemInfo()->weakFormsType == WeakFormsType_Interpreted)
+    //                {
+    //                    custom_form = new CustomParserVectorFormVol<Scalar>(form->i - 1, form->j - 1,
+    //                                                                        QString::number(i).toStdString(),
+    //                                                                        form->expression,
+    //                                                                        material);
+    //                }
 
-//                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-//                    for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
-//                        custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
+    //                if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
+    //                    for(int sol_comp = 0; sol_comp < Util::scene()->problemInfo()->module()->number_of_solution(); sol_comp++)
+    //                        custom_form->ext.push_back(solution.at(solution.size() - Util::scene()->problemInfo()->module()->number_of_solution() + sol_comp));
 
-//                if (custom_form)
-//                {
-//                    //cout << "pridavam vektorovou formu, i: " << form->i << ", j: " << form->j << ", expresion: " << form->expression << endl;
-//                    add_vector_form(custom_form);
-//                }
-//            }
-//        }
-//    }
+    //                if (custom_form)
+    //                {
+    //                    //cout << "pridavam vektorovou formu, i: " << form->i << ", j: " << form->j << ", expresion: " << form->expression << endl;
+    //                    add_vector_form(custom_form);
+    //                }
+    //            }
+    //        }
+    //    }
 }
 
 // ***********************************************************************************************
@@ -528,7 +548,7 @@ void Hermes::Module::Module::read(std::string filename)
 
         // problem
         rapidxml::xml_node<> *general = doc.first_node("module")->first_node("general");
-        id = general->first_attribute("id")->value();
+        fieldid = general->first_attribute("id")->value();
         name = QObject::tr(general->first_attribute("name")->value()).toStdString(); // FIXME - Qt dependence
         deformed_shape = general->first_attribute("deformed_shape") ? atoi(general->first_attribute("deformed_shape")->value()) : 0;
         description = general->first_node("description")->value();
@@ -697,7 +717,7 @@ void Hermes::Module::Module::read(std::string filename)
 void Hermes::Module::Module::clear()
 {
     // general information
-    id = "";
+    fieldid = "";
     name = "";
     description = "";
 
@@ -851,48 +871,48 @@ ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Mod
                                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
     assert(0);
-//    Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
-//    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
-//    {
-//        sln.push_back(Util::scene()->sceneSolution()->sln(
-//                          k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->module()->number_of_solution())));
-//    }
-//    return new ViewScalarFilter<double>(sln, get_expression(physicFieldVariable, physicFieldVariableComp));//TODO PK <double>
+    //    Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
+    //    for (int k = 0; k < Util::scene()->problemInfo()->module()->number_of_solution(); k++)
+    //    {
+    //        sln.push_back(Util::scene()->sceneSolution()->sln(
+    //                          k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->module()->number_of_solution())));
+    //    }
+    //    return new ViewScalarFilter<double>(sln, get_expression(physicFieldVariable, physicFieldVariableComp));//TODO PK <double>
 }
 
 bool Hermes::Module::Module::solve_init_variables()
 {
     assert(0); //TODO
-//    // transient
-//    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-//    {
-//        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return false;
-//        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return false;
-//        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return false;
-//    }
+    //    // transient
+    //    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
+    //    {
+    //        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return false;
+    //        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return false;
+    //        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return false;
+    //    }
 
-//    // edge markers
-//    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-//    {
-//        SceneBoundary *boundary = Util::scene()->boundaries[i];
+    //    // edge markers
+    //    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
+    //    {
+    //        SceneBoundary *boundary = Util::scene()->boundaries[i];
 
-//        // evaluate script
-//        for (std::map<std::string, Value>::iterator it = boundary->getBoundary("TODO")->getValues().begin(); it != boundary->getBoundary("TODO")->getValues().end(); ++it)
-//            if (!it->second.evaluate()) return false;
-//    }
+    //        // evaluate script
+    //        for (std::map<std::string, Value>::iterator it = boundary->getBoundary("TODO")->getValues().begin(); it != boundary->getBoundary("TODO")->getValues().end(); ++it)
+    //            if (!it->second.evaluate()) return false;
+    //    }
 
-//    // label markers
-//    for (int i = 1; i<Util::scene()->materials.count(); i++)
-//    {
-//        SceneMaterial *material = Util::scene()->materials[i];
+    //    // label markers
+    //    for (int i = 1; i<Util::scene()->materials.count(); i++)
+    //    {
+    //        SceneMaterial *material = Util::scene()->materials[i];
 
-//        // evaluate script
-//        for (std::map<std::string, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
-//            if (!it->second.evaluate()) return false;
-//    }
+    //        // evaluate script
+    //        for (std::map<std::string, Value>::iterator it = material->values.begin(); it != material->values.end(); ++it)
+    //            if (!it->second.evaluate()) return false;
+    //    }
 
 
-//    return true;
+    //    return true;
 }
 
 Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
@@ -911,27 +931,27 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressIt
 Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solveAdaptiveStep(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
 {
     assert(0); //TODO
-//    if (!solve_init_variables())
-//        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
+    //    if (!solve_init_variables())
+    //        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
 
-//    WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
+    //    WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
-//    SolverAgros<double> solutionAgros(progressItemSolve, &wf);
+    //    SolverAgros<double> solutionAgros(progressItemSolve, &wf);
 
-//    Hermes::vector<const Hermes::Hermes2D::Space<double> *> space;
-//    Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution;
+    //    Hermes::vector<const Hermes::Hermes2D::Space<double> *> space;
+    //    Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution;
 
-//    for (int i = 0; i < Util::scene()->fiedInfo(id)->module()->number_of_solution(); i++)
-//    {
-//        int n = i + (Util::scene()->sceneSolution()->timeStepCount() - 1) * Util::scene()->problemInfo()->module()->number_of_solution();
-//        // space
-//        space.push_back(Util::scene()->sceneSolution()->sln(n)->get_space());
-//        // solution
-//        solution.push_back(Util::scene()->sceneSolution()->sln(n));
-//    }
+    //    for (int i = 0; i < Util::scene()->fiedInfo(id)->module()->number_of_solution(); i++)
+    //    {
+    //        int n = i + (Util::scene()->sceneSolution()->timeStepCount() - 1) * Util::scene()->problemInfo()->module()->number_of_solution();
+    //        // space
+    //        space.push_back(Util::scene()->sceneSolution()->sln(n)->get_space());
+    //        // solution
+    //        solution.push_back(Util::scene()->sceneSolution()->sln(n));
+    //    }
 
-//    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(space, solution);
-//    return solutionArrayList;
+    //    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(space, solution);
+    //    return solutionArrayList;
 }
 
 // ***********************************************************************************************
@@ -1007,17 +1027,17 @@ void writeMeshFromFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh)
 void refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
 {
     assert(0); //TODO
-//    // refine mesh - global
-//    if (refineGlobal)
-//        for (int i = 0; i < Util::scene()->problemInfo()->numberOfRefinements; i++)
-//            mesh->refine_all_elements(0);
+    //    // refine mesh - global
+    //    if (refineGlobal)
+    //        for (int i = 0; i < Util::scene()->problemInfo()->numberOfRefinements; i++)
+    //            mesh->refine_all_elements(0);
 
-//    // refine mesh - boundary
-//    if (refineTowardsEdge)
-//        for (int i = 0; i < Util::scene()->edges.count(); i++)
-//            if (Util::scene()->edges[i]->refineTowardsEdge > 0)
-//                mesh->refine_towards_boundary(QString::number(((Util::scene()->edges[i]->boundary->getType() != "") ? i + 1 : -i)).toStdString(),
-//                                              Util::scene()->edges[i]->refineTowardsEdge);
+    //    // refine mesh - boundary
+    //    if (refineTowardsEdge)
+    //        for (int i = 0; i < Util::scene()->edges.count(); i++)
+    //            if (Util::scene()->edges[i]->refineTowardsEdge > 0)
+    //                mesh->refine_towards_boundary(QString::number(((Util::scene()->edges[i]->boundary->getType() != "") ? i + 1 : -i)).toStdString(),
+    //                                              Util::scene()->edges[i]->refineTowardsEdge);
 }
 
 // return geom type
@@ -1028,7 +1048,7 @@ Hermes::Hermes2D::GeomType convertProblemType(CoordinateType problemType)
 
 // *********************************************************************************************************************************************
 
-Parser::Parser()
+Parser::Parser(FieldInfo *fieldInfo) : fieldInfo(fieldInfo)
 {
 
 }
@@ -1071,7 +1091,7 @@ void Parser::setParserVariables(Material *material, Boundary *boundary, double v
 
 void Parser::initParserMaterialVariables()
 {
-    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo("TODO")->module()->material_type_variables;
+    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = fieldInfo->module()->material_type_variables;
     for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
     {
         Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
@@ -1086,7 +1106,7 @@ void Parser::initParserMaterialVariables()
 
 void Parser::initParserBoundaryVariables(Boundary *boundary)
 {
-    Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(boundary->getType());
+    Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
     for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
     {
         Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
@@ -1102,11 +1122,12 @@ void Parser::initParserBoundaryVariables(Boundary *boundary)
 // *********************************************************************************************************************************************
 
 template <typename Scalar>
-ViewScalarFilter<Scalar>::ViewScalarFilter(Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
+ViewScalarFilter<Scalar>::ViewScalarFilter(FieldInfo *fieldInfo,
+                                           Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
                                            std::string expression)
-    : Hermes::Hermes2D::Filter<Scalar>(sln)
+    : Hermes::Hermes2D::Filter<Scalar>(sln), fieldInfo(fieldInfo)
 {
-    parser = new Parser();
+    parser = new Parser(fieldInfo);
     initParser(expression);
 
     // init material variables
@@ -1127,28 +1148,28 @@ template <typename Scalar>
 void ViewScalarFilter<Scalar>::initParser(std::string expression)
 {
     assert(0); //TODO
-//    mu::Parser *pars = Util::scene()->problemInfo()->module()->get_parser();
+    //    mu::Parser *pars = Util::scene()->problemInfo()->module()->get_parser();
 
-//    pars->SetExpr(expression);
+    //    pars->SetExpr(expression);
 
-//    pars->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
-//    pars->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
+    //    pars->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
+    //    pars->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
 
-//    pvalue = new double[Hermes::Hermes2D::Filter<Scalar>::num];
-//    pdx = new double[Hermes::Hermes2D::Filter<Scalar>::num];
-//    pdy = new double[Hermes::Hermes2D::Filter<Scalar>::num];
+    //    pvalue = new double[Hermes::Hermes2D::Filter<Scalar>::num];
+    //    pdx = new double[Hermes::Hermes2D::Filter<Scalar>::num];
+    //    pdy = new double[Hermes::Hermes2D::Filter<Scalar>::num];
 
-//    for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
-//    {
-//        std::stringstream number;
-//        number << (k+1);
+    //    for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
+    //    {
+    //        std::stringstream number;
+    //        number << (k+1);
 
-//        pars->DefineVar("value" + number.str(), &pvalue[k]);
-//        pars->DefineVar("d" + Util::scene()->problemInfo()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-//        pars->DefineVar("d" + Util::scene()->problemInfo()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
-//    }
+    //        pars->DefineVar("value" + number.str(), &pvalue[k]);
+    //        pars->DefineVar("d" + Util::scene()->problemInfo()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+    //        pars->DefineVar("d" + Util::scene()->problemInfo()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+    //    }
 
-//    parser->parser.push_back(pars);
+    //    parser->parser.push_back(pars);
 }
 
 template <typename Scalar>
@@ -1161,73 +1182,73 @@ template <typename Scalar>
 void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 {
     assert(0); //TODO
-//    bool isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear);
+    //    bool isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear);
 
-//    Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
-//    int np = quad->get_num_points(order);
-//    node = Hermes::Hermes2D::Function<Scalar>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
+    //    Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
+    //    int np = quad->get_num_points(order);
+    //    node = Hermes::Hermes2D::Function<Scalar>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
 
-//    double **value = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
-//    double **dudx = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
-//    double **dudy = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+    //    double **value = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+    //    double **dudx = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+    //    double **dudy = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
 
-//    for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
-//    {
-//        Hermes::Hermes2D::Filter<Scalar>::sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
-//        Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
-//        value[k] = Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_fn_values();
-//    }
+    //    for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
+    //    {
+    //        Hermes::Hermes2D::Filter<Scalar>::sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
+    //        Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
+    //        value[k] = Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_fn_values();
+    //    }
 
-//    Hermes::Hermes2D::Filter<Scalar>::update_refmap();
+    //    Hermes::Hermes2D::Filter<Scalar>::update_refmap();
 
-//    double *x = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_x(order);
-//    double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
-//    Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
+    //    double *x = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_x(order);
+    //    double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
+    //    Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
 
-//    SceneMaterial *material = Util::scene()->labels[atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str())]->material;
-//    if (isLinear)
-//        parser->setParserVariables(material, NULL);
+    //    SceneMaterial *material = Util::scene()->labels[atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str())]->material;
+    //    if (isLinear)
+    //        parser->setParserVariables(material, NULL);
 
-//    for (int i = 0; i < np; i++)
-//    {
-//        px = x[i];
-//        py = y[i];
+    //    for (int i = 0; i < np; i++)
+    //    {
+    //        px = x[i];
+    //        py = y[i];
 
-//        for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
-//        {
-//            pvalue[k] = value[k][i];
-//            pdx[k] = dudx[k][i];
-//            pdy[k] = dudy[k][i];
-//        }
+    //        for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
+    //        {
+    //            pvalue[k] = value[k][i];
+    //            pdx[k] = dudx[k][i];
+    //            pdy[k] = dudy[k][i];
+    //        }
 
 
-//        // FIXME
-//        if (!isLinear)
-//            parser->setParserVariables(material, NULL,
-//                                       pvalue[0], pdx[0], pdy[0]);
+    //        // FIXME
+    //        if (!isLinear)
+    //            parser->setParserVariables(material, NULL,
+    //                                       pvalue[0], pdx[0], pdy[0]);
 
-//        // parse expression
-//        try
-//        {
-//            node->values[0][0][i] = parser->parser[0]->Eval();
-//        }
-//        catch (mu::Parser::exception_type &e)
-//        {
-//            std::cout << "Scalar view: " << e.GetMsg() << std::endl;
-//        }
-//    }
+    //        // parse expression
+    //        try
+    //        {
+    //            node->values[0][0][i] = parser->parser[0]->Eval();
+    //        }
+    //        catch (mu::Parser::exception_type &e)
+    //        {
+    //            std::cout << "Scalar view: " << e.GetMsg() << std::endl;
+    //        }
+    //    }
 
-//    delete [] value;
-//    delete [] dudx;
-//    delete [] dudy;
+    //    delete [] value;
+    //    delete [] dudx;
+    //    delete [] dudy;
 
-//    if (Hermes::Hermes2D::Function<Scalar>::nodes->present(order))
-//    {
-//        assert(Hermes::Hermes2D::Function<Scalar>::nodes->get(order) == Hermes::Hermes2D::Function<Scalar>::cur_node);
-//        ::free(Hermes::Hermes2D::Function<Scalar>::nodes->get(order));
-//    }
-//    Hermes::Hermes2D::Function<Scalar>::nodes->add(node, order);
-//    Hermes::Hermes2D::Function<Scalar>::cur_node = node;
+    //    if (Hermes::Hermes2D::Function<Scalar>::nodes->present(order))
+    //    {
+    //        assert(Hermes::Hermes2D::Function<Scalar>::nodes->get(order) == Hermes::Hermes2D::Function<Scalar>::cur_node);
+    //        ::free(Hermes::Hermes2D::Function<Scalar>::nodes->get(order));
+    //    }
+    //    Hermes::Hermes2D::Function<Scalar>::nodes->add(node, order);
+    //    Hermes::Hermes2D::Function<Scalar>::cur_node = node;
 }
 
 template class WeakFormAgros<double>;

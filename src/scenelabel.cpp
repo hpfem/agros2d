@@ -23,6 +23,8 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
+#include "hermes2d/module_agros.h"
+
 SceneLabel::SceneLabel(const Point &point, double area, int polynomialOrder)
     : MarkedSceneBasic()
 {
@@ -107,11 +109,7 @@ QLayout* SceneLabelDialog::createContent()
     txtPointY = new ValueLineEdit();
     connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    cmbMaterial = new QComboBox();
-    connect(cmbMaterial, SIGNAL(currentIndexChanged(int)), this, SLOT(doMaterialChanged(int)));
-    btnMaterial = new QPushButton(icon("three-dots"), "");
-    btnMaterial->setMaximumSize(btnMaterial->sizeHint());
-    connect(btnMaterial, SIGNAL(clicked()), this, SLOT(doMaterialClicked()));
+
     txtArea = new ValueLineEdit();
     txtArea->setMinimum(0.0);
     connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
@@ -130,11 +128,6 @@ QLayout* SceneLabelDialog::createContent()
 
     QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
     grpCoordinates->setLayout(layoutCoordinates);
-
-    // marker
-    QHBoxLayout *layoutMaterial = new QHBoxLayout();
-    layoutMaterial->addWidget(cmbMaterial);
-    layoutMaterial->addWidget(btnMaterial);
 
     // order
     chkPolynomialOrder = new QCheckBox();
@@ -164,8 +157,33 @@ QLayout* SceneLabelDialog::createContent()
     QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
     grpMeshParameters->setLayout(layoutMeshParameters);
 
+    // markers
+    QFormLayout *layoutMaterials = new QFormLayout();
+
+    QGroupBox *grpMaterials = new QGroupBox(tr("Materials"));
+    grpMaterials->setLayout(layoutMaterials);
+
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        QComboBox *cmbMaterial = new QComboBox();
+        connect(cmbMaterial, SIGNAL(currentIndexChanged(int)), this, SLOT(doMaterialChanged(int)));
+        cmbMaterials.append(cmbMaterial);
+
+        QPushButton *btnMaterial = new QPushButton(icon("three-dots"), "");
+        btnMaterial->setMaximumSize(btnMaterial->sizeHint());
+        connect(btnMaterial, SIGNAL(clicked()), this, SLOT(doMaterialClicked()));
+        btnMaterials.append(btnMaterial);
+
+        QHBoxLayout *layoutMaterial = new QHBoxLayout();
+        layoutMaterial->addWidget(cmbMaterial);
+        layoutMaterial->addWidget(btnMaterial);
+
+        layoutMaterials->addRow(QString::fromStdString(fieldInfo->module()->name),
+                                layoutMaterial);
+    }
+
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(tr("Material:"), layoutMaterial);
+    layout->addRow(grpMaterials);
     layout->addRow(grpCoordinates);
     layout->addRow(grpMeshParameters);
 
@@ -179,10 +197,23 @@ void SceneLabelDialog::fillComboBox()
     logMessage("DSceneLabel::fillComboBox()");
 
     // markers
-    cmbMaterial->clear();
-    foreach (SceneMaterial *material, Util::scene()->materials->items())
-        cmbMaterial->addItem(QString::fromStdString(material->getName()),
-                             material->variant());
+    int i = 0;
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        cmbMaterials[i]->clear();
+
+        // //TODO - do it better - none marker
+        cmbMaterials[i]->addItem(QString::fromStdString(Util::scene()->materials->at(0)->getName()),
+                                 Util::scene()->materials->at(0)->variant());
+
+        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
+        {
+            cmbMaterials[i]->addItem(QString::fromStdString(material->getName()),
+                                     material->variant());
+        }
+
+        i++;
+    }
 }
 
 bool SceneLabelDialog::load()
@@ -193,13 +224,20 @@ bool SceneLabelDialog::load()
 
     txtPointX->setNumber(sceneLabel->point.x);
     txtPointY->setNumber(sceneLabel->point.y);
-    cmbMaterial->setCurrentIndex(cmbMaterial->findData(sceneLabel->getMarker("TODO")->variant()));
     txtArea->setNumber(sceneLabel->area);
     chkArea->setChecked(sceneLabel->area > 0.0);
     txtArea->setEnabled(chkArea->isChecked());
     txtPolynomialOrder->setValue(sceneLabel->polynomialOrder);
     chkPolynomialOrder->setChecked(sceneLabel->polynomialOrder > 0);
     txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
+
+    int i = 0;
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        cmbMaterials[i]->setCurrentIndex(cmbMaterials[i]->findData(sceneLabel->getMarker(fieldInfo->fieldId())->variant()));
+
+        i++;
+    }
 
     return true;
 }
@@ -241,9 +279,16 @@ bool SceneLabelDialog::save()
     }
 
     sceneLabel->point = point;
-    sceneLabel->addMarker(cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>());
     sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
     sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
+
+    int i = 0;
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        sceneLabel->addMarker(cmbMaterials[i]->itemData(cmbMaterials[i]->currentIndex()).value<SceneMaterial *>());
+
+        i++;
+    }
 
     return true;
 }
@@ -252,19 +297,22 @@ void SceneLabelDialog::doMaterialChanged(int index)
 {
     logMessage("DSceneLabel::doMaterialChanged()");
 
-    btnMaterial->setEnabled(cmbMaterial->currentIndex() > 0);
+    for (int i = 0; i < cmbMaterials.length(); i++)
+        btnMaterials[i]->setEnabled(cmbMaterials[i]->currentIndex() > 0);
 }
 
 void SceneLabelDialog::doMaterialClicked()
 {
-    logMessage("DSceneLabel::doMaterialClicked()");
+    //TODO
+    assert(0);
+    //    logMessage("DSceneLabel::doMaterialClicked()");
 
-    SceneMaterial *marker = cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>();
-    if (marker->showDialog(this) == QDialog::Accepted)
-    {
-        cmbMaterial->setItemText(cmbMaterial->currentIndex(), QString::fromStdString(marker->getName()));
-        Util::scene()->refresh();
-    }
+    //    SceneMaterial *marker = cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>();
+    //    if (marker->showDialog(this) == QDialog::Accepted)
+    //    {
+    //        cmbMaterial->setItemText(cmbMaterial->currentIndex(), QString::fromStdString(marker->getName()));
+    //        Util::scene()->refresh();
+    //    }
 }
 
 void SceneLabelDialog::doPolynomialOrder(int state)
@@ -304,11 +352,11 @@ void SceneLabelCommandAdd::undo()
 void SceneLabelCommandAdd::redo()
 {
     assert(0); //TODO
-//    logMessage("SceneLabelCommandAdd::redo()");
+    //    logMessage("SceneLabelCommandAdd::redo()");
 
-//    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
-//    if (material == NULL) material = Util::scene()->materials->get("none"); //TODO - do it better
-//    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
+    //    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
+    //    if (material == NULL) material = Util::scene()->materials->get("none"); //TODO - do it better
+    //    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
 }
 
 SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent) : QUndoCommand(parent)
@@ -324,11 +372,11 @@ SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QStri
 void SceneLabelCommandRemove::undo()
 {
     assert(0);//TODO
-//    logMessage("SceneLabelCommandRemove::undo()");
+    //    logMessage("SceneLabelCommandRemove::undo()");
 
-//    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
-//    if (material == NULL) material = Util::scene()->materials->get("none"); //TODO - do it better
-//    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
+    //    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
+    //    if (material == NULL) material = Util::scene()->materials->get("none"); //TODO - do it better
+    //    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
 }
 
 void SceneLabelCommandRemove::redo()

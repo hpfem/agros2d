@@ -130,15 +130,18 @@ void ResultsView::doShowVolumeIntegral()
     volumeIntegrals.SetValue("STYLESHEET", style);
     volumeIntegrals.SetValue("LABEL", tr("Volume integrals").toStdString());
 
-    VolumeIntegralValue volumeIntegralValue;
-    for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue.values.begin();
-         it != volumeIntegralValue.values.end(); ++it)
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
-        ctemplate::TemplateDictionary *item = volumeIntegrals.AddSectionDictionary("ITEM");
-        item->SetValue("NAME", it->first->name);
-        item->SetValue("SHORTNAME", it->first->shortname_html);
-        item->SetValue("VALUE", QString("%1").arg(it->second, 0, 'e', 3).toStdString());
-        item->SetValue("UNIT", it->first->unit_html);
+        VolumeIntegralValue volumeIntegralValue(fieldInfo);
+        for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue.values.begin();
+             it != volumeIntegralValue.values.end(); ++it)
+        {
+            ctemplate::TemplateDictionary *item = volumeIntegrals.AddSectionDictionary("ITEM");
+            item->SetValue("NAME", it->first->name);
+            item->SetValue("SHORTNAME", it->first->shortname_html);
+            item->SetValue("VALUE", QString("%1").arg(it->second, 0, 'e', 3).toStdString());
+            item->SetValue("UNIT", it->first->unit_html);
+        }
     }
 
     // expand template
@@ -168,15 +171,18 @@ void ResultsView::doShowSurfaceIntegral()
     surfaceIntegrals.SetValue("STYLESHEET", style);
     surfaceIntegrals.SetValue("LABEL", tr("Surface integrals").toStdString());
 
-    SurfaceIntegralValue surfaceIntegralValue;
-    for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue.values.begin();
-         it != surfaceIntegralValue.values.end(); ++it)
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
-        ctemplate::TemplateDictionary *item = surfaceIntegrals.AddSectionDictionary("ITEM");
-        item->SetValue("NAME", it->first->name);
-        item->SetValue("SHORTNAME", it->first->shortname_html);
-        item->SetValue("VALUE", QString("%1").arg(it->second, 0, 'e', 3).toStdString());
-        item->SetValue("UNIT", it->first->unit_html);
+        SurfaceIntegralValue surfaceIntegralValue(fieldInfo);
+        for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue.values.begin();
+             it != surfaceIntegralValue.values.end(); ++it)
+        {
+            ctemplate::TemplateDictionary *item = surfaceIntegrals.AddSectionDictionary("ITEM");
+            item->SetValue("NAME", it->first->name);
+            item->SetValue("SHORTNAME", it->first->shortname_html);
+            item->SetValue("VALUE", QString("%1").arg(it->second, 0, 'e', 3).toStdString());
+            item->SetValue("UNIT", it->first->unit_html);
+        }
     }
 
     // expand template
@@ -209,37 +215,40 @@ void ResultsView::doShowPoint()
     localPointValues.SetValue("POINTY", (QString("%1").arg(m_point.y, 0, 'e', 3)).toStdString());
     localPointValues.SetValue("POINT_UNIT", "m");
 
-    LocalPointValue value(m_point);
-    for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin();
-         it != value.values.end(); ++it)
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
-        if (it->first->is_scalar)
+        LocalPointValue value(fieldInfo, m_point);
+        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin();
+             it != value.values.end(); ++it)
         {
-            // scalar variable
-            ctemplate::TemplateDictionary *item = localPointValues.AddSectionDictionary("ITEM");
-            item->SetValue("NAME", it->first->name);
-            item->SetValue("SHORTNAME", it->first->shortname_html);
-            item->SetValue("VALUE", QString("%1").arg(it->second.scalar, 0, 'e', 3).toStdString());
-            item->SetValue("UNIT", it->first->unit_html);
-        }
-        else
-        {
-            // vector variable
-            ctemplate::TemplateDictionary *itemMagnitude = localPointValues.AddSectionDictionary("ITEM");
-            itemMagnitude->SetValue("NAME", it->first->name);
-            itemMagnitude->SetValue("SHORTNAME", it->first->shortname_html);
-            itemMagnitude->SetValue("VALUE", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3).toStdString());
-            itemMagnitude->SetValue("UNIT", it->first->unit_html);
-            ctemplate::TemplateDictionary *itemX = localPointValues.AddSectionDictionary("ITEM");
-            itemX->SetValue("SHORTNAME", it->first->shortname_html);
-            itemX->SetValue("PART", Util::scene()->problemInfo()->labelX().toLower().toStdString());
-            itemX->SetValue("VALUE", QString("%1").arg(it->second.vector.x, 0, 'e', 3).toStdString());
-            itemX->SetValue("UNIT", it->first->unit_html);
-            ctemplate::TemplateDictionary *itemY = localPointValues.AddSectionDictionary("ITEM");
-            itemY->SetValue("SHORTNAME", it->first->shortname_html);
-            itemY->SetValue("PART", Util::scene()->problemInfo()->labelY().toLower().toStdString());
-            itemY->SetValue("VALUE", QString("%1").arg(it->second.vector.y, 0, 'e', 3).toStdString());
-            itemY->SetValue("UNIT", it->first->unit_html);
+            if (it->first->is_scalar)
+            {
+                // scalar variable
+                ctemplate::TemplateDictionary *item = localPointValues.AddSectionDictionary("ITEM");
+                item->SetValue("NAME", it->first->name);
+                item->SetValue("SHORTNAME", it->first->shortname_html);
+                item->SetValue("VALUE", QString("%1").arg(it->second.scalar, 0, 'e', 3).toStdString());
+                item->SetValue("UNIT", it->first->unit_html);
+            }
+            else
+            {
+                // vector variable
+                ctemplate::TemplateDictionary *itemMagnitude = localPointValues.AddSectionDictionary("ITEM");
+                itemMagnitude->SetValue("NAME", it->first->name);
+                itemMagnitude->SetValue("SHORTNAME", it->first->shortname_html);
+                itemMagnitude->SetValue("VALUE", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3).toStdString());
+                itemMagnitude->SetValue("UNIT", it->first->unit_html);
+                ctemplate::TemplateDictionary *itemX = localPointValues.AddSectionDictionary("ITEM");
+                itemX->SetValue("SHORTNAME", it->first->shortname_html);
+                itemX->SetValue("PART", Util::scene()->problemInfo()->labelX().toLower().toStdString());
+                itemX->SetValue("VALUE", QString("%1").arg(it->second.vector.x, 0, 'e', 3).toStdString());
+                itemX->SetValue("UNIT", it->first->unit_html);
+                ctemplate::TemplateDictionary *itemY = localPointValues.AddSectionDictionary("ITEM");
+                itemY->SetValue("SHORTNAME", it->first->shortname_html);
+                itemY->SetValue("PART", Util::scene()->problemInfo()->labelY().toLower().toStdString());
+                itemY->SetValue("VALUE", QString("%1").arg(it->second.vector.y, 0, 'e', 3).toStdString());
+                itemY->SetValue("UNIT", it->first->unit_html);
+            }
         }
     }
 

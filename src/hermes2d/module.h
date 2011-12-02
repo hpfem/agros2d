@@ -45,6 +45,8 @@ class ParserFormEssential;
 
 class ProgressItemSolve;
 
+class FieldInfo;
+
 template<typename Scalar>
 class InitialCondition : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
 {
@@ -269,7 +271,7 @@ struct DialogUI
 struct Module
 {
     // id
-    std::string id;
+    std::string fieldid;
     // name
     std::string name;
     // deformed shape
@@ -351,10 +353,10 @@ struct Module
     inline AnalysisType get_analysis_type() const { return m_analysisType; }
 
     // variable by name
-    LocalVariable *get_variable(std::string id);
-    BoundaryType *get_boundary_type(std::string id);
-    BoundaryTypeVariable *get_boundary_type_variable(std::string id);
-    MaterialTypeVariable *get_material_type_variable(std::string id);
+    LocalVariable *get_variable(std::string fieldid);
+    BoundaryType *get_boundary_type(std::string fieldid);
+    BoundaryTypeVariable *get_boundary_type_variable(std::string fieldid);
+    MaterialTypeVariable *get_material_type_variable(std::string fieldid);
 
     // expression
     std::string get_expression(LocalVariable *physicFieldVariable,
@@ -385,6 +387,8 @@ private:
 
 // available modules
 std::map<std::string, std::string> availableModules();
+// available analyses
+std::map<std::string, std::string> availableAnalyses(std::string fieldId);
 
 class Parser
 {
@@ -393,20 +397,24 @@ public:
     Hermes::vector<mu::Parser *> parser;
     std::map<std::string, double> parser_variables;
 
-    Parser();
+    Parser(FieldInfo *fieldInfo);
     ~Parser();
 
     void initParserBoundaryVariables(Boundary *boundary);
     void initParserMaterialVariables();
     void setParserVariables(Material *material, Boundary *boundary,
                             double value = 0.0, double dx = 0.0, double dy = 0.0);
+
+private:
+    FieldInfo *fieldInfo;
 };
 
 template <typename Scalar>
 class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>
 {
 public:
-    ViewScalarFilter(Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
+    ViewScalarFilter(FieldInfo *fieldInfo,
+                     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
                      std::string expression);
     ~ViewScalarFilter();
 
@@ -425,6 +433,9 @@ protected:
 
     void initParser(std::string expression);
     void precalculate(int order, int mask);
+
+private:
+    FieldInfo *fieldInfo;
 };
 
 // mesh fix

@@ -17,8 +17,10 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "scenemarker.h"
+#include "hermes2d/marker.h"
 
+#include "scene.h"
+#include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
 template <typename MarkerType>
@@ -56,11 +58,11 @@ MarkerType* MarkerContainer<MarkerType>::get(const QString &name)
 }
 
 template <typename MarkerType>
-MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(const QString &field)
+MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(const QString &fieldName)
 {
     MarkerContainer<MarkerType> items;
     foreach (MarkerType *item, data)
-        if (item->getField() == field.toStdString())
+        if (item->field() && item->field()->fieldId() == fieldName)
             items.add(item);
 
     return items;

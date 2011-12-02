@@ -887,7 +887,7 @@ void ProgressItemSolve::setSteps()
 {
     assert(0); //TODO
 //    m_steps = 1;
-//    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
 //    {
 //        Util::scene()->problemInfo()->timeTotal.evaluate();
 //        Util::scene()->problemInfo()->timeStep.evaluate();

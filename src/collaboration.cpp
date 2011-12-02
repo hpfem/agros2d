@@ -357,7 +357,7 @@ void ServerUploadDialog::createControls()
 //    layoutDialog->addWidget(cmbName, 2, 1, 1, 2);
 //    layoutDialog->addWidget(txtName, 2, 1, 1, 2);
 //    layoutDialog->addWidget(new QLabel(tr("Physic field:")), 3, 0);
-//    layoutDialog->addWidget(new QLabel(QString::fromStdString(Util::scene()->problemInfo()->module()->id)), 3, 1);
+//    layoutDialog->addWidget(new QLabel(QString::fromStdString(Util::scene()->problemInfo()->fieldId())), 3, 1);
 //    layoutDialog->addWidget(lblInformation, 5, 1);
 
 //    // dialog buttons
@@ -419,7 +419,7 @@ void ServerUploadDialog::readFromServerContent()
 //    logMessage("ServerUploadDialog::readFromServerContent()");
 
 //    QByteArray postData;
-//    postData.append("physicfield=" + QString::fromStdString(Util::scene()->problemInfo()->module()->id));
+//    postData.append("physicfield=" + QString::fromStdString(Util::scene()->problemInfo()->fieldId()));
 
 //    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problems_xml.php")), postData);
 //    connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
@@ -483,7 +483,7 @@ void ServerUploadDialog::uploadToServer()
 //    QByteArray postData;
 //    postData.append("id_problem=" + QString::number(id_problem) + "&");
 //    postData.append("name=" + name + "&");
-//    postData.append("physicfield=" + QString::fromStdString(Util::scene()->problemInfo()->module()->id) + "&");
+//    postData.append("physicfield=" + QString::fromStdString(Util::scene()->problemInfo()->fieldId()) + "&");
 //    postData.append("content=" + text);
 
 //    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problem_upload.php")), postData);

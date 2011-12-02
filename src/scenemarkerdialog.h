@@ -43,7 +43,7 @@ class DialogUI;
 class SceneBoundary : public Boundary
 {
 public:
-    SceneBoundary(std::string field, std::string name = "", std::string type = "",
+    SceneBoundary(FieldInfo *fieldInfo, std::string name = "", std::string type = "",
                   std::map<std::string, Value> values = (std::map<std::string, Value>()));
 
     int showDialog(QWidget *parent);
@@ -147,7 +147,7 @@ private slots:
 class SceneMaterial : public Material
 {
 public:
-    SceneMaterial(std::string field, std::string name,
+    SceneMaterial(FieldInfo *fieldInfo, std::string name,
                   std::map<std::string, Value> values = (std::map<std::string, Value>()));
 
     int showDialog(QWidget *parent);
@@ -196,7 +196,7 @@ protected:
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
-    SceneBoundary *m_boundary;
+    SceneBoundary *boundary;
 
     QTabWidget* tabModules;
 
@@ -210,7 +210,6 @@ protected:
 
 protected slots:
     void evaluated(bool isError);
-    void readEquation(QLabel *lblEquation, const QString &type);
 
 private slots:
     void doAccept();
@@ -229,7 +228,7 @@ protected:
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
-    SceneMaterial *m_material;
+    SceneMaterial *material;
 
     QTabWidget* tabModules;
 

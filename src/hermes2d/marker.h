@@ -22,10 +22,12 @@
 
 #include "util.h"
 
+class FieldInfo;
+
 class Marker
 {
 public:
-    Marker(std::string field, std::string name);
+    Marker(FieldInfo *fieldInfo, std::string name);
     ~Marker();
 
     /// value of one individual variable
@@ -42,21 +44,16 @@ public:
     /// set name
     void setName(string paramName) { name = paramName; }
 
-    /// return field
-    std::string getField() { return field; }
-
-    /// set field
-    void setField(string paramField) {field = paramField; }
+    FieldInfo *field() { return fieldInfo; }
 
     /// ????
     void evaluate(std::string id, double time);
-
 
 private:
     std::string name;
 
 protected:
-    std::string field;
+    FieldInfo *fieldInfo;
 
     /// variables - the way to customize boundary "template", given by the type parameter
     std::map<std::string, Value> values;
@@ -67,7 +64,7 @@ protected:
 class Boundary : public Marker
 {
 public:
-    Boundary(std::string field, std::string name = "", std::string type = "",
+    Boundary(FieldInfo *fieldInfo, std::string name = "", std::string type = "",
              std::map<std::string, Value> values = (std::map<std::string, Value>()));
 
     /// get type
@@ -87,7 +84,7 @@ private:
 class Material : public Marker
 {
 public:
-    Material(std::string field, std::string name,
+    Material(FieldInfo *fieldInfo, std::string name,
              std::map<std::string, Value> values = (std::map<std::string, Value>()));
 };
 

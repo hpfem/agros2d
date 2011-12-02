@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
-    <general id ="magnetic" name="Magnetic field">
+    <general id="magnetic" name="Magnetic field">
         <description>Magnetic field ...</description>
         <analyses>
             <analysis id="steadystate" type="steadystate" name="Steady state" solutions="1" />

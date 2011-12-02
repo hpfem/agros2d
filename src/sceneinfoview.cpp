@@ -173,7 +173,8 @@ void SceneInfoView::keyPressEvent(QKeyEvent *event)
 
 void SceneInfoView::showInfo()
 {
-    if (!Util::scene()->fieldInfo("TODO"))
+    //TODO
+    if (!Util::scene()->fieldInfos().count() == 0)
         return;
 
     // stylesheet
@@ -201,14 +202,14 @@ void SceneInfoView::showInfo()
     problem.SetValue("PROBLEM_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType).toStdString());
 
     problem.SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
-    problem.SetValue("ANALYSIS_TYPE", analysisTypeString(Util::scene()->fieldInfo("TODO")->analysisType).toStdString());
-    if (Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Harmonic)
+    problem.SetValue("ANALYSIS_TYPE", analysisTypeString(Util::scene()->fieldInfo("TODO")->analysisType()).toStdString());
+    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Harmonic)
     {
         problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
         problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency).toStdString() + " Hz");
         problem.ShowSection("ANALYSIS_PARAMETERS_SECTION");
     }
-    if (Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient)
+    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
     {
         problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
         problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep.number()).toStdString() + " s");

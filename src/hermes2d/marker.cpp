@@ -23,10 +23,9 @@
 #include "scene.h"
 #include "util.h"
 
-Marker::Marker(std::string field, std::string name)
+Marker::Marker(FieldInfo *fieldInfo, std::string name)
+    : fieldInfo(fieldInfo), name(name)
 {
-    this->field = field;
-    this->name = name;
 }
 
 Marker::~Marker()
@@ -53,8 +52,8 @@ void Marker::evaluate(std::string id, double time)
 }
 
 
-Boundary::Boundary(std::string field, std::string name, std::string type,
-                   std::map<std::string, Value> values) : Marker(field, name)
+Boundary::Boundary(FieldInfo *fieldInfo, std::string name, std::string type,
+                   std::map<std::string, Value> values) : Marker(fieldInfo, name)
 {
     // name and type
     setType(type);
@@ -65,7 +64,7 @@ Boundary::Boundary(std::string field, std::string name, std::string type,
     {
         if (this->values.size() == 0)
         {
-            Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(type);
+            Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(type);
             for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
             {
                 Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
@@ -77,8 +76,8 @@ Boundary::Boundary(std::string field, std::string name, std::string type,
 
 
 
-Material::Material(std::string field, std::string name,
-                   std::map<std::string, Value> values) : Marker(field, name)
+Material::Material(FieldInfo *fieldInfo, std::string name,
+                   std::map<std::string, Value> values) : Marker(fieldInfo, name)
 {
     // name and type
     this->values = values;
@@ -88,7 +87,7 @@ Material::Material(std::string field, std::string name,
     {
         if (this->values.size() == 0)
         {
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo(field)->module()->material_type_variables;
+            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = fieldInfo->module()->material_type_variables;
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);

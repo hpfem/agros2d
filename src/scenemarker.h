@@ -47,7 +47,7 @@ public:
     MarkerType *get(const QString &name);
 
     /// filter field
-    MarkerContainer<MarkerType> filter(const QString &field);
+    MarkerContainer<MarkerType> filter(const QString &fieldName);
 
     /// length of the array
     inline int length() { return data.length(); }
@@ -65,7 +65,6 @@ public:
     void clear();
 
 private:
-
     QList<MarkerType* > data;
 
     static MarkerType* noneMarker;

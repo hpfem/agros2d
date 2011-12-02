@@ -82,12 +82,13 @@ private:
     QLabel *lblEquation;
     QComboBox *cmbNodeStart;
     QComboBox *cmbNodeEnd;
-    QComboBox *cmbBoundary;
-    QPushButton *btnBoundary;
     ValueLineEdit *txtAngle;
     QLabel *lblLength;
     QCheckBox *chkRefineTowardsEdge;
     QSpinBox *txtRefineTowardsEdge;
+
+    QList<QComboBox *> cmbBoundaries;
+    QList<QPushButton *> btnBoundaries;
 
     void fillComboBox();
 

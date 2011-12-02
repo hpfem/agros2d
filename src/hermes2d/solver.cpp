@@ -197,7 +197,7 @@ Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> SolverAgros<Scalar>::createSpa
 //                if (weakFormsType == WeakFormsType_Compiled)
 //                {
 
-//                    string problemId = Util::scene()->problemInfo()->module()->id + "_" +
+//                    string problemId = Util::scene()->problemInfo()->fieldId() + "_" +
 //                            analysisTypeToStringKey(Util::scene()->problemInfo()->module()->get_analysis_type()).toStdString()  + "_" +
 //                            problemTypeToStringKey(Util::scene()->problemInfo()->module()->get_problem_type()).toStdString();
 

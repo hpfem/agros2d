@@ -72,8 +72,6 @@ public:
     void refresh();
 
 private:
-    QString fieldId;
-
     // problem info
     const ProblemInfo *problemInfo;
     FieldInfo *fieldInfo;

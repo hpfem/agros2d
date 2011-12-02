@@ -24,8 +24,8 @@
 #include "hermes2d.h"
 
 class SceneMaterial;
-
 class Parser;
+class FieldInfo;
 
 namespace Hermes
 {
@@ -50,8 +50,11 @@ public:
     // variables
     std::map<Hermes::Module::Integral *, double> values;
 
-    VolumeIntegralValue();
+    VolumeIntegralValue(FieldInfo *fieldInfo);
     ~VolumeIntegralValue();
+
+private:
+    FieldInfo *fieldInfo;
 };
 
 #endif // VOLUMEINTEGRAL_H

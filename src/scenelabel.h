@@ -69,12 +69,13 @@ protected:
 private:
     ValueLineEdit *txtPointX;
     ValueLineEdit *txtPointY;
-    QComboBox *cmbMaterial;
-    QPushButton *btnMaterial;
     ValueLineEdit *txtArea;
     QSpinBox *txtPolynomialOrder;
     QCheckBox *chkArea;
     QCheckBox *chkPolynomialOrder;
+
+    QList<QComboBox *> cmbMaterials;
+    QList<QPushButton *> btnMaterials;
 
     void fillComboBox();
 

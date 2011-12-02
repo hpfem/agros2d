@@ -104,7 +104,7 @@ QString createPythonFromModel()
 //                   "            nonlineartolerance=%7, nonlinearsteps=%8").
 //            arg(Util::scene()->problemInfo()->name).
 //            arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
-//            arg(QString::fromStdString(Util::scene()->problemInfo()->module()->id)).
+//            arg(QString::fromStdString(Util::scene()->problemInfo()->fieldId())).
 //            arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
 //            arg(Util::scene()->problemInfo()->numberOfRefinements).
 //            arg(Util::scene()->problemInfo()->polynomialOrder).
@@ -123,7 +123,7 @@ QString createPythonFromModel()
 //                       "            frequency=%1").
 //                arg(Util::scene()->problemInfo()->frequency);
 
-//    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
 //        str += QString(",\n"
 //                       "            adaptivitytype=%1, adaptivitysteps=%2, adaptivitytolerance=%3").
 //                arg(Util::scene()->problemInfo()->timeStep.text()).

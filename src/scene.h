@@ -90,6 +90,17 @@ public:
 class FieldInfo
 {
 public:
+    FieldInfo(ProblemInfo* parent, QString fieldId = "");
+    ~FieldInfo();
+
+    void clear();
+
+    inline Hermes::Module::ModuleAgros *module() const { return m_module; }
+
+    QString fieldId() { return m_fieldId; }
+    AnalysisType analysisType() { return m_analysisType; }
+    void setAnalysisType(AnalysisType analysisType);
+
     QString name() { return m_parent->name; }
     QDate date() { return m_parent->date; }
     QString fileName() { return m_parent->fileName; }
@@ -97,7 +108,6 @@ public:
     double frequency() { return m_parent->frequency; }
     Value timeStep() {return m_parent->timeStep; }
     Value timeTotal() {return m_parent->timeTotal; }
-
 
     // linearity
     LinearityType linearityType;
@@ -112,35 +122,22 @@ public:
     double adaptivityTolerance; // percent
 
     // transient
-    AnalysisType analysisType;
     Value initialCondition;
 
     // weakforms
     WeakFormsType weakFormsType;
-
-    FieldInfo(ProblemInfo* parent)
-    {
-        m_module = NULL;
-        m_parent = parent;
-        clear();
-    }
-
-    ~FieldInfo()
-    {
-        if (m_module) delete m_module;
-    }
-
-    void clear();
-
-    void setModule(Hermes::Module::ModuleAgros *module);
-    inline Hermes::Module::ModuleAgros *module() const { return m_module; }
-
 private:
     /// module
     Hermes::Module::ModuleAgros *m_module;
 
     /// pointer to problem info, whose this object is a "subfield"
     ProblemInfo *m_parent;
+
+    /// unique field info
+    QString m_fieldId;
+
+    // analysis type
+    AnalysisType m_analysisType;
 };
 
 class DxfFilter : public DL_CreationAdapter
@@ -239,10 +236,10 @@ public:
     void setProblemInfo(ProblemInfo *problemInfo) { clear(); delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
 
     inline QMap<QString, FieldInfo *> fieldInfos() const { return m_fieldInfos; }
-    inline FieldInfo *fieldInfo(QString name) { return m_fieldInfos[name]; }
+    inline FieldInfo *fieldInfo(QString name) { if (!m_fieldInfos.keys().contains(name)) assert(0); return m_fieldInfos[name]; }
     inline FieldInfo *fieldInfo(std::string name) { return fieldInfo(QString::fromStdString(name)); }
     inline FieldInfo *fieldInfo(const char* name) { return fieldInfo(QString::fromAscii(name)); }
-    void addField(QString name, FieldInfo *field) { m_fieldInfos[name] = field; }
+    void addField(FieldInfo *field) { m_fieldInfos[field->fieldId()] = field; }
 
     inline void refresh() { emit invalidated(); }
     inline SceneSolution<double> *sceneSolution() const { return m_sceneSolution; } //TODO PK <double>

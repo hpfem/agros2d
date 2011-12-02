@@ -87,9 +87,18 @@ ParserFormVector::ParserFormVector(rapidxml::xml_node<> *node, CoordinateType pr
     }
 }
 
-ParserForm::ParserForm()
+ParserForm::ParserForm(FieldInfo *fieldInfo)
 {
-    parser = new Parser();
+    //TODO - FIXME
+    if (!fieldInfo)
+    {
+        QString firstField = Util::scene()->fieldInfos().keys().at(0);
+        parser = new Parser(Util::scene()->fieldInfo(firstField));
+    }
+    else
+    {
+        parser = new Parser(fieldInfo);
+    }
 }
 
 ParserForm::~ParserForm()
@@ -209,7 +218,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 //            pupdy = 0.0;
 //        }
 
-//        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//        if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
 //        {
 //            puptval = ext->fn[this->j]->val[i];
 //            puptdx = ext->fn[this->j]->dx[i];
@@ -303,7 +312,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 //            pupdy = 0.0;
 //        }
 
-//        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+//        if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
 //        {
 //            puptval = ext->fn[this->j]->val[i];
 //            puptdx = ext->fn[this->j]->dx[i];
@@ -371,7 +380,7 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        if (Util::scene()->fieldInfo("TODO")->linearityType != LinearityType_Linear)
+        if (fieldInfo->linearityType != LinearityType_Linear)
         {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];
@@ -439,7 +448,7 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        if (Util::scene()->fieldInfo("TODO")->linearityType != LinearityType_Linear)
+        if (fieldInfo->linearityType != LinearityType_Linear)
         {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];
