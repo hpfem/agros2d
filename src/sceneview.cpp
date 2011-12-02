@@ -27,6 +27,10 @@
 #include "scenebasicselectdialog.h"
 
 #include "scenebasic.h"
+#include "scenenode.h"
+#include "sceneedge.h"
+#include "scenelabel.h"
+
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 

@@ -21,6 +21,9 @@
 
 #include "scene.h"
 #include "scenebasic.h"
+#include "scenenode.h"
+#include "sceneedge.h"
+#include "scenelabel.h"
 #include "sceneview.h"
 #include "scenesolution.h"
 #include "scenemarker.h"

@@ -20,6 +20,7 @@
 #include "localpoint.h"
 #include "scene.h"
 #include "scenebasic.h"
+#include "scenelabel.h"
 #include "scenemarkerdialog.h"
 #include "scenesolution.h"
 #include "hermes2d.h"

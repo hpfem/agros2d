@@ -22,6 +22,9 @@
 
 #include "util.h"
 #include "scenebasic.h"
+#include "scenenode.h"
+#include "sceneedge.h"
+#include "scenelabel.h"
 #include "scenemarkerdialog.h"
 #include "scenefunction.h"
 #include "scenesolution.h"
@@ -316,14 +319,11 @@ SceneNode *Scene::addNode(SceneNode *node)
     m_sceneSolution->clear();
 
     // check if node doesn't exists
-    foreach (SceneNode *nodeCheck, nodes->items())
-    {
-        if (nodeCheck->point == node->point)
-        {
-            delete node;
-            return nodeCheck;
-        }
+    if(SceneNode* existing = nodes->get(node)){
+        delete node;
+        return existing;
     }
+
     nodes->add(node);
     if (!scriptIsRunning()) emit invalidated();
 
@@ -350,13 +350,7 @@ SceneNode *Scene::getNode(const Point &point)
 {
     logMessage("SceneNode *Scene::getNode()");
 
-    foreach (SceneNode *nodeCheck, nodes->items())
-    {
-        if (nodeCheck->point == point)
-            return nodeCheck;
-    }
-
-    return NULL;
+    nodes->get(point);
 }
 
 
@@ -368,16 +362,9 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     m_sceneSolution->clear();
 
     // check if edge doesn't exists
-    foreach (SceneEdge *edgeCheck, edges->items())
-    {
-        if (((((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) &&
-              (fabs(edgeCheck->angle - edge->angle) < EPS_ZERO)) ||
-             (((edgeCheck->nodeStart == edge->nodeEnd) && (edgeCheck->nodeEnd == edge->nodeStart))) &&
-             (fabs(edgeCheck->angle + edge->angle) < EPS_ZERO)))
-        {
-            delete edge;
-            return edgeCheck;
-        }
+    if(SceneEdge* existing = edges->get(edge)){
+        delete edge;
+        return existing;
     }
 
     edges->add(edge);
@@ -403,13 +390,7 @@ SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double
 {
     logMessage("SceneEdge *Scene::getEdge()");
 
-    foreach (SceneEdge *edgeCheck, edges->items())
-    {
-        if (((edgeCheck->nodeStart->point == pointStart) && (edgeCheck->nodeEnd->point == pointEnd)) && (edgeCheck->angle == angle))
-            return edgeCheck;
-    }
-
-    return NULL;
+    edges->get(pointStart, pointEnd, angle);
 }
 
 SceneLabel *Scene::addLabel(SceneLabel *label)
@@ -420,13 +401,9 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
     m_sceneSolution->clear();
 
     // check if label doesn't exists
-    foreach (SceneLabel *labelCheck, labels->items())
-    {
-        if (labelCheck->point == label->point)
-        {
-            delete label;
-            return labelCheck;
-        }
+    if(SceneLabel* existing = labels->get(label)){
+        delete label;
+        return existing;
     }
 
     labels->add(label);

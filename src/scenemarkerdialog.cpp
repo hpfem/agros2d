@@ -23,6 +23,8 @@
 #include "hermes2d/module_agros.h"
 #include "scene.h"
 #include "scenebasic.h"
+#include "sceneedge.h"
+#include "scenelabel.h"
 #include "gui.h"
 
 SceneBoundary::SceneBoundary(std::string field, std::string name, std::string type,
