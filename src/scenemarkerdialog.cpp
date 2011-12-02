@@ -669,7 +669,6 @@ SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(
 
     // select marker
     cmbBoundary->setCurrentIndex(-1);
-    SceneBoundary *boundary = NULL;
 //    foreach (SceneEdge *edge, Util::scene()->edges->items())
 //    {
 //        if (edge->isSelected)
@@ -686,9 +685,7 @@ SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(
 //        }
 //    }
 
-    MarkerContainer<SceneBoundary> bds = Util::scene()->edges->selected().allMarkers();
-    if(bds.length() == 1)
-        boundary = bds.at(0);
+    SceneBoundary *boundary = Util::scene()->edges->selected().allMarkers().getSingleOrNull();
 
     if (boundary)
         cmbBoundary->setCurrentIndex(cmbBoundary->findData(boundary->variant()));
@@ -744,10 +741,7 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
     // select marker
     cmbMaterial->setCurrentIndex(-1);
 
-    SceneMaterial *material = NULL;
-    MarkerContainer<SceneMaterial> mats = Util::scene()->labels->selected().allMarkers();
-    if(mats.length() == 1)
-        material = mats.at(0);
+    SceneMaterial *material = Util::scene()->labels->selected().allMarkers().getSingleOrNull();
 
     if (material)
         cmbMaterial->setCurrentIndex(cmbMaterial->findData(material->variant()));

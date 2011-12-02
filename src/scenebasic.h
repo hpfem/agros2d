@@ -51,6 +51,7 @@ public:
     bool isHighlighted;
 
     SceneBasic();
+    void setSelected(bool value = true) { isSelected = value; }
 
     virtual int showDialog(QWidget *parent, bool isNew = false) = 0;
 
@@ -71,6 +72,9 @@ public:
     inline int length() { return data.length(); }
     inline int isEmpty() { return data.isEmpty(); }
     void clear();
+
+    /// selects or unselects all items
+    void setSelected(bool value = true);
 
 protected:
     QList<BasicType*> data;
@@ -107,8 +111,14 @@ template <typename MarkerType>
 class MarkedSceneBasic : public SceneBasic
 {
 public:
+    /// gets marker that corresponds to the given field
+    MarkerType* getMarker(QString field);
+
+    /// true if has given marker
+    bool hasMarker(MarkerType* marker) {return markers->contains(marker); }
+
+public:
     UniqueMarkerContainer<MarkerType> *markers;
-    //MarkerType *marker;
 };
 
 
@@ -120,10 +130,16 @@ public:
     void removeMarkerFromAll(MarkerType* marker);
     void addMarkerToAll(MarkerType* marker);
 
+    /// Filters for elements that has given marker
+    MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> haveMarker(MarkerType *marker);
+
     //TODO unfortunately, those had to be moved here from SceneBasicContainer
     //TODO if they returned SceneBasicContainer, One would have to cast to use methods of this class to return value...
     //TODO it might be possible to do it differently...
+    /// Filters for selected
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> selected();
+
+    /// Filters for highlighted
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> highlited();
 };
 

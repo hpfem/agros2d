@@ -67,6 +67,18 @@ int SceneNode::showDialog(QWidget *parent, bool isNew)
 
 // *************************************************************************************************************************************
 
+template <typename MarkerType>
+MarkerType* MarkedSceneBasic<MarkerType>::getMarker(QString field)
+{
+    assert(this->markers->filter(field).length() < 2);
+    return this->markers->filter(field).getSingleOrNull();
+}
+
+template class MarkedSceneBasic<SceneBoundary>;
+template class MarkedSceneBasic<SceneMaterial>;
+
+// *************************************************************************************************************************************
+
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int refineTowardsEdge)
     : MarkedSceneBasic()
 {
@@ -212,6 +224,13 @@ void SceneBasicContainer<BasicType>::clear()
     data.clear();
 }
 
+template <typename BasicType>
+void SceneBasicContainer<BasicType>::setSelected(bool value)
+{
+    foreach (BasicType* item, data)
+        item->setSelected(value);
+}
+
 template class SceneBasicContainer<SceneNode>;
 template class SceneBasicContainer<SceneEdge>;
 template class SceneBasicContainer<SceneLabel>;
@@ -241,6 +260,20 @@ MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicCont
 
     return list;
 }
+
+template <typename MarkerType, typename MarkedSceneBasicType>
+MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::haveMarker(MarkerType *marker)
+{
+    MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> list;
+    foreach (MarkedSceneBasicType* item, this->data)
+    {
+        if (item->hasMarker(marker))
+            list.data.push_back(item);
+    }
+
+    return list;
+}
+
 
 template <typename MarkerType, typename MarkedSceneBasicType>
 UniqueMarkerContainer<MarkerType> MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::allMarkers()

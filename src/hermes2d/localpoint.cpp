@@ -56,104 +56,103 @@ void LocalPointValue::initParser()
 
 void LocalPointValue::calculate()
 {
-    assert(0); //TODO
-//    values.clear();
+    values.clear();
 
-//    this->point = point;
-//    if (Util::scene()->sceneSolution()->isSolved() &&
-//            Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient)
-//        Util::scene()->fieldInfo("TODO")->module()->update_time_functions(Util::scene()->sceneSolution()->time());
+    this->point = point;
+    if (Util::scene()->sceneSolution()->isSolved() &&
+            Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient)
+        Util::scene()->fieldInfo("TODO")->module()->update_time_functions(Util::scene()->sceneSolution()->time());
 
-//    if (Util::scene()->sceneSolution()->isSolved())
-//    {
-//        int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), point);
-//        if (index != -1)
-//        {
-//            // find marker
-//            Hermes::Hermes2D::Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
-//            int labelIndex = atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str());
-//            SceneMaterial *tmpMaterial = Util::scene()->labels->at(labelIndex)->marker;
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), point);
+        if (index != -1)
+        {
+            // find marker
+            Hermes::Hermes2D::Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
+            int labelIndex = atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str());
+            SceneMaterial *tmpMaterial = Util::scene()->labels->at(labelIndex)->getMarker("TODO");
 
-//            // set variables
-//            double px = point.x;
-//            double py = point.y;
-//            parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
-//            parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
+            // set variables
+            double px = point.x;
+            double py = point.y;
+            parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
+            parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
 
-//            double *pvalue = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
-//            double *pdx = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
-//            double *pdy = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
-//            std::vector<Hermes::Hermes2D::Solution<double> *> sln(Util::scene()->fieldInfo("TODO")->module()->number_of_solution()); //TODO PK <double>
+            double *pvalue = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
+            double *pdx = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
+            double *pdy = new double[Util::scene()->fieldInfo("TODO")->module()->number_of_solution()];
+            std::vector<Hermes::Hermes2D::Solution<double> *> sln(Util::scene()->fieldInfo("TODO")->module()->number_of_solution()); //TODO PK <double>
 
-//            for (int k = 0; k < Util::scene()->fieldInfo("TODO")->module()->number_of_solution(); k++)
-//            {
-//                // solution
-//                sln[k] = Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution()));
+            for (int k = 0; k < Util::scene()->fieldInfo("TODO")->module()->number_of_solution(); k++)
+            {
+                // solution
+                sln[k] = Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution()));
 
-//                double value;
-//                if ((Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient) &&
-//                        Util::scene()->sceneSolution()->timeStep() == 0)
-//                    // const solution at first time step
-//                    value = Util::scene()->fieldInfo("TODO")->initialCondition.number();
-//                else
-//                    value = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
+                double value;
+                if ((Util::scene()->fieldInfo("TODO")->analysisType == AnalysisType_Transient) &&
+                        Util::scene()->sceneSolution()->timeStep() == 0)
+                    // const solution at first time step
+                    value = Util::scene()->fieldInfo("TODO")->initialCondition.number();
+                else
+                    value = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
 
-//                Point derivative;
-//                derivative.x = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_DX_0);
-//                derivative.y = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_DY_0);
+                Point derivative;
+                derivative.x = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_DX_0);
+                derivative.y = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_DY_0);
 
-//                // set variables
-//                pvalue[k] = value;
-//                pdx[k] = derivative.x;
-//                pdy[k] = derivative.y;
+                // set variables
+                pvalue[k] = value;
+                pdx[k] = derivative.x;
+                pdy[k] = derivative.y;
 
-//                std::stringstream number;
-//                number << (k+1);
+                std::stringstream number;
+                number << (k+1);
 
-//                parser->parser[0]->DefineVar("value" + number.str(), &pvalue[k]);
-//                parser->parser[0]->DefineVar("d" + Util::scene()->problemInfo()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-//                parser->parser[0]->DefineVar("d" + Util::scene()->problemInfo()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
-//            }
+                parser->parser[0]->DefineVar("value" + number.str(), &pvalue[k]);
+                parser->parser[0]->DefineVar("d" + Util::scene()->problemInfo()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+                parser->parser[0]->DefineVar("d" + Util::scene()->problemInfo()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+            }
 
-//            // set material variables
-//            // FIXME
-//            parser->setParserVariables(tmpMaterial, NULL,
-//                                       pvalue[0], pdx[0], pdy[0]);
+            // set material variables
+            // FIXME
+            parser->setParserVariables(tmpMaterial, NULL,
+                                       pvalue[0], pdx[0], pdy[0]);
 
-//            // parse expression
-//            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->fieldInfo("TODO")->module()->local_point.begin();
-//                 it < Util::scene()->fieldInfo("TODO")->module()->local_point.end(); ++it )
-//            {
-//                try
-//                {
-//                    PointValue pointValue;
-//                    if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
-//                    {
-//                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.scalar);
-//                        pointValue.scalar = parser->parser[0]->Eval();
-//                    }
-//                    else
-//                    {
-//                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_x);
-//                        pointValue.vector.x = parser->parser[0]->Eval();
-//                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_y);
-//                        pointValue.vector.y = parser->parser[0]->Eval();
-//                    }
-//                    values[*it] = pointValue;
+            // parse expression
+            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->fieldInfo("TODO")->module()->local_point.begin();
+                 it < Util::scene()->fieldInfo("TODO")->module()->local_point.end(); ++it )
+            {
+                try
+                {
+                    PointValue pointValue;
+                    if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
+                    {
+                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.scalar);
+                        pointValue.scalar = parser->parser[0]->Eval();
+                    }
+                    else
+                    {
+                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_x);
+                        pointValue.vector.x = parser->parser[0]->Eval();
+                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_y);
+                        pointValue.vector.y = parser->parser[0]->Eval();
+                    }
+                    values[*it] = pointValue;
 
-//                }
-//                catch (mu::Parser::exception_type &e)
-//                {
-//                    std::cout << "Local value: " << ((Hermes::Module::LocalVariable *) *it)->name <<
-//                                 " (" << ((Hermes::Module::LocalVariable *) *it)->id << ") " <<
-//                                 ((Hermes::Module::LocalVariable *) *it)->name << " - " <<
-//                                 parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
-//                }
-//            }
+                }
+                catch (mu::Parser::exception_type &e)
+                {
+                    std::cout << "Local value: " << ((Hermes::Module::LocalVariable *) *it)->name <<
+                                 " (" << ((Hermes::Module::LocalVariable *) *it)->id << ") " <<
+                                 ((Hermes::Module::LocalVariable *) *it)->name << " - " <<
+                                 parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
+                }
+            }
 
-//            delete [] pvalue;
-//            delete [] pdx;
-//            delete [] pdy;
-//        }
-//    }
+            delete [] pvalue;
+            delete [] pdx;
+            delete [] pdy;
+        }
+    }
 }
