@@ -64,7 +64,7 @@ public:
     /// clear and delete data
     void clear();
 
-private:
+protected:
     QList<MarkerType* > data;
 
     static MarkerType* noneMarker;

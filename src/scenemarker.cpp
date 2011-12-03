@@ -26,16 +26,12 @@
 template <typename MarkerType>
 void MarkerContainer<MarkerType>::add(MarkerType *marker)
 {
-    logMessage("MarkerContainer::add()");
-
     data.append(marker);
 }
 
 template <typename MarkerType>
 void MarkerContainer<MarkerType>::remove(MarkerType *marker)
 {
-    logMessage("MarkerContainer::remove()");
-
     data.removeOne(marker);
 }
 
@@ -48,8 +44,6 @@ MarkerType *MarkerContainer<MarkerType>::at(int i)
 template <typename MarkerType>
 MarkerType* MarkerContainer<MarkerType>::get(const QString &name)
 {
-    logMessage("MarkerContainer::get()");
-
     foreach (MarkerType *item, data)
         if (item->getName() == name.toStdString())
             return item;
@@ -90,7 +84,11 @@ MarkerType* MarkerContainer<MarkerType>::getSingleOrNull()
 template <typename MarkerType>
 void UniqueMarkerContainer<MarkerType>::add(MarkerType *marker)
 {
-    assert(0); //TODO
+    // add check corresponding to the same field ???
+    if (MarkerType *existingMarker = get(QString::fromStdString(marker->getName())))
+        this->data.replace(this->data.indexOf(existingMarker), marker);
+    else
+        this->data.append(marker);
 }
 
 template class MarkerContainer<SceneBoundary>;

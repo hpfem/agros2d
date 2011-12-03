@@ -1381,8 +1381,11 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         double angle = element.attribute("angle", "0").toDouble();
         int refineTowardsEdge = element.attribute("refine_towards", "0").toInt();
 
-        addEdge(new SceneEdge(nodeFrom, nodeTo, angle, refineTowardsEdge));
-        //TODO nacist marker
+        SceneEdge *edge = new SceneEdge(nodeFrom, nodeTo, angle, refineTowardsEdge);
+        edge->addMarker(marker);
+
+        addEdge(edge);
+
         n = n.nextSibling();
     }
 
@@ -1397,8 +1400,11 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         double area = element.attribute("area", "0").toDouble();
         int polynomialOrder = element.attribute("polynomialorder", "0").toInt();
 
-        addLabel(new SceneLabel(point, area, polynomialOrder));
-        //TODO nacist marker
+        SceneLabel *label = new SceneLabel(point, area, polynomialOrder);
+        label->addMarker(marker);
+
+        addLabel(label);
+
         n = n.nextSibling();
     }
 
