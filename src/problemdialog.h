@@ -59,7 +59,7 @@ class FieldWidget : public QWidget
 {
     Q_OBJECT
 public:
-    FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, QWidget *parent);
+    FieldWidget(const ProblemInfo *problemInfo, FieldInfo *m_fieldInfo, QWidget *parent);
 
     // equation
     QLabel *equationImage;
@@ -69,12 +69,13 @@ public:
     void load();
     bool save();
 
+    FieldInfo *fieldInfo();
     void refresh();
 
 private:
     // problem info
     const ProblemInfo *problemInfo;
-    FieldInfo *fieldInfo;
+    FieldInfo *m_fieldInfo;
 
     // main
     QComboBox *cmbAnalysisType;
@@ -110,6 +111,7 @@ private slots:
     void doAdaptivityChanged(int index);
     void doLinearityTypeChanged(int index);
     void doShowEquation();
+    void doRemoveField();
 };
 
 class ProblemDialog: public QDialog
@@ -121,6 +123,7 @@ public:
                   bool isNewProblem, QWidget *parent = 0);
 
     int showDialog();
+    void removeField(FieldInfo *fieldInfo);
 
 private slots:
     void doPhysicFieldChanged(int index);
@@ -162,7 +165,6 @@ private:
     QWidget *createControlsDescription();
 
     void fillComboBox();
-    void refresh();
 
     void load();
     bool save();

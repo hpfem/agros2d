@@ -86,7 +86,7 @@ std::map<std::string, std::string> availableModules()
 
 std::map<std::string, std::string> availableAnalyses(std::string fieldId)
 {
-    static std::map<std::string, std::string> analyses;
+    std::map<std::string, std::string> analyses;
 
     // read module
     rapidxml::file<> file_data((datadir().toStdString() + "/modules/" + fieldId + ".xml").c_str());

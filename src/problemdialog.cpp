@@ -121,7 +121,7 @@ void FieldSelectDialog::doItemDoubleClicked(QListWidgetItem *item)
 // ********************************************************************************************************
 
 FieldWidget::FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, QWidget *parent)
-    : QWidget(parent), problemInfo(problemInfo), fieldInfo(fieldInfo)
+    : QWidget(parent), problemInfo(problemInfo), m_fieldInfo(fieldInfo)
 {
     createContent();
     load();
@@ -169,6 +169,9 @@ void FieldWidget::createContent()
 
     // fill combobox
     fillComboBox();
+
+    QPushButton *btnRemove = new QPushButton(tr("Remove field"));
+    connect(btnRemove, SIGNAL(clicked()), this, SLOT(doRemoveField()));
 
     int minWidth = 130;
 
@@ -239,6 +242,7 @@ void FieldWidget::createContent()
     layoutLeft->addLayout(layoutTable);
     layoutLeft->addWidget(grpLinearity);
     layoutLeft->addStretch();
+    layoutLeft->addWidget(btnRemove, 0, Qt::AlignLeft);
 
     // right
     QVBoxLayout *layoutRight = new QVBoxLayout();
@@ -293,68 +297,68 @@ void FieldWidget::fillComboBox()
         cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
         cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
     }
+
+    std::map<std::string, std::string> analyses = availableAnalyses(m_fieldInfo->fieldId().toStdString());
+    for (std::map<std::string, std::string>::iterator it = analyses.begin(); it != analyses.end(); ++it)
+        cmbAnalysisType->addItem(QString::fromStdString(it->second), analysisTypeFromStringKey(QString::fromStdString(it->first)));
 }
 
 void FieldWidget::load()
 {
-    cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(fieldInfo->adaptivityType));
-    txtAdaptivitySteps->setValue(fieldInfo->adaptivitySteps);
-    txtAdaptivityTolerance->setValue(fieldInfo->adaptivityTolerance);
+    // analysis type
+    cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(m_fieldInfo->analysisType()));
+    // adaptivity
+    cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_fieldInfo->adaptivityType));
+    txtAdaptivitySteps->setValue(m_fieldInfo->adaptivitySteps);
+    txtAdaptivityTolerance->setValue(m_fieldInfo->adaptivityTolerance);
     // weakforms
-    cmbWeakForms->setCurrentIndex(cmbWeakForms->findData(fieldInfo->weakFormsType));
+    cmbWeakForms->setCurrentIndex(cmbWeakForms->findData(m_fieldInfo->weakFormsType));
     //mesh
-    txtNumberOfRefinements->setValue(fieldInfo->numberOfRefinements);
-    txtPolynomialOrder->setValue(fieldInfo->polynomialOrder);
-    cmbMeshType->setCurrentIndex(cmbMeshType->findData(fieldInfo->meshType));
+    txtNumberOfRefinements->setValue(m_fieldInfo->numberOfRefinements);
+    txtPolynomialOrder->setValue(m_fieldInfo->polynomialOrder);
+    cmbMeshType->setCurrentIndex(cmbMeshType->findData(m_fieldInfo->meshType));
     // transient
-    cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(fieldInfo->analysisType()));
-    txtTransientInitialCondition->setValue(fieldInfo->initialCondition);
+    txtTransientInitialCondition->setValue(m_fieldInfo->initialCondition);
     // linearity
-    cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(fieldInfo->linearityType));
-    txtNonlinearSteps->setValue(fieldInfo->nonlinearSteps);
-    txtNonlinearTolerance->setValue(fieldInfo->nonlinearTolerance);
+    cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType));
+    txtNonlinearSteps->setValue(m_fieldInfo->nonlinearSteps);
+    txtNonlinearTolerance->setValue(m_fieldInfo->nonlinearTolerance);
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
-    refresh();
 }
 
 bool FieldWidget::save()
 {    
-    fieldInfo->setAnalysisType((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt());
+    m_fieldInfo->setAnalysisType((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt());
 
-    fieldInfo->initialCondition = txtTransientInitialCondition->value();
-
-    fieldInfo->numberOfRefinements = txtNumberOfRefinements->value();
-    fieldInfo->polynomialOrder = txtPolynomialOrder->value();
-    fieldInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();
-    fieldInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
-    fieldInfo->adaptivitySteps = txtAdaptivitySteps->value();
-    fieldInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
-
-    fieldInfo->linearityType = (LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt();
-    fieldInfo->nonlinearSteps = txtNonlinearSteps->value();
-    fieldInfo->nonlinearTolerance = txtNonlinearTolerance->value();
-
-    fieldInfo->weakFormsType = (WeakFormsType) cmbWeakForms->itemData(cmbWeakForms->currentIndex()).toInt();
+    // adaptivity
+    m_fieldInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
+    m_fieldInfo->adaptivitySteps = txtAdaptivitySteps->value();
+    m_fieldInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
+    // weakforms
+    m_fieldInfo->weakFormsType = (WeakFormsType) cmbWeakForms->itemData(cmbWeakForms->currentIndex()).toInt();
+    //mesh
+    m_fieldInfo->numberOfRefinements = txtNumberOfRefinements->value();
+    m_fieldInfo->polynomialOrder = txtPolynomialOrder->value();
+    m_fieldInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();
+    // transient
+    m_fieldInfo->initialCondition = txtTransientInitialCondition->value();
+    // linearity
+    m_fieldInfo->linearityType = (LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt();
+    m_fieldInfo->nonlinearSteps = txtNonlinearSteps->value();
+    m_fieldInfo->nonlinearTolerance = txtNonlinearTolerance->value();
 
     return true;
 }
 
 void FieldWidget::refresh()
 {
-    // store analysis type
-    AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
-
-    std::map<std::string, std::string> analyses = availableAnalyses(fieldInfo->fieldId().toStdString());
-    for (std::map<std::string, std::string>::iterator it = analyses.begin(); it != analyses.end(); ++it)
-        cmbAnalysisType->addItem(QString::fromStdString(it->second), analysisTypeFromStringKey(QString::fromStdString(it->first)));
-
-    // restore analysis type
-    cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(analysisType));
-    if (cmbAnalysisType->currentIndex() == -1) cmbAnalysisType->setCurrentIndex(0);
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
+}
 
-    doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
+FieldInfo *FieldWidget::fieldInfo()
+{
+    return m_fieldInfo;
 }
 
 void FieldWidget::doAnalysisTypeChanged(int index)
@@ -370,8 +374,14 @@ void FieldWidget::doShowEquation()
 {
     readPixmap(lblEquationPixmap,
                QString(":/images/equations/%1/%1_%2.png")
-               .arg(fieldInfo->fieldId())
+               .arg(m_fieldInfo->fieldId())
                .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
+}
+
+void FieldWidget::doRemoveField()
+{
+    ProblemDialog *problemDialog = dynamic_cast<ProblemDialog *>(parent());
+    problemDialog->removeField(m_fieldInfo);
 }
 
 void FieldWidget::doAdaptivityChanged(int index)
@@ -448,7 +458,8 @@ void ProblemDialog::createControls()
 
     setLayout(layout);
 
-    refresh();
+    setMinimumSize(sizeHint());
+    resize(sizeHint());
 }
 
 QWidget *ProblemDialog::createControlsGeneral()
@@ -539,7 +550,9 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     // fields
     tabFields = new QTabWidget(this);
-    refresh();
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        tabFields->addTab(new FieldWidget(m_problemInfo, fieldInfo, tabFields),
+                          QString::fromStdString(fieldInfo->module()->name));
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
     layoutProblem->addLayout(layoutName);
@@ -592,18 +605,6 @@ void ProblemDialog::fillComboBox()
     cmbCoordinateType->addItem(coordinateTypeString(CoordinateType_Axisymmetric), CoordinateType_Axisymmetric);
 
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
-}
-
-void ProblemDialog::refresh()
-{
-    tabFields->clear();
-
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-        tabFields->addTab(new FieldWidget(m_problemInfo, fieldInfo, tabFields),
-                          QString::fromStdString(fieldInfo->module()->name));
-
-    setMinimumSize(sizeHint());
-    resize(sizeHint());
 }
 
 void ProblemDialog::load()
@@ -735,7 +736,22 @@ bool ProblemDialog::save()
 
     // save fields
     for (int i = 0; i < tabFields->count(); i++)
-        static_cast<FieldWidget *>(tabFields->widget(i))->save();
+    {
+        FieldWidget *wid = static_cast<FieldWidget *>(tabFields->widget(i));
+        wid->save();
+    }
+
+    // add missing fields
+    for (int i = 0; i < tabFields->count(); i++)
+    {
+        FieldWidget *wid = static_cast<FieldWidget *>(tabFields->widget(i));
+
+        if (!Util::scene()->fieldInfo(wid->fieldInfo()->fieldId()))
+            Util::scene()->addField(wid->fieldInfo());
+    }
+
+    // remove deleted fields
+
 
     return true;
 }
@@ -810,9 +826,23 @@ void ProblemDialog::doAddField()
     FieldSelectDialog dialog(this);
     if (dialog.showDialog() == QDialog::Accepted)
     {
-        Util::scene()->addField(new FieldInfo(m_problemInfo, dialog.fieldId()));
+        FieldInfo *fieldInfo = new FieldInfo(m_problemInfo, dialog.fieldId());
 
-        refresh();
+        tabFields->addTab(new FieldWidget(m_problemInfo, fieldInfo, tabFields),
+                          QString::fromStdString(fieldInfo->module()->name));
+        tabFields->setCurrentIndex(tabFields->count() - 1);
     }
 }
 
+void ProblemDialog::removeField(FieldInfo *fieldInfo)
+{
+//    for (int i = 0; i < tabFields->count(); i++)
+//    {
+//        FieldWidget *wid = dynamic_cast<FieldWidget *>(tabFields->widget(i));
+//        if (wid->fieldInfo() == fieldInfo)
+//        {
+//            tabFields->removeTab(i);
+//            return;
+//        }
+//    }
+}

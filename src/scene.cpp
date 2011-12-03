@@ -919,6 +919,30 @@ void Scene::doNewMaterial()
         delete marker;
 }
 
+void Scene::addField(FieldInfo *field)
+{
+    // add to the collection
+    m_fieldInfos[field->fieldId()] = field;
+
+    emit invalidated();
+}
+
+void Scene::removeField(FieldInfo *field)
+{
+    // remove boundary conditions
+    foreach (SceneBoundary *boundary, field->module()->boundaries().items())
+        removeBoundary(boundary);
+
+    // remove materials
+    foreach (SceneMaterial *material, field->module()->materials().items())
+        removeMaterial(material);
+
+    // remove from the collection
+    m_fieldInfos.remove(field->fieldId());
+
+    emit invalidated();
+}
+
 void Scene::doTransform()
 {
     logMessage("Scene::doTransform()");
@@ -1194,9 +1218,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     }
     file.close();
 
-    QDomNode n;
-    QDomElement element;
-
     // main document
     QDomElement eleDoc = doc.documentElement();
     QString version = eleDoc.attribute("version");
@@ -1248,23 +1269,23 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // nodes
     QDomNode eleNodes = eleGeometry.toElement().elementsByTagName("nodes").at(0);
-    n = eleNodes.firstChild();
-    while(!n.isNull())
+    QDomNode nodeNode = eleNodes.firstChild();
+    while (!nodeNode.isNull())
     {
-        element = n.toElement();
+        QDomElement element = nodeNode.toElement();
 
         Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
 
         addNode(new SceneNode(point));
-        n = n.nextSibling();
+        nodeNode = nodeNode.nextSibling();
     }
 
     // edges
     QDomNode eleEdges = eleGeometry.toElement().elementsByTagName("edges").at(0);
-    n = eleEdges.firstChild();
-    while(!n.isNull())
+    QDomNode nodeEdge = eleEdges.firstChild();
+    while (!nodeEdge.isNull())
     {
-        element = n.toElement();
+        QDomElement element = nodeEdge.toElement();
 
         SceneNode *nodeFrom = nodes->at(element.attribute("start").toInt());
         SceneNode *nodeTo = nodes->at(element.attribute("end").toInt());
@@ -1272,38 +1293,34 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         int refineTowardsEdge = element.attribute("refine_towards", "0").toInt();
 
         SceneEdge *edge = new SceneEdge(nodeFrom, nodeTo, angle, refineTowardsEdge);
-
         addEdge(edge);
 
-        n = n.nextSibling();
+        nodeEdge = nodeEdge.nextSibling();
     }
 
     // labels
     QDomNode eleLabels = eleGeometry.toElement().elementsByTagName("labels").at(0);
-    n = eleLabels.firstChild();
-    while(!n.isNull())
+    QDomNode nodeLabel = eleLabels.firstChild();
+    while (!nodeLabel.isNull())
     {
-        element = n.toElement();
+        QDomElement element = nodeLabel.toElement();
         Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
         double area = element.attribute("area", "0").toDouble();
         int polynomialOrder = element.attribute("polynomialorder", "0").toInt();
 
         SceneLabel *label = new SceneLabel(point, area, polynomialOrder);
-        // SceneMaterial *marker = materials->at(element.attribute("marker").toInt());
-        // label->addMarker(marker);
-
         addLabel(label);
 
-        n = n.nextSibling();
+        nodeLabel = nodeLabel.nextSibling();
     }
 
     // field ***************************************************************************************************************
 
     QDomNode eleFields = eleProblemInfo.toElement().elementsByTagName("fields").at(0);
-    n = eleFields.firstChild();
-    while(!n.isNull())
+    QDomNode nodeField = eleFields.firstChild();
+    while (!nodeField.isNull())
     {
-        QDomNode eleField = n.toElement();
+        QDomNode eleField = nodeField.toElement();
 
         FieldInfo *field = new FieldInfo(m_problemInfo, eleField.toElement().attribute("fieldid"));
 
@@ -1348,10 +1365,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
         // boundary conditions
         QDomNode eleBoundaries = eleField.toElement().elementsByTagName("boundaries").at(0);
-        n = eleBoundaries.firstChild();
-        while(!n.isNull())
+        QDomNode nodeBoundary = eleBoundaries.firstChild();
+        while (!nodeBoundary.isNull())
         {
-            element = n.toElement();
+            QDomElement element = nodeBoundary.toElement();
             QString name = element.toElement().attribute("name");
             QString type = element.toElement().attribute("type");
 
@@ -1392,15 +1409,15 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                 }
             }
 
-            n = n.nextSibling();
+            nodeBoundary = nodeBoundary.nextSibling();
         }
 
         // materials
         QDomNode eleMaterials = eleField.toElement().elementsByTagName("materials").at(0);
-        n = eleMaterials.firstChild();
-        while(!n.isNull())
+        QDomNode nodeMaterial = eleMaterials.firstChild();
+        while (!nodeMaterial.isNull())
         {
-            element = n.toElement();
+            QDomElement element = nodeMaterial.toElement();
             QString name = element.toElement().attribute("name");
 
             if (element.toElement().attribute("id") == 0)
@@ -1439,14 +1456,14 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                 }
             }
 
-            n = n.nextSibling();
+            nodeMaterial = nodeMaterial.nextSibling();
         }
 
         // add field
         addField(field);
 
         // next field
-        n = n.nextSibling();
+        nodeField = nodeField.nextSibling();
     }
 
     // set system locale

@@ -236,10 +236,11 @@ public:
     void setProblemInfo(ProblemInfo *problemInfo) { clear(); delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
 
     inline QMap<QString, FieldInfo *> fieldInfos() const { return m_fieldInfos; }
-    inline FieldInfo *fieldInfo(QString name) { if (!m_fieldInfos.keys().contains(name)) assert(0); return m_fieldInfos[name]; }
+    inline FieldInfo *fieldInfo(QString name) { return m_fieldInfos[name]; }
     inline FieldInfo *fieldInfo(std::string name) { return fieldInfo(QString::fromStdString(name)); }
     inline FieldInfo *fieldInfo(const char* name) { return fieldInfo(QString::fromAscii(name)); }
-    void addField(FieldInfo *field) { m_fieldInfos[field->fieldId()] = field; }
+    void addField(FieldInfo *field);
+    void removeField(FieldInfo *field);
 
     inline void refresh() { emit invalidated(); }
     inline SceneSolution<double> *sceneSolution() const { return m_sceneSolution; } //TODO PK <double>
