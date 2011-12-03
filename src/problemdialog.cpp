@@ -286,6 +286,13 @@ void FieldWidget::fillComboBox()
     cmbWeakForms->clear();
     cmbWeakForms->addItem(weakFormsTypeString(WeakFormsType_Compiled), WeakFormsType_Compiled);
     cmbWeakForms->addItem(weakFormsTypeString(WeakFormsType_Interpreted), WeakFormsType_Interpreted);
+
+    cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
+    // if (hermesField->hasNonlinearity())
+    {
+        cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
+        cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
+    }
 }
 
 void FieldWidget::load()
@@ -346,16 +353,6 @@ void FieldWidget::refresh()
     cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(analysisType));
     if (cmbAnalysisType->currentIndex() == -1) cmbAnalysisType->setCurrentIndex(0);
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
-
-    // nonlinearity
-    cmbLinearityType->clear();
-    cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
-    // if (hermesField->hasNonlinearity())
-    {
-        cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
-        cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
-    }
-    doLinearityTypeChanged(cmbLinearityType->currentIndex());
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 }
@@ -449,7 +446,7 @@ void ProblemDialog::createControls()
     layout->addStretch();
     layout->addWidget(buttonBox);
 
-    setLayout(layout);   
+    setLayout(layout);
 
     refresh();
 }
@@ -677,40 +674,40 @@ bool ProblemDialog::save()
     //                                                ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString()));
     //    }
 
-            // check values
-            //TODO
-            //    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Harmonic)
-            //    {
-            //        if (txtFrequency->value() < 0)
-            //        {
-            //            QMessageBox::critical(this, tr("Error"), tr("Frequency cannot be negative."));
-            //            return false;
-            //        }
-            //    }
-            //    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Transient)
-            //    {
-            //        txtTransientTimeStep->evaluate(false);
-            //        if (txtTransientTimeStep->number() <= 0.0)
-            //        {
-            //            QMessageBox::critical(this, tr("Error"), tr("Time step must be positive."));
-            //            return false;
-            //        }
-            //        txtTransientTimeTotal->evaluate(false);
-            //        if (txtTransientTimeTotal->number() <= 0.0)
-            //        {
-            //            QMessageBox::critical(this, tr("Error"), tr("Total time must be positive."));
-            //            return false;
-            //        }
-            //        txtTransientTimeStep->evaluate(false);
-            //        if (txtTransientTimeStep->number() > txtTransientTimeTotal->number())
-            //        {
-            //            QMessageBox::critical(this, tr("Error"), tr("Time step is greater then total time."));
-            //            return false;
-            //        }
-            //    }
+    // check values
+    //TODO
+    //    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Harmonic)
+    //    {
+    //        if (txtFrequency->value() < 0)
+    //        {
+    //            QMessageBox::critical(this, tr("Error"), tr("Frequency cannot be negative."));
+    //            return false;
+    //        }
+    //    }
+    //    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Transient)
+    //    {
+    //        txtTransientTimeStep->evaluate(false);
+    //        if (txtTransientTimeStep->number() <= 0.0)
+    //        {
+    //            QMessageBox::critical(this, tr("Error"), tr("Time step must be positive."));
+    //            return false;
+    //        }
+    //        txtTransientTimeTotal->evaluate(false);
+    //        if (txtTransientTimeTotal->number() <= 0.0)
+    //        {
+    //            QMessageBox::critical(this, tr("Error"), tr("Total time must be positive."));
+    //            return false;
+    //        }
+    //        txtTransientTimeStep->evaluate(false);
+    //        if (txtTransientTimeStep->number() > txtTransientTimeTotal->number())
+    //        {
+    //            QMessageBox::critical(this, tr("Error"), tr("Time step is greater then total time."));
+    //            return false;
+    //        }
+    //    }
 
-            // run and check startup script
-            if (!txtStartupScript->toPlainText().isEmpty())
+    // run and check startup script
+    if (!txtStartupScript->toPlainText().isEmpty())
     {
         ScriptResult scriptResult = runPythonScript(txtStartupScript->toPlainText());
         if (scriptResult.isError)

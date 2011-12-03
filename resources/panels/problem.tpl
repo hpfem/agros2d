@@ -11,49 +11,78 @@
 <h1>{{BASIC_INFORMATION_LABEL}}</h1>
 <div class="section">
 <table class="maintable">
-	<tr><td><b>{{NAME_LABEL}}</b></td><td>{{NAME}}</td></tr>
-	<tr><td><b>{{PHYSICAL_FIELD_LABEL}}</b></td><td>{{PHYSICAL_FIELD}}</td></tr>
-	<tr><td><b>{{PROBLEM_TYPE_LABEL}}</b></td><td>{{PROBLEM_TYPE}}</td></tr>
-	<tr><td><b>{{ANALYSIS_TYPE_LABEL}}</b></td><td>{{ANALYSIS_TYPE}}</td></tr>
-	{{#ANALYSIS_PARAMETERS_SECTION}}
-	<tr><td colspan=2><div class="subsection">
-		<table>
-			<tr><td><b>{{FREQUENCY_LABEL}}</b></td><td>{{FREQUENCY}}</td></tr>
-			<tr><td><b>{{TIME_STEP_LABEL}}</b></td><td>{{TIME_STEP}}</td></tr>
-			<tr><td><b>{{TIME_TOTAL_LABEL}}</b></td><td>{{TIME_TOTAL}}</td></tr>
-			<tr><td><b>{{INITIAL_CONDITION_LABEL}}</b></td><td>{{INITIAL_CONDITION}}</td></tr>
-		</table>
-	</div></td></tr>
-	{{/ANALYSIS_PARAMETERS_SECTION}}
-	<tr><td><b>{{ADAPTIVITY_TYPE_LABEL}}</b></td><td>{{ADAPTIVITY_TYPE}}</td></tr>
-	{{#ADAPTIVITY_PARAMETERS_SECTION}}
-	<tr><td colspan=2><div class="subsection">
-		<table>
-			<tr><td><b>{{ADAPTIVITY_STEPS_LABEL}}</b></td><td>{{ADAPTIVITY_STEPS}}</td></tr>
-			<tr><td><b>{{ADAPTIVITY_TOLERANCE_LABEL}}</b></td><td>{{ADAPTIVITY_TOLERANCE}}</td></tr>
-		</table>
-	</div></td></tr>
-	{{/ADAPTIVITY_PARAMETERS_SECTION}}
-	<tr><td><b>{{MESH_TYPE_LABEL}}</b></td><td>{{MESH_TYPE}}</td></tr>
-	<tr><td colspan=2><div class="subsection">
-		<table>
-			<tr><td>{{REFINEMENS_NUMBER_LABEL}}</b></td><td>{{REFINEMENS_NUMBER}}</td></tr>
-			<tr><td>{{POLYNOMIAL_ORDER_LABEL}}</b></td><td>{{POLYNOMIAL_ORDER}}</td></tr>
-		</table>
-	</div></td></tr>
-	<tr><td><b>{{SOLUTION_TYPE_LABEL}}</b></td><td>{{SOLUTION_TYPE}}</td></tr>
-	{{#SOLVER_PARAMETERS_SECTION}}
-	<tr><td colspan=2><div class="subsection">
-		<table>
-			<tr><td><b>{{NONLINEAR_STEPS_LABEL}}</b></td><td>{{NONLINEAR_STEPS}}</td></tr>
-			<tr><td><b>{{NONLINEAR_TOLERANCE_LABEL}}</b></td><td>{{NONLINEAR_TOLERANCE}}</td></tr>
-		</table>
-	</div></td></tr>
-	{{/SOLVER_PARAMETERS_SECTION}}
-	<tr><td><b>{{WEAK_FORMS_TYPE_LABEL}}</b></td><td>{{WEAK_FORMS_TYPE}}</td></tr>
+	<tr>
+		<td><b>{{NAME_LABEL}}</b></td><td>{{NAME}}</td>
+	</tr>
+	<tr>
+		<td><b>{{COORDINATE_TYPE_LABEL}}</b></td><td>{{COORDINATE_TYPE}}</td>
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;<b>{{FREQUENCY_LABEL}}</b></td><td>{{FREQUENCY}}</td>
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;<b>{{TIME_STEP_LABEL}}</b></td><td>{{TIME_STEP}}</td>
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;<b>{{TIME_TOTAL_LABEL}}</b></td><td>{{TIME_TOTAL}}</td>
+	</tr>
 </table>
 </div>
 
+{{#FIELD}}
+<div class="section">
+<h2>{{PHYSICAL_FIELD}}</h2>
+<table class="maintable">
+	<tr>
+		<td><b>{{ANALYSIS_TYPE_LABEL}}</b></td><td>{{ANALYSIS_TYPE}}</td>
+	</tr>
+	<tr>
+		<td><b>{{WEAK_FORMS_TYPE_LABEL}}</b></td><td>{{WEAK_FORMS_TYPE}}</td>
+	</tr>
+	{{#INITIAL_CONDITION_SECTION}}
+	<tr>
+		<td><b>{{INITIAL_CONDITION_LABEL}}</b></td><td>{{INITIAL_CONDITION}}</td>
+	</tr>
+	{{/INITIAL_CONDITION_SECTION}}
+	<tr>
+		<td><b>{{LINEARITY_TYPE_LABEL}}</b></td><td>{{LINEARITY_TYPE}}</td>
+	</tr>
+	{{#SOLVER_PARAMETERS_SECTION}}
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_STEPS_LABEL}}</b></td><td>{{NONLINEAR_STEPS}}</td>
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_TOLERANCE_LABEL}}</b></td><td>{{NONLINEAR_TOLERANCE}}</td>
+	</tr>		
+	{{/SOLVER_PARAMETERS_SECTION}}
+	<tr>
+		<td><b>{{ADAPTIVITY_TYPE_LABEL}}</b></td><td>{{ADAPTIVITY_TYPE}}</td>
+	</tr>
+	{{#ADAPTIVITY_PARAMETERS_SECTION}}
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;<b>{{ADAPTIVITY_STEPS_LABEL}}</b></td><td>{{ADAPTIVITY_STEPS}}</td>
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;<b>{{ADAPTIVITY_TOLERANCE_LABEL}}</b></td><td>{{ADAPTIVITY_TOLERANCE}}</td>
+	</tr>
+	{{/ADAPTIVITY_PARAMETERS_SECTION}}
+	<tr>
+		<td><b>{{MESH_TYPE_LABEL}}</b></td><td>{{MESH_TYPE}}</td>
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;<b>{{REFINEMENS_NUMBER_LABEL}}</b></td><td>{{REFINEMENS_NUMBER}}</td>
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;<b>{{POLYNOMIAL_ORDER_LABEL}}</b></td><td>{{POLYNOMIAL_ORDER}}</td>
+	</tr>	
+</table>
+</div>
+{{/FIELD}}
+
+</body>
+</html>
+
+<!--
 {{#SOLUTION_SECTION}}
 <h1>{{SOLUTION_INFORMATION_LABEL}}</h1>
 <div class="section">
@@ -88,5 +117,4 @@
 </table>
 </div>
 {{/SOLUTION_SECTION}}
-</body>
-</html>
+-->

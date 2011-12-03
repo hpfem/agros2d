@@ -17,10 +17,21 @@
 
 <div class="section">
 <table class="maintable">
-	<tr><td><b>Point</b></td><td>{{LABELX}}</td><td>{{POINTX}}</td><td>{{POINT_UNIT}}</td></tr>
-	<tr><td></td><td>{{LABELY}}</td><td>{{POINTY}}</td><td>{{POINT_UNIT}}</td></tr>
+	<tr>
+		<td><b>Point</b></td><td>{{LABELX}}</td>
+		<td>{{POINTX}}</td><td>{{POINT_UNIT}}</td>
+	</tr>
+	<tr>
+		<td></td><td>{{LABELY}}</td>
+		<td>{{POINTY}}</td><td>{{POINT_UNIT}}</td>
+	</tr>
+
 	{{#ITEM}}
-	<tr><td><b>{{NAME}}<b></td><td>{{SHORTNAME}}<sub>{{PART}}</sub></td><td>{{VALUE}}</td><td>{{UNIT}}</td></tr>
+	<tr>
+		<td><b>{{NAME}}<b></td>
+		<td>{{SHORTNAME}}<sub>{{PART}}</sub></td>
+		<td>{{VALUE}}</td><td>{{UNIT}}</td>
+	</tr>
 	{{/ITEM}}
 </table>
 </div>

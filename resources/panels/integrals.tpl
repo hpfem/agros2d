@@ -12,7 +12,12 @@
 <div class="section">
 <table class="maintable">
 	{{#ITEM}}
-	<tr><td><b>{{NAME}}<b></td><td>{{SHORTNAME}}</td><td>{{VALUE}}</td><td>{{UNIT}}</td></tr>
+	<tr>
+		<td><b>{{NAME}}<b></td>
+		<td>{{SHORTNAME}}</td>
+		<td>{{VALUE}}</td>
+		<td>{{UNIT}}</td>
+	</tr>
 	{{/ITEM}}
 </table>
 </div>

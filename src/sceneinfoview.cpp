@@ -173,10 +173,6 @@ void SceneInfoView::keyPressEvent(QKeyEvent *event)
 
 void SceneInfoView::showInfo()
 {
-    //TODO
-    if (!Util::scene()->fieldInfos().count() == 0)
-        return;
-
     // stylesheet
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
@@ -195,62 +191,15 @@ void SceneInfoView::showInfo()
     problem.SetValue("NAME_LABEL", tr("Name:").toStdString());
     problem.SetValue("NAME", Util::scene()->problemInfo()->name.toStdString());
 
-    problem.SetValue("PHYSICAL_FIELD_LABEL", tr("Field:").toStdString());
-    problem.SetValue("PHYSICAL_FIELD", Util::scene()->fieldInfo("TODO")->module()->name);
+    problem.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
+    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType).toStdString());
 
-    problem.SetValue("PROBLEM_TYPE_LABEL", tr("Type:").toStdString());
-    problem.SetValue("PROBLEM_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType).toStdString());
-
-    problem.SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
-    problem.SetValue("ANALYSIS_TYPE", analysisTypeString(Util::scene()->fieldInfo("TODO")->analysisType()).toStdString());
-    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Harmonic)
-    {
-        problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
-        problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency).toStdString() + " Hz");
-        problem.ShowSection("ANALYSIS_PARAMETERS_SECTION");
-    }
-    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
-    {
-        problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
-        problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep.number()).toStdString() + " s");
-        problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
-        problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal.number()).toStdString() + " s");
-        problem.SetValue("INITIAL_CONDITION_LABEL", tr("Total time:").toStdString());
-        problem.SetValue("INITIAL_CONDITION", QString::number(Util::scene()->fieldInfo("TODO")->initialCondition.number()).toStdString());
-        problem.ShowSection("ANALYSIS_PARAMETERS_SECTION");
-    }
-
-    problem.SetValue("ADAPTIVITY_TYPE_LABEL", tr("Adaptivity:").toStdString());
-    problem.SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(Util::scene()->fieldInfo("TODO")->adaptivityType).toStdString());
-    if (Util::scene()->fieldInfo("TODO")->adaptivityType != AdaptivityType_None)
-    {
-        problem.SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
-        problem.SetValue("ADAPTIVITY_STEPS", QString::number(Util::scene()->fieldInfo("TODO")->adaptivitySteps).toStdString());
-        problem.SetValue("ADAPTIVITY_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-        problem.SetValue("ADAPTIVITY_TOLERANCE", QString::number(Util::scene()->fieldInfo("TODO")->adaptivityTolerance).toStdString());
-        problem.ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
-    }
-
-    problem.SetValue("WEAK_FORMS_TYPE_LABEL", tr("Weak forms:").toStdString());
-    problem.SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(Util::scene()->fieldInfo("TODO")->weakFormsType).toStdString());
-
-    problem.SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
-    problem.SetValue("MESH_TYPE", meshTypeString(Util::scene()->fieldInfo("TODO")->meshType).toStdString());
-    problem.SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());
-    problem.SetValue("REFINEMENS_NUMBER", QString::number(Util::scene()->fieldInfo("TODO")->numberOfRefinements).toStdString());
-    problem.SetValue("POLYNOMIAL_ORDER_LABEL", tr("Polynomial order:").toStdString());
-    problem.SetValue("POLYNOMIAL_ORDER", QString::number(Util::scene()->fieldInfo("TODO")->polynomialOrder).toStdString());
-
-    problem.SetValue("SOLUTION_TYPE_LABEL", tr("Solution type:").toStdString());
-    problem.SetValue("SOLUTION_TYPE", linearityTypeString(Util::scene()->fieldInfo("TODO")->linearityType).toStdString());
-    if (Util::scene()->fieldInfo("TODO")->linearityType != LinearityType_Linear)
-    {
-        problem.SetValue("NONLINEAR_STEPS_LABEL", tr("Steps:").toStdString());
-        problem.SetValue("NONLINEAR_STEPS", QString::number(Util::scene()->fieldInfo("TODO")->nonlinearSteps).toStdString());
-        problem.SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-        problem.SetValue("NONLINEAR_TOLERANCE", QString::number(Util::scene()->fieldInfo("TODO")->nonlinearTolerance).toStdString());
-        problem.ShowSection("SOLVER_PARAMETERS_SECTION");
-    }
+    problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
+    problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency).toStdString() + " Hz");
+    problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
+    problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep.number()).toStdString() + " s");
+    problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
+    problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal.number()).toStdString() + " s");
 
     if (Util::scene()->sceneSolution()->isMeshed())
     {
@@ -273,24 +222,82 @@ void SceneInfoView::showInfo()
                 problem.SetValue("DOFS_LABEL", tr("DOFs:").toStdString());
                 problem.SetValue("DOFS", QString::number(Util::scene()->sceneSolution()->space()->get_num_dofs()).toStdString());
             }
-
-            if (Util::scene()->fieldInfo("TODO")->adaptivityType != AdaptivityType_None)
-            {
-                problem.SetValue("ADAPTIVITY_LABEL", tr("Adaptivity").toStdString());
-                problem.SetValue("ADAPTIVITY_ERROR_LABEL", tr("Error:").toStdString());
-                problem.SetValue("ADAPTIVITY_ERROR", QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3).toStdString());
-
-                problem.SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh").toStdString());
-                problem.SetValue("SOLUTION_MESH_NODES_LABEL", tr("Nodes:").toStdString());
-                problem.SetValue("SOLUTION_MESH_NODES", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()).toStdString());
-                problem.SetValue("SOLUTION_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
-                problem.SetValue("SOLUTION_MESH_ELEMENTS", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()).toStdString());
-
-                problem.ShowSection("ADAPTIVITY_SECTION");
-            }
             problem.ShowSection("SOLUTION_PARAMETERS_SECTION");
         }
         problem.ShowSection("SOLUTION_SECTION");
+    }
+
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        ctemplate::TemplateDictionary *field = problem.AddSectionDictionary("FIELD");
+
+        field->SetValue("PHYSICAL_FIELD", fieldInfo->module()->name);
+
+        field->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
+        field->SetValue("ANALYSIS_TYPE", analysisTypeString(fieldInfo->analysisType()).toStdString());
+
+        field->SetValue("WEAK_FORMS_TYPE_LABEL", tr("Weak forms:").toStdString());
+        field->SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(fieldInfo->weakFormsType).toStdString());
+
+        if (fieldInfo->analysisType() == AnalysisType_Transient)
+        {
+            field->SetValue("INITIAL_CONDITION_LABEL", tr("Initial condition:").toStdString());
+            field->SetValue("INITIAL_CONDITION", QString::number(fieldInfo->initialCondition.number()).toStdString());
+            field->ShowSection("INITIAL_CONDITION_SECTION");
+        }
+
+        field->SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
+        field->SetValue("MESH_TYPE", meshTypeString(fieldInfo->meshType).toStdString());
+        field->SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());
+        field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->numberOfRefinements).toStdString());
+        field->SetValue("POLYNOMIAL_ORDER_LABEL", tr("Polynomial order:").toStdString());
+        field->SetValue("POLYNOMIAL_ORDER", QString::number(fieldInfo->polynomialOrder).toStdString());
+
+        field->SetValue("ADAPTIVITY_TYPE_LABEL", tr("Adaptivity:").toStdString());
+        field->SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(fieldInfo->adaptivityType).toStdString());
+
+        if (fieldInfo->adaptivityType != AdaptivityType_None)
+        {
+            field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
+            field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->adaptivitySteps).toStdString());
+            field->SetValue("ADAPTIVITY_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
+            field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance).toStdString());
+            field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
+        }
+
+        field->SetValue("LINEARITY_TYPE_LABEL", tr("Solution type:").toStdString());
+        field->SetValue("LINEARITY_TYPE", linearityTypeString(fieldInfo->linearityType).toStdString());
+
+        if (fieldInfo->linearityType != LinearityType_Linear)
+        {
+            field->SetValue("NONLINEAR_STEPS_LABEL", tr("Steps:").toStdString());
+            field->SetValue("NONLINEAR_STEPS", QString::number(fieldInfo->nonlinearSteps).toStdString());
+            field->SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
+            field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->nonlinearTolerance).toStdString());
+            field->ShowSection("SOLVER_PARAMETERS_SECTION");
+        }
+
+        //        if (Util::scene()->sceneSolution()->isMeshed())
+        //        {
+        //            if (Util::scene()->sceneSolution()->isSolved())
+        //            {
+        //                if (fieldInfo->adaptivityType != AdaptivityType_None)
+        //                {
+        //                    problem.SetValue("ADAPTIVITY_LABEL", tr("Adaptivity").toStdString());
+        //                    problem.SetValue("ADAPTIVITY_ERROR_LABEL", tr("Error:").toStdString());
+        //                    problem.SetValue("ADAPTIVITY_ERROR", QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3).toStdString());
+
+        //                    problem.SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh").toStdString());
+        //                    problem.SetValue("SOLUTION_MESH_NODES_LABEL", tr("Nodes:").toStdString());
+        //                    problem.SetValue("SOLUTION_MESH_NODES", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()).toStdString());
+        //                    problem.SetValue("SOLUTION_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
+        //                    problem.SetValue("SOLUTION_MESH_ELEMENTS", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()).toStdString());
+
+        //                    problem.ShowSection("ADAPTIVITY_SECTION");
+        //                }
+        //                problem.ShowSection("SOLUTION_PARAMETERS_SECTION");
+        //            }
+        //        }
     }
 
     ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/problem.tpl", ctemplate::DO_NOT_STRIP, &problem, &info);
