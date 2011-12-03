@@ -1208,30 +1208,29 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         return ErrorResult(ErrorResultType_Information, tr("File '%1' has been converted to new version. The file is created in temp directory. Please, save problem file to the new location.").arg(fileName));
     }
 
-    // problems
-    QDomNode eleProblems = eleDoc.elementsByTagName("problems").at(0);
-    // first problem
-    QDomNode eleProblem = eleProblems.toElement().elementsByTagName("problem").at(0);
+    // problem info
+    QDomNode eleProblemInfo = eleDoc.elementsByTagName("problem").at(0);
+
     // name
-    m_problemInfo->name = eleProblem.toElement().attribute("name");
+    m_problemInfo->name = eleProblemInfo.toElement().attribute("name");
     // date
-    m_problemInfo->date = QDate::fromString(eleProblem.toElement().attribute("date", QDate::currentDate().toString(Qt::ISODate)), Qt::ISODate);
+    m_problemInfo->date = QDate::fromString(eleProblemInfo.toElement().attribute("date", QDate::currentDate().toString(Qt::ISODate)), Qt::ISODate);
     // problem type                                                                                                                                                                                                                             `
-    m_problemInfo->coordinateType = coordinateTypeFromStringKey(eleProblem.toElement().attribute("problemtype"));
+    m_problemInfo->coordinateType = coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinatetype"));
 
     // harmonic
-    m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();
+    m_problemInfo->frequency = eleProblemInfo.toElement().attribute("frequency", "0").toDouble();
 
     // transient
-    m_problemInfo->timeStep.setText(eleProblem.toElement().attribute("timestep", "1"));
-    m_problemInfo->timeTotal.setText(eleProblem.toElement().attribute("timetotal", "1"));
+    m_problemInfo->timeStep.setText(eleProblemInfo.toElement().attribute("timestep", "1"));
+    m_problemInfo->timeTotal.setText(eleProblemInfo.toElement().attribute("timetotal", "1"));
 
     // matrix solver
-    m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblem.toElement().attribute("matrix_solver",
-                                                                                                 matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK)));
+    m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
+                                                                                                     matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK)));
 
     // startup script
-    QDomNode eleScriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
+    QDomNode eleScriptStartup = eleProblemInfo.toElement().elementsByTagName("startupscript").at(0);
     m_problemInfo->scriptStartup = eleScriptStartup.toElement().text();
 
     // FIX ME - EOL conversion
@@ -1240,119 +1239,11 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->scriptStartup = textEdit.toPlainText();
 
     // description
-    QDomNode eleDescription = eleProblem.toElement().elementsByTagName("description").at(0);
+    QDomNode eleDescription = eleProblemInfo.toElement().elementsByTagName("description").at(0);
     m_problemInfo->description = eleDescription.toElement().text();
-
-    // field ***************************************************************************************************************
-
-    FieldInfo *field = new FieldInfo(m_problemInfo, eleProblem.toElement().attribute("type"));
-
-    // analysis type
-    field->setAnalysisType(analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype",
-                                                                                      analysisTypeToStringKey(AnalysisType_SteadyState))));
-
-    // number of refinements
-    field->numberOfRefinements = eleProblem.toElement().attribute("numberofrefinements").toInt();
-    // polynomial order
-    field->polynomialOrder = eleProblem.toElement().attribute("polynomialorder").toInt();
-    // mesh type
-    field->meshType = meshTypeFromStringKey(eleProblem.toElement().attribute("meshtype",
-                                                                             meshTypeToStringKey(MeshType_Triangle)));
-    // adaptivity
-    field->adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
-    field->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
-    field->adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
-
-    // initial condition
-    field->initialCondition.setText(eleProblem.toElement().attribute("initialcondition", "0"));
-
-    // linearity
-    field->linearityType = linearityTypeFromStringKey(eleProblem.toElement().attribute("linearity",
-                                                                                       linearityTypeToStringKey(LinearityType_Linear)));
-    field->nonlinearSteps = eleProblem.toElement().attribute("nonlinearsteps", "10").toInt();
-    field->nonlinearTolerance = eleProblem.toElement().attribute("nonlineartolerance", "1e-3").toDouble();
-
-    // weakforms
-    field->weakFormsType = weakFormsTypeFromStringKey(eleProblem.toElement().attribute("weakforms",
-                                                                                       weakFormsTypeToStringKey(WeakFormsType_Compiled)));
-
-    addField(field);
-
-    // markers ***************************************************************************************************************
-
-    // edge marker
-    QDomNode eleBoundaries = eleProblem.toElement().elementsByTagName("edges").at(0);
-    n = eleBoundaries.firstChild();
-    while(!n.isNull())
-    {
-        element = n.toElement();
-        QString name = element.toElement().attribute("name");
-        QString type = element.toElement().attribute("type");
-
-        if (element.toElement().attribute("id") == 0)
-        {
-            // none marker
-            addBoundary(new SceneBoundaryNone());
-        }
-        else
-        {
-            // read marker
-            SceneBoundary *boundary = new SceneBoundary(field,
-                                                        name.toStdString(),
-                                                        type.toStdString());
-
-            Hermes::Module::BoundaryType *boundary_type = field->module()->get_boundary_type(type.toStdString());
-            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin();
-                 it < boundary_type->variables.end(); ++it)
-            {
-                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-
-                boundary->setValue(variable->id,
-                                   Value(element.toElement().attribute(QString::fromStdString(variable->id), "0")));
-            }
-
-            Util::scene()->addBoundary(boundary);
-        }
-
-        n = n.nextSibling();
-    }
-
-    // label marker
-    QDomNode eleMaterials = eleProblem.toElement().elementsByTagName("labels").at(0);
-    n = eleMaterials.firstChild();
-    while(!n.isNull())
-    {
-        element = n.toElement();
-        QString name = element.toElement().attribute("name");
-
-        if (element.toElement().attribute("id") == 0)
-        {
-            // none marker
-            addMaterial(new SceneMaterialNone());
-        }
-        else
-        {
-            // read marker
-            SceneMaterial *material = new SceneMaterial(field,
-                                                        name.toStdString());
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = field->module()->material_type_variables;
-            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-            {
-                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-
-                material->setValue(variable->id,
-                                   Value(element.toElement().attribute(QString::fromStdString(variable->id),
-                                                                       QString::number(variable->default_value))));
-            }
-            Util::scene()->addMaterial(material);
-        }
-
-        n = n.nextSibling();
-    }
 
     // geometry ***************************************************************************************************************
 
-    // geometry
     QDomNode eleGeometry = eleDoc.elementsByTagName("geometry").at(0);
 
     // nodes
@@ -1377,12 +1268,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
         SceneNode *nodeFrom = nodes->at(element.attribute("start").toInt());
         SceneNode *nodeTo = nodes->at(element.attribute("end").toInt());
-        SceneBoundary *marker = boundaries->at(element.attribute("marker").toInt());
         double angle = element.attribute("angle", "0").toDouble();
         int refineTowardsEdge = element.attribute("refine_towards", "0").toInt();
 
         SceneEdge *edge = new SceneEdge(nodeFrom, nodeTo, angle, refineTowardsEdge);
-        edge->addMarker(marker);
 
         addEdge(edge);
 
@@ -1396,15 +1285,167 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     {
         element = n.toElement();
         Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
-        SceneMaterial *marker = materials->at(element.attribute("marker").toInt());
         double area = element.attribute("area", "0").toDouble();
         int polynomialOrder = element.attribute("polynomialorder", "0").toInt();
 
         SceneLabel *label = new SceneLabel(point, area, polynomialOrder);
-        label->addMarker(marker);
+        // SceneMaterial *marker = materials->at(element.attribute("marker").toInt());
+        // label->addMarker(marker);
 
         addLabel(label);
 
+        n = n.nextSibling();
+    }
+
+    // field ***************************************************************************************************************
+
+    QDomNode eleFields = eleProblemInfo.toElement().elementsByTagName("fields").at(0);
+    n = eleFields.firstChild();
+    while(!n.isNull())
+    {
+        QDomNode eleField = n.toElement();
+
+        FieldInfo *field = new FieldInfo(m_problemInfo, eleField.toElement().attribute("fieldid"));
+
+        // analysis type
+        field->setAnalysisType(analysisTypeFromStringKey(eleField.toElement().attribute("analysistype",
+                                                                                        analysisTypeToStringKey(AnalysisType_SteadyState))));
+
+        // initial condition
+        field->initialCondition.setText(eleField.toElement().attribute("initialcondition", "0"));
+
+        // weakforms
+        field->weakFormsType = weakFormsTypeFromStringKey(eleField.toElement().attribute("weakforms",
+                                                                                         weakFormsTypeToStringKey(WeakFormsType_Compiled)));
+
+        // polynomial order
+        field->polynomialOrder = eleField.toElement().attribute("polynomialorder").toInt();
+
+        // mesh
+        QDomNode eleFieldMesh = eleField.toElement().elementsByTagName("mesh").at(0);
+
+        // mesh type
+        field->meshType = meshTypeFromStringKey(eleFieldMesh.toElement().attribute("meshtype",
+                                                                                   meshTypeToStringKey(MeshType_Triangle)));
+
+        // number of refinements
+        field->numberOfRefinements = eleFieldMesh.toElement().attribute("numberofrefinements").toInt();
+
+        // adaptivity
+        QDomNode eleFieldAdaptivity = eleField.toElement().elementsByTagName("adaptivity").at(0);
+
+        field->adaptivityType = adaptivityTypeFromStringKey(eleFieldAdaptivity.toElement().attribute("adaptivitytype"));
+        field->adaptivitySteps = eleFieldAdaptivity.toElement().attribute("adaptivitysteps").toInt();
+        field->adaptivityTolerance = eleFieldAdaptivity.toElement().attribute("adaptivitytolerance").toDouble();
+
+        // linearity
+        QDomNode eleFieldLinearity = eleField.toElement().elementsByTagName("solver").at(0);
+
+        field->linearityType = linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity",
+                                                                                                  linearityTypeToStringKey(LinearityType_Linear)));
+        field->nonlinearSteps = eleFieldLinearity.toElement().attribute("nonlinearsteps", "10").toInt();
+        field->nonlinearTolerance = eleFieldLinearity.toElement().attribute("nonlineartolerance", "1e-3").toDouble();
+
+        // boundary conditions
+        QDomNode eleBoundaries = eleField.toElement().elementsByTagName("boundaries").at(0);
+        n = eleBoundaries.firstChild();
+        while(!n.isNull())
+        {
+            element = n.toElement();
+            QString name = element.toElement().attribute("name");
+            QString type = element.toElement().attribute("type");
+
+            if (element.toElement().attribute("id") == 0)
+            {
+                // none marker
+                addBoundary(new SceneBoundaryNone());
+            }
+            else
+            {
+                // read marker
+                SceneBoundary *boundary = new SceneBoundary(field,
+                                                            name.toStdString(),
+                                                            type.toStdString());
+
+                Hermes::Module::BoundaryType *boundary_type = field->module()->get_boundary_type(type.toStdString());
+                for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin();
+                     it < boundary_type->variables.end(); ++it)
+                {
+                    Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+
+                    boundary->setValue(variable->id,
+                                       Value(element.toElement().attribute(QString::fromStdString(variable->id), "0")));
+                }
+
+                Util::scene()->addBoundary(boundary);
+
+                // add boundary to the edge marker
+                QDomNode nodeEdge = element.firstChild();
+                while(!nodeEdge.isNull())
+                {
+                    QDomElement eleEdge = nodeEdge.toElement();
+
+                    int id = eleEdge.toElement().attribute("edge").toInt();
+                    edges->at(id)->addMarker(boundary);
+
+                    nodeEdge = nodeEdge.nextSibling();
+                }
+            }
+
+            n = n.nextSibling();
+        }
+
+        // materials
+        QDomNode eleMaterials = eleField.toElement().elementsByTagName("materials").at(0);
+        n = eleMaterials.firstChild();
+        while(!n.isNull())
+        {
+            element = n.toElement();
+            QString name = element.toElement().attribute("name");
+
+            if (element.toElement().attribute("id") == 0)
+            {
+                // none marker
+                addMaterial(new SceneMaterialNone());
+            }
+            else
+            {
+                // read marker
+                SceneMaterial *material = new SceneMaterial(field,
+                                                            name.toStdString());
+                Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = field->module()->material_type_variables;
+                for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+                {
+                    Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+
+                    material->setValue(variable->id,
+                                       Value(element.toElement().attribute(QString::fromStdString(variable->id),
+                                                                           QString::number(variable->default_value))));
+                }
+
+                // add material
+                Util::scene()->addMaterial(material);
+
+                // add material to the label marker
+                QDomNode nodeLabel = element.firstChild();
+                while(!nodeLabel.isNull())
+                {
+                    QDomElement eleLabel = nodeLabel.toElement();
+
+                    int id = eleLabel.toElement().attribute("label").toInt();
+                    labels->at(id)->addMarker(material);
+
+                    nodeLabel = nodeLabel.nextSibling();
+                }
+            }
+
+            n = n.nextSibling();
+        }
+
+        // add field
+        addField(field);
+
+        // next field
         n = n.nextSibling();
     }
 
@@ -1418,6 +1459,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     emit defaultValues();
 
     // mesh
+    /*
     if (eleDoc.elementsByTagName("mesh").count() > 0)
     {
         QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
@@ -1431,6 +1473,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         Util::scene()->sceneSolution()->loadSolution(eleSolutions.toElement());
         emit invalidated();
     }
+    */
 
     // run script
     runPythonScript(m_problemInfo->scriptStartup);

@@ -816,13 +816,26 @@ void SceneView::paintGeometry()
     // edges
     foreach (SceneEdge *edge, m_scene->edges->items())
     {
-        //TODO kdy ma byt hrana prerusovana?
-        //        // edge with marker
-        //        if (m_sceneMode == SceneMode_OperateOnEdges && edge->marker->getType() == "")
-        //        {
-        //            glEnable(GL_LINE_STIPPLE);
-        //            glLineStipple(1, 0x8FFF);
-        //        }
+        // edge without marker
+        QString str;
+
+        if (str.length() > 0)
+            str = str.left(str.length() - 2);
+
+        if (m_sceneMode == SceneMode_OperateOnEdges)
+        {
+            // is any boundary assigned ?
+            bool boundaryAssigned = false;
+            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+                if (edge->getMarker(fieldInfo->fieldId()))
+                    boundaryAssigned = true;
+
+            if (!boundaryAssigned)
+            {
+                glEnable(GL_LINE_STIPPLE);
+                glLineStipple(1, 0x8FFF);
+            }
+        }
 
         glColor3d(Util::config()->colorEdges.redF(),
                   Util::config()->colorEdges.greenF(),
@@ -949,14 +962,20 @@ void SceneView::paintGeometry()
             {
                 glColor3d(0.1, 0.1, 0.1);
 
+                // assigned materials
+                QString str;
+                foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+                    if (label->getMarker(fieldInfo->fieldId()))
+                        str = str + QString("%1, ").
+                                arg(QString::fromStdString(label->getMarker(fieldInfo->fieldId())->getName()));
+                if (str.length() > 0)
+                    str = str.left(str.length() - 2);
+
                 Point point;
-                //TODO - fix marker
-                // point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(QString::fromStdString(label->getMarker("TODO")->getName()))/m_scale2d/2.0;
-                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width("")/m_scale2d/2.0;
+                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(str)/m_scale2d/2.0;
                 point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale2d;
 
-                // renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, QString::fromStdString(label->getMarker("TODO")->getName()), false);
-                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, QString::fromStdString("TODO"), false);
+                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, str, false);
             }
 
             // area size
@@ -3288,21 +3307,31 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             }
             if (m_sceneMode == SceneMode_OperateOnEdges)
             {
-                // highlight the closest label
+                // highlight the closest edge
                 SceneEdge *edge = findClosestEdge(p);
                 if (edge)
                 {
+                    // assigned boundary conditions
+                    QString str;
+                    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+                        if (edge->getMarker(fieldInfo->fieldId()))
+                            str = str + QString("%1 (%2), ").
+                                    arg(QString::fromStdString(edge->getMarker(fieldInfo->fieldId())->getName())).
+                                    arg(QString::fromStdString(fieldInfo->module()->name));
+                    if (str.length() > 0)
+                        str = str.left(str.length() - 2);
+
                     m_scene->highlightNone();
                     edge->isHighlighted = true;
-                    setToolTip(tr("<h3>Edge</h3>Point: [%1; %2] - [%3; %4]<br/>Boundary Condition: %5<br/>Angle: %6 deg.<br/>Index: %7 %8").
+                    setToolTip(tr("<h3>Edge</h3><b>Point:</b> [%1; %2] - [%3; %4]<br/><b>Boundary conditions:</b> %5<br/><b>Angle:</b> %6 deg.<br/><b>Refine towards edge:</b> %7<br/><b>Index:</b> %8").
                                arg(edge->nodeStart->point.x, 0, 'g', 3).
                                arg(edge->nodeStart->point.y, 0, 'g', 3).
                                arg(edge->nodeEnd->point.x, 0, 'g', 3).
                                arg(edge->nodeEnd->point.y, 0, 'g', 3).
-                               arg("TODO").
+                               arg(str).
                                arg(edge->angle, 0, 'f', 0).
-                               arg(m_scene->edges->items().indexOf(edge)).
-                               arg("TODO"));
+                               arg(edge->refineTowardsEdge, 0, 'g', 3).
+                               arg(m_scene->edges->items().indexOf(edge)));
                     updateGL();
                 }
             }
@@ -3312,16 +3341,25 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                 SceneLabel *label = findClosestLabel(p);
                 if (label)
                 {
+                    // assigned materials
+                    QString str;
+                    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+                        if (label->getMarker(fieldInfo->fieldId()))
+                            str = str + QString("%1 (%2), ").
+                                    arg(QString::fromStdString(label->getMarker(fieldInfo->fieldId())->getName())).
+                                    arg(QString::fromStdString(fieldInfo->module()->name));
+                    if (str.length() > 0)
+                        str = str.left(str.length() - 2);
+
                     m_scene->highlightNone();
                     label->isHighlighted = true;
-                    setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle area: %4 m<sup>2</sup><br/>Polynomial order: %5<br/>Index: %6 %7").
+                    setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Triangle area:</b> %4 m<sup>2</sup><br/><b>Polynomial order:</b> %5<br/><b>Index:</b> %6").
                                arg(label->point.x, 0, 'g', 3).
                                arg(label->point.y, 0, 'g', 3).
-                               arg("TODO").
+                               arg(str).
                                arg(label->area, 0, 'g', 3).
                                arg(label->polynomialOrder).
-                               arg(m_scene->labels->items().indexOf(label)).
-                               arg("TODO"));
+                               arg(m_scene->labels->items().indexOf(label)));
                     updateGL();
                 }
             }
