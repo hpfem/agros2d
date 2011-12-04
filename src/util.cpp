@@ -387,15 +387,15 @@ void setLanguage(const QString &locale)
     QString country = locale.section('_',0,0);
     if (QFile::exists(QLibraryInfo::location(QLibraryInfo::TranslationsPath) + "/qt_" + country + ".qm"))
         qtTranslator->load(QLibraryInfo::location(QLibraryInfo::TranslationsPath) + "/qt_" + country + ".qm");
-    else if (QFile::exists(datadir() + "/lang/qt_" + country + ".qm"))
-        qtTranslator->load(datadir() + "/lang/qt_" + country + ".qm");
+    else if (QFile::exists(datadir() + LANGUAGEROOT + "/qt_" + country + ".qm"))
+        qtTranslator->load(datadir() + LANGUAGEROOT + "/qt_" + country + ".qm");
     else
         qDebug() << "Qt language file not found.";
 
-    if (QFile::exists(datadir() + "/lang/" + locale + ".qm"))
-        appTranslator->load(datadir() + "/lang/" + locale + ".qm");
-    else if (QFile::exists(datadir() + "/lang/en_US.qm"))
-        appTranslator->load(datadir() + "/lang/en_US.qm");
+    if (QFile::exists(datadir() + LANGUAGEROOT + "/" + locale + ".qm"))
+        appTranslator->load(datadir() + LANGUAGEROOT + "/" + locale + ".qm");
+    else if (QFile::exists(datadir() + LANGUAGEROOT + "/en_US.qm"))
+        appTranslator->load(datadir() + LANGUAGEROOT + "/en_US.qm");
     else
         qDebug() << "Language file not found.";
 
@@ -408,7 +408,7 @@ QStringList availableLanguages()
     logMessage("availableLanguages()");
 
     QDir dir;
-    dir.setPath(datadir() + "/lang");
+    dir.setPath(datadir() + LANGUAGEROOT);
 
     // add all translations
     QStringList filters;
@@ -429,16 +429,16 @@ QStringList availableLanguages()
 }
 
 QIcon icon(const QString &name)
-{
+{    
     QString fileName;
 
 #ifdef Q_WS_WIN
-    if (QFile::exists(":/images/" + name + "-windows.png")) return QIcon(":/images/" + name + "-windows.png");
+    if (QFile::exists(":/" + name + "-windows.png")) return QIcon(":/" + name + "-windows.png");
 #endif
 
 #ifdef Q_WS_X11
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
-    return QIcon::fromTheme(name, QIcon(":images/" + name + ".png"));
+    return QIcon::fromTheme(name, QIcon(":/" + name + ".png"));
 #endif
 
     QDir dir;
@@ -467,8 +467,8 @@ QIcon icon(const QString &name)
     }
 #endif
 
-    if (QFile::exists(":images/" + name + ".svg")) return QIcon(":images/" + name + ".svg");
-    if (QFile::exists(":images/" + name + ".png")) return QIcon(":images/" + name + ".png");
+    if (QFile::exists(":/" + name + ".svg")) return QIcon(":/" + name + ".svg");
+    if (QFile::exists(":/" + name + ".png")) return QIcon(":/" + name + ".png");
 
     return QIcon();
 }

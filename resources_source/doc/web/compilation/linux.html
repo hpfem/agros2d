@@ -1,0 +1,162 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Compiling under GNU/Linux &mdash; Agros2D Documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/agros2d.ico"/>
+    <link rel="top" title="Agros2D Documentation" href="../index.html" />
+    <link rel="next" title="Compiling under MS Windows" href="windows.html" />
+    <link rel="prev" title="About Agros2D" href="../introduction/about_agros2d.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="windows.html" title="Compiling under MS Windows"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../introduction/about_agros2d.html" title="About Agros2D"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Content</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="compiling-under-gnu-linux">
+<h1>Compiling under GNU/Linux<a class="headerlink" href="#compiling-under-gnu-linux" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="download-source-codes">
+<h2>Download Source Codes<a class="headerlink" href="#download-source-codes" title="Permalink to this headline">¶</a></h2>
+<p>Download from the Git repository:</p>
+<div class="highlight-python"><pre>git clone git://github.com/hpfem/agros2d.git</pre>
+</div>
+</div>
+<div class="section" id="install-requirements">
+<h2>Install Requirements<a class="headerlink" href="#install-requirements" title="Permalink to this headline">¶</a></h2>
+<p>Agros2D have following requirements:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.hpfem.org/hermes">Hermes</a> ()</li>
+<li><a class="reference external" href="http://www.cs.cmu.edu/~quake/triangle.html">Triangle</a> ()</li>
+<li><a class="reference external" href="http://www.qtsoftware.com/products">Nokia Qt</a> ()</li>
+<li><a class="reference external" href="http://www.python.org">Python</a> ()</li>
+<li><a class="reference external" href="http://www.ribbonsoft.com/dxflib.html">dxflib</a> ()</li>
+<li><a class="reference external" href="http://qwt.sourceforge.net">Qwt</a> ()</li>
+<li><a class="reference external" href="http://ffmpeg.org">FFmpeg</a> ()</li>
+</ul>
+<p>If you are using a Debian-based system, install the required libraries with following command:</p>
+<div class="highlight-python"><pre>sudo apt-get install libqt4-dev libqt4-opengl-dev qt4-dev-tools qt4-qmake g++ cython libssl-dev libqwt5-qt4-dev triangle-bin python-dev python-sphinx ffmpeg libsuitesparse-dev libmumps-seq-dev libsuperlu3-dev</pre>
+</div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>make html</pre>
+</div>
+</div>
+<div class="section" id="localization">
+<h2>Localization<a class="headerlink" href="#localization" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>lrelease ./lang/*.ts</pre>
+</div>
+</div>
+<div class="section" id="compilation">
+<h2>Compilation<a class="headerlink" href="#compilation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>qmake agros2d.pro
+make</pre>
+</div>
+<p>The binary package can be build as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">dpkg</span><span class="o">-</span><span class="n">buildpackage</span> <span class="o">-</span><span class="n">sgpg</span> <span class="o">-</span><span class="n">rfakeroot</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/agros2d.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Compiling under GNU/Linux</a><ul>
+<li><a class="reference internal" href="#download-source-codes">Download Source Codes</a></li>
+<li><a class="reference internal" href="#install-requirements">Install Requirements</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#localization">Localization</a></li>
+<li><a class="reference internal" href="#compilation">Compilation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../introduction/about_agros2d.html"
+                        title="previous chapter">About Agros2D</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="windows.html"
+                        title="next chapter">Compiling under MS Windows</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="windows.html" title="Compiling under MS Windows"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../introduction/about_agros2d.html" title="About Agros2D"
+             >previous</a> |</li>
+        <li><a href="../index.html">Content</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Last updated on Aug 17, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

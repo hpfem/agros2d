@@ -121,7 +121,7 @@ void ResultsView::doShowVolumeIntegral()
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string results;
@@ -145,7 +145,7 @@ void ResultsView::doShowVolumeIntegral()
     }
 
     // expand template
-    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/integrals.tpl", ctemplate::DO_NOT_STRIP, &volumeIntegrals, &results);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/integrals.tpl", ctemplate::DO_NOT_STRIP, &volumeIntegrals, &results);
     webView->setHtml(QString::fromStdString(results));
 }
 
@@ -162,7 +162,7 @@ void ResultsView::doShowSurfaceIntegral()
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string results;
@@ -186,7 +186,7 @@ void ResultsView::doShowSurfaceIntegral()
     }
 
     // expand template
-    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/integrals.tpl", ctemplate::DO_NOT_STRIP, &surfaceIntegrals, &results);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/integrals.tpl", ctemplate::DO_NOT_STRIP, &surfaceIntegrals, &results);
     webView->setHtml(QString::fromStdString(results));
 }
 
@@ -200,7 +200,7 @@ void ResultsView::doShowPoint()
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string results;
@@ -253,7 +253,7 @@ void ResultsView::doShowPoint()
     }
 
     // expand template
-    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/local_point_values.tpl", ctemplate::DO_NOT_STRIP, &localPointValues, &results);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/local_point_values.tpl", ctemplate::DO_NOT_STRIP, &localPointValues, &results);
     webView->setHtml(QString::fromStdString(results));
 }
 

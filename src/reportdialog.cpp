@@ -206,8 +206,8 @@ void ReportDialog::defaultValues()
     chkFigureShowAxes->setChecked(Util::config()->showAxes);
     chkFigureShowLabel->setChecked(Util::config()->showLabel);
 
-    txtTemplate->setText(QString("%1/resources/report/default.tpl").arg(datadir()));
-    txtStyleSheet->setText(QString("%1/resources/report/default.css").arg(datadir()));
+    txtTemplate->setText(QString("%1/report/default.tpl").arg(datadir() + TEMPLATEROOT));
+    txtStyleSheet->setText(QString("%1/report/default.css").arg(datadir() + TEMPLATEROOT));
 
     checkPaths();
 }

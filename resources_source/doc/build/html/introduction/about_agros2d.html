@@ -1,0 +1,178 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>About Agros2D &mdash; Agros2D Documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/agros2d.ico"/>
+    <link rel="top" title="Agros2D Documentation" href="../index.html" />
+    <link rel="next" title="Basic Control" href="../getting_started/basic_control.html" />
+    <link rel="prev" title="Agros2D Documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../getting_started/basic_control.html" title="Basic Control"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Agros2D Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Content</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="about-agros2d">
+<h1>About Agros2D<a class="headerlink" href="#about-agros2d" title="Permalink to this headline">¶</a></h1>
+<p>Agros2D is a multiplatform C++ application for the solution of partial differential equations (PDE) based on the <a class="reference external" href="http://hpfem.org/hermes">Hermes</a> library, developed by the <a class="reference external" href="http://hpfem.org">hpfem.org</a> group at the <a class="reference external" href="http://www.zcu.cz">University of West Bohemia in Pilsen</a>. Agros2D is distributed under the <a class="reference external" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">GNU General Public License</a>.</p>
+<p><strong>Supported Physical Fields:</strong></p>
+<ul class="simple">
+<li>Electrostatic fields</li>
+<li>Electric current fields</li>
+<li>Magnetic fields (steady state, harmonic and transient analysis)</li>
+<li>High frequency electromagnetic fields – in development</li>
+<li>Temperature fields (steady state and transient analysis)</li>
+<li>Acoustic field (harmonic and transient analysis)</li>
+<li>Linear thermo-elasticity</li>
+<li>Incompressible flow (steady state and transient analysis) – in development</li>
+</ul>
+<div class="section" id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="hp-fem">
+<h3><em>hp</em>-FEM<a class="headerlink" href="#hp-fem" title="Permalink to this headline">¶</a></h3>
+<p>Ilustrative example (<a class="reference internal" href="../examples/electrostatic_axisymmetric_sparkgap.html#electrostatic-axisymmetric-sparkgap"><em>Electrostatic Axisymmetric Sparkgap</em></a>):</p>
+<a class="reference internal image-reference" href="../_images/mesh-h(p=1).png"><img alt="h-adaptivity (p=1)" class="align-center" src="../_images/mesh-h(p=1).png" style="width: 235.0px; height: 468.5px;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh-h(p=2).png"><img alt="h-adaptivity (p=1)" class="align-center" src="../_images/mesh-h(p=2).png" style="width: 235.0px; height: 468.5px;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh-hp.png"><img alt="hp-adaptivity" class="align-center" src="../_images/mesh-hp.png" style="width: 235.0px; height: 468.5px;" /></a>
+<p>Fig.: Initial (orange) and solution (red) mesh (<em>h</em>-adaptivity (p = 1), <em>h</em>-adaptivity (p = 2) and <em>hp</em>-adaptivity)</p>
+<a class="reference internal image-reference" href="../_images/polynomial_order-p.png"><img alt="p-adaptivity" class="align-center" src="../_images/polynomial_order-p.png" style="width: 297.0px; height: 469.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/polynomial_order-hp.png"><img alt="hp-adaptivity" class="align-center" src="../_images/polynomial_order-hp.png" style="width: 297.0px; height: 469.0px;" /></a>
+<p>Fig.: Polynomial order (<em>p</em>-adaptivity and <em>hp</em>-adaptivity)</p>
+<a class="reference internal image-reference" href="../_images/convergence.png"><img alt="Convergence" class="align-center" src="../_images/convergence.png" style="width: 437.5px; height: 233.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/error.png"><img alt="Error" class="align-center" src="../_images/error.png" style="width: 431.5px; height: 233.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/dofs.png"><img alt="DOFs" class="align-center" src="../_images/dofs.png" style="width: 427.0px; height: 233.0px;" /></a>
+<p>Fig.: Adaptivity charts</p>
+</div>
+<div class="section" id="curvilinear-elements">
+<h3>Curvilinear elements<a class="headerlink" href="#curvilinear-elements" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="../_images/elements.png"><img alt="Curvilinear and normal elements at the same geometry" class="align-center" src="../_images/elements.png" style="width: 281.4px; height: 281.7px;" /></a>
+<p>Fig: Curvilinear and normal elements at the same ilustrative geometry</p>
+<p>Ilustrative example ():</p>
+<a class="reference internal image-reference" href="../_images/mesh-normal_elements.png"><img alt="Normal elements mesh" class="align-center" src="../_images/mesh-normal_elements.png" style="width: 469.0px; height: 468.5px;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh-curvilinear_elements.png"><img alt="Curvilinear elements mesh" class="align-center" src="../_images/mesh-curvilinear_elements.png" style="width: 469.0px; height: 468.5px;" /></a>
+<p>Fig.: Normal (left) and curvilinear (right) meshes</p>
+<a class="reference internal image-reference" href="../_images/convergence1.png"><img alt="Convergence" class="align-center" src="../_images/convergence1.png" style="width: 435.5px; height: 233.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/error1.png"><img alt="Error" class="align-center" src="../_images/error1.png" style="width: 431.5px; height: 233.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/dofs1.png"><img alt="DOFs" class="align-center" src="../_images/dofs1.png" style="width: 427.0px; height: 233.0px;" /></a>
+<p>Fig.: Adaptivity charts (<em>hp</em>-adaptivity)</p>
+</div>
+<div class="section" id="triangular-or-quadrilateral-elements">
+<h3>Triangular or quadrilateral elements<a class="headerlink" href="#triangular-or-quadrilateral-elements" title="Permalink to this headline">¶</a></h3>
+<p>Ilustrative example (<a class="reference internal" href="../examples/acoustic_axisymmetric_horn.html#acoustic-axisymmetric-horn"><em>Acoustic Axisymmetric Horn</em></a>):</p>
+<a class="reference internal image-reference" href="../_images/mesh-quads.png"><img alt="Normal elements mesh" class="align-center" src="../_images/mesh-quads.png" style="width: 282.0px; height: 468.5px;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh-triangles.png"><img alt="Curvilinear elements mesh" class="align-center" src="../_images/mesh-triangles.png" style="width: 282.0px; height: 468.5px;" /></a>
+<p>Fig.: Quadrilateral (left) and triangular (right) elements mesh</p>
+<a class="reference internal image-reference" href="../_images/polynomial_order-quads.png"><img alt="Quadrilateral elements" class="align-center" src="../_images/polynomial_order-quads.png" style="width: 344.5px; height: 469.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/polynomial_order-triangles.png"><img alt="Triangular elements" class="align-center" src="../_images/polynomial_order-triangles.png" style="width: 344.5px; height: 469.0px;" /></a>
+<p>Fig.: Polynomial order on quadrilateral elements mesh (left) and triangular elements mesh (right)</p>
+<a class="reference internal image-reference" href="../_images/convergence2.png"><img alt="Convergence" class="align-center" src="../_images/convergence2.png" style="width: 431.0px; height: 233.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/error2.png"><img alt="Error" class="align-center" src="../_images/error2.png" style="width: 427.0px; height: 233.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/dofs2.png"><img alt="DOFs" class="align-center" src="../_images/dofs2.png" style="width: 427.0px; height: 233.0px;" /></a>
+<p>Fig.: Adaptivity charts (<em>hp</em>-adaptivity)</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/agros2d.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">About Agros2D</a><ul>
+<li><a class="reference internal" href="#key-features">Key Features</a><ul>
+<li><a class="reference internal" href="#hp-fem"><em>hp</em>-FEM</a></li>
+<li><a class="reference internal" href="#curvilinear-elements">Curvilinear elements</a></li>
+<li><a class="reference internal" href="#triangular-or-quadrilateral-elements">Triangular or quadrilateral elements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">Agros2D Documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../getting_started/basic_control.html"
+                        title="next chapter">Basic Control</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../getting_started/basic_control.html" title="Basic Control"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Agros2D Documentation"
+             >previous</a> |</li>
+        <li><a href="../index.html">Content</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Last updated on Oct 15, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

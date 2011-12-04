@@ -1,0 +1,208 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Compiling under MS Windows &mdash; Agros2D Documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/agros2d.ico"/>
+    <link rel="top" title="Agros2D Documentation" href="../index.html" />
+    <link rel="next" title="Basic Control" href="../getting_started/basic_control.html" />
+    <link rel="prev" title="Compiling under GNU/Linux" href="linux.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../getting_started/basic_control.html" title="Basic Control"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="linux.html" title="Compiling under GNU/Linux"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Content</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="compiling-under-ms-windows">
+<h1>Compiling under MS Windows<a class="headerlink" href="#compiling-under-ms-windows" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="how-to-build-release">
+<h2>How to Build Release<a class="headerlink" href="#how-to-build-release" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Install <a class="reference external" href="http://http://git-scm.com">Git</a> client on Windows, for example <a class="reference external" href="http://code.google.com/p/msysgit">msysGit</a></li>
+</ol>
+<blockquote>
+<ul class="simple">
+<li>Run Git and run <tt class="docutils literal"><span class="pre">ssh-keygen</span></tt></li>
+<li>Files with keys are created in a subfolder of the user profile, in subfolder  &#8220;.ssh&#8221;. In case of Windows 7 for example C:\Users\username\.ssh</li>
+<li>You can use these keys. If you have already these keys created, just create a folder &#8220;.ssh&#8221; and put the necessary files (<tt class="docutils literal"><span class="pre">known_hosts</span></tt>, <tt class="docutils literal"><span class="pre">id_rsa.pub</span></tt>, <tt class="docutils literal"><span class="pre">id_rsa</span></tt>) there.</li>
+</ul>
+</blockquote>
+<ol class="arabic simple" start="2">
+<li>Download current version version of Agros2D sources - from <a class="reference external" href="http://github.com">GitHub</a>: <a class="reference external" href="git://github.com/hpfem/agros2d.git">git://github.com/hpfem/agros2d.git</a>.</li>
+<li>Download and install <a class="reference external" href="http://qt.nokia.com/products">QtCreator</a></li>
+<li>Download and install Windows SDK for Qt - Qt libraries 4.7.2 for Windows (VS 2008) (<a class="reference external" href="http://qt.nokia.com/downloads/windows-cpp-vs2008">http://qt.nokia.com/downloads/windows-cpp-vs2008</a>).</li>
+<li>Install Microsoft Visual Studio C++ (Express version is enough) - MSVC compiler is necessary</li>
+<li>You can install additional (optional) debugger, e.g. Debugging Tools for Windows (<a class="reference external" href="http://download.cnet.com/Debugging-Tools-for-Windows/3000-2086_4-10907878.html">http://download.cnet.com/Debugging-Tools-for-Windows/3000-2086_4-10907878.html</a>)</li>
+<li>You need a necessary files from &#8220;triangle&#8221;  - copy binaries from Agros binaries for Windows, copy into the project folder with Agros2D sources</li>
+<li>You need a necessary files from &#8220;ffmpeg&#8221; - copy binaries from Agros binaries for Windows, copy into the project folder with Agros2D sources</li>
+<li>Install <a class="reference external" href="http://www.python.org">Python</a> and <a class="reference external" href="http://numpy.scipy.org">NumPy</a></li>
+</ol>
+<blockquote>
+<ul class="simple">
+<li>Copy files from Python directory into the directory of Agros2D sources especially<ul>
+<li><tt class="docutils literal"><span class="pre">Python27\python.exe</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">Python27\pythonw.exe</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">Python27\libs\python27.lib</span></tt></li>
+<li>Lib directory</li>
+</ul>
+</li>
+<li>Copy file <tt class="docutils literal"><span class="pre">python27.dll</span></tt> from Windows\System32 directory into the project Agros2D source directory</li>
+</ul>
+</blockquote>
+<ol class="arabic simple" start="10">
+<li>Library &#8220;pthread&#8221; - download and extract the binary version for Windows (<a class="reference external" href="ftp://sourceware.org/pub/pthreads-win32/prebuilt-dll-2-8-0-release/">ftp://sourceware.org/pub/pthreads-win32/prebuilt-dll-2-8-0-release/</a>) and from directory pthreads\Pre-built.2\ copy into to the project Agros2D file <tt class="docutils literal"><span class="pre">pthreadVCE2.dll</span></tt></li>
+</ol>
+<blockquote>
+<ul class="simple">
+<li>into include path of Agros2D project copy following files<ul>
+<li><tt class="docutils literal"><span class="pre">pthreads\Pre-built.2\include\semaphore.h</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pthreads\Pre-built.2\include\pthread.h</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pthreads\Pre-</span> <span class="pre">built.2\include\sched.h</span></tt></li>
+</ul>
+</li>
+<li>copy file <tt class="docutils literal"><span class="pre">pthreadVCE2.lib</span></tt> (pthread\lib) into library path and rename file to <tt class="docutils literal"><span class="pre">libpthreadVCE2.lib</span></tt></li>
+</ul>
+</blockquote>
+<ol class="arabic simple" start="11">
+<li>Qwt - download form <a class="reference external" href="http://qwt.sourceforge.net">http://qwt.sourceforge.net</a> and then compile. Use Agros2D project directory like a target directory for compilation (or optionally copy compiled files into the Agros2D project directory.</li>
+<li>umfpack - necessary version is version 5.4 - download (<a class="reference external" href="http://www.cise.ufl.edu/research/sparse/umfpac">http://www.cise.ufl.edu/research/sparse/umfpac</a>), compile and then copy compiled files:</li>
+</ol>
+<blockquote>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">libumfpack.lib</span></tt>, <tt class="docutils literal"><span class="pre">liamd.lib</span></tt> into Agros2D\Lib directory (or into library path)</li>
+<li><tt class="docutils literal"><span class="pre">libumfpack.dll</span></tt> from directory UMFPACK\Lib\  into Agros2D directory (or into library path)</li>
+<li>header files from directories AMD, UFconfig, UMFPACK copy into include path</li>
+</ul>
+</blockquote>
+<ol class="arabic simple" start="13">
+<li>Install Python <a class="reference external" href="http://www.python.org">http://www.python.org</a></li>
+<li>To run debugger - add to Windows <tt class="docutils literal"><span class="pre">Path</span></tt> variable a path to the bin folder of the Qt SDK, e.g. C:\Qt\4.7.2\bin</li>
+<li>Copy the file <tt class="docutils literal"><span class="pre">inttypes.h</span></tt> from Hermes\CMakeVars\MSVC to your include directory.</li>
+<li>Set in the project include path to the folder with header files (.h) files and with the libraries (.lib, .dll)</li>
+<li>A problem in during compilation process of Agros2D may appears in file <tt class="docutils literal"><span class="pre">agros2d\hermes2d\src\function\solution.cpp</span></tt> - scalar method <tt class="docutils literal"><span class="pre">Solution::get_pt_value(double</span> <span class="pre">x,</span> <span class="pre">double</span> <span class="pre">y,</span> <span class="pre">int</span> <span class="pre">item)</span></tt> returns <tt class="docutils literal"><span class="pre">NAN</span></tt> - it has been declared in incorrectly in <tt class="docutils literal"><span class="pre">\agros2d\hermes_common\comp\c99_functions.h</span></tt> respectively <tt class="docutils literal"><span class="pre">\Agros2d\hermes_common\comp\c99_functions.cpp</span></tt>. Temporary solution is to locally use for compilation correct version of these files from Hermes project&#8217;s GitHub (<a class="reference external" href="https://github.com/hpfem/Hermes/tree/master/hermes_common/compat">https://github.com/hpfem/Hermes/tree/master/hermes_common/compat</a>).</li>
+<li>Build successful...</li>
+</ol>
+</div>
+<div class="section" id="building-html-documentation">
+<h2>Building Html Documentation<a class="headerlink" href="#building-html-documentation" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Python is necessary to have installed.</li>
+<li>Install setuptools for Python (easy_install_setup, <a class="reference external" href="http://pypi.python.org/pypi/setuptools#windows">http://pypi.python.org/pypi/setuptools#windows</a>).</li>
+<li>To the system variable &#8220;path&#8221; add path PythonXX\Scripts, e.g. C:\Python27\Scripts.</li>
+<li>Install Sphinx documentation tool: on the command line run command <tt class="docutils literal"><span class="pre">easy_install</span> <span class="pre">sphinx</span></tt>. It automatically download and install all necessary tools.</li>
+<li>To start building of the html documentation, run on the command line in the Agros2D project folder command: <tt class="docutils literal"><span class="pre">sphinx-build</span> <span class="pre">-b</span> <span class="pre">html</span> <span class="pre">.\\doc\\source</span> <span class="pre">.\\doc\\web</span></tt></li>
+<li>For convenient using is a better way to prepare windows script e.g. build_help_win.cmd including following contents:</li>
+</ol>
+<div class="highlight-python"><pre>@echo off
+:: For windows platform development
+:: Windows script for html help building
+set helpSourcePath=".\\doc\\source"
+set webPath=".\\doc\\web"
+echo Building Agros2D html help...
+sphinx-build -b html %helpSourcePath% %webPath%
+echo Finished.</pre>
+</div>
+<ol class="arabic simple" start="7">
+<li>The builded html documentation can be found in the folder .\doc\web (in Agros2D project folder).</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/agros2d.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Compiling under MS Windows</a><ul>
+<li><a class="reference internal" href="#how-to-build-release">How to Build Release</a></li>
+<li><a class="reference internal" href="#building-html-documentation">Building Html Documentation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="linux.html"
+                        title="previous chapter">Compiling under GNU/Linux</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../getting_started/basic_control.html"
+                        title="next chapter">Basic Control</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../getting_started/basic_control.html" title="Basic Control"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="linux.html" title="Compiling under GNU/Linux"
+             >previous</a> |</li>
+        <li><a href="../index.html">Content</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Last updated on Aug 17, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

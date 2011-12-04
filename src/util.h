@@ -528,6 +528,12 @@ QString linearityTypeToStringKey(LinearityType linearityType);
 LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
 // constants
+
+const QString IMAGEROOT = "../resources_source/images";
+const QString LANGUAGEROOT = "/resources/lang";
+const QString MODULEROOT = "/resources/modules";
+const QString TEMPLATEROOT = "/resources/templates";
+
 const QColor COLORBACKGROUND = QColor::fromRgb(255, 255, 255);
 const QColor COLORGRID = QColor::fromRgb(200, 200, 200);
 const QColor COLORCROSS = QColor::fromRgb(150, 150, 150);

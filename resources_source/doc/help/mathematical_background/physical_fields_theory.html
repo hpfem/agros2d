@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Physical Fields Theory &mdash; Agros2D Documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/agros2d.ico"/>
+    <link rel="top" title="Agros2D Documentation" href="../index.html" />
+    <link rel="next" title="Commands" href="../scripting/commands.html" />
+    <link rel="prev" title="Shortcut Keys" href="../getting_started/shortcut_keys.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../scripting/commands.html" title="Commands"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../getting_started/shortcut_keys.html" title="Shortcut Keys"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Content</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="physical-fields-theory">
+<h1>Physical Fields Theory<a class="headerlink" href="#physical-fields-theory" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter we will describe physical field equations used in Agros2D.</p>
+<div class="section" id="electrostatic">
+<h2>Electrostatic<a class="headerlink" href="#electrostatic" title="Permalink to this headline">¶</a></h2>
+<p>Electrostatic field can be described by Poisson partial differential equation</p>
+<div class="math">
+<p><img src="../_images/math/d96cd59de4dd788cda37367797bce9f978998599.png" alt="\div \varepsilon\, \grad \varphi = \rho," /></p>
+</div><p>where <img class="math" src="../_images/math/e2a63918a6fa75b62ad87ad17aaf65f782d71546.png" alt="\varepsilon"/> is permittivity of the material, <img class="math" src="../_images/math/921aade3100afbc11d0d13f71cdd7e68d83ad52e.png" alt="\varphi"/> is electrical scalar potential and <img class="math" src="../_images/math/0027034d8a10372a06deaf4f4084c01956587479.png" alt="\rho"/> is subdomain charge density. Electric field can be written as</p>
+<div class="math">
+<p><img src="../_images/math/c2c41a147b9e5b94ff8436d271d6ab8c9f0f2de3.png" alt="\vec{E} = - \grad \varphi" /></p>
+</div><p>and electric displacement is</p>
+<div class="math">
+<p><img src="../_images/math/4c09b4acc476a27b6e644bde78283c7bd0eb7cc3.png" alt="\vec{D} = \varepsilon \vec{E}." /></p>
+</div><p>Maxwell stress tensor:</p>
+<div class="math">
+<p><img src="../_images/math/caa23730514d8eec3970cdfce76752d1c33dd7f4.png" alt="\vec{S}_\mathrm{M} = \vec{E} \otimes \vec{D} - \frac{1}{2} \vec{E} \vec{D} \cdot \delta" /></p>
+</div><div class="section" id="boundary-conditions">
+<h3>Boundary conditions<a class="headerlink" href="#boundary-conditions" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Dirichlet BC</p>
+<p>Scalar potential <img class="math" src="../_images/math/8f0f73c77269bb6af28b5022572d84cd70c1e8eb.png" alt="\varphi = f"/> on the boundary is known.</p>
+</li>
+<li><p class="first">Neumann BC</p>
+<p>Surface charge density <img class="math" src="../_images/math/21df037d7f746de210753a7598af606121b24dcc.png" alt="D_\mathrm{n} = g"/> on the boundary is known.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="boundary-integrals">
+<h3>Boundary integrals<a class="headerlink" href="#boundary-integrals" title="Permalink to this headline">¶</a></h3>
+<p>Charge:</p>
+<div class="math">
+<p><img src="../_images/math/0f30dce5af6c92a8fd6985ada4fdbf4a664bb737.png" alt="Q = \int_S D_\mathrm{n} \dif S = \int_S \varepsilon \frac{\partial \varphi}{\partial n} \dif S\,\,\,\mathrm{(C)}" /></p>
+</div></div>
+<div class="section" id="subdomain-integrals">
+<h3>Subdomain integrals<a class="headerlink" href="#subdomain-integrals" title="Permalink to this headline">¶</a></h3>
+<p>Energy:</p>
+<div class="math">
+<p><img src="../_images/math/423960c4c00400cc050935e0d4b65e96596ba105.png" alt="W_\mathrm{e} = \int_V \frac{1}{2} \vec{E} \vec{D} \dif V\,\,\,\mathrm{(J)}" /></p>
+</div><p>Maxwell force:</p>
+<div class="math">
+<p><img src="../_images/math/55c6eda7249cd235d57c9741c29abc86a25bffee.png" alt="\vec{F}_\mathrm{M} = \int_S \vec{S}_\mathrm{M} \dif S = \int_V \div \vec{S}_\mathrm{M} \dif V\,\,\,\mathrm{(N)}" /></p>
+</div></div>
+</div>
+<div class="section" id="current-field">
+<h2>Current Field<a class="headerlink" href="#current-field" title="Permalink to this headline">¶</a></h2>
+<p>Current field can be described by Laplace partial differential equation</p>
+<div class="math">
+<p><img src="../_images/math/42b76d2661f3f41684b1f0b2a5455c983e9701f2.png" alt="\div \sigma\, \grad \varphi = 0," /></p>
+</div><p>where <img class="math" src="../_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is electric conductivity of the material and <img class="math" src="../_images/math/921aade3100afbc11d0d13f71cdd7e68d83ad52e.png" alt="\varphi"/> is electrical scalar potential. Electric field can be written as</p>
+<div class="math">
+<p><img src="../_images/math/c2c41a147b9e5b94ff8436d271d6ab8c9f0f2de3.png" alt="\vec{E} = - \grad \varphi" /></p>
+</div><p>and electric current density is</p>
+<div class="math">
+<p><img src="../_images/math/3dfe834bed96144ee2330747902fbef4c7ebaba9.png" alt="\vec{J} = \sigma \vec{E}." /></p>
+</div><div class="section" id="id1">
+<h3>Boundary conditions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Dirichlet BC</p>
+<p>Scalar potential <img class="math" src="../_images/math/8f0f73c77269bb6af28b5022572d84cd70c1e8eb.png" alt="\varphi = f"/> on the boundary is known.</p>
+</li>
+<li><p class="first">Neumann BC</p>
+<p>Current density <img class="math" src="../_images/math/2f6c55636f5cbdd3771df94e180b4466b6ef0621.png" alt="J_\mathrm{n} = \sigma \frac{\partial \varphi}{\partial n} = g"/> on the boundary is known.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h3>Boundary integrals<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Current:</p>
+<div class="math">
+<p><img src="../_images/math/a2b0509754d7f143bd3d8d7839ed7aa40f5a1851.png" alt="I = \int_S J_\mathrm{n} \dif S = \int_S \sigma \frac{\partial \varphi}{\partial n} \dif S\,\,\,\mathrm{(A)}" /></p>
+</div></div>
+</div>
+<div class="section" id="general-magnetic-field">
+<h2>General Magnetic Field<a class="headerlink" href="#general-magnetic-field" title="Permalink to this headline">¶</a></h2>
+<p>General magnetic field can be desribed by partial differential equation</p>
+<div class="math">
+<p><img src="../_images/math/8ee7eac47dff62cd7dd138f77295b63d274c4bf0.png" alt="\curl \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) + \sigma \vec{v} \times \curl \vec{A} + \sigma \frac{\partial \vec{A}}{\partial t} = \vec{J}_\mathrm{ext}," /></p>
+</div><p>where <img class="math" src="../_images/math/2d8c833ed800824727cd7bd2fb9de1a12ad7e674.png" alt="\mu"/> is permeability of the material, <img class="math" src="../_images/math/e52978320307c809662f76fc7d7fb2c123b7129a.png" alt="\vec{A} = ( A_z\,\mathrm{or}\,A_{\varphi} )"/> is component of the magnetic vector potential, <img class="math" src="../_images/math/c3ffbae2064f1a0026bede9b265d24bdd8b94c9c.png" alt="\vec{B}_\mathrm{r}"/> is remanent flux density, <img class="math" src="../_images/math/0e25809cc8ec81373d3c46ff247a7c6d3a63dcaf.png" alt="\vec{v}"/> is velocity, <img class="math" src="../_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is electric conductivity and finally <img class="math" src="../_images/math/e1abcde77414d3b0922a92798847c57f20ff5e72.png" alt="J_\mathrm{ext} = ( \vec{J}_z\,\mathrm{or}\,J_{\varphi} )"/> is component of source current density. Magnetic flux density is given by form</p>
+<div class="math">
+<p><img src="../_images/math/70f682b2fbd30af79a9c57b9bdfd97ab40388c9f.png" alt="\vec{B} = \curl \vec{A}," /></p>
+</div><p>magnetic field is</p>
+<div class="math">
+<p><img src="../_images/math/b8f3a5b979ae99c6894804e360e47be283a45cf7.png" alt="\vec{H} = \frac{\vec{B}}{\mu}," /></p>
+</div><p>eddy current density is</p>
+<div class="math">
+<p><img src="../_images/math/79516e1720b8a5806fbc34d40824b792ac4d2405.png" alt="J_\mathrm{trans} = \sigma \frac{\partial \vec{A}}{\partial t}," /></p>
+</div><p>velocity current density is</p>
+<div class="math">
+<p><img src="../_images/math/cec5cfcf6ef92e94db91ba3136ee9efdbfc853db.png" alt="J_\mathrm{vel} = \sigma \vec{v} \times \vec{B} = \sigma \vec{v} \times \curl \vec{A}," /></p>
+</div><p>and total current density is</p>
+<div class="math">
+<p><img src="../_images/math/b431b03d1cc91ce15ac1366c91926e349e6019f6.png" alt="J_\mathrm{tot} = J_\mathrm{ext} + J_\mathrm{trans} + J_\mathrm{vel}." /></p>
+</div><p>Maxwell stress tensor:</p>
+<div class="math">
+<p><img src="../_images/math/31d9c8872070733fd1953d265e5b6a73b34bff38.png" alt="\mat{S}_\mathrm{M} = \vec{H} \otimes \vec{B} - \frac{1}{2} \vec{H} \vec{B} \cdot \mat{I}" /></p>
+</div><div class="section" id="id3">
+<h3>Boundary conditions<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Dirichlet BC</p>
+<p>Component of the magnetic vector potential <img class="math" src="../_images/math/c820c91bf7141cfa70a1a1ded562ac7638ca623a.png" alt="A = f"/> on the boundary is known.</p>
+</li>
+<li><p class="first">Neumann BC</p>
+<p>Normal derivative of magnetic vector potential <img class="math" src="../_images/math/ccd92725e59bb5848ffcd2267ea37b66cb774b56.png" alt="\frac{\partial A}{\partial n} = g"/> on the boundary is known.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>Subdomain integrals<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>External current:</p>
+<div class="math">
+<p><img src="../_images/math/48426a8a6884beff936cfb6e68667ca9d25a02a1.png" alt="I_\mathrm{ext} = \int_V J_\mathrm{ext} \dif V\,\,\,\mathrm{(A)}" /></p>
+</div><p>Eddy current:</p>
+<div class="math">
+<p><img src="../_images/math/77cfbb82aba1847dcd2500f3aaefad318d728353.png" alt="I_\mathrm{trans} = \int_V J_\mathrm{trans} \dif V\,\,\,\mathrm{(A)}" /></p>
+</div><p>Velocity current:</p>
+<div class="math">
+<p><img src="../_images/math/442af759293b69bf0b5eb6dabc7e803655d28c44.png" alt="I_\mathrm{vel} = \int_V J_\mathrm{vel} \dif V\,\,\,\mathrm{(A)}" /></p>
+</div><p>Total current:</p>
+<div class="math">
+<p><img src="../_images/math/88b0a7deeba216b6283a551b77775aecb5817711.png" alt="I_\mathrm{tot} = I_\mathrm{ext} + I_\mathrm{trans} + I_\mathrm{vel}" /></p>
+</div><p>Power losses:</p>
+<div class="math">
+<p><img src="../_images/math/6323a63628432334fb682ee488e9ba67dfd46a55.png" alt="P_\mathrm{j} = \int_V \frac{J_\mathrm{tot}^2}{\sigma} \dif V\,\,\,\mathrm{(W)}" /></p>
+</div><p>Energy:</p>
+<div class="math">
+<p><img src="../_images/math/b7d08582899465858c965d05195801c95081cd53.png" alt="W_\mathrm{m} = \int_V \frac{1}{2} \vec{H} \vec{B} \dif V\,\,\,\mathrm{(J)}" /></p>
+</div><p>Lorentz force:</p>
+<div class="math">
+<p><img src="../_images/math/3e820e639b9812e236c00b1b437e3a7fb89611c9.png" alt="\vec{F} = \int_V J_\mathrm{tot} \times \vec{B} \dif V = \int_V J_\mathrm{tot} \times \curl \vec{A} \dif V\,\,\,\mathrm{(N)}" /></p>
+</div><p>Maxwell force:</p>
+<div class="math">
+<p><img src="../_images/math/a46e8c2231128e8d923fc3a624e2a997f895bfb7.png" alt="\vec{F}_\mathrm{M} = \oint_S \mat{S}_\mathrm{M} \dif S \,\,\,\mathrm{(N)}" /></p>
+</div><p>Torque (planar arrangement only):</p>
+<div class="math">
+<p><img src="../_images/math/39adc052d7f858a03816fcdd93136448b1c679b5.png" alt="T_\mathrm{z} = \int_V \vec{r} \times \vec{F} \dif V\,\,\,\mathrm{(Nm)}" /></p>
+</div></div>
+</div>
+<div class="section" id="harmonic-magnetic-field">
+<h2>Harmonic Magnetic Field<a class="headerlink" href="#harmonic-magnetic-field" title="Permalink to this headline">¶</a></h2>
+<p>Harmonic magnetic field can be described by partial differential equation</p>
+<div class="math">
+<p><img src="../_images/math/65716f8ca48ad8681c8b2863ff2796d630b43db2.png" alt="\curl \frac{1}{\mu}\, \left( \curl \vecphas{A} - \vec{B}_\mathrm{r} \right) + \sigma \vec{v} \times \curl \vecphas{A} + \mj \omega \sigma \vecphas{A} = \vecphas{J}_\mathrm{ext}," /></p>
+</div><p>where <img class="math" src="../_images/math/2d8c833ed800824727cd7bd2fb9de1a12ad7e674.png" alt="\mu"/> is permeability of the material, <img class="math" src="../_images/math/1444be9da8755237cb19a83e8aa27056d5673cb3.png" alt="\phas{A} = ( \phas{A}_z\,\mathrm{or}\,\phas{A}_{\varphi} )"/> is component of the magnetic vector potential, <img class="math" src="../_images/math/919ca494783e1b39fe9193c1ed927d960e3aaac8.png" alt="\omega = 2 \pi f"/> is frequency, <img class="math" src="../_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is electric conductivity, <img class="math" src="../_images/math/0e25809cc8ec81373d3c46ff247a7c6d3a63dcaf.png" alt="\vec{v}"/> is velocity and finally <img class="math" src="../_images/math/8a68edf3f22477b237aa61165b2f5a9b8e40db7e.png" alt="\phas{J}_\mathrm{ext} = ( \phas{J}_z\,\mathrm{or}\,\phas{J}_{\varphi} )"/> is component of source current density. Magnetic flux density is given by form</p>
+<div class="math">
+<p><img src="../_images/math/0ca0de5a51fa7c2fd7c99cbaeb13f605a3dd8017.png" alt="\vecphas{B} = \curl \vecphas{A}," /></p>
+</div><p>magnetic field is</p>
+<div class="math">
+<p><img src="../_images/math/b039c2112a8d0e5b21308f64e418b41a182bc44c.png" alt="\vecphas{H} = \frac{\vecphas{B}}{\mu}," /></p>
+</div><p>eddy current density is</p>
+<div class="math">
+<p><img src="../_images/math/4338167afd3454b2f716fde0e4ccbf845d61bcd7.png" alt="\vecphas{J}_\mathrm{trans} = \mj \omega \sigma \vecphas{A}," /></p>
+</div><p>velocity current density is</p>
+<div class="math">
+<p><img src="../_images/math/86928f0f1d16005b9bb96bd097175a7c8fa981a2.png" alt="\vecphas{J}_\mathrm{vel} = \sigma \vec{v} \times \vecphas{B} = \sigma \vec{v} \times \curl \vecphas{A}," /></p>
+</div><p>and total current density is</p>
+<div class="math">
+<p><img src="../_images/math/357a0f888e6b6e9f7ba6f0663b8bcc8b59b6d429.png" alt="\vecphas{J}_\mathrm{tot} = \vecphas{J}_\mathrm{ext} + \vecphas{J}_\mathrm{trans} + \vecphas{J}_\mathrm{vel}." /></p>
+</div><div class="section" id="id5">
+<h3>Boundary conditions<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Dirichlet BC</p>
+<p>Component of the magnetic vector potential <img class="math" src="../_images/math/a2940477c311577e6297d3f1b12027ccd5166001.png" alt="\phas{A} = \phas{f}"/> on the boundary is known.</p>
+</li>
+<li><p class="first">Neumann BC</p>
+<p>Normal derivative of magnetic vector potential <img class="math" src="../_images/math/edd443450d2e577c8e084aeb16b2777e7af84e9f.png" alt="\frac{\partial \phas{A}}{\partial n} = \phas{g}"/> on the boundary is known.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h3>Subdomain integrals<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>External current:</p>
+<div class="math">
+<p><img src="../_images/math/1a3102028fed1a77c7ea9d7aa37cb5961b162ee4.png" alt="\phas{I}_\mathrm{ext} = \int_S \vecphas{J}_\mathrm{ext} \dif S\,\,\,\mathrm{(A)}" /></p>
+</div><p>Eddy current:</p>
+<div class="math">
+<p><img src="../_images/math/daebfc3bb382f9e57f6a1bd53fbeb0e7302c5677.png" alt="\phas{I}_\mathrm{trans} = \int_S \vecphas{J}_\mathrm{trans} \dif S\,\,\,\mathrm{(A)}" /></p>
+</div><p>Velocity current:</p>
+<div class="math">
+<p><img src="../_images/math/9b368763d6b3473ec4a47eafebab197625366957.png" alt="\phas{I}_\mathrm{vel} = \int_S \vecphas{J}_\mathrm{vel} \dif S\,\,\,\mathrm{(A)}" /></p>
+</div><p>Total current:</p>
+<div class="math">
+<p><img src="../_images/math/e99af6cc97cf25163a65dc93c94791fe21de9f4a.png" alt="\phas{I}_\mathrm{tot} = \phas{I}_\mathrm{ext} + \phas{I}_\mathrm{trans} + \phas{I}_\mathrm{vel}" /></p>
+</div><p>Power losses:</p>
+<div class="math">
+<p><img src="../_images/math/febf218738bc88219cb3099b061f94ce62cbbae2.png" alt="P = \int_V \frac{\left( \vecphas{J}_\mathrm{tot} \cdot \vecphas{J}_\mathrm{tot}^* \right)}{\sigma} \dif V\,\,\,\mathrm{(W)}" /></p>
+</div><p>Lorentz force:</p>
+<div class="math">
+<p><img src="../_images/math/6454d43ed69e75eceedb88075e98f822504168fd.png" alt="F_\mathrm{L} = \int_V \vecphas{J}_\mathrm{tot} \times \vecphas{B} \dif V\,\,\,\mathrm{(N)}" /></p>
+</div><p>Average energy:</p>
+<div class="math">
+<p><img src="../_images/math/ff1e72cde4f16e3ebd37cf81b5d252fdff0e5652.png" alt="W_\mathrm{m} = \int_V \frac{1}{2} \vecphas{H} \vecphas{B} \dif V\,\,\,\mathrm{(N)}" /></p>
+</div></div>
+</div>
+<div class="section" id="heat-transfer">
+<h2>Heat Transfer<a class="headerlink" href="#heat-transfer" title="Permalink to this headline">¶</a></h2>
+<p>Heat transfer can be described by partial differential equation</p>
+<div class="math">
+<p><img src="../_images/math/d88f393c605201139a0f766a5f3bb914ccc96ed4.png" alt="\div \lambda\, \grad T - \rho c_\mathrm{p} \frac{\partial T}{\partial t} = -w," /></p>
+</div><p>where <img class="math" src="../_images/math/ce4588fd900d02afcbd260bc07f54cce49a7dc4a.png" alt="\lambda"/> is thermal conductivity, <img class="math" src="../_images/math/2554b6496c3b678897e9b060ef00aa9f0a7d7ece.png" alt="T"/> is temperature, <img class="math" src="../_images/math/0027034d8a10372a06deaf4f4084c01956587479.png" alt="\rho"/> is density, <img class="math" src="../_images/math/5eafc2f55b05effde824a53fcc6089b856ddac60.png" alt="c_\mathrm{p}"/> is specific heat and finally <img class="math" src="../_images/math/9ee4b825a2e36ae093ed7be5e4851ef453b34914.png" alt="w"/> is source of the inner heat (eddy current, chemical source, ...). Term with partial derivative is in steady-state analysis neglected. Thermal flux can be written as</p>
+<div class="math">
+<p><img src="../_images/math/741800b09d032c6cc1ab1e848d69398791978b95.png" alt="\vec{F} = \lambda\, \grad T" /></p>
+</div><p>and temperature gradient is</p>
+<div class="math">
+<p><img src="../_images/math/f28664b297dd0a29c42c1e1fae2f6462a2507abe.png" alt="\vec{G} = \grad T." /></p>
+</div><div class="section" id="id7">
+<h3>Boundary conditions<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Dirichlet BC</p>
+<p>Temperature <img class="math" src="../_images/math/b6821682f8d114199cddb611f8ab90f6fcfd1f05.png" alt="T = f"/> on the boundary is known.</p>
+</li>
+<li><p class="first">Neumann BC</p>
+<p>Thermal heat flux <img class="math" src="../_images/math/d090feef368eb4f4cae06f8b8840dea38d4106ef.png" alt="q = - \lambda \frac{\partial T}{\partial n}"/> on the boundary is known.</p>
+</li>
+<li><p class="first">Mixed BC</p>
+<p>Thermal heat flux due to convection into the environment <img class="math" src="../_images/math/e91a1f0439c51efd56ac396cfd7053571511b271.png" alt="q = - \lambda \frac{\partial T}{\partial n} = \alpha \left( T - T_{\mathrm{ext}}\right)"/> on the boundary is known.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id8">
+<h3>Boundary integrals<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>Average temperature:</p>
+<div class="math">
+<p><img src="../_images/math/fae9b06495d496190c472ca32ed617ab40ecba8d.png" alt="T_\mathrm{avg} = \frac{1}{S} \int_S T \dif S\,\,\,\mathrm{(deg.)}" /></p>
+</div><p>Heat flux:</p>
+<div class="math">
+<p><img src="../_images/math/bb2b667c719a8629dc89ec3d93155d1f039bc9b7.png" alt="F = \int_S \lambda \frac{\partial T}{\partial n} \dif S\,\,\,\mathrm{(W)}" /></p>
+</div></div>
+<div class="section" id="id9">
+<h3>Subdomain integrals<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<p>Average temperature:</p>
+<div class="math">
+<p><img src="../_images/math/e3b20ef2e7727163870aa4bd95c185bf4f2e11c3.png" alt="T_\mathrm{avg} = \frac{1}{V} \int_V T \dif V\,\,\,\mathrm{(deg.)}" /></p>
+</div></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/agros2d.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Physical Fields Theory</a><ul>
+<li><a class="reference internal" href="#electrostatic">Electrostatic</a><ul>
+<li><a class="reference internal" href="#boundary-conditions">Boundary conditions</a></li>
+<li><a class="reference internal" href="#boundary-integrals">Boundary integrals</a></li>
+<li><a class="reference internal" href="#subdomain-integrals">Subdomain integrals</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#current-field">Current Field</a><ul>
+<li><a class="reference internal" href="#id1">Boundary conditions</a></li>
+<li><a class="reference internal" href="#id2">Boundary integrals</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#general-magnetic-field">General Magnetic Field</a><ul>
+<li><a class="reference internal" href="#id3">Boundary conditions</a></li>
+<li><a class="reference internal" href="#id4">Subdomain integrals</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#harmonic-magnetic-field">Harmonic Magnetic Field</a><ul>
+<li><a class="reference internal" href="#id5">Boundary conditions</a></li>
+<li><a class="reference internal" href="#id6">Subdomain integrals</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#heat-transfer">Heat Transfer</a><ul>
+<li><a class="reference internal" href="#id7">Boundary conditions</a></li>
+<li><a class="reference internal" href="#id8">Boundary integrals</a></li>
+<li><a class="reference internal" href="#id9">Subdomain integrals</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../getting_started/shortcut_keys.html"
+                        title="previous chapter">Shortcut Keys</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../scripting/commands.html"
+                        title="next chapter">Commands</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../scripting/commands.html" title="Commands"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../getting_started/shortcut_keys.html" title="Shortcut Keys"
+             >previous</a> |</li>
+        <li><a href="../index.html">Content</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Last updated on Oct 21, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

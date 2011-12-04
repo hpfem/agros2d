@@ -1,0 +1,227 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Electrostatic Planar Capacitor &mdash; Agros2D Documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/agros2d.ico"/>
+    <link rel="top" title="Agros2D Documentation" href="../index.html" />
+    <link rel="next" title="Electrostatic Axisymmetric Capacitor" href="electrostatic_axisymmetric_capacitor.html" />
+    <link rel="prev" title="Program Features" href="../program_features/program_features.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="electrostatic_axisymmetric_capacitor.html" title="Electrostatic Axisymmetric Capacitor"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../program_features/program_features.html" title="Program Features"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Content</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="electrostatic-planar-capacitor">
+<h1>Electrostatic Planar Capacitor<a class="headerlink" href="#electrostatic-planar-capacitor" title="Permalink to this headline">¶</a></h1>
+<p>This example demonstrates the basics of working with Agros2D. The resulting model can be found <em>/data/electrostatic_planar_capacitor.a2d</em>.</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Capacitor is a passive electrical component, which consists of electrodes that are separated by a dielectric and have different electrical potential. It is used to store electric charge. The basic type of the capacitor is a plate capacitor.</p>
+<p>For more information visit <a class="reference external" href="http://en.wikipedia.org/wiki/Capacitor">http://en.wikipedia.org/wiki/Capacitor</a>.</p>
+</div>
+<div class="section" id="preprocessing">
+<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">¶</a></h2>
+<p>Select &#8220;New&#8221; in the menu &#8220;File&#8221; and enter problem properties.</p>
+<ul class="simple">
+<li>Name: Electrostatic planar capacitor</li>
+<li>Date: Today</li>
+<li>Problem type: Planar</li>
+<li>Physic field: Electrostatic</li>
+<li>Number of refinements: 1</li>
+<li>Polynomial order: 2</li>
+<li>Adaptivity: hp-adaptivity</li>
+<li>Adaptivity steps: 10</li>
+<li>Adaptivity tolerance: 5</li>
+</ul>
+<img alt="../_images/editing_problem1.png" src="../_images/editing_problem1.png" />
+<p>Fig. 1.: Editing of a problem</p>
+<div class="section" id="geometry">
+<h3>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Nodes</p>
+<p>Select &#8220;Operate on nodes&#8221; in the menu &#8220;Problem&#8221; and place 6 points with coordinates [0.1, 0.0], [0.2, 0.0], [0.0, 0.2], [0.0, 0.3], [0.1, 0.2] and [0.2, 0.3]. You can move mouse to requested place and press left button together with Ctrl key, or by pressing Alt+N and entering the node coordinates.</p>
+</li>
+<li><p class="first">Edges</p>
+<p>Select &#8220;Operate on edges&#8221; in the menu &#8220;Problem&#8221; and draw 6 edges according to the definition area. Press Ctrl key and select start and end node of the line, or press Alt+E and select these points from a list.</p>
+</li>
+<li><p class="first">Labels</p>
+<p>Select &#8220;Operate on labels&#8221; in menu &#8220;Problem&#8221; and place block label into an inner area. To place label you can use left mouse button together with Ctrl key or pressing Alt+L and entering the label point coordinates.</p>
+</li>
+</ul>
+<img alt="../_images/editing_geometry1.png" src="../_images/editing_geometry1.png" />
+<p>Fig. 2.: Editing of a geometry</p>
+</div>
+<div class="section" id="boundary-conditions">
+<h3>Boundary conditions<a class="headerlink" href="#boundary-conditions" title="Permalink to this headline">¶</a></h3>
+<p>Select &#8220;New boundary condition&#8221; from the menu &#8220;Problem&#8221;, or press Alt+B and gradually define three boundary conditions.</p>
+<ul class="simple">
+<li>Name: Source electrode</li>
+<li>BC type: Fixed voltage</li>
+<li>Value: 30</li>
+<li>Name: Ground electrode</li>
+<li>BC type: Fixed voltage</li>
+<li>Value: 0</li>
+<li>Name: Neumann BC</li>
+<li>BC type: Surface charge density</li>
+<li>Value: 0</li>
+</ul>
+</div>
+<div class="section" id="materials">
+<h3>Materials<a class="headerlink" href="#materials" title="Permalink to this headline">¶</a></h3>
+<p>Select &#8220;New material&#8221; from the menu &#8220;Problem&#8221;, or press Alt+M and define dielectric material embedded between the electrodes.</p>
+<ul class="simple">
+<li>Name: Dieletric</li>
+<li>Permitivity: 10</li>
+<li>Charge density (C/m3): 0</li>
+</ul>
+</div>
+</div>
+<div class="section" id="processing">
+<h2>Processing<a class="headerlink" href="#processing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="mesh">
+<h3>Mesh<a class="headerlink" href="#mesh" title="Permalink to this headline">¶</a></h3>
+<p>Select &#8220;Mesh area&#8221; from the menu &#8220;Problem&#8221;.</p>
+</div>
+<div class="section" id="solve">
+<h3>Solve<a class="headerlink" href="#solve" title="Permalink to this headline">¶</a></h3>
+<p>Select &#8220;Solve problem&#8221; from the menu &#8220;Problem&#8221;, or press Alt+S.</p>
+</div>
+</div>
+<div class="section" id="postprocessing">
+<h2>Postprocessing<a class="headerlink" href="#postprocessing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="calculation-of-capacity">
+<h3>Calculation of capacity<a class="headerlink" href="#calculation-of-capacity" title="Permalink to this headline">¶</a></h3>
+<p>Select &#8220;Volume integrals&#8221; in menu &#8220;File&#8221; and mark area &#8220;Dielectric&#8221;. In panel &#8220;Volume integral&#8221; find value of &#8220;Energy&#8221; in group &#8220;Electrostatic field&#8221;.</p>
+<img alt="../_images/calculation_of_energy1.png" src="../_images/calculation_of_energy1.png" />
+<p>Fig. 3.: Calculation of energy</p>
+<p>Capacity of the capacitor can be calculated according to formula</p>
+<div class="math">
+<p><img src="../_images/math/72dd35937fcd982f144c1c4319ff2907d9fae6d4.png" alt="W_e = 4 \cdot \frac{1}{2} CU^2," /></p>
+</div><p>which can be adjusted to</p>
+<div class="math">
+<p><img src="../_images/math/3ee13578e8cd901874742286fd7a180f4aff2df8.png" alt="C = \frac{4 \cdot 2 \cdot W_e}{U^2}." /></p>
+</div></div>
+<div class="section" id="chart-of-electric-potential">
+<h3>Chart of electric potential<a class="headerlink" href="#chart-of-electric-potential" title="Permalink to this headline">¶</a></h3>
+<p>Select &#8220;Chart&#8221; in menu &#8220;Tools&#8221;. This opens a window for plotting charts. As a starting coordinates enter point [0.1, 0.2] and as ending coordinates point [0.2, 0.3]. Select &#8220;X&#8221; in &#8220;Horizontal axis&#8221; and select &#8220;Plot&#8221;.</p>
+<img alt="../_images/chart_plotting1.png" src="../_images/chart_plotting1.png" />
+<p>Fig. 4.: Chart plotting</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/agros2d.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Electrostatic Planar Capacitor</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#preprocessing">Preprocessing</a><ul>
+<li><a class="reference internal" href="#geometry">Geometry</a></li>
+<li><a class="reference internal" href="#boundary-conditions">Boundary conditions</a></li>
+<li><a class="reference internal" href="#materials">Materials</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#processing">Processing</a><ul>
+<li><a class="reference internal" href="#mesh">Mesh</a></li>
+<li><a class="reference internal" href="#solve">Solve</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#postprocessing">Postprocessing</a><ul>
+<li><a class="reference internal" href="#calculation-of-capacity">Calculation of capacity</a></li>
+<li><a class="reference internal" href="#chart-of-electric-potential">Chart of electric potential</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../program_features/program_features.html"
+                        title="previous chapter">Program Features</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="electrostatic_axisymmetric_capacitor.html"
+                        title="next chapter">Electrostatic Axisymmetric Capacitor</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="electrostatic_axisymmetric_capacitor.html" title="Electrostatic Axisymmetric Capacitor"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../program_features/program_features.html" title="Program Features"
+             >previous</a> |</li>
+        <li><a href="../index.html">Content</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Last updated on Aug 17, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

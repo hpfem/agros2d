@@ -4,7 +4,8 @@ docPath="./doc"
 docReleasePath="./doc/help"
 docBuildPath="./doc/build/html"
 reportPath="./doc/report"
-langPath="./lang"
+langPath="./resources_source/lang"
+langPathTarget="./resources/lang"
 temporaryDirectory="./tmp"
 debianizedFiles="./data ./debian ./lang ./src ./hermes_common ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
 
@@ -24,6 +25,7 @@ case "$1" in
 		case "$2" in
 			release )
 				lrelease $langPath/*.ts
+				mv $langPath/*.qm $langPathTarget
 				;;
 			update )
 				lupdate src/src.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts $langPath/pl_PL.ts $langPath/de_DE.ts

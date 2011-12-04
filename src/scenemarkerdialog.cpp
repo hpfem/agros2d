@@ -296,7 +296,7 @@ bool SceneTabWidgetMaterial::save()
 void SceneTabWidgetMaterial::refresh()
 {
     // read equation
-    QString fileName = QString(":/images/equations/%1/%1_%2.png")
+    QString fileName = QString(":/equations/%1/%1_%2.png")
             .arg(material->field()->fieldId())
             .arg(analysisTypeToStringKey(material->field()->analysisType()));
 
@@ -348,7 +348,7 @@ void SceneTabWidgetBoundary::doTypeChanged(int index)
     }
 
     // read equation
-    QString fileName = QString(":/images/equations/%1/%2.png")
+    QString fileName = QString(":/equations/%1/%2.png")
             .arg(boundary->field()->fieldId())
             .arg(comboBox->itemData(index).toString());
 

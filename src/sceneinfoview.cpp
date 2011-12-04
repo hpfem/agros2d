@@ -179,7 +179,7 @@ void SceneInfoView::showInfo()
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string info;
@@ -300,7 +300,7 @@ void SceneInfoView::showInfo()
         //        }
     }
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + "/resources/panels/problem.tpl", ctemplate::DO_NOT_STRIP, &problem, &info);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/problem.tpl", ctemplate::DO_NOT_STRIP, &problem, &info);
     webView->setHtml(QString::fromStdString(info));
 }
 

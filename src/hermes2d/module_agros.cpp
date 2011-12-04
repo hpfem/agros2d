@@ -200,7 +200,7 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, CoordinateType proble
     }
 
     // open default module
-    std::string filename_default = (datadir() + "/modules/" + QString::fromStdString(id) + ".xml").toStdString();
+    std::string filename_default = (datadir() + MODULEROOT + "/" + QString::fromStdString(id) + ".xml").toStdString();
     ifstream ifile_default(filename_default.c_str());
     if (ifile_default)
     {

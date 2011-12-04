@@ -49,8 +49,8 @@ std::map<std::string, std::string> availableModules()
     if (modules.size() == 0)
     {
         DIR *dp;
-        if ((dp = opendir((datadir() + "/modules").toStdString().c_str())) == NULL)
-            error("Modules dir '%s' doesn't exists", (datadir() + "/modules").toStdString().c_str());
+        if ((dp = opendir((datadir()+ MODULEROOT).toStdString().c_str())) == NULL)
+            error("Modules dir '%s' doesn't exists", (datadir() + MODULEROOT).toStdString().c_str());
 
         struct dirent *dirp;
         while ((dirp = readdir(dp)) != NULL)
@@ -64,7 +64,7 @@ std::map<std::string, std::string> availableModules()
             if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
             {
                 // read name
-                rapidxml::file<> file_data((datadir().toStdString() + "/modules/" + filename).c_str());
+                rapidxml::file<> file_data((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename).c_str());
 
                 // parse xml
                 rapidxml::xml_document<> doc;
@@ -89,7 +89,7 @@ std::map<std::string, std::string> availableAnalyses(std::string fieldId)
     std::map<std::string, std::string> analyses;
 
     // read module
-    rapidxml::file<> file_data((datadir().toStdString() + "/modules/" + fieldId + ".xml").c_str());
+    rapidxml::file<> file_data((datadir().toStdString() + MODULEROOT.toStdString() + "/" + fieldId + ".xml").c_str());
 
     // parse xml
     rapidxml::xml_document<> doc;
