@@ -35,10 +35,10 @@ class FieldSelectDialog : public QDialog
 {
     Q_OBJECT
 public:
-    FieldSelectDialog(QWidget *parent);
+    FieldSelectDialog(QList<QString> fields, QWidget *parent);
 
     int showDialog();
-    inline QString fieldId() { return m_fieldId; }
+    inline QString selectedFieldId() { return m_selectedFieldId; }
 
 private slots:
     void doAccept();
@@ -49,7 +49,7 @@ private slots:
 
 private:
     QListWidget *lstFields;
-    QString m_fieldId;
+    QString m_selectedFieldId;
 
     QDialogButtonBox *buttonBox;
 };
@@ -111,7 +111,6 @@ private slots:
     void doAdaptivityChanged(int index);
     void doLinearityTypeChanged(int index);
     void doShowEquation();
-    void doRemoveField();
 };
 
 class ProblemDialog: public QDialog
@@ -131,12 +130,16 @@ private slots:
     void doAccept();
     void doReject();
     void doOpenXML();
+
     void doAddField();
+    void doRemoveFieldRequested(int);
 
 private:
     bool m_isNewProblem;
     ProblemInfo *m_problemInfo;
     QMap<QString, FieldInfo *>  m_fieldInfos;
+
+    QDialogButtonBox *buttonBox;
 
     QTabWidget *tabFields;
 

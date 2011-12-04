@@ -26,14 +26,14 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 
-FieldSelectDialog::FieldSelectDialog(QWidget *parent) : QDialog(parent)
+FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : QDialog(parent)
 {
     logMessage("FieldSelectDialog::FieldSelectDialog()");
 
     setWindowTitle(tr("Select field"));
     setModal(true);
 
-    m_fieldId = "";
+    m_selectedFieldId = "";
 
     lstFields = new QListWidget(this);
 
@@ -42,7 +42,7 @@ FieldSelectDialog::FieldSelectDialog(QWidget *parent) : QDialog(parent)
          it != modules.end(); ++it)
     {
         // add only missing fields
-        if (!Util::scene()->fieldInfos().contains(QString::fromStdString(it->first)))
+        if (!fields.contains(QString::fromStdString(it->first)))
         {
             QListWidgetItem *item = new QListWidgetItem(lstFields);
             item->setText(QString::fromStdString(it->second));
@@ -105,7 +105,7 @@ int FieldSelectDialog::showDialog()
 
 void FieldSelectDialog::doItemSelected(QListWidgetItem *item)
 {
-    m_fieldId = item->data(Qt::UserRole).toString();
+    m_selectedFieldId = item->data(Qt::UserRole).toString();
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 }
 
@@ -113,7 +113,7 @@ void FieldSelectDialog::doItemDoubleClicked(QListWidgetItem *item)
 {
     if (lstFields->currentItem())
     {
-        m_fieldId = lstFields->currentItem()->data(Qt::UserRole).toString();
+        m_selectedFieldId = lstFields->currentItem()->data(Qt::UserRole).toString();
         accept();
     }
 }
@@ -169,9 +169,6 @@ void FieldWidget::createContent()
 
     // fill combobox
     fillComboBox();
-
-    QPushButton *btnRemove = new QPushButton(tr("Remove field"));
-    connect(btnRemove, SIGNAL(clicked()), this, SLOT(doRemoveField()));
 
     int minWidth = 130;
 
@@ -242,7 +239,6 @@ void FieldWidget::createContent()
     layoutLeft->addLayout(layoutTable);
     layoutLeft->addWidget(grpLinearity);
     layoutLeft->addStretch();
-    layoutLeft->addWidget(btnRemove, 0, Qt::AlignLeft);
 
     // right
     QVBoxLayout *layoutRight = new QVBoxLayout();
@@ -378,12 +374,6 @@ void FieldWidget::doShowEquation()
                .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
 }
 
-void FieldWidget::doRemoveField()
-{
-    ProblemDialog *problemDialog = dynamic_cast<ProblemDialog *>(parent());
-    problemDialog->removeField(m_fieldInfo);
-}
-
 void FieldWidget::doAdaptivityChanged(int index)
 {
     logMessage("ProblemDialog::doAdaptivityChanged()");
@@ -446,7 +436,7 @@ void ProblemDialog::createControls()
     btnAddField->setVisible(false);
     connect(btnAddField, SIGNAL(clicked()), this, SLOT(doAddField()));
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     buttonBox->addButton(btnAddField, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
@@ -550,6 +540,9 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     // fields
     tabFields = new QTabWidget(this);
+    tabFields->setTabsClosable(true);
+    connect(tabFields, SIGNAL(tabCloseRequested(int)), this, SLOT(doRemoveFieldRequested(int)));
+
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
         tabFields->addTab(new FieldWidget(m_problemInfo, fieldInfo, tabFields),
                           QString::fromStdString(fieldInfo->module()->name));
@@ -634,79 +627,6 @@ bool ProblemDialog::save()
 {
     logMessage("ProblemDialog::save()");
 
-    // physical field type
-    //    if (Util::scene()->problemInfo()->fieldId() !=
-    //            cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString())
-    //    {
-    //        if (!this->m_isNewProblem)
-    //        {
-    //            if (Util::scene()->boundaries.count() != 1 || Util::scene()->materials.count() != 1)
-    //            {
-    //                if (QMessageBox::question(this, tr("Change physical field type"), tr("Are you sure change physical field type?"), tr("&Yes"), tr("&No")) == 1)
-    //                    return false;
-    //            }
-    //        }
-
-    //        if (Util::scene()->sceneSolution()->isSolved())
-    //            Util::scene()->doClearSolution();
-
-    //        m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
-    //                                               (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
-    //                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt(),
-    //                                               (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
-    //                                                ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString()));
-
-    //        for (int i = 1; i < Util::scene()->boundaries.count(); i++)
-    //        {
-    //            Util::scene()->replaceBoundary(Util::scene()->boundaries[1]);
-    //        }
-
-    //        for (int i = 1; i < Util::scene()->materials.count(); i++)
-    //        {
-    //            Util::scene()->replaceMaterial(Util::scene()->materials[1]);
-    //        }
-    //    }
-    //    else
-    //    {
-    //        m_problemInfo->setModule(moduleFactory(cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString().toStdString(),
-    //                                               (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt(),
-    //                                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt(),
-    //                                               (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom"
-    //                                                ? Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml" : "").toStdString()));
-    //    }
-
-    // check values
-    //TODO
-    //    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Harmonic)
-    //    {
-    //        if (txtFrequency->value() < 0)
-    //        {
-    //            QMessageBox::critical(this, tr("Error"), tr("Frequency cannot be negative."));
-    //            return false;
-    //        }
-    //    }
-    //    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Transient)
-    //    {
-    //        txtTransientTimeStep->evaluate(false);
-    //        if (txtTransientTimeStep->number() <= 0.0)
-    //        {
-    //            QMessageBox::critical(this, tr("Error"), tr("Time step must be positive."));
-    //            return false;
-    //        }
-    //        txtTransientTimeTotal->evaluate(false);
-    //        if (txtTransientTimeTotal->number() <= 0.0)
-    //        {
-    //            QMessageBox::critical(this, tr("Error"), tr("Total time must be positive."));
-    //            return false;
-    //        }
-    //        txtTransientTimeStep->evaluate(false);
-    //        if (txtTransientTimeStep->number() > txtTransientTimeTotal->number())
-    //        {
-    //            QMessageBox::critical(this, tr("Error"), tr("Time step is greater then total time."));
-    //            return false;
-    //        }
-    //    }
-
     // run and check startup script
     if (!txtStartupScript->toPlainText().isEmpty())
     {
@@ -736,22 +656,34 @@ bool ProblemDialog::save()
 
     // save fields
     for (int i = 0; i < tabFields->count(); i++)
-    {
-        FieldWidget *wid = static_cast<FieldWidget *>(tabFields->widget(i));
-        wid->save();
-    }
+        static_cast<FieldWidget *>(tabFields->widget(i))->save();
 
     // add missing fields
     for (int i = 0; i < tabFields->count(); i++)
     {
         FieldWidget *wid = static_cast<FieldWidget *>(tabFields->widget(i));
 
+        // add missing field
         if (!Util::scene()->fieldInfo(wid->fieldInfo()->fieldId()))
             Util::scene()->addField(wid->fieldInfo());
     }
 
     // remove deleted fields
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        bool exists = false;
+        for (int i = 0; i < tabFields->count(); i++)
+        {
+            FieldWidget *wid = static_cast<FieldWidget *>(tabFields->widget(i));
 
+            if (fieldInfo->fieldId() == wid->fieldInfo()->fieldId())
+                exists = true;
+        }
+
+        // remove field
+        if (!exists)
+            Util::scene()->removeField(fieldInfo);
+    }
 
     return true;
 }
@@ -823,26 +755,58 @@ void ProblemDialog::doTransientChanged()
 
 void ProblemDialog::doAddField()
 {
-    FieldSelectDialog dialog(this);
+    // used fields
+    QList<QString> fields;
+    for (int i = 0; i < tabFields->count(); i++)
+    {
+        FieldWidget *wid = dynamic_cast<FieldWidget *>(tabFields->widget(i));
+        fields.append(wid->fieldInfo()->fieldId());
+    }
+
+    // select field dialog
+    FieldSelectDialog dialog(fields, this);
     if (dialog.showDialog() == QDialog::Accepted)
     {
-        FieldInfo *fieldInfo = new FieldInfo(m_problemInfo, dialog.fieldId());
+        FieldInfo *fieldInfo;
+        if (Util::scene()->fieldInfos().keys().contains(dialog.selectedFieldId()))
+        {
+            // existing field info main in collection
+            fieldInfo = Util::scene()->fieldInfo(dialog.selectedFieldId());
+        }
+        else
+        {
+            // new field info
+            fieldInfo = new FieldInfo(m_problemInfo, dialog.selectedFieldId());
+        }
 
-        tabFields->addTab(new FieldWidget(m_problemInfo, fieldInfo, tabFields),
+        // new field widget
+        FieldWidget *fieldWidget = new FieldWidget(m_problemInfo, fieldInfo, tabFields);
+
+        // add widget
+        tabFields->addTab(fieldWidget,
                           QString::fromStdString(fieldInfo->module()->name));
         tabFields->setCurrentIndex(tabFields->count() - 1);
+
+        buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
     }
 }
 
-void ProblemDialog::removeField(FieldInfo *fieldInfo)
+void ProblemDialog::doRemoveFieldRequested(int index)
 {
-//    for (int i = 0; i < tabFields->count(); i++)
-//    {
-//        FieldWidget *wid = dynamic_cast<FieldWidget *>(tabFields->widget(i));
-//        if (wid->fieldInfo() == fieldInfo)
-//        {
-//            tabFields->removeTab(i);
-//            return;
-//        }
-//    }
+    // remove field
+    FieldWidget *wid = dynamic_cast<FieldWidget *>(tabFields->widget(index));
+
+    if (QMessageBox::question(this, tr("Remove field"), tr("Are you sure to remove field '%1'?").
+                              arg(QString::fromStdString(wid->fieldInfo()->module()->name)),
+                              QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+    {
+        tabFields->removeTab(index);
+
+        // delete corresponding fileinfo (new field only)
+        if (!Util::scene()->fieldInfos().keys().contains(wid->fieldInfo()->fieldId()))
+            delete wid->fieldInfo();
+
+        // enable accept button
+        buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
+    }
 }
