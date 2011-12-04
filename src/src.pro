@@ -164,20 +164,18 @@ INCLUDEPATH += . \
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
     version.xml \
-    ../modules/rf.xml \
-    ../modules/magnetic.xml \
-    ../modules/heat.xml \
-    ../modules/electrostatic.xml \
-    ../modules/elasticity.xml \
-    ../modules/current.xml \
-    ../modules/acoustic.xml \
+    ../resources/modules/rf.xml \
+    ../resources/modules/magnetic.xml \
+    ../resources/modules/heat.xml \
+    ../resources/modules/electrostatic.xml \
+    ../resources/modules/elasticity.xml \
+    ../resources/modules/current.xml \
+    ../resources/modules/acoustic.xml \
+    ../resources/custom.xml \
+    ../resources/a2d_convert_table.xml \
     ../resources/materials/Copper.xml \
     ../resources/materials/Aluminum.xml \
-    ../resources/materials/Iron.xml \
-    ../modules/general.xml \
-    ../resources/custom.xml \
-    ../resources/a2d_convert_table.xml
-
+    ../resources/materials/Iron.xml
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include

@@ -46,7 +46,7 @@ struct Value
     bool evaluate(bool quiet = false);
     bool evaluate(double time, bool quiet = false);
 
-    QString toString();
+    QString toString() const;
     void fromString(const QString &str);
 
     inline void setText(const QString &str) { m_isEvaluated = false; m_text = str; }

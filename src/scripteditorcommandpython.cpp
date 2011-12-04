@@ -1347,8 +1347,8 @@ void PythonEngine::runPythonHeader()
         PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
     // startup script
-    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
-        PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    if (!Util::scene()->problemInfo()->startupscript.isEmpty())
+        PyRun_String(Util::scene()->problemInfo()->startupscript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
 ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)

@@ -77,7 +77,7 @@ public:
     // matrix solver
     Hermes::MatrixSolverType matrixSolver;
 
-    QString scriptStartup;
+    QString startupscript;
     QString description;
 
     inline QString labelX() { return ((coordinateType == CoordinateType_Planar) ? "X" : "R");  }

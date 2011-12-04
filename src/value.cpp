@@ -102,7 +102,7 @@ Hermes::Ord Value::derivative(Hermes::Ord key)
     return Hermes::Ord(1);
 }
 
-QString Value::toString()
+QString Value::toString() const
 {
     if (table->size() == 0)
         return m_text;

@@ -616,7 +616,7 @@ void ProblemDialog::load()
     // matrix solver
     cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_problemInfo->matrixSolver));
     // startup
-    txtStartupScript->setPlainText(m_problemInfo->scriptStartup);
+    txtStartupScript->setPlainText(m_problemInfo->startupscript);
     // description
     txtDescription->setPlainText(m_problemInfo->description);
 
@@ -649,7 +649,7 @@ bool ProblemDialog::save()
     m_problemInfo->timeTotal = txtTransientTimeTotal->value();
 
     m_problemInfo->description = txtDescription->toPlainText();
-    m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
+    m_problemInfo->startupscript = txtStartupScript->toPlainText();
 
     // matrix solver
     m_problemInfo->matrixSolver = (Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
