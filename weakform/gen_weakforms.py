@@ -2,7 +2,7 @@
 
 from xml_parser import XmlParser
 
-modules = ['heat']
+modules = []
 # modules = ['electrostatic', 'current', 'heat', 'acoustic', 'elasticity', 'rf', 'magnetic']
 # modules = ['magnetic']
 xml_parser = XmlParser(modules)

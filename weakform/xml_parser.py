@@ -1,9 +1,9 @@
 #!/usr/bin/python
 import module as md
 
-module = md.parse("../../../modules/current.xml")
-general = module.get_general()
-print general.description
+#module = md.parse("../resources/modules/current.xml")
+#general = module.get_general()
+#print general.description
 ##!/usr/bin/python
 #
 #from xml.dom import minidom

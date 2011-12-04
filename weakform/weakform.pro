@@ -12,13 +12,13 @@ OBJECTS_DIR = build
 CONFIG += staticlib
 CONFIG += warn_off
 
-INCLUDEPATH += ../../../hermes2d/include \
-    ../../../hermes_common/include \
-    ../../../lib/muparser \
-    ../../../lib/dxflib \
-    ../../../lib/rapidxml \
-    ../../ \
-    ../
+INCLUDEPATH += ../hermes2d/include \
+    ../hermes_common/include \
+    ../lib/muparser \
+    ../lib/dxflib \
+    ../lib/rapidxml \
+    ../src/ \
+    ../src/hermes2d
 
 linux-g++|linux-g++-64|linux-g++-32 {
     system(python ./gen_weakforms.py)

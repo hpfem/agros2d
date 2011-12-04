@@ -19,7 +19,7 @@
 
 #include "scripteditorcommandpython.h"
 
-#include "python/agros2d.c"
+#include "../resources_source/python/agros2d.c"
 
 #include "util.h"
 #include "scene.h"

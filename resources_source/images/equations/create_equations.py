@@ -58,11 +58,6 @@ create_image(template, r"-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\m
 create_image(template, r"T = T_0", dir + "heat/heat_temperature.png")
 create_image(template, r"f = - \lambda \frac{\partial T}{\partial n_0} = f_0 + \alpha \left ( T_\mathrm{ext} - T \right)", dir + "heat/heat_heat_flux.png")
 
-# general
-create_image(template, r"-\, \div \left( c\,\, \grad u \right) = r", dir + "general/general_steadystate.png")
-create_image(template, r"u = u_0", dir + "general/general_value.png")
-create_image(template, r"g_\mathrm{n} = \frac{\partial u}{\partial n_0} = g_0", dir + "general/general_derivative.png")
-
 # magnetic
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vec{A} = \vec{J}_\mathrm{ext}", dir + "magnetic/magnetic_steadystate.png")
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vec{A} + \sigma \frac{\partial \vec{A}}{\partial t} = \vec{J}_\mathrm{ext}", dir + "magnetic/magnetic_transient.png")

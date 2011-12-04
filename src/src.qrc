@@ -85,9 +85,6 @@
         <file alias="equations/electrostatic/electrostatic_steadystate.png">../resources_source/images/equations/electrostatic/electrostatic_steadystate.png</file>
         <file alias="equations/electrostatic/electrostatic_potential.png">../resources_source/images/equations/electrostatic/electrostatic_potential.png</file>
         <file alias="equations/electrostatic/electrostatic_surface_charge_density.png">../resources_source/images/equations/electrostatic/electrostatic_surface_charge_density.png</file>
-        <file alias="equations/general/general_steadystate.png">../resources_source/images/equations/general/general_steadystate.png</file>
-        <file alias="equations/general/general_value.png">../resources_source/images/equations/general/general_value.png</file>
-        <file alias="equations/general/general_derivative.png">../resources_source/images/equations/general/general_derivative.png</file>
         <file alias="equations/heat/heat_steadystate.png">../resources_source/images/equations/heat/heat_steadystate.png</file>
         <file alias="equations/heat/heat_transient.png">../resources_source/images/equations/heat/heat_transient.png</file>
         <file alias="equations/heat/heat_temperature.png">../resources_source/images/equations/heat/heat_temperature.png</file>
@@ -103,10 +100,10 @@
         <file alias="equations/elasticity/elasticity_coeffs.png">../resources_source/images/equations/elasticity/elasticity_coeffs.png</file>
         <file alias="equations/elasticity/elasticity_free.png">../resources_source/images/equations/elasticity/elasticity_free.png</file>
         <file alias="equations/elasticity/elasticity_fixed.png">../resources_source/images/equations/elasticity/elasticity_fixed.png</file>
-        <file alias="equations/rf/rf_harmonic.png">../resources_source/images/equations/rf/rf_harmonic.png</file>
-        <file alias="equations/rf/rf_surface_current.png">../resources_source/images/equations/rf/rf_surface_current.png</file>
-        <file alias="equations/rf/rf_electric_field.png">../resources_source/images/equations/rf/rf_electric_field.png</file>
-        <file alias="equations/rf/rf_matched_boundary.png">../resources_source/images/equations/rf/rf_matched_boundary.png</file>
+        <file alias="equations/rf_te/rf_te_harmonic.png">../resources_source/images/equations/rf_te/rf_te_harmonic.png</file>
+        <file alias="equations/rf_te/rf_te_surface_current.png">../resources_source/images/equations/rf_te/rf_te_surface_current.png</file>
+        <file alias="equations/rf_te/rf_te_electric_field.png">../resources_source/images/equations/rf_te/rf_te_electric_field.png</file>
+        <file alias="equations/rf_te/rf_te_matched_boundary.png">../resources_source/images/equations/rf_te/rf_te_matched_boundary.png</file>
         <file alias="equations/acoustic/acoustic_harmonic.png">../resources_source/images/equations/acoustic/acoustic_harmonic.png</file>
         <file alias="equations/acoustic/acoustic_transient.png">../resources_source/images/equations/acoustic/acoustic_transient.png</file>
         <file alias="equations/acoustic/acoustic_pressure.png">../resources_source/images/equations/acoustic/acoustic_pressure.png</file>

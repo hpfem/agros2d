@@ -20,7 +20,7 @@
 #include "module.h"
 #include "module_agros.h"
 
-#include "weakform_factory.h"
+#include "../weakform/src/weakform_factory.h"
 
 #include "progressdialog.h"
 #include "util.h"

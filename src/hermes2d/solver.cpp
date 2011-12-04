@@ -28,7 +28,7 @@
 #include "scenesolution.h"
 #include "progressdialog.h"
 #include "weakform_parser.h"
-#include "weakform_factory.h"
+#include "../weakform/src/weakform_factory.h"
 
 template <typename Scalar>
 SolutionArray<Scalar>::SolutionArray()

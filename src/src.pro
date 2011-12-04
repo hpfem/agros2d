@@ -19,8 +19,12 @@ DEFINES += WEAKFORM_FACTORY
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
-linux-g++|linux-g++-64|linux-g++-32 :CONFIG(release) system(cython python/agros2d.pyx)
-linux-g++|linux-g++-64|linux-g++-32 :CONFIG(release) system(lrelease ../lang/*.ts)
+linux-g++|linux-g++-64|linux-g++-32 :CONFIG(release) {
+    system(cython ../resources_source/python/agros2d.pyx)
+    system(lrelease ../resources_source/lang/*.ts)
+    system(mkdir ../resources/lang)
+    system(mv ../resources_source/lang/*.qm ../resources/lang)
+}
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/pl_PL.ts \
     lang/de_DE.ts
@@ -181,8 +185,8 @@ LIBS += -L../hermes2d/lib
 LIBS += -lhermes2d
 LIBS += -L../lib/lib
 LIBS += -llib
-LIBS += -Lhermes2d/weakform/lib
-LIBS += -lweakform
+LIBS += -L../weakform/lib
+#LIBS += -lweakform #//TODO
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS

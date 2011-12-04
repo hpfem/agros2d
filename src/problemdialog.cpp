@@ -369,7 +369,7 @@ void FieldWidget::doAnalysisTypeChanged(int index)
 void FieldWidget::doShowEquation()
 {
     readPixmap(lblEquationPixmap,
-               QString(":/images/equations/%1/%1_%2.png")
+               QString(":/equations/%1/%1_%2.png")
                .arg(m_fieldInfo->fieldId())
                .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
 }
