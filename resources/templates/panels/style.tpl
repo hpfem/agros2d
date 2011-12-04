@@ -21,6 +21,7 @@ h2 {
 }
 
 table, tr, td {
+	font-size: 93%;
 	text-align: left;
 	/*border: 1pt solid black;*/
 }
