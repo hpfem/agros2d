@@ -34,7 +34,7 @@
             <label x="0.0284191" y="0.123601" polynomialorder="2" id="2" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" timetotal="10" type="triangle" timestep="0.5" name="Electrostatic capacitor" date="2011-04-19">
+    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" meshtype="triangle" timetotal="10" timestep="0.5" name="Electrostatic capacitor" date="2011-04-19">
         <startupscript>U = 10
 eps1 = 10
 eps2 = 3</startupscript>
@@ -44,7 +44,7 @@ eps2 = 3</startupscript>
                 <adaptivity adaptivitytolerance="5" adaptivitytype="disabled" adaptivitysteps="10"/>
                 <solver nonlineartolerance="0.001" nonlinearsteps="10" linearity="newton"/>
                 <boundaries>
-                    <boundary electrostatic_potential="U" type="electrostatic_potential" id="1" name="Source" electrostatic_surface_charge_density="0">
+                    <boundary electrostatic_potential="U" type="electrostatic_potential" id="1" name="Source">
                         <edge edge="1"/>
                         <edge edge="12"/>
                     </boundary>

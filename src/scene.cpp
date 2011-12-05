@@ -1605,7 +1605,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // coordinate type
     eleProblem.setAttribute("coordinatetype", coordinateTypeToStringKey(m_problemInfo->coordinateType));
     // mesh type
-    eleProblem.setAttribute("type", meshTypeToStringKey(m_problemInfo->meshType));
+    eleProblem.setAttribute("meshtype", meshTypeToStringKey(m_problemInfo->meshType));
 
     // harmonic
     eleProblem.setAttribute("frequency", m_problemInfo->frequency);
