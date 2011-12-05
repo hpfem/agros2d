@@ -1227,9 +1227,28 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // convert document
     if (version.isEmpty() || version == "2.0")
     {
-        Util::scene()->convertA2DFile(fileName, datadir() + "/resources/xslt/problem_a2d_xml.xsl");
-        // FIXME (use return ErrorResult())
-        return ErrorResult(ErrorResultType_Information, tr("File '%1' has been converted to new version.").arg(fileName));
+        if (QMessageBox::question(QApplication::activeWindow(), tr("Convert file?"), tr("File %1 must be converted to new version. Do you want convert and rewrite current file?").arg(fileName),
+                                  tr("&Yes"), tr("&No")) == 0)
+        {
+            QString out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_xml.xsl");
+            qDebug() << out;
+            doc.setContent(out);
+            eleDoc = doc.documentElement();
+
+            QFile file(fileName);
+            if (!file.open(QIODevice::WriteOnly))
+                return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved (%2).").
+                                   arg(fileName).
+                                   arg(file.errorString()));
+
+            QTextStream stream(&file);
+            doc.save(stream, 4);
+
+            file.waitForBytesWritten(0);
+            file.close();
+        }
+        else
+            return ErrorResult();
     }
 
     // geometry ***************************************************************************************************************
@@ -1774,40 +1793,4 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     setlocale(LC_NUMERIC, plocale);
 
     return ErrorResult();
-}
-
-ErrorResult Scene::convertA2DFile(const QString &fileName, const QString &stylesheetFileName)
-{
-    logMessage("Scene::convertA2DFile()");
-
-    QString out = transformXML(fileName, stylesheetFileName);
-    QDomDocument doc;
-    if (!doc.setContent(out))
-        return ErrorResult(ErrorResultType_Critical, tr("File %1 has not been converted.").arg(fileName));
-
-    QFileInfo fileInfo(fileName);
-    QString newFileName;
-
-    if (QMessageBox::question(QApplication::activeWindow(), tr("Rewrite current file?"), tr("File %1 has been converted to new version. Do you want rewrite current file?").arg(fileName),
-                              tr("&Yes"), tr("&No")) == 0)
-        newFileName = fileName;
-    else
-        newFileName = tempProblemDir() + "/" + fileInfo.baseName() + "." + fileInfo.suffix();
-
-    QFile file(newFileName);
-    if (!file.open(QIODevice::WriteOnly))
-        return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved (%2).").
-                           arg(newFileName).
-                           arg(file.errorString()));
-
-    QTextStream stream(&file);
-    doc.save(stream, 4);
-
-    file.waitForBytesWritten(0);
-    file.close();
-
-    // FIXME (call open function from MainWindow)
-    ErrorResult result = readFromFile(newFileName);
-    if (result.isError())
-        result.showDialog();
 }
