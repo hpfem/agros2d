@@ -1,18 +1,4 @@
-<document version="2.0">
-    <problems>
-        <problem maxdofs="60000" adaptivitytolerance="5" id="0" analysistype="steadystate" initialcondition="0" linearitysteps="10" adaptivitysteps="10" linearity="linear" name="Electrostatic Planar Capacitor" date="2011-07-07" polynomialorder="1" meshtype="triangle" timestep="0" problemtype="planar" adaptivitytype="hp-adaptivity" linearitytolerance="0.001" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="0">
-            <scriptstartup></scriptstartup>
-            <description>This model is an example.</description>
-            <edges>
-                <edge electrostatic_potential="10" type="electrostatic_potential" id="1" name="Source"/>
-                <edge electrostatic_potential="0" type="electrostatic_potential" id="2" name="Ground"/>
-                <edge type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0"/>
-            </edges>
-            <labels>
-                <label id="1" electrostatic_charge_density="0" name="Dielectric" electrostatic_permittivity="10"/>
-            </labels>
-        </problem>
-    </problems>
+<document version="2.1">
     <geometry>
         <nodes>
             <node x="0.1" y="0" id="0"/>
@@ -23,15 +9,44 @@
             <node x="0.2" y="0.3" id="5"/>
         </nodes>
         <edges>
-            <edge end="3" refine_towards="0" marker="3" id="0" start="4" angle="0"/>
-            <edge end="2" refine_towards="0" marker="1" id="1" start="3" angle="0"/>
-            <edge end="0" refine_towards="0" marker="1" id="2" start="2" angle="0"/>
-            <edge end="1" refine_towards="0" marker="3" id="3" start="0" angle="0"/>
-            <edge end="5" refine_towards="0" marker="2" id="4" start="1" angle="0"/>
-            <edge end="4" refine_towards="0" marker="2" id="5" start="5" angle="0"/>
+            <edge end="3" refine_towards="0" id="0" start="4" angle="0"/>
+            <edge end="2" refine_towards="0" id="1" start="3" angle="0"/>
+            <edge end="0" refine_towards="0" id="2" start="2" angle="0"/>
+            <edge end="1" refine_towards="0" id="3" start="0" angle="0"/>
+            <edge end="5" refine_towards="0" id="4" start="1" angle="0"/>
+            <edge end="4" refine_towards="0" id="5" start="5" angle="0"/>
         </edges>
         <labels>
-            <label x="0.129936" y="0.239288" polynomialorder="0" marker="1" id="0" area="0.002"/>
+            <label x="0.129936" y="0.239288" polynomialorder="0" id="0" area="0.002"/>
         </labels>
     </geometry>
+    <problem coordinatetype="planar" frequency="0" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Electrostatic Planar Capacitor" date="2011-07-07">
+        <description>This model is an example.</description>
+        <startupscript/>
+        <fields>
+            <field fieldid="electrostatic" numberofrefinements="0" analysistype="steadystate" polynomialorder="1" weakforms="interpreted" initialcondition="0">
+                <adaptivity adaptivitytolerance="5" maxdofs="60000" adaptivitytype="hp-adaptivity" adaptivitysteps="10"/>
+                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+                <boundaries>
+                    <boundary electrostatic_potential="10" type="electrostatic_potential" id="1" name="Source">
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                    </boundary>
+                    <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="Ground">
+                        <edge edge="4"/>
+                        <edge edge="5"/>
+                    </boundary>
+                    <boundary type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0">
+                        <edge edge="0"/>
+                        <edge edge="3"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material id="1" electrostatic_charge_density="0" name="Dielectric" electrostatic_permittivity="10">
+                        <label label="0"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
 </document>

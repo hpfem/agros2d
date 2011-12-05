@@ -34,15 +34,15 @@
             <label x="0.0284191" y="0.123601" polynomialorder="2" id="2" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Electrostatic capacitor" date="2011-04-19">
+    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Electrostatic Axisymmetric Capacitor" date="2011-04-19">
+        <description>This model is an example.</description>
         <startupscript>U = 10
 eps1 = 10
 eps2 = 3</startupscript>
-        <description>This model is an example.</description>
         <fields>
             <field fieldid="electrostatic" numberofrefinements="0" analysistype="steadystate" polynomialorder="3" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="5" adaptivitytype="disabled" adaptivitysteps="10"/>
-                <solver nonlineartolerance="0.001" nonlinearsteps="10" linearity="newton"/>
+                <adaptivity adaptivitytolerance="5" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="10"/>
+                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
                 <boundaries>
                     <boundary electrostatic_potential="U" type="electrostatic_potential" id="1" name="Source">
                         <edge edge="1"/>
