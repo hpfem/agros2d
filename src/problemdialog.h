@@ -87,7 +87,6 @@ private:
     QComboBox *cmbLinearityType;
 
     // mesh
-    QComboBox *cmbMeshType;
     QSpinBox *txtNumberOfRefinements;
     QSpinBox *txtPolynomialOrder;
 
@@ -145,6 +144,7 @@ private:
 
     QLineEdit *txtName;
     QComboBox *cmbCoordinateType;
+    QComboBox *cmbMeshType;
     QDateTimeEdit *dtmDate;
     QComboBox *cmbMatrixSolver;
 

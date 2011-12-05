@@ -18,6 +18,9 @@
 		<td><b>{{COORDINATE_TYPE_LABEL}}</b></td><td>{{COORDINATE_TYPE}}</td>
 	</tr>
 	<tr>
+		<td><b>{{MESH_TYPE_LABEL}}</b></td><td>{{MESH_TYPE}}</td>
+	</tr>
+	<tr>
 		<td>&nbsp;&nbsp;&nbsp;<b>{{FREQUENCY_LABEL}}</b></td><td>{{FREQUENCY}}</td>
 	</tr>
 	<tr>
@@ -66,9 +69,6 @@
 		<td>&nbsp;&nbsp;&nbsp;<b>{{ADAPTIVITY_TOLERANCE_LABEL}}</b></td><td>{{ADAPTIVITY_TOLERANCE}}</td>
 	</tr>
 	{{/ADAPTIVITY_PARAMETERS_SECTION}}
-	<tr>
-		<td><b>{{MESH_TYPE_LABEL}}</b></td><td>{{MESH_TYPE}}</td>
-	</tr>
 	<tr>
 		<td>&nbsp;&nbsp;&nbsp;<b>{{REFINEMENS_NUMBER_LABEL}}</b></td><td>{{REFINEMENS_NUMBER}}</td>
 	</tr>

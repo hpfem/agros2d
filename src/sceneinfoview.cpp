@@ -194,6 +194,9 @@ void SceneInfoView::showInfo()
     problem.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
     problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType).toStdString());
 
+    problem.SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
+    problem.SetValue("MESH_TYPE", meshTypeString(Util::scene()->problemInfo()->meshType).toStdString());
+
     problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
     problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency).toStdString() + " Hz");
     problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
@@ -246,8 +249,6 @@ void SceneInfoView::showInfo()
             field->ShowSection("INITIAL_CONDITION_SECTION");
         }
 
-        field->SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
-        field->SetValue("MESH_TYPE", meshTypeString(fieldInfo->meshType).toStdString());
         field->SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());
         field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->numberOfRefinements).toStdString());
         field->SetValue("POLYNOMIAL_ORDER_LABEL", tr("Polynomial order:").toStdString());

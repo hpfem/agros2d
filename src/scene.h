@@ -77,6 +77,9 @@ public:
     // matrix solver
     Hermes::MatrixSolverType matrixSolver;
 
+    // mesh type
+    MeshType meshType;
+
     QString startupscript;
     QString description;
 
@@ -116,7 +119,7 @@ public:
 
     int numberOfRefinements;
     int polynomialOrder;
-    MeshType meshType;
+
     AdaptivityType adaptivityType;
     int adaptivitySteps;
     double adaptivityTolerance; // percent

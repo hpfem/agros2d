@@ -146,7 +146,6 @@ void FieldWidget::createContent()
     txtPolynomialOrder = new QSpinBox(this);
     txtPolynomialOrder->setMinimum(1);
     txtPolynomialOrder->setMaximum(10);
-    cmbMeshType = new QComboBox();
 
     // weak forms
     cmbWeakForms = new QComboBox();
@@ -197,8 +196,6 @@ void FieldWidget::createContent()
     QGridLayout *layoutMesh = new QGridLayout();
     layoutMesh->setColumnMinimumWidth(0, minWidth);
     layoutMesh->setColumnStretch(1, 1);
-    layoutMesh->addWidget(new QLabel(tr("Mesh type:")), 0, 0);
-    layoutMesh->addWidget(cmbMeshType, 0, 1);
     layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 1, 0);
     layoutMesh->addWidget(txtNumberOfRefinements, 1, 1);
     layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 2, 0);
@@ -278,11 +275,6 @@ void FieldWidget::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_P), AdaptivityType_P);
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
 
-    cmbMeshType->addItem(meshTypeString(MeshType_Triangle), MeshType_Triangle);
-    cmbMeshType->addItem(meshTypeString(MeshType_QuadFineDivision), MeshType_QuadFineDivision);
-    cmbMeshType->addItem(meshTypeString(MeshType_QuadRoughDivision), MeshType_QuadRoughDivision);
-    cmbMeshType->addItem(meshTypeString(MeshType_QuadJoin), MeshType_QuadJoin);
-
     cmbWeakForms->clear();
     cmbWeakForms->addItem(weakFormsTypeString(WeakFormsType_Compiled), WeakFormsType_Compiled);
     cmbWeakForms->addItem(weakFormsTypeString(WeakFormsType_Interpreted), WeakFormsType_Interpreted);
@@ -312,7 +304,6 @@ void FieldWidget::load()
     //mesh
     txtNumberOfRefinements->setValue(m_fieldInfo->numberOfRefinements);
     txtPolynomialOrder->setValue(m_fieldInfo->polynomialOrder);
-    cmbMeshType->setCurrentIndex(cmbMeshType->findData(m_fieldInfo->meshType));
     // transient
     txtTransientInitialCondition->setValue(m_fieldInfo->initialCondition);
     // linearity
@@ -336,7 +327,6 @@ bool FieldWidget::save()
     //mesh
     m_fieldInfo->numberOfRefinements = txtNumberOfRefinements->value();
     m_fieldInfo->polynomialOrder = txtPolynomialOrder->value();
-    m_fieldInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();
     // transient
     m_fieldInfo->initialCondition = txtTransientInitialCondition->value();
     // linearity
@@ -463,7 +453,11 @@ QWidget *ProblemDialog::createControlsGeneral()
     dtmDate->setDisplayFormat("dd.MM.yyyy");
     dtmDate->setCalendarPopup(true);
 
+    // matrix solver
     cmbMatrixSolver = new QComboBox();
+
+    // mesh type
+    cmbMeshType = new QComboBox();
 
     // harmonic
     txtFrequency = new SLineEditDouble();
@@ -491,6 +485,8 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutTable->addWidget(cmbCoordinateType, 4, 1);
     layoutTable->addWidget(new QLabel(tr("Linear solver:")), 8, 0);
     layoutTable->addWidget(cmbMatrixSolver, 8, 1);
+    layoutTable->addWidget(new QLabel(tr("Mesh type:")), 0, 0);
+    layoutTable->addWidget(cmbMeshType, 0, 1);
 
     // harmonic analysis
     QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
@@ -597,6 +593,11 @@ void ProblemDialog::fillComboBox()
     cmbCoordinateType->addItem(coordinateTypeString(CoordinateType_Planar), CoordinateType_Planar);
     cmbCoordinateType->addItem(coordinateTypeString(CoordinateType_Axisymmetric), CoordinateType_Axisymmetric);
 
+    cmbMeshType->addItem(meshTypeString(MeshType_Triangle), MeshType_Triangle);
+    cmbMeshType->addItem(meshTypeString(MeshType_QuadFineDivision), MeshType_QuadFineDivision);
+    cmbMeshType->addItem(meshTypeString(MeshType_QuadRoughDivision), MeshType_QuadRoughDivision);
+    cmbMeshType->addItem(meshTypeString(MeshType_QuadJoin), MeshType_QuadJoin);
+
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
 }
 
@@ -608,6 +609,8 @@ void ProblemDialog::load()
     txtName->setText(m_problemInfo->name);
     dtmDate->setDate(m_problemInfo->date);
     cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(m_problemInfo->coordinateType));
+    // mesh type
+    cmbMeshType->setCurrentIndex(cmbMeshType->findData(m_problemInfo->meshType));
     // harmonic magnetic
     txtFrequency->setValue(m_problemInfo->frequency);
     // transient
@@ -642,6 +645,7 @@ bool ProblemDialog::save()
     m_problemInfo->name = txtName->text();
     m_problemInfo->date = dtmDate->date();
     m_problemInfo->coordinateType = (CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt();
+    m_problemInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();
 
     m_problemInfo->frequency = txtFrequency->value();
 

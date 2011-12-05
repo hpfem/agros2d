@@ -53,6 +53,9 @@ void ProblemInfo::clear()
     // matrix solver
     matrixSolver = Hermes::SOLVER_UMFPACK;
 
+    // mesh type
+    meshType = MeshType_Triangle;
+
     // harmonic
     frequency = 0.0;
 
@@ -104,7 +107,6 @@ void FieldInfo::clear()
 
     numberOfRefinements = 1;
     polynomialOrder = 2;
-    meshType = MeshType_Triangle;
     adaptivityType = AdaptivityType_None;
     adaptivitySteps = 0;
     adaptivityTolerance = 1.0;
@@ -1289,6 +1291,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->date = QDate::fromString(eleProblemInfo.toElement().attribute("date", QDate::currentDate().toString(Qt::ISODate)), Qt::ISODate);
     // coordinate type
     m_problemInfo->coordinateType = coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinatetype"));
+    // mesh type
+    m_problemInfo->meshType = meshTypeFromStringKey(eleProblemInfo.toElement().attribute("meshtype",
+                                                                               meshTypeToStringKey(MeshType_Triangle)));
 
     // harmonic
     m_problemInfo->frequency = eleProblemInfo.toElement().attribute("frequency", "0").toDouble();
@@ -1338,15 +1343,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         // polynomial order
         field->polynomialOrder = eleField.toElement().attribute("polynomialorder").toInt();
 
-        // mesh
-        QDomNode eleFieldMesh = eleField.toElement().elementsByTagName("mesh").at(0);
-
-        // mesh type
-        field->meshType = meshTypeFromStringKey(eleFieldMesh.toElement().attribute("meshtype",
-                                                                                   meshTypeToStringKey(MeshType_Triangle)));
-
         // number of refinements
-        field->numberOfRefinements = eleFieldMesh.toElement().attribute("numberofrefinements").toInt();
+        field->numberOfRefinements = eleField.toElement().attribute("numberofrefinements").toInt();
 
         // adaptivity
         QDomNode eleFieldAdaptivity = eleField.toElement().elementsByTagName("adaptivity").at(0);
@@ -1606,6 +1604,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("date", m_problemInfo->date.toString(Qt::ISODate));
     // coordinate type
     eleProblem.setAttribute("coordinatetype", coordinateTypeToStringKey(m_problemInfo->coordinateType));
+    // mesh type
+    eleProblem.setAttribute("type", meshTypeToStringKey(m_problemInfo->meshType));
 
     // harmonic
     eleProblem.setAttribute("frequency", m_problemInfo->frequency);
@@ -1646,13 +1646,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         // polynomial order
         eleField.setAttribute("polynomialorder", fieldInfo->polynomialOrder);
 
-        // mesh
-        QDomElement eleMesh = doc.createElement("mesh");
-        eleField.appendChild(eleMesh);
-        // mesh type
-        eleMesh.setAttribute("type", meshTypeToStringKey(fieldInfo->meshType));
         // number of refinements
-        eleMesh.setAttribute("numberofrefinements", fieldInfo->numberOfRefinements);
+        eleField.setAttribute("numberofrefinements", fieldInfo->numberOfRefinements);
 
         // adaptivity
         QDomElement eleAdaptivity = doc.createElement("adaptivity");
