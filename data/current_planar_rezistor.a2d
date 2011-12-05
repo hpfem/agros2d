@@ -1,19 +1,4 @@
-<document version="2.0">
-    <problems>
-        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.01" linearity="newton" name="unnamed" date="2011-07-22" polynomialorder="2" weakforms="compiled" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="current" timetotal="1.0">
-            <scriptstartup></scriptstartup>
-            <description></description>
-            <edges>
-                <edge current_potential="10" type="current_potential" id="1" name="Source"/>
-                <edge current_potential="0" type="current_potential" id="2" name="Ground"/>
-                <edge current_inward_current_flow="0" type="current_inward_current_flow" id="3" name="Neumann"/>
-            </edges>
-            <labels>
-                <label current_conductivity="33e6" id="1" name="Cond 1"/>
-                <label current_conductivity="57e6" id="2" name="Cond 2"/>
-            </labels>
-        </problem>
-    </problems>
+<document version="2.1">
     <geometry>
         <nodes>
             <node x="0" y="0" id="0"/>
@@ -24,17 +9,49 @@
             <node x="0.15" y="0" id="5"/>
         </nodes>
         <edges>
-            <edge end="0" refine_towards="0" marker="1" id="0" start="1" angle="0"/>
-            <edge end="4" refine_towards="0" marker="2" id="1" start="5" angle="0"/>
-            <edge end="3" refine_towards="0" marker="3" id="2" start="0" angle="0"/>
-            <edge end="5" refine_towards="0" marker="3" id="3" start="3" angle="0"/>
-            <edge end="3" refine_towards="0" marker="0" id="4" start="2" angle="0"/>
-            <edge end="1" refine_towards="0" marker="3" id="5" start="2" angle="0"/>
-            <edge end="4" refine_towards="0" marker="3" id="6" start="2" angle="0"/>
+            <edge end="0" refine_towards="0" id="0" start="1" angle="0"/>
+            <edge end="4" refine_towards="0" id="1" start="5" angle="0"/>
+            <edge end="3" refine_towards="0" id="2" start="0" angle="0"/>
+            <edge end="5" refine_towards="0" id="3" start="3" angle="0"/>
+            <edge end="3" refine_towards="0" id="4" start="2" angle="0"/>
+            <edge end="1" refine_towards="0" id="5" start="2" angle="0"/>
+            <edge end="4" refine_towards="0" id="6" start="2" angle="0"/>
         </edges>
         <labels>
-            <label x="0.0266815" y="0.0278347" polynomialorder="0" marker="1" id="0" area="0"/>
-            <label x="0.104249" y="0.0211345" polynomialorder="0" marker="2" id="1" area="0"/>
+            <label x="0.0266815" y="0.0278347" polynomialorder="0" id="0" area="0"/>
+            <label x="0.104249" y="0.0211345" polynomialorder="0" id="1" area="0"/>
         </labels>
     </geometry>
+    <problem coordinatetype="planar" frequency="0" matrix_solver="umfpack" timetotal="1.0" type="triangle" timestep="1.0" name="unnamed" date="2011-07-22">
+        <description/>
+        <startupscript/>
+        <fields>
+            <field fieldid="current" numberofrefinements="1" analysistype="steadystate" polynomialorder="2" weakforms="interpreted" initialcondition="0.0">
+                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
+                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+                <boundaries>
+                    <boundary current_potential="10" type="current_potential" id="1" name="Source">
+                        <edge edge="0"/>
+                    </boundary>
+                    <boundary current_potential="0" type="current_potential" id="2" name="Ground">
+                        <edge edge="1"/>
+                    </boundary>
+                    <boundary current_inward_current_flow="0" type="current_inward_current_flow" id="3" name="Neumann">
+                        <edge edge="2"/>
+                        <edge edge="3"/>
+                        <edge edge="5"/>
+                        <edge edge="6"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material current_conductivity="33e6" id="1" name="Cond 1">
+                        <label label="0"/>
+                    </material>
+                    <material current_conductivity="57e6" id="2" name="Cond 2">
+                        <label label="1"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
 </document>

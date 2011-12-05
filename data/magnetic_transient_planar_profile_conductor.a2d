@@ -1,18 +1,4 @@
-<document version="2.0">
-    <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="transient" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic transient planar profile conductor" date="2011-04-16" polynomialorder="3" meshtype="triangle" timestep="3e-6" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="50000" matrix_solver="umfpack" type="magnetic" timetotal="5*3e-6">
-            <scriptstartup></scriptstartup>
-            <description>This model is an example.</description>
-            <edges>
-                <edge type="magnetic_surface_current" magnetic_surface_current_imag="0" id="1" name="Neumann" magnetic_surface_current_real="0"/>
-                <edge magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="2" name="A = 0"/>
-            </edges>
-            <labels>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="1e7*(exp(-1/2e-5*time) - exp(-1/1e-5*time))" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="57e6" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-            </labels>
-        </problem>
-    </problems>
+<document version="2.1">
     <geometry>
         <nodes>
             <node x="0" y="0.000768" id="0"/>
@@ -26,20 +12,49 @@
             <node x="0" y="0" id="8"/>
         </nodes>
         <edges>
-            <edge end="0" refine_towards="0" marker="1" id="0" start="7" angle="0"/>
-            <edge end="8" refine_towards="0" marker="1" id="1" start="0" angle="0"/>
-            <edge end="1" refine_towards="0" marker="1" id="2" start="8" angle="0"/>
-            <edge end="6" refine_towards="0" marker="1" id="3" start="1" angle="0"/>
-            <edge end="7" refine_towards="0" marker="2" id="4" start="6" angle="90"/>
-            <edge end="2" refine_towards="0" marker="0" id="5" start="1" angle="90"/>
-            <edge end="4" refine_towards="0" marker="0" id="6" start="2" angle="0"/>
-            <edge end="4" refine_towards="0" marker="0" id="7" start="5" angle="90"/>
-            <edge end="5" refine_towards="0" marker="0" id="8" start="3" angle="0"/>
-            <edge end="0" refine_towards="0" marker="0" id="9" start="3" angle="90"/>
+            <edge end="0" refine_towards="0" id="0" start="7" angle="0"/>
+            <edge end="8" refine_towards="0" id="1" start="0" angle="0"/>
+            <edge end="1" refine_towards="0" id="2" start="8" angle="0"/>
+            <edge end="6" refine_towards="0" id="3" start="1" angle="0"/>
+            <edge end="7" refine_towards="0" id="4" start="6" angle="90"/>
+            <edge end="2" refine_towards="0" id="5" start="1" angle="90"/>
+            <edge end="4" refine_towards="0" id="6" start="2" angle="0"/>
+            <edge end="4" refine_towards="0" id="7" start="5" angle="90"/>
+            <edge end="5" refine_towards="0" id="8" start="3" angle="0"/>
+            <edge end="0" refine_towards="0" id="9" start="3" angle="90"/>
         </edges>
         <labels>
-            <label x="0.000585418" y="0.00126858" polynomialorder="0" marker="1" id="0" area="0"/>
-            <label x="0.000109549" y="8.6116e-05" polynomialorder="4" marker="2" id="1" area="0"/>
+            <label x="0.000585418" y="0.00126858" polynomialorder="0" id="0" area="0"/>
+            <label x="0.000109549" y="8.6116e-05" polynomialorder="4" id="1" area="0"/>
         </labels>
     </geometry>
+    <problem coordinatetype="planar" frequency="50000" matrix_solver="umfpack" timetotal="5*3e-6" type="triangle" timestep="3e-6" name="Magnetic transient planar profile conductor" date="2011-04-16">
+        <description>This model is an example.</description>
+        <startupscript/>
+        <fields>
+            <field fieldid="magnetic" numberofrefinements="0" analysistype="transient" polynomialorder="3" weakforms="interpreted" initialcondition="0">
+                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
+                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+                <boundaries>
+                    <boundary type="magnetic_surface_current" magnetic_surface_current_imag="0" id="1" name="Neumann" magnetic_surface_current_real="0">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                        <edge edge="3"/>
+                    </boundary>
+                    <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="2" name="A = 0">
+                        <edge edge="4"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="0"/>
+                    </material>
+                    <material magnetic_current_density_external_real="1e7*(exp(-1/2e-5*time) - exp(-1/1e-5*time))" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="57e6" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="1"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
 </document>

@@ -1,25 +1,4 @@
-<document version="2.0">
-    <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Steadystate Planar Halbach Array" date="2011-07-08" polynomialorder="5" meshtype="triangle" timestep="1" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="2" frequency="0" matrix_solver="umfpack" type="magnetic" timetotal="1">
-            <scriptstartup>Br_dir1 = 180
-Br_dir2 = 90
-Br_dir3 = 0
-Br_dir4 = -90
-Br_dir5 = 180</scriptstartup>
-            <description>This model is an example.</description>
-            <edges>
-                <edge type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0"/>
-            </edges>
-            <labels>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.05" magnetic_conductivity="0" magnetic_remanence="1.15" id="1" magnetic_remanence_angle="Br_dir1" name="Magnet 1" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.05" magnetic_conductivity="0" magnetic_remanence="1.15" id="2" magnetic_remanence_angle="Br_dir2" name="Magnet 2" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.05" magnetic_conductivity="0" magnetic_remanence="1.15" id="3" magnetic_remanence_angle="Br_dir3" name="Magnet 3" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.05" magnetic_conductivity="0" magnetic_remanence="1.15" id="4" magnetic_remanence_angle="Br_dir4" name="Magnet 4" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.05" magnetic_conductivity="0" magnetic_remanence="1.15" id="5" magnetic_remanence_angle="Br_dir5" name="Magnet 5" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="6" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-            </labels>
-        </problem>
-    </problems>
+<document version="2.1">
     <geometry>
         <nodes>
             <node x="0" y="-0" id="0"/>
@@ -40,34 +19,76 @@ Br_dir5 = 180</scriptstartup>
             <node x="-0.03" y="0.04" id="15"/>
         </nodes>
         <edges>
-            <edge end="2" refine_towards="0" marker="0" id="0" start="3" angle="0"/>
-            <edge end="5" refine_towards="0" marker="0" id="1" start="2" angle="0"/>
-            <edge end="6" refine_towards="0" marker="0" id="2" start="5" angle="0"/>
-            <edge end="8" refine_towards="0" marker="0" id="3" start="6" angle="0"/>
-            <edge end="8" refine_towards="0" marker="0" id="4" start="11" angle="0"/>
-            <edge end="10" refine_towards="0" marker="0" id="5" start="11" angle="0"/>
-            <edge end="9" refine_towards="0" marker="0" id="6" start="10" angle="0"/>
-            <edge end="7" refine_towards="0" marker="0" id="7" start="9" angle="0"/>
-            <edge end="4" refine_towards="0" marker="0" id="8" start="7" angle="0"/>
-            <edge end="1" refine_towards="0" marker="0" id="9" start="4" angle="0"/>
-            <edge end="0" refine_towards="0" marker="0" id="10" start="1" angle="0"/>
-            <edge end="3" refine_towards="0" marker="0" id="11" start="0" angle="0"/>
-            <edge end="1" refine_towards="0" marker="0" id="12" start="2" angle="0"/>
-            <edge end="5" refine_towards="0" marker="0" id="13" start="4" angle="0"/>
-            <edge end="7" refine_towards="0" marker="0" id="14" start="6" angle="0"/>
-            <edge end="8" refine_towards="0" marker="0" id="15" start="9" angle="0"/>
-            <edge end="13" refine_towards="0" marker="1" id="16" start="12" angle="0"/>
-            <edge end="14" refine_towards="0" marker="1" id="17" start="13" angle="0"/>
-            <edge end="15" refine_towards="0" marker="1" id="18" start="14" angle="0"/>
-            <edge end="12" refine_towards="0" marker="1" id="19" start="15" angle="0"/>
+            <edge end="2" refine_towards="0" id="0" start="3" angle="0"/>
+            <edge end="5" refine_towards="0" id="1" start="2" angle="0"/>
+            <edge end="6" refine_towards="0" id="2" start="5" angle="0"/>
+            <edge end="8" refine_towards="0" id="3" start="6" angle="0"/>
+            <edge end="8" refine_towards="0" id="4" start="11" angle="0"/>
+            <edge end="10" refine_towards="0" id="5" start="11" angle="0"/>
+            <edge end="9" refine_towards="0" id="6" start="10" angle="0"/>
+            <edge end="7" refine_towards="0" id="7" start="9" angle="0"/>
+            <edge end="4" refine_towards="0" id="8" start="7" angle="0"/>
+            <edge end="1" refine_towards="0" id="9" start="4" angle="0"/>
+            <edge end="0" refine_towards="0" id="10" start="1" angle="0"/>
+            <edge end="3" refine_towards="0" id="11" start="0" angle="0"/>
+            <edge end="1" refine_towards="0" id="12" start="2" angle="0"/>
+            <edge end="5" refine_towards="0" id="13" start="4" angle="0"/>
+            <edge end="7" refine_towards="0" id="14" start="6" angle="0"/>
+            <edge end="8" refine_towards="0" id="15" start="9" angle="0"/>
+            <edge end="13" refine_towards="0" id="16" start="12" angle="0"/>
+            <edge end="14" refine_towards="0" id="17" start="13" angle="0"/>
+            <edge end="15" refine_towards="0" id="18" start="14" angle="0"/>
+            <edge end="12" refine_towards="0" id="19" start="15" angle="0"/>
         </edges>
         <labels>
-            <label x="0.005" y="0.005" polynomialorder="6" marker="1" id="0" area="0"/>
-            <label x="0.015" y="0.005" polynomialorder="6" marker="2" id="1" area="0"/>
-            <label x="0.025" y="0.005" polynomialorder="6" marker="3" id="2" area="0"/>
-            <label x="0.035" y="0.005" polynomialorder="6" marker="4" id="3" area="0"/>
-            <label x="0.045" y="0.005" polynomialorder="6" marker="5" id="4" area="0"/>
-            <label x="0.025" y="0.025" polynomialorder="0" marker="6" id="5" area="0"/>
+            <label x="0.005" y="0.005" polynomialorder="6" id="0" area="0"/>
+            <label x="0.015" y="0.005" polynomialorder="6" id="1" area="0"/>
+            <label x="0.025" y="0.005" polynomialorder="6" id="2" area="0"/>
+            <label x="0.035" y="0.005" polynomialorder="6" id="3" area="0"/>
+            <label x="0.045" y="0.005" polynomialorder="6" id="4" area="0"/>
+            <label x="0.025" y="0.025" polynomialorder="0" id="5" area="0"/>
         </labels>
     </geometry>
+    <problem coordinatetype="planar" frequency="0" matrix_solver="umfpack" timetotal="1" type="triangle" timestep="1" name="Magnetic Steadystate Planar Halbach Array" date="2011-07-08">
+        <description>This model is an example.</description>
+        <startupscript>Br_dir1 = 180
+Br_dir2 = 90
+Br_dir3 = 0
+Br_dir4 = -90
+Br_dir5 = 180</startupscript>
+        <fields>
+            <field fieldid="magnetic" numberofrefinements="2" analysistype="steadystate" polynomialorder="5" weakforms="interpreted" initialcondition="0">
+                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
+                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+                <boundaries>
+                    <boundary type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
+                        <edge edge="16"/>
+                        <edge edge="17"/>
+                        <edge edge="18"/>
+                        <edge edge="19"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.05" magnetic_conductivity="0" magnetic_remanence="1.15" id="1" magnetic_remanence_angle="Br_dir1" name="Magnet 1" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="0"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.05" magnetic_conductivity="0" magnetic_remanence="1.15" id="2" magnetic_remanence_angle="Br_dir2" name="Magnet 2" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="1"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.05" magnetic_conductivity="0" magnetic_remanence="1.15" id="3" magnetic_remanence_angle="Br_dir3" name="Magnet 3" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="2"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.05" magnetic_conductivity="0" magnetic_remanence="1.15" id="4" magnetic_remanence_angle="Br_dir4" name="Magnet 4" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="3"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.05" magnetic_conductivity="0" magnetic_remanence="1.15" id="5" magnetic_remanence_angle="Br_dir5" name="Magnet 5" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="4"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="6" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="5"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
 </document>

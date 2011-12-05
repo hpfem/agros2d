@@ -1,20 +1,4 @@
-<document version="2.0">
-    <problems>
-        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="15" id="0" analysistype="transient" initialcondition="20" adaptivitysteps="5" nonlineartolerance="0.001" linearity="linear" name="Heat Transfer Axisymmetric Actuator" date="2011-07-18" polynomialorder="1" weakforms="compiled" meshtype="triangle" timestep="500" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" numberofrefinements="0" frequency="0" matrix_solver="umfpack" type="heat" timetotal="15e3">
-            <scriptstartup></scriptstartup>
-            <description>This model is an example.</description>
-            <edges>
-                <edge heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Neumann" heat_radiation_ambient_temperature="0"/>
-                <edge heat_convection_external_temperature="20" heat_convection_heat_transfer_coefficient="5" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection" heat_radiation_ambient_temperature="0"/>
-            </edges>
-            <labels>
-                <label heat_volume_heat="0" heat_conductivity="0.02" heat_density="1.2" heat_specific_heat="0" id="1" name="Air"/>
-                <label heat_volume_heat="26000" heat_conductivity="200" heat_density="8700" heat_specific_heat="0" id="2" name="Copper"/>
-                <label heat_volume_heat="0" heat_conductivity="60" heat_density="7800" heat_specific_heat="0" id="3" name="Iron"/>
-                <label heat_volume_heat="0" heat_conductivity="100" heat_density="8400" heat_specific_heat="0" id="4" name="Brass"/>
-            </labels>
-        </problem>
-    </problems>
+<document version="2.1">
     <geometry>
         <nodes>
             <node x="0" y="0.18" id="0"/>
@@ -43,40 +27,81 @@
             <node x="0.008999999999999999" y="0.03" id="23"/>
         </nodes>
         <edges>
-            <edge end="1" refine_towards="0" marker="2" id="0" start="0" angle="0"/>
-            <edge end="2" refine_towards="0" marker="2" id="1" start="1" angle="0"/>
-            <edge end="3" refine_towards="0" marker="2" id="2" start="2" angle="0"/>
-            <edge end="4" refine_towards="0" marker="0" id="3" start="3" angle="0"/>
-            <edge end="5" refine_towards="0" marker="0" id="4" start="4" angle="0"/>
-            <edge end="7" refine_towards="0" marker="0" id="5" start="6" angle="0"/>
-            <edge end="8" refine_towards="0" marker="0" id="6" start="7" angle="0"/>
-            <edge end="9" refine_towards="0" marker="0" id="7" start="8" angle="0"/>
-            <edge end="10" refine_towards="0" marker="0" id="8" start="9" angle="0"/>
-            <edge end="0" refine_towards="0" marker="1" id="9" start="10" angle="0"/>
-            <edge end="12" refine_towards="0" marker="0" id="10" start="11" angle="0"/>
-            <edge end="13" refine_towards="0" marker="0" id="11" start="12" angle="0"/>
-            <edge end="15" refine_towards="0" marker="2" id="12" start="14" angle="0"/>
-            <edge end="11" refine_towards="0" marker="1" id="13" start="15" angle="0"/>
-            <edge end="6" refine_towards="0" marker="0" id="14" start="5" angle="0"/>
-            <edge end="16" refine_towards="0" marker="0" id="15" start="5" angle="0"/>
-            <edge end="10" refine_towards="0" marker="1" id="16" start="11" angle="0"/>
-            <edge end="18" refine_towards="0" marker="0" id="17" start="17" angle="0"/>
-            <edge end="17" refine_towards="0" marker="0" id="18" start="19" angle="0"/>
-            <edge end="20" refine_towards="0" marker="0" id="19" start="18" angle="0"/>
-            <edge end="19" refine_towards="0" marker="0" id="20" start="20" angle="0"/>
-            <edge end="21" refine_towards="0" marker="0" id="21" start="13" angle="0"/>
-            <edge end="14" refine_towards="0" marker="2" id="22" start="21" angle="0"/>
-            <edge end="22" refine_towards="0" marker="0" id="23" start="16" angle="0"/>
-            <edge end="23" refine_towards="0" marker="2" id="24" start="21" angle="0"/>
-            <edge end="23" refine_towards="0" marker="0" id="25" start="22" angle="0"/>
-            <edge end="3" refine_towards="0" marker="2" id="26" start="23" angle="0"/>
+            <edge end="1" refine_towards="0" id="0" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" id="1" start="1" angle="0"/>
+            <edge end="3" refine_towards="0" id="2" start="2" angle="0"/>
+            <edge end="4" refine_towards="0" id="3" start="3" angle="0"/>
+            <edge end="5" refine_towards="0" id="4" start="4" angle="0"/>
+            <edge end="7" refine_towards="0" id="5" start="6" angle="0"/>
+            <edge end="8" refine_towards="0" id="6" start="7" angle="0"/>
+            <edge end="9" refine_towards="0" id="7" start="8" angle="0"/>
+            <edge end="10" refine_towards="0" id="8" start="9" angle="0"/>
+            <edge end="0" refine_towards="0" id="9" start="10" angle="0"/>
+            <edge end="12" refine_towards="0" id="10" start="11" angle="0"/>
+            <edge end="13" refine_towards="0" id="11" start="12" angle="0"/>
+            <edge end="15" refine_towards="0" id="12" start="14" angle="0"/>
+            <edge end="11" refine_towards="0" id="13" start="15" angle="0"/>
+            <edge end="6" refine_towards="0" id="14" start="5" angle="0"/>
+            <edge end="16" refine_towards="0" id="15" start="5" angle="0"/>
+            <edge end="10" refine_towards="0" id="16" start="11" angle="0"/>
+            <edge end="18" refine_towards="0" id="17" start="17" angle="0"/>
+            <edge end="17" refine_towards="0" id="18" start="19" angle="0"/>
+            <edge end="20" refine_towards="0" id="19" start="18" angle="0"/>
+            <edge end="19" refine_towards="0" id="20" start="20" angle="0"/>
+            <edge end="21" refine_towards="0" id="21" start="13" angle="0"/>
+            <edge end="14" refine_towards="0" id="22" start="21" angle="0"/>
+            <edge end="22" refine_towards="0" id="23" start="16" angle="0"/>
+            <edge end="23" refine_towards="0" id="24" start="21" angle="0"/>
+            <edge end="23" refine_towards="0" id="25" start="22" angle="0"/>
+            <edge end="3" refine_towards="0" id="26" start="23" angle="0"/>
         </edges>
         <labels>
-            <label x="0.0308709" y="0.17103101" polynomialorder="0" marker="3" id="0" area="0"/>
-            <label x="0.00316251" y="0.01122399999999998" polynomialorder="0" marker="3" id="1" area="0"/>
-            <label x="0.0163723" y="0.1442892" polynomialorder="0" marker="2" id="2" area="0"/>
-            <label x="0.00380689" y="0.1510552" polynomialorder="0" marker="1" id="3" area="0"/>
-            <label x="0.0112064" y="0.0336487" polynomialorder="0" marker="4" id="4" area="0"/>
+            <label x="0.0308709" y="0.17103101" polynomialorder="0" id="0" area="0"/>
+            <label x="0.00316251" y="0.01122399999999998" polynomialorder="0" id="1" area="0"/>
+            <label x="0.0163723" y="0.1442892" polynomialorder="0" id="2" area="0"/>
+            <label x="0.00380689" y="0.1510552" polynomialorder="0" id="3" area="0"/>
+            <label x="0.0112064" y="0.0336487" polynomialorder="0" id="4" area="0"/>
         </labels>
     </geometry>
+    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" timetotal="15e3" type="triangle" timestep="500" name="Heat Transfer Axisymmetric Actuator" date="2011-07-18">
+        <description>This model is an example.</description>
+        <startupscript/>
+        <fields>
+            <field fieldid="heat" numberofrefinements="0" analysistype="transient" polynomialorder="1" weakforms="interpreted" initialcondition="20">
+                <adaptivity adaptivitytolerance="15" maxdofs="60000" adaptivitytype="hp-adaptivity" adaptivitysteps="5"/>
+                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+                <boundaries>
+                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Neumann" heat_radiation_ambient_temperature="0">
+                        <edge edge="9"/>
+                        <edge edge="13"/>
+                        <edge edge="16"/>
+                    </boundary>
+                    <boundary heat_convection_external_temperature="20" heat_convection_heat_transfer_coefficient="5" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection" heat_radiation_ambient_temperature="0">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                        <edge edge="12"/>
+                        <edge edge="22"/>
+                        <edge edge="24"/>
+                        <edge edge="26"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material heat_volume_heat="0" heat_conductivity="0.02" heat_density="1.2" heat_specific_heat="0" id="1" name="Air">
+                        <label label="3"/>
+                    </material>
+                    <material heat_volume_heat="26000" heat_conductivity="200" heat_density="8700" heat_specific_heat="0" id="2" name="Copper">
+                        <label label="2"/>
+                    </material>
+                    <material heat_volume_heat="0" heat_conductivity="60" heat_density="7800" heat_specific_heat="0" id="3" name="Iron">
+                        <label label="0"/>
+                        <label label="1"/>
+                    </material>
+                    <material heat_volume_heat="0" heat_conductivity="100" heat_density="8400" heat_specific_heat="0" id="4" name="Brass">
+                        <label label="4"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
 </document>

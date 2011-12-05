@@ -1,26 +1,4 @@
-<document version="2.0">
-    <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Harmonic Planar Three Phase Cable" date="2011-07-17" polynomialorder="2" meshtype="triangle" timestep="0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="1000" matrix_solver="umfpack" type="magnetic" timetotal="0">
-            <scriptstartup>J0 = 1e6
-J01r = J0
-J01i = 0.0
-J02r = J0*cos(-120.0/180.0*pi)
-J02i = J0*sin(-120.0/180.0*pi)
-J03r = J0*cos(-240.0/180.0*pi)
-J03i = J0*sin(-240.0/180.0*pi)
-gamma = 57e6</scriptstartup>
-            <description>This model is an example.</description>
-            <edges>
-                <edge magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0"/>
-            </edges>
-            <labels>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="J01r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="gamma" magnetic_remanence="0" magnetic_current_density_external_imag="J01i" id="2" magnetic_remanence_angle="0" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="J02r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="gamma" magnetic_remanence="0" magnetic_current_density_external_imag="J02i" id="3" magnetic_remanence_angle="0" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="J03r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="gamma" magnetic_remanence="0" magnetic_current_density_external_imag="J03i" id="4" magnetic_remanence_angle="0" name="Conductor 3" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-            </labels>
-        </problem>
-    </problems>
+<document version="2.1">
     <geometry>
         <nodes>
             <node x="0.002255" y="0.00492" id="0"/>
@@ -49,38 +27,79 @@ gamma = 57e6</scriptstartup>
             <node x="0" y="-0.05" id="23"/>
         </nodes>
         <edges>
-            <edge end="8" refine_towards="0" marker="0" id="0" start="2" angle="90"/>
-            <edge end="3" refine_towards="0" marker="0" id="1" start="8" angle="90"/>
-            <edge end="6" refine_towards="0" marker="0" id="2" start="3" angle="90"/>
-            <edge end="2" refine_towards="0" marker="0" id="3" start="6" angle="90"/>
-            <edge end="9" refine_towards="0" marker="0" id="4" start="4" angle="90"/>
-            <edge end="5" refine_towards="0" marker="0" id="5" start="9" angle="90"/>
-            <edge end="7" refine_towards="0" marker="0" id="6" start="5" angle="90"/>
-            <edge end="4" refine_towards="0" marker="0" id="7" start="7" angle="90"/>
-            <edge end="10" refine_towards="0" marker="0" id="8" start="0" angle="90"/>
-            <edge end="1" refine_towards="0" marker="0" id="9" start="10" angle="90"/>
-            <edge end="11" refine_towards="0" marker="0" id="10" start="1" angle="90"/>
-            <edge end="0" refine_towards="0" marker="0" id="11" start="11" angle="90"/>
-            <edge end="16" refine_towards="0" marker="0" id="12" start="19" angle="90"/>
-            <edge end="18" refine_towards="0" marker="0" id="13" start="16" angle="90"/>
-            <edge end="17" refine_towards="0" marker="0" id="14" start="18" angle="90"/>
-            <edge end="19" refine_towards="0" marker="0" id="15" start="17" angle="90"/>
-            <edge end="12" refine_towards="0" marker="0" id="16" start="15" angle="90"/>
-            <edge end="14" refine_towards="0" marker="0" id="17" start="12" angle="90"/>
-            <edge end="13" refine_towards="0" marker="0" id="18" start="14" angle="90"/>
-            <edge end="15" refine_towards="0" marker="0" id="19" start="13" angle="90"/>
-            <edge end="22" refine_towards="0" marker="1" id="20" start="20" angle="90"/>
-            <edge end="21" refine_towards="0" marker="1" id="21" start="22" angle="90"/>
-            <edge end="23" refine_towards="0" marker="1" id="22" start="21" angle="90"/>
-            <edge end="20" refine_towards="0" marker="1" id="23" start="23" angle="90"/>
+            <edge end="8" refine_towards="0" id="0" start="2" angle="90"/>
+            <edge end="3" refine_towards="0" id="1" start="8" angle="90"/>
+            <edge end="6" refine_towards="0" id="2" start="3" angle="90"/>
+            <edge end="2" refine_towards="0" id="3" start="6" angle="90"/>
+            <edge end="9" refine_towards="0" id="4" start="4" angle="90"/>
+            <edge end="5" refine_towards="0" id="5" start="9" angle="90"/>
+            <edge end="7" refine_towards="0" id="6" start="5" angle="90"/>
+            <edge end="4" refine_towards="0" id="7" start="7" angle="90"/>
+            <edge end="10" refine_towards="0" id="8" start="0" angle="90"/>
+            <edge end="1" refine_towards="0" id="9" start="10" angle="90"/>
+            <edge end="11" refine_towards="0" id="10" start="1" angle="90"/>
+            <edge end="0" refine_towards="0" id="11" start="11" angle="90"/>
+            <edge end="16" refine_towards="0" id="12" start="19" angle="90"/>
+            <edge end="18" refine_towards="0" id="13" start="16" angle="90"/>
+            <edge end="17" refine_towards="0" id="14" start="18" angle="90"/>
+            <edge end="19" refine_towards="0" id="15" start="17" angle="90"/>
+            <edge end="12" refine_towards="0" id="16" start="15" angle="90"/>
+            <edge end="14" refine_towards="0" id="17" start="12" angle="90"/>
+            <edge end="13" refine_towards="0" id="18" start="14" angle="90"/>
+            <edge end="15" refine_towards="0" id="19" start="13" angle="90"/>
+            <edge end="22" refine_towards="0" id="20" start="20" angle="90"/>
+            <edge end="21" refine_towards="0" id="21" start="22" angle="90"/>
+            <edge end="23" refine_towards="0" id="22" start="21" angle="90"/>
+            <edge end="20" refine_towards="0" id="23" start="23" angle="90"/>
         </edges>
         <labels>
-            <label x="0.0162468" y="0.0243702" polynomialorder="0" marker="1" id="0" area="0"/>
-            <label x="0.00559029" y="0.00375598" polynomialorder="0" marker="1" id="1" area="0"/>
-            <label x="0" y="0.00497885" polynomialorder="0" marker="2" id="2" area="1e-07"/>
-            <label x="0.00384333" y="-0.0023584" polynomialorder="0" marker="3" id="3" area="1e-07"/>
-            <label x="-0.00419272" y="-0.00288249" polynomialorder="0" marker="4" id="4" area="1e-07"/>
-            <label x="-1.35974e-05" y="0.009661400000000001" polynomialorder="0" marker="1" id="5" area="0"/>
+            <label x="0.0162468" y="0.0243702" polynomialorder="0" id="0" area="0"/>
+            <label x="0.00559029" y="0.00375598" polynomialorder="0" id="1" area="0"/>
+            <label x="0" y="0.00497885" polynomialorder="0" id="2" area="1e-07"/>
+            <label x="0.00384333" y="-0.0023584" polynomialorder="0" id="3" area="1e-07"/>
+            <label x="-0.00419272" y="-0.00288249" polynomialorder="0" id="4" area="1e-07"/>
+            <label x="-1.35974e-05" y="0.009661400000000001" polynomialorder="0" id="5" area="0"/>
         </labels>
     </geometry>
+    <problem coordinatetype="planar" frequency="1000" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Magnetic Harmonic Planar Three Phase Cable" date="2011-07-17">
+        <description>This model is an example.</description>
+        <startupscript>J0 = 1e6
+J01r = J0
+J01i = 0.0
+J02r = J0*cos(-120.0/180.0*pi)
+J02i = J0*sin(-120.0/180.0*pi)
+J03r = J0*cos(-240.0/180.0*pi)
+J03i = J0*sin(-240.0/180.0*pi)
+gamma = 57e6</startupscript>
+        <fields>
+            <field fieldid="magnetic" numberofrefinements="1" analysistype="harmonic" polynomialorder="2" weakforms="interpreted" initialcondition="0">
+                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
+                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+                <boundaries>
+                    <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
+                        <edge edge="20"/>
+                        <edge edge="21"/>
+                        <edge edge="22"/>
+                        <edge edge="23"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="0"/>
+                        <label label="1"/>
+                        <label label="5"/>
+                    </material>
+                    <material magnetic_current_density_external_real="J01r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="gamma" magnetic_remanence="0" magnetic_current_density_external_imag="J01i" id="2" magnetic_remanence_angle="0" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="2"/>
+                    </material>
+                    <material magnetic_current_density_external_real="J02r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="gamma" magnetic_remanence="0" magnetic_current_density_external_imag="J02i" id="3" magnetic_remanence_angle="0" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="3"/>
+                    </material>
+                    <material magnetic_current_density_external_real="J03r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="gamma" magnetic_remanence="0" magnetic_current_density_external_imag="J03i" id="4" magnetic_remanence_angle="0" name="Conductor 3" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="4"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
 </document>

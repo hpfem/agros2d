@@ -1,18 +1,4 @@
-<document version="2.0">
-    <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Harmonic Planar Proximity Effect" date="2011-07-17" polynomialorder="3" meshtype="triangle" timestep="0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="50" matrix_solver="umfpack" type="magnetic" timetotal="0">
-            <scriptstartup></scriptstartup>
-            <description>This model is an example.</description>
-            <edges>
-                <edge magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="Border"/>
-            </edges>
-            <labels>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="57e6" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="57e6" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-            </labels>
-        </problem>
-    </problems>
+<document version="2.1">
     <geometry>
         <nodes>
             <node x="-0.075" y="0.06" id="0"/>
@@ -29,23 +15,52 @@
             <node x="-0.005" y="-0.01" id="11"/>
         </nodes>
         <edges>
-            <edge end="2" refine_towards="0" marker="1" id="0" start="0" angle="0"/>
-            <edge end="4" refine_towards="0" marker="1" id="1" start="2" angle="0"/>
-            <edge end="3" refine_towards="0" marker="1" id="2" start="4" angle="0"/>
-            <edge end="0" refine_towards="0" marker="1" id="3" start="3" angle="0"/>
-            <edge end="7" refine_towards="0" marker="0" id="4" start="1" angle="0"/>
-            <edge end="10" refine_towards="0" marker="0" id="5" start="7" angle="0"/>
-            <edge end="11" refine_towards="0" marker="0" id="6" start="1" angle="0"/>
-            <edge end="10" refine_towards="0" marker="0" id="7" start="11" angle="0"/>
-            <edge end="9" refine_towards="0" marker="0" id="8" start="8" angle="0"/>
-            <edge end="6" refine_towards="0" marker="0" id="9" start="9" angle="0"/>
-            <edge end="5" refine_towards="0" marker="0" id="10" start="6" angle="0"/>
-            <edge end="8" refine_towards="0" marker="0" id="11" start="5" angle="0"/>
+            <edge end="2" refine_towards="0" id="0" start="0" angle="0"/>
+            <edge end="4" refine_towards="0" id="1" start="2" angle="0"/>
+            <edge end="3" refine_towards="0" id="2" start="4" angle="0"/>
+            <edge end="0" refine_towards="0" id="3" start="3" angle="0"/>
+            <edge end="7" refine_towards="0" id="4" start="1" angle="0"/>
+            <edge end="10" refine_towards="0" id="5" start="7" angle="0"/>
+            <edge end="11" refine_towards="0" id="6" start="1" angle="0"/>
+            <edge end="10" refine_towards="0" id="7" start="11" angle="0"/>
+            <edge end="9" refine_towards="0" id="8" start="8" angle="0"/>
+            <edge end="6" refine_towards="0" id="9" start="9" angle="0"/>
+            <edge end="5" refine_towards="0" id="10" start="6" angle="0"/>
+            <edge end="8" refine_towards="0" id="11" start="5" angle="0"/>
         </edges>
         <labels>
-            <label x="0.035349" y="0.036683" polynomialorder="0" marker="1" id="0" area="0"/>
-            <label x="0.00778124" y="0.00444642" polynomialorder="0" marker="2" id="1" area="1e-05"/>
-            <label x="-0.0111161" y="-0.00311249" polynomialorder="0" marker="3" id="2" area="1e-05"/>
+            <label x="0.035349" y="0.036683" polynomialorder="0" id="0" area="0"/>
+            <label x="0.00778124" y="0.00444642" polynomialorder="0" id="1" area="1e-05"/>
+            <label x="-0.0111161" y="-0.00311249" polynomialorder="0" id="2" area="1e-05"/>
         </labels>
     </geometry>
+    <problem coordinatetype="planar" frequency="50" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Magnetic Harmonic Planar Proximity Effect" date="2011-07-17">
+        <description>This model is an example.</description>
+        <startupscript/>
+        <fields>
+            <field fieldid="magnetic" numberofrefinements="1" analysistype="harmonic" polynomialorder="3" weakforms="interpreted" initialcondition="0">
+                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
+                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+                <boundaries>
+                    <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="Border">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                        <edge edge="3"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="0"/>
+                    </material>
+                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="57e6" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="1"/>
+                    </material>
+                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="57e6" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="2"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
 </document>

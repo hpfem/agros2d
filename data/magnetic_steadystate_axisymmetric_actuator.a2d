@@ -1,18 +1,4 @@
-<document version="2.0">
-    <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Steadystate Axisymmetric Actuator" date="2011-07-09" polynomialorder="3" meshtype="triangle" timestep="1" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="magnetic" timetotal="1">
-            <scriptstartup></scriptstartup>
-            <description>This model is an example.</description>
-            <edges>
-                <edge magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0"/>
-            </edges>
-            <labels>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="300" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Iron" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-                <label magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
-            </labels>
-        </problem>
-    </problems>
+<document version="2.1">
     <geometry>
         <nodes>
             <node x="0.01" y="0.01" id="0"/>
@@ -38,35 +24,68 @@
             <node x="0.1" y="0.05" id="20"/>
         </nodes>
         <edges>
-            <edge end="1" refine_towards="0" marker="0" id="0" start="0" angle="0"/>
-            <edge end="2" refine_towards="0" marker="0" id="1" start="1" angle="0"/>
-            <edge end="3" refine_towards="0" marker="0" id="2" start="2" angle="0"/>
-            <edge end="4" refine_towards="0" marker="0" id="3" start="3" angle="0"/>
-            <edge end="5" refine_towards="0" marker="1" id="4" start="4" angle="0"/>
-            <edge end="6" refine_towards="0" marker="0" id="5" start="5" angle="0"/>
-            <edge end="8" refine_towards="0" marker="0" id="6" start="7" angle="0"/>
-            <edge end="6" refine_towards="0" marker="0" id="7" start="7" angle="0"/>
-            <edge end="9" refine_towards="0" marker="0" id="8" start="8" angle="0"/>
-            <edge end="9" refine_towards="0" marker="0" id="9" start="0" angle="0"/>
-            <edge end="11" refine_towards="0" marker="0" id="10" start="10" angle="0"/>
-            <edge end="12" refine_towards="0" marker="0" id="11" start="11" angle="0"/>
-            <edge end="13" refine_towards="0" marker="0" id="12" start="12" angle="0"/>
-            <edge end="10" refine_towards="0" marker="0" id="13" start="13" angle="0"/>
-            <edge end="15" refine_towards="0" marker="0" id="14" start="14" angle="0"/>
-            <edge end="16" refine_towards="0" marker="0" id="15" start="15" angle="0"/>
-            <edge end="17" refine_towards="0" marker="1" id="16" start="14" angle="0"/>
-            <edge end="16" refine_towards="0" marker="0" id="17" start="17" angle="0"/>
-            <edge end="4" refine_towards="0" marker="1" id="18" start="18" angle="0"/>
-            <edge end="14" refine_towards="0" marker="1" id="19" start="5" angle="0"/>
-            <edge end="19" refine_towards="0" marker="1" id="20" start="17" angle="0"/>
-            <edge end="20" refine_towards="0" marker="1" id="21" start="19" angle="90"/>
-            <edge end="18" refine_towards="0" marker="1" id="22" start="20" angle="90"/>
+            <edge end="1" refine_towards="0" id="0" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" id="1" start="1" angle="0"/>
+            <edge end="3" refine_towards="0" id="2" start="2" angle="0"/>
+            <edge end="4" refine_towards="0" id="3" start="3" angle="0"/>
+            <edge end="5" refine_towards="0" id="4" start="4" angle="0"/>
+            <edge end="6" refine_towards="0" id="5" start="5" angle="0"/>
+            <edge end="8" refine_towards="0" id="6" start="7" angle="0"/>
+            <edge end="6" refine_towards="0" id="7" start="7" angle="0"/>
+            <edge end="9" refine_towards="0" id="8" start="8" angle="0"/>
+            <edge end="9" refine_towards="0" id="9" start="0" angle="0"/>
+            <edge end="11" refine_towards="0" id="10" start="10" angle="0"/>
+            <edge end="12" refine_towards="0" id="11" start="11" angle="0"/>
+            <edge end="13" refine_towards="0" id="12" start="12" angle="0"/>
+            <edge end="10" refine_towards="0" id="13" start="13" angle="0"/>
+            <edge end="15" refine_towards="0" id="14" start="14" angle="0"/>
+            <edge end="16" refine_towards="0" id="15" start="15" angle="0"/>
+            <edge end="17" refine_towards="0" id="16" start="14" angle="0"/>
+            <edge end="16" refine_towards="0" id="17" start="17" angle="0"/>
+            <edge end="4" refine_towards="0" id="18" start="18" angle="0"/>
+            <edge end="14" refine_towards="0" id="19" start="5" angle="0"/>
+            <edge end="19" refine_towards="0" id="20" start="17" angle="0"/>
+            <edge end="20" refine_towards="0" id="21" start="19" angle="90"/>
+            <edge end="18" refine_towards="0" id="22" start="20" angle="90"/>
         </edges>
         <labels>
-            <label x="0.03487431206306708" y="0.03472367950279597" polynomialorder="0" marker="2" id="0" area="0"/>
-            <label x="0.021206" y="0.06929639999999999" polynomialorder="0" marker="3" id="1" area="0"/>
-            <label x="0.0141705" y="0.12445" polynomialorder="0" marker="1" id="2" area="0"/>
-            <label x="0.00512569" y="0.040852" polynomialorder="0" marker="2" id="3" area="0"/>
+            <label x="0.03487431206306708" y="0.03472367950279597" polynomialorder="0" id="0" area="0"/>
+            <label x="0.021206" y="0.06929639999999999" polynomialorder="0" id="1" area="0"/>
+            <label x="0.0141705" y="0.12445" polynomialorder="0" id="2" area="0"/>
+            <label x="0.00512569" y="0.040852" polynomialorder="0" id="3" area="0"/>
         </labels>
     </geometry>
+    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" timetotal="1" type="triangle" timestep="1" name="Magnetic Steadystate Axisymmetric Actuator" date="2011-07-09">
+        <description>This model is an example.</description>
+        <startupscript/>
+        <fields>
+            <field fieldid="magnetic" numberofrefinements="1" analysistype="steadystate" polynomialorder="3" weakforms="interpreted" initialcondition="0">
+                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
+                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+                <boundaries>
+                    <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
+                        <edge edge="4"/>
+                        <edge edge="16"/>
+                        <edge edge="18"/>
+                        <edge edge="19"/>
+                        <edge edge="20"/>
+                        <edge edge="21"/>
+                        <edge edge="22"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="2"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="300" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Iron" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="0"/>
+                        <label label="3"/>
+                    </material>
+                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="1"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
 </document>
