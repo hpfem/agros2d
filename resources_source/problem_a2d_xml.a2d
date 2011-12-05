@@ -1,0 +1,33 @@
+<document version="">
+    <geometry>
+        <nodes>
+            <node x="" y="" id=""/>
+        </nodes>
+        <edges>
+            <edge end="" refine_towards="" id="" start="" angle=""/>
+        </edges>
+        <labels>
+            <label x="" y="" polynomialorder="" id="" area=""/>
+        </labels>
+    </geometry>
+    <problem coordinatetype="" frequency="" matrix_solver="" timetotal="" meshtype="" timestep="" name="" date="">
+        <startupscript></startupscript>
+        <description></description>
+        <fields>
+            <field fieldid="" numberofrefinements="" analysistype="" polynomialorder="" weakforms="" initialcondition="">
+                <adaptivity adaptivitytolerance="" adaptivitytype="" adaptivitysteps="" maxdofs=""/>
+                <solver nonlineartolerance="" nonlinearsteps="" linearity=""/>
+                <boundaries>
+                    <boundary type="" id="" name="">
+                        <edge edge=""/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material id="" name="">
+                        <label label=""/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
+</document>

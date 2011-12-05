@@ -253,7 +253,7 @@ public:
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
 
-    void convertA2DFile(const QString &fileName);
+    ErrorResult convertA2DFile(const QString &fileName, const QString &stylesheetFileName);
 
     inline QUndoStack *undoStack() const { return m_undoStack; }
 
