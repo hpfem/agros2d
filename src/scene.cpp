@@ -193,7 +193,7 @@ void DxfFilter::addCircle(const DL_CircleData& c)
 // ************************************************************************************************************************
 
 NewBoundaryAction::NewBoundaryAction(QIcon icon, QObject* parent, QString field) :
-    QAction(icon, tr("New &boundary condition..."), parent),
+    QAction(icon, tr(availableModules()[field.toStdString()].c_str()), parent),
     field(field)
 {
     setStatusTip(tr("New boundary condition"));
@@ -326,13 +326,18 @@ void Scene::createActions()
     actDeleteSelected->setStatusTip(tr("Delete selected objects"));
     connect(actDeleteSelected, SIGNAL(triggered()), this, SLOT(doDeleteSelected()));
 
-//    actNewBoundary = new QAction(icon("scene-edgemarker"), tr("New &boundary condition..."), this);
-//    actNewBoundary->setShortcut(tr("Alt+B"));
-//    actNewBoundary->setStatusTip(tr("New boundary condition"));
-//    connect(actNewBoundary, SIGNAL(triggered()), this, SLOT(doNewBoundary()));
+    actNewBoundary = new QAction(icon("scene-edgemarker"), tr("New &boundary condition..."), this);
+    actNewBoundary->setShortcut(tr("Alt+B"));
+    actNewBoundary->setStatusTip(tr("New boundary condition"));
+    connect(actNewBoundary, SIGNAL(triggered()), this, SLOT(doNewBoundary()));
 
-    actNewBoundary = new NewBoundaryAction(icon("scene-edgemarker"), this, "heat");
-    connect(actNewBoundary, SIGNAL(triggered(QString)), this, SLOT(doNewBoundary(QString)));
+    std::map<std::string, std::string> modules = availableModules();
+
+    for(std::map<std::string, std::string>::iterator iter = modules.begin(); iter!= modules.end(); ++iter){
+        NewBoundaryAction* action = new NewBoundaryAction(icon("scene-edgemarker"), this, iter->first.c_str());
+        connect(action, SIGNAL(triggered(QString)), this, SLOT(doNewBoundary(QString)));
+        actNewBoundaries[iter->first.c_str()] = action;
+    }
 
     actNewMaterial = new QAction(icon("scene-labelmarker"), tr("New &material..."), this);
     actNewMaterial->setShortcut(tr("Alt+M"));

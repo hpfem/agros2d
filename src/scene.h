@@ -209,6 +209,9 @@ public:
     QAction *actNewLabel;
     QAction *actDeleteSelected;
     QAction *actNewBoundary;
+
+    QMap<QString, QAction*> actNewBoundaries;
+
     QAction *actNewMaterial;
     QAction *actProblemProperties;
     QAction *actClearSolution;
