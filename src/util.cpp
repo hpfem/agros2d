@@ -429,7 +429,7 @@ QStringList availableLanguages()
 }
 
 QIcon icon(const QString &name)
-{    
+{
     QString fileName;
 
 #ifdef Q_WS_WIN
@@ -860,4 +860,16 @@ void CheckVersion::handleError(QNetworkReply::NetworkError error)
     logMessage("CheckVersion::handleError()");
 
     qDebug() << "An error ocurred (code #" << error << ").";
+}
+
+QString transformXML(const QString &fileName, const QString &stylesheetFileName)
+{
+    QString out;
+
+    QXmlQuery query(QXmlQuery::XSLT20);
+    query.setFocus(QUrl(fileName));
+    query.setQuery(QUrl(stylesheetFileName));
+    query.evaluateTo(&out);
+
+    return out;
 }

@@ -1,18 +1,4 @@
-<document version="2.0">
-    <problems>
-        <problem nonlinearsteps="10" maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0.0" adaptivitysteps="1" nonlineartolerance="0.001" linearity="newton" name="RF_waveguide_R100" date="2011-04-13" polynomialorder="4" weakforms="interpreted" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" numberofrefinements="0" frequency="16000000000" matrix_solver="umfpack" type="rf" timetotal="1.0">
-            <scriptstartup></scriptstartup>
-            <description></description>
-            <edges>
-                <edge rf_electric_field_real="0" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_electric_field" rf_port_phase="0" rf_surface_current_real="0" id="1" rf_magnetic_field_imag="0" name="Perfect electric conductor"/>
-                <edge rf_electric_field_real="0" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_magnetic_field" rf_port_phase="0" rf_surface_current_real="0" id="2" rf_magnetic_field_imag="0" name="Matched boundary"/>
-                <edge rf_electric_field_real="1" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_electric_field" rf_port_phase="0" rf_surface_current_real="0" id="3" rf_magnetic_field_imag="0" name="Surface current"/>
-            </edges>
-            <labels>
-                <label rf_current_density_external_imag="0" rf_permittivity="1" rf_conductivity="0" id="1" name="Air" rf_current_density_external_real="0" rf_permeability="1"/>
-            </labels>
-        </problem>
-    </problems>
+<document version="2.1">
     <geometry>
         <nodes>
             <node x="0.17" y="0.02286" id="0"/>
@@ -29,21 +15,56 @@
             <node x="0.08100000000000002" y="0.02286" id="11"/>
         </nodes>
         <edges>
-            <edge end="0" refine_towards="0" marker="2" id="0" start="3" angle="0"/>
-            <edge end="1" refine_towards="0" marker="3" id="1" start="2" angle="0"/>
-            <edge end="9" refine_towards="0" marker="1" id="2" start="8" angle="0"/>
-            <edge end="10" refine_towards="0" marker="1" id="3" start="9" angle="0"/>
-            <edge end="11" refine_towards="0" marker="1" id="4" start="10" angle="0"/>
-            <edge end="6" refine_towards="0" marker="1" id="5" start="5" angle="0"/>
-            <edge end="4" refine_towards="0" marker="1" id="6" start="5" angle="0"/>
-            <edge end="7" refine_towards="0" marker="1" id="7" start="4" angle="0"/>
-            <edge end="7" refine_towards="0" marker="1" id="8" start="1" angle="0"/>
-            <edge end="3" refine_towards="0" marker="1" id="9" start="6" angle="0"/>
-            <edge end="11" refine_towards="0" marker="1" id="10" start="0" angle="0"/>
-            <edge end="2" refine_towards="0" marker="1" id="11" start="8" angle="0"/>
+            <edge end="0" refine_towards="0" id="0" start="3" angle="0"/>
+            <edge end="1" refine_towards="0" id="1" start="2" angle="0"/>
+            <edge end="9" refine_towards="0" id="2" start="8" angle="0"/>
+            <edge end="10" refine_towards="0" id="3" start="9" angle="0"/>
+            <edge end="11" refine_towards="0" id="4" start="10" angle="0"/>
+            <edge end="6" refine_towards="0" id="5" start="5" angle="0"/>
+            <edge end="4" refine_towards="0" id="6" start="5" angle="0"/>
+            <edge end="7" refine_towards="0" id="7" start="4" angle="0"/>
+            <edge end="7" refine_towards="0" id="8" start="1" angle="0"/>
+            <edge end="3" refine_towards="0" id="9" start="6" angle="0"/>
+            <edge end="11" refine_towards="0" id="10" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" id="11" start="8" angle="0"/>
         </edges>
         <labels>
-            <label x="0.0359418" y="0.0109393" polynomialorder="0" marker="1" id="0" area="1e-05"/>
+            <label x="0.0359418" y="0.0109393" polynomialorder="0" id="0" area="1e-05"/>
         </labels>
     </geometry>
+    <problem coordinatetype="planar" frequency="16000000000" matrix_solver="umfpack" timetotal="1.0" type="triangle" timestep="1.0" name="RF_waveguide_R100" date="2011-04-13">
+        <description/>
+        <startupscript/>
+        <fields>
+            <field fieldid="rf" numberofrefinements="0" analysistype="harmonic" polynomialorder="4" weakforms="interpreted" initialcondition="0.0">
+                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
+                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+                <boundaries>
+                    <boundary rf_electric_field_real="0" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_electric_field" rf_port_phase="0" rf_surface_current_real="0" id="1" rf_magnetic_field_imag="0" name="Perfect electric conductor">
+                        <edge edge="2"/>
+                        <edge edge="3"/>
+                        <edge edge="4"/>
+                        <edge edge="5"/>
+                        <edge edge="6"/>
+                        <edge edge="7"/>
+                        <edge edge="8"/>
+                        <edge edge="9"/>
+                        <edge edge="10"/>
+                        <edge edge="11"/>
+                    </boundary>
+                    <boundary rf_electric_field_real="0" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_magnetic_field" rf_port_phase="0" rf_surface_current_real="0" id="2" rf_magnetic_field_imag="0" name="Matched boundary">
+                        <edge edge="0"/>
+                    </boundary>
+                    <boundary rf_electric_field_real="1" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_electric_field" rf_port_phase="0" rf_surface_current_real="0" id="3" rf_magnetic_field_imag="0" name="Surface current">
+                        <edge edge="1"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material rf_current_density_external_imag="0" rf_permittivity="1" rf_conductivity="0" id="1" name="Air" rf_current_density_external_real="0" rf_permeability="1">
+                        <label label="0"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
 </document>

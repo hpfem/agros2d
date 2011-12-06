@@ -3,7 +3,8 @@ QT += opengl \
     xml \
     network \
     webkit \
-    svg
+    svg \
+    xmlpatterns
 
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=9
@@ -175,7 +176,9 @@ OTHER_FILES += python/agros2d.pyx \
     ../resources/a2d_convert_table.xml \
     ../resources/materials/Copper.xml \
     ../resources/materials/Aluminum.xml \
-    ../resources/materials/Iron.xml
+    ../resources/materials/Iron.xml \
+    ../resources/xsd/problem_a2d_xml.xsd \
+    ../resources/xslt/problem_a2d_xml.xsl
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include

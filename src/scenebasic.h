@@ -118,6 +118,9 @@ public:
     /// true if has given marker
     bool hasMarker(MarkerType* marker) {return markers->contains(marker); }
 
+    /// returns markers length
+    int markersLength() { return markers->length(); }
+
 public:
     UniqueMarkerContainer<MarkerType> *markers;
 };

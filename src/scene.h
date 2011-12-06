@@ -254,8 +254,6 @@ public:
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
 
-    void convertA2DFile(const QString &fileName);
-
     inline QUndoStack *undoStack() const { return m_undoStack; }
 
 private:

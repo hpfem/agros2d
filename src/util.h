@@ -25,6 +25,7 @@
 #include <QtNetwork>
 #include <QDomDocument>
 #include <QtWebKit>
+#include <QtXmlPatterns>
 
 #include <muParser.h>
 
@@ -134,6 +135,9 @@ inline QString versionString(int major, int minor, int sub, int git, int year, i
             .arg(QString("0%1").arg(month).right(2))
             .arg(QString("0%1").arg(day).right(2));
 }
+
+// xml transformation
+QString transformXML(const QString &fileName, const QString &stylesheetFileName);
 
 // dirty html unit replace
 QString unitToHTML(const QString &str);
