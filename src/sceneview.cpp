@@ -298,6 +298,8 @@ void SceneView::createMenu()
     logMessage("SceneView::createMenu()");
 
     mnuScene = new QMenu(this);
+    QMenu* mnuSub = new QMenu(Util::scene()->fieldInfo()->fieldId(), this);
+    mnuScene->addMenu(mnuSub);
 
     /*
     QMenu *mnuModeGroup = new QMenu(tr("Mode"), this);
@@ -307,7 +309,7 @@ void SceneView::createMenu()
     mnuModeGroup->addAction(actSceneModePostprocessor);
     */
 
-    mnuScene->addAction(m_scene->actNewNode);
+    //mnuScene->addAction() (m_scene->actNewNode);
     mnuScene->addAction(m_scene->actNewEdge);
     mnuScene->addAction(m_scene->actNewLabel);
     mnuScene->addSeparator();
@@ -3569,6 +3571,10 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
     if (m_sceneMode == SceneMode_OperateOnLabels)
         actSceneObjectProperties->setEnabled(m_scene->selectedCount() > 0);
 
+
+    if(mnuScene)
+        delete mnuScene;
+    createMenu();
 
     mnuScene->exec(event->globalPos());
 }
