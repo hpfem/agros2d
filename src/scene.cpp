@@ -1232,6 +1232,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         {
             QString out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_xml.xsl");
             qDebug() << out;
+
             doc.setContent(out);
             eleDoc = doc.documentElement();
 
