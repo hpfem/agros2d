@@ -1,104 +1,84 @@
 #!/bin/sh
 
-docPath="./doc"
-docReleasePath="./doc/help"
-docBuildPath="./doc/build/html"
-reportPath="./doc/report"
+docPath="./resources_source/doc"
+docPathTarget="./resources/help"
 langPath="./resources_source/lang"
 langPathTarget="./resources/lang"
-temporaryDirectory="./tmp"
-debianizedFiles="./data ./debian ./lang ./src ./hermes_common ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
-
-version="1.9"
+tempPath="./tmp"
+version="2.1"
+debianizedFiles="data debian hermes2d hermes_common lib resources src src-remote weakform agros2d.desktop agros2d.pro agros2d.sh AUTHORS COPYING functions.py README"
+unwantedFiles="data/custom data/data hermes2d/build hermes2d/lib hermes2d/Makefile lib/build lib/lib lib/Makefile src/build src/python src/Makefile src/python src-remote/build src-remote/Makefile weakform/build weakform/lib weakform/src weakform/Makefile weakform/*.pyc"
 
 case "$1" in
-	help )
-		cd $docPath
-		make html
+    help )
+        make html -C $docPath
 
-		cd ../
-		if [ -e $docReleasePath ] ; then rm -r $docReleasePath ; fi
-		mkdir $docReleasePath
-		cp -r $docBuildPath/* $docReleasePath
-		;;
+        if [ -e $docPathTarget ] ; then rm -rv $docPathTarget ; fi
+        mkdir -v $docPathTarget
+        cp -rv $docPath/build/html/* $docPathTarget
+        ;;
 	lang )
-		case "$2" in
-			release )
-				lrelease $langPath/*.ts
-				mv $langPath/*.qm $langPathTarget
-				;;
-			update )
-				lupdate src/src.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts $langPath/pl_PL.ts $langPath/de_DE.ts
-				;;
-			* )
-				echo "Usage: agros2d.sh lang\n  [release - release language files]\n  [update - update language files]"
-				;;
-		esac
-		;;
-	comp )
-		if qmake ./agros2d.pro ; then make ; fi
-		;;
-	build )
-		case "$2" in
-			binary )
-				if [ -e ../agros2d_* ] ; then rm ../agros2d_* ; fi
-				dpkg-buildpackage -sgpg -rfakeroot
-				;;
-			source )
-				./agros2d.sh help
-				./agros2d.sh lang release
+        case "$2" in
+            release )
+                lrelease $langPath/*.ts
 
-				rm -r $temporaryDirectory
+                if [ -e $langPathTarget ] ; then rm -rv $langPathTarget ; fi
+                mkdir -v $langPathTarget
+                mv -v $langPath/*.qm $langPathTarget
+                ;;
+            update )
+                lupdate src/src.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts $langPath/pl_PL.ts $langPath/de_DE.ts
+                ;;
+            * )
+                echo "Usage: agros2d.sh lang\n\t [release - release language files]\n\t [update - update language files]"
+                ;;
+        esac
+        ;;
+    comp )
+        if qmake ./agros2d.pro ; then make ; fi
+        ;;
+    build )
+        case "$2" in
+            binary )
+                if [ -e ../agros2d_* ] ; then rm -v ../agros2d_* ; fi
+                dpkg-buildpackage -sgpg -rfakeroot
+                ;;
+            source )
+                tempPathTarget=$tempPath/agros2d-$version
 
-				if [ -e $temporaryDirectory ]
-				then
-					if [ -e $temporaryDirectory/agros2d-$version ]
-					then
-						rm -r $temporaryDirectory/agros2d-$version
-					fi
-				else
-					mkdir $temporaryDirectory
-				fi
+                ./agros2d.sh help
+                ./agros2d.sh lang release
 
-				mkdir $temporaryDirectory/agros2d-$version
-				for i in $debianizedFiles
-				do
-					cp -r $i $temporaryDirectory/agros2d-$version
-				done
+                if [ -e $tempPath ]
+                then
+                    if [ -e $tempPathTarget ] ; then rm -rv $tempPathTarget ; fi
+                else
+                    mkdir -v $tempPath
+                fi
 
-				# documentation
-				mkdir $temporaryDirectory/agros2d-$version/doc
-				mkdir $temporaryDirectory/agros2d-$version/doc/help
-				cp -r $docReleasePath/* $temporaryDirectory/agros2d-$version/doc/help
-				cp -r $reportPath $temporaryDirectory/agros2d-$version/doc
+                mkdir -v $tempPathTarget
 
-				rm -f $temporaryDirectory/agros2d-$version/src/Doxyfile
-				rm -f $temporaryDirectory/agros2d-$version/src/Makefile
-				rm -f $temporaryDirectory/agros2d-$version/src/build/*
-				rm -f $temporaryDirectory/agros2d-$version/hermes2d/build/*
-				rm -f $temporaryDirectory/agros2d-$version/hermes2d/lib/*
-				rm -f $temporaryDirectory/agros2d-$version/src-remote/build/*
-				rm -f $temporaryDirectory/agros2d-$version/src-remote/agros2d-remote
-				rm -f $temporaryDirectory/agros2d-$version/data/data/*
-				rmdir $temporaryDirectory/agros2d-$version/data/data
+                for file in $debianizedFiles
+                do
+                    cp -rv ./$file $tempPathTarget
+                done
 
-				cd $temporaryDirectory/agros2d-$version
-				echo "Run 'debuild -S -sa'"
-				echo "Run 'dput ppa:pkarban/agros2d *.changes' for upload"
-				;;
-			* )
-				echo "Usage: agros2d.sh build\n  [binary - build binary package]\n  [source - build source package]"
-				;;
-		esac
-		;;
-	upload )
-		./agros2d.sh build source
-		cd $temporaryDirectory/agros2d-$version
-		debuild -S -sa
-		echo "Run 'dput ppa:pkarban/agros2dunstable *.changes' for upload unstable"
-		echo "Run 'dput ppa:pkarban/agros2d *.changes' for upload"
-		;;
-	* )
-		echo "Usage: agros2d.sh\n  [help - build and generate documentation]\n  [lang release - release language files]\n  [lang update - update language files]\n  [comp - compile]\n  [build binary - build binary package]\n  [build source - build source package]\n  [upload - prepare package for upload]"
-		;;
+                for file in $unwantedFiles
+                do
+                    rm -rv ./$tempPathTarget/$file
+                done
+
+                echo "Run 'debuild -S -sa'"
+                echo "Run 'dput ppa:pkarban/agros2d *.changes'"
+                echo "Run 'dput ppa:pkarban/agros2dunstable *.changes' for upload unstable version"
+                echo "Run 'dput ppa:pkarban/agros2d *.changes' for upload stable version"
+                ;;
+            * )
+                echo "Usage: agros2d.sh build\n\t [binary - build binary package]\n\t [source - build source package]"
+                ;;
+        esac
+        ;;
+    * )
+        echo "Usage: agros2d.sh\n\t [help - build and generate documentation]\n\t [lang release - release language files]\n\t [lang update - update language files]\n\t [comp - compile]\n\t [build binary - build binary package]\n\t [build source - build source package]"
+        ;;
 esac

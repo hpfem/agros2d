@@ -17,7 +17,8 @@ agros2d.pro.user
 agros2d-remote
 agros2d-remote.pro.user
 debian/files
-doc/build
+resources_source/doc/build
+resources/help
 setup
 install
 *.res
@@ -33,5 +34,7 @@ doc/doxygen
 pthreadGC2.dll
 mingwm10.dll
 src/python/agros2d.c
+resources_source/python/agros2d.c
 src/hermes2d/weakform/*
 src/hermes2d/weakform_factory.h
+tmp

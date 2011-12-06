@@ -21,8 +21,8 @@ linux-g++ {
     script.files = data/script/*.py
 
     # install help
-    help.path = $${PREFIX}/share/agros2d/doc/help
-    help.files = doc/help/*
+    help.path = $${PREFIX}/share/agros2d/resources/help
+    help.files = resources/help/*
 
     # install report
     report.path = $${PREFIX}/share/agros2d/doc/report
