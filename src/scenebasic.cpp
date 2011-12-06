@@ -122,6 +122,18 @@ void SceneBasicContainer<BasicType>::deleteWithUndo(QString message)
     }
 }
 
+//TODO asi to nema cenu delat tady...
+//template <typename BasicType>
+//void SceneBasicContainer<BasicType>::fillQDomNode(const QDomDocument & document) const
+//{
+//    QDomNode nodeList = doc.createELement(containerName);
+//    int i = 0;
+//    foreach (BasicType *node, data)
+//    {
+//        nodeList.appendChild(node->getQDomElement(document, i));
+//        i++;
+//    }
+//}
 
 template class SceneBasicContainer<SceneNode>;
 template class SceneBasicContainer<SceneEdge>;

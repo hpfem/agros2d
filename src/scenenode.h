@@ -24,6 +24,7 @@
 #include "scenebasic.h"
 
 class SceneNodeCommandRemove;
+class QDomElement;
 
 class SceneNode : public SceneBasic
 {
@@ -35,6 +36,7 @@ public:
     int showDialog(QWidget *parent, bool isNew = false);
 
     SceneNodeCommandRemove* getRemoveCommand();
+//    QDomElement* getQDomElement(const QDomDocument& document, int nodeNumber) const;
 
 public: //TODO
     Point point;
@@ -43,11 +45,15 @@ public: //TODO
 class SceneNodeContainer : public SceneBasicContainer<SceneNode>
 {
 public:
+ //   SceneNodeContainer();
+
     /// if container contains object with the same coordinates as node, returns it. Otherwise returns NULL
     SceneNode* get(SceneNode* node) const;
 
     /// returns node with given coordinates or NULL
     SceneNode* get(const Point& point) const;
+
+    SceneNode* findClosest(const Point& point) const;
 
     /// returns bounding box, assumes container not empty
     RectPoint boundingBox() const;

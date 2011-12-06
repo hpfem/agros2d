@@ -242,6 +242,7 @@ public:
     inline FieldInfo *fieldInfo(QString name) { return m_fieldInfos[name]; }
     inline FieldInfo *fieldInfo(std::string name) { return fieldInfo(QString::fromStdString(name)); }
     inline FieldInfo *fieldInfo(const char* name) { return fieldInfo(QString::fromAscii(name)); }
+    inline FieldInfo *fieldInfo() { if(m_fieldInfos.size() == 0) return NULL;  return *m_fieldInfos.begin(); }
     void addField(FieldInfo *field);
     void removeField(FieldInfo *field);
 
