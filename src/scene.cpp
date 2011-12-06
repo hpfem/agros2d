@@ -1227,11 +1227,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // convert document
     if (version.isEmpty() || version == "2.0")
     {
-        if (QMessageBox::question(QApplication::activeWindow(), tr("Convert file?"), tr("File %1 must be converted to new version. Do you want convert and rewrite current file?").arg(fileName),
+        if (QMessageBox::question(QApplication::activeWindow(), tr("Convert file?"),
+                                  tr("File %1 must be converted to the new version. Do you want to convert and replace current file?").arg(fileName),
                                   tr("&Yes"), tr("&No")) == 0)
         {
             QString out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_xml.xsl");
-            qDebug() << out;
+
             doc.setContent(out);
             eleDoc = doc.documentElement();
 
