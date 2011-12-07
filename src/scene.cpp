@@ -929,7 +929,7 @@ void Scene::doDeleteSelected()
 void Scene::doNewBoundary()
 {
     doNewBoundary(Util::scene()->fieldInfo()->fieldId());
-}
+    }
 
 void Scene::doNewBoundary(QString field)
 {
@@ -965,11 +965,13 @@ void Scene::addField(FieldInfo *field)
     // add to the collection
     m_fieldInfos[field->fieldId()] = field;
 
+    emit fieldsChanged();
     emit invalidated();
 }
 
 void Scene::removeField(FieldInfo *field)
 {
+
     // remove boundary conditions
     foreach (SceneBoundary *boundary, field->module()->boundaries().items())
         removeBoundary(boundary);
@@ -981,6 +983,7 @@ void Scene::removeField(FieldInfo *field)
     // remove from the collection
     m_fieldInfos.remove(field->fieldId());
 
+    emit fieldsChanged();
     emit invalidated();
 }
 
@@ -1055,6 +1058,31 @@ void Scene::doProblemProperties()
         sceneView()->sceneViewSettings().vectorPhysicFieldVariable = fieldInfo->module()->view_default_vector_variable->id;
 
     emit invalidated();
+}
+
+void Scene::addBdrAndMatMenuItems(QMenu* menu, QWidget* parent)
+{
+    if(Util::scene()->fieldInfos().count() == 1){
+        menu->addAction(actNewBoundary);
+        menu->addAction(actNewMaterial);
+    }
+    else{
+        QMenu* mnuSubBoundaries = new QMenu("New boundary condition", parent);
+        menu->addMenu(mnuSubBoundaries);
+        foreach(FieldInfo* pi, fieldInfos())
+        {
+            mnuSubBoundaries->addAction(actNewBoundaries[pi->fieldId()]);
+        }
+
+        QMenu* mnuSubMaterials = new QMenu("New material", parent);
+        menu->addMenu(mnuSubMaterials);
+        foreach(FieldInfo* pi, fieldInfos())
+        {
+            mnuSubMaterials->addAction(actNewMaterials[pi->fieldId()]);
+        }
+    }
+
+
 }
 
 void Scene::writeToDxf(const QString &fileName)

@@ -84,6 +84,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(postprocessorView, SIGNAL(apply()), this, SLOT(doInvalidated()));
     connect(resultsView->btnSelectMarker, SIGNAL(clicked()), sceneView->actSceneViewSelectMarker, SLOT(trigger()));
 
+    connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
+
     sceneView->doDefaultValues();
 
     connect(chartDialog, SIGNAL(setChartLine(ChartLine)), sceneView, SLOT(doSetChartLine(ChartLine)));
@@ -377,6 +379,13 @@ void MainWindow::createActions()
     connect(actViewQuick3DModel, SIGNAL(triggered()), this, SLOT(doViewQuick3DModel()));
 }
 
+void MainWindow::doFieldsChanged()
+{
+    //TODO it is not necessary to create whole menu, it only needs to be adjusted
+    //TODO what hapens to old menu object? Memory leaks???
+    createMenus();
+}
+
 void MainWindow::createMenus()
 {
     logMessage("MainWindow::createMenus()");
@@ -474,8 +483,7 @@ void MainWindow::createMenus()
     mnuAdd->addAction(Util::scene()->actNewEdge);
     mnuAdd->addAction(Util::scene()->actNewLabel);
     mnuAdd->addSeparator();
-    //mnuAdd->addAction(Util::scene()->actNewBoundary);
-    mnuAdd->addAction(Util::scene()->actNewMaterial);
+    Util::scene()->addBdrAndMatMenuItems(mnuAdd, this);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actSceneViewSelectRegion);
     mnuProblem->addAction(Util::scene()->actTransform);
