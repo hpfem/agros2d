@@ -71,7 +71,7 @@ void Hermes::Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbF
 SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()
 {
     //TODO - add dialog
-    FieldInfo *field = Util::scene()->fieldInfos().values().at(0);
+    FieldInfo *field = Util::scene()->fieldInfo(this->fieldid);
 
     return new SceneBoundary(field, tr("new boundary").toStdString(),
                              field->module()->boundary_type_default->id);

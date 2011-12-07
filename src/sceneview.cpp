@@ -307,11 +307,22 @@ void SceneView::createMenu()
     mnuModeGroup->addAction(actSceneModePostprocessor);
     */
 
-    mnuScene->addAction(m_scene->actNewNode);
+    //mnuScene->addAction() (m_scene->actNewNode);
     mnuScene->addAction(m_scene->actNewEdge);
     mnuScene->addAction(m_scene->actNewLabel);
     mnuScene->addSeparator();
-    mnuScene->addAction(m_scene->actNewBoundary);
+
+    if(Util::scene()->fieldInfos().count() == 1)
+        mnuScene->addAction(m_scene->actNewBoundary);
+    else{
+        QMenu* mnuSub = new QMenu("New boundary condition", this);
+        mnuScene->addMenu(mnuSub);
+        foreach(FieldInfo* pi, Util::scene()->fieldInfos())
+        {
+            mnuSub->addAction(m_scene->actNewBoundaries[pi->fieldId()]);
+        }
+    }
+
     mnuScene->addAction(m_scene->actNewMaterial);
     mnuScene->addSeparator();
     mnuScene->addAction(actSceneViewSelectRegion);
@@ -3569,6 +3580,10 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
     if (m_sceneMode == SceneMode_OperateOnLabels)
         actSceneObjectProperties->setEnabled(m_scene->selectedCount() > 0);
 
+
+    if(mnuScene)
+        delete mnuScene;
+    createMenu();
 
     mnuScene->exec(event->globalPos());
 }

@@ -104,7 +104,7 @@ void SceneInfoView::createMenu()
     mnuInfo->addAction(Util::scene()->actNewEdge);
     mnuInfo->addAction(Util::scene()->actNewLabel);
     mnuInfo->addSeparator();
-    mnuInfo->addAction(Util::scene()->actNewBoundary);
+    //mnuInfo->addAction(Util::scene()->actNewBoundary);
     mnuInfo->addAction(Util::scene()->actNewMaterial);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actDelete);

@@ -192,6 +192,23 @@ void DxfFilter::addCircle(const DL_CircleData& c)
 
 // ************************************************************************************************************************
 
+NewBoundaryAction::NewBoundaryAction(QIcon icon, QObject* parent, QString field) :
+    QAction(icon, tr(availableModules()[field.toStdString()].c_str()), parent),
+    field(field)
+{
+    setStatusTip(tr("New boundary condition"));
+    connect(this, SIGNAL(triggered()), this, SLOT(doTriggered()));
+}
+
+void NewBoundaryAction::doTriggered()
+{
+    emit triggered(field);
+}
+
+
+
+// ************************************************************************************************************************
+
 // initialize pointer
 Util *Util::m_singleton = NULL;
 
@@ -313,6 +330,14 @@ void Scene::createActions()
     actNewBoundary->setShortcut(tr("Alt+B"));
     actNewBoundary->setStatusTip(tr("New boundary condition"));
     connect(actNewBoundary, SIGNAL(triggered()), this, SLOT(doNewBoundary()));
+
+    std::map<std::string, std::string> modules = availableModules();
+
+    for(std::map<std::string, std::string>::iterator iter = modules.begin(); iter!= modules.end(); ++iter){
+        NewBoundaryAction* action = new NewBoundaryAction(icon("scene-edgemarker"), this, iter->first.c_str());
+        connect(action, SIGNAL(triggered(QString)), this, SLOT(doNewBoundary(QString)));
+        actNewBoundaries[iter->first.c_str()] = action;
+    }
 
     actNewMaterial = new QAction(icon("scene-labelmarker"), tr("New &material..."), this);
     actNewMaterial->setShortcut(tr("Alt+M"));
@@ -897,10 +922,27 @@ void Scene::doDeleteSelected()
 
 void Scene::doNewBoundary()
 {
-    assert(0);
+    //assert(0);
     logMessage("Scene::doNewBoundary()");
 
-    SceneBoundary *marker = Util::scene()->fieldInfo("TODO")->module()->newBoundary();
+    //SceneBoundary *marker = Util::scene()->fieldInfo("TODO")->module()->newBoundary();
+
+    SceneBoundary *marker = Util::scene()->fieldInfo()->module()->newBoundary();
+
+    if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
+        addBoundary(marker);
+    else
+        delete marker;
+}
+
+void Scene::doNewBoundary(QString field)
+{
+    //assert(0);
+    logMessage("Scene::doNewBoundary()");
+
+    //SceneBoundary *marker = Util::scene()->fieldInfo("TODO")->module()->newBoundary();
+
+    SceneBoundary *marker = Util::scene()->fieldInfo(field)->module()->newBoundary();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addBoundary(marker);
@@ -910,10 +952,11 @@ void Scene::doNewBoundary()
 
 void Scene::doNewMaterial()
 {
-    assert(0);
+    //assert(0);
     logMessage("Scene::doNewMaterial()");
 
-    SceneMaterial *marker = Util::scene()->fieldInfo("TODO")->module()->newMaterial();
+//    SceneMaterial *marker = Util::scene()->fieldInfo("TODO")->module()->newMaterial();
+    SceneMaterial *marker = Util::scene()->fieldInfo()->module()->newMaterial();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addMaterial(marker);

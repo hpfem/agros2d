@@ -51,8 +51,23 @@ SceneNodeCommandRemove* SceneNode::getRemoveCommand()
     return new SceneNodeCommandRemove(this->point);
 }
 
+//void SceneNode::getQDomElement(const QDomDocument &document, int number)
+//{
+//    QDomElement eleNode = document.createElement("node");
+
+//    eleNode.setAttribute("id", number);
+//    eleNode.setAttribute("x", point.x);
+//    eleNode.setAttribute("y", point.y);
+
+//    return eleNode;
+//}
 
 // *************************************************************************************************************************************
+
+//SceneNodeContainer() : SceneBasicContainer()
+//{
+//    containerName = "nodes";
+//}
 
 SceneNode* SceneNodeContainer::get(SceneNode *node) const
 {

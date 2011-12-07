@@ -82,8 +82,14 @@ public:
 
     void deleteWithUndo(QString message);
 
+    // saves all members into the node
+    //void fillQDomNode(const QDomDocument & document) const;
+
+
 protected:
     QList<BasicType*> data;
+
+    QString containerName;
 };
 
 // *************************************************************************************************************************************
