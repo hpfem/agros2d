@@ -312,18 +312,26 @@ void SceneView::createMenu()
     mnuScene->addAction(m_scene->actNewLabel);
     mnuScene->addSeparator();
 
-    if(Util::scene()->fieldInfos().count() == 1)
+    if(Util::scene()->fieldInfos().count() == 1){
         mnuScene->addAction(m_scene->actNewBoundary);
+        mnuScene->addAction(m_scene->actNewMaterial);
+    }
     else{
-        QMenu* mnuSub = new QMenu("New boundary condition", this);
-        mnuScene->addMenu(mnuSub);
+        QMenu* mnuSubBoundaries = new QMenu("New boundary condition", this);
+        mnuScene->addMenu(mnuSubBoundaries);
         foreach(FieldInfo* pi, Util::scene()->fieldInfos())
         {
-            mnuSub->addAction(m_scene->actNewBoundaries[pi->fieldId()]);
+            mnuSubBoundaries->addAction(m_scene->actNewBoundaries[pi->fieldId()]);
+        }
+
+        QMenu* mnuSubMaterials = new QMenu("New material", this);
+        mnuScene->addMenu(mnuSubMaterials);
+        foreach(FieldInfo* pi, Util::scene()->fieldInfos())
+        {
+            mnuSubMaterials->addAction(m_scene->actNewMaterials[pi->fieldId()]);
         }
     }
 
-    mnuScene->addAction(m_scene->actNewMaterial);
     mnuScene->addSeparator();
     mnuScene->addAction(actSceneViewSelectRegion);
     mnuScene->addAction(m_scene->actTransform);

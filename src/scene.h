@@ -155,12 +155,12 @@ private:
     Scene *m_scene;
 };
 
-class NewBoundaryAction : public QAction
+class NewMarkerAction : public QAction
 {
     Q_OBJECT
 
 public:
-    NewBoundaryAction(QIcon icon, QObject* parent, QString field);
+    NewMarkerAction(QIcon icon, QObject* parent, QString field);
 
 public slots:
     void doTriggered();
@@ -181,11 +181,13 @@ public slots:
     void doNewEdge();
     void doNewLabel(const Point &point = Point());
     void doDeleteSelected();
-    void doNewBoundary();
 
+    void doNewBoundary();
     void doNewBoundary(QString field);
 
     void doNewMaterial();
+    void doNewMaterial(QString field);
+
     void doTransform();
     void doClearSolution();
     void doProblemProperties();
@@ -208,11 +210,13 @@ public:
     QAction *actNewEdge;
     QAction *actNewLabel;
     QAction *actDeleteSelected;
-    QAction *actNewBoundary;
 
+    QAction *actNewBoundary;
     QMap<QString, QAction*> actNewBoundaries;
 
     QAction *actNewMaterial;
+    QMap<QString, QAction*> actNewMaterials;
+
     QAction *actProblemProperties;
     QAction *actClearSolution;
     QAction *actTransform;
