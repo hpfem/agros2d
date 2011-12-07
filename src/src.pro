@@ -22,9 +22,8 @@ DEFINES += WEAKFORM_FACTORY
 # run cython for python extensions
 linux-g++|linux-g++-64|linux-g++-32 :CONFIG(release) {
     system(cython ../resources_source/python/agros2d.pyx)
-    system(lrelease ../resources_source/lang/*.ts)
-    system(mkdir ../resources/lang)
-    system(mv ../resources_source/lang/*.qm ../resources/lang)
+    system(cd ../ && ./agros2d.sh lang release)
+    #system(cd ../ && ./agros2d.sh help)
 }
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/pl_PL.ts \
@@ -267,9 +266,3 @@ win32-msvc2008 {
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
 }
-
-
-
-
-
-

@@ -663,9 +663,9 @@ void showPage(const QString &str)
     logMessage("showPage()");
 
     if (str.isEmpty())
-        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/doc/help/index.html"));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/resources/help/index.html"));
     else
-        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/doc/help/" + str));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/resources/help/" + str));
 }
 
 
@@ -872,4 +872,34 @@ QString transformXML(const QString &fileName, const QString &stylesheetFileName)
     query.evaluateTo(&out);
 
     return out;
+}
+
+ErrorResult validateXML(const QString &fileName, const QString &schemaFileName)
+{
+    QXmlSchema schema;
+    schema.load(QUrl(schemaFileName));
+
+    MessageHandler schemaMessageHandler;
+    schema.setMessageHandler(&schemaMessageHandler);
+
+    if (!schema.isValid())
+        return ErrorResult(ErrorResultType_Critical, QObject::tr("Schena '%1' is not valid. %2").
+                           arg(schemaFileName).
+                           arg(schemaMessageHandler.statusMessage()));
+
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+
+    QXmlSchemaValidator validator(schema);
+    MessageHandler validatorMessageHandler;
+    validator.setMessageHandler(&validatorMessageHandler);
+
+    if (!validator.validate(&file, QUrl::fromLocalFile(file.fileName())))
+        return ErrorResult(ErrorResultType_Critical, QObject::tr("File '%1' cannot be converted. Error (line %3, column %4): %2").
+                           arg(fileName).
+                           arg(validatorMessageHandler.statusMessage()).
+                           arg(validatorMessageHandler.line()).
+                           arg(validatorMessageHandler.column()));
+
+    return ErrorResult();
 }

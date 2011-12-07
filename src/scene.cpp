@@ -1252,6 +1252,14 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             return ErrorResult();
     }
 
+    // validation
+    ErrorResult error = validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_xml.xsd");
+    if (error.isError())
+    {
+        error.showDialog();
+        //return ErrorResult();
+    }
+
     // geometry ***************************************************************************************************************
 
     QDomNode eleGeometry = eleDoc.elementsByTagName("geometry").at(0);
