@@ -136,9 +136,6 @@ inline QString versionString(int major, int minor, int sub, int git, int year, i
             .arg(QString("0%1").arg(day).right(2));
 }
 
-// xml transformation
-QString transformXML(const QString &fileName, const QString &stylesheetFileName);
-
 // dirty html unit replace
 QString unitToHTML(const QString &str);
 
@@ -326,6 +323,53 @@ private:
     ErrorResultType m_type;
     QString m_message;
 };
+
+class MessageHandler : public QAbstractMessageHandler
+ {
+     public:
+         MessageHandler()
+             : QAbstractMessageHandler(0)
+         {
+         }
+
+         QString statusMessage() const
+         {
+             return m_description;
+         }
+
+         int line() const
+         {
+             return m_sourceLocation.line();
+         }
+
+         int column() const
+         {
+             return m_sourceLocation.column();
+         }
+
+     protected:
+         virtual void handleMessage(QtMsgType type, const QString &description,
+                                    const QUrl &identifier, const QSourceLocation &sourceLocation)
+         {
+             Q_UNUSED(type);
+             Q_UNUSED(identifier);
+
+             m_messageType = type;
+             m_description = description;
+             m_sourceLocation = sourceLocation;
+         }
+
+     private:
+         QtMsgType m_messageType;
+         QString m_description;
+         QSourceLocation m_sourceLocation;
+ };
+
+// xml transformation
+QString transformXML(const QString &fileName, const QString &stylesheetFileName);
+
+// xml validation
+ErrorResult validateXML(const QString &fileName, const QString &schemaFileName);
 
 enum SolverMode
 {

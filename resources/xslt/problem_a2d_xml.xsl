@@ -66,7 +66,7 @@
             <xsl:attribute name="timetotal">
                 <xsl:value-of select="document/problems/problem/@timetotal" />
             </xsl:attribute>
-            <xsl:attribute name="type">
+            <xsl:attribute name="meshtype">
                 <xsl:value-of select="document/problems/problem/@meshtype" />
             </xsl:attribute>
             <xsl:attribute name="timestep">

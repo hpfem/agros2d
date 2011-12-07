@@ -873,3 +873,33 @@ QString transformXML(const QString &fileName, const QString &stylesheetFileName)
 
     return out;
 }
+
+ErrorResult validateXML(const QString &fileName, const QString &schemaFileName)
+{
+    QXmlSchema schema;
+    schema.load(QUrl(schemaFileName));
+
+    MessageHandler schemaMessageHandler;
+    schema.setMessageHandler(&schemaMessageHandler);
+
+    if (!schema.isValid())
+        return ErrorResult(ErrorResultType_Critical, QObject::tr("Schena '%1' is not valid. %2").
+                           arg(schemaFileName).
+                           arg(schemaMessageHandler.statusMessage()));
+
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+
+    QXmlSchemaValidator validator(schema);
+    MessageHandler validatorMessageHandler;
+    validator.setMessageHandler(&validatorMessageHandler);
+
+    if (!validator.validate(&file, QUrl::fromLocalFile(file.fileName())))
+        return ErrorResult(ErrorResultType_Critical, QObject::tr("File '%1' cannot be converted. Error (line %3, column %4): %2").
+                           arg(fileName).
+                           arg(validatorMessageHandler.statusMessage()).
+                           arg(validatorMessageHandler.line()).
+                           arg(validatorMessageHandler.column()));
+
+    return ErrorResult();
+}

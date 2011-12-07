@@ -1,30 +1,51 @@
-<document version="">
+<document version="0.0">
     <geometry>
         <nodes>
-            <node x="" y="" id=""/>
+            <node x="0.0" y="0.0" id="0"/>
+            <node x="0.0" y="0.0" id="0"/>
         </nodes>
         <edges>
-            <edge end="" refine_towards="" id="" start="" angle=""/>
+            <edge end="0" refine_towards="0" id="0" start="0" angle="0"/>
+            <edge end="0" refine_towards="0" id="0" start="0" angle="0"/>
         </edges>
         <labels>
-            <label x="" y="" polynomialorder="" id="" area=""/>
+            <label x="0.0" y="0.0" polynomialorder="0" id="0" area="0.0"/>
+            <label x="0.0" y="0.0" polynomialorder="0" id="0" area="0.0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="" frequency="" matrix_solver="" timetotal="" meshtype="" timestep="" name="" date="">
-        <startupscript></startupscript>
-        <description></description>
+    <problem coordinatetype="string" frequency="0" matrix_solver="string" timetotal="0" meshtype="string" timestep="0" name="string" date="string">
+        <startupscript>string</startupscript>
+        <description>string</description>
         <fields>
-            <field fieldid="" numberofrefinements="" analysistype="" polynomialorder="" weakforms="" initialcondition="">
-                <adaptivity adaptivitytolerance="" adaptivitytype="" adaptivitysteps="" maxdofs=""/>
-                <solver nonlineartolerance="" nonlinearsteps="" linearity=""/>
+            <field fieldid="string" numberofrefinements="0" analysistype="string" polynomialorder="0" weakforms="string" initialcondition="0.0">
+                <adaptivity adaptivitytolerance="0.0" adaptivitytype="string" adaptivitysteps="0" maxdofs="0"/>
+                <solver nonlineartolerance="0.0" nonlinearsteps="0" linearity="string"/>
                 <boundaries>
-                    <boundary type="" id="" name="">
-                        <edge edge=""/>
+                    <boundary type="string" id="0" name="string">
+                        <edge edge="0"/>
+                        <edge edge="0"/>
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material id="" name="">
-                        <label label=""/>
+                    <material id="0" name="string">
+                        <label label="0"/>
+                        <label label="0"/>
+                    </material>
+                </materials>
+            </field>
+            <field fieldid="string" numberofrefinements="0" analysistype="string" polynomialorder="0" weakforms="string" initialcondition="0.0">
+                <adaptivity adaptivitytolerance="0.0" adaptivitytype="string" adaptivitysteps="0" maxdofs="0"/>
+                <solver nonlineartolerance="0.0" nonlinearsteps="0" linearity="string"/>
+                <boundaries>
+                    <boundary type="string" id="0" name="string">
+                        <edge edge="0"/>
+                        <edge edge="0"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material id="0" name="string">
+                        <label label="0"/>
+                        <label label="0"/>
                     </material>
                 </materials>
             </field>
