@@ -297,8 +297,8 @@ void SceneTabWidgetMaterial::refresh()
 {
     // read equation
     QString fileName = QString(":/equations/%1/%1_%2.png")
-            .arg(material->field()->fieldId())
-            .arg(analysisTypeToStringKey(material->field()->analysisType()));
+            .arg(material->getFieldInfo()->fieldId())
+            .arg(analysisTypeToStringKey(material->getFieldInfo()->analysisType()));
 
     readPixmap(equationImage, fileName);
 }
@@ -313,7 +313,7 @@ SceneTabWidgetBoundary::SceneTabWidgetBoundary(Hermes::Module::DialogUI *ui, Sce
 void SceneTabWidgetBoundary::addCustomWidget(QVBoxLayout *layout)
 {
     comboBox = new QComboBox(this);
-    boundary->field()->module()->fillComboBoxBoundaryCondition(comboBox);
+    boundary->getFieldInfo()->module()->fillComboBoxBoundaryCondition(comboBox);
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     QFormLayout *layoutForm = new QFormLayout();
@@ -336,7 +336,7 @@ void SceneTabWidgetBoundary::doTypeChanged(int index)
     for (int i = 0; i < ids.count(); i++)
         values.at(i)->setEnabled(false);
 
-    Hermes::Module::BoundaryType *boundary_type = boundary->field()->module()->get_boundary_type(comboBox->itemData(index).toString().toStdString());
+    Hermes::Module::BoundaryType *boundary_type = boundary->getFieldInfo()->module()->get_boundary_type(comboBox->itemData(index).toString().toStdString());
     for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
     {
         Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
@@ -349,7 +349,7 @@ void SceneTabWidgetBoundary::doTypeChanged(int index)
 
     // read equation
     QString fileName = QString(":/equations/%1/%2.png")
-            .arg(boundary->field()->fieldId())
+            .arg(boundary->getFieldInfo()->fieldId())
             .arg(comboBox->itemData(index).toString());
 
     readPixmap(equationImage, fileName);
@@ -428,11 +428,11 @@ void SceneBoundaryDialog::createDialog()
 void SceneBoundaryDialog::createContent()
 {
     tabModules = new QTabWidget(this);
-    SceneTabWidgetBoundary *wid = new SceneTabWidgetBoundary(&boundary->field()->module()->boundary_ui, boundary, this);
+    SceneTabWidgetBoundary *wid = new SceneTabWidgetBoundary(&boundary->getFieldInfo()->module()->boundary_ui, boundary, this);
     wid->createContent();
     wid->setMinimumSize(sizeHint());
 
-    tabModules->addTab(wid, icon(""), QString::fromStdString(boundary->field()->module()->name));
+    tabModules->addTab(wid, icon(""), QString::fromStdString(boundary->getFieldInfo()->module()->name));
 
     layout->addWidget(tabModules, 10, 0, 1, 3);
 }
@@ -551,11 +551,11 @@ void SceneMaterialDialog::createDialog()
 void SceneMaterialDialog::createContent()
 {
     tabModules = new QTabWidget(this);
-    SceneTabWidgetMaterial *wid = new SceneTabWidgetMaterial(&material->field()->module()->material_ui, material, this);
+    SceneTabWidgetMaterial *wid = new SceneTabWidgetMaterial(&material->getFieldInfo()->module()->material_ui, material, this);
     wid->createContent();
     wid->setMinimumSize(sizeHint());
 
-    tabModules->addTab(wid, icon(""), QString::fromStdString(material->field()->module()->name));
+    tabModules->addTab(wid, icon(""), QString::fromStdString(material->getFieldInfo()->module()->name));
 
     layout->addWidget(tabModules, 10, 0, 1, 3);
 }

@@ -39,12 +39,15 @@ public:
     void setValue(string name, Value value) { values[name] = value; }
 
     /// return name
-    std::string getName() { return name; }
+    std::string getName() { cout<< "vracim jmeno" << endl; cout << name << endl; return name; }
 
     /// set name
     void setName(string paramName) { name = paramName; }
 
-    FieldInfo *field() { return fieldInfo; }
+    FieldInfo *getFieldInfo() { return fieldInfo; }
+
+    /// returns QString identification of field
+    QString fieldId();
 
     /// ????
     void evaluate(std::string id, double time);

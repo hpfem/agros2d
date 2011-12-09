@@ -49,17 +49,40 @@ QVariant SceneBasic::variant()
 
 
 template <typename MarkerType>
-MarkerType* MarkedSceneBasic<MarkerType>::getMarker(QString field)
+MarkerType* MarkedSceneBasic<MarkerType>::getMarker(FieldInfo* field)
 {
-    assert(this->markers->filter(field).length() < 2);
-    return this->markers->filter(field).getSingleOrNull();
+    if(markers.contains(field))
+        return markers[field];
+    return NULL;
 }
+
+template <typename MarkerType>
+MarkerType* MarkedSceneBasic<MarkerType>::getMarker(QString fieldId)
+{
+    getMarker(Util::scene()->fieldInfo(fieldId));
+}
+
 
 template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::addMarker(MarkerType* marker)
 {
-    this->markers->add(marker);
+    markers[marker->getFieldInfo()] = marker;
 }
+
+template <typename MarkerType>
+void MarkedSceneBasic<MarkerType>::putMarkersToList(MarkerContainer<MarkerType>* list)
+{
+    foreach(MarkerType* marker, markers)
+        if(!list->contains(marker))
+            list->add(marker);
+}
+
+template <typename MarkerType>
+void MarkedSceneBasic<MarkerType>::removeMarker(QString field)
+{
+    removeMarker(Util::scene()->fieldInfo(field));
+}
+
 
 template class MarkedSceneBasic<SceneBoundary>;
 template class MarkedSceneBasic<SceneMaterial>;
@@ -178,23 +201,30 @@ MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicCont
     return list;
 }
 
+template <typename MarkerType, typename MarkedSceneBasicType>
+void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::removeFieldMarkers(FieldInfo *fieldInfo)
+{
+    foreach(MarkedSceneBasicType* item, this->data)
+    {
+        item->removeMarker(fieldInfo);
+    }
+}
 
 template <typename MarkerType, typename MarkedSceneBasicType>
-UniqueMarkerContainer<MarkerType> MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::allMarkers()
+MarkerContainer<MarkerType> MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::allMarkers()
 {
-    UniqueMarkerContainer<MarkerType> list;
+    MarkerContainer<MarkerType> list;
     foreach(MarkedSceneBasicType* item, this->data){
-        foreach(MarkerType* marker, item->markers->items())
-            if(!list.contains(marker))
-                list.add(marker);
+        item->putMarkersToList(&list);
     }
+    return list;
 }
 
 template <typename MarkerType, typename MarkedSceneBasicType>
 void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::removeMarkerFromAll(MarkerType* marker)
 {
     foreach(MarkedSceneBasicType* item, this->data){
-        item->markers->remove(marker);
+        item->removeMarker(marker);
     }
 }
 
@@ -202,7 +232,7 @@ template <typename MarkerType, typename MarkedSceneBasicType>
 void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::addMarkerToAll(MarkerType* marker)
 {
     foreach(MarkedSceneBasicType* item, this->data){
-        item->markers->add(marker);
+        item->addMarker(marker);
     }
 }
 

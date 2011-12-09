@@ -85,29 +85,29 @@ SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
     return new SceneMaterial(field, tr("new material").toStdString());
 }
 
-SceneBoundaryContainer Hermes::Module::ModuleAgros::boundaries()
-{
-    //TODO - how to cast???
-    MarkerContainer<SceneBoundary> boundaries = Util::scene()->boundaries->filter(QString::fromStdString(fieldid));
+//SceneBoundaryContainer Hermes::Module::ModuleAgros::boundaries()
+//{
+//    //TODO - how to cast???
+//    MarkerContainer<SceneBoundary> boundaries = Util::scene()->boundaries->filter(QString::fromStdString(fieldid));
 
-    SceneBoundaryContainer boundaryContainer;
-    foreach (SceneBoundary *boundary, boundaries.items())
-        boundaryContainer.add(boundary);
+//    SceneBoundaryContainer boundaryContainer;
+//    foreach (SceneBoundary *boundary, boundaries.items())
+//        boundaryContainer.add(boundary);
 
-    return boundaryContainer;
-}
+//    return boundaryContainer;
+//}
 
-SceneMaterialContainer Hermes::Module::ModuleAgros::materials()
-{
-    //TODO - how to cast???
-    MarkerContainer<SceneMaterial> materials = Util::scene()->materials->filter(QString::fromStdString(fieldid));
+//SceneMaterialContainer Hermes::Module::ModuleAgros::materials()
+//{
+//    //TODO - how to cast???
+//    MarkerContainer<SceneMaterial> materials = Util::scene()->materials->filter(QString::fromStdString(fieldid));
 
-    SceneMaterialContainer materialContainer;
-    foreach (SceneMaterial *material, materials.items())
-        materialContainer.add(material);
+//    SceneMaterialContainer materialContainer;
+//    foreach (SceneMaterial *material, materials.items())
+//        materialContainer.add(material);
 
-    return materialContainer;
-}
+//    return materialContainer;
+//}
 
 template <class T>
 void deformShapeTemplate(T linVert, int count)

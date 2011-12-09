@@ -206,7 +206,8 @@ void SceneLabelDialog::fillComboBox()
         cmbMaterials[i]->addItem(QString::fromStdString(Util::scene()->materials->at(0)->getName()),
                                  Util::scene()->materials->at(0)->variant());
 
-        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
+//        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
+        foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
             cmbMaterials[i]->addItem(QString::fromStdString(material->getName()),
                                      material->variant());

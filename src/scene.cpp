@@ -971,14 +971,21 @@ void Scene::addField(FieldInfo *field)
 
 void Scene::removeField(FieldInfo *field)
 {
+    // first remove references to markers of this field from all edges and labels
+    edges->removeFieldMarkers(field);
+    labels->removeFieldMarkers(field);
 
-    // remove boundary conditions
-    foreach (SceneBoundary *boundary, field->module()->boundaries().items())
-        removeBoundary(boundary);
+    // then remove them from lists of markers - here they are really deleted
+    boundaries->removeFieldMarkers(field);
+    materials->removeFieldMarkers(field);
 
-    // remove materials
-    foreach (SceneMaterial *material, field->module()->materials().items())
-        removeMaterial(material);
+//    // remove boundary conditions
+//    foreach (SceneBoundary *boundary, field->module()->boundaries().items())
+//        removeBoundary(boundary);
+
+//    // remove materials
+//    foreach (SceneMaterial *material, field->module()->materials().items())
+//        removeMaterial(material);
 
     // remove from the collection
     m_fieldInfos.remove(field->fieldId());
@@ -1755,7 +1762,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         QDomNode eleBoundaries = doc.createElement("boundaries");
         eleField.appendChild(eleBoundaries);
         int iboundary = 1;
-        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
+//        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
+        foreach (SceneBoundary *boundary, boundaries->filter(fieldInfo).items())
         {
             QDomElement eleBoundary = doc.createElement("boundary");
 
@@ -1795,7 +1803,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         QDomNode eleMaterials = doc.createElement("materials");
         eleField.appendChild(eleMaterials);
         int imaterial = 1;
-        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
+//        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
+        foreach (SceneMaterial *material, materials->filter(fieldInfo).items())
         {
             QDomElement eleMaterial = doc.createElement("material");
 

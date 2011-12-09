@@ -25,6 +25,7 @@
 class SceneBoundary;
 class SceneMaterial;
 class Marker;
+class FieldInfo;
 
 template <typename MarkerType>
 class MarkerContainer
@@ -40,14 +41,20 @@ public:
     /// remove marker
     void remove(MarkerType *marker);
 
+    /// remove all markers of this field
+    void removeFieldMarkers(FieldInfo* fieldInfo);
+
     /// get marker at position i
     MarkerType *at(int i);
 
     /// get marker by name
     MarkerType *get(const QString &name);
 
+//    MarkerType *getNone() { return noneMarker; }
+
     /// filter field
     MarkerContainer<MarkerType> filter(const QString &fieldName);
+    MarkerContainer<MarkerType> filter(FieldInfo* fieldInfo);
 
     /// length of the array
     inline int length() { return data.length(); }
@@ -67,16 +74,16 @@ public:
 protected:
     QList<MarkerType* > data;
 
-    static MarkerType* noneMarker;
+//    static MarkerType* noneMarker;
 };
 
-template <typename MarkerType>
-class UniqueMarkerContainer : public MarkerContainer<MarkerType>
-{
-public:
-    /// If container allready contains marker corresponding to the same field, it is replaced, not added
-    virtual void add(MarkerType *marker);
-};
+//template <typename MarkerType>
+//class UniqueMarkerContainer : public MarkerContainer<MarkerType>
+//{
+//public:
+//    /// If container allready contains marker corresponding to the same field, it is replaced, not added
+//    virtual void add(MarkerType *marker);
+//};
 
 class SceneBoundaryContainer : public MarkerContainer<SceneBoundary>
 {
