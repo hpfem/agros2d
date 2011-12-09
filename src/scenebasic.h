@@ -29,11 +29,12 @@ struct Point;
 
 class SceneBasic;
 template <typename MarkerType> class MarkedSceneBasic;
-template <typename MarkerType> class UniqueMarkerContainer;
+template <typename MarkerType> class MarkerContainer;
 class SceneNode;
 class SceneEdge;
 class SceneLabel;
 class Marker;
+class FieldInfo;
 
 class SceneBoundary;
 class SceneMaterial;
@@ -106,23 +107,32 @@ template <typename MarkerType>
 class MarkedSceneBasic : public SceneBasic
 {
 public:
-    MarkedSceneBasic() { markers = new UniqueMarkerContainer<MarkerType>; }
-    ~MarkedSceneBasic() { delete markers; }
+    MarkedSceneBasic() {}
+    ~MarkedSceneBasic() {}
 
     /// gets marker that corresponds to the given field
     MarkerType* getMarker(QString field);
+    MarkerType* getMarker(FieldInfo* fieldInfo);
 
     /// adds marker. If there exists marker with the same field, is overwritten
     void addMarker(MarkerType* marker);
 
     /// true if has given marker
-    bool hasMarker(MarkerType* marker) {return markers->contains(marker); }
+    bool hasMarker(MarkerType* marker) {return markers[marker->getFieldInfo()] == marker; }
 
     /// returns markers length
-    int markersLength() { return markers->length(); }
+    int markersCount() { return markers.count(); }
 
-public:
-    UniqueMarkerContainer<MarkerType> *markers;
+    /// removes marker corresponding to this field from node
+    void removeMarker(FieldInfo* fieldInfo) {markers.remove(fieldInfo); }
+    void removeMarker(QString field);
+    void removeMarker(MarkerType* marker) {removeMarker(marker->getFieldInfo()); }
+
+    /// goes through own markers and if they are not yet in the list, adds them there
+    void putMarkersToList(MarkerContainer<MarkerType>* list);
+
+private:
+    QMap<FieldInfo*, MarkerType*> markers;
 };
 
 
@@ -130,9 +140,12 @@ template <typename MarkerType, typename MarkedSceneBasicType>
 class MarkedSceneBasicContainer : public SceneBasicContainer<MarkedSceneBasicType>
 {
 public:
-    UniqueMarkerContainer<MarkerType> allMarkers();
+    MarkerContainer<MarkerType> allMarkers();
     void removeMarkerFromAll(MarkerType* marker);
     void addMarkerToAll(MarkerType* marker);
+
+    /// removes markers corresponding to field from all members
+    void removeFieldMarkers(FieldInfo* field);
 
     /// Filters for elements that has given marker
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> haveMarker(MarkerType *marker);

@@ -112,6 +112,9 @@ private slots:
 
     void doTimeStepChanged(int index);
 
+    /// fields adeed or removed, menus need to be modified
+    void doFieldsChanged();
+
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);

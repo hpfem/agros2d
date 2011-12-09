@@ -33,7 +33,19 @@ template <typename MarkerType>
 void MarkerContainer<MarkerType>::remove(MarkerType *marker)
 {
     data.removeOne(marker);
+    delete marker;
 }
+
+template <typename MarkerType>
+void MarkerContainer<MarkerType>::removeFieldMarkers(FieldInfo* fieldInfo)
+{
+    foreach(MarkerType* item, data)
+    {
+        if(item->getFieldInfo() == fieldInfo)
+            remove(item);
+    }
+}
+
 
 template <typename MarkerType>
 MarkerType *MarkerContainer<MarkerType>::at(int i)
@@ -56,10 +68,16 @@ MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(const QString &f
 {
     MarkerContainer<MarkerType> items;
     foreach (MarkerType *item, data)
-        if (item->field() && item->field()->fieldId() == fieldName)
+        if (item->getFieldInfo() && item->getFieldInfo()->fieldId() == fieldName)
             items.add(item);
 
     return items;
+}
+
+template <typename MarkerType>
+MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(FieldInfo *fieldInfo)
+{
+    return filter(fieldInfo->fieldId());
 }
 
 template <typename MarkerType>
@@ -81,18 +99,18 @@ MarkerType* MarkerContainer<MarkerType>::getSingleOrNull()
 }
 
 
-template <typename MarkerType>
-void UniqueMarkerContainer<MarkerType>::add(MarkerType *marker)
-{
-    // add check corresponding to the same field ???
-    if (MarkerType *existingMarker = get(QString::fromStdString(marker->getName())))
-        this->data.replace(this->data.indexOf(existingMarker), marker);
-    else
-        this->data.append(marker);
-}
+//template <typename MarkerType>
+//void UniqueMarkerContainer<MarkerType>::add(MarkerType *marker)
+//{
+//    // add check corresponding to the same field ???
+//    if (MarkerType *existingMarker = get(QString::fromStdString(marker->getName())))
+//        this->data.replace(this->data.indexOf(existingMarker), marker);
+//    else
+//        this->data.append(marker);
+//}
 
 template class MarkerContainer<SceneBoundary>;
 template class MarkerContainer<SceneMaterial>;
 
-template class UniqueMarkerContainer<SceneBoundary>;
-template class UniqueMarkerContainer<SceneMaterial>;
+//template class UniqueMarkerContainer<SceneBoundary>;
+//template class UniqueMarkerContainer<SceneMaterial>;

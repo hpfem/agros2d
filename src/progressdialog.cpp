@@ -226,7 +226,7 @@ bool ProgressItemMesh::writeToTriangle()
         // at least one boundary condition has to be assigned
         int count = 0;
         foreach (SceneEdge *edge, Util::scene()->edges->items())
-            if (edge->markersLength() > 0)
+            if (edge->markersCount() > 0)
                 count++;
 
         if (count == 0)
@@ -245,7 +245,7 @@ bool ProgressItemMesh::writeToTriangle()
         // at least one material has to be assigned
         int count = 0;
         foreach (SceneLabel *label, Util::scene()->labels->items())
-            if (label->markersLength() > 0)
+            if (label->markersCount() > 0)
                 count++;
 
         if (count == 0)
@@ -363,14 +363,14 @@ bool ProgressItemMesh::writeToTriangle()
     // holes
     int holesCount = 0;
     foreach (SceneLabel *label, Util::scene()->labels->items())
-        if (label->markersLength() == 0)
+        if (label->markersCount() == 0)
             holesCount++;
 
     QString outHoles = QString("%1\n").arg(holesCount);
     holesCount = 0;
     foreach (SceneLabel *label, Util::scene()->labels->items())
     {
-        if (label->markersLength() == 0)
+        if (label->markersCount() == 0)
         {
             outHoles += QString("%1  %2  %3\n").
                     arg(holesCount + 1).
@@ -386,7 +386,7 @@ bool ProgressItemMesh::writeToTriangle()
     int labelsCount = 0;
     foreach (SceneLabel *label, Util::scene()->labels->items())
     {
-        if (label->markersLength() > 0)
+        if (label->markersCount() > 0)
         {
             outLabels += QString("%1  %2  %3  %4  %5\n").
                     arg(labelsCount).

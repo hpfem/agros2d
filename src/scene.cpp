@@ -192,7 +192,7 @@ void DxfFilter::addCircle(const DL_CircleData& c)
 
 // ************************************************************************************************************************
 
-NewBoundaryAction::NewBoundaryAction(QIcon icon, QObject* parent, QString field) :
+NewMarkerAction::NewMarkerAction(QIcon icon, QObject* parent, QString field) :
     QAction(icon, tr(availableModules()[field.toStdString()].c_str()), parent),
     field(field)
 {
@@ -200,7 +200,7 @@ NewBoundaryAction::NewBoundaryAction(QIcon icon, QObject* parent, QString field)
     connect(this, SIGNAL(triggered()), this, SLOT(doTriggered()));
 }
 
-void NewBoundaryAction::doTriggered()
+void NewMarkerAction::doTriggered()
 {
     emit triggered(field);
 }
@@ -334,7 +334,7 @@ void Scene::createActions()
     std::map<std::string, std::string> modules = availableModules();
 
     for(std::map<std::string, std::string>::iterator iter = modules.begin(); iter!= modules.end(); ++iter){
-        NewBoundaryAction* action = new NewBoundaryAction(icon("scene-edgemarker"), this, iter->first.c_str());
+        NewMarkerAction* action = new NewMarkerAction(icon("scene-edgemarker"), this, iter->first.c_str());
         connect(action, SIGNAL(triggered(QString)), this, SLOT(doNewBoundary(QString)));
         actNewBoundaries[iter->first.c_str()] = action;
     }
@@ -343,6 +343,12 @@ void Scene::createActions()
     actNewMaterial->setShortcut(tr("Alt+M"));
     actNewMaterial->setStatusTip(tr("New material"));
     connect(actNewMaterial, SIGNAL(triggered()), this, SLOT(doNewMaterial()));
+
+    for(std::map<std::string, std::string>::iterator iter = modules.begin(); iter!= modules.end(); ++iter){
+        NewMarkerAction* action = new NewMarkerAction(icon("scene-labelmarker"), this, iter->first.c_str());
+        connect(action, SIGNAL(triggered(QString)), this, SLOT(doNewMaterial(QString)));
+        actNewMaterials[iter->first.c_str()] = action;
+    }
 
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
@@ -922,25 +928,12 @@ void Scene::doDeleteSelected()
 
 void Scene::doNewBoundary()
 {
-    //assert(0);
-    logMessage("Scene::doNewBoundary()");
-
-    //SceneBoundary *marker = Util::scene()->fieldInfo("TODO")->module()->newBoundary();
-
-    SceneBoundary *marker = Util::scene()->fieldInfo()->module()->newBoundary();
-
-    if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
-        addBoundary(marker);
-    else
-        delete marker;
-}
+    doNewBoundary(Util::scene()->fieldInfo()->fieldId());
+    }
 
 void Scene::doNewBoundary(QString field)
 {
-    //assert(0);
     logMessage("Scene::doNewBoundary()");
-
-    //SceneBoundary *marker = Util::scene()->fieldInfo("TODO")->module()->newBoundary();
 
     SceneBoundary *marker = Util::scene()->fieldInfo(field)->module()->newBoundary();
 
@@ -952,11 +945,14 @@ void Scene::doNewBoundary(QString field)
 
 void Scene::doNewMaterial()
 {
-    //assert(0);
+    doNewMaterial(Util::scene()->fieldInfo()->fieldId());
+}
+
+void Scene::doNewMaterial(QString field)
+{
     logMessage("Scene::doNewMaterial()");
 
-//    SceneMaterial *marker = Util::scene()->fieldInfo("TODO")->module()->newMaterial();
-    SceneMaterial *marker = Util::scene()->fieldInfo()->module()->newMaterial();
+    SceneMaterial *marker = Util::scene()->fieldInfo(field)->module()->newMaterial();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addMaterial(marker);
@@ -969,22 +965,32 @@ void Scene::addField(FieldInfo *field)
     // add to the collection
     m_fieldInfos[field->fieldId()] = field;
 
+    emit fieldsChanged();
     emit invalidated();
 }
 
 void Scene::removeField(FieldInfo *field)
 {
-    // remove boundary conditions
-    foreach (SceneBoundary *boundary, field->module()->boundaries().items())
-        removeBoundary(boundary);
+    // first remove references to markers of this field from all edges and labels
+    edges->removeFieldMarkers(field);
+    labels->removeFieldMarkers(field);
 
-    // remove materials
-    foreach (SceneMaterial *material, field->module()->materials().items())
-        removeMaterial(material);
+    // then remove them from lists of markers - here they are really deleted
+    boundaries->removeFieldMarkers(field);
+    materials->removeFieldMarkers(field);
+
+//    // remove boundary conditions
+//    foreach (SceneBoundary *boundary, field->module()->boundaries().items())
+//        removeBoundary(boundary);
+
+//    // remove materials
+//    foreach (SceneMaterial *material, field->module()->materials().items())
+//        removeMaterial(material);
 
     // remove from the collection
     m_fieldInfos.remove(field->fieldId());
 
+    emit fieldsChanged();
     emit invalidated();
 }
 
@@ -1059,6 +1065,31 @@ void Scene::doProblemProperties()
         sceneView()->sceneViewSettings().vectorPhysicFieldVariable = fieldInfo->module()->view_default_vector_variable->id;
 
     emit invalidated();
+}
+
+void Scene::addBdrAndMatMenuItems(QMenu* menu, QWidget* parent)
+{
+    if(Util::scene()->fieldInfos().count() == 1){
+        menu->addAction(actNewBoundary);
+        menu->addAction(actNewMaterial);
+    }
+    else{
+        QMenu* mnuSubBoundaries = new QMenu("New boundary condition", parent);
+        menu->addMenu(mnuSubBoundaries);
+        foreach(FieldInfo* pi, fieldInfos())
+        {
+            mnuSubBoundaries->addAction(actNewBoundaries[pi->fieldId()]);
+        }
+
+        QMenu* mnuSubMaterials = new QMenu("New material", parent);
+        menu->addMenu(mnuSubMaterials);
+        foreach(FieldInfo* pi, fieldInfos())
+        {
+            mnuSubMaterials->addAction(actNewMaterials[pi->fieldId()]);
+        }
+    }
+
+
 }
 
 void Scene::writeToDxf(const QString &fileName)
@@ -1739,7 +1770,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         QDomNode eleBoundaries = doc.createElement("boundaries");
         eleField.appendChild(eleBoundaries);
         int iboundary = 1;
-        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
+//        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
+        foreach (SceneBoundary *boundary, boundaries->filter(fieldInfo).items())
         {
             QDomElement eleBoundary = doc.createElement("boundary");
 
@@ -1779,7 +1811,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         QDomNode eleMaterials = doc.createElement("materials");
         eleField.appendChild(eleMaterials);
         int imaterial = 1;
-        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
+//        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
+        foreach (SceneMaterial *material, materials->filter(fieldInfo).items())
         {
             QDomElement eleMaterial = doc.createElement("material");
 

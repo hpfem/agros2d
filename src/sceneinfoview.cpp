@@ -328,7 +328,8 @@ void SceneInfoView::doInvalidated()
         fieldBoundaryConditionsNode->setExpanded(true);
 
         QList<QTreeWidgetItem *> listMarkes;
-        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
+//        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
+        foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(fieldBoundaryConditionsNode);
 
@@ -346,7 +347,8 @@ void SceneInfoView::doInvalidated()
         fieldMaterialsNode->setExpanded(true);
 
         QList<QTreeWidgetItem *> listMaterials;
-        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
+//        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
+        foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(fieldMaterialsNode);
 

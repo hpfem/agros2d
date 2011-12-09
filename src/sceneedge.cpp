@@ -292,7 +292,8 @@ void SceneEdgeDialog::fillComboBox()
         cmbBoundaries[i]->addItem(QString::fromStdString(Util::scene()->boundaries->at(0)->getName()),
                                   Util::scene()->boundaries->at(0)->variant());
 
-        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
+//        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
+        foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
             cmbBoundaries[i]->addItem(QString::fromStdString(boundary->getName()),
                                       boundary->variant());
@@ -458,7 +459,6 @@ void SceneEdgeCommandAdd::undo()
 
 void SceneEdgeCommandAdd::redo()
 {
-    //assert(0); //TODO
     logMessage("SceneEdgeCommandAdd::redo()");
 
     //TODO

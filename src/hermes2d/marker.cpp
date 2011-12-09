@@ -26,6 +26,7 @@
 Marker::Marker(FieldInfo *fieldInfo, std::string name)
     : fieldInfo(fieldInfo), name(name)
 {
+    cout << "creating marker " << name << endl;
 }
 
 Marker::~Marker()
@@ -51,6 +52,10 @@ void Marker::evaluate(std::string id, double time)
     values[id].evaluate(time);
 }
 
+QString Marker::fieldId()
+{
+    return fieldInfo->fieldId();
+}
 
 Boundary::Boundary(FieldInfo *fieldInfo, std::string name, std::string type,
                    std::map<std::string, Value> values) : Marker(fieldInfo, name)
