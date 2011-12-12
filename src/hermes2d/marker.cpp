@@ -31,6 +31,7 @@ Marker::Marker(FieldInfo *fieldInfo, std::string name)
 
 Marker::~Marker()
 {
+    cout << "destroying marker " << name << endl;
     values.clear();
 }
 

@@ -22,6 +22,7 @@
 #include "scene.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
+//#include "heremesmodule.h"
 
 template <typename MarkerType>
 void MarkerContainer<MarkerType>::add(MarkerType *marker)
@@ -46,6 +47,15 @@ void MarkerContainer<MarkerType>::removeFieldMarkers(FieldInfo* fieldInfo)
     }
 }
 
+
+template <typename MarkerType>
+MarkerType* MarkerContainer<MarkerType>::getNone(FieldInfo* field)
+{
+    if(!noneMarkers.contains(field))
+        noneMarkers[field] = new MarkerType(field, "none");
+
+    return noneMarkers[field];
+}
 
 template <typename MarkerType>
 MarkerType *MarkerContainer<MarkerType>::at(int i)
@@ -109,8 +119,15 @@ MarkerType* MarkerContainer<MarkerType>::getSingleOrNull()
 //        this->data.append(marker);
 //}
 
+
+template <typename MarkerType>
+QMap<FieldInfo*, MarkerType*> MarkerContainer<MarkerType>::noneMarkers;
+
+
 template class MarkerContainer<SceneBoundary>;
 template class MarkerContainer<SceneMaterial>;
+
+
 
 //template class UniqueMarkerContainer<SceneBoundary>;
 //template class UniqueMarkerContainer<SceneMaterial>;
