@@ -50,7 +50,7 @@ public:
     /// get marker by name
     MarkerType *get(const QString &name);
 
-//    MarkerType *getNone() { return noneMarker; }
+    static MarkerType *getNone(FieldInfo* field);
 
     /// filter field
     MarkerContainer<MarkerType> filter(const QString &fieldName);
@@ -74,7 +74,7 @@ public:
 protected:
     QList<MarkerType* > data;
 
-//    static MarkerType* noneMarker;
+    static QMap<FieldInfo*, MarkerType*> noneMarkers;
 };
 
 //template <typename MarkerType>

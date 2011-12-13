@@ -35,6 +35,11 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int
     this->nodeEnd = nodeEnd;
     this->angle = angle;
     this->refineTowardsEdge = refineTowardsEdge;
+
+    foreach(FieldInfo* field, Util::scene()->fieldInfos())
+    {
+        this->addMarker(SceneBoundaryContainer::getNone(field));
+    }
 }
 
 Point SceneEdge::center() const

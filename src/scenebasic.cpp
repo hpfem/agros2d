@@ -53,7 +53,7 @@ MarkerType* MarkedSceneBasic<MarkerType>::getMarker(FieldInfo* field)
 {
     if(markers.contains(field))
         return markers[field];
-    return NULL;
+    assert(0);
 }
 
 template <typename MarkerType>
