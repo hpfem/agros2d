@@ -815,21 +815,10 @@ void SceneView::paintGeometry()
     // edges
     foreach (SceneEdge *edge, m_scene->edges->items())
     {
-        // edge without marker
-        QString str;
-
-        if (str.length() > 0)
-            str = str.left(str.length() - 2);
-
         if (m_sceneMode == SceneMode_OperateOnEdges)
         {
-            // is any boundary assigned ?
-            bool boundaryAssigned = false;
-            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-                if (edge->getMarker(fieldInfo->fieldId()))
-                    boundaryAssigned = true;
-
-            if (!boundaryAssigned)
+            // edge without marker
+            if (edge->markersCount() == 0)
             {
                 glEnable(GL_LINE_STIPPLE);
                 glLineStipple(1, 0x8FFF);
@@ -964,9 +953,9 @@ void SceneView::paintGeometry()
                 // assigned materials
                 QString str;
                 foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-                    if (label->getMarker(fieldInfo->fieldId()))
+                    if (label->hasMarker(fieldInfo))
                         str = str + QString("%1, ").
-                                arg(QString::fromStdString(label->getMarker(fieldInfo->fieldId())->getName()));
+                                arg(QString::fromStdString(label->getMarker(fieldInfo)->getName()));
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 
@@ -3313,7 +3302,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     // assigned boundary conditions
                     QString str;
                     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-                        if (edge->getMarker(fieldInfo->fieldId()))
+                        if (edge->hasMarker(fieldInfo))
                             str = str + QString("%1 (%2), ").
                                     arg(QString::fromStdString(edge->getMarker(fieldInfo)->getName())).
                                     arg(QString::fromStdString(fieldInfo->module()->name));
@@ -3343,9 +3332,9 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     // assigned materials
                     QString str;
                     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-                        if (label->getMarker(fieldInfo->fieldId()))
+                        if (label->hasMarker(fieldInfo))
                             str = str + QString("%1 (%2), ").
-                                    arg(QString::fromStdString(label->getMarker(fieldInfo->fieldId())->getName())).
+                                    arg(QString::fromStdString(label->getMarker(fieldInfo)->getName())).
                                     arg(QString::fromStdString(fieldInfo->module()->name));
                     if (str.length() > 0)
                         str = str.left(str.length() - 2);

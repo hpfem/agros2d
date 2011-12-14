@@ -1327,12 +1327,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     }
 
     // validation
-    ErrorResult error = validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_xml.xsd");
-    if (error.isError())
-    {
-        error.showDialog();
-        //return ErrorResult();
-    }
+    //    ErrorResult error = validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_xml.xsd");
+    //    if (error.isError())
+    //    {
+    //        error.showDialog();
+    //        //return ErrorResult();
+    //    }
 
     // geometry ***************************************************************************************************************
 

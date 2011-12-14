@@ -118,7 +118,8 @@ public:
     void addMarker(MarkerType* marker);
 
     /// true if has given marker
-    bool hasMarker(MarkerType* marker) {return markers[marker->getFieldInfo()] == marker; }
+    bool hasMarker(MarkerType* marker) { return markers[marker->getFieldInfo()] == marker; }
+    bool hasMarker(FieldInfo* fieldInfo) { return markers.contains(fieldInfo); }
 
     /// returns markers length
     int markersCount() { return markers.count(); }
