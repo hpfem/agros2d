@@ -51,9 +51,11 @@ QVariant SceneBasic::variant()
 template <typename MarkerType>
 MarkerType* MarkedSceneBasic<MarkerType>::getMarker(FieldInfo* field)
 {
-    if(markers.contains(field))
-        return markers[field];
-    assert(0);
+    assert(markers.contains(field));
+    MarkerType* marker = markers[field];
+    assert(marker);
+
+    return marker;
 }
 
 template <typename MarkerType>

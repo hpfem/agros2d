@@ -239,12 +239,13 @@ QLayout* SceneEdgeDialog::createContent()
     {
         QComboBox *cmbBoundary = new QComboBox();
         connect(cmbBoundary, SIGNAL(currentIndexChanged(int)), this, SLOT(doBoundaryChanged(int)));
-        cmbBoundaries.append(cmbBoundary);
+        cmbBoundaries[fieldInfo] = cmbBoundary;
+        //cmbBoundary->addItem("neco");
 
         QPushButton *btnBoundary = new QPushButton(icon("three-dots"), "");
         btnBoundary->setMaximumSize(btnBoundary->sizeHint());
         connect(btnBoundary, SIGNAL(clicked()), this, SLOT(doBoundaryClicked()));
-        btnBoundaries.append(btnBoundary);
+        btnBoundaries[fieldInfo] = btnBoundary;
 
         QHBoxLayout *layoutBoundary = new QHBoxLayout();
         layoutBoundary->addWidget(cmbBoundary);
@@ -288,23 +289,20 @@ void SceneEdgeDialog::fillComboBox()
     }
 
     // markers
-    int i = 0;
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, cmbBoundaries.keys())
     {
-        cmbBoundaries[i]->clear();
+        cmbBoundaries[fieldInfo]->clear();
 
         // //TODO - do it better - none marker
-        cmbBoundaries[i]->addItem(QString::fromStdString(Util::scene()->boundaries->at(0)->getName()),
-                                  Util::scene()->boundaries->at(0)->variant());
+        cmbBoundaries[fieldInfo]->addItem(QString::fromStdString(Util::scene()->boundaries->getNone(fieldInfo)->getName()),
+                                  Util::scene()->boundaries->getNone(fieldInfo)->variant());
 
 //        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
-            cmbBoundaries[i]->addItem(QString::fromStdString(boundary->getName()),
+            cmbBoundaries[fieldInfo]->addItem(QString::fromStdString(boundary->getName()),
                                       boundary->variant());
         }
-
-        i++;
     }
 }
 
@@ -322,12 +320,9 @@ bool SceneEdgeDialog::load()
     txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
     txtRefineTowardsEdge->setValue(sceneEdge->refineTowardsEdge);
 
-    int i = 0;
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
-        cmbBoundaries[i]->setCurrentIndex(cmbBoundaries[i]->findData(sceneEdge->getMarker(fieldInfo->fieldId())->variant()));
-
-        i++;
+        cmbBoundaries[fieldInfo]->setCurrentIndex(cmbBoundaries[fieldInfo]->findData(sceneEdge->getMarker(fieldInfo)->variant()));
     }
 
     doNodeChanged();
@@ -376,12 +371,9 @@ bool SceneEdgeDialog::save()
     sceneEdge->angle = txtAngle->number();
     sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
 
-    int i = 0;
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (QComboBox* cmbBoundary, cmbBoundaries)
     {
-        sceneEdge->addMarker(cmbBoundaries[i]->itemData(cmbBoundaries[i]->currentIndex()).value<SceneBoundary *>());
-
-        i++;
+        sceneEdge->addMarker(cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>());
     }
 
     return true;
@@ -391,8 +383,8 @@ void SceneEdgeDialog::doBoundaryChanged(int index)
 {
     logMessage("DSceneEdge::doBoundaryChanged()");
 
-    for (int i = 0; i < cmbBoundaries.length(); i++)
-        btnBoundaries[i]->setEnabled(cmbBoundaries[i]->currentIndex() > 0);
+    foreach (QComboBox* cmbBoundary, cmbBoundaries)
+        cmbBoundary->setEnabled(true);//cmbBoundary->currentIndex() > 0);
 }
 
 void SceneEdgeDialog::doBoundaryClicked()

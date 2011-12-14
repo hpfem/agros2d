@@ -3315,7 +3315,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
                         if (edge->getMarker(fieldInfo->fieldId()))
                             str = str + QString("%1 (%2), ").
-                                    arg(QString::fromStdString(edge->getMarker(fieldInfo->fieldId())->getName())).
+                                    arg(QString::fromStdString(edge->getMarker(fieldInfo)->getName())).
                                     arg(QString::fromStdString(fieldInfo->module()->name));
                     if (str.length() > 0)
                         str = str.left(str.length() - 2);

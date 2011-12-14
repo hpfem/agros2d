@@ -87,8 +87,8 @@ private:
     QCheckBox *chkRefineTowardsEdge;
     QSpinBox *txtRefineTowardsEdge;
 
-    QList<QComboBox *> cmbBoundaries;
-    QList<QPushButton *> btnBoundaries;
+    QMap<FieldInfo*, QComboBox *> cmbBoundaries;
+    QMap<FieldInfo*, QPushButton *> btnBoundaries;
 
     void fillComboBox();
 
