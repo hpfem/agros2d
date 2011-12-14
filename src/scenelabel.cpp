@@ -33,6 +33,11 @@ SceneLabel::SceneLabel(const Point &point, double area, int polynomialOrder)
     this->point = point;
     this->area = area;
     this->polynomialOrder = polynomialOrder;
+
+    foreach (FieldInfo* field, Util::scene()->fieldInfos())
+    {
+        this->addMarker(SceneMaterialContainer::getNone(field));
+    }
 }
 
 double SceneLabel::distance(const Point &point) const
@@ -197,23 +202,20 @@ void SceneLabelDialog::fillComboBox()
     logMessage("DSceneLabel::fillComboBox()");
 
     // markers
-    int i = 0;
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
         cmbMaterials[fieldInfo]->clear();
 
-        // //TODO - do it better - none marker
-        cmbMaterials[fieldInfo]->addItem(QString::fromStdString(Util::scene()->materials->at(0)->getName()),
-                                 Util::scene()->materials->at(0)->variant());
+        // none marker
+        cmbMaterials[fieldInfo]->addItem(QString::fromStdString(Util::scene()->materials->getNone(fieldInfo)->getName()),
+                                  Util::scene()->materials->getNone(fieldInfo)->variant());
 
-//        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
+        // real markers
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
             cmbMaterials[fieldInfo]->addItem(QString::fromStdString(material->getName()),
                                      material->variant());
         }
-
-        i++;
     }
 }
 

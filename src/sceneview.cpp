@@ -953,9 +953,8 @@ void SceneView::paintGeometry()
                 // assigned materials
                 QString str;
                 foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-                    if (label->hasMarker(fieldInfo))
-                        str = str + QString("%1, ").
-                                arg(QString::fromStdString(label->getMarker(fieldInfo)->getName()));
+                    str = str + QString("%1, ").
+                            arg(QString::fromStdString(label->getMarker(fieldInfo)->getName()));
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 
@@ -3302,10 +3301,9 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     // assigned boundary conditions
                     QString str;
                     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-                        if (edge->hasMarker(fieldInfo))
-                            str = str + QString("%1 (%2), ").
-                                    arg(QString::fromStdString(edge->getMarker(fieldInfo)->getName())).
-                                    arg(QString::fromStdString(fieldInfo->module()->name));
+                        str = str + QString("%1 (%2), ").
+                                arg(QString::fromStdString(edge->getMarker(fieldInfo)->getName())).
+                                arg(QString::fromStdString(fieldInfo->module()->name));
                     if (str.length() > 0)
                         str = str.left(str.length() - 2);
 
@@ -3332,10 +3330,9 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     // assigned materials
                     QString str;
                     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-                        if (label->hasMarker(fieldInfo))
-                            str = str + QString("%1 (%2), ").
-                                    arg(QString::fromStdString(label->getMarker(fieldInfo)->getName())).
-                                    arg(QString::fromStdString(fieldInfo->module()->name));
+                        str = str + QString("%1 (%2), ").
+                                arg(QString::fromStdString(label->getMarker(fieldInfo)->getName())).
+                                arg(QString::fromStdString(fieldInfo->module()->name));
                     if (str.length() > 0)
                         str = str.left(str.length() - 2);
 

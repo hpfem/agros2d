@@ -72,9 +72,21 @@ void MarkedSceneBasic<MarkerType>::addMarker(MarkerType* marker)
 }
 
 template <typename MarkerType>
+int MarkedSceneBasic<MarkerType>::markersCount()
+{
+    int count = 0;
+
+    foreach (MarkerType* marker, markers)
+        if (marker != MarkerContainer<MarkerType>::getNone(marker->getFieldInfo()))
+            count++;
+
+    return count;
+}
+
+template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::putMarkersToList(MarkerContainer<MarkerType>* list)
 {
-    foreach(MarkerType* marker, markers)
+    foreach (MarkerType* marker, markers)
         if(!list->contains(marker))
             list->add(marker);
 }
@@ -213,10 +225,21 @@ void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::removeFieldMar
 }
 
 template <typename MarkerType, typename MarkedSceneBasicType>
+void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::addMissingFieldMarkers(FieldInfo *fieldInfo)
+{
+    foreach(MarkedSceneBasicType* item, this->data)
+    {
+        if (!item->hasMarker(fieldInfo))
+            item->addMarker(MarkerContainer<MarkerType>::getNone(fieldInfo));
+    }
+}
+
+template <typename MarkerType, typename MarkedSceneBasicType>
 MarkerContainer<MarkerType> MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::allMarkers()
 {
     MarkerContainer<MarkerType> list;
-    foreach(MarkedSceneBasicType* item, this->data){
+    foreach(MarkedSceneBasicType* item, this->data)
+    {
         item->putMarkersToList(&list);
     }
     return list;
@@ -225,7 +248,8 @@ MarkerContainer<MarkerType> MarkedSceneBasicContainer<MarkerType, MarkedSceneBas
 template <typename MarkerType, typename MarkedSceneBasicType>
 void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::removeMarkerFromAll(MarkerType* marker)
 {
-    foreach(MarkedSceneBasicType* item, this->data){
+    foreach(MarkedSceneBasicType* item, this->data)
+    {
         item->removeMarker(marker);
     }
 }
@@ -233,14 +257,14 @@ void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::removeMarkerFr
 template <typename MarkerType, typename MarkedSceneBasicType>
 void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::addMarkerToAll(MarkerType* marker)
 {
-    foreach(MarkedSceneBasicType* item, this->data){
+    foreach(MarkedSceneBasicType* item, this->data)
+    {
         item->addMarker(marker);
     }
 }
 
 template class MarkedSceneBasicContainer<SceneBoundary, SceneEdge>;
 template class MarkedSceneBasicContainer<SceneMaterial, SceneLabel>;
-
 
 // *************************************************************************************************************************************
 
