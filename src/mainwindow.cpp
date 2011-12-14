@@ -383,12 +383,15 @@ void MainWindow::doFieldsChanged()
 {
     //TODO it is not necessary to create whole menu, it only needs to be adjusted
     //TODO what hapens to old menu object? Memory leaks???
+
     createMenus();
 }
 
 void MainWindow::createMenus()
 {
     logMessage("MainWindow::createMenus()");
+
+    menuBar()->clear();
 
     mnuRecentFiles = new QMenu(tr("&Recent files"), this);
     mnuFileImportExport = new QMenu(tr("Import/Export"), this);
