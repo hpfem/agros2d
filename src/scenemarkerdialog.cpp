@@ -197,12 +197,12 @@ SceneMaterialNone::SceneMaterialNone() : SceneMaterial(NULL, "none")
 // *************************************************************************************************************************************
 
 
-SceneTabWidget::SceneTabWidget(Hermes::Module::DialogUI *ui, QWidget *parent)
+SceneFieldWidget::SceneFieldWidget(Hermes::Module::DialogUI *ui, QWidget *parent)
     : QWidget(parent), ui(ui)
 {
 }
 
-void SceneTabWidget::createContent()
+void SceneFieldWidget::createContent()
 {
     // widget layout
     layout = new QVBoxLayout();
@@ -271,18 +271,18 @@ void SceneTabWidget::createContent()
 
 // *************************************************************************************************************************************
 
-SceneTabWidgetMaterial::SceneTabWidgetMaterial(Hermes::Module::DialogUI *ui, SceneMaterial *material, QWidget *parent)
-    : SceneTabWidget(ui, parent), material(material)
+SceneFieldWidgetMaterial::SceneFieldWidgetMaterial(Hermes::Module::DialogUI *ui, SceneMaterial *material, QWidget *parent)
+    : SceneFieldWidget(ui, parent), material(material)
 {
 }
 
-void SceneTabWidgetMaterial::load()
+void SceneFieldWidgetMaterial::load()
 {
     for (int j = 0; j < ids.count(); j++)
         values.at(j)->setValue(material->getValue(ids.at(j).toStdString()));
 }
 
-bool SceneTabWidgetMaterial::save()
+bool SceneFieldWidgetMaterial::save()
 {
     for (int j = 0; j < ids.count(); j++)
         if (values.at(j)->evaluate())
@@ -293,7 +293,7 @@ bool SceneTabWidgetMaterial::save()
     return true;
 }
 
-void SceneTabWidgetMaterial::refresh()
+void SceneFieldWidgetMaterial::refresh()
 {
     // read equation
     QString fileName = QString(":/equations/%1/%1_%2.png")
@@ -305,12 +305,12 @@ void SceneTabWidgetMaterial::refresh()
 
 // *************************************************************************************************************************************
 
-SceneTabWidgetBoundary::SceneTabWidgetBoundary(Hermes::Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent)
-    : SceneTabWidget(ui, parent), boundary(boundary)
+SceneFieldWidgetBoundary::SceneFieldWidgetBoundary(Hermes::Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent)
+    : SceneFieldWidget(ui, parent), boundary(boundary)
 {
 }
 
-void SceneTabWidgetBoundary::addCustomWidget(QVBoxLayout *layout)
+void SceneFieldWidgetBoundary::addCustomWidget(QVBoxLayout *layout)
 {
     comboBox = new QComboBox(this);
     boundary->getFieldInfo()->module()->fillComboBoxBoundaryCondition(comboBox);
@@ -322,13 +322,13 @@ void SceneTabWidgetBoundary::addCustomWidget(QVBoxLayout *layout)
     layout->addLayout(layoutForm);
 }
 
-void SceneTabWidgetBoundary::refresh()
+void SceneFieldWidgetBoundary::refresh()
 {
     // set active marker
     doTypeChanged(comboBox->currentIndex());
 }
 
-void SceneTabWidgetBoundary::doTypeChanged(int index)
+void SceneFieldWidgetBoundary::doTypeChanged(int index)
 {
     setMinimumSize(sizeHint());
 
@@ -358,7 +358,7 @@ void SceneTabWidgetBoundary::doTypeChanged(int index)
     setMinimumSize(sizeHint());
 }
 
-void SceneTabWidgetBoundary::load()
+void SceneFieldWidgetBoundary::load()
 {
     // load type
     comboBox->setCurrentIndex(comboBox->findData(QString::fromStdString(boundary->getType())));
@@ -368,7 +368,7 @@ void SceneTabWidgetBoundary::load()
         values.at(i)->setValue(boundary->getValue(ids.at(i).toStdString()));
 }
 
-bool SceneTabWidgetBoundary::save()
+bool SceneFieldWidgetBoundary::save()
 {
     // save type
     boundary->setType(comboBox->itemData(comboBox->currentIndex()).toString().toStdString());
@@ -391,7 +391,7 @@ SceneBoundaryDialog::SceneBoundaryDialog(SceneBoundary *boundary, QWidget *paren
     logMessage("SceneBoundaryDialog::SceneBoundaryDialog()");
     
     setWindowIcon(icon("scene-edgemarker"));
-    setWindowTitle(tr("Boundary condition"));
+    setWindowTitle(tr("Boundary condition - %1").arg(QString::fromStdString(boundary->getFieldInfo()->module()->name)));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
@@ -427,14 +427,11 @@ void SceneBoundaryDialog::createDialog()
 
 void SceneBoundaryDialog::createContent()
 {
-    tabModules = new QTabWidget(this);
-    SceneTabWidgetBoundary *wid = new SceneTabWidgetBoundary(&boundary->getFieldInfo()->module()->boundary_ui, boundary, this);
-    wid->createContent();
-    wid->setMinimumSize(sizeHint());
+    fieldWidget = new SceneFieldWidgetBoundary(&boundary->getFieldInfo()->module()->boundary_ui, boundary, this);
+    fieldWidget->createContent();
+    fieldWidget->setMinimumSize(sizeHint());
 
-    tabModules->addTab(wid, icon(""), QString::fromStdString(boundary->getFieldInfo()->module()->name));
-
-    layout->addWidget(tabModules, 10, 0, 1, 3);
+    layout->addWidget(fieldWidget, 10, 0, 1, 3);
 }
 
 void SceneBoundaryDialog::load()
@@ -442,11 +439,7 @@ void SceneBoundaryDialog::load()
     txtName->setText(QString::fromStdString(boundary->getName()));
 
     // load variables
-    for (int i = 0; i < tabModules->count(); i++)
-    {
-        SceneTabWidget *wid = dynamic_cast<SceneTabWidget *>(tabModules->widget(i));
-        wid->load();
-    }
+    fieldWidget->load();
 }
 
 bool SceneBoundaryDialog::save()
@@ -466,12 +459,8 @@ bool SceneBoundaryDialog::save()
     boundary->setName(txtName->text().toStdString());
 
     // save variables
-    for (int i = 0; i < tabModules->count(); i++)
-    {
-        SceneTabWidget *wid = dynamic_cast<SceneTabWidget *>(tabModules->widget(i));
-        if (!wid->save())
-            return false;
-    }
+    if (!fieldWidget->save())
+        return false;
 
     return true;
 }
@@ -513,7 +502,7 @@ SceneMaterialDialog::SceneMaterialDialog(SceneMaterial *material, QWidget *paren
     logMessage("SceneMaterial::SceneMaterial()");
     
     setWindowIcon(icon("scene-labelmarker"));
-    setWindowTitle(tr("Material"));
+    setWindowTitle(tr("Material - %1").arg(QString::fromStdString(material->getFieldInfo()->module()->name)));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
@@ -550,14 +539,11 @@ void SceneMaterialDialog::createDialog()
 
 void SceneMaterialDialog::createContent()
 {
-    tabModules = new QTabWidget(this);
-    SceneTabWidgetMaterial *wid = new SceneTabWidgetMaterial(&material->getFieldInfo()->module()->material_ui, material, this);
-    wid->createContent();
-    wid->setMinimumSize(sizeHint());
+    fieldWidget = new SceneFieldWidgetMaterial(&material->getFieldInfo()->module()->material_ui, material, this);
+    fieldWidget->createContent();
+    fieldWidget->setMinimumSize(sizeHint());
 
-    tabModules->addTab(wid, icon(""), QString::fromStdString(material->getFieldInfo()->module()->name));
-
-    layout->addWidget(tabModules, 10, 0, 1, 3);
+    layout->addWidget(fieldWidget, 10, 0, 1, 3);
 }
 
 void SceneMaterialDialog::load()
@@ -567,11 +553,7 @@ void SceneMaterialDialog::load()
     txtName->setText(QString::fromStdString(material->getName()));
 
     // load variables
-    for (int i = 0; i < tabModules->count(); i++)
-    {
-        SceneTabWidget *wid = dynamic_cast<SceneTabWidget *>(tabModules->widget(i));
-        wid->load();
-    }
+    fieldWidget->load();
 }
 
 bool SceneMaterialDialog::save()
@@ -593,12 +575,8 @@ bool SceneMaterialDialog::save()
     material->setName(txtName->text().toStdString());
 
     // save variables
-    for (int i = 0; i < tabModules->count(); i++)
-    {
-        SceneTabWidget *wid = dynamic_cast<SceneTabWidget *>(tabModules->widget(i));
-        if (!wid->save())
-            return false;
-    }
+    if (!fieldWidget->save())
+        return false;
 
     return true;
 }
