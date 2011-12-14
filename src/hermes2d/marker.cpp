@@ -26,13 +26,10 @@
 Marker::Marker(FieldInfo *fieldInfo, std::string name)
     : fieldInfo(fieldInfo), name(name)
 {
-    cout << "creating marker " << name << endl;
 }
 
 Marker::~Marker()
 {
-    cout << "destroying marker " << name << endl;
-    name = "destroyed";
     values.clear();
 }
 
