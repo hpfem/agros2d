@@ -61,6 +61,11 @@ protected:
     /// variables - the way to customize boundary "template", given by the type parameter
     std::map<std::string, Value> values;
 
+private:
+    /// we don't want those objects to be copied since we compare pointers
+    Marker(const Marker& );
+    Marker& operator =(const Marker& );
+
 };
 
 
