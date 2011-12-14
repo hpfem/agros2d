@@ -82,11 +82,11 @@ void deformShapeTemplate(T linVert, int count);
 
 // ************************************************************************************************
 
-class SceneTabWidget : public QWidget
+class SceneFieldWidget : public QWidget
 {
     Q_OBJECT
 public:
-    SceneTabWidget(Hermes::Module::DialogUI *ui, QWidget *parent);
+    SceneFieldWidget(Hermes::Module::DialogUI *ui, QWidget *parent);
 
     Hermes::Module::DialogUI *ui;
 
@@ -109,13 +109,13 @@ public:
     virtual bool save() = 0;
 };
 
-class SceneTabWidgetMaterial : public SceneTabWidget
+class SceneFieldWidgetMaterial : public SceneFieldWidget
 {
     Q_OBJECT
 public:
     SceneMaterial *material;
 
-    SceneTabWidgetMaterial(Hermes::Module::DialogUI *ui, SceneMaterial *material, QWidget *parent);
+    SceneFieldWidgetMaterial(Hermes::Module::DialogUI *ui, SceneMaterial *material, QWidget *parent);
 
     void addCustomWidget(QVBoxLayout *layout) {}
     void refresh();
@@ -123,13 +123,13 @@ public:
     bool save();
 };
 
-class SceneTabWidgetBoundary : public SceneTabWidget
+class SceneFieldWidgetBoundary : public SceneFieldWidget
 {
     Q_OBJECT
 public:
     SceneBoundary *boundary;
 
-    SceneTabWidgetBoundary(Hermes::Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent);
+    SceneFieldWidgetBoundary(Hermes::Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent);
 
     QComboBox *comboBox;
 
@@ -198,7 +198,7 @@ protected:
     QLineEdit *txtName;
     SceneBoundary *boundary;
 
-    QTabWidget* tabModules;
+    SceneFieldWidget *fieldWidget;
 
     void createContent();
     void createDialog();
@@ -230,7 +230,7 @@ protected:
     QLineEdit *txtName;
     SceneMaterial *material;
 
-    QTabWidget* tabModules;
+    SceneFieldWidget *fieldWidget;
 
     void createContent();
     void createDialog();

@@ -1473,42 +1473,37 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             QString name = element.toElement().attribute("name");
             QString type = element.toElement().attribute("type");
 
-            if (element.toElement().attribute("id") == 0)
+            // read marker
+            SceneBoundary *boundary = new SceneBoundary(field,
+                                                        name.toStdString(),
+                                                        type.toStdString());
+
+            Hermes::Module::BoundaryType *boundary_type = field->module()->get_boundary_type(type.toStdString());
+            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin();
+                 it < boundary_type->variables.end(); ++it)
             {
-                // none marker
-                addBoundary(new SceneBoundaryNone());
+                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+
+                boundary->setValue(variable->id,
+                                   Value(element.toElement().attribute(QString::fromStdString(variable->id), "0")));
             }
-            else
+
+            Util::scene()->addBoundary(boundary);
+
+            // add boundary to the edge marker
+            QDomNode nodeEdge = element.firstChild();
+            while (!nodeEdge.isNull())
             {
-                // read marker
-                SceneBoundary *boundary = new SceneBoundary(field,
-                                                            name.toStdString(),
-                                                            type.toStdString());
+                QDomElement eleEdge = nodeEdge.toElement();
 
-                Hermes::Module::BoundaryType *boundary_type = field->module()->get_boundary_type(type.toStdString());
-                for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin();
-                     it < boundary_type->variables.end(); ++it)
-                {
-                    Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+                int id = eleEdge.toElement().attribute("edge").toInt();
+                edges->at(id)->addMarker(boundary);
 
-                    boundary->setValue(variable->id,
-                                       Value(element.toElement().attribute(QString::fromStdString(variable->id), "0")));
-                }
-
-                Util::scene()->addBoundary(boundary);
-
-                // add boundary to the edge marker
-                QDomNode nodeEdge = element.firstChild();
-                while(!nodeEdge.isNull())
-                {
-                    QDomElement eleEdge = nodeEdge.toElement();
-
-                    int id = eleEdge.toElement().attribute("edge").toInt();
-                    edges->at(id)->addMarker(boundary);
-
-                    nodeEdge = nodeEdge.nextSibling();
-                }
+                nodeEdge = nodeEdge.nextSibling();
             }
+
+            // add missing none markers
+            edges->addMissingFieldMarkers(field);
 
             nodeBoundary = nodeBoundary.nextSibling();
         }
@@ -1521,41 +1516,36 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             QDomElement element = nodeMaterial.toElement();
             QString name = element.toElement().attribute("name");
 
-            if (element.toElement().attribute("id") == 0)
+            // read marker
+            SceneMaterial *material = new SceneMaterial(field,
+                                                        name.toStdString());
+            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = field->module()->material_type_variables;
+            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
-                // none marker
-                addMaterial(new SceneMaterialNone());
+                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+
+                material->setValue(variable->id,
+                                   Value(element.toElement().attribute(QString::fromStdString(variable->id),
+                                                                       QString::number(variable->default_value))));
             }
-            else
+
+            // add material
+            Util::scene()->addMaterial(material);
+
+            // add material to the label marker
+            QDomNode nodeLabel = element.firstChild();
+            while(!nodeLabel.isNull())
             {
-                // read marker
-                SceneMaterial *material = new SceneMaterial(field,
-                                                            name.toStdString());
-                Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = field->module()->material_type_variables;
-                for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-                {
-                    Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+                QDomElement eleLabel = nodeLabel.toElement();
 
-                    material->setValue(variable->id,
-                                       Value(element.toElement().attribute(QString::fromStdString(variable->id),
-                                                                           QString::number(variable->default_value))));
-                }
+                int id = eleLabel.toElement().attribute("label").toInt();
+                labels->at(id)->addMarker(material);
 
-                // add material
-                Util::scene()->addMaterial(material);
-
-                // add material to the label marker
-                QDomNode nodeLabel = element.firstChild();
-                while(!nodeLabel.isNull())
-                {
-                    QDomElement eleLabel = nodeLabel.toElement();
-
-                    int id = eleLabel.toElement().attribute("label").toInt();
-                    labels->at(id)->addMarker(material);
-
-                    nodeLabel = nodeLabel.nextSibling();
-                }
+                nodeLabel = nodeLabel.nextSibling();
             }
+
+            // add missing none markers
+            labels->addMissingFieldMarkers(field);
 
             nodeMaterial = nodeMaterial.nextSibling();
         }
@@ -1770,7 +1760,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         QDomNode eleBoundaries = doc.createElement("boundaries");
         eleField.appendChild(eleBoundaries);
         int iboundary = 1;
-//        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
         foreach (SceneBoundary *boundary, boundaries->filter(fieldInfo).items())
         {
             QDomElement eleBoundary = doc.createElement("boundary");
@@ -1811,7 +1800,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         QDomNode eleMaterials = doc.createElement("materials");
         eleField.appendChild(eleMaterials);
         int imaterial = 1;
-//        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
         foreach (SceneMaterial *material, materials->filter(fieldInfo).items())
         {
             QDomElement eleMaterial = doc.createElement("material");

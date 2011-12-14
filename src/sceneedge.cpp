@@ -36,7 +36,7 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int
     this->angle = angle;
     this->refineTowardsEdge = refineTowardsEdge;
 
-    foreach(FieldInfo* field, Util::scene()->fieldInfos())
+    foreach (FieldInfo* field, Util::scene()->fieldInfos())
     {
         this->addMarker(SceneBoundaryContainer::getNone(field));
     }
@@ -240,7 +240,6 @@ QLayout* SceneEdgeDialog::createContent()
         QComboBox *cmbBoundary = new QComboBox();
         connect(cmbBoundary, SIGNAL(currentIndexChanged(int)), this, SLOT(doBoundaryChanged(int)));
         cmbBoundaries[fieldInfo] = cmbBoundary;
-        //cmbBoundary->addItem("neco");
 
         QPushButton *btnBoundary = new QPushButton(icon("three-dots"), "");
         btnBoundary->setMaximumSize(btnBoundary->sizeHint());
@@ -293,11 +292,11 @@ void SceneEdgeDialog::fillComboBox()
     {
         cmbBoundaries[fieldInfo]->clear();
 
-        // //TODO - do it better - none marker
+        // none marker
         cmbBoundaries[fieldInfo]->addItem(QString::fromStdString(Util::scene()->boundaries->getNone(fieldInfo)->getName()),
                                   Util::scene()->boundaries->getNone(fieldInfo)->variant());
 
-//        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
+        // real markers
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
             cmbBoundaries[fieldInfo]->addItem(QString::fromStdString(boundary->getName()),

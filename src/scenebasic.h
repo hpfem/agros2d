@@ -122,7 +122,7 @@ public:
     bool hasMarker(FieldInfo* fieldInfo) { return markers.contains(fieldInfo); }
 
     /// returns markers length
-    int markersCount() { return markers.count(); }
+    int markersCount();
 
     /// removes marker corresponding to this field from node
     void removeMarker(FieldInfo* fieldInfo) {markers.remove(fieldInfo); }
@@ -147,6 +147,8 @@ public:
 
     /// removes markers corresponding to field from all members
     void removeFieldMarkers(FieldInfo* field);
+    /// add missing field markers
+    void addMissingFieldMarkers(FieldInfo* field);
 
     /// Filters for elements that has given marker
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> haveMarker(MarkerType *marker);
