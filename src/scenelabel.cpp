@@ -167,12 +167,12 @@ QLayout* SceneLabelDialog::createContent()
     {
         QComboBox *cmbMaterial = new QComboBox();
         connect(cmbMaterial, SIGNAL(currentIndexChanged(int)), this, SLOT(doMaterialChanged(int)));
-        cmbMaterials.append(cmbMaterial);
+        cmbMaterials[fieldInfo] = cmbMaterial;
 
         QPushButton *btnMaterial = new QPushButton(icon("three-dots"), "");
         btnMaterial->setMaximumSize(btnMaterial->sizeHint());
         connect(btnMaterial, SIGNAL(clicked()), this, SLOT(doMaterialClicked()));
-        btnMaterials.append(btnMaterial);
+        btnMaterials[fieldInfo] = btnMaterial;
 
         QHBoxLayout *layoutMaterial = new QHBoxLayout();
         layoutMaterial->addWidget(cmbMaterial);
@@ -200,16 +200,16 @@ void SceneLabelDialog::fillComboBox()
     int i = 0;
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
-        cmbMaterials[i]->clear();
+        cmbMaterials[fieldInfo]->clear();
 
         // //TODO - do it better - none marker
-        cmbMaterials[i]->addItem(QString::fromStdString(Util::scene()->materials->at(0)->getName()),
+        cmbMaterials[fieldInfo]->addItem(QString::fromStdString(Util::scene()->materials->at(0)->getName()),
                                  Util::scene()->materials->at(0)->variant());
 
 //        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
-            cmbMaterials[i]->addItem(QString::fromStdString(material->getName()),
+            cmbMaterials[fieldInfo]->addItem(QString::fromStdString(material->getName()),
                                      material->variant());
         }
 
@@ -232,12 +232,9 @@ bool SceneLabelDialog::load()
     chkPolynomialOrder->setChecked(sceneLabel->polynomialOrder > 0);
     txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 
-    int i = 0;
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
-        cmbMaterials[i]->setCurrentIndex(cmbMaterials[i]->findData(sceneLabel->getMarker(fieldInfo->fieldId())->variant()));
-
-        i++;
+        cmbMaterials[fieldInfo]->setCurrentIndex(cmbMaterials[fieldInfo]->findData(sceneLabel->getMarker(fieldInfo)->variant()));
     }
 
     return true;
@@ -283,12 +280,9 @@ bool SceneLabelDialog::save()
     sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
     sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
 
-    int i = 0;
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
-        sceneLabel->addMarker(cmbMaterials[i]->itemData(cmbMaterials[i]->currentIndex()).value<SceneMaterial *>());
-
-        i++;
+        sceneLabel->addMarker(cmbMaterials[fieldInfo]->itemData(cmbMaterials[fieldInfo]->currentIndex()).value<SceneMaterial *>());
     }
 
     return true;
@@ -298,8 +292,8 @@ void SceneLabelDialog::doMaterialChanged(int index)
 {
     logMessage("DSceneLabel::doMaterialChanged()");
 
-    for (int i = 0; i < cmbMaterials.length(); i++)
-        btnMaterials[i]->setEnabled(cmbMaterials[i]->currentIndex() > 0);
+    // for (int i = 0; i < cmbMaterials.length(); i++)
+    //     btnMaterials[i]->setEnabled(cmbMaterials[i]->currentIndex() > 0);
 }
 
 void SceneLabelDialog::doMaterialClicked()

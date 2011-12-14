@@ -74,8 +74,8 @@ private:
     QCheckBox *chkArea;
     QCheckBox *chkPolynomialOrder;
 
-    QList<QComboBox *> cmbMaterials;
-    QList<QPushButton *> btnMaterials;
+    QMap<FieldInfo*, QComboBox *> cmbMaterials;
+    QMap<FieldInfo*, QPushButton *> btnMaterials;
 
     void fillComboBox();
 

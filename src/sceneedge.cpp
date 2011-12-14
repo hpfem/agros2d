@@ -383,8 +383,9 @@ void SceneEdgeDialog::doBoundaryChanged(int index)
 {
     logMessage("DSceneEdge::doBoundaryChanged()");
 
-    foreach (QComboBox* cmbBoundary, cmbBoundaries)
-        cmbBoundary->setEnabled(true);//cmbBoundary->currentIndex() > 0);
+    //TODO - enable detail button
+    // foreach (QComboBox* cmbBoundary, cmbBoundaries)
+    //    btnBoundary->setEnabled(true);//cmbBoundary->currentIndex() > 0);
 }
 
 void SceneEdgeDialog::doBoundaryClicked()
