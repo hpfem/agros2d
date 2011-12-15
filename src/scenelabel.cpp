@@ -348,7 +348,7 @@ void SceneLabelCommandAdd::undo()
 
 void SceneLabelCommandAdd::redo()
 {
-    assert(0); //TODO
+    //assert(0); //TODO
     //    logMessage("SceneLabelCommandAdd::redo()");
 
     //    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
@@ -368,7 +368,7 @@ SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QStri
 
 void SceneLabelCommandRemove::undo()
 {
-    assert(0);//TODO
+   // assert(0);//TODO
     //    logMessage("SceneLabelCommandRemove::undo()");
 
     //    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);

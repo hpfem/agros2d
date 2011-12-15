@@ -108,6 +108,18 @@ MarkerType* MarkerContainer<MarkerType>::getSingleOrNull()
         return NULL;
 }
 
+template <typename MarkerType>
+void MarkerContainer<MarkerType>::doFieldsChanged()
+{
+    foreach(FieldInfo* fieldInfo, noneMarkers.keys())
+    {
+        if(! Util::scene()->fieldInfos().contains(fieldInfo->fieldId())){
+            delete noneMarkers[fieldInfo];
+            noneMarkers.remove(fieldInfo);
+            removeFieldMarkers(fieldInfo);
+        }
+    }
+}
 
 //template <typename MarkerType>
 //void UniqueMarkerContainer<MarkerType>::add(MarkerType *marker)
@@ -126,8 +138,3 @@ QMap<FieldInfo*, MarkerType*> MarkerContainer<MarkerType>::noneMarkers;
 
 template class MarkerContainer<SceneBoundary>;
 template class MarkerContainer<SceneMaterial>;
-
-
-
-//template class UniqueMarkerContainer<SceneBoundary>;
-//template class UniqueMarkerContainer<SceneMaterial>;

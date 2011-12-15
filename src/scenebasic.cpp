@@ -97,6 +97,30 @@ void MarkedSceneBasic<MarkerType>::removeMarker(QString field)
     removeMarker(Util::scene()->fieldInfo(field));
 }
 
+template <typename MarkerType>
+void MarkedSceneBasic<MarkerType>::doFieldsChanged()
+{
+    foreach (MarkerType* marker, markers)
+    {
+        if(! Util::scene()->fieldInfos().contains(marker->fieldId()))
+            removeMarker(marker);
+    }
+
+    foreach (FieldInfo* fieldInfo, Util::scene()->fieldInfos())
+    {
+        if(! markers.contains(fieldInfo)){
+            if(typeid(MarkerType) == typeid(SceneBoundary))
+                markers[fieldInfo] = (MarkerType*)Util::scene()->boundaries->getNone(fieldInfo);
+
+            else if (typeid(MarkerType) == typeid(SceneMaterial))
+                markers[fieldInfo] = (MarkerType*)Util::scene()->materials->getNone(fieldInfo);
+
+            else
+                assert(0);
+        }
+    }
+}
+
 
 template class MarkedSceneBasic<SceneBoundary>;
 template class MarkedSceneBasic<SceneMaterial>;
@@ -255,6 +279,15 @@ void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::removeMarkerFr
 }
 
 template <typename MarkerType, typename MarkedSceneBasicType>
+void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::doFieldsChanged()
+{
+    foreach(MarkedSceneBasicType* item, this->data)
+    {
+        item->doFieldsChanged();
+    }
+}
+
+template <typename MarkerType, typename MarkedSceneBasicType>
 void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::addMarkerToAll(MarkerType* marker)
 {
     foreach(MarkedSceneBasicType* item, this->data)
@@ -320,4 +353,7 @@ void DSceneBasic::evaluated(bool isError)
 
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
+
+
+//**************************************************************************************************
 

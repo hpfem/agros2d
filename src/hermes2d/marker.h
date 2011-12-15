@@ -28,7 +28,7 @@ class Marker
 {
 public:
     Marker(FieldInfo *fieldInfo, std::string name);
-    ~Marker();
+    virtual ~Marker();
 
     /// value of one individual variable
     const Value getValue(std::string id);

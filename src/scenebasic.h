@@ -93,15 +93,8 @@ protected:
     QString containerName;
 };
 
+
 // *************************************************************************************************************************************
-
-
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//TODO zamyslet se nad porovnavanim markeru
-//TODO opravdu chci porovnavat ukazatele?
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 template <typename MarkerType>
 class MarkedSceneBasic : public SceneBasic
@@ -132,6 +125,8 @@ public:
     /// goes through own markers and if they are not yet in the list, adds them there
     void putMarkersToList(MarkerContainer<MarkerType>* list);
 
+    void doFieldsChanged();
+
 private:
     QMap<FieldInfo*, MarkerType*> markers;
 };
@@ -147,6 +142,10 @@ public:
 
     /// removes markers corresponding to field from all members
     void removeFieldMarkers(FieldInfo* field);
+
+    /// adds none markers for new fields and removes markers from fields that have been deleted
+    void doFieldsChanged();
+
     /// add missing field markers
     void addMissingFieldMarkers(FieldInfo* field);
 
@@ -196,7 +195,40 @@ private slots:
     void doReject();
 };
 
+
 // *************************************************************************************************************************************
 
+//TODO general undo framework should reduce code repetition.... TODO
+
+template <typename BasicType>
+class SceneBasicTrace
+{
+public:
+    virtual void save(const BasicType& original) = 0;
+    virtual void load(BasicType& destination) const = 0;
+    virtual void remove() const = 0;
+};
+
+template <typename MarkedBasicType>
+class MarkedSceneBasicTrace
+{
+    void saveMarkers(const MarkedBasicType& original);
+    void loadMarkers(MarkedBasicType& destination) const;
+};
+
+template <typename BasicType, typename BasicHistoryType>
+class SceneUndoCommand : public QUndoCommand
+{
+
+};
+
+template <typename BasicType, typename BasicHistoryType>
+class SceneCommandAdd : public SceneUndoCommand<BasicType, BasicHistoryType>
+{
+public:
+    SceneCommandAdd();
+    void undo();
+    void redo();
+};
 
 #endif // SCENEBASIC_H

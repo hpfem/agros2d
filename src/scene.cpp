@@ -274,6 +274,7 @@ Scene::Scene()
 
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
     connect(m_sceneSolution, SIGNAL(solved()), this, SLOT(doInvalidated()));
+    connect(this, SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
     boundaries = new SceneBoundaryContainer();
     materials = new SceneMaterialContainer();
@@ -1088,8 +1089,14 @@ void Scene::addBdrAndMatMenuItems(QMenu* menu, QWidget* parent)
             mnuSubMaterials->addAction(actNewMaterials[pi->fieldId()]);
         }
     }
+}
 
-
+void Scene::doFieldsChanged()
+{
+    edges->doFieldsChanged();
+    labels->doFieldsChanged();
+    boundaries->doFieldsChanged();
+    materials->doFieldsChanged();
 }
 
 void Scene::writeToDxf(const QString &fileName)

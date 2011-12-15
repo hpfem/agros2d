@@ -191,6 +191,7 @@ public slots:
     void doTransform();
     void doClearSolution();
     void doProblemProperties();
+    void doFieldsChanged();
 
 signals:
     void invalidated();

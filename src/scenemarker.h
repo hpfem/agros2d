@@ -71,6 +71,9 @@ public:
     /// clear and delete data
     void clear();
 
+    /// create or delete markers for new or removed field
+    void doFieldsChanged();
+
 protected:
     QList<MarkerType* > data;
 
