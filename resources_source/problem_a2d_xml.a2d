@@ -9,17 +9,17 @@
             <edge end="0" refine_towards="0" id="0" start="0" angle="0"/>
         </edges>
         <labels>
-            <label x="0.0" y="0.0" polynomialorder="0" id="0" area="0.0"/>
-            <label x="0.0" y="0.0" polynomialorder="0" id="0" area="0.0"/>
+            <label x="0.0" y="0.0" polynomial_order="0" id="0" area="0.0"/>
+            <label x="0.0" y="0.0" polynomial_order="0" id="0" area="0.0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="string" frequency="0" matrix_solver="string" timetotal="0" meshtype="string" timestep="0" name="string" date="string">
+    <problem coordinate_type="string" frequency="0" matrix_solver="string" time_total="0" mesh_type="string" time_step="0" name="string" date="string">
         <startupscript>string</startupscript>
         <description>string</description>
         <fields>
-            <field fieldid="string" numberofrefinements="0" analysistype="string" polynomialorder="0" weakforms="string" initialcondition="0.0">
-                <adaptivity adaptivitytolerance="0.0" adaptivitytype="string" adaptivitysteps="0" maxdofs="0"/>
-                <solver nonlineartolerance="0.0" nonlinearsteps="0" linearity="string"/>
+            <field field_id="string" number_of_refinements="0" analysis_type="string" polynomial_order="0" weakforms="string" initial_condition="0.0">
+                <adaptivity adaptivity_tolerance="0.0" adaptivity_type="string" adaptivity_steps="0" max_dofs="0"/>
+                <solver nonlinear_tolerance="0.0" nonlinear_steps="0" linearity_type="string"/>
                 <boundaries>
                     <boundary type="string" id="0" name="string">
                         <edge edge="0"/>
@@ -33,8 +33,8 @@
                     </material>
                 </materials>
             </field>
-            <field fieldid="string" numberofrefinements="0" analysistype="string" polynomialorder="0" weakforms="string" initialcondition="0.0">
-                <adaptivity adaptivitytolerance="0.0" adaptivitytype="string" adaptivitysteps="0" maxdofs="0"/>
+            <field field_id="string" number_of_refinements="0" analysis_type="string" polynomial_order="0" weakforms="string" initial_condition="0.0">
+                <adaptivity adaptivity_tolerance="0.0" adaptivity_type="string" adaptivity_steps="0" max_dofs="0"/>
                 <solver nonlineartolerance="0.0" nonlinearsteps="0" linearity="string"/>
                 <boundaries>
                     <boundary type="string" id="0" name="string">

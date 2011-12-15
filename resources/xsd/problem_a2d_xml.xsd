@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <xsd:element name="document">
     <xsd:complexType>
       <xsd:sequence>
@@ -41,7 +41,7 @@
                       <xsd:complexType>
                         <xsd:attribute name="x" type="xsd:decimal" />
                         <xsd:attribute name="y" type="xsd:decimal" />
-                        <xsd:attribute name="polynomialorder" type="xsd:int" />
+                        <xsd:attribute name="polynomial_order" type="xsd:int" />
                         <xsd:attribute name="id" type="xsd:int" />
                         <xsd:attribute name="area" type="xsd:decimal" />
                       </xsd:complexType>
@@ -55,8 +55,8 @@
         <xsd:element name="problem">
           <xsd:complexType>
             <xsd:sequence>
-              <xsd:element name="startupscript" type="xsd:string" />
               <xsd:element name="description" type="xsd:string" />
+              <xsd:element name="startup_script" type="xsd:string" />
               <xsd:element name="fields">
                 <xsd:complexType>
                   <xsd:sequence>
@@ -65,17 +65,17 @@
                         <xsd:sequence>
                           <xsd:element name="adaptivity">
                             <xsd:complexType>
-                              <xsd:attribute name="adaptivitytolerance" type="xsd:decimal" />
-                              <xsd:attribute name="adaptivitytype" type="xsd:string" />
-                              <xsd:attribute name="adaptivitysteps" type="xsd:int" />
-                              <xsd:attribute name="maxdofs" type="xsd:int" />
+                              <xsd:attribute name="adaptivity_tolerance" type="xsd:decimal" />
+                              <xsd:attribute name="adaptivity_type" type="xsd:string" />
+                              <xsd:attribute name="adaptivity_steps" type="xsd:int" />
+                              <xsd:attribute name="max_dofs" type="xsd:int" />
                             </xsd:complexType>
                           </xsd:element>
                           <xsd:element name="solver">
                             <xsd:complexType>
-                              <xsd:attribute name="nonlineartolerance" type="xsd:decimal" />
-                              <xsd:attribute name="nonlinearsteps" type="xsd:int" />
-                              <xsd:attribute name="linearity" type="xsd:string" />
+                              <xsd:attribute name="nonlinear_tolerance" type="xsd:string" />
+                              <xsd:attribute name="nonlinear_steps" type="xsd:int" />
+                              <xsd:attribute name="linearity_type" type="xsd:string" />
                             </xsd:complexType>
                           </xsd:element>
                           <xsd:element name="boundaries">
@@ -84,7 +84,7 @@
                                 <xsd:element name="boundary">
                                   <xsd:complexType>
                                     <xsd:sequence>
-                                      <xsd:element maxOccurs="unbounded" name="edge">
+                                      <xsd:element name="edge">
                                         <xsd:complexType>
                                           <xsd:attribute name="edge" type="xsd:int" />
                                         </xsd:complexType>
@@ -93,6 +93,7 @@
                                     <xsd:attribute name="type" type="xsd:string" />
                                     <xsd:attribute name="id" type="xsd:int" />
                                     <xsd:attribute name="name" type="xsd:string" />
+                                    <xsd:anyAttribute />
                                   </xsd:complexType>
                                 </xsd:element>
                               </xsd:sequence>
@@ -104,7 +105,7 @@
                                 <xsd:element name="material">
                                   <xsd:complexType>
                                     <xsd:sequence>
-                                      <xsd:element maxOccurs="unbounded" name="label">
+                                      <xsd:element name="label">
                                         <xsd:complexType>
                                           <xsd:attribute name="label" type="xsd:int" />
                                         </xsd:complexType>
@@ -112,30 +113,31 @@
                                     </xsd:sequence>
                                     <xsd:attribute name="id" type="xsd:int" />
                                     <xsd:attribute name="name" type="xsd:string" />
+                                    <xsd:anyAttribute />
                                   </xsd:complexType>
                                 </xsd:element>
                               </xsd:sequence>
                             </xsd:complexType>
                           </xsd:element>
                         </xsd:sequence>
-                        <xsd:attribute name="fieldid" type="xsd:string" />
-                        <xsd:attribute name="numberofrefinements" type="xsd:int" />
-                        <xsd:attribute name="analysistype" type="xsd:string" />
-                        <xsd:attribute name="polynomialorder" type="xsd:int" />
+                        <xsd:attribute name="field_id" type="xsd:string" />
+                        <xsd:attribute name="number_of_refinements" type="xsd:int" />
+                        <xsd:attribute name="analysis_type" type="xsd:string" />
+                        <xsd:attribute name="polynomial_order" type="xsd:int" />
                         <xsd:attribute name="weakforms" type="xsd:string" />
-                        <xsd:attribute name="initialcondition" type="xsd:decimal" />
+                        <xsd:attribute name="initial_condition" type="xsd:decimal" />
                       </xsd:complexType>
                     </xsd:element>
                   </xsd:sequence>
                 </xsd:complexType>
               </xsd:element>
             </xsd:sequence>
-            <xsd:attribute name="coordinatetype" type="xsd:string" />
+            <xsd:attribute name="coordinate_type" type="xsd:string" />
             <xsd:attribute name="frequency" type="xsd:int" />
             <xsd:attribute name="matrix_solver" type="xsd:string" />
-            <xsd:attribute name="timetotal" type="xsd:decimal" />
-            <xsd:attribute name="meshtype" type="xsd:string" />
-            <xsd:attribute name="timestep" type="xsd:decimal" />
+            <xsd:attribute name="time_total" type="xsd:decimal" />
+            <xsd:attribute name="mesh_type" type="xsd:string" />
+            <xsd:attribute name="time_step" type="xsd:decimal" />
             <xsd:attribute name="name" type="xsd:string" />
             <xsd:attribute name="date" type="xsd:string" />
           </xsd:complexType>

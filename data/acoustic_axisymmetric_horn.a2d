@@ -17,27 +17,27 @@
             <edge end="0" refine_towards="0" id="5" start="5" angle="0"/>
         </edges>
         <labels>
-            <label x="0.109723" y="0.176647" polynomialorder="0" id="0" area="0"/>
+            <label x="0.109723" y="0.176647" polynomial_order="0" id="0" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="5000" matrix_solver="umfpack" timetotal="1.0" type="quad_join" timestep="1.0" name="Acoustic Horn" date="2011-05-17">
+    <problem frequency="5000" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="quad_join" time_step="1.0" time_total="1.0" name="Acoustic Horn" date="2011-05-17">
         <description/>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="acoustic" numberofrefinements="0" analysistype="harmonic" polynomialorder="1" weakforms="interpreted" initialcondition="0.0">
-                <adaptivity adaptivitytolerance="10" maxdofs="60000" adaptivitytype="hp-adaptivity" adaptivitysteps="25"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="acoustic" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weakforms="interpreted" analysis_type="harmonic">
+                <adaptivity adaptivity_type="hp-adaptivity" max_dofs="60000" adaptivity_tolerance="10" adaptivity_steps="25"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
-                    <boundary acoustic_pressure="0" acoustic_normal_acceleration_real="0" acoustic_normal_acceleration_imag="0" type="acoustic_normal_acceleration" id="1" name="Wall" acoustic_normal_acceleration="0">
+                    <boundary type="acoustic_normal_acceleration" id="1" name="Wall" acoustic_normal_acceleration="0">
                         <edge edge="1"/>
                         <edge edge="2"/>
                         <edge edge="3"/>
                         <edge edge="5"/>
                     </boundary>
-                    <boundary acoustic_pressure="0" type="acoustic_impedance" acoustic_impedance="1.25*343" id="2" name="Matched boundary">
+                    <boundary id="2" name="Matched boundary">
                         <edge edge="0"/>
                     </boundary>
-                    <boundary acoustic_pressure="0" acoustic_pressure_imag="0" type="acoustic_pressure" id="3" name="Source" acoustic_pressure_real="1">
+                    <boundary acoustic_pressure="1" type="acoustic_pressure" id="3" name="Source">
                         <edge edge="4"/>
                     </boundary>
                 </boundaries>

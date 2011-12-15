@@ -24,17 +24,17 @@
             <edge end="0" refine_towards="0" id="9" start="3" angle="90"/>
         </edges>
         <labels>
-            <label x="0.000585418" y="0.00126858" polynomialorder="0" id="0" area="0"/>
-            <label x="0.000109549" y="8.6116e-05" polynomialorder="4" id="1" area="0"/>
+            <label x="0.000585418" y="0.00126858" polynomial_order="0" id="0" area="0"/>
+            <label x="0.000109549" y="8.6116e-05" polynomial_order="0" id="1" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="50000" matrix_solver="umfpack" timetotal="5*3e-6" type="triangle" timestep="3e-6" name="Magnetic transient planar profile conductor" date="2011-04-16">
+    <problem frequency="50000" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="3e-6" time_total="2.2e-4" name="Magnetic transient planar profile conductor" date="2011-04-16">
         <description>This model is an example.</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="magnetic" numberofrefinements="0" analysistype="transient" polynomialorder="3" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="magnetic" initial_condition="0" polynomial_order="2" number_of_refinements="0" weakforms="interpreted" analysis_type="transient">
+                <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary type="magnetic_surface_current" magnetic_surface_current_imag="0" id="1" name="Neumann" magnetic_surface_current_real="0">
                         <edge edge="0"/>
@@ -47,10 +47,10 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="1" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="0"/>
                     </material>
-                    <material magnetic_current_density_external_real="1e7*(exp(-1/2e-5*time) - exp(-1/1e-5*time))" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="57e6" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="1e7*(exp(-1/2e-5*time) - exp(-1/1e-5*time))" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="57e6" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="2" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="1"/>
                     </material>
                 </materials>

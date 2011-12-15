@@ -44,8 +44,14 @@
                         <xsl:attribute name="area">
                             <xsl:value-of select="@area" />
                         </xsl:attribute>
-                        <xsl:attribute name="polynomialorder">
-                            <xsl:value-of select="@polynomialorder" />
+                        <xsl:attribute name="polynomial_order">
+                            <xsl:variable name="polynomial_order" select="document/geometry/labels/label/@polynomial_order" />
+                            <xsl:choose>
+                                <xsl:when test="$polynomial_order!=null">
+                                    <xsl:value-of select="$polynomial_order" />
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
                         </xsl:attribute>
                     </xsl:element>
                 </xsl:for-each>
@@ -54,7 +60,7 @@
 
         <!-- Problem -->
         <xsl:element name="problem">
-            <xsl:attribute name="coordinatetype">
+            <xsl:attribute name="coordinate_type">
                 <xsl:value-of select="document/problems/problem/@problemtype" />
             </xsl:attribute>
             <xsl:attribute name="frequency">
@@ -63,13 +69,13 @@
             <xsl:attribute name="matrix_solver">
                 <xsl:value-of select="document/problems/problem/@matrix_solver" />
             </xsl:attribute>
-            <xsl:attribute name="timetotal">
+            <xsl:attribute name="time_total">
                 <xsl:value-of select="document/problems/problem/@timetotal" />
             </xsl:attribute>
-            <xsl:attribute name="meshtype">
+            <xsl:attribute name="mesh_type">
                 <xsl:value-of select="document/problems/problem/@meshtype" />
             </xsl:attribute>
-            <xsl:attribute name="timestep">
+            <xsl:attribute name="time_step">
                 <xsl:value-of select="document/problems/problem/@timestep" />
             </xsl:attribute>
             <xsl:attribute name="name">
@@ -83,23 +89,29 @@
                 <xsl:value-of select="document/problems/problem/description" />
             </xsl:element>
 
-            <xsl:element name="startupscript">
+            <xsl:element name="startup_script">
                 <xsl:value-of select="document/problems/problem/scriptstartup" />
             </xsl:element>
 
             <xsl:element name="fields">
                 <xsl:element name="field">
-                    <xsl:attribute name="fieldid">
+                    <xsl:attribute name="field_id">
                         <xsl:value-of select="document/problems/problem/@type" />
                     </xsl:attribute>
-                    <xsl:attribute name="numberofrefinements">
+                    <xsl:attribute name="number_of_refinements">
                         <xsl:value-of select="document/problems/problem/@numberofrefinements" />
                     </xsl:attribute>
-                    <xsl:attribute name="analysistype">
+                    <xsl:attribute name="analysis_type">
                         <xsl:value-of select="document/problems/problem/@analysistype" />
                     </xsl:attribute>
-                    <xsl:attribute name="polynomialorder">
-                        <xsl:value-of select="document/problems/problem/@polynomialorder" />
+                    <xsl:attribute name="polynomial_order">
+                        <xsl:variable name="polynomial_order" select="document/problems/problem/@polynomial_order" />
+                        <xsl:choose>
+                            <xsl:when test="$polynomial_order!=null">
+                                <xsl:value-of select="$polynomial_order" />
+                            </xsl:when>
+                            <xsl:otherwise>2</xsl:otherwise>
+                        </xsl:choose>
                     </xsl:attribute>
                     <xsl:attribute name="weakforms">
                         <xsl:variable name="weakforms" select="document/problems/problem/@weakforms" />
@@ -110,51 +122,51 @@
                             <xsl:otherwise>interpreted</xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
-                    <xsl:attribute name="initialcondition">
+                    <xsl:attribute name="initial_condition">
                         <xsl:value-of select="document/problems/problem/@initialcondition" />
                     </xsl:attribute>
 
                     <xsl:element name="adaptivity">
-                        <xsl:attribute name="adaptivitytolerance">
+                        <xsl:attribute name="adaptivity_tolerance">
                             <xsl:value-of select="document/problems/problem/@adaptivitytolerance" />
                         </xsl:attribute>
-                        <xsl:attribute name="adaptivitytype">
+                        <xsl:attribute name="adaptivity_type">
                             <xsl:value-of select="document/problems/problem/@adaptivitytype" />
                         </xsl:attribute>
-                        <xsl:attribute name="adaptivitysteps">
+                        <xsl:attribute name="adaptivity_steps">
                             <xsl:value-of select="document/problems/problem/@adaptivitysteps" />
                         </xsl:attribute>
-                        <xsl:attribute name="maxdofs">
+                        <xsl:attribute name="max_dofs">
                             <xsl:value-of select="document/problems/problem/@maxdofs" />
                         </xsl:attribute>
                     </xsl:element>
 
                     <xsl:element name="solver">
-                        <xsl:attribute name="nonlineartolerance">
-                            <xsl:variable name="nonlineartolerance" select="document/problems/problem/@nonlineartolerance" />
+                        <xsl:attribute name="nonlinear_tolerance">
+                            <xsl:variable name="nonlinear_tolerance" select="document/problems/problem/@nonlineartolerance" />
                             <xsl:choose>
-                                <xsl:when test="$nonlineartolerance!=null">
-                                    <xsl:value-of select="$nonlineartolerance" />
+                                <xsl:when test="$nonlinear_tolerance!=null">
+                                    <xsl:value-of select="$nonlinear_tolerance" />
                                 </xsl:when>
-                                <xsl:otherwise>interpreted</xsl:otherwise>
+                                <xsl:otherwise>1e-3</xsl:otherwise>
                             </xsl:choose>
                         </xsl:attribute>
-                        <xsl:attribute name="nonlinearsteps">
-                            <xsl:variable name="nonlinearsteps" select="document/problems/problem/@nonlinearsteps" />
+                        <xsl:attribute name="nonlinear_steps">
+                            <xsl:variable name="nonlinear_steps" select="document/problems/problem/@nonlinearsteps" />
                             <xsl:choose>
-                                <xsl:when test="$nonlinearsteps!=null">
-                                    <xsl:value-of select="$nonlinearsteps" />
+                                <xsl:when test="$nonlinear_steps!=null">
+                                    <xsl:value-of select="$nonlinear_steps" />
                                 </xsl:when>
-                                <xsl:otherwise>interpreted</xsl:otherwise>
+                                <xsl:otherwise>10</xsl:otherwise>
                             </xsl:choose>
                         </xsl:attribute>
-                        <xsl:attribute name="nonlinearsteps">
-                            <xsl:variable name="linearity" select="document/problems/problem/@linearity" />
+                        <xsl:attribute name="linearity_type">
+                            <xsl:variable name="linearity_type" select="document/problems/problem/@linearity" />
                             <xsl:choose>
-                                <xsl:when test="$linearity!=null">
-                                    <xsl:value-of select="$linearity" />
+                                <xsl:when test="$linearity_type!=null">
+                                    <xsl:value-of select="$linearity_type" />
                                 </xsl:when>
-                                <xsl:otherwise>interpreted</xsl:otherwise>
+                                <xsl:otherwise>linear</xsl:otherwise>
                             </xsl:choose>
                         </xsl:attribute>
                     </xsl:element>

@@ -13,16 +13,16 @@
             <edge end="2" refine_towards="0" id="3" start="1" angle="0"/>
         </edges>
         <labels>
-            <label x="0.106263999229792" y="0.1077655497278325" polynomialorder="0" id="0" area="0"/>
+            <label x="0.106263999229792" y="0.1077655497278325" polynomial_order="0" id="0" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="0" matrix_solver="umfpack" timetotal="1.0" type="quad_join" timestep="1.0" name="General Planar Poisson" date="2011-09-10">
+    <problem coordinate_type="planar" frequency="0" matrix_solver="umfpack" time_total="1.0" type="quad_join" time_step="1.0" name="General Planar Poisson" date="2011-09-10">
         <description>This model is an example.</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="custom" numberofrefinements="1" analysistype="steadystate" polynomialorder="1" weakforms="interpreted" initialcondition="0.0">
-                <adaptivity adaptivitytolerance="0.01" maxdofs="60000" adaptivitytype="hp-adaptivity" adaptivitysteps="20"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="custom" number_of_refinements="1" analysis_type="steadystate" polynomial_order="1" weakforms="interpreted" initial_condition="0.0">
+                <adaptivity adaptivity_tolerance="0.01" max_dofs="60000" adaptivity_type="hp-adaptivity" adaptivity_steps="20"/>
+                <solver linearity_type="linear" nonlinear_tolerance="1e-3" nonlinearsteps="10"/>
                 <boundaries>
                     <boundary type="general_essential" id="1" name="Boundary">
                         <edge edge="0"/>

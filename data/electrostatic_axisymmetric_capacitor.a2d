@@ -29,20 +29,20 @@
             <edge end="1" refine_towards="0" id="12" start="2" angle="0"/>
         </edges>
         <labels>
-            <label x="0.019" y="0.021" polynomialorder="0" id="0" area="0"/>
-            <label x="0.0379" y="0.051" polynomialorder="0" id="1" area="0"/>
-            <label x="0.0284191" y="0.123601" polynomialorder="2" id="2" area="0"/>
+            <label x="0.019" y="0.021" polynomial_order="0" id="0" area="0"/>
+            <label x="0.0379" y="0.051" polynomial_order="0" id="1" area="0"/>
+            <label x="0.0284191" y="0.123601" polynomial_order="0" id="2" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Electrostatic Axisymmetric Capacitor" date="2011-04-19">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_step="0" time_total="0" name="Electrostatic Axisymmetric Capacitor" date="2011-04-19">
         <description>This model is an example.</description>
-        <startupscript>U = 10
+        <startup_script>U = 10
 eps1 = 10
-eps2 = 3</startupscript>
+eps2 = 3</startup_script>
         <fields>
-            <field fieldid="electrostatic" numberofrefinements="0" analysistype="steadystate" polynomialorder="3" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="5" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="10"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="electrostatic" initial_condition="0" polynomial_order="2" number_of_refinements="0" weakforms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="5" adaptivity_steps="10"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary electrostatic_potential="U" type="electrostatic_potential" id="1" name="Source">
                         <edge edge="1"/>
@@ -62,13 +62,13 @@ eps2 = 3</startupscript>
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material id="1" electrostatic_charge_density="0" name="Air" electrostatic_permittivity="1">
+                    <material electrostatic_charge_density="0" id="1" electrostatic_permittivity="1" name="Air">
                         <label label="2"/>
                     </material>
-                    <material id="2" electrostatic_charge_density="0" name="Dielectric 1" electrostatic_permittivity="eps1">
+                    <material electrostatic_charge_density="0" id="2" electrostatic_permittivity="eps1" name="Dielectric 1">
                         <label label="0"/>
                     </material>
-                    <material id="3" electrostatic_charge_density="0" name="Dielectric 2" electrostatic_permittivity="eps2">
+                    <material electrostatic_charge_density="0" id="3" electrostatic_permittivity="eps2" name="Dielectric 2">
                         <label label="1"/>
                     </material>
                 </materials>

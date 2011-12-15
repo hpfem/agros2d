@@ -29,20 +29,20 @@
             <edge end="1" refine_towards="0" id="12" start="2" angle="0"/>
         </edges>
         <labels>
-            <label x="0.019" y="0.021" polynomialorder="0" id="0" area="0"/>
-            <label x="0.0379" y="0.051" polynomialorder="0" id="1" area="0"/>
-            <label x="0.0284191" y="0.123601" polynomialorder="2" id="2" area="0"/>
+            <label x="0.019" y="0.021" polynomial_order="0" id="0" area="0"/>
+            <label x="0.0379" y="0.051" polynomial_order="0" id="1" area="0"/>
+            <label x="0.0284191" y="0.123601" polynomial_order="2" id="2" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" meshtype="triangle" timetotal="10" timestep="0.5" name="Electrostatic capacitor" date="2011-04-19">
-        <startupscript>U = 10
-eps1 = 10
-eps2 = 3</startupscript>
+    <problem coordinate_type="axisymmetric" frequency="0" matrix_solver="umfpack" mesh_type="triangle" time_total="10" time_step="0.5" name="Electrostatic capacitor" date="2011-04-19">
         <description>This model is an example.</description>
+        <startup_script>U = 10
+eps1 = 10
+eps2 = 3</startup_script>
         <fields>
-            <field fieldid="electrostatic" numberofrefinements="0" analysistype="steadystate" polynomialorder="3" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="5" adaptivitytype="disabled" adaptivitysteps="10"/>
-                <solver nonlineartolerance="0.001" nonlinearsteps="10" linearity="newton"/>
+            <field field_id="electrostatic" number_of_refinements="0" analysis_type="steadystate" polynomial_order="3" weakforms="interpreted" initial_condition="0">
+                <adaptivity adaptivity_tolerance="5" adaptivity_type="disabled" adaptivity_steps="10"/>
+                <solver nonlinear_tolerance="0.001" nonlinear_steps="10" linearity_type="newton"/>
                 <boundaries>
                     <boundary electrostatic_potential="U" type="electrostatic_potential" id="1" name="Source">
                         <edge edge="1"/>
@@ -73,9 +73,9 @@ eps2 = 3</startupscript>
                     </material>
                 </materials>
             </field>
-            <field fieldid="heat" numberofrefinements="0" analysistype="transient" polynomialorder="2" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="5" adaptivitytype="hp-adaptivity" adaptivitysteps="3"/>
-                <solver nonlineartolerance="0.001" nonlinearsteps="10" linearity="newton"/>
+            <field field_id="heat" number_of_refinements="0" analysis_type="transient" polynomial_order="2" weakforms="interpreted" initial_condition="0">
+                <adaptivity adaptivity_tolerance="5" adaptivity_type="hp-adaptivity" adaptivity_steps="3"/>
+                <solver nonlinear_tolerance="0.001" nonlinear_steps="10" linearity_type="newton"/>
                 <boundaries>
                     <boundary type="heat_temperature" heat_temperature="10" id="1" name="Temperature">
                         <edge edge="1"/>

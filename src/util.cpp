@@ -895,7 +895,7 @@ ErrorResult validateXML(const QString &fileName, const QString &schemaFileName)
     validator.setMessageHandler(&validatorMessageHandler);
 
     if (!validator.validate(&file, QUrl::fromLocalFile(file.fileName())))
-        return ErrorResult(ErrorResultType_Critical, QObject::tr("File '%1' cannot be converted. Error (line %3, column %4): %2").
+        return ErrorResult(ErrorResultType_Critical, QObject::tr("File '%1' is not valid Agrso2D problem file. Error (line %3, column %4): %2").
                            arg(fileName).
                            arg(validatorMessageHandler.statusMessage()).
                            arg(validatorMessageHandler.line()).

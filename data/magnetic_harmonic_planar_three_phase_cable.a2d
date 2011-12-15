@@ -53,28 +53,28 @@
             <edge end="20" refine_towards="0" id="23" start="23" angle="90"/>
         </edges>
         <labels>
-            <label x="0.0162468" y="0.0243702" polynomialorder="0" id="0" area="0"/>
-            <label x="0.00559029" y="0.00375598" polynomialorder="0" id="1" area="0"/>
-            <label x="0" y="0.00497885" polynomialorder="0" id="2" area="1e-07"/>
-            <label x="0.00384333" y="-0.0023584" polynomialorder="0" id="3" area="1e-07"/>
-            <label x="-0.00419272" y="-0.00288249" polynomialorder="0" id="4" area="1e-07"/>
-            <label x="-1.35974e-05" y="0.009661400000000001" polynomialorder="0" id="5" area="0"/>
+            <label x="0.0162468" y="0.0243702" polynomial_order="0" id="0" area="0"/>
+            <label x="0.00559029" y="0.00375598" polynomial_order="0" id="1" area="0"/>
+            <label x="0" y="0.00497885" polynomial_order="0" id="2" area="1e-07"/>
+            <label x="0.00384333" y="-0.0023584" polynomial_order="0" id="3" area="1e-07"/>
+            <label x="-0.00419272" y="-0.00288249" polynomial_order="0" id="4" area="1e-07"/>
+            <label x="-1.35974e-05" y="0.009661400000000001" polynomial_order="0" id="5" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="1000" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Magnetic Harmonic Planar Three Phase Cable" date="2011-07-17">
+    <problem frequency="1000" matrix_solver="umfpack" coordinate_type="planar" mesh_type="" time_step="0" time_total="0" name="Magnetic Harmonic Planar Three Phase Cable" date="">
         <description>This model is an example.</description>
-        <startupscript>J0 = 1e6
+        <startup_script>J0 = 1e6
 J01r = J0
 J01i = 0.0
 J02r = J0*cos(-120.0/180.0*pi)
 J02i = J0*sin(-120.0/180.0*pi)
 J03r = J0*cos(-240.0/180.0*pi)
 J03i = J0*sin(-240.0/180.0*pi)
-gamma = 57e6</startupscript>
+gamma = 57e6</startup_script>
         <fields>
-            <field fieldid="magnetic" numberofrefinements="1" analysistype="harmonic" polynomialorder="2" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="magnetic" initial_condition="0" polynomial_order="2" number_of_refinements="1" weakforms="interpreted" analysis_type="harmonic">
+                <adaptivity adaptivity_type="disabled" max_dofs="" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
                         <edge edge="20"/>
@@ -84,18 +84,18 @@ gamma = 57e6</startupscript>
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="1" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="0"/>
                         <label label="1"/>
                         <label label="5"/>
                     </material>
-                    <material magnetic_current_density_external_real="J01r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="gamma" magnetic_remanence="0" magnetic_current_density_external_imag="J01i" id="2" magnetic_remanence_angle="0" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="J01r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="gamma" magnetic_current_density_external_imag="J01i" magnetic_remanence_angle="0" id="2" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="2"/>
                     </material>
-                    <material magnetic_current_density_external_real="J02r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="gamma" magnetic_remanence="0" magnetic_current_density_external_imag="J02i" id="3" magnetic_remanence_angle="0" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="J02r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="gamma" magnetic_current_density_external_imag="J02i" magnetic_remanence_angle="0" id="3" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="3"/>
                     </material>
-                    <material magnetic_current_density_external_real="J03r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="gamma" magnetic_remanence="0" magnetic_current_density_external_imag="J03i" id="4" magnetic_remanence_angle="0" name="Conductor 3" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="J03r" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="gamma" magnetic_current_density_external_imag="J03i" magnetic_remanence_angle="0" id="4" name="Conductor 3" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="4"/>
                     </material>
                 </materials>

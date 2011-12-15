@@ -49,19 +49,19 @@
             <edge end="18" refine_towards="0" id="22" start="20" angle="90"/>
         </edges>
         <labels>
-            <label x="0.03487431206306708" y="0.03472367950279597" polynomialorder="0" id="0" area="0"/>
-            <label x="0.021206" y="0.06929639999999999" polynomialorder="0" id="1" area="0"/>
-            <label x="0.0141705" y="0.12445" polynomialorder="0" id="2" area="0"/>
-            <label x="0.00512569" y="0.040852" polynomialorder="0" id="3" area="0"/>
+            <label x="0.03487431206306708" y="0.03472367950279597" polynomial_order="0" id="0" area="0"/>
+            <label x="0.021206" y="0.06929639999999999" polynomial_order="0" id="1" area="0"/>
+            <label x="0.0141705" y="0.12445" polynomial_order="0" id="2" area="0"/>
+            <label x="0.00512569" y="0.040852" polynomial_order="0" id="3" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" timetotal="1" type="triangle" timestep="1" name="Magnetic Steadystate Axisymmetric Actuator" date="2011-07-09">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_step="1" time_total="1" name="Magnetic Steadystate Axisymmetric Actuator" date="2011-07-09">
         <description>This model is an example.</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="magnetic" numberofrefinements="1" analysistype="steadystate" polynomialorder="3" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="magnetic" initial_condition="0" polynomial_order="2" number_of_refinements="1" weakforms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
                         <edge edge="4"/>
@@ -74,14 +74,14 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="1" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="2"/>
                     </material>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="300" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Iron" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="300" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="2" name="Iron" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="0"/>
                         <label label="3"/>
                     </material>
-                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="3" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="1"/>
                     </material>
                 </materials>

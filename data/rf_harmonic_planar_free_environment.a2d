@@ -29,18 +29,18 @@
             <edge end="8" refine_towards="0" id="11" start="11" angle="0"/>
         </edges>
         <labels>
-            <label x="-0.000983203" y="-0.000784806" polynomialorder="0" id="0" area="0"/>
-            <label x="-0.10637" y="-0.0988343" polynomialorder="0" id="1" area="0.002"/>
-            <label x="0.1554331551727514" y="0.07732589177413272" polynomialorder="0" id="2" area="0"/>
+            <label x="-0.000983203" y="-0.000784806" polynomial_order="0" id="0" area="0"/>
+            <label x="-0.10637" y="-0.0988343" polynomial_order="0" id="1" area="0.002"/>
+            <label x="0.1554331551727514" y="0.07732589177413272" polynomial_order="0" id="2" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="1000000000" matrix_solver="umfpack" timetotal="1.0" type="" timestep="1.0" name="RF_free_environment_with_J" date="2011-04-16">
+    <problem coordinate_type="planar" frequency="1000000000" matrix_solver="umfpack" time_total="1.0" maesh_type="triangle" time_step="1.0" name="RF_free_environment_with_J" date="2011-04-16">
         <description/>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="rf" numberofrefinements="0" analysistype="harmonic" polynomialorder="3" weakforms="interpreted" initialcondition="0.0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="rf" number_of_refinements="0" analysis_type="harmonic" polynomial_order="3" weakforms="interpreted" initial_condition="0.0">
+                <adaptivity adaptivity_tolerance="1" max_dofs="60000" adaptivity_type="disabled" adaptivity_steps="1"/>
+                <solver linearity_type="linear" nonlinear_tolerance="1e-3" nonlinear_steps="10"/>
                 <boundaries>
                     <boundary height="0" type="rf_matched_boundary" id="1" name="Matched boundary">
                         <edge edge="4"/>
