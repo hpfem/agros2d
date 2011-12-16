@@ -668,7 +668,7 @@ bool ProblemDialog::save()
         FieldWidget *wid = static_cast<FieldWidget *>(tabFields->widget(i));
 
         // add missing field
-        if (!Util::scene()->fieldInfo(wid->fieldInfo()->fieldId()))
+        if (!Util::scene()->hasField(wid->fieldInfo()->fieldId()))
             Util::scene()->addField(wid->fieldInfo());
     }
 

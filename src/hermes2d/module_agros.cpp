@@ -80,7 +80,7 @@ SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()
 SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
 {
     //TODO - add dialog
-    FieldInfo *field = Util::scene()->fieldInfos().values().at(0);
+    FieldInfo *field = Util::scene()->fieldInfo(this->fieldid);
 
     return new SceneMaterial(field, tr("new material").toStdString());
 }
