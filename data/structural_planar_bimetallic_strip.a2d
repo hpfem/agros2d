@@ -18,34 +18,34 @@
             <edge end="3" refine_towards="0" id="6" start="2" angle="0"/>
         </edges>
         <labels>
-            <label x="0.0325318" y="0.00282399" polynomialorder="0" id="0" area="0"/>
-            <label x="0.0471237" y="0.000719387" polynomialorder="0" id="1" area="0"/>
+            <label x="0.0325318" y="0.00282399" polynomial_order="0" id="0" area="0"/>
+            <label x="0.0471237" y="0.000719387" polynomial_order="0" id="1" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="0" matrix_solver="umfpack" timetotal="1.0" type="triangle" timestep="1.0" name="unnamed" date="2011-07-10">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="1.0" time_total="1.0" name="Bimetal Strip" date="2011-08-28">
         <description/>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="elasticity" numberofrefinements="1" analysistype="steadystate" polynomialorder="3" weakforms="interpreted" initialcondition="0.0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="elasticity" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weakforms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
-                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_free_free" id="1" name="Free">
+                    <boundary id="1" name="Free">
                         <edge edge="2"/>
                         <edge edge="3"/>
                         <edge edge="4"/>
                         <edge edge="5"/>
                     </boundary>
-                    <boundary type="elasticity_fixed_fixed" id="2" elasticity_displacement_x="0" name="Fixed" elasticity_displacement_y="0">
+                    <boundary id="2" name="Fixed">
                         <edge edge="0"/>
                         <edge edge="1"/>
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature="80" elasticity_poisson_ratio="0.33" elasticity_young_modulus="208e9" elasticity_alpha="15e-6" elasticity_temperature_reference="20" id="1" name="Mild steel">
+                    <material id="1" name="Mild steel">
                         <label label="0"/>
                     </material>
-                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature="80" elasticity_poisson_ratio="0.33" elasticity_young_modulus="70e9" elasticity_alpha="23e-6" elasticity_temperature_reference="20" id="2" name="Aluminium">
+                    <material id="2" name="Aluminium">
                         <label label="1"/>
                     </material>
                 </materials>

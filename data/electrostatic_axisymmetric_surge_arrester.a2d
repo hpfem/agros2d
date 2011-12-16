@@ -186,25 +186,25 @@
             <edge end="3" refine_towards="0" id="94" start="2" angle="55"/>
         </edges>
         <labels>
-            <label x="0.0998906" y="0.127835" polynomialorder="0" id="0" area="0"/>
-            <label x="0.009889749999999999" y="0.186791" polynomialorder="0" id="1" area="0"/>
-            <label x="0.01017437235888598" y="0.1435285707170678" polynomialorder="0" id="2" area="0"/>
-            <label x="0.0104589952311539" y="0.1039659914718254" polynomialorder="0" id="3" area="0"/>
-            <label x="0.01017437235888598" y="0.06212642924843963" polynomialorder="0" id="4" area="0"/>
-            <label x="0.0205122" y="0.223519" polynomialorder="0" id="5" area="0"/>
-            <label x="0.0229784" y="0.0232514" polynomialorder="0" id="6" area="0"/>
-            <label x="0.00978188" y="0.166438" polynomialorder="0" id="7" area="0"/>
-            <label x="0.009892720000000001" y="0.124325" polynomialorder="0" id="8" area="0"/>
-            <label x="0.0101315" y="0.0822441" polynomialorder="0" id="9" area="0"/>
+            <label x="0.0998906" y="0.127835" polynomial_order="0" id="0" area="0"/>
+            <label x="0.009889749999999999" y="0.186791" polynomial_order="0" id="1" area="0"/>
+            <label x="0.01017437235888598" y="0.1435285707170678" polynomial_order="0" id="2" area="0"/>
+            <label x="0.0104589952311539" y="0.1039659914718254" polynomial_order="0" id="3" area="0"/>
+            <label x="0.01017437235888598" y="0.06212642924843963" polynomial_order="0" id="4" area="0"/>
+            <label x="0.0205122" y="0.223519" polynomial_order="0" id="5" area="0"/>
+            <label x="0.0229784" y="0.0232514" polynomial_order="0" id="6" area="0"/>
+            <label x="0.00978188" y="0.166438" polynomial_order="0" id="7" area="0"/>
+            <label x="0.009892720000000001" y="0.124325" polynomial_order="0" id="8" area="0"/>
+            <label x="0.0101315" y="0.0822441" polynomial_order="0" id="9" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" timetotal="1.0" type="triangle" timestep="1.0" name="Surge Arrester" date="2011-06-28">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_step="1.0" time_total="1.0" name="Surge Arrester" date="2011-06-28">
         <description>This model is an example.</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="electrostatic" numberofrefinements="0" analysistype="steadystate" polynomialorder="1" weakforms="interpreted" initialcondition="0.0">
-                <adaptivity adaptivitytolerance="5" maxdofs="60000" adaptivitytype="hp-adaptivity" adaptivitysteps="10"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="electrostatic" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weakforms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="hp-adaptivity" max_dofs="60000" adaptivity_tolerance="5" adaptivity_steps="10"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary type="electrostatic_surface_charge_density" id="1" name="Border" electrostatic_surface_charge_density="0">
                         <edge edge="34"/>
@@ -238,22 +238,22 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material id="1" electrostatic_charge_density="0" name="Air" electrostatic_permittivity="1">
+                    <material electrostatic_charge_density="0" id="1" electrostatic_permittivity="1" name="Air">
                         <label label="0"/>
                     </material>
-                    <material id="2" electrostatic_charge_density="0" name="Insulator" electrostatic_permittivity="3.9">
+                    <material electrostatic_charge_density="0" id="2" electrostatic_permittivity="3.9" name="Insulator">
                         <label label="6"/>
                     </material>
-                    <material id="3" electrostatic_charge_density="0" name="ZnO" electrostatic_permittivity="60">
+                    <material electrostatic_charge_density="0" id="3" electrostatic_permittivity="60" name="ZnO">
                         <label label="1"/>
                         <label label="2"/>
                         <label label="3"/>
                         <label label="4"/>
                     </material>
-                    <material id="4" electrostatic_charge_density="0" name="Resin" electrostatic_permittivity="4.6">
+                    <material electrostatic_charge_density="0" id="4" electrostatic_permittivity="4.6" name="Resin">
                         <label label="5"/>
                     </material>
-                    <material id="5" electrostatic_charge_density="0" name="Conductor" electrostatic_permittivity="1e6">
+                    <material electrostatic_charge_density="0" id="5" electrostatic_permittivity="1e6" name="Conductor">
                         <label label="7"/>
                         <label label="8"/>
                         <label label="9"/>

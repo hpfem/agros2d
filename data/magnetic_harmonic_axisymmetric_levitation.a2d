@@ -146,33 +146,33 @@
             <edge end="66" refine_towards="0" id="70" start="69" angle="0"/>
         </edges>
         <labels>
-            <label x="0.0125" y="-0.005" polynomialorder="0" id="0" area="0"/>
-            <label x="0.01625" y="-0.005" polynomialorder="0" id="1" area="0"/>
-            <label x="0.0225" y="0.0025" polynomialorder="0" id="2" area="0"/>
-            <label x="0.02625" y="0.0025" polynomialorder="0" id="3" area="0"/>
-            <label x="0.03" y="0.0125" polynomialorder="0" id="4" area="0"/>
-            <label x="0.03375" y="0.0125" polynomialorder="0" id="5" area="0"/>
-            <label x="0.0325" y="0.025" polynomialorder="0" id="6" area="0"/>
-            <label x="0.03625" y="0.025" polynomialorder="0" id="7" area="0"/>
-            <label x="0.0325" y="0.0375" polynomialorder="0" id="8" area="0"/>
-            <label x="0.03625" y="0.0375" polynomialorder="0" id="9" area="0"/>
-            <label x="0.0325" y="0.05" polynomialorder="0" id="10" area="0"/>
-            <label x="0.03625" y="0.05" polynomialorder="0" id="11" area="0"/>
-            <label x="0.0325" y="0.0625" polynomialorder="0" id="12" area="0"/>
-            <label x="0.03625" y="0.0625" polynomialorder="0" id="13" area="0"/>
-            <label x="0.025" y="0.0825" polynomialorder="0" id="14" area="0"/>
-            <label x="0.02875" y="0.0825" polynomialorder="0" id="15" area="0"/>
-            <label x="0.0055" y="0.06" polynomialorder="3" id="16" area="1e-06"/>
-            <label x="0.1" y="0.05" polynomialorder="0" id="17" area="0"/>
+            <label x="0.0125" y="-0.005" polynomial_order="0" id="0" area="0"/>
+            <label x="0.01625" y="-0.005" polynomial_order="0" id="1" area="0"/>
+            <label x="0.0225" y="0.0025" polynomial_order="0" id="2" area="0"/>
+            <label x="0.02625" y="0.0025" polynomial_order="0" id="3" area="0"/>
+            <label x="0.03" y="0.0125" polynomial_order="0" id="4" area="0"/>
+            <label x="0.03375" y="0.0125" polynomial_order="0" id="5" area="0"/>
+            <label x="0.0325" y="0.025" polynomial_order="0" id="6" area="0"/>
+            <label x="0.03625" y="0.025" polynomial_order="0" id="7" area="0"/>
+            <label x="0.0325" y="0.0375" polynomial_order="0" id="8" area="0"/>
+            <label x="0.03625" y="0.0375" polynomial_order="0" id="9" area="0"/>
+            <label x="0.0325" y="0.05" polynomial_order="0" id="10" area="0"/>
+            <label x="0.03625" y="0.05" polynomial_order="0" id="11" area="0"/>
+            <label x="0.0325" y="0.0625" polynomial_order="0" id="12" area="0"/>
+            <label x="0.03625" y="0.0625" polynomial_order="0" id="13" area="0"/>
+            <label x="0.025" y="0.0825" polynomial_order="0" id="14" area="0"/>
+            <label x="0.02875" y="0.0825" polynomial_order="0" id="15" area="0"/>
+            <label x="0.0055" y="0.06" polynomial_order="0" id="16" area="1e-06"/>
+            <label x="0.1" y="0.05" polynomial_order="0" id="17" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="1000" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Magnetic Harmonic Axisymmetric Levitation" date="2011-07-17">
+    <problem frequency="1000" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_step="0" time_total="0" name="Levitation Heating (magnetic field)" date="2011-08-28">
         <description>This model is an example.</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="magnetic" numberofrefinements="1" analysistype="harmonic" polynomialorder="2" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="magnetic" initial_condition="0" polynomial_order="2" number_of_refinements="1" weakforms="interpreted" analysis_type="harmonic">
+                <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="Border">
                         <edge edge="66"/>
@@ -183,7 +183,7 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="1" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="0"/>
                         <label label="2"/>
                         <label label="4"/>
@@ -194,10 +194,10 @@
                         <label label="14"/>
                         <label label="17"/>
                     </material>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="33000000" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Aluminium" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="33000000" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="2" name="Aluminium" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="16"/>
                     </material>
-                    <material magnetic_current_density_external_real="10000000" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="10000000" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="3" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="1"/>
                         <label label="3"/>
                         <label label="5"/>
@@ -206,7 +206,7 @@
                         <label label="11"/>
                         <label label="13"/>
                     </material>
-                    <material magnetic_current_density_external_real="-10000000" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="4" magnetic_remanence_angle="0" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="-10000000" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="4" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="15"/>
                     </material>
                 </materials>

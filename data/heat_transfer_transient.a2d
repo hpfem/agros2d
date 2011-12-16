@@ -17,26 +17,26 @@
             <edge end="1" refine_towards="0" id="5" start="4" angle="0"/>
         </edges>
         <labels>
-            <label x="-0.138626" y="-0.0639812" polynomialorder="0" id="0" area="0.1"/>
+            <label x="-0.138626" y="-0.0639812" polynomial_order="0" id="0" area="0.1"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="0" matrix_solver="umfpack" timetotal="40e3" type="triangle" timestep="1e3" name="Heat Transfer Transient" date="2011-04-16">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="" time_step="1e3" time_total="40e3" name="Heat Transfer Transient" date="2011-04-16">
         <description>This model is an example.</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="heat" numberofrefinements="0" analysistype="transient" polynomialorder="3" weakforms="interpreted" initialcondition="10">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="heat" initial_condition="10" polynomial_order="2" number_of_refinements="0" weakforms="interpreted" analysis_type="transient">
+                <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
-                    <boundary type="heat_heat_flux" heat_heat_flux="0" id="1" name="Insulation">
+                    <boundary heat_heat_transfer_coefficient="0" external_temperature="" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Insulation">
                         <edge edge="0"/>
                         <edge edge="4"/>
                     </boundary>
-                    <boundary heat_convection_external_temperature="20" heat_convection_heat_transfer_coefficient="10" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection" heat_radiation_ambient_temperature="0">
+                    <boundary heat_heat_transfer_coefficient="10" external_temperature="" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection">
                         <edge edge="1"/>
                         <edge edge="5"/>
                     </boundary>
-                    <boundary type="heat_temperature" heat_temperature="10" id="3" name="Temperature">
+                    <boundary type="heat_temperature" heat_temperature="0" id="3" name="Temperature">
                         <edge edge="2"/>
                         <edge edge="3"/>
                     </boundary>

@@ -18,17 +18,17 @@
             <edge end="4" refine_towards="0" id="6" start="2" angle="0"/>
         </edges>
         <labels>
-            <label x="0.0266815" y="0.0278347" polynomialorder="0" id="0" area="0"/>
-            <label x="0.104249" y="0.0211345" polynomialorder="0" id="1" area="0"/>
+            <label x="0.0266815" y="0.0278347" polynomial_order="0" id="0" area="0"/>
+            <label x="0.104249" y="0.0211345" polynomial_order="0" id="1" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="0" matrix_solver="umfpack" timetotal="1.0" type="triangle" timestep="1.0" name="unnamed" date="2011-07-22">
+    <problem coordinate_type="planar" frequency="0" matrix_solver="umfpack" time_total="1.0" mesh_type="triangle" time_step="1.0" name="unnamed" date="2011-07-22">
         <description/>
         <startupscript/>
         <fields>
-            <field fieldid="current" numberofrefinements="1" analysistype="steadystate" polynomialorder="2" weakforms="interpreted" initialcondition="0.0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="current" number_of_refinements="1" analysis_type="steadystate" polynomial_order="2" weakforms="interpreted" initial_condition="0.0">
+                <adaptivity adaptivity_tolerance="1" max_dofs="60000" adaptivity_type="disabled" adaptivity_steps="1"/>
+                <solver linearity_type="linear" nonlinear_tolerance="1e-3" nonlinear_steps="10"/>
                 <boundaries>
                     <boundary current_potential="10" type="current_potential" id="1" name="Source">
                         <edge edge="0"/>

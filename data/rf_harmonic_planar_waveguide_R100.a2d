@@ -29,16 +29,16 @@
             <edge end="2" refine_towards="0" id="11" start="8" angle="0"/>
         </edges>
         <labels>
-            <label x="0.0359418" y="0.0109393" polynomialorder="0" id="0" area="1e-05"/>
+            <label x="0.0359418" y="0.0109393" polynomial_order="0" id="0" area="1e-05"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="16000000000" matrix_solver="umfpack" timetotal="1.0" type="triangle" timestep="1.0" name="RF_waveguide_R100" date="2011-04-13">
+    <problem coordinate_type="planar" frequency="16000000000" matrix_solver="umfpack" time_total="1.0" mesh_type="triangle" time_step="1.0" name="RF_waveguide_R100" date="2011-04-13">
         <description/>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="rf" numberofrefinements="0" analysistype="harmonic" polynomialorder="4" weakforms="interpreted" initialcondition="0.0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="rf" number_of_refinements="0" analysis_type="harmonic" polynomial_order="4" weakforms="interpreted" initial_condition="0.0">
+                <adaptivity adaptivity_tolerance="1" max_dofs="60000" adaptivity_type="disabled" adaptivity_steps="1"/>
+                <solver linearity_type="linear" nonlinear_tolerance="1e-3" nonlinear_steps="10"/>
                 <boundaries>
                     <boundary rf_electric_field_real="0" rf_electric_field_imag="0" rf_port_power="0" rf_surface_current_imag="0" rf_magnetic_field_real="0" type="rf_electric_field" rf_port_phase="0" rf_surface_current_real="0" id="1" rf_magnetic_field_imag="0" name="Perfect electric conductor">
                         <edge edge="2"/>

@@ -19,44 +19,44 @@
             <node x="0" y="-0.25" id="15"/>
         </nodes>
         <edges>
-            <edge end="5" refine_towards="0" id="0" start="3" angle="120"/>
-            <edge end="4" refine_towards="0" id="1" start="5" angle="0"/>
-            <edge end="4" refine_towards="0" id="2" start="2" angle="120"/>
-            <edge end="3" refine_towards="0" id="3" start="2" angle="0"/>
-            <edge end="6" refine_towards="0" id="4" start="7" angle="0"/>
-            <edge end="8" refine_towards="0" id="5" start="9" angle="0"/>
-            <edge end="6" refine_towards="0" id="6" start="8" angle="120"/>
-            <edge end="7" refine_towards="0" id="7" start="9" angle="120"/>
-            <edge end="12" refine_towards="0" id="8" start="0" angle="90"/>
-            <edge end="1" refine_towards="0" id="9" start="12" angle="90"/>
-            <edge end="13" refine_towards="0" id="10" start="1" angle="90"/>
-            <edge end="0" refine_towards="0" id="11" start="13" angle="90"/>
-            <edge end="14" refine_towards="0" id="12" start="10" angle="90"/>
-            <edge end="11" refine_towards="0" id="13" start="14" angle="90"/>
-            <edge end="15" refine_towards="0" id="14" start="11" angle="90"/>
-            <edge end="10" refine_towards="0" id="15" start="15" angle="90"/>
+            <edge end="5" refine_towards="" id="0" start="3" angle="120"/>
+            <edge end="4" refine_towards="" id="1" start="5" angle="0"/>
+            <edge end="4" refine_towards="" id="2" start="2" angle="120"/>
+            <edge end="3" refine_towards="" id="3" start="2" angle="0"/>
+            <edge end="6" refine_towards="" id="4" start="7" angle="0"/>
+            <edge end="8" refine_towards="" id="5" start="9" angle="0"/>
+            <edge end="6" refine_towards="" id="6" start="8" angle="120"/>
+            <edge end="7" refine_towards="" id="7" start="9" angle="120"/>
+            <edge end="12" refine_towards="" id="8" start="0" angle="90"/>
+            <edge end="1" refine_towards="" id="9" start="12" angle="90"/>
+            <edge end="13" refine_towards="" id="10" start="1" angle="90"/>
+            <edge end="0" refine_towards="" id="11" start="13" angle="90"/>
+            <edge end="14" refine_towards="" id="12" start="10" angle="90"/>
+            <edge end="11" refine_towards="" id="13" start="14" angle="90"/>
+            <edge end="15" refine_towards="" id="14" start="11" angle="90"/>
+            <edge end="10" refine_towards="" id="15" start="15" angle="90"/>
         </edges>
         <labels>
-            <label x="0.0899971" y="0.155764" polynomialorder="0" id="0" area="0"/>
-            <label x="-0.0184609" y="0.0207686" polynomialorder="4" id="1" area="0.0002"/>
-            <label x="0.0576904" y="0.0403833" polynomialorder="0" id="2" area="0"/>
-            <label x="-0.0588442" y="0.0380757" polynomialorder="0" id="3" area="0"/>
+            <label x="0.0899971" y="0.155764" polynomial_order="0" id="0" area="0"/>
+            <label x="-0.0184609" y="0.0207686" polynomial_order="0" id="1" area="0.0002"/>
+            <label x="0.0576904" y="0.0403833" polynomial_order="0" id="2" area="0"/>
+            <label x="-0.0588442" y="0.0380757" polynomial_order="0" id="3" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="0" matrix_solver="umfpack" timetotal="1" type="triangle" timestep="1" name="Magnetic Steadystate Planar Rotating Heating" date="2011-07-17">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="" time_step="1" time_total="1" name="Magnetic Steadystate Planar Rotating Heating" date="">
         <description>This model is an example.</description>
-        <startupscript>Jext = 3e7
+        <startup_script>Jext = 3e7
 sigma = 33e6
 n = 1500
 p = 1
 f = p*n/60
-omega = 2*pi*f</startupscript>
+omega = 2*pi*f</startup_script>
         <fields>
-            <field fieldid="magnetic" numberofrefinements="1" analysistype="steadystate" polynomialorder="3" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="0" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="magnetic" initial_condition="0" polynomial_order="2" number_of_refinements="1" weakforms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="disabled" max_dofs="" adaptivity_tolerance="0" adaptivity_steps="1"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
-                    <boundary type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
+                    <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
                         <edge edge="12"/>
                         <edge edge="13"/>
                         <edge edge="14"/>
@@ -64,16 +64,16 @@ omega = 2*pi*f</startupscript>
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="omega" magnetic_permeability="1" magnetic_conductivity="sigma" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Aluminum" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="omega" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="sigma" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="1" name="Aluminum" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="1"/>
                     </material>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="2" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="0"/>
                     </material>
-                    <material magnetic_current_density_external_real="Jext" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="Jext" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="3" name="Conductor 1" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="2"/>
                     </material>
-                    <material magnetic_current_density_external_real="-Jext" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="4" magnetic_remanence_angle="0" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="-Jext" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="4" name="Conductor 2" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="3"/>
                     </material>
                 </materials>

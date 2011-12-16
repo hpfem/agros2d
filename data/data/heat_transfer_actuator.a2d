@@ -47,20 +47,20 @@
             <edge end="12" refine_towards="" id="21" start="5" angle="0"/>
         </edges>
         <labels>
-            <label x="0.009743589743589751" y="0.005011655011655021" polynomialorder="" id="0" area="0"/>
-            <label x="0.003449883449883458" y="0.06585081585081586" polynomialorder="" id="1" area="0"/>
-            <label x="0.02559440559440559" y="0.04906759906759908" polynomialorder="" id="2" area="0"/>
-            <label x="0.008344492199837732" y="0.08323175014650917" polynomialorder="" id="3" area="0"/>
-            <label x="0.02396100777080716" y="0.09183032725717474" polynomialorder="" id="4" area="0"/>
+            <label x="0.009743589743589751" y="0.005011655011655021" polynomial_order="" id="0" area="0"/>
+            <label x="0.003449883449883458" y="0.06585081585081586" polynomial_order="" id="1" area="0"/>
+            <label x="0.02559440559440559" y="0.04906759906759908" polynomial_order="" id="2" area="0"/>
+            <label x="0.008344492199837732" y="0.08323175014650917" polynomial_order="" id="3" area="0"/>
+            <label x="0.02396100777080716" y="0.09183032725717474" polynomial_order="" id="4" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="" timetotal="" type="" timestep="" name="unnamed" date="">
+    <problem coordina_tetype="axisymmetric" frequency="0" matrix_solver="" time_total="" mesh_type="triangle" time_step="" name="unnamed" date="">
         <description/>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="heat transfer" numberofrefinements="1" analysistype="" polynomialorder="2" weakforms="interpreted" initialcondition="">
-                <adaptivity adaptivitytolerance="1" maxdofs="" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="heat transfer" number_of_refinements="1" analysis_type="harmonic" polynomial_order="2" weakforms="interpreted" initial_condition="">
+                <adaptivity adaptivity_tolerance="1" max_dofs="" adaptivity_type="disabled" adaptivity_steps="1"/>
+                <solver linearity_type="linear" nonlinear_tolerance="1e-3" nonlinearsteps="10"/>
                 <boundaries>
                     <boundary h="8" external_temperature="20" type="heat_flux" id="1" name="Convection" heat_flux="0">
                         <edge edge="4"/>

@@ -58,21 +58,21 @@
             <edge end="21" refine_towards="0" id="27" start="23" angle="0"/>
         </edges>
         <labels>
-            <label x="0.0347323" y="-0.0250981" polynomialorder="0" id="0" area="0"/>
-            <label x="0.0454599" y="0.0290599" polynomialorder="0" id="1" area="0"/>
-            <label x="0.0329872" y="0.0163811" polynomialorder="0" id="2" area="0"/>
-            <label x="0.0159681" y="0.0321414" polynomialorder="0" id="3" area="0"/>
-            <label x="0.0371552" y="0.0376048" polynomialorder="0" id="4" area="0"/>
+            <label x="0.0347323" y="-0.0250981" polynomial_order="0" id="0" area="0"/>
+            <label x="0.0454599" y="0.0290599" polynomial_order="0" id="1" area="0"/>
+            <label x="0.0329872" y="0.0163811" polynomial_order="0" id="2" area="0"/>
+            <label x="0.0159681" y="0.0321414" polynomial_order="0" id="3" area="0"/>
+            <label x="0.0371552" y="0.0376048" polynomial_order="0" id="4" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="0" matrix_solver="umfpack" timetotal="1.0" type="triangle" timestep="1.0" name="unnamed" date="2011-07-17">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_step="1.0" time_total="1.0" name="Speaker (magnetic field)" date="2011-08-28">
         <description>Woofer femm 4.2 model
 http://www.femm.info/wiki/Woofer</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="magnetic" numberofrefinements="1" analysistype="steadystate" polynomialorder="2" weakforms="interpreted" initialcondition="0.0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="5"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="magnetic" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weakforms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="5"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
                         <edge edge="18"/>
@@ -83,17 +83,17 @@ http://www.femm.info/wiki/Woofer</description>
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="1" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="0"/>
                     </material>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.4" magnetic_conductivity="0" magnetic_remanence="0.22" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="90" name="Ceramic" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.4" magnetic_remanence="0.22" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="90" id="2" name="Ceramic" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="1"/>
                     </material>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="700" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Iron " magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="700" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="3" name="Iron " magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="2"/>
                         <label label="4"/>
                     </material>
-                    <material magnetic_current_density_external_real="6e7" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="4" magnetic_remanence_angle="0" name="Coil" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="6e7" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="4" name="Coil" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="3"/>
                     </material>
                 </materials>

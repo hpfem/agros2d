@@ -30,18 +30,18 @@
             <edge end="5" refine_towards="0" id="12" start="11" angle="90"/>
         </edges>
         <labels>
-            <label x="0.0491249" y="0" polynomialorder="0" id="0" area="0"/>
-            <label x="0.100407" y="0.112332" polynomialorder="0" id="1" area="0"/>
-            <label x="0.0124949" y="0.038258" polynomialorder="0" id="2" area="0.01"/>
+            <label x="0.0491249" y="0" polynomial_order="0" id="0" area="0"/>
+            <label x="0.100407" y="0.112332" polynomial_order="0" id="1" area="0"/>
+            <label x="0.0124949" y="0.038258" polynomial_order="0" id="2" area="0.01"/>
         </labels>
     </geometry>
-    <problem coordinatetype="axisymmetric" frequency="1000" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Magnetic Harmonic Axisymmetric Heating" date="2011-07-09">
+    <problem frequency="1000" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_step="0" time_total="0" name="Magnetic Harmonic Axisymmetric Heating" date="2011-07-09">
         <description>This model is an example.</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="magnetic" numberofrefinements="1" analysistype="harmonic" polynomialorder="3" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="magnetic" initial_condition="0" polynomial_order="2" number_of_refinements="1" weakforms="interpreted" analysis_type="harmonic">
+                <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
                         <edge edge="0"/>
@@ -53,13 +53,13 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Coil" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="1" name="Coil" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="0"/>
                     </material>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="3.7e7" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Metal" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="3.7e7" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="2" name="Metal" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="2"/>
                     </material>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="3" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="1"/>
                     </material>
                 </materials>

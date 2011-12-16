@@ -157,20 +157,20 @@
             <edge end="74" refine_towards="0" id="75" start="73" angle="0"/>
         </edges>
         <labels>
-            <label x="2.38936" y="6.96417" polynomialorder="0" id="0" area="0.01"/>
-            <label x="4.218148269245698" y="4.796715679645291" polynomialorder="0" id="1" area="0"/>
-            <label x="0.6836037997722029" y="6.093697749031771" polynomialorder="0" id="2" area="0"/>
+            <label x="2.38936" y="6.96417" polynomial_order="0" id="0" area="0.01"/>
+            <label x="4.218148269245698" y="4.796715679645291" polynomial_order="0" id="1" area="0"/>
+            <label x="0.6836037997722029" y="6.093697749031771" polynomial_order="0" id="2" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="500" matrix_solver="umfpack" timetotal="10e-2" type="triangle" timestep="1e-4" name="Acoustic Building" date="2011-04-08">
+    <problem frequency="500" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="1e-4" time_total="10e-2" name="Acoustic Building" date="2011-04-08">
         <description>This model is an example.</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="acoustic" numberofrefinements="0" analysistype="harmonic" polynomialorder="2" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="acoustic" initial_condition="0" polynomial_order="2" number_of_refinements="0" weakforms="interpreted" analysis_type="harmonic">
+                <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
-                    <boundary acoustic_pressure="0" acoustic_pressure_imag="0" acoustic_normal_acceleration_real="0" acoustic_normal_acceleration_imag="0" type="acoustic_impedance" acoustic_impedance="1.25*343" id="1" name="Wall" acoustic_normal_acceleration="0" acoustic_pressure_real="0">
+                    <boundary id="1" name="Wall">
                         <edge edge="0"/>
                         <edge edge="1"/>
                         <edge edge="2"/>
@@ -247,7 +247,7 @@
                         <edge edge="73"/>
                         <edge edge="74"/>
                     </boundary>
-                    <boundary acoustic_pressure="0" acoustic_pressure_imag="0" type="acoustic_pressure" id="2" name="Source" acoustic_pressure_real="1">
+                    <boundary acoustic_pressure="1" type="acoustic_pressure" id="2" name="Source">
                         <edge edge="75"/>
                     </boundary>
                 </boundaries>

@@ -17,16 +17,16 @@
             <edge end="4" refine_towards="0" id="5" start="5" angle="0"/>
         </edges>
         <labels>
-            <label x="0.129936" y="0.239288" polynomialorder="0" id="0" area="0.002"/>
+            <label x="0.129936" y="0.239288" polynomial_order="0" id="0" area="0.002"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="0" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Electrostatic Planar Capacitor" date="2011-07-07">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="0" time_total="0" name="Electrostatic Planar Capacitor" date="2011-07-07">
         <description>This model is an example.</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="electrostatic" numberofrefinements="0" analysistype="steadystate" polynomialorder="1" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="5" maxdofs="60000" adaptivitytype="hp-adaptivity" adaptivitysteps="10"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="electrostatic" initial_condition="0" polynomial_order="2" number_of_refinements="0" weakforms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="hp-adaptivity" max_dofs="60000" adaptivity_tolerance="5" adaptivity_steps="10"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary electrostatic_potential="10" type="electrostatic_potential" id="1" name="Source">
                         <edge edge="1"/>
@@ -42,7 +42,7 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material id="1" electrostatic_charge_density="0" name="Dielectric" electrostatic_permittivity="10">
+                    <material electrostatic_charge_density="0" id="1" electrostatic_permittivity="10" name="Dielectric">
                         <label label="0"/>
                     </material>
                 </materials>

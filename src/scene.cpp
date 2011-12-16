@@ -1334,12 +1334,13 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     }
 
     // validation
-    //    ErrorResult error = validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_xml.xsd");
-    //    if (error.isError())
-    //    {
-    //        error.showDialog();
-    //        //return ErrorResult();
-    //    }
+    ErrorResult error = validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_xml.xsd");
+    if (error.isError())
+    {
+        qDebug() << error.message();
+        //error.showDialog();
+        //return ErrorResult();
+    }
 
     // geometry ***************************************************************************************************************
 
@@ -1384,7 +1385,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         QDomElement element = nodeLabel.toElement();
         Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
         double area = element.attribute("area", "0").toDouble();
-        int polynomialOrder = element.attribute("polynomialorder", "0").toInt();
+        int polynomialOrder = element.attribute("polynomial_order", "0").toInt();
 
         SceneLabel *label = new SceneLabel(point, area, polynomialOrder);
         addLabel(label);
@@ -1400,24 +1401,24 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // date
     m_problemInfo->date = QDate::fromString(eleProblemInfo.toElement().attribute("date", QDate::currentDate().toString(Qt::ISODate)), Qt::ISODate);
     // coordinate type
-    m_problemInfo->coordinateType = coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinatetype"));
+    m_problemInfo->coordinateType = coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinate_type"));
     // mesh type
-    m_problemInfo->meshType = meshTypeFromStringKey(eleProblemInfo.toElement().attribute("meshtype",
+    m_problemInfo->meshType = meshTypeFromStringKey(eleProblemInfo.toElement().attribute("mesh_type",
                                                                                meshTypeToStringKey(MeshType_Triangle)));
 
     // harmonic
     m_problemInfo->frequency = eleProblemInfo.toElement().attribute("frequency", "0").toDouble();
 
     // transient
-    m_problemInfo->timeStep.setText(eleProblemInfo.toElement().attribute("timestep", "1"));
-    m_problemInfo->timeTotal.setText(eleProblemInfo.toElement().attribute("timetotal", "1"));
+    m_problemInfo->timeStep.setText(eleProblemInfo.toElement().attribute("time_step", "1"));
+    m_problemInfo->timeTotal.setText(eleProblemInfo.toElement().attribute("time_total", "1"));
 
     // matrix solver
     m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
                                                                                                      matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK)));
 
     // startup script
-    QDomNode eleScriptStartup = eleProblemInfo.toElement().elementsByTagName("startupscript").at(0);
+    QDomNode eleScriptStartup = eleProblemInfo.toElement().elementsByTagName("startup_script").at(0);
     m_problemInfo->startupscript = eleScriptStartup.toElement().text();
 
     // FIX ME - EOL conversion
@@ -1437,39 +1438,39 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     {
         QDomNode eleField = nodeField.toElement();
 
-        FieldInfo *field = new FieldInfo(m_problemInfo, eleField.toElement().attribute("fieldid"));
+        FieldInfo *field = new FieldInfo(m_problemInfo, eleField.toElement().attribute("field_id"));
 
         // analysis type
-        field->setAnalysisType(analysisTypeFromStringKey(eleField.toElement().attribute("analysistype",
+        field->setAnalysisType(analysisTypeFromStringKey(eleField.toElement().attribute("analysis_type",
                                                                                         analysisTypeToStringKey(AnalysisType_SteadyState))));
 
         // initial condition
-        field->initialCondition.setText(eleField.toElement().attribute("initialcondition", "0"));
+        field->initialCondition.setText(eleField.toElement().attribute("initial_condition", "0"));
 
         // weakforms
         field->weakFormsType = weakFormsTypeFromStringKey(eleField.toElement().attribute("weakforms",
                                                                                          weakFormsTypeToStringKey(WeakFormsType_Compiled)));
 
         // polynomial order
-        field->polynomialOrder = eleField.toElement().attribute("polynomialorder").toInt();
+        field->polynomialOrder = eleField.toElement().attribute("polynomial_order").toInt();
 
         // number of refinements
-        field->numberOfRefinements = eleField.toElement().attribute("numberofrefinements").toInt();
+        field->numberOfRefinements = eleField.toElement().attribute("number_of_refinements").toInt();
 
         // adaptivity
         QDomNode eleFieldAdaptivity = eleField.toElement().elementsByTagName("adaptivity").at(0);
 
-        field->adaptivityType = adaptivityTypeFromStringKey(eleFieldAdaptivity.toElement().attribute("adaptivitytype"));
-        field->adaptivitySteps = eleFieldAdaptivity.toElement().attribute("adaptivitysteps").toInt();
-        field->adaptivityTolerance = eleFieldAdaptivity.toElement().attribute("adaptivitytolerance").toDouble();
+        field->adaptivityType = adaptivityTypeFromStringKey(eleFieldAdaptivity.toElement().attribute("adaptivity_type"));
+        field->adaptivitySteps = eleFieldAdaptivity.toElement().attribute("adaptivity_steps").toInt();
+        field->adaptivityTolerance = eleFieldAdaptivity.toElement().attribute("adaptivity_tolerance").toDouble();
 
         // linearity
         QDomNode eleFieldLinearity = eleField.toElement().elementsByTagName("solver").at(0);
 
-        field->linearityType = linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity",
+        field->linearityType = linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type",
                                                                                                   linearityTypeToStringKey(LinearityType_Linear)));
-        field->nonlinearSteps = eleFieldLinearity.toElement().attribute("nonlinearsteps", "10").toInt();
-        field->nonlinearTolerance = eleFieldLinearity.toElement().attribute("nonlineartolerance", "1e-3").toDouble();
+        field->nonlinearSteps = eleFieldLinearity.toElement().attribute("nonlinear_steps", "10").toInt();
+        field->nonlinearTolerance = eleFieldLinearity.toElement().attribute("nonlinear_tolerance", "1e-3").toDouble();
 
         // boundary conditions
         QDomNode eleBoundaries = eleField.toElement().elementsByTagName("boundaries").at(0);

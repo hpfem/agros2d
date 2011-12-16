@@ -12,29 +12,29 @@
             <node x="0" y="0" id="8"/>
         </nodes>
         <edges>
-            <edge end="0" refine_towards="0" id="0" start="7" angle="0"/>
-            <edge end="8" refine_towards="0" id="1" start="0" angle="0"/>
-            <edge end="1" refine_towards="0" id="2" start="8" angle="0"/>
-            <edge end="6" refine_towards="0" id="3" start="1" angle="0"/>
-            <edge end="7" refine_towards="0" id="4" start="6" angle="90"/>
-            <edge end="2" refine_towards="0" id="5" start="1" angle="90"/>
-            <edge end="4" refine_towards="0" id="6" start="2" angle="0"/>
-            <edge end="4" refine_towards="0" id="7" start="5" angle="90"/>
-            <edge end="5" refine_towards="0" id="8" start="3" angle="0"/>
-            <edge end="0" refine_towards="0" id="9" start="3" angle="90"/>
+            <edge end="0" refine_towards="" id="0" start="7" angle="0"/>
+            <edge end="8" refine_towards="" id="1" start="0" angle="0"/>
+            <edge end="1" refine_towards="" id="2" start="8" angle="0"/>
+            <edge end="6" refine_towards="" id="3" start="1" angle="0"/>
+            <edge end="7" refine_towards="" id="4" start="6" angle="90"/>
+            <edge end="2" refine_towards="" id="5" start="1" angle="90"/>
+            <edge end="4" refine_towards="" id="6" start="2" angle="0"/>
+            <edge end="4" refine_towards="" id="7" start="5" angle="90"/>
+            <edge end="5" refine_towards="" id="8" start="3" angle="0"/>
+            <edge end="0" refine_towards="" id="9" start="3" angle="90"/>
         </edges>
         <labels>
-            <label x="0.000585418" y="0.00126858" polynomialorder="0" id="0" area="0"/>
-            <label x="0.000109549" y="8.6116e-05" polynomialorder="4" id="1" area="0"/>
+            <label x="0.000585418" y="0.00126858" polynomial_order="0" id="0" area="0"/>
+            <label x="0.000109549" y="8.6116e-05" polynomial_order="0" id="1" area="0"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="50000" matrix_solver="umfpack" timetotal="0" type="triangle" timestep="0" name="Magnetic Harmonic Planar Profile Conductor" date="2011-07-17">
+    <problem frequency="50000" matrix_solver="umfpack" coordinate_type="planar" mesh_type="" time_step="0" time_total="0" name="Magnetic Harmonic Planar Profile Conductor" date="">
         <description>This model is an example.</description>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="magnetic" numberofrefinements="1" analysistype="harmonic" polynomialorder="3" weakforms="interpreted" initialcondition="0">
-                <adaptivity adaptivitytolerance="1" maxdofs="60000" adaptivitytype="disabled" adaptivitysteps="1"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="magnetic" initial_condition="0" polynomial_order="2" number_of_refinements="1" weakforms="interpreted" analysis_type="harmonic">
+                <adaptivity adaptivity_type="disabled" max_dofs="" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary type="magnetic_surface_current" magnetic_surface_current_imag="0" id="1" name="Neumann" magnetic_surface_current_real="0">
                         <edge edge="0"/>
@@ -47,10 +47,10 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="1" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="0"/>
                     </material>
-                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="57e6" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="57e6" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="2" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="1"/>
                     </material>
                 </materials>

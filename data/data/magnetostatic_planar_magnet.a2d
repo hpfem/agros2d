@@ -21,17 +21,17 @@
             <edge end="6" refine_towards="" id="7" start="5" angle="0"/>
         </edges>
         <labels>
-            <label x="0.00301448" y="0.0404858" polynomialorder="" id="0" area="0.0005"/>
-            <label x="-0.145434" y="-0.706253" polynomialorder="" id="1" area="0.01"/>
+            <label x="0.00301448" y="0.0404858" polynomial_order="" id="0" area="0.0005"/>
+            <label x="-0.145434" y="-0.706253" polynomial_order="" id="1" area="0.01"/>
         </labels>
     </geometry>
-    <problem coordinatetype="planar" frequency="0" matrix_solver="" timetotal="" type="" timestep="" name="unnamed" date="">
+    <problem coordinate_type="planar" frequency="0" matrix_solver="" time_total="" mesh_type="triangle" time_step="" name="unnamed" date="">
         <description/>
-        <startupscript/>
+        <startup_script/>
         <fields>
-            <field fieldid="magnetostatic" numberofrefinements="0" analysistype="" polynomialorder="2" weakforms="interpreted" initialcondition="">
-                <adaptivity adaptivitytolerance="0" maxdofs="" adaptivitytype="disabled" adaptivitysteps="0"/>
-                <solver nonlineartolerance="interpreted" nonlinearsteps="interpreted"/>
+            <field field_id="magnetostatic" number_of_refinements="0" analysis_type="" polynomial_order="2" weakforms="interpreted" initial_condition="">
+                <adaptivity adaptivity_tolerance="0" max_dofs="" adaptivity_type="disabled" adaptivity_steps="0"/>
+                <solver linearity_type="linear" nonlinear_tolerance="1e-3" nonlinear_steps="10"/>
                 <boundaries>
                     <boundary type="vector_potential" value="0" id="1" name="A = 0">
                         <edge edge="0"/>
