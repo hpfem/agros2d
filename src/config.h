@@ -114,6 +114,12 @@ public:
     // rulers
     bool showRulers;
 
+    // particle tracing
+    double particleConstant;
+    Point particleStart;
+    Point particleStartVelocity;
+    int particleNumberOfPoints;
+
     // colors
     QColor colorBackground;
     QColor colorGrid;

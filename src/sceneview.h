@@ -48,6 +48,7 @@ struct SceneViewSettings
 
     bool showContours;
     bool showVectors;
+    bool showParticleTracing;
     bool showSolutionMesh;
 
     // contour
@@ -216,6 +217,7 @@ private:
     int m_listSolutionMesh;
     int m_listContours;
     int m_listVectors;
+    int m_listParticleTracing;
     int m_listScalarField;
     int m_listScalarField3D;
     int m_listScalarField3DSolid;
@@ -245,6 +247,7 @@ private:
 
     QAction *actShowContours;
     QAction *actShowVectors;
+    QAction *actShowParticleTracing;
     QAction *actShowSolutionMesh;
 
     void createActions();
@@ -270,6 +273,7 @@ private:
     void paintContours(); // paint scalar field contours
     void paintContoursTri(double3* vert, int3* tri, double step);
     void paintVectors(); // paint vector field vectors
+    void paintParticleTracing();
     void paintSolutionMesh();
 
     void paintScalarField(); // paint scalar field surface

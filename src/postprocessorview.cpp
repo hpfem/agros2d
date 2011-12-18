@@ -57,6 +57,7 @@ void PostprocessorView::loadBasic()
 
     chkShowContours->setChecked(m_sceneView->sceneViewSettings().showContours);
     chkShowVectors->setChecked(m_sceneView->sceneViewSettings().showVectors);
+    chkShowParticleTracing->setChecked(m_sceneView->sceneViewSettings().showParticleTracing);
     chkShowSolutionMesh->setChecked(m_sceneView->sceneViewSettings().showSolutionMesh);
 
     // scalar field
@@ -117,6 +118,14 @@ void PostprocessorView::loadAdvanced()
     chkShowOrderScale->setChecked(Util::config()->showOrderScale);
     cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData(Util::config()->orderPaletteOrderType));
     chkOrderLabel->setChecked(Util::config()->orderLabel);
+
+    // particle tracing
+    txtParticleNumberOfPoints->setValue(Util::config()->particleNumberOfPoints);
+    txtParticleConstant->setValue(Util::config()->particleConstant);
+    txtParticlePointX->setValue(Util::config()->particleStart.x);
+    txtParticlePointY->setValue(Util::config()->particleStart.y);
+    txtParticleVelocityX->setValue(Util::config()->particleStartVelocity.x);
+    txtParticleVelocityY->setValue(Util::config()->particleStartVelocity.y);
 }
 
 void PostprocessorView::saveBasic()
@@ -136,6 +145,7 @@ void PostprocessorView::saveBasic()
 
     m_sceneView->sceneViewSettings().showContours = chkShowContours->isChecked();
     m_sceneView->sceneViewSettings().showVectors = chkShowVectors->isChecked();
+    m_sceneView->sceneViewSettings().showParticleTracing = chkShowParticleTracing->isChecked();
     m_sceneView->sceneViewSettings().showSolutionMesh = chkShowSolutionMesh->isChecked();
 
     // scalar field
@@ -186,6 +196,14 @@ void PostprocessorView::saveAdvanced()
     Util::config()->orderPaletteOrderType = (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt();
     Util::config()->orderLabel = chkOrderLabel->isChecked();
 
+    // particle tracing
+    Util::config()->particleNumberOfPoints = txtParticleNumberOfPoints->value();
+    Util::config()->particleConstant = txtParticleConstant->value();
+    Util::config()->particleStart.x = txtParticlePointX->value();
+    Util::config()->particleStart.y = txtParticlePointY->value();
+    Util::config()->particleStartVelocity.x = txtParticleVelocityX->value();
+    Util::config()->particleStartVelocity.y = txtParticleVelocityY->value();
+
     // save
     Util::config()->save();
 }
@@ -233,6 +251,7 @@ QWidget *PostprocessorView::controlsBasic()
     chkShowInitialMesh = new QCheckBox(tr("Initial mesh"));
     chkShowContours = new QCheckBox(tr("Contours"));
     chkShowVectors = new QCheckBox(tr("Vectors"));
+    chkShowParticleTracing = new QCheckBox(tr("Particle tracing"));
     connect(chkShowVectors, SIGNAL(clicked()), this, SLOT(setControls()));
     chkShowSolutionMesh = new QCheckBox(tr("Solution mesh"));
 
@@ -259,6 +278,7 @@ QWidget *PostprocessorView::controlsBasic()
     layoutShow->addWidget(chkShowSolutionMesh, 2, 0);
     layoutShow->addWidget(chkShowContours, 3, 0);
     layoutShow->addWidget(chkShowVectors, 4, 0);
+    layoutShow->addWidget(chkShowParticleTracing, 5, 0);
     layoutShow->addWidget(new QLabel(tr("2D:")), 0, 1);
     layoutShow->addWidget(radPostprocessorNone, 0, 2);
     layoutShow->addWidget(radPostprocessorOrder, 1, 2);
@@ -568,12 +588,48 @@ QWidget *PostprocessorView::controlsAdvanced()
     QWidget *orderWidget = new QWidget();
     orderWidget->setLayout(layoutOrder);
 
+    // particle tracing
+    txtParticleNumberOfPoints = new QSpinBox(this);
+    txtParticleNumberOfPoints->setMinimum(1);
+    txtParticleNumberOfPoints->setMaximum(50);
+    txtParticleConstant = new SLineEditDouble();
+    txtParticlePointX = new SLineEditDouble();
+    txtParticlePointY = new SLineEditDouble();
+    txtParticleVelocityX = new SLineEditDouble();
+    txtParticleVelocityY = new SLineEditDouble();
+
+    QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
+    connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
+
+    QGridLayout *gridLayoutParticle = new QGridLayout();
+    gridLayoutParticle->setColumnMinimumWidth(0, minWidth);
+    gridLayoutParticle->setColumnStretch(1, 1);
+    gridLayoutParticle->addWidget(new QLabel(tr("Number of points:")), 0, 0);
+    gridLayoutParticle->addWidget(txtParticleNumberOfPoints, 0, 1);
+    gridLayoutParticle->addWidget(new QLabel(tr("Constant:")), 1, 0);
+    gridLayoutParticle->addWidget(txtParticleConstant, 1, 1);
+    gridLayoutParticle->addWidget(new QLabel(tr("Particle position:")), 2, 0);
+    gridLayoutParticle->addWidget(txtParticlePointX, 2, 1);
+    gridLayoutParticle->addWidget(txtParticlePointY, 3, 1);
+    gridLayoutParticle->addWidget(new QLabel(tr("Particle velocity:")), 4, 0);
+    gridLayoutParticle->addWidget(txtParticleVelocityX, 4, 1);
+    gridLayoutParticle->addWidget(txtParticleVelocityY, 5, 1);
+
+    QVBoxLayout *layoutParticle = new QVBoxLayout();
+    layoutParticle->addLayout(gridLayoutParticle);
+    layoutParticle->addStretch();
+    layoutParticle->addWidget(btnParticleDefault, 0, Qt::AlignLeft);
+
+    QWidget *particleWidget = new QWidget();
+    particleWidget->setLayout(layoutParticle);
+
     tbxAdvance = new QToolBox();
     tbxAdvance->addItem(workspaceWidget, icon(""), "Workspace");
     tbxAdvance->addItem(scalarFieldWidget, icon(""), "Scalar view");
     tbxAdvance->addItem(contoursWidget, icon(""), "Contours");
     tbxAdvance->addItem(vectorFieldWidget, icon(""), "Vector field");
     tbxAdvance->addItem(orderWidget, icon(""), "Polynomial order");
+    tbxAdvance->addItem(particleWidget, icon(""), "Particle tracing");
 
     // layout postprocessor
     QVBoxLayout *layout = new QVBoxLayout();
@@ -646,6 +702,7 @@ void PostprocessorView::setControls()
     chkShowSolutionMesh->setEnabled(isSolved && (cmbScalarFieldVariable->count() > 0));
     chkShowContours->setEnabled(isSolved);
     chkShowVectors->setEnabled(isSolved && (cmbVectorFieldVariable->count() > 0));
+    chkShowParticleTracing->setEnabled(isSolved && (cmbVectorFieldVariable->count() > 0));
 
     radPostprocessorNone->setEnabled(isSolved);
     radPostprocessorScalarField->setEnabled(isSolved);
@@ -682,6 +739,7 @@ void PostprocessorView::setControls()
         chkShowSolutionMesh->setEnabled(false);
         chkShowContours->setEnabled(false);
         chkShowVectors->setEnabled(false);
+        chkShowParticleTracing->setEnabled(false);
     }
 }
 
@@ -783,6 +841,18 @@ void PostprocessorView::doOrderDefault()
     cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData((PaletteOrderType) ORDERPALETTEORDERTYPE));
     chkShowOrderScale->setChecked(ORDERSCALE);
     chkOrderLabel->setChecked(ORDERLABEL);
+}
+
+void PostprocessorView::doParticleDefault()
+{
+    logMessage("PostprocessorView::doParticleDefault()");
+
+    txtParticleNumberOfPoints->setValue(PARTICLENUMBEROFPOINTS);
+    txtParticleConstant->setValue(PARTICLECONSTANT);
+    txtParticlePointX->setValue(PARTICLESTARTX);
+    txtParticlePointY->setValue(PARTICLESTARTY);
+    txtParticleVelocityX->setValue(PARTICLESTARTVELOCITYX);
+    txtParticleVelocityY->setValue(PARTICLESTARTVELOCITYY);
 }
 
 void PostprocessorView::doScalarFieldRangeMinChanged()
