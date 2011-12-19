@@ -162,7 +162,6 @@ Hermes::Hermes2D::Mesh *SolverAgros<Scalar>::readMesh()
 {
     // load the mesh file
     Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
-    refineMesh(mesh, true, true);
 
     return mesh;
 }
@@ -401,6 +400,9 @@ Hermes::vector<SolutionArray<Scalar> *> SolverAgros<Scalar>::solve(Hermes::vecto
 //    {
 //        // read mesh from file
 //        mesh = readMesh();
+//          foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+//                refineMesh(fieldInfo, mesh, true, true);
+
 
 //        // create essential boundary conditions and space
 //        space = createSpace(mesh);

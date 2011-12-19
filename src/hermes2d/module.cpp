@@ -28,6 +28,7 @@
 #include "scenebasic.h"
 #include "scenemarkerdialog.h"
 #include "scenesolution.h"
+#include "sceneedge.h"
 #include "hermes2d/solver.h"
 
 #include "mesh/mesh_reader_h2d.h"
@@ -1024,20 +1025,25 @@ void writeMeshFromFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh)
     setlocale(LC_NUMERIC, plocale);
 }
 
-void refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
+void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
 {
-    assert(0); //TODO
-    //    // refine mesh - global
-    //    if (refineGlobal)
-    //        for (int i = 0; i < Util::scene()->problemInfo()->numberOfRefinements; i++)
-    //            mesh->refine_all_elements(0);
+    // refine mesh - global
+    if (refineGlobal)
+        for (int i = 0; i < fieldInfo->numberOfRefinements; i++)
+            mesh->refine_all_elements(0);
 
-    //    // refine mesh - boundary
-    //    if (refineTowardsEdge)
-    //        for (int i = 0; i < Util::scene()->edges.count(); i++)
-    //            if (Util::scene()->edges[i]->refineTowardsEdge > 0)
-    //                mesh->refine_towards_boundary(QString::number(((Util::scene()->edges[i]->boundary->getType() != "") ? i + 1 : -i)).toStdString(),
-    //                                              Util::scene()->edges[i]->refineTowardsEdge);
+    // refine mesh - boundary
+    int i = 0;
+    if (refineTowardsEdge)
+        foreach (SceneEdge *edge, Util::scene()->edges->items())
+        {
+            if (edge->refineTowardsEdge > 0)
+                mesh->refine_towards_boundary(QString::number(((edge->getMarker(fieldInfo)
+                                                                != SceneBoundaryContainer::getNone(fieldInfo)) ? i + 1 : -i)).toStdString(),
+                                              edge->refineTowardsEdge);
+
+            i++;
+        }
 }
 
 // return geom type
