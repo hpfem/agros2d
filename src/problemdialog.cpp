@@ -175,19 +175,19 @@ void FieldWidget::createContent()
     QGridLayout *layoutTable = new QGridLayout();
     layoutTable->setColumnMinimumWidth(0, minWidth);
     layoutTable->setColumnStretch(1, 1);
-    layoutTable->addWidget(new QLabel(tr("Type of analysis:")), 5, 0);
-    layoutTable->addWidget(cmbAnalysisType, 5, 1);
-    layoutTable->addWidget(new QLabel(tr("Adaptivity:")), 6, 0);
-    layoutTable->addWidget(cmbAdaptivityType, 6, 1);
-    layoutTable->addWidget(new QLabel(tr("Weak forms:")), 9, 0);
-    layoutTable->addWidget(cmbWeakForms, 9, 1);
+    layoutTable->addWidget(new QLabel(tr("Type of analysis:")), 0, 0);
+    layoutTable->addWidget(cmbAnalysisType, 0, 1);
+    layoutTable->addWidget(new QLabel(tr("Adaptivity:")), 1, 0);
+    layoutTable->addWidget(cmbAdaptivityType, 1, 1);
+    layoutTable->addWidget(new QLabel(tr("Weak forms:")), 2, 0);
+    layoutTable->addWidget(cmbWeakForms, 2, 1);
 
     // transient analysis
     QGridLayout *layoutTransientAnalysis = new QGridLayout();
     layoutTransientAnalysis->setColumnMinimumWidth(0, minWidth);
     layoutTransientAnalysis->setColumnStretch(1, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Initial condition:")), 2, 0);
-    layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 2, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Initial condition:")), 0, 0);
+    layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 0, 1);
 
     QGroupBox *grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
     grpTransientAnalysis->setLayout(layoutTransientAnalysis);
@@ -196,10 +196,10 @@ void FieldWidget::createContent()
     QGridLayout *layoutMesh = new QGridLayout();
     layoutMesh->setColumnMinimumWidth(0, minWidth);
     layoutMesh->setColumnStretch(1, 1);
-    layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 1, 0);
-    layoutMesh->addWidget(txtNumberOfRefinements, 1, 1);
-    layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 2, 0);
-    layoutMesh->addWidget(txtPolynomialOrder, 2, 1);
+    layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 0, 0);
+    layoutMesh->addWidget(txtNumberOfRefinements, 0, 1);
+    layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 1, 0);
+    layoutMesh->addWidget(txtPolynomialOrder, 1, 1);
 
     QGroupBox *grpMesh = new QGroupBox(tr("Mesh parameters"));
     grpMesh->setLayout(layoutMesh);
@@ -479,14 +479,14 @@ QWidget *ProblemDialog::createControlsGeneral()
     QGridLayout *layoutTable = new QGridLayout();
     layoutTable->setColumnMinimumWidth(0, minWidth);
     layoutTable->setColumnStretch(1, 1);
-    layoutTable->addWidget(new QLabel(tr("Date:")), 2, 0);
-    layoutTable->addWidget(dtmDate, 2, 1);
-    layoutTable->addWidget(new QLabel(tr("Coordinate type:")), 4, 0);
-    layoutTable->addWidget(cmbCoordinateType, 4, 1);
-    layoutTable->addWidget(new QLabel(tr("Linear solver:")), 8, 0);
-    layoutTable->addWidget(cmbMatrixSolver, 8, 1);
-    layoutTable->addWidget(new QLabel(tr("Mesh type:")), 0, 0);
-    layoutTable->addWidget(cmbMeshType, 0, 1);
+    layoutTable->addWidget(new QLabel(tr("Date:")), 0, 0);
+    layoutTable->addWidget(dtmDate, 0, 1);
+    layoutTable->addWidget(new QLabel(tr("Coordinate type:")), 1, 0);
+    layoutTable->addWidget(cmbCoordinateType, 1, 1);
+    layoutTable->addWidget(new QLabel(tr("Linear solver:")), 2, 0);
+    layoutTable->addWidget(cmbMatrixSolver, 2, 1);
+    layoutTable->addWidget(new QLabel(tr("Mesh type:")), 3, 0);
+    layoutTable->addWidget(cmbMeshType, 3, 1);
 
     // harmonic analysis
     QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
@@ -505,8 +505,8 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutTransientAnalysis->addWidget(txtTransientTimeStep, 0, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Total time (s):")), 1, 0);
     layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 1, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Steps:")), 3, 0);
-    layoutTransientAnalysis->addWidget(lblTransientSteps, 3, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Steps:")), 2, 0);
+    layoutTransientAnalysis->addWidget(lblTransientSteps, 2, 1);
 
     QGroupBox *grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
     grpTransientAnalysis->setLayout(layoutTransientAnalysis);
