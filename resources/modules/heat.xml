@@ -123,19 +123,19 @@
                     shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;" shortname_latex="T"
                     unit="K" unit_html="K" unit_latex="K" />
                 <quantity id="heat_heat_flux" name="Heat flux"
-                    shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;" shortname_latex=""
+                    shortname="f" shortname_html="&lt;i&gt;f&lt;/i&gt;" shortname_latex=""
                     unit="W/m2" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="W \cdot m^{-2}" />
                 <quantity id="heat_convection_heat_transfer_coefficient" name="Heat transfer coefficient" default="5" condition="value >= 0"
-                    shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;" shortname_latex=""
+                    shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;" shortname_latex=""
                     unit="W/m2.K" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="W \cdot m^{-2} \cdot K^{-1}" />
                 <quantity id="heat_convection_external_temperature" name="Convection - external temperature" default="20"
-                    shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;" shortname_latex=""
+                    shortname="Te" shortname_html="&lt;i&gt;T&lt;/i&gt;e" shortname_latex=""
                     unit="K" unit_html="K" unit_latex="K" />
                 <quantity id="heat_radiation_emissivity" name="Emissivity" default="0.0" condition="value >= 0"
-                    shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;" shortname_latex=""
+                    shortname="eps" shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;" shortname_latex=""
                     unit="-" unit_html="-" unit_latex="-" />
                 <quantity id="heat_radiation_ambient_temperature" name="Radiation - ambient temperature" default="20"
-                    shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;" shortname_latex=""
+                    shortname="Ta" shortname_html="&lt;i&gt;T&lt;/i&gt;a" shortname_latex=""
                     unit="K" unit_html="K" unit_latex="K" />
             </group>
         </surface>
