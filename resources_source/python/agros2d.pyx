@@ -7,7 +7,7 @@ cdef extern from "limits.h":
     int c_DOUBLE_MIN "DOUBLE_MIN"
     int c_DOUBLE_MAX "DOUBLE_MAX"
 
-cdef extern from "../scripteditorcommandpython.h":
+cdef extern from "../../src/scripteditorcommandpython.h":
     void pythonMessage(char *str)
     char *pythonVersion()
     char *pythonInput(char *str)

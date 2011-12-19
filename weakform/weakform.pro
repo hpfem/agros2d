@@ -7,8 +7,8 @@
 QT += core gui network xml webkit
 
 TEMPLATE = lib
-TARGET = lib/weakform
-OBJECTS_DIR = build
+TARGET = ../build/weakform/lib/weakform
+OBJECTS_DIR = ../build/weakform
 CONFIG += staticlib
 CONFIG += warn_off
 

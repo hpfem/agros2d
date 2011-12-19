@@ -1,7 +1,7 @@
 QT -= GUI
-TARGET = lib/hermes2d
+TARGET = ../build/hermes2d/lib/hermes2d
 TEMPLATE = lib
-OBJECTS_DIR = build
+OBJECTS_DIR = ../build/hermes2d
 CONFIG += staticlib
 CONFIG += debug
 DEFINES += NOGLUT
