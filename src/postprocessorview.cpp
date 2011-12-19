@@ -569,11 +569,11 @@ QWidget *PostprocessorView::controlsAdvanced()
     orderWidget->setLayout(layoutOrder);
 
     tbxAdvance = new QToolBox();
-    tbxAdvance->addItem(workspaceWidget, icon(""), "Workspace");
-    tbxAdvance->addItem(scalarFieldWidget, icon(""), "Scalar view");
-    tbxAdvance->addItem(contoursWidget, icon(""), "Contours");
-    tbxAdvance->addItem(vectorFieldWidget, icon(""), "Vector field");
-    tbxAdvance->addItem(orderWidget, icon(""), "Polynomial order");
+    tbxAdvance->addItem(workspaceWidget, icon(""), tr("Workspace"));
+    tbxAdvance->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
+    tbxAdvance->addItem(contoursWidget, icon(""), tr("Contours"));
+    tbxAdvance->addItem(vectorFieldWidget, icon(""), tr("Vector field"));
+    tbxAdvance->addItem(orderWidget, icon(""), tr("Polynomial order"));
 
     // layout postprocessor
     QVBoxLayout *layout = new QVBoxLayout();
