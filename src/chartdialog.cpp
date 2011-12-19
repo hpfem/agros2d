@@ -29,7 +29,7 @@ QList<Point> ChartLine::getPoints()
         return QList<Point>();
 
     QList<Point> points;
-    points.reserve(numberOfPoints);
+    //points.reserve(numberOfPoints);
 
     if (fabs(angle) < EPS_ZERO)
     {
