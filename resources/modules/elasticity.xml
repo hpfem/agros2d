@@ -9,9 +9,7 @@
 
     <constants />
 
-    <macros>
-        <macro id="" expression="" />
-    </macros>
+    <macros />
 
     <volume>
         <quantity id="elasticity_young_modulus" shortname="E" />
@@ -127,16 +125,26 @@
         <volume>
             <group>
                 <quantity id="elasticity_young_modulus" name="Young modulus"
-                shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;"
-                unit="Pa" unit_html="Pa" />
+                          shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;" shortname_latex="E"
+                          unit="Pa" unit_html="Pa" unit_latex="Pa" />
                 <quantity id="elasticity_poisson_ratio" name="Poisson ratio"
-                shortname="nu" shortname_html="&lt;i&gt;&amp;nu;&lt;/i&gt;"
-                unit="-" unit_html="-" />
-                <quantity id="elasticity_force_x" name="Force - x" shortname="fx" unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="N \cdot m^{-3}" />
-                <quantity id="elasticity_force_y" name="Force - y" shortname="fy" unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="N \cdot m^{-3}" />
-                <quantity id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/m" unit_html="m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m^{-1}" />
-                <quantity id="elasticity_temperature" name="Temperature" shortname="T" unit="K" />
-                <quantity id="elasticity_temperature_reference" name="Reference emperature" shortname="Tr" unit="K" />
+                          shortname="nu" shortname_html="&lt;i&gt;&amp;nu;&lt;/i&gt;" shortname_latex="\nu"
+                          unit="-" unit_html="-" unit_latex="-" />
+                <quantity id="elasticity_force_x" name="Force - x"
+                          shortname="fx" shortname_html="&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;" shortname_latex="f_{x}"
+                          unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="N \cdot m^{-3}" />
+                <quantity id="elasticity_force_y" name="Force - y"
+                          shortname="fy" shortname_html="&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;" shortname_latex="f_{y}"
+                          unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="N \cdot m^{-3}" />
+                <quantity id="elasticity_alpha" name="Temperature coefficient"
+                          shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;" shortname_latex="\alpha"
+                          unit="1/K" unit_html="K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="K^{-1}" />
+                <quantity id="elasticity_temperature" name="Temperature"
+                          shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;" shortname_latex="T"
+                          unit="K" unit_html="K" unit_latex="K" />
+                <quantity id="elasticity_temperature_reference" name="Reference emperature"
+                          shortname="Tr" shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;" shortname_latex="T_{ref}"
+                          unit="K" unit_html="K" unit_latex="K" />
             </group>
         </volume>
         <surface>
@@ -151,35 +159,49 @@
 
     <postprocessor>
         <localvariables>
-            <localvariable id="elasticity_displacement" name="Displacement" shortname="d" unit="m" type="vector">
+            <localvariable id="elasticity_displacement" name="Displacement" type="vector"
+                           shortname="d" shortname_html="&lt;i&gt;d&lt;/i&gt;" shortname_latex="d"
+                           unit="m" unit_html="m" unit_latex="m">
                 <expression analysistype="steadystate" planar_x="value1"
                                                        planar_y="value2"
                                                        axi_r="value1"
                                                        axi_z="value2" />
             </localvariable>
-            <localvariable id="elasticity_young_modulus" name="Young modulus" shortname="E" unit="Pa" type="scalar">
+            <localvariable id="elasticity_young_modulus" name="Young modulus" type="scalar"
+                           shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;" shortname_latex="E"
+                           unit="Pa" unit_html="Pa" unit_latex="Pa" >
                 <expression analysistype="steadystate" planar="E"
                                                        axi="E" />
             </localvariable>
-            <localvariable id="elasticity_poisson_ratio" name="Poisson ratio" shortname="nu" unit="-" type="scalar">
+            <localvariable id="elasticity_poisson_ratio" name="Poisson ratio" type="scalar"
+                           shortname="nu" shortname_html="&lt;i&gt;&amp;nu;&lt;/i&gt;" shortname_latex="\nu"
+                           unit="-" unit_html="-" unit_latex="-" >
                 <expression analysistype="steadystate" planar="nu"
                                                        axi="nu" />
             </localvariable>
-            <localvariable id="elasticity_inner_force" name="Inner force" shortname="f" unit="N" type="vector">
+            <localvariable id="elasticity_inner_force" name="Inner force" type="vector"
+                           shortname="f" shortname_html="&lt;i&gt;f&lt;/i&gt;" shortname_latex="f"
+                           unit="N" unit_html="N" unit_latex="N" >
                 <expression analysistype="steadystate" planar_x="fx"
                                                        planar_y="fy"
                                                        axi_r="fx"
                                                        axi_z="fy" />
             </localvariable>
-            <localvariable id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" unit="1/K" type="scalar">
+            <localvariable id="elasticity_alpha" name="Temperature coefficient" type="scalar"
+                           shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;" shortname_latex="\alpha"
+                           unit="1/K" unit_html="K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="K^{-1}" >
                 <expression analysistype="steadystate" planar="alpha"
                                                        axi="alpha" />
             </localvariable>
-            <localvariable id="elasticity_temperature" name="Temperature" shortname="T" unit="K" type="scalar">
+            <localvariable id="elasticity_temperature" name="Temperature" type="scalar"
+                           shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;" shortname_latex="T"
+                           unit="K" unit_html="K" unit_latex="K" >
                 <expression analysistype="steadystate" planar="T"
                                                        axi="T" />
             </localvariable>
-            <localvariable id="elasticity_temperature_reference" name="Reference temperature" shortname="Tr" unit="K" type="scalar">
+            <localvariable id="elasticity_temperature_reference" name="Reference temperature" type="scalar"
+                           shortname="Tr" shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;" shortname_latex="T_{ref}"
+                           unit="K" unit_html="K" unit_latex="K" >
                 <expression analysistype="steadystate" planar="Tr"
                                                        axi="Tr" />
             </localvariable>
@@ -195,22 +217,30 @@
         </view>
 
         <volumeintegrals>
-            <volumeintegral id="elasticity_volume" name="Volume" shortname="V" unit="m3">
+            <volumeintegral id="elasticity_volume" name="Volume"
+                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
+                            unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}" >
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="2.0 * PI * r" />
             </volumeintegral>
-            <volumeintegral id="elasticity_cross_section" name="Cross section" shortname="S" unit="m2">
+            <volumeintegral id="elasticity_cross_section" name="Cross section"
+                            shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
+                            unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}" >
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="1.0" />
             </volumeintegral>
         </volumeintegrals>
 
         <surfaceintegrals>
-            <surfaceintegral id="elasticity_length" name="Length" shortname="l" unit="m">
+            <surfaceintegral id="elasticity_length" name="Length"
+                             shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;" shortname_latex="l"
+                             unit="m" unit_html="m" unit_latex="m" >
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="1.0" />
             </surfaceintegral>
-            <surfaceintegral id="elasticity_surface" name="Surface" shortname="S" unit="m2">
+            <surfaceintegral id="elasticity_surface" name="Surface"
+                             shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
+                             unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}" >
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="2.0 * PI * r" />
             </surfaceintegral>

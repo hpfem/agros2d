@@ -12,9 +12,7 @@
         <constant id="SIGMA0" value="5.670373e-8" />
     </constants>
     
-    <macros>
-        <macro id="" expression="" />
-    </macros>
+    <macros />
 
     <volume>
         <quantity id="heat_conductivity" shortname="lambda" />
@@ -105,53 +103,57 @@
     <preprocessor>
         <volume>
             <group>
-                <quantity id="heat_conductivity" nonlin="1" name="Thermal conductivity"
-                shortname="lambda" shortname_html="&lt;i&gt;&amp;lambda;&lt;/i&gt;"
-                unit="W/m.K" unit_html="W.m&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="W \cdot m^{-1} \cdot K^{-1}" default="385" condition="value > 0" />
-                <quantity id="heat_volume_heat" timedep="1" name="Volume heat"
-                shortname="p" shortname_html="&lt;i&gt;p&lt;/i&gt;"
-                unit="W/m3" unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}" condition="value >= 0" />
-                <quantity id="heat_density" name="Density"
-                shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;"
-                unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" condition="value >= 0" />
-                <quantity id="heat_specific_heat" name="Specific heat"
-                shortname="cp" shortname_html="&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;P&lt;/sub&gt;"
-                unit="J/kg.K" unit_html="J.kg&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="J \cdot kg^{-1} \cdot K^{-1}" condition="value >= 0" />
+                <quantity id="heat_conductivity" nonlin="1" name="Thermal conductivity" default="385" condition="value > 0"
+                    shortname="lambda" shortname_html="&lt;i&gt;&amp;lambda;&lt;/i&gt;" shortname_latex="\lambda"
+                    unit="W/m.K" unit_html="W.m&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="W \cdot m^{-1} \cdot K^{-1}" />
+                <quantity id="heat_volume_heat" timedep="1" name="Volume heat" condition="value >= 0"
+                    shortname="p" shortname_html="&lt;i&gt;p&lt;/i&gt;" shortname_latex="p"
+                    unit="W/m3" unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}" />
+                <quantity id="heat_density" name="Density" condition="value >= 0"
+                    shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;" shortname_latex="\rho"
+                    unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" />
+                <quantity id="heat_specific_heat" name="Specific heat" condition="value >= 0"
+                    shortname="cp" shortname_html="&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;P&lt;/sub&gt;" shortname_latex="c_{P}"
+                    unit="J/kg.K" unit_html="J.kg&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="J \cdot kg^{-1} \cdot K^{-1}" />
             </group>
         </volume>
         <surface>
             <group>
                 <quantity id="heat_temperature" name="Temperature"
-                shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;"
-                unit="K" />
+                    shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;" shortname_latex="T"
+                    unit="K" unit_html="K" unit_latex="K" />
                 <quantity id="heat_heat_flux" name="Heat flux"
-                shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;"
-                unit="W/m2" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="W \cdot m^{-2}" />
-                <quantity id="heat_convection_heat_transfer_coefficient" name="Heat transfer coefficient"
-                shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;"
-                unit="W/m2.K" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="W \cdot m^{-2} \cdot K^{-1}" default="5" condition="value >= 0" />
-                <quantity id="heat_convection_external_temperature" name="Convection - external temperature"
-                shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;"
-                unit="K" default="20" />
-                <quantity id="heat_radiation_emissivity" name="Emissivity"
-                shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;"
-                unit="-" unit_html="-" unit_latex="-" default="0.0" condition="value >= 0" />
-                <quantity id="heat_radiation_ambient_temperature" name="Radiation - ambient temperature"
-                shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;"
-                unit="K" default="20" />
+                    shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;" shortname_latex=""
+                    unit="W/m2" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="W \cdot m^{-2}" />
+                <quantity id="heat_convection_heat_transfer_coefficient" name="Heat transfer coefficient" default="5" condition="value >= 0"
+                    shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;" shortname_latex=""
+                    unit="W/m2.K" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="W \cdot m^{-2} \cdot K^{-1}" />
+                <quantity id="heat_convection_external_temperature" name="Convection - external temperature" default="20"
+                    shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;" shortname_latex=""
+                    unit="K" unit_html="K" unit_latex="K" />
+                <quantity id="heat_radiation_emissivity" name="Emissivity" default="0.0" condition="value >= 0"
+                    shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;" shortname_latex=""
+                    unit="-" unit_html="-" unit_latex="-" />
+                <quantity id="heat_radiation_ambient_temperature" name="Radiation - ambient temperature" default="20"
+                    shortname="" shortname_html="&lt;i&gt;&lt;/i&gt;" shortname_latex=""
+                    unit="K" unit_html="K" unit_latex="K" />
             </group>
         </surface>
     </preprocessor>
 
     <postprocessor>
         <localvariables>
-            <localvariable id="heat_temperature" name="Temperature" shortname="T" unit="K" type="scalar">
+            <localvariable id="heat_temperature" name="Temperature" type="scalar"
+                           shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;" shortname_latex="T"
+                           unit="K" unit_html="K" unit_latex="K" >
                 <expression analysistype="steadystate" planar="value1"
                                                        axi="value1"/>
                 <expression analysistype="transient" planar="value1"
                                                      axi="value1"/>
             </localvariable>
-            <localvariable id="heat_heat_flux" name="Heat flux" shortname="F" unit="W/m2" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="W \cdot m^{-2}" format="%5.3e" type="vector">
+            <localvariable id="heat_heat_flux" name="Heat flux" format="%5.3e" type="vector"
+                           shortname="F" shortname_html="&lt;i&gt;F&lt;/i&gt;" shortname_latex="F"
+                           unit="W/m2" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="W \cdot m^{-2}" >
                 <expression analysistype="steadystate" planar_x="- lambda * dx1"
                                                        planar_y="- lambda * dy1"
                                                        axi_r="- lambda * dr1"
@@ -161,7 +163,9 @@
                                                      axi_r="- lambda * dr1"
                                                      axi_z="- lambda * dz1" />
             </localvariable>
-            <localvariable id="heat_temperature_gradient" name="Temperature gradient" shortname="G" unit="K/m" unit_html="K.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="K \cdot m^{-1}" type="vector">
+            <localvariable id="heat_temperature_gradient" name="Temperature gradient" type="vector"
+                           shortname="G" shortname_html="&lt;i&gt;G&lt;/i&gt;" shortname_latex="G"
+                           unit="K/m" unit_html="K.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="K \cdot m^{-1}" >
                 <expression analysistype="steadystate" planar_x="- dx1"
                                                        planar_y="- dy1"
                                                        axi_r="- dr1"
@@ -171,23 +175,31 @@
                                                      axi_r="- dr1"
                                                      axi_z="- dz1" />
             </localvariable>
-            <localvariable id="heat_conductivity" name="Thermal conductivity" shortname="lambda" unit="W/m.K" unit_html="W.m&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="W \cdot m^{-1} \cdot K^{-1}" type="scalar">
+            <localvariable id="heat_conductivity" name="Thermal conductivity" type="scalar"
+                           shortname="lambda" shortname_html="&lt;i&gt;&amp;lambda;&lt;/i&gt;" shortname_latex="\lamda"
+                           unit="W/m.K" unit_html="W.m&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="W \cdot m^{-1} \cdot K^{-1}" >
                 <expression analysistype="steadystate" planar="lambda"
                                                        axi="lambda" />
                 <expression analysistype="transient" planar="lambda"
                                                      axi="lambda" />
             </localvariable>
-            <localvariable id="heat_volume_heat" name="Volume heat" shortname="p" unit="W/m3" unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}" type="scalar">
+            <localvariable id="heat_volume_heat" name="Volume heat" type="scalar"
+                           shortname="p" shortname_html="&lt;i&gt;p&lt;/i&gt;" shortname_latex="p"
+                           unit="W/m3" unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}" >
                 <expression analysistype="steadystate" planar="p"
                                                        axi="p" />
                 <expression analysistype="transient" planar="p"
                                                      axi="p" />
             </localvariable>
-            <localvariable id="heat_density" name="Density" shortname="rho" unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" type="scalar">
+            <localvariable id="heat_density" name="Density" type="scalar"
+                           shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;" shortname_latex="\rho"
+                           unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" >
                 <expression analysistype="transient" planar="rho"
                                                      axi="rho" />
             </localvariable>
-            <localvariable id="heat_specific_heat" name="Specific heat" shortname="cp" unit="J/kg.K" unit_html="J.kg&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="J \cdot kg^{-1} \cdot K^{-1}" type="scalar">
+            <localvariable id="heat_specific_heat" name="Specific heat" type="scalar"
+                           shortname="cp" shortname_html="&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;P&lt;/sub&gt;" shortname_latex="c_{P}"
+                           unit="J/kg.K" unit_html="J.kg&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="J \cdot kg^{-1} \cdot K^{-1}" >
                 <expression analysistype="transient" planar="cp"
                                                      axi="cp" />
             </localvariable>
@@ -205,19 +217,25 @@
         </view>
 
         <volumeintegrals>
-            <volumeintegral id="heat_volume" name="Volume" shortname="V" unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
+            <volumeintegral id="heat_volume" name="Volume"
+                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
+                            unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}" >
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="2.0 * PI * r" />
                 <expression analysistype="transient" planar="1.0"
                                                      axi="2.0 * PI * r" />
             </volumeintegral>
-            <volumeintegral id="heat_cross_section" name="Cross section" shortname="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
+            <volumeintegral id="heat_cross_section" name="Cross section"
+                            shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
+                            unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}" >
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="1.0" />
                 <expression analysistype="transient" planar="1.0"
                                                      axi="1.0" />
             </volumeintegral>
-            <volumeintegral id="heat_temperature" name="Temperature" shortname="T" unit="T.m3" unit_html=" T.m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="T \cdot m^{3}">
+            <volumeintegral id="heat_temperature" name="Temperature"
+                            shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;" shortname_latex="T"
+                            unit="T.m3" unit_html=" T.m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="T \cdot m^{3}" >
                 <expression analysistype="steadystate" planar="value1"
                                                        axi="2.0 * PI * r * value1" />
                 <expression analysistype="transient" planar="value1"
@@ -226,25 +244,33 @@
         </volumeintegrals>
 
         <surfaceintegrals>
-            <surfaceintegral id="heat_length" name="Length" shortname="l" unit="m">
+            <surfaceintegral id="heat_length" name="Length"
+                             shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;" shortname_latex="l"
+                             unit="m" unit_html="m" unit_latex="m" >
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="1.0" />
                 <expression analysistype="transient" planar="1.0"
                                                      axi="1.0" />
             </surfaceintegral>
-            <surfaceintegral id="heat_surface" name="Surface" shortname="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
+            <surfaceintegral id="heat_surface" name="Surface"
+                             shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
+                             unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}" >
                 <expression analysistype="steadystate" planar="1.0"
                                                        axi="2.0 * PI * r" />
                 <expression analysistype="transient" planar="1.0"
                                                      axi="2.0 * PI * r" />
             </surfaceintegral>
-            <surfaceintegral id="heat_temperature" name="Temperature" shortname="T" unit="T.m2" unit_html=" T.m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="T \cdot m^{2}">
+            <surfaceintegral id="heat_temperature" name="Temperature"
+                             shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;" shortname_latex="T"
+                             unit="T.m2" unit_html=" T.m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="T \cdot m^{2}" >
                 <expression analysistype="steadystate" planar="value1"
                                                        axi="2.0 * PI * r * value1" />
                 <expression analysistype="transient" planar="value1"
                                                      axi="2.0 * PI * r * value1" />
             </surfaceintegral>
-            <surfaceintegral id="heat_heat_flux" name="Heat flux" shortname="f" unit="W">
+            <surfaceintegral id="heat_heat_flux" name="Heat flux"
+                             shortname="f" shortname_html="&lt;i&gt;f&lt;/i&gt;" shortname_latex="f"
+                             unit="W" unit_html="W" unit_latex="W" >
                 <expression analysistype="steadystate" planar="- lambda * (tany * dx1 - tanx * dy1)"
                                                        axi="- 2.0 * PI * r * lambda * (tanz * dr1 - tanr * dz1)" />
                 <expression analysistype="transient" planar="- lambda * (tany * dx1 - tanx * dy1)"

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
-    <general id="acoustic" name="Acoustic">
+    <general id="acoustic" name="Acoustics">
         <description>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids, and solids.</description>
         <analyses>
             <analysis id="harmonic" type="harmonic" name="Harmonic" solutions="2" />

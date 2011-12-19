@@ -13,10 +13,8 @@
         <constant id="MU0" value="1.2566371e-06" />
     </constants>
 
-    <macros>
-        <macro id="" expression="" />
-    </macros>
-
+    <macros />
+        
     <volume>
         <quantity id="magnetic_permeability" shortname="mur" />
         <quantity id="magnetic_conductivity" shortname="gamma" />
@@ -190,8 +188,8 @@
         <volume>
             <group name="Material properties">
                 <quantity id="magnetic_permeability" name="Permeability"
-                shortname="mur" shortname_html="&lt;i&gt;&amp;mu&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-                unit="H/m" unit_html="H.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="H \cdot m^{-1}" />
+                shortname="mur" shortname_html="&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                unit="-" unit_html="-" unit_latex="-" />
                 <quantity id="magnetic_conductivity" name="Electrical conductivity"
                 shortname="gamma" unit="S/m" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;"
                 unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}"/>

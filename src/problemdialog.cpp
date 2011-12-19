@@ -295,6 +295,8 @@ void FieldWidget::load()
 {
     // analysis type
     cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(m_fieldInfo->analysisType()));
+    if (cmbAnalysisType->currentIndex() == -1)
+        cmbAnalysisType->setCurrentIndex(0);
     // adaptivity
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_fieldInfo->adaptivityType));
     txtAdaptivitySteps->setValue(m_fieldInfo->adaptivitySteps);
@@ -609,6 +611,9 @@ void ProblemDialog::load()
     txtName->setText(m_problemInfo->name);
     dtmDate->setDate(m_problemInfo->date);
     cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(m_problemInfo->coordinateType));
+    if (cmbCoordinateType->currentIndex() == -1)
+        cmbCoordinateType->setCurrentIndex(0);
+
     // mesh type
     cmbMeshType->setCurrentIndex(cmbMeshType->findData(m_problemInfo->meshType));
     // harmonic magnetic
