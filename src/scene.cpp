@@ -1339,9 +1339,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     ErrorResult error = validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_xml.xsd");
     if (error.isError())
     {
-        qDebug() << error.message();
-        //error.showDialog();
-        //return ErrorResult();
+        //qDebug() << error.message();
+        return error;
     }
 
     // geometry ***************************************************************************************************************
