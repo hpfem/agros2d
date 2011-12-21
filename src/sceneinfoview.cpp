@@ -43,7 +43,9 @@ SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget
     setObjectName("SceneInfoView");
 
     createActions();
-    createMenu();
+
+    // context menu
+    mnuInfo = new QMenu(this);
 
     // problem information
     webView = new QWebView(this);
@@ -98,14 +100,13 @@ void SceneInfoView::createMenu()
 {
     logMessage("SceneInfoView::createMenu()");
 
-    mnuInfo = new QMenu(this);
+    mnuInfo->clear();
 
     mnuInfo->addAction(Util::scene()->actNewNode);
     mnuInfo->addAction(Util::scene()->actNewEdge);
     mnuInfo->addAction(Util::scene()->actNewLabel);
     mnuInfo->addSeparator();
-    //mnuInfo->addAction(Util::scene()->actNewBoundary);
-    mnuInfo->addAction(Util::scene()->actNewMaterial);
+    Util::scene()->addBoundartAndMaterialMenuItems(mnuInfo, this);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actDelete);
     mnuInfo->addSeparator();
@@ -477,6 +478,8 @@ void SceneInfoView::doContextMenu(const QPoint &pos)
 void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
 {
     logMessage("SceneInfoView::doItemSelected()");
+
+    createMenu();
 
     actProperties->setEnabled(false);
     actDelete->setEnabled(false);

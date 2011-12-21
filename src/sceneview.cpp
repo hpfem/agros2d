@@ -311,7 +311,7 @@ void SceneView::createMenu()
     mnuScene->addAction(m_scene->actNewEdge);
     mnuScene->addAction(m_scene->actNewLabel);
     mnuScene->addSeparator();
-    Util::scene()->addBdrAndMatMenuItems(mnuScene, this);
+    Util::scene()->addBoundartAndMaterialMenuItems(mnuScene, this);
     mnuScene->addSeparator();
     mnuScene->addAction(actSceneViewSelectRegion);
     mnuScene->addAction(m_scene->actTransform);

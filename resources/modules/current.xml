@@ -53,14 +53,18 @@
         <volume>
             <group>
                 <quantity id="current_conductivity" name="Conductivity"
-                          shortname="gamma" shortname_html="&amp;gamma"
+                          shortname="gamma" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;" shortname_latex="\gamma"
                           unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}" />
             </group>
         </volume>
         <surface>
             <group>
-                <quantity id="current_potential" name="Fixed voltage" shortname="V" unit="V" />
-                <quantity id="current_inward_current_flow" name="Current density" shortname="Jn" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" />
+                <quantity id="current_potential"  name="Fixed voltage"
+                shortname="V" shortname_html="&lt;i&gt;&amp;phi;&lt;/i&gt;" shortname_latex="\phi"
+                unit="V" unit_html="V" unit_latex="V" />
+                <quantity id="current_inward_current_flow" name="Current density"
+                shortname="Jn" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;n&lt;/sub&gt;" shortname_latex="J_\mathrm{n}"
+                unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" />
             </group>
         </surface>
     </preprocessor>

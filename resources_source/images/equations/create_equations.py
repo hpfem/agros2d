@@ -56,7 +56,7 @@ create_image(template, r"u = u_0", dir + "elasticity/elasticity_fixed.png")
 create_image(template, r"-\, \div \left( \lambda\,\, \grad T \right) = Q", dir + "heat/heat_steadystate.png")
 create_image(template, r"-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\mathrm{p} \frac{\partial T}{\partial t} = Q", dir + "heat/heat_transient.png")
 create_image(template, r"T = T_0", dir + "heat/heat_temperature.png")
-create_image(template, r"f = - \lambda \frac{\partial T}{\partial n_0} = f_0 + \alpha \left ( T_\mathrm{ext} - T \right)", dir + "heat/heat_heat_flux.png")
+create_image(template, r"f = - \lambda \frac{\partial T}{\partial n_0} = f_0 + \alpha \left ( T_\mathrm{ext} - T \right) + \epsilon \sigma \left ( T_\mathrm{amb}^4 - T^4 \right)", dir + "heat/heat_heat_flux.png")
 
 # magnetic
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vec{A} = \vec{J}_\mathrm{ext}", dir + "magnetic/magnetic_steadystate.png")

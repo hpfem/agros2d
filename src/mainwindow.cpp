@@ -486,7 +486,7 @@ void MainWindow::createMenus()
     mnuAdd->addAction(Util::scene()->actNewEdge);
     mnuAdd->addAction(Util::scene()->actNewLabel);
     mnuAdd->addSeparator();
-    Util::scene()->addBdrAndMatMenuItems(mnuAdd, this);
+    Util::scene()->addBoundartAndMaterialMenuItems(mnuAdd, this);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actSceneViewSelectRegion);
     mnuProblem->addAction(Util::scene()->actTransform);

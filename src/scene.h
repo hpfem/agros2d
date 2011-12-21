@@ -291,7 +291,7 @@ public:
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
 
-    void addBdrAndMatMenuItems(QMenu* menu, QWidget* parent);
+    void addBoundartAndMaterialMenuItems(QMenu* menu, QWidget* parent);
 
     inline QUndoStack *undoStack() const { return m_undoStack; }
 

@@ -345,7 +345,8 @@ void Scene::createActions()
     actNewMaterial->setStatusTip(tr("New material"));
     connect(actNewMaterial, SIGNAL(triggered()), this, SLOT(doNewMaterial()));
 
-    for(std::map<std::string, std::string>::iterator iter = modules.begin(); iter!= modules.end(); ++iter){
+    for(std::map<std::string, std::string>::iterator iter = modules.begin(); iter!= modules.end(); ++iter)
+    {
         NewMarkerAction* action = new NewMarkerAction(icon("scene-labelmarker"), this, iter->first.c_str());
         connect(action, SIGNAL(triggered(QString)), this, SLOT(doNewMaterial(QString)));
         actNewMaterials[iter->first.c_str()] = action;
@@ -1068,26 +1069,26 @@ void Scene::doProblemProperties()
     emit invalidated();
 }
 
-void Scene::addBdrAndMatMenuItems(QMenu* menu, QWidget* parent)
+void Scene::addBoundartAndMaterialMenuItems(QMenu* menu, QWidget* parent)
 {
-    if(Util::scene()->fieldInfos().count() == 1){
+    if (Util::scene()->fieldInfos().count() == 1)
+    {
+        // one material and boundary
         menu->addAction(actNewBoundary);
         menu->addAction(actNewMaterial);
     }
-    else{
+    else
+    {
+        // multiple materials and boundaries
         QMenu* mnuSubBoundaries = new QMenu("New boundary condition", parent);
         menu->addMenu(mnuSubBoundaries);
-        foreach(FieldInfo* pi, fieldInfos())
-        {
-            mnuSubBoundaries->addAction(actNewBoundaries[pi->fieldId()]);
-        }
+        foreach(FieldInfo* fieldInfo, fieldInfos())
+            mnuSubBoundaries->addAction(actNewBoundaries[fieldInfo->fieldId()]);
 
         QMenu* mnuSubMaterials = new QMenu("New material", parent);
         menu->addMenu(mnuSubMaterials);
-        foreach(FieldInfo* pi, fieldInfos())
-        {
-            mnuSubMaterials->addAction(actNewMaterials[pi->fieldId()]);
-        }
+        foreach(FieldInfo* fieldInfo, fieldInfos())
+            mnuSubMaterials->addAction(actNewMaterials[fieldInfo->fieldId()]);
     }
 }
 
@@ -1295,7 +1296,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     blockSignals(true);
 
-    if (!doc.setContent(&file)) {
+    if (!doc.setContent(&file))
+    {
         file.close();
         return ErrorResult(ErrorResultType_Critical, tr("File '%1' is not valid Agros2D file.").arg(fileName));
     }
@@ -1628,7 +1630,12 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
+
     QDomDocument doc;
+
+    // xml version
+    QDomProcessingInstruction xmlVersion = doc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
+    doc.appendChild(xmlVersion);
 
     // main document
     QDomElement eleDoc = doc.createElement("document");

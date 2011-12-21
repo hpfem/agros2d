@@ -149,10 +149,18 @@
         </volume>
         <surface>
             <group>
-                <quantity id="elasticity_displacement_x" name="Fixed - x" shortname="dx" unit="m" />
-                <quantity id="elasticity_displacement_y" name="Fixed - y" shortname="dy" unit="m" />
-                <quantity id="elasticity_force_x" name="Free - x" shortname="fx" unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="N \cdot m^{-2}" />
-                <quantity id="elasticity_force_y" name="Free - y" shortname="fy" unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="N \cdot m^{-2}" />
+                <quantity id="elasticity_displacement_x" name="Fixed - x"
+                shortname="dx" shortname_html="&lt;i&gt;&amp;delta;&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;" shortname_latex="\delta_\mathrm{x}"
+                unit="m" unit_html="m" unit_latex="m" />
+                <quantity id="elasticity_displacement_y" name="Fixed - y"
+                shortname="dy" shortname_html="&lt;i&gt;&amp;delta;&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;" shortname_latex="\delta_\mathrm{y}"
+                unit="m" unit_html="m" unit_latex="m" />
+                <quantity id="elasticity_force_x" name="Free - x"
+                shortname="fx" shortname_html="&lt;i&gt;F&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;" shortname_latex="F_\mathrm{x}"
+                unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="N \cdot m^{-2}" />
+                <quantity id="elasticity_force_y" name="Free - y"
+                shortname="fy" shortname_html="&lt;i&gt;F&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;" shortname_latex="F_\mathrm{y}"
+                unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="N \cdot m^{-2}" />
             </group>
         </surface>
     </preprocessor>

@@ -2,10 +2,10 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <xsd:element name="document">
     <xsd:complexType>
-      <xsd:sequence>
+      <xsd:all>
         <xsd:element name="geometry">
           <xsd:complexType>
-            <xsd:sequence>
+            <xsd:all>
               <xsd:element name="nodes">
                 <xsd:complexType>
                   <xsd:sequence>
@@ -49,18 +49,18 @@
                   </xsd:sequence>
                 </xsd:complexType>
               </xsd:element>
-            </xsd:sequence>
+            </xsd:all>
           </xsd:complexType>
         </xsd:element>
         <xsd:element name="problem">
           <xsd:complexType>
-            <xsd:sequence>
+            <xsd:all>
               <xsd:element name="description" type="xsd:string" />
               <xsd:element name="startup_script" type="xsd:string" />
               <xsd:element name="fields">
                 <xsd:complexType>
-                  <xsd:sequence>
-                    <xsd:element maxOccurs="unbounded" name="field">
+                  <xsd:all>
+                    <xsd:element minOccurs="1" name="field">
                       <xsd:complexType>
                         <xsd:sequence>
                           <xsd:element name="adaptivity">
@@ -81,7 +81,7 @@
                           <xsd:element name="boundaries">
                             <xsd:complexType>
                               <xsd:sequence>
-                                <xsd:element name="boundary">
+                                <xsd:element name="boundary" minOccurs="0">
                                   <xsd:complexType>
                                     <xsd:sequence>
                                       <xsd:element name="edge">
@@ -102,7 +102,7 @@
                           <xsd:element name="materials">
                             <xsd:complexType>
                               <xsd:sequence>
-                                <xsd:element name="material">
+                                <xsd:element name="material" minOccurs="0">
                                   <xsd:complexType>
                                     <xsd:sequence>
                                       <xsd:element name="label">
@@ -124,14 +124,14 @@
                         <xsd:attribute name="number_of_refinements" type="xsd:int" />
                         <xsd:attribute name="analysis_type" type="xsd:string" />
                         <xsd:attribute name="polynomial_order" type="xsd:int" />
-                        <xsd:attribute name="weakforms" type="xsd:string" />
+                        <xsd:attribute name="weak_forms" type="xsd:string" />
                         <xsd:attribute name="initial_condition" type="xsd:decimal" />
                       </xsd:complexType>
                     </xsd:element>
-                  </xsd:sequence>
+                  </xsd:all>
                 </xsd:complexType>
               </xsd:element>
-            </xsd:sequence>
+            </xsd:all>
             <xsd:attribute name="coordinate_type" type="xsd:string" />
             <xsd:attribute name="frequency" type="xsd:int" />
             <xsd:attribute name="matrix_solver" type="xsd:string" />
@@ -142,7 +142,7 @@
             <xsd:attribute name="date" type="xsd:string" />
           </xsd:complexType>
         </xsd:element>
-      </xsd:sequence>
+      </xsd:all>
       <xsd:attribute name="version" type="xsd:decimal" />
     </xsd:complexType>
   </xsd:element>
