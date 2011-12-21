@@ -81,19 +81,22 @@
                           <xsd:element name="boundaries">
                             <xsd:complexType>
                               <xsd:sequence>
-                                <xsd:element name="boundary" minOccurs="0">
+                                <xsd:element name="boundary" minOccurs="0" maxOccurs="unbounded" >
                                   <xsd:complexType>
-                                    <xsd:sequence>
-                                      <xsd:element name="edge">
-                                        <xsd:complexType>
-                                          <xsd:attribute name="edge" type="xsd:int" />
-                                        </xsd:complexType>
-                                      </xsd:element>
-                                    </xsd:sequence>
-                                    <xsd:attribute name="type" type="xsd:string" />
-                                    <xsd:attribute name="id" type="xsd:int" />
-                                    <xsd:attribute name="name" type="xsd:string" />
-                                    <xsd:anyAttribute />
+                                  	<xsd:sequence>
+                                  		<xsd:element name="edge"
+                                  			minOccurs="0"
+                                  			maxOccurs="unbounded">
+                                  			<xsd:complexType>
+                                  				<xsd:attribute
+                                  					name="edge" type="xsd:int" />
+                                  			</xsd:complexType>
+                                  		</xsd:element>
+                                  	</xsd:sequence>
+                                  	<xsd:attribute name="type" type="xsd:string" />
+                                  	<xsd:attribute name="id" type="xsd:int" />
+                                  	<xsd:attribute name="name" type="xsd:string" />
+                                  	<xsd:anyAttribute processContents="lax"/> 
                                   </xsd:complexType>
                                 </xsd:element>
                               </xsd:sequence>
@@ -102,18 +105,18 @@
                           <xsd:element name="materials">
                             <xsd:complexType>
                               <xsd:sequence>
-                                <xsd:element name="material" minOccurs="0">
+                                <xsd:element name="material" minOccurs="0" maxOccurs="unbounded" >
                                   <xsd:complexType>
                                     <xsd:sequence>
-                                      <xsd:element name="label">
+                                      <xsd:element name="label" minOccurs="0" maxOccurs="unbounded" >
                                         <xsd:complexType>
                                           <xsd:attribute name="label" type="xsd:int" />
                                         </xsd:complexType>
                                       </xsd:element>
                                     </xsd:sequence>
-                                    <xsd:attribute name="id" type="xsd:int" />
-                                    <xsd:attribute name="name" type="xsd:string" />
-                                    <xsd:anyAttribute />
+                                   	<xsd:attribute name="id" type="xsd:int" />
+                                   	<xsd:attribute name="name" type="xsd:string" />
+                                    <xsd:anyAttribute processContents="lax"/>
                                   </xsd:complexType>
                                 </xsd:element>
                               </xsd:sequence>

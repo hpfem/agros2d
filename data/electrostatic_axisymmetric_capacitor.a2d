@@ -40,7 +40,7 @@
 eps1 = 10
 eps2 = 3</startup_script>
         <fields>
-            <field field_id="electrostatic" initial_condition="0" polynomial_order="2" number_of_refinements="0" weakforms="interpreted" analysis_type="steadystate">
+            <field field_id="electrostatic" initial_condition="0" polynomial_order="2" number_of_refinements="0" weak_forms="interpreted" analysis_type="steadystate">
                 <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="5" adaptivity_steps="10"/>
                 <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
