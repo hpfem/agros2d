@@ -33,7 +33,7 @@ class TooltipView;
 
 class HelpDialog;
 class ChartDialog;
-class ScriptEditorDialog;
+class PythonLabAgros;
 class ReportDialog;
 class VideoDialog;
 class LogDialog;
@@ -208,7 +208,7 @@ private:
 
     HelpDialog *helpDialog;
     ChartDialog *chartDialog;
-    ScriptEditorDialog *scriptEditorDialog;
+    PythonLabAgros *scriptEditorDialog;
     ReportDialog *reportDialog;
     VideoDialog *videoDialog;
     LogDialog *logDialog;

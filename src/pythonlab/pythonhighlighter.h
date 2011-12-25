@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef QSCRIPTSYNTAXHIGHLIGHTER_H
-#define QSCRIPTSYNTAXHIGHLIGHTER_H
+#ifndef PYTHONHIGHLIGHTER_H
+#define PYTHONHIGHLIGHTER_H
 
 #include <QtCore/QVector>
 #include <QtCore/QSet>
@@ -28,8 +28,6 @@
 
 #include <QHash>
 #include <QTextCharFormat>
-
-#include "util.h"
 
 class QTextDocument;
 
@@ -51,12 +49,12 @@ private:
     QVector<ParenthesisInfo *> m_parentheses;
 };
 
-class QScriptSyntaxHighlighter : public QSyntaxHighlighter
+class QPythonHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 
 public:
-    QScriptSyntaxHighlighter(QTextDocument *parent = 0);
+    QPythonHighlighter(QTextDocument *parent = 0);
 
 protected:
     void highlightBlock(const QString &text);
@@ -83,4 +81,4 @@ private:
     QTextCharFormat numberFormat;
 };
 
-#endif // QSCRIPTSYNTAXHIGHLIGHTER_H
+#endif // PYTHONHIGHLIGHTER_H

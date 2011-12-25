@@ -20,76 +20,62 @@
 #ifndef SCRIPTEDITORDIALOG_H
 #define SCRIPTEDITORDIALOG_H
 
-#include "util.h"
+#include <QtGui>
+#include <QtCore>
 
 class PythonEngine;
+class PythonScriptingConsole;
+class PythonScriptingConsoleView;
+class PythonScriptingHistoryView;
+class PythonBrowserView;
 
 class SceneView;
 class FileBrowser;
-class TerminalView;
-class Terminal;
 
 class Scene;
 class SceneView;
 class ScriptEditor;
 class SearchDialog;
+class SearchWidget;
 
 struct ScriptResult;
 struct ExpressionResult;
 
-void createScriptEngine();
-PythonEngine *currentPythonEngine();
-void connectTerminal(Terminal *terminal);
-void disconnectTerminal(Terminal *terminal);
-bool scriptIsRunning();
-
-QString createPythonFromModel();
-ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
-ExpressionResult runPythonExpression(const QString &expression, bool returnValue = true);
-
-class ScriptEngineRemote : QObject
-{
-    Q_OBJECT
-
-public:
-    ScriptEngineRemote();
-    ~ScriptEngineRemote();
-
-private slots:
-    void connected();
-    void readCommand();
-    void disconnected();
-
-    void displayError(QLocalSocket::LocalSocketError socketError);
-
-private:
-    QString command;
-
-    QLocalServer *m_server;
-    QLocalSocket *m_server_socket;
-    QLocalSocket *m_client_socket;
-};
-
-class ScriptEditorWidget : public QWidget
+class PythonEditorWidget : public QWidget
 {
     Q_OBJECT
 public:
     QString file;
     ScriptEditor *txtEditor;
+    QTreeWidget *trvPyLint;
+    SearchWidget *searchWidget;
+    QSplitter *splitter;
 
-    ScriptEditorWidget(QWidget *parent);
-    ~ScriptEditorWidget();
+    PythonEditorWidget(PythonEngine *pythonEngine, QWidget *parent);
+    ~PythonEditorWidget();
+
+public slots:
+    void pyLintAnalyse();
+    void pyFlakesAnalyse();
+
+private:
+    PythonEngine *pythonEngine;
 
     void createControls();
     void createEngine();
+
+private slots:
+    void pyLintAnalyseStopped(int exitCode);
+    void pyFlakesAnalyseStopped(int exitCode);
+    void doHighlightLine(QTreeWidgetItem *item, int role);   
 };
 
-class ScriptEditorDialog : public QMainWindow
+class PythonEditorDialog : public QMainWindow
 {
     Q_OBJECT
 public:
-    ScriptEditorDialog(QWidget *parent = 0);
-    ~ScriptEditorDialog();
+    PythonEditorDialog(PythonEngine *pythonEngine, QStringList args, QWidget *parent = 0);
+    ~PythonEditorDialog();
 
     void showDialog();
     void closeTabs();
@@ -112,18 +98,31 @@ public slots:
 
     void doHelp();
     void doHelpKeywordList();
+    void doAbout();
 
     void doCloseTab(int index);
 
-private:
+    // message from another app
+    void onOtherInstanceMessage(const QString &msg);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);
+    void dropEvent(QDropEvent *event);
+
+protected:
+    PythonEngine *pythonEngine;
+
     QStringList recentFiles;
 
+    // gui
     FileBrowser *filBrowser;
 
     ScriptEditor *txtEditor;
-    SearchDialog *searchDialog;
 
-    TerminalView *terminalView;
+    PythonScriptingConsoleView *consoleView;
+    PythonScriptingHistoryView *consoleHistoryView;
+    PythonBrowserView *variablesView;
     QDockWidget *fileBrowserView;
 
     QLabel *lblCurrentPosition;
@@ -133,6 +132,9 @@ private:
     QMenu *mnuEdit;
     QMenu *mnuTools;
     QMenu *mnuHelp;
+
+    QToolBar *tlbFile;
+    QToolBar *tlbTools;
 
     QAction *actFileNew;
     QAction *actFileOpen;
@@ -160,10 +162,12 @@ private:
     QAction *actGotoLine;
 
     QAction *actRunPython;
-    QAction *actCreateFromModel;
+    QAction *actCheckPython;
 
     QAction *actHelp;
     QAction *actHelpKeywordList;
+    QAction *actAbout;
+    QAction *actAboutQt;
 
     QTabWidget *tabWidget;
 
@@ -174,11 +178,11 @@ private:
 
     void setRecentFiles();
 
-    inline ScriptEditorWidget *scriptEditorWidget() { return dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget()); }
+    inline PythonEditorWidget *scriptEditorWidget() { return dynamic_cast<PythonEditorWidget *>(tabWidget->currentWidget()); }
 
 private slots:
     void doRunPython();
-    void doCreatePythonFromModel();
+    void doPyLintPython();
     void doFileItemDoubleClick(const QString &path);
     void doPathChangeDir();
     void doCurrentDocumentChanged(bool changed);
@@ -191,10 +195,13 @@ class ScriptEditor : public QPlainTextEdit
     Q_OBJECT
 
 public:
+    QMap<int, QString> errorMessagesPyFlakes;
+
     ScriptEditor(QWidget *parent = 0);
     ~ScriptEditor();
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
+    void lineNumberAreaMouseMoveEvent(QMouseEvent *event);
     int lineNumberAreaWidth();
 
 public slots:
@@ -227,18 +234,18 @@ private:
 class ScriptEditorLineNumberArea : public QWidget
 {
 public:
-    ScriptEditorLineNumberArea(ScriptEditor *editor) : QWidget(editor) {
+    ScriptEditorLineNumberArea(ScriptEditor *editor) : QWidget(editor)
+    {
+        setMouseTracking(true);
         codeEditor = editor;
     }
 
-    QSize sizeHint() const {
-        return QSize(codeEditor->lineNumberAreaWidth(), 0);
-    }
+    QSize sizeHint() const { return QSize(codeEditor->lineNumberAreaWidth(), 0); }
 
 protected:
-    void paintEvent(QPaintEvent *event) {
-        codeEditor->lineNumberAreaPaintEvent(event);
-    }
+    void paintEvent(QPaintEvent *event) { codeEditor->lineNumberAreaPaintEvent(event); }
+
+    virtual void mouseMoveEvent(QMouseEvent *event) { codeEditor->lineNumberAreaMouseMoveEvent(event); }
 
 private:
     ScriptEditor *codeEditor;
@@ -246,27 +253,32 @@ private:
 
 // ************************************************************************************************************
 
-class SearchDialog: public QDialog
+class SearchWidget: public QWidget
 {
     Q_OBJECT
 public:
-    // Constructor
-    SearchDialog(QWidget *parent=0);
-    ~SearchDialog();
+    SearchWidget(ScriptEditor *txtEditor, QWidget *parent = 0);
 
-    int showDialogFind();
-    int showDialogReplace();
+    int showFind(const QString &text = "");
+    int showReplaceAll(const QString &text = "");
 
-    inline QString searchString()  { return txtFind->text(); }
-    inline QString replaceString() { return txtReplace->text(); }
+public slots:
+    void find();
+    void findNext(bool fromBegining);
+    void replaceAll();
+    void hideWidget();
 
-    inline bool searchStringIsRegExp() { return chkSearchRegExp->checkState(); }
-    inline bool caseSensitive() { return chkCaseSensitive->checkState(); }
+protected:
+    void keyPressEvent(QKeyEvent *event);
 
 private:
+    ScriptEditor *txtEditor;
+
+    QLabel *lblFind, *lblReplace;
     QLineEdit *txtFind, *txtReplace;
-    QCheckBox *chkSearchRegExp, *chkCaseSensitive;
-    QPushButton *btnCancel, *btnConfirm;
+    QPushButton *btnFind, *btnReplace, *btnHide;
+
+    bool startFromBeginning;
 };
 
 #endif // SCRIPTEDITORDIALOG_H

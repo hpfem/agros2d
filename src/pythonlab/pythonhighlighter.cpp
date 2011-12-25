@@ -27,7 +27,7 @@
 **
 **************************************************************************/
 
-#include "scripteditorhighlighter.h"
+#include "pythonhighlighter.h"
 
 #include <QtCore/QSet>
 #include <QtCore/QtAlgorithms>
@@ -42,21 +42,16 @@ const int ErrorMarkerPropertyId = QTextFormat::UserProperty + 1;
 
 TextBlockData::TextBlockData()
 {
-    logMessage("TextBlockData::TextBlockData()");
 
 }
 
 QVector<ParenthesisInfo *> TextBlockData::parentheses()
 {
-    logMessage("TextBlockData::parentheses()");
-
     return m_parentheses;
 }
 
 void TextBlockData::insert(ParenthesisInfo *info)
 {
-    logMessage("TextBlockData::insert()");
-
     int i = 0;
     while (i < m_parentheses.size() && info->position > m_parentheses.at(i)->position)
         ++i;
@@ -66,10 +61,8 @@ void TextBlockData::insert(ParenthesisInfo *info)
 
 // ************************************************************************************************************
 
-QScriptSyntaxHighlighter::QScriptSyntaxHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
+QPythonHighlighter::QPythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
 {
-    logMessage("QScriptSyntaxHighlighter::QScriptSyntaxHighlighter()");
-
     HighlightingRule rule;
 
     keywordFormat.setForeground(Qt::darkBlue);
@@ -133,10 +126,8 @@ QScriptSyntaxHighlighter::QScriptSyntaxHighlighter(QTextDocument *parent) : QSyn
     multiLineCommentFormat.setForeground(Qt::red);
 }
 
-void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
+void QPythonHighlighter::highlightBlock(const QString &text)
 {
-    logMessage("QScriptSyntaxHighlighter::highlightBlock()");
-
     foreach (const HighlightingRule &rule, highlightingRules)
     {
         QRegExp expression(rule.pattern);
@@ -182,10 +173,8 @@ void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
     // highlightBlockParenthesis(text, '{', '}');
 }
 
-void QScriptSyntaxHighlighter::highlightBlockParenthesis(const QString &text, char left, char right)
+void QPythonHighlighter::highlightBlockParenthesis(const QString &text, char left, char right)
 {
-    logMessage("QScriptSyntaxHighlighter::highlightBlockParenthesis()");
-
     TextBlockData *data = new TextBlockData();
 
     int leftPos = text.indexOf(left);

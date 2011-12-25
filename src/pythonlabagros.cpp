@@ -17,7 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "scripteditorcommandpython.h"
+#include "pythonlabagros.h"
 
 #include <Python.h>
 #include "python/agros2d.c"
@@ -26,7 +26,212 @@
 #include "scene.h"
 #include "sceneview.h"
 #include "scenemarker.h"
-#include "scripteditordialog.h"
+
+ScriptResult runPythonScript(const QString &script, const QString &fileName)
+{
+    logMessage("runPythonScript()");
+
+    return currentPythonEngine()->runPythonScript(script, fileName);
+}
+
+ExpressionResult runPythonExpression(const QString &expression, bool returnValue)
+{
+    logMessage("runPythonExpression()");
+
+    return currentPythonEngine()->runPythonExpression(expression, returnValue);
+}
+
+bool scriptIsRunning()
+{
+    logMessage("scriptIsRunning()");
+
+    if (currentPythonEngine())
+        return currentPythonEngine()->isRunning();
+    else
+        return false;
+}
+
+QString createPythonFromModel()
+{
+    logMessage("createPythonFromModel()");
+
+    QString str;
+
+    // model
+    str += "# model\n";
+    str += QString("newdocument(\"%1\", \"%2\", \"%3\", %4, %5, \"%6\", %7, %8, %9, \"%10\", %11, %12, %13)").
+            arg(Util::scene()->problemInfo()->name).
+            arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
+            arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField())).
+            arg(Util::scene()->problemInfo()->numberOfRefinements).
+            arg(Util::scene()->problemInfo()->polynomialOrder).
+            arg(adaptivityTypeToStringKey(Util::scene()->problemInfo()->adaptivityType)).
+            arg(Util::scene()->problemInfo()->adaptivitySteps).
+            arg(Util::scene()->problemInfo()->adaptivityTolerance).
+            arg(Util::scene()->problemInfo()->frequency).
+            arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
+            arg(Util::scene()->problemInfo()->timeStep.text).
+            arg(Util::scene()->problemInfo()->timeTotal.text).
+            arg(Util::scene()->problemInfo()->initialCondition.text)
+            + "\n";
+    str += "\n";
+
+    // startup script
+    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
+    {
+        str += "# startup script\n";
+        str += Util::scene()->problemInfo()->scriptStartup;
+        str += "\n\n";
+    }
+
+    // boundaries
+    if (Util::scene()->boundaries.count() > 1)
+    {
+        str += "# boundaries\n";
+        for (int i = 1; i<Util::scene()->boundaries.count(); i++)
+        {
+            str += Util::scene()->boundaries[i]->script() + "\n";
+        }
+        str += "\n";
+    }
+
+    // materials
+    if (Util::scene()->materials.count() > 1)
+    {
+        str += "# materials\n";
+        for (int i = 1; i<Util::scene()->materials.count(); i++)
+        {
+            str += Util::scene()->materials[i]->script() + "\n";
+        }
+        str += "\n";
+    }
+
+    // edges
+    if (Util::scene()->edges.count() > 0)
+    {
+        str += "# edges\n";
+        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        {
+            str += QString("addedge(%1, %2, %3, %4, %5, \"%6\")").
+                    arg(Util::scene()->edges[i]->nodeStart->point.x).
+                    arg(Util::scene()->edges[i]->nodeStart->point.y).
+                    arg(Util::scene()->edges[i]->nodeEnd->point.x).
+                    arg(Util::scene()->edges[i]->nodeEnd->point.y).
+                    arg(Util::scene()->edges[i]->angle).
+                    arg(Util::scene()->edges[i]->boundary->name) + "\n";
+        }
+        str += "\n";
+    }
+
+    // labels
+    if (Util::scene()->labels.count() > 0)
+    {
+        str += "# labels\n";
+        for (int i = 0; i<Util::scene()->labels.count(); i++)
+        {
+            str += QString("addlabel(%1, %2, %3, %4, \"%5\")").
+                    arg(Util::scene()->labels[i]->point.x).
+                    arg(Util::scene()->labels[i]->point.y).
+                    arg(Util::scene()->labels[i]->area).
+                    arg(Util::scene()->labels[i]->polynomialOrder).
+                    arg(Util::scene()->labels[i]->material->name) + "\n";
+        }
+
+    }
+    return str;
+}
+
+ScriptEngineRemote::ScriptEngineRemote()
+{
+    logMessage("ScriptEngineRemote::ScriptEngineRemote()");
+
+    // server
+    m_server = new QLocalServer();
+    QLocalServer::removeServer("agros2d-server");
+    if (!m_server->listen("agros2d-server"))
+    {
+        qWarning() << tr("Error: Unable to start the server (agros2d-server): %1.").arg(m_server->errorString());
+        return;
+    }
+
+    connect(m_server, SIGNAL(newConnection()), this, SLOT(connected()));
+}
+
+ScriptEngineRemote::~ScriptEngineRemote()
+{
+    logMessage("ScriptEngineRemote::~ScriptEngineRemote()");
+
+    delete m_server;
+    delete m_client_socket;
+}
+
+void ScriptEngineRemote::connected()
+{
+    logMessage("ScriptEngineRemote::connected()");
+
+    command = "";
+
+    m_server_socket = m_server->nextPendingConnection();
+    connect(m_server_socket, SIGNAL(readyRead()), this, SLOT(readCommand()));
+    connect(m_server_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+}
+
+void ScriptEngineRemote::readCommand()
+{
+    logMessage("ScriptEngineRemote::readCommand()");
+
+    QTextStream in(m_server_socket);
+    command = in.readAll();
+}
+
+void ScriptEngineRemote::disconnected()
+{
+    logMessage("ScriptEngineRemote::disconnected()");
+
+    m_server_socket->deleteLater();
+
+    ScriptResult result;
+    if (!command.isEmpty())
+    {
+        result = runPythonScript(command);
+    }
+
+    m_client_socket = new QLocalSocket();
+    connect(m_client_socket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(displayError(QLocalSocket::LocalSocketError)));
+
+    m_client_socket->connectToServer("agros2d-client");
+    if (m_client_socket->waitForConnected(1000))
+    {
+        QTextStream out(m_client_socket);
+        out << result.text;
+        out.flush();
+        m_client_socket->waitForBytesWritten();
+    }
+    else
+    {
+        displayError(QLocalSocket::ConnectionRefusedError);
+    }
+
+    delete m_client_socket;
+}
+
+void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError)
+{
+    logMessage("ScriptEngineRemote::displayError()");
+
+    switch (socketError) {
+    case QLocalSocket::ServerNotFoundError:
+        qWarning() << tr("Server error: The host was not found.");
+        break;
+    case QLocalSocket::ConnectionRefusedError:
+        qWarning() << tr("Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.");
+        break;
+    default:
+        qWarning() << tr("Server error: The following error occurred: %1.").arg(m_client_socket->errorString());
+    }
+}
+
+// ************************************************************************************
 
 // FIX ********************************************************************************************************************************************************************
 // Terible, is it possible to write this code better???
@@ -958,21 +1163,7 @@ void pythonSaveImage(char *str, int w, int h)
         throw invalid_argument(result.message().toStdString());
 }
 
-// print stdout
-PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
-{
-    logMessage("pythonCaptureStdout()");
-
-    char *str = NULL;
-    if (PyArg_ParseTuple(pArgs, "s", &str))
-    {
-        emit currentPythonEngine()->showMessage(QString(str) + "\n");
-        Py_RETURN_NONE;
-    }
-    return NULL;
-}
-
-static PyMethodDef pythonMethods[] =
+static PyMethodDef pythonMethodsAgros[] =
 {
     {"addboundary", pythonAddBoundary, METH_VARARGS, "addboundary(name, type, value, ...)"},
     {"modifyboundary", pythonModifyBoundary, METH_VARARGS, "modifyBoundary(name, type, value, ...)"},
@@ -984,73 +1175,21 @@ static PyMethodDef pythonMethods[] =
     {"pointresult", pythonPointResult, METH_VARARGS, "pointresult(x, y)"},
     {"volumeintegral", pythonVolumeIntegral, METH_VARARGS, "volumeintegral(index, ...)"},
     {"surfaceintegral", pythonSurfaceIntegral, METH_VARARGS, "surfaceintegral(index, ...)"},
-    {"capturestdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
     {NULL, NULL, 0, NULL}
 };
 
-// ******************************************************************************************************************************************************
+// *******************************************************************************************
 
-PythonEngine::PythonEngine()
+void PythonEngineAgros::addCustomExtensions()
 {
-    logMessage("PythonEngine::PythonEngine()");
-
-    m_isRunning = false;
-    m_stdOut = "";
-
-    // connect stdout
-    connect(this, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
-
-    // init python
-    Py_Initialize();
-
-    // read functions
-    m_functions = readFileContent(datadir() + "/functions.py");
-
-    m_dict = PyDict_New();
-    PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
-
     // init agros cython extensions
     initagros2d();
     // agros2d file
-    Py_InitModule("agros2file", pythonMethods);
-
-    // stdout
-    PyRun_String(QString("agrosstdout = \"" + tempProblemDir() + "/stdout.txt" + "\"").toStdString().c_str(), Py_file_input, m_dict, m_dict);
-
-    // functions.py
-    PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    Py_InitModule("agros2file", pythonMethodsAgros);
 }
 
-PythonEngine::~PythonEngine()
+void PythonEngineAgros::runPythonHeader()
 {
-    logMessage("PythonEngine::~PythonEngine()");
-
-    // finalize and garbage python
-    Py_DECREF(m_dict);
-
-    if (Py_IsInitialized())
-        Py_Finalize();
-}
-
-void PythonEngine::showMessage(const QString &message)
-{
-    logMessage("PythonEngine::showMessage()");
-
-    emit printStdout(message);
-}
-
-void PythonEngine::doPrintStdout(const QString &message)
-{
-    logMessage("PythonEngine::doPrintStdout()");
-
-    m_stdOut.append(message);
-    QApplication::processEvents();
-}
-
-void PythonEngine::runPythonHeader()
-{
-    logMessage("PythonEngine::runPythonHeader()");
-
     // global script
     if (!Util::config()->globalScript.isEmpty())
         PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
@@ -1060,177 +1199,24 @@ void PythonEngine::runPythonHeader()
         PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
-ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)
-{
-    logMessage("PythonEngine::runPythonScript()");
+PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
+    : PythonEditorDialog(pythonEngine, args, parent)
+{    
+    // add create from model
+    actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);
+    actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));
+    connect(actCreateFromModel, SIGNAL(triggered()), this, SLOT(doCreatePythonFromModel()));
 
-    m_isRunning = true;
-    m_stdOut = "";
+    mnuTools->addSeparator();
+    mnuTools->addAction(actCreateFromModel);
 
-    runPythonHeader();
-
-    PyObject *output = NULL;
-    if (QFile::exists(fileName))
-    {
-        // compile
-        PyObject *code = Py_CompileString(QString("from os import chdir \nchdir(u'" + QFileInfo(fileName).absolutePath() + "')").toStdString().c_str(), "", Py_file_input);
-        // run
-        if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
-    }
-    // compile
-    PyObject *code = Py_CompileString(script.toStdString().c_str(), fileName.toStdString().c_str(), Py_file_input);
-    // run
-    if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
-
-    ScriptResult scriptResult;
-    if (output)
-    {
-        /*
-        if (output == Py_None)
-        {
-            cout << "none" << endl;
-        }
-        if (PyInt_Check(output))
-        {
-            cout << "int" << endl;
-        }
-        if (PyFloat_Check(output))
-        {
-            cout << "float" << endl;
-        }
-        if (PyString_Check(output))
-        {
-            cout << "string" << endl;
-        }
-        if (PyLong_Check(output))
-        {
-            cout << "long" << endl;
-        }
-        if (PyNumber_Check(output))
-        {
-            cout << "number" << endl;
-        }
-        if (PyBool_Check(output))
-        {
-            cout << "bool" << endl;
-        }
-        */
-        scriptResult.isError = false;
-        scriptResult.text = m_stdOut;
-    }
-    else
-    {
-        scriptResult = parseError();
-    }
-    Py_DECREF(Py_None);
-
-    m_isRunning = false;
-    Util::scene()->refresh();
-    sceneView()->doInvalidated();
-
-    return scriptResult;
+    tlbTools->addSeparator();
+    tlbTools->addAction(actCreateFromModel);
 }
 
-ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bool returnValue)
+void PythonLabAgros::doCreatePythonFromModel()
 {
-    runPythonHeader();        
+    logMessage("ScriptEditorDialog::doCreatePythonFromModel()");
 
-    QString exp;
-    if (returnValue)
-        exp = QString("result = %1").arg(expression);
-    else
-        exp = expression;
-
-    PyObject *output = PyRun_String(exp.toStdString().c_str(), Py_file_input, m_dict, m_dict);
-
-    ExpressionResult expressionResult;
-    if (output)
-    {
-        PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
-        PyErr_Fetch(&type, &value, &traceback);
-
-        if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
-        {
-            Py_INCREF(type);
-
-            expressionResult.error = PyString_AsString(str);
-            if (type) Py_DECREF(type);
-            if (str) Py_DECREF(str);
-        }
-        else
-        {
-            // parse result
-            if (returnValue)
-            {
-                PyObject *result = PyDict_GetItemString(m_dict, "result");
-                if (result)
-                {
-                    Py_INCREF(result);
-                    PyArg_Parse(result, "d", &expressionResult.value);
-                    if (fabs(expressionResult.value) < EPS_ZERO)
-                        expressionResult.value = 0.0;
-                    Py_DECREF(result);
-                }
-            }
-        }
-    }
-    else
-    {
-        expressionResult.error = parseError().text;
-    }
-    Py_DECREF(Py_None);
-
-    return expressionResult;
-}
-
-ScriptResult PythonEngine::parseError()
-{
-    logMessage("PythonEngine::parseError()");
-
-    // error
-    ScriptResult error;
-    error.isError = true;
-
-    PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
-    PyErr_Fetch(&type, &value, &traceback);
-
-    if (traceback)
-    {
-        PyTracebackObject *object = (PyTracebackObject *) traceback;
-        error.text.append(QString("Line %1: ").arg(object->tb_lineno));
-        error.line = object->tb_lineno;
-        Py_DECREF(traceback);
-    }
-
-    if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
-    {
-        Py_INCREF(type);
-        error.text.append("\n");
-        error.text.append(PyString_AsString(str));
-        if (type) Py_DECREF(type);
-        if (str) Py_DECREF(str);
-    }
-    else
-    {
-        error.text.append("\n");
-        error.text.append("<unknown exception type> ");
-    }
-
-    if (value != NULL && (str = PyObject_Str(value)) != NULL && (PyString_Check(str)))
-    {
-        Py_INCREF(value);
-        error.text.append("\n");
-        error.text.append(PyString_AsString(value));
-        if (value) Py_DECREF(value);
-        if (str) Py_DECREF(str);
-    }
-    else
-    {
-        error.text.append("\n");
-        error.text.append("<unknown exception date> ");
-    }
-
-    PyErr_Clear();
-
-    return error;
+    txtEditor->setPlainText(createPythonFromModel());
 }

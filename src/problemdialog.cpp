@@ -21,7 +21,7 @@
 
 #include "gui.h"
 #include "scene.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 
 ProblemDialog::ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidget *parent) : QDialog(parent)
 {

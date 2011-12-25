@@ -20,7 +20,7 @@
 #include "terminalview.h"
 
 #include "scene.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 
 TerminalLineEdit::TerminalLineEdit(QWidget *parent) : QLineEdit(parent)
 {

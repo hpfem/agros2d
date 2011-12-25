@@ -30,7 +30,7 @@
 #include "postprocessorview.h"
 #include "chartdialog.h"
 #include "configdialog.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 #include "reportdialog.h"
 #include "videodialog.h"
 #include "logdialog.h"
@@ -47,11 +47,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // fixme - curve elements from script doesn't work
     readMeshDirtyFix();
 
-    createScriptEngine();
+    createPythonEngine(new PythonEngineAgros());
+    currentPythonEngine();
     createScene();
 
     chartDialog = new ChartDialog(this);
-    scriptEditorDialog = new ScriptEditorDialog(this);
+    scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
     reportDialog = new ReportDialog(sceneView, this);
     videoDialog = new VideoDialog(sceneView, this);
     logDialog = new LogDialog(this);
@@ -1167,13 +1168,13 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
     if (QFile::exists(fileNameScript))
     {
         terminalView->terminal()->doPrintStdout("Run script: " + QFileInfo(fileNameScript).fileName().left(QFileInfo(fileNameScript).fileName().length() - 3) + "\n", Qt::gray);
-        connectTerminal(terminalView->terminal());
+        // connectTerminal(terminalView->terminal());
 
         ScriptResult result = runPythonScript(readFileContent(fileNameScript), fileNameScript);
         if (result.isError)
             terminalView->terminal()->doPrintStdout(result.text + "\n", Qt::red);
 
-        disconnectTerminal(terminalView->terminal());
+        // disconnectTerminal(terminalView->terminal());
 
         QFileInfo fileInfo(fileNameScript);
         if (fileInfo.absoluteDir() != tempProblemDir())

@@ -1,4 +1,5 @@
 # import libraries
+from python_engine import *
 from agros2d import *
 from agros2file import *
 from math import *
@@ -6,10 +7,6 @@ import sys
 
 # add actual directory to the path
 sys.path.append(".")
-
-# consts
-MU0 = 4*pi*1e-7
-EPS0 = 8.854e-12
 
 # user functions
 def sgn(number):
@@ -40,12 +37,6 @@ def addrect(x0, y0, width, height, marker = "none", label = "null"):
 	if (label != "null"):
 		addlabel((x0)+(width/2.0), (y0)+(height/2.0), 0, 0, label)
 	return
-
-def agroslistvariables():
-	import types
-	agrosType = [types.IntType, types.StringType, types.TupleType, types.FloatType, types.BooleanType, types.ListType, types.LongType, types.UnicodeType]
-
-	return filter(lambda x: type(x) in [types.IntType, types.DictType], globals().values())
 
 def test(text, value, normal, error = 0.03):
 	if ((normal == 0.0) and abs(value < 1e-14)):

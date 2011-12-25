@@ -38,7 +38,7 @@
 
 #include "hermes2d/hermes_field.h"
 
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 
 PhysicField ProblemInfo::physicField()
 {

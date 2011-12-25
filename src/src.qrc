@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>images/pythonlab.png</file>
         <file>images/application-exit.png</file>
         <file>images/browser.png</file>
         <file>images/document-new.png</file>
@@ -113,5 +114,23 @@
         <file>images/equations/acoustic/acoustic_impedance_transient.png</file>        
         <file>images/equations/acoustic/acoustic_matched_boundary_harmonic.png</file>
         <file>images/equations/acoustic/acoustic_matched_boundary_transient.png</file>
+		<file>images/check-convention.png</file>
+        <file>images/check-warning.png</file>
+        <file>images/check-error.png</file>
+        <file>images/checkbox.png</file>
+		<file>images/browser-class.png</file>
+		<file>images/browser-variable.png</file>
+		<file>images/browser-function.png</file>
+		<file>images/browser-other.png</file>
+		<file>images/browser-variable-int.png</file>
+		<file>images/browser-variable-float.png</file>
+		<file>images/browser-variable-string.png</file>
+		<file>images/browser-variable-array.png</file>
+		<file>images/browser-variable-dict.png</file>
+		<file>images/browser-variable-list.png</file>
+		<file>images/browser-variable-tuple.png</file>
+		<file>images/browser-variable-class.png</file>
+		<file>images/browser-variable-unknown.png</file>
+		<file>images/history-command.png</file>
     </qresource>
 </RCC>

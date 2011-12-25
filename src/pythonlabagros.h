@@ -17,42 +17,67 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef SCRIPTEDITORCOMMANDPYTHON_H
-#define SCRIPTEDITORCOMMANDPYTHON_H
+#ifndef PYTHONLABAGROS_H
+#define PYTHONLABAGROS_H
+
+#include "pythonlab/pythonconsole.h"
+#include "pythonlab/pythonengine.h"
+#include "pythonlab/pythoneditor.h"
 
 #include "util.h"
 
 class Solution;
 
-class PythonEngine : public QObject
+class PythonEngineAgros : public PythonEngine
 {
     Q_OBJECT
-
-signals:
-    void printStdout(const QString &);
-
 public:
-    PythonEngine();
-    ~PythonEngine();
+    PythonEngineAgros() : PythonEngine() {}
 
-    void showMessage(const QString &message);
+protected:
+    virtual void addCustomExtensions();
+    virtual void runPythonHeader();
+};
 
-    ScriptResult runPythonScript(const QString &script, const QString &fileName);
-    ExpressionResult runPythonExpression(const QString &expression, bool returnValue);
-    ScriptResult parseError();
-    inline bool isRunning() { return m_isRunning; }
-
-private slots:
-    void doPrintStdout(const QString &message);
+class PythonLabAgros : public PythonEditorDialog
+{
+    Q_OBJECT
+public:
+    PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent);
 
 private:
-    bool m_isRunning;
-    QString m_stdOut;
+    QAction *actCreateFromModel;
 
-    PyObject *m_dict;
-    QString m_functions;
+private slots:
+    void doCreatePythonFromModel();
+};
 
-    void runPythonHeader();
+bool scriptIsRunning();
+
+QString createPythonFromModel();
+ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
+ExpressionResult runPythonExpression(const QString &expression, bool returnValue = true);
+
+class ScriptEngineRemote : QObject
+{
+    Q_OBJECT
+public:
+    ScriptEngineRemote();
+    ~ScriptEngineRemote();
+
+private slots:
+    void connected();
+    void readCommand();
+    void disconnected();
+
+    void displayError(QLocalSocket::LocalSocketError socketError);
+
+private:
+    QString command;
+
+    QLocalServer *m_server;
+    QLocalSocket *m_server_socket;
+    QLocalSocket *m_client_socket;
 };
 
 // cython functions
@@ -120,4 +145,4 @@ int pythonTimeStepCount();
 
 void pythonSaveImage(char *str, int w, int h);
 
-#endif // SCRIPTEDITORCOMMANDPYTHON_H
+#endif // PYTHONLABAGROS_H

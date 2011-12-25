@@ -53,13 +53,16 @@ SOURCES += util.cpp \
     #hermes2d/hermes_flow.cpp \
     hermes2d/hermes_rf.cpp \
     hermes2d/hermes_acoustic.cpp \
+    pythonlab/pythonconsole.cpp \
+    pythonlab/pythonhighlighter.cpp \
+    pythonlab/pythonengine.cpp \
+    pythonlab/pythonbrowser.cpp \
+    pythonlab/pythoneditor.cpp \
+    pythonlabagros.cpp \
     localvalueview.cpp \
     surfaceintegralview.cpp \
     volumeintegralview.cpp \
     main.cpp \
-    scripteditordialog.cpp \
-    scripteditorcommandpython.cpp \
-    scripteditorhighlighter.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenebasic.cpp \
@@ -103,13 +106,16 @@ HEADERS += util.h \
     #hermes2d/hermes_flow.h \
     hermes2d/hermes_rf.h \
     hermes2d/hermes_acoustic.h \
+    pythonlab/pythonconsole.h \
+    pythonlab/pythonhighlighter.h \
+    pythonlab/pythonengine.h \
+    pythonlab/pythonbrowser.h \
+    pythonlab/pythoneditor.h \
+    pythonlabagros.h \
     localvalueview.h \
     surfaceintegralview.h \
     volumeintegralview.h \
     mainwindow.h \
-    scripteditordialog.h \
-    scripteditorcommandpython.h \
-    scripteditorhighlighter.h \
     scenebasic.h \
     sceneinfoview.h \
     scenemarker.h \
