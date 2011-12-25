@@ -1201,7 +1201,12 @@ void PythonEngineAgros::runPythonHeader()
 
 PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
     : PythonEditorDialog(pythonEngine, args, parent)
-{    
+{
+    // temporaly disable static checks
+    QSettings settings;
+    settings.setValue("PythonEditorWidget/EnablePyLint", false);
+    settings.setValue("PythonEditorWidget/EnablePyFlakes", false);
+
     // add create from model
     actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);
     actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));

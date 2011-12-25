@@ -80,7 +80,6 @@ SOURCES += util.cpp \
     dxflib/dl_dxf.cpp \
     reportdialog.cpp \
     videodialog.cpp \
-    terminalview.cpp \
     scenemarkerselectdialog.cpp \
     tooltipview.cpp \
     scenebasicselectdialog.cpp \
@@ -131,7 +130,6 @@ HEADERS += util.h \
     scenesolution.h \
     reportdialog.h \
     videodialog.h \
-    terminalview.h \
     scenemarkerselectdialog.h \
     tooltipview.h \
     scenebasicselectdialog.h \

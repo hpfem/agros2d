@@ -33,9 +33,13 @@ PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *pare
 
     createControls();
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
-    timer->start(4000);
+    QSettings settings;
+    if (settings.value("PythonEditorWidget/EnablePyFlakes", true).toBool())
+    {
+        QTimer *timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
+        timer->start(4000);
+    }
 
     txtEditor->setAcceptDrops(false);
 }
@@ -60,24 +64,28 @@ void PythonEditorWidget::createControls()
     QWidget *editor = new QWidget();
     editor->setLayout(layoutEditor);
 
-    trvPyLint = new QTreeWidget(this);
-    trvPyLint->setHeaderHidden(true);
-    trvPyLint->setMouseTracking(true);
-    trvPyLint->setColumnCount(1);
-    trvPyLint->setIndentation(12);
-    connect(trvPyLint, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLine(QTreeWidgetItem *, int)));
-
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
     splitter->addWidget(editor);
-    splitter->addWidget(trvPyLint);
+
+    QSettings settings;
+    if (settings.value("PythonEditorWidget/EnablePyLint", true).toBool())
+    {
+        trvPyLint = new QTreeWidget(this);
+        trvPyLint->setHeaderHidden(true);
+        trvPyLint->setMouseTracking(true);
+        trvPyLint->setColumnCount(1);
+        trvPyLint->setIndentation(12);
+        connect(trvPyLint, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLine(QTreeWidgetItem *, int)));
+
+        splitter->addWidget(trvPyLint);
+    }
 
     QSizePolicy policy = splitter->sizePolicy();
     policy.setHorizontalStretch(0.2);
     policy.setVerticalStretch(1.0);
     splitter->setSizePolicy(policy);
 
-    QSettings settings;
     splitter->restoreState(settings.value("PythonEditorWidget/SplitterState", splitter->saveState()).toByteArray());
     splitter->restoreGeometry(settings.value("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry()).toByteArray());
     txtEditor->resize(txtEditor->width(), settings.value("PythonEditorWidget/EditorHeight").toInt());
@@ -305,13 +313,15 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
 
     filBrowser->refresh();
 
+    QSettings settings;
+
     connect(actRunPython, SIGNAL(triggered()), this, SLOT(doRunPython()));
-    connect(actCheckPython, SIGNAL(triggered()), this, SLOT(doPyLintPython()));
+    if (settings.value("PythonEditorWidget/EnablePyLint", true).toBool())
+        connect(actCheckPython, SIGNAL(triggered()), this, SLOT(doPyLintPython()));
 
     // macx
     setUnifiedTitleAndToolBarOnMac(true);
 
-    QSettings settings;
     restoreGeometry(settings.value("PythonEditorDialog/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("PythonEditorDialog/RecentFiles").value<QStringList>();
     restoreState(settings.value("PythonEditorDialog/State", saveState()).toByteArray());
@@ -445,8 +455,12 @@ void PythonEditorDialog::createActions()
     actRunPython = new QAction(icon("run"), tr("&Run Python script"), this);
     actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
-    actCheckPython = new QAction(icon("checkbox"), tr("&Check Python script (PyLint)"), this);
-    actCheckPython->setShortcut(QKeySequence(tr("Alt+C")));
+    QSettings settings;
+    if (settings.value("PythonEditorWidget/EnablePyLint", true).toBool())
+    {
+        actCheckPython = new QAction(icon("checkbox"), tr("&Check Python script (PyLint)"), this);
+        actCheckPython->setShortcut(QKeySequence(tr("Alt+C")));
+    }
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
@@ -511,7 +525,9 @@ void PythonEditorDialog::createControls()
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunPython);
-    mnuTools->addAction(actCheckPython);
+    QSettings settings;
+    if (settings.value("PythonEditorWidget/EnablePyLint", true).toBool())
+        mnuTools->addAction(actCheckPython);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     // mnuHelp->addAction(actHelp);
@@ -553,7 +569,8 @@ void PythonEditorDialog::createControls()
 #endif
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actRunPython);
-    tlbTools->addAction(actCheckPython);
+    if (settings.value("PythonEditorWidget/EnablePyLint", true).toBool())
+        tlbTools->addAction(actCheckPython);
 
     // path
     QLineEdit *txtPath = new QLineEdit(this);

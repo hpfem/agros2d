@@ -25,7 +25,6 @@
 #include "scenebasic.h"
 #include "sceneview.h"
 #include "sceneinfoview.h"
-#include "terminalview.h"
 #include "tooltipview.h"
 #include "postprocessorview.h"
 #include "chartdialog.h"
@@ -421,7 +420,7 @@ void MainWindow::createMenus()
     mnuShowPanels->addAction(surfaceIntegralValueView->toggleViewAction());
     mnuShowPanels->addAction(volumeIntegralValueView->toggleViewAction());
     mnuShowPanels->addAction(postprocessorView->toggleViewAction());
-    mnuShowPanels->addAction(terminalView->toggleViewAction());
+    mnuShowPanels->addAction(consoleView->toggleViewAction());
     mnuShowPanels->addAction(tooltipView->toggleViewAction());
 
     mnuView = menuBar()->addMenu(tr("&View"));
@@ -667,10 +666,10 @@ void MainWindow::createViews()
     postprocessorView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, postprocessorView);
 
-    terminalView = new TerminalView(this);
-    terminalView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    terminalView->setVisible(false);
-    addDockWidget(Qt::BottomDockWidgetArea, terminalView);
+    consoleView = new PythonScriptingConsoleView(currentPythonEngine(), this);
+    consoleView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    consoleView->setVisible(false);
+    addDockWidget(Qt::BottomDockWidgetArea, consoleView);
 
     tooltipView = new TooltipView(this);
     tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -1167,14 +1166,14 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
     if (QFile::exists(fileNameScript))
     {
-        terminalView->terminal()->doPrintStdout("Run script: " + QFileInfo(fileNameScript).fileName().left(QFileInfo(fileNameScript).fileName().length() - 3) + "\n", Qt::gray);
-        // connectTerminal(terminalView->terminal());
+        consoleView->console()->consoleMessage("Run script: " + QFileInfo(fileNameScript).fileName().left(QFileInfo(fileNameScript).fileName().length() - 3) + "\n",
+                                               Qt::gray);
 
         ScriptResult result = runPythonScript(readFileContent(fileNameScript), fileNameScript);
         if (result.isError)
-            terminalView->terminal()->doPrintStdout(result.text + "\n", Qt::red);
+            consoleView->console()->stdErr(result.text);
 
-        // disconnectTerminal(terminalView->terminal());
+        consoleView->console()->appendCommandPrompt();
 
         QFileInfo fileInfo(fileNameScript);
         if (fileInfo.absoluteDir() != tempProblemDir())
@@ -1191,8 +1190,8 @@ void MainWindow::doScriptEditorRunCommand()
 {
     logMessage("MainWindow::doScriptEditorRunCommand()");
 
-    terminalView->show();
-    terminalView->activateWindow();
+    consoleView->show();
+    consoleView->activateWindow();
 }
 
 void MainWindow::doCut()

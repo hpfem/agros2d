@@ -28,7 +28,7 @@ class LocalPointValueView;
 class VolumeIntegralValueView;
 class SurfaceIntegralValueView;
 class PostprocessorView;
-class TerminalView;
+class PythonScriptingConsoleView;
 class TooltipView;
 
 class HelpDialog;
@@ -203,7 +203,7 @@ private:
     VolumeIntegralValueView *volumeIntegralValueView;
     SurfaceIntegralValueView *surfaceIntegralValueView;
     PostprocessorView *postprocessorView;
-    TerminalView *terminalView;
+    PythonScriptingConsoleView *consoleView;
     TooltipView *tooltipView;
 
     HelpDialog *helpDialog;
