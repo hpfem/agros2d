@@ -20,7 +20,7 @@
 #include "value.h"
 
 #include "gui.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 #include "scene.h"
 #include "datatable.h"
 #include "datatabledialog.h"

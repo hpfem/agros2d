@@ -23,7 +23,7 @@
 
 #include "scene.h"
 #include "sceneview.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
@@ -397,7 +397,7 @@ QWidget *ConfigDialog::createMainWidget()
 
     // other
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
-    chkCheckVersion = new QCheckBox(tr("Check new version during startup."));
+    chkCheckVersion = new QCheckBox(tr("Check new version during startup"));
     chkExperimentalFeatures = new QCheckBox(tr("Enable experimental features"));
     chkExperimentalFeatures->setToolTip(tr("Warning: Agros2D should be unstable!"));
 

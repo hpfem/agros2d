@@ -25,7 +25,7 @@
 #include "scenesolution.h"
 #include "sceneview.h"
 #include "scenemarkerdialog.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 

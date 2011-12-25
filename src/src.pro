@@ -54,16 +54,17 @@ SOURCES += util.cpp \
     hermes2d/marker.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
-###    hermes2d/hermes_flow.cpp \
+    pythonlab/pythonconsole.cpp \
+    pythonlab/pythonhighlighter.cpp \
+    pythonlab/pythonengine.cpp \
+    pythonlab/pythonbrowser.cpp \
+    pythonlab/pythoneditor.cpp \
+    pythonlabagros.cpp \
     main.cpp \
-    scripteditordialog.cpp \
-    scripteditorcommandpython.cpp \
-    scripteditorhighlighter.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenemarkerdialog.cpp \
     scenebasic.cpp \
-###    scenefunction.cpp \
     sceneinfoview.cpp \
     sceneview.cpp \
     progressdialog.cpp \
@@ -73,7 +74,6 @@ SOURCES += util.cpp \
     scenesolution.cpp \
     reportdialog.cpp \
     videodialog.cpp \
-    terminalview.cpp \
     scenemarkerselectdialog.cpp \
     tooltipview.cpp \
     scenebasicselectdialog.cpp \
@@ -107,16 +107,17 @@ HEADERS += util.h \
     hermes2d/surfaceintegral.h \
     hermes2d/marker.h \
     hermes2d/module.h \
-    #hermes2d/hermes_flow.h \
+    pythonlab/pythonconsole.h \
+    pythonlab/pythonhighlighter.h \
+    pythonlab/pythonengine.h \
+    pythonlab/pythonbrowser.h \
+    pythonlab/pythoneditor.h \
+    pythonlabagros.h \
     mainwindow.h \
-    scripteditordialog.h \
-    scripteditorcommandpython.h \
-    scripteditorhighlighter.h \
     scenebasic.h \
     sceneinfoview.h \
     scenemarker.h \
     scenemarkerdialog.h \
-#    scenefunction.h \
     sceneview_data.h \
     sceneview.h \
     progressdialog.h \
@@ -126,7 +127,6 @@ HEADERS += util.h \
     scenesolution.h \
     reportdialog.h \
     videodialog.h \
-    terminalview.h \
     scenemarkerselectdialog.h \
     tooltipview.h \
     scenebasicselectdialog.h \

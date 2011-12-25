@@ -26,12 +26,11 @@
 #include "sceneview.h"
 #include "scenesolution.h"
 #include "sceneinfoview.h"
-#include "terminalview.h"
 #include "tooltipview.h"
 #include "postprocessorview.h"
 #include "chartdialog.h"
 #include "confdialog.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 #include "reportdialog.h"
 #include "videodialog.h"
 #include "logdialog.h"
@@ -55,11 +54,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // fixme - curve elements from script doesn't work
     readMeshDirtyFix();
 
-    createScriptEngine();
+    createPythonEngine(new PythonEngineAgros());
+    currentPythonEngine();
     createScene();
 
     chartDialog = new ChartDialog(this);
-    scriptEditorDialog = new ScriptEditorDialog(this);
+    scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
     reportDialog = new ReportDialog(sceneView, this);
     videoDialog = new VideoDialog(sceneView, this);
     logDialog = new LogDialog(this);
@@ -448,7 +448,7 @@ void MainWindow::createMenus()
     mnuShowPanels->addAction(sceneInfoView->toggleViewAction());
     mnuShowPanels->addAction(resultsView->toggleViewAction());
     mnuShowPanels->addAction(postprocessorView->toggleViewAction());
-    mnuShowPanels->addAction(terminalView->toggleViewAction());
+    mnuShowPanels->addAction(consoleView->toggleViewAction());
     mnuShowPanels->addAction(tooltipView->toggleViewAction());
 
     mnuView = menuBar()->addMenu(tr("&View"));
@@ -689,10 +689,10 @@ void MainWindow::createViews()
     postprocessorView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, postprocessorView);
 
-    terminalView = new TerminalView(this);
-    terminalView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    terminalView->setVisible(false);
-    addDockWidget(Qt::BottomDockWidgetArea, terminalView);
+    consoleView = new PythonScriptingConsoleView(currentPythonEngine(), this);
+    consoleView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    consoleView->setVisible(false);
+    addDockWidget(Qt::BottomDockWidgetArea, consoleView);
 
     tooltipView = new TooltipView(this);
     tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -1261,14 +1261,14 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
     if (QFile::exists(fileNameScript))
     {
-        terminalView->terminal()->doPrintStdout("Run script: " + QFileInfo(fileNameScript).fileName().left(QFileInfo(fileNameScript).fileName().length() - 3) + "\n", Qt::gray);
-        connectTerminal(terminalView->terminal());
+        consoleView->console()->consoleMessage("Run script: " + QFileInfo(fileNameScript).fileName().left(QFileInfo(fileNameScript).fileName().length() - 3) + "\n",
+                                               Qt::gray);
 
         ScriptResult result = runPythonScript(readFileContent(fileNameScript), fileNameScript);
         if (result.isError)
-            terminalView->terminal()->doPrintStdout(result.text + "\n", Qt::red);
+            consoleView->console()->stdErr(result.text);
 
-        disconnectTerminal(terminalView->terminal());
+        consoleView->console()->appendCommandPrompt();
 
         QFileInfo fileInfo(fileNameScript);
         if (fileInfo.absoluteDir() != tempProblemDir())
@@ -1285,8 +1285,8 @@ void MainWindow::doScriptEditorRunCommand()
 {
     logMessage("MainWindow::doScriptEditorRunCommand()");
 
-    terminalView->show();
-    terminalView->activateWindow();
+    consoleView->show();
+    consoleView->activateWindow();
 }
 
 void MainWindow::doCut()
@@ -1481,67 +1481,67 @@ void MainWindow::doDocumentExportMeshFile()
 void MainWindow::doExportVTKScalar()
 {
     assert(0); //TODO
-//    logMessage("MainWindow::doDocumentExportVTKScalar()");
-//    if (Util::scene()->sceneSolution()->isSolved())
-//    {
-//        QSettings settings;
-//        QString dir = settings.value("General/LastVTKDir").toString();
+    //    logMessage("MainWindow::doDocumentExportVTKScalar()");
+    //    if (Util::scene()->sceneSolution()->isSolved())
+    //    {
+    //        QSettings settings;
+    //        QString dir = settings.value("General/LastVTKDir").toString();
 
-//        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
-//        if (fileName.isEmpty())
-//            return;
+    //        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+    //        if (fileName.isEmpty())
+    //            return;
 
-//        if (!fileName.endsWith(".vtk"))
-//            fileName.append(".vtk");
+    //        if (!fileName.endsWith(".vtk"))
+    //            fileName.append(".vtk");
 
-//        // remove existing file
-//        if (QFile::exists(fileName))
-//            QFile::remove(fileName);
+    //        // remove existing file
+    //        if (QFile::exists(fileName))
+    //            QFile::remove(fileName);
 
-//        Util::scene()->sceneSolution()->linScalarView().save_solution_vtk(Util::scene()->sceneSolution()->sln(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
-//                                                                          fileName.toStdString().c_str(),
-//                                                                          sceneView->sceneViewSettings().scalarPhysicFieldVariable.c_str(),
-//                                                                          true);
+    //        Util::scene()->sceneSolution()->linScalarView().save_solution_vtk(Util::scene()->sceneSolution()->sln(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
+    //                                                                          fileName.toStdString().c_str(),
+    //                                                                          sceneView->sceneViewSettings().scalarPhysicFieldVariable.c_str(),
+    //                                                                          true);
 
-//        if (!fileName.isEmpty())
-//        {
-//            QFileInfo fileInfo(fileName);
-//            if (fileInfo.absoluteDir() != tempProblemDir())
-//                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
-//        }
-//    }
+    //        if (!fileName.isEmpty())
+    //        {
+    //            QFileInfo fileInfo(fileName);
+    //            if (fileInfo.absoluteDir() != tempProblemDir())
+    //                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+    //        }
+    //    }
 }
 
 void MainWindow::doExportVTKOrder()
 {
     assert(0);
-//    logMessage("MainWindow::doDocumentExportVTKOrder()");
-//    if (Util::scene()->sceneSolution()->isSolved())
-//    {
-//        QSettings settings;
-//        QString dir = settings.value("General/LastVTKDir").toString();
+    //    logMessage("MainWindow::doDocumentExportVTKOrder()");
+    //    if (Util::scene()->sceneSolution()->isSolved())
+    //    {
+    //        QSettings settings;
+    //        QString dir = settings.value("General/LastVTKDir").toString();
 
-//        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
-//        if (fileName.isEmpty())
-//            return;
+    //        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+    //        if (fileName.isEmpty())
+    //            return;
 
-//        if (!fileName.endsWith(".vtk"))
-//            fileName.append(".vtk");
+    //        if (!fileName.endsWith(".vtk"))
+    //            fileName.append(".vtk");
 
-//        // remove existing file
-//        if (QFile::exists(fileName))
-//            QFile::remove(fileName);
+    //        // remove existing file
+    //        if (QFile::exists(fileName))
+    //            QFile::remove(fileName);
 
-//        Util::scene()->sceneSolution()->ordView().save_orders_vtk(Util::scene()->sceneSolution()->space(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
-//                                                                  fileName.toStdString().c_str());
+    //        Util::scene()->sceneSolution()->ordView().save_orders_vtk(Util::scene()->sceneSolution()->space(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
+    //                                                                  fileName.toStdString().c_str());
 
-//        if (!fileName.isEmpty())
-//        {
-//            QFileInfo fileInfo(fileName);
-//            if (fileInfo.absoluteDir() != tempProblemDir())
-//                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
-//        }
-//    }
+    //        if (!fileName.isEmpty())
+    //        {
+    //            QFileInfo fileInfo(fileName);
+    //            if (fileInfo.absoluteDir() != tempProblemDir())
+    //                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+    //        }
+    //    }
 }
 
 void MainWindow::doProgressLog()

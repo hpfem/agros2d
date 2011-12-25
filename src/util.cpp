@@ -23,7 +23,7 @@
 
 #include "util.h"
 #include "scene.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 #include "style/manhattanstyle.h"
 
 #include "hermes2d/module.h"

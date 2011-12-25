@@ -22,7 +22,7 @@
 #include "gui.h"
 #include "scene.h"
 #include "scenesolution.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 

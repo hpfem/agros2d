@@ -20,7 +20,7 @@
 #include "datatabledialog.h"
 
 #include "gui.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 #include "materialbrowserdialog.h"
 
 DataTableDialog::DataTableDialog(QWidget *parent) : QDialog(parent)
