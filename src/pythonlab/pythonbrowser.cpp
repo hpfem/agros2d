@@ -10,7 +10,7 @@ const int valuePos = 2;
 
 bool isVariable(const QString& type)
 {
-    if (type == "int" || type == "float" || type == "string" ||
+    if (type == "int" || type == "float" || type == "string" || type == "bool" ||
             type == "list" || type == "dict" || type == "tuple" ||
             type == "instance" || type == "numpy.ndarray")
         return true;
@@ -117,7 +117,13 @@ void PythonBrowserView::executed()
     foreach (Variables variable, list)
     {
         QTreeWidgetItem *item = NULL;
-        if (variable.type == "int")
+        if (variable.type == "bool")
+        {
+            item = new QTreeWidgetItem(trvVariables);
+            item->setText(2, variable.value.toString());
+            item->setIcon(0, icon("browser-variable-bool"));
+        }
+        else if (variable.type == "int")
         {
             item = new QTreeWidgetItem(trvVariables);
             item->setText(2, QString::number(variable.value.toInt()));

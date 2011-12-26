@@ -96,6 +96,7 @@
 		<file alias="browser-variable-list.png">../resources_source/images/browser-variable-list.png</file>
 		<file alias="browser-variable-tuple.png">../resources_source/images/browser-variable-tuple.png</file>
 		<file alias="browser-variable-class.png">../resources_source/images/browser-variable-class.png</file>
+		<file alias="browser-variable-bool.png">../resources_source/images/browser-variable-bool.png</file>
 		<file alias="browser-variable-unknown.png">../resources_source/images/browser-variable-unknown.png</file>
 		<file alias="history-command.png">../resources_source/images/history-command.png</file>
         <file alias="equations/current/current_steadystate.png">../resources_source/images/equations/current/current_steadystate.png</file>

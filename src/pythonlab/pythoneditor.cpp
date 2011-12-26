@@ -529,7 +529,6 @@ void PythonEditorDialog::createControls()
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunPython);
-    QSettings settings;
     mnuTools->addAction(actCheckPyLint);
 
     mnuOptions = menuBar()->addMenu(tr("&Options"));

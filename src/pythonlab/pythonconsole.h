@@ -41,11 +41,13 @@ class PythonEngine;
 class PythonScriptingConsole : public QTextEdit
 {
     Q_OBJECT
-
 public:
     PythonScriptingConsole(PythonEngine *pythonEngine, QWidget* parent = NULL);
-
     ~PythonScriptingConsole();
+
+    // static history for all consoles
+    static QStringList history;
+    static int historyPosition;
 
 signals:
     void historyChanged(const QString &code);
@@ -63,12 +65,6 @@ public slots:
 
     // clear command line
     void clearCommandLine();
-
-    // get history
-    QStringList history() { return m_history; }
-
-    // set history
-    void setHistory(const QStringList& h) { m_history = h; m_historyPosition = 0; }
 
     // clear the console
     void clear();
@@ -118,11 +114,6 @@ private:
     PythonEngine *pythonEngine;
 
     void executeCode(const QString& code);
-
-    // history
-    QStringList m_history;
-    int m_historyPosition;
-
 
     QString m_clickedAnchor;
     QString m_storageKey;
