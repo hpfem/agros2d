@@ -265,6 +265,11 @@ QList<Variables> PythonEngine::variableList()
         var.type = value->ob_type->tp_name;
 
         // variable value
+        if (var.type == "bool")
+        {
+            var.value = PyInt_AsLong(value) ? "True" : "False";
+            append = true;
+        }
         if (var.type == "int")
         {
             var.value = (int) PyInt_AsLong(value);
@@ -302,9 +307,6 @@ QList<Variables> PythonEngine::variableList()
         }
         if (var.type == "function"
                 || var.type == "module"
-                || var.type == "dict"
-                || var.type == "tuple"
-                || var.type == "list"
                 || var.type == "instance"
                 || var.type == "classobj")
         {

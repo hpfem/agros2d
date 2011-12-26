@@ -130,6 +130,7 @@
 		<file>images/browser-variable-list.png</file>
 		<file>images/browser-variable-tuple.png</file>
 		<file>images/browser-variable-class.png</file>
+		<file>images/browser-variable-bool.png</file>
 		<file>images/browser-variable-unknown.png</file>
 		<file>images/history-command.png</file>
     </qresource>

@@ -33,13 +33,9 @@ PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *pare
 
     createControls();
 
-    QSettings settings;
-    if (settings.value("PythonEditorWidget/EnablePyFlakes", true).toBool())
-    {
-        QTimer *timer = new QTimer(this);
-        connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
-        timer->start(4000);
-    }
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
+    timer->start(4000);
 
     txtEditor->setAcceptDrops(false);
 }
@@ -69,17 +65,14 @@ void PythonEditorWidget::createControls()
     splitter->addWidget(editor);
 
     QSettings settings;
-    if (settings.value("PythonEditorWidget/EnablePyLint", true).toBool())
-    {
-        trvPyLint = new QTreeWidget(this);
-        trvPyLint->setHeaderHidden(true);
-        trvPyLint->setMouseTracking(true);
-        trvPyLint->setColumnCount(1);
-        trvPyLint->setIndentation(12);
-        connect(trvPyLint, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLine(QTreeWidgetItem *, int)));
+    trvPyLint = new QTreeWidget(this);
+    trvPyLint->setHeaderHidden(true);
+    trvPyLint->setMouseTracking(true);
+    trvPyLint->setColumnCount(1);
+    trvPyLint->setIndentation(12);
+    connect(trvPyLint, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLine(QTreeWidgetItem *, int)));
 
-        splitter->addWidget(trvPyLint);
-    }
+    splitter->addWidget(trvPyLint);
 
     QSizePolicy policy = splitter->sizePolicy();
     policy.setHorizontalStretch(0.2);
@@ -213,6 +206,10 @@ void PythonEditorWidget::pyLintAnalyseStopped(int exitCode)
 
 void PythonEditorWidget::pyFlakesAnalyse()
 {
+    QSettings settings;
+    if (!settings.value("PythonEditorWidget/EnablePyFlakes", true).toBool())
+        return;
+
     if (txtEditor->isVisible() && txtEditor->hasFocus())
     {
         QProcess processPyFlakes;
@@ -316,8 +313,7 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     QSettings settings;
 
     connect(actRunPython, SIGNAL(triggered()), this, SLOT(doRunPython()));
-    if (settings.value("PythonEditorWidget/EnablePyLint", true).toBool())
-        connect(actCheckPython, SIGNAL(triggered()), this, SLOT(doPyLintPython()));
+    connect(actCheckPyLint, SIGNAL(triggered()), this, SLOT(doPyLintPython()));
 
     // macx
     setUnifiedTitleAndToolBarOnMac(true);
@@ -456,11 +452,19 @@ void PythonEditorDialog::createActions()
     actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
     QSettings settings;
-    if (settings.value("PythonEditorWidget/EnablePyLint", true).toBool())
-    {
-        actCheckPython = new QAction(icon("checkbox"), tr("&Check Python script (PyLint)"), this);
-        actCheckPython->setShortcut(QKeySequence(tr("Alt+C")));
-    }
+    actCheckPyLint = new QAction(icon("checkbox"), tr("&Check Python script (PyLint)"), this);
+    actCheckPyLint->setEnabled(settings.value("PythonEditorWidget/EnablePyLint", true).toBool());
+    actCheckPyLint->setShortcut(QKeySequence(tr("Alt+C")));
+
+    actOptionsEnablePyFlakes = new QAction(icon(""), tr("PyFlakes enabled"), this);
+    actOptionsEnablePyFlakes->setCheckable(true);
+    actOptionsEnablePyFlakes->setChecked(settings.value("PythonEditorWidget/EnablePyFlakes", true).toBool());
+    connect(actOptionsEnablePyFlakes, SIGNAL(triggered()), this, SLOT(doOptionsEneblePyFlakes()));
+
+    actOptionsEnablePyLint = new QAction(icon(""), tr("PyLint enabled"), this);
+    actOptionsEnablePyLint->setCheckable(true);
+    actOptionsEnablePyLint->setChecked(settings.value("PythonEditorWidget/EnablePyLint", true).toBool());
+    connect(actOptionsEnablePyLint, SIGNAL(triggered()), this, SLOT(doOptionsEneblePyLint()));
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
@@ -525,9 +529,11 @@ void PythonEditorDialog::createControls()
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunPython);
-    QSettings settings;
-    if (settings.value("PythonEditorWidget/EnablePyLint", true).toBool())
-        mnuTools->addAction(actCheckPython);
+    mnuTools->addAction(actCheckPyLint);
+
+    mnuOptions = menuBar()->addMenu(tr("&Options"));
+    mnuOptions->addAction(actOptionsEnablePyFlakes);
+    mnuOptions->addAction(actOptionsEnablePyLint);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     // mnuHelp->addAction(actHelp);
@@ -569,8 +575,7 @@ void PythonEditorDialog::createControls()
 #endif
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actRunPython);
-    if (settings.value("PythonEditorWidget/EnablePyLint", true).toBool())
-        tlbTools->addAction(actCheckPython);
+    tlbTools->addAction(actCheckPyLint);
 
     // path
     QLineEdit *txtPath = new QLineEdit(this);
@@ -677,7 +682,6 @@ void PythonEditorDialog::doRunPython()
 
     // disable controls
     consoleView->setEnabled(false);
-    // actRunPython->setEnabled(false);
     scriptEditorWidget()->setCursor(Qt::BusyCursor);
     QApplication::processEvents();
 
@@ -688,6 +692,8 @@ void PythonEditorDialog::doRunPython()
     // benchmark
     QTime time;
     time.start();
+
+    consoleView->console()->connectStdOut();
 
     ScriptResult result;
     if (txtEditor->textCursor().hasSelection())
@@ -707,6 +713,7 @@ void PythonEditorDialog::doRunPython()
         result = pythonEngine->runPythonScript(txtEditor->toPlainText(),
                                                QFileInfo(scriptEditorWidget()->file).absoluteFilePath());
     }
+    consoleView->console()->disconnectStdOut();
 
     if (result.isError)
     {
@@ -720,7 +727,6 @@ void PythonEditorDialog::doRunPython()
     // enable controls
     consoleView->setEnabled(true);
     scriptEditorWidget()->setCursor(Qt::ArrowCursor);
-    // actRunPython->setEnabled(true);
 
     txtEditor->setFocus();
     activateWindow();
@@ -736,6 +742,20 @@ void PythonEditorDialog::doPyLintPython()
 
     txtEditor->setFocus();
     activateWindow();
+}
+
+void PythonEditorDialog::doOptionsEneblePyFlakes()
+{
+    QSettings settings;
+    settings.setValue("PythonEditorWidget/EnablePyFlakes", actOptionsEnablePyFlakes->isChecked());
+}
+
+void PythonEditorDialog::doOptionsEneblePyLint()
+{
+    actCheckPyLint->setEnabled(actOptionsEnablePyLint->isChecked());
+
+    QSettings settings;
+    settings.setValue("PythonEditorWidget/EnablePyLint", actOptionsEnablePyLint->isChecked());
 }
 
 void PythonEditorDialog::doFileItemDoubleClick(const QString &path)
