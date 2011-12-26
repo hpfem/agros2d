@@ -53,9 +53,6 @@ PythonScriptingConsole::PythonScriptingConsole(PythonEngine *pythonEngine, QWidg
     QObject::connect(m_completer, SIGNAL(activated(const QString&)),
                      this, SLOT(insertCompletion(const QString&)));
 
-    connect(pythonEngine, SIGNAL(printStdOut(QString)),
-            this, SLOT(stdOut(QString)));
-
     // HACK
     QFont font("Monospace");
     font.setStyleHint(QFont::TypeWriter);
@@ -126,8 +123,9 @@ void PythonScriptingConsole::clear()
 {    
     QTextEdit::clear();
 
+    connectStdOut();
     pythonEngine->runPythonScript("v = sys.version + \" on \" + sys.platform; print(v); del v;", "");
-
+    disconnectStdOut();
     appendCommandPrompt();
 }
 
@@ -199,7 +197,9 @@ void PythonScriptingConsole::executeCode(const QString& code)
     m_stdOut = "";
     m_stdErr = "";
 
+    connectStdOut();
     ExpressionResult result = pythonEngine->runPythonExpression(code, false);
+    disconnectStdOut();
 
     if (!result.error.isEmpty())
         stdErr(result.error);
@@ -226,6 +226,17 @@ void PythonScriptingConsole::appendCommandPrompt(bool storeOnly)
     cursor.movePosition(QTextCursor::End);
     setTextCursor(cursor);
 }
+
+void PythonScriptingConsole::connectStdOut()
+{
+    connect(pythonEngine, SIGNAL(printStdOut(QString)), this, SLOT(stdOut(QString)));
+}
+
+void PythonScriptingConsole::disconnectStdOut()
+{
+    disconnect(pythonEngine, SIGNAL(printStdOut(QString)), this, SLOT(stdOut(QString)));
+}
+
 
 int PythonScriptingConsole::commandPromptPosition() {
 

@@ -126,9 +126,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             QString scriptName = args[++i];
 
             if (QFile::exists(scriptName))
+            {
+                consoleView->console()->connectStdOut();
                 runPythonScript(readFileContent(scriptName));
+                consoleView->console()->disconnectStdOut();
+            }
             else
+            {
                 qWarning() << "Script " << scriptName << "not found.";
+            }
 
             continue;
         }
@@ -1264,7 +1270,10 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
         consoleView->console()->consoleMessage("Run script: " + QFileInfo(fileNameScript).fileName().left(QFileInfo(fileNameScript).fileName().length() - 3) + "\n",
                                                Qt::gray);
 
+        consoleView->console()->connectStdOut();
         ScriptResult result = runPythonScript(readFileContent(fileNameScript), fileNameScript);
+        consoleView->console()->disconnectStdOut();
+
         if (result.isError)
             consoleView->console()->stdErr(result.text);
 

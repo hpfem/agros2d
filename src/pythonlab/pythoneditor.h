@@ -131,6 +131,7 @@ protected:
     QMenu *mnuRecentFiles;
     QMenu *mnuEdit;
     QMenu *mnuTools;
+    QMenu *mnuOptions;
     QMenu *mnuHelp;
 
     QToolBar *tlbFile;
@@ -162,7 +163,10 @@ protected:
     QAction *actGotoLine;
 
     QAction *actRunPython;
-    QAction *actCheckPython;
+    QAction *actCheckPyLint;
+
+    QAction *actOptionsEnablePyLint;
+    QAction *actOptionsEnablePyFlakes;
 
     QAction *actHelp;
     QAction *actHelpKeywordList;
@@ -188,6 +192,8 @@ private slots:
     void doCurrentDocumentChanged(bool changed);
     void doCurrentPageChanged(int index);
     void doCursorPositionChanged();
+    void doOptionsEneblePyFlakes();
+    void doOptionsEneblePyLint();
 };
 
 class ScriptEditor : public QPlainTextEdit

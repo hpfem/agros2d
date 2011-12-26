@@ -86,6 +86,9 @@ public slots:
     // Appends a newline and command prompt at the end of the document.
     void appendCommandPrompt(bool storeOnly = false);
 
+    void connectStdOut();
+    void disconnectStdOut();
+
 public:
     // returns true if python cerr had an error
     inline bool hasError() { return m_hasError; }
