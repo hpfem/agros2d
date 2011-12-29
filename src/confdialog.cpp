@@ -748,7 +748,7 @@ QWidget *ConfigDialog::createGlobalScriptWidget()
 
     QWidget *viewWidget = new QWidget(this);
 
-    txtGlobalScript = new ScriptEditor(this);
+    txtGlobalScript = new ScriptEditor(currentPythonEngine(), this);
 
     // layout
     QVBoxLayout *layout = new QVBoxLayout();

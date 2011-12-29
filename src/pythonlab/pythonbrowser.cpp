@@ -8,7 +8,7 @@ const int namePos = 0;
 const int typePos = 1;
 const int valuePos = 2;
 
-bool isVariable(const QString& type)
+bool isPythonVariable(const QString& type)
 {
     if (type == "int" || type == "float" || type == "string" || type == "bool" ||
             type == "list" || type == "dict" || type == "tuple" ||
@@ -77,7 +77,7 @@ void PythonBrowserView::doContextMenu(const QPoint &point)
     actCopyValue->setEnabled(false);
 
     QTreeWidgetItem *item = trvBrowser->itemAt(point);
-    if (item && isVariable(item->text(typePos)))
+    if (item && isPythonVariable(item->text(typePos)))
     {
         actDelete->setEnabled(true);
         actCopyName->setEnabled(true);
@@ -112,9 +112,9 @@ void PythonBrowserView::executed()
     trvOther->setIcon(0, icon("browser-other"));
     trvOther->setExpanded(otherExpanded);
 
-    QList<Variables> list = pythonEngine->variableList();
+    QList<PythonVariables> list = pythonEngine->variableList();
 
-    foreach (Variables variable, list)
+    foreach (PythonVariables variable, list)
     {
         QTreeWidgetItem *item = NULL;
         if (variable.type == "bool")
@@ -179,6 +179,11 @@ void PythonBrowserView::executed()
         {
             item = new QTreeWidgetItem(trvClasses);
         }
+        else if (variable.type == "module")
+        {
+            item = new QTreeWidgetItem(trvOther);
+            item->setText(2, variable.value.toString());
+        }
         else
         {
             item = new QTreeWidgetItem(trvOther);
@@ -217,7 +222,7 @@ void PythonBrowserView::copyValue()
 
 void PythonBrowserView::deleteVariable()
 {
-    if (trvBrowser->currentItem() && isVariable(trvBrowser->currentItem()->text(typePos)))
+    if (trvBrowser->currentItem() && isPythonVariable(trvBrowser->currentItem()->text(typePos)))
     {
         QString variable = trvBrowser->currentItem()->text(namePos);
 

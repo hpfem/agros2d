@@ -55,6 +55,7 @@ SOURCES += util.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
     pythonlab/pythonconsole.cpp \
+    pythonlab/pythoncompleter.cpp \
     pythonlab/pythonhighlighter.cpp \
     pythonlab/pythonengine.cpp \
     pythonlab/pythonbrowser.cpp \
@@ -108,6 +109,7 @@ HEADERS += util.h \
     hermes2d/marker.h \
     hermes2d/module.h \
     pythonlab/pythonconsole.h \
+    pythonlab/pythoncompleter.h \
     pythonlab/pythonhighlighter.h \
     pythonlab/pythonengine.h \
     pythonlab/pythonbrowser.h \

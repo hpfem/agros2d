@@ -25,12 +25,6 @@ PythonEngine *currentPythonEngine()
 
 // ****************************************************************************
 
-static PyMethodDef pythonEngineFuntions[] =
-{
-    {"capturestdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
-    {NULL, NULL, 0, NULL}
-};
-
 // print stdout
 PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
 {
@@ -42,6 +36,12 @@ PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
     }
     return NULL;
 }
+
+static PyMethodDef pythonEngineFuntions[] =
+{
+    {"capturestdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
+    {NULL, NULL, 0, NULL}
+};
 
 // ****************************************************************************
 
@@ -117,7 +117,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
 
     ScriptResult scriptResult;
     if (output)
-    {        
+    {
         scriptResult.isError = false;
         scriptResult.text = m_stdOut.trimmed();
     }
@@ -142,7 +142,7 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
 
     QString exp;
     if (returnValue)
-        exp = QString("result = %1").arg(expression);
+        exp = QString("result_pythonlab = %1").arg(expression);
     else
         exp = expression;
 
@@ -167,7 +167,7 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
             // parse result
             if (returnValue)
             {
-                PyObject *result = PyDict_GetItemString(m_dict, "result"); //FIX maybe m_dict_globals???
+                PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
                 if (result)
                 {
                     Py_INCREF(result);
@@ -178,6 +178,9 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
                 }
             }
         }
+
+        if (returnValue)
+            PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
     }
     else
     {
@@ -188,6 +191,56 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
     emit executed();
 
     return expressionResult;
+}
+
+QStringList PythonEngine::codeCompletion(const QString& code, int offset, const QString& fileName)
+{
+    runPythonHeader();
+
+    QStringList out;
+
+    QString exp;
+    if (QFile::exists(fileName))
+    {
+        // ignore code
+        exp = QString("result_rope_pythonlab = python_engine_get_completion_file(\"%1\", %2)").
+                arg(fileName).
+                arg(offset);
+    }
+    else
+    {
+        exp = QString("result_rope_pythonlab = python_engine_get_completion_string(\"%1\", %2)").
+                arg(code).
+                arg(offset);
+    }
+
+    PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+
+    // parse result
+    PyObject *result = PyDict_GetItemString(m_dict, "result_rope_pythonlab");
+    if (result)
+    {
+        Py_INCREF(result);
+        PyObject *list;
+        if (PyArg_Parse(result, "O", &list))
+        {
+            int count = PyList_Size(list);
+            for (int i = 0; i < count; i++)
+            {
+                PyObject *item = PyList_GetItem(list, i);
+
+                QString str = PyString_AsString(item);
+                out.append(str);
+            }
+        }
+        Py_DECREF(result);
+    }
+
+    PyRun_String("del result_rope_pythonlab", Py_single_input, m_dict, m_dict);
+
+    Py_DECREF(Py_None);
+
+    return out;
 }
 
 ScriptResult PythonEngine::parseError()
@@ -240,12 +293,12 @@ ScriptResult PythonEngine::parseError()
     return error;
 }
 
-QList<Variables> PythonEngine::variableList()
+QList<PythonVariables> PythonEngine::variableList()
 {
     QStringList filter;
-    filter << "__builtins__" << "StdoutCatcher" << "agrosstdout" << "capturestdout" << "chdir";
+    filter << "__builtins__" << "StdoutCatcher" << "agrosstdout" << "capturestdout" << "chdir" << "python_engine_get_completion_file" << "python_engine_get_completion_string";
 
-    QList<Variables> list;
+    QList<PythonVariables> list;
 
     PyObject *keys = PyDict_Keys(m_dict);
     for (int i = 0; i < PyList_Size(keys); ++i)
@@ -256,7 +309,7 @@ QList<Variables> PythonEngine::variableList()
         bool append = false;
 
         // variable
-        Variables var;
+        PythonVariables var;
 
         // variable name
         var.name = PyString_AsString(key);
@@ -305,15 +358,19 @@ QList<Variables> PythonEngine::variableList()
             var.value = ""; //TODO count
             append = true;
         }
+        if (var.type == "module")
+        {
+            var.value = PyString_AsString(PyObject_GetAttrString(value, "__name__"));
+            append = true;
+        }
         if (var.type == "function"
-                || var.type == "module"
                 || var.type == "instance"
                 || var.type == "classobj")
         {
             append = true;
         }
 
-        // qDebug() << var.type;
+        // qDebug() << var.name << " : " << var.type;
 
         if (append && !filter.contains(var.name))
             list.append(var);

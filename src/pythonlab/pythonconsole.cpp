@@ -32,6 +32,8 @@
 
 #include "pythonconsole.h"
 #include "pythonengine.h"
+#include "pythoncompleter.h"
+#include "pythonbrowser.h"
 
 #include <QtGui>
 
@@ -52,10 +54,9 @@ PythonScriptingConsole::PythonScriptingConsole(PythonEngine *pythonEngine, QWidg
     PythonScriptingConsole::historyPosition = 0;
     m_hasError = false;
 
-    m_completer = new QCompleter(this);
-    m_completer->setWidget(this);
-    QObject::connect(m_completer, SIGNAL(activated(const QString&)),
-                     this, SLOT(insertCompletion(const QString&)));
+    completer = createCompleter();
+    completer->setWidget(this);
+    QObject::connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
 
     // HACK
     QFont font("Monospace");
@@ -252,111 +253,82 @@ int PythonScriptingConsole::commandPromptPosition() {
 
 void PythonScriptingConsole::insertCompletion(const QString& completion)
 {
+    QString str = completion.left(completion.indexOf("(") - 1);
+
     QTextCursor tc = textCursor();
     tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
     if (tc.selectedText() == ".")
     {
-        tc.insertText(QString(".") + completion);
+        tc.insertText(QString(".") + str);
     }
     else
     {
         tc = textCursor();
         tc.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
         tc.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-        tc.insertText(completion);
+        tc.insertText(str);
         setTextCursor(tc);
     }
 }
 
 void PythonScriptingConsole::handleTabCompletion()
 {
-    QTextCursor textCursor   = this->textCursor();
-    int pos = textCursor.position();
-    textCursor.setPosition(commandPromptPosition());
-    textCursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    int startPos = textCursor.selectionStart();
+    QTextCursor c = textCursor();
+    int pos = c.position();
+    c.setPosition(commandPromptPosition());
+    c.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
 
-    int offset = pos-startPos;
-    QString text = textCursor.selectedText();
+    QString search = c.selectedText();
 
-    QString textToComplete;
-    int cur = offset;
-    while (cur--)
+    QString text;
+    // add modules
+    QList<PythonVariables> list = pythonEngine->variableList();
+    foreach (PythonVariables variable, list)
     {
-        QChar c = text.at(cur);
-        if (c.isLetterOrNumber() || c == '.' || c == '_')
-        {
-            textToComplete.prepend(c);
-        }
-        else
-        {
-            break;
-        }
+        if (variable.type == "module")
+            text += QString("import %1 as %2; ").arg(variable.value.toString()).arg(variable.name);
+    }
+    text += search;
+
+    // code completion
+    QStringList found = pythonEngine->codeCompletion(text.toLower(), text.length());
+
+    // add variables
+    foreach (PythonVariables variable, list)
+    {
+        if (isPythonVariable(variable.type))
+            found.append(QString("%1 (global, variable)").arg(variable.name));
     }
 
-    QString lookup;
-    QString compareText = textToComplete;
-    int dot = compareText.lastIndexOf('.');
-    if (dot!=-1)
-    {
-        lookup = compareText.mid(0, dot);
-        compareText = compareText.mid(dot+1, offset);
-    }
-    if (!lookup.isEmpty() || !compareText.isEmpty())
-    {
-        compareText = compareText.toLower();
-        QStringList found;
-        QStringList l = QStringList(); //TODO PythonQt::self()->introspection(_context, lookup, PythonQt::Anything);
-        foreach (QString n, l)
-        {
-            if (n.toLower().startsWith(compareText))
-            {
-                found << n;
-            }
-        }
+    found.sort();
 
-        if (!found.isEmpty())
-        {
-            m_completer->setCompletionPrefix(compareText);
-            m_completer->setCompletionMode(QCompleter::PopupCompletion);
-            m_completer->setModel(new QStringListModel(found, m_completer));
-            m_completer->setCaseSensitivity(Qt::CaseInsensitive);
-            QTextCursor c = this->textCursor();
-            c.movePosition(QTextCursor::StartOfWord);
-            QRect cr = cursorRect(c);
-            cr.setWidth(m_completer->popup()->sizeHintForColumn(0)
-                        + m_completer->popup()->verticalScrollBar()->sizeHint().width());
-            cr.translate(0,8);
-            m_completer->complete(cr);
-        }
-        else
-        {
-            m_completer->popup()->hide();
-        }
+    if (!found.isEmpty())
+    {
+        if (!search.contains("."))
+            completer->setCompletionPrefix(search);
+        completer->setModel(new QStringListModel(found, completer));
+        QTextCursor c = textCursor();
+        c.movePosition(QTextCursor::StartOfWord);
+        QRect cr = cursorRect(c);
+        cr.setWidth(completer->popup()->sizeHintForColumn(0)
+                    + completer->popup()->verticalScrollBar()->sizeHint().width() + 30);
+        cr.translate(0, 4);
+        completer->complete(cr);
     }
     else
     {
-        m_completer->popup()->hide();
+        completer->popup()->hide();
     }
 }
 
-void PythonScriptingConsole::keyPressEvent(QKeyEvent* event) {
-
-    if (m_completer && m_completer->popup()->isVisible())
+void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
+{
+    if (completer && completer->popup()->isVisible())
     {
         // The following keys are forwarded by the completer to the widget
         switch (event->key())
         {
         case Qt::Key_Return:
-            if (!m_completer->popup()->currentIndex().isValid())
-            {
-                insertCompletion(m_completer->currentCompletion());
-                m_completer->popup()->hide();
-                event->accept();
-            }
-            event->ignore();
-            return;
-            break;
         case Qt::Key_Enter:
         case Qt::Key_Escape:
         case Qt::Key_Tab:
@@ -370,25 +342,24 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event) {
     }
 
     bool eventHandled = false;
-    QTextCursor textCursor = this->textCursor();
 
-    int key = event->key();
-    switch (key)
+    switch (event->key())
     {
     case Qt::Key_Left:
-
+    {
         // Moving the cursor left is limited to the position
         // of the command prompt.
 
-        if (textCursor.position() <= commandPromptPosition())
+        if (textCursor().position() <= commandPromptPosition())
         {
             QApplication::beep();
             eventHandled = true;
         }
+    }
         break;
 
     case Qt::Key_Up:
-
+    {
         // Display the previous command in the history
         if (PythonScriptingConsole::historyPosition > 0)
         {
@@ -397,10 +368,11 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event) {
         }
 
         eventHandled = true;
+    }
         break;
 
     case Qt::Key_Down:
-
+    {
         // clean input
         if (PythonScriptingConsole::historyPosition+1 == PythonScriptingConsole::history.count())
         {
@@ -416,20 +388,22 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event) {
         }
 
         eventHandled = true;
+    }
         break;
 
     case Qt::Key_Return:
     case Qt::Key_Enter:
-
+    {
         //TODO - enable store
         // executeLine(event->modifiers() & Qt::ShiftModifier);
         executeLine(false);
         eventHandled = true;
+    }
         break;
 
     case Qt::Key_Backspace:
-
-        if (textCursor.hasSelection())
+    {
+        if (textCursor().hasSelection())
         {
             cut();
             eventHandled = true;
@@ -441,17 +415,18 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event) {
             // allowed, if the user wants to delete the
             // command prompt.
 
-            if (textCursor.position() <= commandPromptPosition())
+            if (textCursor().position() <= commandPromptPosition())
             {
                 QApplication::beep();
                 eventHandled = true;
             }
         }
+    }
         break;
 
     case Qt::Key_Delete:
-
-        if (textCursor.hasSelection())
+    {
+        if (textCursor().hasSelection())
         {
             cut();
             eventHandled = true;
@@ -459,34 +434,34 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event) {
         else
         {
             int commandPromptPosition = this->commandPromptPosition();
-            if (textCursor.position() < commandPromptPosition)
+            if (textCursor().position() < commandPromptPosition)
             {
-                textCursor.movePosition(QTextCursor::End);
-                setTextCursor(textCursor);
+                QTextCursor c = textCursor();
+                c.movePosition(QTextCursor::End);
+                setTextCursor(c);
             }
         }
-
+    }
         break;
 
     case Qt::Key_Home:
-
     {
-        QTextCursor textCursor = this->textCursor();
-        textCursor.setPosition(commandPromptPosition(),
-                               (event->modifiers() & Qt::ShiftModifier) ? QTextCursor::KeepAnchor : QTextCursor::MoveAnchor);
+        QTextCursor c = textCursor();
+        c.setPosition(commandPromptPosition(),
+                      (event->modifiers() & Qt::ShiftModifier) ? QTextCursor::KeepAnchor : QTextCursor::MoveAnchor);
 
-        setTextCursor(textCursor);
+        setTextCursor(c);
         eventHandled = true;
     }
         break;
 
     default:
-        if (key >= Qt::Key_Space && key <= Qt::Key_division)
+        if (event->key() >= Qt::Key_Space && event->key() <= Qt::Key_division)
         {
-            if (textCursor.hasSelection() && !verifySelectionBeforeDeletion())
+            if (textCursor().hasSelection() && !verifySelectionBeforeDeletion())
             {
                 // The selection must not be deleted.
-                eventHandled = true;
+                // eventHandled = true;
             }
             else
             {
@@ -495,10 +470,11 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event) {
                 // character is not allowed.
 
                 int commandPromptPosition = this->commandPromptPosition();
-                if (textCursor.position() < commandPromptPosition)
+                if (textCursor().position() < commandPromptPosition)
                 {
-                    textCursor.setPosition(commandPromptPosition);
-                    setTextCursor(textCursor);
+                    QTextCursor c = textCursor();
+                    c.setPosition(commandPromptPosition);
+                    setTextCursor(c);
                 }
             }
         }
@@ -506,22 +482,18 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event) {
 
     if (eventHandled)
     {
-        m_completer->popup()->hide();
+        completer->popup()->hide();
         event->accept();
     }
     else
     {
         QTextEdit::keyPressEvent(event);
-        QString text = event->text();
-        if (!text.isEmpty())
+
+        if ((event->modifiers() & Qt::ControlModifier && event->key() == Qt::Key_Space)
+                || completer->popup()->isVisible())
         {
             handleTabCompletion();
         }
-        else
-        {
-            m_completer->popup()->hide();
-        }
-        eventHandled = true;
     }
 }
 
@@ -538,13 +510,13 @@ bool PythonScriptingConsole::verifySelectionBeforeDeletion()
 {
     bool deletionAllowed = true;
 
-    QTextCursor textCursor = this->textCursor();
+    QTextCursor c = textCursor();
 
     int commandPromptPosition = this->commandPromptPosition();
-    int selectionStart = textCursor.selectionStart();
-    int selectionEnd = textCursor.selectionEnd();
+    int selectionStart = c.selectionStart();
+    int selectionEnd = c.selectionEnd();
 
-    if (textCursor.hasSelection())
+    if (c.hasSelection())
     {
 
         // Selected text may only be deleted after the last command prompt.
@@ -579,9 +551,9 @@ bool PythonScriptingConsole::verifySelectionBeforeDeletion()
                 // The selectionEnd is after the command prompt, so set
                 // the selection start to the commandPromptPosition.
                 selectionStart = commandPromptPosition;
-                textCursor.setPosition(selectionStart);
-                textCursor.setPosition(selectionStart, QTextCursor::KeepAnchor);
-                setTextCursor(textCursor);
+                c.setPosition(selectionStart);
+                c.setPosition(selectionStart, QTextCursor::KeepAnchor);
+                setTextCursor(c);
             }
         }
 
@@ -591,7 +563,7 @@ bool PythonScriptingConsole::verifySelectionBeforeDeletion()
 
         // When there is no selected text, deletion is not allowed before the
         // command prompt.
-        if (textCursor.position() < commandPromptPosition)
+        if (c.position() < commandPromptPosition)
         {
             QApplication::beep();
             deletionAllowed = false;

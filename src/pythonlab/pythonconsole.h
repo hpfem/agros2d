@@ -125,7 +125,7 @@ private:
     QString m_stdErr;
 
     QTextCharFormat m_defaultTextCharacterFormat;
-    QCompleter* m_completer;
+    QCompleter* completer;
 
     bool m_hasError;
 };

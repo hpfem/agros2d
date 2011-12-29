@@ -42,12 +42,6 @@ def addrect(x0, y0, width, height, boundary = "none", material = "null"):
 		addlabel((x0)+(width/2.0), (y0)+(height/2.0), material=material)
 	return
 
-def agroslistvariables():
-	import types
-	agrosType = [types.IntType, types.StringType, types.TupleType, types.FloatType, types.BooleanType, types.ListType, types.LongType, types.UnicodeType]
-
-	return filter(lambda x: type(x) in [types.IntType, types.DictType], globals().values())
-
 def test(text, value, normal, error = 0.03):
 	if ((normal == 0.0) and abs(value < 1e-14)):
 		return True
@@ -55,6 +49,46 @@ def test(text, value, normal, error = 0.03):
 	if (not test):	
 		print(text + ": (" + str(value) + " != " + str(normal) + ")")
 	return test
+
+# get completion list
+def python_engine_get_completion_string(code, offset):
+	try:
+		from rope.base.project import Project
+		from rope.contrib import codeassist
+	
+		project = Project(".", ropefolder=None)	
+
+		proposals = codeassist.code_assist(project, code, offset)
+		proposals = codeassist.sorted_proposals(proposals)
+		proposals_string = []
+		for p in proposals:
+			proposals_string.append(p.__str__())
+		
+		return proposals_string
+		# return [proposal.name for proposal in proposals]
+	except:
+		return []
+
+def python_engine_get_completion_file(filename, offset):
+	try:
+		from rope.base.project import Project
+		from rope.contrib import codeassist
+	
+		project = Project(".", ropefolder=None)	
+	
+		f = open(filename, 'r')
+		code = ''.join(f.readlines())
+	
+		proposals = codeassist.code_assist(project, code, offset, maxfixes=10) 
+		proposals = codeassist.sorted_proposals(proposals)
+		proposals_string = []
+		for p in proposals:
+			proposals_string.append(p.__str__())
+		
+		return proposals_string
+		# return [proposal.name for proposal in proposals]
+	except:
+		return []
 
 # redirect script output
 class StdoutCatcher:

@@ -22,14 +22,17 @@
 #include "pythonconsole.h"
 #include "pythonbrowser.h"
 #include "pythonengine.h"
+#include "pythoncompleter.h"
 
 #include "util.h"
 #include "gui.h"
 
+const QString TABS = "    ";
+
 PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *parent)
     : QWidget(parent), pythonEngine(pythonEngine)
 {
-    file = "";
+    fileName = "";
 
     createControls();
 
@@ -50,7 +53,7 @@ PythonEditorWidget::~PythonEditorWidget()
 
 void PythonEditorWidget::createControls()
 {
-    txtEditor = new ScriptEditor(this);
+    txtEditor = new ScriptEditor(pythonEngine, this);
     searchWidget = new SearchWidget(txtEditor, this);
 
     QVBoxLayout *layoutEditor = new QVBoxLayout();
@@ -313,6 +316,7 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     QSettings settings;
 
     connect(actRunPython, SIGNAL(triggered()), this, SLOT(doRunPython()));
+    connect(actReplaceTabsWithSpaces, SIGNAL(triggered()), this, SLOT(doReplaceTabsWithSpaces()));
     connect(actCheckPyLint, SIGNAL(triggered()), this, SLOT(doPyLintPython()));
 
     // macx
@@ -451,6 +455,8 @@ void PythonEditorDialog::createActions()
     actRunPython = new QAction(icon("run"), tr("&Run Python script"), this);
     actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
+    actReplaceTabsWithSpaces = new QAction(icon(""), tr("Replace tabs with spaces"), this);
+
     QSettings settings;
     actCheckPyLint = new QAction(icon("checkbox"), tr("&Check Python script (PyLint)"), this);
     actCheckPyLint->setEnabled(settings.value("PythonEditorWidget/EnablePyLint", true).toBool());
@@ -529,6 +535,7 @@ void PythonEditorDialog::createControls()
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunPython);
+    mnuTools->addAction(actReplaceTabsWithSpaces);
     mnuTools->addAction(actCheckPyLint);
 
     mnuOptions = menuBar()->addMenu(tr("&Options"));
@@ -677,8 +684,8 @@ void PythonEditorDialog::createStatusBar()
 
 void PythonEditorDialog::doRunPython()
 {
-    if (!scriptEditorWidget()->file.isEmpty())
-        filBrowser->setDir(QFileInfo(scriptEditorWidget()->file).absolutePath());
+    if (!scriptEditorWidget()->fileName.isEmpty())
+        filBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName).absolutePath());
 
     // disable controls
     consoleView->setEnabled(false);
@@ -700,18 +707,18 @@ void PythonEditorDialog::doRunPython()
     {
         result = pythonEngine->runPythonScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), "");
     }
-    else if (scriptEditorWidget()->file.isEmpty())
+    else if (scriptEditorWidget()->fileName.isEmpty())
     {
         result = pythonEngine->runPythonScript(txtEditor->toPlainText());
     }
     else
     {
-        if (!scriptEditorWidget()->file.isEmpty() &&
-                QFile::exists(scriptEditorWidget()->file))
+        if (!scriptEditorWidget()->fileName.isEmpty() &&
+                QFile::exists(scriptEditorWidget()->fileName))
             doFileSave();
 
         result = pythonEngine->runPythonScript(txtEditor->toPlainText(),
-                                               QFileInfo(scriptEditorWidget()->file).absoluteFilePath());
+                                               QFileInfo(scriptEditorWidget()->fileName).absoluteFilePath());
     }
     consoleView->console()->disconnectStdOut();
 
@@ -732,10 +739,15 @@ void PythonEditorDialog::doRunPython()
     activateWindow();
 }
 
+void PythonEditorDialog::doReplaceTabsWithSpaces()
+{
+    txtEditor->replaceTabsWithSpaces();
+}
+
 void PythonEditorDialog::doPyLintPython()
 {
-    if (!scriptEditorWidget()->file.isEmpty())
-        filBrowser->setDir(QFileInfo(scriptEditorWidget()->file).absolutePath());
+    if (!scriptEditorWidget()->fileName.isEmpty())
+        filBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName).absolutePath());
 
     // analyse by pylint
     scriptEditorWidget()->pyLintAnalyse();
@@ -807,7 +819,7 @@ void PythonEditorDialog::doFileOpen(const QString &file)
         for (int i = 0; i < tabWidget->count(); i++)
         {
             PythonEditorWidget *scriptEditorWidgetTmp = dynamic_cast<PythonEditorWidget *>(tabWidget->widget(i));
-            if (scriptEditorWidgetTmp->file == fileName)
+            if (scriptEditorWidgetTmp->fileName == fileName)
             {
                 tabWidget->setCurrentIndex(i);
                 QMessageBox::information(this, tr("Information"), tr("Script is already opened."));
@@ -823,12 +835,12 @@ void PythonEditorDialog::doFileOpen(const QString &file)
             scriptEditor = scriptEditorWidget();
         }
 
-        scriptEditor->file = fileName;
-        txtEditor->setPlainText(readFileContent(scriptEditor->file));
+        scriptEditor->fileName = fileName;
+        txtEditor->setPlainText(readFileContent(scriptEditor->fileName));
 
         setRecentFiles();
 
-        QFileInfo fileInfo(scriptEditor->file);
+        QFileInfo fileInfo(scriptEditor->fileName);
         tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
 
         doCurrentPageChanged(tabWidget->currentIndex());
@@ -854,16 +866,16 @@ void PythonEditorDialog::doFileSave()
     QString dir = settings.value("General/LastDir", "data").toString();
 
     // save dialog
-    if (scriptEditorWidget()->file.isEmpty())
-        scriptEditorWidget()->file = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python files (*.py)"));
+    if (scriptEditorWidget()->fileName.isEmpty())
+        scriptEditorWidget()->fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python files (*.py)"));
 
     // write text
-    if (!scriptEditorWidget()->file.isEmpty())
+    if (!scriptEditorWidget()->fileName.isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget()->file);
-        if (fileInfo.suffix() != "py") scriptEditorWidget()->file += ".py";
+        QFileInfo fileInfo(scriptEditorWidget()->fileName);
+        if (fileInfo.suffix() != "py") scriptEditorWidget()->fileName += ".py";
 
-        QFile fileName(scriptEditorWidget()->file);
+        QFile fileName(scriptEditorWidget()->fileName);
         if (fileName.open(QFile::WriteOnly | QFile::Text))
         {
             QTextStream out(&fileName);
@@ -877,7 +889,7 @@ void PythonEditorDialog::doFileSave()
         }
         else
         {
-            ErrorResult errorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->file));
+            ErrorResult errorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->fileName));
             errorResult.showDialog();
         }
 
@@ -894,7 +906,7 @@ void PythonEditorDialog::doFileSaveAs()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python files (*.py)"));
     if (!fileName.isEmpty())
     {
-        scriptEditorWidget()->file = fileName;
+        scriptEditorWidget()->fileName = fileName;
         doFileSave();
 
         QFileInfo fileInfo(fileName);
@@ -981,9 +993,9 @@ void PythonEditorDialog::doCloseTab(int index)
     tabWidget->setCurrentIndex(index);
 
     QString fileName = tr("Untitled");
-    if (!scriptEditorWidget()->file.isEmpty())
+    if (!scriptEditorWidget()->fileName.isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget()->file);
+        QFileInfo fileInfo(scriptEditorWidget()->fileName);
         fileName = fileInfo.completeBaseName();
     }
 
@@ -1058,9 +1070,9 @@ void PythonEditorDialog::doCurrentPageChanged(int index)
     tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
 
     QString fileName = tr("Untitled");
-    if (!scriptEditorWidget()->file.isEmpty())
+    if (!scriptEditorWidget()->fileName.isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget()->file);
+        QFileInfo fileInfo(scriptEditorWidget()->fileName);
         fileName = fileInfo.completeBaseName();
     }
     setWindowTitle(tr("Python Lab - %1").arg(fileName));
@@ -1079,9 +1091,9 @@ void PythonEditorDialog::doCurrentDocumentChanged(bool changed)
 {
     // modified
     QString fileName = tr("Untitled");
-    if (!scriptEditorWidget()->file.isEmpty())
+    if (!scriptEditorWidget()->fileName.isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget()->file);
+        QFileInfo fileInfo(scriptEditorWidget()->fileName);
         fileName = fileInfo.completeBaseName();
     }
 
@@ -1096,9 +1108,9 @@ void PythonEditorDialog::setRecentFiles()
     if (!tabWidget) return;
 
     // recent files
-    if (!scriptEditorWidget()->file.isEmpty())
+    if (!scriptEditorWidget()->fileName.isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget()->file);
+        QFileInfo fileInfo(scriptEditorWidget()->fileName);
         if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
             recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
@@ -1129,14 +1141,15 @@ bool PythonEditorDialog::isScriptModified()
 
 // ******************************************************************************************************
 
-ScriptEditor::ScriptEditor(QWidget *parent) : QPlainTextEdit(parent)
+ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
+    : QPlainTextEdit(parent), pythonEngine(pythonEngine)
 {
     lineNumberArea = new ScriptEditorLineNumberArea(this);
 
 #ifndef Q_WS_MAC
     setFont(QFont("Monospace", 10));
 #endif
-    setTabStopWidth(fontMetrics().width("    "));
+    setTabStopWidth(fontMetrics().width(TABS));
     setLineWrapMode(QPlainTextEdit::NoWrap);
     setTabChangesFocus(false);
 
@@ -1149,6 +1162,10 @@ ScriptEditor::ScriptEditor(QWidget *parent) : QPlainTextEdit(parent)
 
     updateLineNumberAreaWidth(0);
     highlightCurrentLine();
+
+    completer = createCompleter();
+    completer->setWidget(this);
+    connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
 }
 
 ScriptEditor::~ScriptEditor()
@@ -1166,6 +1183,24 @@ void ScriptEditor::resizeEvent(QResizeEvent *e)
 
 void ScriptEditor::keyPressEvent(QKeyEvent *event)
 {
+    if (completer && completer->popup()->isVisible())
+    {
+        // The following keys are forwarded by the completer to the widget
+        switch (event->key())
+        {
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+        case Qt::Key_Escape:
+        case Qt::Key_Tab:
+        case Qt::Key_Backtab:
+
+            event->ignore();
+            return; // let the completer do default behavior
+        default:
+            break;
+        }
+    }
+
     if (event->key() == Qt::Key_Tab)
     {
         if (textCursor().hasSelection())
@@ -1185,6 +1220,39 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
     }
 
     QPlainTextEdit::keyPressEvent(event);
+
+    if ((event->key() == Qt::Key_Space && event->modifiers() & Qt::ControlModifier)
+            || completer->popup()->isVisible())
+    {
+        QTextCursor tc = textCursor();
+        tc.select(QTextCursor::WordUnderCursor);
+        QString textToComplete = tc.selectedText();
+
+        QString fn = tempProblemFileName() + ".rope_str.py";
+        QString str = toPlainText();
+        writeStringContent(fn, &str);
+
+        QStringList found = pythonEngine->codeCompletion("", tc.position(), fn);
+
+        if (!found.isEmpty())
+        {
+            completer->setCompletionPrefix(textToComplete);
+            completer->setModel(new QStringListModel(found, completer));
+            QTextCursor c = textCursor();
+            c.movePosition(QTextCursor::StartOfWord);
+            QRect cr = cursorRect(c);
+            cr.setWidth(completer->popup()->sizeHintForColumn(0)
+                        + completer->popup()->verticalScrollBar()->sizeHint().width() + 30);
+            cr.translate(lineNumberAreaWidth(), 4);
+            completer->complete(cr);
+        }
+        else
+        {
+            completer->popup()->hide();
+        }
+
+        QFile::remove(fn);
+    }
 }
 
 void ScriptEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
@@ -1519,6 +1587,33 @@ void ScriptEditor::createParenthesisSelection(int pos)
     selections.append(selection);
 
     setExtraSelections(selections);
+}
+
+void ScriptEditor::insertCompletion(const QString& completion)
+{
+    QString str = completion.left(completion.indexOf("(") - 1);
+
+    QTextCursor tc = textCursor();
+    tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
+    if (tc.selectedText() == ".")
+    {
+        tc.insertText(QString(".") + str);
+    }
+    else
+    {
+        tc = textCursor();
+        tc.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
+        tc.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
+        tc.insertText(str);
+        setTextCursor(tc);
+    }
+}
+
+void ScriptEditor::replaceTabsWithSpaces()
+{
+    QString text = document()->toPlainText();
+    text = text.replace("\t", TABS);
+    document()->setPlainText(text);
 }
 
 // ********************************************************************************************************

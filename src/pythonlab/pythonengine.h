@@ -4,7 +4,7 @@
 #include "util.h"
 #include <Python.h>
 
-struct Variables
+struct PythonVariables
 {
     QString name;
     QString type;
@@ -32,7 +32,8 @@ public:
     ScriptResult parseError();
     inline bool isRunning() { return m_isRunning; }
 
-    QList<Variables> variableList();
+    QStringList codeCompletion(const QString& code, int offset, const QString& fileName = "");
+    QList<PythonVariables> variableList();
 
 protected:
     PyObject *m_dict;
@@ -54,7 +55,5 @@ private:
 void createPythonEngine(PythonEngine *custom = NULL);
 // current python engine
 PythonEngine *currentPythonEngine();
-
-PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs);
 
 #endif // PYTHONENGINE_H
