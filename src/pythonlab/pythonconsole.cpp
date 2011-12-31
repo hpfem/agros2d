@@ -64,7 +64,7 @@ PythonScriptingConsole::PythonScriptingConsole(PythonEngine *pythonEngine, QWidg
     font.setPointSize(font.pointSize() - 2);
     setFont(font);
 
-    clear();
+    welcomeMessage();
 
     QSettings settings;
     PythonScriptingConsole::history = settings.value("PythonScriptingConsole/History").value<QStringList>();
@@ -81,6 +81,12 @@ PythonScriptingConsole::~PythonScriptingConsole()
     settings.setValue("PythonScriptingConsole/History", PythonScriptingConsole::history);
 }
 
+void PythonScriptingConsole::stdClear()
+{
+    // QTextEdit::clear();
+    // appendCommandPrompt();
+}
+
 void PythonScriptingConsole::stdOut(const QString& str)
 {
     m_stdOut += str;
@@ -94,6 +100,13 @@ void PythonScriptingConsole::stdOut(const QString& str)
     }
 }
 
+void PythonScriptingConsole::stdHtml(const QString& str)
+{
+    append(QString());
+
+    insertHtml(str);
+}
+
 void PythonScriptingConsole::stdErr(const QString& str)
 {
     m_hasError = true;
@@ -105,6 +118,33 @@ void PythonScriptingConsole::stdErr(const QString& str)
         consoleMessage(m_stdErr.left(idx), Qt::red);
         // std::cerr << m_stdErr.left(idx).toLatin1().data() << std::endl;
         m_stdErr = m_stdErr.mid(idx+1);
+    }
+}
+
+void PythonScriptingConsole::stdImage(const QString &fileName)
+{
+    QString fn = fileName;
+    if (!QFile::exists(fileName))
+        fn = m_currentPath + QDir::separator() + fileName;
+
+    if (QFile::exists(fn))
+    {
+        append(QString());
+
+        // QUrl uri(QString("file://%1").arg(fn));
+        QUrl uri(QString("%1").arg(fn));
+        QImage image = QImageReader(fn).read();
+
+        QTextDocument *textDocument = document();
+        textDocument->addResource(QTextDocument::ImageResource, uri, QVariant (image));
+        QTextCursor cursor = textCursor();
+        QTextImageFormat imageFormat;
+        imageFormat.setWidth(image.width());
+        imageFormat.setHeight(image.height());
+        imageFormat.setName(uri.toString());
+        cursor.insertImage(imageFormat);
+
+        // appendCommandPrompt();
     }
 }
 
@@ -124,7 +164,7 @@ void PythonScriptingConsole::flushStdOut()
     QApplication::processEvents();
 }
 
-void PythonScriptingConsole::clear()
+void PythonScriptingConsole::welcomeMessage()
 {    
     QTextEdit::clear();
 
@@ -232,16 +272,26 @@ void PythonScriptingConsole::appendCommandPrompt(bool storeOnly)
     setTextCursor(cursor);
 }
 
-void PythonScriptingConsole::connectStdOut()
+void PythonScriptingConsole::connectStdOut(const QString &currentPath)
 {
-    connect(pythonEngine, SIGNAL(printStdOut(QString)), this, SLOT(stdOut(QString)));
+    if (QDir(currentPath).exists())
+        m_currentPath = currentPath;
+    else
+        m_currentPath = "";
+
+    connect(pythonEngine, SIGNAL(pythonClear()), this, SLOT(stdClear()));
+    connect(pythonEngine, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
+    connect(pythonEngine, SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
+    connect(pythonEngine, SIGNAL(pythonShowImage(QString)), this, SLOT(stdImage(QString)));
 }
 
 void PythonScriptingConsole::disconnectStdOut()
 {
-    disconnect(pythonEngine, SIGNAL(printStdOut(QString)), this, SLOT(stdOut(QString)));
+    disconnect(pythonEngine, SIGNAL(pythonClear()), this, SLOT(stdClear()));
+    disconnect(pythonEngine, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
+    disconnect(pythonEngine, SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
+    disconnect(pythonEngine, SIGNAL(pythonShowImage(QString)), this, SLOT(stdImage(QString)));
 }
-
 
 int PythonScriptingConsole::commandPromptPosition() {
 
@@ -349,7 +399,6 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
     {
         // Moving the cursor left is limited to the position
         // of the command prompt.
-
         if (textCursor().position() <= commandPromptPosition())
         {
             QApplication::beep();
@@ -659,7 +708,6 @@ PythonScriptingHistoryView::PythonScriptingHistoryView(PythonScriptingConsole *c
 void PythonScriptingHistoryView::historyChanged(const QString &code)
 {
     trvHistory->clear();
-
 
     if (PythonScriptingConsole::history.count() > 0)
     {

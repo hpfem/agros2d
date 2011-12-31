@@ -16,7 +16,11 @@ class PythonEngine : public QObject
     Q_OBJECT
 
 signals:
-    void printStdOut(const QString &);
+    void pythonClear();
+    void pythonShowMessage(const QString &);
+    void pythonShowHtml(const QString &);
+    void pythonShowImage(const QString &);
+
     void executed();
 
 public:
@@ -25,7 +29,11 @@ public:
 
     void init();
 
-    void showMessage(const QString &message);
+    // python commands
+    void pythonClearCommand();
+    void pythonShowMessageCommand(const QString &message);
+    void pythonShowHtmlCommand(const QString &fileName);
+    void pythonShowImageCommand(const QString &fileName);
 
     ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
     ExpressionResult runPythonExpression(const QString &expression, bool returnValue);

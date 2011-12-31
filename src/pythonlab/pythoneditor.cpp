@@ -40,7 +40,7 @@ PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *pare
     connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
     timer->start(4000);
 
-    txtEditor->setAcceptDrops(false);
+    txtEditor->setAcceptDrops(false);    
 }
 
 PythonEditorWidget::~PythonEditorWidget()
@@ -103,12 +103,13 @@ void PythonEditorWidget::pyLintAnalyse()
     processPyLint.setStandardErrorFile(tempProblemFileName() + ".pylint.err");
     connect(&processPyLint, SIGNAL(finished(int)), this, SLOT(pyLintAnalyseStopped(int)));
 
-    QString pylintBinary = "pylint";
+    QString pylintBinary = datadir() + "/resources/python/pylint_lab";
+    /*
     if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "pylint"))
         pylintBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "pylint\"";
     if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "pylint"))
         pylintBinary = QApplication::applicationDirPath() + QDir::separator() + "pylint";
-
+    */
     QString test = txtEditor->toPlainText();
     writeStringContent(tempProblemFileName() + ".pylint.py", &test);
 
@@ -153,25 +154,27 @@ void PythonEditorWidget::pyLintAnalyseStopped(int exitCode)
     }
     QTextStream inOutput(&fileOutput);
 
-    QString line;
+    QString line_str;
     do
     {
-        line = inOutput.readLine();
+        line_str = inOutput.readLine();
 
-        if (!line.isEmpty())
+        if (!line_str.isEmpty())
         {
-            if (line.startsWith("C") || line.startsWith("W") || line.startsWith("E"))
+            if (line_str.startsWith("C") || line_str.startsWith("W") || line_str.startsWith("E"))
             {
                 QString type;
                 QString typeFamily;
-                int number;
+                QString line_column;
+                int line;
                 QString message;
 
-                QStringList list = line.split(":");
+                QStringList list = line_str.split(":");
                 if (list.count() == 3)
                 {
                     type = list[0];
-                    number = list[1].toInt();
+                    line_column = list[1];
+                    line = line_column.split(",").at(0).toInt();
                     message = list[2];
 
                     QTreeWidgetItem *item;
@@ -192,14 +195,14 @@ void PythonEditorWidget::pyLintAnalyseStopped(int exitCode)
                     }
 
                     item->setText(0, QString("%1: %2").
-                                  arg(number).
+                                  arg(line_column).
                                   arg(message));
 
-                    item->setData(0, Qt::UserRole, number);
+                    item->setData(0, Qt::UserRole, line);
                 }
             }
         }
-    } while (!line.isNull());
+    } while (!line_str.isNull());
 
     txtEditor->repaint();
 
@@ -220,11 +223,13 @@ void PythonEditorWidget::pyFlakesAnalyse()
         processPyFlakes.setStandardErrorFile(tempProblemFileName() + ".pyflakes.err");
         connect(&processPyFlakes, SIGNAL(finished(int)), this, SLOT(pyFlakesAnalyseStopped(int)));
 
-        QString pyflakesBinary = "pyflakes";
+        QString pyflakesBinary = datadir() + "/resources/python/pyflakes_lab";
+        /*
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "pyflakes"))
             pyflakesBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "pyflakes";
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "pyflakes"))
             pyflakesBinary = QApplication::applicationDirPath() + QDir::separator() + "pyflakes";
+        */
 
         QString test = txtEditor->toPlainText();
         writeStringContent(tempProblemFileName() + ".pyflakes.py", &test);
@@ -393,9 +398,12 @@ void PythonEditorDialog::createActions()
     actFileSave->setShortcuts(QKeySequence::Save);
     connect(actFileSave, SIGNAL(triggered()), this, SLOT(doFileSave()));
 
-    actFileSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
+    actFileSaveAs = new QAction(icon("document-save-as"), tr("Save &as..."), this);
     actFileSaveAs->setShortcuts(QKeySequence::SaveAs);
     connect(actFileSaveAs, SIGNAL(triggered()), this, SLOT(doFileSaveAs()));
+
+    actFileSaveConsoleAs = new QAction(icon(""), tr("Save console output as..."), this);
+    connect(actFileSaveConsoleAs, SIGNAL(triggered()), this, SLOT(doFileSaveConsoleAs()));
 
     actFileOpenRecentGroup = new QActionGroup(this);
     connect(actFileOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doFileOpenRecent(QAction *)));
@@ -505,6 +513,7 @@ void PythonEditorDialog::createControls()
     mnuFile->addAction(actFileOpen);
     mnuFile->addAction(actFileSave);
     mnuFile->addAction(actFileSaveAs);
+    mnuFile->addAction(actFileSaveConsoleAs);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addAction(actFileClose);
@@ -535,8 +544,9 @@ void PythonEditorDialog::createControls()
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunPython);
-    mnuTools->addAction(actReplaceTabsWithSpaces);
     mnuTools->addAction(actCheckPyLint);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actReplaceTabsWithSpaces);
 
     mnuOptions = menuBar()->addMenu(tr("&Options"));
     mnuOptions->addAction(actOptionsEnablePyFlakes);
@@ -700,7 +710,9 @@ void PythonEditorDialog::doRunPython()
     QTime time;
     time.start();
 
-    consoleView->console()->connectStdOut();
+    // connect stdout and set current path
+    consoleView->console()->connectStdOut(QFile::exists(scriptEditorWidget()->fileName) ?
+                                              QFileInfo(scriptEditorWidget()->fileName).absolutePath() : "");
 
     ScriptResult result;
     if (txtEditor->textCursor().hasSelection())
@@ -720,6 +732,7 @@ void PythonEditorDialog::doRunPython()
         result = pythonEngine->runPythonScript(txtEditor->toPlainText(),
                                                QFileInfo(scriptEditorWidget()->fileName).absoluteFilePath());
     }
+    // disconnect stdout
     consoleView->console()->disconnectStdOut();
 
     if (result.isError)
@@ -910,6 +923,29 @@ void PythonEditorDialog::doFileSaveAs()
         doFileSave();
 
         QFileInfo fileInfo(fileName);
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastDir", fileInfo.absolutePath());
+    }
+}
+
+void PythonEditorDialog::doFileSaveConsoleAs()
+{
+    QSettings settings;
+    QString dir = settings.value("General/LastDir", "data").toString();
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Html files (*.html)"));
+    if (!fileName.isEmpty())
+    {
+        QFileInfo fileInfo(fileName);
+        if (fileInfo.suffix() == "html" || fileInfo.suffix() == "htm")
+            ;
+        else
+            fileName += ".html";
+
+        QString str = consoleView->console()->document()->toHtml();
+        writeStringContent(fileName, &str);
+
+
         if (fileInfo.absoluteDir() != tempProblemDir())
             settings.setValue("General/LastDir", fileInfo.absolutePath());
     }

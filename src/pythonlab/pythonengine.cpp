@@ -19,7 +19,6 @@ void createPythonEngine(PythonEngine *custom)
 // current python engine
 PythonEngine *currentPythonEngine()
 {
-    // assert(pythonEngine);
     return pythonEngine;
 }
 
@@ -31,17 +30,51 @@ PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
     char *str = NULL;
     if (PyArg_ParseTuple(pArgs, "s", &str))
     {
-        emit currentPythonEngine()->showMessage(QString(str) + "\n");
+        emit currentPythonEngine()->pythonShowMessageCommand(QString(str) + "\n");
         Py_RETURN_NONE;
     }
     return NULL;
 }
 
+// show image
+PyObject* pythonShowFigure(PyObject* self, PyObject* pArgs)
+{
+    char *str = NULL;
+    if (PyArg_ParseTuple(pArgs, "s", &str))
+    {
+        emit currentPythonEngine()->pythonShowImageCommand(QString(str));
+        Py_RETURN_NONE;
+    }
+    return NULL;
+}
+
+// print html
+PyObject* pythonInsertHtml(PyObject* self, PyObject* pArgs)
+{
+    char *str = NULL;
+    if (PyArg_ParseTuple(pArgs, "s", &str))
+    {
+        emit currentPythonEngine()->pythonShowHtmlCommand(QString(str));
+        Py_RETURN_NONE;
+    }
+    return NULL;
+}
+
+// clear
+static PyObject* pythonClear(PyObject* self, PyObject* pArgs)
+{
+    emit currentPythonEngine()->pythonClearCommand();
+}
+
 static PyMethodDef pythonEngineFuntions[] =
 {
-    {"capturestdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
+    {"stdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
+    {"image", pythonShowFigure, METH_VARARGS, "image(file)"},
+    {"clear", pythonClear, METH_NOARGS, "clear"},
+    {"html", pythonInsertHtml, METH_VARARGS, "html(str)"},
     {NULL, NULL, 0, NULL}
 };
+
 
 // ****************************************************************************
 
@@ -61,7 +94,7 @@ void PythonEngine::init()
     m_stdOut = "";
 
     // connect stdout
-    connect(this, SIGNAL(printStdOut(QString)), this, SLOT(stdOut(QString)));
+    connect(this, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
 
     // init python
     Py_Initialize();
@@ -73,21 +106,39 @@ void PythonEngine::init()
     PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
 
     // init engine extensions
-    Py_InitModule("python_engine", pythonEngineFuntions);
+    Py_InitModule("pythonlab", pythonEngineFuntions);
 
     addCustomExtensions();
 
     // stdout
-    PyRun_String(QString("agrosstdout = \"" + tempProblemDir() + "/stdout.txt" + "\"").toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    // PyRun_String(QString("agrosstdout = \"" + tempProblemDir() + "/stdout.txt" + "\"").toStdString().c_str(), Py_file_input, m_dict, m_dict);
+
+    // custom modules
+    PyRun_String(QString("import sys; sys.path.insert(0, \"" + datadir() + "/resources/python" + "\")").toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
     // functions.py
-    PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);  
 }
 
-void PythonEngine::showMessage(const QString &message)
+void PythonEngine::pythonShowMessageCommand(const QString &message)
 {
     if (message != "\n\n")
-        emit printStdOut(message);
+        emit pythonShowMessage(message);
+}
+
+void PythonEngine::pythonShowImageCommand(const QString &fileName)
+{
+    emit pythonShowImage(fileName);
+}
+
+void PythonEngine::pythonShowHtmlCommand(const QString &fileName)
+{
+    emit pythonShowHtml(fileName);
+}
+
+void PythonEngine::pythonClearCommand()
+{
+    emit pythonClear();
 }
 
 void PythonEngine::stdOut(const QString &message)

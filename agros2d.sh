@@ -67,11 +67,11 @@ case "$1" in
                 do
                     rm -rv ./$tempPathTarget/$file
                 done
+				rm `find ./$tempPathTarget/resources/python -name "*.pyc"`
 
                 echo "Run 'debuild -S -sa'"
-                echo "Run 'dput ppa:pkarban/agros2d *.changes'"
-                echo "Run 'dput ppa:pkarban/agros2dunstable *.changes' for upload unstable version"
                 echo "Run 'dput ppa:pkarban/agros2d *.changes' for upload stable version"
+                echo "Run 'dput ppa:pkarban/agros2dunstable *.changes' for upload unstable version"
                 ;;
             * )
                 echo "Usage: agros2d.sh build\n\t [binary - build binary package]\n\t [source - build source package]"

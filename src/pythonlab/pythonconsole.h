@@ -67,22 +67,28 @@ public slots:
     void clearCommandLine();
 
     // clear the console
-    void clear();
+    void welcomeMessage();
 
     // overridden to control which characters a user may delete
     virtual void cut();
 
+    // clear output
+    void stdClear();
     // output redirection
     void stdOut(const QString& str);
-    // output redirection
+    // error redirection
     void stdErr(const QString& str);
+    // output html
+    void stdHtml(const QString& str);
+    // output image
+    void stdImage(const QString &fileName);
 
     void insertCompletion(const QString& completion);
 
     // Appends a newline and command prompt at the end of the document.
     void appendCommandPrompt(bool storeOnly = false);
 
-    void connectStdOut();
+    void connectStdOut(const QString &currentPath = "");
     void disconnectStdOut();
 
 public:
@@ -109,7 +115,6 @@ protected:
     // flush output that was not yet printed
     void flushStdOut();
 
-
 private:
     PythonEngine *pythonEngine;
 
@@ -128,6 +133,8 @@ private:
     QCompleter* completer;
 
     bool m_hasError;
+
+    QString m_currentPath;
 };
 
 class PythonScriptingConsoleView : public QDockWidget

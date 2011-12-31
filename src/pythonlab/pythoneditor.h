@@ -86,6 +86,7 @@ public slots:
     void doFileOpen(const QString &file = QString());
     void doFileSave();
     void doFileSaveAs();
+    void doFileSaveConsoleAs();
     void doFileClose();
     void doFileOpenRecent(QAction *action);
     void doFilePrint();
@@ -141,6 +142,7 @@ protected:
     QAction *actFileOpen;
     QAction *actFileSave;
     QAction *actFileSaveAs;
+    QAction *actFileSaveConsoleAs;
     QAction *actFileClose;
     QAction *actFilePrint;
     QAction *actExit;

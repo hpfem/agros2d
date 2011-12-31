@@ -1,5 +1,5 @@
 # import libraries
-from python_engine import *
+import pythonlab
 from agros2d import *
 from agros2file import *
 from math import *
@@ -7,10 +7,6 @@ import sys
 
 # add actual directory to the path
 sys.path.append(".")
-
-# consts
-MU0 = 4*pi*1e-7
-EPS0 = 8.854e-12
 
 # user functions
 def sgn(number):
@@ -90,9 +86,9 @@ def python_engine_get_completion_file(filename, offset):
 	except:
 		return []
 
-# redirect script output
+# redirect std output
 class StdoutCatcher:
-	def write(self, str):
-		capturestdout(str)
+    def write(self, str):
+        pythonlab.stdout(str)
 
 sys.stdout = StdoutCatcher()
