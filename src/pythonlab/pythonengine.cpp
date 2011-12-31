@@ -19,17 +19,10 @@ void createPythonEngine(PythonEngine *custom)
 // current python engine
 PythonEngine *currentPythonEngine()
 {
-    // assert(pythonEngine);
     return pythonEngine;
 }
 
 // ****************************************************************************
-
-static PyMethodDef pythonEngineFuntions[] =
-{
-    {"capturestdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
-    {NULL, NULL, 0, NULL}
-};
 
 // print stdout
 PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
@@ -37,11 +30,51 @@ PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
     char *str = NULL;
     if (PyArg_ParseTuple(pArgs, "s", &str))
     {
-        emit currentPythonEngine()->showMessage(QString(str) + "\n");
+        emit currentPythonEngine()->pythonShowMessageCommand(QString(str) + "\n");
         Py_RETURN_NONE;
     }
     return NULL;
 }
+
+// show image
+PyObject* pythonShowFigure(PyObject* self, PyObject* pArgs)
+{
+    char *str = NULL;
+    if (PyArg_ParseTuple(pArgs, "s", &str))
+    {
+        emit currentPythonEngine()->pythonShowImageCommand(QString(str));
+        Py_RETURN_NONE;
+    }
+    return NULL;
+}
+
+// print html
+PyObject* pythonInsertHtml(PyObject* self, PyObject* pArgs)
+{
+    char *str = NULL;
+    if (PyArg_ParseTuple(pArgs, "s", &str))
+    {
+        emit currentPythonEngine()->pythonShowHtmlCommand(QString(str));
+        Py_RETURN_NONE;
+    }
+    return NULL;
+}
+
+// clear
+static PyObject* pythonClear(PyObject* self, PyObject* pArgs)
+{
+    emit currentPythonEngine()->pythonClearCommand();
+}
+
+static PyMethodDef pythonEngineFuntions[] =
+{
+    {"stdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
+    {"image", pythonShowFigure, METH_VARARGS, "image(file)"},
+    {"clear", pythonClear, METH_NOARGS, "clear"},
+    {"html", pythonInsertHtml, METH_VARARGS, "html(str)"},
+    {NULL, NULL, 0, NULL}
+};
+
 
 // ****************************************************************************
 
@@ -61,7 +94,7 @@ void PythonEngine::init()
     m_stdOut = "";
 
     // connect stdout
-    connect(this, SIGNAL(printStdOut(QString)), this, SLOT(stdOut(QString)));
+    connect(this, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
 
     // init python
     Py_Initialize();
@@ -73,21 +106,39 @@ void PythonEngine::init()
     PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
 
     // init engine extensions
-    Py_InitModule("python_engine", pythonEngineFuntions);
+    Py_InitModule("pythonlab", pythonEngineFuntions);
 
     addCustomExtensions();
 
     // stdout
-    PyRun_String(QString("agrosstdout = \"" + tempProblemDir() + "/stdout.txt" + "\"").toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    // PyRun_String(QString("agrosstdout = \"" + tempProblemDir() + "/stdout.txt" + "\"").toStdString().c_str(), Py_file_input, m_dict, m_dict);
+
+    // custom modules
+    PyRun_String(QString("import sys; sys.path.insert(0, \"" + datadir() + "/resources/python" + "\")").toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
     // functions.py
-    PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);  
 }
 
-void PythonEngine::showMessage(const QString &message)
+void PythonEngine::pythonShowMessageCommand(const QString &message)
 {
     if (message != "\n\n")
-        emit printStdOut(message);
+        emit pythonShowMessage(message);
+}
+
+void PythonEngine::pythonShowImageCommand(const QString &fileName)
+{
+    emit pythonShowImage(fileName);
+}
+
+void PythonEngine::pythonShowHtmlCommand(const QString &fileName)
+{
+    emit pythonShowHtml(fileName);
+}
+
+void PythonEngine::pythonClearCommand()
+{
+    emit pythonClear();
 }
 
 void PythonEngine::stdOut(const QString &message)
@@ -117,7 +168,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
 
     ScriptResult scriptResult;
     if (output)
-    {        
+    {
         scriptResult.isError = false;
         scriptResult.text = m_stdOut.trimmed();
     }
@@ -142,7 +193,7 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
 
     QString exp;
     if (returnValue)
-        exp = QString("result = %1").arg(expression);
+        exp = QString("result_pythonlab = %1").arg(expression);
     else
         exp = expression;
 
@@ -167,7 +218,7 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
             // parse result
             if (returnValue)
             {
-                PyObject *result = PyDict_GetItemString(m_dict, "result"); //FIX maybe m_dict_globals???
+                PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
                 if (result)
                 {
                     Py_INCREF(result);
@@ -178,6 +229,9 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
                 }
             }
         }
+
+        if (returnValue)
+            PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
     }
     else
     {
@@ -188,6 +242,56 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
     emit executed();
 
     return expressionResult;
+}
+
+QStringList PythonEngine::codeCompletion(const QString& code, int offset, const QString& fileName)
+{
+    runPythonHeader();
+
+    QStringList out;
+
+    QString exp;
+    if (QFile::exists(fileName))
+    {
+        // ignore code
+        exp = QString("result_rope_pythonlab = python_engine_get_completion_file(\"%1\", %2)").
+                arg(fileName).
+                arg(offset);
+    }
+    else
+    {
+        exp = QString("result_rope_pythonlab = python_engine_get_completion_string(\"%1\", %2)").
+                arg(code).
+                arg(offset);
+    }
+
+    PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+
+    // parse result
+    PyObject *result = PyDict_GetItemString(m_dict, "result_rope_pythonlab");
+    if (result)
+    {
+        Py_INCREF(result);
+        PyObject *list;
+        if (PyArg_Parse(result, "O", &list))
+        {
+            int count = PyList_Size(list);
+            for (int i = 0; i < count; i++)
+            {
+                PyObject *item = PyList_GetItem(list, i);
+
+                QString str = PyString_AsString(item);
+                out.append(str);
+            }
+        }
+        Py_DECREF(result);
+    }
+
+    PyRun_String("del result_rope_pythonlab", Py_single_input, m_dict, m_dict);
+
+    Py_DECREF(Py_None);
+
+    return out;
 }
 
 ScriptResult PythonEngine::parseError()
@@ -240,12 +344,12 @@ ScriptResult PythonEngine::parseError()
     return error;
 }
 
-QList<Variables> PythonEngine::variableList()
+QList<PythonVariables> PythonEngine::variableList()
 {
     QStringList filter;
-    filter << "__builtins__" << "StdoutCatcher" << "agrosstdout" << "capturestdout" << "chdir";
+    filter << "__builtins__" << "StdoutCatcher" << "agrosstdout" << "capturestdout" << "chdir" << "python_engine_get_completion_file" << "python_engine_get_completion_string";
 
-    QList<Variables> list;
+    QList<PythonVariables> list;
 
     PyObject *keys = PyDict_Keys(m_dict);
     for (int i = 0; i < PyList_Size(keys); ++i)
@@ -256,7 +360,7 @@ QList<Variables> PythonEngine::variableList()
         bool append = false;
 
         // variable
-        Variables var;
+        PythonVariables var;
 
         // variable name
         var.name = PyString_AsString(key);
@@ -305,15 +409,19 @@ QList<Variables> PythonEngine::variableList()
             var.value = ""; //TODO count
             append = true;
         }
+        if (var.type == "module")
+        {
+            var.value = PyString_AsString(PyObject_GetAttrString(value, "__name__"));
+            append = true;
+        }
         if (var.type == "function"
-                || var.type == "module"
                 || var.type == "instance"
                 || var.type == "classobj")
         {
             append = true;
         }
 
-        // qDebug() << var.type;
+        // qDebug() << var.name << " : " << var.type;
 
         if (append && !filter.contains(var.name))
             list.append(var);

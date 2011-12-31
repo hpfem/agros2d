@@ -4,7 +4,7 @@
 #include "util.h"
 #include <Python.h>
 
-struct Variables
+struct PythonVariables
 {
     QString name;
     QString type;
@@ -16,7 +16,11 @@ class PythonEngine : public QObject
     Q_OBJECT
 
 signals:
-    void printStdOut(const QString &);
+    void pythonClear();
+    void pythonShowMessage(const QString &);
+    void pythonShowHtml(const QString &);
+    void pythonShowImage(const QString &);
+
     void executed();
 
 public:
@@ -25,14 +29,19 @@ public:
 
     void init();
 
-    void showMessage(const QString &message);
+    // python commands
+    void pythonClearCommand();
+    void pythonShowMessageCommand(const QString &message);
+    void pythonShowHtmlCommand(const QString &fileName);
+    void pythonShowImageCommand(const QString &fileName);
 
     ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
     ExpressionResult runPythonExpression(const QString &expression, bool returnValue);
     ScriptResult parseError();
     inline bool isRunning() { return m_isRunning; }
 
-    QList<Variables> variableList();
+    QStringList codeCompletion(const QString& code, int offset, const QString& fileName = "");
+    QList<PythonVariables> variableList();
 
 protected:
     PyObject *m_dict;
@@ -54,7 +63,5 @@ private:
 void createPythonEngine(PythonEngine *custom = NULL);
 // current python engine
 PythonEngine *currentPythonEngine();
-
-PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs);
 
 #endif // PYTHONENGINE_H

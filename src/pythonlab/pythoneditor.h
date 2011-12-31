@@ -45,7 +45,7 @@ class PythonEditorWidget : public QWidget
 {
     Q_OBJECT
 public:
-    QString file;
+    QString fileName;
     ScriptEditor *txtEditor;
     QTreeWidget *trvPyLint;
     SearchWidget *searchWidget;
@@ -86,6 +86,7 @@ public slots:
     void doFileOpen(const QString &file = QString());
     void doFileSave();
     void doFileSaveAs();
+    void doFileSaveConsoleAs();
     void doFileClose();
     void doFileOpenRecent(QAction *action);
     void doFilePrint();
@@ -141,6 +142,7 @@ protected:
     QAction *actFileOpen;
     QAction *actFileSave;
     QAction *actFileSaveAs;
+    QAction *actFileSaveConsoleAs;
     QAction *actFileClose;
     QAction *actFilePrint;
     QAction *actExit;
@@ -163,6 +165,7 @@ protected:
     QAction *actGotoLine;
 
     QAction *actRunPython;
+    QAction *actReplaceTabsWithSpaces;
     QAction *actCheckPyLint;
 
     QAction *actOptionsEnablePyLint;
@@ -186,6 +189,7 @@ protected:
 
 private slots:
     void doRunPython();
+    void doReplaceTabsWithSpaces();
     void doPyLintPython();
     void doFileItemDoubleClick(const QString &path);
     void doPathChangeDir();
@@ -203,12 +207,14 @@ class ScriptEditor : public QPlainTextEdit
 public:
     QMap<int, QString> errorMessagesPyFlakes;
 
-    ScriptEditor(QWidget *parent = 0);
+    ScriptEditor(PythonEngine *pythonEngine, QWidget *parent = 0);
     ~ScriptEditor();
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     void lineNumberAreaMouseMoveEvent(QMouseEvent *event);
     int lineNumberAreaWidth();
+
+    void replaceTabsWithSpaces();
 
 public slots:
     void gotoLine(int line = -1, bool isError = false);
@@ -229,7 +235,12 @@ private slots:
 
     void matchParentheses(char left, char right);
 
+    void insertCompletion(const QString& completion);
+
 private:
+    PythonEngine *pythonEngine;
+    QCompleter* completer;
+
     QWidget *lineNumberArea;
 
     bool matchLeftParenthesis(char left, char right, QTextBlock currentBlock, int index, int numRightParentheses);

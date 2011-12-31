@@ -54,6 +54,7 @@ SOURCES += util.cpp \
     hermes2d/hermes_rf.cpp \
     hermes2d/hermes_acoustic.cpp \
     pythonlab/pythonconsole.cpp \
+    pythonlab/pythoncompleter.cpp \
     pythonlab/pythonhighlighter.cpp \
     pythonlab/pythonengine.cpp \
     pythonlab/pythonbrowser.cpp \
@@ -106,6 +107,7 @@ HEADERS += util.h \
     hermes2d/hermes_rf.h \
     hermes2d/hermes_acoustic.h \
     pythonlab/pythonconsole.h \
+    pythonlab/pythoncompleter.h \
     pythonlab/pythonhighlighter.h \
     pythonlab/pythonengine.h \
     pythonlab/pythonbrowser.h \

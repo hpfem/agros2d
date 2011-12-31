@@ -6,6 +6,8 @@
 class PythonEngine;
 class PythonScriptingConsole;
 
+bool isPythonVariable(const QString& type);
+
 class PythonBrowserView : public QDockWidget
 {
     Q_OBJECT

@@ -1,5 +1,5 @@
 # import libraries
-from python_engine import *
+import pythonlab
 from agros2d import *
 from agros2file import *
 from math import *
@@ -46,9 +46,49 @@ def test(text, value, normal, error = 0.03):
 		print(text + ": (" + str(value) + " != " + str(normal) + ")")
 	return test
 
-# redirect script output
+# get completion list
+def python_engine_get_completion_string(code, offset):
+	try:
+		from rope.base.project import Project
+		from rope.contrib import codeassist
+	
+		project = Project(".", ropefolder=None)	
+
+		proposals = codeassist.code_assist(project, code, offset)
+		proposals = codeassist.sorted_proposals(proposals)
+		proposals_string = []
+		for p in proposals:
+			proposals_string.append(p.__str__())
+		
+		return proposals_string
+		# return [proposal.name for proposal in proposals]
+	except:
+		return []
+
+def python_engine_get_completion_file(filename, offset):
+	try:
+		from rope.base.project import Project
+		from rope.contrib import codeassist
+	
+		project = Project(".", ropefolder=None)	
+	
+		f = open(filename, 'r')
+		code = ''.join(f.readlines())
+	
+		proposals = codeassist.code_assist(project, code, offset, maxfixes=10) 
+		proposals = codeassist.sorted_proposals(proposals)
+		proposals_string = []
+		for p in proposals:
+			proposals_string.append(p.__str__())
+		
+		return proposals_string
+		# return [proposal.name for proposal in proposals]
+	except:
+		return []
+
+# redirect std output
 class StdoutCatcher:
-	def write(self, str):
-		capturestdout(str)
+    def write(self, str):
+        pythonlab.stdout(str)
 
 sys.stdout = StdoutCatcher()

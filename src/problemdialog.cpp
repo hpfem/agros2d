@@ -290,7 +290,7 @@ QWidget *ProblemDialog::createControlsStartupScript()
 {
     logMessage("ProblemDialog::createControlsStartupScript()");
 
-    txtStartupScript = new ScriptEditor(this);
+    txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
 
     QVBoxLayout *layoutStartup = new QVBoxLayout();
     layoutStartup->addWidget(txtStartupScript);

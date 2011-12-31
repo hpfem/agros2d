@@ -8,7 +8,7 @@ const int namePos = 0;
 const int typePos = 1;
 const int valuePos = 2;
 
-bool isVariable(const QString& type)
+bool isPythonVariable(const QString& type)
 {
     if (type == "int" || type == "float" || type == "string" || type == "bool" ||
             type == "list" || type == "dict" || type == "tuple" ||
@@ -48,6 +48,7 @@ PythonBrowserView::PythonBrowserView(PythonEngine *pythonEngine, PythonScripting
     otherExpanded = false;
 
     executed();
+    trvBrowser->sortItems(0, Qt::AscendingOrder);
 
     connect(trvBrowser, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(executeCommand(QTreeWidgetItem *, int)));
     connect(trvBrowser, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
@@ -77,7 +78,7 @@ void PythonBrowserView::doContextMenu(const QPoint &point)
     actCopyValue->setEnabled(false);
 
     QTreeWidgetItem *item = trvBrowser->itemAt(point);
-    if (item && isVariable(item->text(typePos)))
+    if (item && isPythonVariable(item->text(typePos)))
     {
         actDelete->setEnabled(true);
         actCopyName->setEnabled(true);
@@ -88,6 +89,8 @@ void PythonBrowserView::doContextMenu(const QPoint &point)
 
 void PythonBrowserView::executed()
 {
+    trvBrowser->setSortingEnabled(false);
+
     if (trvVariables) variableExpanded = trvVariables->isExpanded();
     if (trvFunctions) functionExpanded = trvFunctions->isExpanded();
     if (trvClasses) classExpanded = trvClasses->isExpanded();
@@ -99,6 +102,10 @@ void PythonBrowserView::executed()
     trvVariables->setText(0, tr("Variables"));
     trvVariables->setIcon(0, icon("browser-variable"));
     trvVariables->setExpanded(variableExpanded);
+    trvOther = new QTreeWidgetItem(trvBrowser);
+    trvOther->setText(0, tr("Other"));
+    trvOther->setIcon(0, icon("browser-other"));
+    trvOther->setExpanded(otherExpanded);
     trvFunctions = new QTreeWidgetItem(trvBrowser);
     trvFunctions->setText(0, tr("Functions"));
     trvFunctions->setIcon(0, icon("browser-function"));
@@ -107,14 +114,10 @@ void PythonBrowserView::executed()
     trvClasses->setText(0, tr("Classes"));
     trvClasses->setIcon(0, icon("browser-class"));
     trvClasses->setExpanded(classExpanded);
-    trvOther = new QTreeWidgetItem(trvBrowser);
-    trvOther->setText(0, tr("Other"));
-    trvOther->setIcon(0, icon("browser-other"));
-    trvOther->setExpanded(otherExpanded);
 
-    QList<Variables> list = pythonEngine->variableList();
+    QList<PythonVariables> list = pythonEngine->variableList();
 
-    foreach (Variables variable, list)
+    foreach (PythonVariables variable, list)
     {
         QTreeWidgetItem *item = NULL;
         if (variable.type == "bool")
@@ -174,14 +177,23 @@ void PythonBrowserView::executed()
         else if (variable.type == "function")
         {
             item = new QTreeWidgetItem(trvFunctions);
+            item->setIcon(0, icon("browser-variable-float"));
         }
         else if (variable.type == "classobj")
         {
             item = new QTreeWidgetItem(trvClasses);
+            item->setIcon(0, icon("history-command"));
+        }
+        else if (variable.type == "module")
+        {
+            item = new QTreeWidgetItem(trvOther);
+            item->setText(2, variable.value.toString());
+            item->setIcon(0, icon("history-command"));
         }
         else
         {
             item = new QTreeWidgetItem(trvOther);
+            item->setIcon(0, icon("history-command"));
         }
 
         item->setText(0, variable.name);
@@ -189,6 +201,8 @@ void PythonBrowserView::executed()
 
         // qDebug() << variable.type << ": " << variable.name;
     }
+
+    trvBrowser->setSortingEnabled(true);
 }
 
 void PythonBrowserView::executeCommand(QTreeWidgetItem *item, int role)
@@ -217,7 +231,7 @@ void PythonBrowserView::copyValue()
 
 void PythonBrowserView::deleteVariable()
 {
-    if (trvBrowser->currentItem() && isVariable(trvBrowser->currentItem()->text(typePos)))
+    if (trvBrowser->currentItem() && isPythonVariable(trvBrowser->currentItem()->text(typePos)))
     {
         QString variable = trvBrowser->currentItem()->text(namePos);
 
