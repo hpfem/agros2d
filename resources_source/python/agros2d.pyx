@@ -8,8 +8,51 @@ cdef extern from "limits.h":
     int c_DOUBLE_MAX "DOUBLE_MAX"
 
 cdef extern from "../../src/pythonlabagros.h":
+    # problem class
+    cdef cppclass PyProblem:
+        PyProblem(char*, char*, char*, char*, double, double, double)
+
+        # name
+        char *getName()
+        void setName(char *name)
+
+        # coordinate type
+        char *getCoordinateType()
+        void setCoordinateType(char *coordinateType)
+
+        # mesh type
+        char *getMeshType()
+        void setMeshType(char *meshType)
+
+        # matrix solver
+        char *getMatrixSolver()
+        void setMatrixSolver(char *matrixSolver)
+
+        # frequency
+        double getFrequency()
+        void setFrequency(double frequency)
+
+        # time step
+        double getTimeStep()
+        void setTimeStep(double timeStep)
+
+        # time total
+        double getTimeTotal()
+        void setTimeTotal(double timeTotal)
+
+        void solve()
+
+    # problem class
+    cdef cppclass PyField:
+        PyField(char*, char*, int, int, double, char*)
+
+        void solve()
+
+    # version()
+    char *pyVersion()
+
+
     void pythonMessage(char *str)
-    char *pythonVersion()
     char *pythonInput(char *str)
     void pythonQuit()
 
@@ -74,10 +117,85 @@ cdef extern from "../../src/pythonlabagros.h":
     int pythonTimeStepCount()
     void pythonSaveImage(char *str, int w, int h) except +
 
-# system
+# problem class
+cdef class Problem:
+    cdef PyProblem *thisptr
 
+    def __cinit__(self, char *name, char *coordinate_type, char *mesh_type = "triangle", char *matrix_solver = "umfpack", double frequency=0.0, double time_step = 0.0, double time_total = 0.0):
+        self.thisptr = new PyProblem(name, coordinate_type, mesh_type, matrix_solver, frequency, time_step, time_total)
+    def __dealloc__(self):
+        del self.thisptr
+
+    # name
+    property name:
+        def __get__(self):
+            return self.thisptr.getName()
+        def __set__(self, name):
+            self.thisptr.setName(name)
+
+    # coordinate type
+    property coordinate_type:
+        def __get__(self):
+            return self.thisptr.getCoordinateType()
+        def __set__(self, coordinate_type):
+            self.thisptr.setCoordinateType(coordinate_type)
+
+    # mesh type
+    property mesh_type:
+        def __get__(self):
+            return self.thisptr.getMeshType()
+        def __set__(self, mesh_type):
+            self.thisptr.setMeshType(mesh_type)
+
+    # matrix solver
+    property matrix_solver:
+        def __get__(self):
+            return self.thisptr.getMatrixSolver()
+        def __set__(self, matrix_solver):
+            self.thisptr.setMatrixSolver(matrix_solver)
+
+    # frequency
+    property frequency:
+        def __get__(self):
+            return self.thisptr.getFrequency()
+        def __set__(self, frequency):
+            self.thisptr.setFrequency(frequency)
+
+    # time step
+    property time_step:
+        def __get__(self):
+            return self.thisptr.getTimeStep()
+        def __set__(self, time_step):
+            self.thisptr.setTimeStep(time_step)
+
+    # time total
+    property time_total:
+        def __get__(self):
+            return self.thisptr.getTimeTotal()
+        def __set__(self, time_total):
+            self.thisptr.setTimeTotal(time_total)
+
+# field class
+cdef class Field:
+    cdef PyField *thisptr
+
+    def __cinit__(self, char *field_id, char *analysis_type, int number_of_refinements = 1, int polynomial_order = 2, double initial_condition = 0.0, char *weak_forms = "compiled"):
+        self.thisptr = new PyField(field_id, analysis_type, number_of_refinements, polynomial_order, initial_condition, weak_forms)
+    def __dealloc__(self):
+        del self.thisptr
+
+
+    # field_id
+    #property field_id:
+    #    def __get__(self):
+    #        return self.thisptr.getFieldId()
+    #    def __set__(self, field_id):
+    #        self.thisptr.setFieldId(field_id)
+
+# version()
 def version():
-    return pythonVersion()
+    return pyVersion()
+
 
 def message(char *str):
     pythonMessage(str)

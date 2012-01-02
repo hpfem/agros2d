@@ -20,7 +20,7 @@
 #include "pythonlabagros.h"
 
 #include <Python.h>
-#include "../resources_source/python/agros2d.c"
+#include "../resources_source/python/agros2d.cpp"
 
 #include "scene.h"
 #include "sceneview.h"
@@ -276,10 +276,84 @@ void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError
 
 // ************************************************************************************
 
-// version()
-char *pythonVersion()
+PyProblem::PyProblem(char *name, char *coordinateType, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal)
 {
-    logMessage("pythonVersion()");
+    logMessage("PyProblem::PyProblem()");
+
+    // name
+    Util::scene()->problemInfo()->name = QString(name);
+
+    // coordinate type
+    Util::scene()->problemInfo()->coordinateType = coordinateTypeFromStringKey(QString(coordinateType));
+
+    // mesh type
+    Util::scene()->problemInfo()->meshType = meshTypeFromStringKey(QString(meshType));
+
+    // matrix solver
+    Util::scene()->problemInfo()->matrixSolver = matrixSolverTypeFromStringKey(QString(matrixSolver));
+
+    // frequency
+    if (frequency >= 0.0)
+        Util::scene()->problemInfo()->frequency = frequency;
+    else
+        throw invalid_argument(QObject::tr("The frequency must be positive.").toStdString());
+
+    // time step
+    if (timeStep >= 0.0)
+        Util::scene()->problemInfo()->timeStep = Value(QString::number(timeStep));
+    else
+        throw invalid_argument(QObject::tr("The time step must be positive.").toStdString());
+
+    // time total
+    if (timeTotal >= 0.0)
+        Util::scene()->problemInfo()->timeTotal = Value(QString::number(timeTotal));
+    else
+        throw invalid_argument(QObject::tr("The total time must be positive.").toStdString());
+}
+
+PyProblem::~PyProblem()
+{
+    logMessage("PyProblem::~PyProblem()");
+}
+
+void PyProblem::solve()
+{
+    logMessage("PyProblem::solve()");
+
+    qDebug() << "Not now :)";
+}
+
+PyField::PyField(char *fieldId, char *analysisType, int numberOfRefinements, int polynomialOrder, double initialCondition, char *weakForms)
+{
+    logMessage("PyField::PyField()");
+
+    /*
+    fieldInfo = new FieldInfo(, QString(fieldId));
+
+    fieldInfo->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
+    fieldInfo->numberOfRefinements = numberOfRefinements;
+    fieldInfo->polynomialOrder = polynomialOrder;
+    fieldInfo->initialCondition = Value(QString::number(initialCondition));
+    fieldInfo->weakFormsType = weakFormsTypeFromStringKey(QString(weakForms));
+
+    Util::scene()->addField(getFieldInfo());
+    */
+}
+
+FieldInfo *PyField::getFieldInfo()
+{
+    return fieldInfo;
+}
+
+PyField::~PyField()
+{
+    logMessage("PyField::~PyField()");
+}
+
+// version()
+char *pyVersion()
+{
+    logMessage("pyVersion()");
 
     return const_cast<char*>(QApplication::applicationVersion().toStdString().c_str());
 }

@@ -25,6 +25,7 @@
 #include "pythonlab/pythoneditor.h"
 
 #include "util.h"
+#include "scene.h"
 
 class Solution;
 
@@ -80,10 +81,68 @@ private:
     QLocalSocket *m_client_socket;
 };
 
+// ************************************************************************************
+
+// problem class
+class PyProblem {
+    private:
+        ProblemInfo *problemInfo;
+
+    public:
+        PyProblem(char *name, char *coordinateType, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal);
+        ~PyProblem();
+
+        // name
+        inline const char *getName() { return Util::scene()->problemInfo()->name.toStdString().c_str(); }
+        void setName(const char *name) { Util::scene()->problemInfo()->name = QString(name); }
+
+        // coordinate type
+        inline const char *getCoordinateType() { return coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType).toStdString().c_str(); }
+        void setCoordinateType(const char *coordinateType) { Util::scene()->problemInfo()->coordinateType = coordinateTypeFromStringKey(QString(coordinateType)); }
+
+        // mesh type
+        inline const char *getMeshType() { return meshTypeToStringKey(Util::scene()->problemInfo()->meshType).toStdString().c_str(); }
+        void setMeshType(const char *meshType) { Util::scene()->problemInfo()->meshType = meshTypeFromStringKey(QString(meshType)); }
+
+        // matrix solver
+        inline const char *getMatrixSolver() { return matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver).toStdString().c_str(); }
+        void setMatrixSolver(const char *matrixSolver) { Util::scene()->problemInfo()->matrixSolver = matrixSolverTypeFromStringKey(QString(matrixSolver)); }
+
+        // frequency
+        inline const double getFrequency() { return Util::scene()->problemInfo()->frequency; }
+        void setFrequency(const double frequency) { Util::scene()->problemInfo()->frequency = frequency; }
+
+        // time step
+        inline const double getTimeStep() { return Util::scene()->problemInfo()->timeStep.number(); }
+        void setTimeStep(const double timeStep) { Util::scene()->problemInfo()->timeStep = Value(QString::number(timeStep)); }
+
+        // time total
+        inline const double getTimeTotal() { return Util::scene()->problemInfo()->timeTotal.number(); }
+        void setTimeTotal(const double timeTotal) { Util::scene()->problemInfo()->timeTotal = Value(QString::number(timeTotal)); }
+
+        void solve();
+};
+
+// field class
+class PyField {
+    private:
+        FieldInfo *fieldInfo;
+
+    public:
+        PyField(char *fieldId, char *analysisType, int numberOfRefinements, int polynomialOrder, double initialCondition, char *weakForms);
+        ~PyField();
+
+        FieldInfo *getFieldInfo();
+
+        void solve();
+};
+
+// version()
+char *pyVersion();
+
 // cython functions
 void pythonMessage(char *str);
 char *pythonInput(char *str);
-char *pythonVersion();
 char *pythonMeshFileName();
 char *pythonSolutionFileName();
 Solution *pythonSolutionObject();
