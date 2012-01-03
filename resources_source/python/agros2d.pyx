@@ -1,5 +1,3 @@
-# from hermes2d import *
-
 # script functions
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
@@ -8,47 +6,78 @@ cdef extern from "limits.h":
     int c_DOUBLE_MAX "DOUBLE_MAX"
 
 cdef extern from "../../src/pythonlabagros.h":
-    # problem class
     cdef cppclass PyProblem:
-        PyProblem(char*, char*, char*, char*, double, double, double)
+        PyProblem(char*, char*, char*, char*, double, double, double) except +
 
-        # name
         char *getName()
         void setName(char *name)
 
-        # coordinate type
         char *getCoordinateType()
         void setCoordinateType(char *coordinateType)
 
-        # mesh type
         char *getMeshType()
         void setMeshType(char *meshType)
 
-        # matrix solver
         char *getMatrixSolver()
         void setMatrixSolver(char *matrixSolver)
 
-        # frequency
         double getFrequency()
         void setFrequency(double frequency)
 
-        # time step
         double getTimeStep()
         void setTimeStep(double timeStep)
 
-        # time total
         double getTimeTotal()
         void setTimeTotal(double timeTotal)
 
         void solve()
 
-    # problem class
     cdef cppclass PyField:
-        PyField(char*, char*, int, int, double, char*)
+        PyField(char*, char*, int, int, char*, double, int, char*, double, int, double, char*)  except +
+
+        char *getFieldId()
+
+        char *getAnalysisType()
+        void setAnalysisType(char*)
+
+        int getNumberOfRefinemens()
+        void setNumberOfRefinemens(int)
+
+        int getPolynomialOrder()
+        void setPolynomialOrder(int)
+
+        char *getLinearityType()
+        void setLinearityType(char*)
+
+        double getNonlinearTolerance()
+        void setNonlinearTolerance(double)
+
+        int getNonlinearSteps()
+        void setNonlinearSteps(int)
+
+        char *getAdaptivityType()
+        void setAdaptivityType(char*)
+
+        double getAdaptivityTolerance()
+        void setAdaptivityTolerance(double)
+
+        int getAdaptivitySteps()
+        void setAdaptivitySteps(int)
+
+        double getInitialCondition()
+        void setInitialCondition(double)
+
+        char *getWeakForms()
+        void setWeakForms(char*)
 
         void solve()
 
-    # version()
+    cdef cppclass PyGeometry:
+        PyGeometry()
+
+        void addNode(double, double) except +
+        void addEdge(double, double, double, double, double, int, char*) except +
+
     char *pyVersion()
 
 
@@ -69,9 +98,7 @@ cdef extern from "../../src/pythonlabagros.h":
     void pythonOpenDocument(char *str) except +
     void pythonSaveDocument(char *str) except +
     void pythonCloseDocument()
-    
-    void pythonAddNode(double x, double y) except +
-    void pythonAddEdge(double x1, double y1, double x2, double y2, char *boundary, double angle, int refine) except +
+
     void pythonAddLabel(double x, double y, char *material, double area, int order) except +
 
     void pythonDeleteNode(int index) except +
@@ -117,11 +144,12 @@ cdef extern from "../../src/pythonlabagros.h":
     int pythonTimeStepCount()
     void pythonSaveImage(char *str, int w, int h) except +
 
-# problem class
+# problem
 cdef class Problem:
     cdef PyProblem *thisptr
 
-    def __cinit__(self, char *name, char *coordinate_type, char *mesh_type = "triangle", char *matrix_solver = "umfpack", double frequency=0.0, double time_step = 0.0, double time_total = 0.0):
+    def __cinit__(self, char *name, char *coordinate_type, char *mesh_type = "triangle", char *matrix_solver = "umfpack",
+                  double frequency=0.0, double time_step = 0.0, double time_total = 0.0):
         self.thisptr = new PyProblem(name, coordinate_type, mesh_type, matrix_solver, frequency, time_step, time_total)
     def __dealloc__(self):
         del self.thisptr
@@ -175,22 +203,116 @@ cdef class Problem:
         def __set__(self, time_total):
             self.thisptr.setTimeTotal(time_total)
 
-# field class
+# field
 cdef class Field:
     cdef PyField *thisptr
 
-    def __cinit__(self, char *field_id, char *analysis_type, int number_of_refinements = 1, int polynomial_order = 2, double initial_condition = 0.0, char *weak_forms = "compiled"):
-        self.thisptr = new PyField(field_id, analysis_type, number_of_refinements, polynomial_order, initial_condition, weak_forms)
+    def __cinit__(self, char *field_id, char *analysis_type, int number_of_refinements = 0, int polynomial_order = 1, char *linearity_type = "linear",
+                  double nonlinear_tolerance = 0.001, int nonlinear_steps = 10, char *adaptivity_type = "disabled", double adaptivity_tolerance = 1,
+                  int adaptivity_steps = 1, double initial_condition = 0.0, char *weak_forms = "compiled"):
+        self.thisptr = new PyField(field_id, analysis_type, number_of_refinements, polynomial_order, linearity_type, nonlinear_tolerance,
+                                   nonlinear_steps, adaptivity_type, adaptivity_tolerance, adaptivity_steps, initial_condition, weak_forms)
     def __dealloc__(self):
         del self.thisptr
 
+    # field id
+    property field_id:
+        def __get__(self):
+            return self.thisptr.getFieldId()
 
-    # field_id
-    #property field_id:
-    #    def __get__(self):
-    #        return self.thisptr.getFieldId()
-    #    def __set__(self, field_id):
-    #        self.thisptr.setFieldId(field_id)
+    # analysis type
+    property analysis_type:
+        def __get__(self):
+            return self.thisptr.getAnalysisType()
+        def __set__(self, field_id):
+            self.thisptr.setAnalysisType(field_id)
+
+    # number of refinements
+    property number_of_refinements:
+        def __get__(self):
+            return self.thisptr.getNumberOfRefinemens()
+        def __set__(self, number_of_refinements):
+            self.thisptr.setNumberOfRefinemens(number_of_refinements)
+
+    # polynomial order
+    property polynomial_order:
+        def __get__(self):
+            return self.thisptr.getPolynomialOrder()
+        def __set__(self, polynomial_order):
+            self.thisptr.setPolynomialOrder(polynomial_order)
+
+    # linearity type
+    property linearity_type:
+        def __get__(self):
+            return self.thisptr.getLinearityType()
+        def __set__(self, linearity_type):
+            self.thisptr.setLinearityType(linearity_type)
+
+    # nonlinear tolerance
+    property nonlinear_tolerance:
+        def __get__(self):
+            return self.thisptr.getNonlinearTolerance()
+        def __set__(self, nonlinear_tolerance):
+            self.thisptr.setNonlinearTolerance(nonlinear_tolerance)
+
+    # nonlinear steps
+    property nonlinear_steps:
+        def __get__(self):
+            return self.thisptr.getNonlinearSteps()
+        def __set__(self, nonlinear_steps):
+            self.thisptr.setNonlinearSteps(nonlinear_steps)
+
+    # adaptivity type
+    property adaptivity_type:
+        def __get__(self):
+            return self.thisptr.getAdaptivityType()
+        def __set__(self, adaptivity_type):
+            self.thisptr.setAdaptivityType(adaptivity_type)
+
+    # adaptivity tolerance
+    property adaptivity_tolerance:
+        def __get__(self):
+            return self.thisptr.getAdaptivityTolerance()
+        def __set__(self, adaptivity_tolerance):
+            self.thisptr.setAdaptivityTolerance(adaptivity_tolerance)
+
+    # adaptivity steps
+    property adaptivity_steps:
+        def __get__(self):
+            return self.thisptr.getAdaptivitySteps()
+        def __set__(self, adaptivity_steps):
+            self.thisptr.setAdaptivitySteps(adaptivity_steps)
+
+    # initial condition
+    property initial_condition:
+        def __get__(self):
+            return self.thisptr.getInitialCondition()
+        def __set__(self, initial_condition):
+            self.thisptr.setInitialCondition(initial_condition)
+
+    # weak forms
+    property weak_forms:
+        def __get__(self):
+            return self.thisptr.getWeakForms()
+        def __set__(self, weak_forms):
+            self.thisptr.setWeakForms(weak_forms)
+
+# geometry class
+cdef class Geometry:
+    cdef PyGeometry *thisptr
+
+    def __cinit__(self):
+        self.thisptr = new PyGeometry()
+    def __dealloc__(self):
+        del self.thisptr
+
+    # add_node(x, y)
+    def add_node(self, double x, double y):
+        self.thisptr.addNode(x, y)
+
+    # add_edge(x1, y1, x2, y2, angle, refinement, boundary)
+    def add_edge(self, double x1, double y1, double x2, double y2, double angle = 0.0, int refinement = 0, char *boundary = "none"):
+        self.thisptr.addEdge(x1, y1, x2, y2, angle, refinement, boundary)
 
 # version()
 def version():
@@ -237,12 +359,6 @@ def closedocument():
     pythonCloseDocument()
 
 # preprocessor
-
-def addnode(double x, double y):
-    pythonAddNode(x, y)
-
-def addedge(double x1, double y1, double x2, double y2, char *boundary = "none", double angle = 0, int refine = 0):
-    pythonAddEdge(x1, y1, x2, y2, boundary, angle, refine)
 
 def addlabel(double x, double y, double area = 0, char *material = "none", int order = 0):
     pythonAddLabel(x, y, material, area, order)

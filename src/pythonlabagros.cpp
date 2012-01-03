@@ -280,74 +280,110 @@ PyProblem::PyProblem(char *name, char *coordinateType, char *meshType, char *mat
 {
     logMessage("PyProblem::PyProblem()");
 
-    // name
     Util::scene()->problemInfo()->name = QString(name);
-
-    // coordinate type
     Util::scene()->problemInfo()->coordinateType = coordinateTypeFromStringKey(QString(coordinateType));
-
-    // mesh type
     Util::scene()->problemInfo()->meshType = meshTypeFromStringKey(QString(meshType));
-
-    // matrix solver
     Util::scene()->problemInfo()->matrixSolver = matrixSolverTypeFromStringKey(QString(matrixSolver));
 
-    // frequency
     if (frequency >= 0.0)
         Util::scene()->problemInfo()->frequency = frequency;
     else
         throw invalid_argument(QObject::tr("The frequency must be positive.").toStdString());
 
-    // time step
+    // time parameters
     if (timeStep >= 0.0)
         Util::scene()->problemInfo()->timeStep = Value(QString::number(timeStep));
     else
         throw invalid_argument(QObject::tr("The time step must be positive.").toStdString());
 
-    // time total
     if (timeTotal >= 0.0)
         Util::scene()->problemInfo()->timeTotal = Value(QString::number(timeTotal));
     else
         throw invalid_argument(QObject::tr("The total time must be positive.").toStdString());
 }
 
-PyProblem::~PyProblem()
-{
-    logMessage("PyProblem::~PyProblem()");
-}
-
-void PyProblem::solve()
-{
-    logMessage("PyProblem::solve()");
-
-    qDebug() << "Not now :)";
-}
-
-PyField::PyField(char *fieldId, char *analysisType, int numberOfRefinements, int polynomialOrder, double initialCondition, char *weakForms)
+PyField::PyField(char *fieldId, char *analysisType, int numberOfRefinements, int polynomialOrder, char *linearityType, double nonlinearTolerance, int nonlinearSteps,
+                 char *adaptivityType, double adaptivityTolerance, int adaptivitySteps, double initialCondition, char *weakForms)
 {
     logMessage("PyField::PyField()");
 
-    /*
-    fieldInfo = new FieldInfo(, QString(fieldId));
+    fieldInfo = new FieldInfo(Util::scene()->problemInfo(), fieldId);
 
     fieldInfo->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
-    fieldInfo->numberOfRefinements = numberOfRefinements;
-    fieldInfo->polynomialOrder = polynomialOrder;
+
+    if (numberOfRefinements >= 0 && numberOfRefinements <= 5)
+        fieldInfo->numberOfRefinements = numberOfRefinements;
+    else
+        throw invalid_argument(QObject::tr("Polynomial order is out of range (0 - 5).").toStdString());
+
+    if (polynomialOrder >= 1 && polynomialOrder <= 10)
+        fieldInfo->polynomialOrder = polynomialOrder;
+    else
+        throw invalid_argument(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
+
+    // nonlinearity
+    fieldInfo->linearityType = linearityTypeFromStringKey(QString(linearityType));
+
+    if (nonlinearTolerance > 0.0)
+        fieldInfo->nonlinearTolerance = nonlinearTolerance;
+    else
+        throw invalid_argument(QObject::tr("Nonlinearity tolerance must be positive.").toStdString());
+
+    if (nonlinearSteps >= 1)
+        fieldInfo->nonlinearSteps = nonlinearSteps;
+    else
+        throw invalid_argument(QObject::tr("Nonlinearity steps must be higher than 1.").toStdString());
+
+    // adaptivity
+    fieldInfo->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivityType));
+
+    if (adaptivityTolerance > 0.0)
+        fieldInfo->adaptivityTolerance = adaptivityTolerance;
+    else
+        throw invalid_argument(QObject::tr("Adaptivity tolerance must be positive.").toStdString());
+
+    if (adaptivitySteps >= 1)
+        fieldInfo->adaptivitySteps = adaptivitySteps;
+    else
+        throw invalid_argument(QObject::tr("Adaptivity steps must be higher than 1.").toStdString());
+
     fieldInfo->initialCondition = Value(QString::number(initialCondition));
     fieldInfo->weakFormsType = weakFormsTypeFromStringKey(QString(weakForms));
 
-    Util::scene()->addField(getFieldInfo());
+    Util::scene()->addField(fieldInfo);
+}
+
+void PyGeometry::addNode(double x, double y)
+{
+    logMessage("PyGeometry::addNode()");
+
+    Util::scene()->addNode(new SceneNode(Point(x, y)));
+}
+
+void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, char *boundary)
+{
+    logMessage("PyGeometry::pyAddEdge()");
+
+    // nodes
+    SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
+    SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
+
+    // angle
+    if (angle > 180.0 || angle < 0.0)
+        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+
+    // refinement
+    if (refinement < 0)
+        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
+
+    /* FIXME - SceneEdgeContainer
+    // boundary
+    SceneBoundary *scene_boundary = Util::scene()->getBoundary(QString(boundary));
+    if (!scene_boundary)
+        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(boundary).toStdString());
     */
-}
 
-FieldInfo *PyField::getFieldInfo()
-{
-    return fieldInfo;
-}
-
-PyField::~PyField()
-{
-    logMessage("PyField::~PyField()");
+    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, angle, refinement));
 }
 
 // version()
@@ -357,6 +393,7 @@ char *pyVersion()
 
     return const_cast<char*>(QApplication::applicationVersion().toStdString().c_str());
 }
+
 
 // message(string)
 void pythonMessage(char *str)
@@ -568,14 +605,6 @@ void pythonCloseDocument()
     sceneView()->doZoomBestFit();
 }
 
-// addnode(x, y)
-void pythonAddNode(double x, double y)
-{
-    logMessage("pythonAddNode()");
-
-    Util::scene()->addNode(new SceneNode(Point(x, y)));
-}
-
 void pythonDeleteNode(int index)
 {
     logMessage("pythonDeleteNode()");
@@ -592,6 +621,7 @@ void pythonDeleteNodePoint(double x, double y)
     Util::scene()->nodes->remove(Util::scene()->getNode(Point(x, y)));
 }
 
+/*
 // addedge(x1, y1, x2, y2, angle = 0, marker = "none")
 void pythonAddEdge(double x1, double y1, double x2, double y2, char *boundary, double angle, int refine)
 {
@@ -615,6 +645,7 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, char *boundary, d
 
     //    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, scene_boundary, angle, refine));
 }
+*/
 
 void pythonDeleteEdge(int index)
 {

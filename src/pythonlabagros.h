@@ -85,12 +85,9 @@ private:
 
 // problem class
 class PyProblem {
-    private:
-        ProblemInfo *problemInfo;
-
     public:
         PyProblem(char *name, char *coordinateType, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal);
-        ~PyProblem();
+        ~PyProblem() {}
 
         // name
         inline const char *getName() { return Util::scene()->problemInfo()->name.toStdString().c_str(); }
@@ -120,7 +117,7 @@ class PyProblem {
         inline const double getTimeTotal() { return Util::scene()->problemInfo()->timeTotal.number(); }
         void setTimeTotal(const double timeTotal) { Util::scene()->problemInfo()->timeTotal = Value(QString::number(timeTotal)); }
 
-        void solve();
+        void solve() { qDebug() << "Not now :)"; }
 };
 
 // field class
@@ -129,16 +126,74 @@ class PyField {
         FieldInfo *fieldInfo;
 
     public:
-        PyField(char *fieldId, char *analysisType, int numberOfRefinements, int polynomialOrder, double initialCondition, char *weakForms);
-        ~PyField();
+        PyField(char *fieldId, char *analysisType, int numberOfRefinements, int polynomialOrder, char *linearityType, double nonlinearTolerance, int nonlinearSteps,
+                char *adaptivityType, double adaptivityTolerance, int adaptivitySteps, double initialCondition, char *weakForms);
+        ~PyField() {}
 
-        FieldInfo *getFieldInfo();
+        // field id
+        inline const char *getFieldId() { return fieldInfo->fieldId().toStdString().c_str(); }
 
-        void solve();
+        // analysis type
+        inline const char *getAnalysisType() { return analysisTypeToStringKey(Util::scene()->fieldInfo(fieldInfo->fieldId())->analysisType()).toStdString().c_str(); }
+        void setAnalysisType(const char *analysisType) { Util::scene()->fieldInfo(fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType))); }
+
+        // number of refinements
+        inline const int getNumberOfRefinemens() { return Util::scene()->fieldInfo(fieldInfo->fieldId())->numberOfRefinements; }
+        void setNumberOfRefinemens(const int numberOfRefinemens) { Util::scene()->fieldInfo(fieldInfo->fieldId())->numberOfRefinements = numberOfRefinemens; }
+
+        // polynomial order
+        inline const int getPolynomialOrder() { return Util::scene()->fieldInfo(fieldInfo->fieldId())->polynomialOrder; }
+        void setPolynomialOrder(const int polynomialOrder) { Util::scene()->fieldInfo(fieldInfo->fieldId())->polynomialOrder = polynomialOrder; }
+
+        // linearity type
+        inline const char *getLinearityType() { return linearityTypeToStringKey(Util::scene()->fieldInfo(fieldInfo->fieldId())->linearityType).toStdString().c_str(); }
+        void setLinearityType(const char *linearityType) { Util::scene()->fieldInfo(fieldInfo->fieldId())->linearityType = linearityTypeFromStringKey(QString(linearityType)); }
+
+        // nonlinear tolerance
+        inline const double getNonlinearTolerance() { return Util::scene()->fieldInfo(fieldInfo->fieldId())->nonlinearTolerance; }
+        void setNonlinearTolerance(const double nonlinearTolerance) { Util::scene()->fieldInfo(fieldInfo->fieldId())->nonlinearTolerance = nonlinearTolerance; }
+
+        // nonlinear steps
+        inline const int getNonlinearSteps() { return Util::scene()->fieldInfo(fieldInfo->fieldId())->nonlinearSteps; }
+        void setNonlinearSteps(const int nonlinearSteps) { Util::scene()->fieldInfo(fieldInfo->fieldId())->nonlinearSteps = nonlinearSteps; }
+
+        // adaptivity type
+        inline const char *getAdaptivityType() { return adaptivityTypeToStringKey(Util::scene()->fieldInfo(fieldInfo->fieldId())->adaptivityType).toStdString().c_str(); }
+        void setAdaptivityType(const char *adaptivityType) { Util::scene()->fieldInfo(fieldInfo->fieldId())->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivityType)); }
+
+        // adaptivity tolerance
+        inline const double getAdaptivityTolerance() { return Util::scene()->fieldInfo(fieldInfo->fieldId())->adaptivityTolerance; }
+        void setAdaptivityTolerance(const double adaptivityTolerance) { Util::scene()->fieldInfo(fieldInfo->fieldId())->adaptivityTolerance = adaptivityTolerance; }
+
+        // adaptivity steps
+        inline const int getAdaptivitySteps() { return Util::scene()->fieldInfo(fieldInfo->fieldId())->adaptivitySteps; }
+        void setAdaptivitySteps(const int adaptivitySteps) { Util::scene()->fieldInfo(fieldInfo->fieldId())->adaptivitySteps = adaptivitySteps; }
+
+        // initial condition
+        inline const double getInitialCondition() { return Util::scene()->fieldInfo(fieldInfo->fieldId())->initialCondition.number(); }
+        void setInitialCondition(const double initialCondition) { Util::scene()->fieldInfo(fieldInfo->fieldId())->initialCondition = Value(QString::number(initialCondition)); }
+
+        // weak forms
+        inline const char *getWeakForms() { return weakFormsTypeToStringKey(Util::scene()->fieldInfo(fieldInfo->fieldId())->weakFormsType).toStdString().c_str(); }
+        void setWeakForms(const char *weakForms) { Util::scene()->fieldInfo(fieldInfo->fieldId())->weakFormsType = weakFormsTypeFromStringKey(QString(weakForms)); }
+
+        void solve() { qDebug() << "Not now :)"; }
+};
+
+// geometry class
+class PyGeometry {
+    public:
+        PyGeometry() {}
+        ~PyGeometry() {}
+
+        void addNode(double x, double y);
+        void addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, char *boundary);
 };
 
 // version()
 char *pyVersion();
+
+void pythonAddLabel(double x, double y, char *material, double area, int order);
 
 // cython functions
 void pythonMessage(char *str);
@@ -157,10 +212,6 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
 void pythonOpenDocument(char *str);
 void pythonSaveDocument(char *str);
 void pythonCloseDocument();
-
-void pythonAddNode(double x, double y);
-void pythonAddEdge(double x1, double y1, double x2, double y2, char *boundary, double angle, int refine);
-void pythonAddLabel(double x, double y, char *material, double area, int order);
 
 void pythonDeleteNode(int index);
 void pythonDeleteNodePoint(double x, double y);
