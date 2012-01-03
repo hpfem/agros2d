@@ -3,7 +3,7 @@ newdocument(name="unnamed", type="axisymmetric",
             physicfield="elasticity", analysistype="steadystate",
             numberofrefinements=2, polynomialorder=3,
             nonlineartolerance=0.001, nonlinearsteps=10)
-
+s
 # boundaries
 addboundary("Fixed", "elasticity_fixed_fixed", {"dx" : 0, "dy" : 0})
 addboundary("Free", "elasticity_free_free", {"fx" : 0, "fy" : 0})

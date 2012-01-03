@@ -290,8 +290,8 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
 
         if (QFile::exists(fileName))
         {
-            QFileInfo info(fileName);
-            doFileOpen(info.absoluteFilePath());
+            QFileInfo fileInfo(fileName);
+            doFileOpen(fileInfo.absoluteFilePath());
         }
     }
 
@@ -323,8 +323,8 @@ void PythonEditorDialog::dropEvent(QDropEvent *event)
         QString fileName = QUrl(event->mimeData()->urls().at(0)).toLocalFile().trimmed();
         if (QFile::exists(fileName))
         {
-            QFileInfo info(fileName);
-            doFileOpen(info.absoluteFilePath());
+            QFileInfo fileInfo(fileName);
+            doFileOpen(fileInfo.absoluteFilePath());
 
             event->acceptProposedAction();
         }

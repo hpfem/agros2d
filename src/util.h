@@ -239,18 +239,21 @@ struct ScriptResult
     ScriptResult()
     {
         text = "";
+        traceback = "";
         isError = false;
         this->line = -1;
     }
 
-    ScriptResult(const QString &text, bool isError = false, int line = -1)
+    ScriptResult(const QString &text, const QString &traceback, bool isError = false, int line = -1)
     {
         this->text = text;
+        this->traceback = traceback;
         this->isError = isError;
         this->line = line;
     }
 
     QString text;
+    QString traceback;
     bool isError;
     int line;
 };
@@ -601,10 +604,10 @@ const bool SHOWGRID = true;
 const bool SNAPTOGRID = false;
 
 #ifdef Q_WS_X11
-    const QFont FONT = QFont("Monospace", 9);
+    const QFont FONT = QFont("Monospace", 10);
 #endif
 #ifdef Q_WS_WIN
-    const QFont FONT = QFont("Courier New", 9);
+    const QFont FONT = QFont("Courier New", 10);
 #endif
 #ifdef Q_WS_MAC
     const QFont FONT = QFont("Monaco", 12);
