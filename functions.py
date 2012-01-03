@@ -46,45 +46,68 @@ def test(text, value, normal, error = 0.03):
 		print(text + ": (" + str(value) + " != " + str(normal) + ")")
 	return test
 
+from rope.base.project import Project
+pythonlab_rope_project = Project(".", ropefolder=None)
+
 # get completion list
 def python_engine_get_completion_string(code, offset):
-	try:
-		from rope.base.project import Project
-		from rope.contrib import codeassist
-	
-		project = Project(".", ropefolder=None)	
+    from rope.contrib import codeassist
 
-		proposals = codeassist.code_assist(project, code, offset)
-		proposals = codeassist.sorted_proposals(proposals)
-		proposals_string = []
-		for p in proposals:
-			proposals_string.append(p.__str__())
-		
-		return proposals_string
-		# return [proposal.name for proposal in proposals]
-	except:
-		return []
+    proposals = codeassist.code_assist(pythonlab_rope_project, code, offset, maxfixes=20)
+    # proposals = codeassist.sorted_proposals(proposals)
+    proposals_string = []
+    for p in proposals:
+        proposals_string.append(p.__str__())
+    
+    return proposals_string
+    # return [proposal.name for proposal in proposals]
 
 def python_engine_get_completion_file(filename, offset):
-	try:
-		from rope.base.project import Project
-		from rope.contrib import codeassist
-	
-		project = Project(".", ropefolder=None)	
-	
-		f = open(filename, 'r')
-		code = ''.join(f.readlines())
-	
-		proposals = codeassist.code_assist(project, code, offset, maxfixes=10) 
-		proposals = codeassist.sorted_proposals(proposals)
-		proposals_string = []
-		for p in proposals:
-			proposals_string.append(p.__str__())
-		
-		return proposals_string
-		# return [proposal.name for proposal in proposals]
-	except:
-		return []
+    from rope.contrib import codeassist
+
+    f = open(filename, 'r')
+    code = ''.join(f.readlines())
+
+    proposals_string = []
+    try:
+        proposals = codeassist.code_assist(pythonlab_rope_project, code, offset, maxfixes=20) 
+        # proposals = codeassist.sorted_proposals(proposals)        
+        for p in proposals:
+            proposals_string.append(p.__str__())
+        
+        return proposals_string
+        # return [proposal.name for proposal in proposals]
+    except:
+        return []
+
+def python_engine_pyflakes_check(filename):
+    f = open(filename, 'r')
+    code = ''.join(f.readlines())
+
+    # first, compile into an AST and handle syntax errors.
+    try:
+        import _ast
+        tree = compile(code, "", "exec", _ast.PyCF_ONLY_AST)
+    except SyntaxError, value:
+        msg = value.args[0]
+
+        (lineno, offset, text) = value.lineno, value.offset, value.text
+
+        line = text.splitlines()[-1]
+
+        if offset is not None:
+            offset = offset - (len(text) - len(line))
+
+            return ['%s:%d: %s' % ("", lineno, msg)]
+
+        return 1
+    else:
+        # okay, it's syntactically valid. Now check it.
+        import pyflakes.checker as checker
+
+        w = checker.Checker(tree, "")
+        w.messages.sort(lambda a, b: cmp(a.lineno, b.lineno))       
+        return [warning.__str__() for warning in w.messages]
 
 # redirect std output
 class StdoutCatcher:

@@ -48,6 +48,7 @@ PythonBrowserView::PythonBrowserView(PythonEngine *pythonEngine, PythonScripting
     otherExpanded = false;
 
     executed();
+    trvBrowser->sortItems(0, Qt::AscendingOrder);
 
     connect(trvBrowser, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(executeCommand(QTreeWidgetItem *, int)));
     connect(trvBrowser, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
@@ -88,6 +89,8 @@ void PythonBrowserView::doContextMenu(const QPoint &point)
 
 void PythonBrowserView::executed()
 {
+    trvBrowser->setSortingEnabled(false);
+
     if (trvVariables) variableExpanded = trvVariables->isExpanded();
     if (trvFunctions) functionExpanded = trvFunctions->isExpanded();
     if (trvClasses) classExpanded = trvClasses->isExpanded();
@@ -99,6 +102,10 @@ void PythonBrowserView::executed()
     trvVariables->setText(0, tr("Variables"));
     trvVariables->setIcon(0, icon("browser-variable"));
     trvVariables->setExpanded(variableExpanded);
+    trvOther = new QTreeWidgetItem(trvBrowser);
+    trvOther->setText(0, tr("Other"));
+    trvOther->setIcon(0, icon("browser-other"));
+    trvOther->setExpanded(otherExpanded);
     trvFunctions = new QTreeWidgetItem(trvBrowser);
     trvFunctions->setText(0, tr("Functions"));
     trvFunctions->setIcon(0, icon("browser-function"));
@@ -107,10 +114,6 @@ void PythonBrowserView::executed()
     trvClasses->setText(0, tr("Classes"));
     trvClasses->setIcon(0, icon("browser-class"));
     trvClasses->setExpanded(classExpanded);
-    trvOther = new QTreeWidgetItem(trvBrowser);
-    trvOther->setText(0, tr("Other"));
-    trvOther->setIcon(0, icon("browser-other"));
-    trvOther->setExpanded(otherExpanded);
 
     QList<PythonVariables> list = pythonEngine->variableList();
 
@@ -174,19 +177,23 @@ void PythonBrowserView::executed()
         else if (variable.type == "function")
         {
             item = new QTreeWidgetItem(trvFunctions);
+            item->setIcon(0, icon("browser-variable-float"));
         }
         else if (variable.type == "classobj")
         {
             item = new QTreeWidgetItem(trvClasses);
+            item->setIcon(0, icon("history-command"));
         }
         else if (variable.type == "module")
         {
             item = new QTreeWidgetItem(trvOther);
             item->setText(2, variable.value.toString());
+            item->setIcon(0, icon("history-command"));
         }
         else
         {
             item = new QTreeWidgetItem(trvOther);
+            item->setIcon(0, icon("history-command"));
         }
 
         item->setText(0, variable.name);
@@ -194,6 +201,8 @@ void PythonBrowserView::executed()
 
         // qDebug() << variable.type << ": " << variable.name;
     }
+
+    trvBrowser->setSortingEnabled(true);
 }
 
 void PythonBrowserView::executeCommand(QTreeWidgetItem *item, int role)

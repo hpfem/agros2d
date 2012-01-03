@@ -64,13 +64,16 @@ PyObject* pythonInsertHtml(PyObject* self, PyObject* pArgs)
 static PyObject* pythonClear(PyObject* self, PyObject* pArgs)
 {
     emit currentPythonEngine()->pythonClearCommand();
+
+    Py_RETURN_NONE;
+    return NULL;
 }
 
 static PyMethodDef pythonEngineFuntions[] =
 {
     {"stdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
     {"image", pythonShowFigure, METH_VARARGS, "image(file)"},
-    {"clear", pythonClear, METH_NOARGS, "clear"},
+    {"clear", pythonClear, METH_NOARGS, "clear()"},
     {"html", pythonInsertHtml, METH_VARARGS, "html(str)"},
     {NULL, NULL, 0, NULL}
 };
@@ -117,7 +120,7 @@ void PythonEngine::init()
     PyRun_String(QString("import sys; sys.path.insert(0, \"" + datadir() + "/resources/python" + "\")").toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
     // functions.py
-    PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);  
+    PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
 void PythonEngine::pythonShowMessageCommand(const QString &message)
@@ -176,6 +179,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     {
         scriptResult = parseError();
     }
+    Py_XDECREF(output);
     Py_DECREF(Py_None);
 
     m_isRunning = false;
@@ -207,11 +211,10 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
 
         if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
         {
-            Py_INCREF(type);
-
+            Py_INCREF(str);
             expressionResult.error = PyString_AsString(str);
-            if (type) Py_DECREF(type);
-            if (str) Py_DECREF(str);
+            Py_XDECREF(type);
+            Py_XDECREF(str);
         }
         else
         {
@@ -237,6 +240,7 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
     {
         expressionResult.error = parseError().text;
     }
+    Py_XDECREF(output);
     Py_DECREF(Py_None);
 
     emit executed();
@@ -253,7 +257,6 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
     QString exp;
     if (QFile::exists(fileName))
     {
-        // ignore code
         exp = QString("result_rope_pythonlab = python_engine_get_completion_file(\"%1\", %2)").
                 arg(fileName).
                 arg(offset);
@@ -265,7 +268,10 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
                 arg(offset);
     }
 
+    // QTime time;
+    // time.start();
     PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+    // qDebug() << time.elapsed();
 
     // parse result
     PyObject *result = PyDict_GetItemString(m_dict, "result_rope_pythonlab");
@@ -294,50 +300,109 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
     return out;
 }
 
+QStringList PythonEngine::codePyFlakes(const QString& fileName)
+{
+    QStringList out;
+
+    QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(fileName);
+
+    PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+
+    // parse result
+    PyObject *result = PyDict_GetItemString(m_dict, "result_pyflakes_pythonlab");
+    if (result)
+    {
+        Py_INCREF(result);
+        PyObject *list;
+        if (PyArg_Parse(result, "O", &list))
+        {
+            int count = PyList_Size(list);
+            for (int i = 0; i < count; i++)
+            {
+                PyObject *item = PyList_GetItem(list, i);
+
+                QString str = PyString_AsString(item);
+                out.append(str);
+            }
+        }
+        Py_DECREF(result);
+    }
+
+    PyRun_String("del result_pyflakes_pythonlab", Py_single_input, m_dict, m_dict);
+
+    Py_DECREF(Py_None);
+
+    return out;
+}
+
+
 ScriptResult PythonEngine::parseError()
 {    
     // error
     ScriptResult error;
     error.isError = true;
 
-    PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
-    PyErr_Fetch(&type, &value, &traceback);
+    PyObject *error_type = NULL;
+    PyObject *error_value = NULL;
+    PyObject *error_traceback = NULL;
+    PyObject *error_string = NULL;
+    PyErr_Fetch(&error_type, &error_value, &error_traceback);
+    PyErr_NormalizeException(&error_type, &error_value, &error_traceback);
 
-    if (traceback)
+    if (error_traceback)
     {
-        PyTracebackObject *object = (PyTracebackObject *) traceback;
-        error.text.append(QString("Line %1: ").arg(object->tb_lineno));
-        error.line = object->tb_lineno;
-        Py_DECREF(traceback);
+        PyTracebackObject *traceback = (PyTracebackObject *) error_traceback;
+        error.line = traceback->tb_lineno;
+        error.text.append(QString("Line %1: ").arg(traceback->tb_lineno));
+
+        while (traceback)
+        {
+            PyFrameObject *frame = traceback->tb_frame;
+
+            if (frame && frame->f_code) {
+                PyCodeObject* codeObject = frame->f_code;
+                if (PyString_Check(codeObject->co_filename))
+                    error.traceback.append(QString("File '%1'").arg(PyString_AsString(codeObject->co_filename)));
+
+                int errorLine = PyCode_Addr2Line(codeObject, frame->f_lasti);
+                error.traceback.append(QString(", line %1").arg(errorLine));
+
+                if (PyString_Check(codeObject->co_name))
+                    error.traceback.append(QString(", in %1").arg(PyString_AsString(codeObject->co_name)));
+            }
+            error.traceback.append(QString("\n"));
+
+            traceback = traceback->tb_next;
+        }
     }
+    error.traceback = error.traceback.trimmed();
 
-    if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
+    if (error_type != NULL && (error_string = PyObject_Str(error_type)) != NULL && (PyString_Check(error_string)))
     {
-        Py_INCREF(type);
-        error.text.append("\n");
-        error.text.append(PyString_AsString(str));
-        if (type) Py_DECREF(type);
-        if (str) Py_DECREF(str);
+        Py_INCREF(error_string);
+        error.text.append(PyString_AsString(error_string));
+        Py_XDECREF(error_string);
     }
     else
     {
-        error.text.append("\n");
-        error.text.append("<unknown exception type> ");
+        error.text.append("\n<unknown exception type>");
     }
 
-    if (value != NULL && (str = PyObject_Str(value)) != NULL && (PyString_Check(str)))
+    if (error_value != NULL && (error_string = PyObject_Str(error_value)) != NULL && (PyString_Check(error_string)))
     {
-        Py_INCREF(value);
+        Py_INCREF(error_string);
         error.text.append("\n");
-        error.text.append(PyString_AsString(value));
-        if (value) Py_DECREF(value);
-        if (str) Py_DECREF(str);
+        error.text.append(PyString_AsString(error_string));
+        Py_XDECREF(error_string);
     }
     else
     {
-        error.text.append("\n");
-        error.text.append("<unknown exception date> ");
+        error.text.append("\n<unknown exception data>");
     }
+
+    Py_XDECREF(error_type);
+    Py_XDECREF(error_value);
+    Py_XDECREF(error_traceback);
 
     PyErr_Clear();
 
@@ -347,7 +412,9 @@ ScriptResult PythonEngine::parseError()
 QList<PythonVariables> PythonEngine::variableList()
 {
     QStringList filter;
-    filter << "__builtins__" << "StdoutCatcher" << "agrosstdout" << "capturestdout" << "chdir" << "python_engine_get_completion_file" << "python_engine_get_completion_string";
+    filter << "__builtins__" << "StdoutCatcher" << "agrosstdout" << "capturestdout" << "chdir"
+           << "python_engine_get_completion_file" << "python_engine_get_completion_string"
+           << "python_engine_pyflakes_check";
 
     QList<PythonVariables> list;
 

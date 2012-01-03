@@ -41,6 +41,7 @@ public:
     inline bool isRunning() { return m_isRunning; }
 
     QStringList codeCompletion(const QString& code, int offset, const QString& fileName = "");
+    QStringList codePyFlakes(const QString& fileName);
     QList<PythonVariables> variableList();
 
 protected:

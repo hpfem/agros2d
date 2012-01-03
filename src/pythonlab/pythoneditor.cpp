@@ -212,84 +212,32 @@ void PythonEditorWidget::pyLintAnalyseStopped(int exitCode)
 
 void PythonEditorWidget::pyFlakesAnalyse()
 {
-    QSettings settings;
-    if (!settings.value("PythonEditorWidget/EnablePyFlakes", true).toBool())
-        return;
+    QString fn = tempProblemFileName() + ".pyflakes_str.py";
+    QString str = txtEditor->toPlainText();
+    writeStringContent(fn, &str);
 
-    if (txtEditor->isVisible() && txtEditor->hasFocus())
-    {
-        QProcess processPyFlakes;
-        processPyFlakes.setStandardOutputFile(tempProblemFileName() + ".pyflakes.out");
-        processPyFlakes.setStandardErrorFile(tempProblemFileName() + ".pyflakes.err");
-        connect(&processPyFlakes, SIGNAL(finished(int)), this, SLOT(pyFlakesAnalyseStopped(int)));
+    QStringList messages = pythonEngine->codePyFlakes(fn);
 
-        QString pyflakesBinary = datadir() + "/resources/python/pyflakes_lab";
-        /*
-        if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "pyflakes"))
-            pyflakesBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "pyflakes";
-        if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "pyflakes"))
-            pyflakesBinary = QApplication::applicationDirPath() + QDir::separator() + "pyflakes";
-        */
-
-        QString test = txtEditor->toPlainText();
-        writeStringContent(tempProblemFileName() + ".pyflakes.py", &test);
-
-        QStringList arguments;
-        arguments << "-i" << "yes" << tempProblemFileName() + ".pyflakes.py";
-
-        processPyFlakes.start(pyflakesBinary, arguments);
-
-        if (!processPyFlakes.waitForStarted())
-        {
-            qDebug() << "Could not start PyFlakes: " << processPyFlakes.errorString();
-
-            processPyFlakes.kill();
-            return;
-        }
-
-        while (!processPyFlakes.waitForFinished()) {}
-    }
-}
-
-void PythonEditorWidget::pyFlakesAnalyseStopped(int exitCode)
-{
     txtEditor->errorMessagesPyFlakes.clear();
-
-    QStringList fileNames;
-    fileNames << tempProblemFileName() + ".pyflakes.out"
-              << tempProblemFileName() + ".pyflakes.err";
-
-    // read from stdout and stderr
-    foreach (QString fileName, fileNames) {
-        QFile fileOutput(fileName);
-        if (!fileOutput.open(QIODevice::ReadOnly | QIODevice::Text))
+    foreach (QString line, messages)
+    {
+        if (!line.isEmpty())
         {
-            qDebug() << tr("Could not read PyFlakes output.");
-            return;
-        }
-        QTextStream inOutput(&fileOutput);
+            int number;
+            QString message;
 
-        QString line;
-        do
-        {
-            line = inOutput.readLine();
-
-            if (!line.isEmpty())
+            QStringList list = line.split(":");
+            if (list.count() == 3)
             {
-                int number;
-                QString message;
+                number = list[1].toInt();
+                message = list[2];
 
-                QStringList list = line.split(":");
-                if (list.count() == 3)
-                {
-                    number = list[1].toInt();
-                    message = list[2];
-
-                    txtEditor->errorMessagesPyFlakes[number] = message;
-                }
+                txtEditor->errorMessagesPyFlakes[number] = message;
             }
-        } while (!line.isNull());
+        }
     }
+
+    QFile::remove(fn);
 
     txtEditor->repaint();
 }
@@ -331,6 +279,9 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     recentFiles = settings.value("PythonEditorDialog/RecentFiles").value<QStringList>();
     restoreState(settings.value("PythonEditorDialog/State", saveState()).toByteArray());
 
+    // set recent files
+    setRecentFiles();
+
     // parameters
     for (int i = 1; i < args.count(); i++)
     {
@@ -338,7 +289,10 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
                 QFile::exists(args[i]) ? args[i] : QApplication::applicationDirPath() + QDir::separator() + args[i];
 
         if (QFile::exists(fileName))
-            doFileOpen(fileName);
+        {
+            QFileInfo info(fileName);
+            doFileOpen(info.absoluteFilePath());
+        }
     }
 
     setAcceptDrops(true);
@@ -369,7 +323,8 @@ void PythonEditorDialog::dropEvent(QDropEvent *event)
         QString fileName = QUrl(event->mimeData()->urls().at(0)).toLocalFile().trimmed();
         if (QFile::exists(fileName))
         {
-            doFileOpen(fileName);
+            QFileInfo info(fileName);
+            doFileOpen(info.absoluteFilePath());
 
             event->acceptProposedAction();
         }
@@ -473,7 +428,7 @@ void PythonEditorDialog::createActions()
     actOptionsEnablePyFlakes = new QAction(icon(""), tr("PyFlakes enabled"), this);
     actOptionsEnablePyFlakes->setCheckable(true);
     actOptionsEnablePyFlakes->setChecked(settings.value("PythonEditorWidget/EnablePyFlakes", true).toBool());
-    connect(actOptionsEnablePyFlakes, SIGNAL(triggered()), this, SLOT(doOptionsEneblePyFlakes()));
+    connect(actOptionsEnablePyFlakes, SIGNAL(triggered()), this, SLOT(doOptionsEnablePyFlakes()));
 
     actOptionsEnablePyLint = new QAction(icon(""), tr("PyLint enabled"), this);
     actOptionsEnablePyLint->setCheckable(true);
@@ -738,6 +693,8 @@ void PythonEditorDialog::doRunPython()
     if (result.isError)
     {
         consoleView->console()->stdErr(result.text);
+        consoleView->console()->stdErr("\nStacktrace:");
+        consoleView->console()->stdErr(result.traceback);
 
         if (!txtEditor->textCursor().hasSelection() && result.line >= 0)
             txtEditor->gotoLine(result.line, true);
@@ -769,7 +726,7 @@ void PythonEditorDialog::doPyLintPython()
     activateWindow();
 }
 
-void PythonEditorDialog::doOptionsEneblePyFlakes()
+void PythonEditorDialog::doOptionsEnablePyFlakes()
 {
     QSettings settings;
     settings.setValue("PythonEditorWidget/EnablePyFlakes", actOptionsEnablePyFlakes->isChecked());
@@ -1182,9 +1139,7 @@ ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
 {
     lineNumberArea = new ScriptEditorLineNumberArea(this);
 
-#ifndef Q_WS_MAC
-    setFont(QFont("Monospace", 10));
-#endif
+    setFont(FONT);
     setTabStopWidth(fontMetrics().width(TABS));
     setLineWrapMode(QPlainTextEdit::NoWrap);
     setTabChangesFocus(false);
@@ -1708,7 +1663,7 @@ void SearchWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-int SearchWidget::showFind(const QString &text)
+void SearchWidget::showFind(const QString &text)
 {
     if (!text.isEmpty())
         txtFind->setText(text);
@@ -1724,7 +1679,7 @@ int SearchWidget::showFind(const QString &text)
     show();
 }
 
-int SearchWidget::showReplaceAll(const QString &text)
+void SearchWidget::showReplaceAll(const QString &text)
 {
     if (!text.isEmpty())
         txtFind->setText(text);

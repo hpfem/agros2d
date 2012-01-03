@@ -52,17 +52,12 @@ PythonScriptingConsole::PythonScriptingConsole(PythonEngine *pythonEngine, QWidg
 
     // _context = context;
     PythonScriptingConsole::historyPosition = 0;
-    m_hasError = false;
 
     completer = createCompleter();
     completer->setWidget(this);
     QObject::connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
 
-    // HACK
-    QFont font("Monospace");
-    font.setStyleHint(QFont::TypeWriter);
-    font.setPointSize(font.pointSize() - 2);
-    setFont(font);
+    setFont(FONT);
 
     welcomeMessage();
 
@@ -109,15 +104,10 @@ void PythonScriptingConsole::stdHtml(const QString& str)
 
 void PythonScriptingConsole::stdErr(const QString& str)
 {
-    m_hasError = true;
-    m_stdErr += str;
-
-    int idx;
-    while ((idx = m_stdErr.indexOf('\n')) != -1)
+    QStringList strList = str.split("\n");
+    for (int i = 0; i < strList.count(); i++)
     {
-        consoleMessage(m_stdErr.left(idx), Qt::red);
-        // std::cerr << m_stdErr.left(idx).toLatin1().data() << std::endl;
-        m_stdErr = m_stdErr.mid(idx+1);
+        consoleMessage(strList[i], Qt::red);
     }
 }
 
@@ -146,22 +136,6 @@ void PythonScriptingConsole::stdImage(const QString &fileName)
 
         // appendCommandPrompt();
     }
-}
-
-void PythonScriptingConsole::flushStdOut()
-{
-    QApplication::processEvents();
-
-    if (!m_stdOut.isEmpty())
-    {
-        stdOut("\n");
-    }
-    if (!m_stdErr.isEmpty())
-    {
-        stdErr("\n");
-    }
-
-    QApplication::processEvents();
 }
 
 void PythonScriptingConsole::welcomeMessage()
@@ -240,7 +214,6 @@ void PythonScriptingConsole::executeCode(const QString& code)
 
     // evaluate the code
     m_stdOut = "";
-    m_stdErr = "";
 
     connectStdOut();
     ExpressionResult result = pythonEngine->runPythonExpression(code, false);
@@ -249,7 +222,7 @@ void PythonScriptingConsole::executeCode(const QString& code)
     if (!result.error.isEmpty())
         stdErr(result.error);
 
-    flushStdOut();
+    QApplication::processEvents();
 
     // bool messageInserted = (this->textCursor().position() != cursorPosition);
 }
@@ -348,6 +321,8 @@ void PythonScriptingConsole::handleTabCompletion()
     {
         if (isPythonVariable(variable.type))
             found.append(QString("%1 (global, variable)").arg(variable.name));
+        if (variable.type == "function")
+            found.append(QString("%1 (global, function)").arg(variable.name));
     }
 
     found.sort();
