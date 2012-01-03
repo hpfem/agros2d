@@ -66,8 +66,8 @@ QCompleter *createCompleter()
     QCompleter *completer = new QCompleter();
     completer->setPopup(lstView);
     completer->setCompletionMode(QCompleter::PopupCompletion);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+    completer->setCaseSensitivity(Qt::CaseSensitive);
+    completer->setModelSorting(QCompleter::CaseSensitivelySortedModel);
 
     return completer;
 }
