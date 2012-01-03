@@ -263,16 +263,19 @@ struct ExpressionResult
     ExpressionResult()
     {
         this->error = "";
+        this->traceback = "";
         this->value = 0.0;
     }
 
-    ExpressionResult(double value, const QString &error)
+    ExpressionResult(double value, const QString &traceback, const QString &error)
     {
         this->error = error;
+        this->traceback = traceback;
         this->value = value;
     }
 
     QString error;
+    QString traceback;
     double value;
 };
 

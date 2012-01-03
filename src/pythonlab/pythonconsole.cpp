@@ -220,7 +220,16 @@ void PythonScriptingConsole::executeCode(const QString& code)
     disconnectStdOut();
 
     if (!result.error.isEmpty())
+    {
         stdErr(result.error);
+
+        QSettings settings;
+        if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
+        {
+            stdErr("\nStacktrace:");
+            stdErr(result.traceback);
+        }
+    }
 
     QApplication::processEvents();
 
