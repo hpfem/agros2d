@@ -78,7 +78,7 @@ cdef extern from "../../src/pythonlabagros.h":
         PyGeometry()
 
         void addNode(double, double) except +
-        void addEdge(double, double, double, double, double, int, map) except +
+        void addEdge(double, double, double, double, double, int, map[char*, char*]) except +
 
     char *pyVersion()
 
@@ -314,11 +314,15 @@ cdef class Geometry:
 
     # add_edge(x1, y1, x2, y2, angle, refinement, boundary)
     def add_edge(self, double x1, double y1, double x2, double y2, double angle = 0.0, int refinement = 0, boundaries = {}):
-        print boundaries
-        cdef map[char*, char*] b
-        cdef pair[char*, char*] p
 
-        #self.thisptr.addEdge(x1, y1, x2, y2, angle, refinement, bound)
+        cdef map[char*, char*] boundaries_map
+        cdef pair[char*, char *] boundary
+        for key in boundaries:
+            boundary.first = key
+            boundary.second = boundaries[key]
+            boundaries_map.insert(boundary)
+
+        self.thisptr.addEdge(x1, y1, x2, y2, angle, refinement, boundaries_map)
 
 # version()
 def version():

@@ -360,7 +360,7 @@ void PyGeometry::addNode(double x, double y)
     Util::scene()->addNode(new SceneNode(Point(x, y)));
 }
 
-void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> *boundaries)
+void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries)
 {
     logMessage("PyGeometry::pyAddEdge()");
 
@@ -376,8 +376,11 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
     if (refinement < 0)
         throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
 
+    // boundaries
+    for( map<char*, char*>::iterator i=boundaries.begin(); i!=boundaries.end(); ++i)
+        qDebug() << (*i).first << ": " << (*i).second;
+
     /* FIXME - SceneEdgeContainer
-    // boundary
     SceneBoundary *scene_boundary = Util::scene()->getBoundary(QString(boundary));
     if (!scene_boundary)
         throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(boundary).toStdString());

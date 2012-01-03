@@ -190,7 +190,7 @@ class PyGeometry {
         ~PyGeometry() {}
 
         void addNode(double x, double y);
-        void addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> *boundaries);
+        void addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries);
 };
 
 // version()
