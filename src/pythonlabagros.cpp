@@ -1615,7 +1615,7 @@ void PythonEngineAgros::addCustomExtensions()
     // init agros cython extensions
     initagros2d();
     // agros2d file
-    Py_InitModule("agros2file", pythonMethodsAgros);
+    Py_InitModule("agros2d", pythonMethodsAgros);
 }
 
 void PythonEngineAgros::runPythonHeader()

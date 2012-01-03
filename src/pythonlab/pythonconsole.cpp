@@ -303,7 +303,7 @@ void PythonScriptingConsole::insertCompletion(const QString& completion)
     }
 }
 
-void PythonScriptingConsole::handleTabCompletion()
+void PythonScriptingConsole::handleTabCompletion(bool autoComplete)
 {
     QTextCursor c = textCursor();
     int pos = c.position();
@@ -312,42 +312,54 @@ void PythonScriptingConsole::handleTabCompletion()
 
     QString search = c.selectedText();
 
-    QString text;
-    // add modules
-    QList<PythonVariables> list = pythonEngine->variableList();
-    foreach (PythonVariables variable, list)
-    {
-        if (variable.type == "module")
-            text += QString("import %1 as %2; ").arg(variable.value.toString()).arg(variable.name);
-    }
-    text += search;
-
     // code completion
-    QStringList found = pythonEngine->codeCompletion(text.toLower(), text.length());
+    QStringList found = pythonEngine->codeCompletion(search.toLower(), search.length());
 
     // add variables
-    foreach (PythonVariables variable, list)
+    QList<PythonVariables> list = pythonEngine->variableList();
+    if (!search.contains("."))
     {
-        if (isPythonVariable(variable.type))
-            found.append(QString("%1 (global, variable)").arg(variable.name));
-        if (variable.type == "function")
-            found.append(QString("%1 (global, function)").arg(variable.name));
+        foreach (PythonVariables variable, list)
+        {
+            if (isPythonVariable(variable.type))
+                found.append(QString("%1 (global, variable)").arg(variable.name));
+            if (variable.type == "function")
+                found.append(QString("%1 (global, function)").arg(variable.name));
+            if (variable.type == "module")
+                found.append(QString("%1 (global, module)").arg(variable.name));
+        }
     }
 
     found.sort();
 
     if (!found.isEmpty())
     {
-        if (!search.contains("."))
-            completer->setCompletionPrefix(search);
+        QString str = search.trimmed();
+
+        if (str.contains(".") && str.right(1) == ".")
+            str = "";
+        else
+            str = str.right(str.length() - str.lastIndexOf(".") - 1);
+
+        completer->setCompletionPrefix(str);
         completer->setModel(new QStringListModel(found, completer));
-        QTextCursor c = textCursor();
-        c.movePosition(QTextCursor::StartOfWord);
-        QRect cr = cursorRect(c);
-        cr.setWidth(completer->popup()->sizeHintForColumn(0)
-                    + completer->popup()->verticalScrollBar()->sizeHint().width() + 30);
-        cr.translate(0, 4);
-        completer->complete(cr);
+        if (autoComplete && completer->completionCount() == 1)
+        {
+            // autocomplete
+            insertCompletion(completer->currentCompletion());
+            completer->popup()->hide();
+        }
+        else
+        {
+            // show completer
+            QTextCursor c = textCursor();
+            c.movePosition(QTextCursor::StartOfWord);
+            QRect cr = cursorRect(c);
+            cr.setWidth(completer->popup()->sizeHintForColumn(0)
+                        + completer->popup()->verticalScrollBar()->sizeHint().width() + 30);
+            cr.translate(0, 4);
+            completer->complete(cr);
+        }
     }
     else
     {
@@ -365,11 +377,14 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         case Qt::Key_Escape:
-        case Qt::Key_Tab:
         case Qt::Key_Backtab:
 
             event->ignore();
             return; // let the completer do default behavior
+        case Qt::Key_Tab:
+        {
+            handleTabCompletion(true);
+        }
         default:
             break;
         }
@@ -485,6 +500,20 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
 
         setTextCursor(c);
         eventHandled = true;
+    }
+        break;
+
+    case Qt::Key_Tab:
+    {
+        handleTabCompletion(true);
+        event->accept();
+        return;
+    }
+        break;
+
+    case Qt::Key_Period:
+    {
+        handleTabCompletion();
     }
         break;
 

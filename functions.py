@@ -1,7 +1,6 @@
 # import libraries
 import pythonlab
-from agros2d import *
-from agros2file import *
+import agros2d
 from math import *
 import sys
 
@@ -61,6 +60,12 @@ def python_engine_get_completion_string(code, offset):
     
     return proposals_string
     # return [proposal.name for proposal in proposals]
+
+def python_engine_get_completion_string_dot(code):
+    try:      
+        return dir(eval(code))
+    except:
+        return []
 
 def python_engine_get_completion_file(filename, offset):
     from rope.contrib import codeassist

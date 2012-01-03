@@ -265,10 +265,18 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
     }
     else
     {
-        exp = QString("result_rope_pythonlab = python_engine_get_completion_string(\"%1\", %2)").
-                arg(code).
-                arg(offset);
+        if (code.contains("."))
+        {
+            QString search = code.left(code.lastIndexOf("."));
+            exp = QString("result_rope_pythonlab = python_engine_get_completion_string_dot(\"%1\")").
+                    arg(search);
+        }
+        else
+            exp = QString("result_rope_pythonlab = python_engine_get_completion_string(\"%1\", %2)").
+                    arg(code).
+                    arg(offset);
     }
+    // qDebug() << exp;
 
     // QTime time;
     // time.start();
@@ -416,6 +424,7 @@ QList<PythonVariables> PythonEngine::variableList()
     QStringList filter;
     filter << "__builtins__" << "StdoutCatcher" << "agrosstdout" << "capturestdout" << "chdir"
            << "python_engine_get_completion_file" << "python_engine_get_completion_string"
+           << "python_engine_get_completion_string_dot"
            << "python_engine_pyflakes_check";
 
     QList<PythonVariables> list;

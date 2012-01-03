@@ -93,7 +93,7 @@ public slots:
 
 protected:
     // handle the pressing of tab
-    void handleTabCompletion();
+    void handleTabCompletion(bool autoComplete = false);
 
     // Returns the position of the command prompt
     int commandPromptPosition();
