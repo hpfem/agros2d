@@ -238,7 +238,9 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
     }
     else
     {
-        expressionResult.error = parseError().text;
+        ScriptResult error = parseError();
+        expressionResult.error = error.text;
+        expressionResult.traceback = error.traceback;
     }
     Py_XDECREF(output);
     Py_DECREF(Py_None);

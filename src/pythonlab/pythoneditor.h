@@ -169,6 +169,7 @@ protected:
 
     QAction *actOptionsEnablePyLint;
     QAction *actOptionsEnablePyFlakes;
+    QAction *actOptionsPrintStacktrace;
 
     QAction *actHelp;
     QAction *actHelpKeywordList;
@@ -196,7 +197,8 @@ private slots:
     void doCurrentPageChanged(int index);
     void doCursorPositionChanged();
     void doOptionsEnablePyFlakes();
-    void doOptionsEneblePyLint();
+    void doOptionsEnablePyLint();
+    void doOptionsPrintStacktrace();
 };
 
 class ScriptEditor : public QPlainTextEdit

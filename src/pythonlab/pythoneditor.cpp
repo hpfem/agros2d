@@ -433,7 +433,12 @@ void PythonEditorDialog::createActions()
     actOptionsEnablePyLint = new QAction(icon(""), tr("PyLint enabled"), this);
     actOptionsEnablePyLint->setCheckable(true);
     actOptionsEnablePyLint->setChecked(settings.value("PythonEditorWidget/EnablePyLint", true).toBool());
-    connect(actOptionsEnablePyLint, SIGNAL(triggered()), this, SLOT(doOptionsEneblePyLint()));
+    connect(actOptionsEnablePyLint, SIGNAL(triggered()), this, SLOT(doOptionsEnablePyLint()));
+
+    actOptionsPrintStacktrace = new QAction(icon(""), tr("Print stacktrace"), this);
+    actOptionsPrintStacktrace->setCheckable(true);
+    actOptionsPrintStacktrace->setChecked(settings.value("PythonEditorWidget/PrintStacktrace", true).toBool());
+    connect(actOptionsPrintStacktrace, SIGNAL(triggered()), this, SLOT(doOptionsPrintStacktrace()));
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
@@ -506,6 +511,8 @@ void PythonEditorDialog::createControls()
     mnuOptions = menuBar()->addMenu(tr("&Options"));
     mnuOptions->addAction(actOptionsEnablePyFlakes);
     mnuOptions->addAction(actOptionsEnablePyLint);
+    mnuOptions->addSeparator();
+    mnuOptions->addAction(actOptionsPrintStacktrace);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     // mnuHelp->addAction(actHelp);
@@ -693,8 +700,13 @@ void PythonEditorDialog::doRunPython()
     if (result.isError)
     {
         consoleView->console()->stdErr(result.text);
-        consoleView->console()->stdErr("\nStacktrace:");
-        consoleView->console()->stdErr(result.traceback);
+
+        QSettings settings;
+        if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
+        {
+            consoleView->console()->stdErr("\nStacktrace:");
+            consoleView->console()->stdErr(result.traceback);
+        }
 
         if (!txtEditor->textCursor().hasSelection() && result.line >= 0)
             txtEditor->gotoLine(result.line, true);
@@ -726,13 +738,19 @@ void PythonEditorDialog::doPyLintPython()
     activateWindow();
 }
 
+void PythonEditorDialog::doOptionsPrintStacktrace()
+{
+    QSettings settings;
+    settings.setValue("PythonEditorWidget/PrintStacktrace", actOptionsPrintStacktrace->isChecked());
+}
+
 void PythonEditorDialog::doOptionsEnablePyFlakes()
 {
     QSettings settings;
     settings.setValue("PythonEditorWidget/EnablePyFlakes", actOptionsEnablePyFlakes->isChecked());
 }
 
-void PythonEditorDialog::doOptionsEneblePyLint()
+void PythonEditorDialog::doOptionsEnablePyLint()
 {
     actCheckPyLint->setEnabled(actOptionsEnablePyLint->isChecked());
 
