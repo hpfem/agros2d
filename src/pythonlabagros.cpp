@@ -360,7 +360,7 @@ void PyGeometry::addNode(double x, double y)
     Util::scene()->addNode(new SceneNode(Point(x, y)));
 }
 
-void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, char *boundary)
+void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> *boundaries)
 {
     logMessage("PyGeometry::pyAddEdge()");
 

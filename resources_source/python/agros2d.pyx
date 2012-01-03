@@ -1,4 +1,6 @@
-# script functions
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
     int c_INT_MAX "INT_MAX"
@@ -76,7 +78,7 @@ cdef extern from "../../src/pythonlabagros.h":
         PyGeometry()
 
         void addNode(double, double) except +
-        void addEdge(double, double, double, double, double, int, char*) except +
+        void addEdge(double, double, double, double, double, int, map) except +
 
     char *pyVersion()
 
@@ -311,8 +313,12 @@ cdef class Geometry:
         self.thisptr.addNode(x, y)
 
     # add_edge(x1, y1, x2, y2, angle, refinement, boundary)
-    def add_edge(self, double x1, double y1, double x2, double y2, double angle = 0.0, int refinement = 0, char *boundary = "none"):
-        self.thisptr.addEdge(x1, y1, x2, y2, angle, refinement, boundary)
+    def add_edge(self, double x1, double y1, double x2, double y2, double angle = 0.0, int refinement = 0, boundaries = {}):
+        print boundaries
+        cdef map[char*, char*] b
+        cdef pair[char*, char*] p
+
+        #self.thisptr.addEdge(x1, y1, x2, y2, angle, refinement, bound)
 
 # version()
 def version():
