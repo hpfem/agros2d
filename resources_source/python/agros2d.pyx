@@ -72,6 +72,8 @@ cdef extern from "../../src/pythonlabagros.h":
         char *getWeakForms()
         void setWeakForms(char*)
 
+        void addBoundary(char*, char*, map[char*, double]) except +
+
         void solve()
 
     cdef cppclass PyGeometry:
@@ -298,6 +300,17 @@ cdef class Field:
             return self.thisptr.getWeakForms()
         def __set__(self, weak_forms):
             self.thisptr.setWeakForms(weak_forms)
+
+    # boundary
+    def add_boundary(self, char *name, char *type, parameters = {}):
+        cdef map[char*, double] parameters_map
+        cdef pair[char*, double] parameter
+        for key in parameters:
+            parameter.first = key
+            parameter.second = parameters[key]
+            parameters_map.insert(parameter)
+
+        self.thisptr.addBoundary(name, type, parameters_map)
 
 # geometry class
 cdef class Geometry:

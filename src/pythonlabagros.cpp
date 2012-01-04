@@ -29,6 +29,7 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 #include "scenemarker.h"
+#include "scenemarkerdialog.h"
 
 #include "hermes2d/surfaceintegral.h"
 #include "hermes2d/volumeintegral.h"
@@ -307,50 +308,80 @@ PyField::PyField(char *fieldId, char *analysisType, int numberOfRefinements, int
 {
     logMessage("PyField::PyField()");
 
-    fieldInfo = new FieldInfo(Util::scene()->problemInfo(), fieldId);
+    m_fieldInfo = new FieldInfo(Util::scene()->problemInfo(), fieldId);
 
-    fieldInfo->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
+    m_fieldInfo->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
 
     if (numberOfRefinements >= 0 && numberOfRefinements <= 5)
-        fieldInfo->numberOfRefinements = numberOfRefinements;
+        m_fieldInfo->numberOfRefinements = numberOfRefinements;
     else
         throw invalid_argument(QObject::tr("Polynomial order is out of range (0 - 5).").toStdString());
 
     if (polynomialOrder >= 1 && polynomialOrder <= 10)
-        fieldInfo->polynomialOrder = polynomialOrder;
+        m_fieldInfo->polynomialOrder = polynomialOrder;
     else
         throw invalid_argument(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
 
     // nonlinearity
-    fieldInfo->linearityType = linearityTypeFromStringKey(QString(linearityType));
+    m_fieldInfo->linearityType = linearityTypeFromStringKey(QString(linearityType));
 
     if (nonlinearTolerance > 0.0)
-        fieldInfo->nonlinearTolerance = nonlinearTolerance;
+        m_fieldInfo->nonlinearTolerance = nonlinearTolerance;
     else
         throw invalid_argument(QObject::tr("Nonlinearity tolerance must be positive.").toStdString());
 
     if (nonlinearSteps >= 1)
-        fieldInfo->nonlinearSteps = nonlinearSteps;
+        m_fieldInfo->nonlinearSteps = nonlinearSteps;
     else
         throw invalid_argument(QObject::tr("Nonlinearity steps must be higher than 1.").toStdString());
 
     // adaptivity
-    fieldInfo->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivityType));
+    m_fieldInfo->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivityType));
 
     if (adaptivityTolerance > 0.0)
-        fieldInfo->adaptivityTolerance = adaptivityTolerance;
+        m_fieldInfo->adaptivityTolerance = adaptivityTolerance;
     else
         throw invalid_argument(QObject::tr("Adaptivity tolerance must be positive.").toStdString());
 
     if (adaptivitySteps >= 1)
-        fieldInfo->adaptivitySteps = adaptivitySteps;
+        m_fieldInfo->adaptivitySteps = adaptivitySteps;
     else
         throw invalid_argument(QObject::tr("Adaptivity steps must be higher than 1.").toStdString());
 
-    fieldInfo->initialCondition = Value(QString::number(initialCondition));
-    fieldInfo->weakFormsType = weakFormsTypeFromStringKey(QString(weakForms));
+    m_fieldInfo->initialCondition = Value(QString::number(initialCondition));
+    m_fieldInfo->weakFormsType = weakFormsTypeFromStringKey(QString(weakForms));
 
-    Util::scene()->addField(fieldInfo);
+    Util::scene()->addField(fieldInfo());
+}
+
+FieldInfo *PyField::fieldInfo()
+{
+    return m_fieldInfo;
+}
+
+void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
+{
+    logMessage("PyField::add_bounadry()");
+
+    if (Util::scene()->getBoundary(QString(name)))
+        throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
+
+    Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
+
+    std::map<std::string, Value> values;
+    for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
+    {
+        qDebug() << (*i).first << ": " << (*i).second;
+
+        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+        {
+            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+            if (variable->shortname == std::string((*i).first))
+                values[variable->id] = Value(QString::number((*i).second));
+        }
+    }
+
+    Util::scene()->addBoundary(new SceneBoundary(fieldInfo(), std::string(name), std::string(type), values));
 }
 
 void PyGeometry::addNode(double x, double y)
@@ -362,7 +393,7 @@ void PyGeometry::addNode(double x, double y)
 
 void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries)
 {
-    logMessage("PyGeometry::pyAddEdge()");
+    logMessage("PyGeometry::addEdge()");
 
     // nodes
     SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
@@ -376,17 +407,19 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
     if (refinement < 0)
         throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
 
+    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, angle, refinement));
+
     // boundaries
     for( map<char*, char*>::iterator i=boundaries.begin(); i!=boundaries.end(); ++i)
+    {
         qDebug() << (*i).first << ": " << (*i).second;
 
-    /* FIXME - SceneEdgeContainer
-    SceneBoundary *scene_boundary = Util::scene()->getBoundary(QString(boundary));
-    if (!scene_boundary)
-        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(boundary).toStdString());
-    */
+        SceneBoundary *scene_boundary = Util::scene()->getBoundary(QString((*i).second));
+        if (!scene_boundary)
+            throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(QString((*i).second)).toStdString());
 
-    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, angle, refinement));
+        // FIXME -assignment of boundaries
+    }
 }
 
 // version()
@@ -624,32 +657,6 @@ void pythonDeleteNodePoint(double x, double y)
     Util::scene()->nodes->remove(Util::scene()->getNode(Point(x, y)));
 }
 
-/*
-// addedge(x1, y1, x2, y2, angle = 0, marker = "none")
-void pythonAddEdge(double x1, double y1, double x2, double y2, char *boundary, double angle, int refine)
-{
-    assert(0); //TODO
-    //    logMessage("pythonAddEdge()");
-
-    //    if (angle > 180.0 || angle < 0.0)
-    //        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
-
-    //    if (refine < 0)
-    //        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
-
-    //    SceneBoundary *scene_boundary = Util::scene()->getBoundary(QString(boundary));
-    //    if (!scene_boundary)
-    //        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(boundary).toStdString());
-
-    //    // start node
-    //    SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
-    //    // end node
-    //    SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
-
-    //    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, scene_boundary, angle, refine));
-}
-*/
-
 void pythonDeleteEdge(int index)
 {
     logMessage("pythonDeleteEdge()");
@@ -696,53 +703,6 @@ void pythonDeleteLabelPoint(double x, double y)
     logMessage("pythonDeleteLabelPoint()");
 
     Util::scene()->labels->remove(Util::scene()->getLabel(Point(x, y)));
-}
-
-// addboundary(name, type, value, ...)
-static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
-{
-    assert(0); //TODO
-    //    logMessage("pythonAddBoundary()");
-
-    //    PyObject *dict;
-    //    char *name, *type;
-    //    if (PyArg_ParseTuple(args, "ssO", &name, &type, &dict))
-    //    {
-    //        // check name
-    //        if (Util::scene()->getBoundary(name))
-    //        {
-    //            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary already exists.").toStdString().c_str());
-    //            return NULL;
-    //        }
-
-    //        PyObject *key, *value;
-    //        Py_ssize_t pos = 0;
-
-    //        std::map<std::string, Value> values;
-    //        while (PyDict_Next(dict, &pos, &key, &value))
-    //        {
-    //            double val;
-    //            char *str;
-
-    //            // key
-    //            PyArg_Parse(key, "s", &str);
-    //            PyArg_Parse(value, "d", &val);
-
-    //            Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(type);
-    //            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-    //            {
-    //                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-    //                if (variable->shortname == std::string(str))
-    //                    values[variable->id] = Value(QString::number(val));
-    //            }
-    //        }
-
-    //        assert(0); //TODO
-    //        //Util::scene()->addBoundary(new SceneBoundary(name, type, values));
-    //        Py_RETURN_NONE;
-    //    }
-
-    //    return NULL;
 }
 
 // modifyBoundary(name, type, value, ...)
@@ -1598,7 +1558,6 @@ void pythonSaveImage(char *str, int w, int h)
 
 static PyMethodDef pythonMethodsAgros[] =
 {
-    {"addboundary", pythonAddBoundary, METH_VARARGS, "addboundary(name, type, value, ...)"},
     {"modifyboundary", pythonModifyBoundary, METH_VARARGS, "modifyBoundary(name, type, value, ...)"},
     {"addmaterial", pythonAddMaterial, METH_VARARGS, "addmaterial(name, type, value, ...)"},
     {"modifymaterial", pythonModifyMaterial, METH_VARARGS, "modifymaterial(name, type, value, ...)"},
