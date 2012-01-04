@@ -73,6 +73,7 @@ cdef extern from "../../src/pythonlabagros.h":
         void setWeakForms(char*)
 
         void addBoundary(char*, char*, map[char*, double]) except +
+        void addMaterial(char*, map[char*, double]) except +
 
         void solve()
 
@@ -81,6 +82,7 @@ cdef extern from "../../src/pythonlabagros.h":
 
         void addNode(double, double) except +
         void addEdge(double, double, double, double, double, int, map[char*, char*]) except +
+        void addLabel(double, double, double, int, map[char*, char*]) except +
 
     char *pyVersion()
 
@@ -102,8 +104,6 @@ cdef extern from "../../src/pythonlabagros.h":
     void pythonOpenDocument(char *str) except +
     void pythonSaveDocument(char *str) except +
     void pythonCloseDocument()
-
-    void pythonAddLabel(double x, double y, char *material, double area, int order) except +
 
     void pythonDeleteNode(int index) except +
     void pythonDeleteNodePoint(double x, double y)
@@ -301,7 +301,7 @@ cdef class Field:
         def __set__(self, weak_forms):
             self.thisptr.setWeakForms(weak_forms)
 
-    # boundary
+    # boundaries
     def add_boundary(self, char *name, char *type, parameters = {}):
         cdef map[char*, double] parameters_map
         cdef pair[char*, double] parameter
@@ -311,6 +311,17 @@ cdef class Field:
             parameters_map.insert(parameter)
 
         self.thisptr.addBoundary(name, type, parameters_map)
+
+    # materials
+    def add_material(self, char *name, parameters = {}):
+        cdef map[char*, double] parameters_map
+        cdef pair[char*, double] parameter
+        for key in parameters:
+            parameter.first = key
+            parameter.second = parameters[key]
+            parameters_map.insert(parameter)
+
+        self.thisptr.addMaterial(name, parameters_map)
 
 # geometry class
 cdef class Geometry:
@@ -325,7 +336,7 @@ cdef class Geometry:
     def add_node(self, double x, double y):
         self.thisptr.addNode(x, y)
 
-    # add_edge(x1, y1, x2, y2, angle, refinement, boundary)
+    # add_edge(x1, y1, x2, y2, angle, refinement, boundaries)
     def add_edge(self, double x1, double y1, double x2, double y2, double angle = 0.0, int refinement = 0, boundaries = {}):
 
         cdef map[char*, char*] boundaries_map
@@ -336,6 +347,18 @@ cdef class Geometry:
             boundaries_map.insert(boundary)
 
         self.thisptr.addEdge(x1, y1, x2, y2, angle, refinement, boundaries_map)
+
+    # add_label(x, y, area, order, materials)
+    def add_label(self, double x, double y, double area = 0.0, int order = 1, materials = {}):
+
+        cdef map[char*, char*] materials_map
+        cdef pair[char*, char *] material
+        for key in materials:
+            material.first = key
+            material.second = materials[key]
+            materials_map.insert(material)
+
+        self.thisptr.addLabel(x, y, area, order, materials_map)
 
 # version()
 def version():
@@ -382,9 +405,6 @@ def closedocument():
     pythonCloseDocument()
 
 # preprocessor
-
-def addlabel(double x, double y, double area = 0, char *material = "none", int order = 0):
-    pythonAddLabel(x, y, material, area, order)
 
 def deletenode(int index):
     pythonDeleteNode(index)

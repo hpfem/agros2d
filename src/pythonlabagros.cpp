@@ -281,6 +281,8 @@ PyProblem::PyProblem(char *name, char *coordinateType, char *meshType, char *mat
 {
     logMessage("PyProblem::PyProblem()");
 
+    //Util::scene()->clear();
+
     Util::scene()->problemInfo()->name = QString(name);
     Util::scene()->problemInfo()->coordinateType = coordinateTypeFromStringKey(QString(coordinateType));
     Util::scene()->problemInfo()->meshType = meshTypeFromStringKey(QString(meshType));
@@ -315,7 +317,7 @@ PyField::PyField(char *fieldId, char *analysisType, int numberOfRefinements, int
     if (numberOfRefinements >= 0 && numberOfRefinements <= 5)
         m_fieldInfo->numberOfRefinements = numberOfRefinements;
     else
-        throw invalid_argument(QObject::tr("Polynomial order is out of range (0 - 5).").toStdString());
+        throw invalid_argument(QObject::tr("Number of refenements is out of range (0 - 5).").toStdString());
 
     if (polynomialOrder >= 1 && polynomialOrder <= 10)
         m_fieldInfo->polynomialOrder = polynomialOrder;
@@ -361,7 +363,7 @@ FieldInfo *PyField::fieldInfo()
 
 void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 {
-    logMessage("PyField::add_bounadry()");
+    logMessage("PyField::addBoundary()");
 
     if (Util::scene()->getBoundary(QString(name)))
         throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
@@ -371,7 +373,7 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     std::map<std::string, Value> values;
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
-        qDebug() << (*i).first << ": " << (*i).second;
+        //qDebug() << (*i).first << ": " << (*i).second;
 
         for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
         {
@@ -382,6 +384,32 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     }
 
     Util::scene()->addBoundary(new SceneBoundary(fieldInfo(), std::string(name), std::string(type), values));
+}
+
+void PyField::addMaterial(char *name, map<char*, double> parameters)
+{
+    logMessage("PyField::addMaterial()");
+
+    if (Util::scene()->getMaterial(QString(name)))
+        throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString(name)).toStdString());
+
+    std::map<std::string, Value> values;
+    for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
+    {
+        //qDebug() << (*i).first << ": " << (*i).second;
+
+        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->material_type_variables;
+
+        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+        {
+            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+            if (variable->shortname == std::string((*i).first))
+                values[variable->id] = Value(QString::number((*i).second));
+        }
+    }
+
+    Util::scene()->addMaterial(new SceneMaterial(fieldInfo(), std::string(name), values));
+
 }
 
 void PyGeometry::addNode(double x, double y)
@@ -407,18 +435,49 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
     if (refinement < 0)
         throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
 
-    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, angle, refinement));
+    SceneEdge *sceneEdge = new SceneEdge(nodeStart, nodeEnd, angle, refinement);
+    Util::scene()->addEdge(sceneEdge);
 
     // boundaries
     for( map<char*, char*>::iterator i=boundaries.begin(); i!=boundaries.end(); ++i)
     {
-        qDebug() << (*i).first << ": " << (*i).second;
+        //qDebug() << (*i).first << ": " << (*i).second;
 
-        SceneBoundary *scene_boundary = Util::scene()->getBoundary(QString((*i).second));
-        if (!scene_boundary)
+        SceneBoundary *sceneBoundary = Util::scene()->getBoundary(QString((*i).second));
+        /* FIXME - more fields
+        if (!sceneBoundary)
             throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(QString((*i).second)).toStdString());
+        */
 
-        // FIXME -assignment of boundaries
+        sceneEdge->addMarker(sceneBoundary);
+    }
+}
+
+void PyGeometry::addLabel(double x, double y, double area, int order, map<char*, char*> materials)
+{
+    logMessage("PyGeometry::addLabel()");
+
+    if (area < 0.0)
+        throw out_of_range(QObject::tr("Area must be positive.").toStdString());
+
+    if (order <= 0 || order >= 10)
+        throw out_of_range(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
+
+    SceneLabel *sceneLabel = new SceneLabel(Point(x, y), area, order);
+    Util::scene()->addLabel(sceneLabel);
+
+    // materials
+    for( map<char*, char*>::iterator i=materials.begin(); i!=materials.end(); ++i)
+    {
+        //qDebug() << (*i).first << ": " << (*i).second;
+
+        SceneMaterial *sceneMaterial = Util::scene()->getMaterial(QString((*i).second));
+        /* FIXME - more fields
+        if (!sceneMaterial)
+            throw invalid_argument(QObject::tr("Material '%1' is not defined.").arg(QString((*i).second)).toStdString());
+        */
+
+        sceneLabel->addMarker(sceneMaterial);
     }
 }
 
@@ -673,22 +732,6 @@ void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double an
     Util::scene()->edges->remove(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
 }
 
-// addlabel(x, y, area = 0, marker = "none", polynomialorder = 0)
-void pythonAddLabel(double x, double y, char *material, double area, int order)
-{
-    assert(0); //TODO
-    //    logMessage("pythonAddLabel()");
-
-    //    if (order < 0)
-    //        throw out_of_range(QObject::tr("Polynomial order '%1' is out of range.").arg(order).toStdString());
-
-    //    SceneMaterial *scene_material = Util::scene()->getMaterial(QString(material));
-    //    if (!scene_material)
-    //        throw invalid_argument(QObject::tr("Material '%1' is not defined.").arg(material).toStdString());
-
-    //    Util::scene()->addLabel(new SceneLabel(Point(x, y), scene_material, area, order));
-}
-
 void pythonDeleteLabel(int index)
 {
     logMessage("pythonDeleteLabel()");
@@ -757,52 +800,6 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
     //            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary with name '%1' doesn't exists.").arg(name).toStdString().c_str());
     //            return NULL;
     //        }
-    //    }
-
-    //    return NULL;
-}
-
-// addmaterial(name, type, value, ...)
-static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
-{
-    assert(0); //TODO
-    //    logMessage("pythonAddMaterial()");
-
-    //    PyObject *dict;
-    //    char *name;
-    //    if (PyArg_ParseTuple(args, "sO", &name, &dict))
-    //    {
-    //        // check name
-    //        if (Util::scene()->getMaterial(name))
-    //        {
-    //            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker already exists.").toStdString().c_str());
-    //            return NULL;
-    //        }
-
-    //        PyObject *key, *value;
-    //        Py_ssize_t pos = 0;
-
-    //        std::map<std::string, Value> values;
-    //        while (PyDict_Next(dict, &pos, &key, &value))
-    //        {
-    //            double val;
-    //            char *str;
-
-    //            // key
-    //            PyArg_Parse(key, "s", &str);
-    //            PyArg_Parse(value, "d", &val);
-
-    //            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo("TODO")->module()->material_type_variables;
-    //            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-    //            {
-    //                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-    //                if (variable->shortname == std::string(str))
-    //                    values[variable->id] = Value(QString::number(val));
-    //            }
-    //        }
-
-    //        Util::scene()->addMaterial(new SceneMaterial(name, values));
-    //        Py_RETURN_NONE;
     //    }
 
     //    return NULL;
@@ -1559,7 +1556,6 @@ void pythonSaveImage(char *str, int w, int h)
 static PyMethodDef pythonMethodsAgros[] =
 {
     {"modifyboundary", pythonModifyBoundary, METH_VARARGS, "modifyBoundary(name, type, value, ...)"},
-    {"addmaterial", pythonAddMaterial, METH_VARARGS, "addmaterial(name, type, value, ...)"},
     {"modifymaterial", pythonModifyMaterial, METH_VARARGS, "modifymaterial(name, type, value, ...)"},
     {"selectnode", pythonSelectNode, METH_VARARGS, "selectnode(list)"},
     {"selectedge", pythonSelectEdge, METH_VARARGS, "selectedge(list)"},

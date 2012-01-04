@@ -53,7 +53,7 @@ private:
     QAction *actCreateFromModel;
 
 private slots:
-    void doCreatePythonFromModel();    
+    void doCreatePythonFromModel();
 };
 
 bool scriptIsRunning();
@@ -185,6 +185,9 @@ class PyField {
         // boundaries
         void addBoundary(char *name, char *type, map<char*, double> parameters);
 
+        // materials
+        void addMaterial(char *name, map<char*, double> parameters);
+
         void solve() { qDebug() << "Not now :)"; }
 };
 
@@ -196,6 +199,7 @@ class PyGeometry {
 
         void addNode(double x, double y);
         void addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries);
+        void addLabel(double x, double y, double area, int order, map<char*, char*> materials);
 };
 
 // version()
