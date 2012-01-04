@@ -538,42 +538,43 @@ void SolutionArrayList<Scalar>::doAdaptivityStep()
 template <typename Scalar>
 void SolutionArrayList<Scalar>::solve()
 {
-    assert(0);
-//    QTime time;
+    QTime time;
 
-//    double error = 0.0;
+    double error = 0.0;
 
-//    // read mesh from file
-//    readMesh();
+    // read mesh from file
+    readMesh();
 
-//    // create essential boundary conditions and space
-//    createSpace();
+    // create essential boundary conditions and space
+    createSpace();
 
-//    qDebug() << "nodes: " << mesh->get_num_nodes();
-//    qDebug() << "elements: " << mesh->get_num_elements();
-//    qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(desmartize(space));
+    qDebug() << "nodes: " << mesh->get_num_nodes();
+    qDebug() << "elements: " << mesh->get_num_elements();
+    qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(space)));
 
-//    // create solutions
-//    createSolutions();
+    // create solutions
+    createSolutions();
 
-//    // init selectors
-//    initSelectors();
+    // init selectors
+    initSelectors();
 
-//    // check for DOFs
-//    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(desmartize(space)) == 0)
-//    {
-//        m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
-//        cleanup();
-//        return;
-//    }
+    // check for DOFs
+    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(space))) == 0)
+    {
+        m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
+        cleanup();
+        return;
+    }
 
-//    for (int i = 0; i < numberOfSolution; i++)
+
+    assert(m_fieldInfo->analysisType() == AnalysisType_SteadyState); //transient se dodela
+//    for (int i = 0; i <m_fieldInfo->module()->number_of_solution(); i++)
 //    {
 //        // nonlinear - initial solution
 //        // solution.at(i)->set_const(mesh, 0.0);
 
 //        // transient
-//        if (analysisType == AnalysisType_Transient)
+//        if (m_fieldInfo->analysisType() == AnalysisType_Transient)
 //        {
 //            // constant initial solution
 //            shared_ptr<InitialCondition> initial(new InitialCondition(mesh, initialCondition));
@@ -581,71 +582,71 @@ void SolutionArrayList<Scalar>::solve()
 //        }
 //    }
 
-//    actualTime = 0.0;
-//    int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
-//    for (int n = 0; n<timesteps; n++)
-//    {
-//        // set actual time
-//        actualTime = (n + 1) * timeStep;
+    actualTime = 0.0;
+    int timesteps = (m_fieldInfo->analysisType() == AnalysisType_Transient) ? floor(m_fieldInfo->timeTotal().number() / m_fieldInfo->timeStep().number()) : 1;
+    for (int n = 0; n<timesteps; n++)
+    {
+        // set actual time
+        actualTime = (n + 1) * m_fieldInfo->timeStep().number();
 
-//        // update essential bc values
-//        Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(space), actualTime);
-//        // update timedep values
-//        m_fieldInfo->module()->update_time_functions(actualTime);
+        // update essential bc values
+        Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(space), actualTime);
+        // update timedep values
+        m_fieldInfo->module()->update_time_functions(actualTime);
 
-//        m_wf->set_current_time(actualTime);
-//        //TODO tady predavam reseni v casovych vrstvach... asi by to slo delat jinde/bez toho..
-//        if (analysisType == AnalysisType_Transient)
-//            for (int i = 0; i < solution.size(); i++)
-//                m_wf->solution.push_back(listOfSolutionArrays.at(listOfSolutionArrays.size() - solution.size() + i)->sln.get() );
-//        m_wf->delete_all();
-//        m_wf->registerForms();
+        m_wf->set_current_time(actualTime);
+        //TODO tady predavam reseni v casovych vrstvach... asi by to slo delat jinde/bez toho..
+        if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+            for (int i = 0; i < solution.size(); i++)
+                m_wf->solution.push_back(listOfSolutionArrays.at(listOfSolutionArrays.size() - solution.size() + i)->sln.get() );
+        m_wf->delete_all();
+        m_wf->registerForms();
 
-//        int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
-//        int actualAdaptivitySteps = -1;
-//        int i = 0;
-//        do
-//        {
-//            if (adaptivityType == AdaptivityType_None)
-//            {
-//                if (!solveOneProblem(space, solution))
-//                    isError = true;
-//            }
-//            else
-//            {
-//                if(! performAdaptivityStep(error, i, actualAdaptivitySteps, maxAdaptivitySteps))
-//                    break;
-//            }
+        int maxAdaptivitySteps = (m_fieldInfo->adaptivityType == AdaptivityType_None) ? 1 : m_fieldInfo->adaptivitySteps;
+        int actualAdaptivitySteps = -1;
+        int i = 0;
+        do
+        {
+            if (m_fieldInfo->adaptivityType == AdaptivityType_None)
+            {
+                if (!solveOneProblem(space, solution))
+                    isError = true;
+            }
+            else
+            {
+                if(! performAdaptivityStep(error, i, actualAdaptivitySteps, maxAdaptivitySteps))
+                    break;
+            }
 
-//            i++;
-//        }
-//        while (i < maxAdaptivitySteps);
+            i++;
+        }
+        while (i < maxAdaptivitySteps);
 
-//        // output
-//        if (!isError)
-//        {
-//            for (int i = 0; i < numberOfSolution; i++)
-//                recordSolution(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep);
+        // output
+        if (!isError)
+        {
+            for (int i = 0; i < m_fieldInfo->module()->number_of_solution(); i++)
+                recordSolution(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*m_fieldInfo->timeStep().number());
 
-//            if (analysisType == AnalysisType_Transient)
-//                m_progressItemSolve->emitMessage(QObject::tr("Transient time step (%1/%2): %3 s").
-//                                                 arg(n+1).
-//                                                 arg(timesteps).
-//                                                 arg(actualTime, 0, 'e', 2), false, n+2);
-//        }
-//        else
-//            break;
-//    }
+            if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+                m_progressItemSolve->emitMessage(QObject::tr("Transient time step (%1/%2): %3 s").
+                                                 arg(n+1).
+                                                 arg(timesteps).
+                                                 arg(actualTime, 0, 'e', 2), false, n+2);
+        }
+        else
+            break;
+    }
 
-//    cleanup();
+    cleanup();
 
-//    if (isError)
-//    {
-//        clear();
-////        for (int i = 0; i < listOfSolutionArrays.size(); i++)
-////            delete listOfSolutionArrays.at(i);
-////        listOfSolutionArrays.clear();
-//    }
+    if (isError)
+    {
+        clear();
+//        for (int i = 0; i < listOfSolutionArrays.size(); i++)
+//            delete listOfSolutionArrays.at(i);
+//        listOfSolutionArrays.clear();
+    }
 
 }
 
