@@ -3816,7 +3816,7 @@
     <message>
         <location filename="../src/util.cpp" line="311"/>
         <source>Magnetic field - imag</source>
-        <translation>Pole magnetyczne - rzecz.</translation>
+        <translation>Pole magnetyczne - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="313"/>
@@ -3828,12 +3828,12 @@
     <message>
         <location filename="../src/util.cpp" line="315"/>
         <source>Current density - external - real</source>
-        <translation>Gęstość prądu - zewnętrzna - rzecz</translation>
+        <translation>Gęstość prądu - zewnętrzna - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="317"/>
         <source>Current density - external - imag</source>
-        <translation>Gęstość prądu - zewnętrzna - uroj</translation>
+        <translation>Gęstość prądu - zewnętrzna - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="319"/>
@@ -3843,12 +3843,12 @@
     <message>
         <location filename="../src/util.cpp" line="321"/>
         <source>Current density - total - real</source>
-        <translation>Gęstość prądu - całkowita - rzecz</translation>
+        <translation>Gęstość prądu - całkowita - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="323"/>
         <source>Current density - total - imag</source>
-        <translation>Gęstość prądu - całkowita - uroj</translation>
+        <translation>Gęstość prądu - całkowita - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="325"/>
@@ -3858,12 +3858,12 @@
     <message>
         <location filename="../src/util.cpp" line="327"/>
         <source>Current density - induced transform - real</source>
-        <translation>Gęstość prądu - przesunięcia - rzecz</translation>
+        <translation>Gęstość prądu - przesunięcia - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="329"/>
         <source>Current density - induced transform - imag</source>
-        <translation>Gęstość prądu - przesunięcia - uroj</translation>
+        <translation>Gęstość prądu - przesunięcia - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="331"/>
@@ -3873,12 +3873,12 @@
     <message>
         <location filename="../src/util.cpp" line="333"/>
         <source>Current density - induced velocity - real</source>
-        <translation>Gęstość prądu - przewodzenia - rzecz</translation>
+        <translation>Gęstość prądu - przewodzenia - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="335"/>
         <source>Current density - induced velocity - imag</source>
-        <translation>Gęstość prądu - przewodzenia - uroj</translation>
+        <translation>Gęstość prądu - przewodzenia - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="337"/>
