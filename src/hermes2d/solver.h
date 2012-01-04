@@ -43,6 +43,16 @@ Hermes::vector<shared_ptr<entity> > smartize(Hermes::vector<entity*>  vec)
     return smart_vec;
 }
 
+template <typename Scalar>
+Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> castConst(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space)
+{
+    Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> out;
+    for (int i = 0; i < space.size(); i++)
+        out.push_back(const_cast<const Hermes::Hermes2D::Space<Scalar> *>(space.at(i)));
+
+    return out;
+}
+
 class ProgressItemSolve;
 class FieldInfo;
 

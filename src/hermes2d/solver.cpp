@@ -264,23 +264,22 @@ void SolutionArrayList<Scalar>::createSpace()
 template <typename Scalar>
 void SolutionArrayList<Scalar>::createSolutions(bool copyPrevious)
 {
-    assert(0);
-//    for (int i = 0; i < numberOfSolution; i++)
-//    {
-//        // solution agros array
-//        Solution<double> *sln = new Solution<double>();
-//        solution.push_back(shared_ptr<Solution<double> >(sln));
+    for (int i = 0; i < m_fieldInfo->module()->number_of_solution(); i++)
+    {
+        // solution agros array
+        Solution<double> *sln = new Solution<double>();
+        solution.push_back(shared_ptr<Solution<double> >(sln));
 
-//        // single adaptive step
-//        if (copyPrevious)
-//            sln->copy((listOfSolutionArrays.at(listOfSolutionArrays.size() - numberOfSolution + i)->sln).get());
+        // single adaptive step
+        if (copyPrevious)
+            sln->copy((listOfSolutionArrays.at(listOfSolutionArrays.size() - m_fieldInfo->module()->number_of_solution() + i)->sln).get());
 
-//        if (adaptivityType != AdaptivityType_None)
-//        {
-//            // reference solution
-//            solutionReference.push_back(shared_ptr<Solution<Scalar> >(new Solution<Scalar>()));
-//        }
-//    }
+        if (m_fieldInfo->adaptivityType != AdaptivityType_None)
+        {
+            // reference solution
+            solutionReference.push_back(shared_ptr<Solution<Scalar> >(new Solution<Scalar>()));
+        }
+    }
 
 }
 
@@ -344,38 +343,83 @@ template <typename Scalar>
 bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                                           Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam)
 {
-    assert(0);
-//    // Initialize the FE problem.
-//    Hermes::Hermes2D::DiscreteProblem<double> dp(m_wf, desmartize(spaceParam));
+    // Initialize the FE problem.
+    Hermes::Hermes2D::DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(spaceParam)));
 
-//    int ndof = Hermes::Hermes2D::Space<double>::get_num_dofs(desmartize(spaceParam));
+    // Linear solver
+    if (m_fieldInfo->linearityType == LinearityType_Linear)
+    {
+        // set up the solver, matrix, and rhs according to the solver selection.
+        Hermes::Algebra::SparseMatrix<Scalar> *matrix = create_matrix<Scalar>(Hermes::SOLVER_UMFPACK);
+        Hermes::Algebra::Vector<Scalar> *rhs = create_vector<Scalar>(Hermes::SOLVER_UMFPACK);
+        Hermes::Algebra::LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(Hermes::SOLVER_UMFPACK, matrix, rhs);
 
-//    // Initial coefficient vector for the Newton's method.
-//    double* coeff_vec = new double[ndof];
-//    memset(coeff_vec, 0, ndof*sizeof(double));
+        // assemble the linear problem.
+        dp.assemble(matrix, rhs);
 
-//    // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
-//    Hermes::Hermes2D::NewtonSolver<double> newton(&dp, Hermes::SOLVER_UMFPACK);
-//    if (!newton.solve(coeff_vec, m_fieldInfo->nonlinearTolerance, m_fieldInfo->nonlinearSteps))
-//    {
-//        m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed"), true);
-//        return false;
-//    }
-//    else
-//    {
-////        newton.solve(coeff_vec);
+        if (solver->solve())
+        {
+            Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(solver->get_sln_vector(), castConst(desmartize(spaceParam)), desmartize(solutionParam));
 
-//        Hermes::Hermes2D::Solution<double>::vector_to_solutions(newton.get_sln_vector(), desmartize(spaceParam), desmartize(solutionParam));
+            Hermes::Hermes2D::Views::Linearizer lin;
+            bool mode_3D = true;
+            lin.save_solution_vtk(solutionParam[0].get(), "sln.vtk", "SLN", mode_3D);
+        }
+        else
+        {
+            m_progressItemSolve->emitMessage(QObject::tr("Linear solver failed."), true);
+            return false;
+        }
 
-//        m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
-//                                         arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
-//        m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
-//                                         arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
-//    }
+        delete matrix;
+        delete rhs;
+        delete solver;
+    }
 
-//    //delete coeff_vec; //TODO nebo se to dela v resici???
+    // Nonlinear solver
+    if (m_fieldInfo->linearityType == LinearityType_Newton)
+    {
+        // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
+        Hermes::Hermes2D::NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
+        try
+        {
+            int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(spaceParam)));
 
-//    return true;
+            // Initial coefficient vector for the Newton's method.
+            Scalar* coeff_vec = new Scalar[ndof];
+            memset(coeff_vec, 0, ndof*sizeof(Scalar));
+
+            newton.solve(coeff_vec, m_fieldInfo->nonlinearTolerance, m_fieldInfo->nonlinearSteps);
+
+            Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(spaceParam)), desmartize(solutionParam));
+
+            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
+                                             arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
+            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
+                                             arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
+
+            //delete coeff_vec; //TODO nebo se to dela v resici???
+        }
+        catch(Hermes::Exceptions::Exception e)
+        {
+            QString error = QString(e.getMsg());
+            m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed: ") + error, true);
+            return false;
+        }
+    }
+
+    if (m_fieldInfo->linearityType == LinearityType_Picard)
+    {
+    }
+
+    return true;
+
+
+
+
+
+
+
 }
 
 
