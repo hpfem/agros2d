@@ -8,6 +8,7 @@ cdef extern from "limits.h":
     int c_DOUBLE_MAX "DOUBLE_MAX"
 
 cdef extern from "../../src/pythonlabagros.h":
+    # PyProblem
     cdef cppclass PyProblem:
         PyProblem(char*, char*, char*, char*, double, double, double) except +
 
@@ -34,6 +35,7 @@ cdef extern from "../../src/pythonlabagros.h":
 
         void solve()
 
+    # PyField
     cdef cppclass PyField:
         PyField(char*, char*, int, int, char*, double, int, char*, double, int, double, char*)  except +
 
@@ -77,6 +79,7 @@ cdef extern from "../../src/pythonlabagros.h":
 
         void solve()
 
+    # PyGeometry
     cdef cppclass PyGeometry:
         PyGeometry()
 
@@ -84,23 +87,24 @@ cdef extern from "../../src/pythonlabagros.h":
         void addEdge(double, double, double, double, double, int, map[char*, char*]) except +
         void addLabel(double, double, double, int, map[char*, char*]) except +
 
+        void mesh()
+
+        void zoomBestFit()
+        void zoomIn()
+        void zoomOut()
+        void zoomRegion(double, double, double, double)
+
     char *pyVersion()
+    char *pyInput(char *str)
+    void pyMessage(char *str)
+    void pyQuit()
 
 
-    void pythonMessage(char *str)
-    char *pythonInput(char *str)
-    void pythonQuit()
 
     char *pythonMeshFileName() except +
     char *pythonSolutionFileName() except +
     # Solution *pythonSolutionObject() except +
 
-    void pythonNewDocument(char *name, char *type, char *physicfield,
-                           int numberofrefinements, int polynomialorder, char *adaptivitytype,
-                           double adaptivitysteps, double adaptivitytolerance,
-                           double frequency,
-                           char *analysistype, double timestep, double totaltime, double initialcondition,
-                           char *linearitytype, double nonlineartolerance, int nonlinearsteps) except +
     void pythonOpenDocument(char *str) except +
     void pythonSaveDocument(char *str) except +
     void pythonCloseDocument()
@@ -128,11 +132,6 @@ cdef extern from "../../src/pythonlabagros.h":
     void pythonSolve()
     void pythonSolveAdaptiveStep()
 
-    void pythonZoomBestFit()
-    void pythonZoomIn()
-    void pythonZoomOut()
-    void pythonZoomRegion(double x1, double y1, double x2, double y2)
-
     void pythonMode(char *str) except +
     void pythonPostprocessorMode(char *str) except +
 
@@ -148,13 +147,15 @@ cdef extern from "../../src/pythonlabagros.h":
     int pythonTimeStepCount()
     void pythonSaveImage(char *str, int w, int h) except +
 
-# problem
+# Problem
 cdef class Problem:
     cdef PyProblem *thisptr
 
-    def __cinit__(self, char *name, char *coordinate_type, char *mesh_type = "triangle", char *matrix_solver = "umfpack",
+    # Problem(coordinate_type, name, mesh_type, matrix_solver, frequency, time_step, time_total)
+    def __cinit__(self, char *coordinate_type, char *name = "", char *mesh_type = "triangle", char *matrix_solver = "umfpack",
                   double frequency=0.0, double time_step = 0.0, double time_total = 0.0):
-        self.thisptr = new PyProblem(name, coordinate_type, mesh_type, matrix_solver, frequency, time_step, time_total)
+        self.thisptr = new PyProblem(coordinate_type, name, mesh_type, matrix_solver, frequency, time_step, time_total)
+
     def __dealloc__(self):
         del self.thisptr
 
@@ -165,21 +166,21 @@ cdef class Problem:
         def __set__(self, name):
             self.thisptr.setName(name)
 
-    # coordinate type
+    # coordinate_type
     property coordinate_type:
         def __get__(self):
             return self.thisptr.getCoordinateType()
         def __set__(self, coordinate_type):
             self.thisptr.setCoordinateType(coordinate_type)
 
-    # mesh type
+    # mesh_type
     property mesh_type:
         def __get__(self):
             return self.thisptr.getMeshType()
         def __set__(self, mesh_type):
             self.thisptr.setMeshType(mesh_type)
 
-    # matrix solver
+    # matrix_solver
     property matrix_solver:
         def __get__(self):
             return self.thisptr.getMatrixSolver()
@@ -193,24 +194,25 @@ cdef class Problem:
         def __set__(self, frequency):
             self.thisptr.setFrequency(frequency)
 
-    # time step
+    # time_step
     property time_step:
         def __get__(self):
             return self.thisptr.getTimeStep()
         def __set__(self, time_step):
             self.thisptr.setTimeStep(time_step)
 
-    # time total
+    # time_total
     property time_total:
         def __get__(self):
             return self.thisptr.getTimeTotal()
         def __set__(self, time_total):
             self.thisptr.setTimeTotal(time_total)
 
-# field
+# Field
 cdef class Field:
     cdef PyField *thisptr
 
+    # Field(field_id, analysis_type, number_of_refinements, polynomial_order, linearity_type, nonlinear_tolerance, nonlinear_steps, adaptivity_type, adaptivity_tolerance, adaptivity_steps, initial_condition, weak_forms)
     def __cinit__(self, char *field_id, char *analysis_type, int number_of_refinements = 0, int polynomial_order = 1, char *linearity_type = "linear",
                   double nonlinear_tolerance = 0.001, int nonlinear_steps = 10, char *adaptivity_type = "disabled", double adaptivity_tolerance = 1,
                   int adaptivity_steps = 1, double initial_condition = 0.0, char *weak_forms = "compiled"):
@@ -219,40 +221,40 @@ cdef class Field:
     def __dealloc__(self):
         del self.thisptr
 
-    # field id
+    # field_id
     property field_id:
         def __get__(self):
             return self.thisptr.getFieldId()
 
-    # analysis type
+    # analysis_type
     property analysis_type:
         def __get__(self):
             return self.thisptr.getAnalysisType()
         def __set__(self, field_id):
             self.thisptr.setAnalysisType(field_id)
 
-    # number of refinements
+    # number_of_refinements
     property number_of_refinements:
         def __get__(self):
             return self.thisptr.getNumberOfRefinemens()
         def __set__(self, number_of_refinements):
             self.thisptr.setNumberOfRefinemens(number_of_refinements)
 
-    # polynomial order
+    # polynomial_order
     property polynomial_order:
         def __get__(self):
             return self.thisptr.getPolynomialOrder()
         def __set__(self, polynomial_order):
             self.thisptr.setPolynomialOrder(polynomial_order)
 
-    # linearity type
+    # linearity_type
     property linearity_type:
         def __get__(self):
             return self.thisptr.getLinearityType()
         def __set__(self, linearity_type):
             self.thisptr.setLinearityType(linearity_type)
 
-    # nonlinear tolerance
+    # nonlinear_tolerance
     property nonlinear_tolerance:
         def __get__(self):
             return self.thisptr.getNonlinearTolerance()
@@ -266,35 +268,35 @@ cdef class Field:
         def __set__(self, nonlinear_steps):
             self.thisptr.setNonlinearSteps(nonlinear_steps)
 
-    # adaptivity type
+    # adaptivity_type
     property adaptivity_type:
         def __get__(self):
             return self.thisptr.getAdaptivityType()
         def __set__(self, adaptivity_type):
             self.thisptr.setAdaptivityType(adaptivity_type)
 
-    # adaptivity tolerance
+    # adaptivity_tolerance
     property adaptivity_tolerance:
         def __get__(self):
             return self.thisptr.getAdaptivityTolerance()
         def __set__(self, adaptivity_tolerance):
             self.thisptr.setAdaptivityTolerance(adaptivity_tolerance)
 
-    # adaptivity steps
+    # adaptivity_steps
     property adaptivity_steps:
         def __get__(self):
             return self.thisptr.getAdaptivitySteps()
         def __set__(self, adaptivity_steps):
             self.thisptr.setAdaptivitySteps(adaptivity_steps)
 
-    # initial condition
+    # initial_condition
     property initial_condition:
         def __get__(self):
             return self.thisptr.getInitialCondition()
         def __set__(self, initial_condition):
             self.thisptr.setInitialCondition(initial_condition)
 
-    # weak forms
+    # weak_forms
     property weak_forms:
         def __get__(self):
             return self.thisptr.getWeakForms()
@@ -323,10 +325,11 @@ cdef class Field:
 
         self.thisptr.addMaterial(name, parameters_map)
 
-# geometry class
+# Geometry
 cdef class Geometry:
     cdef PyGeometry *thisptr
 
+    # Geometry()
     def __cinit__(self):
         self.thisptr = new PyGeometry()
     def __dealloc__(self):
@@ -360,16 +363,37 @@ cdef class Geometry:
 
         self.thisptr.addLabel(x, y, area, order, materials_map)
 
+    # mesh()
+    def mesh(self):
+        self.thisptr.mesh()
+
+    # zoom_best_fit(), zoom_in(), zoom_out(), zoom_region()
+    def zoom_best_fit(self):
+        self.thisptr.zoomBestFit()
+    def zoom_in(self):
+        self.thisptr.zoomIn()
+    def zoom_out(self):
+        self.thisptr.zoomOut()
+    def zoom_region(self, double x1, double y1, double x2, double y2):
+        self.thisptr.zoomRegion(x1, y1, x2, y2)
+
 # version()
 def version():
     return pyVersion()
 
-
-def message(char *str):
-    pythonMessage(str)
-
+# input()
 def input(char *str):
-    return pythonInput(str)
+    return pyInput(str)
+
+# message()
+def message(char *str):
+    pyMessage(str)
+
+# quit()
+def quit():
+    pyQuit()
+
+
 
 def meshfilename():
     return pythonMeshFileName()
@@ -377,23 +401,7 @@ def meshfilename():
 def solutionfilename():
     return pythonSolutionFileName()
 
-def quit():
-    pythonQuit()
-
 # document
-
-def newdocument(char *name, char *type, char *physicfield,
-               int numberofrefinements = 0, int polynomialorder = 1, char *adaptivitytype = "disabled",
-               double adaptivitysteps = 1, double adaptivitytolerance = 0,
-               double frequency = 0,
-               char *analysistype = "steadystate", double timestep = 0, double totaltime = 0, double initialcondition = 0,
-               char *linearitytype = "newton", nonlineartolerance = 0.01, nonlinearsteps = 10):
-    pythonNewDocument(name, type, physicfield,
-                       numberofrefinements, polynomialorder, adaptivitytype,
-                       adaptivitysteps, adaptivitytolerance,
-                       frequency,
-                       analysistype, timestep, totaltime, initialcondition,
-                       linearitytype, nonlineartolerance, nonlinearsteps)
 
 def opendocument(char *str):
     pythonOpenDocument(str)
@@ -453,9 +461,6 @@ def deleteselection():
 
 # solver
 
-def mesh():
-    pythonMesh()
-
 def solve():
     pythonSolve()
 
@@ -463,18 +468,6 @@ def solveadaptivestep():
     pythonSolveAdaptiveStep()
 
 # postprocessor
-    
-def zoombestfit():
-    pythonZoomBestFit()
-
-def zoomin():
-    pythonZoomIn()
-
-def zoomout():
-    pythonZoomOut()
-
-def zoomregion(double x1, double y1, double x2, double y2):
-    pythonZoomRegion(x1, y1, x2, y2)
 
 def mode(char *str):
     pythonMode(str)

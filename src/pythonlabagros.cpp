@@ -277,7 +277,7 @@ void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError
 
 // ************************************************************************************
 
-PyProblem::PyProblem(char *name, char *coordinateType, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal)
+PyProblem::PyProblem(char *coordinateType, char *name, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal)
 {
     logMessage("PyProblem::PyProblem()");
 
@@ -365,8 +365,10 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 {
     logMessage("PyField::addBoundary()");
 
+    /* FIXME
     if (Util::scene()->getBoundary(QString(name)))
         throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
+    */
 
     Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
 
@@ -390,8 +392,10 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
 {
     logMessage("PyField::addMaterial()");
 
+    /* FIXME
     if (Util::scene()->getMaterial(QString(name)))
         throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString(name)).toStdString());
+    */
 
     std::map<std::string, Value> values;
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
@@ -436,21 +440,20 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
         throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
 
     SceneEdge *sceneEdge = new SceneEdge(nodeStart, nodeEnd, angle, refinement);
-    Util::scene()->addEdge(sceneEdge);
 
     // boundaries
     for( map<char*, char*>::iterator i=boundaries.begin(); i!=boundaries.end(); ++i)
     {
-        //qDebug() << (*i).first << ": " << (*i).second;
+        //qDebug() << "boundary" << (*i).first << ": " << (*i).second;
 
-        SceneBoundary *sceneBoundary = Util::scene()->getBoundary(QString((*i).second));
-        /* FIXME - more fields
-        if (!sceneBoundary)
-            throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(QString((*i).second)).toStdString());
-        */
-
-        sceneEdge->addMarker(sceneBoundary);
+        foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::scene()->fieldInfo(QString((*i).first))).items())
+        {
+            if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->getName() == std::string((*i).second)))
+                sceneEdge->addMarker(sceneBoundary);
+        }
     }
+
+    Util::scene()->addEdge(sceneEdge);
 }
 
 void PyGeometry::addLabel(double x, double y, double area, int order, map<char*, char*> materials)
@@ -464,24 +467,60 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
         throw out_of_range(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
 
     SceneLabel *sceneLabel = new SceneLabel(Point(x, y), area, order);
-    Util::scene()->addLabel(sceneLabel);
 
     // materials
     for( map<char*, char*>::iterator i=materials.begin(); i!=materials.end(); ++i)
     {
-        //qDebug() << (*i).first << ": " << (*i).second;
+        //qDebug() << "material" << (*i).first << ": " << (*i).second;
 
-        SceneMaterial *sceneMaterial = Util::scene()->getMaterial(QString((*i).second));
-        /* FIXME - more fields
-        if (!sceneMaterial)
-            throw invalid_argument(QObject::tr("Material '%1' is not defined.").arg(QString((*i).second)).toStdString());
-        */
-
-        sceneLabel->addMarker(sceneMaterial);
+        foreach (SceneMaterial *sceneMaterial, Util::scene()->materials->filter(Util::scene()->fieldInfo(QString((*i).first))).items())
+        {
+            if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->getName() == std::string((*i).second)))
+            {
+                sceneLabel->addMarker(sceneMaterial);
+            }
+        }
     }
+
+    Util::scene()->addLabel(sceneLabel);
 }
 
-// version()
+void PyGeometry::mesh()
+{
+    logMessage("PyGeometry::mesh()");
+
+    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
+    // FIXME - scene refresh
+}
+
+void PyGeometry::zoomBestFit()
+{
+    logMessage("PyGeometry::zoomBestFit()");
+
+    sceneView()->doZoomBestFit();
+}
+
+void PyGeometry::zoomIn()
+{
+    logMessage("PyGeometry::zoomIn()");
+
+    sceneView()->doZoomIn();
+}
+
+void PyGeometry::zoomOut()
+{
+    logMessage("PyGeometry::zoomOut()");
+
+    sceneView()->doZoomOut();
+}
+
+void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
+{
+    logMessage("PyGeometry::zoomRegion()");
+
+    sceneView()->doZoomRegion(Point(x1, y1), Point(x2, y2));
+}
+
 char *pyVersion()
 {
     logMessage("pyVersion()");
@@ -489,23 +528,32 @@ char *pyVersion()
     return const_cast<char*>(QApplication::applicationVersion().toStdString().c_str());
 }
 
-
-// message(string)
-void pythonMessage(char *str)
+char *pyInput(char *str)
 {
-    logMessage("pythonMessage()");
-
-    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString(str));
-}
-
-// variable = input(string)
-char *pythonInput(char *str)
-{
-    logMessage("pythonInput()");
+    logMessage("pyInput()");
 
     QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), QString(str));
     return const_cast<char*>(text.toStdString().c_str());
 }
+
+void pyMessage(char *str)
+{
+    logMessage("pyMessage()");
+
+    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString(str));
+}
+
+void pyQuit()
+{
+    logMessage("pyQuit()");
+
+    // doesn't work without main event loop (run from script)
+    // QApplication::exit(0);
+
+    exit(0);
+}
+
+// ************************************************************************************
 
 // meshfilename()
 char *pythonMeshFileName()
@@ -542,129 +590,6 @@ char *pythonSolutionFileName()
     }
     else
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
-}
-
-// quit()
-void pythonQuit()
-{
-    logMessage("pythonQuit()");
-
-    // doesn't work without main event loop (run from script)
-    // QApplication::exit(0);
-
-    exit(0);
-}
-
-// newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance,
-// frequency, analysistype, timestep, totaltime, initialcondition, linearitytype, nonlineartolerance, nonlinearsteps)
-void pythonNewDocument(char *name, char *type, char *physicfield,
-                       int numberofrefinements, int polynomialorder, char *adaptivitytype,
-                       double adaptivitysteps, double adaptivitytolerance,
-                       double frequency,
-                       char *analysistype, double timestep, double totaltime, double initialcondition,
-                       char *linearitytype, double nonlineartolerance, int nonlinearsteps)
-{
-    assert(0); //TODO
-    //    logMessage("pythonNewDocument()");
-
-    //    Util::scene()->clear();
-    //    Util::scene()->fieldInfo("TODO")->name = QString(name);
-
-    //    // type
-    //    Util::scene()->fieldInfo("TODO")->problemType = problemTypeFromStringKey(QString(type));
-    //    if (Util::scene()->fieldInfo("TODO")->problemType == ProblemType_Undefined)
-    //        throw invalid_argument(QObject::tr("Problem type '%1' is not implemented.").arg(QString(type)).toStdString());
-
-    //    // analysis type
-    //    Util::scene()->fieldInfo("TODO")->analysisType() = analysisTypeFromStringKey(QString(analysistype));
-    //    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Undefined)
-    //        throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
-
-    //    // physicfield
-    //    QString field = physicfield;
-    //    if (field != "")
-    //    {
-    //        Util::scene()->fieldInfo("TODO")->setModule(moduleFactory(field.toStdString(),
-    //                                                              problemTypeFromStringKey(QString(type)),
-    //                                                              analysisTypeFromStringKey(QString(analysistype)),
-    //                                                              ""));
-    //    }
-    //    else
-    //        throw invalid_argument(QObject::tr("Physic field '%1' is not implemented.").arg(QString(physicfield)).toStdString());
-
-    //    // numberofrefinements
-    //    if (numberofrefinements >= 0)
-    //        Util::scene()->fieldInfo("TODO")->numberOfRefinements = numberofrefinements;
-    //    else
-    //        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(numberofrefinements).toStdString());
-
-    //    // polynomialorder
-    //    if (polynomialorder >= 1 && polynomialorder <= 10)
-    //        Util::scene()->fieldInfo("TODO")->polynomialOrder = polynomialorder;
-    //    else
-    //        throw out_of_range(QObject::tr("Polynomial order '%1' is out of range.").arg(polynomialorder).toStdString());
-
-    //    // adaptivitytype
-    //    Util::scene()->fieldInfo("TODO")->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivitytype));
-    //    if (Util::scene()->fieldInfo("TODO")->adaptivityType == AdaptivityType_Undefined)
-    //        throw invalid_argument(QObject::tr("Adaptivity type '%1' is not implemented.").arg(QString(adaptivitytype)).toStdString());
-
-    //    // adaptivitysteps
-    //    if (adaptivitysteps >= 0)
-    //        Util::scene()->fieldInfo("TODO")->adaptivitySteps = adaptivitysteps;
-    //    else
-    //        throw out_of_range(QObject::tr("Adaptivity step '%1' is out of range.").arg(adaptivitysteps).toStdString());
-
-    //    // adaptivitytolerance
-    //    if (adaptivitytolerance >= 0)
-    //        Util::scene()->fieldInfo("TODO")->adaptivityTolerance = adaptivitytolerance;
-    //    else
-    //        throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
-
-    //    // frequency
-    //    if (Util::scene()->fieldInfo("TODO")->module()->harmonic_solutions)
-    //    {
-    //        if (frequency >= 0)
-    //            Util::scene()->fieldInfo("TODO")->frequency = frequency;
-    //        else
-    //            throw invalid_argument(QObject::tr("The frequency can not be used for this problem.").toStdString());
-    //    }
-
-    //    // transient timestep
-    //    if (timestep > 0)
-    //        Util::scene()->fieldInfo("TODO")->timeStep = Value(QString::number(timestep));
-    //    else if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
-    //        throw out_of_range(QObject::tr("Time step must be positive.").toStdString());
-
-    //    // transient timetotal
-    //    if (totaltime > 0)
-    //        Util::scene()->fieldInfo("TODO")->timeTotal = Value(QString::number(totaltime));
-    //    else if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
-    //        throw out_of_range(QObject::tr("Total time must be positive.").toStdString());
-
-    //    // nonlineartolerance
-    //    if (nonlineartolerance >= 0)
-    //        Util::scene()->fieldInfo("TODO")->nonlinearTolerance = nonlineartolerance;
-    //    else
-    //        throw out_of_range(QObject::tr("Nonlinear tolerance '%1' is out of range.").arg(nonlineartolerance).toStdString());
-
-    //    // nonlinearsteps
-    //    if (nonlinearsteps >= 0)
-    //        Util::scene()->fieldInfo("TODO")->nonlinearSteps = nonlinearsteps;
-    //    else
-    //        throw out_of_range(QObject::tr("Number of nonlinear steps '%1' must be positive.").arg(nonlinearsteps).toStdString());
-
-    //    // linearity type
-    //    Util::scene()->fieldInfo("TODO")->linearityType = linearityTypeFromStringKey(QString(linearitytype));
-    //    if (Util::scene()->fieldInfo("TODO")->linearityType == LinearityType_Undefined)
-    //        throw invalid_argument(QObject::tr("Linearity type '%1' is not implemented").arg(QString(linearitytype)).toStdString());
-
-    //    // transient initial condition
-    //    Util::scene()->fieldInfo("TODO")->initialCondition = Value(QString::number(initialcondition));
-
-    //    // invalidate
-    //    sceneView()->doDefaultValues();
-    //    Util::scene()->refresh();
 }
 
 // opendocument(filename)
@@ -1076,15 +1001,6 @@ void pythonDeleteSelection()
     Util::scene()->deleteSelected();
 }
 
-// mesh()
-void pythonMesh()
-{
-    logMessage("pythonMesh()");
-
-    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
-    Util::scene()->refresh();
-}
-
 // solve()
 void pythonSolve()
 {
@@ -1122,38 +1038,6 @@ void pythonSolveAdaptiveStep()
 
     // restore adaptivity steps
     Util::scene()->fieldInfo("TODO")->adaptivitySteps = adaptivitySteps;
-}
-
-// zoombestfit()
-void pythonZoomBestFit()
-{
-    logMessage("pythonZoomBestFit()");
-
-    sceneView()->doZoomBestFit();
-}
-
-// zoomin()
-void pythonZoomIn()
-{
-    logMessage("pythonZoomIn()");
-
-    sceneView()->doZoomIn();
-}
-
-// zoomout()
-void pythonZoomOut()
-{
-    logMessage("pythonZoomOut()");
-
-    sceneView()->doZoomOut();
-}
-
-// zoomregion(x1, y1, x2, y2)
-void pythonZoomRegion(double x1, double y1, double x2, double y2)
-{
-    logMessage("pythonZoomRegion()");
-
-    sceneView()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 // mode(mode = {"node", "edge", "label", "postprocessor"})

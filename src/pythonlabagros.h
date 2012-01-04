@@ -86,10 +86,10 @@ private:
 
 // ************************************************************************************
 
-// problem class
+// problem
 class PyProblem {
     public:
-        PyProblem(char *name, char *coordinateType, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal);
+        PyProblem(char *coordinateType, char *name, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal);
         ~PyProblem() {}
 
         // name
@@ -123,7 +123,7 @@ class PyProblem {
         void solve() { qDebug() << "Not now :)"; }
 };
 
-// field class
+// field
 class PyField {
     private:
         FieldInfo *m_fieldInfo;
@@ -191,36 +191,39 @@ class PyField {
         void solve() { qDebug() << "Not now :)"; }
 };
 
-// geometry class
+// geometry
 class PyGeometry {
     public:
         PyGeometry() {}
         ~PyGeometry() {}
 
+        // elements
         void addNode(double x, double y);
         void addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries);
         void addLabel(double x, double y, double area, int order, map<char*, char*> materials);
+
+        void mesh();
+
+        // zoom operations
+        void zoomBestFit();
+        void zoomIn();
+        void zoomOut();
+        void zoomRegion(double x1, double y1, double x2, double y2);
 };
 
-// version()
+// functions
 char *pyVersion();
+char *pyInput(char *str);
+void pyMessage(char *str);
+void pyQuit();
 
-void pythonAddLabel(double x, double y, char *material, double area, int order);
+// ************************************************************************************
 
 // cython functions
-void pythonMessage(char *str);
-char *pythonInput(char *str);
 char *pythonMeshFileName();
 char *pythonSolutionFileName();
 Solution *pythonSolutionObject();
-void pythonQuit();
 
-void pythonNewDocument(char *name, char *type, char *physicfield,
-                       int numberofrefinements, int polynomialorder, char *adaptivitytype,
-                       double adaptivitysteps, double adaptivitytolerance,
-                       double frequency,
-                       char *analysistype, double timestep, double totaltime, double initialcondition,
-                       char *linearitytype, double nonlineartolerance, int nonlinearsteps);
 void pythonOpenDocument(char *str);
 void pythonSaveDocument(char *str);
 void pythonCloseDocument();
