@@ -63,6 +63,8 @@ public:
 
     virtual double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
     virtual QStringList variables() = 0;
+
+    friend class SceneView;
 };
 
 class LocalPointValueView : public QDockWidget
