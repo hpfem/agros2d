@@ -59,7 +59,7 @@ QVariant SceneBoundary::variant()
     return v;
 }
 
-SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary("none", PhysicFieldBC_None)
+SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary(QObject::tr("none", "boundary"), PhysicFieldBC_None)
 {
     logMessage("SceneBoundary::SceneBoundaryNone()");
 
@@ -103,10 +103,9 @@ QVariant SceneMaterial::variant()
     return v;
 }
 
-SceneMaterialNone::SceneMaterialNone() : SceneMaterial("none")
+SceneMaterialNone::SceneMaterialNone() : SceneMaterial(QObject::tr("none", "material"))
 {
     logMessage("SceneMaterial::SceneMaterialNone()");
-
 }
 
 
