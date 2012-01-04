@@ -423,11 +423,15 @@ ScriptResult PythonEngine::parseError()
 
 QList<PythonVariables> PythonEngine::variableList()
 {
-    QStringList filter;
-    filter << "__builtins__" << "StdoutCatcher" << "python_engine_stdout" << "chdir"
+    QStringList filter_name;
+    filter_name << "__builtins__" << "StdoutCatcher" << "python_engine_stdout" << "chdir"
            << "python_engine_get_completion_file" << "python_engine_get_completion_string"
-           << "python_engine_get_completion_string_dot"
+           << "python_engine_get_completion_string_dot" << "PythonLabRopeProject"
+           << "pythonlab_rope_project"
            << "python_engine_pyflakes_check";
+
+    QStringList filter_type;
+    filter_type << "builtin_function_or_method";
 
     QList<PythonVariables> list;
 
@@ -436,8 +440,6 @@ QList<PythonVariables> PythonEngine::variableList()
     {
         PyObject *key = PyList_GetItem(keys, i);
         PyObject *value = PyDict_GetItem(m_dict, key);
-
-        bool append = false;
 
         // variable
         PythonVariables var;
@@ -452,60 +454,50 @@ QList<PythonVariables> PythonEngine::variableList()
         if (var.type == "bool")
         {
             var.value = PyInt_AsLong(value) ? "True" : "False";
-            append = true;
         }
-        if (var.type == "int")
+        else if (var.type == "int")
         {
             var.value = (int) PyInt_AsLong(value);
-            append = true;
         }
-        if (var.type == "float")
+        else if (var.type == "float")
         {
             var.value = PyFloat_AsDouble(value);
-            append = true;
         }
-        if (var.type == "str")
+        else if (var.type == "str")
         {
             var.value = PyString_AsString(value);
-            append = true;
         }
-        if (var.type == "list")
+        else if (var.type == "list")
         {
             var.value = QString("%1 items").arg(PyList_Size(value));
-            append = true;
         }
-        if (var.type == "tuple")
+        else if (var.type == "tuple")
         {
             var.value = QString("%1 items").arg(PyTuple_Size(value));
-            append = true;
         }
-        if (var.type == "dict")
+        else if (var.type == "dict")
         {
             var.value = QString("%1 items").arg(PyDict_Size(value));
-            append = true;
         }
-        if (var.type == "numpy.ndarray")
+        else if (var.type == "numpy.ndarray")
         {
             var.value = ""; //TODO count
-            append = true;
         }
-        if (var.type == "module")
+        else if (var.type == "module")
         {
             var.value = PyString_AsString(PyObject_GetAttrString(value, "__name__"));
-            append = true;
         }
-        if (var.type == "function"
+        else if (var.type == "function"
                 || var.type == "instance"
                 || var.type == "classobj")
         {
-            append = true;
         }
 
-        // if (var.name == "problem")
-        //    qDebug() << var.name << " : " << var.type << value->ob_type->tp_
-
-        if (append && !filter.contains(var.name))
+        // append
+        if (!filter_name.contains(var.name) && !filter_type.contains(var.type))
+        {
             list.append(var);
+        }
     }
     Py_DECREF(keys);
 

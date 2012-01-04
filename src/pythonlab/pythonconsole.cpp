@@ -312,10 +312,12 @@ void PythonScriptingConsole::handleTabCompletion(bool autoComplete)
         {
             if (isPythonVariable(variable.type))
                 found.append(QString("%1 (global, variable)").arg(variable.name));
-            if (variable.type == "function")
+            else if (variable.type == "function")
                 found.append(QString("%1 (global, function)").arg(variable.name));
-            if (variable.type == "module")
+            else if (variable.type == "module")
                 found.append(QString("%1 (global, module)").arg(variable.name));
+            else
+                found.append(QString("%1").arg(variable.name));
         }
     }
 
