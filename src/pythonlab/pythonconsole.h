@@ -116,8 +116,6 @@ private:
 
     QString m_currentMultiLineCode;
 
-    QString m_stdOut;
-
     QTextCharFormat m_defaultTextCharacterFormat;
     QCompleter* completer;
 

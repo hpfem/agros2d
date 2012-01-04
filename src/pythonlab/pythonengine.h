@@ -21,7 +21,8 @@ signals:
     void pythonShowHtml(const QString &);
     void pythonShowImage(const QString &);
 
-    void executed();
+    void executedExpression();
+    void executedScript();
 
 public:
     PythonEngine() {}
@@ -46,6 +47,7 @@ public:
 
 protected:
     PyObject *m_dict;
+    bool m_isRunning;
 
     virtual void addCustomExtensions() {}
     virtual void runPythonHeader() {}
@@ -54,7 +56,6 @@ private slots:
     void stdOut(const QString &message);
 
 private:
-    bool m_isRunning;
     QString m_stdOut;
 
     QString m_functions;    

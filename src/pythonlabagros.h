@@ -38,6 +38,9 @@ public:
 protected:
     virtual void addCustomExtensions();
     virtual void runPythonHeader();
+
+private slots:
+    void doExecutedScript();
 };
 
 class PythonLabAgros : public PythonEditorDialog
@@ -50,7 +53,7 @@ private:
     QAction *actCreateFromModel;
 
 private slots:
-    void doCreatePythonFromModel();
+    void doCreatePythonFromModel();    
 };
 
 bool scriptIsRunning();

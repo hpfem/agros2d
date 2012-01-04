@@ -1616,6 +1616,8 @@ void PythonEngineAgros::addCustomExtensions()
     initagros2d();
     // agros2d file
     Py_InitModule("agros2d", pythonMethodsAgros);
+
+    connect(this, SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
 }
 
 void PythonEngineAgros::runPythonHeader()
@@ -1629,11 +1631,15 @@ void PythonEngineAgros::runPythonHeader()
         PyRun_String(Util::scene()->problemInfo()->startupscript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
+void PythonEngineAgros::doExecutedScript()
+{
+    Util::scene()->refresh();
+    sceneView()->doInvalidated();
+}
+
 PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
     : PythonEditorDialog(pythonEngine, args, parent)
 {
-    setWindowIcon(icon("pythonlab"));
-
     // add create from model
     actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);
     actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));

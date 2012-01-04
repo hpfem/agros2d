@@ -25,7 +25,7 @@ PythonEngine *currentPythonEngine()
 // ****************************************************************************
 
 // print stdout
-PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
+PyObject* pythonStdout(PyObject* self, PyObject* pArgs)
 {
     char *str = NULL;
     if (PyArg_ParseTuple(pArgs, "s", &str))
@@ -71,7 +71,7 @@ static PyObject* pythonClear(PyObject* self, PyObject* pArgs)
 
 static PyMethodDef pythonEngineFuntions[] =
 {
-    {"stdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
+    {"__stdout__", pythonStdout, METH_VARARGS, "__stdout__(str)"},
     {"image", pythonShowFigure, METH_VARARGS, "image(file)"},
     {"clear", pythonClear, METH_NOARGS, "clear()"},
     {"html", pythonInsertHtml, METH_VARARGS, "html(str)"},
@@ -112,9 +112,6 @@ void PythonEngine::init()
     Py_InitModule("pythonlab", pythonEngineFuntions);
 
     addCustomExtensions();
-
-    // stdout
-    // PyRun_String(QString("agrosstdout = \"" + tempProblemDir() + "/stdout.txt" + "\"").toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
     // custom modules
     PyRun_String(QString("import sys; sys.path.insert(0, \"" + datadir() + "/resources/python" + "\")").toStdString().c_str(), Py_file_input, m_dict, m_dict);
@@ -183,10 +180,8 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     Py_DECREF(Py_None);
 
     m_isRunning = false;
-    //TODO Util::scene()->refresh();
-    //TODO sceneView()->doInvalidated();
 
-    emit executed();
+    emit executedScript();
 
     return scriptResult;
 }
@@ -245,7 +240,7 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
     Py_XDECREF(output);
     Py_DECREF(Py_None);
 
-    emit executed();
+    emit executedExpression();
 
     return expressionResult;
 }
@@ -265,16 +260,20 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
     }
     else
     {
-        if (code.contains("."))
+        QString str = code;
+        if (str.contains("="))
+            str = str.right(str.length() - str.lastIndexOf("=") - 1);
+
+        if (str.contains("."))
         {
-            QString search = code.left(code.lastIndexOf("."));
+            QString search = str.left(str.lastIndexOf("."));
             exp = QString("result_rope_pythonlab = python_engine_get_completion_string_dot(\"%1\")").
                     arg(search);
         }
         else
             exp = QString("result_rope_pythonlab = python_engine_get_completion_string(\"%1\", %2)").
-                    arg(code).
-                    arg(offset);
+                    arg(str.trimmed()).
+                    arg(str.trimmed().length());
     }
     // qDebug() << exp;
 
@@ -297,7 +296,10 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
                 PyObject *item = PyList_GetItem(list, i);
 
                 QString str = PyString_AsString(item);
-                out.append(str);
+
+                // remove builtin methods
+                if (!str.startsWith("__"))
+                    out.append(str);
             }
         }
         Py_DECREF(result);
@@ -422,7 +424,7 @@ ScriptResult PythonEngine::parseError()
 QList<PythonVariables> PythonEngine::variableList()
 {
     QStringList filter;
-    filter << "__builtins__" << "StdoutCatcher" << "agrosstdout" << "capturestdout" << "chdir"
+    filter << "__builtins__" << "StdoutCatcher" << "python_engine_stdout" << "chdir"
            << "python_engine_get_completion_file" << "python_engine_get_completion_string"
            << "python_engine_get_completion_string_dot"
            << "python_engine_pyflakes_check";
@@ -499,7 +501,8 @@ QList<PythonVariables> PythonEngine::variableList()
             append = true;
         }
 
-        // qDebug() << var.name << " : " << var.type;
+        // if (var.name == "problem")
+        //    qDebug() << var.name << " : " << var.type << value->ob_type->tp_
 
         if (append && !filter.contains(var.name))
             list.append(var);

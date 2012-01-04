@@ -84,21 +84,14 @@ void PythonScriptingConsole::stdClear()
 
 void PythonScriptingConsole::stdOut(const QString& str)
 {
-    m_stdOut += str;
-
-    int idx;
-    while ((idx = m_stdOut.indexOf('\n')) != -1)
-    {
-        consoleMessage(m_stdOut.left(idx), Qt::darkGreen);
-        // std::cout << m_stdOut.left(idx).toLatin1().data() << std::endl;
-        m_stdOut = m_stdOut.mid(idx+1);
-    }
+    QStringList strList = str.trimmed().split("\n");
+    for (int i = 0; i < strList.count(); i++)
+        consoleMessage(strList[i], Qt::darkGreen);
 }
 
 void PythonScriptingConsole::stdHtml(const QString& str)
 {
     append(QString());
-
     insertHtml(str);
 }
 
@@ -106,9 +99,7 @@ void PythonScriptingConsole::stdErr(const QString& str)
 {
     QStringList strList = str.split("\n");
     for (int i = 0; i < strList.count(); i++)
-    {
         consoleMessage(strList[i], Qt::red);
-    }
 }
 
 void PythonScriptingConsole::stdImage(const QString &fileName)
@@ -212,9 +203,6 @@ void PythonScriptingConsole::executeCode(const QString& code)
 
     int cursorPosition = this->textCursor().position();
 
-    // evaluate the code
-    m_stdOut = "";
-
     connectStdOut();
     ExpressionResult result = pythonEngine->runPythonExpression(code, false);
     disconnectStdOut();
@@ -289,11 +277,11 @@ void PythonScriptingConsole::insertCompletion(const QString& completion)
 
     QTextCursor tc = textCursor();
     tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
-    if (tc.selectedText() == ".")
-    {
-        tc.insertText(QString(".") + str);
-    }
-    else
+    // if (tc.selectedText() == ".")
+    // {
+    //     tc.insertText(QString(".") + str);
+    // }
+    // else
     {
         tc = textCursor();
         tc.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
@@ -314,6 +302,7 @@ void PythonScriptingConsole::handleTabCompletion(bool autoComplete)
 
     // code completion
     QStringList found = pythonEngine->codeCompletion(search.toLower(), search.length());
+    // qDebug() << found.length();
 
     // add variables
     QList<PythonVariables> list = pythonEngine->variableList();
@@ -335,13 +324,17 @@ void PythonScriptingConsole::handleTabCompletion(bool autoComplete)
     if (!found.isEmpty())
     {
         QString str = search.trimmed();
+        if (str.contains("="))
+            str = str.right(str.length() - str.lastIndexOf("=") - 1);
 
         if (str.contains(".") && str.right(1) == ".")
             str = "";
         else
             str = str.right(str.length() - str.lastIndexOf(".") - 1);
 
-        completer->setCompletionPrefix(str);
+        // qDebug() << str.trimmed();
+
+        completer->setCompletionPrefix(str.trimmed());
         completer->setModel(new QStringListModel(found, completer));
         if (autoComplete && completer->completionCount() == 1)
         {
@@ -513,7 +506,10 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
 
     case Qt::Key_Period:
     {
+        QTextEdit::keyPressEvent(event);
         handleTabCompletion();
+        event->accept();
+        return;
     }
         break;
 

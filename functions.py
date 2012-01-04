@@ -117,6 +117,6 @@ def python_engine_pyflakes_check(filename):
 # redirect std output
 class StdoutCatcher:
     def write(self, str):
-        pythonlab.stdout(str)
+        pythonlab.__stdout__(str)
 
 sys.stdout = StdoutCatcher()
