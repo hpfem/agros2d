@@ -112,6 +112,8 @@ public:
     Value timeStep() {return m_parent->timeStep; }
     Value timeTotal() {return m_parent->timeTotal; }
 
+//    int numberOfSolutions() const;
+
     // linearity
     LinearityType linearityType;
     double nonlinearTolerance; // percent

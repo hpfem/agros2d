@@ -26,6 +26,7 @@
 Marker::Marker(FieldInfo *fieldInfo, std::string name)
     : fieldInfo(fieldInfo), name(name)
 {
+    m_isNone = false;
 }
 
 Marker::~Marker()

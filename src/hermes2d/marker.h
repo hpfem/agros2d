@@ -52,8 +52,12 @@ public:
     /// ????
     void evaluate(std::string id, double time);
 
+    int isNone() const { return m_isNone;}
+    void setNone() {m_isNone = true;}
+
 private:
     std::string name;
+    bool m_isNone;
 
 protected:
     FieldInfo *fieldInfo;

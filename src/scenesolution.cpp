@@ -297,7 +297,7 @@ Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
 {
     logMessage("SceneSolution::sln()");
 
-    return solutionArray(i)->sln;
+    return solutionArray(i)->sln.get();
 }
 
 template <typename Scalar>
@@ -305,7 +305,7 @@ Hermes::Hermes2D::Space<Scalar> *SceneSolution<Scalar>::space(int i)
 {
     logMessage("SceneSolution::space()");
 
-    return solutionArray(i)->space;
+    return solutionArray(i)->space.get();
 }
 
 template <typename Scalar>

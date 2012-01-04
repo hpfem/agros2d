@@ -132,6 +132,18 @@ void FieldInfo::setAnalysisType(AnalysisType analysisType)
                              m_analysisType);
 }
 
+//int FieldInfo::numberOfSolutions() const
+//{
+//    if (m_analysisType == AnalysisType_SteadyState)
+//        return module()->steady_state_solutions;
+//    else if (m_analysisType == AnalysisType_Transient)
+//        return module()->transient_solutions;
+//    else if (m_analysisType == AnalysisType_Harmonic)
+//        return module()->harmonic_solutions;
+//    else
+//        return 0;
+//}
+
 DxfFilter::DxfFilter(Scene *scene)
 {
     logMessage("DxfFilter::DxfFilter()");

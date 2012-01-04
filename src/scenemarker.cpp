@@ -51,8 +51,10 @@ void MarkerContainer<MarkerType>::removeFieldMarkers(FieldInfo* fieldInfo)
 template <typename MarkerType>
 MarkerType* MarkerContainer<MarkerType>::getNone(FieldInfo* field)
 {
-    if(!noneMarkers.contains(field))
+    if(!noneMarkers.contains(field)){
         noneMarkers[field] = new MarkerType(field, "none");
+        noneMarkers[field]->setNone();
+    }
 
     return noneMarkers[field];
 }
