@@ -78,8 +78,7 @@ PythonScriptingConsole::~PythonScriptingConsole()
 
 void PythonScriptingConsole::stdClear()
 {
-    // QTextEdit::clear();
-    // appendCommandPrompt();
+    QTextEdit::clear();
 }
 
 void PythonScriptingConsole::stdOut(const QString& str)
@@ -305,10 +304,10 @@ void PythonScriptingConsole::handleTabCompletion(bool autoComplete)
     // qDebug() << found.length();
 
     // add variables
-    QList<PythonVariables> list = pythonEngine->variableList();
+    QList<PythonVariable> list = pythonEngine->variableList();
     if (!search.contains("."))
     {
-        foreach (PythonVariables variable, list)
+        foreach (PythonVariable variable, list)
         {
             if (isPythonVariable(variable.type))
                 found.append(QString("%1 (global, variable)").arg(variable.name));

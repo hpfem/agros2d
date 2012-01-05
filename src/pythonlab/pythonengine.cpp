@@ -146,20 +146,56 @@ void PythonEngine::stdOut(const QString &message)
     m_stdOut.append(message);
 }
 
+void PythonEngine::deleteUserModules()
+{
+    // delete all user modules
+    //
+    // When working with Python scripts interactively, one must keep in mind that Python
+    // import a module from its source code (on disk) only when parsing the first corresponding
+    // import statement. During this first import, the byte code is generated (.pyc file)
+    // if necessary and the imported module code object is cached in sys.modules. Then, when
+    // re-importing the same module, this cached code object will be directly used even
+    // if the source code file (.py[w] file) has changed meanwhile.
+    //
+    // This behavior is sometimes unexpected when working with the Python interpreter in
+    // interactive mode, because one must either always restart the interpreter or remove manually the .pyc
+    // files to be sure that changes made in imported modules were taken into account.
+
+    QStringList filter_name;
+    filter_name << "pythonlab" << "agros2d" << "sys";
+
+    QList<PythonVariable> list = variableList();
+
+    foreach (PythonVariable variable, list)
+    {
+        if (variable.type == "module")
+        {
+            if (filter_name.contains(variable.name))
+                continue;
+
+            QString exp = QString("del %1; del sys.modules[\"%1\"]").arg(variable.name);
+            // qDebug() << exp;
+            PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+        }
+    }
+
+    PyErr_Clear();
+}
+
 ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)
 {
     m_isRunning = true;
     m_stdOut = "";
+
+    deleteUserModules();
 
     runPythonHeader();
 
     PyObject *output = NULL;
     if (QFile::exists(fileName))
     {
-        // compile
-        PyObject *code = Py_CompileString(QString("from os import chdir \nchdir(u'" + QFileInfo(fileName).absolutePath() + "')").toStdString().c_str(), "", Py_file_input);
-        // run
-        if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
+        QString str = QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')");
+        PyRun_String(str.toStdString().c_str(), Py_single_input, m_dict, m_dict);
     }
     // compile
     PyObject *code = Py_CompileString(script.toStdString().c_str(), fileName.toStdString().c_str(), Py_file_input);
@@ -421,7 +457,7 @@ ScriptResult PythonEngine::parseError()
     return error;
 }
 
-QList<PythonVariables> PythonEngine::variableList()
+QList<PythonVariable> PythonEngine::variableList()
 {
     QStringList filter_name;
     filter_name << "__builtins__" << "StdoutCatcher" << "python_engine_stdout" << "chdir"
@@ -433,7 +469,7 @@ QList<PythonVariables> PythonEngine::variableList()
     QStringList filter_type;
     filter_type << "builtin_function_or_method";
 
-    QList<PythonVariables> list;
+    QList<PythonVariable> list;
 
     PyObject *keys = PyDict_Keys(m_dict);
     for (int i = 0; i < PyList_Size(keys); ++i)
@@ -442,7 +478,7 @@ QList<PythonVariables> PythonEngine::variableList()
         PyObject *value = PyDict_GetItem(m_dict, key);
 
         // variable
-        PythonVariables var;
+        PythonVariable var;
 
         // variable name
         var.name = PyString_AsString(key);
@@ -491,6 +527,7 @@ QList<PythonVariables> PythonEngine::variableList()
                 || var.type == "instance"
                 || var.type == "classobj")
         {
+            // qDebug() << value->ob_type->tp_name;
         }
 
         // append
