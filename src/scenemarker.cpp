@@ -123,6 +123,18 @@ void MarkerContainer<MarkerType>::doFieldsChanged()
     }
 }
 
+template <typename MarkerType>
+bool MarkerContainer<MarkerType>::evaluateAllVariables()
+{
+    foreach(MarkerType* marker, data)
+    {
+        if (!marker->evaluateAllVariables())
+            return false;
+    }
+
+    return true;
+}
+
 //template <typename MarkerType>
 //void UniqueMarkerContainer<MarkerType>::add(MarkerType *marker)
 //{

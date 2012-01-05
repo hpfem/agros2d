@@ -17,8 +17,32 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "scene.h"
+#include "scenemarker.h"
 #include "problem.h"
 
+
+bool Field::solveInitVariables()
+{
+    //TODO transient
+    //
+    //
+    //    // transient
+    //    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
+    //    {
+    //        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return false;
+    //        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return false;
+    //        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return false;
+    //    }
+
+    if(!Util::scene()->boundaries->filter(m_fieldInfo).evaluateAllVariables())
+        return false;
+
+    if(!Util::scene()->materials->filter(m_fieldInfo).evaluateAllVariables())
+        return false;
+
+    return true;
+}
 
 void Problem::solve()
 {

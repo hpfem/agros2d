@@ -9,9 +9,21 @@ class WeakFormAgros;
 template <typename Scalar>
 class SolutionArrayList;
 
+class Field
+{
+public:
+    bool solveInitVariables();
+
+private:
+    FieldInfo* m_fieldInfo;
+};
+
 /// represents one or more fields, that are hard-coupled -> produce only 1 weak form
 class Block
 {
+public:
+
+private:
     WeakFormAgros<double> *m_wf;
     SolutionArrayList<double> *m_solutionList;
 };

@@ -52,6 +52,9 @@ public:
     /// ????
     void evaluate(std::string id, double time);
 
+    /// returns true if all OK
+    bool evaluateAllVariables();
+
     int isNone() const { return m_isNone;}
     void setNone() {m_isNone = true;}
 

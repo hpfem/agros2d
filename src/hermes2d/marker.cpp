@@ -52,6 +52,16 @@ void Marker::evaluate(std::string id, double time)
     values[id].evaluate(time);
 }
 
+bool Marker::evaluateAllVariables()
+{
+    for (std::map<std::string, Value>::iterator it = values.begin(); it != values.end(); ++it)
+    {
+        if (!it->second.evaluate())
+            return false;
+    }
+    return true;
+}
+
 QString Marker::fieldId()
 {
     return fieldInfo->fieldId();
