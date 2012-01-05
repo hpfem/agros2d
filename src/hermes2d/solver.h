@@ -95,24 +95,6 @@ public:
 private:
     Hermes::vector<SolutionArray<Scalar> *> listOfSolutionArrays;
 
-//    int polynomialOrder;
-//    AdaptivityType adaptivityType;
-//    int adaptivitySteps;
-//    double adaptivityTolerance;
-//    int adaptivityMaxDOFs;
-//    int numberOfSolution;
-//    double timeTotal;
-//    double timeStep;
-//    double initialCondition;
-//    CoordinateType coordinateType;
-//    AnalysisType analysisType;
-
-//    double nonlinearTolerance;
-//    int nonlinearSteps;
-
-//    Hermes::MatrixSolverType matrixSolver;
-//    WeakFormsType weakFormsType;
-
     FieldInfo *m_fieldInfo;
 
     // error

@@ -122,25 +122,6 @@ void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
 template <typename Scalar>
 void SolutionArrayList<Scalar>::init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, FieldInfo *fieldInfo)
 {
-//    coordinateType = Util::scene()->problemInfo()->problemType;
-//    analysisType = Util::scene()->problemInfo()->analysisType;
-//    polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
-//    adaptivityType = Util::scene()->problemInfo()->adaptivityType;
-//    adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
-//    adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
-//    adaptivityMaxDOFs = Util::config()->maxDofs;
-//    numberOfSolution = m_fieldInfo->module()->number_of_solution();
-//    timeTotal = Util::scene()->problemInfo()->timeTotal.number();
-//    timeStep = Util::scene()->problemInfo()->timeStep.number();
-//    initialCondition = Util::scene()->problemInfo()->initialCondition.number();
-
-//    nonlinearTolerance = Util::scene()->problemInfo()->nonlinearTolerance;
-//    nonlinearSteps = Util::scene()->problemInfo()->nonlinearSteps;
-
-//    matrixSolver = Util::scene()->problemInfo()->matrixSolver;
-
-//    weakFormsType = Util::scene()->problemInfo()->weakFormsType;
-
     m_fieldInfo = fieldInfo;
     m_progressItemSolve = progressItemSolve;
     m_wf = wf;
@@ -210,14 +191,14 @@ void SolutionArrayList<Scalar>::createSpace()
                 // compiled form
                 if (m_fieldInfo->weakFormsType == WeakFormsType_Compiled)
                 {
+                    assert(0);
+//                    string problemId = m_fieldInfo->module()->fieldid + "_" +
+//                            analysisTypeToStringKey(m_fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
+//                            coordinateTypeToStringKey(m_fieldInfo->module()->get_problem_type()).toStdString();
 
-                    string problemId = m_fieldInfo->module()->fieldid + "_" +
-                            analysisTypeToStringKey(m_fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
-                            coordinateTypeToStringKey(m_fieldInfo->module()->get_problem_type()).toStdString();
-
-                    Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
-                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
-                                                                                           function);
+//                    Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
+//                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
+//                                                                                           function);
                 }
 
                 if (!custom_form && m_fieldInfo->weakFormsType == WeakFormsType_Compiled)
@@ -413,12 +394,6 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
     }
 
     return true;
-
-
-
-
-
-
 
 }
 

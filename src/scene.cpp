@@ -40,6 +40,7 @@
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 void ProblemInfo::clear()
 {
@@ -249,6 +250,8 @@ Util::Util()
     m_config = new Config();
     m_config->load();
 
+    m_problem = new Problem();
+
     initLists();
 }
 
@@ -260,6 +263,7 @@ Util::~Util()
     delete m_completer;
     delete m_config;
     delete m_scriptEngineRemote;
+    delete m_problem;
 }
 
 void Util::createSingleton()

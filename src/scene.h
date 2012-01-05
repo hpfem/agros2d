@@ -51,6 +51,8 @@ class ScriptEngineRemote;
 class ProblemDialog;
 class SceneTransformDialog;
 
+class Problem;
+
 namespace Hermes
 {
     namespace Module
@@ -322,6 +324,7 @@ public:
     static inline Scene *scene() { return Util::singleton()->m_scene; }
     static inline QCompleter *completer() { return Util::singleton()->m_completer; }
     static inline Config *config() { return Util::singleton()->m_config; }
+    static inline Problem *problem() { return Util::singleton()->m_problem; }
 
 protected:
     Util();
@@ -335,6 +338,7 @@ private:
     Scene *m_scene;
     QCompleter *m_completer;
     Config *m_config;
+    Problem *m_problem;
     ScriptEngineRemote *m_scriptEngineRemote;
 };
 

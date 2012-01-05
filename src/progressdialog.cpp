@@ -33,6 +33,7 @@
 #include "scenesolution.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 ProgressItem::ProgressItem()
 {
@@ -903,15 +904,16 @@ ProgressItemSolve::ProgressItemSolve() : ProgressItem()
 
 void ProgressItemSolve::setSteps()
 {
-    assert(0); //TODO
-    //    m_steps = 1;
-    //    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
-    //    {
-    //        Util::scene()->problemInfo()->timeTotal.evaluate();
-    //        Util::scene()->problemInfo()->timeStep.evaluate();
+        m_steps = 1;
+//        if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
+//        {
+//            assert(0); //TODO
 
-    //        m_steps += floor(Util::scene()->problemInfo()->timeTotal.number() / Util::scene()->problemInfo()->timeStep.number());
-    //    }
+//            Util::scene()->problemInfo()->timeTotal.evaluate();
+//            Util::scene()->problemInfo()->timeStep.evaluate();
+
+//            m_steps += floor(Util::scene()->problemInfo()->timeTotal.number() / Util::scene()->problemInfo()->timeStep.number());
+//        }
 }
 
 bool ProgressItemSolve::run(bool quiet)
@@ -927,19 +929,20 @@ bool ProgressItemSolve::run(bool quiet)
 
 void ProgressItemSolve::solve()
 {
-    assert(0); //TODO
-        logMessage("ProgressItemSolve::solve()");
+    logMessage("ProgressItemSolve::solve()");
 
-        m_adaptivityError.clear();
-        m_adaptivityDOF.clear();
-        m_nonlinearError.clear();
+    m_adaptivityError.clear();
+    m_adaptivityDOF.clear();
+    m_nonlinearError.clear();
 
-        if (!QFile::exists(tempProblemFileName() + ".xml"))
-            return;
+    if (!QFile::exists(tempProblemFileName() + ".xml"))
+        return;
 
-        // benchmark
-        QTime time;
-        time.start();
+    // benchmark
+    QTime time;
+    time.start();
+
+    Util::problem()->solve();
 
 //        emit message(tr("Problem analysis: %1 (%2, %3)").
 //                     arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)).
