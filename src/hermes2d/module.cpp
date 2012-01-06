@@ -883,6 +883,7 @@ ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Mod
 
 bool Hermes::Module::Module::solve_init_variables()
 {
+    //TODO moved to problem, remove this method
     assert(0); //TODO
     //    // transient
     //    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)

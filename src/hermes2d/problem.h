@@ -9,12 +9,17 @@ class WeakFormAgros;
 template <typename Scalar>
 class SolutionArrayList;
 
+class FieldInfo;
+class ProgressItemSolve;
+
 class Field
 {
 public:
+    Field(FieldInfo* fieldInfo);
     bool solveInitVariables();
 
-private:
+public:
+//private:
     FieldInfo* m_fieldInfo;
 };
 
@@ -22,10 +27,18 @@ private:
 class Block
 {
 public:
+    Block(QList<FieldInfo*> fieldInfos, ProgressItemSolve* progressItemSolve);
 
-private:
+    bool solveInit();
+    void solve();
+
+public:
+//private:
     WeakFormAgros<double> *m_wf;
     SolutionArrayList<double> *m_solutionList;
+
+    QList<Field*> m_fields;
+    ProgressItemSolve* m_progressItemSolve;
 };
 
 /// intented as central for solution process
@@ -34,10 +47,14 @@ private:
 class Problem
 {
 public:
-
+    Problem(ProgressItemSolve* progressItemSolve);
+    void createStructure();
     void solve();
 
-    Hermes::vector<Block> blocks;
+public:
+//private:
+    QList<Block*> m_blocks;
+    ProgressItemSolve* m_progressItemSolve;
 };
 
 #endif // PROBLEM_H

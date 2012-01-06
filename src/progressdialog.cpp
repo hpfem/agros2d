@@ -942,6 +942,8 @@ void ProgressItemSolve::solve()
     QTime time;
     time.start();
 
+    Util::createProblem(this);
+    Util::problem()->createStructure();
     Util::problem()->solve();
 
 //        emit message(tr("Problem analysis: %1 (%2, %3)").

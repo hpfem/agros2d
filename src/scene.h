@@ -50,6 +50,7 @@ class ScriptEngineRemote;
 
 class ProblemDialog;
 class SceneTransformDialog;
+class ProgressItemSolve;
 
 class Problem;
 
@@ -325,6 +326,7 @@ public:
     static inline QCompleter *completer() { return Util::singleton()->m_completer; }
     static inline Config *config() { return Util::singleton()->m_config; }
     static inline Problem *problem() { return Util::singleton()->m_problem; }
+    static Problem *createProblem(ProgressItemSolve* pis);
 
 protected:
     Util();

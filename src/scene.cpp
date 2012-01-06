@@ -250,7 +250,7 @@ Util::Util()
     m_config = new Config();
     m_config->load();
 
-    m_problem = new Problem();
+    m_problem = NULL;
 
     initLists();
 }
@@ -264,6 +264,15 @@ Util::~Util()
     delete m_config;
     delete m_scriptEngineRemote;
     delete m_problem;
+}
+
+Problem* Util::createProblem(ProgressItemSolve* pis)
+{
+    if(Util::singleton()->m_problem)
+        delete Util::singleton()->m_problem;
+
+    Util::singleton()->m_problem = new Problem(pis);
+    return Util::singleton()->m_problem;
 }
 
 void Util::createSingleton()

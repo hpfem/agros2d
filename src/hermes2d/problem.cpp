@@ -19,8 +19,15 @@
 
 #include "scene.h"
 #include "scenemarker.h"
+#include "module.h"
+#include "solver.h"
 #include "problem.h"
 
+
+Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
+{
+
+}
 
 bool Field::solveInitVariables()
 {
@@ -44,7 +51,67 @@ bool Field::solveInitVariables()
     return true;
 }
 
+Block::Block(QList<FieldInfo *> fieldInfos, ProgressItemSolve* progressItemSolve) : m_progressItemSolve(progressItemSolve)
+{
+    foreach(FieldInfo* fi, fieldInfos)
+    {
+        m_fields.append(new Field(fi));
+    }
+
+    m_solutionList = new SolutionArrayList<double>;
+}
+
+bool Block::solveInit()
+{
+    foreach(Field* field, m_fields)
+    {
+        if(! field->solveInitVariables())
+            assert(0); //TODO co to znamena?
+    }
+
+    m_wf = new WeakFormAgros<double>(1);
+
+    m_solutionList->init(m_progressItemSolve, m_wf, m_fields.at(0)->m_fieldInfo);
+    m_solutionList->clear();
+}
+
+void Block::solve()
+{
+    m_solutionList->solve();
+}
+
+Problem::Problem(ProgressItemSolve* progressItemSolve) : m_progressItemSolve(progressItemSolve)
+{
+
+}
+
+void Problem::createStructure()
+{
+    QMap<QString, FieldInfo *> fieldInfos = Util::scene()->fieldInfos();
+    assert(fieldInfos.size() == 1);
+    QList<FieldInfo*> tmp;
+    tmp.append(fieldInfos.begin().value());
+    m_blocks.append(new Block(tmp, m_progressItemSolve));
+}
+
 void Problem::solve()
 {
+    //    if (!solve_init_variables())
+    //        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
+
+    //    WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
+
+    //    SolverAgros<double> solutionAgros(progressItemSolve, &wf);
+
+    //    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(); //TODO PK <double>
+    //    return solutionArrayList;
+
+
+    foreach(Block* block, m_blocks)
+    {
+        block->solveInit();
+        block->solve();
+    }
+
 
 }
