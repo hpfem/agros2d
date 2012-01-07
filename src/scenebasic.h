@@ -72,6 +72,7 @@ public:
     bool remove(BasicType *item);
     BasicType *at(int i);
     inline int length() { return data.length(); }
+    inline int count() {return length(); }
     inline int isEmpty() { return data.isEmpty(); }
     void clear();
 

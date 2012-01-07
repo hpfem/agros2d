@@ -40,6 +40,7 @@
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 void ProblemInfo::clear()
 {
@@ -131,6 +132,18 @@ void FieldInfo::setAnalysisType(AnalysisType analysisType)
                              coordinateType(),
                              m_analysisType);
 }
+
+//int FieldInfo::numberOfSolutions() const
+//{
+//    if (m_analysisType == AnalysisType_SteadyState)
+//        return module()->steady_state_solutions;
+//    else if (m_analysisType == AnalysisType_Transient)
+//        return module()->transient_solutions;
+//    else if (m_analysisType == AnalysisType_Harmonic)
+//        return module()->harmonic_solutions;
+//    else
+//        return 0;
+//}
 
 DxfFilter::DxfFilter(Scene *scene)
 {
@@ -237,6 +250,8 @@ Util::Util()
     m_config = new Config();
     m_config->load();
 
+    m_problem = NULL;
+
     initLists();
 }
 
@@ -248,6 +263,16 @@ Util::~Util()
     delete m_completer;
     delete m_config;
     delete m_scriptEngineRemote;
+    delete m_problem;
+}
+
+Problem* Util::createProblem(ProgressItemSolve* pis)
+{
+    if(Util::singleton()->m_problem)
+        delete Util::singleton()->m_problem;
+
+    Util::singleton()->m_problem = new Problem(pis);
+    return Util::singleton()->m_problem;
 }
 
 void Util::createSingleton()
