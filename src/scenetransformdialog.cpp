@@ -87,9 +87,16 @@ void SceneTransformDialog::createControls()
 
     // copy
     chkCopy = new QCheckBox(tr("Copy objects"));
-
+/*
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+*/
+
+    // my dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Apply | QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(doApply()));
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -143,4 +150,36 @@ void SceneTransformDialog::doReject()
     logMessage("SceneTransformDialog::doReject()");
 
     reject();
+}
+
+
+void SceneTransformDialog::doApply()
+{
+    logMessage("SceneTransformDialog::doApply()");
+
+    if (tabWidget->currentWidget() == widTranslate)
+    {
+        if (!txtTranslateX->evaluate(false)) return;
+        if (!txtTranslateY->evaluate(false)) return;
+        Util::scene()->transformTranslate(Point(txtTranslateX->number(), txtTranslateY->number()), chkCopy->isChecked());
+    }
+
+    if (tabWidget->currentWidget() == widRotate)
+    {
+        if (!txtRotateBasePointX->evaluate(false)) return;
+        if (!txtRotateBasePointY->evaluate(false)) return;
+        if (!txtRotateAngle->evaluate(false)) return;
+        Util::scene()->transformRotate(Point(txtRotateBasePointX->number(), txtRotateBasePointY->number()), txtRotateAngle->number(), chkCopy->isChecked());
+    }
+
+    if (tabWidget->currentWidget() == widScale)
+    {
+        if (!txtScaleBasePointX->evaluate(false)) return;
+        if (!txtScaleBasePointY->evaluate(false)) return;
+        if (!txtScaleFactor->evaluate(false)) return;
+        Util::scene()->transformScale(Point(txtScaleBasePointX->number(), txtScaleBasePointY->number()), txtScaleFactor->number(), chkCopy->isChecked());
+    }
+
+    exec();
+
 }
