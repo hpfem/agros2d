@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document version="2.1">
+    <geometry>
+        <nodes>
+            <node x="-0.2163924707277309" y="0.1665925596561435" id="0"/>
+            <node x="-0.1784496813398548" y="-0.07292129835482442" id="1"/>
+            <node x="0.1061212390692158" y="-0.03972135764043285" id="2"/>
+            <node x="0.07884985919667994" y="0.1594782866459167" id="3"/>
+        </nodes>
+        <edges>
+            <edge end="1" refine_towards="0" id="0" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" id="1" start="1" angle="0"/>
+            <edge end="3" refine_towards="0" id="2" start="2" angle="0"/>
+            <edge end="0" refine_towards="0" id="3" start="3" angle="0"/>
+        </edges>
+        <labels>
+            <label x="-0.107307" y="0.0717356" polynomial_order="0" id="0" area="0"/>
+        </labels>
+    </geometry>
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="1.0" name="unnamed" time_total="1.0" date="2011-12-22">
+        <startup_script></startup_script>
+        <description></description>
+        <fields>
+            <field field_id="electrostatic" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weak_forms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary electrostatic_potential="0" type="electrostatic_potential" id="1" name="fixed">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                        <edge edge="3"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material id="1" electrostatic_charge_density="10" name="mat" electrostatic_permittivity="1">
+                        <label label="0"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
+</document>
