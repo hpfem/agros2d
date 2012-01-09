@@ -30,7 +30,7 @@
 #include "scenesolution.h"
 #include "progressdialog.h"
 #include "weakform_parser.h"
-#include "weakform_factory.h"
+#include "../weakform/src/weakform_factory.h"
 
 using namespace Hermes::Hermes2D;
 

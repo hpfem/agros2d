@@ -187,7 +187,10 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     m_isRunning = true;
     m_stdOut = "";
 
-    deleteUserModules();
+    QSettings settings;
+    // enable user module deleter
+    if (settings.value("PythonEngine/UserModuleDeleter", true).toBool())
+        deleteUserModules();
 
     runPythonHeader();
 
@@ -297,8 +300,24 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
     else
     {
         QString str = code;
-        if (str.contains("="))
-            str = str.right(str.length() - str.lastIndexOf("=") - 1);
+        // if (str.lastIndexOf("=") != -1)
+        //    str = str.right(str.length() - str.lastIndexOf("=") - 1);
+
+        for (int i = 33; i <= 126; i++)
+        {
+            // skip numbers and alphabet and dot
+            if ((i >= 48 && i <= 57) || (i >= 65 && i <= 90) || (i >= 97 && i <= 122) || (i == 46))
+                continue;
+
+            QChar c(i);
+            // qDebug() << c << ", " << str.lastIndexOf(c) << ", " << str.length();
+
+            if (str.lastIndexOf(c) != -1)
+            {
+                str = str.right(str.length() - str.lastIndexOf(c) - 1);
+                break;
+            }
+        }
 
         if (str.contains("."))
         {

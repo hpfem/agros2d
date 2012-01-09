@@ -192,6 +192,13 @@ struct Point
 // return center
 Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
 
+// intersection of two lines
+Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e);
+
+// intersection of two lines or line and arc
+QList<Point> intersection(Point p1s, Point p1e,
+                          Point p2s, Point p2e, Point center, double radius, double angle);
+
 struct Point3
 {
     double x, y, z;
