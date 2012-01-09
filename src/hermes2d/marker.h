@@ -31,7 +31,7 @@ public:
     virtual ~Marker();
 
     /// value of one individual variable
-    const Value getValue(std::string id);
+    Value getValue(std::string id);
 
     /// get all values
     const map<string, Value> getValues() const;

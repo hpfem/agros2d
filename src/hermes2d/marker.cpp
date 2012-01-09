@@ -34,7 +34,7 @@ Marker::~Marker()
     values.clear();
 }
 
-const Value Marker::getValue(std::string id)
+Value Marker::getValue(std::string id)
 {
     if (id != "")
         return values[id];

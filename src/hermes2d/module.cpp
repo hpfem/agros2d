@@ -1071,30 +1071,29 @@ Parser::~Parser()
 }
 
 void Parser::setParserVariables(Material *material, Boundary *boundary, double value, double dx, double dy)
-{
-    assert(0); //TODO
-    /*
+{    
+    //TODO zkontrolovat volani value, proc u boundary neni derivace, ...
     if (material)
     {
-        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->problemInfo()->module()->material_type_variables;
+        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials =  fieldInfo->module()->material_type_variables;
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
             Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-            parser_variables[variable->shortname] = material->get_value(variable->id).value(value);
-            parser_variables["d" + variable->shortname] = material->get_value(variable->id).derivative(value);
+            parser_variables[variable->shortname] = material->getValue(variable->id).value(value);
+            parser_variables["d" + variable->shortname] = material->getValue(variable->id).derivative(value);
         }
     }
 
     if (boundary)
     {
-        Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(boundary->type);
+        Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
         for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-            parser_variables[variable->shortname] = boundary->values[variable->id].value(0.0);
+            parser_variables[variable->shortname] = boundary->getValue(variable->id).value(0.0);
         }
     }
-    */
+
 }
 
 void Parser::initParserMaterialVariables()
