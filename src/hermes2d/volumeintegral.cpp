@@ -49,7 +49,7 @@ void VolumeIntegralValue::initParser()
     for (Hermes::vector<Hermes::Module::Integral *>::iterator it = fieldInfo->module()->volume_integral.begin();
          it < fieldInfo->module()->volume_integral.end(); ++it )
     {
-        mu::Parser *pars = fieldInfo->module()->get_parser();
+        mu::Parser *pars = fieldInfo->module()->get_parser(fieldInfo);
 
         pars->SetExpr(((Hermes::Module::Integral *) *it)->expression.scalar);
 

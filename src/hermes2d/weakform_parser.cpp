@@ -102,7 +102,7 @@ ParserForm::~ParserForm()
 void ParserForm::initParser(Material *material, Boundary *boundary)
 {
     //assert(0); //TODO
-    parser->parser.push_back(m_fieldInfo->module()->get_parser());
+    parser->parser.push_back(m_fieldInfo->module()->get_parser(m_fieldInfo));
 
     // atan2 for muparser
     parser->parser[0]->DefineFun("atan2", mu_atan2, false);

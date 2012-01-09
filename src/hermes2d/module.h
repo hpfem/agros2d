@@ -82,12 +82,15 @@ template <typename Scalar>
 class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 {
 public:
-    WeakFormAgros(unsigned int neq = 1) : Hermes::Hermes2D::WeakForm<Scalar>(neq) { }
+    WeakFormAgros(FieldInfo* fieldInfo);
 
     void registerForms();
 
     // previous solution
     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
+
+private:
+    FieldInfo* m_fieldInfo;
 };
 
 namespace Hermes
@@ -341,15 +344,15 @@ struct Module
     Module(CoordinateType problemType, AnalysisType analysisType);
     ~Module();
 
-    // parser
-    mu::Parser *get_parser();
+    // parser  TODO move this method to FieldInfo???
+    mu::Parser *get_parser(FieldInfo* fieldInfo);
 
     // read form xml
     void read(std::string filename);
     // clear
     void clear();
 
-    inline CoordinateType get_problem_type() const { return m_problemType; }
+    inline CoordinateType get_coordinate_type() const { return m_coordinateType; }
     inline AnalysisType get_analysis_type() const { return m_analysisType; }
 
     // variable by name
@@ -378,7 +381,7 @@ struct Module
     virtual inline void deform_shape(double4* linVert, int count) {}
 
 private:
-    CoordinateType m_problemType;
+    CoordinateType m_coordinateType;
     AnalysisType m_analysisType;
 };
 

@@ -17,6 +17,7 @@ class Field
 public:
     Field(FieldInfo* fieldInfo);
     bool solveInitVariables();
+    FieldInfo* fieldInfo() { return m_fieldInfo; }
 
 public:
 //private:
