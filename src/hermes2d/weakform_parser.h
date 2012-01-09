@@ -103,13 +103,13 @@ public:
     // time step
     mutable double pdeltat;
 
-    ParserForm(FieldInfo *fieldInfo = NULL);
+    ParserForm(FieldInfo *fieldInfo);
     ~ParserForm();
 
     void initParser(Material *material, Boundary *boundary);
 
 protected:
-    FieldInfo *fieldInfo;
+    FieldInfo *m_fieldInfo;
 };
 
 // **********************************************************************************************

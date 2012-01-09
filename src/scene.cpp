@@ -1474,7 +1474,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         field->initialCondition.setText(eleField.toElement().attribute("initial_condition", "0"));
 
         // weakforms
-        field->weakFormsType = weakFormsTypeFromStringKey(eleField.toElement().attribute("weakforms",
+        field->weakFormsType = weakFormsTypeFromStringKey(eleField.toElement().attribute("weak_forms",
                                                                                          weakFormsTypeToStringKey(WeakFormsType_Compiled)));
 
         // polynomial order

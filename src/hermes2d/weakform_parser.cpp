@@ -20,6 +20,7 @@
 #include "weakform_parser.h"
 #include "scene.h"
 #include "util.h"
+#include "marker.h"
 #include "hermes2d.h"
 #include "module.h"
 #include "module_agros.h"
@@ -87,18 +88,10 @@ ParserFormVector::ParserFormVector(rapidxml::xml_node<> *node, CoordinateType pr
     }
 }
 
-ParserForm::ParserForm(FieldInfo *fieldInfo)
+ParserForm::ParserForm(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
-    //TODO - FIXME
-    if (!fieldInfo)
-    {
-        QString firstField = Util::scene()->fieldInfos().keys().at(0);
-        parser = new Parser(Util::scene()->fieldInfo(firstField));
-    }
-    else
-    {
-        parser = new Parser(fieldInfo);
-    }
+    assert(fieldInfo);
+    parser = new Parser(fieldInfo);
 }
 
 ParserForm::~ParserForm()
@@ -108,43 +101,43 @@ ParserForm::~ParserForm()
 
 void ParserForm::initParser(Material *material, Boundary *boundary)
 {
-    assert(0); //TODO
-//    parser->parser.push_back(Util::scene()->problemInfo()->module()->get_parser());
+    //assert(0); //TODO
+    parser->parser.push_back(m_fieldInfo->module()->get_parser());
 
-//    // atan2 for muparser
-//    parser->parser[0]->DefineFun("atan2", mu_atan2, false);
+    // atan2 for muparser
+    parser->parser[0]->DefineFun("atan2", mu_atan2, false);
 
-//    // coordinates
-//    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
-//    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
+    // coordinates
+    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
+    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
 
-//    // current solution
-//    parser->parser[0]->DefineVar("uval", &puval);
-//    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelX().toLower().toStdString() , &pudx);
-//    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pudy);
+    // current solution
+    parser->parser[0]->DefineVar("uval", &puval);
+    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelX().toLower().toStdString() , &pudx);
+    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pudy);
 
-//    // test function
-//    parser->parser[0]->DefineVar("vval", &pvval);
-//    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pvdx);
-//    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pvdy);
+    // test function
+    parser->parser[0]->DefineVar("vval", &pvval);
+    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pvdx);
+    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pvdy);
 
-//    // previous solution
-//    parser->parser[0]->DefineVar("upval", &pupval);
-//    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pupdx);
-//    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pupdy);
+    // previous solution
+    parser->parser[0]->DefineVar("upval", &pupval);
+    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pupdx);
+    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pupdy);
 
-//    // solution from previous time level
-//    parser->parser[0]->DefineVar("uptval", &puptval);
-//    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &puptdx);
-//    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &puptdy);
+    // solution from previous time level
+    parser->parser[0]->DefineVar("uptval", &puptval);
+    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &puptdx);
+    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &puptdy);
 
-//    // time step
-//    parser->parser[0]->DefineVar("deltat", &pdeltat);
+    // time step
+    parser->parser[0]->DefineVar("deltat", &pdeltat);
 
-//    parser->setParserVariables(material, boundary);
+    parser->setParserVariables(material, boundary);
 
-//    for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
-//        parser->parser[0]->DefineVar(it->first, &it->second);
+    for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
+        parser->parser[0]->DefineVar(it->first, &it->second);
 }
 
 // **********************************************************************************************
@@ -155,7 +148,7 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
                                                              Hermes::Hermes2D::SymFlag sym,
                                                              std::string expression,
                                                              Material *material)
-    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(), m_material(material)
+    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(material->getFieldInfo()), m_material(material)
 {
     initParser(material, NULL);
 
@@ -255,7 +248,7 @@ template <typename Scalar>
 CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, unsigned int j,
                                                              std::string area, std::string expression,
                                                              Material *material)
-    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm(), m_material(material), j(j)
+    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm(material->getFieldInfo()), m_material(material), j(j)
 {
     initParser(material, NULL);
 
@@ -351,7 +344,7 @@ template <typename Scalar>
 CustomParserMatrixFormSurf<Scalar>::CustomParserMatrixFormSurf(unsigned int i, unsigned int j,
                                                                std::string area, std::string expression,
                                                                Boundary *boundary)
-    : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j, area), ParserForm()
+    : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j, area), ParserForm(boundary->getFieldInfo())
 {
     initParser(NULL, boundary);
 
@@ -380,7 +373,7 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        if (fieldInfo->linearityType != LinearityType_Linear)
+        if (m_fieldInfo->linearityType != LinearityType_Linear)
         {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];
@@ -423,7 +416,7 @@ template <typename Scalar>
 CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i, unsigned int j,
                                                                std::string area, std::string expression,
                                                                Boundary *boundary)
-    : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), ParserForm(), j(j)
+    : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), ParserForm(boundary->getFieldInfo()), j(j)
 {
     initParser(NULL, boundary);
 
@@ -448,7 +441,7 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // previous solution
-        if (fieldInfo->linearityType != LinearityType_Linear)
+        if (m_fieldInfo->linearityType != LinearityType_Linear)
         {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];
@@ -491,7 +484,7 @@ Hermes::Ord CustomParserVectorFormSurf<Scalar>::ord(int n, double *wt, Hermes::H
 
 template <typename Scalar>
 CustomExactSolution<Scalar>::CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, std::string expression, Boundary *boundary)
-    : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), ParserForm()
+    : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), ParserForm(boundary->getFieldInfo())
 {
     initParser(NULL, boundary);
 
