@@ -184,9 +184,11 @@ class PyField {
 
         // boundaries
         void addBoundary(char *name, char *type, map<char*, double> parameters);
+        void setBoundary(char *name, char *type, map<char*, double> parameters);
 
         // materials
         void addMaterial(char *name, map<char*, double> parameters);
+        void setMaterial(char *name, map<char*, double> parameters);
 
         void solve() { qDebug() << "Not now :)"; }
 };

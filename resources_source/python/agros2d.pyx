@@ -75,7 +75,10 @@ cdef extern from "../../src/pythonlabagros.h":
         void setWeakForms(char*)
 
         void addBoundary(char*, char*, map[char*, double]) except +
+        void setBoundary(char*, char*, map[char*, double]) except +
+
         void addMaterial(char*, map[char*, double]) except +
+        void setMaterial(char*, map[char*, double]) except +
 
         void solve()
 
@@ -314,6 +317,16 @@ cdef class Field:
 
         self.thisptr.addBoundary(name, type, parameters_map)
 
+    def set_boundary(self, char *name, char *type = "", parameters = {}):
+        cdef map[char*, double] parameters_map
+        cdef pair[char*, double] parameter
+        for key in parameters:
+            parameter.first = key
+            parameter.second = parameters[key]
+            parameters_map.insert(parameter)
+
+        self.thisptr.setBoundary(name, type, parameters_map)
+
     # materials
     def add_material(self, char *name, parameters = {}):
         cdef map[char*, double] parameters_map
@@ -324,6 +337,16 @@ cdef class Field:
             parameters_map.insert(parameter)
 
         self.thisptr.addMaterial(name, parameters_map)
+
+    def set_material(self, char *name, parameters):
+        cdef map[char*, double] parameters_map
+        cdef pair[char*, double] parameter
+        for key in parameters:
+            parameter.first = key
+            parameter.second = parameters[key]
+            parameters_map.insert(parameter)
+
+        self.thisptr.setMaterial(name, parameters_map)
 
 # Geometry
 cdef class Geometry:

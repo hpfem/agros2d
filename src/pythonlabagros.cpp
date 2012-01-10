@@ -281,7 +281,7 @@ PyProblem::PyProblem(char *coordinateType, char *name, char *meshType, char *mat
 {
     logMessage("PyProblem::PyProblem()");
 
-    //Util::scene()->clear();
+    Util::scene()->clear();
 
     Util::scene()->problemInfo()->name = QString(name);
     Util::scene()->problemInfo()->coordinateType = coordinateTypeFromStringKey(QString(coordinateType));
@@ -366,21 +366,24 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     logMessage("PyField::addBoundary()");
 
     /* FIXME
-    if (Util::scene()->getBoundary(QString(name)))
-        throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
+    foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::scene()->fieldInfo(QString(name))).items())
+    {
+        if (sceneBoundary->getName() == std::string(name))
+            throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
+    }
     */
 
-    Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
+    Hermes::Module::BoundaryType *boundaryType = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
 
     std::map<std::string, Value> values;
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
         //qDebug() << (*i).first << ": " << (*i).second;
 
-        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundaryType->variables.begin(); it < boundaryType->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-            if (variable->shortname == std::string((*i).first))
+            if (variable->id == std::string((*i).first))
                 values[variable->id] = Value(QString::number((*i).second));
         }
     }
@@ -388,13 +391,23 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     Util::scene()->addBoundary(new SceneBoundary(fieldInfo(), std::string(name), std::string(type), values));
 }
 
+void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
+{
+    logMessage("PyField::setBoundary()");
+
+    SceneBoundary *sceneBoundary = Util::scene()->getBoundary(QString(name));
+    if (std::string(type) != "")
+        sceneBoundary->setType(std::string(type));
+
+    for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
+        sceneBoundary->setValue(std::string((*i).first), Value(QString::number((*i).second)));
+}
+
 void PyField::addMaterial(char *name, map<char*, double> parameters)
 {
     logMessage("PyField::addMaterial()");
 
-    /* FIXME
-    if (Util::scene()->getMaterial(QString(name)))
-        throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString(name)).toStdString());
+    /* FIXME - boundaries with same names
     */
 
     std::map<std::string, Value> values;
@@ -407,13 +420,22 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
             Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-            if (variable->shortname == std::string((*i).first))
+            if (variable->id == std::string((*i).first))
                 values[variable->id] = Value(QString::number((*i).second));
         }
     }
 
     Util::scene()->addMaterial(new SceneMaterial(fieldInfo(), std::string(name), values));
+}
 
+void PyField::setMaterial(char *name, map<char*, double> parameters)
+{
+    logMessage("PyField::setMaterial()");
+
+    SceneMaterial *sceneMaterial = Util::scene()->getMaterial(QString(name));
+
+    for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
+        sceneMaterial->setValue(std::string((*i).first), Value(QString::number((*i).second)));
 }
 
 void PyGeometry::addNode(double x, double y)
@@ -671,109 +693,6 @@ void pythonDeleteLabelPoint(double x, double y)
     logMessage("pythonDeleteLabelPoint()");
 
     Util::scene()->labels->remove(Util::scene()->getLabel(Point(x, y)));
-}
-
-// modifyBoundary(name, type, value, ...)
-static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
-{
-    assert(0); //TODO
-    //    logMessage("pythonModifyBoundary()");
-
-    //    PyObject *dict;
-    //    char *name, *type;
-    //    if (PyArg_ParseTuple(args, "ssO", &name, &type, &dict))
-    //    {
-    //        if (SceneBoundary *boundary = Util::scene()->getBoundary(name))
-    //        {
-    //            if (Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(type))
-    //            {
-    // boundary type
-
-    //                boundary->type = type;
-
-    //                // variables
-    //                PyObject *key, *value;
-    //                Py_ssize_t pos = 0;
-
-    //                while (PyDict_Next(dict, &pos, &key, &value))
-    //                {
-    //                    double val;
-    //                    char *str;
-
-    //                    // key
-    //                    PyArg_Parse(key, "s", &str);
-    //                    PyArg_Parse(value, "d", &val);
-
-    //                    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-    //                    {
-    //                        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-    //                        if (variable->shortname == std::string(str))
-    //                            boundary->values[variable->id] = Value(QString::number(val));
-    //                    }
-    //                }
-
-    //                Py_RETURN_NONE;
-    //            }
-    //            else
-    //            {
-    //                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
-    //                return NULL;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary with name '%1' doesn't exists.").arg(name).toStdString().c_str());
-    //            return NULL;
-    //        }
-    //    }
-
-    //    return NULL;
-}
-
-// modifymaterial(name, type, value, ...)
-static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
-{
-    assert(0); //TODO
-    //    logMessage("pythonModifyMaterial()");
-
-    //    PyObject *dict;
-    //    char *name, *type;
-    //    if (PyArg_ParseTuple(args, "sO", &name, &dict))
-    //    {
-    //        if (SceneMaterial *material = Util::scene()->getMaterial(name))
-    //        {
-    //            // variables
-    //            PyObject *key, *value;
-    //            Py_ssize_t pos = 0;
-
-    //            while (PyDict_Next(dict, &pos, &key, &value))
-    //            {
-    //                double val;
-    //                char *str;
-
-    //                // key
-    //                PyArg_Parse(key, "s", &str);
-    //                PyArg_Parse(value, "d", &val);
-
-    //                Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo("TODO")->module()->material_type_variables;
-    //                for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-    //                {
-    //                    Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-    //                    if (variable->shortname == std::string(str))
-    //                        material->values[variable->id] = Value(QString::number(val));
-    //                }
-    //            }
-
-    //            Py_RETURN_NONE;
-    //        }
-    //        else
-    //        {
-    //            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Material with name '%1' doesn't exists.").arg(name).toStdString().c_str());
-    //            return NULL;
-    //        }
-    //    }
-
-    //    return NULL;
 }
 
 // selectnone()
@@ -1439,8 +1358,6 @@ void pythonSaveImage(char *str, int w, int h)
 
 static PyMethodDef pythonMethodsAgros[] =
 {
-    {"modifyboundary", pythonModifyBoundary, METH_VARARGS, "modifyBoundary(name, type, value, ...)"},
-    {"modifymaterial", pythonModifyMaterial, METH_VARARGS, "modifymaterial(name, type, value, ...)"},
     {"selectnode", pythonSelectNode, METH_VARARGS, "selectnode(list)"},
     {"selectedge", pythonSelectEdge, METH_VARARGS, "selectedge(list)"},
     {"selectlabel", pythonSelectLabel, METH_VARARGS, "selectlabel(list)"},
