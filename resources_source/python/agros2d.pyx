@@ -76,9 +76,11 @@ cdef extern from "../../src/pythonlabagros.h":
 
         void addBoundary(char*, char*, map[char*, double]) except +
         void setBoundary(char*, char*, map[char*, double]) except +
+        void removeBoundary(char*)
 
         void addMaterial(char*, map[char*, double]) except +
         void setMaterial(char*, map[char*, double]) except +
+        void removeMaterial(char*)
 
         void solve()
 
@@ -89,6 +91,10 @@ cdef extern from "../../src/pythonlabagros.h":
         void addNode(double, double) except +
         void addEdge(double, double, double, double, double, int, map[char*, char*]) except +
         void addLabel(double, double, double, int, map[char*, char*]) except +
+
+        void removeNode(int index) except +
+        void removeEdge(int index) except +
+        void removeLabel(int index) except +
 
         void mesh()
 
@@ -112,11 +118,8 @@ cdef extern from "../../src/pythonlabagros.h":
     void pythonSaveDocument(char *str) except +
     void pythonCloseDocument()
 
-    void pythonDeleteNode(int index) except +
     void pythonDeleteNodePoint(double x, double y)
-    void pythonDeleteEdge(int index) except +
     void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
-    void pythonDeleteLabel(int index) except +
     void pythonDeleteLabelPoint(double x, double y)
 
     void pythonSelectNone()
@@ -327,6 +330,9 @@ cdef class Field:
 
         self.thisptr.setBoundary(name, type, parameters_map)
 
+    def remove_boundary(self, char *name):
+        self.thisptr.removeBoundary(name)
+
     # materials
     def add_material(self, char *name, parameters = {}):
         cdef map[char*, double] parameters_map
@@ -347,6 +353,9 @@ cdef class Field:
             parameters_map.insert(parameter)
 
         self.thisptr.setMaterial(name, parameters_map)
+
+    def remove_material(self, char *name):
+        self.thisptr.removeMaterial(name)
 
 # Geometry
 cdef class Geometry:
@@ -385,6 +394,18 @@ cdef class Geometry:
             materials_map.insert(material)
 
         self.thisptr.addLabel(x, y, area, order, materials_map)
+
+    # remove_node(index)
+    def remove_node(self, int index):
+        self.thisptr.removeNode(index)
+
+    # remove_edge(index)
+    def remove_edge(self, int index):
+        self.thisptr.removeEdge(index)
+
+    # remove_label(index)
+    def remove_label(self, int index):
+        self.thisptr.removeLabel(index)
 
     # mesh()
     def mesh(self):
@@ -437,20 +458,11 @@ def closedocument():
 
 # preprocessor
 
-def deletenode(int index):
-    pythonDeleteNode(index)
-
 def deletenodepoint(double x, double y):
     pythonDeleteNodePoint(x, y)
 
-def deleteedge(int index):
-    pythonDeleteEdge(index)
-
 def deleteedgepoint(double x1, double y1, double x2, double y2, double angle):
     pythonDeleteEdgePoint(x1, y1, x2, y2, angle)
-
-def deletelabel(int index):
-    pythonDeleteLabel(index)
 
 def deletelabelpoint(double x, double y):
     pythonDeleteLabelPoint(x, y)

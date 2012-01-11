@@ -365,21 +365,27 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 {
     logMessage("PyField::addBoundary()");
 
-    /* FIXME
-    foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::scene()->fieldInfo(QString(name))).items())
+    // check boundaries with same name
+    foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(Util::scene()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
     {
-        if (sceneBoundary->getName() == std::string(name))
+        if (boundary->getName() == name)
             throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
     }
-    */
 
     Hermes::Module::BoundaryType *boundaryType = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
 
+    // browse boundary parameter
     std::map<std::string, Value> values;
+    /*
+    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundaryType->variables.begin(); it < boundaryType->variables.end(); ++it)
+    {
+        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+        values[variable->id] = Value(parameters.find(std::string(variable->id)));
+    }
+    */
+
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
-        //qDebug() << (*i).first << ": " << (*i).second;
-
         for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundaryType->variables.begin(); it < boundaryType->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
@@ -401,6 +407,13 @@ void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
 
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
         sceneBoundary->setValue(std::string((*i).first), Value(QString::number((*i).second)));
+}
+
+void PyField::removeBoundary(char *name)
+{
+    logMessage("PyField::removeBoundary()");
+
+    Util::scene()->removeBoundary(Util::scene()->getBoundary(QString(name)));
 }
 
 void PyField::addMaterial(char *name, map<char*, double> parameters)
@@ -436,6 +449,13 @@ void PyField::setMaterial(char *name, map<char*, double> parameters)
 
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
         sceneMaterial->setValue(std::string((*i).first), Value(QString::number((*i).second)));
+}
+
+void PyField::removeMaterial(char *name)
+{
+    logMessage("PyField::removeMaterial()");
+
+    Util::scene()->removeMaterial(Util::scene()->getMaterial(QString(name)));
 }
 
 void PyGeometry::addNode(double x, double y)
@@ -505,6 +525,36 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
     }
 
     Util::scene()->addLabel(sceneLabel);
+}
+
+void PyGeometry::removeNode(int index)
+{
+    logMessage("PyGeometry::removeNode()");
+
+    if (index < 0 || index >= Util::scene()->nodes->length())
+        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+
+    Util::scene()->removeNode(Util::scene()->nodes->at(index));
+}
+
+void PyGeometry::removeEdge(int index)
+{
+    logMessage("PyGeometry::removeEdge()");
+
+    if (index < 0 || index >= Util::scene()->edges->length())
+        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+
+    Util::scene()->removeEdge(Util::scene()->edges->at(index));
+}
+
+void PyGeometry::removeLabel(int index)
+{
+    logMessage("PyGeometry::removeLabel()");
+
+    if (index < 0 || index >= Util::scene()->labels->length())
+        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+
+    Util::scene()->removeLabel(Util::scene()->labels->at(index));
 }
 
 void PyGeometry::mesh()

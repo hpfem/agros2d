@@ -185,10 +185,12 @@ class PyField {
         // boundaries
         void addBoundary(char *name, char *type, map<char*, double> parameters);
         void setBoundary(char *name, char *type, map<char*, double> parameters);
+        void removeBoundary(char *name);
 
         // materials
         void addMaterial(char *name, map<char*, double> parameters);
         void setMaterial(char *name, map<char*, double> parameters);
+        void removeMaterial(char *name);
 
         void solve() { qDebug() << "Not now :)"; }
 };
@@ -203,6 +205,10 @@ class PyGeometry {
         void addNode(double x, double y);
         void addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries);
         void addLabel(double x, double y, double area, int order, map<char*, char*> materials);
+
+        void removeNode(int index);
+        void removeEdge(int index);
+        void removeLabel(int index);
 
         void mesh();
 
@@ -230,11 +236,8 @@ void pythonOpenDocument(char *str);
 void pythonSaveDocument(char *str);
 void pythonCloseDocument();
 
-void pythonDeleteNode(int index);
 void pythonDeleteNodePoint(double x, double y);
-void pythonDeleteEdge(int index);
 void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle);
-void pythonDeleteLabel(int index);
 void pythonDeleteLabelPoint(double x, double y);
 
 void pythonSelectNone();
