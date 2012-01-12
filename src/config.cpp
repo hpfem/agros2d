@@ -139,12 +139,15 @@ void Config::load()
     deformVector = settings.value("SceneViewSettings/DeformVector", true).toBool();
 
     // particle tracing
+    particleIncludeGravitation = settings.value("SceneViewSettings/ParticleIncludeGravitation", PARTICLEINCLUDEGRAVITATION).toBool();
+    particleMass = settings.value("SceneViewSettings/ParticleMass", PARTICLEMASS).toDouble();
     particleConstant = settings.value("SceneViewSettings/ParticleConstant", PARTICLECONSTANT).toDouble();
     particleStart.x = settings.value("SceneViewSettings/ParticleStartX", PARTICLESTARTX).toDouble();
     particleStart.y = settings.value("SceneViewSettings/ParticleStartY", PARTICLESTARTY).toDouble();
     particleStartVelocity.x = settings.value("SceneViewSettings/ParticleStartVelocityX", PARTICLESTARTVELOCITYX).toDouble();
     particleStartVelocity.y = settings.value("SceneViewSettings/ParticleStartVelocityY", PARTICLESTARTVELOCITYY).toDouble();
-    particleNumberOfPoints = settings.value("SceneViewSettings/ParticleNumberOfPoints", PARTICLENUMBEROFPOINTS).toInt();
+    particleNumberOfParticles = settings.value("SceneViewSettings/ParticleNumberOfParticles", PARTICLENUMBEROFPARTICLES).toInt();
+    particleStartingRadius = settings.value("SceneViewSettings/ParticleStartingRadius", PARTICLESTARTINGRADIUS).toDouble();
 
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
@@ -281,12 +284,15 @@ void Config::save()
     settings.setValue("SceneViewSettings/DeformVector", deformVector);
 
     // particle tracing
+    settings.setValue("SceneViewSettings/ParticleIncludeGravitation", particleIncludeGravitation);
+    settings.setValue("SceneViewSettings/ParticleMass", particleMass);
     settings.setValue("SceneViewSettings/ParticleConstant", particleConstant);
     settings.setValue("SceneViewSettings/ParticleStartX", particleStart.x);
     settings.setValue("SceneViewSettings/ParticleStartY", particleStart.y);
     settings.setValue("SceneViewSettings/ParticleStartVelocityX", particleStartVelocity.x);
     settings.setValue("SceneViewSettings/ParticleStartVelocityY", particleStartVelocity.y);
-    settings.setValue("SceneViewSettings/ParticleNumberOfPoints", particleNumberOfPoints);
+    settings.setValue("SceneViewSettings/ParticleNumberOfParticles", particleNumberOfParticles);
+    settings.setValue("SceneViewSettings/ParticleStartingRadius", particleStartingRadius);
 
     // 3d
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);

@@ -115,10 +115,14 @@ public:
     bool showRulers;
 
     // particle tracing
+    bool particleIncludeGravitation;
+    double particleMass;
     double particleConstant;
     Point particleStart;
     Point particleStartVelocity;
-    int particleNumberOfPoints;
+    Point particleAcceleration;
+    int particleNumberOfParticles;
+    double particleStartingRadius;
 
     // colors
     QColor colorBackground;

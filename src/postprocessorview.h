@@ -112,7 +112,10 @@ private:
     QCheckBox *chkOrderLabel;
 
     // particle tracing
-    QSpinBox *txtParticleNumberOfPoints;
+    QCheckBox *chkParticleIncludeGravitation;
+    QSpinBox *txtParticleNumberOfParticles;
+    SLineEditDouble *txtParticleStartingRadius;
+    SLineEditDouble *txtParticleMass;
     SLineEditDouble *txtParticleConstant;
     SLineEditDouble *txtParticlePointX;
     SLineEditDouble *txtParticlePointY;

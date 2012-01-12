@@ -28,7 +28,7 @@
 #include "progressdialog.h"
 
 // scene view
-static SceneView *m_sceneView = NULL;;
+static SceneView *m_sceneView = NULL;
 
 SceneView *sceneView()
 {
@@ -2279,23 +2279,21 @@ void SceneView::paintParticleTracing()
                   Util::config()->colorSelected.greenF(),
                   Util::config()->colorSelected.blueF());
 
-        for (int i = 0; i < Util::config()->particleNumberOfPoints; i++)
+        for (int i = 0; i < Util::config()->particleNumberOfParticles; i++)
         {
             Point p = Util::config()->particleStart;
             Point v = Util::config()->particleStartVelocity;
 
             // random point
             if (i > 0)
-            {                
-                double dif = 10;
-
+            {
                 int trials = 0;
                 while (true)
                 {
-                    Point dp(rand() * (bound / dif) / RAND_MAX,
-                             rand() * (bound / dif) / RAND_MAX);
+                    Point dp(rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
+                             rand() * (Util::config()->particleStartingRadius) / RAND_MAX);
 
-                    p = Point(-bound / (2*dif), -bound / (2*dif)) + p + dp;
+                    p = Point(-Util::config()->particleStartingRadius / 2, -Util::config()->particleStartingRadius/ 2) + p + dp;
 
                     int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), p);
 
@@ -2326,7 +2324,9 @@ void SceneView::paintParticleTracing()
                     dt /= 2;
                     newPoint = p
                             + v * dt
-                            + localPointValue->derivative * Util::config()->particleConstant * dt*dt;
+                            + (localPointValue->derivative * (-1) * Util::config()->particleConstant +
+                               ((Util::config()->particleIncludeGravitation) ? Point(0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION) : Point()))
+                            / Util::config()->particleMass * dt*dt;
 
                     if (abs((p - newPoint).magnitude()) < bound/100)
                         break;

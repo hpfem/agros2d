@@ -120,7 +120,10 @@ void PostprocessorView::loadAdvanced()
     chkOrderLabel->setChecked(Util::config()->orderLabel);
 
     // particle tracing
-    txtParticleNumberOfPoints->setValue(Util::config()->particleNumberOfPoints);
+    chkParticleIncludeGravitation->setChecked(Util::config()->particleIncludeGravitation);
+    txtParticleNumberOfParticles->setValue(Util::config()->particleNumberOfParticles);
+    txtParticleStartingRadius->setValue(Util::config()->particleStartingRadius);
+    txtParticleMass->setValue(Util::config()->particleMass);
     txtParticleConstant->setValue(Util::config()->particleConstant);
     txtParticlePointX->setValue(Util::config()->particleStart.x);
     txtParticlePointY->setValue(Util::config()->particleStart.y);
@@ -197,7 +200,10 @@ void PostprocessorView::saveAdvanced()
     Util::config()->orderLabel = chkOrderLabel->isChecked();
 
     // particle tracing
-    Util::config()->particleNumberOfPoints = txtParticleNumberOfPoints->value();
+    Util::config()->particleIncludeGravitation = chkParticleIncludeGravitation->isChecked();
+    Util::config()->particleNumberOfParticles = txtParticleNumberOfParticles->value();
+    Util::config()->particleStartingRadius = txtParticleStartingRadius->value();
+    Util::config()->particleMass = txtParticleMass->value();
     Util::config()->particleConstant = txtParticleConstant->value();
     Util::config()->particleStart.x = txtParticlePointX->value();
     Util::config()->particleStart.y = txtParticlePointY->value();
@@ -589,9 +595,12 @@ QWidget *PostprocessorView::controlsAdvanced()
     orderWidget->setLayout(layoutOrder);
 
     // particle tracing
-    txtParticleNumberOfPoints = new QSpinBox(this);
-    txtParticleNumberOfPoints->setMinimum(1);
-    txtParticleNumberOfPoints->setMaximum(50);
+    chkParticleIncludeGravitation = new QCheckBox(tr("Include gravitation"));
+    txtParticleNumberOfParticles = new QSpinBox(this);
+    txtParticleNumberOfParticles->setMinimum(1);
+    txtParticleNumberOfParticles->setMaximum(50);
+    txtParticleStartingRadius = new SLineEditDouble();
+    txtParticleMass = new SLineEditDouble();
     txtParticleConstant = new SLineEditDouble();
     txtParticlePointX = new SLineEditDouble();
     txtParticlePointY = new SLineEditDouble();
@@ -601,19 +610,47 @@ QWidget *PostprocessorView::controlsAdvanced()
     QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
     connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
 
+    // particle properties
+    QGridLayout *gridLayoutParticleProperties = new QGridLayout();
+    gridLayoutParticleProperties->addWidget(new QLabel(tr("Mass:")), 1, 0);
+    gridLayoutParticleProperties->addWidget(txtParticleMass, 1, 1);
+    gridLayoutParticleProperties->addWidget(new QLabel(tr("Constant:")), 2, 0);
+    gridLayoutParticleProperties->addWidget(txtParticleConstant, 2, 1);
+
+    QGroupBox *grpParticleProperties = new QGroupBox(tr("Particle properties"));
+    grpParticleProperties->setLayout(gridLayoutParticleProperties);
+
+    // initial particle position
+    QGridLayout *gridLayoutInitialPosition = new QGridLayout();
+    gridLayoutInitialPosition->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelX())), 0, 0);
+    gridLayoutInitialPosition->addWidget(txtParticlePointX, 0, 1);
+    gridLayoutInitialPosition->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelY())), 1, 0);
+    gridLayoutInitialPosition->addWidget(txtParticlePointY, 1, 1);
+
+    QGroupBox *grpInitialPosition = new QGroupBox(tr("Initial particle position"));
+    grpInitialPosition->setLayout(gridLayoutInitialPosition);
+
+    // initial particle velocity
+    QGridLayout *gridLayoutInitialVelocity = new QGridLayout();
+    gridLayoutInitialVelocity->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelX())), 0, 0);
+    gridLayoutInitialVelocity->addWidget(txtParticleVelocityX, 0, 1);
+    gridLayoutInitialVelocity->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelY())), 1, 0);
+    gridLayoutInitialVelocity->addWidget(txtParticleVelocityY, 1, 1);
+
+    QGroupBox *grpInitialVelocity = new QGroupBox(tr("Initial particle velocity"));
+    grpInitialVelocity->setLayout(gridLayoutInitialVelocity);
+
     QGridLayout *gridLayoutParticle = new QGridLayout();
     gridLayoutParticle->setColumnMinimumWidth(0, minWidth);
     gridLayoutParticle->setColumnStretch(1, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Number of points:")), 0, 0);
-    gridLayoutParticle->addWidget(txtParticleNumberOfPoints, 0, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Constant:")), 1, 0);
-    gridLayoutParticle->addWidget(txtParticleConstant, 1, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Particle position:")), 2, 0);
-    gridLayoutParticle->addWidget(txtParticlePointX, 2, 1);
-    gridLayoutParticle->addWidget(txtParticlePointY, 3, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Particle velocity:")), 4, 0);
-    gridLayoutParticle->addWidget(txtParticleVelocityX, 4, 1);
-    gridLayoutParticle->addWidget(txtParticleVelocityY, 5, 1);
+    gridLayoutParticle->addWidget(new QLabel(tr("Number of particles:")), 0, 0);
+    gridLayoutParticle->addWidget(txtParticleNumberOfParticles, 0, 1);
+    gridLayoutParticle->addWidget(new QLabel(tr("Particles radius:")), 1, 0);
+    gridLayoutParticle->addWidget(txtParticleStartingRadius, 1, 1);
+    gridLayoutParticle->addWidget(chkParticleIncludeGravitation, 2, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpParticleProperties, 3, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpInitialPosition, 4, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpInitialVelocity, 5, 0, 1, 2);
 
     QVBoxLayout *layoutParticle = new QVBoxLayout();
     layoutParticle->addLayout(gridLayoutParticle);
@@ -847,7 +884,10 @@ void PostprocessorView::doParticleDefault()
 {
     logMessage("PostprocessorView::doParticleDefault()");
 
-    txtParticleNumberOfPoints->setValue(PARTICLENUMBEROFPOINTS);
+    txtParticleNumberOfParticles->setValue(PARTICLENUMBEROFPARTICLES);
+    txtParticleStartingRadius->setValue(PARTICLESTARTINGRADIUS);
+    chkParticleIncludeGravitation->setChecked(PARTICLEINCLUDEGRAVITATION);
+    txtParticleMass->setValue(PARTICLEMASS);
     txtParticleConstant->setValue(PARTICLECONSTANT);
     txtParticlePointX->setValue(PARTICLESTARTX);
     txtParticlePointY->setValue(PARTICLESTARTY);
