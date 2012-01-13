@@ -1353,12 +1353,13 @@ void SceneView::paintScalarField()
                 value[j]   = linVert[linTris[i][j]][2];
             }
 
-            if (!m_sceneViewSettings.scalarRangeAuto)
-            {
-                double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
-                    continue;
-            }
+//            // Skip triangle if avarage value out of range
+//            if (!m_sceneViewSettings.scalarRangeAuto)
+//            {
+//                double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+//                if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+//                    continue;
+//            }
 
             for (int j = 0; j < 3; j++)
             {
