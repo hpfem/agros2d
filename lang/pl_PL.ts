@@ -2615,157 +2615,157 @@
 <context>
     <name>PostprocessorView</name>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="113"/>
+        <location filename="../src/postprocessorview.cpp" line="114"/>
         <source>Width and height of bounding box over vector count.</source>
         <translation>Szerokość i wysokość ramki do okoła licznika wektorów.</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="202"/>
+        <location filename="../src/postprocessorview.cpp" line="226"/>
         <source>Basic</source>
         <translation>Podstawowy</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="203"/>
+        <location filename="../src/postprocessorview.cpp" line="227"/>
         <source>Advanced</source>
         <translation>Rozszerzony</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="206"/>
+        <location filename="../src/postprocessorview.cpp" line="230"/>
         <source>Apply</source>
         <translation>Zastosuj</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="232"/>
+        <location filename="../src/postprocessorview.cpp" line="256"/>
         <source>Geometry</source>
         <translation>Geometria</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="233"/>
+        <location filename="../src/postprocessorview.cpp" line="257"/>
         <source>Initial mesh</source>
         <translation>Siatka początkowa</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="240"/>
+        <location filename="../src/postprocessorview.cpp" line="265"/>
         <source>None</source>
         <translation>Nic</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="241"/>
-        <location filename="../src/postprocessorview.cpp" line="576"/>
+        <location filename="../src/postprocessorview.cpp" line="266"/>
+        <location filename="../src/postprocessorview.cpp" line="668"/>
         <source>Polynomial order</source>
         <translation>Stopień wielomianu</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="242"/>
-        <location filename="../src/postprocessorview.cpp" line="243"/>
-        <location filename="../src/postprocessorview.cpp" line="573"/>
+        <location filename="../src/postprocessorview.cpp" line="267"/>
+        <location filename="../src/postprocessorview.cpp" line="268"/>
+        <location filename="../src/postprocessorview.cpp" line="665"/>
         <source>Scalar view</source>
         <translation>Pole skalarne</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="244"/>
+        <location filename="../src/postprocessorview.cpp" line="269"/>
         <source>Scalar view solid</source>
         <translation>Pole skalarne, bryła</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="234"/>
-        <location filename="../src/postprocessorview.cpp" line="574"/>
+        <location filename="../src/postprocessorview.cpp" line="258"/>
+        <location filename="../src/postprocessorview.cpp" line="666"/>
         <source>Contours</source>
         <translation>Izolinie</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="235"/>
+        <location filename="../src/postprocessorview.cpp" line="259"/>
         <source>Vectors</source>
         <translation>Wektory</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="237"/>
+        <location filename="../src/postprocessorview.cpp" line="262"/>
         <source>Solution mesh</source>
         <translation>Siatka rozwiązania</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="262"/>
+        <location filename="../src/postprocessorview.cpp" line="288"/>
         <source>2D:</source>
         <translation>2D:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="266"/>
+        <location filename="../src/postprocessorview.cpp" line="292"/>
         <source>3D:</source>
         <translation>3D:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="275"/>
+        <location filename="../src/postprocessorview.cpp" line="301"/>
         <source>Show</source>
         <translation>Pokaż</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="284"/>
+        <location filename="../src/postprocessorview.cpp" line="310"/>
         <source>Auto range</source>
         <translation>Zakres autom.</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="302"/>
-        <location filename="../src/postprocessorview.cpp" line="327"/>
+        <location filename="../src/postprocessorview.cpp" line="328"/>
+        <location filename="../src/postprocessorview.cpp" line="353"/>
         <source>Variable:</source>
         <translation>Zmienna:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="305"/>
+        <location filename="../src/postprocessorview.cpp" line="331"/>
         <source>Component:</source>
         <translation>Składnik:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="309"/>
+        <location filename="../src/postprocessorview.cpp" line="335"/>
         <source>Minimum:</source>
         <translation>Minimum:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="313"/>
+        <location filename="../src/postprocessorview.cpp" line="339"/>
         <source>Maximum:</source>
         <translation>Maximum:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="318"/>
+        <location filename="../src/postprocessorview.cpp" line="344"/>
         <source>Scalar field</source>
         <translation>Pole skalarne</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="330"/>
-        <location filename="../src/postprocessorview.cpp" line="575"/>
+        <location filename="../src/postprocessorview.cpp" line="356"/>
+        <location filename="../src/postprocessorview.cpp" line="667"/>
         <source>Vector field</source>
         <translation>Pole wektorowe</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="339"/>
+        <location filename="../src/postprocessorview.cpp" line="365"/>
         <source>Time step:</source>
         <translation>Czas:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="342"/>
+        <location filename="../src/postprocessorview.cpp" line="368"/>
         <source>Transient analysis</source>
         <translation>Analiza w czasie</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="488"/>
+        <location filename="../src/postprocessorview.cpp" line="514"/>
         <source>Contours count:</source>
         <translation>Liczba izolinii:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="420"/>
-        <location filename="../src/postprocessorview.cpp" line="535"/>
+        <location filename="../src/postprocessorview.cpp" line="446"/>
+        <location filename="../src/postprocessorview.cpp" line="561"/>
         <source>Jet</source>
         <translation>Jet</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="429"/>
-        <location filename="../src/postprocessorview.cpp" line="543"/>
+        <location filename="../src/postprocessorview.cpp" line="455"/>
+        <location filename="../src/postprocessorview.cpp" line="569"/>
         <source>Autumn</source>
         <translation>Jesienna</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="421"/>
-        <location filename="../src/postprocessorview.cpp" line="423"/>
-        <location filename="../src/postprocessorview.cpp" line="537"/>
+        <location filename="../src/postprocessorview.cpp" line="447"/>
+        <location filename="../src/postprocessorview.cpp" line="449"/>
+        <location filename="../src/postprocessorview.cpp" line="563"/>
         <source>Hot</source>
         <translation>Gorąca</translation>
     </message>
@@ -2775,233 +2775,280 @@
         <translation>Widok</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="367"/>
+        <location filename="../src/postprocessorview.cpp" line="260"/>
+        <location filename="../src/postprocessorview.cpp" line="669"/>
+        <source>Particle tracing</source>
+        <translation>Śledzenie cząsteczek</translation>
+    </message>
+    <message>
+        <location filename="../src/postprocessorview.cpp" line="393"/>
         <source>Show grid</source>
         <translation>Pokaż kratkę</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="369"/>
+        <location filename="../src/postprocessorview.cpp" line="395"/>
         <source>Snap to grid</source>
         <translation>Przyciągaj do kratki</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="372"/>
+        <location filename="../src/postprocessorview.cpp" line="398"/>
         <source>Grid step:</source>
         <translation>Rozmiar kratki:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="377"/>
+        <location filename="../src/postprocessorview.cpp" line="403"/>
         <source>Grid</source>
         <translation>Kratka</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="382"/>
+        <location filename="../src/postprocessorview.cpp" line="408"/>
         <source>Set font</source>
         <translation>Czcionka</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="389"/>
+        <location filename="../src/postprocessorview.cpp" line="415"/>
         <source>Scene font</source>
         <translation>Czcionka widoku</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="393"/>
+        <location filename="../src/postprocessorview.cpp" line="419"/>
         <source>Show rulers</source>
         <translation>Pokaż linijki</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="394"/>
+        <location filename="../src/postprocessorview.cpp" line="420"/>
         <source>Show axes</source>
         <translation>Pokaż osie</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="395"/>
+        <location filename="../src/postprocessorview.cpp" line="421"/>
         <source>Show label</source>
         <translation>Pokaż etykiety</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="402"/>
+        <location filename="../src/postprocessorview.cpp" line="428"/>
         <source>Other</source>
         <translation>Inne</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="422"/>
-        <location filename="../src/postprocessorview.cpp" line="536"/>
+        <location filename="../src/postprocessorview.cpp" line="448"/>
+        <location filename="../src/postprocessorview.cpp" line="562"/>
         <source>Copper</source>
         <translation>Miedziana</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="424"/>
-        <location filename="../src/postprocessorview.cpp" line="538"/>
+        <location filename="../src/postprocessorview.cpp" line="450"/>
+        <location filename="../src/postprocessorview.cpp" line="564"/>
         <source>Cool</source>
         <translation>Zimna</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="425"/>
-        <location filename="../src/postprocessorview.cpp" line="539"/>
+        <location filename="../src/postprocessorview.cpp" line="451"/>
+        <location filename="../src/postprocessorview.cpp" line="565"/>
         <source>Bone</source>
         <translation>Szkielet</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="426"/>
-        <location filename="../src/postprocessorview.cpp" line="540"/>
+        <location filename="../src/postprocessorview.cpp" line="452"/>
+        <location filename="../src/postprocessorview.cpp" line="566"/>
         <source>Pink</source>
         <translation>Różowa</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="427"/>
-        <location filename="../src/postprocessorview.cpp" line="541"/>
+        <location filename="../src/postprocessorview.cpp" line="453"/>
+        <location filename="../src/postprocessorview.cpp" line="567"/>
         <source>Spring</source>
         <translation>Wiosna</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="428"/>
-        <location filename="../src/postprocessorview.cpp" line="542"/>
+        <location filename="../src/postprocessorview.cpp" line="454"/>
+        <location filename="../src/postprocessorview.cpp" line="568"/>
         <source>Summer</source>
         <translation>Lato</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="430"/>
-        <location filename="../src/postprocessorview.cpp" line="544"/>
+        <location filename="../src/postprocessorview.cpp" line="456"/>
+        <location filename="../src/postprocessorview.cpp" line="570"/>
         <source>Winter</source>
         <translation>Zima</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="431"/>
-        <location filename="../src/postprocessorview.cpp" line="545"/>
+        <location filename="../src/postprocessorview.cpp" line="457"/>
+        <location filename="../src/postprocessorview.cpp" line="571"/>
         <source>HSV</source>
         <translation>HSV</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="432"/>
-        <location filename="../src/postprocessorview.cpp" line="546"/>
+        <location filename="../src/postprocessorview.cpp" line="458"/>
+        <location filename="../src/postprocessorview.cpp" line="572"/>
         <source>B/W ascending</source>
         <translation>B/Cz rosnąco</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="433"/>
-        <location filename="../src/postprocessorview.cpp" line="547"/>
+        <location filename="../src/postprocessorview.cpp" line="459"/>
+        <location filename="../src/postprocessorview.cpp" line="573"/>
         <source>B/W descending</source>
         <translation>B-Cz malejąco</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="436"/>
+        <location filename="../src/postprocessorview.cpp" line="462"/>
         <source>Extremely coarse</source>
         <translation>Super niska</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="437"/>
+        <location filename="../src/postprocessorview.cpp" line="463"/>
         <source>Extra coarse</source>
         <translation>Bardzo niska</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="438"/>
+        <location filename="../src/postprocessorview.cpp" line="464"/>
         <source>Coarser</source>
         <translation>Niska</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="439"/>
+        <location filename="../src/postprocessorview.cpp" line="465"/>
         <source>Coarse</source>
         <translation>Gorsza</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="440"/>
+        <location filename="../src/postprocessorview.cpp" line="466"/>
         <source>Normal</source>
         <translation>Normalna</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="441"/>
+        <location filename="../src/postprocessorview.cpp" line="467"/>
         <source>Fine</source>
         <translation>Dobra</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="442"/>
+        <location filename="../src/postprocessorview.cpp" line="468"/>
         <source>Finer</source>
         <translation>Lepsza</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="443"/>
+        <location filename="../src/postprocessorview.cpp" line="469"/>
         <source>Extra fine</source>
         <translation>Bardzo dobra</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="445"/>
+        <location filename="../src/postprocessorview.cpp" line="471"/>
         <source>Filter</source>
         <translation>Filtr</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="452"/>
-        <location filename="../src/postprocessorview.cpp" line="549"/>
+        <location filename="../src/postprocessorview.cpp" line="478"/>
+        <location filename="../src/postprocessorview.cpp" line="575"/>
         <source>Show scale</source>
         <translation>Pokaż skalę</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="465"/>
+        <location filename="../src/postprocessorview.cpp" line="491"/>
         <source>Quality:</source>
         <translation>Jakość:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="460"/>
-        <location filename="../src/postprocessorview.cpp" line="558"/>
+        <location filename="../src/postprocessorview.cpp" line="598"/>
+        <source>Include gravitation</source>
+        <translation>Włącz grawitacje</translation>
+    </message>
+    <message>
+        <location filename="../src/postprocessorview.cpp" line="615"/>
+        <source>Mass:</source>
+        <translation>Masa:</translation>
+    </message>
+    <message>
+        <location filename="../src/postprocessorview.cpp" line="617"/>
+        <source>Constant:</source>
+        <translation>Stała:</translation>
+    </message>
+    <message>
+        <location filename="../src/postprocessorview.cpp" line="620"/>
+        <source>Particle properties</source>
+        <translation>Parametry cząsteczki</translation>
+    </message>
+    <message>
+        <location filename="../src/postprocessorview.cpp" line="630"/>
+        <source>Initial particle position</source>
+        <translation>Początkowa pozycja cząsteczki</translation>
+    </message>
+    <message>
+        <location filename="../src/postprocessorview.cpp" line="640"/>
+        <source>Initial particle velocity</source>
+        <translation>Początkowa prędkość cząsteczki</translation>
+    </message>
+    <message>
+        <location filename="../src/postprocessorview.cpp" line="646"/>
+        <source>Number of particles:</source>
+        <translation>Liczba cząsteczek:</translation>
+    </message>
+    <message>
+        <location filename="../src/postprocessorview.cpp" line="648"/>
+        <source>Particles radius:</source>
+        <translation>Promień cząsteczki</translation>
+    </message>
+    <message>
+        <location filename="../src/postprocessorview.cpp" line="486"/>
+        <location filename="../src/postprocessorview.cpp" line="584"/>
         <source>Palette:</source>
         <translation>Paleta:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="462"/>
+        <location filename="../src/postprocessorview.cpp" line="488"/>
         <source>Steps:</source>
         <translation>Kroki:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="500"/>
+        <location filename="../src/postprocessorview.cpp" line="526"/>
         <source>Proportional</source>
         <translation>Proporcjonalnie</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="501"/>
+        <location filename="../src/postprocessorview.cpp" line="527"/>
         <source>Color (b/w)</source>
         <translation>Kolor (b-cz)</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="517"/>
+        <location filename="../src/postprocessorview.cpp" line="543"/>
         <source>Vectors:</source>
         <translation>Wektory:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="520"/>
+        <location filename="../src/postprocessorview.cpp" line="546"/>
         <source>Scale:</source>
         <translation>Skala:</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="534"/>
+        <location filename="../src/postprocessorview.cpp" line="560"/>
         <source>Hermes</source>
         <translation>Hermes</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="405"/>
-        <location filename="../src/postprocessorview.cpp" line="454"/>
-        <location filename="../src/postprocessorview.cpp" line="482"/>
-        <location filename="../src/postprocessorview.cpp" line="511"/>
-        <location filename="../src/postprocessorview.cpp" line="552"/>
+        <location filename="../src/postprocessorview.cpp" line="431"/>
+        <location filename="../src/postprocessorview.cpp" line="480"/>
+        <location filename="../src/postprocessorview.cpp" line="508"/>
+        <location filename="../src/postprocessorview.cpp" line="537"/>
+        <location filename="../src/postprocessorview.cpp" line="578"/>
+        <location filename="../src/postprocessorview.cpp" line="610"/>
         <source>Default</source>
         <translation>Domyślne</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="550"/>
+        <location filename="../src/postprocessorview.cpp" line="576"/>
         <source>Show order labels</source>
         <translation>Pokaż numery stopnia</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="572"/>
+        <location filename="../src/postprocessorview.cpp" line="664"/>
         <source>Workspace</source>
         <translation>Panel roboczy</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="598"/>
+        <location filename="../src/postprocessorview.cpp" line="691"/>
         <source>Scalar</source>
         <translation>Skalarne</translation>
     </message>
     <message>
-        <location filename="../src/postprocessorview.cpp" line="602"/>
+        <location filename="../src/postprocessorview.cpp" line="695"/>
         <source>Magnitude</source>
         <translation>Amplituda</translation>
     </message>
@@ -4836,42 +4883,42 @@
         <translation>adaptacja typu hp</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="300"/>
+        <location filename="../src/util.h" line="301"/>
         <source>Information</source>
         <translation>Informacja</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="303"/>
+        <location filename="../src/util.h" line="304"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="306"/>
+        <location filename="../src/util.h" line="307"/>
         <source>Critical</source>
         <translation>Błąd krytyczny</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="698"/>
+        <location filename="../src/util.h" line="699"/>
         <source>H1 norm</source>
         <translation>Norma H1</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="700"/>
+        <location filename="../src/util.h" line="701"/>
         <source>L2 norm</source>
         <translation>Norma L2</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="702"/>
+        <location filename="../src/util.h" line="703"/>
         <source>H1 seminorm</source>
         <translation>Seminorma H1</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="704"/>
+        <location filename="../src/util.h" line="705"/>
         <source>Hdiv norm</source>
         <translation>Norma Hdiv</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="706"/>
+        <location filename="../src/util.h" line="707"/>
         <source>Hcurl norm</source>
         <translation>Norma Hcurl</translation>
     </message>
@@ -6351,210 +6398,215 @@
 <context>
     <name>SceneView</name>
     <message>
-        <location filename="../src/sceneview.cpp" line="149"/>
         <location filename="../src/sceneview.cpp" line="151"/>
+        <location filename="../src/sceneview.cpp" line="153"/>
         <source>Zoom in</source>
         <translation>Przybliż</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="154"/>
         <location filename="../src/sceneview.cpp" line="156"/>
+        <location filename="../src/sceneview.cpp" line="158"/>
         <source>Zoom out</source>
         <translation>Oddal</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="159"/>
+        <location filename="../src/sceneview.cpp" line="161"/>
         <source>Zoom best fit</source>
         <translation>Dopasuj</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="160"/>
+        <location filename="../src/sceneview.cpp" line="162"/>
         <source>Ctrl+0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="161"/>
+        <location filename="../src/sceneview.cpp" line="163"/>
         <source>Best fit</source>
         <translation>Dopasowanie do wielkości okna</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="164"/>
-        <location filename="../src/sceneview.cpp" line="165"/>
+        <location filename="../src/sceneview.cpp" line="166"/>
+        <location filename="../src/sceneview.cpp" line="167"/>
         <source>Zoom region</source>
         <translation>Dopasuj do zaznaczenia</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="169"/>
-        <location filename="../src/sceneview.cpp" line="170"/>
+        <location filename="../src/sceneview.cpp" line="171"/>
+        <location filename="../src/sceneview.cpp" line="172"/>
         <source>Show grid</source>
         <translation>Pokaż kratkę</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="175"/>
-        <location filename="../src/sceneview.cpp" line="176"/>
+        <location filename="../src/sceneview.cpp" line="177"/>
+        <location filename="../src/sceneview.cpp" line="178"/>
         <source>Snap to grid</source>
         <translation>Przyciągaj do kratki</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="181"/>
-        <location filename="../src/sceneview.cpp" line="182"/>
+        <location filename="../src/sceneview.cpp" line="183"/>
+        <location filename="../src/sceneview.cpp" line="184"/>
         <source>Show rulers</source>
         <translation>Pokaż linijki</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="188"/>
+        <location filename="../src/sceneview.cpp" line="190"/>
         <source>Operate on &amp;nodes</source>
         <translation>Operacje na &amp;węzłach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="190"/>
-        <location filename="../src/sceneview.cpp" line="2262"/>
+        <location filename="../src/sceneview.cpp" line="192"/>
+        <location filename="../src/sceneview.cpp" line="2374"/>
         <source>Operate on nodes</source>
         <translation>Operacje na węzłach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="193"/>
+        <location filename="../src/sceneview.cpp" line="195"/>
         <source>Operate on &amp;edges</source>
         <translation>Operacje na &amp;krawędziach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="195"/>
-        <location filename="../src/sceneview.cpp" line="2265"/>
+        <location filename="../src/sceneview.cpp" line="197"/>
+        <location filename="../src/sceneview.cpp" line="2377"/>
         <source>Operate on edges</source>
         <translation>Operacje na krawędziach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="198"/>
+        <location filename="../src/sceneview.cpp" line="200"/>
         <source>Operate on &amp;labels</source>
         <translation>Operacje na &amp;etykietach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="200"/>
-        <location filename="../src/sceneview.cpp" line="2268"/>
+        <location filename="../src/sceneview.cpp" line="202"/>
+        <location filename="../src/sceneview.cpp" line="2380"/>
         <source>Operate on labels</source>
         <translation>Operacje na etykietach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="203"/>
+        <location filename="../src/sceneview.cpp" line="205"/>
         <source>&amp;Postprocessor</source>
         <translation>&amp;Wyniki</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="205"/>
-        <location filename="../src/sceneview.cpp" line="2287"/>
+        <location filename="../src/sceneview.cpp" line="207"/>
+        <location filename="../src/sceneview.cpp" line="2399"/>
         <source>Postprocessor</source>
         <translation>Wyniki</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="216"/>
-        <location filename="../src/sceneview.cpp" line="220"/>
-        <location filename="../src/sceneview.cpp" line="224"/>
+        <location filename="../src/sceneview.cpp" line="218"/>
+        <location filename="../src/sceneview.cpp" line="222"/>
+        <location filename="../src/sceneview.cpp" line="226"/>
         <source>Projection to %1%2</source>
         <translation>Rzut na %1%2</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="217"/>
-        <location filename="../src/sceneview.cpp" line="221"/>
-        <location filename="../src/sceneview.cpp" line="225"/>
+        <location filename="../src/sceneview.cpp" line="219"/>
+        <location filename="../src/sceneview.cpp" line="223"/>
+        <location filename="../src/sceneview.cpp" line="227"/>
         <source>Projection to %1%2 plane.</source>
         <translation>Rzut na płaszczyznę %1%2.</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="237"/>
+        <location filename="../src/sceneview.cpp" line="239"/>
         <source>Solution mesh</source>
         <translation>Siatka rozwiązania</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="240"/>
+        <location filename="../src/sceneview.cpp" line="242"/>
         <source>Contours</source>
         <translation>Izolinie</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="243"/>
+        <location filename="../src/sceneview.cpp" line="245"/>
         <source>Vectors</source>
         <translation>Wektory</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="254"/>
+        <location filename="../src/sceneview.cpp" line="248"/>
+        <source>Particle tracing</source>
+        <translation>Śledzenie cząsteczek</translation>
+    </message>
+    <message>
+        <location filename="../src/sceneview.cpp" line="260"/>
         <source>Local Values</source>
         <translation>Wartości w punkcie</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="257"/>
+        <location filename="../src/sceneview.cpp" line="263"/>
         <source>Surface Integrals</source>
         <translation>Całka powierzchniowa</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="260"/>
+        <location filename="../src/sceneview.cpp" line="266"/>
         <source>Volume Integrals</source>
         <translation>Całka objętościowa</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="270"/>
+        <location filename="../src/sceneview.cpp" line="276"/>
         <source>Object properties</source>
         <translation>Parametry obiektu</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="275"/>
+        <location filename="../src/sceneview.cpp" line="281"/>
         <source>&amp;Select region</source>
         <translation>&amp;Wybierz obszar</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="276"/>
+        <location filename="../src/sceneview.cpp" line="282"/>
         <source>Select region</source>
         <translation>Wybierz obszar</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="279"/>
-        <location filename="../src/sceneview.cpp" line="280"/>
+        <location filename="../src/sceneview.cpp" line="285"/>
+        <location filename="../src/sceneview.cpp" line="286"/>
         <source>Select by marker</source>
         <translation>Zaznacz znacznikiem</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2281"/>
+        <location filename="../src/sceneview.cpp" line="2393"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2284"/>
+        <location filename="../src/sceneview.cpp" line="2396"/>
         <source>Polynomial order</source>
         <translation>Stopień wielomianu</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2564"/>
-        <location filename="../src/sceneview.cpp" line="2604"/>
+        <location filename="../src/sceneview.cpp" line="2676"/>
+        <location filename="../src/sceneview.cpp" line="2716"/>
         <source>Undefined: %1.</source>
         <translation>Nieznane: %1.</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2962"/>
-        <location filename="../src/sceneview.cpp" line="3011"/>
+        <location filename="../src/sceneview.cpp" line="3074"/>
+        <location filename="../src/sceneview.cpp" line="3123"/>
         <source>Node</source>
         <translation>Węzeł</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2962"/>
-        <location filename="../src/sceneview.cpp" line="3011"/>
+        <location filename="../src/sceneview.cpp" line="3074"/>
+        <location filename="../src/sceneview.cpp" line="3123"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation>Współrzędna radialna musi być większa lub równa od zera.</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3264"/>
+        <location filename="../src/sceneview.cpp" line="3376"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation>&lt;h3&gt;Węzeł&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Numer: %3</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3279"/>
+        <location filename="../src/sceneview.cpp" line="3391"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation>&lt;h3&gt;Krawędź&lt;/h3&gt;Punkty: [%1; %2] - [%3; %4]&lt;br/&gt;Warunek brzegowy: %5&lt;br/&gt;Kąt: %6 stopni.&lt;br/&gt;Numer: %7 %8</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3299"/>
+        <location filename="../src/sceneview.cpp" line="3411"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation>&lt;h3&gt;Etykieta&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Materiał: %3&lt;br/&gt;Rozmiar elementu: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Stopień wielomianu: %5&lt;br/&gt;Numer: %6 %7</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4204"/>
+        <location filename="../src/sceneview.cpp" line="4317"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Obraz nie może być zapisany do pliku &apos;%1&apos;.</translation>
     </message>
