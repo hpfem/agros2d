@@ -661,12 +661,12 @@ QWidget *PostprocessorView::controlsAdvanced()
     particleWidget->setLayout(layoutParticle);
 
     tbxAdvance = new QToolBox();
-    tbxAdvance->addItem(workspaceWidget, icon(""), "Workspace");
-    tbxAdvance->addItem(scalarFieldWidget, icon(""), "Scalar view");
-    tbxAdvance->addItem(contoursWidget, icon(""), "Contours");
-    tbxAdvance->addItem(vectorFieldWidget, icon(""), "Vector field");
-    tbxAdvance->addItem(orderWidget, icon(""), "Polynomial order");
-    tbxAdvance->addItem(particleWidget, icon(""), "Particle tracing");
+    tbxAdvance->addItem(workspaceWidget, icon(""), tr("Workspace"));
+    tbxAdvance->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
+    tbxAdvance->addItem(contoursWidget, icon(""), tr("Contours"));
+    tbxAdvance->addItem(vectorFieldWidget, icon(""), tr("Vector field"));
+    tbxAdvance->addItem(orderWidget, icon(""), tr("Polynomial order"));
+    tbxAdvance->addItem(particleWidget, icon(""), tr("Particle tracing"));
 
     // layout postprocessor
     QVBoxLayout *layout = new QVBoxLayout();
