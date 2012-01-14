@@ -75,7 +75,7 @@ public:
     void calculate();
 
 private:
-    FieldInfo *fieldInfo;
+    FieldInfo *m_fieldInfo;
 };
 
 #endif // LOCALPOINT_H

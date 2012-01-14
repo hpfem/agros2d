@@ -10,7 +10,12 @@ template <typename Scalar>
 class SolutionArrayList;
 
 class FieldInfo;
+
+class ProgressDialog;
+class ProgressItemMesh;
 class ProgressItemSolve;
+class ProgressItemSolveAdaptiveStep;
+class ProgressItemProcessView;
 
 class Field
 {
@@ -19,9 +24,13 @@ public:
     bool solveInitVariables();
     FieldInfo* fieldInfo() { return m_fieldInfo; }
 
+    // mesh
+    void setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial);
+
 public:
 //private:
     FieldInfo* m_fieldInfo;
+
 };
 
 /// represents one or more fields, that are hard-coupled -> produce only 1 weak form
@@ -45,17 +54,68 @@ public:
 /// intented as central for solution process
 /// shielded from gui and QT
 /// holds data describing individual fields, means of coupling and solutions
-class Problem
+class Problem : public QObject
 {
+    Q_OBJECT
+
+signals:
+    void timeStepChanged(bool showViewProgress = true);
+    void meshed();
+    void solved();
+
+    void processedRangeContour();
+    void processedRangeScalar();
+    void processedRangeVector();
+
+
 public:
-    Problem(ProgressItemSolve* progressItemSolve);
+    Problem();
+    ~Problem() {}
     void createStructure();
-    void solve();
+
+    // solve
+    void solve(SolverMode solverMode);
+
+    // progress dialog
+    ProgressDialog* progressDialog();
+
+    inline Hermes::Hermes2D::Mesh *meshInitial() { return m_meshInitial; }
+
+
+    // time TODO zatim tady, ale asi presunout
+    void setTimeStep(int timeStep, bool showViewProgress = true) { assert(0); }
+    inline int timeStep() const { return m_timeStep; }
+    int timeStepCount() const { return 0; }
+    double time() const { return 0; }
+
+    bool isSolved() const { return (m_timeStep != -1); }
+    bool isMeshed()  const { return m_meshInitial; }
+    bool isSolving() const { return m_isSolving; }
+
+    inline int timeElapsed() const { return m_timeElapsed; }
+    double adaptiveError() const { return 0; }
+    int adaptiveSteps() const { return 0; }
+    inline void setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
 
 public:
 //private:
     QList<Block*> m_blocks;
-    ProgressItemSolve* m_progressItemSolve;
+
+    // progress dialog
+    ProgressDialog *m_progressDialog;
+    ProgressItemMesh *m_progressItemMesh;
+    ProgressItemSolve *m_progressItemSolve;
+    ProgressItemSolveAdaptiveStep *m_progressItemSolveAdaptiveStep;
+    ProgressItemProcessView *m_progressItemProcessView;
+
+    int m_timeElapsed;
+    bool m_isSolving;
+    int m_timeStep;
+
+    //TODO move to Field
+    Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
+
+
 };
 
 #endif // PROBLEM_H

@@ -228,7 +228,7 @@ public:
     QMap<QString, QAction*> actNewMaterials;
 
     QAction *actProblemProperties;
-    QAction *actClearSolution;
+    QAction *actClearSolutions;
     QAction *actTransform;
 
     Scene();
@@ -289,7 +289,9 @@ public:
     void removeField(FieldInfo *field);
 
     inline void refresh() { emit invalidated(); }
-    inline SceneSolution<double> *sceneSolution() const { return m_sceneSolution; } //TODO PK <double>
+    inline SceneSolution<double> *sceneSolution(FieldInfo* fieldInfo) const { return m_sceneSolutions[fieldInfo]; }
+    inline SceneSolution<double> *activeSceneSolution() const { return m_sceneSolutions[activeViewField()]; }
+    inline FieldInfo* activeViewField() const { assert(m_activeViewField); return m_activeViewField; }
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
@@ -306,10 +308,13 @@ private:
     ProblemInfo* m_problemInfo;
     QMap<QString, FieldInfo *>  m_fieldInfos;
 
-    // scene solution
-    SceneSolution<double> *m_sceneSolution;  //TODO PK <double>
+    QMap<FieldInfo*, SceneSolution<double>* > m_sceneSolutions;
+    FieldInfo* m_activeViewField;
 
     void createActions();
+
+    // clears all solutions and remove them
+    void clearSolutions();
 
 private slots:
     void doInvalidated();
@@ -326,7 +331,6 @@ public:
     static inline QCompleter *completer() { return Util::singleton()->m_completer; }
     static inline Config *config() { return Util::singleton()->m_config; }
     static inline Problem *problem() { return Util::singleton()->m_problem; }
-    static Problem *createProblem(ProgressItemSolve* pis);
 
 protected:
     Util();

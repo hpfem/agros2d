@@ -42,6 +42,7 @@
 #include "datatabledialog.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 #include "../lib/gl2ps/gl2ps.h"
 
@@ -505,7 +506,7 @@ void MainWindow::createMenus()
     mnuProblem->addAction(actCreateMesh);
     mnuProblem->addAction(actSolve);
     mnuProblem->addAction(actSolveAdaptiveStep);
-    mnuProblem->addAction(Util::scene()->actClearSolution);
+    mnuProblem->addAction(Util::scene()->actClearSolutions);
     mnuProblem->addSeparator();
     mnuProblem->addAction(Util::scene()->actProblemProperties);
 
@@ -1134,14 +1135,14 @@ void MainWindow::doCreateMesh()
     logMessage("MainWindow::doCreateMesh()");
 
     // create mesh
-    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
-    if (Util::scene()->sceneSolution()->isMeshed())
+    Util::problem()->solve(SolverMode_Mesh);
+    if (Util::problem()->isMeshed())
     {
         sceneView->actSceneModeLabel->trigger();
         sceneView->sceneViewSettings().showInitialMesh = true;
         sceneView->doInvalidated();
 
-        Util::scene()->sceneSolution()->progressDialog()->close();
+        Util::problem()->progressDialog()->close();
     }
 
     doInvalidated();
@@ -1162,8 +1163,8 @@ void MainWindow::doSolve()
     logMessage("MainWindow::doSolve()");
 
     // solve problem
-    Util::scene()->sceneSolution()->solve(SolverMode_MeshAndSolve);
-    if (Util::scene()->sceneSolution()->isSolved())
+    Util::problem()->solve(SolverMode_MeshAndSolve);
+    if (Util::problem()->isSolved())
     {
         sceneView->actSceneModePostprocessor->trigger();
 
@@ -1185,8 +1186,8 @@ void MainWindow::doSolveAdaptiveStep()
     logMessage("MainWindow::doSolveAdaptiveStep()");
 
     // solve problem
-    Util::scene()->sceneSolution()->solve(SolverMode_SolveAdaptiveStep);
-    if (Util::scene()->sceneSolution()->isSolved())
+    Util::problem()->solve(SolverMode_SolveAdaptiveStep);
+    if (Util::problem()->isSolved())
     {
         sceneView->actSceneModePostprocessor->trigger();
 
@@ -1323,7 +1324,7 @@ void MainWindow::doTimeStepChanged(int index)
 
     if (cmbTimeStep->currentIndex() != -1)
     {
-        Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
+        Util::problem()->setTimeStep(cmbTimeStep->currentIndex(), false);
         postprocessorView->updateControls();
     }
 }
@@ -1337,32 +1338,32 @@ void MainWindow::doInvalidated()
     logMessage("MainWindow::doInvalidated()");
 
     if (Util::config()->showExperimentalFeatures)
-        actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
+        actDocumentSaveWithSolution->setEnabled(Util::problem()->isSolved());
 
-    actViewQuick2DNone->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actViewQuick2DOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actViewQuick2DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actViewQuick3DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actViewQuick3DScalarViewSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actViewQuick3DModel->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick2DNone->setEnabled(Util::problem()->isSolved());
+    actViewQuick2DOrder->setEnabled(Util::problem()->isSolved());
+    actViewQuick2DScalarView->setEnabled(Util::problem()->isSolved());
+    actViewQuick3DScalarView->setEnabled(Util::problem()->isSolved());
+    actViewQuick3DScalarViewSolid->setEnabled(Util::problem()->isSolved());
+    actViewQuick3DModel->setEnabled(Util::problem()->isSolved());
 
-    actSolveAdaptiveStep->setEnabled(Util::scene()->sceneSolution()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
-    actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient));
-    tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actSolveAdaptiveStep->setEnabled(Util::problem()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
+    actChart->setEnabled(Util::problem()->isSolved());
+    actCreateVideo->setEnabled(Util::problem()->isSolved() && (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient));
+    tlbTransient->setEnabled(Util::problem()->isSolved());
     fillComboBoxTimeStep(cmbTimeStep);
 
     lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->name)));
     lblProblemType->setText(tr("Problem Type: %1").arg(coordinateTypeString(Util::scene()->problemInfo()->coordinateType)));
     lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->fieldInfo("TODO")->analysisType())));
 
-    actExportVTKScalar->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actExportVTKOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actExportVTKScalar->setEnabled(Util::problem()->isSolved());
+    actExportVTKOrder->setEnabled(Util::problem()->isSolved());
 
     postprocessorView->updateControls();
 
     // set current timestep
-    cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
+    cmbTimeStep->setCurrentIndex(Util::problem()->timeStep());
 
     //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
     //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
@@ -1438,8 +1439,8 @@ void MainWindow::doDocumentExportMeshFile()
     if (commutator)
         Util::config()->deleteHermes2DMeshFile = !commutator;
 
-    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
-    if (Util::scene()->sceneSolution()->isMeshed())
+    Util::problem()->solve(SolverMode_Mesh);
+    if (Util::problem()->isMeshed())
     {
         sceneView->actSceneModeLabel->trigger();
         sceneView->sceneViewSettings().showInitialMesh = true;
@@ -1491,7 +1492,7 @@ void MainWindow::doExportVTKScalar()
 {
     assert(0); //TODO
     //    logMessage("MainWindow::doDocumentExportVTKScalar()");
-    //    if (Util::scene()->sceneSolution()->isSolved())
+    //    if (Util::problem()->isSolved())
     //    {
     //        QSettings settings;
     //        QString dir = settings.value("General/LastVTKDir").toString();
@@ -1507,7 +1508,7 @@ void MainWindow::doExportVTKScalar()
     //        if (QFile::exists(fileName))
     //            QFile::remove(fileName);
 
-    //        Util::scene()->sceneSolution()->linScalarView().save_solution_vtk(Util::scene()->sceneSolution()->sln(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
+    //        Util::problem()->linScalarView().save_solution_vtk(Util::problem()->sln(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
     //                                                                          fileName.toStdString().c_str(),
     //                                                                          sceneView->sceneViewSettings().scalarPhysicFieldVariable.c_str(),
     //                                                                          true);
@@ -1525,7 +1526,7 @@ void MainWindow::doExportVTKOrder()
 {
     assert(0);
     //    logMessage("MainWindow::doDocumentExportVTKOrder()");
-    //    if (Util::scene()->sceneSolution()->isSolved())
+    //    if (Util::problem()->isSolved())
     //    {
     //        QSettings settings;
     //        QString dir = settings.value("General/LastVTKDir").toString();
@@ -1541,7 +1542,7 @@ void MainWindow::doExportVTKOrder()
     //        if (QFile::exists(fileName))
     //            QFile::remove(fileName);
 
-    //        Util::scene()->sceneSolution()->ordView().save_orders_vtk(Util::scene()->sceneSolution()->space(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
+    //        Util::problem()->ordView().save_orders_vtk(Util::problem()->space(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
     //                                                                  fileName.toStdString().c_str());
 
     //        if (!fileName.isEmpty())
@@ -1590,10 +1591,10 @@ void MainWindow::doViewQuick(SceneViewPostprocessorShow show)
 
     // time step
     QApplication::processEvents();
-    Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
+    Util::problem()->setTimeStep(cmbTimeStep->currentIndex(), false);
 
     // switch to the postprocessor
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (Util::problem()->isSolved())
         sceneView->actSceneModePostprocessor->trigger();
 
     doInvalidated();

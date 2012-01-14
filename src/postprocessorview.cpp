@@ -26,6 +26,7 @@
 #include "sceneview.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 PostprocessorView::PostprocessorView(SceneView *sceneView, QWidget *parent) : QDockWidget(tr("View Properties"), parent)
 {
@@ -77,7 +78,7 @@ void PostprocessorView::loadBasic()
     cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(QString::fromStdString(m_sceneView->sceneViewSettings().vectorPhysicFieldVariable)));
 
     // transient view
-    cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
+    //cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
 
     setControls();
 }
@@ -690,8 +691,8 @@ void PostprocessorView::setControls()
 {
     logMessage("PostprocessorView::setControls()");
 
-    bool isMeshed = Util::scene()->sceneSolution()->isMeshed();
-    bool isSolved = Util::scene()->sceneSolution()->isSolved();
+    bool isMeshed = Util::problem()->isMeshed();
+    bool isSolved = Util::problem()->isSolved();
 
     chkShowGeometry->setEnabled(true);
 
@@ -707,7 +708,7 @@ void PostprocessorView::setControls()
     radPostprocessorScalarField3DSolid->setEnabled(isSolved);
     radPostprocessorModel->setEnabled(isSolved);
 
-    cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
+//    cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
 
     cmbScalarFieldVariable->setEnabled(false);
     cmbScalarFieldVariableComp->setEnabled(false);
@@ -769,7 +770,7 @@ void PostprocessorView::doApply()
 
     // time step
     QApplication::processEvents();
-    Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
+    //Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
 
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
@@ -779,8 +780,8 @@ void PostprocessorView::doApply()
     }
 
     // switch to the postprocessor
-    if (Util::scene()->sceneSolution()->isSolved())
-        m_sceneView->actSceneModePostprocessor->trigger();
+    //if (Util::scene()->sceneSolution()->isSolved())
+    //    m_sceneView->actSceneModePostprocessor->trigger();
 
     emit apply();
 

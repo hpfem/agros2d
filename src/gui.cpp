@@ -91,30 +91,31 @@ void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 
 void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 {
-    logMessage("fillComboBoxTimeStep()");
+    assert(0);
+//    logMessage("fillComboBoxTimeStep()");
 
-    cmbFieldVariable->blockSignals(true);
+//    cmbFieldVariable->blockSignals(true);
 
-    // store variable
-    int timeStep = cmbFieldVariable->currentIndex();
-    if (timeStep == -1) timeStep = Util::scene()->sceneSolution()->timeStepCount() - 1;
+//    // store variable
+//    int timeStep = cmbFieldVariable->currentIndex();
+//    if (timeStep == -1) timeStep = Util::scene()->sceneSolution()->timeStepCount() - 1;
 
-    // clear combo
-    cmbFieldVariable->clear();
-    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
-    {
-        for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
-        {
-            cmbFieldVariable->addItem(QString::number(Util::scene()->sceneSolution()->solutionArrayList().at(i * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())->time, 'e', 2), i);
-        }
-    }
-    else
-    {
-        cmbFieldVariable->addItem(QString::number(0.0, 'e', 2), 0);
-    }
+//    // clear combo
+//    cmbFieldVariable->clear();
+//    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
+//    {
+//        for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
+//        {
+//            cmbFieldVariable->addItem(QString::number(Util::scene()->sceneSolution()->solutionArrayList().at(i * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())->time, 'e', 2), i);
+//        }
+//    }
+//    else
+//    {
+//        cmbFieldVariable->addItem(QString::number(0.0, 'e', 2), 0);
+//    }
 
-    cmbFieldVariable->setCurrentIndex(timeStep);
-    cmbFieldVariable->blockSignals(false);
+//    cmbFieldVariable->setCurrentIndex(timeStep);
+//    cmbFieldVariable->blockSignals(false);
 }
 
 // ***********************************************************************************************************

@@ -28,34 +28,29 @@
 #include "hermes2d/module_agros.h"
 
 template <typename Scalar>
-SceneSolution<Scalar>::SceneSolution()
+SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldInfo)
 {
     logMessage("SceneSolution::SceneSolution()");
 
-    m_progressDialog = new ProgressDialog();
-    m_progressItemMesh = new ProgressItemMesh();
-    m_progressItemSolve = new ProgressItemSolve();
-    m_progressItemSolveAdaptiveStep = new ProgressItemSolveAdaptiveStep();
-    m_progressItemProcessView = new ProgressItemProcessView();
 
-    m_timeStep = -1;
-    m_isSolving = false;
+    //m_timeStep = -1;
+    //m_isSolving = false;
 
-    m_meshInitial = NULL;
-    m_slnContourView = NULL;
-    m_slnScalarView = NULL;
-    m_slnVectorXView = NULL;
-    m_slnVectorYView = NULL;
+//    m_meshInitial = NULL;
+//    m_slnContourView = NULL;
+//    m_slnScalarView = NULL;
+//    m_slnVectorXView = NULL;
+//    m_slnVectorYView = NULL;
 }
 
 template <typename Scalar>
 SceneSolution<Scalar>::~SceneSolution()
 {
-    delete m_progressDialog;
-    delete m_progressItemMesh;
-    delete m_progressItemSolve;
-    delete m_progressItemSolveAdaptiveStep;
-    delete m_progressItemProcessView;
+//    delete m_progressDialog;
+//    delete m_progressItemMesh;
+//    delete m_progressItemSolve;
+//    delete m_progressItemSolveAdaptiveStep;
+//    delete m_progressItemProcessView;
 }
 
 template <typename Scalar>
@@ -63,16 +58,16 @@ void SceneSolution<Scalar>::clear(bool all)
 {
     logMessage("SceneSolution::clear()");
 
-    // m_linInitialMeshView.free();
-    // m_linSolutionMeshView.free();
-    // m_linContourView.free();
-    // m_linScalarView.free();
-    // m_vecVectorView.free();
+//     m_linInitialMeshView.free();
+//     m_linSolutionMeshView.free();
+//     m_linContourView.free();
+//     m_linScalarView.free();
+//     m_vecVectorView.free();
 
     // solution array
     if (all)
     {
-        m_timeStep = -1;
+        //m_timeStep = -1;
 
         for (int i = 0; i < m_solutionArrayList.size(); i++)
             delete m_solutionArrayList.at(i);
@@ -112,70 +107,9 @@ void SceneSolution<Scalar>::clear(bool all)
         m_slnVectorYView = NULL;
     }
 
-    m_progressDialog->clear();
+    //m_progressDialog->clear();
 }
 
-template <typename Scalar>
-void SceneSolution<Scalar>::solve(SolverMode solverMode)
-{
-    logMessage("SceneSolution::solve()");
-
-    if (isSolving()) return;
-
-    m_isSolving = true;
-
-    // clear problem
-    clear(solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve);
-
-    // open indicator progress
-    Indicator::openProgress();
-
-    // save problem
-    ErrorResult result = Util::scene()->writeToFile(tempProblemFileName() + ".a2d");
-    if (result.isError())
-        result.showDialog();
-
-    if (solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve)
-    {
-        m_progressDialog->clear();
-        m_progressDialog->appendProgressItem(m_progressItemMesh);
-        if (solverMode == SolverMode_MeshAndSolve)
-        {
-            m_progressDialog->appendProgressItem(m_progressItemSolve);
-            m_progressDialog->appendProgressItem(m_progressItemProcessView);
-        }
-    }
-    else if (solverMode == SolverMode_SolveAdaptiveStep)
-    {
-        m_progressDialog->appendProgressItem(m_progressItemSolveAdaptiveStep);
-        m_progressDialog->appendProgressItem(m_progressItemProcessView);
-    }
-
-    if (m_progressDialog->run())
-    {
-        Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStepCount() - 1);
-        emit meshed();
-        emit solved();
-    }
-
-    if (isMeshed())
-    {
-        InitialCondition<double> initial(m_meshInitial, 0.0);
-        m_linInitialMeshView.process_solution(&initial);
-    }
-
-    // delete temp file
-    if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
-    {
-        QFile::remove(Util::scene()->problemInfo()->fileName);
-        Util::scene()->problemInfo()->fileName = "";
-    }
-
-    // close indicator progress
-    Indicator::closeProgress();
-
-    m_isSolving = false;
-}
 
 template <typename Scalar>
 void SceneSolution<Scalar>::loadMeshInitial(QDomElement element)
@@ -201,16 +135,17 @@ void SceneSolution<Scalar>::saveMeshInitial(QDomDocument *doc, QDomElement eleme
 {
     logMessage("SceneSolution::saveMeshInitial()");
 
-    if (isMeshed())
-    {
-        QString fileName = tempProblemFileName() + ".mesh";
+    assert(0);
+//    if (isMeshed())
+//    {
+//        QString fileName = tempProblemFileName() + ".mesh";
 
-        writeMeshFromFile(fileName, m_meshInitial);
+//        writeMeshFromFile(fileName, m_meshInitial);
 
-        // read content
-        QDomText text = doc->createTextNode(readFileContentByteArray(fileName).toBase64());
-        element.appendChild(text);
-    }
+//        // read content
+//        QDomText text = doc->createTextNode(readFileContentByteArray(fileName).toBase64());
+//        element.appendChild(text);
+//    }
 }
 
 template <typename Scalar>
@@ -279,17 +214,18 @@ SolutionArray<Scalar> *SceneSolution<Scalar>::solutionArray(int i)
 {
     logMessage("SceneSolution::solutionArray()");
 
-    int currentTimeStep = i;
-    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())
-    {
-        // default
-        if (currentTimeStep == -1)
-            currentTimeStep = m_timeStep * Util::scene()->fieldInfo("TODO")->module()->number_of_solution();
+    assert(0);
+//    int currentTimeStep = i;
+//    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())
+//    {
+//        // default
+//        if (currentTimeStep == -1)
+//            currentTimeStep = m_timeStep * Util::scene()->fieldInfo("TODO")->module()->number_of_solution();
 
-        if (m_solutionArrayList.at(currentTimeStep))
-            return m_solutionArrayList.at(currentTimeStep);
-    }
-    return NULL;
+//        if (m_solutionArrayList.at(currentTimeStep))
+//            return m_solutionArrayList.at(currentTimeStep);
+//    }
+//    return NULL;
 }
 
 template <typename Scalar>
@@ -308,23 +244,23 @@ Hermes::Hermes2D::Space<Scalar> *SceneSolution<Scalar>::space(int i)
     return solutionArray(i)->space.get();
 }
 
-template <typename Scalar>
-double SceneSolution<Scalar>::adaptiveError()
-{
-    assert(0); //TODO
-//    logMessage("SceneSolution::adaptiveError()");
+//template <typename Scalar>
+//double SceneSolution<Scalar>::adaptiveError()
+//{
+//    assert(0); //TODO
+////    logMessage("SceneSolution::adaptiveError()");
 
-//    return (isSolved()) ? m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->adaptiveError : 100.0;
-}
+////    return (isSolved()) ? m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->adaptiveError : 100.0;
+//}
 
-template <typename Scalar>
-int SceneSolution<Scalar>::adaptiveSteps()
-{
-    assert(0); //TODO
-//    logMessage("SceneSolution::adaptiveSteps()");
+//template <typename Scalar>
+//int SceneSolution<Scalar>::adaptiveSteps()
+//{
+//    assert(0); //TODO
+////    logMessage("SceneSolution::adaptiveSteps()");
 
-//    return (isSolved()) ? m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->adaptiveSteps : 0.0;
-}
+////    return (isSolved()) ? m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->adaptiveSteps : 0.0;
+//}
 
 template <typename Scalar>
 int SceneSolution<Scalar>::findElementInVectorizer(Hermes::Hermes2D::Views::Vectorizer &vec, const Point &point) const
@@ -415,41 +351,41 @@ void SceneSolution<Scalar>::setSolutionArrayList(Hermes::vector<SolutionArray<Sc
     m_solutionArrayList = solutionArrayList;
 
     // if (!isSolving())
-    setTimeStep(timeStepCount() - 1);
+    //setTimeStep(timeStepCount() - 1);
 }
 
-template <typename Scalar>
-void SceneSolution<Scalar>::setTimeStep(int timeStep, bool showViewProgress)
-{
-    logMessage("SceneSolution::setTimeStep()");
+//template <typename Scalar>
+//void SceneSolution<Scalar>::setTimeStep(int timeStep, bool showViewProgress)
+//{
+//    logMessage("SceneSolution::setTimeStep()");
 
-    m_timeStep = timeStep;
-    if (!isSolved()) return;
+//    m_timeStep = timeStep;
+//    if (!isSolved()) return;
 
-    emit timeStepChanged(showViewProgress);
-}
+//    emit timeStepChanged(showViewProgress);
+//}
 
-template <typename Scalar>
-int SceneSolution<Scalar>::timeStepCount() const
-{
-    logMessage("SceneSolution::timeStepCount()");
+//template <typename Scalar>
+//int SceneSolution<Scalar>::timeStepCount() const
+//{
+//    logMessage("SceneSolution::timeStepCount()");
 
-    return (m_solutionArrayList.size() > 0) ? m_solutionArrayList.size() / Util::scene()->fieldInfo("TODO")->module()->number_of_solution() : 0;
-}
+//    return (m_solutionArrayList.size() > 0) ? m_solutionArrayList.size() / Util::scene()->fieldInfo("TODO")->module()->number_of_solution() : 0;
+//}
 
-template <typename Scalar>
-double SceneSolution<Scalar>::time() const
-{
-    assert(0); //TODO
-//    logMessage("SceneSolution::time()");
+//template <typename Scalar>
+//double SceneSolution<Scalar>::time() const
+//{
+//    assert(0); //TODO
+////    logMessage("SceneSolution::time()");
 
-//    if (isSolved())
-//    {
-//        if (m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->sln)
-//            return m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->time;
-//    }
-//    return 0.0;
-}
+////    if (isSolved())
+////    {
+////        if (m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->sln)
+////            return m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->time;
+////    }
+////    return 0.0;
+//}
 
 template <typename Scalar>
 void SceneSolution<Scalar>::setSlnContourView(ViewScalarFilter<Scalar> *slnScalarView)
@@ -539,17 +475,18 @@ void SceneSolution<Scalar>::setOrderView(Hermes::Hermes2D::Space<Scalar> *space)
 template <typename Scalar>
 void SceneSolution<Scalar>::processView(bool showViewProgress)
 {
-    if (showViewProgress)
-    {
-        m_progressDialog->clear();
-        m_progressDialog->appendProgressItem(m_progressItemProcessView);
-        m_progressDialog->run(showViewProgress);
-    }
-    else
-    {
-        m_progressItemProcessView->setSteps();
-        m_progressItemProcessView->run(true);
-    }
+    assert(0);
+//    if (showViewProgress)
+//    {
+//        m_progressDialog->clear();
+//        m_progressDialog->appendProgressItem(m_progressItemProcessView);
+//        m_progressDialog->run(showViewProgress);
+//    }
+//    else
+//    {
+//        m_progressItemProcessView->setSteps();
+//        m_progressItemProcessView->run(true);
+//    }
 }
 
 template <typename Scalar>
@@ -631,12 +568,6 @@ void SceneSolution<Scalar>::processOrder()
 
 //    if (isSolved())
 //        setOrderView(m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
-}
-
-template <typename Scalar>
-ProgressDialog *SceneSolution<Scalar>::progressDialog()  //TODO PK <double>
-{
-    return m_progressDialog;
 }
 
 
