@@ -88,7 +88,7 @@ public:
     int timeStepCount() const { return 0; }
     double time() const { return 0; }
 
-    bool isSolved() const { return (m_timeStep != -1); }
+    bool isSolved() const { return false; }
     bool isMeshed()  const { return m_meshInitial; }
     bool isSolving() const { return m_isSolving; }
 

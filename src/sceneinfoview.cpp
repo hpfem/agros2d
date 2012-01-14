@@ -212,13 +212,14 @@ void SceneInfoView::showInfo()
     {
         problem.SetValue("SOLUTION_INFORMATION_LABEL", tr("Mesh and solution informations").toStdString());
 
-        problem.SetValue("INITIAL_MESH_LABEL", tr("Initial mesh").toStdString());
-        problem.SetValue("INITIAL_MESH_NODES_LABEL", tr("Nodes:").toStdString());
-        problem.SetValue("INITIAL_MESH_NODES", QString::number(Util::problem()->meshInitial()->get_num_nodes()).toStdString());
-        problem.SetValue("INITIAL_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
-        problem.SetValue("INITIAL_MESH_ELEMENTS", QString::number(Util::problem()->meshInitial()->get_num_active_elements()).toStdString());
-
         //TODO
+//        problem.SetValue("INITIAL_MESH_LABEL", tr("Initial mesh").toStdString());
+//        problem.SetValue("INITIAL_MESH_NODES_LABEL", tr("Nodes:").toStdString());
+//        problem.SetValue("INITIAL_MESH_NODES", QString::number(Util::problem()->meshInitial()->get_num_nodes()).toStdString());
+//        problem.SetValue("INITIAL_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
+//        problem.SetValue("INITIAL_MESH_ELEMENTS", QString::number(Util::problem()->meshInitial()->get_num_active_elements()).toStdString());
+
+
 //        if (Util::problem()->isSolved())
 //        {
 //            if (Util::scene()->sceneSolution()->space() && (Util::scene()->sceneSolution()->space()->get_num_dofs() > 0))
