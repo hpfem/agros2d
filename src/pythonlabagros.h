@@ -223,7 +223,9 @@ class PyGeometry {
         void scaleSelection(double x, double y, double scale, bool copy);
         void removeSelection();
 
+        // mesh
         void mesh();
+        char *meshFileName();
 
         // zoom operations
         void zoomBestFit();
@@ -234,20 +236,22 @@ class PyGeometry {
 
 // functions
 char *pyVersion();
+void pyQuit();
+
 char *pyInput(char *str);
 void pyMessage(char *str);
-void pyQuit();
+
+void pyOpenDocument(char *str);
+void pySaveDocument(char *str);
+void pyCloseDocument();
+
+void pySaveImage(char *str, int w, int h);
 
 // ************************************************************************************
 
 // cython functions
-char *pythonMeshFileName();
 char *pythonSolutionFileName();
 Solution *pythonSolutionObject();
-
-void pythonOpenDocument(char *str);
-void pythonSaveDocument(char *str);
-void pythonCloseDocument();
 
 void pythonDeleteNodePoint(double x, double y);
 void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle);
@@ -257,7 +261,6 @@ void pythonSelectNodePoint(double x, double y);
 void pythonSelectEdgePoint(double x, double y);
 void pythonSelectLabelPoint(double x, double y);
 
-void pythonMesh();
 void pythonSolve();
 void pythonSolveAdaptiveStep();
 
@@ -274,7 +277,5 @@ void pythonShowVectors(bool show);
 
 void pythonSetTimeStep(int timestep);
 int pythonTimeStepCount();
-
-void pythonSaveImage(char *str, int w, int h);
 
 #endif // PYTHONLABAGROS_H

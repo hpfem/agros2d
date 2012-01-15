@@ -668,7 +668,17 @@ void PyGeometry::mesh()
     logMessage("PyGeometry::mesh()");
 
     Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
-    // FIXME - scene refresh
+    Util::scene()->refresh();
+}
+
+char *PyGeometry::meshFileName()
+{
+    logMessage("PyGeometry::meshFileName()");
+
+    if (Util::scene()->sceneSolution()->isMeshed())
+        return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toStdString().c_str());
+    else
+        throw invalid_argument(QObject::tr("Problem is not meshed.").toStdString());
 }
 
 void PyGeometry::zoomBestFit()
@@ -706,6 +716,16 @@ char *pyVersion()
     return const_cast<char*>(QApplication::applicationVersion().toStdString().c_str());
 }
 
+void pyQuit()
+{
+    logMessage("pyQuit()");
+
+    // doesn't work without main event loop (run from script)
+    // QApplication::exit(0);
+
+    exit(0);
+}
+
 char *pyInput(char *str)
 {
     logMessage("pyInput()");
@@ -721,28 +741,46 @@ void pyMessage(char *str)
     QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString(str));
 }
 
-void pyQuit()
+void pyOpenDocument(char *str)
 {
-    logMessage("pyQuit()");
+    logMessage("pyOpenDocument()");
 
-    // doesn't work without main event loop (run from script)
-    // QApplication::exit(0);
+    ErrorResult result = Util::scene()->readFromFile(QString(str));
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
+}
 
-    exit(0);
+void pySaveDocument(char *str)
+{
+    logMessage("pySaveDocument()");
+
+    ErrorResult result = Util::scene()->writeToFile(QString(str));
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
+}
+
+void pyCloseDocument()
+{
+    logMessage("pyCloseDocument()");
+
+    Util::scene()->clear();
+    sceneView()->doDefaultValues();
+    Util::scene()->refresh();
+
+    sceneView()->actSceneModeNode->trigger();
+    sceneView()->doZoomBestFit();
+}
+
+void pySaveImage(char *str, int w, int h)
+{
+    logMessage("pySaveImage()");
+
+    ErrorResult result = sceneView()->saveImageToFile(QString(str), w, h);
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
 }
 
 // ************************************************************************************
-
-// meshfilename()
-char *pythonMeshFileName()
-{
-    logMessage("pythonMeshFileName()");
-
-    if (Util::scene()->sceneSolution()->isMeshed())
-        return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toStdString().c_str());
-    else
-        throw invalid_argument(QObject::tr("Problem is not meshed.").toStdString());
-}
 
 template <typename Scalar>
 Hermes::Hermes2D::Solution<Scalar> *pythonSolutionObject()
@@ -770,48 +808,6 @@ char *pythonSolutionFileName()
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 }
 
-// opendocument(filename)
-void pythonOpenDocument(char *str)
-{
-    logMessage("pythonOpenDocument()");
-
-    ErrorResult result = Util::scene()->readFromFile(QString(str));
-    if (result.isError())
-        throw invalid_argument(result.message().toStdString());
-}
-
-// savedocument(filename)
-void pythonSaveDocument(char *str)
-{
-    logMessage("pythonSaveDocument()");
-
-    ErrorResult result = Util::scene()->writeToFile(QString(str));
-    if (result.isError())
-        throw invalid_argument(result.message().toStdString());
-}
-
-// closedocument(filename)
-void pythonCloseDocument()
-{
-    logMessage("pythonCloseDocument()");
-
-    Util::scene()->clear();
-    sceneView()->doDefaultValues();
-    Util::scene()->refresh();
-
-    sceneView()->actSceneModeNode->trigger();
-    sceneView()->doZoomBestFit();
-}
-
-void pythonDeleteNode(int index)
-{
-    logMessage("pythonDeleteNode()");
-
-    if (index < 0 || index >= Util::scene()->nodes->length())
-        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->nodes->remove(Util::scene()->nodes->at(index));
-}
-
 void pythonDeleteNodePoint(double x, double y)
 {
     logMessage("pythonDeleteNodePoint()");
@@ -819,29 +815,11 @@ void pythonDeleteNodePoint(double x, double y)
     Util::scene()->nodes->remove(Util::scene()->getNode(Point(x, y)));
 }
 
-void pythonDeleteEdge(int index)
-{
-    logMessage("pythonDeleteEdge()");
-
-    if (index < 0 || index >= Util::scene()->edges->length())
-        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->edges->remove(Util::scene()->edges->at(index));
-}
-
 void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
 {
     logMessage("pythonDeleteEdgePoint()");
 
     Util::scene()->edges->remove(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
-}
-
-void pythonDeleteLabel(int index)
-{
-    logMessage("pythonDeleteLabel()");
-
-    if (index < 0 || index >= Util::scene()->labels->length())
-        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->labels->remove(Util::scene()->labels->at(index));
 }
 
 void pythonDeleteLabelPoint(double x, double y)
@@ -1314,16 +1292,6 @@ int pythonTimeStepCount()
     logMessage("pythonTimeStepCount()");
 
     return Util::scene()->sceneSolution()->timeStepCount();
-}
-
-// saveimage(filename)
-void pythonSaveImage(char *str, int w, int h)
-{
-    logMessage("pythonSaveImage()");
-
-    ErrorResult result = sceneView()->saveImageToFile(QString(str), w, h);
-    if (result.isError())
-        throw invalid_argument(result.message().toStdString());
 }
 
 static PyMethodDef pythonMethodsAgros[] =

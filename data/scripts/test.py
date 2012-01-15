@@ -57,7 +57,7 @@ geometry.zoom_best_fit()
 #geometry.rotate_selection(0.5, 0.5, 90)
 #geometry.scale_selection(0.5, 0.5, 2)
 
-geometry.select_labels()
-geometry.remove_selection()
+#geometry.select_labels()
+#geometry.remove_selection()
 
-#geometry.mesh()
+geometry.mesh()

@@ -108,6 +108,7 @@ cdef extern from "../../src/pythonlabagros.h":
         void removeSelection()
 
         void mesh()
+        char *meshFileName() except +
 
         void zoomBestFit()
         void zoomIn()
@@ -115,19 +116,20 @@ cdef extern from "../../src/pythonlabagros.h":
         void zoomRegion(double, double, double, double)
 
     char *pyVersion()
-    char *pyInput(char *str)
-    void pyMessage(char *str)
     void pyQuit()
 
+    char *pyInput(char *str)
+    void pyMessage(char *str)
+
+    void pyOpenDocument(char *str) except +
+    void pySaveDocument(char *str) except +
+    void pyCloseDocument()
+
+    void pySaveImage(char *str, int w, int h) except +
 
 
-    char *pythonMeshFileName() except +
     char *pythonSolutionFileName() except +
     # Solution *pythonSolutionObject() except +
-
-    void pythonOpenDocument(char *str) except +
-    void pythonSaveDocument(char *str) except +
-    void pythonCloseDocument()
 
     void pythonDeleteNodePoint(double x, double y)
     void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
@@ -154,7 +156,6 @@ cdef extern from "../../src/pythonlabagros.h":
 
     void pythonSetTimeStep(int timestep) except +
     int pythonTimeStepCount()
-    void pythonSaveImage(char *str, int w, int h) except +
 
 # Problem
 cdef class Problem:
@@ -458,6 +459,10 @@ cdef class Geometry:
     def mesh(self):
         self.thisptr.mesh()
 
+    # mesh_file_name()
+    def mesh_file_name(self):
+        self.thisptr.meshFileName()
+
     # zoom_best_fit()
     def zoom_best_fit(self):
         self.thisptr.zoomBestFit()
@@ -478,6 +483,10 @@ cdef class Geometry:
 def version():
     return pyVersion()
 
+# quit()
+def quit():
+    pyQuit()
+
 # input()
 def input(char *str):
     return pyInput(str)
@@ -486,28 +495,21 @@ def input(char *str):
 def message(char *str):
     pyMessage(str)
 
-# quit()
-def quit():
-    pyQuit()
+def open_document(char *str):
+    pyOpenDocument(str)
 
+def save_document(char *str):
+    pySaveDocument(str)
 
+def close_document():
+    pyCloseDocument()
 
-def meshfilename():
-    return pythonMeshFileName()
+def save_image(char *str, int w = 0, int h = 0):
+    pySaveImage(str, w, h)
+
 
 def solutionfilename():
     return pythonSolutionFileName()
-
-# document
-
-def opendocument(char *str):
-    pythonOpenDocument(str)
-
-def savedocument(char *str):
-    pythonSaveDocument(str)
-
-def closedocument():
-    pythonCloseDocument()
 
 # preprocessor
 
@@ -571,7 +573,3 @@ def timestep(int timestep):
 
 def timestepcount():
     return pythonTimeStepCount()
-
-def saveimage(char *str, int w = 0, int h = 0):
-    pythonSaveImage(str, w, h)
-
