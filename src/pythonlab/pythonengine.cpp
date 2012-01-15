@@ -146,20 +146,59 @@ void PythonEngine::stdOut(const QString &message)
     m_stdOut.append(message);
 }
 
+void PythonEngine::deleteUserModules()
+{
+    // delete all user modules
+    //
+    // When working with Python scripts interactively, one must keep in mind that Python
+    // import a module from its source code (on disk) only when parsing the first corresponding
+    // import statement. During this first import, the byte code is generated (.pyc file)
+    // if necessary and the imported module code object is cached in sys.modules. Then, when
+    // re-importing the same module, this cached code object will be directly used even
+    // if the source code file (.py[w] file) has changed meanwhile.
+    //
+    // This behavior is sometimes unexpected when working with the Python interpreter in
+    // interactive mode, because one must either always restart the interpreter or remove manually the .pyc
+    // files to be sure that changes made in imported modules were taken into account.
+
+    QStringList filter_name;
+    filter_name << "pythonlab" << "agros2d" << "sys";
+
+    QList<PythonVariable> list = variableList();
+
+    foreach (PythonVariable variable, list)
+    {
+        if (variable.type == "module")
+        {
+            if (filter_name.contains(variable.name))
+                continue;
+
+            QString exp = QString("del %1; del sys.modules[\"%1\"]").arg(variable.name);
+            // qDebug() << exp;
+            PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+        }
+    }
+
+    PyErr_Clear();
+}
+
 ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)
 {
     m_isRunning = true;
     m_stdOut = "";
+
+    QSettings settings;
+    // enable user module deleter
+    if (settings.value("PythonEngine/UserModuleDeleter", true).toBool())
+        deleteUserModules();
 
     runPythonHeader();
 
     PyObject *output = NULL;
     if (QFile::exists(fileName))
     {
-        // compile
-        PyObject *code = Py_CompileString(QString("from os import chdir \nchdir(u'" + QFileInfo(fileName).absolutePath() + "')").toStdString().c_str(), "", Py_file_input);
-        // run
-        if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
+        QString str = QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')");
+        PyRun_String(str.toStdString().c_str(), Py_single_input, m_dict, m_dict);
     }
     // compile
     PyObject *code = Py_CompileString(script.toStdString().c_str(), fileName.toStdString().c_str(), Py_file_input);
@@ -261,8 +300,24 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
     else
     {
         QString str = code;
-        if (str.contains("="))
-            str = str.right(str.length() - str.lastIndexOf("=") - 1);
+        // if (str.lastIndexOf("=") != -1)
+        //    str = str.right(str.length() - str.lastIndexOf("=") - 1);
+
+        for (int i = 33; i <= 126; i++)
+        {
+            // skip numbers and alphabet and dot
+            if ((i >= 48 && i <= 57) || (i >= 65 && i <= 90) || (i >= 97 && i <= 122) || (i == 46))
+                continue;
+
+            QChar c(i);
+            // qDebug() << c << ", " << str.lastIndexOf(c) << ", " << str.length();
+
+            if (str.lastIndexOf(c) != -1)
+            {
+                str = str.right(str.length() - str.lastIndexOf(c) - 1);
+                break;
+            }
+        }
 
         if (str.contains("."))
         {
@@ -421,15 +476,19 @@ ScriptResult PythonEngine::parseError()
     return error;
 }
 
-QList<PythonVariables> PythonEngine::variableList()
+QList<PythonVariable> PythonEngine::variableList()
 {
-    QStringList filter;
-    filter << "__builtins__" << "StdoutCatcher" << "python_engine_stdout" << "chdir"
+    QStringList filter_name;
+    filter_name << "__builtins__" << "StdoutCatcher" << "python_engine_stdout" << "chdir"
            << "python_engine_get_completion_file" << "python_engine_get_completion_string"
-           << "python_engine_get_completion_string_dot"
+           << "python_engine_get_completion_string_dot" << "PythonLabRopeProject"
+           << "pythonlab_rope_project"
            << "python_engine_pyflakes_check";
 
-    QList<PythonVariables> list;
+    QStringList filter_type;
+    filter_type << "builtin_function_or_method";
+
+    QList<PythonVariable> list;
 
     PyObject *keys = PyDict_Keys(m_dict);
     for (int i = 0; i < PyList_Size(keys); ++i)
@@ -437,10 +496,8 @@ QList<PythonVariables> PythonEngine::variableList()
         PyObject *key = PyList_GetItem(keys, i);
         PyObject *value = PyDict_GetItem(m_dict, key);
 
-        bool append = false;
-
         // variable
-        PythonVariables var;
+        PythonVariable var;
 
         // variable name
         var.name = PyString_AsString(key);
@@ -452,60 +509,51 @@ QList<PythonVariables> PythonEngine::variableList()
         if (var.type == "bool")
         {
             var.value = PyInt_AsLong(value) ? "True" : "False";
-            append = true;
         }
-        if (var.type == "int")
+        else if (var.type == "int")
         {
             var.value = (int) PyInt_AsLong(value);
-            append = true;
         }
-        if (var.type == "float")
+        else if (var.type == "float")
         {
             var.value = PyFloat_AsDouble(value);
-            append = true;
         }
-        if (var.type == "str")
+        else if (var.type == "str")
         {
             var.value = PyString_AsString(value);
-            append = true;
         }
-        if (var.type == "list")
+        else if (var.type == "list")
         {
             var.value = QString("%1 items").arg(PyList_Size(value));
-            append = true;
         }
-        if (var.type == "tuple")
+        else if (var.type == "tuple")
         {
             var.value = QString("%1 items").arg(PyTuple_Size(value));
-            append = true;
         }
-        if (var.type == "dict")
+        else if (var.type == "dict")
         {
             var.value = QString("%1 items").arg(PyDict_Size(value));
-            append = true;
         }
-        if (var.type == "numpy.ndarray")
+        else if (var.type == "numpy.ndarray")
         {
             var.value = ""; //TODO count
-            append = true;
         }
-        if (var.type == "module")
+        else if (var.type == "module")
         {
             var.value = PyString_AsString(PyObject_GetAttrString(value, "__name__"));
-            append = true;
         }
-        if (var.type == "function"
+        else if (var.type == "function"
                 || var.type == "instance"
                 || var.type == "classobj")
         {
-            append = true;
+            // qDebug() << value->ob_type->tp_name;
         }
 
-        // if (var.name == "problem")
-        //    qDebug() << var.name << " : " << var.type << value->ob_type->tp_
-
-        if (append && !filter.contains(var.name))
+        // append
+        if (!filter_name.contains(var.name) && !filter_type.contains(var.type))
+        {
             list.append(var);
+        }
     }
     Py_DECREF(keys);
 

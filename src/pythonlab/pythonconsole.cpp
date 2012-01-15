@@ -78,8 +78,7 @@ PythonScriptingConsole::~PythonScriptingConsole()
 
 void PythonScriptingConsole::stdClear()
 {
-    // QTextEdit::clear();
-    // appendCommandPrompt();
+    QTextEdit::clear();
 }
 
 void PythonScriptingConsole::stdOut(const QString& str)
@@ -305,17 +304,19 @@ void PythonScriptingConsole::handleTabCompletion(bool autoComplete)
     // qDebug() << found.length();
 
     // add variables
-    QList<PythonVariables> list = pythonEngine->variableList();
+    QList<PythonVariable> list = pythonEngine->variableList();
     if (!search.contains("."))
     {
-        foreach (PythonVariables variable, list)
+        foreach (PythonVariable variable, list)
         {
             if (isPythonVariable(variable.type))
                 found.append(QString("%1 (global, variable)").arg(variable.name));
-            if (variable.type == "function")
+            else if (variable.type == "function")
                 found.append(QString("%1 (global, function)").arg(variable.name));
-            if (variable.type == "module")
+            else if (variable.type == "module")
                 found.append(QString("%1 (global, module)").arg(variable.name));
+            else
+                found.append(QString("%1").arg(variable.name));
         }
     }
 
@@ -324,8 +325,22 @@ void PythonScriptingConsole::handleTabCompletion(bool autoComplete)
     if (!found.isEmpty())
     {
         QString str = search.trimmed();
-        if (str.contains("="))
-            str = str.right(str.length() - str.lastIndexOf("=") - 1);
+
+        for (int i = 33; i <= 126; i++)
+        {
+            // skip numbers and alphabet and dot
+            if ((i >= 48 && i <= 57) || (i >= 65 && i <= 90) || (i >= 97 && i <= 122) || (i == 46))
+                continue;
+
+            QChar c(i);
+            // qDebug() << c << ", " << str.lastIndexOf(c) << ", " << str.length();
+
+            if (str.lastIndexOf(c) != -1)
+            {
+                str = str.right(str.length() - str.lastIndexOf(c) - 1);
+                break;
+            }
+        }
 
         if (str.contains(".") && str.right(1) == ".")
             str = "";

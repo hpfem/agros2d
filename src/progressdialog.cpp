@@ -33,6 +33,7 @@
 #include "scenesolution.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 ProgressItem::ProgressItem()
 {
@@ -903,15 +904,16 @@ ProgressItemSolve::ProgressItemSolve() : ProgressItem()
 
 void ProgressItemSolve::setSteps()
 {
-    assert(0); //TODO
-    //    m_steps = 1;
-    //    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
-    //    {
-    //        Util::scene()->problemInfo()->timeTotal.evaluate();
-    //        Util::scene()->problemInfo()->timeStep.evaluate();
+        m_steps = 1;
+//        if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
+//        {
+//            assert(0); //TODO
 
-    //        m_steps += floor(Util::scene()->problemInfo()->timeTotal.number() / Util::scene()->problemInfo()->timeStep.number());
-    //    }
+//            Util::scene()->problemInfo()->timeTotal.evaluate();
+//            Util::scene()->problemInfo()->timeStep.evaluate();
+
+//            m_steps += floor(Util::scene()->problemInfo()->timeTotal.number() / Util::scene()->problemInfo()->timeStep.number());
+//        }
 }
 
 bool ProgressItemSolve::run(bool quiet)
@@ -927,41 +929,44 @@ bool ProgressItemSolve::run(bool quiet)
 
 void ProgressItemSolve::solve()
 {
-    assert(0); //TODO
-    //    logMessage("ProgressItemSolve::solve()");
+    logMessage("ProgressItemSolve::solve()");
 
-    //    m_adaptivityError.clear();
-    //    m_adaptivityDOF.clear();
-    //    m_nonlinearError.clear();
+    m_adaptivityError.clear();
+    m_adaptivityDOF.clear();
+    m_nonlinearError.clear();
 
-    //    if (!QFile::exists(tempProblemFileName() + ".xml"))
-    //        return;
+    if (!QFile::exists(tempProblemFileName() + ".xml"))
+        return;
 
-    //    // benchmark
-    //    QTime time;
-    //    time.start();
+    // benchmark
+    QTime time;
+    time.start();
 
-    //    emit message(tr("Problem analysis: %1 (%2, %3)").
-    //                 arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)).
-    //                 arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
-    //                 arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false, 1);
+    Util::createProblem(this);
+    Util::problem()->createStructure();
+    Util::problem()->solve();
 
-    //    emit message(tr("Solver was started: %1 ").arg(matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver)), false, 1);
+//        emit message(tr("Problem analysis: %1 (%2, %3)").
+//                     arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)).
+//                     arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
+//                     arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false, 1);
 
-    //    Hermes::vector<SolutionArray<double> *> solutionArrayList = Util::scene()->problemInfo()->module()->solve(this);  //TODO PK <double>
+//        emit message(tr("Solver was started: %1 ").arg(matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver)), false, 1);
 
-    //    if (solutionArrayList.size() > 0)
-    //    {
-    //        emit message(tr("Problem was solved"), false, 2);
-    //        Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
-    //    }
-    //    else
-    //    {
-    //        emit message(tr("Problem was not solved"), true, 0);
-    //        Util::scene()->sceneSolution()->setTimeElapsed(0);
-    //    }
+//        Hermes::vector<SolutionArray<double> *> solutionArrayList = Util::scene()->problemInfo()->module()->solve(this);  //TODO PK <double>
 
-    //    Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
+//        if (solutionArrayList.size() > 0)
+//        {
+//            emit message(tr("Problem was solved"), false, 2);
+//            Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
+//        }
+//        else
+//        {
+//            emit message(tr("Problem was not solved"), true, 0);
+//            Util::scene()->sceneSolution()->setTimeElapsed(0);
+//        }
+
+//        Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
 }
 
 // *********************************************************************************************

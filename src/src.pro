@@ -54,6 +54,7 @@ SOURCES += util.cpp \
     hermes2d/marker.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
+    hermes2d/problem.cpp \
     pythonlab/pythonconsole.cpp \
     pythonlab/pythoncompleter.cpp \
     pythonlab/pythonhighlighter.cpp \
@@ -108,6 +109,7 @@ HEADERS += util.h \
     hermes2d/surfaceintegral.h \
     hermes2d/marker.h \
     hermes2d/module.h \
+    hermes2d/problem.h \
     pythonlab/pythonconsole.h \
     pythonlab/pythoncompleter.h \
     pythonlab/pythonhighlighter.h \

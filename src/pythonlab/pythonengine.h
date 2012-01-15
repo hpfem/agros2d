@@ -4,7 +4,7 @@
 #include "util.h"
 #include <Python.h>
 
-struct PythonVariables
+struct PythonVariable
 {
     QString name;
     QString type;
@@ -41,9 +41,10 @@ public:
     ScriptResult parseError();
     inline bool isRunning() { return m_isRunning; }
 
+    void deleteUserModules();
     QStringList codeCompletion(const QString& code, int offset, const QString& fileName = "");
     QStringList codePyFlakes(const QString& fileName);
-    QList<PythonVariables> variableList();
+    QList<PythonVariable> variableList();
 
 protected:
     PyObject *m_dict;

@@ -51,8 +51,10 @@ void MarkerContainer<MarkerType>::removeFieldMarkers(FieldInfo* fieldInfo)
 template <typename MarkerType>
 MarkerType* MarkerContainer<MarkerType>::getNone(FieldInfo* field)
 {
-    if(!noneMarkers.contains(field))
+    if(!noneMarkers.contains(field)){
         noneMarkers[field] = new MarkerType(field, "none");
+        noneMarkers[field]->setNone();
+    }
 
     return noneMarkers[field];
 }
@@ -119,6 +121,18 @@ void MarkerContainer<MarkerType>::doFieldsChanged()
             removeFieldMarkers(fieldInfo);
         }
     }
+}
+
+template <typename MarkerType>
+bool MarkerContainer<MarkerType>::evaluateAllVariables()
+{
+    foreach(MarkerType* marker, data)
+    {
+        if (!marker->evaluateAllVariables())
+            return false;
+    }
+
+    return true;
 }
 
 //template <typename MarkerType>

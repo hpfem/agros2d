@@ -883,6 +883,7 @@ ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Mod
 
 bool Hermes::Module::Module::solve_init_variables()
 {
+    //TODO moved to problem, remove this method
     assert(0); //TODO
     //    // transient
     //    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
@@ -918,15 +919,16 @@ bool Hermes::Module::Module::solve_init_variables()
 
 Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
 {
-    if (!solve_init_variables())
-        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
+    assert(0);
+//    if (!solve_init_variables())
+//        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
 
-    WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
+//    WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
-    SolverAgros<double> solutionAgros(progressItemSolve, &wf);
+//    SolverAgros<double> solutionAgros(progressItemSolve, &wf);
 
-    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(); //TODO PK <double>
-    return solutionArrayList;
+//    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(); //TODO PK <double>
+//    return solutionArrayList;
 }
 
 Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solveAdaptiveStep(ProgressItemSolve *progressItemSolve)  //TODO PK <double>

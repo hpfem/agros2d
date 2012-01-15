@@ -20,12 +20,28 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
+#include <tr1/memory>
 #include "util.h"
 
-class ProgressItemSolve;
+using namespace std::tr1;
 
-template <typename Scalar>
-class WeakFormAgros;
+template <typename entity>
+Hermes::vector<entity*> desmartize(Hermes::vector<shared_ptr<entity> > smart_vec)
+{
+    Hermes::vector<entity*> vec;
+    for(int i = 0; i < smart_vec.size(); i++)
+        vec.push_back(smart_vec.at(i).get());
+    return vec;
+}
+
+template <typename entity>
+Hermes::vector<shared_ptr<entity> > smartize(Hermes::vector<entity*>  vec)
+{
+    Hermes::vector<shared_ptr<entity> > smart_vec;
+    for(int i = 0; i < vec.size(); i++)
+        smart_vec.push_back(shared_ptr<entity>(vec.at(i)));
+    return smart_vec;
+}
 
 template <typename Scalar>
 Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> castConst(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space)
@@ -37,6 +53,12 @@ Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> castConst(Hermes::vector
     return out;
 }
 
+class ProgressItemSolve;
+class FieldInfo;
+
+template <typename Scalar>
+class WeakFormAgros;
+
 template <typename Scalar>
 struct SolutionArray
 {
@@ -44,8 +66,8 @@ struct SolutionArray
     double adaptiveError;
     int adaptiveSteps;
 
-    Hermes::Hermes2D::Solution<Scalar> *sln;
-    Hermes::Hermes2D::Space<Scalar> *space;
+    shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln;
+    shared_ptr<Hermes::Hermes2D::Space<Scalar> > space;
 
     SolutionArray();
     ~SolutionArray();
@@ -57,63 +79,65 @@ struct SolutionArray
 
 // solve
 template <typename Scalar>
-class SolverAgros
+class SolutionArrayList
 {
 public:
-    SolverAgros(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf);
+    void init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, FieldInfo *fieldInfo);
+    void clear();
+    SolutionArray<Scalar>* at(int i);
+    int size() { return listOfSolutionArrays.size(); }
+    Hermes::vector<SolutionArray<Scalar> *> get_list() { return listOfSolutionArrays; }
+    Hermes::Hermes2D::Solution<Scalar>* sln(int index) const {return listOfSolutionArrays.at(index)->sln.get();}
+    void solve();
+    void doAdaptivityStep();
+    void doTimeStep();
 
-    Hermes::vector<SolutionArray<Scalar> *> solve(Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> spaceParam = Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *>(),
-                                                  Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionParam = Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
 private:
-    int polynomialOrder;
-    AdaptivityType adaptivityType;
-    int adaptivitySteps;
-    double adaptivityTolerance;
-    int adaptivityMaxDOFs;
-    int numberOfSolution;
-    double timeTotal;
-    double timeStep;
-    double initialCondition;
-    CoordinateType problemType;
-    AnalysisType analysisType;
+    Hermes::vector<SolutionArray<Scalar> *> listOfSolutionArrays;
 
-    LinearityType linearityType;
-    double nonlinearTolerance;
-    int nonlinearSteps;
-
-    Hermes::MatrixSolverType matrixSolver;
-    WeakFormsType weakFormsType;
+    FieldInfo *m_fieldInfo;
 
     // error
     bool isError;
+
+    // mesh file
+    Hermes::Hermes2D::Mesh *mesh;
 
     // weak form
     WeakFormAgros<Scalar> *m_wf;
     ProgressItemSolve *m_progressItemSolve;
 
-    // solution
-    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution;
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solution;
 
     // adaptivity
-    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionReference;
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutionReference;
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
     Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
-    Hermes::Hermes2D::Mesh *readMesh();
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> createSpace(Hermes::Hermes2D::Mesh *meshParam);
+    void readMesh();
+    void createSpace();
+
+    // if copyPrevious == true, last solutions will be used (intented for doAdaptivityStep function)
+    void createSolutions(bool copyPrevious = false);
     void initSelectors();
 
     void cleanup();
 
-    bool solveOneProblem(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> &spaceParam,
-                         Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> &solutionParam);
+    bool solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
+                         Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
 
+    //  returns false if adaptivity should be ended
+    bool performAdaptivityStep(double &error, int stepI, int &actualAdaptivitySteps, int maxAdaptivitySteps);
+    void prepareTimestepping();
 
+    void recordSolution(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
 
-    SolutionArray<Scalar> *solutionArray(Hermes::Hermes2D::Solution<Scalar> *solutionParam,
-                                         Hermes::Hermes2D::Space<Scalar> *spaceParam = NULL,
-                                         double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
+    bool solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar> *dp,
+                     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
+                     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
+                     Hermes::Solvers::LinearSolver<Scalar> *solver, SparseMatrix<Scalar> *matrix, Vector<Scalar> *rhs);
 };
 
 #endif // SOLVER_H

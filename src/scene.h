@@ -50,6 +50,9 @@ class ScriptEngineRemote;
 
 class ProblemDialog;
 class SceneTransformDialog;
+class ProgressItemSolve;
+
+class Problem;
 
 namespace Hermes
 {
@@ -111,6 +114,8 @@ public:
     double frequency() { return m_parent->frequency; }
     Value timeStep() {return m_parent->timeStep; }
     Value timeTotal() {return m_parent->timeTotal; }
+
+//    int numberOfSolutions() const;
 
     // linearity
     LinearityType linearityType;
@@ -320,6 +325,8 @@ public:
     static inline Scene *scene() { return Util::singleton()->m_scene; }
     static inline QCompleter *completer() { return Util::singleton()->m_completer; }
     static inline Config *config() { return Util::singleton()->m_config; }
+    static inline Problem *problem() { return Util::singleton()->m_problem; }
+    static Problem *createProblem(ProgressItemSolve* pis);
 
 protected:
     Util();
@@ -333,6 +340,7 @@ private:
     Scene *m_scene;
     QCompleter *m_completer;
     Config *m_config;
+    Problem *m_problem;
     ScriptEngineRemote *m_scriptEngineRemote;
 };
 

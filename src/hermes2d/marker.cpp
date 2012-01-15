@@ -26,6 +26,7 @@
 Marker::Marker(FieldInfo *fieldInfo, std::string name)
     : fieldInfo(fieldInfo), name(name)
 {
+    m_isNone = false;
 }
 
 Marker::~Marker()
@@ -49,6 +50,16 @@ const map<string, Value> Marker::getValues() const
 void Marker::evaluate(std::string id, double time)
 {
     values[id].evaluate(time);
+}
+
+bool Marker::evaluateAllVariables()
+{
+    for (std::map<std::string, Value>::iterator it = values.begin(); it != values.end(); ++it)
+    {
+        if (!it->second.evaluate())
+            return false;
+    }
+    return true;
 }
 
 QString Marker::fieldId()

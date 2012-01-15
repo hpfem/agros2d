@@ -74,6 +74,8 @@ public:
     /// create or delete markers for new or removed field
     void doFieldsChanged();
 
+    bool evaluateAllVariables();
+
 protected:
     QList<MarkerType* > data;
 

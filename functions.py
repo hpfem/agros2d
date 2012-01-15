@@ -45,8 +45,8 @@ def test(text, value, normal, error = 0.03):
 		print(text + ": (" + str(value) + " != " + str(normal) + ")")
 	return test
 
-from rope.base.project import Project
-pythonlab_rope_project = Project(".", ropefolder=None)
+from rope.base.project import Project as PythonLabRopeProject
+pythonlab_rope_project = PythonLabRopeProject(".", ropefolder=None)
 
 # get completion list
 def python_engine_get_completion_string(code, offset):
