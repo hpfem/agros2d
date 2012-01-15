@@ -102,6 +102,11 @@ cdef extern from "../../src/pythonlabagros.h":
         void selectLabels(vector[int]) except +
         void selectNone()
 
+        void moveSelection(double, double, bool)
+        void rotateSelection(double, double, double, bool)
+        void scaleSelection(double, double, double, bool)
+        void removeSelection()
+
         void mesh()
 
         void zoomBestFit()
@@ -131,11 +136,6 @@ cdef extern from "../../src/pythonlabagros.h":
     void pythonSelectNodePoint(double x, double y)
     void pythonSelectEdgePoint(double x, double y)
     void pythonSelectLabelPoint(double x, double y)
-
-    void pythonRotateSelection(double x, double y, double angle, int copy)
-    void pythonScaleSelection(double x, double y, double scale, int copy)
-    void pythonMoveSelection(double dx, double dy, int copy)
-    void pythonDeleteSelection()
 
     void pythonMesh()
     void pythonSolve()
@@ -434,6 +434,22 @@ cdef class Geometry:
 
         self.thisptr.selectLabels(labels_vector)
 
+    # move_selection(dx, dy, copy)
+    def move_selection(self, double dx, double dy, int copy = False):
+        self.thisptr.moveSelection(dx, dy, int(copy))
+
+    # rotate_selection(x, y, angle, copy)
+    def rotate_selection(self, double x, double y, double angle, int copy = False):
+        self.thisptr.rotateSelection(x, y, angle, int(copy))
+
+    # scale_selection(x, y, scale, copy)
+    def scale_selection(self, double x, double y, double scale, int copy = False):
+        self.thisptr.scaleSelection(x, y, scale, int(copy))
+
+    # remove_selection(dx, dy, copy)
+    def remove_selection(self):
+        self.thisptr.removeSelection()
+
     # select_none()
     def select_none(self):
         self.thisptr.selectNone()
@@ -512,18 +528,6 @@ def selectedgepoint(double x, double y):
     
 def selectlabelpoint(double x, double y):
     pythonSelectLabelPoint(x, y)
-
-def rotateselection(double x, double y, double angle, int copy = False):
-    pythonRotateSelection(x, y, angle, int(copy))
-
-def scaleselection(double x, double y, double scale, int copy = False):
-    pythonScaleSelection(x, y, scale, int(copy))
-
-def moveselection(double dx, double dy, int copy = False):
-    pythonMoveSelection(dx, dy, int(copy))
-
-def deleteselection():
-    pythonDeleteSelection()
 
 # solver
 

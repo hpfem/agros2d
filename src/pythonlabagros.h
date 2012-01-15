@@ -206,14 +206,22 @@ class PyGeometry {
         void addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries);
         void addLabel(double x, double y, double area, int order, map<char*, char*> materials);
 
+        // remove operations
         void removeNode(int index);
         void removeEdge(int index);
         void removeLabel(int index);
 
+        // select operations
         void selectNodes(vector<int> nodes);
         void selectEdges(vector<int> edges);
         void selectLabels(vector<int> labels);
         void selectNone();
+
+        // transform operations
+        void moveSelection(double dx, double dy, bool copy);
+        void rotateSelection(double x, double y, double angle, bool copy);
+        void scaleSelection(double x, double y, double scale, bool copy);
+        void removeSelection();
 
         void mesh();
 
@@ -249,19 +257,9 @@ void pythonSelectNodePoint(double x, double y);
 void pythonSelectEdgePoint(double x, double y);
 void pythonSelectLabelPoint(double x, double y);
 
-void pythonRotateSelection(double x, double y, double angle, bool copy);
-void pythonScaleSelection(double x, double y, double scale, bool copy);
-void pythonMoveSelection(double dx, double dy, bool copy);
-void pythonDeleteSelection();
-
 void pythonMesh();
 void pythonSolve();
 void pythonSolveAdaptiveStep();
-
-void pythonZoomBestFit();
-void pythonZoomIn();
-void pythonZoomOut();
-void pythonZoomRegion(double x1, double y1, double x2, double y2);
 
 void pythonMode(char *str);
 void pythonPostprocessorMode(char *str);

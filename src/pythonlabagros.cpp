@@ -632,6 +632,37 @@ void PyGeometry::selectNone()
     Util::scene()->refresh();
 }
 
+void PyGeometry::moveSelection(double dx, double dy, bool copy)
+{
+    logMessage("PyGeometry::moveSelection()");
+
+    Util::scene()->transformTranslate(Point(dx, dy), copy);
+    sceneView()->doInvalidated();
+}
+
+void PyGeometry::rotateSelection(double x, double y, double angle, bool copy)
+{
+    logMessage("PyGeometry::rotateSelection()");
+
+    Util::scene()->transformRotate(Point(x, y), angle, copy);
+    sceneView()->doInvalidated();
+}
+
+void PyGeometry::scaleSelection(double x, double y, double scale, bool copy)
+{
+    logMessage("PyGeometry::scaleSelection()");
+
+    Util::scene()->transformScale(Point(x, y), scale, copy);
+    sceneView()->doInvalidated();
+}
+
+void PyGeometry::removeSelection()
+{
+    logMessage("PyGeometry::deleteSelection()");
+
+    Util::scene()->deleteSelected();
+}
+
 void PyGeometry::mesh()
 {
     logMessage("PyGeometry::mesh()");
@@ -857,41 +888,6 @@ void pythonSelectLabelPoint(double x, double y)
         label->isSelected = true;
         sceneView()->doInvalidated();
     }
-}
-
-// rotateselection(x, y, angle, copy = {True, False})
-void pythonRotateSelection(double x, double y, double angle, bool copy)
-{
-    logMessage("pythonRotateSelection()");
-
-    Util::scene()->transformRotate(Point(x, y), angle, copy);
-    sceneView()->doInvalidated();
-}
-
-// scaleselection(x, y, scale, copy = {True, False})
-void pythonScaleSelection(double x, double y, double scale, bool copy)
-{
-    logMessage("pythonScaleSelection()");
-
-    Util::scene()->transformScale(Point(x, y), scale, copy);
-    sceneView()->doInvalidated();
-}
-
-// moveselection(dx, dy, copy = {True, False})
-void pythonMoveSelection(double dx, double dy, bool copy)
-{
-    logMessage("pythonMoveSelection()");
-
-    Util::scene()->transformTranslate(Point(dx, dy), copy);
-    sceneView()->doInvalidated();
-}
-
-// deleteselection()
-void pythonDeleteSelection()
-{
-    logMessage("pythonDeleteSelection()");
-
-    Util::scene()->deleteSelected();
 }
 
 // solve()
