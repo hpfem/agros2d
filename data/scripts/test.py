@@ -9,7 +9,6 @@ problem = agros2d.Problem("planar", name = "Test", time_step = 10, time_total = 
 electrostatic = agros2d.Field("electrostatic", "steadystate")
 
 electrostatic.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
-#electrostatic.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
 electrostatic.add_boundary("Dirichlet", "electrostatic_surface_charge_density")
 electrostatic.set_boundary("Dirichlet", "electrostatic_potential", {"electrostatic_potential" : 1.4*U})
 electrostatic.set_boundary("Dirichlet", parameters = {"electrostatic_potential" : U/2.0})
@@ -32,6 +31,7 @@ heat.set_material("Conductor", {"heat_volume_heat" : Q/3.0})
 
 geometry = agros2d.Geometry()
 geometry.add_node(-1, -1)
+geometry.add_node(0, 0)
 geometry.remove_node(0)
 
 geometry.add_edge(0, 0, 1, 0, boundaries = {"electrostatic" : "Dirichlet", "heat" : "Dirichlet"})
@@ -41,6 +41,14 @@ geometry.add_edge(0, 1, 0, 0, boundaries = {"electrostatic" : "Dirichlet", "heat
 geometry.add_edge(0, 1, 1, 0, angle = 45, refinement = 2, boundaries = {"heat" : "Neumann"})
 geometry.add_label(.25, .25, materials = {"electrostatic" : "Conductor", "heat" : "Conductor"})
 geometry.add_label(.75, .75, materials = {"electrostatic" : "Dieletric"})
+
+geometry.select_nodes([0])
+geometry.select_nodes()
+geometry.select_edges([1, 2, 3])
+geometry.select_edges()
+geometry.select_edges([1])
+geometry.select_edges()
+geometry.select_none()
 
 geometry.zoom_best_fit()
 

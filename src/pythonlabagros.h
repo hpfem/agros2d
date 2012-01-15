@@ -210,6 +210,11 @@ class PyGeometry {
         void removeEdge(int index);
         void removeLabel(int index);
 
+        void selectNodes(vector<int> nodes);
+        void selectEdges(vector<int> edges);
+        void selectLabels(vector<int> labels);
+        void selectNone();
+
         void mesh();
 
         // zoom operations
@@ -239,9 +244,6 @@ void pythonCloseDocument();
 void pythonDeleteNodePoint(double x, double y);
 void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle);
 void pythonDeleteLabelPoint(double x, double y);
-
-void pythonSelectNone();
-void pythonSelectAll();
 
 void pythonSelectNodePoint(double x, double y);
 void pythonSelectEdgePoint(double x, double y);

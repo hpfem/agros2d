@@ -374,16 +374,8 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 
     Hermes::Module::BoundaryType *boundaryType = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
 
-    // browse boundary parameter
+    // browse boundary parameters
     std::map<std::string, Value> values;
-    /*
-    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundaryType->variables.begin(); it < boundaryType->variables.end(); ++it)
-    {
-        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-        values[variable->id] = Value(parameters.find(std::string(variable->id)));
-    }
-    */
-
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
         for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundaryType->variables.begin(); it < boundaryType->variables.end(); ++it)
@@ -420,14 +412,17 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
 {
     logMessage("PyField::addMaterial()");
 
-    /* FIXME - boundaries with same names
-    */
+    // check materials with same name
+    foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::scene()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
+    {
+        if (material->getName() == name)
+            throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString(name)).toStdString());
+    }
 
+    // browse material parameters
     std::map<std::string, Value> values;
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
-        //qDebug() << (*i).first << ": " << (*i).second;
-
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->material_type_variables;
 
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
@@ -555,6 +550,86 @@ void PyGeometry::removeLabel(int index)
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
 
     Util::scene()->removeLabel(Util::scene()->labels->at(index));
+}
+
+void PyGeometry::selectNodes(vector<int> nodes)
+{
+    logMessage("PyGeometry::selectNode()");
+
+    Util::scene()->selectNone();
+
+    if (!nodes.empty())
+    {
+        for (vector<int>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+        {
+            if ((*it >= 0) && (*it < Util::scene()->nodes->length()))
+                Util::scene()->nodes->at(*it)->isSelected = true;
+            else
+                throw out_of_range(QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->nodes->length()-1).toStdString());
+        }
+    }
+    else
+    {
+        Util::scene()->selectAll(SceneMode_OperateOnNodes);
+    }
+
+    Util::scene()->refresh();
+}
+
+void PyGeometry::selectEdges(vector<int> edges)
+{
+    logMessage("PyGeometry::selectEdge()");
+
+    Util::scene()->selectNone();
+
+    if (!edges.empty())
+    {
+        for (vector<int>::iterator it = edges.begin(); it != edges.end(); ++it)
+        {
+            if ((*it >= 0) && (*it < Util::scene()->edges->length()))
+                Util::scene()->edges->at(*it)->isSelected = true;
+            else
+                throw out_of_range(QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString());
+        }
+    }
+    else
+    {
+        Util::scene()->selectAll(SceneMode_OperateOnEdges);
+    }
+
+    Util::scene()->refresh();
+}
+
+void PyGeometry::selectLabels(vector<int> labels)
+{
+    logMessage("PyGeometry::selectLabel()");
+
+    Util::scene()->selectNone();
+
+    if (!labels.empty())
+    {
+        for (vector<int>::iterator it = labels.begin(); it != labels.end(); ++it)
+        {
+            if ((*it >= 0) && (*it < Util::scene()->labels->length()))
+                Util::scene()->labels->at(*it)->isSelected = true;
+            else
+                throw out_of_range(QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels->length()-1).toStdString());
+        }
+    }
+    else
+    {
+        Util::scene()->selectAll(SceneMode_OperateOnLabels);
+    }
+
+    Util::scene()->refresh();
+}
+
+void PyGeometry::selectNone()
+{
+    logMessage("PyGeometry::selectNone()");
+
+    Util::scene()->selectNone();
+    Util::scene()->refresh();
 }
 
 void PyGeometry::mesh()
@@ -745,76 +820,6 @@ void pythonDeleteLabelPoint(double x, double y)
     Util::scene()->labels->remove(Util::scene()->getLabel(Point(x, y)));
 }
 
-// selectnone()
-void pythonSelectNone()
-{
-    logMessage("pythonSelectNone()");
-
-    Util::scene()->selectNone();
-}
-
-// selectall()
-void pythonSelectAll()
-{
-    logMessage("pythonSelectAll()");
-
-    if (sceneView()->sceneMode() == SceneMode_Postprocessor)
-    {
-        // select volume integral area
-        if (sceneView()->actPostprocessorModeVolumeIntegral->isChecked())
-            Util::scene()->selectAll(SceneMode_OperateOnLabels);
-
-        // select surface integral area
-        if (sceneView()->actPostprocessorModeSurfaceIntegral->isChecked())
-            Util::scene()->selectAll(SceneMode_OperateOnEdges);
-    }
-    else
-    {
-        Util::scene()->selectAll(sceneView()->sceneMode());
-    }
-    sceneView()->doInvalidated();
-}
-
-// selectnode(node)
-static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
-{
-    logMessage("pythonSelectNode()");
-
-    PyObject *list;
-    if (PyArg_ParseTuple(args, "O", &list))
-    {
-        sceneView()->actSceneModeNode->trigger();
-        Util::scene()->selectNone();
-
-        Py_ssize_t size = PyList_Size(list);
-        for (int i = 0; i < size; i++)
-        {
-            PyObject *value = PyList_GetItem(list, i);
-
-            int index;
-            PyArg_Parse(value, "i", &index);
-
-            if ((index >= 0) && index < Util::scene()->nodes->length())
-            {
-                Util::scene()->nodes->at(index)->isSelected = true;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString().c_str());
-                return NULL;
-            }
-        }
-
-        sceneView()->doInvalidated();
-        Py_RETURN_NONE;
-    }
-    else
-    {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
-    }
-    return NULL;
-}
-
 // selectnodepoint(x, y)
 void pythonSelectNodePoint(double x, double y)
 {
@@ -828,47 +833,6 @@ void pythonSelectNodePoint(double x, double y)
     }
 }
 
-// selectedge(list)
-static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
-{
-    assert(0); //TODO
-    //    logMessage("pythonSelectEdge()");
-
-    //    PyObject *list;
-    //    if (PyArg_ParseTuple(args, "O", &list))
-    //    {
-    //        sceneView()->actSceneModeEdge->trigger();
-    //        Util::scene()->selectNone();
-
-    //        Py_ssize_t size = PyList_Size(list);
-    //        for (int i = 0; i < size; i++)
-    //        {
-    //            PyObject *value = PyList_GetItem(list, i);
-
-    //            int index;
-    //            PyArg_Parse(value, "i", &index);
-
-    //            if ((index >= 0) && index < Util::scene()->edges.count())
-    //            {
-    //                Util::scene()->edges[index]->isSelected = true;
-    //            }
-    //            else
-    //            {
-    //                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
-    //                return NULL;
-    //            }
-    //        }
-
-    //        sceneView()->doInvalidated();
-    //        Py_RETURN_NONE;
-    //    }
-    //    else
-    //    {
-    //        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
-    //    }
-    //    return NULL;
-}
-
 // selectedgepoint(x, y)
 void pythonSelectEdgePoint(double x, double y)
 {
@@ -880,46 +844,6 @@ void pythonSelectEdgePoint(double x, double y)
         edge->isSelected = true;
         sceneView()->doInvalidated();
     }
-}
-
-// selectlabel(list)
-static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
-{
-    logMessage("pythonSelectLabel()");
-
-    PyObject *list;
-    if (PyArg_ParseTuple(args, "O", &list))
-    {
-        Util::scene()->selectNone();
-
-        Py_ssize_t size = PyList_Size(list);
-        for (int i = 0; i < size; i++)
-        {
-            sceneView()->actSceneModeLabel->trigger();
-            PyObject *value = PyList_GetItem(list, i);
-
-            int index;
-            PyArg_Parse(value, "i", &index);
-
-            if ((index >= 0) && index < Util::scene()->labels->length())
-            {
-                Util::scene()->labels->at(index)->isSelected = true;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString().c_str());
-                return NULL;
-            }
-        }
-
-        sceneView()->doInvalidated();
-        Py_RETURN_NONE;
-    }
-    else
-    {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
-    }
-    return NULL;
 }
 
 // selectlabelpoint(x, y)
@@ -1408,9 +1332,6 @@ void pythonSaveImage(char *str, int w, int h)
 
 static PyMethodDef pythonMethodsAgros[] =
 {
-    {"selectnode", pythonSelectNode, METH_VARARGS, "selectnode(list)"},
-    {"selectedge", pythonSelectEdge, METH_VARARGS, "selectedge(list)"},
-    {"selectlabel", pythonSelectLabel, METH_VARARGS, "selectlabel(list)"},
     {"pointresult", pythonPointResult, METH_VARARGS, "pointresult(x, y)"},
     {"volumeintegral", pythonVolumeIntegral, METH_VARARGS, "volumeintegral(list)"},
     {"surfaceintegral", pythonSurfaceIntegral, METH_VARARGS, "surfaceintegral(list)"},

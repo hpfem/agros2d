@@ -1,3 +1,4 @@
+from libcpp.vector cimport vector
 from libcpp.map cimport map
 from libcpp.pair cimport pair
 
@@ -96,6 +97,11 @@ cdef extern from "../../src/pythonlabagros.h":
         void removeEdge(int index) except +
         void removeLabel(int index) except +
 
+        void selectNodes(vector[int]) except +
+        void selectEdges(vector[int]) except +
+        void selectLabels(vector[int]) except +
+        void selectNone()
+
         void mesh()
 
         void zoomBestFit()
@@ -121,9 +127,6 @@ cdef extern from "../../src/pythonlabagros.h":
     void pythonDeleteNodePoint(double x, double y)
     void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
     void pythonDeleteLabelPoint(double x, double y)
-
-    void pythonSelectNone()
-    void pythonSelectAll()
 
     void pythonSelectNodePoint(double x, double y)
     void pythonSelectEdgePoint(double x, double y)
@@ -371,6 +374,10 @@ cdef class Geometry:
     def add_node(self, double x, double y):
         self.thisptr.addNode(x, y)
 
+    # remove_node(index)
+    def remove_node(self, int index):
+        self.thisptr.removeNode(index)
+
     # add_edge(x1, y1, x2, y2, angle, refinement, boundaries)
     def add_edge(self, double x1, double y1, double x2, double y2, double angle = 0.0, int refinement = 0, boundaries = {}):
 
@@ -382,6 +389,10 @@ cdef class Geometry:
             boundaries_map.insert(boundary)
 
         self.thisptr.addEdge(x1, y1, x2, y2, angle, refinement, boundaries_map)
+
+    # remove_edge(index)
+    def remove_edge(self, int index):
+        self.thisptr.removeEdge(index)
 
     # add_label(x, y, area, order, materials)
     def add_label(self, double x, double y, double area = 0.0, int order = 1, materials = {}):
@@ -395,29 +406,55 @@ cdef class Geometry:
 
         self.thisptr.addLabel(x, y, area, order, materials_map)
 
-    # remove_node(index)
-    def remove_node(self, int index):
-        self.thisptr.removeNode(index)
-
-    # remove_edge(index)
-    def remove_edge(self, int index):
-        self.thisptr.removeEdge(index)
-
     # remove_label(index)
     def remove_label(self, int index):
         self.thisptr.removeLabel(index)
+
+    # select_nodes(nodes)
+    def select_nodes(self, nodes = []):
+        cdef vector[int] nodes_vector
+        for i in nodes:
+            nodes_vector.push_back(i)
+
+        self.thisptr.selectNodes(nodes_vector)
+
+    # select_edges(edges)
+    def select_edges(self, edges = []):
+        cdef vector[int] edges_vector
+        for i in edges:
+            edges_vector.push_back(i)
+
+        self.thisptr.selectEdges(edges_vector)
+
+    # select_labels(labels)
+    def select_labels(self, labels = []):
+        cdef vector[int] labels_vector
+        for i in labels:
+            labels_vector.push_back(i)
+
+        self.thisptr.selectLabels(labels_vector)
+
+    # select_none()
+    def select_none(self):
+        self.thisptr.selectNone()
 
     # mesh()
     def mesh(self):
         self.thisptr.mesh()
 
-    # zoom_best_fit(), zoom_in(), zoom_out(), zoom_region()
+    # zoom_best_fit()
     def zoom_best_fit(self):
         self.thisptr.zoomBestFit()
+
+    # zoom_in()
     def zoom_in(self):
         self.thisptr.zoomIn()
+
+    # zoom_out()
     def zoom_out(self):
         self.thisptr.zoomOut()
+
+    # zoom_region()
     def zoom_region(self, double x1, double y1, double x2, double y2):
         self.thisptr.zoomRegion(x1, y1, x2, y2)
 
@@ -466,12 +503,6 @@ def deleteedgepoint(double x1, double y1, double x2, double y2, double angle):
 
 def deletelabelpoint(double x, double y):
     pythonDeleteLabelPoint(x, y)
-
-def selectnone():
-    pythonSelectNone()
-
-def selectall():
-    pythonSelectAll()
 
 def selectnodepoint(double x, double y):
     pythonSelectNodePoint(x, y)
