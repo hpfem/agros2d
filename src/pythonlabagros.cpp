@@ -36,6 +36,7 @@
 #include "hermes2d/localpoint.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 ScriptResult runPythonScript(const QString &script, const QString &fileName)
 {
@@ -667,7 +668,7 @@ void PyGeometry::mesh()
 {
     logMessage("PyGeometry::mesh()");
 
-    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
+    Util::problem()->solve(SolverMode_Mesh);
     Util::scene()->refresh();
 }
 
@@ -675,7 +676,7 @@ char *PyGeometry::meshFileName()
 {
     logMessage("PyGeometry::meshFileName()");
 
-    if (Util::scene()->sceneSolution()->isMeshed())
+    if (Util::problem()->isMeshed())
         return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toStdString().c_str());
     else
         throw invalid_argument(QObject::tr("Problem is not meshed.").toStdString());
@@ -782,23 +783,12 @@ void pySaveImage(char *str, int w, int h)
 
 // ************************************************************************************
 
-template <typename Scalar>
-Hermes::Hermes2D::Solution<Scalar> *pythonSolutionObject()
-{
-    logMessage("pythonSolutionObject()");
-
-    if (Util::scene()->sceneSolution()->isSolved())
-        return Util::scene()->sceneSolution()->sln();
-    else
-        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
-}
-
 // solutionfilename()
 char *pythonSolutionFileName()
 {
     logMessage("pythonSolutionFileName()");
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (Util::problem()->isSolved())
     {
         char *fileName = const_cast<char*>(QString(tempProblemFileName() + ".sln").toStdString().c_str());
         //Util::scene()->sceneSolution()->sln()->save(fileName);

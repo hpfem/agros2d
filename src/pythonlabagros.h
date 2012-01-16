@@ -251,7 +251,6 @@ void pySaveImage(char *str, int w, int h);
 
 // cython functions
 char *pythonSolutionFileName();
-Solution *pythonSolutionObject();
 
 void pythonDeleteNodePoint(double x, double y);
 void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle);
