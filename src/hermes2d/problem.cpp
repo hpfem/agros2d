@@ -67,12 +67,11 @@ bool Block::solveInit()
     {
         if(! field->solveInitVariables())
             assert(0); //TODO co to znamena?
+        m_wf = new WeakFormAgros<double>(field->fieldInfo());
+
+        m_solutionList->init(m_progressItemSolve, m_wf, m_fields.at(0)->m_fieldInfo);
+        m_solutionList->clear();
     }
-
-    m_wf = new WeakFormAgros<double>(1);
-
-    m_solutionList->init(m_progressItemSolve, m_wf, m_fields.at(0)->m_fieldInfo);
-    m_solutionList->clear();
 }
 
 void Block::solve()
