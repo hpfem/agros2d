@@ -33,6 +33,7 @@
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 #include "../lib/gl2ps/gl2ps.h"
 
@@ -123,12 +124,12 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
     m_mainWindow = (QMainWindow *) parent;
     m_scene = Util::scene();
 
-    connect(m_scene->sceneSolution(), SIGNAL(timeStepChanged(bool)), this, SLOT(timeStepChanged(bool)));
-    connect(m_scene->sceneSolution(), SIGNAL(solved()), this, SLOT(solved()));
-    connect(m_scene->sceneSolution(), SIGNAL(processedRangeContour()), this, SLOT(processedRangeContour()));
-    connect(m_scene->sceneSolution(), SIGNAL(processedRangeScalar()), this, SLOT(processedRangeScalar()));
-    connect(m_scene->sceneSolution(), SIGNAL(processedRangeVector()), this, SLOT(processedRangeVector()));
-    connect(m_scene->sceneSolution(), SIGNAL(meshed()), this, SLOT(clearGLLists()));
+    connect(Util::problem(), SIGNAL(timeStepChanged(bool)), this, SLOT(timeStepChanged(bool)));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(solved()));
+    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(clearGLLists()));
+    connect(Util::problem(), SIGNAL(processedRangeContour()), this, SLOT(processedRangeContour()));
+    connect(Util::problem(), SIGNAL(processedRangeScalar()), this, SLOT(processedRangeScalar()));
+    connect(Util::problem(), SIGNAL(processedRangeVector()), this, SLOT(processedRangeVector()));
 
     connect(m_scene, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
     connect(m_scene, SIGNAL(defaultValues()), this, SLOT(doDefaultValues()));
@@ -338,7 +339,7 @@ void SceneView::resizeGL(int w, int h)
 
     setupViewport(w, h);
 
-    if (Util::scene()->sceneSolution()->isSolved() && m_sceneMode == SceneMode_Postprocessor)
+    if (Util::problem()->isSolved() && m_sceneMode == SceneMode_Postprocessor)
     {
         paletteFilter();
         paletteUpdateTexAdjust();
@@ -432,17 +433,17 @@ void SceneView::paintGL()
                  Util::config()->colorBackground.blueF(), 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // if (Util::scene()->sceneSolution()->isSolving())
+    // if (Util::problem()->isSolving())
     //    return;
 
     if (is3DMode())
     {
-        if (m_scene->sceneSolution()->isMeshed() && (m_sceneMode == SceneMode_Postprocessor))
+        if (Util::problem()->isMeshed() && (m_sceneMode == SceneMode_Postprocessor))
         {
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model) paintScalarField3DSolid();
         }
 
-        if (m_scene->sceneSolution()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
+        if (Util::problem()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
         {
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D) paintScalarField3D();
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid) paintScalarField3DSolid();
@@ -464,7 +465,7 @@ void SceneView::paintGL()
         if (Util::config()->showGrid) paintGrid();
 
         // view
-        if (m_scene->sceneSolution()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
+        if (Util::problem()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
         {
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView) paintScalarField();
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) paintOrder();
@@ -480,7 +481,7 @@ void SceneView::paintGL()
         // geometry
         if (m_sceneViewSettings.showGeometry) paintGeometry();
 
-        if (m_scene->sceneSolution()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
+        if (Util::problem()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
         {
             if (actPostprocessorModeVolumeIntegral->isChecked()) paintPostprocessorSelectedVolume();
             if (actPostprocessorModeSurfaceIntegral->isChecked()) paintPostprocessorSelectedSurface();
@@ -985,14 +986,14 @@ void SceneView::paintInitialMesh()
 {
     logMessage("SceneView::paintInitialMesh()");
 
-    if (!m_scene->sceneSolution()->isMeshed()) return;
+    if (!Util::problem()->isMeshed()) return;
 
     loadProjection2d(true);
 
-    m_scene->sceneSolution()->linInitialMeshView().lock_data();
+    m_scene->activeSceneSolution()->linInitialMeshView().lock_data();
 
-    double3* linVert = m_scene->sceneSolution()->linInitialMeshView().get_vertices();
-    int3* linEdges = m_scene->sceneSolution()->linInitialMeshView().get_edges();
+    double3* linVert = m_scene->activeSceneSolution()->linInitialMeshView().get_vertices();
+    int3* linEdges = m_scene->activeSceneSolution()->linInitialMeshView().get_edges();
 
     // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -1003,14 +1004,14 @@ void SceneView::paintInitialMesh()
 
     // triangles
     glBegin(GL_LINES);
-    for (int i = 0; i < m_scene->sceneSolution()->linInitialMeshView().get_num_edges(); i++)
+    for (int i = 0; i < m_scene->activeSceneSolution()->linInitialMeshView().get_num_edges(); i++)
     {
         glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
         glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
     }
     glEnd();
 
-    m_scene->sceneSolution()->linInitialMeshView().unlock_data();
+    m_scene->activeSceneSolution()->linInitialMeshView().unlock_data();
 }
 
 void SceneView::paintSolutionMesh()
@@ -1021,10 +1022,10 @@ void SceneView::paintSolutionMesh()
 
     loadProjection2d(true);
 
-    m_scene->sceneSolution()->linSolutionMeshView().lock_data();
+    Util::scene()->activeSceneSolution()->linSolutionMeshView().lock_data();
 
-    double3* linVert = m_scene->sceneSolution()->linSolutionMeshView().get_vertices();
-    int3* linEdges = m_scene->sceneSolution()->linSolutionMeshView().get_edges();
+    double3* linVert = Util::scene()->activeSceneSolution()->linSolutionMeshView().get_vertices();
+    int3* linEdges = Util::scene()->activeSceneSolution()->linSolutionMeshView().get_edges();
 
     // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -1034,16 +1035,16 @@ void SceneView::paintSolutionMesh()
     glLineWidth(1.3);
 
     // triangles
-    // qDebug() << m_scene->sceneSolution()->linSolutionMeshView().get_num_edges();
+    // qDebug() << Util::problem()->linSolutionMeshView().get_num_edges();
     glBegin(GL_LINES);
-    for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_edges(); i++)
+    for (int i = 0; i < Util::scene()->activeSceneSolution()->linSolutionMeshView().get_num_edges(); i++)
     {
         glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
         glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
     }
     glEnd();
 
-    m_scene->sceneSolution()->linSolutionMeshView().unlock_data();
+    Util::scene()->activeSceneSolution()->linSolutionMeshView().unlock_data();
 
 }
 
@@ -1061,15 +1062,15 @@ void SceneView::paintOrder()
         glNewList(m_listOrder, GL_COMPILE);
 
         // order scalar view
-        m_scene->sceneSolution()->ordView().lock_data();
+        m_scene->activeSceneSolution()->ordView().lock_data();
 
-        double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
-        int3* tris = m_scene->sceneSolution()->ordView().get_triangles();
+        double3* vert = m_scene->activeSceneSolution()->ordView().get_vertices();
+        int3* tris = m_scene->activeSceneSolution()->ordView().get_triangles();
 
         // draw mesh
         int min = 11;
         int max = 1;
-        for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->activeSceneSolution()->ordView().get_num_triangles(); i++)
         {
             if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
@@ -1080,7 +1081,7 @@ void SceneView::paintOrder()
 
         // triangles
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->activeSceneSolution()->ordView().get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
             glColor3d(paletteColorOrder(color)[0], paletteColorOrder(color)[1], paletteColorOrder(color)[2]);
@@ -1108,13 +1109,13 @@ void SceneView::paintOrder()
         QFont fontLabel = font();
         fontLabel.setPointSize(fontLabel.pointSize() - 3);
 
-        m_scene->sceneSolution()->ordView().lock_data();
+        m_scene->activeSceneSolution()->ordView().lock_data();
 
-        double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
+        double3* vert = m_scene->activeSceneSolution()->ordView().get_vertices();
         int* lvert;
         char** ltext;
         double2* lbox;
-        int nl = m_scene->sceneSolution()->ordView().get_labels(lvert, ltext, lbox);
+        int nl = m_scene->activeSceneSolution()->ordView().get_labels(lvert, ltext, lbox);
 
         Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale2d*aspect(),
                    (2.0/contextHeight()*fontMetrics().height())/m_scale2d);
@@ -1132,7 +1133,7 @@ void SceneView::paintOrder()
             }
         }
 
-        m_scene->sceneSolution()->ordView().unlock_data();
+        m_scene->activeSceneSolution()->ordView().unlock_data();
     }
 }
 
@@ -1143,20 +1144,20 @@ void SceneView::paintOrderColorBar()
     if (!m_isSolutionPrepared || !Util::config()->showOrderScale) return;
 
     // order scalar view
-    m_scene->sceneSolution()->ordView().lock_data();
+    m_scene->activeSceneSolution()->ordView().lock_data();
 
-    double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
-    int3* tris = m_scene->sceneSolution()->ordView().get_triangles();
+    double3* vert = m_scene->activeSceneSolution()->ordView().get_vertices();
+    int3* tris = m_scene->activeSceneSolution()->ordView().get_triangles();
 
     int min = 11;
     int max = 1;
-    for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
+    for (int i = 0; i < m_scene->activeSceneSolution()->ordView().get_num_triangles(); i++)
     {
         if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
         if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
     }
 
-    m_scene->sceneSolution()->ordView().unlock_data();
+    m_scene->activeSceneSolution()->ordView().unlock_data();
 
     // order color map
     loadProjection2d();
@@ -1339,10 +1340,10 @@ void SceneView::paintScalarField()
         if (fabs(m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin) < EPS_ZERO)
             irange = 1.0;
 
-        m_scene->sceneSolution()->linScalarView().lock_data();
+        m_scene->activeSceneSolution()->linScalarView().lock_data();
 
-        double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
-        int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
+        double3* linVert = m_scene->activeSceneSolution()->linScalarView().get_vertices();
+        int3* linTris = m_scene->activeSceneSolution()->linScalarView().get_triangles();
         Point point[3];
         double value[3];
 
@@ -1359,7 +1360,7 @@ void SceneView::paintScalarField()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
         {
             for (int j = 0; j < 3; j++)
             {
@@ -1394,7 +1395,7 @@ void SceneView::paintScalarField()
         glLoadIdentity();
         glMatrixMode(GL_MODELVIEW);
 
-        m_scene->sceneSolution()->linScalarView().unlock_data();
+        m_scene->activeSceneSolution()->linScalarView().unlock_data();
 
         glEndList();
 
@@ -1431,10 +1432,10 @@ void SceneView::paintScalarField3D()
             irange = 1.0;
         }
 
-        m_scene->sceneSolution()->linScalarView().lock_data();
+        m_scene->activeSceneSolution()->linScalarView().lock_data();
 
-        double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
-        int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
+        double3* linVert = m_scene->activeSceneSolution()->linScalarView().get_vertices();
+        int3* linTris = m_scene->activeSceneSolution()->linScalarView().get_triangles();
         Point point[3];
         double value[3];
 
@@ -1463,7 +1464,7 @@ void SceneView::paintScalarField3D()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
         {
             point[0].x = linVert[linTris[i][0]][0];
             point[0].y = linVert[linTris[i][0]][1];
@@ -1512,14 +1513,14 @@ void SceneView::paintScalarField3D()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4d(0.5, 0.5, 0.5, 0.3);
 
-        m_scene->sceneSolution()->linInitialMeshView().lock_data();
+        m_scene->activeSceneSolution()->linInitialMeshView().lock_data();
 
-        double3* linVertMesh = m_scene->sceneSolution()->linInitialMeshView().get_vertices();
-        int3* linTrisMesh = m_scene->sceneSolution()->linInitialMeshView().get_triangles();
+        double3* linVertMesh = m_scene->activeSceneSolution()->linInitialMeshView().get_vertices();
+        int3* linTrisMesh = m_scene->activeSceneSolution()->linInitialMeshView().get_triangles();
 
         // triangles
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->sceneSolution()->linInitialMeshView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->activeSceneSolution()->linInitialMeshView().get_num_triangles(); i++)
         {
             glVertex2d(linVertMesh[linTrisMesh[i][0]][0], linVertMesh[linTrisMesh[i][0]][1]);
             glVertex2d(linVertMesh[linTrisMesh[i][1]][0], linVertMesh[linTrisMesh[i][1]][1]);
@@ -1527,7 +1528,7 @@ void SceneView::paintScalarField3D()
         }
         glEnd();
 
-        m_scene->sceneSolution()->linInitialMeshView().unlock_data();
+        m_scene->activeSceneSolution()->linInitialMeshView().unlock_data();
 
         glDisable(GL_BLEND);
         glDisable(GL_POLYGON_OFFSET_FILL);
@@ -1570,7 +1571,7 @@ void SceneView::paintScalarField3D()
 
         glPopMatrix();
 
-        m_scene->sceneSolution()->linScalarView().unlock_data();
+        m_scene->activeSceneSolution()->linScalarView().unlock_data();
 
         glEndList();
 
@@ -1615,11 +1616,11 @@ void SceneView::paintScalarField3DSolid()
 
         double phi = Util::config()->scalarView3DAngle;
 
-        m_scene->sceneSolution()->linScalarView().lock_data();
+        m_scene->activeSceneSolution()->linScalarView().lock_data();
 
-        double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
-        int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
-        int3* linEdges = m_scene->sceneSolution()->linScalarView().get_edges();
+        double3* linVert = m_scene->activeSceneSolution()->linScalarView().get_vertices();
+        int3* linTris = m_scene->activeSceneSolution()->linScalarView().get_triangles();
+        int3* linEdges = m_scene->activeSceneSolution()->linScalarView().get_edges();
         Point point[3];
         double value[3];
 
@@ -1651,7 +1652,7 @@ void SceneView::paintScalarField3DSolid()
         if (m_scene->problemInfo()->coordinateType == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -1703,7 +1704,7 @@ void SceneView::paintScalarField3DSolid()
 
             // length
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -1746,7 +1747,7 @@ void SceneView::paintScalarField3DSolid()
         {
             // side
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -1785,7 +1786,7 @@ void SceneView::paintScalarField3DSolid()
 
             // symmetry
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -1966,7 +1967,7 @@ void SceneView::paintScalarField3DSolid()
 
         glPopMatrix();
 
-        m_scene->sceneSolution()->linScalarView().unlock_data();
+        m_scene->activeSceneSolution()->linScalarView().unlock_data();
 
         glEndList();
 
@@ -1991,17 +1992,17 @@ void SceneView::paintContours()
         m_listContours = glGenLists(1);
         glNewList(m_listContours, GL_COMPILE);
 
-        m_scene->sceneSolution()->linContourView().lock_data();
+        m_scene->activeSceneSolution()->linContourView().lock_data();
 
-        double3* tvert = m_scene->sceneSolution()->linContourView().get_vertices();
-        int3* tris = m_scene->sceneSolution()->linContourView().get_triangles();
+        double3* tvert = m_scene->activeSceneSolution()->linContourView().get_vertices();
+        int3* tris = m_scene->activeSceneSolution()->linContourView().get_triangles();
 
         // transform variable
         double rangeMin =  numeric_limits<double>::max();
         double rangeMax = -numeric_limits<double>::max();
 
-        double3* vert = new double3[m_scene->sceneSolution()->linContourView().get_num_vertices()];
-        for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_vertices(); i++)
+        double3* vert = new double3[m_scene->activeSceneSolution()->linContourView().get_num_vertices()];
+        for (int i = 0; i < m_scene->activeSceneSolution()->linContourView().get_num_vertices(); i++)
         {
             vert[i][0] = tvert[i][0];
             vert[i][1] = tvert[i][1];
@@ -2021,7 +2022,7 @@ void SceneView::paintContours()
                   Util::config()->colorContours.blueF());
 
         glBegin(GL_LINES);
-        for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->activeSceneSolution()->linContourView().get_num_triangles(); i++)
         {
             if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))
             {
@@ -2032,7 +2033,7 @@ void SceneView::paintContours()
 
         delete vert;
 
-        m_scene->sceneSolution()->linContourView().unlock_data();
+        m_scene->activeSceneSolution()->linContourView().unlock_data();
 
         glEndList();
 
@@ -2106,8 +2107,8 @@ void SceneView::paintVectors()
         m_listVectors = glGenLists(1);
         glNewList(m_listVectors, GL_COMPILE);
 
-        double vectorRangeMin = m_scene->sceneSolution()->vecVectorView().get_min_value();
-        double vectorRangeMax = m_scene->sceneSolution()->vecVectorView().get_max_value();
+        double vectorRangeMin = m_scene->activeSceneSolution()->vecVectorView().get_min_value();
+        double vectorRangeMax = m_scene->activeSceneSolution()->vecVectorView().get_max_value();
 
         //Add 20% margin to the range
         double vectorRange = vectorRangeMax - vectorRangeMin;
@@ -2123,16 +2124,16 @@ void SceneView::paintVectors()
         double gs = (rect.width() + rect.height()) / Util::config()->vectorCount;
 
         // paint
-        m_scene->sceneSolution()->vecVectorView().lock_data();
+        m_scene->activeSceneSolution()->vecVectorView().lock_data();
 
-        double4* vecVert = m_scene->sceneSolution()->vecVectorView().get_vertices();
-        int3* vecTris = m_scene->sceneSolution()->vecVectorView().get_triangles();
+        double4* vecVert = m_scene->activeSceneSolution()->vecVectorView().get_vertices();
+        int3* vecTris = m_scene->activeSceneSolution()->vecVectorView().get_triangles();
 
         glEnable(GL_POLYGON_OFFSET_FILL);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->sceneSolution()->vecVectorView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->activeSceneSolution()->vecVectorView().get_num_triangles(); i++)
         {
             Point a(vecVert[vecTris[i][0]][0], vecVert[vecTris[i][0]][1]);
             Point b(vecVert[vecTris[i][1]][0], vecVert[vecTris[i][1]][1]);
@@ -2262,7 +2263,7 @@ void SceneView::paintVectors()
 
         glDisable(GL_POLYGON_OFFSET_FILL);
 
-        m_scene->sceneSolution()->vecVectorView().unlock_data();
+        m_scene->activeSceneSolution()->vecVectorView().unlock_data();
 
         glEndList();
 
@@ -2964,11 +2965,11 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 // select volume integral area
                 if (actPostprocessorModeVolumeIntegral->isChecked())
                 {
-                    int index = m_scene->sceneSolution()->findElementInMesh(m_scene->sceneSolution()->meshInitial(), p);
+                    int index = m_scene->activeSceneSolution()->findElementInMesh(m_scene->activeSceneSolution()->meshInitial(), p);
                     if (index != -1)
                     {
                         //  find label marker
-                        int labelIndex = atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker).marker.c_str());
+                        int labelIndex = atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(m_scene->activeSceneSolution()->meshInitial()->get_element_fast(index)->marker).marker.c_str());
 
                         m_scene->labels->at(labelIndex)->isSelected = !m_scene->labels->at(labelIndex)->isSelected;
                         updateGL();
@@ -3735,14 +3736,14 @@ void SceneView::doInvalidated()
 
     resizeGL(width(), height());
 
-    if (!m_scene->sceneSolution()->isSolved())
+    if (!Util::problem()->isSolved())
     {
         if (m_sceneMode == SceneMode_Postprocessor)
             actSceneModeNode->trigger();
     }
 
-    actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
-    actSceneViewSelectMarker->setEnabled(m_scene->sceneSolution()->isSolved());
+    actSceneModePostprocessor->setEnabled(Util::problem()->isSolved());
+    actSceneViewSelectMarker->setEnabled(Util::problem()->isSolved());
     actSceneZoomRegion->setEnabled(!is3DMode());
 
     m_scene->actDeleteSelected->setEnabled(m_sceneMode != SceneMode_Postprocessor);
@@ -3774,12 +3775,12 @@ void SceneView::timeStepChanged(bool showViewProgress)
 {
     logMessage("SceneView::timeStepChanged()");
 
-    if (!Util::scene()->sceneSolution()->isSolving())
+    if (!Util::problem()->isSolving())
     {
         QTime time;
         time.start();
 
-        Util::scene()->sceneSolution()->processView(showViewProgress);
+        Util::scene()->activeSceneSolution()->processView(showViewProgress);
     }
 
     clearGLLists();
@@ -3882,7 +3883,7 @@ void SceneView::doSceneModeSet(QAction *action)
 {
     logMessage("SceneView::doSceneModeSet()");
 
-    actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
+    actSceneModePostprocessor->setEnabled(Util::problem()->isSolved());
 
     if (actSceneModeNode->isChecked()) m_sceneMode = SceneMode_OperateOnNodes;
     if (actSceneModeEdge->isChecked()) m_sceneMode = SceneMode_OperateOnEdges;
@@ -3946,8 +3947,8 @@ void SceneView::processedRangeScalar()
 
     if (m_sceneViewSettings.scalarRangeAuto)
     {
-        m_sceneViewSettings.scalarRangeMin = m_scene->sceneSolution()->linScalarView().get_min_value();
-        m_sceneViewSettings.scalarRangeMax = m_scene->sceneSolution()->linScalarView().get_max_value();
+        m_sceneViewSettings.scalarRangeMin = m_scene->activeSceneSolution()->linScalarView().get_min_value();
+        m_sceneViewSettings.scalarRangeMax = m_scene->activeSceneSolution()->linScalarView().get_max_value();
     }
 }
 
@@ -4135,7 +4136,7 @@ void SceneView::paintPostprocessorSelectedVolume()
 {
     logMessage("SceneView::paintPostprocessorSelectedVolume()");
 
-    if (!m_scene->sceneSolution()->isMeshed()) return;
+    if (!Util::problem()->isMeshed()) return;
 
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -4149,10 +4150,10 @@ void SceneView::paintPostprocessorSelectedVolume()
               0.5);
 
     // triangles
-    for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
+    for (int i = 0; i < m_scene->activeSceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
-        Hermes::Hermes2D::Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
-        if (m_scene->labels->at(atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected)
+        Hermes::Hermes2D::Element *element = m_scene->activeSceneSolution()->meshInitial()->get_element(i);
+        if (m_scene->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected)
         {
             if (element->is_triangle())
             {
@@ -4182,12 +4183,12 @@ void SceneView::paintPostprocessorSelectedVolume()
     /*
     logMessage("SceneView::paintPostprocessorSelectedVolume()");
 
-    if (!m_scene->sceneSolution()->isMeshed()) return;
+    if (!m_scene->activeSceneSolution()->isMeshed()) return;
 
-    m_scene->sceneSolution()->linInitialMeshView().lock_data();
+    m_scene->activeSceneSolution()->linInitialMeshView().lock_data();
 
-    double3* linVert = m_scene->sceneSolution()->linInitialMeshView().get_vertices();
-    int3* linTris = m_scene->sceneSolution()->linInitialMeshView().get_triangles();
+    double3* linVert = m_scene->activeSceneSolution()->linInitialMeshView().get_vertices();
+    int3* linTris = m_scene->activeSceneSolution()->linInitialMeshView().get_triangles();
 
     // draw initial mesh
     glEnable(GL_POLYGON_OFFSET_FILL);
@@ -4202,7 +4203,7 @@ void SceneView::paintPostprocessorSelectedVolume()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_triangles(); i++)
+    for (int i = 0; i < Util::problem()->linSolutionMeshView().get_num_triangles(); i++)
     {
         if (m_scene->labels[element->marker - 1]->isSelected)
         {
@@ -4216,7 +4217,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     glDisable(GL_BLEND);
     glDisable(GL_POLYGON_OFFSET_FILL);
 
-    m_scene->sceneSolution()->linSolutionMeshView().unlock_data();
+    Util::problem()->linSolutionMeshView().unlock_data();
     */
 }
 
@@ -4373,7 +4374,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showGrid, bool sho
     //        resultGeometry.showDialog();
 
     //    // mesh
-    //    if (m_scene->sceneSolution()->isMeshed())
+    //    if (m_scene->activeSceneSolution()->isMeshed())
     //    {
     //        // show only initial mesh
     //        actSceneModeLabel->trigger();
@@ -4387,12 +4388,12 @@ void SceneView::saveImagesForReport(const QString &path, bool showGrid, bool sho
     //        m_sceneViewSettings.showSolutionMesh = false;
     //    }
 
-    //    if (m_scene->sceneSolution()->isSolved())
+    //    if (m_scene->activeSceneSolution()->isSolved())
     //    {
     //        // when solved show both meshes
     //        actSceneModePostprocessor->trigger();
 
-    //        m_scene->sceneSolution()->processSolutionMesh();
+    //        m_scene->activeSceneSolution()->processSolutionMesh();
     //        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
     //        updateGL();
 
@@ -4405,7 +4406,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showGrid, bool sho
     //        m_sceneViewSettings.showSolutionMesh = false;
 
     //        // contours
-    //        m_scene->sceneSolution()->processRangeContour();
+    //        m_scene->activeSceneSolution()->processRangeContour();
     //        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
     //        m_sceneViewSettings.showContours = true;
     //        updateGL();
@@ -4415,7 +4416,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showGrid, bool sho
     //        m_sceneViewSettings.showContours = false;
 
     //        // vectors
-    //        m_scene->sceneSolution()->processRangeVector();
+    //        m_scene->activeSceneSolution()->processRangeVector();
     //        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
     //        m_sceneViewSettings.showVectors = true;
     //        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->module()->view_default_vector_variable->id;
@@ -4436,10 +4437,10 @@ void SceneView::saveImagesForReport(const QString &path, bool showGrid, bool sho
 
     //        // last step
     //        if (m_scene->problemInfo()->module()->transient_solutions)
-    //            m_scene->sceneSolution()->setTimeStep(m_scene->sceneSolution()->timeStepCount() - 1);
+    //            m_scene->activeSceneSolution()->setTimeStep(m_scene->activeSceneSolution()->timeStepCount() - 1);
 
     //        // scalar field
-    //        m_scene->sceneSolution()->processRangeScalar();
+    //        m_scene->activeSceneSolution()->processRangeScalar();
     //        m_sceneViewSettings.scalarRangeAuto = true;
     //        m_sceneViewSettings.scalarPhysicFieldVariable = m_scene->problemInfo()->module()->view_default_scalar_variable->id;
     //        m_sceneViewSettings.scalarPhysicFieldVariableComp = m_scene->problemInfo()->module()->view_default_scalar_variable_comp();

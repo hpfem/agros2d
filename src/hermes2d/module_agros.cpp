@@ -119,8 +119,8 @@ void deformShapeTemplate(T linVert, int count)
         double x = linVert[i][0];
         double y = linVert[i][1];
 
-        double dx = Util::scene()->sceneSolution()->sln(0)->get_pt_value(x, y);
-        double dy = Util::scene()->sceneSolution()->sln(1)->get_pt_value(x, y);
+        double dx = Util::scene()->activeSceneSolution()->sln(0)->get_pt_value(x, y);
+        double dy = Util::scene()->activeSceneSolution()->sln(1)->get_pt_value(x, y);
 
         double dm = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
 
@@ -136,8 +136,8 @@ void deformShapeTemplate(T linVert, int count)
         double x = linVert[i][0];
         double y = linVert[i][1];
 
-        double dx = Util::scene()->sceneSolution()->sln(0)->get_pt_value(x, y);
-        double dy = Util::scene()->sceneSolution()->sln(1)->get_pt_value(x, y);
+        double dx = Util::scene()->activeSceneSolution()->sln(0)->get_pt_value(x, y);
+        double dy = Util::scene()->activeSceneSolution()->sln(1)->get_pt_value(x, y);
 
         linVert[i][0] += k*dx;
         linVert[i][1] += k*dy;

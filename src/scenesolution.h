@@ -32,21 +32,13 @@ class ViewScalarFilter;
 template <typename Scalar>
 struct SolutionArray;
 
-class ProgressDialog;
-class ProgressItemMesh;
-class ProgressItemSolve;
-class ProgressItemSolveAdaptiveStep;
-class ProgressItemProcessView;
+class FieldInfo;
 
 class SceneSolutionQT : public QObject
 {
     Q_OBJECT
 
 signals:
-    void timeStepChanged(bool showViewProgress = true);
-    void meshed();
-    void solved();
-
     void processedSolutionMesh();
     void processedRangeContour();
     void processedRangeScalar();
@@ -55,11 +47,14 @@ signals:
 
 };
 
+
+/// TODO in the future, this class should only encapsulate solution and provide methods for its visualisation
+/// all code related to meshing and solving should be moved to Problem, Block and Field
 template <typename Scalar>
 class SceneSolution : public SceneSolutionQT, Hermes::Hermes2D::Solution<Scalar>
 {
 public:
-    SceneSolution();
+    SceneSolution(FieldInfo* fieldInfo);
     ~SceneSolution();
 
     void clear(bool all = true);
@@ -68,12 +63,6 @@ public:
     void loadSolution(QDomElement element);
     void saveSolution(QDomDocument *doc, QDomElement element);
 
-    // solve
-    void solve(SolverMode solverMode);
-
-    // mesh
-    inline Hermes::Hermes2D::Mesh *meshInitial() { return m_meshInitial; }
-    void setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial);
 
     // solution
     SolutionArray<Scalar> *solutionArray(int i = -1);
@@ -82,19 +71,12 @@ public:
     void setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> *> solutionArrayList);
     inline Hermes::vector<SolutionArray<Scalar> *> solutionArrayList() { return m_solutionArrayList; }
 
-    // time
-    void setTimeStep(int timeStep, bool showViewProgress = true);
-    inline int timeStep() const { return m_timeStep; }
-    int timeStepCount() const;
-    double time() const;
-
-    bool isSolved() const { return (m_timeStep != -1); }
-    bool isMeshed()  const { return m_meshInitial; }
-    bool isSolving() const { return m_isSolving; }
-
     // mesh
-    inline Hermes::Hermes2D::Views::Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
     inline Hermes::Hermes2D::Views::Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
+    inline Hermes::Hermes2D::Views::Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
+    Hermes::Hermes2D::Mesh* meshInitial() { return m_meshInitial; }
+    void setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial);
+
 
     // contour
     inline ViewScalarFilter<Scalar> *slnContourView() { return m_slnContourView; }
@@ -116,11 +98,6 @@ public:
     void setOrderView(Hermes::Hermes2D::Space<Scalar> *space);
     Hermes::Hermes2D::Views::Orderizer &ordView() { return m_orderView; }
 
-    inline int timeElapsed() const { return m_timeElapsed; }
-    double adaptiveError();
-    int adaptiveSteps();
-    inline void setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
-
     int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point) const;
     int findElementInVectorizer(Hermes::Hermes2D::Views::Vectorizer &vecVectorView, const Point &point) const;
 
@@ -132,20 +109,15 @@ public:
     void processRangeVector();
     void processOrder();
 
-    // progress dialog
-    ProgressDialog *progressDialog();
 
 private:
-    int m_timeElapsed;
-    bool m_isSolving;
-
     // general solution array
     Hermes::vector<SolutionArray<Scalar> *> m_solutionArrayList;
-    int m_timeStep;
 
     // mesh
-    Hermes::Hermes2D::Views::Linearizer m_linInitialMeshView;
     Hermes::Hermes2D::Views::Linearizer m_linSolutionMeshView;
+    Hermes::Hermes2D::Views::Linearizer m_linInitialMeshView;
+    Hermes::Hermes2D::Mesh* m_meshInitial;
 
     // contour
     ViewScalarFilter<Scalar> *m_slnContourView; // scalar view solution
@@ -160,17 +132,10 @@ private:
     ViewScalarFilter<Scalar> *m_slnVectorYView; // vector view solution - y
     Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
 
-    Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
-
     // order view
     Hermes::Hermes2D::Views::Orderizer m_orderView;
 
-    // progress dialog
-    ProgressDialog *m_progressDialog;
-    ProgressItemMesh *m_progressItemMesh;
-    ProgressItemSolve *m_progressItemSolve;
-    ProgressItemSolveAdaptiveStep *m_progressItemSolveAdaptiveStep;
-    ProgressItemProcessView *m_progressItemProcessView;
+    FieldInfo* m_fieldInfo;
 };
 
 typedef SceneSolution<double> SceneSolutionDouble;

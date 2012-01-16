@@ -25,6 +25,7 @@
 #include "hermes2d/localpoint.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 QList<Point> ChartLine::getPoints()
 {
@@ -116,35 +117,36 @@ ChartDialog::~ChartDialog()
 
 void ChartDialog::showDialog()
 {
-    logMessage("ChartDialog::showDialog()");
+    assert(0);
+//    logMessage("ChartDialog::showDialog()");
 
-    fillComboBoxScalarVariable(cmbFieldVariable);
-    fillComboBoxTimeStep(cmbTimeStep);
+//    fillComboBoxScalarVariable(cmbFieldVariable);
+//    fillComboBoxTimeStep(cmbTimeStep);
 
-    // correct labels
-    lblStartX->setText(Util::scene()->problemInfo()->labelX() + ":");
-    lblStartY->setText(Util::scene()->problemInfo()->labelY() + ":");
-    lblEndX->setText(Util::scene()->problemInfo()->labelX() + ":");
-    lblEndY->setText(Util::scene()->problemInfo()->labelY() + ":");
-    lblPointX->setText(Util::scene()->problemInfo()->labelX() + ":");
-    lblPointY->setText(Util::scene()->problemInfo()->labelY() + ":");
-    radAxisX->setText(Util::scene()->problemInfo()->labelX());
-    radAxisY->setText(Util::scene()->problemInfo()->labelY());
+//    // correct labels
+//    lblStartX->setText(Util::scene()->problemInfo()->labelX() + ":");
+//    lblStartY->setText(Util::scene()->problemInfo()->labelY() + ":");
+//    lblEndX->setText(Util::scene()->problemInfo()->labelX() + ":");
+//    lblEndY->setText(Util::scene()->problemInfo()->labelY() + ":");
+//    lblPointX->setText(Util::scene()->problemInfo()->labelX() + ":");
+//    lblPointY->setText(Util::scene()->problemInfo()->labelY() + ":");
+//    radAxisX->setText(Util::scene()->problemInfo()->labelX());
+//    radAxisY->setText(Util::scene()->problemInfo()->labelY());
 
-    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
-    {
-        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), true);
-    }
-    else
-    {
-        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), false);
-        tabAnalysisType->setCurrentWidget(widGeometry);
-    }
+//    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
+//    {
+//        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), true);
+//    }
+//    else
+//    {
+//        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), false);
+//        tabAnalysisType->setCurrentWidget(widGeometry);
+//    }
 
-    show();
-    activateWindow();
-    raise();
-    doChartLine();
+//    show();
+//    activateWindow();
+//    raise();
+//    doChartLine();
 }
 
 void ChartDialog::hideEvent(QHideEvent *event)
@@ -583,7 +585,7 @@ void ChartDialog::addValue(LocalPointValue *localPointValue, double *yval, int i
                       new QTableWidgetItem(QString("%1").arg(localPointValue->point.y, 0, 'e', 3)));
     // time
     trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 2,
-                      new QTableWidgetItem(QString("%1").arg(Util::scene()->sceneSolution()->time(), 0, 'e', 3)));
+                      new QTableWidgetItem(QString("%1").arg(Util::problem()->time(), 0, 'e', 3)));
 
     // counter
     int n = 3;
@@ -640,7 +642,7 @@ void ChartDialog::doPlot()
 {
     logMessage("ChartDialog::doPlot()");
 
-    if (!Util::scene()->sceneSolution()->isSolved()) return;
+    if (!Util::problem()->isSolved()) return;
 
     if (tabAnalysisType->currentWidget() == widGeometry)
         plotGeometry();
@@ -814,7 +816,7 @@ void ChartDialog::doTimeStepChanged(int index)
 
     if (cmbTimeStep->currentIndex() != -1)
     {
-        Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex());
+        Util::problem()->setTimeStep(cmbTimeStep->currentIndex());
         doPlot();
     }
 }

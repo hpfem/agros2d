@@ -2,11 +2,12 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "alter_newton_solver.h"
+#include "hermes2d/problem.h"
 #include "progressdialog.h"
 
 void newton_log(char *str)
 {
-    Util::scene()->sceneSolution()->progressDialog()->showMessage(str, false, 0);
+    Util::problem()->progressDialog()->showMessage(str, false, 0);
 
     // hack
     QString message = QString::fromAscii(str);
@@ -17,7 +18,7 @@ void newton_log(char *str)
         double error = message.right(message.length() - pos).toDouble();
         if (error > 0.0)
         {
-            dynamic_cast<ProgressItemSolve *>(Util::scene()->sceneSolution()->progressDialog()->currentProgressItem())->
+            dynamic_cast<ProgressItemSolve *>(Util::problem()->progressDialog()->currentProgressItem())->
                     addNonlinearError(error);
         }
     }

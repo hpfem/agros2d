@@ -189,7 +189,8 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
                 }
             }
 
-            Util::scene()->sceneSolution()->setMeshInitial(mesh);
+            assert(0);
+            //scene()->sceneSolution()->setMeshInitial(mesh);
         }
         else
         {
@@ -942,9 +943,8 @@ void ProgressItemSolve::solve()
     QTime time;
     time.start();
 
-    Util::createProblem(this);
     Util::problem()->createStructure();
-    Util::problem()->solve();
+    Util::problem()->solve(SolverMode_MeshAndSolve);
 
 //        emit message(tr("Problem analysis: %1 (%2, %3)").
 //                     arg(QString::fromStdString(Util::scene()->problemInfo()->module()->name)).
@@ -1045,39 +1045,40 @@ bool ProgressItemProcessView::run(bool quiet)
 
 void ProgressItemProcessView::process()
 {
-    logMessage("ProgressItemProcessView::process()");
+    assert(0);
+//    logMessage("ProgressItemProcessView::process()");
 
-    int step = 0;
+//    int step = 0;
 
-    // process order
-    Util::scene()->sceneSolution()->processOrder();
+//    // process order
+//    Util::problem()->processOrder();
 
-    if (sceneView()->sceneViewSettings().showSolutionMesh)
-    {
-        step++;
-        emit message(tr("Processing solution mesh cache"), false, step);
-        Util::scene()->sceneSolution()->processSolutionMesh();
-    }
-    if (sceneView()->sceneViewSettings().showContours)
-    {
-        step++;
-        emit message(tr("Processing contour view cache"), false, step);
-        Util::scene()->sceneSolution()->processRangeContour();
-    }
-    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
-            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
-    {
-        step++;
-        emit message(tr("Processing scalar view cache"), false, step);
-        Util::scene()->sceneSolution()->processRangeScalar();
-    }
-    if (sceneView()->sceneViewSettings().showVectors)
-    {
-        step++;
-        emit message(tr("Processing vector view cache"), false, step);
-        Util::scene()->sceneSolution()->processRangeVector();
-    }
+//    if (sceneView()->sceneViewSettings().showSolutionMesh)
+//    {
+//        step++;
+//        emit message(tr("Processing solution mesh cache"), false, step);
+//        Util::scene()->sceneSolution()->processSolutionMesh();
+//    }
+//    if (sceneView()->sceneViewSettings().showContours)
+//    {
+//        step++;
+//        emit message(tr("Processing contour view cache"), false, step);
+//        Util::scene()->sceneSolution()->processRangeContour();
+//    }
+//    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
+//            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+//            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
+//    {
+//        step++;
+//        emit message(tr("Processing scalar view cache"), false, step);
+//        Util::scene()->sceneSolution()->processRangeScalar();
+//    }
+//    if (sceneView()->sceneViewSettings().showVectors)
+//    {
+//        step++;
+//        emit message(tr("Processing vector view cache"), false, step);
+//        Util::scene()->sceneSolution()->processRangeVector();
+//    }
 }
 
 // ***********************************************************************************************
@@ -1381,7 +1382,7 @@ void ProgressDialog::resetControls(int currentTab)
     btnSaveImage->setEnabled(false);
     btnSaveData->setEnabled(false);
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (Util::problem()->isSolved())
     {
         btnSaveImage->setDisabled(tabType->currentIndex() == 0);
         btnSaveData->setDisabled(tabType->currentIndex() == 0);

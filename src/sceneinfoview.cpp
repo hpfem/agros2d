@@ -31,6 +31,7 @@
 #include "pythonlabagros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 #include "ctemplate/template.h"
 
 SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget(tr("Problem"), parent)
@@ -59,8 +60,10 @@ SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget
     setWidget(splitter);
 
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
-    connect(Util::scene()->sceneSolution(), SIGNAL(solved()), this, SLOT(doInvalidated()));
-    connect(Util::scene()->sceneSolution(), SIGNAL(timeStepChanged(bool)), this, SLOT(doInvalidated()));
+
+    /// TODO
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
+    connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(doInvalidated()));
 
     connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
     connect(trvWidget, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
@@ -205,29 +208,31 @@ void SceneInfoView::showInfo()
     problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
     problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal.number()).toStdString() + " s");
 
-    if (Util::scene()->sceneSolution()->isMeshed())
+    if (Util::problem()->isMeshed())
     {
         problem.SetValue("SOLUTION_INFORMATION_LABEL", tr("Mesh and solution informations").toStdString());
 
-        problem.SetValue("INITIAL_MESH_LABEL", tr("Initial mesh").toStdString());
-        problem.SetValue("INITIAL_MESH_NODES_LABEL", tr("Nodes:").toStdString());
-        problem.SetValue("INITIAL_MESH_NODES", QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()).toStdString());
-        problem.SetValue("INITIAL_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
-        problem.SetValue("INITIAL_MESH_ELEMENTS", QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()).toStdString());
+        //TODO
+//        problem.SetValue("INITIAL_MESH_LABEL", tr("Initial mesh").toStdString());
+//        problem.SetValue("INITIAL_MESH_NODES_LABEL", tr("Nodes:").toStdString());
+//        problem.SetValue("INITIAL_MESH_NODES", QString::number(Util::problem()->meshInitial()->get_num_nodes()).toStdString());
+//        problem.SetValue("INITIAL_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
+//        problem.SetValue("INITIAL_MESH_ELEMENTS", QString::number(Util::problem()->meshInitial()->get_num_active_elements()).toStdString());
 
-        if (Util::scene()->sceneSolution()->isSolved())
-        {
-            if (Util::scene()->sceneSolution()->space() && (Util::scene()->sceneSolution()->space()->get_num_dofs() > 0))
-            {
-                QTime time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
-                problem.SetValue("ELAPSED_TIME_LABEL", tr("Elapsed time:").toStdString());
-                problem.SetValue("ELAPSED_TIME", time.toString("mm:ss.zzz").toStdString());
 
-                problem.SetValue("DOFS_LABEL", tr("DOFs:").toStdString());
-                problem.SetValue("DOFS", QString::number(Util::scene()->sceneSolution()->space()->get_num_dofs()).toStdString());
-            }
-            problem.ShowSection("SOLUTION_PARAMETERS_SECTION");
-        }
+//        if (Util::problem()->isSolved())
+//        {
+//            if (Util::scene()->sceneSolution()->space() && (Util::scene()->sceneSolution()->space()->get_num_dofs() > 0))
+//            {
+//                QTime time = milisecondsToTime(Util::problem()->timeElapsed());
+//                problem.SetValue("ELAPSED_TIME_LABEL", tr("Elapsed time:").toStdString());
+//                problem.SetValue("ELAPSED_TIME", time.toString("mm:ss.zzz").toStdString());
+
+//                problem.SetValue("DOFS_LABEL", tr("DOFs:").toStdString());
+//                problem.SetValue("DOFS", QString::number(Util::scene()->sceneSolution()->space()->get_num_dofs()).toStdString());
+//            }
+//            problem.ShowSection("SOLUTION_PARAMETERS_SECTION");
+//        }
         problem.ShowSection("SOLUTION_SECTION");
     }
 
@@ -279,15 +284,15 @@ void SceneInfoView::showInfo()
             field->ShowSection("SOLVER_PARAMETERS_SECTION");
         }
 
-        //        if (Util::scene()->sceneSolution()->isMeshed())
+        //        if (Util::problem()->isMeshed())
         //        {
-        //            if (Util::scene()->sceneSolution()->isSolved())
+        //            if (Util::problem()->isSolved())
         //            {
         //                if (fieldInfo->adaptivityType != AdaptivityType_None)
         //                {
         //                    problem.SetValue("ADAPTIVITY_LABEL", tr("Adaptivity").toStdString());
         //                    problem.SetValue("ADAPTIVITY_ERROR_LABEL", tr("Error:").toStdString());
-        //                    problem.SetValue("ADAPTIVITY_ERROR", QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3).toStdString());
+        //                    problem.SetValue("ADAPTIVITY_ERROR", QString::number(Util::problem()->adaptiveError(), 'f', 3).toStdString());
 
         //                    problem.SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh").toStdString());
         //                    problem.SetValue("SOLUTION_MESH_NODES_LABEL", tr("Nodes:").toStdString());

@@ -26,8 +26,9 @@
 #include "hermes2d.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
-LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : fieldInfo(fieldInfo), point(point)
+LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : m_fieldInfo(fieldInfo), point(point)
 {
     parser = new Parser(fieldInfo);
     initParser();
@@ -45,11 +46,11 @@ LocalPointValue::~LocalPointValue()
 
 void LocalPointValue::initParser()
 {
-    if (!fieldInfo)
+    if (!m_fieldInfo)
         return;
 
     // parser variables
-    parser->parser.push_back(fieldInfo->module()->get_parser(fieldInfo));
+    parser->parser.push_back(m_fieldInfo->module()->get_parser(m_fieldInfo));
 
     // init material variables
     parser->initParserMaterialVariables();
@@ -60,18 +61,19 @@ void LocalPointValue::calculate()
     values.clear();
 
     this->point = point;
-    if (Util::scene()->sceneSolution()->isSolved() &&
-            fieldInfo->analysisType() == AnalysisType_Transient)
-        fieldInfo->module()->update_time_functions(Util::scene()->sceneSolution()->time());
+    SceneSolution<double>* sceneSolution = Util::scene()->sceneSolution(m_fieldInfo);
+    if (Util::problem()->isSolved() &&
+            m_fieldInfo->analysisType() == AnalysisType_Transient)
+        m_fieldInfo->module()->update_time_functions(Util::problem()->time());
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (Util::problem()->isSolved())
     {
-        int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), point);
+        int index = sceneSolution->findElementInMesh(Util::problem()->meshInitial(), point);
         if (index != -1)
         {
             // find marker
-            Hermes::Hermes2D::Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
-            int labelIndex = atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str());
+            Hermes::Hermes2D::Element *e = Util::problem()->meshInitial()->get_element_fast(index);
+            int labelIndex = atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str());
             SceneMaterial *tmpMaterial = Util::scene()->labels->at(labelIndex)->getMarker("TODO");
 
             // set variables
@@ -80,21 +82,21 @@ void LocalPointValue::calculate()
             parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
             parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
 
-            double *pvalue = new double[fieldInfo->module()->number_of_solution()];
-            double *pdx = new double[fieldInfo->module()->number_of_solution()];
-            double *pdy = new double[fieldInfo->module()->number_of_solution()];
-            std::vector<Hermes::Hermes2D::Solution<double> *> sln(fieldInfo->module()->number_of_solution()); //TODO PK <double>
+            double *pvalue = new double[m_fieldInfo->module()->number_of_solution()];
+            double *pdx = new double[m_fieldInfo->module()->number_of_solution()];
+            double *pdy = new double[m_fieldInfo->module()->number_of_solution()];
+            std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->module()->number_of_solution()); //TODO PK <double>
 
-            for (int k = 0; k < fieldInfo->module()->number_of_solution(); k++)
+            for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
             {
                 // solution
-                sln[k] = Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * fieldInfo->module()->number_of_solution()));
+                sln[k] = sceneSolution->sln(k + (Util::problem()->timeStep() * m_fieldInfo->module()->number_of_solution()));
 
                 double value;
-                if ((fieldInfo->analysisType() == AnalysisType_Transient) &&
-                        Util::scene()->sceneSolution()->timeStep() == 0)
+                if ((m_fieldInfo->analysisType() == AnalysisType_Transient) &&
+                        Util::problem()->timeStep() == 0)
                     // const solution at first time step
-                    value = fieldInfo->initialCondition.number();
+                    value = m_fieldInfo->initialCondition.number();
                 else
                     value = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
 
@@ -117,12 +119,11 @@ void LocalPointValue::calculate()
 
             // set material variables
             // FIXME
-            parser->setParserVariables(tmpMaterial, NULL,
-                                       pvalue[0], pdx[0], pdy[0]);
+            parser->setParserVariables(tmpMaterial, NULL, pvalue[0], pdx[0], pdy[0]);
 
             // parse expression
-            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = fieldInfo->module()->local_point.begin();
-                 it < fieldInfo->module()->local_point.end(); ++it )
+            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = m_fieldInfo->module()->local_point.begin();
+                 it < m_fieldInfo->module()->local_point.end(); ++it )
             {
                 try
                 {

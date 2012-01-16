@@ -22,6 +22,7 @@
 #include "scenebasic.h"
 #include "scenemarkerdialog.h"
 #include "scenesolution.h"
+#include "problem.h"
 
 #include "hermes2d.h"
 #include "hermes2d/module.h"
@@ -34,7 +35,7 @@ VolumeIntegralValue::VolumeIntegralValue(FieldInfo *fieldInfo)
 
     assert(0); //TODO
     for (int k = 0; k < fieldInfo->module()->number_of_solution(); k++)
-        sln.push_back(Util::scene()->sceneSolution()->sln(k + (Util::scene()->sceneSolution()->timeStep() * fieldInfo->module()->number_of_solution())));
+        sln.push_back(Util::scene()->sceneSolution(fieldInfo)->sln(k + (Util::problem()->timeStep() * fieldInfo->module()->number_of_solution())));
 
     calculate();
 }

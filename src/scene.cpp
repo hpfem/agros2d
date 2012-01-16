@@ -234,6 +234,8 @@ Util::Util()
     // script remote
     m_scriptEngineRemote = new ScriptEngineRemote();
 
+    m_problem = new Problem();
+
     // completer
     m_completer = new QCompleter();
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
@@ -250,8 +252,6 @@ Util::Util()
     m_config = new Config();
     m_config->load();
 
-    m_problem = NULL;
-
     initLists();
 }
 
@@ -264,15 +264,6 @@ Util::~Util()
     delete m_config;
     delete m_scriptEngineRemote;
     delete m_problem;
-}
-
-Problem* Util::createProblem(ProgressItemSolve* pis)
-{
-    if(Util::singleton()->m_problem)
-        delete Util::singleton()->m_problem;
-
-    Util::singleton()->m_problem = new Problem(pis);
-    return Util::singleton()->m_problem;
 }
 
 void Util::createSingleton()
@@ -295,10 +286,13 @@ Scene::Scene()
 
     m_problemInfo = new ProblemInfo();
     m_undoStack = new QUndoStack(this);
-    m_sceneSolution = new SceneSolution<double>(); //TODO PK <double>
+    //m_sceneSolution = new SceneSolution<double>();
+    m_activeViewField = 0;
 
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
-    connect(m_sceneSolution, SIGNAL(solved()), this, SLOT(doInvalidated()));
+
+    /// TODO
+    //connect(m_sceneSolution, SIGNAL(solved()), this, SLOT(doInvalidated()));
     connect(this, SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
     boundaries = new SceneBoundaryContainer();
@@ -317,7 +311,7 @@ Scene::~Scene()
 
     clear();
 
-    delete m_sceneSolution;
+    clearSolutions();
     delete m_undoStack;
 
     // TODO write destructors or use shared_ptrs...
@@ -381,9 +375,9 @@ void Scene::createActions()
     actTransform->setStatusTip(tr("Transform"));
     connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
-    actClearSolution = new QAction(icon(""), tr("Clear solution"), this);
-    actClearSolution->setStatusTip(tr("Clear solution"));
-    connect(actClearSolution, SIGNAL(triggered()), this, SLOT(doClearSolution()));
+    actClearSolutions = new QAction(icon(""), tr("Clear solution"), this);
+    actClearSolutions->setStatusTip(tr("Clear solution"));
+    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(doClearSolution()));
 
     actProblemProperties = new QAction(icon("document-properties"), tr("&Problem properties"), this);
     actProblemProperties->setShortcut(tr("F12"));
@@ -391,12 +385,21 @@ void Scene::createActions()
     connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
 }
 
+void Scene::clearSolutions()
+{
+    foreach(SceneSolution<double>* sceneSolution, m_sceneSolutions)
+    {
+        sceneSolution->clear();
+    }
+    m_sceneSolutions.clear();
+}
+
 SceneNode *Scene::addNode(SceneNode *node)
 {
     logMessage("SceneNode *Scene::addNode()");
 
     // clear solution
-    m_sceneSolution->clear();
+    clearSolutions();
 
     // check if node doesn't exists
     if(SceneNode* existing = nodes->get(node)){
@@ -415,7 +418,7 @@ void Scene::removeNode(SceneNode *node)
     logMessage("Scene::nodes->remove()");
 
     // clear solution
-    m_sceneSolution->clear();
+    clearSolutions();
 
     // remove all edges connected to this node
     edges->removeConnectedToNode(node);
@@ -439,7 +442,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     logMessage("SceneEdge *Scene::addEdge");
 
     // clear solution
-    m_sceneSolution->clear();
+    clearSolutions();
 
     // check if edge doesn't exists
     if(SceneEdge* existing = edges->get(edge)){
@@ -458,7 +461,7 @@ void Scene::removeEdge(SceneEdge *edge)
     logMessage("Scene::edges->remove()");
 
     // clear solution
-    m_sceneSolution->clear();
+    clearSolutions();
 
     edges->remove(edge);
     // delete edge;
@@ -478,7 +481,7 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
     logMessage("SceneLabel *Scene::addLabel");
 
     // clear solution
-    m_sceneSolution->clear();
+    clearSolutions();
 
     // check if label doesn't exists
     if(SceneLabel* existing = labels->get(label)){
@@ -497,7 +500,7 @@ void Scene::removeLabel(SceneLabel *label)
     logMessage("Scene::label->remove()");
 
     // clear solution
-    m_sceneSolution->clear();
+    clearSolutions();
 
     labels->remove(label);
     // delete label;
@@ -592,7 +595,7 @@ void Scene::clear()
 
     m_undoStack->clear();
 
-    m_sceneSolution->clear();
+    clearSolutions();
     m_problemInfo->clear();
 
     QMapIterator<QString, FieldInfo *> i(m_fieldInfos);
@@ -707,7 +710,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
         logMessage("Scene::transformTranslate()");
 
         // clear solution
-        m_sceneSolution->clear();
+        clearSolutions();
 
         m_undoStack->beginMacro(tr("Translation"));
 
@@ -893,7 +896,7 @@ void Scene::doInvalidated()
 
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
     actNewLabel->setEnabled(materials->length() >= 1);
-    actClearSolution->setEnabled(m_sceneSolution->isSolved());
+    //actClearSolutions->setEnabled(m_sceneSolution->isSolved());  //TODO kdy umoznit mazani?
 }
 
 void Scene::doNewNode(const Point &point)
@@ -1033,7 +1036,7 @@ void Scene::doClearSolution()
 {
     logMessage("Scene::doClearSolution()");
 
-    m_sceneSolution->clear();
+    clearSolutions();
     emit invalidated();
 }
 

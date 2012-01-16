@@ -24,6 +24,7 @@
 #include "hermes2d/volumeintegral.h"
 #include "hermes2d/surfaceintegral.h"
 #include "hermes2d/module.h"
+#include "hermes2d/problem.h"
 #include "ctemplate/template.h"
 
 ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), parent)
@@ -86,7 +87,7 @@ void ResultsView::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneMo
     m_sceneModePostprocessor = sceneModePostprocessor;
 
     btnPoint->setEnabled(m_sceneModePostprocessor == SceneModePostprocessor_LocalValue);
-    btnSelectMarker->setEnabled(Util::scene()->sceneSolution()->isSolved() && m_sceneModePostprocessor != SceneModePostprocessor_LocalValue);
+    btnSelectMarker->setEnabled(Util::problem()->isSolved() && m_sceneModePostprocessor != SceneModePostprocessor_LocalValue);
 }
 
 void ResultsView::doShowResults()
@@ -112,7 +113,7 @@ void ResultsView::doShowVolumeIntegral()
 {
     logMessage("ResultsView::doShowVolumeIntegral()");
 
-    if (!Util::scene()->sceneSolution()->isSolved())
+    if (!Util::problem()->isSolved())
         return;
 
     // stylesheet
@@ -153,7 +154,7 @@ void ResultsView::doShowSurfaceIntegral()
 {
     logMessage("ResultsView::doShowSurfaceIntegral()");
 
-    if (!Util::scene()->sceneSolution()->isSolved())
+    if (!Util::problem()->isSolved())
         return;
 
     // stylesheet
