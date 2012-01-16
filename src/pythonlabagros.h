@@ -86,10 +86,10 @@ private:
 
 // ************************************************************************************
 
-// problem class
+// problem
 class PyProblem {
     public:
-        PyProblem(char *name, char *coordinateType, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal);
+        PyProblem(char *coordinateType, char *name, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal);
         ~PyProblem() {}
 
         // name
@@ -123,7 +123,7 @@ class PyProblem {
         void solve() { qDebug() << "Not now :)"; }
 };
 
-// field class
+// field
 class PyField {
     private:
         FieldInfo *m_fieldInfo;
@@ -184,74 +184,85 @@ class PyField {
 
         // boundaries
         void addBoundary(char *name, char *type, map<char*, double> parameters);
+        void setBoundary(char *name, char *type, map<char*, double> parameters);
+        void removeBoundary(char *name);
 
         // materials
         void addMaterial(char *name, map<char*, double> parameters);
+        void setMaterial(char *name, map<char*, double> parameters);
+        void removeMaterial(char *name);
 
         void solve() { qDebug() << "Not now :)"; }
 };
 
-// geometry class
+// geometry
 class PyGeometry {
     public:
         PyGeometry() {}
         ~PyGeometry() {}
 
+        // elements
         void addNode(double x, double y);
         void addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries);
         void addLabel(double x, double y, double area, int order, map<char*, char*> materials);
+
+        // remove operations
+        void removeNode(int index);
+        void removeEdge(int index);
+        void removeLabel(int index);
+
+        // select operations
+        void selectNodes(vector<int> nodes);
+        void selectEdges(vector<int> edges);
+        void selectLabels(vector<int> labels);
+        void selectNone();
+
+        // transform operations
+        void moveSelection(double dx, double dy, bool copy);
+        void rotateSelection(double x, double y, double angle, bool copy);
+        void scaleSelection(double x, double y, double scale, bool copy);
+        void removeSelection();
+
+        // mesh
+        void mesh();
+        char *meshFileName();
+
+        // zoom operations
+        void zoomBestFit();
+        void zoomIn();
+        void zoomOut();
+        void zoomRegion(double x1, double y1, double x2, double y2);
 };
 
-// version()
+// functions
 char *pyVersion();
+void pyQuit();
 
-void pythonAddLabel(double x, double y, char *material, double area, int order);
+char *pyInput(char *str);
+void pyMessage(char *str);
+
+void pyOpenDocument(char *str);
+void pySaveDocument(char *str);
+void pyCloseDocument();
+
+void pySaveImage(char *str, int w, int h);
+
+// ************************************************************************************
 
 // cython functions
-void pythonMessage(char *str);
-char *pythonInput(char *str);
-char *pythonMeshFileName();
 char *pythonSolutionFileName();
 Solution *pythonSolutionObject();
-void pythonQuit();
 
-void pythonNewDocument(char *name, char *type, char *physicfield,
-                       int numberofrefinements, int polynomialorder, char *adaptivitytype,
-                       double adaptivitysteps, double adaptivitytolerance,
-                       double frequency,
-                       char *analysistype, double timestep, double totaltime, double initialcondition,
-                       char *linearitytype, double nonlineartolerance, int nonlinearsteps);
-void pythonOpenDocument(char *str);
-void pythonSaveDocument(char *str);
-void pythonCloseDocument();
-
-void pythonDeleteNode(int index);
 void pythonDeleteNodePoint(double x, double y);
-void pythonDeleteEdge(int index);
 void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle);
-void pythonDeleteLabel(int index);
 void pythonDeleteLabelPoint(double x, double y);
-
-void pythonSelectNone();
-void pythonSelectAll();
 
 void pythonSelectNodePoint(double x, double y);
 void pythonSelectEdgePoint(double x, double y);
 void pythonSelectLabelPoint(double x, double y);
 
-void pythonRotateSelection(double x, double y, double angle, bool copy);
-void pythonScaleSelection(double x, double y, double scale, bool copy);
-void pythonMoveSelection(double dx, double dy, bool copy);
-void pythonDeleteSelection();
-
-void pythonMesh();
 void pythonSolve();
 void pythonSolveAdaptiveStep();
-
-void pythonZoomBestFit();
-void pythonZoomIn();
-void pythonZoomOut();
-void pythonZoomRegion(double x1, double y1, double x2, double y2);
 
 void pythonMode(char *str);
 void pythonPostprocessorMode(char *str);
@@ -266,7 +277,5 @@ void pythonShowVectors(bool show);
 
 void pythonSetTimeStep(int timestep);
 int pythonTimeStepCount();
-
-void pythonSaveImage(char *str, int w, int h);
 
 #endif // PYTHONLABAGROS_H

@@ -277,11 +277,11 @@ void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError
 
 // ************************************************************************************
 
-PyProblem::PyProblem(char *name, char *coordinateType, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal)
+PyProblem::PyProblem(char *coordinateType, char *name, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal)
 {
     logMessage("PyProblem::PyProblem()");
 
-    //Util::scene()->clear();
+    Util::scene()->clear();
 
     Util::scene()->problemInfo()->name = QString(name);
     Util::scene()->problemInfo()->coordinateType = coordinateTypeFromStringKey(QString(coordinateType));
@@ -365,20 +365,23 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 {
     logMessage("PyField::addBoundary()");
 
-    if (Util::scene()->getBoundary(QString(name)))
-        throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
+    // check boundaries with same name
+    foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(Util::scene()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
+    {
+        if (boundary->getName() == name)
+            throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
+    }
 
-    Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
+    Hermes::Module::BoundaryType *boundaryType = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
 
+    // browse boundary parameters
     std::map<std::string, Value> values;
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
-        //qDebug() << (*i).first << ": " << (*i).second;
-
-        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundaryType->variables.begin(); it < boundaryType->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-            if (variable->shortname == std::string((*i).first))
+            if (variable->id == std::string((*i).first))
                 values[variable->id] = Value(QString::number((*i).second));
         }
     }
@@ -386,30 +389,68 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     Util::scene()->addBoundary(new SceneBoundary(fieldInfo(), std::string(name), std::string(type), values));
 }
 
+void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
+{
+    logMessage("PyField::setBoundary()");
+
+    SceneBoundary *sceneBoundary = Util::scene()->getBoundary(QString(name));
+    if (std::string(type) != "")
+        sceneBoundary->setType(std::string(type));
+
+    for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
+        sceneBoundary->setValue(std::string((*i).first), Value(QString::number((*i).second)));
+}
+
+void PyField::removeBoundary(char *name)
+{
+    logMessage("PyField::removeBoundary()");
+
+    Util::scene()->removeBoundary(Util::scene()->getBoundary(QString(name)));
+}
+
 void PyField::addMaterial(char *name, map<char*, double> parameters)
 {
     logMessage("PyField::addMaterial()");
 
-    if (Util::scene()->getMaterial(QString(name)))
-        throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString(name)).toStdString());
+    // check materials with same name
+    foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::scene()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
+    {
+        if (material->getName() == name)
+            throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString(name)).toStdString());
+    }
 
+    // browse material parameters
     std::map<std::string, Value> values;
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
-        //qDebug() << (*i).first << ": " << (*i).second;
-
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->material_type_variables;
 
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
             Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-            if (variable->shortname == std::string((*i).first))
+            if (variable->id == std::string((*i).first))
                 values[variable->id] = Value(QString::number((*i).second));
         }
     }
 
     Util::scene()->addMaterial(new SceneMaterial(fieldInfo(), std::string(name), values));
+}
 
+void PyField::setMaterial(char *name, map<char*, double> parameters)
+{
+    logMessage("PyField::setMaterial()");
+
+    SceneMaterial *sceneMaterial = Util::scene()->getMaterial(QString(name));
+
+    for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
+        sceneMaterial->setValue(std::string((*i).first), Value(QString::number((*i).second)));
+}
+
+void PyField::removeMaterial(char *name)
+{
+    logMessage("PyField::removeMaterial()");
+
+    Util::scene()->removeMaterial(Util::scene()->getMaterial(QString(name)));
 }
 
 void PyGeometry::addNode(double x, double y)
@@ -436,21 +477,20 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
         throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
 
     SceneEdge *sceneEdge = new SceneEdge(nodeStart, nodeEnd, angle, refinement);
-    Util::scene()->addEdge(sceneEdge);
 
     // boundaries
     for( map<char*, char*>::iterator i=boundaries.begin(); i!=boundaries.end(); ++i)
     {
-        //qDebug() << (*i).first << ": " << (*i).second;
+        //qDebug() << "boundary" << (*i).first << ": " << (*i).second;
 
-        SceneBoundary *sceneBoundary = Util::scene()->getBoundary(QString((*i).second));
-        /* FIXME - more fields
-        if (!sceneBoundary)
-            throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(QString((*i).second)).toStdString());
-        */
-
-        sceneEdge->addMarker(sceneBoundary);
+        foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::scene()->fieldInfo(QString((*i).first))).items())
+        {
+            if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->getName() == std::string((*i).second)))
+                sceneEdge->addMarker(sceneBoundary);
+        }
     }
+
+    Util::scene()->addEdge(sceneEdge);
 }
 
 void PyGeometry::addLabel(double x, double y, double area, int order, map<char*, char*> materials)
@@ -464,24 +504,211 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
         throw out_of_range(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
 
     SceneLabel *sceneLabel = new SceneLabel(Point(x, y), area, order);
-    Util::scene()->addLabel(sceneLabel);
 
     // materials
     for( map<char*, char*>::iterator i=materials.begin(); i!=materials.end(); ++i)
     {
-        //qDebug() << (*i).first << ": " << (*i).second;
+        //qDebug() << "material" << (*i).first << ": " << (*i).second;
 
-        SceneMaterial *sceneMaterial = Util::scene()->getMaterial(QString((*i).second));
-        /* FIXME - more fields
-        if (!sceneMaterial)
-            throw invalid_argument(QObject::tr("Material '%1' is not defined.").arg(QString((*i).second)).toStdString());
-        */
-
-        sceneLabel->addMarker(sceneMaterial);
+        foreach (SceneMaterial *sceneMaterial, Util::scene()->materials->filter(Util::scene()->fieldInfo(QString((*i).first))).items())
+        {
+            if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->getName() == std::string((*i).second)))
+            {
+                sceneLabel->addMarker(sceneMaterial);
+            }
+        }
     }
+
+    Util::scene()->addLabel(sceneLabel);
 }
 
-// version()
+void PyGeometry::removeNode(int index)
+{
+    logMessage("PyGeometry::removeNode()");
+
+    if (index < 0 || index >= Util::scene()->nodes->length())
+        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+
+    Util::scene()->removeNode(Util::scene()->nodes->at(index));
+}
+
+void PyGeometry::removeEdge(int index)
+{
+    logMessage("PyGeometry::removeEdge()");
+
+    if (index < 0 || index >= Util::scene()->edges->length())
+        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+
+    Util::scene()->removeEdge(Util::scene()->edges->at(index));
+}
+
+void PyGeometry::removeLabel(int index)
+{
+    logMessage("PyGeometry::removeLabel()");
+
+    if (index < 0 || index >= Util::scene()->labels->length())
+        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+
+    Util::scene()->removeLabel(Util::scene()->labels->at(index));
+}
+
+void PyGeometry::selectNodes(vector<int> nodes)
+{
+    logMessage("PyGeometry::selectNode()");
+
+    Util::scene()->selectNone();
+
+    if (!nodes.empty())
+    {
+        for (vector<int>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+        {
+            if ((*it >= 0) && (*it < Util::scene()->nodes->length()))
+                Util::scene()->nodes->at(*it)->isSelected = true;
+            else
+                throw out_of_range(QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->nodes->length()-1).toStdString());
+        }
+    }
+    else
+    {
+        Util::scene()->selectAll(SceneMode_OperateOnNodes);
+    }
+
+    Util::scene()->refresh();
+}
+
+void PyGeometry::selectEdges(vector<int> edges)
+{
+    logMessage("PyGeometry::selectEdge()");
+
+    Util::scene()->selectNone();
+
+    if (!edges.empty())
+    {
+        for (vector<int>::iterator it = edges.begin(); it != edges.end(); ++it)
+        {
+            if ((*it >= 0) && (*it < Util::scene()->edges->length()))
+                Util::scene()->edges->at(*it)->isSelected = true;
+            else
+                throw out_of_range(QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString());
+        }
+    }
+    else
+    {
+        Util::scene()->selectAll(SceneMode_OperateOnEdges);
+    }
+
+    Util::scene()->refresh();
+}
+
+void PyGeometry::selectLabels(vector<int> labels)
+{
+    logMessage("PyGeometry::selectLabel()");
+
+    Util::scene()->selectNone();
+
+    if (!labels.empty())
+    {
+        for (vector<int>::iterator it = labels.begin(); it != labels.end(); ++it)
+        {
+            if ((*it >= 0) && (*it < Util::scene()->labels->length()))
+                Util::scene()->labels->at(*it)->isSelected = true;
+            else
+                throw out_of_range(QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels->length()-1).toStdString());
+        }
+    }
+    else
+    {
+        Util::scene()->selectAll(SceneMode_OperateOnLabels);
+    }
+
+    Util::scene()->refresh();
+}
+
+void PyGeometry::selectNone()
+{
+    logMessage("PyGeometry::selectNone()");
+
+    Util::scene()->selectNone();
+    Util::scene()->refresh();
+}
+
+void PyGeometry::moveSelection(double dx, double dy, bool copy)
+{
+    logMessage("PyGeometry::moveSelection()");
+
+    Util::scene()->transformTranslate(Point(dx, dy), copy);
+    sceneView()->doInvalidated();
+}
+
+void PyGeometry::rotateSelection(double x, double y, double angle, bool copy)
+{
+    logMessage("PyGeometry::rotateSelection()");
+
+    Util::scene()->transformRotate(Point(x, y), angle, copy);
+    sceneView()->doInvalidated();
+}
+
+void PyGeometry::scaleSelection(double x, double y, double scale, bool copy)
+{
+    logMessage("PyGeometry::scaleSelection()");
+
+    Util::scene()->transformScale(Point(x, y), scale, copy);
+    sceneView()->doInvalidated();
+}
+
+void PyGeometry::removeSelection()
+{
+    logMessage("PyGeometry::deleteSelection()");
+
+    Util::scene()->deleteSelected();
+}
+
+void PyGeometry::mesh()
+{
+    logMessage("PyGeometry::mesh()");
+
+    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
+    Util::scene()->refresh();
+}
+
+char *PyGeometry::meshFileName()
+{
+    logMessage("PyGeometry::meshFileName()");
+
+    if (Util::scene()->sceneSolution()->isMeshed())
+        return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toStdString().c_str());
+    else
+        throw invalid_argument(QObject::tr("Problem is not meshed.").toStdString());
+}
+
+void PyGeometry::zoomBestFit()
+{
+    logMessage("PyGeometry::zoomBestFit()");
+
+    sceneView()->doZoomBestFit();
+}
+
+void PyGeometry::zoomIn()
+{
+    logMessage("PyGeometry::zoomIn()");
+
+    sceneView()->doZoomIn();
+}
+
+void PyGeometry::zoomOut()
+{
+    logMessage("PyGeometry::zoomOut()");
+
+    sceneView()->doZoomOut();
+}
+
+void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
+{
+    logMessage("PyGeometry::zoomRegion()");
+
+    sceneView()->doZoomRegion(Point(x1, y1), Point(x2, y2));
+}
+
 char *pyVersion()
 {
     logMessage("pyVersion()");
@@ -489,34 +716,71 @@ char *pyVersion()
     return const_cast<char*>(QApplication::applicationVersion().toStdString().c_str());
 }
 
-
-// message(string)
-void pythonMessage(char *str)
+void pyQuit()
 {
-    logMessage("pythonMessage()");
+    logMessage("pyQuit()");
 
-    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString(str));
+    // doesn't work without main event loop (run from script)
+    // QApplication::exit(0);
+
+    exit(0);
 }
 
-// variable = input(string)
-char *pythonInput(char *str)
+char *pyInput(char *str)
 {
-    logMessage("pythonInput()");
+    logMessage("pyInput()");
 
     QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), QString(str));
     return const_cast<char*>(text.toStdString().c_str());
 }
 
-// meshfilename()
-char *pythonMeshFileName()
+void pyMessage(char *str)
 {
-    logMessage("pythonMeshFileName()");
+    logMessage("pyMessage()");
 
-    if (Util::scene()->sceneSolution()->isMeshed())
-        return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toStdString().c_str());
-    else
-        throw invalid_argument(QObject::tr("Problem is not meshed.").toStdString());
+    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString(str));
 }
+
+void pyOpenDocument(char *str)
+{
+    logMessage("pyOpenDocument()");
+
+    ErrorResult result = Util::scene()->readFromFile(QString(str));
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
+}
+
+void pySaveDocument(char *str)
+{
+    logMessage("pySaveDocument()");
+
+    ErrorResult result = Util::scene()->writeToFile(QString(str));
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
+}
+
+void pyCloseDocument()
+{
+    logMessage("pyCloseDocument()");
+
+    Util::scene()->clear();
+    sceneView()->doDefaultValues();
+    Util::scene()->refresh();
+
+    sceneView()->actSceneModeNode->trigger();
+    sceneView()->doZoomBestFit();
+}
+
+void pySaveImage(char *str, int w, int h)
+{
+    logMessage("pySaveImage()");
+
+    ErrorResult result = sceneView()->saveImageToFile(QString(str), w, h);
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
+}
+
+// ************************************************************************************
 
 template <typename Scalar>
 Hermes::Hermes2D::Solution<Scalar> *pythonSolutionObject()
@@ -544,185 +808,11 @@ char *pythonSolutionFileName()
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 }
 
-// quit()
-void pythonQuit()
-{
-    logMessage("pythonQuit()");
-
-    // doesn't work without main event loop (run from script)
-    // QApplication::exit(0);
-
-    exit(0);
-}
-
-// newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance,
-// frequency, analysistype, timestep, totaltime, initialcondition, linearitytype, nonlineartolerance, nonlinearsteps)
-void pythonNewDocument(char *name, char *type, char *physicfield,
-                       int numberofrefinements, int polynomialorder, char *adaptivitytype,
-                       double adaptivitysteps, double adaptivitytolerance,
-                       double frequency,
-                       char *analysistype, double timestep, double totaltime, double initialcondition,
-                       char *linearitytype, double nonlineartolerance, int nonlinearsteps)
-{
-    assert(0); //TODO
-    //    logMessage("pythonNewDocument()");
-
-    //    Util::scene()->clear();
-    //    Util::scene()->fieldInfo("TODO")->name = QString(name);
-
-    //    // type
-    //    Util::scene()->fieldInfo("TODO")->problemType = problemTypeFromStringKey(QString(type));
-    //    if (Util::scene()->fieldInfo("TODO")->problemType == ProblemType_Undefined)
-    //        throw invalid_argument(QObject::tr("Problem type '%1' is not implemented.").arg(QString(type)).toStdString());
-
-    //    // analysis type
-    //    Util::scene()->fieldInfo("TODO")->analysisType() = analysisTypeFromStringKey(QString(analysistype));
-    //    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Undefined)
-    //        throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
-
-    //    // physicfield
-    //    QString field = physicfield;
-    //    if (field != "")
-    //    {
-    //        Util::scene()->fieldInfo("TODO")->setModule(moduleFactory(field.toStdString(),
-    //                                                              problemTypeFromStringKey(QString(type)),
-    //                                                              analysisTypeFromStringKey(QString(analysistype)),
-    //                                                              ""));
-    //    }
-    //    else
-    //        throw invalid_argument(QObject::tr("Physic field '%1' is not implemented.").arg(QString(physicfield)).toStdString());
-
-    //    // numberofrefinements
-    //    if (numberofrefinements >= 0)
-    //        Util::scene()->fieldInfo("TODO")->numberOfRefinements = numberofrefinements;
-    //    else
-    //        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(numberofrefinements).toStdString());
-
-    //    // polynomialorder
-    //    if (polynomialorder >= 1 && polynomialorder <= 10)
-    //        Util::scene()->fieldInfo("TODO")->polynomialOrder = polynomialorder;
-    //    else
-    //        throw out_of_range(QObject::tr("Polynomial order '%1' is out of range.").arg(polynomialorder).toStdString());
-
-    //    // adaptivitytype
-    //    Util::scene()->fieldInfo("TODO")->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivitytype));
-    //    if (Util::scene()->fieldInfo("TODO")->adaptivityType == AdaptivityType_Undefined)
-    //        throw invalid_argument(QObject::tr("Adaptivity type '%1' is not implemented.").arg(QString(adaptivitytype)).toStdString());
-
-    //    // adaptivitysteps
-    //    if (adaptivitysteps >= 0)
-    //        Util::scene()->fieldInfo("TODO")->adaptivitySteps = adaptivitysteps;
-    //    else
-    //        throw out_of_range(QObject::tr("Adaptivity step '%1' is out of range.").arg(adaptivitysteps).toStdString());
-
-    //    // adaptivitytolerance
-    //    if (adaptivitytolerance >= 0)
-    //        Util::scene()->fieldInfo("TODO")->adaptivityTolerance = adaptivitytolerance;
-    //    else
-    //        throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
-
-    //    // frequency
-    //    if (Util::scene()->fieldInfo("TODO")->module()->harmonic_solutions)
-    //    {
-    //        if (frequency >= 0)
-    //            Util::scene()->fieldInfo("TODO")->frequency = frequency;
-    //        else
-    //            throw invalid_argument(QObject::tr("The frequency can not be used for this problem.").toStdString());
-    //    }
-
-    //    // transient timestep
-    //    if (timestep > 0)
-    //        Util::scene()->fieldInfo("TODO")->timeStep = Value(QString::number(timestep));
-    //    else if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
-    //        throw out_of_range(QObject::tr("Time step must be positive.").toStdString());
-
-    //    // transient timetotal
-    //    if (totaltime > 0)
-    //        Util::scene()->fieldInfo("TODO")->timeTotal = Value(QString::number(totaltime));
-    //    else if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
-    //        throw out_of_range(QObject::tr("Total time must be positive.").toStdString());
-
-    //    // nonlineartolerance
-    //    if (nonlineartolerance >= 0)
-    //        Util::scene()->fieldInfo("TODO")->nonlinearTolerance = nonlineartolerance;
-    //    else
-    //        throw out_of_range(QObject::tr("Nonlinear tolerance '%1' is out of range.").arg(nonlineartolerance).toStdString());
-
-    //    // nonlinearsteps
-    //    if (nonlinearsteps >= 0)
-    //        Util::scene()->fieldInfo("TODO")->nonlinearSteps = nonlinearsteps;
-    //    else
-    //        throw out_of_range(QObject::tr("Number of nonlinear steps '%1' must be positive.").arg(nonlinearsteps).toStdString());
-
-    //    // linearity type
-    //    Util::scene()->fieldInfo("TODO")->linearityType = linearityTypeFromStringKey(QString(linearitytype));
-    //    if (Util::scene()->fieldInfo("TODO")->linearityType == LinearityType_Undefined)
-    //        throw invalid_argument(QObject::tr("Linearity type '%1' is not implemented").arg(QString(linearitytype)).toStdString());
-
-    //    // transient initial condition
-    //    Util::scene()->fieldInfo("TODO")->initialCondition = Value(QString::number(initialcondition));
-
-    //    // invalidate
-    //    sceneView()->doDefaultValues();
-    //    Util::scene()->refresh();
-}
-
-// opendocument(filename)
-void pythonOpenDocument(char *str)
-{
-    logMessage("pythonOpenDocument()");
-
-    ErrorResult result = Util::scene()->readFromFile(QString(str));
-    if (result.isError())
-        throw invalid_argument(result.message().toStdString());
-}
-
-// savedocument(filename)
-void pythonSaveDocument(char *str)
-{
-    logMessage("pythonSaveDocument()");
-
-    ErrorResult result = Util::scene()->writeToFile(QString(str));
-    if (result.isError())
-        throw invalid_argument(result.message().toStdString());
-}
-
-// closedocument(filename)
-void pythonCloseDocument()
-{
-    logMessage("pythonCloseDocument()");
-
-    Util::scene()->clear();
-    sceneView()->doDefaultValues();
-    Util::scene()->refresh();
-
-    sceneView()->actSceneModeNode->trigger();
-    sceneView()->doZoomBestFit();
-}
-
-void pythonDeleteNode(int index)
-{
-    logMessage("pythonDeleteNode()");
-
-    if (index < 0 || index >= Util::scene()->nodes->length())
-        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->nodes->remove(Util::scene()->nodes->at(index));
-}
-
 void pythonDeleteNodePoint(double x, double y)
 {
     logMessage("pythonDeleteNodePoint()");
 
     Util::scene()->nodes->remove(Util::scene()->getNode(Point(x, y)));
-}
-
-void pythonDeleteEdge(int index)
-{
-    logMessage("pythonDeleteEdge()");
-
-    if (index < 0 || index >= Util::scene()->edges->length())
-        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->edges->remove(Util::scene()->edges->at(index));
 }
 
 void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
@@ -732,193 +822,11 @@ void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double an
     Util::scene()->edges->remove(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
 }
 
-void pythonDeleteLabel(int index)
-{
-    logMessage("pythonDeleteLabel()");
-
-    if (index < 0 || index >= Util::scene()->labels->length())
-        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
-    Util::scene()->labels->remove(Util::scene()->labels->at(index));
-}
-
 void pythonDeleteLabelPoint(double x, double y)
 {
     logMessage("pythonDeleteLabelPoint()");
 
     Util::scene()->labels->remove(Util::scene()->getLabel(Point(x, y)));
-}
-
-// modifyBoundary(name, type, value, ...)
-static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
-{
-    assert(0); //TODO
-    //    logMessage("pythonModifyBoundary()");
-
-    //    PyObject *dict;
-    //    char *name, *type;
-    //    if (PyArg_ParseTuple(args, "ssO", &name, &type, &dict))
-    //    {
-    //        if (SceneBoundary *boundary = Util::scene()->getBoundary(name))
-    //        {
-    //            if (Hermes::Module::BoundaryType *boundary_type = Util::scene()->fieldInfo("TODO")->module()->get_boundary_type(type))
-    //            {
-    // boundary type
-
-    //                boundary->type = type;
-
-    //                // variables
-    //                PyObject *key, *value;
-    //                Py_ssize_t pos = 0;
-
-    //                while (PyDict_Next(dict, &pos, &key, &value))
-    //                {
-    //                    double val;
-    //                    char *str;
-
-    //                    // key
-    //                    PyArg_Parse(key, "s", &str);
-    //                    PyArg_Parse(value, "d", &val);
-
-    //                    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-    //                    {
-    //                        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-    //                        if (variable->shortname == std::string(str))
-    //                            boundary->values[variable->id] = Value(QString::number(val));
-    //                    }
-    //                }
-
-    //                Py_RETURN_NONE;
-    //            }
-    //            else
-    //            {
-    //                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
-    //                return NULL;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary with name '%1' doesn't exists.").arg(name).toStdString().c_str());
-    //            return NULL;
-    //        }
-    //    }
-
-    //    return NULL;
-}
-
-// modifymaterial(name, type, value, ...)
-static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
-{
-    assert(0); //TODO
-    //    logMessage("pythonModifyMaterial()");
-
-    //    PyObject *dict;
-    //    char *name, *type;
-    //    if (PyArg_ParseTuple(args, "sO", &name, &dict))
-    //    {
-    //        if (SceneMaterial *material = Util::scene()->getMaterial(name))
-    //        {
-    //            // variables
-    //            PyObject *key, *value;
-    //            Py_ssize_t pos = 0;
-
-    //            while (PyDict_Next(dict, &pos, &key, &value))
-    //            {
-    //                double val;
-    //                char *str;
-
-    //                // key
-    //                PyArg_Parse(key, "s", &str);
-    //                PyArg_Parse(value, "d", &val);
-
-    //                Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo("TODO")->module()->material_type_variables;
-    //                for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-    //                {
-    //                    Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-    //                    if (variable->shortname == std::string(str))
-    //                        material->values[variable->id] = Value(QString::number(val));
-    //                }
-    //            }
-
-    //            Py_RETURN_NONE;
-    //        }
-    //        else
-    //        {
-    //            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Material with name '%1' doesn't exists.").arg(name).toStdString().c_str());
-    //            return NULL;
-    //        }
-    //    }
-
-    //    return NULL;
-}
-
-// selectnone()
-void pythonSelectNone()
-{
-    logMessage("pythonSelectNone()");
-
-    Util::scene()->selectNone();
-}
-
-// selectall()
-void pythonSelectAll()
-{
-    logMessage("pythonSelectAll()");
-
-    if (sceneView()->sceneMode() == SceneMode_Postprocessor)
-    {
-        // select volume integral area
-        if (sceneView()->actPostprocessorModeVolumeIntegral->isChecked())
-            Util::scene()->selectAll(SceneMode_OperateOnLabels);
-
-        // select surface integral area
-        if (sceneView()->actPostprocessorModeSurfaceIntegral->isChecked())
-            Util::scene()->selectAll(SceneMode_OperateOnEdges);
-    }
-    else
-    {
-        Util::scene()->selectAll(sceneView()->sceneMode());
-    }
-    sceneView()->doInvalidated();
-}
-
-// selectnode(node)
-static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
-{
-    logMessage("pythonSelectNode()");
-
-    PyObject *list;
-    if (PyArg_ParseTuple(args, "O", &list))
-    {
-        sceneView()->actSceneModeNode->trigger();
-        Util::scene()->selectNone();
-
-        Py_ssize_t size = PyList_Size(list);
-        for (int i = 0; i < size; i++)
-        {
-            PyObject *value = PyList_GetItem(list, i);
-
-            int index;
-            PyArg_Parse(value, "i", &index);
-
-            if ((index >= 0) && index < Util::scene()->nodes->length())
-            {
-                Util::scene()->nodes->at(index)->isSelected = true;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString().c_str());
-                return NULL;
-            }
-        }
-
-        sceneView()->doInvalidated();
-        Py_RETURN_NONE;
-    }
-    else
-    {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
-    }
-    return NULL;
 }
 
 // selectnodepoint(x, y)
@@ -934,47 +842,6 @@ void pythonSelectNodePoint(double x, double y)
     }
 }
 
-// selectedge(list)
-static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
-{
-    assert(0); //TODO
-    //    logMessage("pythonSelectEdge()");
-
-    //    PyObject *list;
-    //    if (PyArg_ParseTuple(args, "O", &list))
-    //    {
-    //        sceneView()->actSceneModeEdge->trigger();
-    //        Util::scene()->selectNone();
-
-    //        Py_ssize_t size = PyList_Size(list);
-    //        for (int i = 0; i < size; i++)
-    //        {
-    //            PyObject *value = PyList_GetItem(list, i);
-
-    //            int index;
-    //            PyArg_Parse(value, "i", &index);
-
-    //            if ((index >= 0) && index < Util::scene()->edges.count())
-    //            {
-    //                Util::scene()->edges[index]->isSelected = true;
-    //            }
-    //            else
-    //            {
-    //                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
-    //                return NULL;
-    //            }
-    //        }
-
-    //        sceneView()->doInvalidated();
-    //        Py_RETURN_NONE;
-    //    }
-    //    else
-    //    {
-    //        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
-    //    }
-    //    return NULL;
-}
-
 // selectedgepoint(x, y)
 void pythonSelectEdgePoint(double x, double y)
 {
@@ -988,46 +855,6 @@ void pythonSelectEdgePoint(double x, double y)
     }
 }
 
-// selectlabel(list)
-static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
-{
-    logMessage("pythonSelectLabel()");
-
-    PyObject *list;
-    if (PyArg_ParseTuple(args, "O", &list))
-    {
-        Util::scene()->selectNone();
-
-        Py_ssize_t size = PyList_Size(list);
-        for (int i = 0; i < size; i++)
-        {
-            sceneView()->actSceneModeLabel->trigger();
-            PyObject *value = PyList_GetItem(list, i);
-
-            int index;
-            PyArg_Parse(value, "i", &index);
-
-            if ((index >= 0) && index < Util::scene()->labels->length())
-            {
-                Util::scene()->labels->at(index)->isSelected = true;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString().c_str());
-                return NULL;
-            }
-        }
-
-        sceneView()->doInvalidated();
-        Py_RETURN_NONE;
-    }
-    else
-    {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
-    }
-    return NULL;
-}
-
 // selectlabelpoint(x, y)
 void pythonSelectLabelPoint(double x, double y)
 {
@@ -1039,50 +866,6 @@ void pythonSelectLabelPoint(double x, double y)
         label->isSelected = true;
         sceneView()->doInvalidated();
     }
-}
-
-// rotateselection(x, y, angle, copy = {True, False})
-void pythonRotateSelection(double x, double y, double angle, bool copy)
-{
-    logMessage("pythonRotateSelection()");
-
-    Util::scene()->transformRotate(Point(x, y), angle, copy);
-    sceneView()->doInvalidated();
-}
-
-// scaleselection(x, y, scale, copy = {True, False})
-void pythonScaleSelection(double x, double y, double scale, bool copy)
-{
-    logMessage("pythonScaleSelection()");
-
-    Util::scene()->transformScale(Point(x, y), scale, copy);
-    sceneView()->doInvalidated();
-}
-
-// moveselection(dx, dy, copy = {True, False})
-void pythonMoveSelection(double dx, double dy, bool copy)
-{
-    logMessage("pythonMoveSelection()");
-
-    Util::scene()->transformTranslate(Point(dx, dy), copy);
-    sceneView()->doInvalidated();
-}
-
-// deleteselection()
-void pythonDeleteSelection()
-{
-    logMessage("pythonDeleteSelection()");
-
-    Util::scene()->deleteSelected();
-}
-
-// mesh()
-void pythonMesh()
-{
-    logMessage("pythonMesh()");
-
-    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
-    Util::scene()->refresh();
 }
 
 // solve()
@@ -1122,38 +905,6 @@ void pythonSolveAdaptiveStep()
 
     // restore adaptivity steps
     Util::scene()->fieldInfo("TODO")->adaptivitySteps = adaptivitySteps;
-}
-
-// zoombestfit()
-void pythonZoomBestFit()
-{
-    logMessage("pythonZoomBestFit()");
-
-    sceneView()->doZoomBestFit();
-}
-
-// zoomin()
-void pythonZoomIn()
-{
-    logMessage("pythonZoomIn()");
-
-    sceneView()->doZoomIn();
-}
-
-// zoomout()
-void pythonZoomOut()
-{
-    logMessage("pythonZoomOut()");
-
-    sceneView()->doZoomOut();
-}
-
-// zoomregion(x1, y1, x2, y2)
-void pythonZoomRegion(double x1, double y1, double x2, double y2)
-{
-    logMessage("pythonZoomRegion()");
-
-    sceneView()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 // mode(mode = {"node", "edge", "label", "postprocessor"})
@@ -1543,23 +1294,8 @@ int pythonTimeStepCount()
     return Util::scene()->sceneSolution()->timeStepCount();
 }
 
-// saveimage(filename)
-void pythonSaveImage(char *str, int w, int h)
-{
-    logMessage("pythonSaveImage()");
-
-    ErrorResult result = sceneView()->saveImageToFile(QString(str), w, h);
-    if (result.isError())
-        throw invalid_argument(result.message().toStdString());
-}
-
 static PyMethodDef pythonMethodsAgros[] =
 {
-    {"modifyboundary", pythonModifyBoundary, METH_VARARGS, "modifyBoundary(name, type, value, ...)"},
-    {"modifymaterial", pythonModifyMaterial, METH_VARARGS, "modifymaterial(name, type, value, ...)"},
-    {"selectnode", pythonSelectNode, METH_VARARGS, "selectnode(list)"},
-    {"selectedge", pythonSelectEdge, METH_VARARGS, "selectedge(list)"},
-    {"selectlabel", pythonSelectLabel, METH_VARARGS, "selectlabel(list)"},
     {"pointresult", pythonPointResult, METH_VARARGS, "pointresult(x, y)"},
     {"volumeintegral", pythonVolumeIntegral, METH_VARARGS, "volumeintegral(list)"},
     {"surfaceintegral", pythonSurfaceIntegral, METH_VARARGS, "surfaceintegral(list)"},
