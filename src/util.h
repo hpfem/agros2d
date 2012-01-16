@@ -193,6 +193,8 @@ struct Point3
     inline Point3 operator-(const Point3 &vec) const { return Point3(x - vec.x, y - vec.y, z - vec.z); }
     inline Point3 operator*(double num) const { return Point3(x * num, y * num, z * num); }
     inline Point3 operator/(double num) const { return Point3(x / num, y / num, z / num); }
+    inline double operator&(const Point3 &vec) const { return x*vec.x + y*vec.y + z*vec.z; } // dot product
+    inline Point3 operator%(const Point3 &vec) const { return Point3(- z*vec.y, z*vec.x, x*vec.y - y*vec.x); } // cross product
 
     inline double magnitude() const { return sqrt(x * x + y * y); }
     inline double anglexy() const { return atan2(y, x); }
@@ -812,8 +814,11 @@ const double PARTICLESTARTX = 0;
 const double PARTICLESTARTY = 0;
 const double PARTICLESTARTVELOCITYX = 0;
 const double PARTICLESTARTVELOCITYY = 0;
+const double PARTICLESTARTVELOCITYZ = 0;
 const double PARTICLEMASS = 9.109e-31; // mass of the electron
 const double PARTICLECONSTANT = 1.602e-19; // charge of the electron
+const double PARTICLETERMINATEONDIFFERENTMATERIAL = true;
+const double PARTICLEMAXIMUMSTEP = 0.0;
 
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;

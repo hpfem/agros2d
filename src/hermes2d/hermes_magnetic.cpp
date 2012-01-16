@@ -813,6 +813,36 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
     }
 }
 
+Point3 HermesMagnetic::particleForce(Point point, Point3 velocity)
+{
+    LocalPointValueMagnetic *pointValue = localPointValue(point);
+
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        return Point3(- velocity.z*pointValue->B_real.y,
+                      velocity.z*pointValue->B_real.x,
+                      velocity.x*pointValue->B_real.y - velocity.y*pointValue->B_real.x);
+    else
+        return Point3(- velocity.z*pointValue->B_real.y / point.x,
+                      velocity.z*pointValue->B_real.x / point.x,
+                      velocity.x*pointValue->B_real.y - velocity.y*pointValue->B_real.x);
+
+    //    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+    //        return Point3(- velocity.z*pointValue->B_real.y,
+    //                      velocity.z*pointValue->B_real.x,
+    //                      velocity.x*pointValue->B_real.y - velocity.y*pointValue->B_real.x);
+    //    else
+    //    return Point3(- velocity.z*pointValue->B_real.y / point.x,
+    //                  velocity.z*pointValue->B_real.x / point.x,
+    //                  velocity.x*pointValue->B_real.y - velocity.y*pointValue->B_real.x);
+}
+
+double HermesMagnetic::particleMaterial(Point point)
+{
+    LocalPointValueMagnetic *pointValue = localPointValue(point);
+
+    return pointValue->permeability;
+}
+
 QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolve)
 {
     // transient
@@ -892,7 +922,7 @@ void HermesMagnetic::updateTimeFunctions(double time)
 
         material->current_density_real.evaluate(time);
         material->current_density_imag.evaluate(time);
-    }    
+    }
 }
 
 // *************************************************************************************************************************************

@@ -34,6 +34,7 @@ public:
     inline bool hasHarmonic() const { return true; }
     inline bool hasTransient() const { return true; }
     inline bool hasNonlinearity() const { return false; }
+    inline bool hasParticleTracing() const { return true; }
 
     void readBoundaryFromDomElement(QDomElement *element);
     void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
@@ -100,6 +101,9 @@ public:
     void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
 
     ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+
+    Point3 particleForce(Point point, Point3 velocity = Point3());
+    double particleMaterial(Point point);
 };
 
 class LocalPointValueMagnetic : public LocalPointValue

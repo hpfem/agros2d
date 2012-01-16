@@ -118,8 +118,10 @@ public:
     bool particleIncludeGravitation;
     double particleMass;
     double particleConstant;
+    double particleMaximumStep;
+    bool particleTerminateOnDifferentMaterial;
     Point particleStart;
-    Point particleStartVelocity;
+    Point3 particleStartVelocity;
     Point particleAcceleration;
     int particleNumberOfParticles;
     double particleStartingRadius;
