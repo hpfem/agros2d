@@ -28,7 +28,7 @@
 #include "progressdialog.h"
 
 // scene view
-static SceneView *m_sceneView = NULL;;
+static SceneView *m_sceneView = NULL;
 
 SceneView *sceneView()
 {
@@ -81,6 +81,7 @@ void SceneViewSettings::defaultValues()
 
     showContours = false;
     showVectors = false;
+    showParticleTracing = false;
     showSolutionMesh = false;
 
     contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
@@ -99,6 +100,7 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
     m_listSolutionMesh(-1),
     m_listContours(-1),
     m_listVectors(-1),
+    m_listParticleTracing(-1),
     m_listScalarField(-1),
     m_listScalarField3D(-1),
     m_listScalarField3DSolid(-1),
@@ -243,12 +245,16 @@ void SceneView::createActions()
     actShowVectors = new QAction(tr("Vectors"), this);
     actShowVectors->setCheckable(true);
 
+    actShowParticleTracing = new QAction(tr("Particle tracing"), this);
+    actShowParticleTracing->setCheckable(true);
+
     actShowGroup = new QActionGroup(this);
     actShowGroup->setExclusive(false);
     connect(actShowGroup, SIGNAL(triggered(QAction *)), this, SLOT(doShowGroup(QAction *)));
     actShowGroup->addAction(actShowSolutionMesh);
     actShowGroup->addAction(actShowContours);
     actShowGroup->addAction(actShowVectors);
+    actShowGroup->addAction(actShowParticleTracing);
 
     // postprocessor group
     actPostprocessorModeLocalPointValue = new QAction(icon("mode-localpointvalue"), tr("Local Values"), this);
@@ -460,6 +466,7 @@ void SceneView::paintGL()
 
             if (m_sceneViewSettings.showContours) paintContours();
             if (m_sceneViewSettings.showVectors) paintVectors();
+            if (m_sceneViewSettings.showParticleTracing) paintParticleTracing();
             if (m_sceneViewSettings.showSolutionMesh) paintSolutionMesh();
         }
 
@@ -502,6 +509,7 @@ void SceneView::clearGLLists()
     if (m_listSolutionMesh != -1) glDeleteLists(m_listSolutionMesh, 1);
     if (m_listContours != -1) glDeleteLists(m_listContours, 1);
     if (m_listVectors != -1) glDeleteLists(m_listVectors, 1);
+    if (m_listParticleTracing != -1) glDeleteLists(m_listParticleTracing, 1);
     if (m_listScalarField != -1) glDeleteLists(m_listScalarField, 1);
     if (m_listScalarField3D != -1) glDeleteLists(m_listScalarField3D, 1);
     if (m_listScalarField3DSolid != -1) glDeleteLists(m_listScalarField3DSolid, 1);
@@ -512,6 +520,7 @@ void SceneView::clearGLLists()
     m_listSolutionMesh = -1;
     m_listContours = -1;
     m_listVectors = -1;
+    m_listParticleTracing = -1;
     m_listScalarField = -1;
     m_listScalarField3D = -1;
     m_listScalarField3DSolid = -1;
@@ -2250,6 +2259,108 @@ void SceneView::paintVectors()
     }
 }
 
+void SceneView::paintParticleTracing()
+{
+    if (!m_isSolutionPrepared) return;
+
+    loadProjection2d(true);
+
+    if (m_listParticleTracing == -1)
+    {
+        m_listParticleTracing = glGenLists(1);
+        glNewList(m_listParticleTracing, GL_COMPILE);
+
+        RectPoint rect = m_scene->boundingBox();
+        double bound = max(rect.width(), rect.height());
+        if (bound < EPS_ZERO)
+            return;
+
+        glColor3d(Util::config()->colorSelected.redF(),
+                  Util::config()->colorSelected.greenF(),
+                  Util::config()->colorSelected.blueF());
+
+        for (int i = 0; i < Util::config()->particleNumberOfParticles; i++)
+        {
+            Point p = Util::config()->particleStart;
+            Point v = Util::config()->particleStartVelocity;
+
+            // random point
+            if (i > 0)
+            {
+                int trials = 0;
+                while (true)
+                {
+                    Point dp(rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
+                             rand() * (Util::config()->particleStartingRadius) / RAND_MAX);
+
+                    p = Point(-Util::config()->particleStartingRadius / 2, -Util::config()->particleStartingRadius/ 2) + p + dp;
+
+                    int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), p);
+
+                    trials++;
+                    if (index > 0 || trials > 10)
+                        break;
+                }
+            }
+
+            glPointSize(Util::config()->nodeSize);
+
+            glBegin(GL_POINTS);
+            glVertex2d(p.x, p.y);
+            glEnd();
+
+            glLineWidth(2.0);
+
+            glBegin(GL_LINES);
+            while (true)
+            {
+                Point newPoint;
+
+                LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(p);
+
+                double dt = bound;
+                while (true)
+                {
+                    dt /= 2;
+                    newPoint = p
+                            + v * dt
+                            + (localPointValue->derivative * (-1) * Util::config()->particleConstant +
+                               ((Util::config()->particleIncludeGravitation) ? Point(0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION) : Point()))
+                            / Util::config()->particleMass * dt*dt;
+
+                    if (abs((p - newPoint).magnitude()) < bound/100)
+                        break;
+                }
+
+                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), newPoint);
+
+                if (index < 0)
+                    break;
+
+                glVertex2d(p.x, p.y);
+                glVertex2d(newPoint.x, newPoint.y);
+
+                // new values
+                v = (newPoint - p) * 1/dt;
+                p = newPoint;
+            }
+            glEnd();
+        }
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
+
+        m_scene->sceneSolution()->vecVectorView().unlock_data();
+
+        glEndList();
+
+        glCallList(m_listParticleTracing);
+    }
+    else
+    {
+        glCallList(m_listParticleTracing);
+    }
+}
+
 void SceneView::paintSceneModeLabel()
 {
     logMessage("SceneView::paintSceneModeLabel()");
@@ -3741,6 +3852,7 @@ void SceneView::doShowGroup(QAction *action)
 
     m_sceneViewSettings.showContours = actShowContours->isChecked();
     m_sceneViewSettings.showVectors = actShowVectors->isChecked();
+    m_sceneViewSettings.showParticleTracing = actShowParticleTracing->isChecked();
     m_sceneViewSettings.showSolutionMesh = actShowSolutionMesh->isChecked();
 
     doInvalidated();

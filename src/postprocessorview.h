@@ -56,6 +56,7 @@ private:
 
     QCheckBox *chkShowContours;
     QCheckBox *chkShowVectors;
+    QCheckBox *chkShowParticleTracing;
     QCheckBox *chkShowSolutionMesh;
 
     // scalar field
@@ -110,6 +111,17 @@ private:
     QComboBox *cmbOrderPaletteOrder;
     QCheckBox *chkOrderLabel;
 
+    // particle tracing
+    QCheckBox *chkParticleIncludeGravitation;
+    QSpinBox *txtParticleNumberOfParticles;
+    SLineEditDouble *txtParticleStartingRadius;
+    SLineEditDouble *txtParticleMass;
+    SLineEditDouble *txtParticleConstant;
+    SLineEditDouble *txtParticlePointX;
+    SLineEditDouble *txtParticlePointY;
+    SLineEditDouble *txtParticleVelocityX;
+    SLineEditDouble *txtParticleVelocityY;
+
     QToolBox *tbxAdvance;
     QPushButton *btnOK;
 
@@ -141,6 +153,7 @@ private slots:
     void doContoursDefault();
     void doVectorFieldDefault();
     void doOrderDefault();
+    void doParticleDefault();
     void doSceneFont();
     void doShowGridChanged();
 };

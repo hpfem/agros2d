@@ -48,6 +48,7 @@
 #define EPS0 8.854e-12
 #define MU0 4*M_PI*1e-7
 #define PRESSURE_MIN_AIR 20e-6
+#define GRAVITATIONAL_ACCELERATION 9.81
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)
 #define rad2deg(radians) (radians*180.0/M_PI)
@@ -803,6 +804,16 @@ const double VECTORSCALE = 0.6;
 const bool ORDERSCALE = true;
 const PaletteOrderType ORDERPALETTEORDERTYPE = PaletteOrder_Hermes;
 const bool ORDERLABEL = false;
+
+const bool PARTICLEINCLUDEGRAVITATION = true;
+const int PARTICLENUMBEROFPARTICLES = 5;
+const double PARTICLESTARTINGRADIUS = 0;
+const double PARTICLESTARTX = 0;
+const double PARTICLESTARTY = 0;
+const double PARTICLESTARTVELOCITYX = 0;
+const double PARTICLESTARTVELOCITYY = 0;
+const double PARTICLEMASS = 9.109e-31; // mass of the electron
+const double PARTICLECONSTANT = 1.602e-19; // charge of the electron
 
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;

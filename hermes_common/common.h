@@ -189,7 +189,7 @@ enum ProjNormType
   #define REAL(a)       (a)
   #define IMAG(a)       (0)
   #define ABS(a)        (fabs(a))
-  #define SCALAR_FMT      "%lf"
+  #define SCALAR_FMT      "%le"
   #define SCALAR(a)     (a)
 
 #endif

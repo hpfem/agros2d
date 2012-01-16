@@ -45,10 +45,6 @@
         <translation>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D jest programem służącym modelowania zagadnień polowych. Rozwiązywanie równań różniczkowych cząstkowych oparte jest o bibliotekę &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt;, która wykorzystuje metodę elementów skończonych wraz z automatyczną adaptacją stopnia i rozmiarów elementów (&lt;i&gt;hp&lt;/i&gt;-FEM).&lt;br/&gt;&lt;br/&gt;Strona projektu: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Zgłoszenia błędów: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - główny programista (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; - programista, dokumentacja (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - programista - moduł RF (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polskie tłumaczenie (Politechnika Warszawska)&lt;br/&gt;&lt;b&gt;Vaclav Kotlan&lt;/b&gt; - niemieckie tłumaczenie (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D jest programem służącym modelowania zagadnień polowych. Rozwiązywanie równań różniczkowych cząstkowych oparte jest o bibliotekę &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt;, która wykorzystuje metodę elementów skończonych wraz z automatyczną adaptacją stopnia i rozmiarów elementów (&lt;i&gt;hp&lt;/i&gt;-FEM).&lt;br/&gt;&lt;br/&gt;Strona projektu: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Zgłoszenia błędów: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - główny programista (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; - programista, dokumentacja (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polskie tłumaczenie (Politechnika Warszawska)&lt;br/&gt;&lt;b&gt;Vaclav Kotlan&lt;/b&gt; - niemieckie tłumaczenie (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/gui.cpp" line="768"/>
         <source>&lt;h3&gt;Hermes2D&lt;/h3&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</source>
         <translation>&lt;h3&gt;Hermes2D&lt;/h3&gt;Strona projektu: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (lider projektu, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</translation>
@@ -62,49 +58,6 @@
         <location filename="../src/gui.cpp" line="831"/>
         <source>&lt;h3&gt;License:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</source>
         <translation>&lt;h3&gt;Licencja:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</translation>
-    </message>
-</context>
-<context>
-    <name>CentralWidget</name>
-    <message>
-        <source>Add new page</source>
-        <translation type="obsolete">Dodaj nową stronę</translation>
-    </message>
-    <message>
-        <source>Go back</source>
-        <translation type="obsolete">Cofnij</translation>
-    </message>
-    <message>
-        <source>Go forward</source>
-        <translation type="obsolete">Naprzód</translation>
-    </message>
-    <message>
-        <source>Go home</source>
-        <translation type="obsolete">Na początek</translation>
-    </message>
-    <message>
-        <source>Print Document</source>
-        <translation type="obsolete">Drukuj dokument</translation>
-    </message>
-    <message>
-        <source>unknown</source>
-        <translation type="obsolete">nieznany</translation>
-    </message>
-    <message>
-        <source>Add New Page</source>
-        <translation type="obsolete">Dodaj nową stronę</translation>
-    </message>
-    <message>
-        <source>Close This Page</source>
-        <translation type="obsolete">Zamknij tą stronę</translation>
-    </message>
-    <message>
-        <source>Close Other Pages</source>
-        <translation type="obsolete">Zamknij inną stronę</translation>
-    </message>
-    <message>
-        <source>Add Bookmark for this Page...</source>
-        <translation type="obsolete">Dodaj zakładkę dla tej strony...</translation>
     </message>
 </context>
 <context>
@@ -282,10 +235,6 @@
         <translation>Opcje</translation>
     </message>
     <message>
-        <source>Width and height of bounding box over vector count.</source>
-        <translation type="obsolete">Szerokość i wysokość ramki do okoła licznika wektorów.</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="152"/>
         <source>Language change</source>
         <translation>Zmiana języka</translation>
@@ -317,10 +266,6 @@
         <translation>Python</translation>
     </message>
     <message>
-        <source>Advanced</source>
-        <translation type="obsolete">Zaawans.</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="348"/>
         <source>UI:</source>
         <translation>Wygląd:</translation>
@@ -341,10 +286,6 @@
         <location filename="../src/configdialog.cpp" line="664"/>
         <source>General</source>
         <translation>Ogólne</translation>
-    </message>
-    <message>
-        <source>Show label</source>
-        <translation type="obsolete">Pokaż etykiety</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="473"/>
@@ -464,30 +405,6 @@
         <translation>Geometria</translation>
     </message>
     <message>
-        <source>Show grid</source>
-        <translation type="obsolete">Pokaż kratkę</translation>
-    </message>
-    <message>
-        <source>Show rulers</source>
-        <translation type="obsolete">Pokaż linijki</translation>
-    </message>
-    <message>
-        <source>Snap to grid</source>
-        <translation type="obsolete">Przyciągaj do kratki</translation>
-    </message>
-    <message>
-        <source>Show axes</source>
-        <translation type="obsolete">Pokaż osie</translation>
-    </message>
-    <message>
-        <source>Grid step:</source>
-        <translation type="obsolete">Rozmiar kratki:</translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="obsolete">Kratka</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="558"/>
         <source>Curvilinear elements</source>
         <translation>Elementy krzywoliniowe</translation>
@@ -498,57 +415,9 @@
         <translation>Siatka</translation>
     </message>
     <message>
-        <source>Jet</source>
-        <translation type="obsolete">Jet</translation>
-    </message>
-    <message>
-        <source>Set font</source>
-        <translation type="obsolete">Czcionka</translation>
-    </message>
-    <message>
-        <source>Scene font</source>
-        <translation type="obsolete">Czcionka widoku</translation>
-    </message>
-    <message>
-        <source>Autumn</source>
-        <translation type="obsolete">Jesienna</translation>
-    </message>
-    <message>
-        <source>Hot</source>
-        <translation type="obsolete">Gorąca</translation>
-    </message>
-    <message>
-        <source>Copper</source>
-        <translation type="obsolete">Miedziana</translation>
-    </message>
-    <message>
-        <source>Cool</source>
-        <translation type="obsolete">Zimna</translation>
-    </message>
-    <message>
-        <source>B/W ascending</source>
-        <translation type="obsolete">B/Cz rosnąco</translation>
-    </message>
-    <message>
-        <source>B/W descending</source>
-        <translation type="obsolete">B-Cz malejąco</translation>
-    </message>
-    <message>
-        <source>Filter</source>
-        <translation type="obsolete">Filtr</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="461"/>
         <source>Log. scale</source>
         <translation>Skala log.</translation>
-    </message>
-    <message>
-        <source>Palette:</source>
-        <translation type="obsolete">Paleta:</translation>
-    </message>
-    <message>
-        <source>Steps:</source>
-        <translation type="obsolete">Kroki:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="470"/>
@@ -556,17 +425,9 @@
         <translation>Podstawa:</translation>
     </message>
     <message>
-        <source>Number of decimal places:</source>
-        <translation type="obsolete">Liczba miejsc po przecinku:</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="476"/>
         <source>Scalar view</source>
         <translation>Pola skalarne</translation>
-    </message>
-    <message>
-        <source>Contours count:</source>
-        <translation type="obsolete">Liczba izolinii:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="506"/>
@@ -574,25 +435,9 @@
         <translation>Izolinie</translation>
     </message>
     <message>
-        <source>Proportional</source>
-        <translation type="obsolete">Proporcjonalnie</translation>
-    </message>
-    <message>
-        <source>Color (b/w)</source>
-        <translation type="obsolete">Kolor (b-cz)</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="701"/>
         <source>Vectors:</source>
         <translation>Wektory:</translation>
-    </message>
-    <message>
-        <source>Scale:</source>
-        <translation type="obsolete">Skala:</translation>
-    </message>
-    <message>
-        <source>Vector view</source>
-        <translation type="obsolete">Pola wektorowe</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="480"/>
@@ -628,18 +473,6 @@
         <location filename="../src/configdialog.cpp" line="514"/>
         <source>Deform shape</source>
         <translation>Deformacja</translation>
-    </message>
-    <message>
-        <source>Show order label</source>
-        <translation type="obsolete">Pokaż etykiety</translation>
-    </message>
-    <message>
-        <source>Hermes</source>
-        <translation type="obsolete">Hermes</translation>
-    </message>
-    <message>
-        <source>Polynomial order</source>
-        <translation type="obsolete">Stopień wielomianu</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="529"/>
@@ -714,14 +547,6 @@
         <translation>Domyślnie</translation>
     </message>
     <message>
-        <source>Isotropic refinement</source>
-        <translation type="obsolete">Zagęszczanie izotropowe</translation>
-    </message>
-    <message>
-        <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;true&lt;/b&gt;&lt;/td&gt;&lt;td&gt;isotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;false&lt;/b&gt;&lt;/td&gt;&lt;td&gt;anisotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="obsolete">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;prawda&lt;/b&gt;&lt;/td&gt;&lt;td&gt;izotropowe zagęszczanie&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;fałsz&lt;/b&gt;&lt;/td&gt;&lt;td&gt;anizotropowe zagęszczanie&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="597"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj elementy dopóki suma poprawionych nie przekroczy &lt;b&gt;progu&lt;/b&gt;.&lt;br/&gt; Jeżeli wiele elementów ma podobny błąd, poprawiaj je wszystkie, aby utrzymać spójność siatki.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj wszystkie elementy, &lt;br/&gt; których błąd jest większy niż &lt;b&gt;próg&lt;/b&gt; pomnożony przez maksymalny błąd.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj wszystkie elementy, &lt;br/&gt;których błąd jest większy niż &lt;b&gt;próg&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
@@ -747,17 +572,9 @@
         <translation>Historia poleceń została wyczyszczona.</translation>
     </message>
     <message>
-        <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;true&lt;/b&gt;&lt;td&gt;&lt;td&gt;isotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;false&lt;/b&gt;&lt;td&gt;&lt;td&gt;anisotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="obsolete">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;prawda&lt;/b&gt;&lt;td&gt;&lt;td&gt;izotropowe zagęszczanie&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;fałsz&lt;/b&gt;&lt;td&gt;&lt;td&gt;anizotropowe zagęszczanie&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/configdialog.cpp" line="590"/>
         <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences&lt;br/&gt;the selection of candidates in hp-adaptivity</source>
         <translation>&lt;b&gt;&lt;/b&gt;domyślna wartość to 1.0, parametr ten wpływa&lt;br/&gt;na wybór kandydatów do poprawy sieci typu &apos;hp&apos;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences&lt;br/&gt;the selection of cancidates in hp-adaptivity</source>
-        <translation type="obsolete">&lt;b&gt;&lt;/b&gt;domyślna wartość to 1.0, parametr ten wpływa&lt;br/&gt;na wybór kandydatów do poprawy sieci typu &apos;hp&apos;</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="592"/>
@@ -778,10 +595,6 @@
         <location filename="../src/configdialog.cpp" line="596"/>
         <source>2</source>
         <translation>2</translation>
-    </message>
-    <message>
-        <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="obsolete">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj elementy dopóki suma poprawionych nie przekroczy &lt;b&gt;progu&lt;/b&gt;.&lt;br/&gt; Jeżeli wiele elementów ma podobny błąd, poprawiaj je wszystkie, aby utrzymać spójność siatki.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj wszystkie elementy, &lt;br/&gt; których błąd jest większy niż &lt;b&gt;próg&lt;/b&gt; pomnożony przez maksymalny błąd.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj wszystkie elementy, &lt;br/&gt;których błąd jest większy niż &lt;b&gt;próg&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="603"/>
@@ -884,231 +697,6 @@
         <source>Information</source>
         <translation>Informacja</translation>
     </message>
-    <message>
-        <source>Command history was cleared succesfully.</source>
-        <translation type="obsolete">Historia poleceń została wyczyszczona.</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdge</name>
-    <message>
-        <source>Edge</source>
-        <translation type="obsolete">Krawędź</translation>
-    </message>
-    <message>
-        <source>Start point:</source>
-        <translation type="obsolete">Punkt początkowy:</translation>
-    </message>
-    <message>
-        <source>End point:</source>
-        <translation type="obsolete">Punkt końcowy:</translation>
-    </message>
-    <message>
-        <source>Coordinates</source>
-        <translation type="obsolete">Współrzędne</translation>
-    </message>
-    <message>
-        <source>Refine towards edge:</source>
-        <translation type="obsolete">Zagęść przy krawędzi:</translation>
-    </message>
-    <message>
-        <source>Mesh parameters</source>
-        <translation type="obsolete">Parametry siatki</translation>
-    </message>
-    <message>
-        <source>Boundary condition:</source>
-        <translation type="obsolete">Warunek brzegowy:</translation>
-    </message>
-    <message>
-        <source>Angle (deg.):</source>
-        <translation type="obsolete">Kąt (stopnie):</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation type="obsolete">Długość:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeAcousticMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ WB:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Wartość:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeCurrentMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ WB:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Wartość:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeElasticityMarker</name>
-    <message>
-        <source>Equation:</source>
-        <translation type="obsolete">Równanie:</translation>
-    </message>
-    <message>
-        <source>BC Type:</source>
-        <translation type="obsolete">Typ WB:</translation>
-    </message>
-    <message>
-        <source>Force</source>
-        <translation type="obsolete">Siła</translation>
-    </message>
-    <message>
-        <source>Displacement</source>
-        <translation type="obsolete">Przesunięcie</translation>
-    </message>
-    <message>
-        <source>Force (N):</source>
-        <translation type="obsolete">Siła (N):</translation>
-    </message>
-    <message>
-        <source>Displacement (m):</source>
-        <translation type="obsolete">Odkształcenie (m):</translation>
-    </message>
-    <message>
-        <source>Direction %1</source>
-        <translation type="obsolete">Kierunek %1</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeElectrostaticMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ WB:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Wartość:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeFlowMarker</name>
-    <message>
-        <source>BC Type:</source>
-        <translation type="obsolete">Typ WB:</translation>
-    </message>
-    <message>
-        <source>Velocity X (m/s):</source>
-        <translation type="obsolete">Prędkość X (m/s):</translation>
-    </message>
-    <message>
-        <source>Velocity Y (m/s):</source>
-        <translation type="obsolete">Prędkość Y (m/s):</translation>
-    </message>
-    <message>
-        <source>Pressure (Pa):</source>
-        <translation type="obsolete">Ciśnienie (Pa):</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeGeneralMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ WB:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Wartość:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeHeatMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ WB:</translation>
-    </message>
-    <message>
-        <source>Temperature</source>
-        <translation type="obsolete">Temperatura</translation>
-    </message>
-    <message>
-        <source>Heat flux</source>
-        <translation type="obsolete">Strumień ciepła</translation>
-    </message>
-    <message>
-        <source>Heat transfer coef.</source>
-        <translation type="obsolete">Współ. przenik. cieplnej</translation>
-    </message>
-    <message>
-        <source>External temperature</source>
-        <translation type="obsolete">Zewnętrzna temperatura</translation>
-    </message>
-    <message>
-        <source>Temperature (deg.):</source>
-        <translation type="obsolete">Temperatura (stopnie):</translation>
-    </message>
-    <message>
-        <source>Heat flux (W/m2):</source>
-        <translation type="obsolete">Strumień ciepła (W/m2):</translation>
-    </message>
-    <message>
-        <source>Heat transfer coef. (W/m2.K):</source>
-        <translation type="obsolete">Współ. przenik. cieplnej (W/m2.K):</translation>
-    </message>
-    <message>
-        <source>External temperature (deg.):</source>
-        <translation type="obsolete">Zewnętrzna temperatura (stopnie):</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeMagneticMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ WB:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Wartość:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeMarker</name>
-    <message>
-        <source>Equation:</source>
-        <translation type="obsolete">Równanie:</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Nazwa:</translation>
-    </message>
-    <message>
-        <source>Boundary marker</source>
-        <translation type="obsolete">Znacznik brzegu</translation>
-    </message>
-    <message>
-        <source>Boundary marker name already exists.</source>
-        <translation type="obsolete">Istnieje już znacznik brzegu o takiej nazwie.</translation>
-    </message>
-    <message>
-        <source>Boundary condition</source>
-        <translation type="obsolete">Warunek brzegowy</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneEdgeRFMarker</name>
-    <message>
-        <source>BC type:</source>
-        <translation type="obsolete">Typ WB:</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="obsolete">Wartość:</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <translation type="obsolete">Wysokość:</translation>
-    </message>
 </context>
 <context>
     <name>DSceneFunction</name>
@@ -1149,323 +737,6 @@
     </message>
 </context>
 <context>
-    <name>DSceneLabel</name>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Etykieta</translation>
-    </message>
-    <message>
-        <source>Coordinates</source>
-        <translation type="obsolete">Współrzędne</translation>
-    </message>
-    <message>
-        <source>Global order is %1.</source>
-        <translation type="obsolete">Globalny stopień %1.</translation>
-    </message>
-    <message>
-        <source>Triangle area (m):</source>
-        <translation type="obsolete">Powierzchnia trójkąta (m):</translation>
-    </message>
-    <message>
-        <source>Polynomial order (-):</source>
-        <translation type="obsolete">Stopień wielomianu (-):</translation>
-    </message>
-    <message>
-        <source>Mesh parameters</source>
-        <translation type="obsolete">Parametry siatki</translation>
-    </message>
-    <message>
-        <source>Material:</source>
-        <translation type="obsolete">Materiał:</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelAcousticMarker</name>
-    <message>
-        <source>Density (kg/m3):</source>
-        <translation type="obsolete">Gęstość (kg/m3):</translation>
-    </message>
-    <message>
-        <source>Mass density</source>
-        <translation type="obsolete">Gęstość</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelCurrentMarker</name>
-    <message>
-        <source>Conductivity (S/m):</source>
-        <translation type="obsolete">Konduktywność (S/m):</translation>
-    </message>
-    <message>
-        <source>Conductivity</source>
-        <translation type="obsolete">Konduktywność</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelElasticityMarker</name>
-    <message>
-        <source>Force X (N):</source>
-        <translation type="obsolete">Siła X (N):</translation>
-    </message>
-    <message>
-        <source>Force Y (N):</source>
-        <translation type="obsolete">Siła Y (N):</translation>
-    </message>
-    <message>
-        <source>Force</source>
-        <translation type="obsolete">Siła</translation>
-    </message>
-    <message>
-        <source>Volumetric forces</source>
-        <translation type="obsolete">Siły w objętości</translation>
-    </message>
-    <message>
-        <source>Thermal exp. coef.</source>
-        <translation type="obsolete">Wsp. rozsz. ciepl.</translation>
-    </message>
-    <message>
-        <source>Temperature</source>
-        <translation type="obsolete">Temperatura</translation>
-    </message>
-    <message>
-        <source>Young modulus</source>
-        <translation type="obsolete">Moduł Younga</translation>
-    </message>
-    <message>
-        <source>Poisson number</source>
-        <translation type="obsolete">Liczba Poissona</translation>
-    </message>
-    <message>
-        <source>Thermal exp. coef. (1/deg):</source>
-        <translation type="obsolete">Wsp. rozsz. ciepl. (1/K):</translation>
-    </message>
-    <message>
-        <source>Temperature (deg):</source>
-        <translation type="obsolete">Temperatura (K):</translation>
-    </message>
-    <message>
-        <source>Ref. temperature (deg):</source>
-        <translation type="obsolete">Temp. odniesienia (K):</translation>
-    </message>
-    <message>
-        <source>Thermal expansion</source>
-        <translation type="obsolete">Rozszerzalność cieplna</translation>
-    </message>
-    <message>
-        <source>Young modulus (Pa):</source>
-        <translation type="obsolete">Moduł Younga (Pa):</translation>
-    </message>
-    <message>
-        <source>Poisson number (-):</source>
-        <translation type="obsolete">Liczba Poissona (-):</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelElectrostaticMarker</name>
-    <message>
-        <source>Permittivity (-):</source>
-        <translation type="obsolete">Przenikalność (-):</translation>
-    </message>
-    <message>
-        <source>Charge density (C/m3):</source>
-        <translation type="obsolete">Gęstość ładunku (C/m3):</translation>
-    </message>
-    <message>
-        <source>Permittivity</source>
-        <translation type="obsolete">Przenikalność</translation>
-    </message>
-    <message>
-        <source>Charge density</source>
-        <translation type="obsolete">Gęstość ładunku</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelFlowMarker</name>
-    <message>
-        <source>Dynamic viscosity (Pa.s):</source>
-        <translation type="obsolete">Lepkość dymaniczna (Pa.s):</translation>
-    </message>
-    <message>
-        <source>Density (kg/m3):</source>
-        <translation type="obsolete">Gęstość (kg/m3):</translation>
-    </message>
-    <message>
-        <source>Dynamic viscosity</source>
-        <translation type="obsolete">Lepkość dymaniczna</translation>
-    </message>
-    <message>
-        <source>Mass density</source>
-        <translation type="obsolete">Gęstość</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelGeneralMarker</name>
-    <message>
-        <source>Constant:</source>
-        <translation type="obsolete">Stała:</translation>
-    </message>
-    <message>
-        <source>Rightside:</source>
-        <translation type="obsolete">Prawa strona:</translation>
-    </message>
-    <message>
-        <source>Constant</source>
-        <translation type="obsolete">Stała</translation>
-    </message>
-    <message>
-        <source>Rightside</source>
-        <translation type="obsolete">Prawa strona</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelHeatMarker</name>
-    <message>
-        <source>Thermal conductivity (W/m.K):</source>
-        <translation type="obsolete">Przewodność cieplna (W/m.K):</translation>
-    </message>
-    <message>
-        <source>Volume heat (J/m3):</source>
-        <translation type="obsolete">Źródło cieplne (J/m3):</translation>
-    </message>
-    <message>
-        <source>Density (kg/m3):</source>
-        <translation type="obsolete">Gęstość (kg/m3):</translation>
-    </message>
-    <message>
-        <source>Specific heat (J/kg.K):</source>
-        <translation type="obsolete">Źródło cieplne (J/kg.K):</translation>
-    </message>
-    <message>
-        <source>Thermal conductivity</source>
-        <translation type="obsolete">Przewodność cieplna</translation>
-    </message>
-    <message>
-        <source>Volume heat</source>
-        <translation type="obsolete">Źródło cieplne</translation>
-    </message>
-    <message>
-        <source>Mass density</source>
-        <translation type="obsolete">Gęstość</translation>
-    </message>
-    <message>
-        <source>Specific heat</source>
-        <translation type="obsolete">Źródło cieplne</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelMagneticMarker</name>
-    <message>
-        <source>Rem. flux dens. (T):</source>
-        <translation type="obsolete">Remanencja (T):</translation>
-    </message>
-    <message>
-        <source>Direction of rem. (deg.):</source>
-        <translation type="obsolete">Kierunek remamencji (stop.):</translation>
-    </message>
-    <message>
-        <source>Rem. flux dens.</source>
-        <translation type="obsolete">Remanencja</translation>
-    </message>
-    <message>
-        <source>Direction of rem.</source>
-        <translation type="obsolete">Kierunek remanencji</translation>
-    </message>
-    <message>
-        <source>Permanent magnet</source>
-        <translation type="obsolete">Magnes trwały</translation>
-    </message>
-    <message>
-        <source>Velocity angular</source>
-        <translation type="obsolete">Prędkość kątowa</translation>
-    </message>
-    <message>
-        <source>Permeability</source>
-        <translation type="obsolete">Przenikalność mag.</translation>
-    </message>
-    <message>
-        <source>Conductivity</source>
-        <translation type="obsolete">Konduktywność</translation>
-    </message>
-    <message>
-        <source>Current density</source>
-        <translation type="obsolete">Gęstość prądu</translation>
-    </message>
-    <message>
-        <source>Velocity %1 (m/s):</source>
-        <translation type="obsolete">Prędkość %1 (m/s):</translation>
-    </message>
-    <message>
-        <source>Velocity angular (rad/s):</source>
-        <translation type="obsolete">Prędkość kątowa (rad/s):</translation>
-    </message>
-    <message>
-        <source>Velocity</source>
-        <translation type="obsolete">Prędkość</translation>
-    </message>
-    <message>
-        <source>Permeability (-):</source>
-        <translation type="obsolete">Przenikalność (-):</translation>
-    </message>
-    <message>
-        <source>Conductivity (S/m):</source>
-        <translation type="obsolete">Konduktywność (S/m):</translation>
-    </message>
-    <message>
-        <source>Current density (A/m2):</source>
-        <translation type="obsolete">Gęstość prądu (A/m2):</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelMarker</name>
-    <message>
-        <source>Equation:</source>
-        <translation type="obsolete">Równanie:</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Nazwa:</translation>
-    </message>
-    <message>
-        <source>Material</source>
-        <translation type="obsolete">Materiał</translation>
-    </message>
-    <message>
-        <source>Material marker</source>
-        <translation type="obsolete">Znacznik materiału</translation>
-    </message>
-    <message>
-        <source>Material marker name already exists.</source>
-        <translation type="obsolete">Istnieje już taki znacznik materiału.</translation>
-    </message>
-</context>
-<context>
-    <name>DSceneLabelRFMarker</name>
-    <message>
-        <source>Permeability (-):</source>
-        <translation type="obsolete">Przenikalność (-):</translation>
-    </message>
-    <message>
-        <source>Conductivity (S/m):</source>
-        <translation type="obsolete">Konduktywność (S/m):</translation>
-    </message>
-    <message>
-        <source>Permittivity</source>
-        <translation type="obsolete">Przenikalność</translation>
-    </message>
-    <message>
-        <source>Permeability</source>
-        <translation type="obsolete">Przenikalność mag.</translation>
-    </message>
-    <message>
-        <source>Conductivity</source>
-        <translation type="obsolete">Konduktywność</translation>
-    </message>
-    <message>
-        <source>Current density</source>
-        <translation type="obsolete">Gęstość prądu</translation>
-    </message>
-</context>
-<context>
     <name>DSceneNode</name>
     <message>
         <location filename="../src/scenebasic.cpp" line="250"/>
@@ -1487,17 +758,6 @@
         <location filename="../src/scenebasic.cpp" line="322"/>
         <source>Node already exists.</source>
         <translation>Istnieje już taki węzeł.</translation>
-    </message>
-</context>
-<context>
-    <name>EdgeMarkerDialog</name>
-    <message>
-        <source>Edge marker</source>
-        <translation type="obsolete">Znacznik krawędzi</translation>
-    </message>
-    <message>
-        <source>Edge marker:</source>
-        <translation type="obsolete">Znacznik krawędzi:</translation>
     </message>
 </context>
 <context>
@@ -1566,32 +826,6 @@
         <location filename="../src/gui.cpp" line="504"/>
         <source>File could not be renamed.</source>
         <translation>Nie można zmienić nazwy pliku.</translation>
-    </message>
-</context>
-<context>
-    <name>HelpDialog</name>
-    <message>
-        <source>Help dialog</source>
-        <translation type="obsolete">Okno pomocy</translation>
-    </message>
-    <message>
-        <source>Filter:</source>
-        <translation type="obsolete">Filtr:</translation>
-    </message>
-    <message>
-        <source>Content</source>
-        <translation type="obsolete">Treść</translation>
-    </message>
-    <message>
-        <source>Index</source>
-        <translation type="obsolete">Indeks</translation>
-    </message>
-</context>
-<context>
-    <name>HelpViewer</name>
-    <message>
-        <source>Open Link in New Tab</source>
-        <translation type="obsolete">Otwórz odnośnik w nowej zakładce</translation>
     </message>
 </context>
 <context>
@@ -1681,10 +915,6 @@
         <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
-        <source>new boundary</source>
-        <translation type="obsolete">nowy warunek</translation>
-    </message>
-    <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="144"/>
         <source>new boundary condition</source>
         <translation>nowy warunek</translation>
@@ -1763,10 +993,6 @@
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="254"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
-    </message>
-    <message>
-        <source>new boundary</source>
-        <translation type="obsolete">nowy warunek</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="342"/>
@@ -1909,41 +1135,6 @@
     </message>
 </context>
 <context>
-    <name>HermesFlow</name>
-    <message>
-        <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="obsolete">Nie istnieje brzeg typu &apos;%1&apos;.</translation>
-    </message>
-    <message>
-        <source>new boundary</source>
-        <translation type="obsolete">nowy warunek</translation>
-    </message>
-    <message>
-        <source>new material</source>
-        <translation type="obsolete">nowy materiał</translation>
-    </message>
-    <message>
-        <source>Flow</source>
-        <translation type="obsolete">Przepływ</translation>
-    </message>
-    <message>
-        <source>Dynamic viscosity:</source>
-        <translation type="obsolete">Lepkość dymaniczna:</translation>
-    </message>
-    <message>
-        <source>Density:</source>
-        <translation type="obsolete">Gęstość:</translation>
-    </message>
-    <message>
-        <source>Velocity</source>
-        <translation type="obsolete">Prędkość</translation>
-    </message>
-    <message>
-        <source>Pressure:</source>
-        <translation type="obsolete">Ciśnienie:</translation>
-    </message>
-</context>
-<context>
     <name>HermesGeneral</name>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="86"/>
@@ -2065,10 +1256,6 @@
         <translation>K/m</translation>
     </message>
     <message>
-        <source>deg./m</source>
-        <translation type="obsolete">deg./m</translation>
-    </message>
-    <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="371"/>
         <source>Heat Transfer</source>
         <translation>Przepływ ciepła</translation>
@@ -2093,10 +1280,6 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="376"/>
         <source>W</source>
         <translation>W</translation>
-    </message>
-    <message>
-        <source>deg.</source>
-        <translation type="obsolete">deg.</translation>
     </message>
 </context>
 <context>
@@ -2552,17 +1735,6 @@
     </message>
 </context>
 <context>
-    <name>LabelMarkerDialog</name>
-    <message>
-        <source>Label marker</source>
-        <translation type="obsolete">Znacznik etykiety</translation>
-    </message>
-    <message>
-        <source>Label marker:</source>
-        <translation type="obsolete">Znacznik etykiety:</translation>
-    </message>
-</context>
-<context>
     <name>LocalPointValueDialog</name>
     <message>
         <location filename="../src/localvalueview.cpp" line="229"/>
@@ -2726,689 +1898,722 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="156"/>
+        <location filename="../src/mainwindow.cpp" line="161"/>
         <source>&amp;New...</source>
         <translation>&amp;Nowy...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="158"/>
+        <location filename="../src/mainwindow.cpp" line="163"/>
         <source>Create a new file</source>
         <translation>Utwórz nowy plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="161"/>
+        <location filename="../src/mainwindow.cpp" line="166"/>
         <source>&amp;Open...</source>
         <translation>&amp;Otwórz...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="163"/>
+        <location filename="../src/mainwindow.cpp" line="168"/>
         <source>Open an existing file</source>
         <translation>Otwórz istniejący plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="171"/>
+        <location filename="../src/mainwindow.cpp" line="176"/>
         <source>&amp;Save</source>
         <translation>&amp;Zapisz</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="173"/>
+        <location filename="../src/mainwindow.cpp" line="178"/>
         <source>Save the file to disk</source>
         <translation>Zapisz plik na dysk</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="176"/>
+        <location filename="../src/mainwindow.cpp" line="181"/>
         <source>Save with solution</source>
         <translation>Zapisz razem z rozwiązaniem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="177"/>
+        <location filename="../src/mainwindow.cpp" line="182"/>
         <source>Save the file to disk with solution</source>
         <translation>Zapisz plik wraz z rozwiązaniem na dysk</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="180"/>
+        <location filename="../src/mainwindow.cpp" line="185"/>
         <source>Save &amp;As...</source>
         <translation>Zapisz &amp;jako...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="182"/>
+        <location filename="../src/mainwindow.cpp" line="187"/>
         <source>Save the file under a new name</source>
         <translation>Zapisz plik pod nową nazwą</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="189"/>
+        <location filename="../src/mainwindow.cpp" line="194"/>
         <source>&amp;Close</source>
         <translation>&amp;Zamknij</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="191"/>
+        <location filename="../src/mainwindow.cpp" line="196"/>
         <source>Close the file</source>
         <translation>Zamknij plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="194"/>
+        <location filename="../src/mainwindow.cpp" line="199"/>
         <source>Import DXF...</source>
         <translation>Import DXF...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="195"/>
+        <location filename="../src/mainwindow.cpp" line="200"/>
         <source>Import AutoCAD DXF</source>
         <translation>Import AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="198"/>
+        <location filename="../src/mainwindow.cpp" line="203"/>
         <source>Export DXF...</source>
         <translation>Eksport DXF...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="199"/>
+        <location filename="../src/mainwindow.cpp" line="204"/>
         <source>Export AutoCAD DXF</source>
         <translation>Eksport AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="245"/>
+        <location filename="../src/mainwindow.cpp" line="250"/>
         <source>Copy image to clipboard</source>
         <translation>Kopiuj obraz do schowka</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="247"/>
+        <location filename="../src/mainwindow.cpp" line="252"/>
         <source>Copy image from workspace to clipboard.</source>
         <translation>Kopiuj widok do schowka.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="383"/>
+        <location filename="../src/mainwindow.cpp" line="338"/>
+        <source>2D: None</source>
+        <translation>2D: Rysunek</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="339"/>
+        <source>Ctrl+1</source>
+        <translation>Ctrl+1</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="342"/>
+        <source>2D: Polynomial order</source>
+        <translation>2D: Stopień wielomianu</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="343"/>
+        <source>Ctrl+2</source>
+        <translation>Ctrl+2</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="346"/>
+        <source>2D: Scalar view</source>
+        <translation>2D: Pole skalarne</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="347"/>
+        <source>Ctrl+3</source>
+        <translation>Ctrl+3</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="350"/>
+        <source>3D: Scalar view</source>
+        <translation>3D: Pole skalarne</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="351"/>
+        <source>Ctrl+4</source>
+        <translation>Ctrl+4</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="354"/>
+        <source>3D: Scalar view - solid</source>
+        <translation>3D: Pole skalarne - bryła</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="355"/>
+        <source>Ctrl+5</source>
+        <translation>Ctrl+5</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="358"/>
+        <source>3D: Model</source>
+        <translation>3D: Model</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="359"/>
+        <source>Ctrl+6</source>
+        <translation>Ctrl+6</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="412"/>
         <source>Projection</source>
         <translation>Rzut</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="388"/>
+        <location filename="../src/mainwindow.cpp" line="417"/>
         <source>Panels</source>
         <translation>Panele</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1297"/>
+        <location filename="../src/mainwindow.cpp" line="433"/>
+        <source>Quick view</source>
+        <translation>Szybka zmiana</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="1342"/>
         <source>Export mesh file</source>
         <translation>Eksport pliku siatki</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="203"/>
+        <location filename="../src/mainwindow.cpp" line="208"/>
         <source>Export Hermes2D mesh file</source>
         <translation>Eksport pliku siatki Hermes2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="166"/>
+        <location filename="../src/mainwindow.cpp" line="171"/>
         <source>&amp;Download from server...</source>
         <translation>&amp;Pobierz z serwera...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="167"/>
+        <location filename="../src/mainwindow.cpp" line="172"/>
         <source>Ctrl+Shift+O</source>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="168"/>
+        <location filename="../src/mainwindow.cpp" line="173"/>
         <source>Download from server...</source>
         <translation>Pobierz z serwera...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="185"/>
-        <location filename="../src/mainwindow.cpp" line="186"/>
+        <location filename="../src/mainwindow.cpp" line="190"/>
+        <location filename="../src/mainwindow.cpp" line="191"/>
         <source>Upload to server...</source>
         <translation>Wyślij na serwer...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="202"/>
+        <location filename="../src/mainwindow.cpp" line="207"/>
         <source>Export mesh file...</source>
         <translation>Eksport siatki...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="206"/>
+        <location filename="../src/mainwindow.cpp" line="211"/>
         <source>Export VTK scalar...</source>
         <translation>Eksport VTK skalarne...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="207"/>
+        <location filename="../src/mainwindow.cpp" line="212"/>
         <source>Export scalar view as VTK file</source>
         <translation>Eksportuj pole skalarne do pliku VTK</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="210"/>
+        <location filename="../src/mainwindow.cpp" line="215"/>
         <source>Export VTK order...</source>
         <translation>Eksport VTK stopień wielomianu...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="211"/>
+        <location filename="../src/mainwindow.cpp" line="216"/>
         <source>Export order view as VTK file</source>
         <translation>Eksport stopnia wielomianu do pliku VTK</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="214"/>
+        <location filename="../src/mainwindow.cpp" line="219"/>
         <source>Export image...</source>
         <translation>Eksport obrazu...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="215"/>
-        <location filename="../src/mainwindow.cpp" line="1002"/>
+        <location filename="../src/mainwindow.cpp" line="220"/>
+        <location filename="../src/mainwindow.cpp" line="1040"/>
         <source>Export image to file</source>
         <translation>Eksport obrazu do pliku</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="218"/>
+        <location filename="../src/mainwindow.cpp" line="223"/>
         <source>Create &amp;video...</source>
         <translation>Tworzenie &amp;wideo...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="219"/>
+        <location filename="../src/mainwindow.cpp" line="224"/>
         <source>Create video</source>
         <translation>Tworzenie wideo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="222"/>
+        <location filename="../src/mainwindow.cpp" line="227"/>
         <source>Load background...</source>
         <translation>Obraz w tle...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="226"/>
+        <location filename="../src/mainwindow.cpp" line="231"/>
         <source>E&amp;xit</source>
         <translation>Wy&amp;jście</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="227"/>
+        <location filename="../src/mainwindow.cpp" line="232"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="228"/>
+        <location filename="../src/mainwindow.cpp" line="233"/>
         <source>Exit the application</source>
         <translation>Wyjście z programu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="235"/>
+        <location filename="../src/mainwindow.cpp" line="240"/>
         <source>&amp;Undo</source>
         <translation>&amp;Cofnij</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="237"/>
+        <location filename="../src/mainwindow.cpp" line="242"/>
         <source>Undo operation</source>
         <translation>Cofnij operacje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="241"/>
+        <location filename="../src/mainwindow.cpp" line="246"/>
         <source>&amp;Redo</source>
         <translation>&amp;Ponów</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="243"/>
+        <location filename="../src/mainwindow.cpp" line="248"/>
         <source>Redo operation</source>
         <translation>Ponów operacje</translation>
     </message>
     <message>
-        <source>Copy</source>
-        <translation type="obsolete">Kopiuj</translation>
-    </message>
-    <message>
-        <source>Copy image to clipboard.</source>
-        <translation type="obsolete">Kopiuj obraz do schowka.</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="250"/>
-        <location filename="../src/mainwindow.cpp" line="457"/>
+        <location filename="../src/mainwindow.cpp" line="255"/>
+        <location filename="../src/mainwindow.cpp" line="495"/>
         <source>&amp;Help</source>
         <translation>&amp;Pomoc</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="251"/>
+        <location filename="../src/mainwindow.cpp" line="256"/>
         <source>Show help</source>
         <translation>Pokaż okno pomocy</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="255"/>
+        <location filename="../src/mainwindow.cpp" line="260"/>
         <source>&amp;Shortcuts</source>
         <translation>&amp;Skróty klawisz.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="256"/>
+        <location filename="../src/mainwindow.cpp" line="261"/>
         <source>Shortcuts</source>
         <translation>Skróty klawiszowe</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="259"/>
+        <location filename="../src/mainwindow.cpp" line="264"/>
         <source>Collaboration server</source>
         <translation>Serwer współpracy</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="260"/>
+        <location filename="../src/mainwindow.cpp" line="265"/>
         <source>Collaboration server...</source>
         <translation>Serwer współpracy...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="263"/>
+        <location filename="../src/mainwindow.cpp" line="268"/>
         <source>&amp;Online help</source>
         <translation>Pomoc &amp;online</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="264"/>
+        <location filename="../src/mainwindow.cpp" line="269"/>
         <source>Online help</source>
         <translation>Pomoc online</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="267"/>
-        <location filename="../src/mainwindow.cpp" line="268"/>
+        <location filename="../src/mainwindow.cpp" line="272"/>
+        <location filename="../src/mainwindow.cpp" line="273"/>
         <source>Check version</source>
         <translation>Sprawdź wersje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="271"/>
+        <location filename="../src/mainwindow.cpp" line="276"/>
         <source>About &amp;Agros2D</source>
         <translation>O &amp;Agros2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="272"/>
+        <location filename="../src/mainwindow.cpp" line="277"/>
         <source>Show the application&apos;s About box</source>
         <translation>Pokaż okno informacyjne</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="276"/>
+        <location filename="../src/mainwindow.cpp" line="281"/>
         <source>About &amp;Qt</source>
         <translation>O &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="277"/>
+        <location filename="../src/mainwindow.cpp" line="282"/>
         <source>Show the Qt library&apos;s About box</source>
         <translation>Pokaż okno o bibliotece Qt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="281"/>
+        <location filename="../src/mainwindow.cpp" line="286"/>
         <source>&amp;Options</source>
         <translation>&amp;Opcje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="282"/>
+        <location filename="../src/mainwindow.cpp" line="287"/>
         <source>Options</source>
         <translation>Opcje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="286"/>
+        <location filename="../src/mainwindow.cpp" line="291"/>
         <source>&amp;Mesh area</source>
         <translation>Generuj siatkę</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="287"/>
+        <location filename="../src/mainwindow.cpp" line="292"/>
         <source>Alt+W</source>
         <translation>Alt+W</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="288"/>
+        <location filename="../src/mainwindow.cpp" line="293"/>
         <source>Mesh area</source>
         <translation>Generuj siatkę</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="291"/>
+        <location filename="../src/mainwindow.cpp" line="296"/>
         <source>&amp;Solve problem</source>
         <translation>Rozwiąż problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="292"/>
+        <location filename="../src/mainwindow.cpp" line="297"/>
         <source>Alt+S</source>
         <translation>Alt+S</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="293"/>
+        <location filename="../src/mainwindow.cpp" line="298"/>
         <source>Solve problem</source>
         <translation>Rozwiąż problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="296"/>
+        <location filename="../src/mainwindow.cpp" line="301"/>
         <source>&amp;Chart</source>
         <translation>&amp;Wykres</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="297"/>
+        <location filename="../src/mainwindow.cpp" line="302"/>
         <source>Chart</source>
         <translation>Wykres</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="300"/>
+        <location filename="../src/mainwindow.cpp" line="305"/>
         <source>Fullscreen mode</source>
         <translation>Pełny ekran</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="301"/>
+        <location filename="../src/mainwindow.cpp" line="306"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <source>&amp;Postprocessor properties</source>
-        <translation type="obsolete">Wyświetlanie &amp;wyników</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="307"/>
+        <location filename="../src/mainwindow.cpp" line="312"/>
         <source>Script &amp;editor</source>
         <translation>Edytor skryptu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="308"/>
+        <location filename="../src/mainwindow.cpp" line="313"/>
         <source>Script editor</source>
         <translation>Edytor skryptu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="312"/>
+        <location filename="../src/mainwindow.cpp" line="317"/>
         <source>Run &amp;script...</source>
         <translation>Wykonaj skrypt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="313"/>
+        <location filename="../src/mainwindow.cpp" line="318"/>
         <source>Run script...</source>
         <translation>Wykonaj skrypt...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="316"/>
+        <location filename="../src/mainwindow.cpp" line="321"/>
         <source>Run &amp;command...</source>
         <translation>Wykonaj &amp;komendę...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="317"/>
+        <location filename="../src/mainwindow.cpp" line="322"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="318"/>
+        <location filename="../src/mainwindow.cpp" line="323"/>
         <source>Run command...</source>
         <translation>Wykonaj komendę</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="321"/>
+        <location filename="../src/mainwindow.cpp" line="326"/>
         <source>&amp;Report...</source>
         <translation>&amp;Sprawozdanie...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="322"/>
+        <location filename="../src/mainwindow.cpp" line="327"/>
         <source>Problem html report</source>
         <translation>Sprawozdanie w formacie HTML</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="325"/>
+        <location filename="../src/mainwindow.cpp" line="330"/>
         <source>Progress &amp;log</source>
         <translation>Dziennik &amp;postępu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="326"/>
+        <location filename="../src/mainwindow.cpp" line="331"/>
         <source>Show progress log</source>
         <translation>Pokaż dziennik postępu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="329"/>
+        <location filename="../src/mainwindow.cpp" line="334"/>
         <source>Application &amp;log</source>
         <translation>Dziennik &amp;aplikacji</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="330"/>
+        <location filename="../src/mainwindow.cpp" line="335"/>
         <source>Show application log</source>
         <translation>Pokaż dziennik aplikacji</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="339"/>
+        <location filename="../src/mainwindow.cpp" line="368"/>
         <source>Import/Export</source>
         <translation>Import/Eksport</translation>
     </message>
     <message>
-        <source>&amp;Show</source>
-        <translation type="obsolete">&amp;Pokaż</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="417"/>
+        <location filename="../src/mainwindow.cpp" line="455"/>
         <source>&amp;Add</source>
         <translation>&amp;Dodaj</translation>
     </message>
     <message>
-        <source>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Bartosz Sawicki &lt;a href=&quot;mailto:sawickib@iem.pw.edu.pl&quot;&gt;sawickib@iem.pw.edu.pl&lt;/a&gt; (developer, Polish translation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Strona internetowa: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Uwagi: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (główny programista)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (programista, dokumentacja)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Bartosz Sawicki &lt;a href=&quot;mailto:sawickib@iem.pw.edu.pl&quot;&gt;sawickib@iem.pw.edu.pl&lt;/a&gt; (programista, polskie tłumaczenie)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="1344"/>
-        <location filename="../src/mainwindow.cpp" line="1376"/>
+        <location filename="../src/mainwindow.cpp" line="1389"/>
+        <location filename="../src/mainwindow.cpp" line="1421"/>
         <source>Export vtk file</source>
         <translation>Eksport pliku vtk</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1344"/>
-        <location filename="../src/mainwindow.cpp" line="1376"/>
+        <location filename="../src/mainwindow.cpp" line="1389"/>
+        <location filename="../src/mainwindow.cpp" line="1421"/>
         <source>VTK files (*.vtk)</source>
         <translation>Pliki VTK (*.vtk)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="338"/>
+        <location filename="../src/mainwindow.cpp" line="367"/>
         <source>&amp;Recent files</source>
         <translation>&amp;Ostatnie pliki</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="223"/>
+        <location filename="../src/mainwindow.cpp" line="228"/>
         <source>Load background image</source>
         <translation>Wczytaj obraz w tło</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="349"/>
+        <location filename="../src/mainwindow.cpp" line="378"/>
         <source>Colaboration</source>
         <translation>Współpraca</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="354"/>
+        <location filename="../src/mainwindow.cpp" line="383"/>
         <source>&amp;File</source>
         <translation>&amp;Plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="373"/>
+        <location filename="../src/mainwindow.cpp" line="402"/>
         <source>E&amp;dit</source>
         <translation>E&amp;dycja</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="397"/>
+        <location filename="../src/mainwindow.cpp" line="426"/>
         <source>&amp;View</source>
         <translation>&amp;Widok</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="411"/>
+        <location filename="../src/mainwindow.cpp" line="449"/>
         <source>&amp;Problem</source>
         <translation>&amp;Problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="440"/>
+        <location filename="../src/mainwindow.cpp" line="478"/>
         <source>&amp;Tools</source>
         <translation>N&amp;arzędzia</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="483"/>
+        <location filename="../src/mainwindow.cpp" line="521"/>
         <source>File</source>
         <translation>Plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="493"/>
+        <location filename="../src/mainwindow.cpp" line="531"/>
         <source>Edit</source>
         <translation>Edycja</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="507"/>
+        <location filename="../src/mainwindow.cpp" line="545"/>
         <source>View</source>
         <translation>Widok</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="518"/>
+        <location filename="../src/mainwindow.cpp" line="556"/>
         <source>Problem</source>
         <translation>Problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="540"/>
+        <location filename="../src/mainwindow.cpp" line="578"/>
         <source>Tools</source>
         <translation>Narzędzia</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="549"/>
+        <location filename="../src/mainwindow.cpp" line="587"/>
         <source>Transient</source>
         <translation>Czasowa</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="555"/>
+        <location filename="../src/mainwindow.cpp" line="593"/>
         <source>Time step:</source>
         <translation>Czas:</translation>
     </message>
     <message>
-        <source>Workspace</source>
-        <translation type="obsolete">Widok</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="580"/>
+        <location filename="../src/mainwindow.cpp" line="618"/>
         <source>Ready</source>
         <translation>Gotowy</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="652"/>
+        <location filename="../src/mainwindow.cpp" line="690"/>
         <source>Position: [%1; %2]</source>
         <translation>Pozycja: [%1; %2]</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="666"/>
+        <location filename="../src/mainwindow.cpp" line="704"/>
         <source>Mode: Add node</source>
         <translation>Tryb: Dodawanie węzłów</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="669"/>
+        <location filename="../src/mainwindow.cpp" line="707"/>
         <source>Mode: Add edge</source>
         <translation>Tryb: Dodawanie krawędzi</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="672"/>
+        <location filename="../src/mainwindow.cpp" line="710"/>
         <source>Mode: Add label</source>
         <translation>Tryb: Dodawanie etykiet</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="680"/>
+        <location filename="../src/mainwindow.cpp" line="718"/>
         <source>Mode: Pan</source>
         <translation>Tryb: Przesunięcie</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="683"/>
+        <location filename="../src/mainwindow.cpp" line="721"/>
         <source>Mode: Rotate</source>
         <translation>Tryb: Obrót</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="690"/>
+        <location filename="../src/mainwindow.cpp" line="728"/>
         <source>Mode: Move node</source>
         <translation>Tryb: Przesunięcie węzła</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="693"/>
+        <location filename="../src/mainwindow.cpp" line="731"/>
         <source>Mode: Move edge</source>
         <translation>Tryb: Przesunięcie krawędzi</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="696"/>
+        <location filename="../src/mainwindow.cpp" line="734"/>
         <source>Mode: Move label</source>
         <translation>Tryb: Przesunięcie etykiety</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="795"/>
+        <location filename="../src/mainwindow.cpp" line="833"/>
         <source>Open file</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="795"/>
+        <location filename="../src/mainwindow.cpp" line="833"/>
         <source>Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)</source>
         <translation>Pliki Agros2D (*.a2d *.py);;Pliki danych Agros2D (*.a2d);;Skrypty Python (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="832"/>
-        <location filename="../src/mainwindow.cpp" line="836"/>
-        <location filename="../src/mainwindow.cpp" line="1147"/>
+        <location filename="../src/mainwindow.cpp" line="870"/>
+        <location filename="../src/mainwindow.cpp" line="874"/>
+        <location filename="../src/mainwindow.cpp" line="1185"/>
         <source>File open</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="832"/>
+        <location filename="../src/mainwindow.cpp" line="870"/>
         <source>Unknown suffix.</source>
         <translation>Nieznane rozszerzenie</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="836"/>
+        <location filename="../src/mainwindow.cpp" line="874"/>
         <source>File &apos;%1&apos; is not found.</source>
         <translation>Nie znaleziono pliku &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="905"/>
+        <location filename="../src/mainwindow.cpp" line="943"/>
         <source>Save file</source>
         <translation>Zapisz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="905"/>
+        <location filename="../src/mainwindow.cpp" line="943"/>
         <source>Agros2D files (*.a2d)</source>
         <translation>Pliki Agros2D (*.a2d)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="964"/>
+        <location filename="../src/mainwindow.cpp" line="1002"/>
         <source>Import file</source>
         <translation>Import pliku</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="964"/>
-        <location filename="../src/mainwindow.cpp" line="983"/>
+        <location filename="../src/mainwindow.cpp" line="1002"/>
+        <location filename="../src/mainwindow.cpp" line="1021"/>
         <source>DXF files (*.dxf)</source>
         <translation>DXF files (*.dxf)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="983"/>
+        <location filename="../src/mainwindow.cpp" line="1021"/>
         <source>Export file</source>
         <translation>Eksport pliku</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1002"/>
+        <location filename="../src/mainwindow.cpp" line="1040"/>
         <source>PNG files (*.png)</source>
         <translation>PNG files (*.png)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1122"/>
+        <location filename="../src/mainwindow.cpp" line="1160"/>
         <source>Open File</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1122"/>
+        <location filename="../src/mainwindow.cpp" line="1160"/>
         <source>Python script (*.py)</source>
         <translation>Skrypt Python (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1147"/>
+        <location filename="../src/mainwindow.cpp" line="1185"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Nie znaleziono pliku &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1201"/>
+        <location filename="../src/mainwindow.cpp" line="1246"/>
         <source>Problem Type: %1</source>
         <translation>Typ problemu: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1202"/>
+        <location filename="../src/mainwindow.cpp" line="1247"/>
         <source>Physic Field: %1</source>
         <translation>Fizyka: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1203"/>
+        <location filename="../src/mainwindow.cpp" line="1248"/>
         <source>Analysis type: %1</source>
         <translation>Typ analizy: %1</translation>
     </message>
     <message>
-        <source>About Agros2D</source>
-        <translation type="obsolete">O Agros2D</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="1297"/>
+        <location filename="../src/mainwindow.cpp" line="1342"/>
         <source>Mesh files (*.mesh)</source>
         <translation>Plik siatki (*.mesh)</translation>
     </message>
 </context>
 <context>
     <name>PostprocessorView</name>
-    <message>
-        <source>Postprocessor properties</source>
-        <translation type="obsolete">Wyświetlanie wyników</translation>
-    </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="113"/>
         <source>Width and height of bounding box over vector count.</source>
@@ -3422,7 +2627,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="203"/>
         <source>Advanced</source>
-        <translation>Zaawans.</translation>
+        <translation>Rozszerzony</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="206"/>
@@ -3442,16 +2647,18 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="240"/>
         <source>None</source>
-        <translation>Pusto</translation>
+        <translation>Nic</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="241"/>
+        <location filename="../src/postprocessorview.cpp" line="576"/>
         <source>Polynomial order</source>
         <translation>Stopień wielomianu</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="242"/>
         <location filename="../src/postprocessorview.cpp" line="243"/>
+        <location filename="../src/postprocessorview.cpp" line="573"/>
         <source>Scalar view</source>
         <translation>Pole skalarne</translation>
     </message>
@@ -3461,11 +2668,8 @@
         <translation>Pole skalarne, bryła</translation>
     </message>
     <message>
-        <source>Postprocessor</source>
-        <translation type="obsolete">Wyniki</translation>
-    </message>
-    <message>
         <location filename="../src/postprocessorview.cpp" line="234"/>
+        <location filename="../src/postprocessorview.cpp" line="574"/>
         <source>Contours</source>
         <translation>Izolinie</translation>
     </message>
@@ -3511,10 +2715,6 @@
         <translation>Składnik:</translation>
     </message>
     <message>
-        <source>Auto range:</source>
-        <translation type="obsolete">Zakres autom.:</translation>
-    </message>
-    <message>
         <location filename="../src/postprocessorview.cpp" line="309"/>
         <source>Minimum:</source>
         <translation>Minimum:</translation>
@@ -3531,6 +2731,7 @@
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="330"/>
+        <location filename="../src/postprocessorview.cpp" line="575"/>
         <source>Vector field</source>
         <translation>Pole wektorowe</translation>
     </message>
@@ -3740,10 +2941,6 @@
         <translation>Jakość:</translation>
     </message>
     <message>
-        <source>Log. scale</source>
-        <translation type="obsolete">Skala log.</translation>
-    </message>
-    <message>
         <location filename="../src/postprocessorview.cpp" line="460"/>
         <location filename="../src/postprocessorview.cpp" line="558"/>
         <source>Palette:</source>
@@ -3753,14 +2950,6 @@
         <location filename="../src/postprocessorview.cpp" line="462"/>
         <source>Steps:</source>
         <translation>Kroki:</translation>
-    </message>
-    <message>
-        <source>Base:</source>
-        <translation type="obsolete">Podstawa:</translation>
-    </message>
-    <message>
-        <source>Decimal places:</source>
-        <translation type="obsolete">Liczba miejsc po przecinku:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="500"/>
@@ -3783,14 +2972,6 @@
         <translation>Skala:</translation>
     </message>
     <message>
-        <source>Vector view</source>
-        <translation type="obsolete">Pola wektorowe</translation>
-    </message>
-    <message>
-        <source>Show order label</source>
-        <translation type="obsolete">Pokaż etykiety</translation>
-    </message>
-    <message>
         <location filename="../src/postprocessorview.cpp" line="534"/>
         <source>Hermes</source>
         <translation>Hermes</translation>
@@ -3808,6 +2989,11 @@
         <location filename="../src/postprocessorview.cpp" line="550"/>
         <source>Show order labels</source>
         <translation>Pokaż numery stopnia</translation>
+    </message>
+    <message>
+        <location filename="../src/postprocessorview.cpp" line="572"/>
+        <source>Workspace</source>
+        <translation>Panel roboczy</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="598"/>
@@ -4132,17 +3318,9 @@
         <translation>Nie można uruchomić Triangle</translation>
     </message>
     <message>
-        <source>Mesh files was created</source>
-        <translation type="obsolete">Pliki siatki zostały utworzone</translation>
-    </message>
-    <message>
         <location filename="../src/progressdialog.cpp" line="232"/>
         <source>Mesh was converted to Hermes2D mesh file</source>
         <translation>Siatka została zapisana w formacie Hermes2D</translation>
-    </message>
-    <message>
-        <source>Mesh files was deleted</source>
-        <translation type="obsolete">Pliki siatki zostały skasowane</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="227"/>
@@ -4329,14 +3507,6 @@
         <translation>Błąd obliczeń.</translation>
     </message>
     <message>
-        <source>Relative error: %1%	(step: %2/%3, DOFs: %4)</source>
-        <translation type="obsolete">Błąd względny: %1%	(Iteracje: %2/%3, zmienne: %4)</translation>
-    </message>
-    <message>
-        <source>Time step: %1/%2</source>
-        <translation type="obsolete">Krok: %1/%2</translation>
-    </message>
-    <message>
         <location filename="../src/problemdialog.cpp" line="466"/>
         <location filename="../src/value.cpp" line="48"/>
         <source>Error</source>
@@ -4365,99 +3535,95 @@
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="95"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="110"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="656"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="671"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="714"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="764"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="814"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="929"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="659"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="674"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="717"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="767"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="817"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="932"/>
         <source>Problem is not solved.</source>
         <translation>Problem nie jest rozwiązany.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="136"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="139"/>
         <source>Problem type &apos;%1&apos; is not implemented.</source>
         <translation>Problem typu &apos;%1&apos; nie jest zaimplementowany.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="143"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="146"/>
         <source>Physic field &apos;%1&apos; is not implemented.</source>
         <translation>Pole &apos;%1&apos; nie jest zaimplementowane.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="149"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="152"/>
         <source>Number of refinements &apos;%1&apos; is out of range.</source>
         <translation>Liczba zagęszczeń &apos;%&apos; jest błędna.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="155"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="158"/>
         <source>Polynomial order &apos;%1&apos; is out of range.</source>
         <translation>Stopień wielomianu &apos;%1&apos; jest poza zakresem.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="160"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="163"/>
         <source>Adaptivity type &apos;%1&apos; is not implemented.</source>
         <translation>Typ adaptacji &apos;%1&apos; nie jest zaimplementowany.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="166"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="169"/>
         <source>Adaptivity step &apos;%1&apos; is out of range.</source>
         <translation>Liczba kroków adaptacji &apos;%1&apos; jest błędna.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="172"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="175"/>
         <source>Adaptivity tolerance &apos;%1&apos; is out of range.</source>
         <translation>Tolerancja adaptacji &apos;%1&apos; jest błędna.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="180"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="183"/>
         <source>The frequency can not be used for this problem.</source>
         <translation>Częstotliwość nie występuje dla tego problemu.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="186"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="191"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="189"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="194"/>
         <source>Analysis type &apos;%1&apos; is not implemented</source>
         <translation>Analiza typu &apos;%1&apos; nie jest zaimplementowana</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="197"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="200"/>
         <source>Time step must be positive.</source>
         <translation>Krok musi być dodatni.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="203"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="206"/>
         <source>Total time must be positive.</source>
         <translation>Całkowity czas musi być dodatni.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="259"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="296"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="324"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="262"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="299"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="327"/>
         <source>Index &apos;%1&apos; is out of range.</source>
         <translation>Numer &apos;%1&apos; jest poza zakresem.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="276"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="279"/>
         <source>Angle &apos;%1&apos; is out of range.</source>
         <translation>Kąt &apos;%1&apos; jest poza zakresem.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="280"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="283"/>
         <source>Boundary &apos;%1&apos; is not defined.</source>
         <translation>Brzeg &apos;%1&apos; nie jest zdefiniowany.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="314"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="317"/>
         <source>Material &apos;%1&apos; is not defined.</source>
         <translation>Materiał &apos;%1&apos; nie jest zdefiniowany.</translation>
     </message>
     <message>
-        <source>Marker &apos;%1&apos; is not defined.</source>
-        <translation type="obsolete">Znacznik &apos;%1&apos; nie jest zdefiniowany.</translation>
-    </message>
-    <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="348"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="351"/>
         <source>Boundary marker already exists.</source>
         <translation>Istnieje już taki znacznik brzegu.</translation>
     </message>
@@ -4485,7 +3651,7 @@
         <translation>Nie istnieje znacznik brzegu o nazwie &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="377"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="380"/>
         <source>Label marker already exists.</source>
         <translation>Istnieje już taki znacznik etykiety.</translation>
     </message>
@@ -4502,64 +3668,64 @@
         <translation>Nie istnieje znacznik etykiety o nazwie &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="443"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="446"/>
         <source>Node index must be between 0 and &apos;%1&apos;.</source>
         <translation>Numer węzła musi się zawierać pomiędzy 0, a &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="486"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="743"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="489"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="746"/>
         <source>Edge index must be between 0 and &apos;%1&apos;.</source>
         <translation>Numer krawędzie musi się zawierać pomiędzy 0, a &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="529"/>
-        <location filename="../src/scripteditorcommandpython.cpp" line="793"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="532"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="796"/>
         <source>Label index must be between 0 and &apos;%1&apos;.</source>
         <translation>Numer etykiety musi się zawierać pomiędzy 0, a &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="658"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="661"/>
         <source>Mode &apos;%1&apos; is not implemented.</source>
         <translation>Tryb &apos;%1&apos; nie jest zaimplementowany.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="680"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="683"/>
         <source>Postprocessor mode &apos;%1&apos; is not implemented.</source>
         <translation>Tryb &apos;%1&apos; nie jest zaimplementowany.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="829"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="832"/>
         <source>View type &apos;%1&apos; is not implemented.</source>
         <translation>Typ widoku &apos;%1&apos; nie jest zaimplementowany.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="834"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="837"/>
         <source>Physic field variable &apos;%1&apos; is not implemented.</source>
         <translation>Pole &apos;%1&apos; nie jest zaimplementowane.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="836"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="839"/>
         <source>Physic field variable &apos;%1&apos; cannot be used with this field.</source>
         <translation>Pole &apos;%1&apos; nie może być użyte w tym przypadku.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="841"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="844"/>
         <source>Physic field variable component &apos;%1&apos; is not implemented.</source>
         <translation>Składowa pola &apos;%1&apos; nie jest zaimplementowana.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="844"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="847"/>
         <source>Physic field variable is scalar variable.</source>
         <translation>Pole jest skalarne.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="932"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="935"/>
         <source>Solved problem is not transient.</source>
         <translation>Rozwiązywany problem nie jest zagadnieniem czasowym.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditorcommandpython.cpp" line="935"/>
+        <location filename="../src/scripteditorcommandpython.cpp" line="938"/>
         <source>Time step must be between 0 and %1.</source>
         <translation>Krok czasowy musi być pomiędzy 0, a %1.</translation>
     </message>
@@ -4650,7 +3816,7 @@
     <message>
         <location filename="../src/util.cpp" line="311"/>
         <source>Magnetic field - imag</source>
-        <translation>Pole magnetyczne - rzecz.</translation>
+        <translation>Pole magnetyczne - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="313"/>
@@ -4662,12 +3828,12 @@
     <message>
         <location filename="../src/util.cpp" line="315"/>
         <source>Current density - external - real</source>
-        <translation>Gęstość prądu - zewnętrzna - rzecz</translation>
+        <translation>Gęstość prądu - zewnętrzna - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="317"/>
         <source>Current density - external - imag</source>
-        <translation>Gęstość prądu - zewnętrzna - uroj</translation>
+        <translation>Gęstość prądu - zewnętrzna - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="319"/>
@@ -4677,12 +3843,12 @@
     <message>
         <location filename="../src/util.cpp" line="321"/>
         <source>Current density - total - real</source>
-        <translation>Gęstość prądu - całkowita - rzecz</translation>
+        <translation>Gęstość prądu - całkowita - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="323"/>
         <source>Current density - total - imag</source>
-        <translation>Gęstość prądu - całkowita - uroj</translation>
+        <translation>Gęstość prądu - całkowita - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="325"/>
@@ -4692,12 +3858,12 @@
     <message>
         <location filename="../src/util.cpp" line="327"/>
         <source>Current density - induced transform - real</source>
-        <translation>Gęstość prądu - przesunięcia - rzecz</translation>
+        <translation>Gęstość prądu - przesunięcia - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="329"/>
         <source>Current density - induced transform - imag</source>
-        <translation>Gęstość prądu - przesunięcia - uroj</translation>
+        <translation>Gęstość prądu - przesunięcia - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="331"/>
@@ -4707,12 +3873,12 @@
     <message>
         <location filename="../src/util.cpp" line="333"/>
         <source>Current density - induced velocity - real</source>
-        <translation>Gęstość prądu - przewodzenia - rzecz</translation>
+        <translation>Gęstość prądu - przewodzenia - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="335"/>
         <source>Current density - induced velocity - imag</source>
-        <translation>Gęstość prądu - przewodzenia - uroj</translation>
+        <translation>Gęstość prądu - przewodzenia - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="337"/>
@@ -5714,6 +4880,18 @@
         <source>Boundary type &apos;%1&apos; or &apos;%2&apos; is not supported.</source>
         <translation>Brzegi typu &apos;%1&apos; i &apos;%3&apos; nie są obsługiwane.</translation>
     </message>
+    <message>
+        <location filename="../src/scenemarker.cpp" line="62"/>
+        <source>none</source>
+        <comment>boundary</comment>
+        <translation>brak</translation>
+    </message>
+    <message>
+        <location filename="../src/scenemarker.cpp" line="106"/>
+        <source>none</source>
+        <comment>material</comment>
+        <translation>puste</translation>
+    </message>
 </context>
 <context>
     <name>ReportDialog</name>
@@ -6014,10 +5192,6 @@
         <translation>Rozwiązane przez Agros2D (&lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;)</translation>
     </message>
     <message>
-        <source>Computed by Agros2D (&lt;a href=&quot;http://hpfem.org/agros2d&quot;&gt;http://hpfem.org/agros2d&lt;/a&gt;)</source>
-        <translation type="obsolete">Rozwiązane przez Agros2D (&lt;a href=&quot;http://hpfem.org/agros2d&quot;&gt;http://hpfem.org/agros2d&lt;/a&gt;)</translation>
-    </message>
-    <message>
         <location filename="../src/reportdialog.cpp" line="560"/>
         <source>Polynomial order</source>
         <translation>Stopień wielomianu</translation>
@@ -6070,22 +5244,11 @@
     </message>
 </context>
 <context>
-    <name>SLineEditValue</name>
-    <message>
-        <source>This textedit allows using variables.</source>
-        <translation type="obsolete">W tym polu można używać zmiennych.</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">błąd</translation>
-    </message>
-</context>
-<context>
     <name>Scene</name>
     <message>
         <location filename="../src/scene.cpp" line="239"/>
         <source>New &amp;node...</source>
-        <translation>Dodaj &amp;węzeł...</translation>
+        <translation>Nowy &amp;węzeł...</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="240"/>
@@ -6095,12 +5258,12 @@
     <message>
         <location filename="../src/scene.cpp" line="241"/>
         <source>New node</source>
-        <translation>Dodaj węzeł</translation>
+        <translation>Nowy węzeł</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="244"/>
         <source>New &amp;edge...</source>
-        <translation>Dodaj &amp;krawędź...</translation>
+        <translation>Nowa &amp;krawędź...</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="245"/>
@@ -6110,12 +5273,12 @@
     <message>
         <location filename="../src/scene.cpp" line="246"/>
         <source>New edge</source>
-        <translation>Dodaj krawędź</translation>
+        <translation>Nowa krawędź</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="249"/>
         <source>New &amp;label...</source>
-        <translation>Dodaj &amp;etykietę...</translation>
+        <translation>Nowa &amp;etykieta...</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="250"/>
@@ -6136,7 +5299,7 @@
     <message>
         <location filename="../src/scene.cpp" line="258"/>
         <source>New &amp;boundary condition...</source>
-        <translation>Dodaj warunek &amp;brzegowy..</translation>
+        <translation>Nowy warunek &amp;brzegowy..</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="259"/>
@@ -6146,12 +5309,12 @@
     <message>
         <location filename="../src/scene.cpp" line="260"/>
         <source>New boundary condition</source>
-        <translation>Dodaj warunek brzegowy</translation>
+        <translation>Nowy warunek brzegowy</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="263"/>
         <source>New &amp;material...</source>
-        <translation>Dodaj &amp;materiał...</translation>
+        <translation>Nowy &amp;materiał...</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="264"/>
@@ -6161,7 +5324,7 @@
     <message>
         <location filename="../src/scene.cpp" line="265"/>
         <source>New material</source>
-        <translation>Dodaj materiał</translation>
+        <translation>Nowy materiał</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="268"/>
@@ -6297,27 +5460,27 @@
 <context>
     <name>SceneBoundaryDialog</name>
     <message>
-        <location filename="../src/scenemarker.cpp" line="124"/>
+        <location filename="../src/scenemarker.cpp" line="123"/>
         <source>Equation:</source>
         <translation>Równanie:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="137"/>
+        <location filename="../src/scenemarker.cpp" line="136"/>
         <source>Name:</source>
         <translation>Nazwa:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="172"/>
+        <location filename="../src/scenemarker.cpp" line="171"/>
         <source>Boundary marker</source>
         <translation>Znacznik brzegu</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="172"/>
+        <location filename="../src/scenemarker.cpp" line="171"/>
         <source>Boundary marker name already exists.</source>
         <translation>Istnieje już znacznik brzegu o takiej nazwie.</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="120"/>
+        <location filename="../src/scenemarker.cpp" line="119"/>
         <source>Boundary condition</source>
         <translation>Warunek brzegowy</translation>
     </message>
@@ -6503,16 +5666,12 @@
 <context>
     <name>SceneBoundarySelectDialog</name>
     <message>
-        <source>Edge marker</source>
-        <translation type="obsolete">Znacznik krawędzi</translation>
-    </message>
-    <message>
-        <location filename="../src/scenemarker.cpp" line="335"/>
+        <location filename="../src/scenemarker.cpp" line="334"/>
         <source>Boundary condition</source>
         <translation>Warunek brzegowy</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="373"/>
+        <location filename="../src/scenemarker.cpp" line="372"/>
         <source>Boundary:</source>
         <translation>Brzeg:</translation>
     </message>
@@ -6630,10 +5789,6 @@
         <location filename="../src/sceneinfoview.cpp" line="127"/>
         <source>Materials</source>
         <translation>Materiały</translation>
-    </message>
-    <message>
-        <source>Functions</source>
-        <translation type="obsolete">Funkcje</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="133"/>
@@ -6828,27 +5983,27 @@
 <context>
     <name>SceneMaterialDialog</name>
     <message>
-        <location filename="../src/scenemarker.cpp" line="237"/>
+        <location filename="../src/scenemarker.cpp" line="236"/>
         <source>Equation:</source>
         <translation>Równanie:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="251"/>
+        <location filename="../src/scenemarker.cpp" line="250"/>
         <source>Name:</source>
         <translation>Nazwa:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="233"/>
+        <location filename="../src/scenemarker.cpp" line="232"/>
         <source>Material</source>
         <translation>Materiał</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="299"/>
+        <location filename="../src/scenemarker.cpp" line="298"/>
         <source>Material marker</source>
         <translation>Znacznik materiału</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="299"/>
+        <location filename="../src/scenemarker.cpp" line="298"/>
         <source>Material marker name already exists.</source>
         <translation>Istnieje już taki znacznik materiału.</translation>
     </message>
@@ -7145,16 +6300,12 @@
 <context>
     <name>SceneMaterialSelectDialog</name>
     <message>
-        <source>Label marker</source>
-        <translation type="obsolete">Znacznik etykiety</translation>
-    </message>
-    <message>
-        <location filename="../src/scenemarker.cpp" line="407"/>
+        <location filename="../src/scenemarker.cpp" line="406"/>
         <source>Material</source>
         <translation>Materiał</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="445"/>
+        <location filename="../src/scenemarker.cpp" line="444"/>
         <source>Material:</source>
         <translation>Materiał:</translation>
     </message>
@@ -7339,10 +6490,6 @@
         <translation>Całka objętościowa</translation>
     </message>
     <message>
-        <source>&amp;Postprocessor properties</source>
-        <translation type="obsolete">Wyświetlanie &amp;wyników</translation>
-    </message>
-    <message>
         <location filename="../src/sceneview.cpp" line="270"/>
         <source>Object properties</source>
         <translation>Parametry obiektu</translation>
@@ -7362,10 +6509,6 @@
         <location filename="../src/sceneview.cpp" line="280"/>
         <source>Select by marker</source>
         <translation>Zaznacz znacznikiem</translation>
-    </message>
-    <message>
-        <source>Set mode</source>
-        <translation type="obsolete">Zmiana trybu</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="2281"/>
@@ -7414,113 +6557,6 @@
         <location filename="../src/sceneview.cpp" line="4204"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Obraz nie może być zapisany do pliku &apos;%1&apos;.</translation>
-    </message>
-</context>
-<context>
-    <name>SceneViewDialog</name>
-    <message>
-        <source>Postprocessor properties</source>
-        <translation type="obsolete">Wyświetlanie wyników</translation>
-    </message>
-    <message>
-        <source>Geometry</source>
-        <translation type="obsolete">Geometria</translation>
-    </message>
-    <message>
-        <source>Initial mesh</source>
-        <translation type="obsolete">Początkowa siatka</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">Pusto</translation>
-    </message>
-    <message>
-        <source>Polynomial order</source>
-        <translation type="obsolete">Stopień wielomianu</translation>
-    </message>
-    <message>
-        <source>Scalar view</source>
-        <translation type="obsolete">Pole skalarne</translation>
-    </message>
-    <message>
-        <source>Scalar view solid</source>
-        <translation type="obsolete">Pole skalarne, bryła</translation>
-    </message>
-    <message>
-        <source>2D mode</source>
-        <translation type="obsolete">Tryb 2D</translation>
-    </message>
-    <message>
-        <source>3D mode</source>
-        <translation type="obsolete">Tryb 3D</translation>
-    </message>
-    <message>
-        <source>Contours</source>
-        <translation type="obsolete">Izolinie</translation>
-    </message>
-    <message>
-        <source>Vectors</source>
-        <translation type="obsolete">Wektory</translation>
-    </message>
-    <message>
-        <source>Solution mesh</source>
-        <translation type="obsolete">Siatka rozwiązania</translation>
-    </message>
-    <message>
-        <source>Show</source>
-        <translation type="obsolete">Pokaż</translation>
-    </message>
-    <message>
-        <source>Postprocessor</source>
-        <translation type="obsolete">Wyniki</translation>
-    </message>
-    <message>
-        <source>Variable:</source>
-        <translation type="obsolete">Zmienna:</translation>
-    </message>
-    <message>
-        <source>Component:</source>
-        <translation type="obsolete">Składowa:</translation>
-    </message>
-    <message>
-        <source>Auto range:</source>
-        <translation type="obsolete">Zakres autom.:</translation>
-    </message>
-    <message>
-        <source>Minimum:</source>
-        <translation type="obsolete">Minimum:</translation>
-    </message>
-    <message>
-        <source>Maximum:</source>
-        <translation type="obsolete">Maximum:</translation>
-    </message>
-    <message>
-        <source>Scalar field</source>
-        <translation type="obsolete">Pole skalarne</translation>
-    </message>
-    <message>
-        <source>Vector field</source>
-        <translation type="obsolete">Pole wektorowe</translation>
-    </message>
-    <message>
-        <source>Time step:</source>
-        <translation type="obsolete">Czas:</translation>
-    </message>
-    <message>
-        <source>Transient analysis</source>
-        <translation type="obsolete">Analiza w czasie</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Anuluj</translation>
-    </message>
-    <message>
-        <source>Scalar</source>
-        <translation type="obsolete">Skalarne</translation>
-    </message>
-    <message>
-        <source>Magnitude</source>
-        <translation type="obsolete">Amplituda</translation>
     </message>
 </context>
 <context>
@@ -7912,18 +6948,6 @@ Do you want to save your changes?</source>
         <translation>Login</translation>
     </message>
     <message>
-        <source>Find</source>
-        <translation type="obsolete">Znajdź</translation>
-    </message>
-    <message>
-        <source>Date:</source>
-        <translation type="obsolete">Data:</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Nazwa:</translation>
-    </message>
-    <message>
         <location filename="../src/collaboration.cpp" line="216"/>
         <source>Close</source>
         <translation>Zamknij</translation>
@@ -7998,10 +7022,6 @@ Do you want to save your changes?</source>
         <location filename="../src/collaboration.cpp" line="361"/>
         <source>Close</source>
         <translation>Zamknij</translation>
-    </message>
-    <message>
-        <source>unnamed</source>
-        <translation type="obsolete">bez nazwy</translation>
     </message>
     <message>
         <location filename="../src/collaboration.cpp" line="429"/>
@@ -8243,17 +7263,6 @@ Do you want to save your changes?</source>
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>TopicChooser</name>
-    <message>
-        <source>Topic browser</source>
-        <translation type="obsolete">Przeglądaj tematy</translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation type="obsolete">Pokaż</translation>
     </message>
 </context>
 <context>

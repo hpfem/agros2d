@@ -510,6 +510,11 @@ bool SolutionAgros::solve(Hermes::vector<Space *> space,
         isError = !solveLinear(&dpLin, space, solution,
                                solver, matrix, rhs);
 
+        // dump matrix
+        FILE *f = fopen(QString(tempProblemDir() + "/matrix.m").toStdString().c_str(), "w");
+        matrix->dump(f, QString("mat").toStdString().c_str(), DF_MATRIX_MARKET);
+        fclose(f);
+
         return !isError;
     }
 

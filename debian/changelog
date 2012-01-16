@@ -1,4 +1,10 @@
-agros2d (1.9-5ubuntu48) oneiric; urgency=low
+agros2d (1.9-ubuntu61) oneiric; urgency=low
+
+  * simple particle tracing
+
+ -- Pavel Karban <pkarban@gmail.com>  Wen, 15 Oct 2011 12:40:00 +0200
+
+agros2d (1.9-ubuntu48) oneiric; urgency=low
 
   * reworked postprocessor panel 
 
