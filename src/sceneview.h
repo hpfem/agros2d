@@ -181,7 +181,9 @@ protected:
     void paintGL();
     void setupViewport(int w, int h);
 
-    void renderTextPos(double x, double y, double z, const QString &str, bool blend = true);
+    void renderTextPos(double x, double y, double z,
+                       const QString &str, bool blend = true, QFont fnt = QFont(),
+                       bool horizontal = true);
 
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
@@ -201,7 +203,7 @@ private:
     Scene *m_scene;
     QMainWindow *m_mainWindow;
 
-    QPointF m_lastPos; // last position of cursor
+    QPoint m_lastPos; // last position of cursor
     QPointF m_regionPos;
     // 2d
     double m_scale2d; // scale
@@ -273,6 +275,7 @@ private:
     void paintGrid(); // paint grid
     void paintAxes();  // paint axes
     void paintRulers(); // paint rulers
+    void paintRulersHints();
     void paintGeometry(); // paint nodes, edges and labels
     void paintInitialMesh();
 
