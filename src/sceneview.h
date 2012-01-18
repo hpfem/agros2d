@@ -279,6 +279,7 @@ private:
     void paintScalarField(); // paint scalar field surface
     void paintScalarField3D(); // paint scalar field 3d surface
     void paintScalarField3DSolid(); // paint scalar field 3d solid
+    void paintScalarField3DSolid_TODOParticle(); // TODO - temporary
     void paintScalarFieldColorBar(double min, double max);
     void paintOrder();
     void paintOrderColorBar();

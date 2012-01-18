@@ -1569,7 +1569,7 @@ void SceneView::paintScalarField3D()
 }
 
 // particle tracing
-void SceneView::paintScalarField3DSolid()
+void SceneView::paintScalarField3DSolid_TODOParticle()
 {
     if (!m_isSolutionPrepared) return;
     if (!Util::scene()->problemInfo()->hermes()->hasParticleTracing()) return;
@@ -1755,7 +1755,6 @@ void SceneView::paintScalarField3DSolid()
     }
 }
 
-/*
 void SceneView::paintScalarField3DSolid()
 {
     logMessage("SceneView::paintScalarField3DSolid()");
@@ -2151,7 +2150,7 @@ void SceneView::paintScalarField3DSolid()
         glCallList(m_listScalarField3DSolid);
     }
 }
-*/
+
 void SceneView::paintContours()
 {
     logMessage("SceneView::paintContours()");

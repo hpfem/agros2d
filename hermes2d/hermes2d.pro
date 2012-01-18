@@ -3,6 +3,7 @@ TARGET = lib/hermes2d
 TEMPLATE = lib
 OBJECTS_DIR = build
 CONFIG = += staticlib
+# CONFIG = += debug
 DEFINES += NOGLUT
 DEFINES += WITH_UMFPACK
 
