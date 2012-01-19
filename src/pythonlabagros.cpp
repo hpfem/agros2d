@@ -1185,7 +1185,9 @@ void PythonEngineAgros::addCustomExtensions()
     // init agros cython extensions
     initagros2d();
     // agros2d file
-    Py_InitModule("agros2file", pythonMethodsAgros);
+    Py_InitModule("agros2d", pythonMethodsAgros);
+
+    connect(this, SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
 }
 
 void PythonEngineAgros::runPythonHeader()
@@ -1197,6 +1199,12 @@ void PythonEngineAgros::runPythonHeader()
     // startup script
     if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
         PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+}
+
+void PythonEngineAgros::doExecutedScript()
+{
+    Util::scene()->refresh();
+    sceneView()->doInvalidated();
 }
 
 PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)

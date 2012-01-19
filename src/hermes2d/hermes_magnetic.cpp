@@ -815,7 +815,7 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
 
 Point3 HermesMagnetic::particleForce(Point point, Point3 velocity)
 {
-    LocalPointValueMagnetic *pointValue = localPointValue(point);
+    LocalPointValueMagnetic *pointValue = dynamic_cast<LocalPointValueMagnetic *>(localPointValue(point));
 
     if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         return Point3(- velocity.z*pointValue->B_real.y,
@@ -838,7 +838,7 @@ Point3 HermesMagnetic::particleForce(Point point, Point3 velocity)
 
 double HermesMagnetic::particleMaterial(Point point)
 {
-    LocalPointValueMagnetic *pointValue = localPointValue(point);
+    LocalPointValueMagnetic *pointValue = dynamic_cast<LocalPointValueMagnetic *>(localPointValue(point));
 
     return pointValue->permeability;
 }

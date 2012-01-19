@@ -138,6 +138,7 @@ win32-msvc2008 {
     DEFINES += IMPLEMENT_C99
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
+    DEFINES += "pclose=_pclose"
     DEFINES += "M_LN2=0.69314718055994530942"
 
     INCLUDEPATH += c:/Python27/include

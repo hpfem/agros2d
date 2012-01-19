@@ -26,7 +26,7 @@
 #ifndef DL_WRITER_H
 #define DL_WRITER_H
 
-#include <strings.h>
+#include <string.h>
 
 #if _MSC_VER > 1000
 #pragma once

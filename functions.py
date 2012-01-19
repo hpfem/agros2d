@@ -1,7 +1,6 @@
 # import libraries
 import pythonlab
 from agros2d import *
-from agros2file import *
 from math import *
 import sys
 
