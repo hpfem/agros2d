@@ -95,7 +95,7 @@ public:
     inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
 
     // order view
-    void setOrderView(Hermes::Hermes2D::Space<Scalar> *space);
+    void setOrderView(shared_ptr<Hermes::Hermes2D::Space<Scalar> > space);
     Hermes::Hermes2D::Views::Orderizer &ordView() { return m_orderView; }
 
     int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point) const;

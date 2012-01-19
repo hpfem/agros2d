@@ -26,6 +26,7 @@
 #include "hermes2d/solver.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 template <typename Scalar>
 SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldInfo)
@@ -465,11 +466,11 @@ void SceneSolution<Scalar>::setSlnVectorView(ViewScalarFilter<Scalar> *slnVector
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::setOrderView(Hermes::Hermes2D::Space<Scalar> *space)
+void SceneSolution<Scalar>::setOrderView(shared_ptr<Hermes::Hermes2D::Space<Scalar> > space)
 {
     logMessage("SceneSolution::setOrderView()");
 
-    m_orderView.process_space(space);
+    m_orderView.process_space(space.get());
 }
 
 template <typename Scalar>
@@ -507,67 +508,64 @@ void SceneSolution<Scalar>::processSolutionMesh()
 template <typename Scalar>
 void SceneSolution<Scalar>::processRangeContour()
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::processRangeContour()");
+    logMessage("SceneSolution::processRangeContour()");
 
-//    if (isSolved() && sceneView()->sceneViewSettings().contourPhysicFieldVariable != "")
-//    {
-//        ViewScalarFilter<Scalar> *viewScalarFilter;
-//        if (Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable)->is_scalar)
-//            viewScalarFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable),
-//                                                                                          PhysicFieldVariableComp_Scalar);
-//        else
-//            viewScalarFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable),
-//                                                                                          PhysicFieldVariableComp_Magnitude);
+    if (Util::problem()->isSolved() && sceneView()->sceneViewSettings().contourPhysicFieldVariable != "")
+    {
+        ViewScalarFilter<Scalar> *viewScalarFilter;
+        if (m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable)->is_scalar)
+            viewScalarFilter = m_fieldInfo->module()->view_scalar_filter(m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable),
+                                                                                          PhysicFieldVariableComp_Scalar);
+        else
+            viewScalarFilter = m_fieldInfo->module()->view_scalar_filter(m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable),
+                                                                                          PhysicFieldVariableComp_Magnitude);
 
-//        setSlnContourView(viewScalarFilter);
-//        emit processedRangeContour();
-//    }
+        setSlnContourView(viewScalarFilter);
+        emit processedRangeContour();
+    }
 }
 
 template <typename Scalar>
 void SceneSolution<Scalar>::processRangeScalar()
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::processRangeScalar()");
+    logMessage("SceneSolution::processRangeScalar()");
 
-//    if (isSolved() && sceneView()->sceneViewSettings().scalarPhysicFieldVariable != "")
-//    {
-//        ViewScalarFilter<Scalar> *viewScalarFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().scalarPhysicFieldVariable),
-//                                                                                                                sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
+    if (Util::problem()->isSolved() && sceneView()->sceneViewSettings().scalarPhysicFieldVariable != "")
+    {
+        ViewScalarFilter<Scalar> *viewScalarFilter = m_fieldInfo->module()->view_scalar_filter(m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().scalarPhysicFieldVariable),
+                                                                                                                sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
 
-//        setSlnScalarView(viewScalarFilter);
-//        emit processedRangeScalar();
-//    }
+        setSlnScalarView(viewScalarFilter);
+        emit processedRangeScalar();
+    }
 }
 
 template <typename Scalar>
 void SceneSolution<Scalar>::processRangeVector()
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::processRangeVector()");
+    logMessage("SceneSolution::processRangeVector()");
 
-//    if (isSolved() && sceneView()->sceneViewSettings().vectorPhysicFieldVariable != "")
-//    {
-//        ViewScalarFilter<Scalar> *viewVectorXFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().vectorPhysicFieldVariable),
-//                                                                                                                 PhysicFieldVariableComp_X);
+    if (Util::problem()->isSolved() && sceneView()->sceneViewSettings().vectorPhysicFieldVariable != "")
+    {
+        ViewScalarFilter<Scalar> *viewVectorXFilter = m_fieldInfo->module()->view_scalar_filter(m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().vectorPhysicFieldVariable),
+                                                                                                                 PhysicFieldVariableComp_X);
 
-//        ViewScalarFilter<Scalar> *viewVectorYFilter = Util::scene()->problemInfo()->module()->view_scalar_filter(Util::scene()->problemInfo()->module()->get_variable(sceneView()->sceneViewSettings().vectorPhysicFieldVariable),
-//                                                                                                                 PhysicFieldVariableComp_Y);
+        ViewScalarFilter<Scalar> *viewVectorYFilter = m_fieldInfo->module()->view_scalar_filter(m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().vectorPhysicFieldVariable),
+                                                                                                                 PhysicFieldVariableComp_Y);
 
-//        setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
-//        emit processedRangeVector();
-//    }
+        setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
+        emit processedRangeVector();
+    }
 }
 
 template <typename Scalar>
 void SceneSolution<Scalar>::processOrder()
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::processOrder()");
+    logMessage("SceneSolution::processOrder()");
 
-//    if (isSolved())
-//        setOrderView(m_solutionArrayList.at(m_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
+    if (Util::problem()->isSolved())
+        setOrderView(m_solutionArrayList.at(0)->space);
+                //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
 }
 
 

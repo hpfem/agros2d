@@ -292,6 +292,7 @@ public:
     inline SceneSolution<double> *sceneSolution(FieldInfo* fieldInfo) const { return m_sceneSolutions[fieldInfo]; }
     inline SceneSolution<double> *activeSceneSolution() const { return m_sceneSolutions[activeViewField()]; }
     inline FieldInfo* activeViewField() const { assert(m_activeViewField); return m_activeViewField; }
+    void setActiveViewField(FieldInfo* fieldInfo) { m_activeViewField = fieldInfo; }
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);

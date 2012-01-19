@@ -73,8 +73,12 @@ public:
     ~Problem() {}
     void createStructure();
 
+    void mesh();
+
     // solve
     void solve(SolverMode solverMode);
+
+    void postprocess();
 
     // progress dialog
     ProgressDialog* progressDialog();

@@ -77,7 +77,9 @@ bool Block::solveInit()
 
 void Block::solve()
 {
+    //m_solutionList->init(m_progressItemSolve, m_wf, m_fields[0]->fieldInfo());
     m_solutionList->solve();
+
 }
 
 Problem::Problem()
@@ -101,6 +103,18 @@ void Problem::createStructure()
 }
 
 
+void Problem::mesh()
+{
+    ProgressItemMesh* pim = new ProgressItemMesh();
+    pim->mesh();
+}
+
+void Problem::postprocess()
+{
+    ProgressItemProcessView* pipv = new ProgressItemProcessView();
+    pipv->run();
+}
+
 void Problem::solve(SolverMode solverMode)
 {
     logMessage("SceneSolution::solve()");
@@ -120,47 +134,62 @@ void Problem::solve(SolverMode solverMode)
     if (result.isError())
         result.showDialog();
 
-    if (solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve)
-    {
-        m_progressDialog->clear();
-        m_progressDialog->appendProgressItem(m_progressItemMesh);
-        if (solverMode == SolverMode_MeshAndSolve)
-        {
-            m_progressDialog->appendProgressItem(m_progressItemSolve);
-            m_progressDialog->appendProgressItem(m_progressItemProcessView);
-        }
-    }
-    else if (solverMode == SolverMode_SolveAdaptiveStep)
-    {
-        m_progressDialog->appendProgressItem(m_progressItemSolveAdaptiveStep);
-        m_progressDialog->appendProgressItem(m_progressItemProcessView);
-    }
+//    if (solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve)
+//    {
+//        m_progressDialog->clear();
+//        m_progressDialog->appendProgressItem(m_progressItemMesh);
+//        if (solverMode == SolverMode_MeshAndSolve)
+//        {
+//            m_progressDialog->appendProgressItem(m_progressItemSolve);
+//            m_progressDialog->appendProgressItem(m_progressItemProcessView);
+//        }
+//    }
+//    else if (solverMode == SolverMode_SolveAdaptiveStep)
+//    {
+//        m_progressDialog->appendProgressItem(m_progressItemSolveAdaptiveStep);
+//        m_progressDialog->appendProgressItem(m_progressItemProcessView);
+//    }
 
-    if (m_progressDialog->run())
-    {
-        setTimeStep(timeStepCount() - 1);
-        //emit meshed();
-        //emit solved();
-    }
+//    if (m_progressDialog->run())
+//    {
+//        setTimeStep(timeStepCount() - 1);
+//        //emit meshed();
+//        //emit solved();
+//    }
 
-    if (isMeshed())
-    {
+    createStructure();
+
+    Util::scene()->setActiveViewField(m_blocks[0]->m_fields[0]->fieldInfo());
+
+    mesh();
+
+//    if (isMeshed())
+//    {
         InitialCondition<double> initial(m_meshInitial, 0.0);
         //m_linInitialMeshView.process_solution(&initial);
-    }
+//    }
 
-    // delete temp file
-    if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
-    {
-        QFile::remove(Util::scene()->problemInfo()->fileName);
-        Util::scene()->problemInfo()->fileName = "";
-    }
 
+
+        foreach(Block* block, m_blocks)
+        {
+            block->solveInit();
+            block->solve();
+        }
+
+        // delete temp file
+        if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
+        {
+            QFile::remove(Util::scene()->problemInfo()->fileName);
+            Util::scene()->problemInfo()->fileName = "";
+        }
     // close indicator progress
     Indicator::closeProgress();
 
     m_isSolving = false;
 
+
+    postprocess();
 
     //    if (!solve_init_variables())
     //        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
