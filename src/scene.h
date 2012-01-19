@@ -303,6 +303,8 @@ public:
 
     inline QUndoStack *undoStack() const { return m_undoStack; }
 
+    void createSolutions();
+
 private:
     QUndoStack *m_undoStack;
 
@@ -316,6 +318,7 @@ private:
 
     // clears all solutions and remove them
     void clearSolutions();
+
 
 private slots:
     void doInvalidated();

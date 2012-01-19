@@ -92,7 +92,7 @@ public:
     int timeStepCount() const { return 0; }
     double time() const { return 0; }
 
-    bool isSolved() const { return false; }
+    bool isSolved() const { return m_isSolved; }
     bool isMeshed()  const { return m_meshInitial; }
     bool isSolving() const { return m_isSolving; }
 
@@ -115,6 +115,7 @@ public:
     int m_timeElapsed;
     bool m_isSolving;
     int m_timeStep;
+    bool m_isSolved;
 
     //TODO move to Field
     Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)

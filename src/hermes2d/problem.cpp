@@ -19,6 +19,7 @@
 
 #include "scene.h"
 #include "scenemarker.h"
+#include "scenesolution.h"
 #include "module.h"
 #include "solver.h"
 #include "problem.h"
@@ -79,12 +80,15 @@ void Block::solve()
 {
     //m_solutionList->init(m_progressItemSolve, m_wf, m_fields[0]->fieldInfo());
     m_solutionList->solve();
+    Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setSolutionArray(m_solutionList->at(0));
 
 }
 
 Problem::Problem()
 {
     m_timeStep = 0;
+    m_isSolved = false;
+    m_isSolving = false;
 //    m_progressDialog = new ProgressDialog();
 //    m_progressItemMesh = new ProgressItemMesh();
 //    m_progressItemSolve = new ProgressItemSolve();
@@ -163,6 +167,8 @@ void Problem::solve(SolverMode solverMode)
 
     mesh();
 
+    Util::scene()->createSolutions();
+
 //    if (isMeshed())
 //    {
         InitialCondition<double> initial(m_meshInitial, 0.0);
@@ -187,6 +193,7 @@ void Problem::solve(SolverMode solverMode)
     Indicator::closeProgress();
 
     m_isSolving = false;
+    m_isSolved = true;
 
 
     postprocess();

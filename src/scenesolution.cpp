@@ -568,5 +568,10 @@ void SceneSolution<Scalar>::processOrder()
                 //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
 }
 
+template <typename Scalar>
+void SceneSolution<Scalar>::setSolutionArray(SolutionArray<Scalar> *solutionArray)
+{
+    m_solutionArrayList.push_back(new SolutionArray<Scalar>(*solutionArray));
+}
 
 template class SceneSolution<double>;

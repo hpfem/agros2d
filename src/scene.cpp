@@ -394,6 +394,15 @@ void Scene::clearSolutions()
     m_sceneSolutions.clear();
 }
 
+void Scene::createSolutions()
+{
+    clearSolutions();
+    foreach(FieldInfo* fi, fieldInfos())
+    {
+        m_sceneSolutions[fi] = new SceneSolution<double>(fi);
+    }
+}
+
 SceneNode *Scene::addNode(SceneNode *node)
 {
     logMessage("SceneNode *Scene::addNode()");
