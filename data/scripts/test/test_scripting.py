@@ -1,3 +1,5 @@
+import os
+
 # model
 newdocument("Scripting test", "planar", "general", 1, 2, "disabled", 0, 1, 0, "steadystate", 0, 0, 0)
 

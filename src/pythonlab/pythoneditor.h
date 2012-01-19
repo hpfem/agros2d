@@ -65,8 +65,7 @@ private:
     void createEngine();
 
 private slots:
-    void pyLintAnalyseStopped(int exitCode);
-    void pyFlakesAnalyseStopped(int exitCode);
+    void pyLintAnalyseStopped(int exitCode);    
     void doHighlightLine(QTreeWidgetItem *item, int role);   
 };
 
@@ -170,6 +169,8 @@ protected:
 
     QAction *actOptionsEnablePyLint;
     QAction *actOptionsEnablePyFlakes;
+    QAction *actOptionsPrintStacktrace;
+    QAction *actOptionsEnableUserModuleDeleter;
 
     QAction *actHelp;
     QAction *actHelpKeywordList;
@@ -196,8 +197,10 @@ private slots:
     void doCurrentDocumentChanged(bool changed);
     void doCurrentPageChanged(int index);
     void doCursorPositionChanged();
-    void doOptionsEneblePyFlakes();
-    void doOptionsEneblePyLint();
+    void doOptionsEnablePyFlakes();
+    void doOptionsEnablePyLint();
+    void doOptionsEnableUserModuleDeleter();
+    void doOptionsPrintStacktrace();
 };
 
 class ScriptEditor : public QPlainTextEdit
@@ -276,8 +279,8 @@ class SearchWidget: public QWidget
 public:
     SearchWidget(ScriptEditor *txtEditor, QWidget *parent = 0);
 
-    int showFind(const QString &text = "");
-    int showReplaceAll(const QString &text = "");
+    void showFind(const QString &text = "");
+    void showReplaceAll(const QString &text = "");
 
 public slots:
     void find();

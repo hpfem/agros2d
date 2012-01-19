@@ -44,6 +44,9 @@ void PythonCompleterDelegate::paint(QPainter* painter, const QStyleOptionViewIte
 
     // draw line of text
     painter->setPen(opt.palette.color(cg, QPalette::Text));
+    if (type.contains("function"))
+        painter->setPen(QColor(66, 0, 0));
+
     painter->drawText(QRect(rect.left() + 20, rect.top(), rect.width(), rect.height()),
                       opt.displayAlignment, str);
 }
@@ -63,8 +66,8 @@ QCompleter *createCompleter()
     QCompleter *completer = new QCompleter();
     completer->setPopup(lstView);
     completer->setCompletionMode(QCompleter::PopupCompletion);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+    completer->setCaseSensitivity(Qt::CaseSensitive);
+    completer->setModelSorting(QCompleter::CaseSensitivelySortedModel);
 
     return completer;
 }

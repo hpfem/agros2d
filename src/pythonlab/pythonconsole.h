@@ -91,16 +91,9 @@ public slots:
     void connectStdOut(const QString &currentPath = "");
     void disconnectStdOut();
 
-public:
-    // returns true if python cerr had an error
-    inline bool hasError() { return m_hasError; }
-
-    // returns true if python cerr had an error
-    inline void clearError() { m_hasError = false; }
-
 protected:
     // handle the pressing of tab
-    void handleTabCompletion();
+    void handleTabCompletion(bool autoComplete = false);
 
     // Returns the position of the command prompt
     int commandPromptPosition();
@@ -111,9 +104,6 @@ protected:
 
     // change the history according to _historyPos
     void changeHistory();
-
-    // flush output that was not yet printed
-    void flushStdOut();
 
 private:
     PythonEngine *pythonEngine;
@@ -126,13 +116,8 @@ private:
 
     QString m_currentMultiLineCode;
 
-    QString m_stdOut;
-    QString m_stdErr;
-
     QTextCharFormat m_defaultTextCharacterFormat;
     QCompleter* completer;
-
-    bool m_hasError;
 
     QString m_currentPath;
 };

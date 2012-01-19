@@ -52,17 +52,12 @@ PythonScriptingConsole::PythonScriptingConsole(PythonEngine *pythonEngine, QWidg
 
     // _context = context;
     PythonScriptingConsole::historyPosition = 0;
-    m_hasError = false;
 
     completer = createCompleter();
     completer->setWidget(this);
     QObject::connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
 
-    // HACK
-    QFont font("Monospace");
-    font.setStyleHint(QFont::TypeWriter);
-    font.setPointSize(font.pointSize() - 2);
-    setFont(font);
+    setFont(FONT);
 
     welcomeMessage();
 
@@ -83,42 +78,27 @@ PythonScriptingConsole::~PythonScriptingConsole()
 
 void PythonScriptingConsole::stdClear()
 {
-    // QTextEdit::clear();
-    // appendCommandPrompt();
+    QTextEdit::clear();
 }
 
 void PythonScriptingConsole::stdOut(const QString& str)
 {
-    m_stdOut += str;
-
-    int idx;
-    while ((idx = m_stdOut.indexOf('\n')) != -1)
-    {
-        consoleMessage(m_stdOut.left(idx), Qt::darkGreen);
-        // std::cout << m_stdOut.left(idx).toLatin1().data() << std::endl;
-        m_stdOut = m_stdOut.mid(idx+1);
-    }
+    QStringList strList = str.trimmed().split("\n");
+    for (int i = 0; i < strList.count(); i++)
+        consoleMessage(strList[i], Qt::darkGreen);
 }
 
 void PythonScriptingConsole::stdHtml(const QString& str)
 {
     append(QString());
-
     insertHtml(str);
 }
 
 void PythonScriptingConsole::stdErr(const QString& str)
 {
-    m_hasError = true;
-    m_stdErr += str;
-
-    int idx;
-    while ((idx = m_stdErr.indexOf('\n')) != -1)
-    {
-        consoleMessage(m_stdErr.left(idx), Qt::red);
-        // std::cerr << m_stdErr.left(idx).toLatin1().data() << std::endl;
-        m_stdErr = m_stdErr.mid(idx+1);
-    }
+    QStringList strList = str.split("\n");
+    for (int i = 0; i < strList.count(); i++)
+        consoleMessage(strList[i], Qt::red);
 }
 
 void PythonScriptingConsole::stdImage(const QString &fileName)
@@ -146,22 +126,6 @@ void PythonScriptingConsole::stdImage(const QString &fileName)
 
         // appendCommandPrompt();
     }
-}
-
-void PythonScriptingConsole::flushStdOut()
-{
-    QApplication::processEvents();
-
-    if (!m_stdOut.isEmpty())
-    {
-        stdOut("\n");
-    }
-    if (!m_stdErr.isEmpty())
-    {
-        stdErr("\n");
-    }
-
-    QApplication::processEvents();
 }
 
 void PythonScriptingConsole::welcomeMessage()
@@ -238,18 +202,23 @@ void PythonScriptingConsole::executeCode(const QString& code)
 
     int cursorPosition = this->textCursor().position();
 
-    // evaluate the code
-    m_stdOut = "";
-    m_stdErr = "";
-
     connectStdOut();
     ExpressionResult result = pythonEngine->runPythonExpression(code, false);
     disconnectStdOut();
 
     if (!result.error.isEmpty())
+    {
         stdErr(result.error);
 
-    flushStdOut();
+        QSettings settings;
+        if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
+        {
+            stdErr("\nStacktrace:");
+            stdErr(result.traceback);
+        }
+    }
+
+    QApplication::processEvents();
 
     // bool messageInserted = (this->textCursor().position() != cursorPosition);
 }
@@ -307,11 +276,11 @@ void PythonScriptingConsole::insertCompletion(const QString& completion)
 
     QTextCursor tc = textCursor();
     tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
-    if (tc.selectedText() == ".")
-    {
-        tc.insertText(QString(".") + str);
-    }
-    else
+    // if (tc.selectedText() == ".")
+    // {
+    //     tc.insertText(QString(".") + str);
+    // }
+    // else
     {
         tc = textCursor();
         tc.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
@@ -321,7 +290,7 @@ void PythonScriptingConsole::insertCompletion(const QString& completion)
     }
 }
 
-void PythonScriptingConsole::handleTabCompletion()
+void PythonScriptingConsole::handleTabCompletion(bool autoComplete)
 {
     QTextCursor c = textCursor();
     int pos = c.position();
@@ -330,40 +299,75 @@ void PythonScriptingConsole::handleTabCompletion()
 
     QString search = c.selectedText();
 
-    QString text;
-    // add modules
-    QList<PythonVariables> list = pythonEngine->variableList();
-    foreach (PythonVariables variable, list)
-    {
-        if (variable.type == "module")
-            text += QString("import %1 as %2; ").arg(variable.value.toString()).arg(variable.name);
-    }
-    text += search;
-
     // code completion
-    QStringList found = pythonEngine->codeCompletion(text.toLower(), text.length());
+    QStringList found = pythonEngine->codeCompletion(search.toLower(), search.length());
+    // qDebug() << found.length();
 
     // add variables
-    foreach (PythonVariables variable, list)
+    QList<PythonVariable> list = pythonEngine->variableList();
+    if (!search.contains("."))
     {
-        if (isPythonVariable(variable.type))
-            found.append(QString("%1 (global, variable)").arg(variable.name));
+        foreach (PythonVariable variable, list)
+        {
+            if (isPythonVariable(variable.type))
+                found.append(QString("%1 (global, variable)").arg(variable.name));
+            else if (variable.type == "function")
+                found.append(QString("%1 (global, function)").arg(variable.name));
+            else if (variable.type == "module")
+                found.append(QString("%1 (global, module)").arg(variable.name));
+            else
+                found.append(QString("%1").arg(variable.name));
+        }
     }
 
     found.sort();
 
     if (!found.isEmpty())
     {
-        if (!search.contains("."))
-            completer->setCompletionPrefix(search);
+        QString str = search.trimmed();
+
+        for (int i = 33; i <= 126; i++)
+        {
+            // skip numbers and alphabet and dot
+            if ((i >= 48 && i <= 57) || (i >= 65 && i <= 90) || (i >= 97 && i <= 122) || (i == 46))
+                continue;
+
+            QChar c(i);
+            // qDebug() << c << ", " << str.lastIndexOf(c) << ", " << str.length();
+
+            if (str.lastIndexOf(c) != -1)
+            {
+                str = str.right(str.length() - str.lastIndexOf(c) - 1);
+                break;
+            }
+        }
+
+        if (str.contains(".") && str.right(1) == ".")
+            str = "";
+        else
+            str = str.right(str.length() - str.lastIndexOf(".") - 1);
+
+        // qDebug() << str.trimmed();
+
+        completer->setCompletionPrefix(str.trimmed());
         completer->setModel(new QStringListModel(found, completer));
-        QTextCursor c = textCursor();
-        c.movePosition(QTextCursor::StartOfWord);
-        QRect cr = cursorRect(c);
-        cr.setWidth(completer->popup()->sizeHintForColumn(0)
-                    + completer->popup()->verticalScrollBar()->sizeHint().width() + 30);
-        cr.translate(0, 4);
-        completer->complete(cr);
+        if (autoComplete && completer->completionCount() == 1)
+        {
+            // autocomplete
+            insertCompletion(completer->currentCompletion());
+            completer->popup()->hide();
+        }
+        else
+        {
+            // show completer
+            QTextCursor c = textCursor();
+            c.movePosition(QTextCursor::StartOfWord);
+            QRect cr = cursorRect(c);
+            cr.setWidth(completer->popup()->sizeHintForColumn(0)
+                        + completer->popup()->verticalScrollBar()->sizeHint().width() + 30);
+            cr.translate(0, 4);
+            completer->complete(cr);
+        }
     }
     else
     {
@@ -381,11 +385,14 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         case Qt::Key_Escape:
-        case Qt::Key_Tab:
         case Qt::Key_Backtab:
 
             event->ignore();
             return; // let the completer do default behavior
+        case Qt::Key_Tab:
+        {
+            handleTabCompletion(true);
+        }
         default:
             break;
         }
@@ -501,6 +508,23 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
 
         setTextCursor(c);
         eventHandled = true;
+    }
+        break;
+
+    case Qt::Key_Tab:
+    {
+        handleTabCompletion(true);
+        event->accept();
+        return;
+    }
+        break;
+
+    case Qt::Key_Period:
+    {
+        QTextEdit::keyPressEvent(event);
+        handleTabCompletion();
+        event->accept();
+        return;
     }
         break;
 

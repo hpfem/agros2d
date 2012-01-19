@@ -24,7 +24,8 @@ PythonBrowserView::PythonBrowserView(PythonEngine *pythonEngine, PythonScripting
     setMinimumWidth(280);
     setObjectName("BrowserView");
 
-    connect(pythonEngine, SIGNAL(executed()), this, SLOT(executed()));
+    connect(pythonEngine, SIGNAL(executedExpression()), this, SLOT(executed()));
+    connect(pythonEngine, SIGNAL(executedScript()), this, SLOT(executed()));
 
     trvBrowser = new QTreeWidget(this);
     trvBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -115,9 +116,9 @@ void PythonBrowserView::executed()
     trvClasses->setIcon(0, icon("browser-class"));
     trvClasses->setExpanded(classExpanded);
 
-    QList<PythonVariables> list = pythonEngine->variableList();
+    QList<PythonVariable> list = pythonEngine->variableList();
 
-    foreach (PythonVariables variable, list)
+    foreach (PythonVariable variable, list)
     {
         QTreeWidgetItem *item = NULL;
         if (variable.type == "bool")

@@ -40,7 +40,7 @@ PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *pare
     connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
     timer->start(4000);
 
-    txtEditor->setAcceptDrops(false);    
+    txtEditor->setAcceptDrops(false);
 }
 
 PythonEditorWidget::~PythonEditorWidget()
@@ -216,80 +216,33 @@ void PythonEditorWidget::pyFlakesAnalyse()
     if (!settings.value("PythonEditorWidget/EnablePyFlakes", true).toBool())
         return;
 
-    if (txtEditor->isVisible() && txtEditor->hasFocus())
-    {
-        QProcess processPyFlakes;
-        processPyFlakes.setStandardOutputFile(tempProblemFileName() + ".pyflakes.out");
-        processPyFlakes.setStandardErrorFile(tempProblemFileName() + ".pyflakes.err");
-        connect(&processPyFlakes, SIGNAL(finished(int)), this, SLOT(pyFlakesAnalyseStopped(int)));
 
-        QString pyflakesBinary = datadir() + "/resources/python/pyflakes_lab";
-        /*
-        if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "pyflakes"))
-            pyflakesBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "pyflakes";
-        if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "pyflakes"))
-            pyflakesBinary = QApplication::applicationDirPath() + QDir::separator() + "pyflakes";
-        */
+    QString fn = tempProblemFileName() + ".pyflakes_str.py";
+    QString str = txtEditor->toPlainText();
+    writeStringContent(fn, &str);
 
-        QString test = txtEditor->toPlainText();
-        writeStringContent(tempProblemFileName() + ".pyflakes.py", &test);
+    QStringList messages = pythonEngine->codePyFlakes(fn);
 
-        QStringList arguments;
-        arguments << "-i" << "yes" << tempProblemFileName() + ".pyflakes.py";
-
-        processPyFlakes.start(pyflakesBinary, arguments);
-
-        if (!processPyFlakes.waitForStarted())
-        {
-            qDebug() << "Could not start PyFlakes: " << processPyFlakes.errorString();
-
-            processPyFlakes.kill();
-            return;
-        }
-
-        while (!processPyFlakes.waitForFinished()) {}
-    }
-}
-
-void PythonEditorWidget::pyFlakesAnalyseStopped(int exitCode)
-{
     txtEditor->errorMessagesPyFlakes.clear();
-
-    QStringList fileNames;
-    fileNames << tempProblemFileName() + ".pyflakes.out"
-              << tempProblemFileName() + ".pyflakes.err";
-
-    // read from stdout and stderr
-    foreach (QString fileName, fileNames) {
-        QFile fileOutput(fileName);
-        if (!fileOutput.open(QIODevice::ReadOnly | QIODevice::Text))
+    foreach (QString line, messages)
+    {
+        if (!line.isEmpty())
         {
-            qDebug() << tr("Could not read PyFlakes output.");
-            return;
-        }
-        QTextStream inOutput(&fileOutput);
+            int number;
+            QString message;
 
-        QString line;
-        do
-        {
-            line = inOutput.readLine();
-
-            if (!line.isEmpty())
+            QStringList list = line.split(":");
+            if (list.count() == 3)
             {
-                int number;
-                QString message;
+                number = list[1].toInt();
+                message = list[2];
 
-                QStringList list = line.split(":");
-                if (list.count() == 3)
-                {
-                    number = list[1].toInt();
-                    message = list[2];
-
-                    txtEditor->errorMessagesPyFlakes[number] = message;
-                }
+                txtEditor->errorMessagesPyFlakes[number] = message;
             }
-        } while (!line.isNull());
+        }
     }
+
+    QFile::remove(fn);
 
     txtEditor->repaint();
 }
@@ -331,6 +284,9 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     recentFiles = settings.value("PythonEditorDialog/RecentFiles").value<QStringList>();
     restoreState(settings.value("PythonEditorDialog/State", saveState()).toByteArray());
 
+    // set recent files
+    setRecentFiles();
+
     // parameters
     for (int i = 1; i < args.count(); i++)
     {
@@ -338,7 +294,10 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
                 QFile::exists(args[i]) ? args[i] : QApplication::applicationDirPath() + QDir::separator() + args[i];
 
         if (QFile::exists(fileName))
-            doFileOpen(fileName);
+        {
+            QFileInfo fileInfo(fileName);
+            doFileOpen(fileInfo.absoluteFilePath());
+        }
     }
 
     setAcceptDrops(true);
@@ -369,7 +328,8 @@ void PythonEditorDialog::dropEvent(QDropEvent *event)
         QString fileName = QUrl(event->mimeData()->urls().at(0)).toLocalFile().trimmed();
         if (QFile::exists(fileName))
         {
-            doFileOpen(fileName);
+            QFileInfo fileInfo(fileName);
+            doFileOpen(fileInfo.absoluteFilePath());
 
             event->acceptProposedAction();
         }
@@ -473,12 +433,22 @@ void PythonEditorDialog::createActions()
     actOptionsEnablePyFlakes = new QAction(icon(""), tr("PyFlakes enabled"), this);
     actOptionsEnablePyFlakes->setCheckable(true);
     actOptionsEnablePyFlakes->setChecked(settings.value("PythonEditorWidget/EnablePyFlakes", true).toBool());
-    connect(actOptionsEnablePyFlakes, SIGNAL(triggered()), this, SLOT(doOptionsEneblePyFlakes()));
+    connect(actOptionsEnablePyFlakes, SIGNAL(triggered()), this, SLOT(doOptionsEnablePyFlakes()));
 
     actOptionsEnablePyLint = new QAction(icon(""), tr("PyLint enabled"), this);
     actOptionsEnablePyLint->setCheckable(true);
     actOptionsEnablePyLint->setChecked(settings.value("PythonEditorWidget/EnablePyLint", true).toBool());
-    connect(actOptionsEnablePyLint, SIGNAL(triggered()), this, SLOT(doOptionsEneblePyLint()));
+    connect(actOptionsEnablePyLint, SIGNAL(triggered()), this, SLOT(doOptionsEnablePyLint()));
+
+    actOptionsPrintStacktrace = new QAction(icon(""), tr("Print stacktrace"), this);
+    actOptionsPrintStacktrace->setCheckable(true);
+    actOptionsPrintStacktrace->setChecked(settings.value("PythonEditorWidget/PrintStacktrace", true).toBool());
+    connect(actOptionsPrintStacktrace, SIGNAL(triggered()), this, SLOT(doOptionsPrintStacktrace()));
+
+    actOptionsEnableUserModuleDeleter = new QAction(icon(""), tr("User module deleter"), this);
+    actOptionsEnableUserModuleDeleter->setCheckable(true);
+    actOptionsEnableUserModuleDeleter->setChecked(settings.value("PythonEngine/UserModuleDeleter", true).toBool());
+    connect(actOptionsEnableUserModuleDeleter, SIGNAL(triggered()), this, SLOT(doOptionsEnableUserModuleDeleter()));
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
@@ -551,6 +521,9 @@ void PythonEditorDialog::createControls()
     mnuOptions = menuBar()->addMenu(tr("&Options"));
     mnuOptions->addAction(actOptionsEnablePyFlakes);
     mnuOptions->addAction(actOptionsEnablePyLint);
+    mnuOptions->addAction(actOptionsEnableUserModuleDeleter);
+    mnuOptions->addSeparator();
+    mnuOptions->addAction(actOptionsPrintStacktrace);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     // mnuHelp->addAction(actHelp);
@@ -739,6 +712,13 @@ void PythonEditorDialog::doRunPython()
     {
         consoleView->console()->stdErr(result.text);
 
+        QSettings settings;
+        if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
+        {
+            consoleView->console()->stdErr("\nStacktrace:");
+            consoleView->console()->stdErr(result.traceback);
+        }
+
         if (!txtEditor->textCursor().hasSelection() && result.line >= 0)
             txtEditor->gotoLine(result.line, true);
     }
@@ -769,13 +749,25 @@ void PythonEditorDialog::doPyLintPython()
     activateWindow();
 }
 
-void PythonEditorDialog::doOptionsEneblePyFlakes()
+void PythonEditorDialog::doOptionsEnableUserModuleDeleter()
+{
+    QSettings settings;
+    settings.setValue("PythonEngine/UserModuleDeleter", actOptionsEnableUserModuleDeleter->isChecked());
+}
+
+void PythonEditorDialog::doOptionsPrintStacktrace()
+{
+    QSettings settings;
+    settings.setValue("PythonEditorWidget/PrintStacktrace", actOptionsPrintStacktrace->isChecked());
+}
+
+void PythonEditorDialog::doOptionsEnablePyFlakes()
 {
     QSettings settings;
     settings.setValue("PythonEditorWidget/EnablePyFlakes", actOptionsEnablePyFlakes->isChecked());
 }
 
-void PythonEditorDialog::doOptionsEneblePyLint()
+void PythonEditorDialog::doOptionsEnablePyLint()
 {
     actCheckPyLint->setEnabled(actOptionsEnablePyLint->isChecked());
 
@@ -1182,9 +1174,7 @@ ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
 {
     lineNumberArea = new ScriptEditorLineNumberArea(this);
 
-#ifndef Q_WS_MAC
-    setFont(QFont("Monospace", 10));
-#endif
+    setFont(FONT);
     setTabStopWidth(fontMetrics().width(TABS));
     setLineWrapMode(QPlainTextEdit::NoWrap);
     setTabChangesFocus(false);
@@ -1237,22 +1227,60 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    if (event->key() == Qt::Key_Tab)
+    switch (event->key())
     {
+    case Qt::Key_Tab:
         if (textCursor().hasSelection())
         {
+            // indent selection
             indentSelection();
             return;
         }
-    }
+        else
+        {
+            QTextCursor cursor = textCursor();
+            cursor.insertText(TABS);
+            return;
+        }
+        break;
 
-    if (event->key() == Qt::Key_Backtab)
-    {
+    case Qt::Key_Backtab:
         if (textCursor().hasSelection())
         {
+            // unindent selection
             unindentSelection();
             return;
         }
+        break;
+
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+        {
+            QTextCursor cursor = textCursor();
+            QString current_line = cursor.block().text();
+
+            QString leadingNonwhite;
+            for (int i = 0; i < current_line.length(); i++)
+            {
+                if (current_line.mid(i, 1) == " ")
+                    leadingNonwhite += " ";
+                else if (current_line.mid(i, 1) == "\t")
+                    leadingNonwhite += "\t";
+                else
+                    break;
+            }
+
+            QPlainTextEdit::keyPressEvent(event);
+            cursor = textCursor();
+            cursor.insertText(leadingNonwhite);
+            // cursor.movePosition(QTextCursor::EndOfWord);
+
+            return;
+        }
+        break;
+
+    default:
+        break;
     }
 
     QPlainTextEdit::keyPressEvent(event);
@@ -1708,7 +1736,7 @@ void SearchWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-int SearchWidget::showFind(const QString &text)
+void SearchWidget::showFind(const QString &text)
 {
     if (!text.isEmpty())
         txtFind->setText(text);
@@ -1724,7 +1752,7 @@ int SearchWidget::showFind(const QString &text)
     show();
 }
 
-int SearchWidget::showReplaceAll(const QString &text)
+void SearchWidget::showReplaceAll(const QString &text)
 {
     if (!text.isEmpty())
         txtFind->setText(text);
