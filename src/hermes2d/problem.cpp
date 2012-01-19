@@ -167,15 +167,16 @@ void Problem::solve(SolverMode solverMode)
     Util::scene()->setActiveViewField(m_blocks[0]->m_fields[0]->fieldInfo());
 
     mesh();
+    emit meshed();
 
     Util::scene()->createSolutions();
 
-//    if (isMeshed())
-//    {
+    assert(isMeshed());
+    if (isMeshed())
+    {
         InitialCondition<double> initial(m_meshInitial, 0.0);
-        //m_linInitialMeshView.process_solution(&initial);
-//    }
-
+        Util::scene()->activeSceneSolution()->linInitialMeshView().process_solution(&initial);
+    }
 
 
         foreach(Block* block, m_blocks)
@@ -195,7 +196,7 @@ void Problem::solve(SolverMode solverMode)
 
     m_isSolving = false;
     m_isSolved = true;
-
+    emit solved();
 
     postprocess();
 

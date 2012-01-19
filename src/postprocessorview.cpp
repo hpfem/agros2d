@@ -125,37 +125,36 @@ void PostprocessorView::loadAdvanced()
 
 void PostprocessorView::saveBasic()
 {
-    assert(0); //TODO
-//    logMessage("PostprocessorView::saveBasic()");
+    logMessage("PostprocessorView::saveBasic()");
 
-//    // show
-//    m_sceneView->sceneViewSettings().showGeometry = chkShowGeometry->isChecked();
-//    m_sceneView->sceneViewSettings().showInitialMesh = chkShowInitialMesh->isChecked();
+    // show
+    m_sceneView->sceneViewSettings().showGeometry = chkShowGeometry->isChecked();
+    m_sceneView->sceneViewSettings().showInitialMesh = chkShowInitialMesh->isChecked();
 
-//    if (radPostprocessorNone->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_None;
-//    if (radPostprocessorScalarField->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView;
-//    if (radPostprocessorScalarField3D->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3D;
-//    if (radPostprocessorScalarField3DSolid->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3DSolid;
-//    if (radPostprocessorModel->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Model;
-//    if (radPostprocessorOrder->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Order;
+    if (radPostprocessorNone->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_None;
+    if (radPostprocessorScalarField->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView;
+    if (radPostprocessorScalarField3D->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3D;
+    if (radPostprocessorScalarField3DSolid->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3DSolid;
+    if (radPostprocessorModel->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Model;
+    if (radPostprocessorOrder->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Order;
 
-//    m_sceneView->sceneViewSettings().showContours = chkShowContours->isChecked();
-//    m_sceneView->sceneViewSettings().showVectors = chkShowVectors->isChecked();
-//    m_sceneView->sceneViewSettings().showSolutionMesh = chkShowSolutionMesh->isChecked();
+    m_sceneView->sceneViewSettings().showContours = chkShowContours->isChecked();
+    m_sceneView->sceneViewSettings().showVectors = chkShowVectors->isChecked();
+    m_sceneView->sceneViewSettings().showSolutionMesh = chkShowSolutionMesh->isChecked();
 
-//    // scalar field
-//    m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString().toStdString();
-//    m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
-//    m_sceneView->sceneViewSettings().scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
-//    m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
-//    m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
+    // scalar field
+    m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString().toStdString();
+    m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
+    m_sceneView->sceneViewSettings().scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
+    m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
+    m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
 
-//    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable);
-//    if (physicFieldVariable && physicFieldVariable->id == "custom")
-//        physicFieldVariable->expression.scalar = txtScalarFieldExpression->text().toStdString();
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable);
+    if (physicFieldVariable && physicFieldVariable->id == "custom")
+        physicFieldVariable->expression.scalar = txtScalarFieldExpression->text().toStdString();
 
-//    // vector field
-//    m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toString().toStdString();
+    // vector field
+    m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toString().toStdString();
 }
 
 void PostprocessorView::saveAdvanced()
@@ -243,6 +242,7 @@ QWidget *PostprocessorView::controlsBasic()
     chkShowContours = new QCheckBox(tr("Contours"));
     chkShowVectors = new QCheckBox(tr("Vectors"));
     connect(chkShowVectors, SIGNAL(clicked()), this, SLOT(setControls()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(setControls()));
     chkShowSolutionMesh = new QCheckBox(tr("Solution mesh"));
 
     // postprocessor mode
@@ -693,6 +693,8 @@ void PostprocessorView::setControls()
 
     bool isMeshed = Util::problem()->isMeshed();
     bool isSolved = Util::problem()->isSolved();
+
+    cout << "ppv::setControls, meshed: " << isMeshed << ", solved: " << isSolved << endl;
 
     chkShowGeometry->setEnabled(true);
 
