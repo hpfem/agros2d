@@ -28,12 +28,12 @@ class LocalPointValueView;
 class VolumeIntegralValueView;
 class SurfaceIntegralValueView;
 class PostprocessorView;
-class TerminalView;
+class PythonScriptingConsoleView;
 class TooltipView;
 
 class HelpDialog;
 class ChartDialog;
-class ScriptEditorDialog;
+class PythonLabAgros;
 class ReportDialog;
 class VideoDialog;
 class LogDialog;
@@ -203,12 +203,12 @@ private:
     VolumeIntegralValueView *volumeIntegralValueView;
     SurfaceIntegralValueView *surfaceIntegralValueView;
     PostprocessorView *postprocessorView;
-    TerminalView *terminalView;
+    PythonScriptingConsoleView *consoleView;
     TooltipView *tooltipView;
 
     HelpDialog *helpDialog;
     ChartDialog *chartDialog;
-    ScriptEditorDialog *scriptEditorDialog;
+    PythonLabAgros *scriptEditorDialog;
     ReportDialog *reportDialog;
     VideoDialog *videoDialog;
     LogDialog *logDialog;

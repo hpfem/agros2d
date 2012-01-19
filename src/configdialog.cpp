@@ -23,7 +23,7 @@
 
 #include "scene.h"
 #include "sceneview.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
@@ -740,7 +740,7 @@ QWidget *ConfigDialog::createGlobalScriptWidget()
 
     QWidget *viewWidget = new QWidget(this);
 
-    txtGlobalScript = new ScriptEditor(this);
+    txtGlobalScript = new ScriptEditor(currentPythonEngine(), this);
 
     // layout
     QVBoxLayout *layout = new QVBoxLayout();

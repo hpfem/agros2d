@@ -21,7 +21,7 @@
 
 #include "gui.h"
 #include "scene.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 
 ProblemDialog::ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidget *parent) : QDialog(parent)
 {
@@ -290,7 +290,7 @@ QWidget *ProblemDialog::createControlsStartupScript()
 {
     logMessage("ProblemDialog::createControlsStartupScript()");
 
-    txtStartupScript = new ScriptEditor(this);
+    txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
 
     QVBoxLayout *layoutStartup = new QVBoxLayout();
     layoutStartup->addWidget(txtStartupScript);

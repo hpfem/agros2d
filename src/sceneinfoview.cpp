@@ -21,7 +21,7 @@
 
 #include "scene.h"
 #include "sceneview.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 
 SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget(tr("Problem"), parent)
 {
