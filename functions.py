@@ -45,6 +45,7 @@ def test(text, value, normal, error = 0.03):
 		print(text + ": (" + str(value) + " != " + str(normal) + ")")
 	return test
 
+"""
 from rope.base.project import Project
 pythonlab_rope_project = Project(".", ropefolder=None)
 
@@ -60,6 +61,7 @@ def python_engine_get_completion_string(code, offset):
     
     return proposals_string
     # return [proposal.name for proposal in proposals]
+"""
 
 def python_engine_get_completion_string_dot(code):
     try:      
