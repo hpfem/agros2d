@@ -84,6 +84,7 @@ public:
     ProgressDialog* progressDialog();
 
     inline Hermes::Hermes2D::Mesh *meshInitial() { return m_meshInitial; }
+    inline void setMeshInitial(Hermes::Hermes2D::Mesh* mesh) {m_meshInitial = mesh; }
 
 
     // time TODO zatim tady, ale asi presunout

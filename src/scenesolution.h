@@ -68,6 +68,7 @@ public:
     //TODO temp
     void setSolutionArray(SolutionArray<Scalar>* solutionArray);
 
+    FieldInfo* fieldInfo() { return m_fieldInfo; }
 
     // solution
     SolutionArray<Scalar> *solutionArray(int i = -1);

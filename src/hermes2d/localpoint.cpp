@@ -74,7 +74,7 @@ void LocalPointValue::calculate()
             // find marker
             Hermes::Hermes2D::Element *e = Util::problem()->meshInitial()->get_element_fast(index);
             int labelIndex = atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str());
-            SceneMaterial *tmpMaterial = Util::scene()->labels->at(labelIndex)->getMarker("TODO");
+            SceneMaterial *tmpMaterial = Util::scene()->labels->at(labelIndex)->getMarker(m_fieldInfo);
 
             // set variables
             double px = point.x;

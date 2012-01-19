@@ -80,6 +80,7 @@ void Block::solve()
 {
     //m_solutionList->init(m_progressItemSolve, m_wf, m_fields[0]->fieldInfo());
     m_solutionList->solve();
+    Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setMeshInitial(Util::problem()->meshInitial());
     Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setSolutionArray(m_solutionList->at(0));
 
 }

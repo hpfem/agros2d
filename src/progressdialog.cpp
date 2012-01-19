@@ -189,8 +189,8 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
                 }
             }
 
-            // TODO set for all?
-            //Util::scene()->activeSceneSolution()->setMeshInitial(mesh);
+            // TODO jinak
+            Util::problem()->setMeshInitial(mesh);
         }
         else
         {

@@ -115,6 +115,10 @@ public:
     Value timeStep() {return m_parent->timeStep; }
     Value timeTotal() {return m_parent->timeTotal; }
 
+    QString labelX() { return m_parent->labelX();  }
+    QString labelY() { return m_parent->labelY();  }
+    QString labelZ() { return m_parent->labelZ();  }
+
 //    int numberOfSolutions() const;
 
     // linearity
