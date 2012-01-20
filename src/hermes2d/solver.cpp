@@ -156,6 +156,7 @@ template <typename Scalar>
 void SolutionArrayList<Scalar>::readMesh()
 {
     // load the mesh file
+    cout << tempProblemFileName().toStdString() + ".xml" << endl;
     mesh = readMeshFromFile(tempProblemFileName() + ".xml");
     refineMesh(m_fieldInfo, mesh, true, true);
 }
