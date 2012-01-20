@@ -97,9 +97,18 @@ cdef extern from "../../src/pythonlabagros.h":
         void removeEdge(int index) except +
         void removeLabel(int index) except +
 
+        void removeNodePoint(double, double)
+        void removeEdgePoint(double, double, double, double, double)
+        void removeLabelPoint(double, double)
+
         void selectNodes(vector[int]) except +
         void selectEdges(vector[int]) except +
         void selectLabels(vector[int]) except +
+
+        void selectNodePoint(double, double)
+        void selectEdgePoint(double, double)
+        void selectLabelPoint(double, double)
+
         void selectNone()
 
         void moveSelection(double, double, bool)
@@ -129,17 +138,7 @@ cdef extern from "../../src/pythonlabagros.h":
 
 
     char *pythonSolutionFileName() except +
-    # Solution *pythonSolutionObject() except +
 
-    void pythonDeleteNodePoint(double x, double y)
-    void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
-    void pythonDeleteLabelPoint(double x, double y)
-
-    void pythonSelectNodePoint(double x, double y)
-    void pythonSelectEdgePoint(double x, double y)
-    void pythonSelectLabelPoint(double x, double y)
-
-    void pythonMesh()
     void pythonSolve()
     void pythonSolveAdaptiveStep()
 
@@ -411,6 +410,18 @@ cdef class Geometry:
     def remove_label(self, int index):
         self.thisptr.removeLabel(index)
 
+    # remove_node_point(x, y)
+    def remove_node_point(self, double x, double y):
+        self.thisptr.removeNodePoint(x, y)
+
+    # remove_edge_point(x1, y1, x2, y2, angle)
+    def remove_edge_point(self, double x1, double y1, double x2, double y2, double angle):
+        self.thisptr.removeEdgePoint(x1, y1, x2, y2, angle)
+
+    # remove_label_point(x, y)
+    def remove_label_point(self, double x, double y):
+        self.thisptr.removeLabelPoint(x, y)
+
     # select_nodes(nodes)
     def select_nodes(self, nodes = []):
         cdef vector[int] nodes_vector
@@ -434,6 +445,19 @@ cdef class Geometry:
             labels_vector.push_back(i)
 
         self.thisptr.selectLabels(labels_vector)
+
+    # select_node_point(x, y)
+    def select_node_point(self, double x, double y):
+        self.thisptr.selectNodePoint(x, y)
+
+    # select_edge_point(x, y)
+    def select_edge_point(self, double x, double y):
+        self.thisptr.selectEdgePoint(x, y)
+
+    # select_label_point(x, y)
+    def select_label_point(self, double x, double y):
+        self.thisptr.selectLabelPoint(x, y)
+
 
     # move_selection(dx, dy, copy)
     def move_selection(self, double dx, double dy, int copy = False):
@@ -508,30 +532,10 @@ def save_image(char *str, int w = 0, int h = 0):
     pySaveImage(str, w, h)
 
 
+# solver
+
 def solutionfilename():
     return pythonSolutionFileName()
-
-# preprocessor
-
-def deletenodepoint(double x, double y):
-    pythonDeleteNodePoint(x, y)
-
-def deleteedgepoint(double x1, double y1, double x2, double y2, double angle):
-    pythonDeleteEdgePoint(x1, y1, x2, y2, angle)
-
-def deletelabelpoint(double x, double y):
-    pythonDeleteLabelPoint(x, y)
-
-def selectnodepoint(double x, double y):
-    pythonSelectNodePoint(x, y)
-
-def selectedgepoint(double x, double y):
-    pythonSelectEdgePoint(x, y)
-    
-def selectlabelpoint(double x, double y):
-    pythonSelectLabelPoint(x, y)
-
-# solver
 
 def solve():
     pythonSolve()
