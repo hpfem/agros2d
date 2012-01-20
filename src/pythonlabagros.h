@@ -211,10 +211,19 @@ class PyGeometry {
         void removeEdge(int index);
         void removeLabel(int index);
 
+        void removeNodePoint(double x, double y);
+        void removeEdgePoint(double x1, double y1, double x2, double y2, double angle);
+        void removeLabelPoint(double x, double y);
+
         // select operations
         void selectNodes(vector<int> nodes);
         void selectEdges(vector<int> edges);
         void selectLabels(vector<int> labels);
+
+        void selectNodePoint(double x, double y);
+        void selectEdgePoint(double x, double y);
+        void selectLabelPoint(double x, double y);
+
         void selectNone();
 
         // transform operations
@@ -251,14 +260,6 @@ void pySaveImage(char *str, int w, int h);
 
 // cython functions
 char *pythonSolutionFileName();
-
-void pythonDeleteNodePoint(double x, double y);
-void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle);
-void pythonDeleteLabelPoint(double x, double y);
-
-void pythonSelectNodePoint(double x, double y);
-void pythonSelectEdgePoint(double x, double y);
-void pythonSelectLabelPoint(double x, double y);
 
 void pythonSolve();
 void pythonSolveAdaptiveStep();

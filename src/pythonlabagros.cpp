@@ -553,6 +553,27 @@ void PyGeometry::removeLabel(int index)
     Util::scene()->removeLabel(Util::scene()->labels->at(index));
 }
 
+void PyGeometry::removeNodePoint(double x, double y)
+{
+    logMessage("PyGeometry::removeNodePoint()");
+
+    Util::scene()->nodes->remove(Util::scene()->getNode(Point(x, y)));
+}
+
+void PyGeometry::removeEdgePoint(double x1, double y1, double x2, double y2, double angle)
+{
+    logMessage("PyGeometry::removeEdgePoint()");
+
+    Util::scene()->edges->remove(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
+}
+
+void PyGeometry::removeLabelPoint(double x, double y)
+{
+    logMessage("PyGeometry::removeLabelPoint()");
+
+    Util::scene()->labels->remove(Util::scene()->getLabel(Point(x, y)));
+}
+
 void PyGeometry::selectNodes(vector<int> nodes)
 {
     logMessage("PyGeometry::selectNode()");
@@ -623,6 +644,42 @@ void PyGeometry::selectLabels(vector<int> labels)
     }
 
     Util::scene()->refresh();
+}
+
+void PyGeometry::selectNodePoint(double x, double y)
+{
+    logMessage("PyGeometry::selectNodePoint()");
+
+    SceneNode *node = sceneView()->findClosestNode(Point(x, y));
+    if (node)
+    {
+        node->isSelected = true;
+        sceneView()->doInvalidated();
+    }
+}
+
+void PyGeometry::selectEdgePoint(double x, double y)
+{
+    logMessage("PyGeometry::selectEdgePoint()");
+
+    SceneEdge *edge = sceneView()->findClosestEdge(Point(x, y));
+    if (edge)
+    {
+        edge->isSelected = true;
+        sceneView()->doInvalidated();
+    }
+}
+
+void PyGeometry::selectLabelPoint(double x, double y)
+{
+    logMessage("PyGeometry::selectLabelPoint()");
+
+    SceneLabel *label = sceneView()->findClosestLabel(Point(x, y));
+    if (label)
+    {
+        label->isSelected = true;
+        sceneView()->doInvalidated();
+    }
 }
 
 void PyGeometry::selectNone()
@@ -796,76 +853,6 @@ char *pythonSolutionFileName()
     }
     else
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
-}
-
-void pythonDeleteNodePoint(double x, double y)
-{
-    logMessage("pythonDeleteNodePoint()");
-
-    Util::scene()->nodes->remove(Util::scene()->getNode(Point(x, y)));
-}
-
-void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
-{
-    logMessage("pythonDeleteEdgePoint()");
-
-    Util::scene()->edges->remove(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
-}
-
-void pythonDeleteLabelPoint(double x, double y)
-{
-    logMessage("pythonDeleteLabelPoint()");
-
-    Util::scene()->labels->remove(Util::scene()->getLabel(Point(x, y)));
-}
-
-// selectnodepoint(x, y)
-void pythonSelectNodePoint(double x, double y)
-{
-    logMessage("pythonSelectNodePoint()");
-
-    SceneNode *node = sceneView()->findClosestNode(Point(x, y));
-    if (node)
-    {
-        node->isSelected = true;
-        sceneView()->doInvalidated();
-    }
-}
-
-// selectedgepoint(x, y)
-void pythonSelectEdgePoint(double x, double y)
-{
-    logMessage("pythonSelectEdgePoint()");
-
-    SceneEdge *edge = sceneView()->findClosestEdge(Point(x, y));
-    if (edge)
-    {
-        edge->isSelected = true;
-        sceneView()->doInvalidated();
-    }
-}
-
-// selectlabelpoint(x, y)
-void pythonSelectLabelPoint(double x, double y)
-{
-    logMessage("pythonSelectLabelPoint()");
-
-    SceneLabel *label = sceneView()->findClosestLabel(Point(x, y));
-    if (label)
-    {
-        label->isSelected = true;
-        sceneView()->doInvalidated();
-    }
-}
-
-// mesh()
-void pythonMesh()
-{
-    assert(0);
-//    logMessage("pythonMesh()");
-
-//    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
-//    Util::scene()->refresh();
 }
 
 // solve()
