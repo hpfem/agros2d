@@ -287,7 +287,10 @@ bool ValueLineEdit::evaluate(bool quiet)
     if (!m_hasNonlin || m_table->size() == 0)
     {
         Value val = value();
-        btnEditTimeDep->setVisible(m_hasTimeDep && Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient);
+
+        //TODO time dependence
+        btnEditTimeDep->setVisible(false);
+        //btnEditTimeDep->setVisible(m_hasTimeDep && Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient);
 
         if (val.evaluate(quiet))
         {

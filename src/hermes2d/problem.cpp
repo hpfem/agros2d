@@ -197,6 +197,7 @@ void Problem::solve(SolverMode solverMode)
     m_isSolving = false;
     m_isSolved = true;
     emit solved();
+    emit timeStepChanged(false);
 
     postprocess();
 

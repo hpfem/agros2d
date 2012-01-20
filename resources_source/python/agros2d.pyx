@@ -38,7 +38,7 @@ cdef extern from "../../src/pythonlabagros.h":
 
     # PyField
     cdef cppclass PyField:
-        PyField(char*, char*, int, int, char*, double, int, char*, double, int, double, char*)  except +
+        PyField(char*, char*, int, int, char*, double, int, char*, double, int, double, char*) except +
 
         char *getFieldId()
 

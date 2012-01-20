@@ -1072,6 +1072,7 @@ void ProgressItemProcessView::process()
     {
         step++;
         emit message(tr("Processing scalar view cache"), false, step);
+        cout << "process Range Scalar" << endl;
         Util::scene()->activeSceneSolution()->processRangeScalar();
     }
     if (sceneView()->sceneViewSettings().showVectors)

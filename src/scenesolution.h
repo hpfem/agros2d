@@ -90,9 +90,9 @@ public:
     inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
 
     // scalar view
-    inline ViewScalarFilter<Scalar> *slnScalarView() { return m_slnScalarView; }
+    inline ViewScalarFilter<Scalar> *slnScalarView() {cout << "get scal view" << endl; return m_slnScalarView; }
     void setSlnScalarView(ViewScalarFilter<Scalar> *slnScalarView);
-    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
+    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { cout << "get scal view lin" << endl; return m_linScalarView; }
 
     // vector view
     void setSlnVectorView(ViewScalarFilter<Scalar> *slnVectorXView, ViewScalarFilter<Scalar> *slnVectorYView);
