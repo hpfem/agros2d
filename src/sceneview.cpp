@@ -946,51 +946,47 @@ void SceneView::paintRulersHints()
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(contextWidth(), contextHeight()));
 
-    if ((((cornerMax.x-cornerMin.x)/Util::config()->gridStep + (cornerMin.y-cornerMax.y)/Util::config()->gridStep) < 200) &&
-            ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
+    glColor3d(1.0, 0.0, 0.0);
+
+    Point p = position(m_lastPos.x(), m_lastPos.y());
+
+    Point areaWidth = Point((2.0/contextWidth()*font().pointSize()*1.5)/m_scale2d*aspect(),
+                            -(2.0/contextHeight()*font().pointSize()*1.5)/m_scale2d);
+
+    Point snapPoint = p;
+    if (m_snapToGrid)
     {
-        glColor3d(1.0, 0.0, 0.0);
+        snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
+        snapPoint.y = floor(p.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
 
-        Point p = position(m_lastPos.x(), m_lastPos.y());
+        // hint line
+        glEnable(GL_LINE_STIPPLE);
+        glLineStipple(1, 0x8FFF);
 
-        Point areaWidth = Point((2.0/contextWidth()*font().pointSize()*1.5)/m_scale2d*aspect(),
-                                -(2.0/contextHeight()*font().pointSize()*1.5)/m_scale2d);
-
-        Point snapPoint = p;
-        if (m_snapToGrid)
-        {
-            snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
-            snapPoint.y = floor(p.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
-
-            // hint line
-            glEnable(GL_LINE_STIPPLE);
-            glLineStipple(1, 0x8FFF);
-
-            glLineWidth(1.0);
-            glBegin(GL_LINES);
-            glVertex2d(snapPoint.x, cornerMax.y - areaWidth.y);
-            glVertex2d(snapPoint.x, cornerMin.y);
-            glVertex2d(cornerMin.x + areaWidth.x, snapPoint.y);
-            glVertex2d(cornerMax.x, snapPoint.y);
-            glEnd();
-
-            glDisable(GL_LINE_STIPPLE);
-
-            renderTextPos(snapPoint.x + areaWidth.x, snapPoint.y - areaWidth.y, 0.0,
-                          QString(tr("%1, %2")).arg(snapPoint.x).arg(snapPoint.y));
-        }
-
-        // ticks
-        glLineWidth(3.0);
-        glBegin(GL_TRIANGLES);
+        glLineWidth(1.0);
+        glBegin(GL_LINES);
         glVertex2d(snapPoint.x, cornerMax.y - areaWidth.y);
-        glVertex2d(snapPoint.x + areaWidth.x / 3.0, cornerMax.y - areaWidth.y / 2.0);
-        glVertex2d(snapPoint.x - areaWidth.x / 3.0, cornerMax.y - areaWidth.y / 2.0);
+        glVertex2d(snapPoint.x, cornerMin.y);
         glVertex2d(cornerMin.x + areaWidth.x, snapPoint.y);
-        glVertex2d(cornerMin.x + areaWidth.x / 2.0, snapPoint.y + areaWidth.y / 3.0);
-        glVertex2d(cornerMin.x + areaWidth.x / 2.0, snapPoint.y - areaWidth.y / 3.0);
+        glVertex2d(cornerMax.x, snapPoint.y);
         glEnd();
+
+        glDisable(GL_LINE_STIPPLE);
+
+        renderTextPos(snapPoint.x + areaWidth.x, snapPoint.y - areaWidth.y, 0.0,
+                      QString(tr("%1, %2")).arg(snapPoint.x).arg(snapPoint.y));
     }
+
+    // ticks
+    glLineWidth(3.0);
+    glBegin(GL_TRIANGLES);
+    glVertex2d(snapPoint.x, cornerMax.y - areaWidth.y);
+    glVertex2d(snapPoint.x + areaWidth.x / 3.0, cornerMax.y - areaWidth.y / 2.0);
+    glVertex2d(snapPoint.x - areaWidth.x / 3.0, cornerMax.y - areaWidth.y / 2.0);
+    glVertex2d(cornerMin.x + areaWidth.x, snapPoint.y);
+    glVertex2d(cornerMin.x + areaWidth.x / 2.0, snapPoint.y + areaWidth.y / 3.0);
+    glVertex2d(cornerMin.x + areaWidth.x / 2.0, snapPoint.y - areaWidth.y / 3.0);
+    glEnd();
 }
 
 void SceneView::paintGeometry()
