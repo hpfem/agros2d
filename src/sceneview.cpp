@@ -765,6 +765,7 @@ void SceneView::paintAxes()
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
+
 void SceneView::paintRulers()
 {
     logMessage("SceneView::paintRulers()");
@@ -774,8 +775,16 @@ void SceneView::paintRulers()
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(contextWidth(), contextHeight()));
 
-    if ((((cornerMax.x-cornerMin.x)/Util::config()->gridStep + (cornerMin.y-cornerMax.y)/Util::config()->gridStep) < 200) &&
-            ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
+    double gridStep = Util::config()->gridStep;
+    if (gridStep < EPS_ZERO)
+        return;
+
+    while (((cornerMax.x-cornerMin.x)/gridStep + (cornerMin.y-cornerMax.y)/gridStep) > 200)
+        gridStep *= 2.0;
+    while (((cornerMax.x-cornerMin.x)/gridStep + (cornerMin.y-cornerMax.y)/gridStep) < 60)
+        gridStep /= 2.0;
+
+    if (((cornerMax.x-cornerMin.x)/gridStep > 0) && ((cornerMin.y-cornerMax.y)/gridStep > 0))
     {
         Point areaWidth = Point((2.0/contextWidth()*font().pointSize()*1.5)/m_scale2d*aspect(),
                                 -(2.0/contextHeight()*font().pointSize()*1.5)/m_scale2d);
@@ -796,16 +805,6 @@ void SceneView::paintRulers()
         glVertex2d(cornerMin.x + areaWidth.x, cornerMin.y);
         glEnd();
 
-        // area lines
-        glColor3d(0.0, 0.0, 0.0);
-        glLineWidth(2.0);
-        glBegin(GL_LINES);
-        glVertex2d(cornerMin.x + areaWidth.x, cornerMax.y - areaWidth.y);
-        glVertex2d(cornerMax.x, cornerMax.y - areaWidth.y);
-        glVertex2d(cornerMin.x + areaWidth.x, cornerMax.y - areaWidth.y);
-        glVertex2d(cornerMin.x + areaWidth.x, cornerMin.y);
-        glEnd();
-
         int heavyLine = 5;
 
         // lines
@@ -813,72 +812,72 @@ void SceneView::paintRulers()
         glBegin(GL_LINES);
 
         // vertical ticks
-        for (int i = 0; i<cornerMax.x/Util::config()->gridStep; i++)
+        for (int i = 0; i<cornerMax.x/gridStep; i++)
         {
-            if (i*Util::config()->gridStep < cornerMin.x + areaWidth.x)
+            if (i*gridStep < cornerMin.x + areaWidth.x)
                 continue;
 
             if (i % heavyLine == 0)
             {
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y - areaWidth.y);
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y - areaWidth.y * 1.0/7.0);
+                glVertex2d(i*gridStep, cornerMax.y - areaWidth.y);
+                glVertex2d(i*gridStep, cornerMax.y - areaWidth.y * 1.0/7.0);
             }
             else
             {
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y - areaWidth.y);
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y - areaWidth.y * 2.0/3.0);
+                glVertex2d(i*gridStep, cornerMax.y - areaWidth.y);
+                glVertex2d(i*gridStep, cornerMax.y - areaWidth.y * 2.0/3.0);
             }
         }
-        for (int i = 0; i>cornerMin.x/Util::config()->gridStep; i--)
+        for (int i = 0; i>cornerMin.x/gridStep; i--)
         {
-            if (i*Util::config()->gridStep < cornerMin.x + areaWidth.x)
+            if (i*gridStep < cornerMin.x + areaWidth.x)
                 continue;
 
             if (i % heavyLine == 0)
             {
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y - areaWidth.y);
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y - areaWidth.y * 1.0/7.0);
+                glVertex2d(i*gridStep, cornerMax.y - areaWidth.y);
+                glVertex2d(i*gridStep, cornerMax.y - areaWidth.y * 1.0/7.0);
             }
             else
             {
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y - areaWidth.y);
-                glVertex2d(i*Util::config()->gridStep, cornerMax.y - areaWidth.y * 2.0/3.0);
+                glVertex2d(i*gridStep, cornerMax.y - areaWidth.y);
+                glVertex2d(i*gridStep, cornerMax.y - areaWidth.y * 2.0/3.0);
             }
 
         }
 
         // horizontal ticks
-        for (int i = 0; i<cornerMin.y/Util::config()->gridStep; i++)
+        for (int i = 0; i<cornerMin.y/gridStep; i++)
         {
-            if (i*Util::config()->gridStep < cornerMax.y - areaWidth.y)
+            if (i*gridStep < cornerMax.y - areaWidth.y)
                 continue;
 
             if (i % heavyLine == 0)
             {
-                glVertex2d(cornerMin.x + areaWidth.x * 1.0/7.0, i*Util::config()->gridStep);
-                glVertex2d(cornerMin.x + areaWidth.x, i*Util::config()->gridStep);
+                glVertex2d(cornerMin.x + areaWidth.x * 1.0/7.0, i*gridStep);
+                glVertex2d(cornerMin.x + areaWidth.x, i*gridStep);
             }
             else
             {
-                glVertex2d(cornerMin.x + areaWidth.x * 2.0/3.0, i*Util::config()->gridStep);
-                glVertex2d(cornerMin.x + areaWidth.x, i*Util::config()->gridStep);
+                glVertex2d(cornerMin.x + areaWidth.x * 2.0/3.0, i*gridStep);
+                glVertex2d(cornerMin.x + areaWidth.x, i*gridStep);
             }
 
         }
-        for (int i = 0; i>cornerMax.y/Util::config()->gridStep; i--)
+        for (int i = 0; i>cornerMax.y/gridStep; i--)
         {
-            if (i*Util::config()->gridStep < cornerMax.y - areaWidth.y)
+            if (i*gridStep < cornerMax.y - areaWidth.y)
                 continue;
 
             if (i % heavyLine == 0)
             {
-                glVertex2d(cornerMin.x + areaWidth.x * 1.0/7.0, i*Util::config()->gridStep);
-                glVertex2d(cornerMin.x + areaWidth.x, i*Util::config()->gridStep);
+                glVertex2d(cornerMin.x + areaWidth.x * 1.0/7.0, i*gridStep);
+                glVertex2d(cornerMin.x + areaWidth.x, i*gridStep);
             }
             else
             {
-                glVertex2d(cornerMin.x + areaWidth.x * 2.0/3.0, i*Util::config()->gridStep);
-                glVertex2d(cornerMin.x + areaWidth.x, i*Util::config()->gridStep);
+                glVertex2d(cornerMin.x + areaWidth.x * 2.0/3.0, i*gridStep);
+                glVertex2d(cornerMin.x + areaWidth.x, i*gridStep);
             }
         }
         glEnd();
@@ -888,55 +887,55 @@ void SceneView::paintRulers()
         fontLabel.setPointSize(fontLabel.pointSize() - 4);
 
         // vertical labels
-        for (int i = 0; i<cornerMax.x/Util::config()->gridStep; i++)
+        for (int i = 0; i<cornerMax.x/gridStep; i++)
         {
-            if (i*Util::config()->gridStep < cornerMin.x + areaWidth.x)
+            if (i*gridStep < cornerMin.x + areaWidth.x)
                 continue;
 
             if (i % heavyLine == 0)
             {
-                QString text = QString::number(i*Util::config()->gridStep, 'g', 4);
+                QString text = QString::number(i*gridStep, 'g', 4);
                 double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).width(text) / 6.0)/m_scale2d*aspect();
-                renderTextPos(i*Util::config()->gridStep + size, cornerMax.y, 0.0, text, false, fontLabel);
+                renderTextPos(i*gridStep + size, cornerMax.y, 0.0, text, false, fontLabel);
             }
         }
-        for (int i = 0; i>cornerMin.x/Util::config()->gridStep; i--)
+        for (int i = 0; i>cornerMin.x/gridStep; i--)
         {
-            if (i*Util::config()->gridStep < cornerMin.x + areaWidth.x)
+            if (i*gridStep < cornerMin.x + areaWidth.x)
                 continue;
 
             if (i % heavyLine == 0)
             {
-                QString text = QString::number(i*Util::config()->gridStep, 'g', 4);
+                QString text = QString::number(i*gridStep, 'g', 4);
                 double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).width(text) / 6.0)/m_scale2d*aspect();
-                renderTextPos(i*Util::config()->gridStep + size, cornerMax.y, 0.0, text, false, fontLabel);
+                renderTextPos(i*gridStep + size, cornerMax.y, 0.0, text, false, fontLabel);
             }
         }
 
         // horizontal labels
-        for (int i = 0; i<cornerMin.y/Util::config()->gridStep; i++)
+        for (int i = 0; i<cornerMin.y/gridStep; i++)
         {
-            if (i*Util::config()->gridStep < cornerMax.y - areaWidth.y)
+            if (i*gridStep < cornerMax.y - areaWidth.y)
                 continue;
 
             if (i % heavyLine == 0)
             {
-                QString text = QString::number(i*Util::config()->gridStep, 'g', 4);
+                QString text = QString::number(i*gridStep, 'g', 4);
                 double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).height() * 7.0 / 6.0)/m_scale2d;
-                renderTextPos(cornerMin.x + areaWidth.x / 20.0, i*Util::config()->gridStep - size, 0.0, text, false, fontLabel, false);
+                renderTextPos(cornerMin.x + areaWidth.x / 20.0, i*gridStep - size, 0.0, text, false, fontLabel, false);
             }
 
         }
-        for (int i = 0; i>cornerMax.y/Util::config()->gridStep; i--)
+        for (int i = 0; i>cornerMax.y/gridStep; i--)
         {
-            if (i*Util::config()->gridStep < cornerMax.y - areaWidth.y)
+            if (i*gridStep < cornerMax.y - areaWidth.y)
                 continue;
 
             if (i % heavyLine == 0)
             {
-                QString text = QString::number(i*Util::config()->gridStep, 'g', 4);
+                QString text = QString::number(i*gridStep, 'g', 4);
                 double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).height() * 7.0 / 6.0)/m_scale2d;
-                renderTextPos(cornerMin.x + areaWidth.x / 20.0, i*Util::config()->gridStep - size, 0.0, text, false, fontLabel, false);
+                renderTextPos(cornerMin.x + areaWidth.x / 20.0, i*gridStep - size, 0.0, text, false, fontLabel, false);
             }
         }
     }
@@ -951,49 +950,47 @@ void SceneView::paintRulersHints()
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(contextWidth(), contextHeight()));
 
-    if ((((cornerMax.x-cornerMin.x)/Util::config()->gridStep + (cornerMin.y-cornerMax.y)/Util::config()->gridStep) < 200) &&
-            ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
+    glColor3d(1.0, 0.0, 0.0);
+
+    Point p = position(m_lastPos.x(), m_lastPos.y());
+
+    Point areaWidth = Point((2.0/contextWidth()*font().pointSize()*1.5)/m_scale2d*aspect(),
+                            -(2.0/contextHeight()*font().pointSize()*1.5)/m_scale2d);
+
+    Point snapPoint = p;
+    if (m_snapToGrid)
     {
-        glColor3d(1.0, 0.0, 0.0);
+        snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
+        snapPoint.y = floor(p.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
 
-        Point p = position(m_lastPos.x(), m_lastPos.y());
+        // hint line
+        glEnable(GL_LINE_STIPPLE);
+        glLineStipple(1, 0x8FFF);
 
-        Point areaWidth = Point((2.0/contextWidth()*font().pointSize()*1.5)/m_scale2d*aspect(),
-                                -(2.0/contextHeight()*font().pointSize()*1.5)/m_scale2d);
-
-        Point snapPoint = p;
-        if (m_snapToGrid)
-        {
-            snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
-            snapPoint.y = floor(p.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
-
-            // hint line
-            glEnable(GL_LINE_STIPPLE);
-            glLineStipple(1, 0x8FFF);
-
-            glLineWidth(1.0);
-            glBegin(GL_LINES);
-            glVertex2d(snapPoint.x, cornerMax.y - areaWidth.y);
-            glVertex2d(snapPoint.x, cornerMin.y);
-            glVertex2d(cornerMin.x + areaWidth.x, snapPoint.y);
-            glVertex2d(cornerMax.x, snapPoint.y);
-            glEnd();
-
-            glDisable(GL_LINE_STIPPLE);
-
-            renderTextPos(snapPoint.x + areaWidth.x, snapPoint.y - areaWidth.y, 0.0,
-                          QString(tr("%1, %2")).arg(snapPoint.x).arg(snapPoint.y));
-        }
-
-        // ticks
-        glLineWidth(3.0);
+        glLineWidth(1.0);
         glBegin(GL_LINES);
         glVertex2d(snapPoint.x, cornerMax.y - areaWidth.y);
-        glVertex2d(snapPoint.x, cornerMax.y - areaWidth.y / 2.0);
+        glVertex2d(snapPoint.x, cornerMin.y);
         glVertex2d(cornerMin.x + areaWidth.x, snapPoint.y);
-        glVertex2d(cornerMin.x + areaWidth.x / 2.0, snapPoint.y);
+        glVertex2d(cornerMax.x, snapPoint.y);
         glEnd();
+
+        glDisable(GL_LINE_STIPPLE);
+
+        renderTextPos(snapPoint.x + areaWidth.x, snapPoint.y - areaWidth.y, 0.0,
+                      QString(tr("%1, %2")).arg(snapPoint.x).arg(snapPoint.y));
     }
+
+    // ticks
+    glLineWidth(3.0);
+    glBegin(GL_TRIANGLES);
+    glVertex2d(snapPoint.x, cornerMax.y - areaWidth.y);
+    glVertex2d(snapPoint.x + areaWidth.x / 3.0, cornerMax.y - areaWidth.y / 2.0);
+    glVertex2d(snapPoint.x - areaWidth.x / 3.0, cornerMax.y - areaWidth.y / 2.0);
+    glVertex2d(cornerMin.x + areaWidth.x, snapPoint.y);
+    glVertex2d(cornerMin.x + areaWidth.x / 2.0, snapPoint.y + areaWidth.y / 3.0);
+    glVertex2d(cornerMin.x + areaWidth.x / 2.0, snapPoint.y - areaWidth.y / 3.0);
+    glEnd();
 }
 
 void SceneView::paintGeometry()
