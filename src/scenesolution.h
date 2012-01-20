@@ -63,6 +63,12 @@ public:
     void loadSolution(QDomElement element);
     void saveSolution(QDomDocument *doc, QDomElement element);
 
+    //TODO in the future, SceneSolution will hold only one SolutionArray, not arrays for all time levels
+
+    //TODO temp
+    void setSolutionArray(SolutionArray<Scalar>* solutionArray);
+
+    FieldInfo* fieldInfo() { return m_fieldInfo; }
 
     // solution
     SolutionArray<Scalar> *solutionArray(int i = -1);
@@ -84,9 +90,9 @@ public:
     inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
 
     // scalar view
-    inline ViewScalarFilter<Scalar> *slnScalarView() { return m_slnScalarView; }
+    inline ViewScalarFilter<Scalar> *slnScalarView() {cout << "get scal view" << endl; return m_slnScalarView; }
     void setSlnScalarView(ViewScalarFilter<Scalar> *slnScalarView);
-    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
+    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { cout << "get scal view lin" << endl; return m_linScalarView; }
 
     // vector view
     void setSlnVectorView(ViewScalarFilter<Scalar> *slnVectorXView, ViewScalarFilter<Scalar> *slnVectorYView);

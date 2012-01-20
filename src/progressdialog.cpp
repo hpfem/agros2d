@@ -189,8 +189,8 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
                 }
             }
 
-            // TODO set for all?
-            //Util::scene()->activeSceneSolution()->setMeshInitial(mesh);
+            // TODO jinak
+            Util::problem()->setMeshInitial(mesh);
         }
         else
         {
@@ -1049,6 +1049,8 @@ void ProgressItemProcessView::process()
 
     int step = 0;
 
+    cout << "process" << endl;
+
     // process order
     Util::scene()->activeSceneSolution()->processOrder();
 
@@ -1070,6 +1072,7 @@ void ProgressItemProcessView::process()
     {
         step++;
         emit message(tr("Processing scalar view cache"), false, step);
+        cout << "process Range Scalar" << endl;
         Util::scene()->activeSceneSolution()->processRangeScalar();
     }
     if (sceneView()->sceneViewSettings().showVectors)

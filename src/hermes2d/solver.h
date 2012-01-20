@@ -70,6 +70,7 @@ struct SolutionArray
     shared_ptr<Hermes::Hermes2D::Space<Scalar> > space;
 
     SolutionArray();
+    SolutionArray(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space);
     ~SolutionArray();
 
     void load(QDomElement element);

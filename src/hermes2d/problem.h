@@ -84,6 +84,7 @@ public:
     ProgressDialog* progressDialog();
 
     inline Hermes::Hermes2D::Mesh *meshInitial() { return m_meshInitial; }
+    inline void setMeshInitial(Hermes::Hermes2D::Mesh* mesh) {m_meshInitial = mesh; }
 
 
     // time TODO zatim tady, ale asi presunout
@@ -92,8 +93,8 @@ public:
     int timeStepCount() const { return 0; }
     double time() const { return 0; }
 
-    bool isSolved() const { return false; }
-    bool isMeshed()  const { return m_meshInitial; }
+    bool isSolved() const { if(m_isSolved) cout << "solved\n"; else cout << "NOT solved\n"; return m_isSolved; }
+    bool isMeshed()  const { if(m_meshInitial) cout << "meshed\n"; else cout << "NOT meshed\n"; return m_meshInitial; }
     bool isSolving() const { return m_isSolving; }
 
     inline int timeElapsed() const { return m_timeElapsed; }
@@ -115,6 +116,7 @@ public:
     int m_timeElapsed;
     bool m_isSolving;
     int m_timeStep;
+    bool m_isSolved;
 
     //TODO move to Field
     Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)

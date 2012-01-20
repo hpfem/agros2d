@@ -876,17 +876,17 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
     }
 }
 
-ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable, //TODO PK <double>
+ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
-    assert(0);
-    //    Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
-    //    for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
-    //    {
-    //        sln.push_back(Util::scene()->sceneSolution()->sln(
-    //                          k + (Util::scene()->sceneSolution()->timeStep() * m_fieldInfo->module()->number_of_solution())));
-    //    }
-    //    return new ViewScalarFilter<double>(sln, get_expression(physicFieldVariable, physicFieldVariableComp));//TODO PK <double>
+        Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
+        for (int k = 0; k < number_of_solution(); k++)
+        {
+            sln.push_back(Util::scene()->activeSceneSolution()->sln(
+                              k )); //+ (Util::scene()->sceneSolution()->timeStep() * m_fieldInfo->module()->number_of_solution())));
+            //TODO casove problemy
+        }
+        return new ViewScalarFilter<double>(Util::scene()->activeSceneSolution()->fieldInfo(), sln, get_expression(physicFieldVariable, physicFieldVariableComp));//TODO PK <double>
 }
 
 bool Hermes::Module::Module::solve_init_variables()
@@ -1140,7 +1140,7 @@ template <typename Scalar>
 ViewScalarFilter<Scalar>::ViewScalarFilter(FieldInfo *fieldInfo,
                                            Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
                                            std::string expression)
-    : Hermes::Hermes2D::Filter<Scalar>(sln), fieldInfo(fieldInfo)
+    : Hermes::Hermes2D::Filter<Scalar>(sln), m_fieldInfo(fieldInfo)
 {
     parser = new Parser(fieldInfo);
     initParser(expression);
@@ -1162,29 +1162,28 @@ ViewScalarFilter<Scalar>::~ViewScalarFilter()
 template <typename Scalar>
 void ViewScalarFilter<Scalar>::initParser(std::string expression)
 {
-    assert(0); //TODO
-    //    mu::Parser *pars = m_fieldInfo->module()->get_parser();
+        mu::Parser *pars = m_fieldInfo->module()->get_parser(m_fieldInfo);
 
-    //    pars->SetExpr(expression);
+        pars->SetExpr(expression);
 
-    //    pars->DefineVar(m_fieldInfo->labelX().toLower().toStdString(), &px);
-    //    pars->DefineVar(m_fieldInfo->labelY().toLower().toStdString(), &py);
+        pars->DefineVar(m_fieldInfo->labelX().toLower().toStdString(), &px);
+        pars->DefineVar(m_fieldInfo->labelY().toLower().toStdString(), &py);
 
-    //    pvalue = new double[Hermes::Hermes2D::Filter<Scalar>::num];
-    //    pdx = new double[Hermes::Hermes2D::Filter<Scalar>::num];
-    //    pdy = new double[Hermes::Hermes2D::Filter<Scalar>::num];
+        pvalue = new double[Hermes::Hermes2D::Filter<Scalar>::num];
+        pdx = new double[Hermes::Hermes2D::Filter<Scalar>::num];
+        pdy = new double[Hermes::Hermes2D::Filter<Scalar>::num];
 
-    //    for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
-    //    {
-    //        std::stringstream number;
-    //        number << (k+1);
+        for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
+        {
+            std::stringstream number;
+            number << (k+1);
 
-    //        pars->DefineVar("value" + number.str(), &pvalue[k]);
-    //        pars->DefineVar("d" + m_fieldInfo->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-    //        pars->DefineVar("d" + m_fieldInfo->labelY().toLower().toStdString() + number.str(), &pdy[k]);
-    //    }
+            pars->DefineVar("value" + number.str(), &pvalue[k]);
+            pars->DefineVar("d" + m_fieldInfo->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+            pars->DefineVar("d" + m_fieldInfo->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+        }
 
-    //    parser->parser.push_back(pars);
+        parser->parser.push_back(pars);
 }
 
 template <typename Scalar>
@@ -1196,74 +1195,73 @@ double ViewScalarFilter<Scalar>::get_pt_value(double x, double y, int item)
 template <typename Scalar>
 void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 {
-    assert(0); //TODO
-    //    bool isLinear = (m_fieldInfo->linearityType == LinearityType_Linear);
+        bool isLinear = (m_fieldInfo->linearityType == LinearityType_Linear);
 
-    //    Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
-    //    int np = quad->get_num_points(order);
-    //    node = Hermes::Hermes2D::Function<Scalar>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
+        Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
+        int np = quad->get_num_points(order);
+        node = Hermes::Hermes2D::Function<Scalar>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
 
-    //    double **value = new double*[m_fieldInfo->module()->number_of_solution()];
-    //    double **dudx = new double*[m_fieldInfo->module()->number_of_solution()];
-    //    double **dudy = new double*[Util::scene()->problemInfo()->module()->number_of_solution()];
+        double **value = new double*[m_fieldInfo->module()->number_of_solution()];
+        double **dudx = new double*[m_fieldInfo->module()->number_of_solution()];
+        double **dudy = new double*[m_fieldInfo->module()->number_of_solution()];
 
-    //    for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
-    //    {
-    //        Hermes::Hermes2D::Filter<Scalar>::sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
-    //        Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
-    //        value[k] = Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_fn_values();
-    //    }
+        for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
+        {
+            Hermes::Hermes2D::Filter<Scalar>::sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
+            Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
+            value[k] = Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_fn_values();
+        }
 
-    //    Hermes::Hermes2D::Filter<Scalar>::update_refmap();
+        Hermes::Hermes2D::Filter<Scalar>::update_refmap();
 
-    //    double *x = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_x(order);
-    //    double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
-    //    Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
+        double *x = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_x(order);
+        double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
+        Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
 
-    //    SceneMaterial *material = Util::scene()->labels[atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str())]->material;
-    //    if (isLinear)
-    //        parser->setParserVariables(material, NULL);
+        SceneMaterial *material = Util::scene()->labels->at(atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
+        if (isLinear)
+            parser->setParserVariables(material, NULL);
 
-    //    for (int i = 0; i < np; i++)
-    //    {
-    //        px = x[i];
-    //        py = y[i];
+        for (int i = 0; i < np; i++)
+        {
+            px = x[i];
+            py = y[i];
 
-    //        for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
-    //        {
-    //            pvalue[k] = value[k][i];
-    //            pdx[k] = dudx[k][i];
-    //            pdy[k] = dudy[k][i];
-    //        }
+            for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
+            {
+                pvalue[k] = value[k][i];
+                pdx[k] = dudx[k][i];
+                pdy[k] = dudy[k][i];
+            }
 
 
-    //        // FIXME
-    //        if (!isLinear)
-    //            parser->setParserVariables(material, NULL,
-    //                                       pvalue[0], pdx[0], pdy[0]);
+            // FIXME
+            if (!isLinear)
+                parser->setParserVariables(material, NULL,
+                                           pvalue[0], pdx[0], pdy[0]);
 
-    //        // parse expression
-    //        try
-    //        {
-    //            node->values[0][0][i] = parser->parser[0]->Eval();
-    //        }
-    //        catch (mu::Parser::exception_type &e)
-    //        {
-    //            std::cout << "Scalar view: " << e.GetMsg() << std::endl;
-    //        }
-    //    }
+            // parse expression
+            try
+            {
+                node->values[0][0][i] = parser->parser[0]->Eval();
+            }
+            catch (mu::Parser::exception_type &e)
+            {
+                std::cout << "Scalar view: " << e.GetMsg() << std::endl;
+            }
+        }
 
-    //    delete [] value;
-    //    delete [] dudx;
-    //    delete [] dudy;
+        delete [] value;
+        delete [] dudx;
+        delete [] dudy;
 
-    //    if (Hermes::Hermes2D::Function<Scalar>::nodes->present(order))
-    //    {
-    //        assert(Hermes::Hermes2D::Function<Scalar>::nodes->get(order) == Hermes::Hermes2D::Function<Scalar>::cur_node);
-    //        ::free(Hermes::Hermes2D::Function<Scalar>::nodes->get(order));
-    //    }
-    //    Hermes::Hermes2D::Function<Scalar>::nodes->add(node, order);
-    //    Hermes::Hermes2D::Function<Scalar>::cur_node = node;
+        if (Hermes::Hermes2D::Function<Scalar>::nodes->present(order))
+        {
+            assert(Hermes::Hermes2D::Function<Scalar>::nodes->get(order) == Hermes::Hermes2D::Function<Scalar>::cur_node);
+            ::free(Hermes::Hermes2D::Function<Scalar>::nodes->get(order));
+        }
+        Hermes::Hermes2D::Function<Scalar>::nodes->add(node, order);
+        Hermes::Hermes2D::Function<Scalar>::cur_node = node;
 }
 
 template class WeakFormAgros<double>;
