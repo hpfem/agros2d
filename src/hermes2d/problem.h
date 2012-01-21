@@ -93,8 +93,8 @@ public:
     int timeStepCount() const { return 0; }
     double time() const { return 0; }
 
-    bool isSolved() const { if(m_isSolved) cout << "solved\n"; else cout << "NOT solved\n"; return m_isSolved; }
-    bool isMeshed()  const { if(m_meshInitial) cout << "meshed\n"; else cout << "NOT meshed\n"; return m_meshInitial; }
+    bool isSolved() const {  return m_isSolved; }
+    bool isMeshed()  const {  return m_meshInitial; }
     bool isSolving() const { return m_isSolving; }
 
     inline int timeElapsed() const { return m_timeElapsed; }

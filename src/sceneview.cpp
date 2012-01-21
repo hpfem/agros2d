@@ -4142,6 +4142,7 @@ void SceneView::processedRangeScalar()
     {
         m_sceneViewSettings.scalarRangeMin = m_scene->activeSceneSolution()->linScalarView().get_min_value();
         m_sceneViewSettings.scalarRangeMax = m_scene->activeSceneSolution()->linScalarView().get_max_value();
+        cout << "setting limits (" << m_sceneViewSettings.scalarRangeMin << ", " << m_sceneViewSettings.scalarRangeMax << ")" << endl;
     }
 }
 

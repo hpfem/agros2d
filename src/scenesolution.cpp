@@ -42,6 +42,11 @@ SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldIn
     m_slnScalarView = NULL;
     m_slnVectorXView = NULL;
     m_slnVectorYView = NULL;
+
+    connect(this, SIGNAL(processedRangeContour()), sceneView(), SLOT(processedRangeContour()));
+    connect(this, SIGNAL(processedRangeScalar()), sceneView(), SLOT(processedRangeScalar()));
+    connect(this, SIGNAL(processedRangeVector()), sceneView(), SLOT(processedRangeVector()));
+
 }
 
 template <typename Scalar>
@@ -475,7 +480,40 @@ void SceneSolution<Scalar>::setOrderView(shared_ptr<Hermes::Hermes2D::Space<Scal
 template <typename Scalar>
 void SceneSolution<Scalar>::processView(bool showViewProgress)
 {
-    assert(0);
+    int step = 0;
+
+    // process order
+    Util::scene()->activeSceneSolution()->processOrder();
+
+    if (sceneView()->sceneViewSettings().showSolutionMesh)
+    {
+        step++;
+        //emit message(tr("Processing solution mesh cache"), false, step);
+        Util::scene()->activeSceneSolution()->processSolutionMesh();
+    }
+    if (sceneView()->sceneViewSettings().showContours)
+    {
+        step++;
+        //emit message(tr("Processing contour view cache"), false, step);
+        Util::scene()->activeSceneSolution()->processRangeContour();
+    }
+    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
+            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
+    {
+        step++;
+        //emit message(tr("Processing scalar view cache"), false, step);
+        cout << "process Range Scalar" << endl;
+        Util::scene()->activeSceneSolution()->processRangeScalar();
+    }
+    if (sceneView()->sceneViewSettings().showVectors)
+    {
+        step++;
+        //emit message(tr("Processing vector view cache"), false, step);
+        Util::scene()->activeSceneSolution()->processRangeVector();
+    }
+
+
 //    if (showViewProgress)
 //    {
 //        m_progressDialog->clear();
