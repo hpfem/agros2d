@@ -4100,7 +4100,15 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
 
     if (maxScene > 0.0)
     {
-        m_scale2d = 1.95/maxScene;
+        if (Util::config()->showRulers)
+        {
+            m_scale2d = 1.85/maxScene;
+            //TODO offset
+        }
+        else
+        {
+            m_scale2d = 1.9/maxScene;
+        }
         m_scale3d = 0.6 * m_scale2d;
     }
 
