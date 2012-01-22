@@ -331,8 +331,6 @@ int SceneSolution::findElementInVectorizer(const Vectorizer &vec, const Point &p
 
 int SceneSolution::findElementInMesh(Mesh *mesh, const Point &point) const
 {
-    logMessage("SceneSolution::findTriangleInMesh()");
-
     for (int i = 0; i < mesh->get_num_active_elements(); i++)
     {
         Element *element = mesh->get_element_fast(i);

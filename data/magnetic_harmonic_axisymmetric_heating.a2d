@@ -1,18 +1,4 @@
-<document>
-    <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Harmonic Axisymmetric Heating" date="2011-07-09" polynomialorder="3" meshtype="triangle" timestep="0" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="1000" matrix_solver="umfpack" type="magnetic" timetotal="0">
-            <scriptstartup></scriptstartup>
-            <description>This model is an example.</description>
-            <edges>
-                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0"/>
-            </edges>
-            <labels>
-                <label current_density_real="1e6" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Coil" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="0" remanence="0" conductivity="3.7e7" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="Metal" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="3" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
-            </labels>
-        </problem>
-    </problems>
+<document version="2.1">
     <geometry>
         <nodes>
             <node x="0.03" y="0.05" id="0"/>
@@ -29,24 +15,55 @@
             <node x="0.05" y="-0.01" id="11"/>
         </nodes>
         <edges>
-            <edge end="3" refine_towards="0" marker="1" id="0" start="7" angle="0"/>
-            <edge end="0" refine_towards="0" marker="0" id="1" start="3" angle="0"/>
-            <edge end="2" refine_towards="0" marker="1" id="2" start="3" angle="0"/>
-            <edge end="1" refine_towards="0" marker="0" id="3" start="0" angle="0"/>
-            <edge end="2" refine_towards="0" marker="0" id="4" start="1" angle="0"/>
-            <edge end="2" refine_towards="0" marker="1" id="5" start="9" angle="0"/>
-            <edge end="8" refine_towards="0" marker="1" id="6" start="9" angle="0"/>
-            <edge end="6" refine_towards="0" marker="1" id="7" start="8" angle="0"/>
-            <edge end="7" refine_towards="0" marker="1" id="8" start="6" angle="0"/>
-            <edge end="10" refine_towards="0" marker="0" id="9" start="5" angle="90"/>
-            <edge end="4" refine_towards="0" marker="0" id="10" start="10" angle="90"/>
-            <edge end="11" refine_towards="0" marker="0" id="11" start="4" angle="90"/>
-            <edge end="5" refine_towards="0" marker="0" id="12" start="11" angle="90"/>
+            <edge end="3" refine_towards="0" id="0" start="7" angle="0"/>
+            <edge end="0" refine_towards="0" id="1" start="3" angle="0"/>
+            <edge end="2" refine_towards="0" id="2" start="3" angle="0"/>
+            <edge end="1" refine_towards="0" id="3" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" id="4" start="1" angle="0"/>
+            <edge end="2" refine_towards="0" id="5" start="9" angle="0"/>
+            <edge end="8" refine_towards="0" id="6" start="9" angle="0"/>
+            <edge end="6" refine_towards="0" id="7" start="8" angle="0"/>
+            <edge end="7" refine_towards="0" id="8" start="6" angle="0"/>
+            <edge end="10" refine_towards="0" id="9" start="5" angle="90"/>
+            <edge end="4" refine_towards="0" id="10" start="10" angle="90"/>
+            <edge end="11" refine_towards="0" id="11" start="4" angle="90"/>
+            <edge end="5" refine_towards="0" id="12" start="11" angle="90"/>
         </edges>
         <labels>
-            <label x="0.0491249" y="0" polynomialorder="0" marker="1" id="0" area="0"/>
-            <label x="0.100407" y="0.112332" polynomialorder="0" marker="3" id="1" area="0"/>
-            <label x="0.0124949" y="0.038258" polynomialorder="0" marker="2" id="2" area="0.01"/>
+            <label x="0.0491249" y="0" polynomial_order="0" id="0" area="0"/>
+            <label x="0.100407" y="0.112332" polynomial_order="0" id="1" area="0"/>
+            <label x="0.0124949" y="0.038258" polynomial_order="0" id="2" area="0.01"/>
         </labels>
     </geometry>
+    <problem frequency="1000" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_step="0" time_total="0" name="Magnetic Harmonic Axisymmetric Heating" date="2011-07-09">
+        <description>This model is an example.</description>
+        <startup_script/>
+        <fields>
+            <field field_id="magnetic" initial_condition="0" polynomial_order="2" number_of_refinements="1" weakforms="interpreted" analysis_type="harmonic">
+                <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="1e-3"/>
+                <boundaries>
+                    <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
+                        <edge edge="0"/>
+                        <edge edge="2"/>
+                        <edge edge="5"/>
+                        <edge edge="6"/>
+                        <edge edge="7"/>
+                        <edge edge="8"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="1" name="Coil" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="0"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="3.7e7" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="2" name="Metal" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="2"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_remanence="0" magnetic_conductivity="0" magnetic_current_density_external_imag="0" magnetic_remanence_angle="0" id="3" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="1"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
 </document>

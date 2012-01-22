@@ -81,7 +81,7 @@ void SceneViewSettings::defaultValues()
 
     showContours = false;
     showVectors = false;
-    showParticleTracing = false;
+    showParticleTracing = true;
     showSolutionMesh = false;
 
     contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
@@ -794,7 +794,7 @@ void SceneView::paintRulers()
         m_rulersNumbersWidth = (2.0/contextWidth()*QFontMetrics(fontLabel).width(QString::number(5*gridStep)))/m_scale2d*aspect();
 
         m_rulersAreaWidth = Point((2.0/contextWidth()*fontLabel.pointSize()*2.0)/m_scale2d*aspect(),
-                                -(2.0/contextHeight()*fontLabel.pointSize()*2.0)/m_scale2d);
+                                  -(2.0/contextHeight()*fontLabel.pointSize()*2.0)/m_scale2d);
 
         // area background
         drawBlend(Point(cornerMin.x, cornerMax.y - m_rulersAreaWidth.y),
@@ -1875,53 +1875,83 @@ void SceneView::paintScalarField3DSolid_TODOParticle()
             {
                 max_steps_iter++;
 
-                Point3 newPoint;
+                Point3 np;
+                Point3 nv;
 
-                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(Point(p.x, p.y), v);
-                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
+                // QTime time;
 
+                // time.start();
+                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(p, v);
+                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(p);
+                // qDebug() << "force and material: " << time.elapsed();
+
+                // time.start();
                 int max_steps_step = 0;
                 while (max_steps_step < 100)
                 {
                     max_steps_step++;
 
-                    newPoint = p
-                            + v * dt
-                            + (force * Util::config()->particleConstant +
-                               ((Util::config()->particleIncludeGravitation) ? Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0) : Point3()))
-                            / Util::config()->particleMass * dt*dt;
+                    // simple Euler method
+                    // position
+                    np = p + v * dt;
 
-                    double step = abs((p - newPoint).magnitude());
+                    // velocity
+                    nv = v + (force * Util::config()->particleConstant +
+                              ((Util::config()->particleIncludeGravitation) ? Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0) : Point3()))
+                            / Util::config()->particleMass * dt;
+
+                    double step = abs((p - np).magnitude());
                     if ((step < Util::config()->particleMaximumStep) ||
                             ((Util::config()->particleMaximumStep < EPS_ZERO) && (step < bound/50)))
                         break;
 
                     dt /= 2;
                 }
+                // qDebug() << "euler: " << time.elapsed();
 
-                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(newPoint.x, newPoint.y));
+                Point pview;
+                Point npview;
+                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                {
+                    pview.x = p.x;
+                    pview.y = p.y;
 
+                    npview.x = np.x;
+                    npview.y = np.y;
+                }
+                else
+                {
+                    pview.x = sqrt(sqr(p.x) + sqr(p.z));
+                    pview.y = p.y;
+
+                    npview.x = sqrt(sqr(np.x) + sqr(np.z));
+                    npview.y = np.y;
+                }
+
+                // qDebug() << "p: " << p.toString() << "pview: " << pview.toString();
+
+                // time.start();
+                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(pview.x, pview.y));
                 if (index < 0)
                 {
                     break;
                 }
                 else if (Util::config()->particleTerminateOnDifferentMaterial)
                 {
-                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(newPoint.x, newPoint.y));
+                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point3(p.x, p.y, 0.0));
                     if (abs(material - newMaterial) > EPS_ZERO)
                         break;
                 }
-
-                // qDebug() << p.z;
+                // qDebug() << "stop check: " << time.elapsed();
 
                 double kkk = 0.2e1;
 
                 glVertex3d(p.x, p.y, kkk*p.z);
-                glVertex3d(newPoint.x, newPoint.y, kkk*newPoint.z);
+                glVertex3d(np.x, np.y, kkk*np.z);
 
                 // new values
-                v = (newPoint - p) * 1/dt;
-                p = newPoint;
+                v = nv;
+                p = np;
 
                 // increase time step
                 dt *= 10;
@@ -2706,63 +2736,97 @@ void SceneView::paintParticleTracing()
                           rand() / double(RAND_MAX),
                           rand() / double(RAND_MAX));
 
-            double dt = bound;
+            double dt = 10;
 
             int max_steps_iter = 0;
             while (max_steps_iter < 100000)
             {
                 max_steps_iter++;
 
-                Point3 newPoint;
+                Point3 np;
+                Point3 nv;
 
-                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(Point(p.x, p.y), v);
-                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
+                // QTime time;
 
+                // time.start();
+                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(p, v);
+                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(p);
+                // qDebug() << "force and material: " << time.elapsed();
+
+                // time.start();
                 int max_steps_step = 0;
                 while (max_steps_step < 100)
                 {
                     max_steps_step++;
 
-                    newPoint = p
-                            + v * dt
-                            + (force * Util::config()->particleConstant +
-                               ((Util::config()->particleIncludeGravitation) ? Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0) : Point3()))
-                            / Util::config()->particleMass * dt*dt;
+                    // simple Euler method
+                    // position
+                    np = p + v * dt;
 
-                    double step = abs((p - newPoint).magnitude());
+                    // velocity
+                    nv = v + (force * Util::config()->particleConstant +
+                              ((Util::config()->particleIncludeGravitation) ? Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0) : Point3()))
+                            / Util::config()->particleMass * dt;
+
+                    double step = abs((p - np).magnitude());
                     if ((step < Util::config()->particleMaximumStep) ||
-                            ((Util::config()->particleMaximumStep < EPS_ZERO) && (step < bound/50)))
+                            ((Util::config()->particleMaximumStep < EPS_ZERO) && (step < bound/200)))
                         break;
 
                     dt /= 2;
                 }
+                // qDebug() << "euler: " << time.elapsed();
 
-                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(newPoint.x, newPoint.y));
+                Point pview;
+                Point npview;
+                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                {
+                    pview.x = p.x;
+                    pview.y = p.y;
 
+                    npview.x = np.x;
+                    npview.y = np.y;
+                }
+                else
+                {
+                    pview.x = sqrt(sqr(p.x) + sqr(p.z));
+                    pview.y = p.y;
+
+                    npview.x = sqrt(sqr(np.x) + sqr(np.z));
+                    npview.y = np.y;
+                }
+
+                // qDebug() << "p: " << p.toString() << "pview: " << pview.toString();
+
+                // time.start();
+                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(pview.x, pview.y));
                 if (index < 0)
                 {
                     break;
                 }
                 else if (Util::config()->particleTerminateOnDifferentMaterial)
                 {
-                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(newPoint.x, newPoint.y));
+                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point3(p.x, p.y, 0.0));
                     if (abs(material - newMaterial) > EPS_ZERO)
                         break;
                 }
+                // qDebug() << "stop check: " << time.elapsed();
 
+                // time.start();
                 // line
                 glBegin(GL_LINES);
-                glVertex2d(p.x, p.y);
-                glVertex2d(newPoint.x, newPoint.y);
+                glVertex2d(pview.x, pview.y);
+                glVertex2d(npview.x, npview.y);
                 glEnd();
 
                 glBegin(GL_POINTS);
-                glVertex2d(newPoint.x, newPoint.y);
+                glVertex2d(npview.x, npview.y);
                 glEnd();
+                // qDebug() << "paint: " << time.elapsed();
 
                 // new values
-                v = (newPoint - p) * 1/dt;
-                p = newPoint;
+                v = nv;
+                p = np;
 
                 // increase time step
                 dt *= 10;

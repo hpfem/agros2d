@@ -813,18 +813,43 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
     }
 }
 
-Point3 HermesMagnetic::particleForce(Point point, Point3 velocity)
+Point3 HermesMagnetic::particleForce(Point3 point, Point3 velocity)
 {
-    LocalPointValueMagnetic *pointValue = dynamic_cast<LocalPointValueMagnetic *>(localPointValue(point));
+    LocalPointValueMagnetic *pointValue = dynamic_cast<LocalPointValueMagnetic *>(localPointValue(Point(point.x, point.y)));
 
     if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-        return Point3(- velocity.z*pointValue->B_real.y,
-                      velocity.z*pointValue->B_real.x,
-                      velocity.x*pointValue->B_real.y - velocity.y*pointValue->B_real.x);
+    {
+        return Point3(- velocity.z * pointValue->B_real.y,
+                      velocity.z * pointValue->B_real.x,
+                      velocity.x * pointValue->B_real.y - velocity.y * pointValue->B_real.x);
+    }
     else
-        return Point3(- velocity.z*pointValue->B_real.y / point.x,
-                      velocity.z*pointValue->B_real.x / point.x,
-                      velocity.x*pointValue->B_real.y - velocity.y*pointValue->B_real.x);
+    {
+        //        Point3 velocityPlanar = Point3(velocity.x * cos(velocity.z),
+        //                                       velocity.x * sin(velocity.z),
+        //                                       velocity.y);
+
+        Point3 velocityPlanar = velocity;
+
+        Point3 fluxPlanar(pointValue->B_real.x * cos(point.z),
+                          pointValue->B_real.y,
+                          pointValue->B_real.x * sin(point.z));
+
+        Point3 forcePlanar(velocityPlanar.y * fluxPlanar.z - velocityPlanar.z * fluxPlanar.y,
+                           velocityPlanar.z * fluxPlanar.x - velocityPlanar.x * fluxPlanar.z,
+                           velocityPlanar.x * fluxPlanar.y - velocityPlanar.y * fluxPlanar.x);
+
+        //        Point3 forceAxi(sqrt(sqr(forcePlanar.x) + sqr(forcePlanar.y)),
+        //                        forcePlanar.z,
+        //                        atan2(forcePlanar.y, forcePlanar.x));
+
+        // qDebug() << "velocityPlanar: " << velocityPlanar.toString();
+        // qDebug() << "forcePlanar: " << forcePlanar.toString();
+        // qDebug() << "forceAxi: " << forceAxi.toString();
+
+        // return forceAxi;
+        return forcePlanar;
+    }
 
     //    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
     //        return Point3(- velocity.z*pointValue->B_real.y,
@@ -836,9 +861,9 @@ Point3 HermesMagnetic::particleForce(Point point, Point3 velocity)
     //                  velocity.x*pointValue->B_real.y - velocity.y*pointValue->B_real.x);
 }
 
-double HermesMagnetic::particleMaterial(Point point)
+double HermesMagnetic::particleMaterial(Point3 point)
 {
-    LocalPointValueMagnetic *pointValue = dynamic_cast<LocalPointValueMagnetic *>(localPointValue(point));
+    LocalPointValueMagnetic *pointValue = dynamic_cast<LocalPointValueMagnetic *>(localPointValue(Point(point.x, point.y)));
 
     return pointValue->permeability;
 }

@@ -177,6 +177,14 @@ struct Point
 
         return Point(mx, my);
     }
+
+    QString toString()
+    {
+        return QString("x = %1, y = %2, magnitude = %3").
+                arg(x).
+                arg(y).
+                arg(magnitude());
+    }
 };
 
 // return center
@@ -210,6 +218,15 @@ struct Point3
         double mz = z/m;
 
         return Point3(mx, my, mz);
+    }
+
+    QString toString()
+    {
+        return QString("x = %1, y = %2, z = %3, magnitude = %4").
+                arg(x).
+                arg(y).
+                arg(z).
+                arg(magnitude());
     }
 };
 
