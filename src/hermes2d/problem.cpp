@@ -78,8 +78,8 @@ bool Block::solveInit()
 
 void Block::solve()
 {
-    //m_solutionList->init(m_progressItemSolve, m_wf, m_fields[0]->fieldInfo());
     m_solutionList->solve();
+    cout << "num elem pri prirazeni do scene solution " <<  Util::problem()->meshInitial()->get_num_active_elements() << endl;
     Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setMeshInitial(Util::problem()->meshInitial());
     Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setSolutionArray(m_solutionList->at(0));
 

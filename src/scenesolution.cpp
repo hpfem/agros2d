@@ -530,16 +530,15 @@ void SceneSolution<Scalar>::processView(bool showViewProgress)
 template <typename Scalar>
 void SceneSolution<Scalar>::processSolutionMesh()
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::processSolutionMesh()");
+    logMessage("SceneSolution::processSolutionMesh()");
 
-//    if (isSolved())
-//    {
-//        InitialCondition<double> initial(sln()->get_mesh(), 0.0);
-//        m_linSolutionMeshView.process_solution(&initial);
+    if (Util::problem()->isSolved())
+    {
+        InitialCondition<double> initial(sln()->get_mesh(), 0.0);
+        m_linSolutionMeshView.process_solution(&initial);
 
-//        emit processedSolutionMesh();
-//    }
+        emit processedSolutionMesh();
+    }
 }
 
 template <typename Scalar>

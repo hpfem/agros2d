@@ -100,6 +100,8 @@ void ProgressItemMesh::mesh()
         processTriangle.setStandardErrorFile(tempProblemFileName() + ".triangle.err");
         connect(&processTriangle, SIGNAL(finished(int)), this, SLOT(meshTriangleCreated(int)));
 
+        cout << "creating mesh in progress item " << tempProblemFileName().toStdString() + ".triangle.out" << endl;
+
         QString triangleBinary = "triangle";
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle.exe"))
             triangleBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "triangle.exe\"";
