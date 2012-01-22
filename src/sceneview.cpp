@@ -81,7 +81,7 @@ void SceneViewSettings::defaultValues()
 
     showContours = false;
     showVectors = false;
-    showParticleTracing = true;
+    showParticleTracing = false;
     showSolutionMesh = false;
 
     contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
@@ -1823,7 +1823,6 @@ void SceneView::paintScalarField3DSolid_TODOParticle()
             Point3 v;
             v.x = Util::config()->particleStartVelocity.x;
             v.y = Util::config()->particleStartVelocity.y;
-            v.z = Util::config()->particleStartVelocity.z;
 
             // random point
             if (i > 0)
@@ -1881,8 +1880,8 @@ void SceneView::paintScalarField3DSolid_TODOParticle()
                 // QTime time;
 
                 // time.start();
-                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(p, v);
-                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(p);
+                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(Point(p.x, p.y), p.z, v);
+                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
                 // qDebug() << "force and material: " << time.elapsed();
 
                 // time.start();
@@ -1938,7 +1937,7 @@ void SceneView::paintScalarField3DSolid_TODOParticle()
                 }
                 else if (Util::config()->particleTerminateOnDifferentMaterial)
                 {
-                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point3(p.x, p.y, 0.0));
+                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
                     if (abs(material - newMaterial) > EPS_ZERO)
                         break;
                 }
@@ -2682,6 +2681,10 @@ void SceneView::paintParticleTracing()
         if (bound < EPS_ZERO)
             return;
 
+        // position and velocity cache
+        QList<Point3> positions;
+        QList<Point3> velocities;
+
         for (int i = 0; i < Util::config()->particleNumberOfParticles; i++)
         {
             // initial position
@@ -2693,7 +2696,6 @@ void SceneView::paintParticleTracing()
             Point3 v;
             v.x = Util::config()->particleStartVelocity.x;
             v.y = Util::config()->particleStartVelocity.y;
-            v.z = Util::config()->particleStartVelocity.z;
 
             // random point
             if (i > 0)
@@ -2717,26 +2719,16 @@ void SceneView::paintParticleTracing()
                 }
             }
 
-            glPointSize(Util::config()->nodeSize);
+            // position and velocity cache
+            positions.append(p);
+            velocities.append(v);
 
-            glBegin(GL_POINTS);
-            glVertex2d(p.x, p.y);
-            glEnd();
+            double dt = 1e-3;
 
-            // lines
-            glLineWidth(2.0);
-            glPointSize(Util::config()->nodeSize * 2.0/5.0);
-
-            if (i == 0)
-                glColor3d(Util::config()->colorSelected.redF(),
-                          Util::config()->colorSelected.greenF(),
-                          Util::config()->colorSelected.blueF());
-            else
-                glColor3d(rand() / double(RAND_MAX),
-                          rand() / double(RAND_MAX),
-                          rand() / double(RAND_MAX));
-
-            double dt = 10;
+            double timeForceAndMaterial = 0.0;
+            double timeEuler = 0.0;
+            double timeStopCheck = 0.0;
+            double timeOpenGL = 0.0;
 
             int max_steps_iter = 0;
             while (max_steps_iter < 100000)
@@ -2746,14 +2738,14 @@ void SceneView::paintParticleTracing()
                 Point3 np;
                 Point3 nv;
 
-                // QTime time;
+                QTime time;
 
-                // time.start();
-                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(p, v);
-                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(p);
-                // qDebug() << "force and material: " << time.elapsed();
+                time.start();
+                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(Point(p.x, p.y), p.z, v);
+                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
+                timeForceAndMaterial += time.elapsed();
 
-                // time.start();
+                time.start();
                 int max_steps_step = 0;
                 while (max_steps_step < 100)
                 {
@@ -2770,12 +2762,15 @@ void SceneView::paintParticleTracing()
 
                     double step = abs((p - np).magnitude());
                     if ((step < Util::config()->particleMaximumStep) ||
-                            ((Util::config()->particleMaximumStep < EPS_ZERO) && (step < bound/200)))
+                            ((Util::config()->particleMaximumStep < EPS_ZERO) && (step < bound/100)))
                         break;
 
                     dt /= 2;
+
+                    // qDebug() << max_steps_step;
                 }
-                // qDebug() << "euler: " << time.elapsed();
+                // qDebug() << dt;
+                timeEuler += time.elapsed();
 
                 Point pview;
                 Point npview;
@@ -2796,9 +2791,7 @@ void SceneView::paintParticleTracing()
                     npview.y = np.y;
                 }
 
-                // qDebug() << "p: " << p.toString() << "pview: " << pview.toString();
-
-                // time.start();
+                time.start();
                 int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(pview.x, pview.y));
                 if (index < 0)
                 {
@@ -2806,31 +2799,86 @@ void SceneView::paintParticleTracing()
                 }
                 else if (Util::config()->particleTerminateOnDifferentMaterial)
                 {
-                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point3(p.x, p.y, 0.0));
+                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(np.x, np.y));
                     if (abs(material - newMaterial) > EPS_ZERO)
                         break;
                 }
-                // qDebug() << "stop check: " << time.elapsed();
-
-                // time.start();
-                // line
-                glBegin(GL_LINES);
-                glVertex2d(pview.x, pview.y);
-                glVertex2d(npview.x, npview.y);
-                glEnd();
-
-                glBegin(GL_POINTS);
-                glVertex2d(npview.x, npview.y);
-                glEnd();
-                // qDebug() << "paint: " << time.elapsed();
+                timeStopCheck += time.elapsed();
 
                 // new values
                 v = nv;
                 p = np;
 
+                // cache
+                positions.append(p);
+                velocities.append(v);
+
                 // increase time step
                 dt *= 10;
             }
+
+            // velocity min and max value
+            double velocity_min =  numeric_limits<double>::max();
+            double velocity_max = -numeric_limits<double>::max();
+            for (int i = 0; i < velocities.length(); i++)
+            {
+                if (velocities[i].magnitude() < velocity_min) velocity_min = velocities[i].magnitude();
+                if (velocities[i].magnitude() > velocity_max) velocity_max = velocities[i].magnitude();
+            }
+
+            // visualization
+            if (!Util::config()->particleColorByVelocity)
+            {
+                if (i == 0)
+                    glColor3d(Util::config()->colorSelected.redF(),
+                              Util::config()->colorSelected.greenF(),
+                              Util::config()->colorSelected.blueF());
+                else
+                    glColor3d(rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX));
+            }
+
+            // starting point
+            glPointSize(Util::config()->nodeSize);
+            glBegin(GL_POINTS);
+            glVertex2d(positions[0].x, positions[0].y);
+            glEnd();
+
+            // lines
+            glLineWidth(2.0);
+            glBegin(GL_LINES);
+            for (int i = 0; i < positions.length() - 1; i++)
+            {
+                if (Util::config()->particleColorByVelocity)
+                    glColor3d(0.8 * (velocities[i].magnitude() - velocity_min) / (velocity_max - velocity_min),
+                              0.8 * (velocities[i].magnitude() - velocity_min) / (velocity_max - velocity_min),
+                              0.8 * (velocities[i].magnitude() - velocity_min) / (velocity_max - velocity_min));
+
+                glVertex2d(positions[i].x, positions[i].y);
+                glVertex2d(positions[i+1].x, positions[i+1].y);
+            }
+            glEnd();
+
+            // points
+            if (Util::config()->particleShowPoints)
+            {
+                glPointSize(Util::config()->nodeSize * 2.0/5.0);
+                glBegin(GL_POINTS);
+                for (int i = 0; i < positions.length() - 1; i++)
+                {
+                    glVertex2d(positions[i].x, positions[i].y);
+                }
+                glEnd();
+            }
+
+            // clear position and velocity cache
+            positions.clear();
+            velocities.clear();
+
+            // qDebug() << "force and material: " << timeForceAndMaterial;
+            // qDebug() << "euler: " << timeEuler;
+            // qDebug() << "stop check: " << timeStopCheck;
         }
 
         glDisable(GL_POLYGON_OFFSET_FILL);

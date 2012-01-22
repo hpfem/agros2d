@@ -121,10 +121,12 @@ public:
     double particleMaximumStep;
     bool particleTerminateOnDifferentMaterial;
     Point particleStart;
-    Point3 particleStartVelocity;
+    Point particleStartVelocity;
     Point particleAcceleration;
     int particleNumberOfParticles;
     double particleStartingRadius;
+    bool particleColorByVelocity;
+    bool particleShowPoints;
 
     // colors
     QColor colorBackground;

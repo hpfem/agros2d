@@ -303,16 +303,16 @@ ViewScalarFilter *HermesCurrent::viewScalarFilter(PhysicFieldVariable physicFiel
                                        physicFieldVariableComp);
 }
 
-Point3 HermesCurrent::particleForce(Point3 point, Point3 velocity)
+Point3 HermesCurrent::particleForce(Point point, double angle, Point3 velocity)
 {
-    LocalPointValueCurrent *pointValue = dynamic_cast<LocalPointValueCurrent *>(localPointValue(Point(point.x, point.y)));
+    LocalPointValueCurrent *pointValue = dynamic_cast<LocalPointValueCurrent *>(localPointValue(point));
 
     return Point3(pointValue->E.x, pointValue->E.y, 0);
 }
 
-double HermesCurrent::particleMaterial(Point3 point)
+double HermesCurrent::particleMaterial(Point point)
 {
-    LocalPointValueCurrent *pointValue = dynamic_cast<LocalPointValueCurrent *>(localPointValue(Point(point.x, point.y)));
+    LocalPointValueCurrent *pointValue = dynamic_cast<LocalPointValueCurrent *>(localPointValue(point));
 
     return pointValue->conductivity;
 }

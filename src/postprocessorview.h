@@ -121,9 +121,14 @@ private:
     SLineEditDouble *txtParticlePointY;
     SLineEditDouble *txtParticleVelocityX;
     SLineEditDouble *txtParticleVelocityY;
-    SLineEditDouble *txtParticleVelocityZ;
     SLineEditDouble *txtParticleMaximumStep;
     QCheckBox *chkParticleTerminateOnDifferentMaterial;
+    QLabel *lblParticlePointX;
+    QLabel *lblParticlePointY;
+    QLabel *lblParticleVelocityX;
+    QLabel *lblParticleVelocityY;
+    QCheckBox *chkParticleColorByVelocity;
+    QCheckBox *chkParticleShowPoints;
 
     QToolBox *tbxAdvance;
     QPushButton *btnOK;

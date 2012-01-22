@@ -146,11 +146,12 @@ void Config::load()
     particleStart.y = settings.value("SceneViewSettings/ParticleStartY", PARTICLESTARTY).toDouble();
     particleStartVelocity.x = settings.value("SceneViewSettings/ParticleStartVelocityX", PARTICLESTARTVELOCITYX).toDouble();
     particleStartVelocity.y = settings.value("SceneViewSettings/ParticleStartVelocityY", PARTICLESTARTVELOCITYY).toDouble();
-    particleStartVelocity.z = settings.value("SceneViewSettings/ParticleStartVelocityZ", PARTICLESTARTVELOCITYZ).toDouble();
     particleNumberOfParticles = settings.value("SceneViewSettings/ParticleNumberOfParticles", PARTICLENUMBEROFPARTICLES).toInt();
     particleStartingRadius = settings.value("SceneViewSettings/ParticleStartingRadius", PARTICLESTARTINGRADIUS).toDouble();
     particleTerminateOnDifferentMaterial = settings.value("SceneViewSettings/ParticleTerminateOnDifferentMaterial", PARTICLETERMINATEONDIFFERENTMATERIAL).toBool();
     particleMaximumStep = settings.value("SceneViewSettings/ParticleMaximumStep", PARTICLEMAXIMUMSTEP).toDouble();
+    particleShowPoints = settings.value("SceneViewSettings/ParticleShowPoints", PARTICLESHOWPOINTS).toBool();
+    particleColorByVelocity = settings.value("SceneViewSettings/ParticleColorByVelocity", PARTICLECOLORBYVELOCITY).toBool();
 
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
@@ -294,11 +295,12 @@ void Config::save()
     settings.setValue("SceneViewSettings/ParticleStartY", particleStart.y);
     settings.setValue("SceneViewSettings/ParticleStartVelocityX", particleStartVelocity.x);
     settings.setValue("SceneViewSettings/ParticleStartVelocityY", particleStartVelocity.y);
-    settings.setValue("SceneViewSettings/ParticleStartVelocityZ", particleStartVelocity.z);
     settings.setValue("SceneViewSettings/ParticleNumberOfParticles", particleNumberOfParticles);
     settings.setValue("SceneViewSettings/ParticleStartingRadius", particleStartingRadius);
     settings.setValue("SceneViewSettings/ParticleTerminateOnDifferentMaterial", particleTerminateOnDifferentMaterial);
     settings.setValue("SceneViewSettings/ParticleMaximumStep", particleMaximumStep);
+    settings.setValue("SceneViewSettings/ParticleShowPoints", particleShowPoints);
+    settings.setValue("SceneViewSettings/ParticleColorByVelocity", particleColorByVelocity);
 
     // 3d
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);

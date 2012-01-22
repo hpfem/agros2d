@@ -129,9 +129,10 @@ void PostprocessorView::loadAdvanced()
     txtParticlePointY->setValue(Util::config()->particleStart.y);
     txtParticleVelocityX->setValue(Util::config()->particleStartVelocity.x);
     txtParticleVelocityY->setValue(Util::config()->particleStartVelocity.y);
-    txtParticleVelocityZ->setValue(Util::config()->particleStartVelocity.z);
     chkParticleTerminateOnDifferentMaterial->setChecked(Util::config()->particleTerminateOnDifferentMaterial);
     txtParticleMaximumStep->setValue(Util::config()->particleMaximumStep);
+    chkParticleColorByVelocity->setChecked(Util::config()->particleColorByVelocity);
+    chkParticleShowPoints->setChecked(Util::config()->particleShowPoints);
 }
 
 void PostprocessorView::saveBasic()
@@ -212,9 +213,10 @@ void PostprocessorView::saveAdvanced()
     Util::config()->particleStart.y = txtParticlePointY->value();
     Util::config()->particleStartVelocity.x = txtParticleVelocityX->value();
     Util::config()->particleStartVelocity.y = txtParticleVelocityY->value();
-    Util::config()->particleStartVelocity.z = txtParticleVelocityZ->value();
     Util::config()->particleTerminateOnDifferentMaterial = chkParticleTerminateOnDifferentMaterial->isChecked();
     Util::config()->particleMaximumStep = txtParticleMaximumStep->value();
+    Util::config()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
+    Util::config()->particleShowPoints = chkParticleShowPoints->isChecked();
 
     // save
     Util::config()->save();
@@ -612,9 +614,14 @@ QWidget *PostprocessorView::controlsAdvanced()
     txtParticlePointY = new SLineEditDouble();
     txtParticleVelocityX = new SLineEditDouble();
     txtParticleVelocityY = new SLineEditDouble();
-    txtParticleVelocityZ = new SLineEditDouble();
     txtParticleMaximumStep = new SLineEditDouble();
-    chkParticleTerminateOnDifferentMaterial = new QCheckBox(tr("Terminate on different material"));
+    chkParticleTerminateOnDifferentMaterial = new QCheckBox(tr("Terminate on different material"));    
+    lblParticlePointX = new QLabel();
+    lblParticlePointY = new QLabel();
+    lblParticleVelocityX = new QLabel();
+    lblParticleVelocityY = new QLabel();
+    chkParticleColorByVelocity = new QCheckBox(tr("Line color controlled by velocity"));
+    chkParticleShowPoints = new QCheckBox(tr("Show points"));
 
     QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
     connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
@@ -631,9 +638,9 @@ QWidget *PostprocessorView::controlsAdvanced()
 
     // initial particle position
     QGridLayout *gridLayoutInitialPosition = new QGridLayout();
-    gridLayoutInitialPosition->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelX())), 0, 0);
+    gridLayoutInitialPosition->addWidget(lblParticlePointX, 0, 0);
     gridLayoutInitialPosition->addWidget(txtParticlePointX, 0, 1);
-    gridLayoutInitialPosition->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelY())), 1, 0);
+    gridLayoutInitialPosition->addWidget(lblParticlePointY, 1, 0);
     gridLayoutInitialPosition->addWidget(txtParticlePointY, 1, 1);
 
     QGroupBox *grpInitialPosition = new QGroupBox(tr("Initial particle position"));
@@ -641,12 +648,10 @@ QWidget *PostprocessorView::controlsAdvanced()
 
     // initial particle velocity
     QGridLayout *gridLayoutInitialVelocity = new QGridLayout();
-    gridLayoutInitialVelocity->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelX())), 0, 0);
+    gridLayoutInitialVelocity->addWidget(lblParticleVelocityX, 0, 0);
     gridLayoutInitialVelocity->addWidget(txtParticleVelocityX, 0, 1);
-    gridLayoutInitialVelocity->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelY())), 1, 0);
+    gridLayoutInitialVelocity->addWidget(lblParticleVelocityY, 1, 0);
     gridLayoutInitialVelocity->addWidget(txtParticleVelocityY, 1, 1);
-    gridLayoutInitialVelocity->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelZ())), 2, 0);
-    gridLayoutInitialVelocity->addWidget(txtParticleVelocityZ, 2, 1);
 
     QGroupBox *grpInitialVelocity = new QGroupBox(tr("Initial particle velocity"));
     grpInitialVelocity->setLayout(gridLayoutInitialVelocity);
@@ -655,8 +660,10 @@ QWidget *PostprocessorView::controlsAdvanced()
     QGridLayout *gridLayoutAdvanced = new QGridLayout();
     gridLayoutAdvanced->addWidget(chkParticleIncludeGravitation, 0, 0, 1, 2);
     gridLayoutAdvanced->addWidget(chkParticleTerminateOnDifferentMaterial, 1, 0, 1, 2);
-    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum step:")), 2, 0);
-    gridLayoutAdvanced->addWidget(txtParticleMaximumStep, 2, 1);
+    gridLayoutAdvanced->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
+    gridLayoutAdvanced->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
+    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum step:")), 4, 0);
+    gridLayoutAdvanced->addWidget(txtParticleMaximumStep, 4, 1);
 
     QGroupBox *grpAdvanced = new QGroupBox(tr("Advanced"));
     grpAdvanced->setLayout(gridLayoutAdvanced);
@@ -817,6 +824,11 @@ void PostprocessorView::updateControls()
     fillComboBoxVectorVariable(cmbVectorFieldVariable);
     fillComboBoxTimeStep(cmbTimeStep);
 
+    lblParticlePointX->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelX()));
+    lblParticlePointY->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelY()));
+    lblParticleVelocityX->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelX()));
+    lblParticleVelocityY->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelY()));
+
     loadBasic();
     loadAdvanced();
 }
@@ -922,9 +934,11 @@ void PostprocessorView::doParticleDefault()
     txtParticlePointY->setValue(PARTICLESTARTY);
     txtParticleVelocityX->setValue(PARTICLESTARTVELOCITYX);
     txtParticleVelocityY->setValue(PARTICLESTARTVELOCITYY);
-    txtParticleVelocityZ->setValue(PARTICLESTARTVELOCITYZ);
     chkParticleTerminateOnDifferentMaterial->setChecked(PARTICLETERMINATEONDIFFERENTMATERIAL);
     txtParticleMaximumStep->setValue(PARTICLEMAXIMUMSTEP);
+    txtParticleMaximumStep->setValue(PARTICLEMAXIMUMSTEP);
+    chkParticleColorByVelocity->setChecked(PARTICLECOLORBYVELOCITY);
+    chkParticleShowPoints->setChecked(PARTICLESHOWPOINTS);
 }
 
 void PostprocessorView::doScalarFieldRangeMinChanged()
