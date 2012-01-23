@@ -66,7 +66,7 @@ public:
     //TODO in the future, SceneSolution will hold only one SolutionArray, not arrays for all time levels
 
     //TODO temp
-    void setSolutionArray(SolutionArray<Scalar>* solutionArray);
+    void setSolutionArray(QList<SolutionArray<Scalar>* > solutionArrays);
 
     FieldInfo* fieldInfo() { return m_fieldInfo; }
 

@@ -21,6 +21,7 @@
 #include "scenemarker.h"
 #include "scenesolution.h"
 #include "module.h"
+#include "module_agros.h"
 #include "solver.h"
 #include "problem.h"
 #include "progressdialog.h"
@@ -81,7 +82,11 @@ void Block::solve()
     m_solutionList->solve();
     cout << "num elem pri prirazeni do scene solution " <<  Util::problem()->meshInitial()->get_num_active_elements() << endl;
     Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setMeshInitial(Util::problem()->meshInitial());
-    Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setSolutionArray(m_solutionList->at(0));
+
+    QList<SolutionArray<double>* > solutionArrays;
+    for(int i = 0; i < m_fields[0]->fieldInfo()->module()->number_of_solution(); i++)
+        solutionArrays.push_back(m_solutionList->at(i));
+    Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setSolutionArray(solutionArrays);
 
 }
 
@@ -101,10 +106,14 @@ Problem::Problem()
 void Problem::createStructure()
 {
     QMap<QString, FieldInfo *> fieldInfos = Util::scene()->fieldInfos();
-    assert(fieldInfos.size() == 1);
-    QList<FieldInfo*> tmp;
-    tmp.append(fieldInfos.begin().value());
-    m_blocks.append(new Block(tmp, m_progressItemSolve));
+
+    //TODO only weak coupling so far
+    foreach(FieldInfo* fi, fieldInfos)
+    {
+        QList<FieldInfo*> tmp;
+        tmp.append(fi);
+        m_blocks.append(new Block(tmp, m_progressItemSolve));
+    }
 }
 
 
@@ -123,6 +132,8 @@ void Problem::postprocess()
 void Problem::solve(SolverMode solverMode)
 {
     logMessage("SceneSolution::solve()");
+
+    setVerbose(true);
 
     if (isSolving()) return;
 

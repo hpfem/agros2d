@@ -220,8 +220,8 @@ SolutionArray<Scalar> *SceneSolution<Scalar>::solutionArray(int i)
 {
     logMessage("SceneSolution::solutionArray()");
 
-    assert(i == 0);
-    return m_solutionArrayList.at(0);
+//    assert(i == 0);
+    return m_solutionArrayList.at(i);
 
 //    int currentTimeStep = i;
 //    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())
@@ -605,9 +605,12 @@ void SceneSolution<Scalar>::processOrder()
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::setSolutionArray(SolutionArray<Scalar> *solutionArray)
+void SceneSolution<Scalar>::setSolutionArray(QList<SolutionArray<Scalar> *> solutionArrays)
 {
-    m_solutionArrayList.push_back(new SolutionArray<Scalar>(*solutionArray));
+    assert(solutionArrays.size() == fieldInfo()->module()->number_of_solution());
+
+    for(int i = 0; i < solutionArrays.size(); i++)
+        m_solutionArrayList.push_back(new SolutionArray<Scalar>(*solutionArrays[i]));
 }
 
 template class SceneSolution<double>;

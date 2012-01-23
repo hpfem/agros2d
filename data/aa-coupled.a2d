@@ -21,6 +21,25 @@
         <startup_script></startup_script>
         <description></description>
         <fields>
+            <field field_id="elasticity" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weak_forms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_fixed_fixed" id="1" elasticity_displacement_x="0" name="fixed" elasticity_displacement_y="0">
+                        <edge edge="2"/>
+                    </boundary>
+                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_free_free" id="2" elasticity_displacement_x="0" name="free" elasticity_displacement_y="0">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="3"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material elasticity_force_x="0" elasticity_force_y="-10" elasticity_temperature="0" elasticity_poisson_ratio="0.33" elasticity_young_modulus="1e7" elasticity_alpha="0" elasticity_temperature_reference="0" id="1" name="new material">
+                        <label label="0"/>
+                    </material>
+                </materials>
+            </field>
             <field field_id="heat" initial_condition="0.0" polynomial_order="2" number_of_refinements="2" weak_forms="interpreted" analysis_type="steadystate">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
