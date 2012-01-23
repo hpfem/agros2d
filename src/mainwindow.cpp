@@ -632,6 +632,7 @@ void MainWindow::createToolBars()
     cmbTimeStep = new QComboBox(this);
     cmbTimeStep->setMinimumWidth(1.7*fontMetrics().width("0.00e+00"));
     connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
     tlbTransient->addWidget(cmbTimeStep);
 }
 
@@ -1331,9 +1332,6 @@ void MainWindow::doTimeStepChanged(int index)
 
 void MainWindow::doInvalidated()
 {
-    //TODO
-    if (!Util::scene()->fieldInfos().count() == 0)
-        return;
 
     logMessage("MainWindow::doInvalidated()");
 
@@ -1347,15 +1345,15 @@ void MainWindow::doInvalidated()
     actViewQuick3DScalarViewSolid->setEnabled(Util::problem()->isSolved());
     actViewQuick3DModel->setEnabled(Util::problem()->isSolved());
 
-    actSolveAdaptiveStep->setEnabled(Util::problem()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
+//    actSolveAdaptiveStep->setEnabled(Util::problem()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
     actChart->setEnabled(Util::problem()->isSolved());
-    actCreateVideo->setEnabled(Util::problem()->isSolved() && (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient));
+//    actCreateVideo->setEnabled(Util::problem()->isSolved() && (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient));
     tlbTransient->setEnabled(Util::problem()->isSolved());
-    fillComboBoxTimeStep(cmbTimeStep);
+//    fillComboBoxTimeStep(cmbTimeStep);
 
-    lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->name)));
+//    lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->name)));
     lblProblemType->setText(tr("Problem Type: %1").arg(coordinateTypeString(Util::scene()->problemInfo()->coordinateType)));
-    lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->fieldInfo("TODO")->analysisType())));
+//    lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->fieldInfo("TODO")->analysisType())));
 
     actExportVTKScalar->setEnabled(Util::problem()->isSolved());
     actExportVTKOrder->setEnabled(Util::problem()->isSolved());
@@ -1363,7 +1361,7 @@ void MainWindow::doInvalidated()
     postprocessorView->updateControls();
 
     // set current timestep
-    cmbTimeStep->setCurrentIndex(Util::problem()->timeStep());
+//    cmbTimeStep->setCurrentIndex(Util::problem()->timeStep());
 
     //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
     //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);

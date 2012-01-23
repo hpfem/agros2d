@@ -605,8 +605,14 @@ void PostprocessorView::doScalarFieldVariable(int index)
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
+
+    QString variableName(cmbScalarFieldVariable->itemData(index).toString());
+
+    //TODO not good - relies on variable names begining with module name
+    std::string fieldName(variableName.split("_")[0].toStdString());
+
     if (cmbScalarFieldVariable->currentIndex() != -1)
-        physicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->get_variable(cmbScalarFieldVariable->itemData(index).toString().toStdString());
+        physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
 
     if (physicFieldVariable)
     {
@@ -636,8 +642,14 @@ void PostprocessorView::doScalarFieldVariableComp(int index)
     txtScalarFieldExpression->setText("");
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
+
+    QString variableName(cmbScalarFieldVariable->itemData(index).toString());
+
+    //TODO not good - relies on variable names begining with module name
+    std::string fieldName(variableName.split("_")[0].toStdString());
+
     if (cmbScalarFieldVariable->currentIndex() != -1)
-        physicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->get_variable(cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString().toStdString());
+        physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
 
     if (physicFieldVariable)
     {
