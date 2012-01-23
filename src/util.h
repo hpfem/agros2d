@@ -187,6 +187,9 @@ struct Point
     }
 };
 
+Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e);
+QList<Point> intersection(Point, Point, Point, Point, Point, double, double);
+
 // return center
 Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
 
