@@ -428,6 +428,8 @@ void SceneView::paintGL()
 {
     logMessage("SceneView::paintGL()");
 
+    assert(this);
+
     glClearColor(Util::config()->colorBackground.redF(),
                  Util::config()->colorBackground.greenF(),
                  Util::config()->colorBackground.blueF(), 0);

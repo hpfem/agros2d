@@ -606,13 +606,15 @@ void PostprocessorView::doScalarFieldVariable(int index)
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
-    QString variableName(cmbScalarFieldVariable->itemData(index).toString());
+    if (cmbScalarFieldVariable->currentIndex() != -1){
+        QString variableName(cmbScalarFieldVariable->itemData(index).toString());
 
-    //TODO not good - relies on variable names begining with module name
-    std::string fieldName(variableName.split("_")[0].toStdString());
+        //TODO not good - relies on variable names begining with module name
+        std::string fieldName(variableName.split("_")[0].toStdString());
+        Util::scene()->setActiveViewField(Util::scene()->fieldInfo(fieldName));
 
-    if (cmbScalarFieldVariable->currentIndex() != -1)
         physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
+    }
 
     if (physicFieldVariable)
     {
@@ -643,13 +645,15 @@ void PostprocessorView::doScalarFieldVariableComp(int index)
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
-    QString variableName(cmbScalarFieldVariable->itemData(index).toString());
+    // TODO proc je tu index a cmb..->currentIndex?
+    if ((cmbScalarFieldVariable->currentIndex() != -1) && (index != -1)){
+        QString variableName(cmbScalarFieldVariable->itemData(index).toString());
 
-    //TODO not good - relies on variable names begining with module name
-    std::string fieldName(variableName.split("_")[0].toStdString());
+        //TODO not good - relies on variable names begining with module name
+        std::string fieldName(variableName.split("_")[0].toStdString());
 
-    if (cmbScalarFieldVariable->currentIndex() != -1)
         physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
+    }
 
     if (physicFieldVariable)
     {
@@ -762,7 +766,7 @@ void PostprocessorView::updateControls()
 
     fillComboBoxScalarVariable(cmbScalarFieldVariable);
     fillComboBoxVectorVariable(cmbVectorFieldVariable);
-    fillComboBoxTimeStep(cmbTimeStep);
+    //fillComboBoxTimeStep(cmbTimeStep);
 
     loadBasic();
     loadAdvanced();
@@ -784,6 +788,8 @@ void PostprocessorView::doApply()
 
     // time step
     QApplication::processEvents();
+
+    //TODO timestep
     //Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
 
     // read auto range values
@@ -794,8 +800,8 @@ void PostprocessorView::doApply()
     }
 
     // switch to the postprocessor
-    //if (Util::scene()->sceneSolution()->isSolved())
-    //    m_sceneView->actSceneModePostprocessor->trigger();
+    if (Util::problem()->isSolved())
+        m_sceneView->actSceneModePostprocessor->trigger();
 
     emit apply();
 
