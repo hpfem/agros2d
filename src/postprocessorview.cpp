@@ -24,6 +24,7 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "sceneview.h"
+#include "progressdialog.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
@@ -800,8 +801,13 @@ void PostprocessorView::doApply()
     }
 
     // switch to the postprocessor
-    if (Util::problem()->isSolved())
+    if (Util::problem()->isSolved()){
+        ProgressItemProcessView *pipv = new ProgressItemProcessView;
+        pipv->run();
+        delete pipv;
+
         m_sceneView->actSceneModePostprocessor->trigger();
+    }
 
     emit apply();
 

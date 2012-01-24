@@ -1051,7 +1051,7 @@ void ProgressItemProcessView::process()
 
     int step = 0;
 
-    //cout << "process" << endl;
+    cout << "process" << endl;
 
     // process order
     Util::scene()->activeSceneSolution()->processOrder();
