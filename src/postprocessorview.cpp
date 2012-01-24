@@ -42,6 +42,8 @@ PostprocessorView::PostprocessorView(SceneView *sceneView, QWidget *parent) : QD
 
     loadBasic();
     loadAdvanced();
+
+    connect(this, SIGNAL(apply()), sceneView, SLOT(timeStepChanged()));
 }
 
 void PostprocessorView::loadBasic()
