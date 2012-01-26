@@ -247,6 +247,10 @@ private:
     int m_backgroundTexture;
     QRectF m_backgroundPosition;
 
+    // rulers
+    Point m_rulersAreaWidth;
+    double m_rulersNumbersWidth;
+
     QMenu *mnuScene;
 
     QActionGroup *actMaterialGroup;
