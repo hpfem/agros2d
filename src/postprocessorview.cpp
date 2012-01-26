@@ -130,7 +130,8 @@ void PostprocessorView::loadAdvanced()
     txtParticleVelocityX->setValue(Util::config()->particleStartVelocity.x);
     txtParticleVelocityY->setValue(Util::config()->particleStartVelocity.y);
     chkParticleTerminateOnDifferentMaterial->setChecked(Util::config()->particleTerminateOnDifferentMaterial);
-    txtParticleMaximumStep->setValue(Util::config()->particleMaximumStep);
+    txtParticleMaximumRelativeError->setValue(Util::config()->particleMaximumRelativeError);
+    txtParticleMaximumSteps->setValue(Util::config()->particleMaximumSteps);
     chkParticleColorByVelocity->setChecked(Util::config()->particleColorByVelocity);
     chkParticleShowPoints->setChecked(Util::config()->particleShowPoints);
 }
@@ -214,7 +215,8 @@ void PostprocessorView::saveAdvanced()
     Util::config()->particleStartVelocity.x = txtParticleVelocityX->value();
     Util::config()->particleStartVelocity.y = txtParticleVelocityY->value();
     Util::config()->particleTerminateOnDifferentMaterial = chkParticleTerminateOnDifferentMaterial->isChecked();
-    Util::config()->particleMaximumStep = txtParticleMaximumStep->value();
+    Util::config()->particleMaximumRelativeError = txtParticleMaximumRelativeError->value();
+    Util::config()->particleMaximumSteps = txtParticleMaximumSteps->value();
     Util::config()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
     Util::config()->particleShowPoints = chkParticleShowPoints->isChecked();
 
@@ -614,14 +616,18 @@ QWidget *PostprocessorView::controlsAdvanced()
     txtParticlePointY = new SLineEditDouble();
     txtParticleVelocityX = new SLineEditDouble();
     txtParticleVelocityY = new SLineEditDouble();
-    txtParticleMaximumStep = new SLineEditDouble();
+    txtParticleMaximumRelativeError = new SLineEditDouble();
     chkParticleTerminateOnDifferentMaterial = new QCheckBox(tr("Terminate on different material"));    
     lblParticlePointX = new QLabel();
     lblParticlePointY = new QLabel();
     lblParticleVelocityX = new QLabel();
     lblParticleVelocityY = new QLabel();
-    chkParticleColorByVelocity = new QCheckBox(tr("Line color controlled by velocity"));
+    chkParticleColorByVelocity = new QCheckBox(tr("Line color is controlled by velocity"));
     chkParticleShowPoints = new QCheckBox(tr("Show points"));
+    txtParticleMaximumSteps = new QSpinBox();
+    txtParticleMaximumSteps->setMinimum(100);
+    txtParticleMaximumSteps->setMaximum(100000);
+    txtParticleMaximumSteps->setSingleStep(100);
 
     QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
     connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
@@ -662,8 +668,10 @@ QWidget *PostprocessorView::controlsAdvanced()
     gridLayoutAdvanced->addWidget(chkParticleTerminateOnDifferentMaterial, 1, 0, 1, 2);
     gridLayoutAdvanced->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
     gridLayoutAdvanced->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
-    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum step:")), 4, 0);
-    gridLayoutAdvanced->addWidget(txtParticleMaximumStep, 4, 1);
+    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum relative error (%):")), 4, 0);
+    gridLayoutAdvanced->addWidget(txtParticleMaximumRelativeError, 4, 1);
+    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum steps:")), 5, 0);
+    gridLayoutAdvanced->addWidget(txtParticleMaximumSteps, 5, 1);
 
     QGroupBox *grpAdvanced = new QGroupBox(tr("Advanced"));
     grpAdvanced->setLayout(gridLayoutAdvanced);
@@ -935,8 +943,8 @@ void PostprocessorView::doParticleDefault()
     txtParticleVelocityX->setValue(PARTICLESTARTVELOCITYX);
     txtParticleVelocityY->setValue(PARTICLESTARTVELOCITYY);
     chkParticleTerminateOnDifferentMaterial->setChecked(PARTICLETERMINATEONDIFFERENTMATERIAL);
-    txtParticleMaximumStep->setValue(PARTICLEMAXIMUMSTEP);
-    txtParticleMaximumStep->setValue(PARTICLEMAXIMUMSTEP);
+    txtParticleMaximumRelativeError->setValue(PARTICLEMAXIMUMRELATIVEERROR);
+    txtParticleMaximumSteps->setValue(PARTICLEMAXIMUMSTEPS);
     chkParticleColorByVelocity->setChecked(PARTICLECOLORBYVELOCITY);
     chkParticleShowPoints->setChecked(PARTICLESHOWPOINTS);
 }

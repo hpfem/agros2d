@@ -102,7 +102,7 @@ public:
 
     ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 
-    Point3 particleForce(Point point, double angle = 0, Point3 velocity = Point3());
+    Point3 particleForce(Point3 point, Point3 velocity = Point3());
     double particleMaterial(Point point);
 };
 

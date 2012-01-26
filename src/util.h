@@ -840,9 +840,10 @@ const double PARTICLESTARTVELOCITYY = 0;
 const double PARTICLEMASS = 9.109e-31; // mass of the electron
 const double PARTICLECONSTANT = 1.602e-19; // charge of the electron
 const double PARTICLETERMINATEONDIFFERENTMATERIAL = true;
-const double PARTICLEMAXIMUMSTEP = 0.0;
+const double PARTICLEMAXIMUMRELATIVEERROR = 0.0;
 const bool PARTICLECOLORBYVELOCITY = true;
 const bool PARTICLESHOWPOINTS = false;
+const int PARTICLEMAXIMUMSTEPS = 1000;
 
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;

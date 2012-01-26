@@ -27,6 +27,38 @@
 #include "scenebasic.h"
 #include "progressdialog.h"
 
+void newtonEquations(double step, Point3 position, Point3 velicity, Point3 *newposition, Point3 *newvelocity)
+{
+    // time.start();
+    Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(position, velicity);
+    // double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(position.x, position.y));
+
+    Point3 totalForce = (force * Util::config()->particleConstant +
+                         ((Util::config()->particleIncludeGravitation) ? Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0) : Point3()));
+
+    Point3 accel = totalForce / Util::config()->particleMass;
+    // Point3 accel;
+
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+    {
+        // position
+        *newposition = velicity * step;
+
+        // velocity
+        *newvelocity = accel * step;
+    }
+    else
+    {
+        (*newposition).x = velicity.x * step; // r
+        (*newposition).y = velicity.y * step; // z
+        (*newposition).z = velicity.z * step; // alpha
+
+        (*newvelocity).x = (accel.x + sqr(velicity.z) * position.x) * step; // r
+        (*newvelocity).y = (accel.y) * step; // z
+        (*newvelocity).z = (accel.z / position.x - 2 / position.x * velicity.x * velicity.z) * step; // alpha
+    }
+}
+
 // scene view
 static SceneView *m_sceneView = NULL;
 
@@ -81,7 +113,7 @@ void SceneViewSettings::defaultValues()
 
     showContours = false;
     showVectors = false;
-    showParticleTracing = false;
+    showParticleTracing = true;
     showSolutionMesh = false;
 
     contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
@@ -440,7 +472,7 @@ void SceneView::paintGL()
         if (m_scene->sceneSolution()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
         {
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D) paintScalarField3D();
-            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid) paintScalarField3DSolid();
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid) paintScalarField3DSolid_TODOParticle();
 
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
                     m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
@@ -1812,6 +1844,10 @@ void SceneView::paintScalarField3DSolid_TODOParticle()
         if (bound < EPS_ZERO)
             return;
 
+        // position and velocity cache
+        QList<Point3> positions;
+        QList<Point3> velocities;
+
         for (int i = 0; i < Util::config()->particleNumberOfParticles; i++)
         {
             // initial position
@@ -1823,6 +1859,10 @@ void SceneView::paintScalarField3DSolid_TODOParticle()
             Point3 v;
             v.x = Util::config()->particleStartVelocity.x;
             v.y = Util::config()->particleStartVelocity.y;
+
+            //            v.x = 0;
+            //            v.y = 0;
+            //            v.z = 0;
 
             // random point
             if (i > 0)
@@ -1846,116 +1886,222 @@ void SceneView::paintScalarField3DSolid_TODOParticle()
                 }
             }
 
-            glPointSize(Util::config()->nodeSize);
+            int steps = 0;
 
-            glBegin(GL_POINTS);
-            glVertex3d(p.x, p.y, p.z);
-            glEnd();
+            // position and velocity cache
+            positions.append(p);
+            velocities.append(v);
 
-            // lines
-            glLineWidth(2.0);
-            glPointSize(Util::config()->nodeSize * 2.0/5.0);
-
-            double dt = bound;
-
-            // line
-            if (i == 0)
-                glColor3d(Util::config()->colorSelected.redF(),
-                          Util::config()->colorSelected.greenF(),
-                          Util::config()->colorSelected.blueF());
-            else
-                glColor3d(rand() / double(RAND_MAX),
-                          rand() / double(RAND_MAX),
-                          rand() / double(RAND_MAX));
+            double relErrorMin = (Util::config()->particleMaximumRelativeError > 0.0) ? Util::config()->particleMaximumRelativeError/100 : 1e-9;
+            double relErrorMax = 1e-3;
+            double dt = 1e-12;
 
             int max_steps_iter = 0;
-            glBegin(GL_LINES);
-            while (max_steps_iter < 100000)
+            while (max_steps_iter < Util::config()->particleMaximumSteps)
             {
                 max_steps_iter++;
 
-                Point3 np;
-                Point3 nv;
-
-                // QTime time;
-
-                // time.start();
-                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(Point(p.x, p.y), p.z, v);
                 double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
-                // qDebug() << "force and material: " << time.elapsed();
 
-                // time.start();
+                steps++;
+
+                QTime time;
+                time.start();
+
+                // Runge-Kutta steps
+                Point3 np5;
+                Point3 nv5;
+
                 int max_steps_step = 0;
                 while (max_steps_step < 100)
                 {
-                    max_steps_step++;
+                    // Runge-Kutta-Fehlberg adaptive method
+                    Point3 k1np;
+                    Point3 k1nv;
+                    newtonEquations(dt,
+                                    p,
+                                    v,
+                                    &k1np, &k1nv);
 
-                    // simple Euler method
-                    // position
-                    np = p + v * dt;
+                    Point3 k2np;
+                    Point3 k2nv;
+                    newtonEquations(dt,
+                                    p + k1np * 1/4,
+                                    v + k1nv * 1/4,
+                                    &k2np, &k2nv);
 
-                    // velocity
-                    nv = v + (force * Util::config()->particleConstant +
-                              ((Util::config()->particleIncludeGravitation) ? Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0) : Point3()))
-                            / Util::config()->particleMass * dt;
+                    Point3 k3np;
+                    Point3 k3nv;
+                    newtonEquations(dt,
+                                    p + k1np * 3/32 + k2np * 9/32,
+                                    v + k1nv * 3/32 + k2nv * 9/32,
+                                    &k3np, &k3nv);
 
-                    double step = abs((p - np).magnitude());
-                    if ((step < Util::config()->particleMaximumStep) ||
-                            ((Util::config()->particleMaximumStep < EPS_ZERO) && (step < bound/50)))
-                        break;
+                    Point3 k4np;
+                    Point3 k4nv;
+                    newtonEquations(dt,
+                                    p + k1np * 1932/2197 - k2np * 7200/2197 + k3np * 7296/2197,
+                                    v + k1nv * 1932/2197 - k2nv * 7200/2197 + k3nv * 7296/2197,
+                                    &k4np, &k4nv);
 
-                    dt /= 2;
+                    Point3 k5np;
+                    Point3 k5nv;
+                    newtonEquations(dt,
+                                    p + k1np * 439/216 - k2np * 8 + k3np * 3680/513 - k4np * 845/4104,
+                                    v + k1nv * 439/216 - k2nv * 8 + k3nv * 3680/513 - k4nv * 845/4104,
+                                    &k5np, &k5nv);
+
+                    Point3 k6np;
+                    Point3 k6nv;
+                    newtonEquations(dt,
+                                    p - k1np * 8/27 + k2np * 2 - k3np * 3544/2565 + k4np * 1859/4104 - k5np * 11/40,
+                                    v - k1nv * 8/27 + k2nv * 2 - k3nv * 3544/2565 + k4nv * 1859/4104 - k5nv * 11/40,
+                                    &k6np, &k6nv);
+
+                    // Runge-Kutta order 4
+                    Point3 np4 = p + k1np * 25/216 + k3np * 1408/2565 + k4np * 2197/4104 - k5np * 1/5;
+                    // Point3 nv4 = v + k1nv * 25/216 + k3nv * 1408/2565 + k4nv * 2197/4104 - k5nv * 1/5;
+
+                    // Runge-Kutta order 5
+                    np5 = p + k1np * 16/135 + k3np * 6656/12825 + k4np * 28561/56430 - k5np * 9/50 + k5np * 2/55;
+                    nv5 = v + k1nv * 16/135 + k3nv * 6656/12825 + k4nv * 28561/56430 - k5nv * 9/50 + k5nv * 2/55;
+
+                    // optimal step estimation
+                    double absError = abs(np5.magnitude() - np4.magnitude());
+                    double relError = abs(absError / np5.magnitude());
+
+                    // qDebug() << np5.toString();
+
+                    // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", step: " << dt;
+
+                    if (relError < relErrorMin || relError < EPS_ZERO)
+                    {
+                        // increase step
+                        dt *= 2.0;
+                        continue;
+                    }
+
+                    if (relError > relErrorMax)
+                    {
+                        // decrease step
+                        dt /= 2.0;
+                        continue;
+                    }
+
+                    break;
                 }
-                // qDebug() << "euler: " << time.elapsed();
 
-                Point pview;
-                Point npview;
-                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-                {
-                    pview.x = p.x;
-                    pview.y = p.y;
-
-                    npview.x = np.x;
-                    npview.y = np.y;
-                }
-                else
-                {
-                    pview.x = sqrt(sqr(p.x) + sqr(p.z));
-                    pview.y = p.y;
-
-                    npview.x = sqrt(sqr(np.x) + sqr(np.z));
-                    npview.y = np.y;
-                }
-
-                // qDebug() << "p: " << p.toString() << "pview: " << pview.toString();
-
-                // time.start();
-                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(pview.x, pview.y));
+                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(),
+                                                                              Point(np5.x, np5.y));
                 if (index < 0)
                 {
                     break;
                 }
                 else if (Util::config()->particleTerminateOnDifferentMaterial)
                 {
-                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
+                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(np5.x, np5.y));
                     if (abs(material - newMaterial) > EPS_ZERO)
                         break;
                 }
-                // qDebug() << "stop check: " << time.elapsed();
-
-                double kkk = 0.2e1;
-
-                glVertex3d(p.x, p.y, kkk*p.z);
-                glVertex3d(np.x, np.y, kkk*np.z);
 
                 // new values
-                v = nv;
-                p = np;
+                v = nv5;
+                p = np5;
 
-                // increase time step
-                dt *= 10;
+                // cache
+                positions.append(p);
+
+                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                {
+                    velocities.append(v);
+                }
+                else
+                {
+                    velocities.append(Point3(v.x, v.y, p.x * v.z)); // v_phi = omega * r
+                }
+            }
+
+            // velocity min and max value
+            double velocity_min =  numeric_limits<double>::max();
+            double velocity_max = -numeric_limits<double>::max();
+            for (int i = 0; i < velocities.length(); i++)
+            {
+                if (velocities[i].magnitude() < velocity_min) velocity_min = velocities[i].magnitude();
+                if (velocities[i].magnitude() > velocity_max) velocity_max = velocities[i].magnitude();
+
+                // qDebug() << velocities[i].toString();
+            }
+
+            // visualization
+            if (!Util::config()->particleColorByVelocity)
+            {
+                if (i == 0)
+                    glColor3d(Util::config()->colorSelected.redF(),
+                              Util::config()->colorSelected.greenF(),
+                              Util::config()->colorSelected.blueF());
+                else
+                    glColor3d(rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX));
+            }
+
+            // starting point
+            glPointSize(Util::config()->nodeSize);
+            glBegin(GL_POINTS);
+            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                glVertex3d(positions[0].x, positions[0].y, positions[0].z);
+            else
+                glVertex3d(positions[0].x * cos(positions[0].z), positions[0].y, positions[0].x * sin(positions[0].z));
+
+            glEnd();
+
+            // lines
+            glLineWidth(2.0);
+            glBegin(GL_LINES);
+            for (int i = 0; i < positions.length() - 1; i++)
+            {
+                if (Util::config()->particleColorByVelocity)
+                    glColor3d(0.8 * (velocities[i].magnitude() - velocity_min) / (velocity_max - velocity_min),
+                              0.8 * (velocities[i].magnitude() - velocity_min) / (velocity_max - velocity_min),
+                              0.8 * (velocities[i].magnitude() - velocity_min) / (velocity_max - velocity_min));
+
+                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                {
+                    glVertex3d(positions[i].x, positions[i].y, positions[i].z);
+                    glVertex3d(positions[i+1].x, positions[i+1].y, positions[i].z);
+                }
+                else
+                {
+                    glVertex3d(positions[i].x * cos(positions[i].z), positions[i].y, positions[i].x * sin(positions[i].z));
+                    glVertex3d(positions[i+1].x * cos(positions[i+1].z), positions[i+1].y, positions[i+1].x * sin(positions[i+1].z));
+                }
             }
             glEnd();
+
+            // points
+            if (Util::config()->particleShowPoints)
+            {
+                glColor3d(Util::config()->colorSelected.redF(),
+                          Util::config()->colorSelected.greenF(),
+                          Util::config()->colorSelected.blueF());
+
+                glPointSize(Util::config()->nodeSize * 3.0/5.0);
+                glBegin(GL_POINTS);
+                for (int i = 0; i < positions.length() - 1; i++)
+                {
+                    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                        glVertex3d(positions[i].x, positions[i].y, positions[i].z);
+                    else
+                        glVertex3d(positions[i].x * cos(positions[i].z), positions[i].y, positions[i].x * sin(positions[i].z));
+                }
+                glEnd();
+            }
+
+            // clear position and velocity cache
+            positions.clear();
+            velocities.clear();
+
+            qDebug() << "steps: " << steps;
         }
 
         glDisable(GL_DEPTH_TEST);
@@ -2681,6 +2827,9 @@ void SceneView::paintParticleTracing()
         if (bound < EPS_ZERO)
             return;
 
+        QTime timePart;
+        timePart.start();
+
         // position and velocity cache
         QList<Point3> positions;
         QList<Point3> velocities;
@@ -2696,6 +2845,10 @@ void SceneView::paintParticleTracing()
             Point3 v;
             v.x = Util::config()->particleStartVelocity.x;
             v.y = Util::config()->particleStartVelocity.y;
+
+            //            v.x = 0;
+            //            v.y = 0;
+            //            v.z = 0;
 
             // random point
             if (i > 0)
@@ -2719,102 +2872,139 @@ void SceneView::paintParticleTracing()
                 }
             }
 
+            int steps = 0;
+
             // position and velocity cache
             positions.append(p);
             velocities.append(v);
 
-            double dt = 1e-3;
-
-            double timeForceAndMaterial = 0.0;
-            double timeEuler = 0.0;
-            double timeStopCheck = 0.0;
-            double timeOpenGL = 0.0;
+            double relErrorMin = (Util::config()->particleMaximumRelativeError > 0.0) ? Util::config()->particleMaximumRelativeError/100 : 1e-9;
+            double relErrorMax = 1e-3;
+            double dt = 1e-12;
 
             int max_steps_iter = 0;
-            while (max_steps_iter < 100000)
+            while (max_steps_iter < Util::config()->particleMaximumSteps)
             {
                 max_steps_iter++;
 
-                Point3 np;
-                Point3 nv;
+                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
+
+                steps++;
 
                 QTime time;
-
                 time.start();
-                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(Point(p.x, p.y), p.z, v);
-                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
-                timeForceAndMaterial += time.elapsed();
 
-                time.start();
+                // Runge-Kutta steps
+                Point3 np5;
+                Point3 nv5;
+
                 int max_steps_step = 0;
                 while (max_steps_step < 100)
                 {
-                    max_steps_step++;
+                    // Runge-Kutta-Fehlberg adaptive method
+                    Point3 k1np;
+                    Point3 k1nv;
+                    newtonEquations(dt,
+                                    p,
+                                    v,
+                                    &k1np, &k1nv);
 
-                    // simple Euler method
-                    // position
-                    np = p + v * dt;
+                    Point3 k2np;
+                    Point3 k2nv;
+                    newtonEquations(dt,
+                                    p + k1np * 1/4,
+                                    v + k1nv * 1/4,
+                                    &k2np, &k2nv);
 
-                    // velocity
-                    nv = v + (force * Util::config()->particleConstant +
-                              ((Util::config()->particleIncludeGravitation) ? Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0) : Point3()))
-                            / Util::config()->particleMass * dt;
+                    Point3 k3np;
+                    Point3 k3nv;
+                    newtonEquations(dt,
+                                    p + k1np * 3/32 + k2np * 9/32,
+                                    v + k1nv * 3/32 + k2nv * 9/32,
+                                    &k3np, &k3nv);
 
-                    double step = abs((p - np).magnitude());
-                    if ((step < Util::config()->particleMaximumStep) ||
-                            ((Util::config()->particleMaximumStep < EPS_ZERO) && (step < bound/100)))
-                        break;
+                    Point3 k4np;
+                    Point3 k4nv;
+                    newtonEquations(dt,
+                                    p + k1np * 1932/2197 - k2np * 7200/2197 + k3np * 7296/2197,
+                                    v + k1nv * 1932/2197 - k2nv * 7200/2197 + k3nv * 7296/2197,
+                                    &k4np, &k4nv);
 
-                    dt /= 2;
+                    Point3 k5np;
+                    Point3 k5nv;
+                    newtonEquations(dt,
+                                    p + k1np * 439/216 - k2np * 8 + k3np * 3680/513 - k4np * 845/4104,
+                                    v + k1nv * 439/216 - k2nv * 8 + k3nv * 3680/513 - k4nv * 845/4104,
+                                    &k5np, &k5nv);
 
-                    // qDebug() << max_steps_step;
+                    Point3 k6np;
+                    Point3 k6nv;
+                    newtonEquations(dt,
+                                    p - k1np * 8/27 + k2np * 2 - k3np * 3544/2565 + k4np * 1859/4104 - k5np * 11/40,
+                                    v - k1nv * 8/27 + k2nv * 2 - k3nv * 3544/2565 + k4nv * 1859/4104 - k5nv * 11/40,
+                                    &k6np, &k6nv);
+
+                    // Runge-Kutta order 4
+                    Point3 np4 = p + k1np * 25/216 + k3np * 1408/2565 + k4np * 2197/4104 - k5np * 1/5;
+                    // Point3 nv4 = v + k1nv * 25/216 + k3nv * 1408/2565 + k4nv * 2197/4104 - k5nv * 1/5;
+
+                    // Runge-Kutta order 5
+                    np5 = p + k1np * 16/135 + k3np * 6656/12825 + k4np * 28561/56430 - k5np * 9/50 + k5np * 2/55;
+                    nv5 = v + k1nv * 16/135 + k3nv * 6656/12825 + k4nv * 28561/56430 - k5nv * 9/50 + k5nv * 2/55;
+
+                    // optimal step estimation
+                    double absError = abs(np5.magnitude() - np4.magnitude());
+                    double relError = abs(absError / np5.magnitude());
+
+                    // qDebug() << np5.toString();
+
+                    // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", step: " << dt;
+
+                    if (relError < relErrorMin || relError < EPS_ZERO)
+                    {
+                        // increase step
+                        dt *= 2.0;
+                        continue;
+                    }
+
+                    if (relError > relErrorMax)
+                    {
+                        // decrease step
+                        dt /= 2.0;
+                        continue;
+                    }
+
+                    break;
                 }
-                // qDebug() << dt;
-                timeEuler += time.elapsed();
 
-                Point pview;
-                Point npview;
-                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-                {
-                    pview.x = p.x;
-                    pview.y = p.y;
-
-                    npview.x = np.x;
-                    npview.y = np.y;
-                }
-                else
-                {
-                    pview.x = sqrt(sqr(p.x) + sqr(p.z));
-                    pview.y = p.y;
-
-                    npview.x = sqrt(sqr(np.x) + sqr(np.z));
-                    npview.y = np.y;
-                }
-
-                time.start();
-                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(pview.x, pview.y));
+                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(),
+                                                                              Point(np5.x, np5.y));
                 if (index < 0)
                 {
                     break;
                 }
                 else if (Util::config()->particleTerminateOnDifferentMaterial)
                 {
-                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(np.x, np.y));
+                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(np5.x, np5.y));
                     if (abs(material - newMaterial) > EPS_ZERO)
                         break;
                 }
-                timeStopCheck += time.elapsed();
 
                 // new values
-                v = nv;
-                p = np;
+                v = nv5;
+                p = np5;
 
                 // cache
                 positions.append(p);
-                velocities.append(v);
 
-                // increase time step
-                dt *= 10;
+                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                {
+                    velocities.append(v);
+                }
+                else
+                {
+                    velocities.append(Point3(v.x, v.y, p.x * v.z)); // v_phi = omega * r
+                }
             }
 
             // velocity min and max value
@@ -2824,6 +3014,8 @@ void SceneView::paintParticleTracing()
             {
                 if (velocities[i].magnitude() < velocity_min) velocity_min = velocities[i].magnitude();
                 if (velocities[i].magnitude() > velocity_max) velocity_max = velocities[i].magnitude();
+
+                // qDebug() << velocities[i].toString();
             }
 
             // visualization
@@ -2863,7 +3055,11 @@ void SceneView::paintParticleTracing()
             // points
             if (Util::config()->particleShowPoints)
             {
-                glPointSize(Util::config()->nodeSize * 2.0/5.0);
+                glColor3d(Util::config()->colorSelected.redF(),
+                          Util::config()->colorSelected.greenF(),
+                          Util::config()->colorSelected.blueF());
+
+                glPointSize(Util::config()->nodeSize * 3.0/5.0);
                 glBegin(GL_POINTS);
                 for (int i = 0; i < positions.length() - 1; i++)
                 {
@@ -2876,10 +3072,10 @@ void SceneView::paintParticleTracing()
             positions.clear();
             velocities.clear();
 
-            // qDebug() << "force and material: " << timeForceAndMaterial;
-            // qDebug() << "euler: " << timeEuler;
-            // qDebug() << "stop check: " << timeStopCheck;
+            qDebug() << "steps: " << steps;
         }
+
+        qDebug() << "total: " << timePart.elapsed();
 
         glDisable(GL_POLYGON_OFFSET_FILL);
 

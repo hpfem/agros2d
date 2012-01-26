@@ -149,9 +149,10 @@ void Config::load()
     particleNumberOfParticles = settings.value("SceneViewSettings/ParticleNumberOfParticles", PARTICLENUMBEROFPARTICLES).toInt();
     particleStartingRadius = settings.value("SceneViewSettings/ParticleStartingRadius", PARTICLESTARTINGRADIUS).toDouble();
     particleTerminateOnDifferentMaterial = settings.value("SceneViewSettings/ParticleTerminateOnDifferentMaterial", PARTICLETERMINATEONDIFFERENTMATERIAL).toBool();
-    particleMaximumStep = settings.value("SceneViewSettings/ParticleMaximumStep", PARTICLEMAXIMUMSTEP).toDouble();
+    particleMaximumRelativeError = settings.value("SceneViewSettings/ParticleMaximumRelativeError", PARTICLEMAXIMUMRELATIVEERROR).toDouble();
     particleShowPoints = settings.value("SceneViewSettings/ParticleShowPoints", PARTICLESHOWPOINTS).toBool();
     particleColorByVelocity = settings.value("SceneViewSettings/ParticleColorByVelocity", PARTICLECOLORBYVELOCITY).toBool();
+    particleMaximumSteps = settings.value("SceneViewSettings/ParticleMaximumSteps", PARTICLEMAXIMUMSTEPS).toInt();
 
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
@@ -298,9 +299,10 @@ void Config::save()
     settings.setValue("SceneViewSettings/ParticleNumberOfParticles", particleNumberOfParticles);
     settings.setValue("SceneViewSettings/ParticleStartingRadius", particleStartingRadius);
     settings.setValue("SceneViewSettings/ParticleTerminateOnDifferentMaterial", particleTerminateOnDifferentMaterial);
-    settings.setValue("SceneViewSettings/ParticleMaximumStep", particleMaximumStep);
+    settings.setValue("SceneViewSettings/ParticleMaximumRelativeError", particleMaximumRelativeError);
     settings.setValue("SceneViewSettings/ParticleShowPoints", particleShowPoints);
     settings.setValue("SceneViewSettings/ParticleColorByVelocity", particleColorByVelocity);
+    settings.setValue("SceneViewSettings/ParticleMaximumSteps", particleMaximumSteps);
 
     // 3d
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
