@@ -24,6 +24,7 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "sceneview.h"
+#include "progressdialog.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
@@ -41,6 +42,8 @@ PostprocessorView::PostprocessorView(SceneView *sceneView, QWidget *parent) : QD
 
     loadBasic();
     loadAdvanced();
+
+    connect(this, SIGNAL(apply()), sceneView, SLOT(timeStepChanged()));
 }
 
 void PostprocessorView::loadBasic()
@@ -605,8 +608,16 @@ void PostprocessorView::doScalarFieldVariable(int index)
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
-    if (cmbScalarFieldVariable->currentIndex() != -1)
-        physicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->get_variable(cmbScalarFieldVariable->itemData(index).toString().toStdString());
+
+    if (cmbScalarFieldVariable->currentIndex() != -1){
+        QString variableName(cmbScalarFieldVariable->itemData(index).toString());
+
+        //TODO not good - relies on variable names begining with module name
+        std::string fieldName(variableName.split("_")[0].toStdString());
+        Util::scene()->setActiveViewField(Util::scene()->fieldInfo(fieldName));
+
+        physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
+    }
 
     if (physicFieldVariable)
     {
@@ -636,8 +647,16 @@ void PostprocessorView::doScalarFieldVariableComp(int index)
     txtScalarFieldExpression->setText("");
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
-    if (cmbScalarFieldVariable->currentIndex() != -1)
-        physicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->get_variable(cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString().toStdString());
+
+    // TODO proc je tu index a cmb..->currentIndex?
+    if ((cmbScalarFieldVariable->currentIndex() != -1) && (index != -1)){
+        QString variableName(cmbScalarFieldVariable->itemData(index).toString());
+
+        //TODO not good - relies on variable names begining with module name
+        std::string fieldName(variableName.split("_")[0].toStdString());
+
+        physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
+    }
 
     if (physicFieldVariable)
     {
@@ -750,7 +769,7 @@ void PostprocessorView::updateControls()
 
     fillComboBoxScalarVariable(cmbScalarFieldVariable);
     fillComboBoxVectorVariable(cmbVectorFieldVariable);
-    fillComboBoxTimeStep(cmbTimeStep);
+    //fillComboBoxTimeStep(cmbTimeStep);
 
     loadBasic();
     loadAdvanced();
@@ -772,6 +791,8 @@ void PostprocessorView::doApply()
 
     // time step
     QApplication::processEvents();
+
+    //TODO timestep
     //Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
 
     // read auto range values
@@ -782,8 +803,13 @@ void PostprocessorView::doApply()
     }
 
     // switch to the postprocessor
-    //if (Util::scene()->sceneSolution()->isSolved())
-    //    m_sceneView->actSceneModePostprocessor->trigger();
+    if (Util::problem()->isSolved()){
+        ProgressItemProcessView *pipv = new ProgressItemProcessView;
+        pipv->run();
+        delete pipv;
+
+        m_sceneView->actSceneModePostprocessor->trigger();
+    }
 
     emit apply();
 

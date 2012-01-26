@@ -31,6 +31,7 @@
 #include "progressdialog.h"
 #include "weakform_parser.h"
 #include "../weakform/src/weakform_factory.h"
+#include "hermes2d/problem.h"
 
 using namespace Hermes::Hermes2D;
 
@@ -156,9 +157,11 @@ template <typename Scalar>
 void SolutionArrayList<Scalar>::readMesh()
 {
     // load the mesh file
-    cout << tempProblemFileName().toStdString() + ".xml" << endl;
+    cout << "reading mesh in solver " << tempProblemFileName().toStdString() + ".xml" << endl;
     mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+
     refineMesh(m_fieldInfo, mesh, true, true);
+    Util::problem()->setMeshInitial(mesh);
 }
 
 
@@ -178,7 +181,7 @@ void SolutionArrayList<Scalar>::createSpace()
 
         if (boundary && (!boundary->isNone()))
         {
-           // printf(" ---- chci typ %s\n", boundary->type.data());
+            //printf(" ---- chci typ %s\n", boundary->getType().data());
             Hermes::Module::BoundaryType *boundary_type = m_fieldInfo->module()->get_boundary_type(boundary->getType());
 
             printf(" ---- bdr type %s\n", boundary_type->id.data(), boundary_type->name.data());
@@ -235,8 +238,12 @@ void SolutionArrayList<Scalar>::createSpace()
         // set order by element
         foreach(SceneLabel* label, Util::scene()->labels->items()){
             if (!label->getMarker(m_fieldInfo)->isNone())
+            {
+                cout << "setting order to " << (label->polynomialOrder > 0 ? label->polynomialOrder : m_fieldInfo->polynomialOrder) << endl;
                 space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : m_fieldInfo->polynomialOrder,
                                                QString::number(j).toStdString());
+            }
+            cout << "doooofs " << space.at(i)->get_num_dofs() << endl;
             j++;
         }
     }
@@ -343,6 +350,14 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
         {
             Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(solver->get_sln_vector(), castConst(desmartize(spaceParam)), desmartize(solutionParam));
 
+            for(int i = 0; i < solver->get_matrix_size(); i++)
+                cout << solver->get_sln_vector()[i] << ", ";
+            cout << "  <- reseni " << endl;
+            FILE *f;
+            f = fopen("rhs.txt", "w");
+            rhs->dump(f, "rhs");
+            fclose(f);
+
             Hermes::Hermes2D::Views::Linearizer lin;
             bool mode_3D = true;
             lin.save_solution_vtk(solutionParam[0].get(), "sln.vtk", "SLN", mode_3D);
@@ -375,10 +390,10 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
 
             Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(spaceParam)), desmartize(solutionParam));
 
-            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
-                                             arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
-            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
-                                             arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
+//            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
+//                                             arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
+//            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
+//                                             arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
 
             //delete coeff_vec; //TODO nebo se to dela v resici???
         }

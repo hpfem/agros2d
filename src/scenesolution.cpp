@@ -42,6 +42,11 @@ SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldIn
     m_slnScalarView = NULL;
     m_slnVectorXView = NULL;
     m_slnVectorYView = NULL;
+
+    connect(this, SIGNAL(processedRangeContour()), sceneView(), SLOT(processedRangeContour()));
+    connect(this, SIGNAL(processedRangeScalar()), sceneView(), SLOT(processedRangeScalar()));
+    connect(this, SIGNAL(processedRangeVector()), sceneView(), SLOT(processedRangeVector()));
+
 }
 
 template <typename Scalar>
@@ -215,8 +220,8 @@ SolutionArray<Scalar> *SceneSolution<Scalar>::solutionArray(int i)
 {
     logMessage("SceneSolution::solutionArray()");
 
-    assert(i == 0);
-    return m_solutionArrayList.at(0);
+//    assert(i == 0);
+    return m_solutionArrayList.at(i);
 
 //    int currentTimeStep = i;
 //    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())
@@ -475,7 +480,40 @@ void SceneSolution<Scalar>::setOrderView(shared_ptr<Hermes::Hermes2D::Space<Scal
 template <typename Scalar>
 void SceneSolution<Scalar>::processView(bool showViewProgress)
 {
-    assert(0);
+    int step = 0;
+
+    // process order
+    Util::scene()->activeSceneSolution()->processOrder();
+
+    if (sceneView()->sceneViewSettings().showSolutionMesh)
+    {
+        step++;
+        //emit message(tr("Processing solution mesh cache"), false, step);
+        Util::scene()->activeSceneSolution()->processSolutionMesh();
+    }
+    if (sceneView()->sceneViewSettings().showContours)
+    {
+        step++;
+        //emit message(tr("Processing contour view cache"), false, step);
+        Util::scene()->activeSceneSolution()->processRangeContour();
+    }
+    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
+            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
+    {
+        step++;
+        //emit message(tr("Processing scalar view cache"), false, step);
+        cout << "process Range Scalar" << endl;
+        Util::scene()->activeSceneSolution()->processRangeScalar();
+    }
+    if (sceneView()->sceneViewSettings().showVectors)
+    {
+        step++;
+        //emit message(tr("Processing vector view cache"), false, step);
+        Util::scene()->activeSceneSolution()->processRangeVector();
+    }
+
+
 //    if (showViewProgress)
 //    {
 //        m_progressDialog->clear();
@@ -492,16 +530,15 @@ void SceneSolution<Scalar>::processView(bool showViewProgress)
 template <typename Scalar>
 void SceneSolution<Scalar>::processSolutionMesh()
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::processSolutionMesh()");
+    logMessage("SceneSolution::processSolutionMesh()");
 
-//    if (isSolved())
-//    {
-//        InitialCondition<double> initial(sln()->get_mesh(), 0.0);
-//        m_linSolutionMeshView.process_solution(&initial);
+    if (Util::problem()->isSolved())
+    {
+        InitialCondition<double> initial(sln()->get_mesh(), 0.0);
+        m_linSolutionMeshView.process_solution(&initial);
 
-//        emit processedSolutionMesh();
-//    }
+        emit processedSolutionMesh();
+    }
 }
 
 template <typename Scalar>
@@ -568,9 +605,12 @@ void SceneSolution<Scalar>::processOrder()
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::setSolutionArray(SolutionArray<Scalar> *solutionArray)
+void SceneSolution<Scalar>::setSolutionArray(QList<SolutionArray<Scalar> *> solutionArrays)
 {
-    m_solutionArrayList.push_back(new SolutionArray<Scalar>(*solutionArray));
+    assert(solutionArrays.size() == fieldInfo()->module()->number_of_solution());
+
+    for(int i = 0; i < solutionArrays.size(); i++)
+        m_solutionArrayList.push_back(new SolutionArray<Scalar>(*solutionArrays[i]));
 }
 
 template class SceneSolution<double>;

@@ -54,13 +54,13 @@ VideoDialog::VideoDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent
 
 VideoDialog::~VideoDialog()
 {
-    assert(0);
-//    logMessage("VideoDialog::~VideoDialog()");
+    logMessage("VideoDialog::~VideoDialog()");
 
-//    // restore previous timestep
-//    Util::scene()->activeSceneSolution()->setTimeStep(m_timeStep);
+    // restore previous timestep
+    //TODO odkomentovat
+    //Util::scene()->activeSceneSolution()->setTimeStep(m_timeStep);
 
-//    delete timerAnimate;
+    delete timerAnimate;
 }
 
 void VideoDialog::showDialog()
