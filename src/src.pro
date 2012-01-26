@@ -98,7 +98,8 @@ SOURCES += util.cpp \
     hermes2d/module_agros.cpp \
     sceneedge.cpp \
     scenelabel.cpp \
-    scenenode.cpp
+    scenenode.cpp \
+    hermes2d/coupling.cpp
 
 HEADERS += util.h \
     value.h \
@@ -154,7 +155,8 @@ HEADERS += util.h \
     hermes2d/module_agros.h \
     sceneedge.h \
     scenelabel.h \
-    scenenode.h
+    scenenode.h \
+    hermes2d/coupling.h
 
 INCLUDEPATH += . \
     ../lib \
