@@ -24,7 +24,13 @@
                             <xsl:value-of select="@angle" />
                         </xsl:attribute>
                         <xsl:attribute name="refine_towards">
-                            <xsl:value-of select="@refine_towards" />
+                            <xsl:variable name="refine_towards" select="document/geometry/edges/edge/@refine_towards" />
+                            <xsl:choose>
+                                <xsl:when test="$refine_towards!=e">
+                                    <xsl:value-of select="$refine_towards" />
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
                         </xsl:attribute>
                     </xsl:element>
                 </xsl:for-each>
@@ -113,11 +119,11 @@
                             <xsl:otherwise>2</xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
-                    <xsl:attribute name="weakforms">
-                        <xsl:variable name="weakforms" select="document/problems/problem/@weakforms" />
+                    <xsl:attribute name="weak_forms">
+                        <xsl:variable name="weak_forms" select="document/problems/problem/@weakforms" />
                         <xsl:choose>
-                            <xsl:when test="$weakforms!=null">
-                                <xsl:value-of select="$weakforms" />
+                            <xsl:when test="$weak_forms!=null">
+                                <xsl:value-of select="$weak_forms" />
                             </xsl:when>
                             <xsl:otherwise>interpreted</xsl:otherwise>
                         </xsl:choose>
@@ -137,7 +143,13 @@
                             <xsl:value-of select="document/problems/problem/@adaptivitysteps" />
                         </xsl:attribute>
                         <xsl:attribute name="max_dofs">
-                            <xsl:value-of select="document/problems/problem/@maxdofs" />
+                            <xsl:variable name="max_dofs" select="document/problems/problem/@maxdofs" />
+                            <xsl:choose>
+                                <xsl:when test="$max_dofs!=null">
+                                    <xsl:value-of select="$max_dofs" />
+                                </xsl:when>
+                                <xsl:otherwise>60000</xsl:otherwise>
+                            </xsl:choose>
                         </xsl:attribute>
                     </xsl:element>
 
