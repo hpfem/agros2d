@@ -438,7 +438,7 @@ protected:
     void precalculate(int order, int mask);
 
 private:
-    FieldInfo *fieldInfo;
+    FieldInfo *m_fieldInfo;
 };
 
 // mesh fix

@@ -100,6 +100,8 @@ void ProgressItemMesh::mesh()
         processTriangle.setStandardErrorFile(tempProblemFileName() + ".triangle.err");
         connect(&processTriangle, SIGNAL(finished(int)), this, SLOT(meshTriangleCreated(int)));
 
+        cout << "creating mesh in progress item " << tempProblemFileName().toStdString() + ".triangle.out" << endl;
+
         QString triangleBinary = "triangle";
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle.exe"))
             triangleBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "triangle.exe\"";
@@ -189,8 +191,8 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
                 }
             }
 
-            // TODO set for all?
-            //Util::scene()->activeSceneSolution()->setMeshInitial(mesh);
+            // TODO jinak
+            Util::problem()->setMeshInitial(mesh);
         }
         else
         {
@@ -1049,6 +1051,8 @@ void ProgressItemProcessView::process()
 
     int step = 0;
 
+    cout << "process" << endl;
+
     // process order
     Util::scene()->activeSceneSolution()->processOrder();
 
@@ -1070,6 +1074,7 @@ void ProgressItemProcessView::process()
     {
         step++;
         emit message(tr("Processing scalar view cache"), false, step);
+        cout << "process Range Scalar" << endl;
         Util::scene()->activeSceneSolution()->processRangeScalar();
     }
     if (sceneView()->sceneViewSettings().showVectors)

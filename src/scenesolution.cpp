@@ -37,11 +37,16 @@ SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldIn
     //m_timeStep = -1;
     //m_isSolving = false;
 
-//    m_meshInitial = NULL;
-//    m_slnContourView = NULL;
-//    m_slnScalarView = NULL;
-//    m_slnVectorXView = NULL;
-//    m_slnVectorYView = NULL;
+    m_meshInitial = NULL;
+    m_slnContourView = NULL;
+    m_slnScalarView = NULL;
+    m_slnVectorXView = NULL;
+    m_slnVectorYView = NULL;
+
+    connect(this, SIGNAL(processedRangeContour()), sceneView(), SLOT(processedRangeContour()));
+    connect(this, SIGNAL(processedRangeScalar()), sceneView(), SLOT(processedRangeScalar()));
+    connect(this, SIGNAL(processedRangeVector()), sceneView(), SLOT(processedRangeVector()));
+
 }
 
 template <typename Scalar>
@@ -215,7 +220,9 @@ SolutionArray<Scalar> *SceneSolution<Scalar>::solutionArray(int i)
 {
     logMessage("SceneSolution::solutionArray()");
 
-    assert(0);
+//    assert(i == 0);
+    return m_solutionArrayList.at(i);
+
 //    int currentTimeStep = i;
 //    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())
 //    {
@@ -391,78 +398,75 @@ void SceneSolution<Scalar>::setSolutionArrayList(Hermes::vector<SolutionArray<Sc
 template <typename Scalar>
 void SceneSolution<Scalar>::setSlnContourView(ViewScalarFilter<Scalar> *slnScalarView)
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::setSlnContourView()");
+    logMessage("SceneSolution::setSlnContourView()");
 
-//    if (m_slnContourView)
-//    {
-//        delete m_slnContourView;
-//        m_slnContourView = NULL;
-//    }
+    if (m_slnContourView)
+    {
+        delete m_slnContourView;
+        m_slnContourView = NULL;
+    }
     
-//    m_slnContourView = slnScalarView;
-//    m_linContourView.process_solution(m_slnContourView,
-//                                      Hermes::Hermes2D::H2D_FN_VAL_0,
-//                                      Util::config()->linearizerQuality);
+    m_slnContourView = slnScalarView;
+    m_linContourView.process_solution(m_slnContourView,
+                                      Hermes::Hermes2D::H2D_FN_VAL_0,
+                                      Util::config()->linearizerQuality);
 
-//    // deformed shape
-//    if (Util::config()->deformContour)
-//        Util::scene()->problemInfo()->module()->deform_shape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
+    // deformed shape
+    if (Util::config()->deformContour)
+        m_fieldInfo->module()->deform_shape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
 }
 
 template <typename Scalar>
 void SceneSolution<Scalar>::setSlnScalarView(ViewScalarFilter<Scalar> *slnScalarView)
 {
-    assert(0); //TODO
     logMessage("SceneSolution::setSlnScalarView()");
 
-//    if (m_slnScalarView)
-//    {
-//        delete m_slnScalarView;
-//        m_slnScalarView = NULL;
-//    }
+    if (m_slnScalarView)
+    {
+        delete m_slnScalarView;
+        m_slnScalarView = NULL;
+    }
     
-//    m_slnScalarView = slnScalarView;
-//    // QTime time;
-//    // time.start();
-//    m_linScalarView.process_solution(m_slnScalarView,
-//                                     Hermes::Hermes2D::H2D_FN_VAL_0,
-//                                     Util::config()->linearizerQuality);
+    m_slnScalarView = slnScalarView;
+    // QTime time;
+    // time.start();
+    m_linScalarView.process_solution(m_slnScalarView,
+                                     Hermes::Hermes2D::H2D_FN_VAL_0,
+                                     Util::config()->linearizerQuality);
 
-//    // deformed shape
-//    if (Util::config()->deformScalar)
-//        Util::scene()->problemInfo()->module()->deform_shape(m_linScalarView.get_vertices(),
-//                                                             m_linScalarView.get_num_vertices());
+    // deformed shape
+    if (Util::config()->deformScalar)
+        m_fieldInfo->module()->deform_shape(m_linScalarView.get_vertices(),
+                                                             m_linScalarView.get_num_vertices());
 }
 
 template <typename Scalar>
 void SceneSolution<Scalar>::setSlnVectorView(ViewScalarFilter<Scalar> *slnVectorXView, ViewScalarFilter<Scalar> *slnVectorYView)
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::setSlnVectorView()");
+    logMessage("SceneSolution::setSlnVectorView()");
 
-//    if (m_slnVectorXView)
-//    {
-//        delete m_slnVectorXView;
-//        m_slnVectorXView = NULL;
-//    }
-//    if (m_slnVectorYView)
-//    {
-//        delete m_slnVectorYView;
-//        m_slnVectorYView = NULL;
-//    }
+    if (m_slnVectorXView)
+    {
+        delete m_slnVectorXView;
+        m_slnVectorXView = NULL;
+    }
+    if (m_slnVectorYView)
+    {
+        delete m_slnVectorYView;
+        m_slnVectorYView = NULL;
+    }
     
-//    m_slnVectorXView = slnVectorXView;
-//    m_slnVectorYView = slnVectorYView;
+    m_slnVectorXView = slnVectorXView;
+    m_slnVectorYView = slnVectorYView;
 
-//    m_vecVectorView.process_solution(m_slnVectorXView, m_slnVectorYView,
-//                                     Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
-//                                     Hermes::Hermes2D::Views::HERMES_EPS_LOW);
+    m_vecVectorView.process_solution(m_slnVectorXView, m_slnVectorYView,
+                                     Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
+                                     Hermes::Hermes2D::Views::HERMES_EPS_LOW);
 
-//    // deformed shape
-//    if (Util::config()->deformVector)
-//        Util::scene()->problemInfo()->module()->deform_shape(m_vecVectorView.get_vertices(),
-//                                                             m_vecVectorView.get_num_vertices());
+    // deformed shape
+    if (Util::config()->deformVector)
+        m_fieldInfo->module()->deform_shape(m_vecVectorView.get_vertices(),
+                                                             m_vecVectorView.get_num_vertices());
 }
 
 template <typename Scalar>
@@ -476,7 +480,40 @@ void SceneSolution<Scalar>::setOrderView(shared_ptr<Hermes::Hermes2D::Space<Scal
 template <typename Scalar>
 void SceneSolution<Scalar>::processView(bool showViewProgress)
 {
-    assert(0);
+    int step = 0;
+
+    // process order
+    Util::scene()->activeSceneSolution()->processOrder();
+
+    if (sceneView()->sceneViewSettings().showSolutionMesh)
+    {
+        step++;
+        //emit message(tr("Processing solution mesh cache"), false, step);
+        Util::scene()->activeSceneSolution()->processSolutionMesh();
+    }
+    if (sceneView()->sceneViewSettings().showContours)
+    {
+        step++;
+        //emit message(tr("Processing contour view cache"), false, step);
+        Util::scene()->activeSceneSolution()->processRangeContour();
+    }
+    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
+            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
+    {
+        step++;
+        //emit message(tr("Processing scalar view cache"), false, step);
+        cout << "process Range Scalar" << endl;
+        Util::scene()->activeSceneSolution()->processRangeScalar();
+    }
+    if (sceneView()->sceneViewSettings().showVectors)
+    {
+        step++;
+        //emit message(tr("Processing vector view cache"), false, step);
+        Util::scene()->activeSceneSolution()->processRangeVector();
+    }
+
+
 //    if (showViewProgress)
 //    {
 //        m_progressDialog->clear();
@@ -493,16 +530,15 @@ void SceneSolution<Scalar>::processView(bool showViewProgress)
 template <typename Scalar>
 void SceneSolution<Scalar>::processSolutionMesh()
 {
-    assert(0); //TODO
-//    logMessage("SceneSolution::processSolutionMesh()");
+    logMessage("SceneSolution::processSolutionMesh()");
 
-//    if (isSolved())
-//    {
-//        InitialCondition<double> initial(sln()->get_mesh(), 0.0);
-//        m_linSolutionMeshView.process_solution(&initial);
+    if (Util::problem()->isSolved())
+    {
+        InitialCondition<double> initial(sln()->get_mesh(), 0.0);
+        m_linSolutionMeshView.process_solution(&initial);
 
-//        emit processedSolutionMesh();
-//    }
+        emit processedSolutionMesh();
+    }
 }
 
 template <typename Scalar>
@@ -568,5 +604,13 @@ void SceneSolution<Scalar>::processOrder()
                 //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
 }
 
+template <typename Scalar>
+void SceneSolution<Scalar>::setSolutionArray(QList<SolutionArray<Scalar> *> solutionArrays)
+{
+    assert(solutionArrays.size() == fieldInfo()->module()->number_of_solution());
+
+    for(int i = 0; i < solutionArrays.size(); i++)
+        m_solutionArrayList.push_back(new SolutionArray<Scalar>(*solutionArrays[i]));
+}
 
 template class SceneSolution<double>;

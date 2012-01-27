@@ -63,6 +63,12 @@ public:
     void loadSolution(QDomElement element);
     void saveSolution(QDomDocument *doc, QDomElement element);
 
+    //TODO in the future, SceneSolution will hold only one SolutionArray, not arrays for all time levels
+
+    //TODO temp
+    void setSolutionArray(QList<SolutionArray<Scalar>* > solutionArrays);
+
+    FieldInfo* fieldInfo() { return m_fieldInfo; }
 
     // solution
     SolutionArray<Scalar> *solutionArray(int i = -1);

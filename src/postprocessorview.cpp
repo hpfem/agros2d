@@ -24,6 +24,7 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "sceneview.h"
+#include "progressdialog.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
@@ -41,6 +42,8 @@ PostprocessorView::PostprocessorView(SceneView *sceneView, QWidget *parent) : QD
 
     loadBasic();
     loadAdvanced();
+
+    connect(this, SIGNAL(apply()), sceneView, SLOT(timeStepChanged()));
 }
 
 void PostprocessorView::loadBasic()
@@ -125,37 +128,36 @@ void PostprocessorView::loadAdvanced()
 
 void PostprocessorView::saveBasic()
 {
-    assert(0); //TODO
-//    logMessage("PostprocessorView::saveBasic()");
+    logMessage("PostprocessorView::saveBasic()");
 
-//    // show
-//    m_sceneView->sceneViewSettings().showGeometry = chkShowGeometry->isChecked();
-//    m_sceneView->sceneViewSettings().showInitialMesh = chkShowInitialMesh->isChecked();
+    // show
+    m_sceneView->sceneViewSettings().showGeometry = chkShowGeometry->isChecked();
+    m_sceneView->sceneViewSettings().showInitialMesh = chkShowInitialMesh->isChecked();
 
-//    if (radPostprocessorNone->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_None;
-//    if (radPostprocessorScalarField->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView;
-//    if (radPostprocessorScalarField3D->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3D;
-//    if (radPostprocessorScalarField3DSolid->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3DSolid;
-//    if (radPostprocessorModel->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Model;
-//    if (radPostprocessorOrder->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Order;
+    if (radPostprocessorNone->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_None;
+    if (radPostprocessorScalarField->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView;
+    if (radPostprocessorScalarField3D->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3D;
+    if (radPostprocessorScalarField3DSolid->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3DSolid;
+    if (radPostprocessorModel->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Model;
+    if (radPostprocessorOrder->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Order;
 
-//    m_sceneView->sceneViewSettings().showContours = chkShowContours->isChecked();
-//    m_sceneView->sceneViewSettings().showVectors = chkShowVectors->isChecked();
-//    m_sceneView->sceneViewSettings().showSolutionMesh = chkShowSolutionMesh->isChecked();
+    m_sceneView->sceneViewSettings().showContours = chkShowContours->isChecked();
+    m_sceneView->sceneViewSettings().showVectors = chkShowVectors->isChecked();
+    m_sceneView->sceneViewSettings().showSolutionMesh = chkShowSolutionMesh->isChecked();
 
-//    // scalar field
-//    m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString().toStdString();
-//    m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
-//    m_sceneView->sceneViewSettings().scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
-//    m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
-//    m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
+    // scalar field
+    m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString().toStdString();
+    m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
+    m_sceneView->sceneViewSettings().scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
+    m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
+    m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
 
-//    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable);
-//    if (physicFieldVariable && physicFieldVariable->id == "custom")
-//        physicFieldVariable->expression.scalar = txtScalarFieldExpression->text().toStdString();
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable);
+    if (physicFieldVariable && physicFieldVariable->id == "custom")
+        physicFieldVariable->expression.scalar = txtScalarFieldExpression->text().toStdString();
 
-//    // vector field
-//    m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toString().toStdString();
+    // vector field
+    m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toString().toStdString();
 }
 
 void PostprocessorView::saveAdvanced()
@@ -243,6 +245,7 @@ QWidget *PostprocessorView::controlsBasic()
     chkShowContours = new QCheckBox(tr("Contours"));
     chkShowVectors = new QCheckBox(tr("Vectors"));
     connect(chkShowVectors, SIGNAL(clicked()), this, SLOT(setControls()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(setControls()));
     chkShowSolutionMesh = new QCheckBox(tr("Solution mesh"));
 
     // postprocessor mode
@@ -605,8 +608,16 @@ void PostprocessorView::doScalarFieldVariable(int index)
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
-    if (cmbScalarFieldVariable->currentIndex() != -1)
-        physicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->get_variable(cmbScalarFieldVariable->itemData(index).toString().toStdString());
+
+    if (cmbScalarFieldVariable->currentIndex() != -1){
+        QString variableName(cmbScalarFieldVariable->itemData(index).toString());
+
+        //TODO not good - relies on variable names begining with module name
+        std::string fieldName(variableName.split("_")[0].toStdString());
+        Util::scene()->setActiveViewField(Util::scene()->fieldInfo(fieldName));
+
+        physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
+    }
 
     if (physicFieldVariable)
     {
@@ -636,8 +647,16 @@ void PostprocessorView::doScalarFieldVariableComp(int index)
     txtScalarFieldExpression->setText("");
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
-    if (cmbScalarFieldVariable->currentIndex() != -1)
-        physicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->get_variable(cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString().toStdString());
+
+    // TODO proc je tu index a cmb..->currentIndex?
+    if ((cmbScalarFieldVariable->currentIndex() != -1) && (index != -1)){
+        QString variableName(cmbScalarFieldVariable->itemData(index).toString());
+
+        //TODO not good - relies on variable names begining with module name
+        std::string fieldName(variableName.split("_")[0].toStdString());
+
+        physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
+    }
 
     if (physicFieldVariable)
     {
@@ -694,6 +713,8 @@ void PostprocessorView::setControls()
     bool isMeshed = Util::problem()->isMeshed();
     bool isSolved = Util::problem()->isSolved();
 
+    cout << "ppv::setControls, meshed: " << isMeshed << ", solved: " << isSolved << endl;
+
     chkShowGeometry->setEnabled(true);
 
     chkShowInitialMesh->setEnabled(isMeshed);
@@ -748,7 +769,7 @@ void PostprocessorView::updateControls()
 
     fillComboBoxScalarVariable(cmbScalarFieldVariable);
     fillComboBoxVectorVariable(cmbVectorFieldVariable);
-    fillComboBoxTimeStep(cmbTimeStep);
+    //fillComboBoxTimeStep(cmbTimeStep);
 
     loadBasic();
     loadAdvanced();
@@ -770,6 +791,8 @@ void PostprocessorView::doApply()
 
     // time step
     QApplication::processEvents();
+
+    //TODO timestep
     //Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
 
     // read auto range values
@@ -780,8 +803,13 @@ void PostprocessorView::doApply()
     }
 
     // switch to the postprocessor
-    //if (Util::scene()->sceneSolution()->isSolved())
-    //    m_sceneView->actSceneModePostprocessor->trigger();
+    if (Util::problem()->isSolved()){
+        ProgressItemProcessView *pipv = new ProgressItemProcessView;
+        pipv->run();
+        delete pipv;
+
+        m_sceneView->actSceneModePostprocessor->trigger();
+    }
 
     emit apply();
 

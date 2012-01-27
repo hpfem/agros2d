@@ -394,6 +394,15 @@ void Scene::clearSolutions()
     m_sceneSolutions.clear();
 }
 
+void Scene::createSolutions()
+{
+    clearSolutions();
+    foreach(FieldInfo* fi, fieldInfos())
+    {
+        m_sceneSolutions[fi] = new SceneSolution<double>(fi);
+    }
+}
+
 SceneNode *Scene::addNode(SceneNode *node)
 {
     logMessage("SceneNode *Scene::addNode()");
@@ -1604,13 +1613,13 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     emit defaultValues();
 
     // mesh
-    /*
+
     if (eleDoc.elementsByTagName("mesh").count() > 0)
     {
         QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
-        Util::scene()->sceneSolution()->loadMeshInitial(eleMesh.toElement());
+        Util::scene()->activeSceneSolution()->loadMeshInitial(eleMesh.toElement());
     }
-
+    /*
     // solutions
     if (eleDoc.elementsByTagName("solutions").count() > 0)
     {

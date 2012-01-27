@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document version="2.1">
+    <geometry>
+        <nodes>
+            <node x="-0.25" y="0.05" id="0"/>
+            <node x="-0.25" y="-0.05" id="1"/>
+            <node x="0.25" y="0.05" id="2"/>
+            <node x="0.25" y="-0.05" id="3"/>
+        </nodes>
+        <edges>
+            <edge end="1" refine_towards="0" id="0" start="0" angle="0"/>
+            <edge end="3" refine_towards="0" id="1" start="1" angle="0"/>
+            <edge end="2" refine_towards="0" id="2" start="3" angle="0"/>
+            <edge end="0" refine_towards="0" id="3" start="2" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0" y="-0.000620097" polynomial_order="0" id="0" area="0"/>
+        </labels>
+    </geometry>
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="1.0" name="unnamed" time_total="1.0" date="2012-01-21">
+        <startup_script></startup_script>
+        <description></description>
+        <fields>
+            <field field_id="elasticity" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weak_forms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_fixed_fixed" id="1" elasticity_displacement_x="0" name="fixed" elasticity_displacement_y="0">
+                        <edge edge="2"/>
+                    </boundary>
+                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_free_free" id="2" elasticity_displacement_x="0" name="free" elasticity_displacement_y="0">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="3"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material elasticity_force_x="0" elasticity_force_y="-10" elasticity_temperature="0" elasticity_poisson_ratio="0.33" elasticity_young_modulus="1e7" elasticity_alpha="0" elasticity_temperature_reference="0" id="1" name="new material">
+                        <label label="0"/>
+                    </material>
+                </materials>
+            </field>
+            <field field_id="heat" initial_condition="0.0" polynomial_order="2" number_of_refinements="2" weak_forms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary type="heat_temperature" heat_temperature="400" id="1" name="t=400">
+                        <edge edge="3"/>
+                    </boundary>
+                    <boundary type="heat_temperature" heat_temperature="300" id="2" name="t=300">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material heat_volume_heat="0" heat_conductivity="385" id="1" name="therm mat">
+                        <label label="0"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+    </problem>
+</document>
