@@ -49,10 +49,11 @@ private:
     QButtonGroup *butPostprocessorGroup;
     QRadioButton *radPostprocessorNone;
     QRadioButton *radPostprocessorScalarField;
+    QRadioButton *radPostprocessorOrder;
     QRadioButton *radPostprocessorScalarField3D;
     QRadioButton *radPostprocessorScalarField3DSolid;
+    QRadioButton *radPostprocessorParticleTracing3D;
     QRadioButton *radPostprocessorModel;
-    QRadioButton *radPostprocessorOrder;
 
     QCheckBox *chkShowContours;
     QCheckBox *chkShowVectors;

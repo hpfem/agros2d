@@ -51,6 +51,7 @@ void PostprocessorView::loadBasic()
     radPostprocessorScalarField->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView);
     radPostprocessorScalarField3D->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D);
     radPostprocessorScalarField3DSolid->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid);
+    radPostprocessorParticleTracing3D->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ParticleTracing3D);
     radPostprocessorModel->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_Model);
     radPostprocessorOrder->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_Order);
     doPostprocessorGroupClicked(butPostprocessorGroup->checkedButton());
@@ -148,6 +149,7 @@ void PostprocessorView::saveBasic()
     if (radPostprocessorScalarField->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView;
     if (radPostprocessorScalarField3D->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3D;
     if (radPostprocessorScalarField3DSolid->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3DSolid;
+    if (radPostprocessorParticleTracing3D->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ParticleTracing3D;
     if (radPostprocessorModel->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Model;
     if (radPostprocessorOrder->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Order;
 
@@ -277,6 +279,7 @@ QWidget *PostprocessorView::controlsBasic()
     radPostprocessorScalarField = new QRadioButton(tr("Scalar view"), this);
     radPostprocessorScalarField3D = new QRadioButton(tr("Scalar view"), this);
     radPostprocessorScalarField3DSolid = new QRadioButton(tr("Scalar view solid"), this);
+    radPostprocessorParticleTracing3D = new QRadioButton(tr("Particle tracing"), this);
     radPostprocessorModel = new QRadioButton("Model", this);
 
     butPostprocessorGroup = new QButtonGroup(this);
@@ -285,6 +288,7 @@ QWidget *PostprocessorView::controlsBasic()
     butPostprocessorGroup->addButton(radPostprocessorOrder);
     butPostprocessorGroup->addButton(radPostprocessorScalarField3D);
     butPostprocessorGroup->addButton(radPostprocessorScalarField3DSolid);
+    butPostprocessorGroup->addButton(radPostprocessorParticleTracing3D);
     butPostprocessorGroup->addButton(radPostprocessorModel);
     connect(butPostprocessorGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(doPostprocessorGroupClicked(QAbstractButton*)));
 
@@ -302,7 +306,8 @@ QWidget *PostprocessorView::controlsBasic()
     layoutShow->addWidget(new QLabel(tr("3D:")), 3, 1);
     layoutShow->addWidget(radPostprocessorScalarField3D, 3, 2);
     layoutShow->addWidget(radPostprocessorScalarField3DSolid, 4, 2);
-    layoutShow->addWidget(radPostprocessorModel, 5, 2);
+    layoutShow->addWidget(radPostprocessorParticleTracing3D, 5, 2);
+    layoutShow->addWidget(radPostprocessorModel, 6, 2);
 
     QHBoxLayout *layoutShowSpace = new QHBoxLayout();
     layoutShowSpace->addLayout(layoutShow);
@@ -636,7 +641,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     QGridLayout *gridLayoutParticleProperties = new QGridLayout();
     gridLayoutParticleProperties->addWidget(new QLabel(tr("Mass:")), 1, 0);
     gridLayoutParticleProperties->addWidget(txtParticleMass, 1, 1);
-    gridLayoutParticleProperties->addWidget(new QLabel(tr("Constant:")), 2, 0);
+    gridLayoutParticleProperties->addWidget(new QLabel(tr("Charge:")), 2, 0);
     gridLayoutParticleProperties->addWidget(txtParticleConstant, 2, 1);
 
     QGroupBox *grpParticleProperties = new QGroupBox(tr("Particle properties"));
@@ -777,7 +782,7 @@ void PostprocessorView::setControls()
     chkShowVectors->setEnabled(isSolved && (cmbVectorFieldVariable->count() > 0));
     if (Util::scene()->problemInfo()->hermes()->hasParticleTracing())
     {
-        chkShowParticleTracing->setEnabled(isSolved && (cmbVectorFieldVariable->count() > 0));
+        chkShowParticleTracing->setEnabled(isSolved && (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState));        
     }
     else
     {
@@ -790,6 +795,7 @@ void PostprocessorView::setControls()
     radPostprocessorOrder->setEnabled(isSolved);
     radPostprocessorScalarField3D->setEnabled(isSolved);
     radPostprocessorScalarField3DSolid->setEnabled(isSolved);
+    radPostprocessorParticleTracing3D->setEnabled(chkShowParticleTracing->isEnabled());
     radPostprocessorModel->setEnabled(isSolved);
 
     cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
