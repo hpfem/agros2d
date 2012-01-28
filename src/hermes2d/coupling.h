@@ -10,6 +10,9 @@ class FieldInfo;
 class ParserFormMatrix;
 class ParserFormVector;
 
+namespace Hermes{
+namespace Module{
+
 struct Coupling{
     // id
     std::string id;
@@ -19,7 +22,10 @@ struct Coupling{
     std::string description;
 
     FieldInfo* sourceField;
-    FieldInfo* influencedField;
+    FieldInfo* objectField;
+
+    Coupling(CoordinateType coordinateType);
+    ~Coupling();
 
     // weak forms
     Hermes::vector<ParserFormMatrix *> weakform_matrix_volume;
@@ -28,7 +34,15 @@ struct Coupling{
 
     void read(std::string filename);
     void clear();
+private:
+
+    //TODO temporary, should be 2 (for source and object), or some other way
+    AnalysisType m_analysisType;
+
+    CoordinateType m_coordinateType;
 };
 
+}
+}
 
 #endif // COUPLING_H

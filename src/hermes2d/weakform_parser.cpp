@@ -134,6 +134,9 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
     // time step
     parser->parser[0]->DefineVar("deltat", &pdeltat);
 
+    // coupling
+    parser->parser[0]->DefineVar("source", &source);
+
     parser->setParserVariables(material, boundary);
 
     for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
@@ -309,6 +312,8 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             puptdx = ext->fn[this->j]->dx[i];
             puptdy = ext->fn[this->j]->dy[i];
         }
+
+
 
         try
         {

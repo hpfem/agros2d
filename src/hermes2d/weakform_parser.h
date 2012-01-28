@@ -103,6 +103,9 @@ public:
     // time step
     mutable double pdeltat;
 
+    //coupled field
+    mutable double source;
+
     ParserForm(FieldInfo *fieldInfo);
     ~ParserForm();
 
