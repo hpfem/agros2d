@@ -17,13 +17,15 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "problem.h"
+
 #include "scene.h"
 #include "scenemarker.h"
 #include "scenesolution.h"
 #include "module.h"
 #include "module_agros.h"
+#include "coupling.h"
 #include "solver.h"
-#include "problem.h"
 #include "progressdialog.h"
 
 
@@ -114,6 +116,11 @@ void Problem::createStructure()
         tmp.append(fi);
         m_blocks.append(new Block(tmp, m_progressItemSolve));
     }
+
+    //TODO temporary
+    Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
+    heatElastCoup->read("resources/couplings/heat-elasticity.xml");
+    m_couplings.push_back(heatElastCoup);
 }
 
 

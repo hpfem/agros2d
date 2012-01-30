@@ -10,8 +10,8 @@ class FieldInfo;
 class ParserFormMatrix;
 class ParserFormVector;
 
-namespace Hermes{
-namespace Module{
+//namespace Hermes{
+//namespace Module{
 
 struct Coupling{
     // id
@@ -42,7 +42,7 @@ private:
     CoordinateType m_coordinateType;
 };
 
-}
-}
+//}
+//}
 
 #endif // COUPLING_H

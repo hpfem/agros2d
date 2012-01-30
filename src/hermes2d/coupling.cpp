@@ -4,23 +4,23 @@
 #include "module.h"
 #include "weakform_parser.h"
 
-Hermes::Module::Coupling::Coupling(CoordinateType coordinateType)
+Coupling::Coupling(CoordinateType coordinateType)
 {
     m_coordinateType = coordinateType;
 
     clear();
 }
 
-Hermes::Module::Coupling::~Coupling()
+Coupling::~Coupling()
 {
     clear();
 }
 
-void Hermes::Module::Coupling::clear()
+void Coupling::clear()
 {
 }
 
-void Hermes::Module::Coupling::read(std::string filename)
+void Coupling::read(std::string filename)
 {
     std::cout << "reading coupling: " << filename << std::endl << std::flush;
 
@@ -65,7 +65,7 @@ void Hermes::Module::Coupling::read(std::string filename)
         for (rapidxml::xml_node<> *weakform = doc.first_node("module")->first_node("volume")->first_node("weakforms")->first_node("weakform");
              weakform; weakform = weakform->next_sibling())
         {
-            if (weakform->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
+            if (weakform->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(m_analysisType))
             {
                 // quantities
 //                for (rapidxml::xml_node<> *quantity = weakform->first_node("quantity");

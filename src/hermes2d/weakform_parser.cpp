@@ -101,7 +101,6 @@ ParserForm::~ParserForm()
 
 void ParserForm::initParser(Material *material, Boundary *boundary)
 {
-    //assert(0); //TODO
     parser->parser.push_back(m_fieldInfo->module()->get_parser(m_fieldInfo));
 
     // atan2 for muparser
@@ -313,7 +312,9 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             puptdy = ext->fn[this->j]->dy[i];
         }
 
-
+        //TODO TEMPORARY... has to be solved with respect to passing previous time solutions....
+        if (ext->get_nf() > 0)
+            source = ext->fn[0]->val[i];
 
         try
         {

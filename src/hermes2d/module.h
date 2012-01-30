@@ -46,6 +46,7 @@ class ParserFormEssential;
 class ProgressItemSolve;
 
 class FieldInfo;
+struct Coupling;
 
 template<typename Scalar>
 class InitialCondition : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
@@ -82,7 +83,10 @@ template <typename Scalar>
 class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 {
 public:
-    WeakFormAgros(FieldInfo* fieldInfo);
+    //TODO
+    //TODO coupling a sourceSolution asi obalit do nejake tridy
+    //TODO mozna by se melo udelat neco jako CouplingInfo (obdoba fieldInfo), a tam by se teprv ziskal Coupling, jako se ziska Module
+    WeakFormAgros(FieldInfo* fieldInfo, Coupling* coupling = NULL, Hermes::Hermes2D::Solution<Scalar>* sourceSolution = NULL);
 
     void registerForms();
 
@@ -91,6 +95,8 @@ public:
 
 private:
     FieldInfo* m_fieldInfo;
+    Coupling* m_coupling;
+    Hermes::Hermes2D::Solution<Scalar>* m_sourceSolution;
 };
 
 namespace Hermes

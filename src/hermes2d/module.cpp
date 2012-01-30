@@ -107,9 +107,9 @@ std::map<std::string, std::string> availableAnalyses(std::string fieldId)
 }
 
 template <typename Scalar>
-WeakFormAgros<Scalar>::WeakFormAgros(FieldInfo *fieldInfo) :
+WeakFormAgros<Scalar>::WeakFormAgros(FieldInfo *fieldInfo, Coupling* coupling, Hermes::Hermes2D::Solution<Scalar>* sourceSolution) :
         Hermes::Hermes2D::WeakForm<Scalar>(fieldInfo->module()->number_of_solution()),
-        m_fieldInfo(fieldInfo)
+            m_fieldInfo(fieldInfo), m_coupling(coupling), m_sourceSolution(sourceSolution)
 {
 }
 
@@ -277,6 +277,14 @@ void WeakFormAgros<Scalar>::registerForms()
                 if (m_fieldInfo->analysisType() == AnalysisType_Transient)
                     for(int sol_comp = 0; sol_comp < m_fieldInfo->module()->number_of_solution(); sol_comp++)
                         custom_form->ext.push_back(solution.at(solution.size() - m_fieldInfo->module()->number_of_solution() + sol_comp));
+
+                //TODO TEMPORARY
+                assert(m_fieldInfo->analysisType() == AnalysisType_SteadyState);
+                if(m_sourceSolution){
+                    printf("pushing coupled field\n");
+                    custom_form->ext.push_back(m_sourceSolution);
+                }
+
 
                 if (custom_form)
                 {
