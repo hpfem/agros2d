@@ -49,10 +49,11 @@ private:
     QButtonGroup *butPostprocessorGroup;
     QRadioButton *radPostprocessorNone;
     QRadioButton *radPostprocessorScalarField;
+    QRadioButton *radPostprocessorOrder;
     QRadioButton *radPostprocessorScalarField3D;
     QRadioButton *radPostprocessorScalarField3DSolid;
+    QRadioButton *radPostprocessorParticleTracing3D;
     QRadioButton *radPostprocessorModel;
-    QRadioButton *radPostprocessorOrder;
 
     QCheckBox *chkShowContours;
     QCheckBox *chkShowVectors;
@@ -121,6 +122,15 @@ private:
     SLineEditDouble *txtParticlePointY;
     SLineEditDouble *txtParticleVelocityX;
     SLineEditDouble *txtParticleVelocityY;
+    SLineEditDouble *txtParticleMaximumRelativeError;
+    QCheckBox *chkParticleTerminateOnDifferentMaterial;
+    QLabel *lblParticlePointX;
+    QLabel *lblParticlePointY;
+    QLabel *lblParticleVelocityX;
+    QLabel *lblParticleVelocityY;
+    QCheckBox *chkParticleColorByVelocity;
+    QCheckBox *chkParticleShowPoints;
+    QSpinBox *txtParticleMaximumSteps;
 
     QToolBox *tbxAdvance;
     QPushButton *btnOK;

@@ -118,11 +118,16 @@ public:
     bool particleIncludeGravitation;
     double particleMass;
     double particleConstant;
+    double particleMaximumRelativeError;
+    int particleMaximumSteps;
+    bool particleTerminateOnDifferentMaterial;
     Point particleStart;
     Point particleStartVelocity;
     Point particleAcceleration;
     int particleNumberOfParticles;
     double particleStartingRadius;
+    bool particleColorByVelocity;
+    bool particleShowPoints;
 
     // colors
     QColor colorBackground;

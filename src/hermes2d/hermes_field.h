@@ -68,6 +68,7 @@ public:
     virtual bool hasHarmonic() const = 0;
     virtual bool hasTransient() const = 0;
     virtual bool hasNonlinearity() const = 0;
+    virtual bool hasParticleTracing() const = 0;
 
     virtual void readBoundaryFromDomElement(QDomElement *element) = 0;
     virtual void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker) = 0;
@@ -112,6 +113,9 @@ public:
 
     virtual inline void deformShape(double3* linVert, int count) {}
     virtual inline void deformShape(double4* linVert, int count) {}
+
+    virtual inline Point3 particleForce(Point3 point, Point3 velocity = Point3()) { return Point3(); }
+    virtual inline double particleMaterial(Point point) { return 0.0; }
 };
 
 HermesField *hermesFieldFactory(PhysicField physicField);

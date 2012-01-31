@@ -177,6 +177,14 @@ struct Point
 
         return Point(mx, my);
     }
+
+    QString toString()
+    {
+        return QString("x = %1, y = %2, magnitude = %3").
+                arg(x).
+                arg(y).
+                arg(magnitude());
+    }
 };
 
 // return center
@@ -193,6 +201,8 @@ struct Point3
     inline Point3 operator-(const Point3 &vec) const { return Point3(x - vec.x, y - vec.y, z - vec.z); }
     inline Point3 operator*(double num) const { return Point3(x * num, y * num, z * num); }
     inline Point3 operator/(double num) const { return Point3(x / num, y / num, z / num); }
+    inline double operator&(const Point3 &vec) const { return x*vec.x + y*vec.y + z*vec.z; } // dot product
+    inline Point3 operator%(const Point3 &vec) const { return Point3(- z*vec.y, z*vec.x, x*vec.y - y*vec.x); } // cross product
 
     inline double magnitude() const { return sqrt(x * x + y * y); }
     inline double anglexy() const { return atan2(y, x); }
@@ -208,6 +218,15 @@ struct Point3
         double mz = z/m;
 
         return Point3(mx, my, mz);
+    }
+
+    QString toString()
+    {
+        return QString("x = %1, y = %2, z = %3, magnitude = %4").
+                arg(x).
+                arg(y).
+                arg(z).
+                arg(magnitude());
     }
 };
 
@@ -229,18 +248,21 @@ struct ScriptResult
     ScriptResult()
     {
         text = "";
+        traceback = "";
         isError = false;
         this->line = -1;
     }
 
-    ScriptResult(const QString &text, bool isError = false, int line = -1)
+    ScriptResult(const QString &text, const QString &traceback, bool isError = false, int line = -1)
     {
         this->text = text;
+        this->traceback = traceback;
         this->isError = isError;
         this->line = line;
     }
 
     QString text;
+    QString traceback;
     bool isError;
     int line;
 };
@@ -250,16 +272,19 @@ struct ExpressionResult
     ExpressionResult()
     {
         this->error = "";
+        this->traceback = "";
         this->value = 0.0;
     }
 
-    ExpressionResult(double value, const QString &error)
+    ExpressionResult(double value, const QString &traceback, const QString &error)
     {
         this->error = error;
+        this->traceback = traceback;
         this->value = value;
     }
 
     QString error;
+    QString traceback;
     double value;
 };
 
@@ -672,6 +697,7 @@ enum SceneViewPostprocessorShow
     SceneViewPostprocessorShow_ScalarView,
     SceneViewPostprocessorShow_ScalarView3D,
     SceneViewPostprocessorShow_ScalarView3DSolid,
+    SceneViewPostprocessorShow_ParticleTracing3D,
     SceneViewPostprocessorShow_Model,
     SceneViewPostprocessorShow_Order
 };
@@ -814,6 +840,11 @@ const double PARTICLESTARTVELOCITYX = 0;
 const double PARTICLESTARTVELOCITYY = 0;
 const double PARTICLEMASS = 9.109e-31; // mass of the electron
 const double PARTICLECONSTANT = 1.602e-19; // charge of the electron
+const double PARTICLETERMINATEONDIFFERENTMATERIAL = true;
+const double PARTICLEMAXIMUMRELATIVEERROR = 0.0;
+const bool PARTICLECOLORBYVELOCITY = true;
+const bool PARTICLESHOWPOINTS = false;
+const int PARTICLEMAXIMUMSTEPS = 1000;
 
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;

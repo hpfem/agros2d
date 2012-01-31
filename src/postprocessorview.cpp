@@ -51,6 +51,7 @@ void PostprocessorView::loadBasic()
     radPostprocessorScalarField->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView);
     radPostprocessorScalarField3D->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D);
     radPostprocessorScalarField3DSolid->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid);
+    radPostprocessorParticleTracing3D->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ParticleTracing3D);
     radPostprocessorModel->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_Model);
     radPostprocessorOrder->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_Order);
     doPostprocessorGroupClicked(butPostprocessorGroup->checkedButton());
@@ -129,6 +130,11 @@ void PostprocessorView::loadAdvanced()
     txtParticlePointY->setValue(Util::config()->particleStart.y);
     txtParticleVelocityX->setValue(Util::config()->particleStartVelocity.x);
     txtParticleVelocityY->setValue(Util::config()->particleStartVelocity.y);
+    chkParticleTerminateOnDifferentMaterial->setChecked(Util::config()->particleTerminateOnDifferentMaterial);
+    txtParticleMaximumRelativeError->setValue(Util::config()->particleMaximumRelativeError);
+    txtParticleMaximumSteps->setValue(Util::config()->particleMaximumSteps);
+    chkParticleColorByVelocity->setChecked(Util::config()->particleColorByVelocity);
+    chkParticleShowPoints->setChecked(Util::config()->particleShowPoints);
 }
 
 void PostprocessorView::saveBasic()
@@ -143,6 +149,7 @@ void PostprocessorView::saveBasic()
     if (radPostprocessorScalarField->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView;
     if (radPostprocessorScalarField3D->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3D;
     if (radPostprocessorScalarField3DSolid->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3DSolid;
+    if (radPostprocessorParticleTracing3D->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ParticleTracing3D;
     if (radPostprocessorModel->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Model;
     if (radPostprocessorOrder->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Order;
 
@@ -209,6 +216,11 @@ void PostprocessorView::saveAdvanced()
     Util::config()->particleStart.y = txtParticlePointY->value();
     Util::config()->particleStartVelocity.x = txtParticleVelocityX->value();
     Util::config()->particleStartVelocity.y = txtParticleVelocityY->value();
+    Util::config()->particleTerminateOnDifferentMaterial = chkParticleTerminateOnDifferentMaterial->isChecked();
+    Util::config()->particleMaximumRelativeError = txtParticleMaximumRelativeError->value();
+    Util::config()->particleMaximumSteps = txtParticleMaximumSteps->value();
+    Util::config()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
+    Util::config()->particleShowPoints = chkParticleShowPoints->isChecked();
 
     // save
     Util::config()->save();
@@ -267,6 +279,7 @@ QWidget *PostprocessorView::controlsBasic()
     radPostprocessorScalarField = new QRadioButton(tr("Scalar view"), this);
     radPostprocessorScalarField3D = new QRadioButton(tr("Scalar view"), this);
     radPostprocessorScalarField3DSolid = new QRadioButton(tr("Scalar view solid"), this);
+    radPostprocessorParticleTracing3D = new QRadioButton(tr("Particle tracing"), this);
     radPostprocessorModel = new QRadioButton("Model", this);
 
     butPostprocessorGroup = new QButtonGroup(this);
@@ -275,6 +288,7 @@ QWidget *PostprocessorView::controlsBasic()
     butPostprocessorGroup->addButton(radPostprocessorOrder);
     butPostprocessorGroup->addButton(radPostprocessorScalarField3D);
     butPostprocessorGroup->addButton(radPostprocessorScalarField3DSolid);
+    butPostprocessorGroup->addButton(radPostprocessorParticleTracing3D);
     butPostprocessorGroup->addButton(radPostprocessorModel);
     connect(butPostprocessorGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(doPostprocessorGroupClicked(QAbstractButton*)));
 
@@ -292,7 +306,8 @@ QWidget *PostprocessorView::controlsBasic()
     layoutShow->addWidget(new QLabel(tr("3D:")), 3, 1);
     layoutShow->addWidget(radPostprocessorScalarField3D, 3, 2);
     layoutShow->addWidget(radPostprocessorScalarField3DSolid, 4, 2);
-    layoutShow->addWidget(radPostprocessorModel, 5, 2);
+    layoutShow->addWidget(radPostprocessorParticleTracing3D, 5, 2);
+    layoutShow->addWidget(radPostprocessorModel, 6, 2);
 
     QHBoxLayout *layoutShowSpace = new QHBoxLayout();
     layoutShowSpace->addLayout(layoutShow);
@@ -598,7 +613,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     chkParticleIncludeGravitation = new QCheckBox(tr("Include gravitation"));
     txtParticleNumberOfParticles = new QSpinBox(this);
     txtParticleNumberOfParticles->setMinimum(1);
-    txtParticleNumberOfParticles->setMaximum(50);
+    txtParticleNumberOfParticles->setMaximum(200);
     txtParticleStartingRadius = new SLineEditDouble();
     txtParticleMass = new SLineEditDouble();
     txtParticleConstant = new SLineEditDouble();
@@ -606,6 +621,18 @@ QWidget *PostprocessorView::controlsAdvanced()
     txtParticlePointY = new SLineEditDouble();
     txtParticleVelocityX = new SLineEditDouble();
     txtParticleVelocityY = new SLineEditDouble();
+    txtParticleMaximumRelativeError = new SLineEditDouble();
+    chkParticleTerminateOnDifferentMaterial = new QCheckBox(tr("Terminate on different material"));    
+    lblParticlePointX = new QLabel();
+    lblParticlePointY = new QLabel();
+    lblParticleVelocityX = new QLabel();
+    lblParticleVelocityY = new QLabel();
+    chkParticleColorByVelocity = new QCheckBox(tr("Line color is controlled by velocity"));
+    chkParticleShowPoints = new QCheckBox(tr("Show points"));
+    txtParticleMaximumSteps = new QSpinBox();
+    txtParticleMaximumSteps->setMinimum(100);
+    txtParticleMaximumSteps->setMaximum(100000);
+    txtParticleMaximumSteps->setSingleStep(100);
 
     QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
     connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
@@ -614,7 +641,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     QGridLayout *gridLayoutParticleProperties = new QGridLayout();
     gridLayoutParticleProperties->addWidget(new QLabel(tr("Mass:")), 1, 0);
     gridLayoutParticleProperties->addWidget(txtParticleMass, 1, 1);
-    gridLayoutParticleProperties->addWidget(new QLabel(tr("Constant:")), 2, 0);
+    gridLayoutParticleProperties->addWidget(new QLabel(tr("Charge:")), 2, 0);
     gridLayoutParticleProperties->addWidget(txtParticleConstant, 2, 1);
 
     QGroupBox *grpParticleProperties = new QGroupBox(tr("Particle properties"));
@@ -622,9 +649,9 @@ QWidget *PostprocessorView::controlsAdvanced()
 
     // initial particle position
     QGridLayout *gridLayoutInitialPosition = new QGridLayout();
-    gridLayoutInitialPosition->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelX())), 0, 0);
+    gridLayoutInitialPosition->addWidget(lblParticlePointX, 0, 0);
     gridLayoutInitialPosition->addWidget(txtParticlePointX, 0, 1);
-    gridLayoutInitialPosition->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelY())), 1, 0);
+    gridLayoutInitialPosition->addWidget(lblParticlePointY, 1, 0);
     gridLayoutInitialPosition->addWidget(txtParticlePointY, 1, 1);
 
     QGroupBox *grpInitialPosition = new QGroupBox(tr("Initial particle position"));
@@ -632,13 +659,27 @@ QWidget *PostprocessorView::controlsAdvanced()
 
     // initial particle velocity
     QGridLayout *gridLayoutInitialVelocity = new QGridLayout();
-    gridLayoutInitialVelocity->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelX())), 0, 0);
+    gridLayoutInitialVelocity->addWidget(lblParticleVelocityX, 0, 0);
     gridLayoutInitialVelocity->addWidget(txtParticleVelocityX, 0, 1);
-    gridLayoutInitialVelocity->addWidget(new QLabel(QString("%1:").arg(Util::scene()->problemInfo()->labelY())), 1, 0);
+    gridLayoutInitialVelocity->addWidget(lblParticleVelocityY, 1, 0);
     gridLayoutInitialVelocity->addWidget(txtParticleVelocityY, 1, 1);
 
     QGroupBox *grpInitialVelocity = new QGroupBox(tr("Initial particle velocity"));
     grpInitialVelocity->setLayout(gridLayoutInitialVelocity);
+
+    // advanced
+    QGridLayout *gridLayoutAdvanced = new QGridLayout();
+    gridLayoutAdvanced->addWidget(chkParticleIncludeGravitation, 0, 0, 1, 2);
+    gridLayoutAdvanced->addWidget(chkParticleTerminateOnDifferentMaterial, 1, 0, 1, 2);
+    gridLayoutAdvanced->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
+    gridLayoutAdvanced->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
+    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum relative error (%):")), 4, 0);
+    gridLayoutAdvanced->addWidget(txtParticleMaximumRelativeError, 4, 1);
+    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum steps:")), 5, 0);
+    gridLayoutAdvanced->addWidget(txtParticleMaximumSteps, 5, 1);
+
+    QGroupBox *grpAdvanced = new QGroupBox(tr("Advanced"));
+    grpAdvanced->setLayout(gridLayoutAdvanced);
 
     QGridLayout *gridLayoutParticle = new QGridLayout();
     gridLayoutParticle->setColumnMinimumWidth(0, minWidth);
@@ -647,10 +688,10 @@ QWidget *PostprocessorView::controlsAdvanced()
     gridLayoutParticle->addWidget(txtParticleNumberOfParticles, 0, 1);
     gridLayoutParticle->addWidget(new QLabel(tr("Particles radius:")), 1, 0);
     gridLayoutParticle->addWidget(txtParticleStartingRadius, 1, 1);
-    gridLayoutParticle->addWidget(chkParticleIncludeGravitation, 2, 0, 1, 2);
     gridLayoutParticle->addWidget(grpParticleProperties, 3, 0, 1, 2);
     gridLayoutParticle->addWidget(grpInitialPosition, 4, 0, 1, 2);
     gridLayoutParticle->addWidget(grpInitialVelocity, 5, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpAdvanced, 6, 0, 1, 2);
 
     QVBoxLayout *layoutParticle = new QVBoxLayout();
     layoutParticle->addLayout(gridLayoutParticle);
@@ -661,12 +702,12 @@ QWidget *PostprocessorView::controlsAdvanced()
     particleWidget->setLayout(layoutParticle);
 
     tbxAdvance = new QToolBox();
-    tbxAdvance->addItem(workspaceWidget, icon(""), "Workspace");
-    tbxAdvance->addItem(scalarFieldWidget, icon(""), "Scalar view");
-    tbxAdvance->addItem(contoursWidget, icon(""), "Contours");
-    tbxAdvance->addItem(vectorFieldWidget, icon(""), "Vector field");
-    tbxAdvance->addItem(orderWidget, icon(""), "Polynomial order");
-    tbxAdvance->addItem(particleWidget, icon(""), "Particle tracing");
+    tbxAdvance->addItem(workspaceWidget, icon(""), tr("Workspace"));
+    tbxAdvance->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
+    tbxAdvance->addItem(contoursWidget, icon(""), tr("Contours"));
+    tbxAdvance->addItem(vectorFieldWidget, icon(""), tr("Vector field"));
+    tbxAdvance->addItem(orderWidget, icon(""), tr("Polynomial order"));
+    tbxAdvance->addItem(particleWidget, icon(""), tr("Particle tracing"));
 
     // layout postprocessor
     QVBoxLayout *layout = new QVBoxLayout();
@@ -739,13 +780,22 @@ void PostprocessorView::setControls()
     chkShowSolutionMesh->setEnabled(isSolved && (cmbScalarFieldVariable->count() > 0));
     chkShowContours->setEnabled(isSolved);
     chkShowVectors->setEnabled(isSolved && (cmbVectorFieldVariable->count() > 0));
-    chkShowParticleTracing->setEnabled(isSolved && (cmbVectorFieldVariable->count() > 0));
+    if (Util::scene()->problemInfo()->hermes()->hasParticleTracing())
+    {
+        chkShowParticleTracing->setEnabled(isSolved && (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState));        
+    }
+    else
+    {
+        chkShowParticleTracing->setEnabled(false);
+        chkShowParticleTracing->setChecked(false);
+    }
 
     radPostprocessorNone->setEnabled(isSolved);
     radPostprocessorScalarField->setEnabled(isSolved);
     radPostprocessorOrder->setEnabled(isSolved);
     radPostprocessorScalarField3D->setEnabled(isSolved);
     radPostprocessorScalarField3DSolid->setEnabled(isSolved);
+    radPostprocessorParticleTracing3D->setEnabled(chkShowParticleTracing->isEnabled());
     radPostprocessorModel->setEnabled(isSolved);
 
     cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
@@ -787,6 +837,11 @@ void PostprocessorView::updateControls()
     fillComboBoxScalarVariable(cmbScalarFieldVariable);
     fillComboBoxVectorVariable(cmbVectorFieldVariable);
     fillComboBoxTimeStep(cmbTimeStep);
+
+    lblParticlePointX->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelX()));
+    lblParticlePointY->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelY()));
+    lblParticleVelocityX->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelX()));
+    lblParticleVelocityY->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelY()));
 
     loadBasic();
     loadAdvanced();
@@ -893,6 +948,11 @@ void PostprocessorView::doParticleDefault()
     txtParticlePointY->setValue(PARTICLESTARTY);
     txtParticleVelocityX->setValue(PARTICLESTARTVELOCITYX);
     txtParticleVelocityY->setValue(PARTICLESTARTVELOCITYY);
+    chkParticleTerminateOnDifferentMaterial->setChecked(PARTICLETERMINATEONDIFFERENTMATERIAL);
+    txtParticleMaximumRelativeError->setValue(PARTICLEMAXIMUMRELATIVEERROR);
+    txtParticleMaximumSteps->setValue(PARTICLEMAXIMUMSTEPS);
+    chkParticleColorByVelocity->setChecked(PARTICLECOLORBYVELOCITY);
+    chkParticleShowPoints->setChecked(PARTICLESHOWPOINTS);
 }
 
 void PostprocessorView::doScalarFieldRangeMinChanged()

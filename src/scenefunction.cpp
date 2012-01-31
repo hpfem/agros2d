@@ -20,7 +20,7 @@
 #include "scenefunction.h"
 
 #include "gui.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 
 SceneFunction::SceneFunction(const QString &name, const QString &function, Value start, Value end)
 {

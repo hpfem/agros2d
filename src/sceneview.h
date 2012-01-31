@@ -156,7 +156,8 @@ public:
         return ((m_sceneMode == SceneMode_Postprocessor) &&
                 (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
                  m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid ||
-                 m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model));
+                 m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model ||
+                 m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ParticleTracing3D));
     }
 
 signals:
@@ -173,7 +174,9 @@ protected:
     void paintGL();
     void setupViewport(int w, int h);
 
-    void renderTextPos(double x, double y, double z, const QString &str, bool blend = true);
+    void renderTextPos(double x, double y, double z,
+                       const QString &str, bool blend = true, QFont fnt = QFont(),
+                       bool horizontal = true);
 
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
@@ -193,7 +196,7 @@ private:
     Scene *m_scene;
     QMainWindow *m_mainWindow;
 
-    QPointF m_lastPos; // last position of cursor
+    QPoint m_lastPos; // last position of cursor
     QPointF m_regionPos;
     // 2d
     double m_scale2d; // scale
@@ -221,6 +224,7 @@ private:
     int m_listScalarField;
     int m_listScalarField3D;
     int m_listScalarField3DSolid;
+    int m_listParticleTracing3D;
     int m_listOrder;
     int m_listModel;
 
@@ -238,6 +242,14 @@ private:
     int m_backgroundTexture;
     QRectF m_backgroundPosition;
 
+    // rulers
+    Point m_rulersAreaWidth;
+    double m_rulersNumbersWidth;
+
+    // particle tracing
+    double velocityMin;
+    double velocityMax;
+
     QMenu *mnuScene;
 
     QActionGroup *actMaterialGroup;
@@ -249,6 +261,12 @@ private:
     QAction *actShowVectors;
     QAction *actShowParticleTracing;
     QAction *actShowSolutionMesh;
+
+    // compute particle path
+    void newtonEquations(double step, Point3 position, Point3 velicity, Point3 *newposition, Point3 *newvelocity);
+    void computeParticleTracingPath(QList<Point3> *positions,
+                                    QList<Point3> *velocities,
+                                    bool randomPoint = false);
 
     void createActions();
     void createMenu();
@@ -267,6 +285,7 @@ private:
     void paintGrid(); // paint grid
     void paintAxes();  // paint axes
     void paintRulers(); // paint rulers
+    void paintRulersHints();
     void paintGeometry(); // paint nodes, edges and labels
     void paintInitialMesh();
 
@@ -274,11 +293,13 @@ private:
     void paintContoursTri(double3* vert, int3* tri, double step);
     void paintVectors(); // paint vector field vectors
     void paintParticleTracing();
+    void paintParticleTracingColorBar(double min, double max);
     void paintSolutionMesh();
 
     void paintScalarField(); // paint scalar field surface
     void paintScalarField3D(); // paint scalar field 3d surface
     void paintScalarField3DSolid(); // paint scalar field 3d solid
+    void paintParticleTracing3D(); // paint particle tracing in 3d
     void paintScalarFieldColorBar(double min, double max);
     void paintOrder();
     void paintOrderColorBar();

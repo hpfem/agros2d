@@ -10,6 +10,12 @@ linux-g++|linux-g++-64|linux-g++-32 {
     # use qmake PREFIX=... to customize your installation
     isEmpty(PREFIX):PREFIX = /usr/local
 
+    # install resources
+    system(rm `find resources/python -name "*.pyc"`)
+    resources.path = $${PREFIX}/share/agros2d/resources
+    resources.CONFIG = recursive
+    resources.files = resources/*
+
     # install examples
     examples.path = $${PREFIX}/share/agros2d/data
     examples.files = data/*.a2d
@@ -52,6 +58,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
 
     # "make install" configuration options
     INSTALLS *= target \
+        resources \
         target-remote \
         examples \
         help \

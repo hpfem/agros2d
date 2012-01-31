@@ -23,7 +23,7 @@
 
 #include "scene.h"
 #include "sceneview.h"
-#include "scripteditordialog.h"
+#include "pythonlabagros.h"
 
 ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {

@@ -34,6 +34,7 @@ public:
     inline bool hasHarmonic() const { return false; }
     inline bool hasTransient() const { return true; }
     inline bool hasNonlinearity() const { return false; }
+    inline bool hasParticleTracing() const { return false; }
 
     void readBoundaryFromDomElement(QDomElement *element);
     void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);

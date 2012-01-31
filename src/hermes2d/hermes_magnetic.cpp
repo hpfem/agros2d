@@ -813,6 +813,47 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
     }
 }
 
+Point3 HermesMagnetic::particleForce(Point3 point, Point3 velocity)
+{
+    LocalPointValueMagnetic *pointValue = dynamic_cast<LocalPointValueMagnetic *>(localPointValue(Point(point.x, point.y)));
+
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+    {
+        return Point3(- velocity.z * pointValue->B_real.y, // x
+                      velocity.z * pointValue->B_real.x, // y
+                      velocity.x * pointValue->B_real.y - velocity.y * pointValue->B_real.x); // z
+    }
+    else
+    {
+        // partq*partv*Bz_emqa
+        // -partq*partv*Br_emqa
+        // partq*(partw*Br_emqa-partu*Bz_emqa)
+
+        return Point3(velocity.z * point.x * pointValue->B_real.y, // r
+                      - velocity.z * point.x * pointValue->B_real.x, // z
+                      velocity.y * pointValue->B_real.x - velocity.x * pointValue->B_real.y); // alpha
+
+        /*
+        Point3 fluxPlanar(pointValue->B_real.x * cos(point.z),
+                          pointValue->B_real.y,
+                          pointValue->B_real.x * sin(point.z));
+
+        Point3 forcePlanar(velocity.y * fluxPlanar.z - velocity.z * fluxPlanar.y,
+                           velocity.z * fluxPlanar.x - velocity.x * fluxPlanar.z,
+                           velocity.x * fluxPlanar.y - velocity.y * fluxPlanar.x);
+        */
+
+        // return forcePlanar;
+    }
+}
+
+double HermesMagnetic::particleMaterial(Point point)
+{
+    LocalPointValueMagnetic *pointValue = dynamic_cast<LocalPointValueMagnetic *>(localPointValue(point));
+
+    return pointValue->permeability;
+}
+
 QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolve)
 {
     // transient
@@ -892,7 +933,7 @@ void HermesMagnetic::updateTimeFunctions(double time)
 
         material->current_density_real.evaluate(time);
         material->current_density_imag.evaluate(time);
-    }    
+    }
 }
 
 // *************************************************************************************************************************************
