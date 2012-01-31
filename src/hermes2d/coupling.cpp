@@ -62,11 +62,11 @@ void Coupling::read(std::string filename)
         //TODO temporary
         m_analysisType = AnalysisType_SteadyState;
 
-        for (rapidxml::xml_node<> *weakform = doc.first_node("module")->first_node("volume")->first_node("weakforms")->first_node("weakform");
+        for (rapidxml::xml_node<> *weakform = doc.first_node("coupling")->first_node("volume")->first_node("weakforms")->first_node("weakform");
              weakform; weakform = weakform->next_sibling())
         {
-            if (weakform->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(m_analysisType))
-            {
+//            if (weakform->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(m_analysisType))
+//            {
                 // quantities
 //                for (rapidxml::xml_node<> *quantity = weakform->first_node("quantity");
 //                     quantity; quantity = quantity->next_sibling())
@@ -98,7 +98,7 @@ void Coupling::read(std::string filename)
                      vector; vector = vector->next_sibling())
                     if (std::string(vector->name()) == "vector")
                         weakform_vector_volume.push_back(new ParserFormVector(vector, m_coordinateType));
-            }
+//            }
         }
 
         // set system locale

@@ -66,13 +66,13 @@ Block::Block(QList<FieldInfo *> fieldInfos, ProgressItemSolve* progressItemSolve
     m_solutionList = new SolutionArrayList<double>;
 }
 
-bool Block::solveInit()
+bool Block::solveInit(Coupling *coupling, Hermes::Hermes2D::Solution<double> *sourceSolution)
 {
     foreach(Field* field, m_fields)
     {
         if(! field->solveInitVariables())
             assert(0); //TODO co to znamena?
-        m_wf = new WeakFormAgros<double>(field->fieldInfo());
+        m_wf = new WeakFormAgros<double>(field->fieldInfo(), coupling, sourceSolution);
 
         m_solutionList->init(m_progressItemSolve, m_wf, m_fields.at(0)->m_fieldInfo);
         m_solutionList->clear();
@@ -197,18 +197,29 @@ void Problem::solve(SolverMode solverMode)
     }
 
 
-        foreach(Block* block, m_blocks)
-        {
-            block->solveInit();
-            block->solve();
-        }
+//    foreach(Block* block, m_blocks)
+//    {
+//        block->solveInit();
+//        block->solve();
+//    }
 
-        // delete temp file
-        if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
-        {
-            QFile::remove(Util::scene()->problemInfo()->fileName);
-            Util::scene()->problemInfo()->fileName = "";
-        }
+    const int elastTODO = 0;  //TODO temp
+    const int heatTODO = 1;   //TODO temp
+
+    m_blocks[heatTODO]->solveInit();
+    m_blocks[heatTODO]->solve();
+
+    m_blocks[elastTODO]->solveInit(m_couplings[0], m_blocks[heatTODO]->m_solutionList->at(0)->sln.get());
+    m_blocks[elastTODO]->solve();
+
+    // delete temp file
+    if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
+    {
+        QFile::remove(Util::scene()->problemInfo()->fileName);
+        Util::scene()->problemInfo()->fileName = "";
+    }
+
+
     // close indicator progress
     Indicator::closeProgress();
 

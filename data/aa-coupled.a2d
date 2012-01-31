@@ -35,7 +35,7 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material elasticity_force_x="0" heat_volume_heat="0" elasticity_force_y="-10" elasticity_temperature="0" elasticity_poisson_ratio="0.33" elasticity_young_modulus="1e7" elasticity_alpha="0" elasticity_temperature_reference="0" id="1" name="new material">
+                    <material elasticity_force_x="0" heat_volume_heat="0" elasticity_force_y="0" elasticity_temperature="300" elasticity_poisson_ratio="0.33" elasticity_young_modulus="1e7" elasticity_alpha="1e-5" elasticity_temperature_reference="300" id="1" name="new material">
                         <label label="0"/>
                     </material>
                 </materials>

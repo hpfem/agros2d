@@ -31,6 +31,7 @@
 #include "scenesolution.h"
 #include "sceneedge.h"
 #include "hermes2d/solver.h"
+#include "hermes2d/coupling.h"
 
 #include "mesh/mesh_reader_h2d.h"
 
@@ -247,8 +248,12 @@ void WeakFormAgros<Scalar>::registerForms()
                 }
             }
 
-            for (Hermes::vector<ParserFormVector *>::iterator it = m_fieldInfo->module()->weakform_vector_volume.begin();
-                 it < m_fieldInfo->module()->weakform_vector_volume.end(); ++it)
+            Hermes::vector<ParserFormVector *> weakform_vector_volume = m_fieldInfo->module()->weakform_vector_volume;
+            if(m_coupling)
+                weakform_vector_volume.insert(weakform_vector_volume.begin(), m_coupling->weakform_vector_volume.begin(), m_coupling->weakform_vector_volume.end());
+
+            for (Hermes::vector<ParserFormVector *>::iterator it = weakform_vector_volume.begin();
+                 it < weakform_vector_volume.end(); ++it)
             {
                 ParserFormVector *form = ((ParserFormVector *) *it);
 
