@@ -613,7 +613,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     chkParticleIncludeGravitation = new QCheckBox(tr("Include gravitation"));
     txtParticleNumberOfParticles = new QSpinBox(this);
     txtParticleNumberOfParticles->setMinimum(1);
-    txtParticleNumberOfParticles->setMaximum(50);
+    txtParticleNumberOfParticles->setMaximum(200);
     txtParticleStartingRadius = new SLineEditDouble();
     txtParticleMass = new SLineEditDouble();
     txtParticleConstant = new SLineEditDouble();

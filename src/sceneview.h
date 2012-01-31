@@ -246,6 +246,10 @@ private:
     Point m_rulersAreaWidth;
     double m_rulersNumbersWidth;
 
+    // particle tracing
+    double velocityMin;
+    double velocityMax;
+
     QMenu *mnuScene;
 
     QActionGroup *actMaterialGroup;
@@ -289,6 +293,7 @@ private:
     void paintContoursTri(double3* vert, int3* tri, double step);
     void paintVectors(); // paint vector field vectors
     void paintParticleTracing();
+    void paintParticleTracingColorBar(double min, double max);
     void paintSolutionMesh();
 
     void paintScalarField(); // paint scalar field surface
