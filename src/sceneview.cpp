@@ -81,7 +81,7 @@ void SceneViewSettings::defaultValues()
 
     showContours = false;
     showVectors = false;
-    showParticleTracing = true;
+    showParticleTracing = false;
     showSolutionMesh = false;
 
     contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
@@ -2455,35 +2455,47 @@ void SceneView::paintVectors()
     }
 }
 
-void SceneView::newtonEquations(double step, Point3 position, Point3 velicity, Point3 *newposition, Point3 *newvelocity)
+void SceneView::newtonEquations(double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
 {
-    // time.start();
-    Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(position, velicity);
-    // double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(position.x, position.y));
+    // Lorentz force
+    Point3 forceLorentz = Util::scene()->problemInfo()->hermes()->particleForce(position, velocity)  * Util::config()->particleConstant;
 
-    Point3 totalForce = (force * Util::config()->particleConstant +
-                         ((Util::config()->particleIncludeGravitation) ? Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0) : Point3()));
+    // Gravitational force
+    Point3 forceGravitational;
+    if (Util::config()->particleIncludeGravitation)
+        forceGravitational = Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0);
 
-    Point3 accel = totalForce / Util::config()->particleMass;
-    // Point3 accel;
+    // Drag force
+    Point3 velocityReal = (Util::scene()->problemInfo()->problemType == ProblemType_Planar) ?
+                velocity : Point3(velocity.x, velocity.y, position.x * velocity.z);
+    Point3 forceDrag;
+    if (velocityReal.magnitude() > 0.0)
+        forceDrag = velocityReal.normalizePoint() *
+                - 0.5 * Util::config()->particleDragDensity * sqr(velocityReal.magnitude()) * Util::config()->particleDragCoefficient * Util::config()->particleDragReferenceArea;
+
+    // Total force
+    Point3 totalForce = forceLorentz + forceGravitational + forceDrag;
+
+    // Total acceleration
+    Point3 totalAccel = totalForce / Util::config()->particleMass;
 
     if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
     {
         // position
-        *newposition = velicity * step;
+        *newposition = velocity * step;
 
         // velocity
-        *newvelocity = accel * step;
+        *newvelocity = totalAccel * step;
     }
     else
     {
-        (*newposition).x = velicity.x * step; // r
-        (*newposition).y = velicity.y * step; // z
-        (*newposition).z = velicity.z * step; // alpha
+        (*newposition).x = velocity.x * step; // r
+        (*newposition).y = velocity.y * step; // z
+        (*newposition).z = velocity.z * step; // alpha
 
-        (*newvelocity).x = (accel.x + sqr(velicity.z) * position.x) * step; // r
-        (*newvelocity).y = (accel.y) * step; // z
-        (*newvelocity).z = (accel.z / position.x - 2 / position.x * velicity.x * velicity.z) * step; // alpha
+        (*newvelocity).x = (totalAccel.x + sqr(velocity.z) * position.x) * step; // r
+        (*newvelocity).y = (totalAccel.y) * step; // z
+        (*newvelocity).z = (totalAccel.z / position.x - 2 / position.x * velocity.x * velocity.z) * step; // alpha
     }
 }
 

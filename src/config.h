@@ -128,6 +128,9 @@ public:
     double particleStartingRadius;
     bool particleColorByVelocity;
     bool particleShowPoints;
+    double particleDragDensity;
+    double particleDragCoefficient;
+    double particleDragReferenceArea;
 
     // colors
     QColor colorBackground;

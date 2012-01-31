@@ -131,6 +131,9 @@ private:
     QCheckBox *chkParticleColorByVelocity;
     QCheckBox *chkParticleShowPoints;
     QSpinBox *txtParticleMaximumSteps;
+    SLineEditDouble *txtParticleDragDensity;
+    SLineEditDouble *txtParticleDragCoefficient;
+    SLineEditDouble *txtParticleDragReferenceArea;
 
     QToolBox *tbxAdvance;
     QPushButton *btnOK;

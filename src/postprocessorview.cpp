@@ -135,6 +135,9 @@ void PostprocessorView::loadAdvanced()
     txtParticleMaximumSteps->setValue(Util::config()->particleMaximumSteps);
     chkParticleColorByVelocity->setChecked(Util::config()->particleColorByVelocity);
     chkParticleShowPoints->setChecked(Util::config()->particleShowPoints);
+    txtParticleDragDensity->setValue(Util::config()->particleDragDensity);
+    txtParticleDragReferenceArea->setValue(Util::config()->particleDragReferenceArea);
+    txtParticleDragCoefficient->setValue(Util::config()->particleDragCoefficient);
 }
 
 void PostprocessorView::saveBasic()
@@ -221,6 +224,9 @@ void PostprocessorView::saveAdvanced()
     Util::config()->particleMaximumSteps = txtParticleMaximumSteps->value();
     Util::config()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
     Util::config()->particleShowPoints = chkParticleShowPoints->isChecked();
+    Util::config()->particleDragDensity = txtParticleDragDensity->value();
+    Util::config()->particleDragCoefficient = txtParticleDragCoefficient->value();
+    Util::config()->particleDragReferenceArea = txtParticleDragReferenceArea->value();
 
     // save
     Util::config()->save();
@@ -633,6 +639,9 @@ QWidget *PostprocessorView::controlsAdvanced()
     txtParticleMaximumSteps->setMinimum(100);
     txtParticleMaximumSteps->setMaximum(100000);
     txtParticleMaximumSteps->setSingleStep(100);
+    txtParticleDragDensity = new SLineEditDouble();
+    txtParticleDragCoefficient = new SLineEditDouble();
+    txtParticleDragReferenceArea = new SLineEditDouble();
 
     QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
     connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
@@ -681,6 +690,18 @@ QWidget *PostprocessorView::controlsAdvanced()
     QGroupBox *grpAdvanced = new QGroupBox(tr("Advanced"));
     grpAdvanced->setLayout(gridLayoutAdvanced);
 
+    // drag force
+    QGridLayout *gridLayoutDragForce = new QGridLayout();
+    gridLayoutDragForce->addWidget(new QLabel(tr("Density")), 0, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragDensity, 0, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Reference area")), 1, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragReferenceArea, 1, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Coefficient")), 2, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragCoefficient, 2, 1);
+
+    QGroupBox *grpDragForce = new QGroupBox(tr("Drag force"));
+    grpDragForce->setLayout(gridLayoutDragForce);
+
     QGridLayout *gridLayoutParticle = new QGridLayout();
     gridLayoutParticle->setColumnMinimumWidth(0, minWidth);
     gridLayoutParticle->setColumnStretch(1, 1);
@@ -691,7 +712,8 @@ QWidget *PostprocessorView::controlsAdvanced()
     gridLayoutParticle->addWidget(grpParticleProperties, 3, 0, 1, 2);
     gridLayoutParticle->addWidget(grpInitialPosition, 4, 0, 1, 2);
     gridLayoutParticle->addWidget(grpInitialVelocity, 5, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpAdvanced, 6, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpDragForce, 6, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpAdvanced, 7, 0, 1, 2);
 
     QVBoxLayout *layoutParticle = new QVBoxLayout();
     layoutParticle->addLayout(gridLayoutParticle);
@@ -953,6 +975,9 @@ void PostprocessorView::doParticleDefault()
     txtParticleMaximumSteps->setValue(PARTICLEMAXIMUMSTEPS);
     chkParticleColorByVelocity->setChecked(PARTICLECOLORBYVELOCITY);
     chkParticleShowPoints->setChecked(PARTICLESHOWPOINTS);
+    txtParticleDragDensity->setValue(PARTICLEDRAGDENSITY);
+    txtParticleDragReferenceArea->setValue(PARTICLEDRAGREFERENCEAREA);
+    txtParticleDragCoefficient->setValue(PARTICLEDRAGCOEFFICIENT);
 }
 
 void PostprocessorView::doScalarFieldRangeMinChanged()

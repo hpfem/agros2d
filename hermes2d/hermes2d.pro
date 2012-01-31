@@ -151,7 +151,7 @@ win32-msvc2008 {
     LIBS += -lpython27
 }
 
-macx-g++ {
+macx-g++|macx-g++42 {
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
