@@ -128,6 +128,7 @@ private:
     QLabel *lblParticlePointY;
     QLabel *lblParticleVelocityX;
     QLabel *lblParticleVelocityY;
+    QLabel *lblParticleMotionEquations;
     QCheckBox *chkParticleColorByVelocity;
     QCheckBox *chkParticleShowPoints;
     QSpinBox *txtParticleMaximumSteps;

@@ -138,6 +138,16 @@ void PostprocessorView::loadAdvanced()
     txtParticleDragDensity->setValue(Util::config()->particleDragDensity);
     txtParticleDragReferenceArea->setValue(Util::config()->particleDragReferenceArea);
     txtParticleDragCoefficient->setValue(Util::config()->particleDragCoefficient);
+
+    lblParticlePointX->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelX()));
+    lblParticlePointY->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelY()));
+    lblParticleVelocityX->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelX()));
+    lblParticleVelocityY->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelY()));
+
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        lblParticleMotionEquations->setText(QString("<i>x</i>\" = <i>F</i><sub>x</sub> / <i>m</i>, &nbsp; <i>y</i>\" = <i>F</i><sub>y</sub> / <i>m</i>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>"));
+    else
+        lblParticleMotionEquations->setText(QString("<i>r</i>\" = <i>F</i><sub>r</sub> / <i>m</i> + <i>r</i> (<i>&phi;</i>')<sup>2</sup>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>, &nbsp; <i>&phi;</i>\" = <i>F</i><sub>&phi;</sub> / <i>m</i> - 2<i>r</i> <i>r</i>' <i>&phi;</i>' / <i>r</i>"));
 }
 
 void PostprocessorView::saveBasic()
@@ -642,19 +652,34 @@ QWidget *PostprocessorView::controlsAdvanced()
     txtParticleDragDensity = new SLineEditDouble();
     txtParticleDragCoefficient = new SLineEditDouble();
     txtParticleDragReferenceArea = new SLineEditDouble();
+    lblParticleMotionEquations = new QLabel();
 
     QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
     connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
 
-    // particle properties
-    QGridLayout *gridLayoutParticleProperties = new QGridLayout();
-    gridLayoutParticleProperties->addWidget(new QLabel(tr("Mass:")), 1, 0);
-    gridLayoutParticleProperties->addWidget(txtParticleMass, 1, 1);
-    gridLayoutParticleProperties->addWidget(new QLabel(tr("Charge:")), 2, 0);
-    gridLayoutParticleProperties->addWidget(txtParticleConstant, 2, 1);
+    // Lorentz force
+    QGridLayout *gridLayoutLorentzForce = new QGridLayout();
+    gridLayoutLorentzForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    gridLayoutLorentzForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>L</sub> = <i>Q</i> (<i><b>E</b></i> + <i><b>v</b></i> x <i><b>B</b></i>)")), 0, 1);
+    gridLayoutLorentzForce->addWidget(new QLabel(tr("Charge:")), 1, 0);
+    gridLayoutLorentzForce->addWidget(txtParticleConstant, 1, 1);
 
-    QGroupBox *grpParticleProperties = new QGroupBox(tr("Particle properties"));
-    grpParticleProperties->setLayout(gridLayoutParticleProperties);
+    QGroupBox *grpLorentzForce = new QGroupBox(tr("Lorentz Force"));
+    grpLorentzForce->setLayout(gridLayoutLorentzForce);
+
+    // drag force
+    QGridLayout *gridLayoutDragForce = new QGridLayout();
+    gridLayoutDragForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    gridLayoutDragForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>D</sub> = - &frac12; <i>&rho;</i> <i>v</i><sup>2</sup> <i>C</i><sub>D</sub> <i>S</i> &sdot; <i><b>v</b></i><sub>0</sub>")), 0, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Density")), 1, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragDensity, 1, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Reference area")), 2, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragReferenceArea, 2, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Coefficient")), 3, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragCoefficient, 3, 1);
+
+    QGroupBox *grpDragForce = new QGroupBox(tr("Drag force"));
+    grpDragForce->setLayout(gridLayoutDragForce);
 
     // initial particle position
     QGridLayout *gridLayoutInitialPosition = new QGridLayout();
@@ -678,7 +703,8 @@ QWidget *PostprocessorView::controlsAdvanced()
 
     // advanced
     QGridLayout *gridLayoutAdvanced = new QGridLayout();
-    gridLayoutAdvanced->addWidget(chkParticleIncludeGravitation, 0, 0, 1, 2);
+    gridLayoutAdvanced->addWidget(chkParticleIncludeGravitation, 0, 0);
+    gridLayoutAdvanced->addWidget(new QLabel(QString("<i><b>F</b></i><sub>G</sub> = (0, m g<sub>0</sub>, 0))")), 0, 1);
     gridLayoutAdvanced->addWidget(chkParticleTerminateOnDifferentMaterial, 1, 0, 1, 2);
     gridLayoutAdvanced->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
     gridLayoutAdvanced->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
@@ -690,30 +716,22 @@ QWidget *PostprocessorView::controlsAdvanced()
     QGroupBox *grpAdvanced = new QGroupBox(tr("Advanced"));
     grpAdvanced->setLayout(gridLayoutAdvanced);
 
-    // drag force
-    QGridLayout *gridLayoutDragForce = new QGridLayout();
-    gridLayoutDragForce->addWidget(new QLabel(tr("Density")), 0, 0);
-    gridLayoutDragForce->addWidget(txtParticleDragDensity, 0, 1);
-    gridLayoutDragForce->addWidget(new QLabel(tr("Reference area")), 1, 0);
-    gridLayoutDragForce->addWidget(txtParticleDragReferenceArea, 1, 1);
-    gridLayoutDragForce->addWidget(new QLabel(tr("Coefficient")), 2, 0);
-    gridLayoutDragForce->addWidget(txtParticleDragCoefficient, 2, 1);
-
-    QGroupBox *grpDragForce = new QGroupBox(tr("Drag force"));
-    grpDragForce->setLayout(gridLayoutDragForce);
-
     QGridLayout *gridLayoutParticle = new QGridLayout();
     gridLayoutParticle->setColumnMinimumWidth(0, minWidth);
     gridLayoutParticle->setColumnStretch(1, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Number of particles:")), 0, 0);
-    gridLayoutParticle->addWidget(txtParticleNumberOfParticles, 0, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Particles radius:")), 1, 0);
-    gridLayoutParticle->addWidget(txtParticleStartingRadius, 1, 1);
-    gridLayoutParticle->addWidget(grpParticleProperties, 3, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpInitialPosition, 4, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpInitialVelocity, 5, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpDragForce, 6, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpAdvanced, 7, 0, 1, 2);
+    gridLayoutParticle->addWidget(new QLabel(tr("Equations:")), 0, 0);
+    gridLayoutParticle->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
+    gridLayoutParticle->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
+    gridLayoutParticle->addWidget(txtParticleNumberOfParticles, 2, 1);
+    gridLayoutParticle->addWidget(new QLabel(tr("Particles radius:")), 3, 0);
+    gridLayoutParticle->addWidget(txtParticleStartingRadius, 3, 1);
+    gridLayoutParticle->addWidget(new QLabel(tr("Mass:")), 4, 0);
+    gridLayoutParticle->addWidget(txtParticleMass, 4, 1);
+    gridLayoutParticle->addWidget(grpInitialPosition, 5, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpInitialVelocity, 6, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpLorentzForce, 7, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpDragForce, 8, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpAdvanced, 9, 0, 1, 2);
 
     QVBoxLayout *layoutParticle = new QVBoxLayout();
     layoutParticle->addLayout(gridLayoutParticle);
@@ -859,11 +877,6 @@ void PostprocessorView::updateControls()
     fillComboBoxScalarVariable(cmbScalarFieldVariable);
     fillComboBoxVectorVariable(cmbVectorFieldVariable);
     fillComboBoxTimeStep(cmbTimeStep);
-
-    lblParticlePointX->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelX()));
-    lblParticlePointY->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelY()));
-    lblParticleVelocityX->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelX()));
-    lblParticleVelocityY->setText(QString("%1:").arg(Util::scene()->problemInfo()->labelY()));
 
     loadBasic();
     loadAdvanced();
