@@ -447,6 +447,9 @@ void SceneView::paintGL()
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
                     m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
                 paintScalarFieldColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
+
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ParticleTracing3D && Util::config()->particleColorByVelocity)
+                paintParticleTracingColorBar(velocityMin, velocityMax);
         }
     }
     else
@@ -486,6 +489,8 @@ void SceneView::paintGL()
             // bars
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView) paintScalarFieldColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) paintOrderColorBar();
+            if (m_sceneViewSettings.showParticleTracing && Util::config()->particleColorByVelocity)
+                paintParticleTracingColorBar(velocityMin, velocityMax);
         }
 
         // rulers
@@ -2798,9 +2803,6 @@ void SceneView::paintParticleTracing()
     {
         glCallList(m_listParticleTracing);
     }
-
-    if (Util::config()->particleColorByVelocity)
-        paintParticleTracingColorBar(velocityMin, velocityMax);
 }
 
 // particle tracing 3D
@@ -3262,9 +3264,6 @@ void SceneView::paintParticleTracing3D()
     {
         glCallList(m_listParticleTracing3D);
     }
-
-    if (Util::config()->particleColorByVelocity)
-        paintParticleTracingColorBar(velocityMin, velocityMax);
 }
 
 void SceneView::paintParticleTracingColorBar(double min, double max)
