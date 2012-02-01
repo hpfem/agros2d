@@ -23,7 +23,7 @@
 #include "util.h"
 #include "scenebasic.h"
 
-class SceneEdgeCommandRemove;
+class SceneEdgeCommandRemove;git
 
 class SceneEdge : public MarkedSceneBasic<SceneBoundary>
 {

@@ -1553,8 +1553,9 @@ QList<Point> intersection(Point p1s, Point p1e,
 
     if (angle > 0.0)
     {
-        double dx = p1e.x - p1s.x;
-        double dy = p1e.y - p1s.y;
+        double dx = p1e.x - p1s.x;  // component of direction vector of the line
+        double dy = p1e.y - p1s.y;  // component of direction vector of the line
+
         double a = dx * dx + dy * dy;
         double b = 2 * (dx * (p1s.x - center.x) + dy * (p1s.y - center.y));
         double c = p1s.x * p1s.x + p1s.y * p1s.y + center.x * center.x + center.y * center.y - 2 * (center.x * p1s.x + center.y * p1s.y)-(radius * radius);
@@ -1572,57 +1573,109 @@ QList<Point> intersection(Point p1s, Point p1e,
         double dist1 = sqrt((center.x-p1s.x)*(center.x-p1s.x)+(center.y-p1s.y)*(center.y-p1s.y));
         double dist2 = sqrt((center.x-p1e.x)*(center.x-p1e.x)+(center.y-p1e.y)*(center.y-p1e.y));
 
-        if  ((bb4ac < 0))
+        Point p1(i1x, i1y);     // possible intersection point
+        Point p2(i2x, i2y);     // possible intersection point
+
+        double t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
+        double t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent
+
+        double angle1 = (p2e - center).angle();
+        double angle2 = (p2s - center).angle();
+        double iangle1 = (p1 - center).angle();
+        double iangle2 = (p2 - center).angle();
+
+
+
+        qDebug() << angle1 << "  " << angle2 << "  " << iangle1 << "   " << iangle2;
+
+
+
+        if (std::abs((angle2 - angle1)) > M_PI)
         {
-            // Not intersecting (bb4ac < 0)
+            if (iangle2 > 0 )
+                iangle2 -= angle2;
+            else
+                iangle2 +=  M_PI;
+            if (iangle1 > 0 )
+                iangle1 -= angle2;
+            else
+                iangle1 +=  M_PI;
+            if (angle1 > 0)
+                angle1  -= angle2;
+            else
+               angle1  +=  M_PI;
+            angle2 = 0;
         }
 
-        if (i1x < p1s.x & i2x < p1s.x & i1x < p1e.x & i2x < p1e.x |
-                i1y < p1s.y & i2y < p1s.y & i1y < p1e.y & i2y < p1e.y |
-                i1x > p1s.x & i2x > p1s.x & i1x > p1e.x & i2x > p1e.x |
-                i1y > p1s.y & i2y > p1s.y & i1y > p1e.y & i2y > p1e.y)
+
+        if (angle2 < angle1)
+        {
+            double temp = angle1;
+            angle1 = angle2;
+            angle2 = temp;
+        }
+
+        qDebug() << angle1 << "  " << angle2 << "  " << iangle1 << "   " << iangle2;
+
+
+        //        {
+        //            double temp = angle1;
+        //            angle1 = 0;
+        //            angle2 = angle2 - temp;
+        //            iangle2 -= temp;
+        //            iangle1 -= temp;
+        //        }
+
+        qDebug() << angle1 << "  " << angle2 << "  " << iangle1 << "   " << iangle2;
+
+        if  ((bb4ac < 0))
+        {
+            // No intersecting (bb4ac < 0)
+        }
+
+        if (i1x < p1s.x && i2x < p1s.x && i1x < p1e.x && i2x < p1e.x |
+                i1y < p1s.y && i2y < p1s.y && i1y < p1e.y && i2y < p1e.y |
+                i1x > p1s.x && i2x > p1s.x && i1x > p1e.x && i2x > p1e.x |
+                i1y > p1s.y && i2y > p1s.y && i1y > p1e.y && i2y > p1e.y)
         {
             // No intersecting, line outside the circle
         }
 
-        if  ((bb4ac==0) & dist1 < radius & dist2<radius)
+
+        if  ((bb4ac==0) && dist1 < radius && dist2<radius)
         {
             // 1 solution: tangent (bb4ac == 0)
-            Point p1(i1x, i1y);
 
             if ((p2s.angle() < p1.angle()) && (p1.angle() < p2e.angle()))
                 out.append(p1);
         }
 
-        if  (bb4ac>0 & (dist1>=radius & dist2>=radius))
-        {
-            // 2 solutions: Line crossing the circle
-            Point p1(i1x, i1y);
-            Point p2(i2x, i2y);
+        //        if (((t1 > 0) && (t1 < 1))&&((t2 > 0) && (t2 < 1)))
+        //        {
+        //            // 2 solutions: Line crossing the circle
+        //            if ((iangle2 > angle2) && (iangle2 < angle1))
+        //                out.append(p2);
 
-            if ((p2s.angle() < p1.angle()) && (p1.angle() < p2e.angle()))
-                out.append(p1);
-            if ((p2s.angle() < p2.angle()) && (p2.angle() < p2e.angle()))
+        //            if ((iangle1 > angle2) && (iangle1 < angle1))
+        //                out.append(p1);
+        //        }
+
+        if ((t2 > 0) && (t2 < 1))
+        {
+            // 1 solution: One Point in the circle
+
+            if ((iangle2 < angle2) && (iangle2 > angle1))
                 out.append(p2);
         }
 
-        if  ((dist1>=radius & dist2<=radius))
+        if ((t1 > 0) && (t1 < 1))
         {
+            qDebug() <<  "OK";
             // 1 solution: One Point in the circle
-            Point p2(i2x, i2y);
-
-            if ((p2s.angle() < p2.angle()) && (p2.angle() < p2e.angle()))
-                out.append(p2);
-        }
-
-        if  ( (dist1<=radius & dist2>=radius))
-        {
-            // 1 solution: One Point in the circle
-            Point p1(i1x, i1y);
-
-            if ((p2s.angle() < p1.angle()) && (p1.angle() < p2e.angle()))
+            if ((iangle1 < angle2) && (iangle1 > angle1))
                 out.append(p1);
         }
+
     }
     else
     {

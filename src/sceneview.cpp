@@ -3068,7 +3068,7 @@ void SceneView::paintEdgeLine()
                       Util::config()->colorEdges.blueF());
 
             // check for crossing
-            foreach (SceneEdge *edge, m_scene->edges->items())
+            foreach (SceneEdge *edge, m_scene->edges)
             {
                 // if ((edge->nodeStart != m_nodeLast && edge->nodeEnd != m_nodeLast))
                     // && (!edge->nodeStart->isHighlighted)
