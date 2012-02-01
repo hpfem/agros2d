@@ -59,8 +59,8 @@ PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
             else                
                 tmpValue = sln->get_pt_value(point.x, point.y, H2D_FN_VAL_0);
 
-            tmpDerivative.x =  sln->get_pt_value(point.x, point.y, H2D_FN_DX_0);
-            tmpDerivative.y =  sln->get_pt_value(point.x, point.y, H2D_FN_DY_0);
+            tmpDerivative.x = sln->get_pt_value(point.x, point.y, H2D_FN_DX_0);
+            tmpDerivative.y = sln->get_pt_value(point.x, point.y, H2D_FN_DY_0);
 
             // find marker
             Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);

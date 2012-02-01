@@ -105,7 +105,8 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
     m_listScalarField3D(-1),
     m_listScalarField3DSolid(-1),
     m_listOrder(-1),
-    m_listModel(-1)
+    m_listModel(-1),
+    m_listParticleTracing3D(-1)
 {
     logMessage("SceneView::SceneView()");
 
@@ -441,6 +442,7 @@ void SceneView::paintGL()
         {
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D) paintScalarField3D();
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid) paintScalarField3DSolid();
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ParticleTracing3D) paintParticleTracing3D();
 
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
                     m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
@@ -519,6 +521,7 @@ void SceneView::clearGLLists()
     if (m_listScalarField3DSolid != -1) glDeleteLists(m_listScalarField3DSolid, 1);
     if (m_listOrder != -1) glDeleteLists(m_listOrder, 1);
     if (m_listModel != -1) glDeleteLists(m_listModel, 1);
+    if (m_listParticleTracing3D != -1) glDeleteLists(m_listParticleTracing3D, 1);
 
     m_listInitialMesh = -1;
     m_listSolutionMesh = -1;
@@ -530,6 +533,7 @@ void SceneView::clearGLLists()
     m_listScalarField3DSolid = -1;
     m_listOrder = -1;
     m_listModel = -1;
+    m_listParticleTracing3D = -1;
 }
 
 // paint *****************************************************************************************************************************
@@ -1430,7 +1434,7 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
     glBegin(GL_QUADS);
-    if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) > EPS_ZERO)
+    if (fabs(min - max) > EPS_ZERO)
         glTexCoord1d(m_texScale + m_texShift);
     else
         glTexCoord1d(m_texShift);
@@ -1756,222 +1760,6 @@ void SceneView::paintScalarField3D()
     }
 }
 
-// particle tracing
-void SceneView::paintScalarField3DSolid_TODOParticle()
-{
-    if (!m_isSolutionPrepared) return;
-    if (!Util::scene()->problemInfo()->hermes()->hasParticleTracing()) return;
-
-    loadProjection3d(true);
-
-    if (m_listParticleTracing == -1)
-    {
-        m_listParticleTracing = glGenLists(1);
-        glNewList(m_listParticleTracing, GL_COMPILE);
-
-        // gradient background
-        paintBackground();
-        glEnable(GL_DEPTH_TEST);
-
-        glDisable(GL_BLEND);
-        glDisable(GL_POLYGON_OFFSET_FILL);
-
-        // geometry - edges
-        foreach (SceneEdge *edge, m_scene->edges)
-        {
-
-            glColor3d(Util::config()->colorEdges.redF(),
-                      Util::config()->colorEdges.greenF(),
-                      Util::config()->colorEdges.blueF());
-            glLineWidth(Util::config()->edgeWidth);
-
-            if (edge->isStraight())
-            {
-                glBegin(GL_LINES);
-                glVertex3d(edge->nodeStart->point.x, edge->nodeStart->point.y, 0.0);
-                glVertex3d(edge->nodeEnd->point.x, edge->nodeEnd->point.y, 0.0);
-                glEnd();
-            }
-            else
-            {
-                Point center = edge->center();
-                double radius = edge->radius();
-                double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
-
-                drawArc(center, radius, startAngle, edge->angle, edge->angle/2);
-            }
-
-            glDisable(GL_LINE_STIPPLE);
-            glLineWidth(1.0);
-        }
-
-        // *************
-
-        RectPoint rect = m_scene->boundingBox();
-        double bound = max(rect.width(), rect.height());
-        if (bound < EPS_ZERO)
-            return;
-
-        for (int i = 0; i < Util::config()->particleNumberOfParticles; i++)
-        {
-            // initial position
-            Point3 p;
-            p.x = Util::config()->particleStart.x;
-            p.y = Util::config()->particleStart.y;
-
-            // initial velocity
-            Point3 v;
-            v.x = Util::config()->particleStartVelocity.x;
-            v.y = Util::config()->particleStartVelocity.y;
-
-            // random point
-            if (i > 0)
-            {
-                int trials = 0;
-                while (true)
-                {
-                    Point3 dp(rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
-                              rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
-                              0.0);
-
-                    p = Point3(-Util::config()->particleStartingRadius / 2,
-                               -Util::config()->particleStartingRadius / 2,
-                               0.0) + p + dp;
-
-                    int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(p.x, p.y));
-
-                    trials++;
-                    if (index > 0 || trials > 10)
-                        break;
-                }
-            }
-
-            glPointSize(Util::config()->nodeSize);
-
-            glBegin(GL_POINTS);
-            glVertex3d(p.x, p.y, p.z);
-            glEnd();
-
-            // lines
-            glLineWidth(2.0);
-            glPointSize(Util::config()->nodeSize * 2.0/5.0);
-
-            double dt = bound;
-
-            // line
-            if (i == 0)
-                glColor3d(Util::config()->colorSelected.redF(),
-                          Util::config()->colorSelected.greenF(),
-                          Util::config()->colorSelected.blueF());
-            else
-                glColor3d(rand() / double(RAND_MAX),
-                          rand() / double(RAND_MAX),
-                          rand() / double(RAND_MAX));
-
-            int max_steps_iter = 0;
-            glBegin(GL_LINES);
-            while (max_steps_iter < 100000)
-            {
-                max_steps_iter++;
-
-                Point3 np;
-                Point3 nv;
-
-                // QTime time;
-
-                // time.start();
-                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(Point(p.x, p.y), p.z, v);
-                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
-                // qDebug() << "force and material: " << time.elapsed();
-
-                // time.start();
-                int max_steps_step = 0;
-                while (max_steps_step < 100)
-                {
-                    max_steps_step++;
-
-                    // simple Euler method
-                    // position
-                    np = p + v * dt;
-
-                    // velocity
-                    nv = v + (force * Util::config()->particleConstant +
-                              ((Util::config()->particleIncludeGravitation) ? Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0) : Point3()))
-                            / Util::config()->particleMass * dt;
-
-                    double step = abs((p - np).magnitude());
-                    if ((step < Util::config()->particleMaximumStep) ||
-                            ((Util::config()->particleMaximumStep < EPS_ZERO) && (step < bound/50)))
-                        break;
-
-                    dt /= 2;
-                }
-                // qDebug() << "euler: " << time.elapsed();
-
-                Point pview;
-                Point npview;
-                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-                {
-                    pview.x = p.x;
-                    pview.y = p.y;
-
-                    npview.x = np.x;
-                    npview.y = np.y;
-                }
-                else
-                {
-                    pview.x = sqrt(sqr(p.x) + sqr(p.z));
-                    pview.y = p.y;
-
-                    npview.x = sqrt(sqr(np.x) + sqr(np.z));
-                    npview.y = np.y;
-                }
-
-                // qDebug() << "p: " << p.toString() << "pview: " << pview.toString();
-
-                // time.start();
-                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(pview.x, pview.y));
-                if (index < 0)
-                {
-                    break;
-                }
-                else if (Util::config()->particleTerminateOnDifferentMaterial)
-                {
-                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
-                    if (abs(material - newMaterial) > EPS_ZERO)
-                        break;
-                }
-                // qDebug() << "stop check: " << time.elapsed();
-
-                double kkk = 0.2e1;
-
-                glVertex3d(p.x, p.y, kkk*p.z);
-                glVertex3d(np.x, np.y, kkk*np.z);
-
-                // new values
-                v = nv;
-                p = np;
-
-                // increase time step
-                dt *= 10;
-            }
-            glEnd();
-        }
-
-        glDisable(GL_DEPTH_TEST);
-
-        m_scene->sceneSolution()->vecVectorView().unlock_data();
-
-        glEndList();
-
-        glCallList(m_listParticleTracing);
-    }
-    else
-    {
-        glCallList(m_listParticleTracing);
-    }
-}
-
 void SceneView::paintScalarField3DSolid()
 {
     logMessage("SceneView::paintScalarField3DSolid()");
@@ -1989,7 +1777,6 @@ void SceneView::paintScalarField3DSolid()
 
         // gradient background
         paintBackground();
-        glEnable(GL_DEPTH_TEST);
 
         RectPoint rect = m_scene->boundingBox();
         double max = qMax(rect.width(), rect.height());
@@ -2014,6 +1801,10 @@ void SceneView::paintScalarField3DSolid()
         double value[3];
 
         glPushMatrix();
+
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         // set texture for coloring
         if (!isModel)
@@ -2664,10 +2455,233 @@ void SceneView::paintVectors()
     }
 }
 
+void SceneView::newtonEquations(double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
+{
+    // Lorentz force
+    Point3 forceLorentz = Util::scene()->problemInfo()->hermes()->particleForce(position, velocity)  * Util::config()->particleConstant;
+
+    // Gravitational force
+    Point3 forceGravitational;
+    if (Util::config()->particleIncludeGravitation)
+        forceGravitational = Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0);
+
+    // Drag force
+    Point3 velocityReal = (Util::scene()->problemInfo()->problemType == ProblemType_Planar) ?
+                velocity : Point3(velocity.x, velocity.y, position.x * velocity.z);
+    Point3 forceDrag;
+    if (velocityReal.magnitude() > 0.0)
+        forceDrag = velocityReal.normalizePoint() *
+                - 0.5 * Util::config()->particleDragDensity * sqr(velocityReal.magnitude()) * Util::config()->particleDragCoefficient * Util::config()->particleDragReferenceArea;
+
+    // Total force
+    Point3 totalForce = forceLorentz + forceGravitational + forceDrag;
+
+    // Total acceleration
+    Point3 totalAccel = totalForce / Util::config()->particleMass;
+
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+    {
+        // position
+        *newposition = velocity * step;
+
+        // velocity
+        *newvelocity = totalAccel * step;
+    }
+    else
+    {
+        (*newposition).x = velocity.x * step; // r
+        (*newposition).y = velocity.y * step; // z
+        (*newposition).z = velocity.z * step; // alpha
+
+        (*newvelocity).x = (totalAccel.x + sqr(velocity.z) * position.x) * step; // r
+        (*newvelocity).y = (totalAccel.y) * step; // z
+        (*newvelocity).z = (totalAccel.z / position.x - 2 / position.x * velocity.x * velocity.z) * step; // alpha
+    }
+}
+
+void SceneView::computeParticleTracingPath(QList<Point3> *positions,
+                                           QList<Point3> *velocities,
+                                           bool randomPoint)
+{
+    QTime timePart;
+    timePart.start();
+
+    // initial position
+    Point3 p;
+    p.x = Util::config()->particleStart.x;
+    p.y = Util::config()->particleStart.y;
+
+    // random point
+    if (randomPoint)
+    {
+        int trials = 0;
+        while (true)
+        {
+            Point3 dp(rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
+                      rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
+                      (m_scene->problemInfo()->problemType == ProblemType_Planar) ? 0.0 : rand() * 2.0*M_PI / RAND_MAX);
+
+            p = Point3(-Util::config()->particleStartingRadius / 2,
+                       -Util::config()->particleStartingRadius / 2,
+                       (m_scene->problemInfo()->problemType == ProblemType_Planar) ? 0.0 : -1.0*M_PI) + p + dp;
+
+            int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(),
+                                                                          Point(p.x, p.y));
+
+            trials++;
+            if (index > 0 || trials > 10)
+                break;
+        }
+    }
+
+    // initial velocity
+    Point3 v;
+    v.x = Util::config()->particleStartVelocity.x;
+    v.y = Util::config()->particleStartVelocity.y;
+
+    int steps = 0;
+
+    // position and velocity cache
+    positions->append(p);
+    velocities->append(v);
+
+    double relErrorMin = (Util::config()->particleMaximumRelativeError > 0.0) ? Util::config()->particleMaximumRelativeError/100 : 1e-6;
+    double relErrorMax = 1e-3;
+    double dt = 1e-12;
+
+    int max_steps_iter = 0;
+    while (max_steps_iter < Util::config()->particleMaximumSteps)
+    {
+        max_steps_iter++;
+
+        double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
+
+        steps++;
+
+        QTime time;
+        time.start();
+
+        // Runge-Kutta steps
+        Point3 np5;
+        Point3 nv5;
+
+        int max_steps_step = 0;
+        while (max_steps_step < 100)
+        {
+            // Runge-Kutta-Fehlberg adaptive method
+            Point3 k1np;
+            Point3 k1nv;
+            newtonEquations(dt,
+                            p,
+                            v,
+                            &k1np, &k1nv);
+
+            Point3 k2np;
+            Point3 k2nv;
+            newtonEquations(dt,
+                            p + k1np * 1/4,
+                            v + k1nv * 1/4,
+                            &k2np, &k2nv);
+
+            Point3 k3np;
+            Point3 k3nv;
+            newtonEquations(dt,
+                            p + k1np * 3/32 + k2np * 9/32,
+                            v + k1nv * 3/32 + k2nv * 9/32,
+                            &k3np, &k3nv);
+
+            Point3 k4np;
+            Point3 k4nv;
+            newtonEquations(dt,
+                            p + k1np * 1932/2197 - k2np * 7200/2197 + k3np * 7296/2197,
+                            v + k1nv * 1932/2197 - k2nv * 7200/2197 + k3nv * 7296/2197,
+                            &k4np, &k4nv);
+
+            Point3 k5np;
+            Point3 k5nv;
+            newtonEquations(dt,
+                            p + k1np * 439/216 - k2np * 8 + k3np * 3680/513 - k4np * 845/4104,
+                            v + k1nv * 439/216 - k2nv * 8 + k3nv * 3680/513 - k4nv * 845/4104,
+                            &k5np, &k5nv);
+
+            Point3 k6np;
+            Point3 k6nv;
+            newtonEquations(dt,
+                            p - k1np * 8/27 + k2np * 2 - k3np * 3544/2565 + k4np * 1859/4104 - k5np * 11/40,
+                            v - k1nv * 8/27 + k2nv * 2 - k3nv * 3544/2565 + k4nv * 1859/4104 - k5nv * 11/40,
+                            &k6np, &k6nv);
+
+            // Runge-Kutta order 4
+            Point3 np4 = p + k1np * 25/216 + k3np * 1408/2565 + k4np * 2197/4104 - k5np * 1/5;
+            // Point3 nv4 = v + k1nv * 25/216 + k3nv * 1408/2565 + k4nv * 2197/4104 - k5nv * 1/5;
+
+            // Runge-Kutta order 5
+            np5 = p + k1np * 16/135 + k3np * 6656/12825 + k4np * 28561/56430 - k5np * 9/50 + k5np * 2/55;
+            nv5 = v + k1nv * 16/135 + k3nv * 6656/12825 + k4nv * 28561/56430 - k5nv * 9/50 + k5nv * 2/55;
+
+            // optimal step estimation
+            double absError = abs(np5.magnitude() - np4.magnitude());
+            double relError = abs(absError / np5.magnitude());
+
+            // qDebug() << np5.toString();
+
+            // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", step: " << dt;
+
+            if (relError < relErrorMin || relError < EPS_ZERO)
+            {
+                // increase step
+                dt *= 2.0;
+                continue;
+            }
+            else if (relError > relErrorMax)
+            {
+                // decrease step
+                dt /= 2.0;
+                // continue;
+            }
+
+            break;
+        }
+
+        int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(),
+                                                                      Point(np5.x, np5.y));
+        if (index < 0)
+        {
+            break;
+        }
+        else if (Util::config()->particleTerminateOnDifferentMaterial)
+        {
+            double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(np5.x, np5.y));
+            if (abs(material - newMaterial) > EPS_ZERO)
+                break;
+        }
+
+        // new values
+        v = nv5;
+        p = np5;
+
+        // cache
+        positions->append(p);
+
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            velocities->append(v);
+        }
+        else
+        {
+            velocities->append(Point3(v.x, v.y, p.x * v.z)); // v_phi = omega * r
+        }
+    }
+
+    // qDebug() << "steps: " << steps;
+    // qDebug() << "total: " << timePart.elapsed();
+}
+
 void SceneView::paintParticleTracing()
 {
     if (!m_isSolutionPrepared) return;
     if (!Util::scene()->problemInfo()->hermes()->hasParticleTracing()) return;
+    if (Util::scene()->problemInfo()->analysisType != AnalysisType_SteadyState) return;
 
     loadProjection2d(true);
 
@@ -2681,155 +2695,47 @@ void SceneView::paintParticleTracing()
         if (bound < EPS_ZERO)
             return;
 
-        // position and velocity cache
-        QList<Point3> positions;
-        QList<Point3> velocities;
+        velocityMin =  numeric_limits<double>::max();
+        velocityMax = -numeric_limits<double>::max();
 
-        for (int i = 0; i < Util::config()->particleNumberOfParticles; i++)
+        QList<QList<Point3> > positionsList;
+        QList<QList<Point3> > velocitiesList;
+
+        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
         {
-            // initial position
-            Point3 p;
-            p.x = Util::config()->particleStart.x;
-            p.y = Util::config()->particleStart.y;
-
-            // initial velocity
-            Point3 v;
-            v.x = Util::config()->particleStartVelocity.x;
-            v.y = Util::config()->particleStartVelocity.y;
-
-            // random point
-            if (i > 0)
-            {
-                int trials = 0;
-                while (true)
-                {
-                    Point3 dp(rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
-                              rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
-                              0.0);
-
-                    p = Point3(-Util::config()->particleStartingRadius / 2,
-                               -Util::config()->particleStartingRadius / 2,
-                               0.0) + p + dp;
-
-                    int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(p.x, p.y));
-
-                    trials++;
-                    if (index > 0 || trials > 10)
-                        break;
-                }
-            }
-
             // position and velocity cache
-            positions.append(p);
-            velocities.append(v);
+            QList<Point3> positions;
+            QList<Point3> velocities;
 
-            double dt = 1e-3;
-
-            double timeForceAndMaterial = 0.0;
-            double timeEuler = 0.0;
-            double timeStopCheck = 0.0;
-            double timeOpenGL = 0.0;
-
-            int max_steps_iter = 0;
-            while (max_steps_iter < 100000)
-            {
-                max_steps_iter++;
-
-                Point3 np;
-                Point3 nv;
-
-                QTime time;
-
-                time.start();
-                Point3 force = Util::scene()->problemInfo()->hermes()->particleForce(Point(p.x, p.y), p.z, v);
-                double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
-                timeForceAndMaterial += time.elapsed();
-
-                time.start();
-                int max_steps_step = 0;
-                while (max_steps_step < 100)
-                {
-                    max_steps_step++;
-
-                    // simple Euler method
-                    // position
-                    np = p + v * dt;
-
-                    // velocity
-                    nv = v + (force * Util::config()->particleConstant +
-                              ((Util::config()->particleIncludeGravitation) ? Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0) : Point3()))
-                            / Util::config()->particleMass * dt;
-
-                    double step = abs((p - np).magnitude());
-                    if ((step < Util::config()->particleMaximumStep) ||
-                            ((Util::config()->particleMaximumStep < EPS_ZERO) && (step < bound/100)))
-                        break;
-
-                    dt /= 2;
-
-                    // qDebug() << max_steps_step;
-                }
-                // qDebug() << dt;
-                timeEuler += time.elapsed();
-
-                Point pview;
-                Point npview;
-                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-                {
-                    pview.x = p.x;
-                    pview.y = p.y;
-
-                    npview.x = np.x;
-                    npview.y = np.y;
-                }
-                else
-                {
-                    pview.x = sqrt(sqr(p.x) + sqr(p.z));
-                    pview.y = p.y;
-
-                    npview.x = sqrt(sqr(np.x) + sqr(np.z));
-                    npview.y = np.y;
-                }
-
-                time.start();
-                int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(), Point(pview.x, pview.y));
-                if (index < 0)
-                {
-                    break;
-                }
-                else if (Util::config()->particleTerminateOnDifferentMaterial)
-                {
-                    double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(np.x, np.y));
-                    if (abs(material - newMaterial) > EPS_ZERO)
-                        break;
-                }
-                timeStopCheck += time.elapsed();
-
-                // new values
-                v = nv;
-                p = np;
-
-                // cache
-                positions.append(p);
-                velocities.append(v);
-
-                // increase time step
-                dt *= 10;
-            }
+            computeParticleTracingPath(&positions, &velocities, (k > 0));
 
             // velocity min and max value
-            double velocity_min =  numeric_limits<double>::max();
-            double velocity_max = -numeric_limits<double>::max();
             for (int i = 0; i < velocities.length(); i++)
             {
-                if (velocities[i].magnitude() < velocity_min) velocity_min = velocities[i].magnitude();
-                if (velocities[i].magnitude() > velocity_max) velocity_max = velocities[i].magnitude();
+                double velocity = velocities[i].magnitude();
+
+                if (velocity < velocityMin) velocityMin = velocity;
+                if (velocity > velocityMax) velocityMax = velocity;
             }
 
-            // visualization
+            positionsList.append(positions);
+            velocitiesList.append(velocities);
+        }
+
+        // visualization
+        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
+        {
+            // starting point
+            glPointSize(Util::config()->nodeSize * 1.2);
+            glColor3d(0.0, 0.0, 0.0);
+            glBegin(GL_POINTS);
+            glVertex2d(positionsList[k][0].x, positionsList[k][0].y);
+            glEnd();
+
+            // color
             if (!Util::config()->particleColorByVelocity)
             {
-                if (i == 0)
+                if (k == 0)
                     glColor3d(Util::config()->colorSelected.redF(),
                               Util::config()->colorSelected.greenF(),
                               Util::config()->colorSelected.blueF());
@@ -2839,47 +2745,46 @@ void SceneView::paintParticleTracing()
                               rand() / double(RAND_MAX));
             }
 
-            // starting point
-            glPointSize(Util::config()->nodeSize);
-            glBegin(GL_POINTS);
-            glVertex2d(positions[0].x, positions[0].y);
-            glEnd();
-
             // lines
             glLineWidth(2.0);
             glBegin(GL_LINES);
-            for (int i = 0; i < positions.length() - 1; i++)
+            for (int i = 0; i < positionsList[k].length() - 1; i++)
             {
                 if (Util::config()->particleColorByVelocity)
-                    glColor3d(0.8 * (velocities[i].magnitude() - velocity_min) / (velocity_max - velocity_min),
-                              0.8 * (velocities[i].magnitude() - velocity_min) / (velocity_max - velocity_min),
-                              0.8 * (velocities[i].magnitude() - velocity_min) / (velocity_max - velocity_min));
+                    glColor3d(1.0 - 0.8 * (velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                              1.0 - 0.8 * (velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                              1.0 - 0.8 * (velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin));
 
-                glVertex2d(positions[i].x, positions[i].y);
-                glVertex2d(positions[i+1].x, positions[i+1].y);
+                glVertex2d(positionsList[k][i].x, positionsList[k][i].y);
+                glVertex2d(positionsList[k][i+1].x, positionsList[k][i+1].y);
             }
             glEnd();
 
             // points
             if (Util::config()->particleShowPoints)
             {
-                glPointSize(Util::config()->nodeSize * 2.0/5.0);
+                glColor3d(Util::config()->colorSelected.redF(),
+                          Util::config()->colorSelected.greenF(),
+                          Util::config()->colorSelected.blueF());
+
+                glPointSize(Util::config()->nodeSize * 4.0/5.0);
                 glBegin(GL_POINTS);
-                for (int i = 0; i < positions.length() - 1; i++)
+                for (int i = 0; i < positionsList.length() - 1; i++)
                 {
-                    glVertex2d(positions[i].x, positions[i].y);
+                    glVertex2d(positionsList[k][i].x, positionsList[k][i].y);
                 }
                 glEnd();
             }
-
-            // clear position and velocity cache
-            positions.clear();
-            velocities.clear();
-
-            // qDebug() << "force and material: " << timeForceAndMaterial;
-            // qDebug() << "euler: " << timeEuler;
-            // qDebug() << "stop check: " << timeStopCheck;
         }
+
+        // clear position and velocity cache
+        foreach (QList<Point3> positions, positionsList)
+            positions.clear();
+        positionsList.clear();
+
+        foreach (QList<Point3> velocities, velocitiesList)
+            velocities.clear();
+        velocitiesList.clear();
 
         glDisable(GL_POLYGON_OFFSET_FILL);
 
@@ -2893,6 +2798,568 @@ void SceneView::paintParticleTracing()
     {
         glCallList(m_listParticleTracing);
     }
+
+    if (Util::config()->particleColorByVelocity)
+        paintParticleTracingColorBar(velocityMin, velocityMax);
+}
+
+// particle tracing 3D
+void SceneView::paintParticleTracing3D()
+{
+    logMessage("SceneView::paintParticleTracing3D()");
+
+    if (!m_isSolutionPrepared) return;
+    if (!Util::scene()->problemInfo()->hermes()->hasParticleTracing()) return;
+    if (Util::scene()->problemInfo()->analysisType != AnalysisType_SteadyState) return;
+
+    loadProjection3d(true);
+
+    if (m_listParticleTracing3D == -1)
+    {
+        m_listParticleTracing3D = glGenLists(1);
+        glNewList(m_listParticleTracing3D, GL_COMPILE);
+
+        // gradient background
+        paintBackground();
+
+        RectPoint rect = m_scene->boundingBox();
+        double max = qMax(rect.width(), rect.height());
+        double depth = max / Util::config()->scalarView3DHeight;
+
+        double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
+        int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
+        int3* linEdges = m_scene->sceneSolution()->linScalarView().get_edges();
+        Point point[3];
+        double value[3];
+
+        glDisable(GL_DEPTH_TEST);
+
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glColor4d(0.7, 0.6, 0.7, 0.4);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+        // init normals
+        double* normal = new double[3];
+
+        if (m_scene->problemInfo()->problemType == ProblemType_Planar)
+        {
+            glBegin(GL_TRIANGLES);
+            for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    point[j].x = linVert[linTris[i][j]][0];
+                    point[j].y = linVert[linTris[i][j]][1];
+                    value[j]   = linVert[linTris[i][j]][2];
+                }
+
+                if (!m_sceneViewSettings.scalarRangeAuto)
+                {
+                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                    if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                        continue;
+                }
+
+                // z = - depth / 2.0
+                computeNormal(point[0].x, point[0].y, -depth/2.0,
+                              point[1].x, point[1].y, -depth/2.0,
+                              point[2].x, point[2].y, -depth/2.0,
+                              normal);
+                glNormal3d(normal[0], normal[1], normal[2]);
+
+                for (int j = 0; j < 3; j++)
+                {
+                    glVertex3d(point[j].x, point[j].y, -depth/2.0);
+                }
+
+                // z = + depth / 2.0
+                computeNormal(point[0].x, point[0].y, depth/2.0,
+                              point[1].x, point[1].y, depth/2.0,
+                              point[2].x, point[2].y, depth/2.0,
+                              normal);
+                glNormal3d(normal[0], normal[1], normal[2]);
+
+                for (int j = 0; j < 3; j++)
+                {
+                    glVertex3d(point[j].x, point[j].y, depth/2.0);
+                }
+            }
+            glEnd();
+
+            // length
+            glBegin(GL_QUADS);
+            for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_edges(); i++)
+            {
+                // draw only boundary edges
+                if (!linEdges[i][2]) continue;
+
+                for (int j = 0; j < 2; j++)
+                {
+                    point[j].x = linVert[linEdges[i][j]][0];
+                    point[j].y = linVert[linEdges[i][j]][1];
+                    value[j]   = linVert[linEdges[i][j]][2];
+                }
+
+                if (!m_sceneViewSettings.scalarRangeAuto)
+                {
+                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                    if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                        continue;
+                }
+
+                computeNormal(point[0].x, point[0].y, -depth/2.0,
+                              point[1].x, point[1].y, -depth/2.0,
+                              point[1].x, point[1].y,  depth/2.0,
+                              normal);
+                glNormal3d(normal[0], normal[1], normal[2]);
+
+                glVertex3d(point[0].x, point[0].y, -depth/2.0);
+                glVertex3d(point[1].x, point[1].y, -depth/2.0);
+                glVertex3d(point[1].x, point[1].y, depth/2.0);
+                glVertex3d(point[0].x, point[0].y, depth/2.0);
+            }
+            glEnd();
+        }
+        else
+        {
+            // side
+            glBegin(GL_TRIANGLES);
+            for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    point[j].x = linVert[linTris[i][j]][0];
+                    point[j].y = linVert[linTris[i][j]][1];
+                    value[j]   = linVert[linTris[i][j]][2];
+                }
+
+                if (!m_sceneViewSettings.scalarRangeAuto)
+                {
+                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                    if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                        continue;
+                }
+
+                for (int j = 0; j <= 360; j = j + 90)
+                {
+                    computeNormal(point[0].x * cos(j/180.0*M_PI), point[0].y, point[0].x * sin(j/180.0*M_PI),
+                                  point[1].x * cos(j/180.0*M_PI), point[1].y, point[1].x * sin(j/180.0*M_PI),
+                                  point[2].x * cos(j/180.0*M_PI), point[2].y, point[2].x * sin(j/180.0*M_PI),
+                                  normal);
+                    glNormal3d(normal[0], normal[1], normal[2]);
+
+                    glVertex3d(point[0].x * cos(j/180.0*M_PI), point[0].y, point[0].x * sin(j/180.0*M_PI));
+                    glVertex3d(point[1].x * cos(j/180.0*M_PI), point[1].y, point[1].x * sin(j/180.0*M_PI));
+                    glVertex3d(point[2].x * cos(j/180.0*M_PI), point[2].y, point[2].x * sin(j/180.0*M_PI));
+                }
+            }
+            glEnd();
+
+            // symmetry
+            glBegin(GL_QUADS);
+            for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_edges(); i++)
+            {
+                // draw only boundary edges
+                if (!linEdges[i][2]) continue;
+
+                for (int j = 0; j < 2; j++)
+                {
+                    point[j].x = linVert[linEdges[i][j]][0];
+                    point[j].y = linVert[linEdges[i][j]][1];
+                    value[j]   = linVert[linEdges[i][j]][2];
+                }
+
+                if (!m_sceneViewSettings.scalarRangeAuto)
+                {
+                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                    if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                        continue;
+                }
+
+                int count = 30;
+                double step = 360.0/count;
+                for (int j = 0; j < count; j++)
+                {
+                    computeNormal(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI),
+                                  point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI),
+                                  point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI),
+                                  normal);
+                    glNormal3d(normal[0], normal[1], normal[2]);
+
+                    glVertex3d(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI));
+                    glVertex3d(point[0].x * cos((j+1)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+1)*step/180.0*M_PI));
+                }
+            }
+            glEnd();
+        }
+
+        glDisable(GL_BLEND);
+
+        // remove normals
+        delete [] normal;
+
+        // geometry
+        if (m_scene->problemInfo()->problemType == ProblemType_Planar)
+        {
+            glColor3d(Util::config()->colorEdges.redF(),
+                      Util::config()->colorEdges.greenF(),
+                      Util::config()->colorEdges.blueF());
+            glLineWidth(Util::config()->edgeWidth);
+
+            // top and bottom
+            foreach (SceneEdge *edge, m_scene->edges)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    if (edge->isStraight())
+                    {
+                        glBegin(GL_LINES);
+                        glVertex3d(edge->nodeStart->point.x, edge->nodeStart->point.y, - depth/2.0 + j*depth);
+                        glVertex3d(edge->nodeEnd->point.x, edge->nodeEnd->point.y, - depth/2.0 + j*depth);
+                        glEnd();
+                    }
+                    else
+                    {
+                        Point center = edge->center();
+                        double radius = edge->radius();
+                        double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+
+                        double theta = edge->angle / double(edge->angle/2 - 1);
+
+                        glBegin(GL_LINE_STRIP);
+                        for (int i = 0; i < edge->angle/2; i++)
+                        {
+                            double arc = (startAngle + i*theta)/180.0*M_PI;
+
+                            double x = radius * cos(arc);
+                            double y = radius * sin(arc);
+
+                            glVertex3d(center.x + x, center.y + y, - depth/2.0 + j*depth);
+                        }
+                        glEnd();
+                    }
+                }
+            }
+
+            // side
+            glBegin(GL_LINES);
+            foreach (SceneNode *node, m_scene->nodes)
+            {
+                glVertex3d(node->point.x, node->point.y,  depth/2.0);
+                glVertex3d(node->point.x, node->point.y, -depth/2.0);
+            }
+            glEnd();
+
+            glLineWidth(1.0);
+        }
+        else
+        {
+            // geometry
+            glColor3d(Util::config()->colorEdges.redF(),
+                      Util::config()->colorEdges.greenF(),
+                      Util::config()->colorEdges.blueF());
+            glLineWidth(Util::config()->edgeWidth);
+
+            // top
+            foreach (SceneEdge *edge, m_scene->edges)
+            {
+                for (int j = 0; j <= 360; j = j + 90)
+                {
+                    if (edge->isStraight())
+                    {
+                        glBegin(GL_LINES);
+                        glVertex3d(edge->nodeStart->point.x * cos(j/180.0*M_PI),
+                                   edge->nodeStart->point.y,
+                                   edge->nodeStart->point.x * sin(j/180.0*M_PI));
+                        glVertex3d(edge->nodeEnd->point.x * cos(j/180.0*M_PI),
+                                   edge->nodeEnd->point.y,
+                                   edge->nodeEnd->point.x * sin(j/180.0*M_PI));
+                        glEnd();
+                    }
+                    else
+                    {
+                        Point center = edge->center();
+                        double radius = edge->radius();
+                        double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+
+                        double theta = edge->angle / double(edge->angle/2 - 1);
+
+                        glBegin(GL_LINE_STRIP);
+                        for (int i = 0; i < edge->angle/2; i++)
+                        {
+                            double arc = (startAngle + i*theta)/180.0*M_PI;
+
+                            double x = radius * cos(arc);
+                            double y = radius * sin(arc);
+
+                            glVertex3d((center.x + x) * cos(j/180.0*M_PI),
+                                       center.y + y,
+                                       (center.x + x) * sin(j/180.0*M_PI));
+                        }
+                        glEnd();
+                    }
+                }
+            }
+
+            // side
+            foreach (SceneNode *node, m_scene->nodes)
+            {
+                int count = 30;
+                double step = 360.0/count;
+
+                glBegin(GL_LINE_STRIP);
+                for (int j = 0; j < count; j++)
+                {
+                    glVertex3d(node->point.x * cos((j+0)*step/180.0*M_PI),
+                               node->point.y,
+                               node->point.x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(node->point.x * cos((j+1)*step/180.0*M_PI),
+                               node->point.y,
+                               node->point.x * sin((j+1)*step/180.0*M_PI));
+                }
+                glEnd();
+            }
+
+            glLineWidth(1.0);
+        }
+
+        velocityMin =  numeric_limits<double>::max();
+        velocityMax = -numeric_limits<double>::max();
+
+        double positionMin =  numeric_limits<double>::max();
+        double positionMax = -numeric_limits<double>::max();
+
+        QList<QList<Point3> > positionsList;
+        QList<QList<Point3> > velocitiesList;
+
+        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
+        {
+            // position and velocity cache
+            QList<Point3> positions;
+            QList<Point3> velocities;
+
+            computeParticleTracingPath(&positions, &velocities, (k > 0));
+
+            // velocity min and max value
+            for (int i = 0; i < velocities.length(); i++)
+            {
+                double velocity = velocities[i].magnitude();
+
+                if (velocity < velocityMin) velocityMin = velocity;
+                if (velocity > velocityMax) velocityMax = velocity;
+            }
+
+            for (int i = 0; i < positions.length(); i++)
+            {
+                double position = positions[i].z;
+
+                if (position < positionMin) positionMin = position;
+                if (position > positionMax) positionMax = position;
+            }
+
+            positionsList.append(positions);
+            velocitiesList.append(velocities);
+        }
+
+        if ((positionMax - positionMin) < EPS_ZERO)
+        {
+            positionMin = -1.0;
+            positionMax = +1.0;
+        }
+
+        // visualization
+        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
+        {
+            // starting point
+            glPointSize(Util::config()->nodeSize * 1.2);
+            glColor3d(0.0, 0.0, 0.0);
+            glBegin(GL_POINTS);
+            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                glVertex3d(positionsList[k][0].x, positionsList[k][0].y, -depth/2.0 + (positionsList[k][0].z - positionMin) * depth/(positionMax - positionMin));
+            else
+                glVertex3d(positionsList[k][0].x * cos(positionsList[k][0].z), positionsList[k][0].y, positionsList[k][0].x * sin(positionsList[k][0].z));
+            glEnd();
+
+            // color
+            if (!Util::config()->particleColorByVelocity)
+            {
+                if (k == 0)
+                    glColor3d(Util::config()->colorSelected.redF(),
+                              Util::config()->colorSelected.greenF(),
+                              Util::config()->colorSelected.blueF());
+                else
+                    glColor3d(rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX));
+            }
+
+            // lines
+            glLineWidth(2.0);
+            glBegin(GL_LINES);
+            for (int i = 0; i < positionsList[k].length() - 1; i++)
+            {
+                if (Util::config()->particleColorByVelocity)
+                    glColor3d(1.0 - 0.8 * (velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                              1.0 - 0.8 * (velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                              1.0 - 0.8 * (velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin));
+
+                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                {
+                    glVertex3d(positionsList[k][i].x, positionsList[k][i].y, -depth/2.0 + (positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
+                    glVertex3d(positionsList[k][i+1].x, positionsList[k][i+1].y, -depth/2.0 + (positionsList[k][i+1].z - positionMin) * depth/(positionMax - positionMin));
+                }
+                else
+                {
+                    glVertex3d(positionsList[k][i].x * cos(positionsList[k][i].z), positionsList[k][i].y, positionsList[k][i].x * sin(positionsList[k][i].z));
+                    glVertex3d(positionsList[k][i+1].x * cos(positionsList[k][i+1].z), positionsList[k][i+1].y, positionsList[k][i+1].x * sin(positionsList[k][i+1].z));
+                }
+            }
+            glEnd();
+
+            // points
+            if (Util::config()->particleShowPoints)
+            {
+                glColor3d(Util::config()->colorSelected.redF(),
+                          Util::config()->colorSelected.greenF(),
+                          Util::config()->colorSelected.blueF());
+
+                glPointSize(Util::config()->nodeSize * 3.0/5.0);
+                glBegin(GL_POINTS);
+                for (int i = 0; i < positionsList[k].length() - 1; i++)
+                {
+                    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                        glVertex3d(positionsList[k][i].x, positionsList[k][i].y, -depth/2.0 + (positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
+                    else
+                        glVertex3d(positionsList[k][i].x * cos(positionsList[k][i].z), positionsList[k][i].y, positionsList[k][i].x * sin(positionsList[k][i].z));
+                }
+                glEnd();
+            }
+        }
+
+        // clear position and velocity cache
+        foreach (QList<Point3> positions, positionsList)
+            positions.clear();
+        positionsList.clear();
+
+        foreach (QList<Point3> velocities, velocitiesList)
+            velocities.clear();
+        velocitiesList.clear();
+
+        glDisable(GL_DEPTH_TEST);
+        glPopMatrix();
+
+        glEndList();
+
+        glCallList(m_listParticleTracing3D);
+    }
+    else
+    {
+        glCallList(m_listParticleTracing3D);
+    }
+
+    if (Util::config()->particleColorByVelocity)
+        paintParticleTracingColorBar(velocityMin, velocityMax);
+}
+
+void SceneView::paintParticleTracingColorBar(double min, double max)
+{
+    logMessage("SceneView::paintParticleTracingColorBar()");
+
+    if (!m_isSolutionPrepared) return;
+    if (!Util::scene()->problemInfo()->hermes()->hasParticleTracing()) return;
+    if (Util::scene()->problemInfo()->analysisType != AnalysisType_SteadyState) return;
+
+    loadProjection2d();
+
+    glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
+    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
+
+    // dimensions
+    int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
+    int textHeight = fontMetrics().height();
+    Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 30.0 : 10.0);
+    double scaleLeft = (contextWidth()
+                        - (((m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
+                             m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) ? 170.0 : 45) + textWidth));
+    int numTicks = 11;
+
+    // blended rectangle
+    drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
+              0.91, 0.91, 0.91);
+
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    // palette border
+    glColor3d(0.0, 0.0, 0.0);
+    glBegin(GL_QUADS);
+    glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 50.0);
+    glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 50.0);
+    glVertex2d(scaleLeft + 10.0, scaleBorder.y + 10.0);
+    glVertex2d(scaleLeft + 30.0, scaleBorder.y + 10.0);
+    glEnd();
+
+    // palette
+    glBegin(GL_QUADS);
+    glColor3d(0.0, 0.0, 0.0);
+    glVertex2d(scaleLeft + 28.0, scaleBorder.y + scaleSize.y - 52.0);
+    glVertex2d(scaleLeft + 12.0, scaleBorder.y + scaleSize.y - 52.0);
+    glColor3d(0.8, 0.8, 0.8);
+    glVertex2d(scaleLeft + 12.0, scaleBorder.y + 12.0);
+    glVertex2d(scaleLeft + 28.0, scaleBorder.y + 12.0);
+    glEnd();
+
+    // ticks
+    glColor3d(0.0, 0.0, 0.0);
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+    for (int i = 1; i < numTicks+1; i++)
+    {
+        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
+
+        glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 15.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 25.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+    }
+    glEnd();
+
+    // labels
+    for (int i = 1; i < numTicks+1; i++)
+    {
+        double value = min + (double) (i-1) / (numTicks-1) * (max - min);
+
+        if (fabs(value) < EPS_ZERO) value = 0.0;
+        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
+
+        renderText(scaleLeft + 33.0 + ((value >= 0.0) ? fontMetrics().width("-") : 0.0),
+                   scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
+                   0.0,
+                   QString::number(value, '+e', Util::config()->scalarDecimalPlace));
+    }
+
+    // variable
+    QString str = QString("%1 (m/s)").
+            arg(tr("Vel."));
+
+    renderText(scaleLeft + scaleSize.x / 2.0 - fontMetrics().width(str) / 2.0,
+               scaleBorder.y + scaleSize.y - 20.0,
+               0.0,
+               str);
+    // line
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+    glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
+    glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
+    glEnd();
 }
 
 void SceneView::paintSceneModeLabel()

@@ -318,9 +318,9 @@ ViewScalarFilter *HermesElectrostatic::viewScalarFilter(PhysicFieldVariable phys
                                              physicFieldVariableComp);
 }
 
-Point3 HermesElectrostatic::particleForce(Point point, double angle, Point3 velocity)
+Point3 HermesElectrostatic::particleForce(Point3 point, Point3 velocity)
 {
-    LocalPointValueElectrostatic *pointValue = dynamic_cast<LocalPointValueElectrostatic *>(localPointValue(point));
+    LocalPointValueElectrostatic *pointValue = dynamic_cast<LocalPointValueElectrostatic *>(localPointValue(Point(point.x, point.y)));
 
     return Point3(pointValue->E.x, pointValue->E.y, 0);
 }

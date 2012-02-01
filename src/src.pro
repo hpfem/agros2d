@@ -192,7 +192,9 @@ linux-g++|linux-g++-64|linux-g++-32 {
     }
 }
 
-macx-g++ {
+macx-g++|macx-g++42 {
+    #ICON = src/images/agros2d.icns
+
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
