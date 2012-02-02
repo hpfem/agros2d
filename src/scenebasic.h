@@ -78,6 +78,7 @@ public:
     SceneNode *nodeEnd;
     double angle;
     int refineTowardsEdge;
+    bool isCrossed;
 
     SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *boundary, double angle, int refineTowardsEdge);
 

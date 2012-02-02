@@ -1016,6 +1016,11 @@ void SceneView::paintGeometry()
                   Util::config()->colorEdges.greenF(),
                   Util::config()->colorEdges.blueF());
         glLineWidth(Util::config()->edgeWidth);
+
+        // ToDo: make color in Util::config
+        if (edge->isCrossed)
+            glColor3d(0.0, 1.0, 0.0);
+
         if (edge->isHighlighted)
         {
             glColor3d(Util::config()->colorHighlighted.redF(),
@@ -3534,16 +3539,17 @@ void SceneView::paintEdgeLine()
                       Util::config()->colorEdges.greenF(),
                       Util::config()->colorEdges.blueF());
 
+
             // check for crossing
             foreach (SceneEdge *edge, m_scene->edges)
             {
                 // if ((edge->nodeStart != m_nodeLast && edge->nodeEnd != m_nodeLast))
-                    // && (!edge->nodeStart->isHighlighted)
-                    // && (!edge->nodeEnd->isHighlighted))
+                // && (!edge->nodeStart->isHighlighted)
+                // && (!edge->nodeEnd->isHighlighted))
                 {
                     QList<Point> intersects = intersection(p, m_nodeLast->point,
                                                            edge->nodeStart->point, edge->nodeEnd->point,
-                                                           edge->center(), edge->radius(), edge->angle);
+                                                           edge->center(), edge->radius(), edge->angle);                    
 
                     foreach (Point intersect, intersects)
                     {
@@ -3595,7 +3601,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataJet[n];
     }
-        break;
+    break;
     case Palette_Copper:
     {
         if (x < 0.0) x = 0.0;
@@ -3604,7 +3610,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataCopper[n];
     }
-        break;
+    break;
     case Palette_Hot:
     {
         if (x < 0.0) x = 0.0;
@@ -3613,7 +3619,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataHot[n];
     }
-        break;
+    break;
     case Palette_Cool:
     {
         if (x < 0.0) x = 0.0;
@@ -3622,7 +3628,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataCool[n];
     }
-        break;
+    break;
     case Palette_Bone:
     {
         if (x < 0.0) x = 0.0;
@@ -3631,7 +3637,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataBone[n];
     }
-        break;
+    break;
     case Palette_Pink:
     {
         if (x < 0.0) x = 0.0;
@@ -3640,7 +3646,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataPink[n];
     }
-        break;
+    break;
     case Palette_Spring:
     {
         if (x < 0.0) x = 0.0;
@@ -3649,7 +3655,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataSpring[n];
     }
-        break;
+    break;
     case Palette_Summer:
     {
         if (x < 0.0) x = 0.0;
@@ -3658,7 +3664,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataSummer[n];
     }
-        break;
+    break;
     case Palette_Autumn:
     {
         if (x < 0.0) x = 0.0;
@@ -3667,7 +3673,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataAutumn[n];
     }
-        break;
+    break;
     case Palette_Winter:
     {
         if (x < 0.0) x = 0.0;
@@ -3676,7 +3682,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataWinter[n];
     }
-        break;
+    break;
     case Palette_HSV:
     {
         if (x < 0.0) x = 0.0;
@@ -3685,21 +3691,21 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataHSV[n];
     }
-        break;
+    break;
     case Palette_BWAsc:
     {
         static double color[3];
         color[0] = color[1] = color[2] = x;
         return color;
     }
-        break;
+    break;
     case Palette_BWDesc:
     {
         static double color[3];
         color[0] = color[1] = color[2] = 1.0 - x;
         return color;
     }
-        break;
+    break;
     default:
         qWarning() << tr("Undefined: %1.").arg(Util::config()->paletteType);
         return NULL;
@@ -3869,45 +3875,45 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             m_offset2d.y += step;
             refresh();
         }
-            break;
+        break;
         case Qt::Key_Down:
         {
             m_offset2d.y -= step;
             refresh();
         }
-            break;
+        break;
         case Qt::Key_Left:
         {
             m_offset2d.x -= step;
             refresh();
         }
-            break;
+        break;
         case Qt::Key_Right:
         {
             m_offset2d.x += step;
             refresh();
         }
-            break;
+        break;
         case Qt::Key_Plus:
         {
             doZoomIn();
         }
-            break;
+        break;
         case Qt::Key_Minus:
         {
             doZoomOut();
         }
-            break;
+        break;
         case Qt::Key_Delete:
         {
             m_scene->deleteSelected();
         }
-            break;
+        break;
         case Qt::Key_Space:
         {
             doSceneObjectProperties();
         }
-            break;
+        break;
         case Qt::Key_Escape:
         {
             m_nodeLast = NULL;
@@ -3915,7 +3921,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             emit mousePressed();
             refresh();
         }
-            break;
+        break;
         case Qt::Key_N:
         {
             // add node with coordinates under mouse pointer
@@ -3925,7 +3931,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
                 m_scene->doNewNode(p);
             }
         }
-            break;
+        break;
         case Qt::Key_L:
         {
             // add label with coordinates under mouse pointer
@@ -3935,7 +3941,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
                 m_scene->doNewLabel(p);
             }
         }
-            break;
+        break;
         case Qt::Key_A:
         {
             // select all
@@ -3965,7 +3971,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
                 refresh();
             }
         }
-            break;
+        break;
         default:
             QGLWidget::keyPressEvent(event);
         }
@@ -4125,13 +4131,34 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     {
                         if (node != m_nodeLast)
                         {
-                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->boundaries[0], 0, 0);
+                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->boundaries[0], 0, 0);                            
                             SceneEdge *edgeAdded = m_scene->addEdge(edge);
-                            if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
-                                                                                                      edge->nodeEnd->point,
-                                                                                                      edge->boundary->name,
-                                                                                                      edge->angle,
-                                                                                                      edge->refineTowardsEdge));
+
+                            if (edgeAdded == edge)
+                            {
+                                foreach (SceneEdge *anyEdge, m_scene->edges)
+                                {
+                                    QList<Point> intersects = intersection(edgeAdded->nodeStart->point, edgeAdded->nodeEnd->point,
+                                                                           anyEdge->nodeStart->point, anyEdge->nodeEnd->point,
+                                                                           anyEdge->center(), anyEdge->radius(), anyEdge->angle);
+
+                                    if ((intersects.count() > 0) &&
+                                            (edgeAdded->nodeEnd->point != anyEdge->nodeEnd->point) &&
+                                            (edgeAdded->nodeEnd->point != anyEdge->nodeStart->point) ||
+                                            (intersects.count() > 1))
+                                    {
+                                        anyEdge->isCrossed = true;
+                                        edgeAdded->isCrossed = true;
+                                    }
+                                }
+
+
+                                m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
+                                                                                   edge->nodeEnd->point,
+                                                                                   edge->boundary->name,
+                                                                                   edge->angle,
+                                                                                   edge->refineTowardsEdge));
+                            }
                         }
 
                         m_nodeLast->isSelected = false;
@@ -5265,44 +5292,44 @@ void SceneView::paintPostprocessorSelectedVolume()
 
     // how to get marker from linearizer?
     /*
-    logMessage("SceneView::paintPostprocessorSelectedVolume()");
+                            logMessage("SceneView::paintPostprocessorSelectedVolume()");
 
-    if (!m_scene->sceneSolution()->isMeshed()) return;
+                            if (!m_scene->sceneSolution()->isMeshed()) return;
 
-    m_scene->sceneSolution()->linInitialMeshView().lock_data();
+                            m_scene->sceneSolution()->linInitialMeshView().lock_data();
 
-    double3* linVert = m_scene->sceneSolution()->linInitialMeshView().get_vertices();
-    int3* linTris = m_scene->sceneSolution()->linInitialMeshView().get_triangles();
+                            double3* linVert = m_scene->sceneSolution()->linInitialMeshView().get_vertices();
+                            int3* linTris = m_scene->sceneSolution()->linInitialMeshView().get_triangles();
 
-    // draw initial mesh
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                            // draw initial mesh
+                            glEnable(GL_POLYGON_OFFSET_FILL);
+                            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4d(Util::config()->colorSelected.redF(),
-              Util::config()->colorSelected.greenF(),
-              Util::config()->colorSelected.blueF(),
-              0.5);
+                            glEnable(GL_BLEND);
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                            glColor4d(Util::config()->colorSelected.redF(),
+                                      Util::config()->colorSelected.greenF(),
+                                      Util::config()->colorSelected.blueF(),
+                                      0.5);
 
-    // triangles
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_triangles(); i++)
-    {
-        if (m_scene->labels[element->marker - 1]->isSelected)
-        {
-            glVertex2d(linVert[linTris[i][0]][0], linVert[linTris[i][0]][1]);
-            glVertex2d(linVert[linTris[i][1]][0], linVert[linTris[i][1]][1]);
-            glVertex2d(linVert[linTris[i][2]][0], linVert[linTris[i][2]][1]);
-        }
-    }
-    glEnd();
+                            // triangles
+                            glBegin(GL_TRIANGLES);
+                            for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_triangles(); i++)
+                            {
+                                if (m_scene->labels[element->marker - 1]->isSelected)
+                                {
+                                    glVertex2d(linVert[linTris[i][0]][0], linVert[linTris[i][0]][1]);
+                                    glVertex2d(linVert[linTris[i][1]][0], linVert[linTris[i][1]][1]);
+                                    glVertex2d(linVert[linTris[i][2]][0], linVert[linTris[i][2]][1]);
+                                }
+                            }
+                            glEnd();
 
-    glDisable(GL_BLEND);
-    glDisable(GL_POLYGON_OFFSET_FILL);
+                            glDisable(GL_BLEND);
+                            glDisable(GL_POLYGON_OFFSET_FILL);
 
-    m_scene->sceneSolution()->linSolutionMeshView().unlock_data();
-    */
+                            m_scene->sceneSolution()->linSolutionMeshView().unlock_data();
+                            */
 }
 
 void SceneView::paintPostprocessorSelectedSurface()
