@@ -1534,7 +1534,7 @@ Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e)
     double ua = nume_a / denom;
     double ub = nume_b / denom;
 
-    if (abs(denom) > EPS_ZERO && ua >= 0.0 && ua <= 1.0 && ub >= 0.0 && ub <= 1.0)
+    if (abs(denom) > EPS_ZERO && ua > 0.0 && ua < 1.0 && ub > 0.0 && ub < 1.0)
     {
         double xi = p1s.x + ua*(p1e.x - p1s.x);
         double yi = p1s.y + ua*(p1e.y - p1s.y);
@@ -1585,12 +1585,7 @@ QList<Point> intersection(Point p1s, Point p1e,
         double iangle2 = (p2 - center).angle();
 
 
-
-        qDebug() << angle1 << "  " << angle2 << "  " << iangle1 << "   " << iangle2;
-
-
-
-        if (std::abs((angle2 - angle1)) > M_PI)
+       if (std::abs((angle2 - angle1)) > M_PI)
         {
             if (iangle2 > 0 )
                 iangle2 -= angle2;
@@ -1615,76 +1610,36 @@ QList<Point> intersection(Point p1s, Point p1e,
             angle2 = temp;
         }
 
-        qDebug() << angle1 << "  " << angle2 << "  " << iangle1 << "   " << iangle2;
-
-
-        //        {
-        //            double temp = angle1;
-        //            angle1 = 0;
-        //            angle2 = angle2 - temp;
-        //            iangle2 -= temp;
-        //            iangle1 -= temp;
-        //        }
-
-        qDebug() << angle1 << "  " << angle2 << "  " << iangle1 << "   " << iangle2;
-
-        if  ((bb4ac < 0))
-        {
-            // No intersecting (bb4ac < 0)
-        }
-
-        if (i1x < p1s.x && i2x < p1s.x && i1x < p1e.x && i2x < p1e.x |
-                i1y < p1s.y && i2y < p1s.y && i1y < p1e.y && i2y < p1e.y |
-                i1x > p1s.x && i2x > p1s.x && i1x > p1e.x && i2x > p1e.x |
-                i1y > p1s.y && i2y > p1s.y && i1y > p1e.y && i2y > p1e.y)
-        {
-            // No intersecting, line outside the circle
-        }
-
 
         if  ((bb4ac==0) && dist1 < radius && dist2<radius)
         {
             // 1 solution: tangent (bb4ac == 0)
-
             if ((p2s.angle() < p1.angle()) && (p1.angle() < p2e.angle()))
                 out.append(p1);
         }
 
-        //        if (((t1 > 0) && (t1 < 1))&&((t2 > 0) && (t2 < 1)))
-        //        {
-        //            // 2 solutions: Line crossing the circle
-        //            if ((iangle2 > angle2) && (iangle2 < angle1))
-        //                out.append(p2);
-
-        //            if ((iangle1 > angle2) && (iangle1 < angle1))
-        //                out.append(p1);
-        //        }
-
         if ((t2 > 0) && (t2 < 1))
         {
             // 1 solution: One Point in the circle
-
             if ((iangle2 < angle2) && (iangle2 > angle1))
                 out.append(p2);
         }
 
         if ((t1 > 0) && (t1 < 1))
-        {
-            qDebug() <<  "OK";
+        {            
             // 1 solution: One Point in the circle
             if ((iangle1 < angle2) && (iangle1 > angle1))
                 out.append(p1);
-        }
-
+        }       
     }
     else
     {
         // straight line
-        Point *point = intersection(p1s, p1e, p2s, p2e);
+        Point *point = intersection(p1s, p1e, p2s, p2e);        
         if (point)
             out.append(Point(point->x, point->y));
         delete point;
-    }
+    }    
 
     return out;
 }
