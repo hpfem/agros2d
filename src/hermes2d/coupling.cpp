@@ -91,13 +91,13 @@ void Coupling::read(std::string filename)
                      matrix; matrix = matrix->next_sibling())
                 {
                     if (std::string(matrix->name()) == "matrix")
-                        weakform_matrix_volume.push_back(new ParserFormMatrix(matrix, m_coordinateType));
+                        weakform_matrix_volume.push_back(new ParserFormExpression(matrix, m_coordinateType));
                 }
 
                 for (rapidxml::xml_node<> *vector = weakform->first_node("vector");
                      vector; vector = vector->next_sibling())
                     if (std::string(vector->name()) == "vector")
-                        weakform_vector_volume.push_back(new ParserFormVector(vector, m_coordinateType));
+                        weakform_vector_volume.push_back(new ParserFormExpression(vector, m_coordinateType));
 //            }
         }
 

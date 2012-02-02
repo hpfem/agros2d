@@ -28,6 +28,8 @@
 
 extern double actualTime;
 
+class Marker;
+
 class Boundary;
 class SceneBoundary;
 class SceneBoundaryDialog;
@@ -39,8 +41,7 @@ class SceneMaterialDialog;
 struct SceneViewSettings;
 template <typename Scalar> struct SolutionArray;
 template <typename Scalar> class ViewScalarFilter;
-class ParserFormMatrix;
-class ParserFormVector;
+class ParserFormExpression;
 class ParserFormEssential;
 
 class ProgressItemSolve;
@@ -79,6 +80,14 @@ private:
 //template <typename Scalar>
 //class ViewScalarFilter;
 
+enum WFType
+{
+    WFType_MatVol,
+    WFType_MatSurf,
+    WFType_VecVol,
+    WFType_VecSurf
+};
+
 template <typename Scalar>
 class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 {
@@ -94,6 +103,9 @@ public:
     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
+    void registerForm(WFType type, string area, Marker* marker, ParserFormExpression* form);
+    void add_form(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
+
     FieldInfo* m_fieldInfo;
     Coupling* m_coupling;
     Hermes::Hermes2D::Solution<Scalar>* m_sourceSolution;
@@ -201,8 +213,8 @@ struct BoundaryType
     Hermes::vector<BoundaryTypeVariable *> variables;
 
     // weakform
-    Hermes::vector<ParserFormMatrix *> weakform_matrix_surface;
-    Hermes::vector<ParserFormVector *> weakform_vector_surface;
+    Hermes::vector<ParserFormExpression *> weakform_matrix_surface;
+    Hermes::vector<ParserFormExpression *> weakform_vector_surface;
 
     // essential
     Hermes::vector<ParserFormEssential *> essential;
@@ -311,8 +323,8 @@ struct Module
     BoundaryType *boundary_type_default;
 
     // weak forms
-    Hermes::vector<ParserFormMatrix *> weakform_matrix_volume;
-    Hermes::vector<ParserFormVector *> weakform_vector_volume;
+    Hermes::vector<ParserFormExpression *> weakform_matrix_volume;
+    Hermes::vector<ParserFormExpression *> weakform_vector_volume;
 
     // all physical variables
     Hermes::vector<LocalVariable *> variables;

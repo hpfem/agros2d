@@ -49,7 +49,7 @@ ParserFormEssential::ParserFormEssential(rapidxml::xml_node<> *node, CoordinateT
 
 
 
-ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, CoordinateType problem_type)
+ParserFormExpression::ParserFormExpression(rapidxml::xml_node<> *node, CoordinateType problem_type)
 {
     i = atoi(node->first_attribute("i")->value());
     j = atoi(node->first_attribute("j")->value());
@@ -58,23 +58,6 @@ ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, CoordinateType pr
     if (node->first_attribute("symmetric"))
         if (atoi(node->first_attribute("symmetric")->value()))
             sym = Hermes::Hermes2D::HERMES_SYM;
-
-    if (problem_type == CoordinateType_Planar)
-    {
-        if (node->first_attribute("planar"))
-            expression = node->first_attribute("planar")->value();
-    }
-    else
-    {
-        if (node->first_attribute("axi"))
-            expression = node->first_attribute("axi")->value();
-    }
-}
-
-ParserFormVector::ParserFormVector(rapidxml::xml_node<> *node, CoordinateType problem_type)
-{
-    i = atoi(node->first_attribute("i")->value());
-    j = atoi(node->first_attribute("j")->value());
 
     if (problem_type == CoordinateType_Planar)
     {

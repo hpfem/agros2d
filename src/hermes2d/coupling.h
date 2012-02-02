@@ -7,8 +7,7 @@
 #include <rapidxml_utils.cpp>
 
 class FieldInfo;
-class ParserFormMatrix;
-class ParserFormVector;
+class ParserFormExpression;
 
 //namespace Hermes{
 //namespace Module{
@@ -28,8 +27,8 @@ struct Coupling{
     ~Coupling();
 
     // weak forms
-    Hermes::vector<ParserFormMatrix *> weakform_matrix_volume;
-    Hermes::vector<ParserFormVector *> weakform_vector_volume;
+    Hermes::vector<ParserFormExpression *> weakform_matrix_volume;
+    Hermes::vector<ParserFormExpression *> weakform_vector_volume;
 
 
     void read(std::string filename);
