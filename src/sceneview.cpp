@@ -3529,12 +3529,40 @@ void SceneView::paintEdgeLine()
 
             Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
 
-            glEnable(GL_LINE_STIPPLE);
-            glLineStipple(1, 0x8FFF);
-
             glColor3d(Util::config()->colorEdges.redF(),
                       Util::config()->colorEdges.greenF(),
                       Util::config()->colorEdges.blueF());
+
+            // check for crossing
+            foreach (SceneEdge *edge, m_scene->edges)
+            {
+                // if ((edge->nodeStart != m_nodeLast && edge->nodeEnd != m_nodeLast))
+                    // && (!edge->nodeStart->isHighlighted)
+                    // && (!edge->nodeEnd->isHighlighted))
+                {
+                    QList<Point> intersects = intersection(p, m_nodeLast->point,
+                                                           edge->nodeStart->point, edge->nodeEnd->point,
+                                                           edge->center(), edge->radius(), edge->angle);
+
+                    foreach (Point intersect, intersects)
+                    {
+                        // red line and point
+                        glColor3d(1.0, 0.0, 0.0);
+
+                        glPointSize(8);
+
+                        glBegin(GL_POINTS);
+                        glVertex2d(intersect.x, intersect.y);
+                        glEnd();
+                    }
+                }
+            }
+
+            glEnable(GL_LINE_STIPPLE);
+            glLineStipple(1, 0x8FFF);
+
+
+
             glLineWidth(Util::config()->edgeWidth);
 
             glBegin(GL_LINES);

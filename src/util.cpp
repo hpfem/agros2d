@@ -1524,6 +1524,172 @@ Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle)
     return center;
 }
 
+Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e)
+{
+    double denom = (p2e.y-p2s.y)*(p1e.x-p1s.x) - (p2e.x-p2s.x)*(p1e.y-p1s.y);
+
+    double nume_a = ((p2e.x-p2s.x)*(p1s.y-p2s.y) - (p2e.y-p2s.y)*(p1s.x-p2s.x));
+    double nume_b = ((p1e.x-p1s.x)*(p1s.y-p2s.y) - (p1e.y-p1s.y)*(p1s.x-p2s.x));
+
+    double ua = nume_a / denom;
+    double ub = nume_b / denom;
+
+    if (abs(denom) > EPS_ZERO && ua >= 0.0 && ua <= 1.0 && ub >= 0.0 && ub <= 1.0)
+    {
+        double xi = p1s.x + ua*(p1e.x - p1s.x);
+        double yi = p1s.y + ua*(p1e.y - p1s.y);
+
+        return new Point(xi, yi);
+    }
+
+    return NULL;
+}
+
+
+QList<Point> intersection(Point p1s, Point p1e,
+                          Point p2s, Point p2e, Point center, double radius, double angle)
+{
+    QList<Point> out;
+
+    if (angle > 0.0)
+    {
+        double dx = p1e.x - p1s.x;  // component of direction vector of the line
+        double dy = p1e.y - p1s.y;  // component of direction vector of the line
+
+        double a = dx * dx + dy * dy;
+        double b = 2 * (dx * (p1s.x - center.x) + dy * (p1s.y - center.y));
+        double c = p1s.x * p1s.x + p1s.y * p1s.y + center.x * center.x + center.y * center.y - 2 * (center.x * p1s.x + center.y * p1s.y)-(radius * radius);
+        double bb4ac = b * b - 4 * a * c;
+
+        double mu1 = (-b + sqrt(bb4ac)) / (2*a);
+        double mu2 = (-b - sqrt(bb4ac)) / (2*a);
+
+        double i1x = p1s.x + mu1*(dx);
+        double i1y = p1s.y + mu1*(dy);
+
+        double i2x = p1s.x + mu2*(dx);
+        double i2y = p1s.y + mu2*(dy);
+
+        double dist1 = sqrt((center.x-p1s.x)*(center.x-p1s.x)+(center.y-p1s.y)*(center.y-p1s.y));
+        double dist2 = sqrt((center.x-p1e.x)*(center.x-p1e.x)+(center.y-p1e.y)*(center.y-p1e.y));
+
+        Point p1(i1x, i1y);     // possible intersection point
+        Point p2(i2x, i2y);     // possible intersection point
+
+        double t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
+        double t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent
+
+        double angle1 = (p2e - center).angle();
+        double angle2 = (p2s - center).angle();
+        double iangle1 = (p1 - center).angle();
+        double iangle2 = (p2 - center).angle();
+
+
+
+        qDebug() << angle1 << "  " << angle2 << "  " << iangle1 << "   " << iangle2;
+
+
+
+        if (std::abs((angle2 - angle1)) > M_PI)
+        {
+            if (iangle2 > 0 )
+                iangle2 -= angle2;
+            else
+                iangle2 +=  M_PI;
+            if (iangle1 > 0 )
+                iangle1 -= angle2;
+            else
+                iangle1 +=  M_PI;
+            if (angle1 > 0)
+                angle1  -= angle2;
+            else
+               angle1  +=  M_PI;
+            angle2 = 0;
+        }
+
+
+        if (angle2 < angle1)
+        {
+            double temp = angle1;
+            angle1 = angle2;
+            angle2 = temp;
+        }
+
+        qDebug() << angle1 << "  " << angle2 << "  " << iangle1 << "   " << iangle2;
+
+
+        //        {
+        //            double temp = angle1;
+        //            angle1 = 0;
+        //            angle2 = angle2 - temp;
+        //            iangle2 -= temp;
+        //            iangle1 -= temp;
+        //        }
+
+        qDebug() << angle1 << "  " << angle2 << "  " << iangle1 << "   " << iangle2;
+
+        if  ((bb4ac < 0))
+        {
+            // No intersecting (bb4ac < 0)
+        }
+
+        if (i1x < p1s.x && i2x < p1s.x && i1x < p1e.x && i2x < p1e.x |
+                i1y < p1s.y && i2y < p1s.y && i1y < p1e.y && i2y < p1e.y |
+                i1x > p1s.x && i2x > p1s.x && i1x > p1e.x && i2x > p1e.x |
+                i1y > p1s.y && i2y > p1s.y && i1y > p1e.y && i2y > p1e.y)
+        {
+            // No intersecting, line outside the circle
+        }
+
+
+        if  ((bb4ac==0) && dist1 < radius && dist2<radius)
+        {
+            // 1 solution: tangent (bb4ac == 0)
+
+            if ((p2s.angle() < p1.angle()) && (p1.angle() < p2e.angle()))
+                out.append(p1);
+        }
+
+        //        if (((t1 > 0) && (t1 < 1))&&((t2 > 0) && (t2 < 1)))
+        //        {
+        //            // 2 solutions: Line crossing the circle
+        //            if ((iangle2 > angle2) && (iangle2 < angle1))
+        //                out.append(p2);
+
+        //            if ((iangle1 > angle2) && (iangle1 < angle1))
+        //                out.append(p1);
+        //        }
+
+        if ((t2 > 0) && (t2 < 1))
+        {
+            // 1 solution: One Point in the circle
+
+            if ((iangle2 < angle2) && (iangle2 > angle1))
+                out.append(p2);
+        }
+
+        if ((t1 > 0) && (t1 < 1))
+        {
+            qDebug() <<  "OK";
+            // 1 solution: One Point in the circle
+            if ((iangle1 < angle2) && (iangle1 > angle1))
+                out.append(p1);
+        }
+
+    }
+    else
+    {
+        // straight line
+        Point *point = intersection(p1s, p1e, p2s, p2e);
+        if (point)
+            out.append(Point(point->x, point->y));
+        delete point;
+    }
+
+    return out;
+}
+
+
 static CheckVersion *checkVersion = NULL;
 void checkForNewVersion(bool quiet)
 {
