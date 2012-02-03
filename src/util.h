@@ -792,6 +792,7 @@ const QColor COLORINITIALMESH = QColor::fromRgb(250, 202, 119);
 const QColor COLORSOLUTIONMESH = QColor::fromRgb(150, 70, 0);
 const QColor COLORHIGHLIGHTED = QColor::fromRgb(250, 150, 0);
 const QColor COLORSELECTED = QColor::fromRgb(150, 0, 0);
+const QColor COLORCROSSED = QColor::fromRgb(0, 255, 0);
 
 // workspace
 const double GRIDSTEP = 0.05;

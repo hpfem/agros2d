@@ -372,6 +372,14 @@ void Scene::removeEdge(SceneEdge *edge)
     // clear solution
     m_sceneSolution->clear();
 
+    // clear crosses
+    foreach(SceneEdge *any_edge, edge->crossEdges)
+    {
+        any_edge->crossEdges.removeOne(edge);
+        if (any_edge->crossEdges.count() == 0)
+            any_edge->isCrossed = false;
+    }
+
     edges.removeOne(edge);
     // delete edge;
 
