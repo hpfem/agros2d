@@ -80,6 +80,7 @@ void Config::load()
     colorSolutionMesh = settings.value("SceneViewSettings/ColorSolutionMesh", COLORSOLUTIONMESH).value<QColor>();
     colorHighlighted = settings.value("SceneViewSettings/ColorHighlighted", COLORHIGHLIGHTED).value<QColor>();
     colorSelected = settings.value("SceneViewSettings/ColorSelected", COLORSELECTED).value<QColor>();
+    colorCrossed = settings.value("SceneViewSettings/ColorCrossed", COLORCROSSED).value<QColor>();
 
     // geometry
     nodeSize = settings.value("SceneViewSettings/NodeSize", 6.0).toDouble();

@@ -144,6 +144,7 @@ public:
     QColor colorInitialMesh;
     QColor colorSolutionMesh;
     QColor colorHighlighted;
+    QColor colorCrossed;
     QColor colorSelected;
 
     // adaptivity

@@ -1070,6 +1070,7 @@ void MainWindow::doCreateMesh()
     logMessage("MainWindow::doCreateMesh()");
 
     // create mesh
+
     Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
     if (Util::scene()->sceneSolution()->isMeshed())
     {

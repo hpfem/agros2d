@@ -70,7 +70,6 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *ma
     : SceneBasic()
 {
     logMessage("SceneEdge::SceneEdge()");
-
     this->isCrossed = false;
     this->nodeStart = nodeStart;
     this->nodeEnd = nodeEnd;

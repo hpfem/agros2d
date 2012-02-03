@@ -211,6 +211,7 @@ public:
     void writeToDxf(const QString &fileName);
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
+    ErrorResult controlGeometry();
 
     inline QUndoStack *undoStack() const { return m_undoStack; }
 

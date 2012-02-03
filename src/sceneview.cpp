@@ -1024,8 +1024,12 @@ void SceneView::paintGeometry()
 
         // ToDo: make color in Util::config
         if (edge->isCrossed)
-            glColor3d(0.0, 1.0, 0.0);
-
+        {
+            glColor3d(Util::config()->colorCrossed.redF(),
+                      Util::config()->colorCrossed.greenF(),
+                      Util::config()->colorCrossed.blueF());
+            glLineWidth(Util::config()->edgeWidth + 2.0);
+        }
         if (edge->isHighlighted)
         {
             glColor3d(Util::config()->colorHighlighted.redF(),
@@ -4147,7 +4151,10 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                                             (intersects.count() > 1))
                                     {
                                         anyEdge->isCrossed = true;
+                                        anyEdge->crossEdges.push_back(edgeAdded);
+
                                         edgeAdded->isCrossed = true;
+                                        edgeAdded->crossEdges.push_back(anyEdge);
                                     }
                                 }
 
