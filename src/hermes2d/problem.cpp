@@ -72,11 +72,12 @@ bool Block::solveInit(Coupling *coupling, Hermes::Hermes2D::Solution<double> *so
     {
         if(! field->solveInitVariables())
             assert(0); //TODO co to znamena?
-        m_wf = new WeakFormAgros<double>(field->fieldInfo(), coupling, sourceSolution);
-
-        m_solutionList->init(m_progressItemSolve, m_wf, m_fields.at(0)->m_fieldInfo);
-        m_solutionList->clear();
     }
+
+    m_wf = new WeakFormAgros<double>(this, coupling, sourceSolution);
+
+    m_solutionList->init(m_progressItemSolve, m_wf, this);
+    m_solutionList->clear();
 }
 
 void Block::solve()
@@ -90,6 +91,82 @@ void Block::solve()
         solutionArrays.push_back(m_solutionList->at(i));
     Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setSolutionArray(solutionArrays);
 
+}
+
+int Block::getNumSolutions()
+{
+    int num = 0;
+
+    foreach(Field* field, m_fields)
+    {
+        num += field->fieldInfo()->module()->number_of_solution();
+    }
+
+    return num;
+}
+
+int Block::getOffset(Field *fieldParam)
+{
+    int offset = 0;
+
+    foreach(Field* field, m_fields)
+    {
+        if(field == fieldParam)
+            return offset;
+        else
+            offset += field->fieldInfo()->module()->number_of_solution();
+    }
+
+    assert(0);
+}
+
+LinearityType Block::getLinearityType()
+{
+    int linear = 0, newton = 0;
+    foreach(Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if(fieldInfo->linearityType == LinearityType_Linear)
+            linear++;
+        if(fieldInfo->linearityType == LinearityType_Newton)
+            newton++;
+    }
+    assert(linear * newton == 0); // all hard coupled fields has to be solved by the same method
+
+    if(linear)
+        return LinearityType_Linear;
+    else if(newton)
+        return  LinearityType_Newton;
+    else
+        assert(0);
+}
+
+double Block::getNonlinearTolerance()
+{
+    double tolerance = 10e20;
+
+    foreach(Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if(fieldInfo->nonlinearTolerance < tolerance)
+            tolerance = fieldInfo->nonlinearTolerance;
+    }
+
+    return tolerance;
+}
+
+int Block::getNonlinearSteps()
+{
+    int steps = 0;
+
+    foreach(Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if(fieldInfo->nonlinearSteps > steps)
+            steps = fieldInfo->nonlinearSteps;
+    }
+
+    return steps;
 }
 
 Problem::Problem()

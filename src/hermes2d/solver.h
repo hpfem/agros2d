@@ -24,6 +24,7 @@
 #include "util.h"
 
 using namespace std::tr1;
+class Block;
 
 template <typename entity>
 Hermes::vector<entity*> desmartize(Hermes::vector<shared_ptr<entity> > smart_vec)
@@ -83,7 +84,7 @@ template <typename Scalar>
 class SolutionArrayList
 {
 public:
-    void init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, FieldInfo *fieldInfo);
+    void init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, Block* block);
     void clear();
     SolutionArray<Scalar>* at(int i);
     int size() { return listOfSolutionArrays.size(); }
@@ -96,7 +97,8 @@ public:
 private:
     Hermes::vector<SolutionArray<Scalar> *> listOfSolutionArrays;
 
-    FieldInfo *m_fieldInfo;
+    //FieldInfo *m_fieldInfo;
+    Block* m_block;
 
     // error
     bool isError;

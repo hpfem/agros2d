@@ -43,12 +43,24 @@ public:
     bool solveInit(Coupling* coupling = NULL, Hermes::Hermes2D::Solution<double>* sourceSolution = NULL);
     void solve();
 
+    int getNumSolutions();
+    int getOffset(Field* field);
+
+    LinearityType getLinearityType();
+
+    // minimal nonlinear tolerance of individual fields
+    double getNonlinearTolerance();
+
+    //maximal nonlinear steps of individual fields
+    int getNonlinearSteps();
+
 public:
 //private:
     WeakFormAgros<double> *m_wf;
     SolutionArrayList<double> *m_solutionList;
 
     QList<Field*> m_fields;
+    QList<Coupling*> m_couplings;
     ProgressItemSolve* m_progressItemSolve;
 };
 

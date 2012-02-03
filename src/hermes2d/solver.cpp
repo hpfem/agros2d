@@ -21,6 +21,7 @@
 
 #include "module.h"
 #include "module_agros.h"
+#include "problem.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenemarker.h"
@@ -121,9 +122,9 @@ void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
 
 
 template <typename Scalar>
-void SolutionArrayList<Scalar>::init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, FieldInfo *fieldInfo)
+void SolutionArrayList<Scalar>::init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, Block* block)
 {
-    m_fieldInfo = fieldInfo;
+    m_block = block;
     m_progressItemSolve = progressItemSolve;
     m_wf = wf;
     isError = false;
@@ -160,7 +161,7 @@ void SolutionArrayList<Scalar>::readMesh()
     cout << "reading mesh in solver " << tempProblemFileName().toStdString() + ".xml" << endl;
     mesh = readMeshFromFile(tempProblemFileName() + ".xml");
 
-    refineMesh(m_fieldInfo, mesh, true, true);
+    refineMesh(m_block->m_fields.at(0)->fieldInfo(), mesh, true, true);  //TODO multimesh
     Util::problem()->setMeshInitial(mesh);
 }
 
@@ -171,105 +172,112 @@ void SolutionArrayList<Scalar>::createSpace()
     printf("---- createSpace()\n");
     // essential boundary conditions
     Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs; //TODO PK <double>
-    for (int i = 0; i < m_fieldInfo->module()->number_of_solution(); i++)
+    for (int i = 0; i < m_block->getNumSolutions(); i++)
         bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());  //TODO PK <double>
 
-    int i = 0;
-    foreach(SceneEdge* edge, Util::scene()->edges->items())
+    foreach(Field* field, m_block->m_fields)
     {
-        SceneBoundary *boundary = edge->getMarker(m_fieldInfo);
-
-        if (boundary && (!boundary->isNone()))
+        FieldInfo* fieldInfo = field->fieldInfo();
+        int index = 0;
+        foreach(SceneEdge* edge, Util::scene()->edges->items())
         {
-            //printf(" ---- chci typ %s\n", boundary->getType().data());
-            Hermes::Module::BoundaryType *boundary_type = m_fieldInfo->module()->get_boundary_type(boundary->getType());
+            SceneBoundary *boundary = edge->getMarker(fieldInfo);
 
-            printf(" ---- bdr type %s\n", boundary_type->id.data(), boundary_type->name.data());
-            for (Hermes::vector<ParserFormEssential *>::iterator it = boundary_type->essential.begin();
-                 it < boundary_type->essential.end(); ++it)
+            if (boundary && (!boundary->isNone()))
             {
-                ParserFormEssential *form = ((ParserFormEssential *) *it);
+                //printf(" ---- chci typ %s\n", boundary->getType().data());
+                Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
 
-                Hermes::Hermes2D::EssentialBoundaryCondition<Scalar> *custom_form = NULL;
-
-                // compiled form
-                if (m_fieldInfo->weakFormsType == WeakFormsType_Compiled)
+                printf(" ---- bdr type %s\n", boundary_type->id.data(), boundary_type->name.data());
+                for (Hermes::vector<ParserFormEssential *>::iterator it = boundary_type->essential.begin();
+                     it < boundary_type->essential.end(); ++it)
                 {
-                    assert(0);
-//                    string problemId = m_fieldInfo->module()->fieldid + "_" +
-//                            analysisTypeToStringKey(m_fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
-//                            coordinateTypeToStringKey(m_fieldInfo->module()->get_problem_type()).toStdString();
+                    ParserFormEssential *form = ((ParserFormEssential *) *it);
 
-//                    Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
-//                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
-//                                                                                           function);
-                }
+                    Hermes::Hermes2D::EssentialBoundaryCondition<Scalar> *custom_form = NULL;
 
-                if (!custom_form && m_fieldInfo->weakFormsType == WeakFormsType_Compiled)
-                    qDebug() << "Cannot find compiled VectorFormEssential().";
-
-                // interpreted form
-                if (!custom_form || m_fieldInfo->weakFormsType == WeakFormsType_Interpreted)
-                {
+                    // compiled form
+                    if (fieldInfo->weakFormsType == WeakFormsType_Compiled)
                     {
-                        CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
-                                                                                                form->expression,
-                                                                                                boundary);
-                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
-                                                                                               function);
+                        assert(0);
+                        //                    string problemId = m_fieldInfo->module()->fieldid + "_" +
+                        //                            analysisTypeToStringKey(m_fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
+                        //                            coordinateTypeToStringKey(m_fieldInfo->module()->get_problem_type()).toStdString();
+
+                        //                    Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
+                        //                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
+                        //                                                                                           function);
+                    }
+
+                    if (!custom_form && fieldInfo->weakFormsType == WeakFormsType_Compiled)
+                        qDebug() << "Cannot find compiled VectorFormEssential().";
+
+                    // interpreted form
+                    if (!custom_form || fieldInfo->weakFormsType == WeakFormsType_Interpreted)
+                    {
+                        {
+                            CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
+                                                                                                    form->expression,
+                                                                                                    boundary);
+                            custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index + 1).toStdString(),
+                                                                                                   function);
+                        }
+                    }
+
+                    if (custom_form)
+                    {
+                        bcs[form->i - 1]->add_boundary_condition(custom_form);
                     }
                 }
+            }
+            index++;
+        }
 
-                if (custom_form)
+        // create space
+        for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
+        {
+            space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(mesh, bcs[i], fieldInfo->polynomialOrder)));
+
+            int j = 0;
+            // set order by element
+            foreach(SceneLabel* label, Util::scene()->labels->items()){
+                if (!label->getMarker(fieldInfo)->isNone())
                 {
-                    bcs[form->i - 1]->add_boundary_condition(custom_form);
+                    cout << "setting order to " << (label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder) << endl;
+                    space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder,
+                                                   QString::number(j).toStdString());
                 }
+                cout << "doooofs " << space.at(i)->get_num_dofs() << endl;
+                j++;
             }
         }
-        i++;
     }
-
-    // create space
-    for (int i = 0; i < m_fieldInfo->module()->number_of_solution(); i++)
-    {
-        space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(mesh, bcs[i], m_fieldInfo->polynomialOrder)));
-
-        int j = 0;
-        // set order by element
-        foreach(SceneLabel* label, Util::scene()->labels->items()){
-            if (!label->getMarker(m_fieldInfo)->isNone())
-            {
-                cout << "setting order to " << (label->polynomialOrder > 0 ? label->polynomialOrder : m_fieldInfo->polynomialOrder) << endl;
-                space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : m_fieldInfo->polynomialOrder,
-                                               QString::number(j).toStdString());
-            }
-            cout << "doooofs " << space.at(i)->get_num_dofs() << endl;
-            j++;
-        }
-    }
-
 }
 
 template <typename Scalar>
 void SolutionArrayList<Scalar>::createSolutions(bool copyPrevious)
 {
-    for (int i = 0; i < m_fieldInfo->module()->number_of_solution(); i++)
+    foreach(Field* field, m_block->m_fields)
     {
-        // solution agros array
-        Solution<double> *sln = new Solution<double>();
-        solution.push_back(shared_ptr<Solution<double> >(sln));
+        FieldInfo* fieldInfo = field->fieldInfo();
 
-        // single adaptive step
-        if (copyPrevious)
-            sln->copy((listOfSolutionArrays.at(listOfSolutionArrays.size() - m_fieldInfo->module()->number_of_solution() + i)->sln).get());
-
-        if (m_fieldInfo->adaptivityType != AdaptivityType_None)
+        for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
         {
-            // reference solution
-            solutionReference.push_back(shared_ptr<Solution<Scalar> >(new Solution<Scalar>()));
+            // solution agros array
+            Solution<double> *sln = new Solution<double>();
+            solution.push_back(shared_ptr<Solution<double> >(sln));
+
+            // single adaptive step
+//            if (copyPrevious)
+//                sln->copy((listOfSolutionArrays.at(listOfSolutionArrays.size() - m_fieldInfo->module()->number_of_solution() + i)->sln).get());
+
+            if (fieldInfo->adaptivityType != AdaptivityType_None)
+            {
+                // reference solution
+                solutionReference.push_back(shared_ptr<Solution<Scalar> >(new Solution<Scalar>()));
+            }
         }
     }
-
 }
 
 template <typename Scalar>
@@ -277,34 +285,34 @@ void SolutionArrayList<Scalar>::initSelectors()
 {
     // set adaptivity selector
     select = NULL;
-    switch (m_fieldInfo->adaptivityType)
-    {
-    case AdaptivityType_H:
-        select = new Hermes::Hermes2D::RefinementSelectors::HOnlySelector<Scalar>();
-        break;
-    case AdaptivityType_P:
-        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
-                                                                                        Util::config()->convExp,
-                                                                                        H2DRS_DEFAULT_ORDER);
-        break;
-    case AdaptivityType_HP:
-        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
-                                                                                        Util::config()->convExp,
-                                                                                        H2DRS_DEFAULT_ORDER);
-        break;
-    }
+//    switch (m_fieldInfo->adaptivityType)
+//    {
+//    case AdaptivityType_H:
+//        select = new Hermes::Hermes2D::RefinementSelectors::HOnlySelector<Scalar>();
+//        break;
+//    case AdaptivityType_P:
+//        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
+//                                                                                        Util::config()->convExp,
+//                                                                                        H2DRS_DEFAULT_ORDER);
+//        break;
+//    case AdaptivityType_HP:
+//        select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
+//                                                                                        Util::config()->convExp,
+//                                                                                        H2DRS_DEFAULT_ORDER);
+//        break;
+//    }
 
-    // create types of projection and selectors
-    for (int i = 0; i < m_fieldInfo->module()->number_of_solution(); i++)
-    {
-        if (m_fieldInfo->adaptivityType != AdaptivityType_None)
-        {
-            // add norm
-            projNormType.push_back(Util::config()->projNormType);
-            // add refinement selector
-            selector.push_back(select);
-        }
-    }
+//    // create types of projection and selectors
+//    for (int i = 0; i < m_fieldInfo->module()->number_of_solution(); i++)
+//    {
+//        if (m_fieldInfo->adaptivityType != AdaptivityType_None)
+//        {
+//            // add norm
+//            projNormType.push_back(Util::config()->projNormType);
+//            // add refinement selector
+//            selector.push_back(select);
+//        }
+//    }
 }
 
 template <typename Scalar>
@@ -336,7 +344,7 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
     Hermes::Hermes2D::DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(spaceParam)));
 
     // Linear solver
-    if (m_fieldInfo->linearityType == LinearityType_Linear)
+    if (m_block->getLinearityType() == LinearityType_Linear)
     {
         // set up the solver, matrix, and rhs according to the solver selection.
         Hermes::Algebra::SparseMatrix<Scalar> *matrix = create_matrix<Scalar>(Hermes::SOLVER_UMFPACK);
@@ -374,7 +382,7 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
     }
 
     // Nonlinear solver
-    if (m_fieldInfo->linearityType == LinearityType_Newton)
+    if (m_block->getLinearityType() == LinearityType_Newton)
     {
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
         Hermes::Hermes2D::NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
@@ -386,7 +394,7 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
             Scalar* coeff_vec = new Scalar[ndof];
             memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
-            newton.solve(coeff_vec, m_fieldInfo->nonlinearTolerance, m_fieldInfo->nonlinearSteps);
+            newton.solve(coeff_vec, m_block->getNonlinearTolerance(), m_block->getNonlinearSteps());
 
             Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(spaceParam)), desmartize(solutionParam));
 
@@ -405,9 +413,9 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
         }
     }
 
-    if (m_fieldInfo->linearityType == LinearityType_Picard)
-    {
-    }
+//    if (m_fieldInfo->linearityType == LinearityType_Picard)
+//    {
+//    }
 
     return true;
 
@@ -558,7 +566,7 @@ void SolutionArrayList<Scalar>::solve()
     }
 
 
-    assert(m_fieldInfo->analysisType() == AnalysisType_SteadyState); //transient se dodela
+//    assert(m_fieldInfo->analysisType() == AnalysisType_SteadyState); //transient se dodela
 //    for (int i = 0; i <m_fieldInfo->module()->number_of_solution(); i++)
 //    {
 //        // nonlinear - initial solution
@@ -574,40 +582,53 @@ void SolutionArrayList<Scalar>::solve()
 //    }
 
     actualTime = 0.0;
-    int timesteps = (m_fieldInfo->analysisType() == AnalysisType_Transient) ? floor(m_fieldInfo->timeTotal().number() / m_fieldInfo->timeStep().number()) : 1;
+
+    //TODO tansient!!
+    //int timesteps = (m_fieldInfo->analysisType() == AnalysisType_Transient) ? floor(m_fieldInfo->timeTotal().number() / m_fieldInfo->timeStep().number()) : 1;
+    int timesteps = 1;
+
     for (int n = 0; n<timesteps; n++)
     {
         // set actual time
-        actualTime = (n + 1) * m_fieldInfo->timeStep().number();
+
+        //TODO tansient!!
+        //actualTime = (n + 1) * m_fieldInfo->timeStep().number();
+
 
         // update essential bc values
         Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(space), actualTime);
         // update timedep values
-        m_fieldInfo->module()->update_time_functions(actualTime);
+        //m_fieldInfo->module()->update_time_functions(actualTime);
 
         m_wf->set_current_time(actualTime);
+
         //TODO tady predavam reseni v casovych vrstvach... asi by to slo delat jinde/bez toho..
-        if (m_fieldInfo->analysisType() == AnalysisType_Transient)
-            for (int i = 0; i < solution.size(); i++)
-                m_wf->solution.push_back(listOfSolutionArrays.at(listOfSolutionArrays.size() - solution.size() + i)->sln.get() );
+        //TODO transient
+//        if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+//            for (int i = 0; i < solution.size(); i++)
+//                m_wf->solution.push_back(listOfSolutionArrays.at(listOfSolutionArrays.size() - solution.size() + i)->sln.get() );
+
         m_wf->delete_all();
         m_wf->registerForms();
 
-        int maxAdaptivitySteps = (m_fieldInfo->adaptivityType == AdaptivityType_None) ? 1 : m_fieldInfo->adaptivitySteps;
+        //TODO adaptivity
+        //int maxAdaptivitySteps = (m_fieldInfo->adaptivityType == AdaptivityType_None) ? 1 : m_fieldInfo->adaptivitySteps;
+        int maxAdaptivitySteps = 1;
+
         int actualAdaptivitySteps = -1;
         int i = 0;
         do
         {
-            if (m_fieldInfo->adaptivityType == AdaptivityType_None)
-            {
+//            if (m_fieldInfo->adaptivityType == AdaptivityType_None)
+//            {
                 if (!solveOneProblem(space, solution))
                     isError = true;
-            }
-            else
-            {
-                if(! performAdaptivityStep(error, i, actualAdaptivitySteps, maxAdaptivitySteps))
-                    break;
-            }
+//            }
+//            else
+//            {
+//                if(! performAdaptivityStep(error, i, actualAdaptivitySteps, maxAdaptivitySteps))
+//                    break;
+//            }
 
             i++;
         }
@@ -616,14 +637,16 @@ void SolutionArrayList<Scalar>::solve()
         // output
         if (!isError)
         {
-            for (int i = 0; i < m_fieldInfo->module()->number_of_solution(); i++)
-                recordSolution(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*m_fieldInfo->timeStep().number());
-
-            if (m_fieldInfo->analysisType() == AnalysisType_Transient)
-                m_progressItemSolve->emitMessage(QObject::tr("Transient time step (%1/%2): %3 s").
-                                                 arg(n+1).
-                                                 arg(timesteps).
-                                                 arg(actualTime, 0, 'e', 2), false, n+2);
+            for (int i = 0; i < m_block->getNumSolutions(); i++){
+                //TODO transient
+                //recordSolution(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*m_fieldInfo->timeStep().number());
+                recordSolution(solution.at(i), space.at(i), error, actualAdaptivitySteps, 0.);
+            }
+//            if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+//                m_progressItemSolve->emitMessage(QObject::tr("Transient time step (%1/%2): %3 s").
+//                                                 arg(n+1).
+//                                                 arg(timesteps).
+//                                                 arg(actualTime, 0, 'e', 2), false, n+2);
         }
         else
             break;

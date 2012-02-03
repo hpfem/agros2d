@@ -19,6 +19,7 @@
 
 #include "module.h"
 #include "module_agros.h"
+#include "problem.h"
 
 #include "../weakform/src/weakform_factory.h"
 
@@ -108,9 +109,9 @@ std::map<std::string, std::string> availableAnalyses(std::string fieldId)
 }
 
 template <typename Scalar>
-WeakFormAgros<Scalar>::WeakFormAgros(FieldInfo *fieldInfo, Coupling* coupling, Hermes::Hermes2D::Solution<Scalar>* sourceSolution) :
-        Hermes::Hermes2D::WeakForm<Scalar>(fieldInfo->module()->number_of_solution()),
-            m_fieldInfo(fieldInfo), m_coupling(coupling), m_sourceSolution(sourceSolution)
+WeakFormAgros<Scalar>::WeakFormAgros(Block* block, Coupling* coupling, Hermes::Hermes2D::Solution<Scalar>* sourceSolution) :
+        Hermes::Hermes2D::WeakForm<Scalar>(block->getNumSolutions()),
+        m_block(block), m_coupling(coupling), m_sourceSolution(sourceSolution)
 {
 }
 
@@ -161,7 +162,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, const std::string
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::add_form(WFType type, Hermes::Hermes2D::Form<Scalar> *form)
+void WeakFormAgros<Scalar>::addForm(WFType type, Hermes::Hermes2D::Form<Scalar> *form)
 {
     //cout << "pridavam vektorovou formu, i: " << form->i << ", j: " << form->j << ", expresion: " << form->expression << endl;
     if(type == WFType_MatVol)
@@ -177,38 +178,38 @@ void WeakFormAgros<Scalar>::add_form(WFType type, Hermes::Hermes2D::Form<Scalar>
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WFType type, string area, Marker* marker, ParserFormExpression *form)
+void WeakFormAgros<Scalar>::registerForm(WFType type, FieldInfo* fieldInfo, string area, Marker* marker, ParserFormExpression *form)
 {
-    string problemId = m_fieldInfo->fieldId().toStdString() + "_" +
-            analysisTypeToStringKey(m_fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
-            coordinateTypeToStringKey(m_fieldInfo->module()->get_coordinate_type()).toStdString();
+    string problemId = fieldInfo->fieldId().toStdString() + "_" +
+            analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
+            coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
 
     Hermes::Hermes2D::Form<Scalar>* custom_form = NULL;
 
     // compiled form
-    if (m_fieldInfo->weakFormsType == WeakFormsType_Compiled)
+    if (fieldInfo->weakFormsType == WeakFormsType_Compiled)
     {
         custom_form = factoryForm<Scalar>(type, problemId, area, form, marker);
     }
 
-    if (!custom_form && m_fieldInfo->weakFormsType == WeakFormsType_Compiled)
+    if (!custom_form && fieldInfo->weakFormsType == WeakFormsType_Compiled)
         qDebug() << "Cannot find compiled VectorFormVol().";
 
     // interpreted form
-    if (!custom_form || m_fieldInfo->weakFormsType == WeakFormsType_Interpreted)
+    if (!custom_form || fieldInfo->weakFormsType == WeakFormsType_Interpreted)
     {
         custom_form = factoryParserForm<Scalar>(type, area, form, marker);
     }
 
-    if (m_fieldInfo->analysisType() == AnalysisType_Transient)
-        for(int sol_comp = 0; sol_comp < m_fieldInfo->module()->number_of_solution(); sol_comp++)
-            custom_form->ext.push_back(solution.at(solution.size() - m_fieldInfo->module()->number_of_solution() + sol_comp));
+    if (fieldInfo->analysisType() == AnalysisType_Transient)
+        for(int sol_comp = 0; sol_comp < fieldInfo->module()->number_of_solution(); sol_comp++)
+            custom_form->ext.push_back(solution.at(solution.size() - fieldInfo->module()->number_of_solution() + sol_comp));
 
 
     //TODO COUPLING, redo..
     //*************************************
 
-    assert(m_fieldInfo->analysisType() == AnalysisType_SteadyState);
+    assert(fieldInfo->analysisType() == AnalysisType_SteadyState);
     if(m_sourceSolution){
         printf("pushing coupled field\n");
         custom_form->ext.push_back(m_sourceSolution);
@@ -219,7 +220,7 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, string area, Marker* marke
 
     if (custom_form)
     {
-        add_form(type, custom_form);
+        addForm(type, custom_form);
     }
 
 }
@@ -230,51 +231,56 @@ void WeakFormAgros<Scalar>::registerForms()
 {
     qDebug() << "registerForms";
 
-    // boundary conditions
-    for (int i = 0; i<Util::scene()->edges->count(); i++)
+    foreach(Field* field, m_block->m_fields)
     {
-        SceneBoundary *boundary = Util::scene()->edges->at(i)->getMarker(m_fieldInfo);
+        FieldInfo* fieldInfo = field->fieldInfo();
 
-        if (boundary && boundary != Util::scene()->boundaries->getNone(m_fieldInfo))
+        // boundary conditions
+        for (int i = 0; i<Util::scene()->edges->count(); i++)
         {
-            Hermes::Module::BoundaryType *boundary_type = m_fieldInfo->module()->get_boundary_type(boundary->getType());
+            SceneBoundary *boundary = Util::scene()->edges->at(i)->getMarker(fieldInfo);
 
-            for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_matrix_surface.begin();
-                 it < boundary_type->weakform_matrix_surface.end(); ++it)
+            if (boundary && boundary != Util::scene()->boundaries->getNone(fieldInfo))
             {
-                registerForm(WFType_MatSurf, QString::number(i).toStdString(), boundary, (ParserFormExpression *) *it);
-            }
+                Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
 
-            for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_vector_surface.begin();
-                 it < boundary_type->weakform_vector_surface.end(); ++it)
-            {
-                registerForm(WFType_VecSurf, QString::number(i).toStdString(), boundary, (ParserFormExpression *) *it);
+                for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_matrix_surface.begin();
+                     it < boundary_type->weakform_matrix_surface.end(); ++it)
+                {
+                    registerForm(WFType_MatSurf, fieldInfo, QString::number(i).toStdString(), boundary, (ParserFormExpression *) *it);
+                }
+
+                for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_vector_surface.begin();
+                     it < boundary_type->weakform_vector_surface.end(); ++it)
+                {
+                    registerForm(WFType_VecSurf, fieldInfo, QString::number(i).toStdString(), boundary, (ParserFormExpression *) *it);
+                }
             }
         }
-    }
 
-    // materials
-    for (int i = 0; i<Util::scene()->labels->count(); i++)
-    {
-        SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(m_fieldInfo);
-
-        if (material && material != Util::scene()->materials->getNone(m_fieldInfo))
+        // materials
+        for (int i = 0; i<Util::scene()->labels->count(); i++)
         {
-            for (Hermes::vector<ParserFormExpression *>::iterator it = m_fieldInfo->module()->weakform_matrix_volume.begin();
-                 it < m_fieldInfo->module()->weakform_matrix_volume.end(); ++it)
+            SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(fieldInfo);
+
+            if (material && material != Util::scene()->materials->getNone(fieldInfo))
             {
-                registerForm(WFType_MatVol, QString::number(i).toStdString(), material, (ParserFormExpression *) *it);
+                for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_matrix_volume.begin();
+                     it < fieldInfo->module()->weakform_matrix_volume.end(); ++it)
+                {
+                    registerForm(WFType_MatVol, fieldInfo, QString::number(i).toStdString(), material, (ParserFormExpression *) *it);
 
-            }
+                }
 
-            Hermes::vector<ParserFormExpression *> weakform_vector_volume = m_fieldInfo->module()->weakform_vector_volume;
-            if(m_coupling)
-                weakform_vector_volume.insert(weakform_vector_volume.begin(), m_coupling->weakform_vector_volume.begin(), m_coupling->weakform_vector_volume.end());
+                Hermes::vector<ParserFormExpression *> weakform_vector_volume = fieldInfo->module()->weakform_vector_volume;
+                if(m_coupling)
+                    weakform_vector_volume.insert(weakform_vector_volume.begin(), m_coupling->weakform_vector_volume.begin(), m_coupling->weakform_vector_volume.end());
 
-            for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_vector_volume.begin();
-                 it < weakform_vector_volume.end(); ++it)
-            {
-                registerForm(WFType_VecVol, QString::number(i).toStdString(), material, (ParserFormExpression *) *it);
+                for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_vector_volume.begin();
+                     it < weakform_vector_volume.end(); ++it)
+                {
+                    registerForm(WFType_VecVol, fieldInfo, QString::number(i).toStdString(), material, (ParserFormExpression *) *it);
+                }
             }
         }
     }

@@ -38,6 +38,9 @@ class Material;
 class SceneMaterial;
 class SceneMaterialDialog;
 
+class Field;
+class Block;
+
 struct SceneViewSettings;
 template <typename Scalar> struct SolutionArray;
 template <typename Scalar> class ViewScalarFilter;
@@ -88,6 +91,8 @@ enum WFType
     WFType_VecSurf
 };
 
+const bool hardCoupling = 1;
+
 template <typename Scalar>
 class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 {
@@ -95,7 +100,7 @@ public:
     //TODO
     //TODO coupling a sourceSolution asi obalit do nejake tridy
     //TODO mozna by se melo udelat neco jako CouplingInfo (obdoba fieldInfo), a tam by se teprv ziskal Coupling, jako se ziska Module
-    WeakFormAgros(FieldInfo* fieldInfo, Coupling* coupling = NULL, Hermes::Hermes2D::Solution<Scalar>* sourceSolution = NULL);
+    WeakFormAgros(Block* block, Coupling* coupling = NULL, Hermes::Hermes2D::Solution<Scalar>* sourceSolution = NULL);
 
     void registerForms();
 
@@ -103,11 +108,11 @@ public:
     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
-    void registerForm(WFType type, string area, Marker* marker, ParserFormExpression* form);
-    void add_form(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
+    void registerForm(WFType type, FieldInfo* fieldInfo, string area, Marker* marker, ParserFormExpression* form);
+    void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
 
-    FieldInfo* m_fieldInfo;
-    Coupling* m_coupling;
+    Block* m_block;
+    Coupling* m_coupling; //TODO taky QList
     Hermes::Hermes2D::Solution<Scalar>* m_sourceSolution;
 };
 
