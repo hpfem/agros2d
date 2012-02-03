@@ -1542,8 +1542,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
 ErrorResult Scene::writeToFile(const QString &fileName)
 {
-    logMessage("Scene::writeToFile()");
-
+    logMessage("Scene::writeToFile()");    
     QSettings settings;
 
     if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
@@ -1748,5 +1747,19 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 
+    return ErrorResult();
+}
+
+ErrorResult Scene::controlGeometry()
+{
+   bool isCorrect = true;
+    foreach(SceneEdge  *edge, this->edges)
+     {
+         if(edge->crossEdges.count() != 0)
+         {
+             isCorrect = false;
+             return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (highlited). Remove the crossings first."));
+         }
+     }
     return ErrorResult();
 }
