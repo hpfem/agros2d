@@ -42,10 +42,11 @@ struct ParserFormEssential
     std::string expression;
 };
 
-struct ParserFormMatrix
+// instead of ParserFormVector and ParserFormMatrix
+struct ParserFormExpression
 {
-    ParserFormMatrix() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), expression("") {}
-    ParserFormMatrix(rapidxml::xml_node<> *node, CoordinateType problem_type);
+    ParserFormExpression() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), expression("") {}
+    ParserFormExpression(rapidxml::xml_node<> *node, CoordinateType problem_type);
 
     // position
     int i;
@@ -58,18 +59,6 @@ struct ParserFormMatrix
     std::string expression;   
 };
 
-struct ParserFormVector
-{
-    ParserFormVector() : i(0), expression("") {}
-    ParserFormVector(rapidxml::xml_node<> *node, CoordinateType problem_type);
-
-    // position
-    int i;
-    int j;
-
-    // expression
-    std::string expression;
-};
 
 class ParserForm
 {
@@ -102,6 +91,9 @@ public:
 
     // time step
     mutable double pdeltat;
+
+    //coupled field
+    mutable double source;
 
     ParserForm(FieldInfo *fieldInfo);
     ~ParserForm();

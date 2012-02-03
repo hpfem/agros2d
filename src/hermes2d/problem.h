@@ -10,6 +10,7 @@ template <typename Scalar>
 class SolutionArrayList;
 
 class FieldInfo;
+struct Coupling;
 
 class ProgressDialog;
 class ProgressItemMesh;
@@ -39,7 +40,7 @@ class Block
 public:
     Block(QList<FieldInfo*> fieldInfos, ProgressItemSolve* progressItemSolve);
 
-    bool solveInit();
+    bool solveInit(Coupling* coupling = NULL, Hermes::Hermes2D::Solution<double>* sourceSolution = NULL);
     void solve();
 
 public:
@@ -105,6 +106,8 @@ public:
 public:
 //private:
     QList<Block*> m_blocks;
+
+    QList<Coupling*> m_couplings;
 
     // progress dialog
     ProgressDialog *m_progressDialog;

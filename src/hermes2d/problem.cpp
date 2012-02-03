@@ -17,13 +17,15 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "problem.h"
+
 #include "scene.h"
 #include "scenemarker.h"
 #include "scenesolution.h"
 #include "module.h"
 #include "module_agros.h"
+#include "coupling.h"
 #include "solver.h"
-#include "problem.h"
 #include "progressdialog.h"
 
 
@@ -64,13 +66,13 @@ Block::Block(QList<FieldInfo *> fieldInfos, ProgressItemSolve* progressItemSolve
     m_solutionList = new SolutionArrayList<double>;
 }
 
-bool Block::solveInit()
+bool Block::solveInit(Coupling *coupling, Hermes::Hermes2D::Solution<double> *sourceSolution)
 {
     foreach(Field* field, m_fields)
     {
         if(! field->solveInitVariables())
             assert(0); //TODO co to znamena?
-        m_wf = new WeakFormAgros<double>(field->fieldInfo());
+        m_wf = new WeakFormAgros<double>(field->fieldInfo(), coupling, sourceSolution);
 
         m_solutionList->init(m_progressItemSolve, m_wf, m_fields.at(0)->m_fieldInfo);
         m_solutionList->clear();
@@ -114,6 +116,11 @@ void Problem::createStructure()
         tmp.append(fi);
         m_blocks.append(new Block(tmp, m_progressItemSolve));
     }
+
+    //TODO temporary
+    Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
+    heatElastCoup->read("resources/couplings/heat-elasticity.xml");
+    m_couplings.push_back(heatElastCoup);
 }
 
 
@@ -190,18 +197,29 @@ void Problem::solve(SolverMode solverMode)
     }
 
 
-        foreach(Block* block, m_blocks)
-        {
-            block->solveInit();
-            block->solve();
-        }
+//    foreach(Block* block, m_blocks)
+//    {
+//        block->solveInit();
+//        block->solve();
+//    }
 
-        // delete temp file
-        if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
-        {
-            QFile::remove(Util::scene()->problemInfo()->fileName);
-            Util::scene()->problemInfo()->fileName = "";
-        }
+    const int elastTODO = 0;  //TODO temp
+    const int heatTODO = 1;   //TODO temp
+
+    m_blocks[heatTODO]->solveInit();
+    m_blocks[heatTODO]->solve();
+
+    m_blocks[elastTODO]->solveInit(m_couplings[0], m_blocks[heatTODO]->m_solutionList->at(0)->sln.get());
+    m_blocks[elastTODO]->solve();
+
+    // delete temp file
+    if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
+    {
+        QFile::remove(Util::scene()->problemInfo()->fileName);
+        Util::scene()->problemInfo()->fileName = "";
+    }
+
+
     // close indicator progress
     Indicator::closeProgress();
 

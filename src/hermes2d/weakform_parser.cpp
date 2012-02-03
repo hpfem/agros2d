@@ -49,7 +49,7 @@ ParserFormEssential::ParserFormEssential(rapidxml::xml_node<> *node, CoordinateT
 
 
 
-ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, CoordinateType problem_type)
+ParserFormExpression::ParserFormExpression(rapidxml::xml_node<> *node, CoordinateType problem_type)
 {
     i = atoi(node->first_attribute("i")->value());
     j = atoi(node->first_attribute("j")->value());
@@ -58,23 +58,6 @@ ParserFormMatrix::ParserFormMatrix(rapidxml::xml_node<> *node, CoordinateType pr
     if (node->first_attribute("symmetric"))
         if (atoi(node->first_attribute("symmetric")->value()))
             sym = Hermes::Hermes2D::HERMES_SYM;
-
-    if (problem_type == CoordinateType_Planar)
-    {
-        if (node->first_attribute("planar"))
-            expression = node->first_attribute("planar")->value();
-    }
-    else
-    {
-        if (node->first_attribute("axi"))
-            expression = node->first_attribute("axi")->value();
-    }
-}
-
-ParserFormVector::ParserFormVector(rapidxml::xml_node<> *node, CoordinateType problem_type)
-{
-    i = atoi(node->first_attribute("i")->value());
-    j = atoi(node->first_attribute("j")->value());
 
     if (problem_type == CoordinateType_Planar)
     {
@@ -101,7 +84,6 @@ ParserForm::~ParserForm()
 
 void ParserForm::initParser(Material *material, Boundary *boundary)
 {
-    //assert(0); //TODO
     parser->parser.push_back(m_fieldInfo->module()->get_parser(m_fieldInfo));
 
     // atan2 for muparser
@@ -133,6 +115,9 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
 
     // time step
     parser->parser[0]->DefineVar("deltat", &pdeltat);
+
+    // coupling
+    parser->parser[0]->DefineVar("source", &source);
 
     parser->setParserVariables(material, boundary);
 
@@ -309,6 +294,10 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             puptdx = ext->fn[this->j]->dx[i];
             puptdy = ext->fn[this->j]->dy[i];
         }
+
+        //TODO TEMPORARY... has to be solved with respect to passing previous time solutions....
+        if (ext->get_nf() > 0)
+            source = ext->fn[0]->val[i];
 
         try
         {
