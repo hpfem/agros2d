@@ -1017,7 +1017,6 @@ void SceneView::paintGeometry()
                   Util::config()->colorEdges.blueF());
         glLineWidth(Util::config()->edgeWidth);
 
-        // ToDo: make color in Util::config
         if (edge->isCrossed)
         {
             glColor3d(Util::config()->colorCrossed.redF(),
@@ -1083,8 +1082,19 @@ void SceneView::paintGeometry()
             glVertex2d(node->point.x, node->point.y);
             glEnd();
 
-            if ((node->isSelected) || (node->isHighlighted))
+            if ((node->isSelected) || (node->isHighlighted) || (!node->isConnected))
             {
+
+                if (!node->isConnected)
+                {
+                    glColor3d(Util::config()->colorNotConnected.redF(),
+                              Util::config()->colorNotConnected.greenF(),
+                              Util::config()->colorNotConnected.blueF());
+                    glPointSize(Util::config()->nodeSize + 2);
+                }
+                else
+                    glPointSize(Util::config()->nodeSize - 2.0);
+
                 if (node->isHighlighted)
                     glColor3d(Util::config()->colorHighlighted.redF(),
                               Util::config()->colorHighlighted.greenF(),
@@ -1092,9 +1102,8 @@ void SceneView::paintGeometry()
                 if (node->isSelected)
                     glColor3d(Util::config()->colorSelected.redF(),
                               Util::config()->colorSelected.greenF(),
-                              Util::config()->colorSelected.blueF());
+                              Util::config()->colorSelected.blueF());                
 
-                glPointSize(Util::config()->nodeSize - 2.0);
                 glBegin(GL_POINTS);
                 glVertex2d(node->point.x, node->point.y);
                 glEnd();
@@ -4138,34 +4147,11 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                             SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->boundaries[0], 0, 0);                            
                             SceneEdge *edgeAdded = m_scene->addEdge(edge);
 
-                            if (edgeAdded == edge)
-                            {
-                                foreach (SceneEdge *anyEdge, m_scene->edges)
-                                {
-                                    QList<Point> intersects = intersection(edgeAdded->nodeStart->point, edgeAdded->nodeEnd->point,
-                                                                           anyEdge->nodeStart->point, anyEdge->nodeEnd->point,
-                                                                           anyEdge->center(), anyEdge->radius(), anyEdge->angle);
-
-                                    if ((intersects.count() > 0) &&
-                                            (edgeAdded->nodeEnd->point != anyEdge->nodeEnd->point) &&
-                                            (edgeAdded->nodeEnd->point != anyEdge->nodeStart->point) ||
-                                            (intersects.count() > 1))
-                                    {
-                                        anyEdge->isCrossed = true;
-                                        anyEdge->crossEdges.push_back(edgeAdded);
-
-                                        edgeAdded->isCrossed = true;
-                                        edgeAdded->crossEdges.push_back(anyEdge);
-                                    }
-                                }
-
-
-                                m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
-                                                                                   edge->nodeEnd->point,
-                                                                                   edge->boundary->name,
-                                                                                   edge->angle,
-                                                                                   edge->refineTowardsEdge));
-                            }
+                            if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
+                                                                                                      edge->nodeEnd->point,
+                                                                                                      edge->boundary->name,
+                                                                                                      edge->angle,
+                                                                                                      edge->refineTowardsEdge));
                         }
 
                         m_nodeLast->isSelected = false;

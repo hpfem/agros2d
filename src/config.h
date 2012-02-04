@@ -146,6 +146,7 @@ public:
     QColor colorHighlighted;
     QColor colorCrossed;
     QColor colorSelected;
+    QColor colorNotConnected;
 
     // adaptivity
     int maxDofs;

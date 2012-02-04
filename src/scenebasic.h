@@ -60,7 +60,8 @@ class SceneNode : public SceneBasic
 {
 public:
     Point point;
-
+    bool isConnected;
+    QList<SceneEdge*> connectedEdges;
     SceneNode(const Point &point);
 
     double distance(const Point &point) const;
