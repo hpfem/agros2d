@@ -91,7 +91,7 @@ enum WFType
     WFType_VecSurf
 };
 
-const bool hardCoupling = 1;
+const bool hardCoupling = 0;
 
 template <typename Scalar>
 class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>

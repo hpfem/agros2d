@@ -56,7 +56,8 @@ bool Field::solveInitVariables()
     return true;
 }
 
-Block::Block(QList<FieldInfo *> fieldInfos, ProgressItemSolve* progressItemSolve) : m_progressItemSolve(progressItemSolve)
+Block::Block(QList<FieldInfo *> fieldInfos, QList<Coupling*> couplings, ProgressItemSolve* progressItemSolve) :
+    m_progressItemSolve(progressItemSolve), m_couplings(couplings)
 {
     foreach(FieldInfo* fi, fieldInfos)
     {
@@ -66,15 +67,18 @@ Block::Block(QList<FieldInfo *> fieldInfos, ProgressItemSolve* progressItemSolve
     m_solutionList = new SolutionArrayList<double>;
 }
 
-bool Block::solveInit(Coupling *coupling, Hermes::Hermes2D::Solution<double> *sourceSolution)
+bool Block::solveInit(Hermes::Hermes2D::Solution<double> *sourceSolution)
 {
     foreach(Field* field, m_fields)
     {
         if(! field->solveInitVariables())
             assert(0); //TODO co to znamena?
     }
-
-    m_wf = new WeakFormAgros<double>(this, coupling, sourceSolution);
+    assert(m_couplings.size() <= 1);
+    if(m_couplings.size())
+        m_wf = new WeakFormAgros<double>(this, m_couplings.at(0), sourceSolution);
+    else
+        m_wf = new WeakFormAgros<double>(this);
 
     m_solutionList->init(m_progressItemSolve, m_wf, this);
     m_solutionList->clear();
@@ -186,20 +190,43 @@ void Problem::createStructure()
 {
     QMap<QString, FieldInfo *> fieldInfos = Util::scene()->fieldInfos();
 
-    //TODO only weak coupling so far
-    foreach(FieldInfo* fi, fieldInfos)
+    if(hardCoupling) //TODO information about coupling method move to some CouplingInfo ...
     {
-        QList<FieldInfo*> tmp;
-        tmp.append(fi);
-        m_blocks.append(new Block(tmp, m_progressItemSolve));
+        QList<FieldInfo*> fieldInfosParam;
+        foreach(FieldInfo* fi, fieldInfos)
+        {
+            fieldInfosParam.append(fi);
+        }
+
+        //TODO temporary
+        Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
+        heatElastCoup->read("resources/couplings/heat-elasticity-hard.xml");
+        QList<Coupling*> couplingsParam;
+        couplingsParam.append(heatElastCoup);
+
+        m_blocks.append(new Block(fieldInfosParam, couplingsParam, m_progressItemSolve));
     }
+    else
+    {
+        //TODO temporary
+        Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
+        heatElastCoup->read("resources/couplings/heat-elasticity.xml");
+        //m_couplings.push_back(heatElastCoup);
 
-    //TODO temporary
-    Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
-    heatElastCoup->read("resources/couplings/heat-elasticity.xml");
-    m_couplings.push_back(heatElastCoup);
+        foreach(FieldInfo* fi, fieldInfos)
+        {
+            QList<FieldInfo*> fieldInfosParam;
+            fieldInfosParam.append(fi);
+
+            //TODO temporary
+            QList<Coupling*> couplingsParam;
+            if(fi == Util::scene()->fieldInfo("elasticity"))
+                couplingsParam.append(heatElastCoup);
+            m_blocks.append(new Block(fieldInfosParam, couplingsParam, m_progressItemSolve));
+        }
+
+    }
 }
-
 
 void Problem::mesh()
 {
@@ -286,7 +313,7 @@ void Problem::solve(SolverMode solverMode)
     m_blocks[heatTODO]->solveInit();
     m_blocks[heatTODO]->solve();
 
-    m_blocks[elastTODO]->solveInit(m_couplings[0], m_blocks[heatTODO]->m_solutionList->at(0)->sln.get());
+    m_blocks[elastTODO]->solveInit(m_blocks[heatTODO]->m_solutionList->at(0)->sln.get());
     m_blocks[elastTODO]->solve();
 
     // delete temp file

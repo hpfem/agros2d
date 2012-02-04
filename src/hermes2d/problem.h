@@ -38,9 +38,9 @@ public:
 class Block
 {
 public:
-    Block(QList<FieldInfo*> fieldInfos, ProgressItemSolve* progressItemSolve);
+    Block(QList<FieldInfo*> fieldInfos, QList<Coupling*> couplings, ProgressItemSolve* progressItemSolve);
 
-    bool solveInit(Coupling* coupling = NULL, Hermes::Hermes2D::Solution<double>* sourceSolution = NULL);
+    bool solveInit(Hermes::Hermes2D::Solution<double>* sourceSolution = NULL);
     void solve();
 
     int getNumSolutions();
