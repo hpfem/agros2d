@@ -172,7 +172,7 @@ void SolutionArrayList<Scalar>::createSpace()
     printf("---- createSpace()\n");
     // essential boundary conditions
     Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs; //TODO PK <double>
-    for (int i = 0; i < m_block->getNumSolutions(); i++)
+    for (int i = 0; i < m_block->numSolutions(); i++)
         bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());  //TODO PK <double>
 
     foreach(Field* field, m_block->m_fields)
@@ -226,7 +226,8 @@ void SolutionArrayList<Scalar>::createSpace()
 
                     if (custom_form)
                     {
-                        bcs[form->i - 1]->add_boundary_condition(custom_form);
+                        cout << "Boundary cond, " << form->i - 1 + m_block->offset(field) << " -> " << form->expression << endl;
+                        bcs[form->i - 1 + m_block->offset(field)]->add_boundary_condition(custom_form);
                     }
                 }
             }
@@ -336,6 +337,8 @@ void SolutionArrayList<Scalar>::cleanup()
     selector.clear();
 }
 
+int DEBUG_COUNTER = 0;
+
 template <typename Scalar>
 bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                                           Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam)
@@ -344,7 +347,7 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
     Hermes::Hermes2D::DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(spaceParam)));
 
     // Linear solver
-    if (m_block->getLinearityType() == LinearityType_Linear)
+    if (m_block->linearityType() == LinearityType_Linear)
     {
         // set up the solver, matrix, and rhs according to the solver selection.
         Hermes::Algebra::SparseMatrix<Scalar> *matrix = create_matrix<Scalar>(Hermes::SOLVER_UMFPACK);
@@ -362,9 +365,17 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
                 cout << solver->get_sln_vector()[i] << ", ";
             cout << "  <- reseni " << endl;
             FILE *f;
-            f = fopen("rhs.txt", "w");
+            char fileName[30];
+            sprintf(fileName, "rhs%d.txt", DEBUG_COUNTER);
+            f = fopen(fileName, "w");
             rhs->dump(f, "rhs");
             fclose(f);
+
+            sprintf(fileName, "mat%d.txt", DEBUG_COUNTER);
+            f = fopen(fileName, "w");
+            matrix->dump(f, "matrix");
+            fclose(f);
+            DEBUG_COUNTER++;
 
             Hermes::Hermes2D::Views::Linearizer lin;
             bool mode_3D = true;
@@ -382,7 +393,7 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
     }
 
     // Nonlinear solver
-    if (m_block->getLinearityType() == LinearityType_Newton)
+    if (m_block->linearityType() == LinearityType_Newton)
     {
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
         Hermes::Hermes2D::NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
@@ -394,7 +405,8 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
             Scalar* coeff_vec = new Scalar[ndof];
             memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
-            newton.solve(coeff_vec, m_block->getNonlinearTolerance(), m_block->getNonlinearSteps());
+            cout << "solving with nonlinear tolerance " << m_block->nonlinearTolerance() << " and nonlin steps " << m_block->nonlinearSteps() << endl;
+            newton.solve(coeff_vec, m_block->nonlinearTolerance(), m_block->nonlinearSteps());
 
             Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(spaceParam)), desmartize(solutionParam));
 
@@ -637,7 +649,7 @@ void SolutionArrayList<Scalar>::solve()
         // output
         if (!isError)
         {
-            for (int i = 0; i < m_block->getNumSolutions(); i++){
+            for (int i = 0; i < m_block->numSolutions(); i++){
                 //TODO transient
                 //recordSolution(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*m_fieldInfo->timeStep().number());
                 recordSolution(solution.at(i), space.at(i), error, actualAdaptivitySteps, 0.);

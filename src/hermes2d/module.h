@@ -91,7 +91,7 @@ enum WFType
     WFType_VecSurf
 };
 
-const bool hardCoupling = 0;
+const bool hardCoupling = false;
 
 template <typename Scalar>
 class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
@@ -100,7 +100,7 @@ public:
     //TODO
     //TODO coupling a sourceSolution asi obalit do nejake tridy
     //TODO mozna by se melo udelat neco jako CouplingInfo (obdoba fieldInfo), a tam by se teprv ziskal Coupling, jako se ziska Module
-    WeakFormAgros(Block* block, Coupling* coupling = NULL, Hermes::Hermes2D::Solution<Scalar>* sourceSolution = NULL);
+    WeakFormAgros(Block* block, Hermes::Hermes2D::Solution<Scalar>* sourceSolution = NULL);
 
     void registerForms();
 
@@ -108,11 +108,10 @@ public:
     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
-    void registerForm(WFType type, FieldInfo* fieldInfo, string area, Marker* marker, ParserFormExpression* form);
+    void registerForm(WFType type, FieldInfo* fieldInfo, string area, Marker* marker, ParserFormExpression* form, int offsetI, int offsetJ);
     void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;
-    Coupling* m_coupling; //TODO taky QList
     Hermes::Hermes2D::Solution<Scalar>* m_sourceSolution;
 };
 

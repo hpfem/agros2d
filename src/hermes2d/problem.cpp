@@ -76,7 +76,7 @@ bool Block::solveInit(Hermes::Hermes2D::Solution<double> *sourceSolution)
     }
     assert(m_couplings.size() <= 1);
     if(m_couplings.size())
-        m_wf = new WeakFormAgros<double>(this, m_couplings.at(0), sourceSolution);
+        m_wf = new WeakFormAgros<double>(this, sourceSolution);
     else
         m_wf = new WeakFormAgros<double>(this);
 
@@ -88,16 +88,21 @@ void Block::solve()
 {
     m_solutionList->solve();
     cout << "num elem pri prirazeni do scene solution " <<  Util::problem()->meshInitial()->get_num_active_elements() << endl;
-    Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setMeshInitial(Util::problem()->meshInitial());
 
-    QList<SolutionArray<double>* > solutionArrays;
-    for(int i = 0; i < m_fields[0]->fieldInfo()->module()->number_of_solution(); i++)
-        solutionArrays.push_back(m_solutionList->at(i));
-    Util::scene()->sceneSolution(m_fields[0]->fieldInfo())->setSolutionArray(solutionArrays);
+    foreach(Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
 
+        Util::scene()->sceneSolution(fieldInfo)->setMeshInitial(Util::problem()->meshInitial());
+
+        QList<SolutionArray<double>* > solutionArrays;
+        for(int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
+            solutionArrays.push_back(m_solutionList->at(i + offset(field)));
+        Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(solutionArrays);
+    }
 }
 
-int Block::getNumSolutions()
+int Block::numSolutions()
 {
     int num = 0;
 
@@ -109,7 +114,7 @@ int Block::getNumSolutions()
     return num;
 }
 
-int Block::getOffset(Field *fieldParam)
+int Block::offset(Field *fieldParam)
 {
     int offset = 0;
 
@@ -124,7 +129,7 @@ int Block::getOffset(Field *fieldParam)
     assert(0);
 }
 
-LinearityType Block::getLinearityType()
+LinearityType Block::linearityType()
 {
     int linear = 0, newton = 0;
     foreach(Field* field, m_fields)
@@ -145,7 +150,7 @@ LinearityType Block::getLinearityType()
         assert(0);
 }
 
-double Block::getNonlinearTolerance()
+double Block::nonlinearTolerance()
 {
     double tolerance = 10e20;
 
@@ -159,7 +164,7 @@ double Block::getNonlinearTolerance()
     return tolerance;
 }
 
-int Block::getNonlinearSteps()
+int Block::nonlinearSteps()
 {
     int steps = 0;
 
@@ -193,10 +198,13 @@ void Problem::createStructure()
     if(hardCoupling) //TODO information about coupling method move to some CouplingInfo ...
     {
         QList<FieldInfo*> fieldInfosParam;
-        foreach(FieldInfo* fi, fieldInfos)
-        {
-            fieldInfosParam.append(fi);
-        }
+//        foreach(FieldInfo* fi, fieldInfos)
+//        {
+//            fieldInfosParam.append(fi);
+//        }
+        //TODO create order in fields and use previous cycle
+        fieldInfosParam.append(Util::scene()->fieldInfo("heat"));
+        fieldInfosParam.append(Util::scene()->fieldInfo("elasticity"));
 
         //TODO temporary
         Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
@@ -310,12 +318,19 @@ void Problem::solve(SolverMode solverMode)
     const int elastTODO = 0;  //TODO temp
     const int heatTODO = 1;   //TODO temp
 
-    m_blocks[heatTODO]->solveInit();
-    m_blocks[heatTODO]->solve();
+    if(hardCoupling)
+    {
+        m_blocks[0]->solveInit();
+        m_blocks[0]->solve();
+    }
+    else
+    {
+        m_blocks[heatTODO]->solveInit();
+        m_blocks[heatTODO]->solve();
 
-    m_blocks[elastTODO]->solveInit(m_blocks[heatTODO]->m_solutionList->at(0)->sln.get());
-    m_blocks[elastTODO]->solve();
-
+        m_blocks[elastTODO]->solveInit(m_blocks[heatTODO]->m_solutionList->at(0)->sln.get());
+        m_blocks[elastTODO]->solve();
+    }
     // delete temp file
     if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
     {

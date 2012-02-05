@@ -43,16 +43,16 @@ public:
     bool solveInit(Hermes::Hermes2D::Solution<double>* sourceSolution = NULL);
     void solve();
 
-    int getNumSolutions();
-    int getOffset(Field* field);
+    int numSolutions();
+    int offset(Field* field);
 
-    LinearityType getLinearityType();
+    LinearityType linearityType();
 
     // minimal nonlinear tolerance of individual fields
-    double getNonlinearTolerance();
+    double nonlinearTolerance();
 
     //maximal nonlinear steps of individual fields
-    int getNonlinearSteps();
+    int nonlinearSteps();
 
 public:
 //private:
