@@ -1822,7 +1822,7 @@ void Scene::controlEdge(SceneEdge * edge)
                                           edge->nodeStart->point, edge->nodeEnd->point,
                                           edge->center(), edge->radius(), edge->angle);
 
-            if (edgeCheck->angle > 0)
+            else
                 intersects = intersection(edge->nodeStart->point, edge->nodeEnd->point,
                                           edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
                                           edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle);
