@@ -346,6 +346,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     // clear solution
     m_sceneSolution->clear();
 
+
     // check if edge doesn't exists
     foreach (SceneEdge *edgeCheck, edges)
     {
@@ -358,6 +359,34 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
             return edgeCheck;
         }
     }
+
+    // check of crossings
+    // ToDo: Zjistit proč se funkce addEdge volá dvakrát pro stejnou hranu. BUG?
+
+    foreach (SceneEdge *edgeCheck, edges)
+    {
+        QList<Point> intersects = intersection(edge->nodeStart->point, edge->nodeEnd->point,
+                                               edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
+                                               edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle);
+
+        if ((intersects.count() > 0) &&
+                (edge->nodeEnd->point != edgeCheck->nodeEnd->point) &&
+                (edge->nodeEnd->point != edgeCheck->nodeStart->point) ||
+                (intersects.count() > 1))
+        {
+            edgeCheck->isCrossed = true;
+            edgeCheck->crossEdges.push_back(edge);
+
+            edge->isCrossed = true;
+            edge->crossEdges.push_back(edgeCheck);
+        }
+
+    }
+
+    edge->nodeStart->isConnected = true;
+    edge->nodeStart->connectedEdges.append(edge);
+    edge->nodeEnd->isConnected = true;
+    edge->nodeEnd->connectedEdges.append(edge);
 
     edges.append(edge);
     if (!scriptIsRunning()) emit invalidated();
@@ -373,14 +402,23 @@ void Scene::removeEdge(SceneEdge *edge)
     m_sceneSolution->clear();
 
     // clear crosses
-    foreach(SceneEdge *any_edge, edge->crossEdges)
+    foreach(SceneEdge *edgeCheck, edge->crossEdges)
     {
-        any_edge->crossEdges.removeOne(edge);
-        if (any_edge->crossEdges.count() == 0)
-            any_edge->isCrossed = false;
+        edgeCheck->crossEdges.removeOne(edge);
+        if (edgeCheck->crossEdges.count() == 0)
+            edgeCheck->isCrossed = false;
     }
 
     edges.removeOne(edge);
+
+    edge->nodeStart->connectedEdges.removeOne(edge);
+    if(edge->nodeStart->connectedEdges.count() == 0)
+    edge->nodeStart->isConnected = false;
+
+    edge->nodeEnd->connectedEdges.removeOne(edge);
+    if(edge->nodeEnd->connectedEdges.count() == 0)
+    edge->nodeEnd->isConnected = false;
+
     // delete edge;
 
     emit invalidated();
@@ -1752,14 +1790,21 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
 ErrorResult Scene::controlGeometry()
 {
-   bool isCorrect = true;
+
     foreach(SceneEdge  *edge, this->edges)
-     {
-         if(edge->crossEdges.count() != 0)
-         {
-             isCorrect = false;
-             return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (highlited). Remove the crossings first."));
-         }
-     }
+    {
+        if(edge->crossEdges.count() != 0)
+        {
+            return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (highlited). Remove the crossings first."));
+        }
+    }
+
+    foreach(SceneNode  *node, this->nodes)
+    {
+        if(!node->isConnected)
+        {
+            return ErrorResult(ErrorResultType_Critical, tr("There are nodes which are not connected to any edge (red). All nodes should be connected."));
+        }
+    }
     return ErrorResult();
 }
