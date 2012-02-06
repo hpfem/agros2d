@@ -298,6 +298,20 @@ SceneNode *Scene::addNode(SceneNode *node)
     nodes.append(node);
     if (!scriptIsRunning()) emit invalidated();
 
+    // control if node is not laying on the edge
+    foreach(SceneEdge *edge, edges)
+    {
+        RectPoint bBox = boundingBox();
+        double size = (bBox.height() > bBox.width()) ? bBox.height() : bBox.width() ;
+        if (edge->distance(node->point)/size < 1e-2)
+        {
+            node->isOnEdge = true;
+            node->onEdge = edge;
+            edge->isLeingNode = true;
+            edge->leingNodes.append(node);
+        }
+    }
+
     return node;
 }
 
@@ -307,6 +321,14 @@ void Scene::removeNode(SceneNode *node)
 
     // clear solution
     m_sceneSolution->clear();
+    if (node->onEdge != NULL)
+    {
+        node->onEdge->leingNodes.removeOne(node);
+        if (node->onEdge->leingNodes.count() == 0)
+        {
+            node->onEdge->isLeingNode = false;
+        }
+    }
 
     // remove all edges connected to this node
     foreach (SceneEdge *edge, edges)
@@ -363,11 +385,26 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     // check of crossings
     // ToDo: Zjistit proč se funkce addEdge volá dvakrát pro stejnou hranu. BUG?
 
-    this->controlEdge(edge);
+    this->controlEdge(edge);    
+
     edge->nodeStart->isConnected = true;
     edge->nodeStart->connectedEdges.append(edge);
     edge->nodeEnd->isConnected = true;
     edge->nodeEnd->connectedEdges.append(edge);
+
+    foreach(SceneNode * node, nodes)
+    {
+        RectPoint bBox = boundingBox();
+        double size = (bBox.height() > bBox.width()) ? bBox.height() : bBox.width() ;
+        if ((edge->distance(node->point)/size < 1e-2) && (edge->nodeStart != node) && (edge->nodeEnd != node))
+        {
+            node->isOnEdge = true;
+            node->onEdge = edge;
+            edge->isLeingNode = true;
+            edge->leingNodes.append(node);
+        }
+
+    }
 
     edges.append(edge);
     if (!scriptIsRunning()) emit invalidated();
@@ -388,6 +425,12 @@ void Scene::removeEdge(SceneEdge *edge)
         edgeCheck->crossEdges.removeOne(edge);
         if (edgeCheck->crossEdges.count() == 0)
             edgeCheck->isCrossed = false;
+    }
+
+    foreach(SceneNode *node, edge->leingNodes)
+    {
+        node->onEdge = NULL;
+        node->isOnEdge = false;
     }
 
     edges.removeOne(edge);
@@ -1351,8 +1394,7 @@ void Scene::readFromDxf(const QString &fileName)
 
     blockSignals(false);
 
-    emit invalidated();
-
+    emit invalidated();    
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 }
@@ -1795,19 +1837,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     return ErrorResult();
 }
 
-
-void Scene::controlEdge(const Point &pointStart, const Point &pointEnd, double angle)
-{
-    foreach (SceneEdge *edgeCheck, edges)
-    {
-        if((edgeCheck->nodeStart->point == pointStart) && (edgeCheck->nodeEnd->point == pointEnd) && (edgeCheck->angle == angle))
-        {
-            controlEdge(edgeCheck);
-            return;
-        }
-    }
-}
-
 void Scene::controlEdge(SceneEdge * edge)
 {
     foreach (SceneEdge *edgeCheck, this->edges)
@@ -1816,7 +1845,8 @@ void Scene::controlEdge(SceneEdge * edge)
         {
             QList<Point> intersects;
 
-            // ToDo: Opravit tenhle hnusnej hack
+            // ToDo: Improve
+            // ToDo: Add control of crossing two arcs
             if(edge->angle > 0)
                 intersects = intersection(edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
                                           edge->nodeStart->point, edge->nodeEnd->point,
@@ -1867,6 +1897,11 @@ ErrorResult Scene::controlGeometry()
         if(!node->isConnected)
         {
             return ErrorResult(ErrorResultType_Critical, tr("There are nodes which are not connected to any edge (red). All nodes should be connected."));
+        }
+
+        if(node->isOnEdge)
+        {
+            return ErrorResult(ErrorResultType_Critical, tr("There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first."));
         }
     }
     return ErrorResult();

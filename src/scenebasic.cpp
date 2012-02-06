@@ -49,6 +49,8 @@ SceneNode::SceneNode(const Point &point) : SceneBasic()
 
     this->point = point;
     isConnected = false;
+    isOnEdge = false;
+    onEdge = NULL;
 }
 
 double SceneNode::distance(const Point &point) const
@@ -73,6 +75,7 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *ma
 {
     logMessage("SceneEdge::SceneEdge()");
     this->isCrossed = false;
+    this->isLeingNode = false;
     this->nodeStart = nodeStart;    
     this->nodeEnd = nodeEnd;    
     this->boundary = marker;
