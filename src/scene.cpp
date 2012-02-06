@@ -363,26 +363,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     // check of crossings
     // ToDo: Zjistit proč se funkce addEdge volá dvakrát pro stejnou hranu. BUG?
 
-    foreach (SceneEdge *edgeCheck, edges)
-    {
-        QList<Point> intersects = intersection(edge->nodeStart->point, edge->nodeEnd->point,
-                                               edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
-                                               edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle);
-
-        if ((intersects.count() > 0) &&
-                (edge->nodeEnd->point != edgeCheck->nodeEnd->point) &&
-                (edge->nodeEnd->point != edgeCheck->nodeStart->point) ||
-                (intersects.count() > 1))
-        {
-            edgeCheck->isCrossed = true;
-            edgeCheck->crossEdges.push_back(edge);
-
-            edge->isCrossed = true;
-            edge->crossEdges.push_back(edgeCheck);
-        }
-
-    }
-
+    this->controlEdge(edge);
     edge->nodeStart->isConnected = true;
     edge->nodeStart->connectedEdges.append(edge);
     edge->nodeEnd->isConnected = true;
@@ -413,11 +394,11 @@ void Scene::removeEdge(SceneEdge *edge)
 
     edge->nodeStart->connectedEdges.removeOne(edge);
     if(edge->nodeStart->connectedEdges.count() == 0)
-    edge->nodeStart->isConnected = false;
+        edge->nodeStart->isConnected = false;
 
     edge->nodeEnd->connectedEdges.removeOne(edge);
     if(edge->nodeEnd->connectedEdges.count() == 0)
-    edge->nodeEnd->isConnected = false;
+        edge->nodeEnd->isConnected = false;
 
     // delete edge;
 
@@ -436,6 +417,7 @@ SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double
 
     return NULL;
 }
+
 
 void Scene::setBoundary(SceneBoundary *boundary)
 {
@@ -921,6 +903,14 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
+    foreach(SceneEdge *edge, edges)
+    {
+        if (edge->isSelected)
+        {
+            this->controlEdge(edge);
+        }
+    }
+
     m_undoStack->endMacro();
 
     emit invalidated();
@@ -982,6 +972,14 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
             }
         }
 
+    foreach(SceneEdge *edge, edges)
+    {
+        if (edge->isSelected)
+        {
+            this->controlEdge(edge);
+        }
+    }
+
     m_undoStack->endMacro();
 
     emit invalidated();
@@ -1037,6 +1035,15 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
             }
         }
 
+    foreach(SceneEdge *edge, edges)
+    {
+        if (edge->isSelected)
+        {
+            this->controlEdge(edge);
+        }
+    }
+
+    // ToDo: Zdá se, že nefunguje UNDO pro změnu měřítka.
     m_undoStack->endMacro();
 
     emit invalidated();
@@ -1786,6 +1793,62 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     setlocale(LC_NUMERIC, plocale);
 
     return ErrorResult();
+}
+
+
+void Scene::controlEdge(const Point &pointStart, const Point &pointEnd, double angle)
+{
+    foreach (SceneEdge *edgeCheck, edges)
+    {
+        if((edgeCheck->nodeStart->point == pointStart) && (edgeCheck->nodeEnd->point == pointEnd) && (edgeCheck->angle == angle))
+        {
+            controlEdge(edgeCheck);
+            return;
+        }
+    }
+}
+
+void Scene::controlEdge(SceneEdge * edge)
+{
+    foreach (SceneEdge *edgeCheck, this->edges)
+    {
+        if(edgeCheck != edge)
+        {
+            QList<Point> intersects;
+
+            // ToDo: Opravit tenhle hnusnej hack
+            if(edge->angle > 0)
+                intersects = intersection(edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
+                                          edge->nodeStart->point, edge->nodeEnd->point,
+                                          edge->center(), edge->radius(), edge->angle);
+
+            if (edgeCheck->angle > 0)
+                intersects = intersection(edge->nodeStart->point, edge->nodeEnd->point,
+                                          edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
+                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle);
+
+
+            edge->crossEdges.removeOne(edgeCheck);
+            if (edge->crossEdges.count() == 0)
+                edge->isCrossed = false;
+
+            edgeCheck->crossEdges.removeOne(edge);
+            if (edgeCheck->crossEdges.count() == 0)
+                edgeCheck->isCrossed = false;
+
+            if ((intersects.count() > 0) &&
+                    (edge->nodeEnd->point != edgeCheck->nodeEnd->point) &&
+                    (edge->nodeEnd->point != edgeCheck->nodeStart->point) ||
+                    (intersects.count() > 1))
+            {
+                edgeCheck->isCrossed = true;
+                edgeCheck->crossEdges.push_back(edge);
+
+                edge->isCrossed = true;
+                edge->crossEdges.push_back(edgeCheck);
+            }
+        }
+    }
 }
 
 ErrorResult Scene::controlGeometry()

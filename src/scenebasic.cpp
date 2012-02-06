@@ -492,6 +492,7 @@ bool SceneEdgeDialog::save()
 
     // check if edge doesn't exists
     SceneEdge *edgeCheck = Util::scene()->getEdge(nodeStart->point, nodeEnd->point, txtAngle->number());
+
     if ((edgeCheck) && ((sceneEdge != edgeCheck) || isNew))
     {
         QMessageBox::warning(this, "Edge", "Edge already exists.");
@@ -516,10 +517,11 @@ bool SceneEdgeDialog::save()
 
     sceneEdge->nodeStart = nodeStart;
     sceneEdge->nodeEnd = nodeEnd;
-    sceneEdge->boundary = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
     sceneEdge->angle = txtAngle->number();
+    sceneEdge->boundary = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
     sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
-
+    Scene * scene = Util::scene();
+    scene->controlEdge(sceneEdge);
     return true;
 }
 
