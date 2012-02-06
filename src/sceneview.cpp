@@ -1028,7 +1028,7 @@ void SceneView::paintGeometry()
             glColor3d(Util::config()->colorCrossed.redF(),
                       Util::config()->colorCrossed.greenF(),
                       Util::config()->colorCrossed.blueF());
-            glLineWidth(Util::config()->edgeWidth + 2.0);
+            glLineWidth(Util::config()->edgeWidth);
         }
         if (edge->isHighlighted)
         {
@@ -3546,32 +3546,25 @@ void SceneView::paintEdgeLine()
             // check for crossing
             foreach (SceneEdge *edge, m_scene->edges)
             {
-                // if ((edge->nodeStart != m_nodeLast && edge->nodeEnd != m_nodeLast))
-                // && (!edge->nodeStart->isHighlighted)
-                // && (!edge->nodeEnd->isHighlighted))
+                QList<Point> intersects = intersection(p, m_nodeLast->point,
+                                                       edge->nodeStart->point, edge->nodeEnd->point,
+                                                       edge->center(), edge->radius(), edge->angle);
+
+                foreach (Point intersect, intersects)
                 {
-                    QList<Point> intersects = intersection(p, m_nodeLast->point,
-                                                           edge->nodeStart->point, edge->nodeEnd->point,
-                                                           edge->center(), edge->radius(), edge->angle);                    
+                    // red line and point
+                    glColor3d(1.0, 0.0, 0.0);
 
-                    foreach (Point intersect, intersects)
-                    {
-                        // red line and point
-                        glColor3d(1.0, 0.0, 0.0);
+                    glPointSize(1.0);
 
-                        glPointSize(8);
-
-                        glBegin(GL_POINTS);
-                        glVertex2d(intersect.x, intersect.y);
-                        glEnd();
-                    }
+                    glBegin(GL_POINTS);
+                    glVertex2d(intersect.x, intersect.y);
+                    glEnd();
                 }
             }
 
             glEnable(GL_LINE_STIPPLE);
             glLineStipple(1, 0x8FFF);
-
-
 
             glLineWidth(Util::config()->edgeWidth);
 
@@ -3604,7 +3597,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataJet[n];
     }
-    break;
+        break;
     case Palette_Copper:
     {
         if (x < 0.0) x = 0.0;
@@ -3613,7 +3606,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataCopper[n];
     }
-    break;
+        break;
     case Palette_Hot:
     {
         if (x < 0.0) x = 0.0;
@@ -3622,7 +3615,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataHot[n];
     }
-    break;
+        break;
     case Palette_Cool:
     {
         if (x < 0.0) x = 0.0;
@@ -3631,7 +3624,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataCool[n];
     }
-    break;
+        break;
     case Palette_Bone:
     {
         if (x < 0.0) x = 0.0;
@@ -3640,7 +3633,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataBone[n];
     }
-    break;
+        break;
     case Palette_Pink:
     {
         if (x < 0.0) x = 0.0;
@@ -3649,7 +3642,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataPink[n];
     }
-    break;
+        break;
     case Palette_Spring:
     {
         if (x < 0.0) x = 0.0;
@@ -3658,7 +3651,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataSpring[n];
     }
-    break;
+        break;
     case Palette_Summer:
     {
         if (x < 0.0) x = 0.0;
@@ -3667,7 +3660,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataSummer[n];
     }
-    break;
+        break;
     case Palette_Autumn:
     {
         if (x < 0.0) x = 0.0;
@@ -3676,7 +3669,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataAutumn[n];
     }
-    break;
+        break;
     case Palette_Winter:
     {
         if (x < 0.0) x = 0.0;
@@ -3685,7 +3678,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataWinter[n];
     }
-    break;
+        break;
     case Palette_HSV:
     {
         if (x < 0.0) x = 0.0;
@@ -3694,21 +3687,21 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataHSV[n];
     }
-    break;
+        break;
     case Palette_BWAsc:
     {
         static double color[3];
         color[0] = color[1] = color[2] = x;
         return color;
     }
-    break;
+        break;
     case Palette_BWDesc:
     {
         static double color[3];
         color[0] = color[1] = color[2] = 1.0 - x;
         return color;
     }
-    break;
+        break;
     default:
         qWarning() << tr("Undefined: %1.").arg(Util::config()->paletteType);
         return NULL;
@@ -3878,45 +3871,45 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             m_offset2d.y += step;
             refresh();
         }
-        break;
+            break;
         case Qt::Key_Down:
         {
             m_offset2d.y -= step;
             refresh();
         }
-        break;
+            break;
         case Qt::Key_Left:
         {
             m_offset2d.x -= step;
             refresh();
         }
-        break;
+            break;
         case Qt::Key_Right:
         {
             m_offset2d.x += step;
             refresh();
         }
-        break;
+            break;
         case Qt::Key_Plus:
         {
             doZoomIn();
         }
-        break;
+            break;
         case Qt::Key_Minus:
         {
             doZoomOut();
         }
-        break;
+            break;
         case Qt::Key_Delete:
         {
             m_scene->deleteSelected();
         }
-        break;
+            break;
         case Qt::Key_Space:
         {
             doSceneObjectProperties();
         }
-        break;
+            break;
         case Qt::Key_Escape:
         {
             m_nodeLast = NULL;
@@ -3924,7 +3917,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             emit mousePressed();
             refresh();
         }
-        break;
+            break;
         case Qt::Key_N:
         {
             // add node with coordinates under mouse pointer
@@ -3934,7 +3927,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
                 m_scene->doNewNode(p);
             }
         }
-        break;
+            break;
         case Qt::Key_L:
         {
             // add label with coordinates under mouse pointer
@@ -3944,7 +3937,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
                 m_scene->doNewLabel(p);
             }
         }
-        break;
+            break;
         case Qt::Key_A:
         {
             // select all
@@ -3974,7 +3967,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
                 refresh();
             }
         }
-        break;
+            break;
         default:
             QGLWidget::keyPressEvent(event);
         }
@@ -4134,7 +4127,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     {
                         if (node != m_nodeLast)
                         {
-                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->boundaries[0], 0, 0);                            
+                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->boundaries[0], 0, 0);
                             SceneEdge *edgeAdded = m_scene->addEdge(edge);
 
                             if (edgeAdded == edge)
@@ -4594,12 +4587,11 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     if (fabs(len.y) > Util::config()->gridStep)
                     {
                         foreach (SceneEdge *edge, m_scene->edges)
-                            foreach (SceneEdge *edge, m_scene->edges)
-                                if (edge->isSelected)
-                                {
-                                    edge->nodeStart->isSelected = true;
-                                    edge->nodeEnd->isSelected = true;
-                                }
+                            if (edge->isSelected)
+                            {
+                                edge->nodeStart->isSelected = true;
+                                edge->nodeEnd->isSelected = true;
+                            }
                         foreach (SceneNode *node, m_scene->nodes)
                             if (node->isSelected)
                                 node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
