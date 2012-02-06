@@ -60,7 +60,10 @@ class SceneNode : public SceneBasic
 {
 public:
     Point point;
-
+    bool isOnEdge;
+    SceneEdge * onEdge;
+    bool isConnected;
+    QList<SceneEdge*> connectedEdges;
     SceneNode(const Point &point);
 
     double distance(const Point &point) const;
@@ -80,6 +83,8 @@ public:
     int refineTowardsEdge;
     QList<SceneEdge *> crossEdges;
     bool isCrossed;
+    bool isLeingNode;
+    QList<SceneNode *> leingNodes;
 
     SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *boundary, double angle, int refineTowardsEdge);
 

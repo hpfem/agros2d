@@ -187,6 +187,7 @@ struct Point
     }
 };
 
+bool intersection(Point p, Point p1s, Point p1e);
 Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e);
 QList<Point> intersection(Point, Point, Point, Point, Point, double, double);
 
@@ -793,6 +794,7 @@ const QColor COLORSOLUTIONMESH = QColor::fromRgb(150, 70, 0);
 const QColor COLORHIGHLIGHTED = QColor::fromRgb(250, 150, 0);
 const QColor COLORSELECTED = QColor::fromRgb(150, 0, 0);
 const QColor COLORCROSSED = QColor::fromRgb(0, 255, 0);
+const QColor COLORNOTCONNECTED = QColor::fromRgb(255, 0, 0);
 
 // workspace
 const double GRIDSTEP = 0.05;

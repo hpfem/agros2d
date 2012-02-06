@@ -1524,6 +1524,14 @@ Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle)
     return center;
 }
 
+bool intersection(Point p, Point p1s, Point p1e)
+{
+    Point dv_line = p1e - p1s;
+    Point dv_point = p1e - p;
+    if (dv_line.angle() == dv_point.angle())        return true;
+    else return false;
+}
+
 Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e)
 {
     double denom = (p2e.y-p2s.y)*(p1e.x-p1s.x) - (p2e.x-p2s.x)*(p1e.y-p1s.y);

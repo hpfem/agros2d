@@ -298,6 +298,20 @@ SceneNode *Scene::addNode(SceneNode *node)
     nodes.append(node);
     if (!scriptIsRunning()) emit invalidated();
 
+    // control if node is not laying on the edge
+    foreach(SceneEdge *edge, edges)
+    {
+        RectPoint bBox = boundingBox();
+        double size = (bBox.height() > bBox.width()) ? bBox.height() : bBox.width() ;
+        if (edge->distance(node->point)/size < 1e-2)
+        {
+            node->isOnEdge = true;
+            node->onEdge = edge;
+            edge->isLeingNode = true;
+            edge->leingNodes.append(node);
+        }
+    }
+
     return node;
 }
 
@@ -307,6 +321,14 @@ void Scene::removeNode(SceneNode *node)
 
     // clear solution
     m_sceneSolution->clear();
+    if (node->onEdge != NULL)
+    {
+        node->onEdge->leingNodes.removeOne(node);
+        if (node->onEdge->leingNodes.count() == 0)
+        {
+            node->onEdge->isLeingNode = false;
+        }
+    }
 
     // remove all edges connected to this node
     foreach (SceneEdge *edge, edges)
@@ -346,6 +368,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     // clear solution
     m_sceneSolution->clear();
 
+
     // check if edge doesn't exists
     foreach (SceneEdge *edgeCheck, edges)
     {
@@ -357,6 +380,30 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
             delete edge;
             return edgeCheck;
         }
+    }
+
+    // check of crossings
+    // ToDo: Zjistit proč se funkce addEdge volá dvakrát pro stejnou hranu. BUG?
+
+    this->controlEdge(edge);    
+
+    edge->nodeStart->isConnected = true;
+    edge->nodeStart->connectedEdges.append(edge);
+    edge->nodeEnd->isConnected = true;
+    edge->nodeEnd->connectedEdges.append(edge);
+
+    foreach(SceneNode * node, nodes)
+    {
+        RectPoint bBox = boundingBox();
+        double size = (bBox.height() > bBox.width()) ? bBox.height() : bBox.width() ;
+        if ((edge->distance(node->point)/size < 1e-2) && (edge->nodeStart != node) && (edge->nodeEnd != node))
+        {
+            node->isOnEdge = true;
+            node->onEdge = edge;
+            edge->isLeingNode = true;
+            edge->leingNodes.append(node);
+        }
+
     }
 
     edges.append(edge);
@@ -373,14 +420,29 @@ void Scene::removeEdge(SceneEdge *edge)
     m_sceneSolution->clear();
 
     // clear crosses
-    foreach(SceneEdge *any_edge, edge->crossEdges)
+    foreach(SceneEdge *edgeCheck, edge->crossEdges)
     {
-        any_edge->crossEdges.removeOne(edge);
-        if (any_edge->crossEdges.count() == 0)
-            any_edge->isCrossed = false;
+        edgeCheck->crossEdges.removeOne(edge);
+        if (edgeCheck->crossEdges.count() == 0)
+            edgeCheck->isCrossed = false;
+    }
+
+    foreach(SceneNode *node, edge->leingNodes)
+    {
+        node->onEdge = NULL;
+        node->isOnEdge = false;
     }
 
     edges.removeOne(edge);
+
+    edge->nodeStart->connectedEdges.removeOne(edge);
+    if(edge->nodeStart->connectedEdges.count() == 0)
+        edge->nodeStart->isConnected = false;
+
+    edge->nodeEnd->connectedEdges.removeOne(edge);
+    if(edge->nodeEnd->connectedEdges.count() == 0)
+        edge->nodeEnd->isConnected = false;
+
     // delete edge;
 
     emit invalidated();
@@ -398,6 +460,7 @@ SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double
 
     return NULL;
 }
+
 
 void Scene::setBoundary(SceneBoundary *boundary)
 {
@@ -883,6 +946,14 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
+    foreach(SceneEdge *edge, edges)
+    {
+        if (edge->isSelected)
+        {
+            this->controlEdge(edge);
+        }
+    }
+
     m_undoStack->endMacro();
 
     emit invalidated();
@@ -944,6 +1015,14 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
             }
         }
 
+    foreach(SceneEdge *edge, edges)
+    {
+        if (edge->isSelected)
+        {
+            this->controlEdge(edge);
+        }
+    }
+
     m_undoStack->endMacro();
 
     emit invalidated();
@@ -999,6 +1078,15 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
             }
         }
 
+    foreach(SceneEdge *edge, edges)
+    {
+        if (edge->isSelected)
+        {
+            this->controlEdge(edge);
+        }
+    }
+
+    // ToDo: Zdá se, že nefunguje UNDO pro změnu měřítka.
     m_undoStack->endMacro();
 
     emit invalidated();
@@ -1306,8 +1394,7 @@ void Scene::readFromDxf(const QString &fileName)
 
     blockSignals(false);
 
-    emit invalidated();
-
+    emit invalidated();    
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 }
@@ -1750,16 +1837,72 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     return ErrorResult();
 }
 
+void Scene::controlEdge(SceneEdge * edge)
+{
+    foreach (SceneEdge *edgeCheck, this->edges)
+    {
+        if(edgeCheck != edge)
+        {
+            QList<Point> intersects;
+
+            // ToDo: Improve
+            // ToDo: Add control of crossing two arcs
+            if(edge->angle > 0)
+                intersects = intersection(edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
+                                          edge->nodeStart->point, edge->nodeEnd->point,
+                                          edge->center(), edge->radius(), edge->angle);
+
+            else
+                intersects = intersection(edge->nodeStart->point, edge->nodeEnd->point,
+                                          edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
+                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle);
+
+
+            edge->crossEdges.removeOne(edgeCheck);
+            if (edge->crossEdges.count() == 0)
+                edge->isCrossed = false;
+
+            edgeCheck->crossEdges.removeOne(edge);
+            if (edgeCheck->crossEdges.count() == 0)
+                edgeCheck->isCrossed = false;
+
+            if ((intersects.count() > 0) &&
+                    (edge->nodeEnd->point != edgeCheck->nodeEnd->point) &&
+                    (edge->nodeEnd->point != edgeCheck->nodeStart->point) ||
+                    (intersects.count() > 1))
+            {
+                edgeCheck->isCrossed = true;
+                edgeCheck->crossEdges.push_back(edge);
+
+                edge->isCrossed = true;
+                edge->crossEdges.push_back(edgeCheck);
+            }
+        }
+    }
+}
+
 ErrorResult Scene::controlGeometry()
 {
-   bool isCorrect = true;
+
     foreach(SceneEdge  *edge, this->edges)
-     {
-         if(edge->crossEdges.count() != 0)
-         {
-             isCorrect = false;
-             return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (highlited). Remove the crossings first."));
-         }
-     }
+    {
+        if(edge->crossEdges.count() != 0)
+        {
+            return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (highlited). Remove the crossings first."));
+        }
+    }
+
+    foreach(SceneNode  *node, this->nodes)
+    {
+        if(!node->isConnected)
+        {
+            return ErrorResult(ErrorResultType_Critical, tr("There are nodes which are not connected to any edge (red). All nodes should be connected."));
+        }
+
+        if(node->isOnEdge)
+        {
+            return ErrorResult(ErrorResultType_Critical, tr("There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first."));
+        }
+    }
     return ErrorResult();
 }
