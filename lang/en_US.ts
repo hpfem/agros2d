@@ -205,24 +205,24 @@
 <context>
     <name>CheckVersion</name>
     <message>
-        <location filename="../src/util.cpp" line="1726"/>
+        <location filename="../src/util.cpp" line="1734"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1719"/>
-        <location filename="../src/util.cpp" line="1734"/>
-        <location filename="../src/util.cpp" line="1738"/>
+        <location filename="../src/util.cpp" line="1727"/>
+        <location filename="../src/util.cpp" line="1742"/>
+        <location filename="../src/util.cpp" line="1746"/>
         <source>New version</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1719"/>
+        <location filename="../src/util.cpp" line="1727"/>
         <source>File is corrupted or network is disconnected.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1738"/>
+        <location filename="../src/util.cpp" line="1746"/>
         <source>You are using actual version.</source>
         <translation></translation>
     </message>
@@ -739,23 +739,23 @@
 <context>
     <name>DSceneNode</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="288"/>
+        <location filename="../src/scenebasic.cpp" line="293"/>
         <source>Distance:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="289"/>
+        <location filename="../src/scenebasic.cpp" line="294"/>
         <source>Angle:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="322"/>
+        <location filename="../src/scenebasic.cpp" line="327"/>
         <source>Node already exists.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="250"/>
-        <location filename="../src/scenebasic.cpp" line="322"/>
+        <location filename="../src/scenebasic.cpp" line="255"/>
+        <location filename="../src/scenebasic.cpp" line="327"/>
         <source>Node</source>
         <translation></translation>
     </message>
@@ -4271,42 +4271,42 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="329"/>
+        <location filename="../src/util.h" line="330"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="332"/>
+        <location filename="../src/util.h" line="333"/>
         <source>Warning</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="335"/>
+        <location filename="../src/util.h" line="336"/>
         <source>Critical</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="728"/>
+        <location filename="../src/util.h" line="729"/>
         <source>H1 norm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="730"/>
+        <location filename="../src/util.h" line="731"/>
         <source>L2 norm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="732"/>
+        <location filename="../src/util.h" line="733"/>
         <source>H1 seminorm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="734"/>
+        <location filename="../src/util.h" line="735"/>
         <source>Hdiv norm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="736"/>
+        <location filename="../src/util.h" line="737"/>
         <source>Hcurl norm</source>
         <translation></translation>
     </message>
@@ -5912,57 +5912,67 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="686"/>
+        <location filename="../src/scene.cpp" line="749"/>
         <source>unnamed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="756"/>
+        <location filename="../src/scene.cpp" line="819"/>
         <source>Delete selected</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="762"/>
+        <location filename="../src/scene.cpp" line="825"/>
         <source>Remove node</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="831"/>
+        <location filename="../src/scene.cpp" line="894"/>
         <source>Translation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="898"/>
+        <location filename="../src/scene.cpp" line="971"/>
         <source>Rotation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="959"/>
+        <location filename="../src/scene.cpp" line="1040"/>
         <source>Scale</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1327"/>
+        <location filename="../src/scene.cpp" line="1416"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1357"/>
+        <location filename="../src/scene.cpp" line="1446"/>
         <source>For opening file &apos;%1&apos; is required Agros2D version 2.0 or higher.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1732"/>
+        <location filename="../src/scene.cpp" line="1821"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1761"/>
+        <location filename="../src/scene.cpp" line="1893"/>
         <source>There are crossings in the geometry (highlited). Remove the crossings first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1343"/>
+        <location filename="../src/scene.cpp" line="1901"/>
+        <source>There are nodes which are not connected to any edge (red). All nodes should be connected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="1906"/>
+        <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="1432"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
         <translation></translation>
     </message>
@@ -6238,47 +6248,47 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneEdgeDialog</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="358"/>
+        <location filename="../src/scenebasic.cpp" line="363"/>
         <source>Edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="392"/>
+        <location filename="../src/scenebasic.cpp" line="397"/>
         <source>Start point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="393"/>
+        <location filename="../src/scenebasic.cpp" line="398"/>
         <source>End point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="394"/>
+        <location filename="../src/scenebasic.cpp" line="399"/>
         <source>Angle (deg.):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="396"/>
+        <location filename="../src/scenebasic.cpp" line="401"/>
         <source>Coordinates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="415"/>
+        <location filename="../src/scenebasic.cpp" line="420"/>
         <source>Refine towards edge:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="417"/>
+        <location filename="../src/scenebasic.cpp" line="422"/>
         <source>Mesh parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="422"/>
+        <location filename="../src/scenebasic.cpp" line="427"/>
         <source>Boundary condition:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="425"/>
+        <location filename="../src/scenebasic.cpp" line="430"/>
         <source>Length:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6450,37 +6460,37 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneLabelDialog</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="582"/>
+        <location filename="../src/scenebasic.cpp" line="589"/>
         <source>Label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="621"/>
+        <location filename="../src/scenebasic.cpp" line="628"/>
         <source>Coordinates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="636"/>
+        <location filename="../src/scenebasic.cpp" line="643"/>
         <source>Global order is %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="648"/>
+        <location filename="../src/scenebasic.cpp" line="655"/>
         <source>Triangle area (m):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="649"/>
+        <location filename="../src/scenebasic.cpp" line="656"/>
         <source>Polynomial order (-):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="651"/>
+        <location filename="../src/scenebasic.cpp" line="658"/>
         <source>Mesh parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="655"/>
+        <location filename="../src/scenebasic.cpp" line="662"/>
         <source>Material:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6967,7 +6977,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="193"/>
-        <location filename="../src/sceneview.cpp" line="3382"/>
+        <location filename="../src/sceneview.cpp" line="3391"/>
         <source>Operate on nodes</source>
         <translation></translation>
     </message>
@@ -6978,7 +6988,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="198"/>
-        <location filename="../src/sceneview.cpp" line="3385"/>
+        <location filename="../src/sceneview.cpp" line="3394"/>
         <source>Operate on edges</source>
         <translation></translation>
     </message>
@@ -6994,7 +7004,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="208"/>
-        <location filename="../src/sceneview.cpp" line="3407"/>
+        <location filename="../src/sceneview.cpp" line="3416"/>
         <source>Postprocessor</source>
         <translation></translation>
     </message>
@@ -7064,55 +7074,55 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3359"/>
+        <location filename="../src/sceneview.cpp" line="3368"/>
         <source>Vel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3401"/>
+        <location filename="../src/sceneview.cpp" line="3410"/>
         <source>Model</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3404"/>
+        <location filename="../src/sceneview.cpp" line="3413"/>
         <source>Polynomial order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3713"/>
-        <location filename="../src/sceneview.cpp" line="3753"/>
+        <location filename="../src/sceneview.cpp" line="3722"/>
+        <location filename="../src/sceneview.cpp" line="3762"/>
         <source>Undefined: %1.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4111"/>
-        <location filename="../src/sceneview.cpp" line="4184"/>
+        <location filename="../src/sceneview.cpp" line="4120"/>
+        <location filename="../src/sceneview.cpp" line="4170"/>
         <source>Node</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4111"/>
-        <location filename="../src/sceneview.cpp" line="4184"/>
+        <location filename="../src/sceneview.cpp" line="4120"/>
+        <location filename="../src/sceneview.cpp" line="4170"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4437"/>
+        <location filename="../src/sceneview.cpp" line="4423"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4452"/>
+        <location filename="../src/sceneview.cpp" line="4438"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4472"/>
+        <location filename="../src/sceneview.cpp" line="4458"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="5399"/>
+        <location filename="../src/sceneview.cpp" line="5385"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation></translation>
     </message>
@@ -7128,7 +7138,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="203"/>
-        <location filename="../src/sceneview.cpp" line="3388"/>
+        <location filename="../src/sceneview.cpp" line="3397"/>
         <source>Operate on labels</source>
         <translation></translation>
     </message>
