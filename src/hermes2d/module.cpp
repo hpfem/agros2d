@@ -180,40 +180,43 @@ void WeakFormAgros<Scalar>::addForm(WFType type, Hermes::Hermes2D::Form<Scalar> 
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WFType type, FieldInfo* fieldInfo, string area, Marker* marker, ParserFormExpression *form, int offsetI, int offsetJ)
+void WeakFormAgros<Scalar>::registerForm(WFType type, /* FieldInfo* fieldInfo,*/ string area, Marker* marker, ParserFormExpression *form, int offsetI, int offsetJ)
 {
-    string problemId = fieldInfo->fieldId().toStdString() + "_" +
-            analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
-            coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
+    //TODO zatim jen interpretovane formy. Pak se musi nejak rozlisit, jestli je registrovana forma z modulu nebo ze zdruzeni
+//    string problemId = fieldInfo->fieldId().toStdString() + "_" +
+//            analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
+//            coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
 
     Hermes::Hermes2D::Form<Scalar>* custom_form = NULL;
 
     // compiled form
-    if (fieldInfo->weakFormsType == WeakFormsType_Compiled)
-    {
-        assert(0);
-        //custom_form = factoryForm<Scalar>(type, problemId, area, form, marker);
-    }
+//    if (fieldInfo->weakFormsType == WeakFormsType_Compiled)
+//    {
+//        assert(0);
+//        //custom_form = factoryForm<Scalar>(type, problemId, area, form, marker);
+//    }
 
-    if (!custom_form && fieldInfo->weakFormsType == WeakFormsType_Compiled)
-        qDebug() << "Cannot find compiled VectorFormVol().";
+//    if (!custom_form && fieldInfo->weakFormsType == WeakFormsType_Compiled)
+//        qDebug() << "Cannot find compiled VectorFormVol().";
 
     // interpreted form
-    if (!custom_form || fieldInfo->weakFormsType == WeakFormsType_Interpreted)
-    {
+//    if (!custom_form || fieldInfo->weakFormsType == WeakFormsType_Interpreted)
+//    {
         custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym, form->expression, marker);
-    }
+//    }
 
-    if (fieldInfo->analysisType() == AnalysisType_Transient)
-        for(int sol_comp = 0; sol_comp < fieldInfo->module()->number_of_solution(); sol_comp++)
-            custom_form->ext.push_back(solution.at(solution.size() - fieldInfo->module()->number_of_solution() + sol_comp));
+
+    //TODO zatim neuvazujeme transientni. Pak se musi vyresit, jakym zpusobem to vubec zadavat (do ktereho fieldInfa atp)
+//    if (fieldInfo->analysisType() == AnalysisType_Transient)
+//        for(int sol_comp = 0; sol_comp < fieldInfo->module()->number_of_solution(); sol_comp++)
+//            custom_form->ext.push_back(solution.at(solution.size() - fieldInfo->module()->number_of_solution() + sol_comp));
 
 
     //TODO COUPLING, redo..
     //*************************************
     if(!hardCoupling)
     {
-        assert(fieldInfo->analysisType() == AnalysisType_SteadyState);
+        //assert(fieldInfo->analysisType() == AnalysisType_SteadyState);
         if(m_sourceSolution){
             printf("pushing coupled field\n");
             custom_form->ext.push_back(m_sourceSolution);
@@ -251,14 +254,14 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_matrix_surface.begin();
                      it < boundary_type->weakform_matrix_surface.end(); ++it)
                 {
-                    registerForm(WFType_MatSurf, fieldInfo, QString::number(i).toStdString(), boundary,
+                    registerForm(WFType_MatSurf, /*fieldInfo,*/ QString::number(i).toStdString(), boundary,
                                  (ParserFormExpression *) *it, m_block->offset(field), m_block->offset(field));
                 }
 
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_vector_surface.begin();
                      it < boundary_type->weakform_vector_surface.end(); ++it)
                 {
-                    registerForm(WFType_VecSurf, fieldInfo, QString::number(i).toStdString(), boundary,
+                    registerForm(WFType_VecSurf, /*fieldInfo,*/ QString::number(i).toStdString(), boundary,
                                  (ParserFormExpression *) *it, m_block->offset(field), m_block->offset(field));
                 }
             }
@@ -274,7 +277,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_matrix_volume.begin();
                      it < fieldInfo->module()->weakform_matrix_volume.end(); ++it)
                 {
-                    registerForm(WFType_MatVol, fieldInfo, QString::number(i).toStdString(), material,
+                    registerForm(WFType_MatVol, /*fieldInfo,*/ QString::number(i).toStdString(), material,
                                  (ParserFormExpression *) *it, m_block->offset(field), m_block->offset(field));
 
                 }
@@ -289,7 +292,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_vector_volume.begin();
                      it < weakform_vector_volume.end(); ++it)
                 {
-                    registerForm(WFType_VecVol, fieldInfo, QString::number(i).toStdString(), material,
+                    registerForm(WFType_VecVol, /*fieldInfo,*/ QString::number(i).toStdString(), material,
                                  (ParserFormExpression *) *it, m_block->offset(field), m_block->offset(field));
                 }
 
@@ -297,16 +300,28 @@ void WeakFormAgros<Scalar>::registerForms()
         }
     }
 
-//    if(m_block->m_couplings.size() && (hardCoupling))
-//    {
-//        Coupling* coupling = m_block->m_couplings.at(0);
-//        for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();
-//             it < coupling->weakform_matrix_volume.end(); ++it)
-//        {
-//            registerForm(WFType_MatVol, fieldInfo, QString::number(i).toStdString(), material,
-//                         (ParserFormExpression *) *it, m_block->offset(field), m_block->offset(field));
-//        }
-//    }
+    if(m_block->m_couplings.size() && (hardCoupling))
+    {
+
+        Coupling* coupling = m_block->m_couplings.at(0);
+        for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();
+             it < coupling->weakform_matrix_volume.end(); ++it)
+        {
+            Field* sourceField = m_block->field(coupling->sourceField);
+            Field* objectField = m_block->field(coupling->objectField);
+
+            //TODO
+            //TODO
+            // jak vybirat material pro sdruzeni? Melo by se vzit "sjednoceni" materialu obou poli?
+            int i = 0;
+            SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(objectField->fieldInfo());
+            //TODO
+            //TODO
+
+            registerForm(WFType_MatVol, /*fieldInfo,*/ QString::number(i).toStdString(), material,
+                         (ParserFormExpression *) *it, m_block->offset(objectField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField));
+        }
+    }
 
 }
 

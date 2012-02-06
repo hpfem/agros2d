@@ -43,16 +43,21 @@ public:
     bool solveInit(Hermes::Hermes2D::Solution<double>* sourceSolution = NULL);
     void solve();
 
-    int numSolutions();
-    int offset(Field* field);
+    int numSolutions() const;
+    int offset(Field* field) const;
 
-    LinearityType linearityType();
+    LinearityType linearityType() const;
 
     // minimal nonlinear tolerance of individual fields
-    double nonlinearTolerance();
+    double nonlinearTolerance() const;
 
     //maximal nonlinear steps of individual fields
-    int nonlinearSteps();
+    int nonlinearSteps() const;
+
+//    Field* couplingSourceField(Coupling* coupling) const;
+//    Field* couplingObjectField(Coupling* coupling) const;
+
+    Field* field(FieldInfo* fieldInfo) const;
 
 public:
 //private:

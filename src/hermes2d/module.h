@@ -108,7 +108,7 @@ public:
     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
-    void registerForm(WFType type, FieldInfo* fieldInfo, string area, Marker* marker, ParserFormExpression* form, int offsetI, int offsetJ);
+    void registerForm(WFType type,/* FieldInfo* fieldInfo,*/ string area, Marker* marker, ParserFormExpression* form, int offsetI, int offsetJ);
     void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;

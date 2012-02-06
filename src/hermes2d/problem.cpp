@@ -102,7 +102,7 @@ void Block::solve()
     }
 }
 
-int Block::numSolutions()
+int Block::numSolutions() const
 {
     int num = 0;
 
@@ -114,7 +114,7 @@ int Block::numSolutions()
     return num;
 }
 
-int Block::offset(Field *fieldParam)
+int Block::offset(Field *fieldParam) const
 {
     int offset = 0;
 
@@ -129,7 +129,7 @@ int Block::offset(Field *fieldParam)
     assert(0);
 }
 
-LinearityType Block::linearityType()
+LinearityType Block::linearityType() const
 {
     int linear = 0, newton = 0;
     foreach(Field* field, m_fields)
@@ -150,7 +150,7 @@ LinearityType Block::linearityType()
         assert(0);
 }
 
-double Block::nonlinearTolerance()
+double Block::nonlinearTolerance() const
 {
     double tolerance = 10e20;
 
@@ -164,7 +164,7 @@ double Block::nonlinearTolerance()
     return tolerance;
 }
 
-int Block::nonlinearSteps()
+int Block::nonlinearSteps() const
 {
     int steps = 0;
 
@@ -176,6 +176,17 @@ int Block::nonlinearSteps()
     }
 
     return steps;
+}
+
+Field* Block::field(FieldInfo *fieldInfo) const
+{
+    foreach(Field* field, m_fields)
+    {
+        if(fieldInfo == field->fieldInfo())
+            return field;
+    }
+
+    return NULL;
 }
 
 Problem::Problem()
@@ -203,8 +214,8 @@ void Problem::createStructure()
 //            fieldInfosParam.append(fi);
 //        }
         //TODO create order in fields and use previous cycle
-        fieldInfosParam.append(Util::scene()->fieldInfo("heat"));
         fieldInfosParam.append(Util::scene()->fieldInfo("elasticity"));
+        fieldInfosParam.append(Util::scene()->fieldInfo("heat"));
 
         //TODO temporary
         Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
