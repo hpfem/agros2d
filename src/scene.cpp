@@ -303,7 +303,7 @@ SceneNode *Scene::addNode(SceneNode *node)
     {
         RectPoint bBox = boundingBox();
         double size = (bBox.height() > bBox.width()) ? bBox.height() : bBox.width() ;
-        if (edge->distance(node->point)/size < 1e-2)
+        if (edge->distance(node->point)/size < 1e-4)
         {
             node->isOnEdge = true;
             node->onEdge = edge;
@@ -385,7 +385,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     // check of crossings
     // ToDo: Zjistit proč se funkce addEdge volá dvakrát pro stejnou hranu. BUG?
 
-    this->controlEdge(edge);    
+    this->controlEdge(edge);
 
     edge->nodeStart->isConnected = true;
     edge->nodeStart->connectedEdges.append(edge);
@@ -396,7 +396,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     {
         RectPoint bBox = boundingBox();
         double size = (bBox.height() > bBox.width()) ? bBox.height() : bBox.width() ;
-        if ((edge->distance(node->point)/size < 1e-2) && (edge->nodeStart != node) && (edge->nodeEnd != node))
+        if ((edge->distance(node->point)/size < 1e-4) && (edge->nodeStart != node) && (edge->nodeEnd != node))
         {
             node->isOnEdge = true;
             node->onEdge = edge;
@@ -950,6 +950,8 @@ void Scene::transformTranslate(const Point &point, bool copy)
     {
         if (edge->isSelected)
         {
+            edge->nodeStart->isSelected = false;
+            edge->nodeEnd->isSelected = false;
             this->controlEdge(edge);
         }
     }
@@ -1019,6 +1021,8 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
     {
         if (edge->isSelected)
         {
+            edge->nodeStart->isSelected = false;
+            edge->nodeEnd->isSelected = false;
             this->controlEdge(edge);
         }
     }
@@ -1082,6 +1086,8 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
     {
         if (edge->isSelected)
         {
+            edge->nodeStart->isSelected = false;
+            edge->nodeEnd->isSelected = false;
             this->controlEdge(edge);
         }
     }
@@ -1394,7 +1400,7 @@ void Scene::readFromDxf(const QString &fileName)
 
     blockSignals(false);
 
-    emit invalidated();    
+    emit invalidated();
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 }
@@ -1629,7 +1635,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
 ErrorResult Scene::writeToFile(const QString &fileName)
 {
-    logMessage("Scene::writeToFile()");    
+    logMessage("Scene::writeToFile()");
     QSettings settings;
 
     if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
