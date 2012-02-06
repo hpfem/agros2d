@@ -212,7 +212,7 @@ public:
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
     ErrorResult controlGeometry();
-
+    void controlEdge(SceneEdge *edge);     
     inline QUndoStack *undoStack() const { return m_undoStack; }
 
 private:

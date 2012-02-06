@@ -1022,7 +1022,7 @@ void SceneView::paintGeometry()
                   Util::config()->colorEdges.blueF());
         glLineWidth(Util::config()->edgeWidth);
 
-        if (edge->isCrossed)
+        if ((edge->isCrossed) || (edge->isLeingNode))
         {
             glColor3d(Util::config()->colorCrossed.redF(),
                       Util::config()->colorCrossed.greenF(),
@@ -1087,10 +1087,10 @@ void SceneView::paintGeometry()
             glVertex2d(node->point.x, node->point.y);
             glEnd();
 
-            if ((node->isSelected) || (node->isHighlighted) || (!node->isConnected))
+            if ((node->isSelected) || (node->isHighlighted) || (!node->isConnected) || (node->isOnEdge))
             {
 
-                if (!node->isConnected)
+                if ((!node->isConnected) || (node->isOnEdge))
                 {
                     glColor3d(Util::config()->colorNotConnected.redF(),
                               Util::config()->colorNotConnected.greenF(),
