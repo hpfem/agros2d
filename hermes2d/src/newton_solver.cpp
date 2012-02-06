@@ -25,7 +25,7 @@ namespace Hermes
   namespace Hermes2D
   {
     template<typename Scalar>
-    double NewtonSolver<Scalar>::max_allowed_residual_norm = 1E9;
+    double NewtonSolver<Scalar>::max_allowed_residual_norm = 1E15;
 
     template<typename Scalar>
     NewtonSolver<Scalar>::NewtonSolver(DiscreteProblem<Scalar>* dp) : NonlinearSolver<Scalar>(dp), kept_jacobian(NULL)

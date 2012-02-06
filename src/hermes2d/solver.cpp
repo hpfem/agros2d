@@ -237,7 +237,7 @@ void SolutionArrayList<Scalar>::createSpace()
         // create space
         for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
         {
-            space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(mesh, bcs[i], fieldInfo->polynomialOrder)));
+            space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(mesh, bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder)));
 
             int j = 0;
             // set order by element
@@ -397,6 +397,7 @@ bool SolutionArrayList<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes
     {
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
         Hermes::Hermes2D::NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
+        //newton.set_max_allowed_residual_norm(1e15);
         try
         {
             int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(spaceParam)));

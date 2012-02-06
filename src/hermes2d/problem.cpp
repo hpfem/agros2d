@@ -294,7 +294,7 @@ void Problem::solve(SolverMode solverMode)
 
     createStructure();
 
-    Util::scene()->setActiveViewField(m_blocks[0]->m_fields[0]->fieldInfo());
+    Util::scene()->setActiveViewField(Util::scene()->fieldInfo("elasticity"));
 
     mesh();
     emit meshed();
