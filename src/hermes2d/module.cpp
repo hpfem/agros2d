@@ -304,13 +304,13 @@ void WeakFormAgros<Scalar>::registerForms()
     {
 
         Coupling* coupling = m_block->m_couplings.at(0);
+        Field* sourceField = m_block->field(coupling->sourceField);
+        Field* objectField = m_block->field(coupling->objectField);
+
+        //TODO
         for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();
              it < coupling->weakform_matrix_volume.end(); ++it)
         {
-            Field* sourceField = m_block->field(coupling->sourceField);
-            Field* objectField = m_block->field(coupling->objectField);
-
-            //TODO
             //TODO
             // jak vybirat material pro sdruzeni? Melo by se vzit "sjednoceni" materialu obou poli?
             int i = 0;
@@ -319,6 +319,21 @@ void WeakFormAgros<Scalar>::registerForms()
             //TODO
 
             registerForm(WFType_MatVol, /*fieldInfo,*/ QString::number(i).toStdString(), material,
+                         (ParserFormExpression *) *it, m_block->offset(objectField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField));
+        }
+
+        for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_vector_volume.begin();
+             it < coupling->weakform_vector_volume.end(); ++it)
+        {
+            //TODO
+            //TODO
+            // jak vybirat material pro sdruzeni? Melo by se vzit "sjednoceni" materialu obou poli?
+            int i = 0;
+            SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(objectField->fieldInfo());
+            //TODO
+            //TODO
+
+            registerForm(WFType_VecVol, /*fieldInfo,*/ QString::number(i).toStdString(), material,
                          (ParserFormExpression *) *it, m_block->offset(objectField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField));
         }
     }

@@ -33,9 +33,10 @@
                         <edge edge="1"/>
                         <edge edge="3"/>
                     </boundary>
+                    <boundary elasticity_force_x="0" elasticity_force_y="10000" type="elasticity_free_free" id="3" elasticity_displacement_x="0" name="load" elasticity_displacement_y="0"/>
                 </boundaries>
                 <materials>
-                    <material elasticity_force_x="0" heat_volume_heat="0" elasticity_force_y="0" elasticity_temperature="300" elasticity_poisson_ratio="0.33" elasticity_young_modulus="1e7" elasticity_alpha="1e-5" elasticity_temperature_reference="300" id="1" name="new material">
+                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature="300" elasticity_poisson_ratio="0.33" elasticity_young_modulus="1e7" elasticity_alpha="1e-5" elasticity_temperature_reference="300" id="1" name="new material">
                         <label label="0"/>
                     </material>
                 </materials>
