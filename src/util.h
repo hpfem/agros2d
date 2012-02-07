@@ -423,6 +423,13 @@ enum LinearityType
     LinearityType_Newton
 };
 
+enum CouplingType
+{
+    CouplingType_None,
+    CouplingType_Weak,
+    CouplingType_Hard
+};
+
 enum WeakFormsType
 {
     WeakFormsType_Undefined,

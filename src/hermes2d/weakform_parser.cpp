@@ -443,6 +443,11 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 
         try
         {
+            if(parser->parser[0]->Eval())
+            {
+                cout << "*****expresion***** " << parser->parser[0]->GetExpr() << parser->parser[0]->Eval() << endl;
+            }
+
             result += wt[i] * parser->parser[0]->Eval();
         }
         catch (mu::Parser::exception_type &e)

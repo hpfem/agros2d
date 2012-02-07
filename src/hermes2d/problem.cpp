@@ -209,13 +209,13 @@ void Problem::createStructure()
     if(hardCoupling) //TODO information about coupling method move to some CouplingInfo ...
     {
         QList<FieldInfo*> fieldInfosParam;
-//        foreach(FieldInfo* fi, fieldInfos)
-//        {
-//            fieldInfosParam.append(fi);
-//        }
-        //TODO create order in fields and use previous cycle
-        fieldInfosParam.append(Util::scene()->fieldInfo("elasticity"));
-        fieldInfosParam.append(Util::scene()->fieldInfo("heat"));
+        foreach(FieldInfo* fi, fieldInfos)
+        {
+            fieldInfosParam.append(fi);
+        }
+//        //TODO create order in fields and use previous cycle
+//        fieldInfosParam.append(Util::scene()->fieldInfo("heat"));
+//        fieldInfosParam.append(Util::scene()->fieldInfo("elasticity"));
 
         //TODO temporary
         Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);

@@ -41,6 +41,32 @@ private:
     CoordinateType m_coordinateType;
 };
 
+class CouplingInfo
+{
+public:
+    CouplingInfo(QString couplingId = "");
+
+    inline Coupling *coupling() const { return m_coupling; }
+
+    QString couplingId() { return m_couplingId; }
+    CouplingType couplingType() { return m_couplingType; }
+    void setCouplingType(CouplingType couplingType);
+
+private:
+    /// module
+    Coupling *m_coupling;
+
+    /// pointer to problem info
+    ProblemInfo *m_parent;
+
+    /// unique coupling info
+    QString m_couplingId;
+
+    /// coupling type
+    CouplingType m_couplingType;
+
+};
+
 //}
 //}
 

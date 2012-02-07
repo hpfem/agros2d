@@ -226,8 +226,8 @@ void SolutionArrayList<Scalar>::createSpace()
 
                     if (custom_form)
                     {
-                        cout << "Boundary cond, " << form->i - 1 + m_block->offset(field) << " -> " << form->expression << endl;
                         bcs[form->i - 1 + m_block->offset(field)]->add_boundary_condition(custom_form);
+                        cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
                     }
                 }
             }
