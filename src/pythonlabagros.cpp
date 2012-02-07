@@ -480,7 +480,7 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
 {
     logMessage("pythonAddEdge()");
 
-    if (angle > 180.0 || angle < 0.0)
+    if (angle > 90.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 
     SceneBoundary *boundary = Util::scene()->getBoundary(QString(marker));

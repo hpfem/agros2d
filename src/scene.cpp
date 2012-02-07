@@ -930,6 +930,8 @@ void Scene::transformTranslate(const Point &point, bool copy)
     {
         if (edge->isSelected)
         {
+            edge->nodeStart->isSelected = false;
+            edge->nodeEnd->isSelected = false;
             this->checkEdge(edge);
         }
     }
@@ -999,6 +1001,8 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
     {
         if (edge->isSelected)
         {
+            edge->nodeStart->isSelected = false;
+            edge->nodeEnd->isSelected = false;
             this->checkEdge(edge);
         }
     }
@@ -1062,6 +1066,8 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
     {
         if (edge->isSelected)
         {
+            edge->nodeStart->isSelected = false;
+            edge->nodeEnd->isSelected = false;
             this->checkEdge(edge);
         }
     }
