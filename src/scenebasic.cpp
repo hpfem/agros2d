@@ -47,10 +47,7 @@ SceneNode::SceneNode(const Point &point) : SceneBasic()
 {
     logMessage("SceneNode::SceneNode()");
 
-    this->point = point;
-    isConnected = false;
-    isOnEdge = false;
-    onEdge = NULL;
+    this->point = point;    
 }
 
 double SceneNode::distance(const Point &point) const
@@ -74,8 +71,6 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *ma
     : SceneBasic()
 {
     logMessage("SceneEdge::SceneEdge()");
-    this->isCrossed = false;
-    this->isLeingNode = false;
     this->nodeStart = nodeStart;    
     this->nodeEnd = nodeEnd;    
     this->boundary = marker;
@@ -523,8 +518,8 @@ bool SceneEdgeDialog::save()
     sceneEdge->angle = txtAngle->number();
     sceneEdge->boundary = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
     sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
-    Scene * scene = Util::scene();
-    scene->controlEdge(sceneEdge);
+    Util::scene()->checkEdge(sceneEdge);
+
     return true;
 }
 

@@ -122,7 +122,7 @@ void SceneSolution::solve(SolverMode solverMode)
     Indicator::openProgress();
 
     // control geometry
-    ErrorResult result = Util::scene()->controlGeometry();
+    ErrorResult result = Util::scene()->checkGeometryResult();
     if (result.isError())
     {
         result.showDialog();

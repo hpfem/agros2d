@@ -211,8 +211,10 @@ public:
     void writeToDxf(const QString &fileName);
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
-    ErrorResult controlGeometry();
-    void controlEdge(SceneEdge *edge);     
+
+    void checkEdge(SceneEdge *edge);
+    ErrorResult checkGeometryResult();
+
     inline QUndoStack *undoStack() const { return m_undoStack; }
 
 private:

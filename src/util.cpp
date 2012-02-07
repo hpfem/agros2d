@@ -1556,7 +1556,7 @@ Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e)
 
 QList<Point> intersection(Point p1s, Point p1e,
                           Point p2s, Point p2e, Point center, double radius, double angle)
-{
+{   
     QList<Point> out;
 
     if (angle > 0.0)
