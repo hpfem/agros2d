@@ -3564,7 +3564,7 @@ void SceneView::paintEdgeLine()
                     // red line and point
                     glColor3d(1.0, 0.0, 0.0);
 
-                    glPointSize(1.0);
+                    glPointSize(5.0);
 
                     glBegin(GL_POINTS);
                     glVertex2d(intersect.x, intersect.y);
