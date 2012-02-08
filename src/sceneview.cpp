@@ -3998,11 +3998,10 @@ void SceneView::keyReleaseEvent(QKeyEvent *event)
     }
     else
     {
-        // if (m_snapToGrid)
-        {
-            m_snapToGrid = false;
-            updateGL();
-        }
+        m_nodeLast = NULL;
+
+        m_snapToGrid = false;
+        updateGL();
     }
 
     emit mouseSceneModeChanged(MouseSceneMode_Nothing);

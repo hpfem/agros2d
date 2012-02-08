@@ -793,13 +793,13 @@ const QColor COLORINITIALMESH = QColor::fromRgb(250, 202, 119);
 const QColor COLORSOLUTIONMESH = QColor::fromRgb(150, 70, 0);
 const QColor COLORHIGHLIGHTED = QColor::fromRgb(250, 150, 0);
 const QColor COLORSELECTED = QColor::fromRgb(150, 0, 0);
-const QColor COLORCROSSED = QColor::fromRgb(0, 255, 0);
+const QColor COLORCROSSED = QColor::fromRgb(16, 162, 6);
 const QColor COLORNOTCONNECTED = QColor::fromRgb(255, 0, 0);
 
 // workspace
 const double GRIDSTEP = 0.05;
 const bool SHOWGRID = true;
-const bool SNAPTOGRID = false;
+const bool SNAPTOGRID = true;
 
 #ifdef Q_WS_X11
     const QFont FONT = QFont("Monospace", 9);
@@ -812,7 +812,7 @@ const bool SNAPTOGRID = false;
 #endif
 
 const bool SHOWAXES = true;
-const bool SHOWRULERS = false;
+const bool SHOWRULERS = true;
 const bool SHOWLABEL = true;
 
 // posprocessor

@@ -240,6 +240,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             }
 
             //  remove triangle temp files
+
             QFile::remove(tempProblemFileName() + ".poly");
             QFile::remove(tempProblemFileName() + ".node");
             QFile::remove(tempProblemFileName() + ".edge");
@@ -249,26 +250,34 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".triangle.err");
             emit message(tr("Mesh files were deleted"), false, 4);
 
+
             // load mesh
             Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
-
+            /*
             // check that all boundary edges have a marker assigned
             for (int i = 0; i < mesh->get_max_node_id(); i++)
             {
-                if (Node *node = mesh->get_node(i))
+                Node *node = mesh->get_node(i);
+                // if (node->bnd == 0 && node->used == 1 && node->type == 1 &&
+                //         (Util::scene()->edges[node->marker-1]->boundary == Util::scene()->boundaries[0]))
+                if (node->bnd == 0 && node->used == 1 && node->type == 1)
                 {
-                    if (node->used == 1 && node->type == 1 && node->ref < 2 && node->marker == 0)
-                    {
-                        qDebug() << "p1: " << node->p1 << "p2: " << node->p2;
-                        emit message(tr("Boundary edge does not have a boundary marker"), true, 0);
+                    qDebug() << "e1: " << node->elem[0]
+                             << "used: " << node->used
+                             << "type: " << node->type
+                             << "ref: " << node->ref
+                             << "bnd: " << node->bnd
+                             << "edge: " << node->marker - 1;
+                             // << "boundary:" << Util::scene()->edges[node->marker-1]->boundary->name;
 
-                        delete mesh;
-                        m_isError = true;
-                        return;
-                    }
+                    emit message(tr("Boundary edge does not have a boundary marker"), true, 0);
+
+                    delete mesh;
+                    m_isError = true;
+                    return;
                 }
             }
-
+            */
             refineMesh(mesh, true, true);
 
             Util::scene()->sceneSolution()->setMeshInitial(mesh);
@@ -1719,5 +1728,4 @@ void ProgressDialog::saveData()
 
         file.close();
     }
-
 }
