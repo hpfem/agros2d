@@ -389,14 +389,14 @@ struct Module
 
     int number_of_solution() const;
 
-    Hermes::vector<SolutionArray<double> *> solve(ProgressItemSolve *progressItemSolve);  //TODO PK <Scalar>
-    Hermes::vector<SolutionArray<double> *> solveAdaptiveStep(ProgressItemSolve *progressItemSolve);  //TODO PK <Scalar>
+    Hermes::vector<SolutionArray<double> *> solve(ProgressItemSolve *progressItemSolve);
+    Hermes::vector<SolutionArray<double> *> solveAdaptiveStep(ProgressItemSolve *progressItemSolve);
     bool solve_init_variables();
 
     inline virtual void update_time_functions(double time) {}
 
 
-    ViewScalarFilter<double> *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,  //TODO PK <Scalar>
+    ViewScalarFilter<double> *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                  PhysicFieldVariableComp physicFieldVariableComp);
 
     virtual inline void deform_shape(double3* linVert, int count) {}

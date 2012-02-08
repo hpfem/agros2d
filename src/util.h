@@ -600,6 +600,7 @@ LinearityType linearityTypeFromStringKey(const QString &linearityType);
 const QString IMAGEROOT = "../resources_source/images";
 const QString LANGUAGEROOT = "/resources/lang";
 const QString MODULEROOT = "/resources/modules";
+const QString COUPLINGROOT = "/resources/couplings";
 const QString TEMPLATEROOT = "/resources/templates";
 
 const QColor COLORBACKGROUND = QColor::fromRgb(255, 255, 255);

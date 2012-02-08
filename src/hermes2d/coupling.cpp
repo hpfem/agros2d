@@ -4,9 +4,53 @@
 #include "module.h"
 #include "weakform_parser.h"
 
-Coupling::Coupling(CoordinateType coordinateType)
+//std::map<std::string, std::string> availableModules()
+//{
+//    static std::map<std::string, std::string> modules;
+
+//    // read modules
+//    if (modules.size() == 0)
+//    {
+//        DIR *dp;
+//        if ((dp = opendir((datadir()+ MODULEROOT).toStdString().c_str())) == NULL)
+//            error("Modules dir '%s' doesn't exists", (datadir() + MODULEROOT).toStdString().c_str());
+
+//        struct dirent *dirp;
+//        while ((dirp = readdir(dp)) != NULL)
+//        {
+//            std::string filename = dirp->d_name;
+
+//            // skip current and parent dir
+//            if (filename == "." || filename == "..")
+//                continue;
+
+//            if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
+//            {
+//                // read name
+//                rapidxml::file<> file_data((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename).c_str());
+
+//                // parse xml
+//                rapidxml::xml_document<> doc;
+//                doc.parse<0>(file_data.data());
+
+//                // module name
+//                modules[filename.substr(0, filename.size() - 4)] =
+//                        QObject::tr(doc.first_node("module")->first_node("general")->first_attribute("name")->value()).toStdString();
+//            }
+//        }
+//        closedir(dp);
+//    }
+
+//    // custom module
+//    // modules["custom"] = "Custom field";
+
+//    return modules;
+//}
+
+Coupling::Coupling(CoordinateType coordinateType, CouplingType couplingType)
 {
     m_coordinateType = coordinateType;
+    m_couplingType = couplingType;
 
     clear();
 }
@@ -47,8 +91,8 @@ void Coupling::read(std::string filename)
 
         rapidxml::xml_node<> *source = general->first_node("modules")->first_node("source");
         this->sourceField = Util::scene()->fieldInfo(source->first_attribute("id")->value());
-        rapidxml::xml_node<> *object = general->first_node("modules")->first_node("object");
-        this->objectField = Util::scene()->fieldInfo(object->first_attribute("id")->value());
+        rapidxml::xml_node<> *object = general->first_node("modules")->first_node("target");
+        this->targetField = Util::scene()->fieldInfo(object->first_attribute("id")->value());
 
 
 
@@ -60,7 +104,7 @@ void Coupling::read(std::string filename)
 //                material_type_variables_tmp.push_back(Hermes::Module::MaterialTypeVariable(quantity));
 
         //TODO temporary
-        m_analysisType = AnalysisType_SteadyState;
+        //m_analysisType = AnalysisType_SteadyState;
 
         for (rapidxml::xml_node<> *weakform = doc.first_node("coupling")->first_node("volume")->first_node("weakforms")->first_node("weakform");
              weakform; weakform = weakform->next_sibling())
@@ -104,4 +148,40 @@ void Coupling::read(std::string filename)
         // set system locale
         setlocale(LC_NUMERIC, plocale);
     }
+}
+
+
+
+// ****************************************************************************************************
+
+Coupling *couplingFactory(std::string id, CoordinateType coordinate_type, CouplingType coupling_type,
+                                           std::string filename_custom)
+{
+    // std::cout << filename_custom << std::endl;
+
+    Coupling *coupling = new Coupling(coordinate_type, coupling_type);
+
+    // try to open custom module
+    if (id == "custom")
+    {
+        ifstream ifile_custom(filename_custom.c_str());
+        if (!ifile_custom)
+            coupling->read(datadir().toStdString() + "/resources/custom.xml");
+        else
+            coupling->read(filename_custom);
+
+        return coupling;
+    }
+
+    // open default module
+    std::string filename_default = (datadir() + COUPLINGROOT + "/" + QString::fromStdString(id) + ".xml").toStdString();
+    ifstream ifile_default(filename_default.c_str());
+    if (ifile_default)
+    {
+        coupling->read(filename_default);
+        return coupling;
+    }
+
+    std::cout << "Coupling doesn't exists." << std::endl;
+    return NULL;
 }

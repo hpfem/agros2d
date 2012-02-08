@@ -384,8 +384,29 @@ void FieldWidget::doLinearityTypeChanged(int index)
 
 // ********************************************************************************************
 
+CouplingsWidget::CouplingsWidget(QWidget *parent) : QWidget(parent)
+{
+    createContent();
+    load();
+}
+
+void CouplingsWidget::createContent()
+{
+}
+
+void CouplingsWidget::load()
+{
+}
+
+void CouplingsWidget::save()
+{
+}
+
+// ********************************************************************************************
+
 ProblemDialog::ProblemDialog(ProblemInfo *problemInfo,
                              QMap<QString, FieldInfo *> fieldInfos,
+                             QMap<QString, CouplingInfo *> couplingInfos,
                              bool isNewProblem,
                              QWidget *parent) : QDialog(parent)
 {
@@ -394,6 +415,7 @@ ProblemDialog::ProblemDialog(ProblemInfo *problemInfo,
     m_isNewProblem = isNewProblem;
     m_problemInfo = problemInfo;
     m_fieldInfos = fieldInfos;
+    m_couplingInfos = couplingInfos;
 
     setWindowTitle(tr("Problem properties"));
 
@@ -544,6 +566,9 @@ QWidget *ProblemDialog::createControlsGeneral()
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
         tabFields->addTab(new FieldWidget(m_problemInfo, fieldInfo, tabFields),
                           QString::fromStdString(fieldInfo->module()->name));
+
+    if (m_couplingInfos.size())
+        tabFields->addTab(new CouplingsWidget(tabFields), "Couplings");
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
     layoutProblem->addLayout(layoutName);
@@ -798,6 +823,8 @@ void ProblemDialog::doAddField()
 
         buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
     }
+
+    findCouplings();
 }
 
 void ProblemDialog::doRemoveFieldRequested(int index)
@@ -818,4 +845,11 @@ void ProblemDialog::doRemoveFieldRequested(int index)
         // enable accept button
         buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
     }
+
+    findCouplings();
+}
+
+void ProblemDialog::findCouplings()
+{
+
 }

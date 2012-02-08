@@ -55,7 +55,7 @@ public:
     int nonlinearSteps() const;
 
 //    Field* couplingSourceField(Coupling* coupling) const;
-//    Field* couplingObjectField(Coupling* coupling) const;
+//    Field* couplingTargetField(Coupling* coupling) const;
 
     Field* field(FieldInfo* fieldInfo) const;
 

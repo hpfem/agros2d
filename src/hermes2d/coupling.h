@@ -7,6 +7,7 @@
 #include <rapidxml_utils.cpp>
 
 class FieldInfo;
+class ProblemInfo;
 class ParserFormExpression;
 
 //namespace Hermes{
@@ -21,36 +22,52 @@ struct Coupling{
     std::string description;
 
     FieldInfo* sourceField;
-    FieldInfo* objectField;
+    FieldInfo* targetField;
 
-    Coupling(CoordinateType coordinateType);
+    Coupling(CoordinateType coordinateType, CouplingType couplingType);
     ~Coupling();
 
     // weak forms
     Hermes::vector<ParserFormExpression *> weakform_matrix_volume;
     Hermes::vector<ParserFormExpression *> weakform_vector_volume;
 
+    mu::Parser *getParser();
 
     void read(std::string filename);
     void clear();
+
+    inline CoordinateType get_coordinate_type() const { return m_coordinateType; }
+
 private:
-
-    //TODO temporary, should be 2 (for source and object), or some other way
-    AnalysisType m_analysisType;
-
+    CouplingType m_couplingType;
     CoordinateType m_coordinateType;
 };
+
+// available couplings
+std::map<std::string, std::string> availableCouplings();
+
+
+// coupling factory
+Coupling *couplingFactory(std::string id, CoordinateType problem_type, CouplingType coupling_type,
+                                           std::string filename_custom = "");
+
 
 class CouplingInfo
 {
 public:
-    CouplingInfo(QString couplingId = "");
+    CouplingInfo(ProblemInfo* parent, QString couplingId = "");
 
     inline Coupling *coupling() const { return m_coupling; }
 
     QString couplingId() { return m_couplingId; }
     CouplingType couplingType() { return m_couplingType; }
     void setCouplingType(CouplingType couplingType);
+
+    FieldInfo* sourceFieldInfo();
+    FieldInfo* targetFIeldInfo();
+
+    /// weakforms
+    WeakFormsType weakFormsType;
 
 private:
     /// module

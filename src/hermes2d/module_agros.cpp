@@ -174,18 +174,18 @@ void ModuleHeat::update_time_functions(double time)
 
 // ****************************************************************************************************
 
-Hermes::Module::ModuleAgros *moduleFactory(std::string id, CoordinateType problem_type, AnalysisType analysis_type,
+Hermes::Module::ModuleAgros *moduleFactory(std::string id, CoordinateType coordinate_type, AnalysisType analysis_type,
                                            std::string filename_custom)
 {
     // std::cout << filename_custom << std::endl;
 
     Hermes::Module::ModuleAgros *module = NULL;
     if (id == "heat")
-        module = new ModuleHeat(problem_type, analysis_type);
+        module = new ModuleHeat(coordinate_type, analysis_type);
     else if (id == "magnetic")
-        module = new ModuleMagnetic(problem_type, analysis_type);
+        module = new ModuleMagnetic(coordinate_type, analysis_type);
     else
-        module = new Hermes::Module::ModuleAgros(problem_type, analysis_type);
+        module = new Hermes::Module::ModuleAgros(coordinate_type, analysis_type);
 
     // try to open custom module
     if (id == "custom")

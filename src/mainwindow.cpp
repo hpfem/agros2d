@@ -831,7 +831,7 @@ void MainWindow::doDocumentNew()
     logMessage("MainWindow::doDocumentNew()");
 
     ProblemInfo *problemInfo = new ProblemInfo();
-    ProblemDialog problemDialog(problemInfo, QMap<QString, FieldInfo *>(),
+    ProblemDialog problemDialog(problemInfo, QMap<QString, FieldInfo *>(), QMap<QString, CouplingInfo *>(),
                                 true, this);
     if (problemDialog.showDialog() == QDialog::Accepted)
     {

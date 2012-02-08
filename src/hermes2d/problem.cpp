@@ -204,47 +204,48 @@ Problem::Problem()
 
 void Problem::createStructure()
 {
-    QMap<QString, FieldInfo *> fieldInfos = Util::scene()->fieldInfos();
+    assert(0);
+//    QMap<QString, FieldInfo *> fieldInfos = Util::scene()->fieldInfos();
 
-    if(hardCoupling) //TODO information about coupling method move to some CouplingInfo ...
-    {
-        QList<FieldInfo*> fieldInfosParam;
-        foreach(FieldInfo* fi, fieldInfos)
-        {
-            fieldInfosParam.append(fi);
-        }
-//        //TODO create order in fields and use previous cycle
-//        fieldInfosParam.append(Util::scene()->fieldInfo("heat"));
-//        fieldInfosParam.append(Util::scene()->fieldInfo("elasticity"));
+//    if(hardCoupling) //TODO information about coupling method move to some CouplingInfo ...
+//    {
+//        QList<FieldInfo*> fieldInfosParam;
+//        foreach(FieldInfo* fi, fieldInfos)
+//        {
+//            fieldInfosParam.append(fi);
+//        }
+////        //TODO create order in fields and use previous cycle
+////        fieldInfosParam.append(Util::scene()->fieldInfo("heat"));
+////        fieldInfosParam.append(Util::scene()->fieldInfo("elasticity"));
 
-        //TODO temporary
-        Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
-        heatElastCoup->read("resources/couplings/heat-elasticity-hard.xml");
-        QList<Coupling*> couplingsParam;
-        couplingsParam.append(heatElastCoup);
+//        //TODO temporary
+//        Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
+//        heatElastCoup->read("resources/couplings/heat-elasticity-hard.xml");
+//        QList<Coupling*> couplingsParam;
+//        couplingsParam.append(heatElastCoup);
 
-        m_blocks.append(new Block(fieldInfosParam, couplingsParam, m_progressItemSolve));
-    }
-    else
-    {
-        //TODO temporary
-        Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
-        heatElastCoup->read("resources/couplings/heat-elasticity.xml");
-        //m_couplings.push_back(heatElastCoup);
+//        m_blocks.append(new Block(fieldInfosParam, couplingsParam, m_progressItemSolve));
+//    }
+//    else
+//    {
+//        //TODO temporary
+//        Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
+//        heatElastCoup->read("resources/couplings/heat-elasticity.xml");
+//        //m_couplings.push_back(heatElastCoup);
 
-        foreach(FieldInfo* fi, fieldInfos)
-        {
-            QList<FieldInfo*> fieldInfosParam;
-            fieldInfosParam.append(fi);
+//        foreach(FieldInfo* fi, fieldInfos)
+//        {
+//            QList<FieldInfo*> fieldInfosParam;
+//            fieldInfosParam.append(fi);
 
-            //TODO temporary
-            QList<Coupling*> couplingsParam;
-            if(fi == Util::scene()->fieldInfo("elasticity"))
-                couplingsParam.append(heatElastCoup);
-            m_blocks.append(new Block(fieldInfosParam, couplingsParam, m_progressItemSolve));
-        }
+//            //TODO temporary
+//            QList<Coupling*> couplingsParam;
+//            if(fi == Util::scene()->fieldInfo("elasticity"))
+//                couplingsParam.append(heatElastCoup);
+//            m_blocks.append(new Block(fieldInfosParam, couplingsParam, m_progressItemSolve));
+//        }
 
-    }
+//    }
 }
 
 void Problem::mesh()

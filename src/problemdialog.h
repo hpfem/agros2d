@@ -24,6 +24,7 @@
 
 class ProblemInfo;
 class FieldInfo;
+class CouplingInfo;
 class ScriptEditor;
 
 class SLineEditDouble;
@@ -54,6 +55,22 @@ private:
     QDialogButtonBox *buttonBox;
 };
 
+class CouplingsWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    CouplingsWidget(QWidget *parent);
+
+    void createContent();
+
+    void load();
+    void save();
+
+    void refresh();
+
+private:
+
+};
 
 class FieldWidget : public QWidget
 {
@@ -118,6 +135,7 @@ class ProblemDialog: public QDialog
 public:
     ProblemDialog(ProblemInfo *problemInfo,
                   QMap<QString, FieldInfo *> fieldInfos,
+                  QMap<QString, CouplingInfo *> couplingInfos,
                   bool isNewProblem, QWidget *parent = 0);
 
     int showDialog();
@@ -137,6 +155,7 @@ private:
     bool m_isNewProblem;
     ProblemInfo *m_problemInfo;
     QMap<QString, FieldInfo *>  m_fieldInfos;
+    QMap<QString, CouplingInfo* > m_couplingInfos;
 
     QDialogButtonBox *buttonBox;
 
@@ -168,6 +187,9 @@ private:
     QWidget *createControlsDescription();
 
     void fillComboBox();
+
+    //called after field is added or removed
+    void findCouplings();
 
     void load();
     bool save();

@@ -51,6 +51,7 @@ class ScriptEngineRemote;
 class ProblemDialog;
 class SceneTransformDialog;
 class ProgressItemSolve;
+class CouplingInfo;
 
 class Problem;
 
@@ -287,6 +288,11 @@ public:
     //TODO remove
     inline FieldInfo *fieldInfo() { if(m_fieldInfos.size() == 0) return NULL;  return *m_fieldInfos.begin(); }
 
+    inline QMap<QString, CouplingInfo *> couplingInfos() const { return m_couplingInfos; }
+    inline CouplingInfo *couplingInfo(QString name) { assert(m_couplingInfos.contains(name)); return m_couplingInfos[name]; }
+    inline CouplingInfo *couplingInfo(std::string name) { return couplingInfo(QString::fromStdString(name)); }
+    inline CouplingInfo *couplingInfo(const char* name) { return couplingInfo(QString::fromAscii(name)); }
+
     bool hasField(QString field) { return m_fieldInfos.contains(field); }
 
     void addField(FieldInfo *field);
@@ -314,6 +320,7 @@ private:
 
     ProblemInfo* m_problemInfo;
     QMap<QString, FieldInfo *>  m_fieldInfos;
+    QMap<QString, CouplingInfo *>  m_couplingInfos;
 
     QMap<FieldInfo*, SceneSolution<double>* > m_sceneSolutions;
     FieldInfo* m_activeViewField;
