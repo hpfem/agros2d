@@ -154,27 +154,28 @@ void Coupling::read(std::string filename)
 
 // ****************************************************************************************************
 
-Coupling *couplingFactory(std::string id, CoordinateType coordinate_type, CouplingType coupling_type,
+Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CoordinateType coordinate_type, CouplingType coupling_type,
                                            std::string filename_custom)
 {
     // std::cout << filename_custom << std::endl;
 
     Coupling *coupling = new Coupling(coordinate_type, coupling_type);
 
-    // try to open custom module
-    if (id == "custom")
-    {
-        ifstream ifile_custom(filename_custom.c_str());
-        if (!ifile_custom)
-            coupling->read(datadir().toStdString() + "/resources/custom.xml");
-        else
-            coupling->read(filename_custom);
+//    // try to open custom module
+//    if (id == "custom")
+//    {
+//        ifstream ifile_custom(filename_custom.c_str());
+//        if (!ifile_custom)
+//            coupling->read(datadir().toStdString() + "/resources/custom.xml");
+//        else
+//            coupling->read(filename_custom);
 
-        return coupling;
-    }
+//        return coupling;
+//    }
 
     // open default module
-    std::string filename_default = (datadir() + COUPLINGROOT + "/" + QString::fromStdString(id) + ".xml").toStdString();
+    std::string filename_default = (datadir() + COUPLINGROOT + "/" + sourceField->fieldId() + "-" +
+                                    targetField->fieldId() + ".xml").toStdString();
     ifstream ifile_default(filename_default.c_str());
     if (ifile_default)
     {
@@ -182,6 +183,7 @@ Coupling *couplingFactory(std::string id, CoordinateType coordinate_type, Coupli
         return coupling;
     }
 
-    std::cout << "Coupling doesn't exists." << std::endl;
+    //it is legal that coupling does not exist
+    //std::cout << "Coupling doesn't exists." << std::endl;
     return NULL;
 }

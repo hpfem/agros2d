@@ -48,7 +48,7 @@ std::map<std::string, std::string> availableCouplings();
 
 
 // coupling factory
-Coupling *couplingFactory(std::string id, CoordinateType problem_type, CouplingType coupling_type,
+Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CoordinateType problem_type, CouplingType coupling_type,
                                            std::string filename_custom = "");
 
 
