@@ -3556,6 +3556,7 @@ void SceneView::paintEdgeLine()
             foreach (SceneEdge *edge, m_scene->edges)
             {
                 QList<Point> intersects = intersection(p, m_nodeLast->point,
+                                                       m_nodeLast->point, 0, 0,
                                                        edge->nodeStart->point, edge->nodeEnd->point,
                                                        edge->center(), edge->radius(), edge->angle);
 

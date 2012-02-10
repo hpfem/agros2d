@@ -1838,11 +1838,13 @@ void Scene::checkEdge(SceneEdge *edge)
             // ToDo: Add control of crossing two arcs
             if(edge->angle > 0)
                 intersects = intersection(edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
+                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle,
                                           edge->nodeStart->point, edge->nodeEnd->point,
                                           edge->center(), edge->radius(), edge->angle);
 
             else
                 intersects = intersection(edge->nodeStart->point, edge->nodeEnd->point,
+                                          edgeCheck->center(), edge->radius(), edge->angle,
                                           edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
                                           edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle);
 
