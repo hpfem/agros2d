@@ -68,7 +68,7 @@ void SurfaceIntegralValue::calculate()
                             integrate = true;
                             boundary = true;
                         }
-                        else if (- atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).c_str()) == i)
+                        else if (- atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).c_str()) - 1 == i)
                         {
                             // inner page
                             integrate = true;

@@ -68,6 +68,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             src/mesh/exodusii.cpp \
             src/mesh/hash.cpp \
             src/mesh/h2d_reader.cpp \
+            src/mesh/mesh2d_parser.cpp \
             src/mesh/mesh.cpp \
             src/mesh/python_reader.cpp \
             src/mesh/refinement_type.cpp \
