@@ -252,21 +252,36 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             // load mesh
             Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
 
+            QSet<int> boundaries;
+
             // check that all boundary edges have a marker assigned
             for (int i = 0; i < mesh->get_max_node_id(); i++)
             {
-                if (Node *node = mesh->get_node(i))
-                {
-                    if (node->used == 1 && node->type == 1 && node->ref < 2 && node->marker == 0)
-                    {
-                        qDebug() << "p1: " << node->p1 << "p2: " << node->p2;
-                        emit message(tr("Boundary edge does not have a boundary marker"), true, 0);
+                Node *node = mesh->get_node(i);
 
-                        delete mesh;
-                        m_isError = true;
-                        return;
-                    }
+                if ((node->used == 1 && node->ref < 2 && node->type == 1)) //&&
+                {
+                    int marker = (node->bnd == 1) ?
+                                atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).c_str()) - 1 :
+                                - atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).c_str()) - 1;
+
+                    if (Util::scene()->edges[marker]->boundary == Util::scene()->boundaries[0])
+                        boundaries.insert(marker);
                 }
+            }
+
+            if (boundaries.count() > 0)
+            {
+                QString markers;
+                foreach (int marker, boundaries)
+                    markers += QString::number(marker) + ", ";
+                markers = markers.left(markers.length() - 2);
+
+                emit message(tr("Boundary edges '%1' does not have a boundary marker").arg(markers), true, 0);
+
+                delete mesh;
+                m_isError = true;
+                return;
             }
 
             refineMesh(mesh, true, true);
@@ -583,7 +598,6 @@ bool ProgressItemMesh::triangleToHermes2D()
         }
     }
     edgeMarkersCheck.clear();
-
     // no edge marker
     if (edgeCountLinear < 1)
     {
@@ -801,8 +815,7 @@ bool ProgressItemMesh::triangleToHermes2D()
 
     // edges
     QString outEdges;
-    outEdges += "boundaries =\n";
-    outEdges += "{\n";
+    outEdges += "boundaries = [\n";
     int countEdges = 0;
     for (int i = 0; i < edgeList.count(); i++)
     {
@@ -814,25 +827,24 @@ bool ProgressItemMesh::triangleToHermes2D()
                 marker = edgeList[i].marker;
             else
                 // inner edge marker (minus markers are ignored)
-                marker = - (edgeList[i].marker-1);
+                marker = - (edgeList[i].marker);
 
             countEdges++;
-            outEdges += QString("  { %1, %2, %3 },\n").
+            outEdges += QString("  [ %1, %2, \"%3\" ],\n").
                     arg(edgeList[i].node[0]).
                     arg(edgeList[i].node[1]).
                     arg(marker);
         }
     }
     outEdges.truncate(outEdges.length()-2);
-    outEdges += "\n}\n\n";
+    outEdges += "\n]\n\n";
 
     // curves
     QString outCurves;
     int countCurves = 0;
     if (Util::config()->curvilinearElements)
     {
-        outCurves += "curves =\n";
-        outCurves += "{\n";
+        outCurves += "curves = [\n";
         for (int i = 0; i<edgeList.count(); i++)
         {
             if (edgeList[i].marker != 0)
@@ -857,7 +869,7 @@ bool ProgressItemMesh::triangleToHermes2D()
 
                     double angle = direction * theta * chordShort / chord;
 
-                    outCurves += QString("  { %1, %2, %3 },\n").
+                    outCurves += QString("  [ %1, %2, %3 ],\n").
                             arg(edgeList[i].node[0]).
                             arg(edgeList[i].node[1]).
                             arg(rad2deg(angle));
@@ -865,7 +877,7 @@ bool ProgressItemMesh::triangleToHermes2D()
             }
         }
         outCurves.truncate(outCurves.length()-2);
-        outCurves += "\n}\n\n";
+        outCurves += "\n]\n\n";
 
         // move nodes (arcs)
         for (int i = 0; i<edgeList.count(); i++)
@@ -895,21 +907,19 @@ bool ProgressItemMesh::triangleToHermes2D()
 
     // nodes
     QString outNodes;
-    outNodes += "vertices =\n";
-    outNodes += "{\n";
+    outNodes += "vertices = [\n";
     for (int i = 0; i<nodeList.count(); i++)
     {
-        outNodes += QString("  { %1,  %2 },\n").
+        outNodes += QString("  [ %1,  %2 ],\n").
                 arg(nodeList[i].x, 0, 'f', 10).
                 arg(nodeList[i].y, 0, 'f', 10);
     }
     outNodes.truncate(outNodes.length()-2);
-    outNodes += "\n}\n\n";
+    outNodes += "\n]\n\n";
 
     // elements
     QString outElements;
-    outElements += "elements =\n";
-    outElements += "{\n";
+    outElements += "elements = [\n";
     for (int i = 0; i < elementList.count(); i++)
     {
         if (elementList[i].isUsed)
@@ -917,7 +927,7 @@ bool ProgressItemMesh::triangleToHermes2D()
             // element returns zero region number for areas without marker, markers must start from 1
             if (elementList[i].isTriangle())
             {
-                outElements += QString("  { %1, %2, %3, %4 },\n").
+                outElements += QString("  [ %1, %2, %3, \"%4\" ],\n").
                         arg(elementList[i].node[0]).
                         arg(elementList[i].node[1]).
                         arg(elementList[i].node[2]).
@@ -925,7 +935,7 @@ bool ProgressItemMesh::triangleToHermes2D()
             }
             else
             {
-                outElements += QString("  { %1, %2, %3, %4, %5 },\n").
+                outElements += QString("  [ %1, %2, %3, %4, \"%5\" ],\n").
                         arg(elementList[i].node[0]).
                         arg(elementList[i].node[1]).
                         arg(elementList[i].node[2]).
@@ -935,7 +945,7 @@ bool ProgressItemMesh::triangleToHermes2D()
         }
     }
     outElements.truncate(outElements.length()-2);
-    outElements += "\n}\n\n";
+    outElements += "\n]\n\n";
 
     outMesh << outNodes;
     outMesh << outElements;
@@ -1719,5 +1729,4 @@ void ProgressDialog::saveData()
 
         file.close();
     }
-
 }

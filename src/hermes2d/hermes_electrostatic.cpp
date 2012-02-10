@@ -32,15 +32,15 @@ public:
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneBoundaryElectrostatic *boundaryHeat = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->edges[i]->boundary);
+            SceneBoundaryElectrostatic *boundaryElectrostatic = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->edges[i]->boundary);
 
-            if (boundaryHeat && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
+            if (boundaryElectrostatic && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
-                if (boundaryHeat->type == PhysicFieldBC_Electrostatic_SurfaceCharge)
-                    if (fabs(boundaryHeat->value.number) > EPS_ZERO)
+                if (boundaryElectrostatic->type == PhysicFieldBC_Electrostatic_SurfaceCharge)
+                    if (fabs(boundaryElectrostatic->value.number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        boundaryHeat->value.number,
+                                                                                                        boundaryElectrostatic->value.number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
         }

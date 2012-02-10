@@ -819,6 +819,10 @@ void PythonEditorDialog::doFileOpen(const QString &file)
     // read text
     if (!fileName.isEmpty())
     {
+        QFileInfo fileInfo(fileName);
+        if (fileInfo.suffix() != "py")
+            return;
+
         PythonEditorWidget *scriptEditor = scriptEditorWidget();
 
         for (int i = 0; i < tabWidget->count(); i++)
@@ -845,7 +849,6 @@ void PythonEditorDialog::doFileOpen(const QString &file)
 
         setRecentFiles();
 
-        QFileInfo fileInfo(scriptEditor->fileName);
         tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
 
         doCurrentPageChanged(tabWidget->currentIndex());

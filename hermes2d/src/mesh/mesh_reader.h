@@ -13,31 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D; if not, see <http://www.gnu.prg/licenses/>.
 
-#ifndef _H2D_READER_H_
-#define _H2D_READER_H_
+#ifndef _MESHLOADER_H_
+#define _MESHLOADER_H_
 
-#include "mesh_loader.h"
-#include "mesh2d_parser.h"
+#include "mesh.h"
 
-/// Mesh loader from Hermes2D format
+
+/// @defgroup mesh_readers Mesh readers
+
+/// Abstract class for mesh readers
 ///
-/// @ingroup meshloaders
-class HERMES_API H2DReader : public MeshLoader
+/// @ingroup mesh_readers
+class HERMES_API MeshReader
 {
 public:
-  H2DReader();
-  virtual ~H2DReader();
+  virtual ~MeshReader() { }
 
-  virtual bool load(const char *file_name, Mesh *mesh);
-  virtual bool save(const char *file_name, Mesh *mesh);
+  /// Loads the mesh from a file. Aborts the program on error.
+  /// @param filename [in] The name of the file.
+  /// @param mesh [out] The mesh.
+  virtual bool load(const char *filename, Mesh *mesg) = 0;
 
 protected:
-  Nurbs* load_nurbs_old(Mesh *mesh, FILE* f, Node** en, int &p1, int &p2);
-  Nurbs* load_nurbs(Mesh *mesh, MeshData *m, int id, Node** en, int &p1, int &p2);
-
-  void save_refinements(Mesh *mesh, FILE* f, Element* e, int id, bool& first);
-  void save_nurbs(Mesh *mesh, FILE* f, int p1, int p2, Nurbs* nurbs);
+  static bool is_twin_nurbs(Element* e, int i)
+  {
+    // on internal edges, where there are two Nurbs', we only save one of them
+    return e->cm->nurbs[i]->twin && e->en[i]->ref == 2;
+  }
 };
 
 #endif
-
