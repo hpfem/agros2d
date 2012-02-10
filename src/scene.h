@@ -292,6 +292,7 @@ public:
 
     inline QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos() const { return m_couplingInfos; }
     inline CouplingInfo* couplingInfo(FieldInfo* sourceField, FieldInfo* targetField);
+    inline void setCouplingInfos(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos) { m_couplingInfos = couplingInfos; }
 
     bool hasField(QString field) { return m_fieldInfos.contains(field); }
 

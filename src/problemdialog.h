@@ -163,6 +163,8 @@ private slots:
     void doFindCouplings();
 
 private:
+    void updateCouplingTab();
+
     bool m_isNewProblem;
     ProblemInfo *m_problemInfo;
     QMap<QString, FieldInfo *>  m_fieldInfos;
@@ -170,9 +172,8 @@ private:
 
     QDialogButtonBox *buttonBox;
 
-
+    int haveCouplingsTab_HACK;
     QTabWidget *tabFields;
-    QTabWidget *tabCouplings;
 
     QLineEdit *txtName;
     QComboBox *cmbCoordinateType;
