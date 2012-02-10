@@ -888,11 +888,14 @@ void ProblemDialog::doAddField()
         FieldWidget *fieldWidget = new FieldWidget(m_problemInfo, fieldInfo, tabFields, this);
 
         // add widget
-        tabFields->addTab(fieldWidget,
+        int fieldPosition = tabFields->count() - haveCouplingsTab_HACK;
+        tabFields->insertTab(fieldPosition, fieldWidget,
                           QString::fromStdString(fieldInfo->module()->name));
-        tabFields->setCurrentIndex(tabFields->count() - 1);
+        tabFields->setCurrentIndex(tabFields->count() - 1 - haveCouplingsTab_HACK);
 
         buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
+
+        m_fieldInfos[fieldInfo->fieldId()] = fieldInfo;
     }
 
     doFindCouplings();
@@ -909,15 +912,17 @@ void ProblemDialog::doRemoveFieldRequested(int index)
     {
         tabFields->removeTab(index);
 
+        m_fieldInfos.remove(wid->fieldInfo()->fieldId());
+
         // delete corresponding fileinfo (new field only)
         if (!Util::scene()->fieldInfos().keys().contains(wid->fieldInfo()->fieldId()))
             delete wid->fieldInfo();
 
         // enable accept button
         buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
-    }
 
-    doFindCouplings();
+        doFindCouplings();
+    }
 }
 
 void ProblemDialog::doFindCouplings()
@@ -943,9 +948,10 @@ void ProblemDialog::doFindCouplings()
     foreach(CouplingInfo* couplingInfo, m_couplingInfos)
     {
         if(! (m_fieldInfos.contains(couplingInfo->sourceField()->fieldId()) &&
-              m_fieldInfos.contains(couplingInfo->sourceField()->fieldId()) &&
+              m_fieldInfos.contains(couplingInfo->targetField()->fieldId()) &&
               isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
         {
+            cout << "removing info" << endl;
             m_couplingInfos.remove(QPair<FieldInfo*, FieldInfo*>(couplingInfo->sourceField(), couplingInfo->targetField()));
         }
     }
