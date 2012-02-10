@@ -537,6 +537,7 @@ QString teModeString(Mode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString coordinateTypeString(CoordinateType coordinateType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
+QString couplingTypeString(CouplingType couplingType);
 QString weakFormsTypeString(WeakFormsType weakFormsType);
 QString meshTypeString(MeshType meshType);
 QString linearityTypeString(LinearityType linearityType);

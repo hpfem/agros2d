@@ -32,6 +32,8 @@ class ValueLineEdit;
 
 class FieldInfo;
 
+class ProblemDialog;
+
 class FieldSelectDialog : public QDialog
 {
     Q_OBJECT
@@ -59,7 +61,7 @@ class CouplingsWidget : public QWidget
 {
     Q_OBJECT
 public:
-    CouplingsWidget(QWidget *parent);
+    CouplingsWidget(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >* couplingInfos, QWidget *parent);
 
     void createContent();
 
@@ -69,14 +71,17 @@ public:
     void refresh();
 
 private:
+    void fillComboBox();
 
+    QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >* m_couplingInfos;
+    QMap<CouplingInfo*, QComboBox*> m_comboBoxes;
 };
 
 class FieldWidget : public QWidget
 {
     Q_OBJECT
 public:
-    FieldWidget(const ProblemInfo *problemInfo, FieldInfo *m_fieldInfo, QWidget *parent);
+    FieldWidget(const ProblemInfo *problemInfo, FieldInfo *m_fieldInfo, QWidget *parent, ProblemDialog* problemDialog);
 
     // equation
     QLabel *equationImage;
@@ -93,6 +98,9 @@ private:
     // problem info
     const ProblemInfo *problemInfo;
     FieldInfo *m_fieldInfo;
+
+    //TODO how to do without it?
+    ProblemDialog* m_problemDialog;
 
     // main
     QComboBox *cmbAnalysisType;
@@ -135,7 +143,7 @@ class ProblemDialog: public QDialog
 public:
     ProblemDialog(ProblemInfo *problemInfo,
                   QMap<QString, FieldInfo *> fieldInfos,
-                  QMap<QString, CouplingInfo *> couplingInfos,
+                  QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos,
                   bool isNewProblem, QWidget *parent = 0);
 
     int showDialog();
@@ -151,15 +159,20 @@ private slots:
     void doAddField();
     void doRemoveFieldRequested(int);
 
+    //called after field is added or removed or analysis type changed
+    void doFindCouplings();
+
 private:
     bool m_isNewProblem;
     ProblemInfo *m_problemInfo;
     QMap<QString, FieldInfo *>  m_fieldInfos;
-    QMap<QString, CouplingInfo* > m_couplingInfos;
+    QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;
 
     QDialogButtonBox *buttonBox;
 
+
     QTabWidget *tabFields;
+    QTabWidget *tabCouplings;
 
     QLineEdit *txtName;
     QComboBox *cmbCoordinateType;
@@ -187,9 +200,6 @@ private:
     QWidget *createControlsDescription();
 
     void fillComboBox();
-
-    //called after field is added or removed
-    void findCouplings();
 
     void load();
     bool save();

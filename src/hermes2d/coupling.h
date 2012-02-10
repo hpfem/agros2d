@@ -21,10 +21,7 @@ struct Coupling{
     // description
     std::string description;
 
-    FieldInfo* sourceField;
-    FieldInfo* targetField;
-
-    Coupling(CoordinateType coordinateType, CouplingType couplingType);
+    Coupling(CoordinateType coordinateType, CouplingType couplingType, AnalysisType sourceFieldAnalysis, AnalysisType targetFieldAnalysis);
     ~Coupling();
 
     // weak forms
@@ -41,21 +38,26 @@ struct Coupling{
 private:
     CouplingType m_couplingType;
     CoordinateType m_coordinateType;
+    AnalysisType m_sourceFieldAnalysis;
+    AnalysisType m_targetFieldAnalysis;
+
 };
 
-// available couplings
-std::map<std::string, std::string> availableCouplings();
+//// available couplings
+//QMap<QPair<FieldInfo*, FieldInfo*>, CouplingInfo* > availableCouplings();
 
+bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField);
 
 // coupling factory
-Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CoordinateType problem_type, CouplingType coupling_type,
+Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CouplingType coupling_type,
                                            std::string filename_custom = "");
 
 
 class CouplingInfo
 {
 public:
-    CouplingInfo(ProblemInfo* parent, QString couplingId = "");
+    CouplingInfo(FieldInfo* sourceField, FieldInfo* targetField);
+    ~CouplingInfo();
 
     inline Coupling *coupling() const { return m_coupling; }
 
@@ -63,18 +65,24 @@ public:
     CouplingType couplingType() { return m_couplingType; }
     void setCouplingType(CouplingType couplingType);
 
-    FieldInfo* sourceFieldInfo();
-    FieldInfo* targetFIeldInfo();
+    inline FieldInfo* sourceField() {return m_sourceField; }
+    inline FieldInfo* targetField() {return m_targetField; }
 
     /// weakforms
     WeakFormsType weakFormsType;
+
+    /// reloads the Coupling ("module"). Should be called when couplingType or AnalysisType of either fields changes
+    void reload();
 
 private:
     /// module
     Coupling *m_coupling;
 
     /// pointer to problem info
-    ProblemInfo *m_parent;
+    ProblemInfo *m_problemInfo;
+
+    FieldInfo* m_sourceField;
+    FieldInfo* m_targetField;
 
     /// unique coupling info
     QString m_couplingId;

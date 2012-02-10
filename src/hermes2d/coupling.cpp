@@ -4,53 +4,134 @@
 #include "module.h"
 #include "weakform_parser.h"
 
-//std::map<std::string, std::string> availableModules()
+#include <dirent.h>
+
+CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField) :
+    m_sourceField(sourceField), m_targetField(targetField)
+{
+    assert(m_sourceField->problemInfo() == m_targetField->problemInfo());
+    m_problemInfo = m_sourceField->problemInfo();
+
+    //TODO in each module should be implicit value
+    m_couplingType = CouplingType_Weak;
+    m_coupling = NULL;
+
+    reload();
+}
+
+CouplingInfo::~CouplingInfo()
+{
+    if(m_coupling)
+        delete m_coupling;
+}
+
+void CouplingInfo::setCouplingType(CouplingType couplingType)
+{
+    m_couplingType = couplingType;
+
+    reload();
+}
+
+void CouplingInfo::reload()
+{
+    if(m_coupling)
+        delete m_coupling;
+
+    m_coupling = couplingFactory(m_sourceField, m_targetField, m_couplingType);
+}
+
+//QMap<QPair<QString, QString >, QString > availableCouplings()
 //{
-//    static std::map<std::string, std::string> modules;
+//    QMap<QPair<QString, QString >, QString > couplings;
+//    DIR *dp;
+//    if ((dp = opendir((datadir()+ COUPLINGROOT).toStdString().c_str())) == NULL)
+//        error("Couplings dir '%s' doesn't exists", (datadir() + ROOT).toStdString().c_str());
 
-//    // read modules
-//    if (modules.size() == 0)
+//    struct dirent *dirp;
+//    while ((dirp = readdir(dp)) != NULL)
 //    {
-//        DIR *dp;
-//        if ((dp = opendir((datadir()+ MODULEROOT).toStdString().c_str())) == NULL)
-//            error("Modules dir '%s' doesn't exists", (datadir() + MODULEROOT).toStdString().c_str());
+//        std::string filename = dirp->d_name;
 
-//        struct dirent *dirp;
-//        while ((dirp = readdir(dp)) != NULL)
+//        // skip current and parent dir
+//        if (filename == "." || filename == "..")
+//            continue;
+
+//        if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
 //        {
-//            std::string filename = dirp->d_name;
+//            // read name
+//            rapidxml::file<> file_data((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename).c_str());
 
-//            // skip current and parent dir
-//            if (filename == "." || filename == "..")
-//                continue;
+//            // parse xml
+//            rapidxml::xml_document<> doc;
+//            doc.parse<0>(file_data.data());
 
-//            if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
-//            {
-//                // read name
-//                rapidxml::file<> file_data((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename).c_str());
-
-//                // parse xml
-//                rapidxml::xml_document<> doc;
-//                doc.parse<0>(file_data.data());
-
-//                // module name
-//                modules[filename.substr(0, filename.size() - 4)] =
-//                        QObject::tr(doc.first_node("module")->first_node("general")->first_attribute("name")->value()).toStdString();
-//            }
+//            // module name
+//            QString sourceFieldStr(doc.first_node("coupling")->first_node("general")->first_node("modules")->first_node("source")->first_attribute("id")->value());
+//            QString targetFieldStr(doc.first_node("coupling")->first_node("general")->first_node("modules")->first_node("target")->first_attribute("id")->value());
+//            couplings[QPair<QString, QString>(sourceFieldStr, targetFieldStr)] =
 //        }
-//        closedir(dp);
 //    }
+//    closedir(dp);
 
-//    // custom module
-//    // modules["custom"] = "Custom field";
 
 //    return modules;
 //}
 
-Coupling::Coupling(CoordinateType coordinateType, CouplingType couplingType)
+bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
+{
+    DIR *dp;
+    if ((dp = opendir((datadir()+ COUPLINGROOT).toStdString().c_str())) == NULL)
+        error("Couplings dir '%s' doesn't exists", (datadir() + COUPLINGROOT).toStdString().c_str());
+
+    struct dirent *dirp;
+    while ((dirp = readdir(dp)) != NULL)
+    {
+        std::string filename = dirp->d_name;
+
+        // skip current and parent dir
+        if (filename == "." || filename == "..")
+            continue;
+
+        if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
+        {
+            // read name
+            rapidxml::file<> file_data((datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + filename).c_str());
+
+            // parse xml
+            rapidxml::xml_document<> doc;
+            doc.parse<0>(file_data.data());
+
+            // module name
+            QString sourceFieldStr(doc.first_node("coupling")->first_node("general")->first_node("modules")->first_node("source")->first_attribute("id")->value());
+            QString targetFieldStr(doc.first_node("coupling")->first_node("general")->first_node("modules")->first_node("target")->first_attribute("id")->value());
+
+            if((sourceFieldStr == sourceField->fieldId()) && (targetFieldStr == targetField->fieldId()))
+            {
+                //check whether coupling is available for values of source and target fields such as analysis type
+                for (rapidxml::xml_node<> *weakform = doc.first_node("coupling")->first_node("volume")->first_node("weakforms")->first_node("weakform");
+                     weakform; weakform = weakform->next_sibling())
+                {
+
+                    if ((weakform->first_attribute("sourceanalysis")->value() == Hermes::analysis_type_tostring(sourceField->analysisType())) &&
+                        (weakform->first_attribute("targetanalysis")->value() == Hermes::analysis_type_tostring(targetField->analysisType())))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    closedir(dp);
+
+    return false;
+}
+
+Coupling::Coupling(CoordinateType coordinateType, CouplingType couplingType, AnalysisType sourceFieldAnalysis, AnalysisType targetFieldAnalysis)
 {
     m_coordinateType = coordinateType;
     m_couplingType = couplingType;
+    m_sourceFieldAnalysis = sourceFieldAnalysis;
+    m_targetFieldAnalysis = targetFieldAnalysis;
 
     clear();
 }
@@ -89,10 +170,10 @@ void Coupling::read(std::string filename)
         description = general->first_node("description")->value();
 
 
-        rapidxml::xml_node<> *source = general->first_node("modules")->first_node("source");
-        this->sourceField = Util::scene()->fieldInfo(source->first_attribute("id")->value());
-        rapidxml::xml_node<> *object = general->first_node("modules")->first_node("target");
-        this->targetField = Util::scene()->fieldInfo(object->first_attribute("id")->value());
+//        rapidxml::xml_node<> *source = general->first_node("modules")->first_node("source");
+//        this->sourceField = Util::scene()->fieldInfo(source->first_attribute("id")->value());
+//        rapidxml::xml_node<> *object = general->first_node("modules")->first_node("target");
+//        this->targetField = Util::scene()->fieldInfo(object->first_attribute("id")->value());
 
 
 
@@ -109,6 +190,12 @@ void Coupling::read(std::string filename)
         for (rapidxml::xml_node<> *weakform = doc.first_node("coupling")->first_node("volume")->first_node("weakforms")->first_node("weakform");
              weakform; weakform = weakform->next_sibling())
         {
+
+            if ((weakform->first_attribute("couplingtype")->value() == Hermes::coupling_type_tostring(m_couplingType)) &&
+                (weakform->first_attribute("sourceanalysis")->value() == Hermes::analysis_type_tostring(m_sourceFieldAnalysis)) &&
+                (weakform->first_attribute("targetanalysis")->value() == Hermes::analysis_type_tostring(m_targetFieldAnalysis)))
+            {
+
 //            if (weakform->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(m_analysisType))
 //            {
                 // quantities
@@ -142,7 +229,7 @@ void Coupling::read(std::string filename)
                      vector; vector = vector->next_sibling())
                     if (std::string(vector->name()) == "vector")
                         weakform_vector_volume.push_back(new ParserFormExpression(vector, m_coordinateType));
-//            }
+            }
         }
 
         // set system locale
@@ -154,12 +241,13 @@ void Coupling::read(std::string filename)
 
 // ****************************************************************************************************
 
-Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CoordinateType coordinate_type, CouplingType coupling_type,
+Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CouplingType couplingType,
                                            std::string filename_custom)
 {
     // std::cout << filename_custom << std::endl;
 
-    Coupling *coupling = new Coupling(coordinate_type, coupling_type);
+    CoordinateType coordinateType = sourceField->coordinateType();
+    Coupling *coupling = new Coupling(coordinateType, couplingType, sourceField->analysisType(), targetField->analysisType());
 
 //    // try to open custom module
 //    if (id == "custom")
@@ -183,7 +271,6 @@ Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, Coordi
         return coupling;
     }
 
-    //it is legal that coupling does not exist
-    //std::cout << "Coupling doesn't exists." << std::endl;
+    std::cout << "Coupling doesn't exists." << std::endl;
     return NULL;
 }

@@ -303,9 +303,10 @@ void WeakFormAgros<Scalar>::registerForms()
     if(m_block->m_couplings.size() && (hardCoupling))
     {
 
+        assert(0);
         Coupling* coupling = m_block->m_couplings.at(0);
-        Field* sourceField = m_block->field(coupling->sourceField);
-        Field* targetField = m_block->field(coupling->targetField);
+        Field* sourceField;// = m_block->field(coupling->sourceField);
+        Field* targetField;// = m_block->field(coupling->targetField);
 
         //TODO
         for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();

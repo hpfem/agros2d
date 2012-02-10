@@ -163,6 +163,24 @@ QString analysisTypeString(AnalysisType analysisType)
     }
 }
 
+QString couplingTypeString(CouplingType couplingType)
+{
+    logMessage("couplingTypeString()");
+
+    switch (couplingType)
+    {
+    case CouplingType_None:
+        return QObject::tr("Not used");
+    case CouplingType_Hard:
+        return QObject::tr("Hard");
+    case CouplingType_Weak:
+        return QObject::tr("Weak");
+    default:
+        std::cerr << "Coupling type '" + QString::number(couplingType).toStdString() + "' is not implemented. couplingTypeString(CouplingType couplingType)" << endl;
+        throw;
+    }
+}
+
 QString teModeString(Mode teMode)
 {
     logMessage("TEModeString()");

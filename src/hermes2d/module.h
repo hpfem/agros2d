@@ -128,6 +128,16 @@ inline std::string analysis_type_tostring(AnalysisType analysisType)
         return "transient";
 }
 
+inline std::string coupling_type_tostring(CouplingType couplingType)
+{
+    if (couplingType == CouplingType_Hard)
+        return "hard";
+    else if (couplingType == CouplingType_Weak)
+        return "weak";
+    else if (couplingType == CouplingType_None)
+        return "none";
+}
+
 namespace Module
 {
 // local variable
