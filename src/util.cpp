@@ -1542,7 +1542,7 @@ Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e)
     double ua = nume_a / denom;
     double ub = nume_b / denom;
 
-    if (p2e != p1s)
+    if ((p2e != p1s) && (p1e != p2s) && (p1e != p2e) && (p1s != p2s))
     {
         if ((abs(denom) > EPS_ZERO) && (ua > 0.0) && (ua < 1.0) && (ub > 0.0) && (ub < 1.0))
         {
@@ -1564,6 +1564,23 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
 
     if ((angle1 > 0.0) && (angle2 > 0.0))
     {
+        {
+                // Calculate distance between centres of circle
+                float distance = (center1 - center2).magnitude();
+
+                //No intersections
+                if (((distance > (radius1 + radius2)) || (distance < std::abs(radius1 - radius2))))
+                 {
+
+                 }
+
+                //
+                if (distance = (radius1 + radius2))
+                 {
+
+                 }
+
+        }
 
     }
     else
