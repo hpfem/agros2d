@@ -387,7 +387,7 @@ bool Config::readConfig(const QString &key, bool defaultValue)
 {
     if (eleConfig)
     {
-        QString att = key.replace("/", "_");
+        QString att = key; att.replace("/", "_");
         if (eleConfig->hasAttribute(att))
             return (eleConfig->attribute(att).toInt() == 1) ? true : false;
     }
@@ -400,7 +400,7 @@ int Config::readConfig(const QString &key, int defaultValue)
 {
     if (eleConfig)
     {
-        QString att = key.replace("/", "_");
+        QString att = key; att.replace("/", "_");
         if (eleConfig->hasAttribute(att))
             return eleConfig->attribute(att).toInt();
     }
@@ -413,7 +413,7 @@ double Config::readConfig(const QString &key, double defaultValue)
 {
     if (eleConfig)
     {
-        QString att = key.replace("/", "_");
+        QString att = key; att.replace("/", "_");
         if (eleConfig->hasAttribute(att))
             return eleConfig->attribute(att).toDouble();
     }
@@ -426,7 +426,7 @@ void Config::writeConfig(const QString &key, bool value)
 {
     if (eleConfig)
     {
-        QString att = key.replace("/", "_");
+        QString att = key; att.replace("/", "_");
         eleConfig->setAttribute(att, value);
     }
 
@@ -438,7 +438,7 @@ void Config::writeConfig(const QString &key, int value)
 {
     if (eleConfig)
     {
-        QString att = key.replace("/", "_");
+        QString att = key; att.replace("/", "_");
         eleConfig->setAttribute(att, value);
     }
 
@@ -450,7 +450,7 @@ void Config::writeConfig(const QString &key, double value)
 {
     if (eleConfig)
     {
-        QString att = key.replace("/", "_");
+        QString att = key; att.replace("/", "_");
         eleConfig->setAttribute(att, value);
     }
 
