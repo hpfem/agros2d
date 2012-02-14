@@ -4746,7 +4746,7 @@ void SceneView::doShowGrid()
     logMessage("SceneView::doShowGrid()");
 
     Util::config()->showGrid = !Util::config()->showGrid;
-    Util::config()->save();
+    Util::config()->saveWorkspace();
     doInvalidated();
 }
 
@@ -4755,7 +4755,7 @@ void SceneView::doSnapToGrid()
     logMessage("SceneView::doSnapToGrid()");
 
     Util::config()->snapToGrid = !Util::config()->snapToGrid;
-    Util::config()->save();
+    Util::config()->saveWorkspace();
 }
 
 void SceneView::doShowRulers()
@@ -4763,7 +4763,7 @@ void SceneView::doShowRulers()
     logMessage("SceneView::doShowRulers()");
 
     Util::config()->showRulers = !Util::config()->showRulers;
-    Util::config()->save();
+    Util::config()->saveWorkspace();
     doInvalidated();
 }
 

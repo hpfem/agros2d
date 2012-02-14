@@ -18,8 +18,9 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "config.h"
+#include "scene.h"
 
-Config::Config()
+Config::Config() : eleConfig(NULL)
 {
     logMessage("Config::Config()");
 
@@ -35,8 +36,13 @@ Config::~Config()
 
 void Config::load()
 {
-    logMessage("Config::load()");
+    loadWorkspace();
+    loadPostprocessor();
+    loadAdvanced();
+}
 
+void Config::loadWorkspace()
+{
     QSettings settings;
 
     // experimental features
@@ -98,6 +104,7 @@ void Config::load()
     // grid
     showGrid = settings.value("SceneViewSettings/ShowGrid", SHOWGRID).toBool();
     gridStep = settings.value("SceneViewSettings/GridStep", GRIDSTEP).toDouble();
+
     // rulers
     showRulers = settings.value("SceneViewSettings/ShowRulers", SHOWRULERS).toBool();
     // snap to grid
@@ -108,62 +115,70 @@ void Config::load()
 
     // label
     showLabel = settings.value("SceneViewSettings/ShowLabel", SHOWLABEL).toBool();
+}
 
+void Config::loadPostprocessor()
+{    
     // linearizer quality
-    linearizerQuality = settings.value("SceneViewSettings/LinearizerQuality", LINEARIZER_QUALITY).toDouble();
+    linearizerQuality = readConfig("SceneViewSettings/LinearizerQuality", LINEARIZER_QUALITY);
 
     // countour
-    contoursCount = settings.value("SceneViewSettings/ContoursCount", CONTOURSCOUNT).toInt();
+    contoursCount = readConfig("SceneViewSettings/ContoursCount", CONTOURSCOUNT);
 
     // scalar view
-    showScalarScale = settings.value("SceneViewSettings/ShowScalarScale", true).toBool();
-    paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", PALETTETYPE).toInt();
-    paletteFilter = settings.value("SceneViewSettings/PaletteFilter", PALETTEFILTER).toBool();
-    paletteSteps = settings.value("SceneViewSettings/PaletteSteps", PALETTESTEPS).toInt();
-    scalarRangeLog = settings.value("SceneViewSettings/ScalarRangeLog", SCALARRANGELOG).toBool();
-    scalarRangeBase = settings.value("SceneViewSettings/ScalarRangeBase", SCALARRANGEBASE).toDouble();
-    scalarDecimalPlace = settings.value("SceneViewSettings/ScalarDecimalPlace", SCALARDECIMALPLACE).toDouble();
+    showScalarScale = readConfig("SceneViewSettings/ShowScalarScale", true);
+    paletteType = (PaletteType) readConfig("SceneViewSettings/PaletteType", PALETTETYPE);
+    paletteFilter = readConfig("SceneViewSettings/PaletteFilter", PALETTEFILTER);
+    paletteSteps = readConfig("SceneViewSettings/PaletteSteps", PALETTESTEPS);
+    scalarRangeLog = readConfig("SceneViewSettings/ScalarRangeLog", SCALARFIELDRANGELOG);
+    scalarRangeBase = readConfig("SceneViewSettings/ScalarRangeBase", SCALARFIELDRANGEBASE);
+    scalarDecimalPlace = readConfig("SceneViewSettings/ScalarDecimalPlace", SCALARDECIMALPLACE);
 
     // vector view
-    vectorProportional = settings.value("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL).toBool();
-    vectorColor = settings.value("SceneViewSettings/VectorColor", VECTORCOLOR).toBool();
-    vectorCount = settings.value("SceneViewSettings/VectorNumber", VECTORNUMBER).toInt();
-    vectorScale = settings.value("SceneViewSettings/VectorScale", VECTORSCALE).toDouble();
+    vectorProportional = readConfig("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL);
+    vectorColor = readConfig("SceneViewSettings/VectorColor", VECTORCOLOR);
+    vectorCount = readConfig("SceneViewSettings/VectorNumber", VECTORNUMBER);
+    vectorScale = readConfig("SceneViewSettings/VectorScale", VECTORSCALE);
 
     // order view
-    showOrderScale = settings.value("SceneViewSettings/ShowOrderScale", true).toBool();
-    orderPaletteOrderType = (PaletteOrderType) settings.value("SceneViewSettings/OrderPaletteOrderType", ORDERPALETTEORDERTYPE).toInt();
-    orderLabel = settings.value("SceneViewSettings/OrderLabel", ORDERLABEL).toBool();
+    showOrderScale = readConfig("SceneViewSettings/ShowOrderScale", true);
+    orderPaletteOrderType = (PaletteOrderType) readConfig("SceneViewSettings/OrderPaletteOrderType", ORDERPALETTEORDERTYPE);
+    orderLabel = readConfig("SceneViewSettings/OrderLabel", ORDERLABEL);
 
     // deformations
-    deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
-    deformContour = settings.value("SceneViewSettings/DeformContour", true).toBool();
-    deformVector = settings.value("SceneViewSettings/DeformVector", true).toBool();
+    deformScalar = readConfig("SceneViewSettings/DeformScalar", true);
+    deformContour = readConfig("SceneViewSettings/DeformContour", true);
+    deformVector = readConfig("SceneViewSettings/DeformVector", true);
 
     // particle tracing
-    particleIncludeGravitation = settings.value("SceneViewSettings/ParticleIncludeGravitation", PARTICLEINCLUDEGRAVITATION).toBool();
-    particleMass = settings.value("SceneViewSettings/ParticleMass", PARTICLEMASS).toDouble();
-    particleConstant = settings.value("SceneViewSettings/ParticleConstant", PARTICLECONSTANT).toDouble();
-    particleStart.x = settings.value("SceneViewSettings/ParticleStartX", PARTICLESTARTX).toDouble();
-    particleStart.y = settings.value("SceneViewSettings/ParticleStartY", PARTICLESTARTY).toDouble();
-    particleStartVelocity.x = settings.value("SceneViewSettings/ParticleStartVelocityX", PARTICLESTARTVELOCITYX).toDouble();
-    particleStartVelocity.y = settings.value("SceneViewSettings/ParticleStartVelocityY", PARTICLESTARTVELOCITYY).toDouble();
-    particleNumberOfParticles = settings.value("SceneViewSettings/ParticleNumberOfParticles", PARTICLENUMBEROFPARTICLES).toInt();
-    particleStartingRadius = settings.value("SceneViewSettings/ParticleStartingRadius", PARTICLESTARTINGRADIUS).toDouble();
-    particleTerminateOnDifferentMaterial = settings.value("SceneViewSettings/ParticleTerminateOnDifferentMaterial", PARTICLETERMINATEONDIFFERENTMATERIAL).toBool();
-    particleMaximumRelativeError = settings.value("SceneViewSettings/ParticleMaximumRelativeError", PARTICLEMAXIMUMRELATIVEERROR).toDouble();
-    particleShowPoints = settings.value("SceneViewSettings/ParticleShowPoints", PARTICLESHOWPOINTS).toBool();
-    particleColorByVelocity = settings.value("SceneViewSettings/ParticleColorByVelocity", PARTICLECOLORBYVELOCITY).toBool();
-    particleMaximumSteps = settings.value("SceneViewSettings/ParticleMaximumSteps", PARTICLEMAXIMUMSTEPS).toInt();
-    particleDragDensity = settings.value("SceneViewSettings/ParticleDragDensity", PARTICLEDRAGDENSITY).toDouble();
-    particleDragCoefficient = settings.value("SceneViewSettings/ParticleDragCoefficient", PARTICLEDRAGCOEFFICIENT).toDouble();
-    particleDragReferenceArea = settings.value("SceneViewSettings/ParticleDragReferenceArea", PARTICLEDRAGREFERENCEAREA).toDouble();
+    particleIncludeGravitation = readConfig("SceneViewSettings/ParticleIncludeGravitation", PARTICLEINCLUDEGRAVITATION);
+    particleMass = readConfig("SceneViewSettings/ParticleMass", PARTICLEMASS);
+    particleConstant = readConfig("SceneViewSettings/ParticleConstant", PARTICLECONSTANT);
+    particleStart.x = readConfig("SceneViewSettings/ParticleStartX", PARTICLESTARTX);
+    particleStart.y = readConfig("SceneViewSettings/ParticleStartY", PARTICLESTARTY);
+    particleStartVelocity.x = readConfig("SceneViewSettings/ParticleStartVelocityX", PARTICLESTARTVELOCITYX);
+    particleStartVelocity.y = readConfig("SceneViewSettings/ParticleStartVelocityY", PARTICLESTARTVELOCITYY);
+    particleNumberOfParticles = readConfig("SceneViewSettings/ParticleNumberOfParticles", PARTICLENUMBEROFPARTICLES);
+    particleStartingRadius = readConfig("SceneViewSettings/ParticleStartingRadius", PARTICLESTARTINGRADIUS);
+    particleTerminateOnDifferentMaterial = readConfig("SceneViewSettings/ParticleTerminateOnDifferentMaterial", PARTICLETERMINATEONDIFFERENTMATERIAL);
+    particleMaximumRelativeError = readConfig("SceneViewSettings/ParticleMaximumRelativeError", PARTICLEMAXIMUMRELATIVEERROR);
+    particleShowPoints = readConfig("SceneViewSettings/ParticleShowPoints", PARTICLESHOWPOINTS);
+    particleColorByVelocity = readConfig("SceneViewSettings/ParticleColorByVelocity", PARTICLECOLORBYVELOCITY);
+    particleMaximumSteps = readConfig("SceneViewSettings/ParticleMaximumSteps", PARTICLEMAXIMUMSTEPS);
+    particleDragDensity = readConfig("SceneViewSettings/ParticleDragDensity", PARTICLEDRAGDENSITY);
+    particleDragCoefficient = readConfig("SceneViewSettings/ParticleDragCoefficient", PARTICLEDRAGCOEFFICIENT);
+    particleDragReferenceArea = readConfig("SceneViewSettings/ParticleDragReferenceArea", PARTICLEDRAGREFERENCEAREA);
 
     // 3d
-    scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
-    scalarView3DAngle = settings.value("SceneViewSettings/ScalarView3DAngle", 270).toDouble();
-    scalarView3DBackground = settings.value("SceneViewSettings/ScalarView3DBackground", true).toBool();
-    scalarView3DHeight = settings.value("SceneViewSettings/ScalarView3DHeight", 4.0).toDouble();
+    scalarView3DLighting = readConfig("SceneViewSettings/ScalarView3DLighting", false);
+    scalarView3DAngle = readConfig("SceneViewSettings/ScalarView3DAngle", 270);
+    scalarView3DBackground = readConfig("SceneViewSettings/ScalarView3DBackground", true);
+    scalarView3DHeight = readConfig("SceneViewSettings/ScalarView3DHeight", 4.0);
+}
+
+void Config::loadAdvanced()
+{
+    QSettings settings;
 
     // adaptivity
     maxDofs = settings.value("Adaptivity/MaxDofs", MAX_DOFS).toInt();
@@ -185,10 +200,35 @@ void Config::load()
     globalScript = settings.value("Python/GlobalScript", "").toString();
 }
 
+void Config::loadPostprocessor(QDomElement *config)
+{
+    if (config)
+        eleConfig = config;
+
+    loadPostprocessor();
+
+    eleConfig = NULL;
+}
+
 void Config::save()
 {
-    logMessage("Config::Save()");
+    saveWorkspace();
+    savePostprocessor();
+    saveAdvanced();
+}
 
+void Config::savePostprocessor(QDomElement *config)
+{
+    if (config)
+        eleConfig = config;
+
+    savePostprocessor();
+
+    eleConfig = NULL;
+}
+
+void Config::saveWorkspace()
+{
     QSettings settings;
 
     // experimental features
@@ -261,62 +301,70 @@ void Config::save()
 
     // label
     settings.setValue("SceneViewSettings/ShowLabel", showLabel);
+}
 
+void Config::savePostprocessor()
+{
     // linearizer quality
-    settings.setValue("SceneViewSettings/LinearizerQuality", linearizerQuality);
+    writeConfig("SceneViewSettings/LinearizerQuality", linearizerQuality);
 
     // countour
-    settings.setValue("SceneViewSettings/ContoursCount", contoursCount);
+    writeConfig("SceneViewSettings/ContoursCount", contoursCount);
 
     // scalar view
-    settings.setValue("SceneViewSettings/ShowScalarScale", showScalarScale);
-    settings.setValue("SceneViewSettings/PaletteType", paletteType);
-    settings.setValue("SceneViewSettings/PaletteFilter", paletteFilter);
-    settings.setValue("SceneViewSettings/PaletteSteps", paletteSteps);
-    settings.setValue("SceneViewSettings/ScalarRangeLog", scalarRangeLog);
-    settings.setValue("SceneViewSettings/ScalarRangeBase", scalarRangeBase);
-    settings.setValue("SceneViewSettings/ScalarDecimalPlace", scalarDecimalPlace);
+    writeConfig("SceneViewSettings/ShowScalarScale", showScalarScale);
+    writeConfig("SceneViewSettings/PaletteType", paletteType);
+    writeConfig("SceneViewSettings/PaletteFilter", paletteFilter);
+    writeConfig("SceneViewSettings/PaletteSteps", paletteSteps);
+    writeConfig("SceneViewSettings/ScalarRangeLog", scalarRangeLog);
+    writeConfig("SceneViewSettings/ScalarRangeBase", scalarRangeBase);
+    writeConfig("SceneViewSettings/ScalarDecimalPlace", scalarDecimalPlace);
 
     // vector view
-    settings.setValue("SceneViewSettings/VectorProportional", vectorProportional);
-    settings.setValue("SceneViewSettings/VectorColor", vectorColor);
-    settings.setValue("SceneViewSettings/VectorNumber", vectorCount);
-    settings.setValue("SceneViewSettings/VectorScale", vectorScale);
+    writeConfig("SceneViewSettings/VectorProportional", vectorProportional);
+    writeConfig("SceneViewSettings/VectorColor", vectorColor);
+    writeConfig("SceneViewSettings/VectorNumber", vectorCount);
+    writeConfig("SceneViewSettings/VectorScale", vectorScale);
 
     // order view
-    settings.setValue("SceneViewSettings/ShowOrderScale", showOrderScale);
-    settings.setValue("SceneViewSettings/OrderPaletteOrderType", orderPaletteOrderType);
-    settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
+    writeConfig("SceneViewSettings/ShowOrderScale", showOrderScale);
+    writeConfig("SceneViewSettings/OrderPaletteOrderType", orderPaletteOrderType);
+    writeConfig("SceneViewSettings/OrderLabel", orderLabel);
 
     // deformations
-    settings.setValue("SceneViewSettings/DeformScalar", deformScalar);
-    settings.setValue("SceneViewSettings/DeformContour", deformContour);
-    settings.setValue("SceneViewSettings/DeformVector", deformVector);
+    writeConfig("SceneViewSettings/DeformScalar", deformScalar);
+    writeConfig("SceneViewSettings/DeformContour", deformContour);
+    writeConfig("SceneViewSettings/DeformVector", deformVector);
 
     // particle tracing
-    settings.setValue("SceneViewSettings/ParticleIncludeGravitation", particleIncludeGravitation);
-    settings.setValue("SceneViewSettings/ParticleMass", particleMass);
-    settings.setValue("SceneViewSettings/ParticleConstant", particleConstant);
-    settings.setValue("SceneViewSettings/ParticleStartX", particleStart.x);
-    settings.setValue("SceneViewSettings/ParticleStartY", particleStart.y);
-    settings.setValue("SceneViewSettings/ParticleStartVelocityX", particleStartVelocity.x);
-    settings.setValue("SceneViewSettings/ParticleStartVelocityY", particleStartVelocity.y);
-    settings.setValue("SceneViewSettings/ParticleNumberOfParticles", particleNumberOfParticles);
-    settings.setValue("SceneViewSettings/ParticleStartingRadius", particleStartingRadius);
-    settings.setValue("SceneViewSettings/ParticleTerminateOnDifferentMaterial", particleTerminateOnDifferentMaterial);
-    settings.setValue("SceneViewSettings/ParticleMaximumRelativeError", particleMaximumRelativeError);
-    settings.setValue("SceneViewSettings/ParticleShowPoints", particleShowPoints);
-    settings.setValue("SceneViewSettings/ParticleColorByVelocity", particleColorByVelocity);
-    settings.setValue("SceneViewSettings/ParticleMaximumSteps", particleMaximumSteps);
-    settings.setValue("SceneViewSettings/ParticleDragDensity", particleDragDensity);
-    settings.setValue("SceneViewSettings/ParticleDragCoefficient", particleDragCoefficient);
-    settings.setValue("SceneViewSettings/ParticleDragReferenceArea", particleDragReferenceArea);
+    writeConfig("SceneViewSettings/ParticleIncludeGravitation", particleIncludeGravitation);
+    writeConfig("SceneViewSettings/ParticleMass", particleMass);
+    writeConfig("SceneViewSettings/ParticleConstant", particleConstant);
+    writeConfig("SceneViewSettings/ParticleStartX", particleStart.x);
+    writeConfig("SceneViewSettings/ParticleStartY", particleStart.y);
+    writeConfig("SceneViewSettings/ParticleStartVelocityX", particleStartVelocity.x);
+    writeConfig("SceneViewSettings/ParticleStartVelocityY", particleStartVelocity.y);
+    writeConfig("SceneViewSettings/ParticleNumberOfParticles", particleNumberOfParticles);
+    writeConfig("SceneViewSettings/ParticleStartingRadius", particleStartingRadius);
+    writeConfig("SceneViewSettings/ParticleTerminateOnDifferentMaterial", particleTerminateOnDifferentMaterial);
+    writeConfig("SceneViewSettings/ParticleMaximumRelativeError", particleMaximumRelativeError);
+    writeConfig("SceneViewSettings/ParticleShowPoints", particleShowPoints);
+    writeConfig("SceneViewSettings/ParticleColorByVelocity", particleColorByVelocity);
+    writeConfig("SceneViewSettings/ParticleMaximumSteps", particleMaximumSteps);
+    writeConfig("SceneViewSettings/ParticleDragDensity", particleDragDensity);
+    writeConfig("SceneViewSettings/ParticleDragCoefficient", particleDragCoefficient);
+    writeConfig("SceneViewSettings/ParticleDragReferenceArea", particleDragReferenceArea);
 
     // 3d
-    settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
-    settings.setValue("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
-    settings.setValue("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
-    settings.setValue("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
+    writeConfig("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
+    writeConfig("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
+    writeConfig("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
+    writeConfig("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
+}
+
+void Config::saveAdvanced()
+{
+    QSettings settings;
 
     // adaptivity
     settings.setValue("Adaptivity/MaxDofs", maxDofs);
@@ -333,4 +381,79 @@ void Config::save()
 
     // global script
     settings.setValue("Python/GlobalScript", globalScript);
+}
+
+bool Config::readConfig(const QString &key, bool defaultValue)
+{
+    if (eleConfig)
+    {
+        QString att = key.replace("/", "_");
+        if (eleConfig->hasAttribute(att))
+            return (eleConfig->attribute(att).toInt() == 1) ? true : false;
+    }
+
+    QSettings settings;
+    return settings.value(key, defaultValue).toBool();
+}
+
+int Config::readConfig(const QString &key, int defaultValue)
+{
+    if (eleConfig)
+    {
+        QString att = key.replace("/", "_");
+        if (eleConfig->hasAttribute(att))
+            return eleConfig->attribute(att).toInt();
+    }
+
+    QSettings settings;
+    return settings.value(key, defaultValue).toInt();
+}
+
+double Config::readConfig(const QString &key, double defaultValue)
+{
+    if (eleConfig)
+    {
+        QString att = key.replace("/", "_");
+        if (eleConfig->hasAttribute(att))
+            return eleConfig->attribute(att).toDouble();
+    }
+
+    QSettings settings;
+    return settings.value(key, defaultValue).toDouble();
+}
+
+void Config::writeConfig(const QString &key, bool value)
+{
+    if (eleConfig)
+    {
+        QString att = key.replace("/", "_");
+        eleConfig->setAttribute(att, value);
+    }
+
+    QSettings settings;
+    settings.setValue(key, value);
+}
+
+void Config::writeConfig(const QString &key, int value)
+{
+    if (eleConfig)
+    {
+        QString att = key.replace("/", "_");
+        eleConfig->setAttribute(att, value);
+    }
+
+    QSettings settings;
+    settings.setValue(key, value);
+}
+
+void Config::writeConfig(const QString &key, double value)
+{
+    if (eleConfig)
+    {
+        QString att = key.replace("/", "_");
+        eleConfig->setAttribute(att, value);
+    }
+
+    QSettings settings;
+    settings.setValue(key, value);
 }

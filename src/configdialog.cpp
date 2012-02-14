@@ -73,11 +73,7 @@ void ConfigDialog::load()
 
     // geometry
     txtMeshAngleSegmentsCount->setValue(Util::config()->angleSegmentsCount);
-    txtGeometryNodeSize->setValue(Util::config()->nodeSize);
-    txtGeometryEdgeWidth->setValue(Util::config()->edgeWidth);
-    txtGeometryLabelSize->setValue(Util::config()->labelSize);
     chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
-    chkZoomToMouse->setChecked(Util::config()->zoomToMouse);
 
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(Util::config()->deleteTriangleMeshFiles);
@@ -100,23 +96,6 @@ void ConfigDialog::load()
     colorSolutionMesh->setColor(Util::config()->colorSolutionMesh);
     colorHighlighted->setColor(Util::config()->colorHighlighted);
     colorSelected->setColor(Util::config()->colorSelected);
-
-    // scalar field
-    chkScalarFieldRangeLog->setChecked(Util::config()->scalarRangeLog);
-    doScalarFieldLog(chkScalarFieldRangeLog->checkState());
-    txtScalarFieldRangeBase->setText(QString::number(Util::config()->scalarRangeBase));
-    txtScalarDecimalPlace->setValue(Util::config()->scalarDecimalPlace);
-
-    // 3d
-    chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
-    txtView3DAngle->setValue(Util::config()->scalarView3DAngle);
-    chkView3DBackground->setChecked(Util::config()->scalarView3DBackground);
-    txtView3DHeight->setValue(Util::config()->scalarView3DHeight);
-
-    // deform shape
-    chkDeformScalar->setChecked(Util::config()->deformScalar);
-    chkDeformContour->setChecked(Util::config()->deformContour);
-    chkDeformVector->setChecked(Util::config()->deformVector);
 
     // adaptivity
     txtMaxDOFs->setValue(Util::config()->maxDofs);
@@ -179,12 +158,6 @@ void ConfigDialog::save()
     // show result in line edit value widget
     Util::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
 
-    // geometry
-    Util::config()->nodeSize = txtGeometryNodeSize->value();
-    Util::config()->edgeWidth = txtGeometryEdgeWidth->value();
-    Util::config()->labelSize = txtGeometryLabelSize->value();
-    Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
-
     // mesh
     Util::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
     Util::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
@@ -210,22 +183,6 @@ void ConfigDialog::save()
     Util::config()->colorSolutionMesh = colorSolutionMesh->color();
     Util::config()->colorHighlighted = colorHighlighted->color();
     Util::config()->colorSelected = colorSelected->color();
-
-    // scalar view
-    Util::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
-    Util::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
-    Util::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
-
-    // 3d
-    Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
-    Util::config()->scalarView3DAngle = txtView3DAngle->value();
-    Util::config()->scalarView3DBackground = chkView3DBackground->isChecked();
-    Util::config()->scalarView3DHeight = txtView3DHeight->value();
-
-    // deform shape
-    Util::config()->deformScalar = chkDeformScalar->isChecked();
-    Util::config()->deformContour = chkDeformContour->isChecked();
-    Util::config()->deformVector = chkDeformVector->isChecked();
 
     // adaptivity
     Util::config()->maxDofs = txtMaxDOFs->value();
@@ -258,7 +215,6 @@ void ConfigDialog::createControls()
     pages = new QStackedWidget(this);
 
     panMain = createMainWidget();
-    panView = createViewWidget();
     panSolver = createSolverWidget();
     panColors = createColorsWidget();
     panGlobalScriptWidget = createGlobalScriptWidget();
@@ -284,11 +240,6 @@ void ConfigDialog::createControls()
     itemMain->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     itemMain->setSizeHint(sizeItem);
 
-    QListWidgetItem *itemView = new QListWidgetItem(icon("options-view"), tr("View"), lstView);
-    itemView->setTextAlignment(Qt::AlignHCenter);
-    itemView->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    itemView->setSizeHint(sizeItem);
-
     QListWidgetItem *itemSolver = new QListWidgetItem(icon("options-solver"), tr("Solver"), lstView);
     itemSolver->setTextAlignment(Qt::AlignHCenter);
     itemSolver->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -305,7 +256,6 @@ void ConfigDialog::createControls()
     itemGlobalScript->setSizeHint(sizeItem);
 
     pages->addWidget(panMain);
-    pages->addWidget(panView);
     pages->addWidget(panSolver);
     pages->addWidget(panColors);
     pages->addWidget(panGlobalScriptWidget);
@@ -414,121 +364,6 @@ QWidget *ConfigDialog::createMainWidget()
     mainWidget->setLayout(layout);
 
     return mainWidget;
-}
-
-QWidget *ConfigDialog::createViewWidget()
-{
-    logMessage("ConfigDialog::createViewWidget()");
-
-    // geometry
-    txtGeometryNodeSize = new SLineEditDouble();
-    // txtGeometryNodeSize->setMaximumWidth(60);
-    txtGeometryEdgeWidth = new SLineEditDouble();
-    // txtGeometryEdgeWidth->setMaximumWidth(60);
-    txtGeometryLabelSize = new SLineEditDouble();
-    // txtGeometryLabelSize->setMaximumWidth(60);
-
-    QGridLayout *layoutGeometry = new QGridLayout();
-    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 0, 0);
-    layoutGeometry->addWidget(txtGeometryNodeSize, 0, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 1, 0);
-    layoutGeometry->addWidget(txtGeometryEdgeWidth, 1, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 2, 0);
-    layoutGeometry->addWidget(txtGeometryLabelSize, 2, 1);
-
-    QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
-    grpGeometry->setLayout(layoutGeometry);
-
-    // others;
-    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
-
-    QVBoxLayout *layoutOther = new QVBoxLayout();
-    layoutOther->addWidget(chkZoomToMouse);
-
-    QGroupBox *grpOther = new QGroupBox(tr("Other"));
-    grpOther->setLayout(layoutOther);
-
-    // layout general
-    QVBoxLayout *layoutGeneral = new QVBoxLayout();
-    layoutGeneral->addWidget(grpGeometry);
-    layoutGeneral->addWidget(grpOther);
-    layoutGeneral->addStretch();
-
-    QWidget *widgetGeneral = new QWidget(this);
-    widgetGeneral->setLayout(layoutGeneral);
-
-    // scalar view log scale
-    chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
-    txtScalarFieldRangeBase = new QLineEdit("10");
-    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
-
-    txtScalarDecimalPlace = new QSpinBox(this);
-    txtScalarDecimalPlace->setMinimum(1);
-    txtScalarDecimalPlace->setMaximum(10);
-
-    QGridLayout *layoutScalarField = new QGridLayout();
-    layoutScalarField->addWidget(new QLabel(tr("Base:")), 0, 0);
-    layoutScalarField->addWidget(txtScalarFieldRangeBase, 0, 1);
-    layoutScalarField->addWidget(chkScalarFieldRangeLog, 0, 2);
-    layoutScalarField->addWidget(new QLabel(tr("Decimal places:")), 1, 0);
-    layoutScalarField->addWidget(txtScalarDecimalPlace, 1, 1);
-
-    QGroupBox *grpScalarField = new QGroupBox(tr("Scalar view"));
-    grpScalarField->setLayout(layoutScalarField);
-
-    // layout 3d
-    chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
-    txtView3DAngle = new QDoubleSpinBox(this);
-    txtView3DAngle->setDecimals(1);
-    txtView3DAngle->setSingleStep(1);
-    txtView3DAngle->setMinimum(30);
-    txtView3DAngle->setMaximum(360);
-    chkView3DBackground = new QCheckBox(tr("Gradient background"), this);
-    txtView3DHeight = new QDoubleSpinBox(this);
-    txtView3DHeight->setDecimals(1);
-    txtView3DHeight->setSingleStep(0.1);
-    txtView3DHeight->setMinimum(0.2);
-    txtView3DHeight->setMaximum(10.0);
-
-    QGridLayout *layout3D = new QGridLayout();
-    layout3D->addWidget(new QLabel(tr("Angle:")), 0, 1);
-    layout3D->addWidget(txtView3DAngle, 0, 2);
-    layout3D->addWidget(chkView3DLighting, 0, 3);
-    layout3D->addWidget(new QLabel(tr("Height:")), 1, 1);
-    layout3D->addWidget(txtView3DHeight, 1, 2);
-    layout3D->addWidget(chkView3DBackground, 1, 3);
-
-    QGroupBox *grp3D = new QGroupBox(tr("3D"));
-    grp3D->setLayout(layout3D);
-
-    // layout deform shape
-    chkDeformScalar = new QCheckBox(tr("Scalar field"), this);
-    chkDeformContour = new QCheckBox(tr("Contours"), this);
-    chkDeformVector = new QCheckBox(tr("Vector field"), this);
-
-    QGridLayout *layoutDeformShape = new QGridLayout();
-    layoutDeformShape->addWidget(chkDeformScalar, 0, 0);
-    layoutDeformShape->addWidget(chkDeformContour, 0, 1);
-    layoutDeformShape->addWidget(chkDeformVector, 0, 2);
-
-    QGroupBox *grpDeformShape = new QGroupBox(tr("Deform shape"));
-    grpDeformShape->setLayout(layoutDeformShape);
-
-    // layout postprocessor
-    QVBoxLayout *layoutPostprocessor = new QVBoxLayout();
-    layoutPostprocessor->addWidget(grpScalarField);
-    layoutPostprocessor->addWidget(grp3D);
-    layoutPostprocessor->addWidget(grpDeformShape);
-    layoutPostprocessor->addStretch();
-
-    QWidget *widgetPostprocessor = new QWidget(this);
-    widgetPostprocessor->setLayout(layoutPostprocessor);
-
-    QTabWidget *tabType = new QTabWidget(this);
-    tabType->addTab(widgetGeneral, icon(""), tr("General"));
-    tabType->addTab(widgetPostprocessor, icon(""), tr("Postprocessor"));
-
-    return tabType;
 }
 
 QWidget *ConfigDialog::createSolverWidget()
@@ -756,13 +591,6 @@ void ConfigDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetIte
     logMessage("ConfigDialog::doCurrentItemChanged()");
 
     pages->setCurrentIndex(lstView->row(current));
-}
-
-void ConfigDialog::doScalarFieldLog(int state)
-{
-    logMessage("PostprocessorView::doScalarFieldLog()");
-
-    txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
 }
 
 void ConfigDialog::doAccept()

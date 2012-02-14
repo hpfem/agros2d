@@ -82,6 +82,12 @@ private:
     QCheckBox *chkShowGrid;
     QCheckBox *chkSnapToGrid;
 
+    // general view
+    QCheckBox *chkZoomToMouse;
+    QSpinBox *txtGeometryNodeSize;
+    QSpinBox *txtGeometryEdgeWidth;
+    QSpinBox *txtGeometryLabelSize;
+
     // scene font
     QLabel *lblSceneFontExample;
     QPushButton *btnSceneFont;
@@ -92,7 +98,7 @@ private:
     QCheckBox *chkShowLabel;
 
     // scalar field
-    QCheckBox *chkShowScalarScale;
+    QCheckBox *chkShowScalarColorBar;
     QComboBox *cmbPalette;
     QCheckBox *chkPaletteFilter;
     QSpinBox *txtPaletteSteps;
@@ -136,6 +142,18 @@ private:
     SLineEditDouble *txtParticleDragCoefficient;
     SLineEditDouble *txtParticleDragReferenceArea;
 
+    // advanced
+    QCheckBox *chkScalarFieldRangeLog;
+    SLineEditDouble *txtScalarFieldRangeBase;
+    QSpinBox *txtScalarDecimalPlace;
+    QCheckBox *chkView3DLighting;
+    QDoubleSpinBox *txtView3DAngle;
+    QCheckBox *chkView3DBackground;
+    QDoubleSpinBox *txtView3DHeight;
+    QCheckBox *chkDeformScalar;
+    QCheckBox *chkDeformContour;
+    QCheckBox *chkDeformVector;
+
     QToolBox *tbxAdvance;
     QPushButton *btnOK;
 
@@ -167,9 +185,11 @@ private slots:
     void doContoursDefault();
     void doVectorFieldDefault();
     void doOrderDefault();
+    void doAdvancedDefault();
     void doParticleDefault();
     void doSceneFont();
     void doShowGridChanged();
+    void doScalarFieldLog(int state);
 };
 
 #endif // SCENEVIEWDIALOG_H

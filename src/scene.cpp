@@ -1583,6 +1583,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         n = n.nextSibling();
     }
 
+    // read config
+    Util::config()->loadPostprocessor(&eleDoc.elementsByTagName("config").at(0).toElement());
+
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 
@@ -1805,6 +1808,11 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved (%2).").
                            arg(fileName).
                            arg(file.errorString()));
+
+    // save config
+    QDomElement eleConfig = doc.createElement("config");
+    eleDoc.appendChild(eleConfig);
+    Util::config()->savePostprocessor(&eleConfig);
 
     QTextStream out(&file);
     doc.save(out, 4);

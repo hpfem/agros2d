@@ -167,7 +167,26 @@ public:
     bool showExperimentalFeatures;
 
     void load();
+    void loadWorkspace();
+    void loadPostprocessor();
+    void loadPostprocessor(QDomElement *config);
+    void loadAdvanced();
+
     void save();
+    void saveWorkspace();
+    void savePostprocessor();
+    void savePostprocessor(QDomElement *config);
+    void saveAdvanced();
+
+private:
+    QDomElement *eleConfig;
+
+    bool readConfig(const QString &key, bool defaultValue);
+    int readConfig(const QString &key, int defaultValue);
+    double readConfig(const QString &key, double defaultValue);
+    void writeConfig(const QString &key, bool value);
+    void writeConfig(const QString &key, int value);
+    void writeConfig(const QString &key, double value);
 };
 
 #endif // CONFIG_H

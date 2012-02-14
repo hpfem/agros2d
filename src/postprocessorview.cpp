@@ -97,8 +97,13 @@ void PostprocessorView::loadAdvanced()
     chkShowRulers->setChecked(Util::config()->showRulers);
     chkShowLabel->setChecked(Util::config()->showLabel);
 
+    chkZoomToMouse->setChecked(Util::config()->zoomToMouse);
+    txtGeometryNodeSize->setValue(Util::config()->nodeSize);
+    txtGeometryEdgeWidth->setValue(Util::config()->edgeWidth);
+    txtGeometryLabelSize->setValue(Util::config()->labelSize);
+
     // scalar field
-    chkShowScalarScale->setChecked(Util::config()->showScalarScale);
+    chkShowScalarColorBar->setChecked(Util::config()->showScalarScale);
     cmbPalette->setCurrentIndex(cmbPalette->findData(Util::config()->paletteType));
     chkPaletteFilter->setChecked(Util::config()->paletteFilter);
     doPaletteFilter(chkPaletteFilter->checkState());
@@ -148,6 +153,22 @@ void PostprocessorView::loadAdvanced()
         lblParticleMotionEquations->setText(QString("<i>x</i>\" = <i>F</i><sub>x</sub> / <i>m</i>, &nbsp; <i>y</i>\" = <i>F</i><sub>y</sub> / <i>m</i>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>"));
     else
         lblParticleMotionEquations->setText(QString("<i>r</i>\" = <i>F</i><sub>r</sub> / <i>m</i> + <i>r</i> (<i>&phi;</i>')<sup>2</sup>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>, &nbsp; <i>&phi;</i>\" = <i>F</i><sub>&phi;</sub> / <i>m</i> - 2<i>r</i> <i>r</i>' <i>&phi;</i>' / <i>r</i>"));
+
+    // advanced
+    // scalar field
+    chkScalarFieldRangeLog->setChecked(Util::config()->scalarRangeLog);
+    doScalarFieldLog(chkScalarFieldRangeLog->checkState());
+    txtScalarFieldRangeBase->setText(QString::number(Util::config()->scalarRangeBase));
+    txtScalarDecimalPlace->setValue(Util::config()->scalarDecimalPlace);
+    // 3d
+    chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
+    txtView3DAngle->setValue(Util::config()->scalarView3DAngle);
+    chkView3DBackground->setChecked(Util::config()->scalarView3DBackground);
+    txtView3DHeight->setValue(Util::config()->scalarView3DHeight);
+    // deform shape
+    chkDeformScalar->setChecked(Util::config()->deformScalar);
+    chkDeformContour->setChecked(Util::config()->deformContour);
+    chkDeformVector->setChecked(Util::config()->deformVector);
 }
 
 void PostprocessorView::saveBasic()
@@ -190,6 +211,7 @@ void PostprocessorView::saveAdvanced()
     Util::config()->showGrid = chkShowGrid->isChecked();
     Util::config()->gridStep = txtGridStep->text().toDouble();
     Util::config()->showRulers = chkShowRulers->isChecked();
+    Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
     Util::config()->snapToGrid = chkSnapToGrid->isChecked();
 
     Util::config()->sceneFont = lblSceneFontExample->font();
@@ -198,8 +220,12 @@ void PostprocessorView::saveAdvanced()
     Util::config()->showRulers = chkShowRulers->isChecked();
     Util::config()->showLabel = chkShowLabel->isChecked();
 
+    Util::config()->nodeSize = txtGeometryNodeSize->value();
+    Util::config()->edgeWidth = txtGeometryEdgeWidth->value();
+    Util::config()->labelSize = txtGeometryLabelSize->value();
+
     // scalar field
-    Util::config()->showScalarScale = chkShowScalarScale->isChecked();
+    Util::config()->showScalarScale = chkShowScalarColorBar->isChecked();
     Util::config()->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
     Util::config()->paletteFilter = chkPaletteFilter->isChecked();
     Util::config()->paletteSteps = txtPaletteSteps->value();
@@ -237,6 +263,21 @@ void PostprocessorView::saveAdvanced()
     Util::config()->particleDragDensity = txtParticleDragDensity->value();
     Util::config()->particleDragCoefficient = txtParticleDragCoefficient->value();
     Util::config()->particleDragReferenceArea = txtParticleDragReferenceArea->value();
+
+    // advanced
+    // scalar view
+    Util::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
+    Util::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
+    Util::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
+    // 3d
+    Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
+    Util::config()->scalarView3DAngle = txtView3DAngle->value();
+    Util::config()->scalarView3DBackground = chkView3DBackground->isChecked();
+    Util::config()->scalarView3DHeight = txtView3DHeight->value();
+    // deform shape
+    Util::config()->deformScalar = chkDeformScalar->isChecked();
+    Util::config()->deformContour = chkDeformContour->isChecked();
+    Util::config()->deformVector = chkDeformVector->isChecked();
 
     // save
     Util::config()->save();
@@ -424,12 +465,14 @@ QWidget *PostprocessorView::controlsAdvanced()
     chkShowGrid = new QCheckBox(tr("Show grid"));
     connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
+    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
 
     QGridLayout *layoutGrid = new QGridLayout();
     layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
     layoutGrid->addWidget(txtGridStep, 0, 1);
     layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
-    layoutGrid->addWidget(chkSnapToGrid,2 ,0, 1, 2);
+    layoutGrid->addWidget(chkSnapToGrid, 2, 0, 1, 2);
+    layoutGrid->addWidget(chkZoomToMouse, 3, 0, 1, 2);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);
@@ -446,7 +489,29 @@ QWidget *PostprocessorView::controlsAdvanced()
     QGroupBox *grpFont = new QGroupBox(tr("Scene font"));
     grpFont->setLayout(layoutFont);
 
-    // others
+    // geometry
+    txtGeometryNodeSize = new QSpinBox();
+    txtGeometryNodeSize->setMinimum(1);
+    txtGeometryNodeSize->setMaximum(20);
+    txtGeometryEdgeWidth = new QSpinBox();
+    txtGeometryEdgeWidth->setMinimum(1);
+    txtGeometryEdgeWidth->setMaximum(20);
+    txtGeometryLabelSize = new QSpinBox();
+    txtGeometryLabelSize->setMinimum(1);
+    txtGeometryLabelSize->setMaximum(20);
+
+    QGridLayout *layoutGeometry = new QGridLayout();
+    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 0, 0);
+    layoutGeometry->addWidget(txtGeometryNodeSize, 0, 1);
+    layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 1, 0);
+    layoutGeometry->addWidget(txtGeometryEdgeWidth, 1, 1);
+    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 2, 0);
+    layoutGeometry->addWidget(txtGeometryLabelSize, 2, 1);
+
+    QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
+    grpGeometry->setLayout(layoutGeometry);
+
+    // other
     chkShowRulers = new QCheckBox(tr("Show rulers"));
     chkShowAxes = new QCheckBox(tr("Show axes"));
     chkShowLabel = new QCheckBox(tr("Show label"));
@@ -465,6 +530,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     QVBoxLayout *layoutWorkspace = new QVBoxLayout();
     layoutWorkspace->addWidget(grpGrid);
     layoutWorkspace->addWidget(grpFont);
+    layoutWorkspace->addWidget(grpGeometry);
     layoutWorkspace->addWidget(grpOther);
     layoutWorkspace->addStretch();
     layoutWorkspace->addWidget(btnWorkspaceDefault, 0, Qt::AlignLeft);
@@ -506,7 +572,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     txtPaletteSteps->setMinimum(5);
     txtPaletteSteps->setMaximum(100);
 
-    chkShowScalarScale = new QCheckBox(tr("Show scale"), this);
+    chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
 
     QPushButton *btnScalarFieldDefault = new QPushButton(tr("Default"));
     connect(btnScalarFieldDefault, SIGNAL(clicked()), this, SLOT(doScalarFieldDefault()));
@@ -521,7 +587,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     gridLayoutScalarField->addWidget(chkPaletteFilter, 1, 2);
     gridLayoutScalarField->addWidget(new QLabel(tr("Quality:")), 2, 0);
     gridLayoutScalarField->addWidget(cmbLinearizerQuality, 2, 1, 1, 2);
-    gridLayoutScalarField->addWidget(chkShowScalarScale, 3, 0, 1, 2);
+    gridLayoutScalarField->addWidget(chkShowScalarColorBar, 3, 0, 1, 2);
 
     QVBoxLayout *layoutScalarField = new QVBoxLayout();
     layoutScalarField->addLayout(gridLayoutScalarField);
@@ -638,7 +704,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     txtParticleVelocityX = new SLineEditDouble();
     txtParticleVelocityY = new SLineEditDouble();
     txtParticleMaximumRelativeError = new SLineEditDouble();
-    chkParticleTerminateOnDifferentMaterial = new QCheckBox(tr("Terminate on different material"));    
+    chkParticleTerminateOnDifferentMaterial = new QCheckBox(tr("Terminate on different material"));
     lblParticlePointX = new QLabel();
     lblParticlePointY = new QLabel();
     lblParticleVelocityX = new QLabel();
@@ -741,6 +807,78 @@ QWidget *PostprocessorView::controlsAdvanced()
     QWidget *particleWidget = new QWidget();
     particleWidget->setLayout(layoutParticle);
 
+    // advanced
+    // scalar view log scale
+    chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
+    txtScalarFieldRangeBase = new SLineEditDouble(SCALARFIELDRANGEBASE);
+    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
+
+    txtScalarDecimalPlace = new QSpinBox(this);
+    txtScalarDecimalPlace->setMinimum(1);
+    txtScalarDecimalPlace->setMaximum(10);
+
+    QGridLayout *layoutScalarFieldAdvanced = new QGridLayout();
+    layoutScalarFieldAdvanced->addWidget(new QLabel(tr("Base:")), 0, 0);
+    layoutScalarFieldAdvanced->addWidget(txtScalarFieldRangeBase, 0, 1);
+    layoutScalarFieldAdvanced->addWidget(chkScalarFieldRangeLog, 0, 2);
+    layoutScalarFieldAdvanced->addWidget(new QLabel(tr("Decimal places:")), 1, 0);
+    layoutScalarFieldAdvanced->addWidget(txtScalarDecimalPlace, 1, 1);
+
+    QGroupBox *grpScalarField = new QGroupBox(tr("Scalar view"));
+    grpScalarField->setLayout(layoutScalarFieldAdvanced);
+
+    // layout 3d
+    chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
+    txtView3DAngle = new QDoubleSpinBox(this);
+    txtView3DAngle->setDecimals(1);
+    txtView3DAngle->setSingleStep(1);
+    txtView3DAngle->setMinimum(30);
+    txtView3DAngle->setMaximum(360);
+    chkView3DBackground = new QCheckBox(tr("Gradient background"), this);
+    txtView3DHeight = new QDoubleSpinBox(this);
+    txtView3DHeight->setDecimals(1);
+    txtView3DHeight->setSingleStep(0.1);
+    txtView3DHeight->setMinimum(0.2);
+    txtView3DHeight->setMaximum(10.0);
+
+    QGridLayout *layout3D = new QGridLayout();
+    layout3D->addWidget(new QLabel(tr("Angle:")), 0, 1);
+    layout3D->addWidget(txtView3DAngle, 0, 2);
+    layout3D->addWidget(chkView3DLighting, 0, 3);
+    layout3D->addWidget(new QLabel(tr("Height:")), 1, 1);
+    layout3D->addWidget(txtView3DHeight, 1, 2);
+    layout3D->addWidget(chkView3DBackground, 1, 3);
+
+    QGroupBox *grp3D = new QGroupBox(tr("3D"));
+    grp3D->setLayout(layout3D);
+
+    // layout deform shape
+    chkDeformScalar = new QCheckBox(tr("Scalar field"), this);
+    chkDeformContour = new QCheckBox(tr("Contours"), this);
+    chkDeformVector = new QCheckBox(tr("Vector field"), this);
+
+    QGridLayout *layoutDeformShape = new QGridLayout();
+    layoutDeformShape->addWidget(chkDeformScalar, 0, 0);
+    layoutDeformShape->addWidget(chkDeformContour, 0, 1);
+    layoutDeformShape->addWidget(chkDeformVector, 0, 2);
+
+    QGroupBox *grpDeformShape = new QGroupBox(tr("Deform shape"));
+    grpDeformShape->setLayout(layoutDeformShape);
+
+    QPushButton *btnAdvancedDefault = new QPushButton(tr("Default"));
+    connect(btnAdvancedDefault, SIGNAL(clicked()), this, SLOT(doAdvancedDefault()));
+
+    // layout postprocessor
+    QVBoxLayout *layoutAdvanced = new QVBoxLayout();
+    layoutAdvanced->addWidget(grpScalarField);
+    layoutAdvanced->addWidget(grp3D);
+    layoutAdvanced->addWidget(grpDeformShape);
+    layoutAdvanced->addStretch();
+    layoutAdvanced->addWidget(btnAdvancedDefault, 0, Qt::AlignLeft);
+
+    QWidget *advancedWidget = new QWidget(this);
+    advancedWidget->setLayout(layoutAdvanced);
+
     tbxAdvance = new QToolBox();
     tbxAdvance->addItem(workspaceWidget, icon(""), tr("Workspace"));
     tbxAdvance->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
@@ -748,6 +886,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     tbxAdvance->addItem(vectorFieldWidget, icon(""), tr("Vector field"));
     tbxAdvance->addItem(orderWidget, icon(""), tr("Polynomial order"));
     tbxAdvance->addItem(particleWidget, icon(""), tr("Particle tracing"));
+    tbxAdvance->addItem(advancedWidget, icon(""), tr("Advanced"));
 
     // layout postprocessor
     QVBoxLayout *layout = new QVBoxLayout();
@@ -822,7 +961,7 @@ void PostprocessorView::setControls()
     chkShowVectors->setEnabled(isSolved && (cmbVectorFieldVariable->count() > 0));
     if (Util::scene()->problemInfo()->hermes()->hasParticleTracing())
     {
-        chkShowParticleTracing->setEnabled(isSolved && (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState));        
+        chkShowParticleTracing->setEnabled(isSolved && (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState));
     }
     else
     {
@@ -931,6 +1070,11 @@ void PostprocessorView::doWorkspaceDefault()
     chkShowAxes->setChecked(SHOWAXES);
     chkShowRulers->setChecked(SHOWRULERS);
     chkShowLabel->setChecked(SHOWLABEL);
+
+    chkZoomToMouse->setChecked(ZOOMTOMOUSE);
+    txtGeometryNodeSize->setValue(GEOMETRYNODESIZE);
+    txtGeometryEdgeWidth->setValue(GEOMETRYEDGEWIDTH);
+    txtGeometryLabelSize->setValue(GEOMETRYLABELSIZE);
 }
 
 void PostprocessorView::doScalarFieldDefault()
@@ -941,7 +1085,7 @@ void PostprocessorView::doScalarFieldDefault()
     chkPaletteFilter->setChecked(PALETTEFILTER);
     txtPaletteSteps->setValue(PALETTESTEPS);
     cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(LINEARIZER_QUALITY));
-    chkShowScalarScale->setChecked(SCALARSCALE);
+    chkShowScalarColorBar->setChecked(SCALARCOLORBAR);
 }
 
 void PostprocessorView::doContoursDefault()
@@ -991,6 +1135,24 @@ void PostprocessorView::doParticleDefault()
     txtParticleDragDensity->setValue(PARTICLEDRAGDENSITY);
     txtParticleDragReferenceArea->setValue(PARTICLEDRAGREFERENCEAREA);
     txtParticleDragCoefficient->setValue(PARTICLEDRAGCOEFFICIENT);
+}
+
+void PostprocessorView::doAdvancedDefault()
+{
+    logMessage("PostprocessorView::doAdvancedDefault()");
+
+    chkScalarFieldRangeLog->setChecked(SCALARFIELDRANGELOG);
+    txtScalarFieldRangeBase->setValue(SCALARFIELDRANGEBASE);
+    txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
+
+    chkView3DLighting->setChecked(VIEW3DLIGHTING);
+    txtView3DAngle->setValue(VIEW3DANGLE);
+    chkView3DBackground->setChecked(VIEW3DBACKGROUND);
+    txtView3DHeight->setValue(VIEW3DHEIGHT);
+
+    chkDeformScalar->setChecked(DEFORMSCALAR);
+    chkDeformContour->setChecked(DEFORMCONTOUR);
+    chkDeformVector->setChecked(DEFORMVECTOR);
 }
 
 void PostprocessorView::doScalarFieldRangeMinChanged()
@@ -1049,4 +1211,11 @@ void PostprocessorView::doSceneFont()
 void PostprocessorView::doShowGridChanged()
 {
     chkSnapToGrid->setEnabled(chkShowGrid->isChecked());
+}
+
+void PostprocessorView::doScalarFieldLog(int state)
+{
+    logMessage("PostprocessorView::doScalarFieldLog()");
+
+    txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
 }

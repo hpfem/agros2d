@@ -814,6 +814,11 @@ const bool SNAPTOGRID = true;
 const bool SHOWAXES = true;
 const bool SHOWRULERS = true;
 const bool SHOWLABEL = true;
+const bool ZOOMTOMOUSE = true;
+
+const int GEOMETRYNODESIZE = 6;
+const int GEOMETRYEDGEWIDTH = 2;
+const int GEOMETRYLABELSIZE = 6;
 
 // posprocessor
 const double LINEARIZER_QUALITY = 0.0006;
@@ -823,10 +828,7 @@ const int CONTOURSCOUNT = 15;
 const PaletteType PALETTETYPE = Palette_Jet;
 const bool PALETTEFILTER = false;
 const int PALETTESTEPS = 30;
-const bool SCALARRANGELOG = false;
-const double SCALARRANGEBASE = 10;
-const double SCALARDECIMALPLACE = 2;
-const bool SCALARSCALE = true;
+const bool SCALARCOLORBAR = true;
 
 const bool VECTORPROPORTIONAL = true;
 const bool VECTORCOLOR = true;
@@ -837,6 +839,7 @@ const bool ORDERSCALE = true;
 const PaletteOrderType ORDERPALETTEORDERTYPE = PaletteOrder_Hermes;
 const bool ORDERLABEL = false;
 
+// particle
 const bool PARTICLEINCLUDEGRAVITATION = true;
 const int PARTICLENUMBEROFPARTICLES = 5;
 const double PARTICLESTARTINGRADIUS = 0;
@@ -854,6 +857,20 @@ const int PARTICLEMAXIMUMSTEPS = 1000;
 const double PARTICLEDRAGDENSITY = 1.2041;
 const double PARTICLEDRAGCOEFFICIENT = 0.0;
 const double PARTICLEDRAGREFERENCEAREA = 1e-6;
+
+// advanced
+const bool SCALARFIELDRANGELOG = false;
+const int SCALARFIELDRANGEBASE = 10;
+const int SCALARDECIMALPLACE = 2;
+
+const bool VIEW3DLIGHTING = false;
+const double VIEW3DANGLE = 230.0;
+const bool VIEW3DBACKGROUND = true;
+const double VIEW3DHEIGHT = 4.0;
+
+const bool DEFORMSCALAR = true;
+const bool DEFORMCONTOUR = true;
+const bool DEFORMVECTOR = true;
 
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;

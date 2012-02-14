@@ -37,7 +37,6 @@ public:
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-    void doScalarFieldLog(int state);
     void doClearApplicationLog();
     void doClearCommandHistory();
     void doAdaptivityDefault();
@@ -51,7 +50,6 @@ private:
     QListWidget *lstView;
     QStackedWidget *pages;
     QWidget *panMain;
-    QWidget *panView;
     QWidget *panSolver;
     QWidget *panColors;
     QWidget *panGlobalScriptWidget;
@@ -91,14 +89,8 @@ private:
     // experimental features
     QCheckBox *chkExperimentalFeatures;
 
-    // general view
-    QCheckBox *chkZoomToMouse;
-
     // geometry
     QSpinBox *txtMeshAngleSegmentsCount;
-    SLineEditDouble *txtGeometryNodeSize;
-    SLineEditDouble *txtGeometryEdgeWidth;
-    SLineEditDouble *txtGeometryLabelSize;
     QCheckBox *chkMeshCurvilinearElements;
 
     // scene font
@@ -134,22 +126,6 @@ private:
     // label
     QCheckBox *chkShowLabel;
 
-    // scalar view
-    QCheckBox *chkScalarFieldRangeLog;
-    QLineEdit *txtScalarFieldRangeBase;
-    QSpinBox *txtScalarDecimalPlace;
-
-    // 3d
-    QCheckBox *chkView3DLighting;
-    QDoubleSpinBox *txtView3DAngle;
-    QCheckBox *chkView3DBackground;
-    QDoubleSpinBox *txtView3DHeight;
-
-    // deform shape
-    QCheckBox *chkDeformScalar;
-    QCheckBox *chkDeformContour;
-    QCheckBox *chkDeformVector;
-
     // adaptivity
     QLabel *lblMaxDofs;
     QSpinBox *txtMaxDOFs;
@@ -175,7 +151,6 @@ private:
 
     void createControls();
     QWidget *createMainWidget();
-    QWidget *createViewWidget();
     QWidget *createSolverWidget();
     QWidget *createColorsWidget();
     QWidget *createGlobalScriptWidget();
