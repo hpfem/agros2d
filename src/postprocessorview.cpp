@@ -996,6 +996,7 @@ void PostprocessorView::setControls()
     }
 
     if (isSolved && (radPostprocessorScalarField3D->isChecked() ||
+                     radPostprocessorParticleTracing3D->isChecked() ||
                      radPostprocessorScalarField3DSolid->isChecked() ||
                      radPostprocessorModel->isChecked()))
     {
