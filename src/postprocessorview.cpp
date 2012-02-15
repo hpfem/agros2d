@@ -713,8 +713,6 @@ void PostprocessorView::setControls()
     bool isMeshed = Util::problem()->isMeshed();
     bool isSolved = Util::problem()->isSolved();
 
-    cout << "ppv::setControls, meshed: " << isMeshed << ", solved: " << isSolved << endl;
-
     chkShowGeometry->setEnabled(true);
 
     chkShowInitialMesh->setEnabled(isMeshed);

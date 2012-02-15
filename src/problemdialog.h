@@ -70,8 +70,14 @@ public:
 
     void refresh();
 
+public slots:
+    void doFieldsChanged();
+
 private:
+    void createComboBoxes();
     void fillComboBox();
+
+    QGridLayout *layoutTable;
 
     QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >* m_couplingInfos;
     QMap<CouplingInfo*, QComboBox*> m_comboBoxes;
@@ -137,6 +143,38 @@ private slots:
     void doShowEquation();
 };
 
+class FieldTabWidget : public QTabWidget
+{
+    Q_OBJECT
+public:
+    FieldTabWidget(QWidget *parent,  QMap<QString, FieldInfo *> fieldInfos,
+                QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos);
+
+    void addFieldTab(FieldInfo* fieldInfo);
+    void removeFieldTab(FieldInfo* fieldInfo);
+
+    void updateCouplingTab();
+
+    void save();
+    int fieldsCount() { return count() - m_haveCouplingsTab; }
+
+signals:
+    void fieldsChanged();
+
+public slots:
+    void doRemoveFieldRequested(int);
+
+    //called after field is added or removed or analysis type changed
+    void doFindCouplings();
+
+
+private:
+    int m_haveCouplingsTab;
+    QMap<FieldInfo*, FieldWidget*> m_fieldTabs;
+    QMap<QString, FieldInfo *>  m_fieldInfos;
+    QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;
+};
+
 class ProblemDialog: public QDialog
 {
     Q_OBJECT
@@ -148,6 +186,7 @@ public:
 
     int showDialog();
     void removeField(FieldInfo *fieldInfo);
+    ProblemInfo* problemInfo() {return m_problemInfo;}
 
 private slots:
     void doPhysicFieldChanged(int index);
@@ -157,14 +196,8 @@ private slots:
     void doOpenXML();
 
     void doAddField();
-    void doRemoveFieldRequested(int);
-
-    //called after field is added or removed or analysis type changed
-    void doFindCouplings();
 
 private:
-    void updateCouplingTab();
-
     bool m_isNewProblem;
     ProblemInfo *m_problemInfo;
     QMap<QString, FieldInfo *>  m_fieldInfos;
@@ -172,8 +205,7 @@ private:
 
     QDialogButtonBox *buttonBox;
 
-    int haveCouplingsTab_HACK;
-    QTabWidget *tabFields;
+    FieldTabWidget *tabFields;
 
     QLineEdit *txtName;
     QComboBox *cmbCoordinateType;

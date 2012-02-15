@@ -389,6 +389,7 @@ void FieldWidget::doLinearityTypeChanged(int index)
 CouplingsWidget::CouplingsWidget(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >* couplingInfos, QWidget *parent) :
     QWidget(parent), m_couplingInfos(couplingInfos)
 {
+    connect(parent, SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
     createContent();
     load();
 }
@@ -398,14 +399,31 @@ void CouplingsWidget::createContent()
     int minWidth = 130;
 
     // table
-    QGridLayout *layoutTable = new QGridLayout();
+    layoutTable = new QGridLayout();
     layoutTable->setColumnMinimumWidth(0, minWidth);
     layoutTable->setColumnStretch(1, 1);
+
+    createComboBoxes();
+
+    setLayout(layoutTable);
+}
+
+void CouplingsWidget::createComboBoxes()
+{
+//    QLayoutItem *wItem;
+//    while ((wItem = layoutTable->takeAt(0)) != 0)
+//          delete wItem;
+
+//    foreach(QComboBox* cb, m_comboBoxes)
+//    {
+//        layoutTable->removeWidget(cb);
+//    }
 
     m_comboBoxes.clear();
     int line = 0;
     foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
     {
+        cout << "adding coupling box " << couplingInfo->coupling()->name << endl;
         layoutTable->addWidget(new QLabel(/*tr(*/QString::fromStdString(couplingInfo->coupling()->name)/*)*/), line, 0);
         m_comboBoxes[couplingInfo] = new QComboBox();
         layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
@@ -414,7 +432,13 @@ void CouplingsWidget::createContent()
 
     fillComboBox();
 
-    setLayout(layoutTable);
+}
+
+void CouplingsWidget::doFieldsChanged()
+{
+    createComboBoxes();
+    //layoutTable->addWidget(new QLabel("extra"), 1, 0);
+    //createContent();
 }
 
 void CouplingsWidget::fillComboBox()
@@ -431,6 +455,7 @@ void CouplingsWidget::load()
 {
     foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
     {
+        cout << "loading couplings widget " << couplingInfo->coupling()->name << endl;
         m_comboBoxes[couplingInfo]->setCurrentIndex(couplingInfo->couplingType());
     }
 }
@@ -439,8 +464,183 @@ void CouplingsWidget::save()
 {
     foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
     {
+        cout << "saving couplings widget " << couplingInfo->coupling()->name << endl;
         couplingInfo->setCouplingType((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
     }
+}
+
+
+// ********************************************************************************************
+
+FieldTabWidget::FieldTabWidget(QWidget *parent,  QMap<QString, FieldInfo *> fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos)
+    : QTabWidget(parent), m_fieldInfos(fieldInfos), m_couplingInfos(couplingInfos)
+{
+    m_haveCouplingsTab = 0;
+
+    connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(doRemoveFieldRequested(int)));
+
+    foreach (FieldInfo *fieldInfo, m_fieldInfos)
+        addFieldTab(fieldInfo);
+
+    doFindCouplings();
+
+}
+
+
+void FieldTabWidget::updateCouplingTab()
+{
+    if(m_haveCouplingsTab)
+    {
+        if (m_couplingInfos.size()){
+        }
+        else
+        {
+            removeTab(count() - 1);
+            m_haveCouplingsTab = 0;
+        }
+    }
+    else
+    {
+        if (m_couplingInfos.size()){
+            addTab(new CouplingsWidget(&m_couplingInfos, this), "Couplings");
+            m_haveCouplingsTab = 1;
+        }
+
+    }
+}
+
+void FieldTabWidget::addFieldTab(FieldInfo *fieldInfo)
+{
+    FieldWidget* fieldWidget = new FieldWidget(((ProblemDialog*)parent())->problemInfo(), fieldInfo, this, (ProblemDialog*)parent());
+    m_fieldTabs[fieldInfo] = fieldWidget;
+    m_fieldInfos[fieldInfo->fieldId()] = fieldInfo;
+
+    // add widget
+    //QTabWidget::addTab(fieldWidget, QString::fromStdString(fieldInfo->module()->name));
+    int fieldPosition = count() - m_haveCouplingsTab;
+    insertTab(fieldPosition, fieldWidget, QString::fromStdString(fieldInfo->module()->name));
+    setCurrentIndex(count() - 1 - m_haveCouplingsTab);
+
+    doFindCouplings();
+    emit fieldsChanged();
+
+//    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
+
+
+}
+
+void FieldTabWidget::removeFieldTab(FieldInfo *fieldInfo)
+{
+    for(int i = 0; i < count(); i++){
+        if(m_fieldTabs[fieldInfo] == widget(i)){
+            QTabWidget::removeTab(i);
+            return;
+        }
+    }
+
+    assert(0);
+}
+
+void FieldTabWidget::doRemoveFieldRequested(int index)
+{
+    // remove field
+    FieldWidget *wid = dynamic_cast<FieldWidget *>(widget(index));
+
+    if (QMessageBox::question(this, tr("Remove field"), tr("Are you sure to remove field '%1'?").
+                              arg(QString::fromStdString(wid->fieldInfo()->module()->name)),
+                              QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+    {
+        removeTab(index);
+
+        m_fieldInfos.remove(wid->fieldInfo()->fieldId());
+
+        // delete corresponding fileinfo (new field only)
+        if (!Util::scene()->fieldInfos().keys().contains(wid->fieldInfo()->fieldId()))
+            delete wid->fieldInfo();
+
+        // enable accept button
+        /// TODO
+        //buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
+
+        doFindCouplings();
+        emit fieldsChanged();
+    }
+}
+
+
+void FieldTabWidget::doFindCouplings()
+{
+    // add missing
+    foreach(FieldInfo* sourceField, m_fieldInfos)
+    {
+        foreach(FieldInfo* targetField, m_fieldInfos)
+        {
+            if(sourceField == targetField)
+                continue;
+            QPair<FieldInfo*, FieldInfo*> fieldInfosPair(sourceField, targetField);
+            if(isCouplingAvailable(sourceField, targetField)){
+                if(! m_couplingInfos.contains(fieldInfosPair))
+                {
+                    m_couplingInfos[fieldInfosPair] = new CouplingInfo(sourceField, targetField);
+                }
+            }
+        }
+    }
+
+    // remove extra
+    foreach(CouplingInfo* couplingInfo, m_couplingInfos)
+    {
+        if(! (m_fieldInfos.contains(couplingInfo->sourceField()->fieldId()) &&
+              m_fieldInfos.contains(couplingInfo->targetField()->fieldId()) &&
+              isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
+        {
+            cout << "removing info" << endl;
+            m_couplingInfos.remove(QPair<FieldInfo*, FieldInfo*>(couplingInfo->sourceField(), couplingInfo->targetField()));
+        }
+    }
+
+    updateCouplingTab();
+}
+
+
+void FieldTabWidget::save()
+{
+    for (int i = 0; i < count() - m_haveCouplingsTab; i++)
+        static_cast<FieldWidget *>(widget(i))->save();
+
+    // save couplings
+    if(m_haveCouplingsTab)
+        static_cast<CouplingsWidget *>(widget(count() - 1))->save();
+
+    // add missing fields
+    for (int i = 0; i < count() - m_haveCouplingsTab; i++)
+    {
+        FieldWidget *wid = static_cast<FieldWidget *>(widget(i));
+
+        // add missing field
+        if (!Util::scene()->hasField(wid->fieldInfo()->fieldId()))
+            Util::scene()->addField(wid->fieldInfo());
+    }
+
+    // remove deleted fields
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        bool exists = false;
+        for (int i = 0; i < count() - m_haveCouplingsTab; i++)
+        {
+            FieldWidget *wid = static_cast<FieldWidget *>(widget(i));
+
+            if (fieldInfo->fieldId() == wid->fieldInfo()->fieldId())
+                exists = true;
+        }
+
+        // remove field
+        if (!exists)
+            Util::scene()->removeField(fieldInfo);
+    }
+
+    Util::scene()->setCouplingInfos(m_couplingInfos);
+
 }
 
 // ********************************************************************************************
@@ -600,17 +800,8 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutName->addWidget(txtName, 0, 1);
 
     // fields
-    tabFields = new QTabWidget(this);
+    tabFields = new FieldTabWidget(this, m_fieldInfos, m_couplingInfos);
     tabFields->setTabsClosable(true);
-    connect(tabFields, SIGNAL(tabCloseRequested(int)), this, SLOT(doRemoveFieldRequested(int)));
-
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-        tabFields->addTab(new FieldWidget(m_problemInfo, fieldInfo, tabFields, this),
-                          QString::fromStdString(fieldInfo->module()->name));
-
-
-    haveCouplingsTab_HACK = 0;
-    updateCouplingTab();
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
     layoutProblem->addLayout(layoutName);
@@ -621,29 +812,6 @@ QWidget *ProblemDialog::createControlsGeneral()
     widMain->setLayout(layoutProblem);
 
     return widMain;
-}
-
-void ProblemDialog::updateCouplingTab()
-{
-    if(haveCouplingsTab_HACK)
-    {
-        if (m_couplingInfos.size()){
-        }
-        else
-        {
-            tabFields->removeTab(tabFields->count() - 1);
-            haveCouplingsTab_HACK = 0;
-        }
-    }
-    else
-    {
-        if (m_couplingInfos.size()){
-            tabFields->addTab(new CouplingsWidget(&m_couplingInfos, tabFields), "Couplings");
-            haveCouplingsTab_HACK = 1;
-        }
-
-    }
-
 }
 
 QWidget *ProblemDialog::createControlsStartupScript()
@@ -754,41 +922,7 @@ bool ProblemDialog::save()
     m_problemInfo->matrixSolver = (Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
 
     // save fields
-    for (int i = 0; i < tabFields->count() - haveCouplingsTab_HACK; i++)
-        static_cast<FieldWidget *>(tabFields->widget(i))->save();
-
-    // save couplings
-    if(haveCouplingsTab_HACK)
-        static_cast<CouplingsWidget *>(tabFields->widget(tabFields->count() - 1))->save();
-
-    // add missing fields
-    for (int i = 0; i < tabFields->count() - haveCouplingsTab_HACK; i++)
-    {
-        FieldWidget *wid = static_cast<FieldWidget *>(tabFields->widget(i));
-
-        // add missing field
-        if (!Util::scene()->hasField(wid->fieldInfo()->fieldId()))
-            Util::scene()->addField(wid->fieldInfo());
-    }
-
-    // remove deleted fields
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-    {
-        bool exists = false;
-        for (int i = 0; i < tabFields->count() -  haveCouplingsTab_HACK; i++)
-        {
-            FieldWidget *wid = static_cast<FieldWidget *>(tabFields->widget(i));
-
-            if (fieldInfo->fieldId() == wid->fieldInfo()->fieldId())
-                exists = true;
-        }
-
-        // remove field
-        if (!exists)
-            Util::scene()->removeField(fieldInfo);
-    }
-
-    Util::scene()->setCouplingInfos(m_couplingInfos);
+    tabFields->save();
 
     return true;
 }
@@ -840,7 +974,7 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     logMessage("ProblemDialog::doPhysicFieldChanged()");
 
     // refresh modules
-    for (int i = 0; i < tabFields->count() -  haveCouplingsTab_HACK; i++)
+    for (int i = 0; i < tabFields->fieldsCount(); i++)
     {
         FieldWidget *wid = dynamic_cast<FieldWidget *>(tabFields->widget(i));
         wid->refresh();
@@ -862,7 +996,7 @@ void ProblemDialog::doAddField()
 {
     // used fields
     QList<QString> fields;
-    for (int i = 0; i < tabFields->count() -  haveCouplingsTab_HACK; i++)
+    for (int i = 0; i < tabFields->fieldsCount(); i++)
     {
         FieldWidget *wid = dynamic_cast<FieldWidget *>(tabFields->widget(i));
         fields.append(wid->fieldInfo()->fieldId());
@@ -884,77 +1018,10 @@ void ProblemDialog::doAddField()
             fieldInfo = new FieldInfo(m_problemInfo, dialog.selectedFieldId());
         }
 
-        // new field widget
-        FieldWidget *fieldWidget = new FieldWidget(m_problemInfo, fieldInfo, tabFields, this);
+        tabFields->addFieldTab(fieldInfo);
 
-        // add widget
-        int fieldPosition = tabFields->count() - haveCouplingsTab_HACK;
-        tabFields->insertTab(fieldPosition, fieldWidget,
-                          QString::fromStdString(fieldInfo->module()->name));
-        tabFields->setCurrentIndex(tabFields->count() - 1 - haveCouplingsTab_HACK);
-
-        buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
-
-        m_fieldInfos[fieldInfo->fieldId()] = fieldInfo;
     }
 
-    doFindCouplings();
+    tabFields->doFindCouplings();
 }
 
-void ProblemDialog::doRemoveFieldRequested(int index)
-{
-    // remove field
-    FieldWidget *wid = dynamic_cast<FieldWidget *>(tabFields->widget(index));
-
-    if (QMessageBox::question(this, tr("Remove field"), tr("Are you sure to remove field '%1'?").
-                              arg(QString::fromStdString(wid->fieldInfo()->module()->name)),
-                              QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-    {
-        tabFields->removeTab(index);
-
-        m_fieldInfos.remove(wid->fieldInfo()->fieldId());
-
-        // delete corresponding fileinfo (new field only)
-        if (!Util::scene()->fieldInfos().keys().contains(wid->fieldInfo()->fieldId()))
-            delete wid->fieldInfo();
-
-        // enable accept button
-        buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
-
-        doFindCouplings();
-    }
-}
-
-void ProblemDialog::doFindCouplings()
-{
-    // add missing
-    foreach(FieldInfo* sourceField, m_fieldInfos)
-    {
-        foreach(FieldInfo* targetField, m_fieldInfos)
-        {
-            if(sourceField == targetField)
-                continue;
-            QPair<FieldInfo*, FieldInfo*> fieldInfosPair(sourceField, targetField);
-            if(isCouplingAvailable(sourceField, targetField)){
-                if(! m_couplingInfos.contains(fieldInfosPair))
-                {
-                    m_couplingInfos[fieldInfosPair] = new CouplingInfo(sourceField, targetField);
-                }
-            }
-        }
-    }
-
-    // remove extra
-    foreach(CouplingInfo* couplingInfo, m_couplingInfos)
-    {
-        if(! (m_fieldInfos.contains(couplingInfo->sourceField()->fieldId()) &&
-              m_fieldInfos.contains(couplingInfo->targetField()->fieldId()) &&
-              isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
-        {
-            cout << "removing info" << endl;
-            m_couplingInfos.remove(QPair<FieldInfo*, FieldInfo*>(couplingInfo->sourceField(), couplingInfo->targetField()));
-        }
-    }
-
-    updateCouplingTab();
-}

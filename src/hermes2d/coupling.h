@@ -61,7 +61,7 @@ public:
 
     inline Coupling *coupling() const { return m_coupling; }
 
-    QString couplingId() { return m_couplingId; }
+    QString couplingId() { if(m_coupling) return QString::fromStdString(m_coupling->id); return "None"; }
     CouplingType couplingType() { return m_couplingType; }
     void setCouplingType(CouplingType couplingType);
 
@@ -84,8 +84,8 @@ private:
     FieldInfo* m_sourceField;
     FieldInfo* m_targetField;
 
-    /// unique coupling info
-    QString m_couplingId;
+//    /// unique coupling info
+//    QString m_couplingId;
 
     /// coupling type
     CouplingType m_couplingType;
