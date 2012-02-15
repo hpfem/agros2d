@@ -1107,7 +1107,7 @@ void SceneView::paintGeometry()
                 if (node->isSelected)
                     glColor3d(Util::config()->colorSelected.redF(),
                               Util::config()->colorSelected.greenF(),
-                              Util::config()->colorSelected.blueF());                
+                              Util::config()->colorSelected.blueF());
 
                 glBegin(GL_POINTS);
                 glVertex2d(node->point.x, node->point.y);
@@ -4716,25 +4716,17 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
 
     if (fabs(end.x-start.x) < EPS_ZERO || fabs(end.y-start.y) < EPS_ZERO) return;
 
-    m_offset2d.x = (start.x+end.x)/2.0;
+    m_offset2d.x = ((Util::config()->showRulers) ? start.x+end.x-m_rulersNumbersWidth-m_rulersAreaWidth.x : start.x+end.x)/2.0;
     m_offset2d.y = (start.y+end.y)/2.0;
 
     double sceneWidth = end.x-start.x;
     double sceneHeight = end.y-start.y;
 
-    double maxScene = (((double) contextWidth() / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
+    double maxScene = (((double) ((Util::config()->showRulers) ? contextWidth()-m_rulersNumbersWidth-m_rulersAreaWidth.x : contextWidth()) / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
 
     if (maxScene > 0.0)
     {
-        if (Util::config()->showRulers)
-        {
-            m_scale2d = 1.85/maxScene;
-            //TODO offset
-        }
-        else
-        {
-            m_scale2d = 1.9/maxScene;
-        }
+        m_scale2d = 1.85/maxScene;
         m_scale3d = 0.6 * m_scale2d;
     }
 
