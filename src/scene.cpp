@@ -903,13 +903,26 @@ void Scene::transformTranslate(const Point &point, bool copy)
                 max.y = qMax(max.y, node->point.y);
             }
 
-            if ((vecX > 0) && (vecY >= 0))
+            if ((vecX >= 0.0) && (vecY >= 0.0))
             {
-                if(node->point.x == max.x)
+                if (vecX > vecY)
                 {
-                    int index = nodes.indexOf(node);
-                    sortedNodes.append(node);
-                    nodes.removeAt(index);
+                    if (node->point.x == max.x)
+                    {
+                        int index = nodes.indexOf(node);
+                        sortedNodes.append(node);
+                        nodes.removeAt(index);
+                    }
+                }
+
+                else if (vecX < vecY)
+                {
+
+                }
+
+                else
+                {
+
                 }
             }
         }
