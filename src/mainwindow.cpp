@@ -813,6 +813,7 @@ void MainWindow::doDocumentNew()
     if (problemDialog.showDialog() == QDialog::Accepted)
     {
         Util::scene()->clear();
+        Util::config()->load();
         Util::scene()->setProblemInfo(problemInfo);
         Util::scene()->refresh();
 
@@ -991,6 +992,7 @@ void MainWindow::doDocumentClose()
     */
 
     Util::scene()->clear();
+    Util::config()->load();
     sceneView->doDefaultValues();
     Util::scene()->refresh();
 
