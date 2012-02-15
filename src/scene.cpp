@@ -882,7 +882,40 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
+    // sorted list of nodes for translate
+    QList<SceneNode*> sortedNodes;
+
     foreach (SceneNode *node, nodes)
+    {
+        if (node->isSelected)
+        {
+            double vecX = point.x;
+            double vecY = point.y;
+
+            Point min( numeric_limits<double>::max(),  numeric_limits<double>::max());
+            Point max(-numeric_limits<double>::max(), -numeric_limits<double>::max());
+
+            foreach (SceneNode *node, nodes)
+            {
+                min.x = qMin(min.x, node->point.x);
+                max.x = qMax(max.x, node->point.x);
+                min.y = qMin(min.y, node->point.y);
+                max.y = qMax(max.y, node->point.y);
+            }
+
+            if ((vecX > 0) && (vecY >= 0))
+            {
+                if(node->point.x == max.x)
+                {
+                    int index = nodes.indexOf(node);
+                    sortedNodes.append(node);
+                    nodes.removeAt(index);
+                }
+            }
+        }
+    }
+
+    foreach (SceneNode *node, sortedNodes)
     {
         if (node->isSelected)
         {
@@ -903,6 +936,9 @@ void Scene::transformTranslate(const Point &point, bool copy)
             }
         }
     }
+
+    // delete list of nodes
+    QList:sortedNodes.clear();
 
     foreach (SceneLabel *label, labels)
     {
