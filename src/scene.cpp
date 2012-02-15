@@ -907,8 +907,9 @@ void Scene::transformTranslate(const Point &point, bool copy)
             {
                 if (vecX > vecY)
                 {
-                    if (node->point.x == max.x)
+                    foreach (SceneNode *node, nodes)
                     {
+                        max.x = qMax(max.x, node->point.x);
                         int index = nodes.indexOf(node);
                         sortedNodes.append(node);
                         nodes.removeAt(index);
