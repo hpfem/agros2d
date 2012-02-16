@@ -727,11 +727,11 @@ QWidget *AboutDialog::createAgros2D()
 {
     QLabel *labelContent = new QLabel(tr("<h3>Agros2D %1</h3>"
                                          "Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) "
-                                         "based on the <a href=\"http://hpfem.org/hermes2d/\">Hermes2D</a> library using higher order finite element method "
+                                         "based on the <a href=\"http://hpfem.org/hermes/\">Hermes</a> library using higher order finite element method "
                                          "(<i>hp</i>-FEM) with automatic adaptivity.<br/><br/>"
                                          "Web page: <a href=\"http://agros2d.org/\">http://agros2d.org/</a><br/>"
                                          "Facebook: <a href=\"http://www.facebook.com/pages/Agros2D/132524130149770?sk=info\">http://www.facebook.com/pages/Agros2D/...</a><br/>"
-                                         "Issues: <a href=\"http://github.com/hpfem/agros2d/issues\">http://github.com/hpfem/agros2d/issues</a><br/><br/>"
+                                         "Discussion: <a href=\"http://groups.google.com/group/agros2d/\">http://groups.google.com/group/agros2d/</a><br/><br/>"
                                          "<b>Authors:</b>"
                                          "<p>"
                                          "<b>Pavel Karban</b> - main developer (University of West Bohemia, Pilsen))<br/>"
@@ -767,9 +767,9 @@ QWidget *AboutDialog::createAgros2D()
 
 QWidget *AboutDialog::createHermes2D()
 {
-    QLabel *labelContent = new QLabel(tr("<h3>Hermes2D</h3>"
+    QLabel *labelContent = new QLabel(tr("<h3>Hermes</h3>"
                                          "Web page: <a href=\"http://hpfem.org/hermes/\">http://hpfem.org/hermes/</a><br/><br/>"
-                                         "<b>Authors:</b>"
+                                         "<b>Authors (Hermes2D):</b>"
                                          "<p>"
                                          "<b>Pavel Solin</b> (project leader, University of Nevada, Reno)<br/>"
                                          "<b>Martin Zitka</b> (formerly University of Texas at El Paso)<br/>"

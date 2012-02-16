@@ -503,8 +503,6 @@ QWidget *PostprocessorView::controlsPosprocessor()
     connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
 
     QGridLayout *gridLayoutScalarFieldPalette = new QGridLayout();
-    gridLayoutScalarFieldPalette->setColumnMinimumWidth(0, minWidth);
-    gridLayoutScalarFieldPalette->setColumnStretch(1, 1);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Palette:")), 0, 0);
     gridLayoutScalarFieldPalette->addWidget(cmbPalette, 0, 1, 1, 2);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Quality:")), 1, 0);
@@ -528,8 +526,6 @@ QWidget *PostprocessorView::controlsPosprocessor()
     chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
 
     QGridLayout *gridLayoutScalarFieldColorbar = new QGridLayout();
-    gridLayoutScalarFieldColorbar->setColumnMinimumWidth(0, minWidth);
-    gridLayoutScalarFieldColorbar->setColumnStretch(1, 1);
     gridLayoutScalarFieldColorbar->addWidget(new QLabel(tr("Decimal places:")), 0, 0);
     gridLayoutScalarFieldColorbar->addWidget(txtScalarDecimalPlace, 0, 1);
     gridLayoutScalarFieldColorbar->addWidget(chkShowScalarColorBar, 1, 0, 1, 2);
@@ -573,8 +569,6 @@ QWidget *PostprocessorView::controlsPosprocessor()
     QGridLayout *gridLayoutContours = new QGridLayout();
     gridLayoutContours->setColumnMinimumWidth(0, minWidth);
     gridLayoutContours->setColumnStretch(1, 1);
-    gridLayoutContours->setColumnMinimumWidth(0, minWidth);
-    gridLayoutContours->setColumnStretch(1, 1);
     gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
     gridLayoutContours->addWidget(txtContoursCount, 0, 1);
 
@@ -582,8 +576,6 @@ QWidget *PostprocessorView::controlsPosprocessor()
     grpContours->setLayout(gridLayoutContours);
 
     QGridLayout *gridLayoutVectors = new QGridLayout();
-    gridLayoutVectors->setColumnMinimumWidth(0, minWidth);
-    gridLayoutVectors->setColumnStretch(1, 1);
     gridLayoutVectors->addWidget(new QLabel(tr("Vectors:")), 0, 0);
     gridLayoutVectors->addWidget(txtVectorCount, 0, 1);
     gridLayoutVectors->addWidget(chkVectorProportional, 0, 2);
@@ -678,8 +670,6 @@ QWidget *PostprocessorView::controlsPosprocessor()
 
     // Lorentz force
     QGridLayout *gridLayoutLorentzForce = new QGridLayout();
-    gridLayoutLorentzForce->setColumnMinimumWidth(0, minWidth);
-    gridLayoutLorentzForce->setColumnStretch(1, 1);
     gridLayoutLorentzForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
     gridLayoutLorentzForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>L</sub> = <i>Q</i> (<i><b>E</b></i> + <i><b>v</b></i> x <i><b>B</b></i>)")), 0, 1);
     gridLayoutLorentzForce->addWidget(new QLabel(tr("Charge (C):")), 1, 0);
@@ -706,8 +696,6 @@ QWidget *PostprocessorView::controlsPosprocessor()
 
     // initial particle position
     QGridLayout *gridLayoutInitialPosition = new QGridLayout();
-    gridLayoutInitialPosition->setColumnMinimumWidth(0, minWidth);
-    gridLayoutInitialPosition->setColumnStretch(1, 1);
     gridLayoutInitialPosition->addWidget(lblParticlePointX, 0, 0);
     gridLayoutInitialPosition->addWidget(txtParticlePointX, 0, 1);
     gridLayoutInitialPosition->addWidget(lblParticlePointY, 1, 0);
@@ -718,8 +706,6 @@ QWidget *PostprocessorView::controlsPosprocessor()
 
     // initial particle velocity
     QGridLayout *gridLayoutInitialVelocity = new QGridLayout();
-    gridLayoutInitialVelocity->setColumnMinimumWidth(0, minWidth);
-    gridLayoutInitialVelocity->setColumnStretch(1, 1);
     gridLayoutInitialVelocity->addWidget(lblParticleVelocityX, 0, 0);
     gridLayoutInitialVelocity->addWidget(txtParticleVelocityX, 0, 1);
     gridLayoutInitialVelocity->addWidget(lblParticleVelocityY, 1, 0);
@@ -730,8 +716,6 @@ QWidget *PostprocessorView::controlsPosprocessor()
 
     // advanced
     QGridLayout *gridLayoutAdvanced = new QGridLayout();
-    gridLayoutAdvanced->setColumnMinimumWidth(0, minWidth);
-    gridLayoutAdvanced->setColumnStretch(1, 1);
     gridLayoutAdvanced->addWidget(chkParticleIncludeGravitation, 0, 0);
     gridLayoutAdvanced->addWidget(new QLabel(QString("<i><b>F</b></i><sub>G</sub> = (0, m g<sub>0</sub>, 0))")), 0, 1);
     gridLayoutAdvanced->addWidget(chkParticleTerminateOnDifferentMaterial, 1, 0, 1, 2);
@@ -746,8 +730,6 @@ QWidget *PostprocessorView::controlsPosprocessor()
     grpAdvanced->setLayout(gridLayoutAdvanced);
 
     QGridLayout *gridLayoutParticle = new QGridLayout();
-    gridLayoutParticle->setColumnMinimumWidth(0, minWidth);
-    gridLayoutParticle->setColumnStretch(1, 1);
     gridLayoutParticle->addWidget(new QLabel(tr("Equations:")), 0, 0);
     gridLayoutParticle->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
     gridLayoutParticle->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
