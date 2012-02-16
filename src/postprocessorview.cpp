@@ -503,6 +503,8 @@ QWidget *PostprocessorView::controlsPosprocessor()
     connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
 
     QGridLayout *gridLayoutScalarFieldPalette = new QGridLayout();
+    gridLayoutScalarFieldPalette->setColumnMinimumWidth(0, minWidth);
+    gridLayoutScalarFieldPalette->setColumnStretch(1, 1);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Palette:")), 0, 0);
     gridLayoutScalarFieldPalette->addWidget(cmbPalette, 0, 1, 1, 2);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Quality:")), 1, 0);
@@ -526,6 +528,8 @@ QWidget *PostprocessorView::controlsPosprocessor()
     chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
 
     QGridLayout *gridLayoutScalarFieldColorbar = new QGridLayout();
+    gridLayoutScalarFieldColorbar->setColumnMinimumWidth(0, minWidth);
+    gridLayoutScalarFieldColorbar->setColumnStretch(1, 1);
     gridLayoutScalarFieldColorbar->addWidget(new QLabel(tr("Decimal places:")), 0, 0);
     gridLayoutScalarFieldColorbar->addWidget(txtScalarDecimalPlace, 0, 1);
     gridLayoutScalarFieldColorbar->addWidget(chkShowScalarColorBar, 1, 0, 1, 2);
@@ -545,29 +549,13 @@ QWidget *PostprocessorView::controlsPosprocessor()
     QWidget *scalarFieldWidget = new QWidget();
     scalarFieldWidget->setLayout(layoutScalarField);
 
+    // contours and vectors
     // contours
     txtContoursCount = new QSpinBox(this);
     txtContoursCount->setMinimum(1);
     txtContoursCount->setMaximum(100);
 
-    QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
-    connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursDefault()));
-
-    QGridLayout *gridLayoutContours = new QGridLayout();
-    gridLayoutContours->setColumnMinimumWidth(0, minWidth);
-    gridLayoutContours->setColumnStretch(1, 1);
-    gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
-    gridLayoutContours->addWidget(txtContoursCount, 0, 1);
-
-    QVBoxLayout *layoutContours = new QVBoxLayout();
-    layoutContours->addLayout(gridLayoutContours);
-    layoutContours->addStretch();
-    layoutContours->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
-
-    QWidget *contoursWidget = new QWidget();
-    contoursWidget->setLayout(layoutContours);
-
-    // vector field
+    // vectors
     chkVectorProportional = new QCheckBox(tr("Proportional"), this);
     chkVectorColor = new QCheckBox(tr("Color (b/w)"), this);
     txtVectorCount = new QSpinBox(this);
@@ -579,28 +567,44 @@ QWidget *PostprocessorView::controlsPosprocessor()
     txtVectorScale->setMinimum(0);
     txtVectorScale->setMaximum(20);
 
-    QPushButton *btnVectorFieldDefault = new QPushButton(tr("Default"));
-    connect(btnVectorFieldDefault, SIGNAL(clicked()), this, SLOT(doVectorFieldDefault()));
+    QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
+    connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
 
-    QGridLayout *gridLayoutVectorField = new QGridLayout();
-    gridLayoutVectorField->setColumnMinimumWidth(0, minWidth);
-    gridLayoutVectorField->setColumnStretch(1, 1);
-    gridLayoutVectorField->addWidget(new QLabel(tr("Vectors:")), 0, 0);
-    gridLayoutVectorField->addWidget(txtVectorCount, 0, 1);
-    gridLayoutVectorField->addWidget(chkVectorProportional, 0, 2);
-    gridLayoutVectorField->addWidget(new QLabel(tr("Scale:")), 1, 0);
-    gridLayoutVectorField->addWidget(txtVectorScale, 1, 1);
-    gridLayoutVectorField->addWidget(chkVectorColor, 1, 2);
+    QGridLayout *gridLayoutContours = new QGridLayout();
+    gridLayoutContours->setColumnMinimumWidth(0, minWidth);
+    gridLayoutContours->setColumnStretch(1, 1);
+    gridLayoutContours->setColumnMinimumWidth(0, minWidth);
+    gridLayoutContours->setColumnStretch(1, 1);
+    gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
+    gridLayoutContours->addWidget(txtContoursCount, 0, 1);
 
-    QVBoxLayout *layoutVectorField = new QVBoxLayout();
-    layoutVectorField->addLayout(gridLayoutVectorField);
-    layoutVectorField->addStretch();
-    layoutVectorField->addWidget(btnVectorFieldDefault, 0, Qt::AlignLeft);
+    QGroupBox *grpContours = new QGroupBox(tr("Contours"));
+    grpContours->setLayout(gridLayoutContours);
 
-    QWidget *vectorFieldWidget = new QWidget();
-    vectorFieldWidget->setLayout(layoutVectorField);
+    QGridLayout *gridLayoutVectors = new QGridLayout();
+    gridLayoutVectors->setColumnMinimumWidth(0, minWidth);
+    gridLayoutVectors->setColumnStretch(1, 1);
+    gridLayoutVectors->addWidget(new QLabel(tr("Vectors:")), 0, 0);
+    gridLayoutVectors->addWidget(txtVectorCount, 0, 1);
+    gridLayoutVectors->addWidget(chkVectorProportional, 0, 2);
+    gridLayoutVectors->addWidget(new QLabel(tr("Scale:")), 1, 0);
+    gridLayoutVectors->addWidget(txtVectorScale, 1, 1);
+    gridLayoutVectors->addWidget(chkVectorColor, 1, 2);
+
+    QGroupBox *grpVectors = new QGroupBox(tr("Vectors"));
+    grpVectors->setLayout(gridLayoutVectors);
+
+    QVBoxLayout *layoutContoursVectors = new QVBoxLayout();
+    layoutContoursVectors->addWidget(grpContours);
+    layoutContoursVectors->addWidget(grpVectors);
+    layoutContoursVectors->addStretch();
+    layoutContoursVectors->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
+
+    QWidget *contoursVectorsWidget = new QWidget();
+    contoursVectorsWidget->setLayout(layoutContoursVectors);
 
     // polynomial order
+    // palette
     cmbOrderPaletteOrder = new QComboBox();
     cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
     cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
@@ -617,6 +621,7 @@ QWidget *PostprocessorView::controlsPosprocessor()
     cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
     cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
 
+    // scale
     chkShowOrderScale = new QCheckBox(tr("Show scale"), this);
     chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
 
@@ -673,6 +678,8 @@ QWidget *PostprocessorView::controlsPosprocessor()
 
     // Lorentz force
     QGridLayout *gridLayoutLorentzForce = new QGridLayout();
+    gridLayoutLorentzForce->setColumnMinimumWidth(0, minWidth);
+    gridLayoutLorentzForce->setColumnStretch(1, 1);
     gridLayoutLorentzForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
     gridLayoutLorentzForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>L</sub> = <i>Q</i> (<i><b>E</b></i> + <i><b>v</b></i> x <i><b>B</b></i>)")), 0, 1);
     gridLayoutLorentzForce->addWidget(new QLabel(tr("Charge (C):")), 1, 0);
@@ -683,6 +690,8 @@ QWidget *PostprocessorView::controlsPosprocessor()
 
     // drag force
     QGridLayout *gridLayoutDragForce = new QGridLayout();
+    gridLayoutDragForce->setColumnMinimumWidth(0, minWidth);
+    gridLayoutDragForce->setColumnStretch(1, 1);
     gridLayoutDragForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
     gridLayoutDragForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>D</sub> = - &frac12; <i>&rho;</i> <i>v</i><sup>2</sup> <i>C</i><sub>D</sub> <i>S</i> &sdot; <i><b>v</b></i><sub>0</sub>")), 0, 1);
     gridLayoutDragForce->addWidget(new QLabel(tr("Density (kg/m<sup>3</sup>):")), 1, 0);
@@ -697,6 +706,8 @@ QWidget *PostprocessorView::controlsPosprocessor()
 
     // initial particle position
     QGridLayout *gridLayoutInitialPosition = new QGridLayout();
+    gridLayoutInitialPosition->setColumnMinimumWidth(0, minWidth);
+    gridLayoutInitialPosition->setColumnStretch(1, 1);
     gridLayoutInitialPosition->addWidget(lblParticlePointX, 0, 0);
     gridLayoutInitialPosition->addWidget(txtParticlePointX, 0, 1);
     gridLayoutInitialPosition->addWidget(lblParticlePointY, 1, 0);
@@ -707,6 +718,8 @@ QWidget *PostprocessorView::controlsPosprocessor()
 
     // initial particle velocity
     QGridLayout *gridLayoutInitialVelocity = new QGridLayout();
+    gridLayoutInitialVelocity->setColumnMinimumWidth(0, minWidth);
+    gridLayoutInitialVelocity->setColumnStretch(1, 1);
     gridLayoutInitialVelocity->addWidget(lblParticleVelocityX, 0, 0);
     gridLayoutInitialVelocity->addWidget(txtParticleVelocityX, 0, 1);
     gridLayoutInitialVelocity->addWidget(lblParticleVelocityY, 1, 0);
@@ -717,6 +730,8 @@ QWidget *PostprocessorView::controlsPosprocessor()
 
     // advanced
     QGridLayout *gridLayoutAdvanced = new QGridLayout();
+    gridLayoutAdvanced->setColumnMinimumWidth(0, minWidth);
+    gridLayoutAdvanced->setColumnStretch(1, 1);
     gridLayoutAdvanced->addWidget(chkParticleIncludeGravitation, 0, 0);
     gridLayoutAdvanced->addWidget(new QLabel(QString("<i><b>F</b></i><sub>G</sub> = (0, m g<sub>0</sub>, 0))")), 0, 1);
     gridLayoutAdvanced->addWidget(chkParticleTerminateOnDifferentMaterial, 1, 0, 1, 2);
@@ -757,8 +772,7 @@ QWidget *PostprocessorView::controlsPosprocessor()
 
     tbxPostprocessor = new QToolBox();
     tbxPostprocessor->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
-    tbxPostprocessor->addItem(contoursWidget, icon(""), tr("Contours"));
-    tbxPostprocessor->addItem(vectorFieldWidget, icon(""), tr("Vector field"));
+    tbxPostprocessor->addItem(contoursVectorsWidget, icon(""), tr("Contours and vectors"));
     tbxPostprocessor->addItem(orderWidget, icon(""), tr("Polynomial order"));
     tbxPostprocessor->addItem(particleWidget, icon(""), tr("Particle tracing"));
 
@@ -1115,17 +1129,11 @@ void PostprocessorView::doScalarFieldDefault()
     txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
 }
 
-void PostprocessorView::doContoursDefault()
+void PostprocessorView::doContoursVectorsDefault()
 {
-    logMessage("PostprocessorView::doContoursDefault()");
+    logMessage("PostprocessorView::doContoursVectorsDefault()");
 
     txtContoursCount->setValue(CONTOURSCOUNT);
-}
-
-void PostprocessorView::doVectorFieldDefault()
-{
-    logMessage("PostprocessorView::doVecotrFieldDefault()");
-
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
     txtVectorCount->setValue(VECTORNUMBER);

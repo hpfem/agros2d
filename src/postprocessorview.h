@@ -185,8 +185,7 @@ private slots:
     void doPaletteFilter(int state);
     void doWorkspaceDefault();
     void doScalarFieldDefault();
-    void doContoursDefault();
-    void doVectorFieldDefault();
+    void doContoursVectorsDefault();
     void doOrderDefault();
     void doAdvancedDefault();
     void doParticleDefault();
