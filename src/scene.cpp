@@ -883,49 +883,30 @@ void Scene::transformTranslate(const Point &point, bool copy)
     }
 
     // sorted list of nodes for translate
-    QList<SceneNode*> sortedNodes;
+    QList<SceneNode *> sortedNodes;
+
+    double angle = point.angle();
+    double max_ud = 0;
+    double ud = 0;
 
     foreach (SceneNode *node, nodes)
     {
         if (node->isSelected)
         {
-            double vecX = point.x;
-            double vecY = point.y;
+            ud = node->point.x * cos(angle) + node->point.y * sin(angle);
+            max_ud = qMax(max_ud, ud);
 
-            Point min( numeric_limits<double>::max(),  numeric_limits<double>::max());
-            Point max(-numeric_limits<double>::max(), -numeric_limits<double>::max());
+            qDebug()<<max_ud;
 
-            foreach (SceneNode *node, nodes)
+            if (max_ud == ud)
             {
-                min.x = qMin(min.x, node->point.x);
-                max.x = qMax(max.x, node->point.x);
-                min.y = qMin(min.y, node->point.y);
-                max.y = qMax(max.y, node->point.y);
+                int index = nodes.indexOf(node);
+                sortedNodes.append(nodes.at(index));
             }
-
-            if ((vecX >= 0.0) && (vecY >= 0.0))
+            /* else
             {
-                if (vecX > vecY)
-                {
-                    foreach (SceneNode *node, nodes)
-                    {
-                        max.x = qMax(max.x, node->point.x);
-                        int index = nodes.indexOf(node);
-                        sortedNodes.append(node);
-                        nodes.removeAt(index);
-                    }
-                }
-
-                else if (vecX < vecY)
-                {
-
-                }
-
-                else
-                {
-
-                }
-            }
+                sortedNodes.append(nodes);
+            }*/
         }
     }
 
