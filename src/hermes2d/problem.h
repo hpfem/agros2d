@@ -36,6 +36,7 @@ public:
 
 public:
 //private:
+    QList<CouplingInfo* > m_couplingSources;
     FieldInfo* m_fieldInfo;
 
 };
@@ -107,7 +108,7 @@ public:
     void postprocess();
 
     // should store all solutionArrays that have been calculated
-    SolutionArray<double> solution(FieldInfo* fieldInfo, int component, int timeStep = 0, int adaptivityStep = 0);
+    SolutionArray<double> solution(FieldInfo* fieldInfo, int component=0, int timeStep = 0, int adaptivityStep = 0);
     void setSolution(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, QList<SolutionArray<double> > solution);
 
     // progress dialog

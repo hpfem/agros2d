@@ -61,7 +61,16 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, Prog
 {
     foreach(FieldInfo* fi, fieldInfos)
     {
-        m_fields.append(new Field(fi));
+        Field* field = new Field(fi);
+        foreach(CouplingInfo* couplingInfo, Util::scene()->couplingInfos())
+        {
+            if(couplingInfo->isWeak() && (couplingInfo->targetField() == fi))
+            {
+                field->m_couplingSources.push_back(couplingInfo);
+            }
+        }
+
+        m_fields.append(field);
     }
 
     m_solutionList = new SolutionArrayList<double>;
@@ -318,6 +327,11 @@ void Problem::createStructure()
 //        }
 
 //    }
+}
+
+SolutionArray<double> Problem::solution(FieldInfo *fieldInfo, int component, int timeStep, int adaptivityStep)
+{
+    assert(0); //dodelat
 }
 
 void Problem::mesh()
