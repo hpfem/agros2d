@@ -56,8 +56,8 @@ bool Field::solveInitVariables()
     return true;
 }
 
-Block::Block(QList<FieldInfo *> fieldInfos, QList<Coupling*> couplings, ProgressItemSolve* progressItemSolve) :
-    m_progressItemSolve(progressItemSolve), m_couplings(couplings)
+Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, ProgressItemSolve* progressItemSolve, Problem* parent) :
+    m_progressItemSolve(progressItemSolve), m_couplings(couplings), m_parentProblem(parent)
 {
     foreach(FieldInfo* fi, fieldInfos)
     {
@@ -89,16 +89,32 @@ void Block::solve()
     m_solutionList->solve();
     cout << "num elem pri prirazeni do scene solution " <<  Util::problem()->meshInitial()->get_num_active_elements() << endl;
 
+    //TODO predelat ukazatele na Solution na shared_ptr
     foreach(Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
         Util::scene()->sceneSolution(fieldInfo)->setMeshInitial(Util::problem()->meshInitial());
 
+
+        //************************************************************
+        //*************************************************************
+        // TODO solutionArrays by mel byt seznam objektu, ne ukazatelu!
+        // TODO jinak nedava smysl pouziti shared_ptr uvnitr
+        // TODO zkusit to hned jak se to rozchodi
+        //************************************************************
+        //*************************************************************
+
         QList<SolutionArray<double>* > solutionArrays;
         for(int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
             solutionArrays.push_back(m_solutionList->at(i + offset(field)));
+
         Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(solutionArrays);
+
+        //TODO
+        // internal storage, should be rewriten
+        //TODO
+
     }
 }
 
@@ -202,11 +218,67 @@ Problem::Problem()
 
 }
 
+const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
+
 void Problem::createStructure()
 {
-    assert(0);
-//    QMap<QString, FieldInfo *> fieldInfos = Util::scene()->fieldInfos();
+    QList<FieldInfo *> fieldInfos = Util::scene()->fieldInfos().values();
+    QList<CouplingInfo* > couplingInfos = Util::scene()->couplingInfos().values();
 
+    while(!fieldInfos.empty()){
+        QList<FieldInfo*> blockFieldInfos;
+        QList<CouplingInfo*> blockCouplingInfos;
+
+        blockFieldInfos.push_back(fieldInfos.takeLast());
+
+        bool added = true;
+        while(added)
+        {
+            added = false;
+
+            // first check whether there is related coupling
+            foreach(CouplingInfo* checkedCouplingInfo, couplingInfos)
+            {
+                foreach(FieldInfo* checkedFieldInfo, blockFieldInfos)
+                {
+                    if(checkedCouplingInfo->isHard() && checkedCouplingInfo->isRelated(checkedFieldInfo))
+                    {
+                        //this coupling is related, add it to the block
+                        added = true;
+                        blockCouplingInfos.push_back(checkedCouplingInfo);
+                        couplingInfos.removeOne(checkedCouplingInfo);
+                    }
+                }
+            }
+
+            // check for fields related to allready included couplings
+            foreach(FieldInfo* checkedFieldInfo, fieldInfos)
+            {
+                foreach(CouplingInfo* checkedCouplingInfo, blockCouplingInfos)
+                {
+                    if(checkedCouplingInfo->isHard() && checkedCouplingInfo->isRelated(checkedFieldInfo))
+                    {
+                        //this field is related (by this coupling)
+                        added = true;
+
+                        //TODO for debugging only
+                        if(REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE)
+                            blockFieldInfos.push_front(checkedFieldInfo);
+                        else
+                            blockFieldInfos.push_back(checkedFieldInfo);
+
+                        fieldInfos.removeOne(checkedFieldInfo);
+                    }
+                }
+            }
+        }
+
+        // now all hard-coupled fields are here, create block
+        m_blocks.append(new Block(blockFieldInfos, blockCouplingInfos, m_progressItemSolve, this));
+    }
+
+
+    /// TODO Coupling
 //    if(hardCoupling) //TODO information about coupling method move to some CouplingInfo ...
 //    {
 //        QList<FieldInfo*> fieldInfosParam;
@@ -224,7 +296,7 @@ void Problem::createStructure()
 //        QList<Coupling*> couplingsParam;
 //        couplingsParam.append(heatElastCoup);
 
-//        m_blocks.append(new Block(fieldInfosParam, couplingsParam, m_progressItemSolve));
+//        m_blocks.append(new Block(fieldInfosParam, couplingsParam, m_progressItemSolve, this));
 //    }
 //    else
 //    {
@@ -306,7 +378,7 @@ void Problem::solve(SolverMode solverMode)
 
     createStructure();
 
-    Util::scene()->setActiveViewField(Util::scene()->fieldInfo("elasticity"));
+    Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
 
     mesh();
     emit meshed();
@@ -321,28 +393,31 @@ void Problem::solve(SolverMode solverMode)
     }
 
 
-//    foreach(Block* block, m_blocks)
+    /// TODO Coupling
+    foreach(Block* block, m_blocks)
+    {
+        block->solveInit();
+        block->solve();
+    }
+
+//    const int elastTODO = 0;  //TODO temp
+//    const int heatTODO = 1;   //TODO temp
+
+//    if(hardCoupling)
 //    {
-//        block->solveInit();
-//        block->solve();
+//        m_blocks[0]->solveInit();
+//        m_blocks[0]->solve();
+//    }
+//    else
+//    {
+//        m_blocks[heatTODO]->solveInit();
+//        m_blocks[heatTODO]->solve();
+
+//        m_blocks[elastTODO]->solveInit(m_blocks[heatTODO]->m_solutionList->at(0)->sln.get());
+//        m_blocks[elastTODO]->solve();
 //    }
 
-    const int elastTODO = 0;  //TODO temp
-    const int heatTODO = 1;   //TODO temp
 
-    if(hardCoupling)
-    {
-        m_blocks[0]->solveInit();
-        m_blocks[0]->solve();
-    }
-    else
-    {
-        m_blocks[heatTODO]->solveInit();
-        m_blocks[heatTODO]->solve();
-
-        m_blocks[elastTODO]->solveInit(m_blocks[heatTODO]->m_solutionList->at(0)->sln.get());
-        m_blocks[elastTODO]->solve();
-    }
     // delete temp file
     if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
     {

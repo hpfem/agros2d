@@ -2,6 +2,7 @@
 #define PROBLEM_H
 
 #include "util.h"
+#include "solver.h"
 
 template <typename Scalar>
 class WeakFormAgros;
@@ -9,14 +10,19 @@ class WeakFormAgros;
 template <typename Scalar>
 class SolutionArrayList;
 
+template <typename Scalar>
+class SolutionArray;
+
 class FieldInfo;
-struct Coupling;
+class CouplingInfo;
 
 class ProgressDialog;
 class ProgressItemMesh;
 class ProgressItemSolve;
 class ProgressItemSolveAdaptiveStep;
 class ProgressItemProcessView;
+
+class Problem;
 
 class Field
 {
@@ -38,7 +44,7 @@ public:
 class Block
 {
 public:
-    Block(QList<FieldInfo*> fieldInfos, QList<Coupling*> couplings, ProgressItemSolve* progressItemSolve);
+    Block(QList<FieldInfo*> fieldInfos, QList<CouplingInfo*> couplings, ProgressItemSolve* progressItemSolve, Problem* parent);
 
     bool solveInit(Hermes::Hermes2D::Solution<double>* sourceSolution = NULL);
     void solve();
@@ -61,11 +67,13 @@ public:
 
 public:
 //private:
+    Problem* m_parentProblem;
+
     WeakFormAgros<double> *m_wf;
     SolutionArrayList<double> *m_solutionList;
 
     QList<Field*> m_fields;
-    QList<Coupling*> m_couplings;
+    QList<CouplingInfo*> m_couplings;
     ProgressItemSolve* m_progressItemSolve;
 };
 
@@ -98,6 +106,10 @@ public:
 
     void postprocess();
 
+    // should store all solutionArrays that have been calculated
+    SolutionArray<double> solution(FieldInfo* fieldInfo, int component, int timeStep = 0, int adaptivityStep = 0);
+    void setSolution(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, QList<SolutionArray<double> > solution);
+
     // progress dialog
     ProgressDialog* progressDialog();
 
@@ -124,7 +136,7 @@ public:
 //private:
     QList<Block*> m_blocks;
 
-    QList<Coupling*> m_couplings;
+    QList<CouplingInfo*> m_couplings;
 
     // progress dialog
     ProgressDialog *m_progressDialog;

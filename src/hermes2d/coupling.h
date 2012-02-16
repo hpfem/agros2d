@@ -63,10 +63,14 @@ public:
 
     QString couplingId() { if(m_coupling) return QString::fromStdString(m_coupling->id); return "None"; }
     CouplingType couplingType() { return m_couplingType; }
+    inline bool isHard() { return m_couplingType == CouplingType_Hard;}
+    inline bool isWeak() { return m_couplingType == CouplingType_Weak;}
     void setCouplingType(CouplingType couplingType);
 
     inline FieldInfo* sourceField() {return m_sourceField; }
     inline FieldInfo* targetField() {return m_targetField; }
+
+    bool isRelated(FieldInfo* fieldInfo) { return((fieldInfo == sourceField()) || (fieldInfo == targetField())); }
 
     /// weakforms
     WeakFormsType weakFormsType;

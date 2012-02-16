@@ -212,16 +212,17 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, /* FieldInfo* fieldInfo,*/
 //            custom_form->ext.push_back(solution.at(solution.size() - fieldInfo->module()->number_of_solution() + sol_comp));
 
 
+        /// weak coupling ... push solution...
     //TODO COUPLING, redo..
     //*************************************
-    if(!hardCoupling)
-    {
-        //assert(fieldInfo->analysisType() == AnalysisType_SteadyState);
-        if(m_sourceSolution){
-            printf("pushing coupled field\n");
-            custom_form->ext.push_back(m_sourceSolution);
-        }
-    }
+//    if(!hardCoupling)
+//    {
+//        //assert(fieldInfo->analysisType() == AnalysisType_SteadyState);
+//        if(m_sourceSolution){
+//            printf("pushing coupled field\n");
+//            custom_form->ext.push_back(m_sourceSolution);
+//        }
+//    }
     //*****************************************
 
 
@@ -284,10 +285,12 @@ void WeakFormAgros<Scalar>::registerForms()
 
                 Hermes::vector<ParserFormExpression *> weakform_vector_volume = fieldInfo->module()->weakform_vector_volume;
 
-                assert(m_block->m_couplings.size() <= 1);
-                if(m_block->m_couplings.size() && (!hardCoupling))
-                    weakform_vector_volume.insert(weakform_vector_volume.begin(), m_block->m_couplings.at(0)->weakform_vector_volume.begin(),
-                                                  m_block->m_couplings.at(0)->weakform_vector_volume.end());
+
+                /// TODO weak coupling
+//                assert(m_block->m_couplings.size() <= 1);
+//                if(m_block->m_couplings.size() && (!hardCoupling))
+//                    weakform_vector_volume.insert(weakform_vector_volume.begin(), m_block->m_couplings.at(0)->weakform_vector_volume.begin(),
+//                                                  m_block->m_couplings.at(0)->weakform_vector_volume.end());
 
                 for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_vector_volume.begin();
                      it < weakform_vector_volume.end(); ++it)
@@ -300,44 +303,46 @@ void WeakFormAgros<Scalar>::registerForms()
         }
     }
 
-    if(m_block->m_couplings.size() && (hardCoupling))
-    {
 
-        assert(0);
-        Coupling* coupling = m_block->m_couplings.at(0);
-        Field* sourceField;// = m_block->field(coupling->sourceField);
-        Field* targetField;// = m_block->field(coupling->targetField);
+    /// TODO hard coupling
+//    if(m_block->m_couplings.size() && (hardCoupling))
+//    {
 
-        //TODO
-        for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();
-             it < coupling->weakform_matrix_volume.end(); ++it)
-        {
-            //TODO
-            // jak vybirat material pro sdruzeni? Melo by se vzit "sjednoceni" materialu obou poli?
-            int i = 0;
-            SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(targetField->fieldInfo());
-            //TODO
-            //TODO
+//        assert(0);
+//        Coupling* coupling = m_block->m_couplings.at(0);
+//        Field* sourceField;// = m_block->field(coupling->sourceField);
+//        Field* targetField;// = m_block->field(coupling->targetField);
 
-            registerForm(WFType_MatVol, /*fieldInfo,*/ QString::number(i).toStdString(), material,
-                         (ParserFormExpression *) *it, m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField));
-        }
+//        //TODO
+//        for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();
+//             it < coupling->weakform_matrix_volume.end(); ++it)
+//        {
+//            //TODO
+//            // jak vybirat material pro sdruzeni? Melo by se vzit "sjednoceni" materialu obou poli?
+//            int i = 0;
+//            SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(targetField->fieldInfo());
+//            //TODO
+//            //TODO
 
-        for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_vector_volume.begin();
-             it < coupling->weakform_vector_volume.end(); ++it)
-        {
-            //TODO
-            //TODO
-            // jak vybirat material pro sdruzeni? Melo by se vzit "sjednoceni" materialu obou poli?
-            int i = 0;
-            SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(targetField->fieldInfo());
-            //TODO
-            //TODO
+//            registerForm(WFType_MatVol, /*fieldInfo,*/ QString::number(i).toStdString(), material,
+//                         (ParserFormExpression *) *it, m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField));
+//        }
 
-            registerForm(WFType_VecVol, /*fieldInfo,*/ QString::number(i).toStdString(), material,
-                         (ParserFormExpression *) *it, m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField));
-        }
-    }
+//        for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_vector_volume.begin();
+//             it < coupling->weakform_vector_volume.end(); ++it)
+//        {
+//            //TODO
+//            //TODO
+//            // jak vybirat material pro sdruzeni? Melo by se vzit "sjednoceni" materialu obou poli?
+//            int i = 0;
+//            SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(targetField->fieldInfo());
+//            //TODO
+//            //TODO
+
+//            registerForm(WFType_VecVol, /*fieldInfo,*/ QString::number(i).toStdString(), material,
+//                         (ParserFormExpression *) *it, m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField));
+//        }
+//    }
 
 }
 
