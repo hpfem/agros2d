@@ -538,6 +538,9 @@ void FieldTabWidget::removeFieldTab(FieldInfo *fieldInfo)
 
 void FieldTabWidget::doRemoveFieldRequested(int index)
 {
+    if(m_haveCouplingsTab && (index == count()-1))
+        return;
+
     // remove field
     FieldWidget *wid = dynamic_cast<FieldWidget *>(widget(index));
 
