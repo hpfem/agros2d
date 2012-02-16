@@ -462,11 +462,11 @@ QWidget *PostprocessorView::controlsPosprocessor()
     double minWidth = 110;
 
     // scalar field
+    // palette
     cmbPalette = new QComboBox();
     cmbPalette->addItem(tr("Jet"), Palette_Jet);
     cmbPalette->addItem(tr("Hot"), Palette_Hot);
     cmbPalette->addItem(tr("Copper"), Palette_Copper);
-    cmbPalette->addItem(tr("Hot"), Palette_Hot);
     cmbPalette->addItem(tr("Cool"), Palette_Cool);
     cmbPalette->addItem(tr("Bone"), Palette_Bone);
     cmbPalette->addItem(tr("Pink"), Palette_Pink);
@@ -478,6 +478,7 @@ QWidget *PostprocessorView::controlsPosprocessor()
     cmbPalette->addItem(tr("B/W ascending"), Palette_BWAsc);
     cmbPalette->addItem(tr("B/W descending"), Palette_BWDesc);
 
+    // quality
     cmbLinearizerQuality = new QComboBox();
     cmbLinearizerQuality->addItem(tr("Extremely coarse"), 0.01);
     cmbLinearizerQuality->addItem(tr("Extra coarse"), 0.007);
@@ -491,43 +492,53 @@ QWidget *PostprocessorView::controlsPosprocessor()
     chkPaletteFilter = new QCheckBox(tr("Filter"));
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
 
+    // steps
     txtPaletteSteps = new QSpinBox(this);
     txtPaletteSteps->setMinimum(5);
     txtPaletteSteps->setMaximum(100);
-
-    chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
 
     // log scale
     chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
     txtScalarFieldRangeBase = new SLineEditDouble(SCALARFIELDRANGEBASE);
     connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
 
+    QGridLayout *gridLayoutScalarFieldPalette = new QGridLayout();
+    gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Palette:")), 0, 0);
+    gridLayoutScalarFieldPalette->addWidget(cmbPalette, 0, 1, 1, 2);
+    gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Quality:")), 1, 0);
+    gridLayoutScalarFieldPalette->addWidget(cmbLinearizerQuality, 1, 1, 1, 2);
+    gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Steps:")), 2, 0);
+    gridLayoutScalarFieldPalette->addWidget(txtPaletteSteps, 2, 1);
+    gridLayoutScalarFieldPalette->addWidget(chkPaletteFilter, 2, 2);
+    gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Base:")), 3, 0);
+    gridLayoutScalarFieldPalette->addWidget(txtScalarFieldRangeBase, 3, 1);
+    gridLayoutScalarFieldPalette->addWidget(chkScalarFieldRangeLog, 3, 2);
+
+    QGroupBox *grpScalarFieldPallete = new QGroupBox(tr("Palette"));
+    grpScalarFieldPallete->setLayout(gridLayoutScalarFieldPalette);
+
+    // decimal places
     txtScalarDecimalPlace = new QSpinBox(this);
     txtScalarDecimalPlace->setMinimum(1);
     txtScalarDecimalPlace->setMaximum(10);
 
+    // color bar
+    chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
+
+    QGridLayout *gridLayoutScalarFieldColorbar = new QGridLayout();
+    gridLayoutScalarFieldColorbar->addWidget(new QLabel(tr("Decimal places:")), 0, 0);
+    gridLayoutScalarFieldColorbar->addWidget(txtScalarDecimalPlace, 0, 1);
+    gridLayoutScalarFieldColorbar->addWidget(chkShowScalarColorBar, 1, 0, 1, 2);
+
+    QGroupBox *grpScalarFieldColorbar = new QGroupBox(tr("Colorbar"));
+    grpScalarFieldColorbar->setLayout(gridLayoutScalarFieldColorbar);
+
     QPushButton *btnScalarFieldDefault = new QPushButton(tr("Default"));
     connect(btnScalarFieldDefault, SIGNAL(clicked()), this, SLOT(doScalarFieldDefault()));
 
-    QGridLayout *gridLayoutScalarField = new QGridLayout();
-    gridLayoutScalarField->setColumnMinimumWidth(0, minWidth);
-    gridLayoutScalarField->setColumnStretch(1, 1);
-    gridLayoutScalarField->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    gridLayoutScalarField->addWidget(cmbPalette, 0, 1, 1, 2);
-    gridLayoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 0);
-    gridLayoutScalarField->addWidget(txtPaletteSteps, 1, 1);
-    gridLayoutScalarField->addWidget(chkPaletteFilter, 1, 2);
-    gridLayoutScalarField->addWidget(new QLabel(tr("Quality:")), 2, 0);
-    gridLayoutScalarField->addWidget(cmbLinearizerQuality, 2, 1, 1, 2);
-    gridLayoutScalarField->addWidget(new QLabel(tr("Base:")), 3, 0);
-    gridLayoutScalarField->addWidget(txtScalarFieldRangeBase, 3, 1);
-    gridLayoutScalarField->addWidget(chkScalarFieldRangeLog, 3, 2);
-    gridLayoutScalarField->addWidget(new QLabel(tr("Decimal places:")), 4, 0);
-    gridLayoutScalarField->addWidget(txtScalarDecimalPlace, 4, 1);
-    gridLayoutScalarField->addWidget(chkShowScalarColorBar, 5, 0, 1, 2);
-
     QVBoxLayout *layoutScalarField = new QVBoxLayout();
-    layoutScalarField->addLayout(gridLayoutScalarField);
+    layoutScalarField->addWidget(grpScalarFieldPallete);
+    layoutScalarField->addWidget(grpScalarFieldColorbar);
     layoutScalarField->addStretch();
     layoutScalarField->addWidget(btnScalarFieldDefault, 0, Qt::AlignLeft);
 
