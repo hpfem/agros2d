@@ -289,11 +289,13 @@ void PostprocessorView::createControls()
 
     // tab widget
     basic = controlsBasic();
-    advanced = controlsAdvanced();
+    postprocessor = controlsPosprocessor();
+    workspace = controlsWorkspace();
 
     QTabWidget *tabType = new QTabWidget(this);
     tabType->addTab(basic, icon(""), tr("Basic"));
-    tabType->addTab(advanced, icon(""), tr("Advanced"));
+    tabType->addTab(postprocessor, icon(""), tr("Postprocessor"));
+    tabType->addTab(workspace, icon(""), tr("Workspace"));
 
     // dialog buttons
     btnOK = new QPushButton(tr("Apply"));
@@ -453,90 +455,11 @@ QWidget *PostprocessorView::controlsBasic()
     return widget;
 }
 
-QWidget *PostprocessorView::controlsAdvanced()
+QWidget *PostprocessorView::controlsPosprocessor()
 {
     logMessage("PostprocessorView::controlsAdvanced()");
 
     double minWidth = 110;
-
-    // workspace
-    txtGridStep = new QLineEdit("0.1");
-    txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
-    chkShowGrid = new QCheckBox(tr("Show grid"));
-    connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
-    chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
-    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
-
-    QGridLayout *layoutGrid = new QGridLayout();
-    layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
-    layoutGrid->addWidget(txtGridStep, 0, 1);
-    layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
-    layoutGrid->addWidget(chkSnapToGrid, 2, 0, 1, 2);
-    layoutGrid->addWidget(chkZoomToMouse, 3, 0, 1, 2);
-
-    QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
-    grpGrid->setLayout(layoutGrid);
-
-    lblSceneFontExample = new QLabel(QString("%1, %2").arg(Util::config()->sceneFont.family()).arg(Util::config()->sceneFont.pointSize()));
-
-    btnSceneFont = new QPushButton(tr("Set font"));
-    connect(btnSceneFont, SIGNAL(clicked()), this, SLOT(doSceneFont()));
-
-    QGridLayout *layoutFont = new QGridLayout();
-    layoutFont->addWidget(lblSceneFontExample, 0, 1);
-    layoutFont->addWidget(btnSceneFont, 0, 2);
-
-    QGroupBox *grpFont = new QGroupBox(tr("Scene font"));
-    grpFont->setLayout(layoutFont);
-
-    // geometry
-    txtGeometryNodeSize = new QSpinBox();
-    txtGeometryNodeSize->setMinimum(1);
-    txtGeometryNodeSize->setMaximum(20);
-    txtGeometryEdgeWidth = new QSpinBox();
-    txtGeometryEdgeWidth->setMinimum(1);
-    txtGeometryEdgeWidth->setMaximum(20);
-    txtGeometryLabelSize = new QSpinBox();
-    txtGeometryLabelSize->setMinimum(1);
-    txtGeometryLabelSize->setMaximum(20);
-
-    QGridLayout *layoutGeometry = new QGridLayout();
-    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 0, 0);
-    layoutGeometry->addWidget(txtGeometryNodeSize, 0, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 1, 0);
-    layoutGeometry->addWidget(txtGeometryEdgeWidth, 1, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 2, 0);
-    layoutGeometry->addWidget(txtGeometryLabelSize, 2, 1);
-
-    QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
-    grpGeometry->setLayout(layoutGeometry);
-
-    // other
-    chkShowRulers = new QCheckBox(tr("Show rulers"));
-    chkShowAxes = new QCheckBox(tr("Show axes"));
-    chkShowLabel = new QCheckBox(tr("Show label"));
-
-    QVBoxLayout *layoutOther = new QVBoxLayout();
-    layoutOther->addWidget(chkShowAxes);
-    layoutOther->addWidget(chkShowRulers);
-    layoutOther->addWidget(chkShowLabel);
-
-    QGroupBox *grpOther = new QGroupBox(tr("Other"));
-    grpOther->setLayout(layoutOther);
-
-    QPushButton *btnWorkspaceDefault = new QPushButton(tr("Default"));
-    connect(btnWorkspaceDefault, SIGNAL(clicked()), this, SLOT(doWorkspaceDefault()));
-
-    QVBoxLayout *layoutWorkspace = new QVBoxLayout();
-    layoutWorkspace->addWidget(grpGrid);
-    layoutWorkspace->addWidget(grpFont);
-    layoutWorkspace->addWidget(grpGeometry);
-    layoutWorkspace->addWidget(grpOther);
-    layoutWorkspace->addStretch();
-    layoutWorkspace->addWidget(btnWorkspaceDefault, 0, Qt::AlignLeft);
-
-    QWidget *workspaceWidget = new QWidget();
-    workspaceWidget->setLayout(layoutWorkspace);
 
     // scalar field
     cmbPalette = new QComboBox();
@@ -574,6 +497,15 @@ QWidget *PostprocessorView::controlsAdvanced()
 
     chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
 
+    // log scale
+    chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
+    txtScalarFieldRangeBase = new SLineEditDouble(SCALARFIELDRANGEBASE);
+    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
+
+    txtScalarDecimalPlace = new QSpinBox(this);
+    txtScalarDecimalPlace->setMinimum(1);
+    txtScalarDecimalPlace->setMaximum(10);
+
     QPushButton *btnScalarFieldDefault = new QPushButton(tr("Default"));
     connect(btnScalarFieldDefault, SIGNAL(clicked()), this, SLOT(doScalarFieldDefault()));
 
@@ -587,7 +519,12 @@ QWidget *PostprocessorView::controlsAdvanced()
     gridLayoutScalarField->addWidget(chkPaletteFilter, 1, 2);
     gridLayoutScalarField->addWidget(new QLabel(tr("Quality:")), 2, 0);
     gridLayoutScalarField->addWidget(cmbLinearizerQuality, 2, 1, 1, 2);
-    gridLayoutScalarField->addWidget(chkShowScalarColorBar, 3, 0, 1, 2);
+    gridLayoutScalarField->addWidget(new QLabel(tr("Base:")), 3, 0);
+    gridLayoutScalarField->addWidget(txtScalarFieldRangeBase, 3, 1);
+    gridLayoutScalarField->addWidget(chkScalarFieldRangeLog, 3, 2);
+    gridLayoutScalarField->addWidget(new QLabel(tr("Decimal places:")), 4, 0);
+    gridLayoutScalarField->addWidget(txtScalarDecimalPlace, 4, 1);
+    gridLayoutScalarField->addWidget(chkShowScalarColorBar, 5, 0, 1, 2);
 
     QVBoxLayout *layoutScalarField = new QVBoxLayout();
     layoutScalarField->addLayout(gridLayoutScalarField);
@@ -807,26 +744,107 @@ QWidget *PostprocessorView::controlsAdvanced()
     QWidget *particleWidget = new QWidget();
     particleWidget->setLayout(layoutParticle);
 
+    tbxPostprocessor = new QToolBox();
+    tbxPostprocessor->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
+    tbxPostprocessor->addItem(contoursWidget, icon(""), tr("Contours"));
+    tbxPostprocessor->addItem(vectorFieldWidget, icon(""), tr("Vector field"));
+    tbxPostprocessor->addItem(orderWidget, icon(""), tr("Polynomial order"));
+    tbxPostprocessor->addItem(particleWidget, icon(""), tr("Particle tracing"));
+
+    // layout postprocessor
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(tbxPostprocessor);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
+QWidget *PostprocessorView::controlsWorkspace()
+{
+    logMessage("PostprocessorView::controlsWorkspace()");
+
+    // workspace
+    txtGridStep = new QLineEdit("0.1");
+    txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
+    chkShowGrid = new QCheckBox(tr("Show grid"));
+    connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
+    chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
+    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
+
+    QGridLayout *layoutGrid = new QGridLayout();
+    layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
+    layoutGrid->addWidget(txtGridStep, 0, 1);
+    layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
+    layoutGrid->addWidget(chkSnapToGrid, 2, 0, 1, 2);
+    layoutGrid->addWidget(chkZoomToMouse, 3, 0, 1, 2);
+
+    QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
+    grpGrid->setLayout(layoutGrid);
+
+    lblSceneFontExample = new QLabel(QString("%1, %2").arg(Util::config()->sceneFont.family()).arg(Util::config()->sceneFont.pointSize()));
+
+    btnSceneFont = new QPushButton(tr("Set font"));
+    connect(btnSceneFont, SIGNAL(clicked()), this, SLOT(doSceneFont()));
+
+    QGridLayout *layoutFont = new QGridLayout();
+    layoutFont->addWidget(lblSceneFontExample, 0, 1);
+    layoutFont->addWidget(btnSceneFont, 0, 2);
+
+    QGroupBox *grpFont = new QGroupBox(tr("Scene font"));
+    grpFont->setLayout(layoutFont);
+
+    // geometry
+    txtGeometryNodeSize = new QSpinBox();
+    txtGeometryNodeSize->setMinimum(1);
+    txtGeometryNodeSize->setMaximum(20);
+    txtGeometryEdgeWidth = new QSpinBox();
+    txtGeometryEdgeWidth->setMinimum(1);
+    txtGeometryEdgeWidth->setMaximum(20);
+    txtGeometryLabelSize = new QSpinBox();
+    txtGeometryLabelSize->setMinimum(1);
+    txtGeometryLabelSize->setMaximum(20);
+
+    QGridLayout *layoutGeometry = new QGridLayout();
+    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 0, 0);
+    layoutGeometry->addWidget(txtGeometryNodeSize, 0, 1);
+    layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 1, 0);
+    layoutGeometry->addWidget(txtGeometryEdgeWidth, 1, 1);
+    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 2, 0);
+    layoutGeometry->addWidget(txtGeometryLabelSize, 2, 1);
+
+    QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
+    grpGeometry->setLayout(layoutGeometry);
+
+    // other
+    chkShowRulers = new QCheckBox(tr("Show rulers"));
+    chkShowAxes = new QCheckBox(tr("Show axes"));
+    chkShowLabel = new QCheckBox(tr("Show label"));
+
+    QVBoxLayout *layoutOther = new QVBoxLayout();
+    layoutOther->addWidget(chkShowAxes);
+    layoutOther->addWidget(chkShowRulers);
+    layoutOther->addWidget(chkShowLabel);
+
+    QGroupBox *grpOther = new QGroupBox(tr("Other"));
+    grpOther->setLayout(layoutOther);
+
+    QPushButton *btnWorkspaceDefault = new QPushButton(tr("Default"));
+    connect(btnWorkspaceDefault, SIGNAL(clicked()), this, SLOT(doWorkspaceDefault()));
+
+    QVBoxLayout *layoutWorkspace = new QVBoxLayout();
+    layoutWorkspace->addWidget(grpGrid);
+    layoutWorkspace->addWidget(grpFont);
+    layoutWorkspace->addWidget(grpGeometry);
+    layoutWorkspace->addWidget(grpOther);
+    layoutWorkspace->addStretch();
+    layoutWorkspace->addWidget(btnWorkspaceDefault, 0, Qt::AlignLeft);
+
+    QWidget *workspaceWidget = new QWidget();
+    workspaceWidget->setLayout(layoutWorkspace);
+
     // advanced
-    // scalar view log scale
-    chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
-    txtScalarFieldRangeBase = new SLineEditDouble(SCALARFIELDRANGEBASE);
-    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
-
-    txtScalarDecimalPlace = new QSpinBox(this);
-    txtScalarDecimalPlace->setMinimum(1);
-    txtScalarDecimalPlace->setMaximum(10);
-
-    QGridLayout *layoutScalarFieldAdvanced = new QGridLayout();
-    layoutScalarFieldAdvanced->addWidget(new QLabel(tr("Base:")), 0, 0);
-    layoutScalarFieldAdvanced->addWidget(txtScalarFieldRangeBase, 0, 1);
-    layoutScalarFieldAdvanced->addWidget(chkScalarFieldRangeLog, 0, 2);
-    layoutScalarFieldAdvanced->addWidget(new QLabel(tr("Decimal places:")), 1, 0);
-    layoutScalarFieldAdvanced->addWidget(txtScalarDecimalPlace, 1, 1);
-
-    QGroupBox *grpScalarField = new QGroupBox(tr("Scalar view"));
-    grpScalarField->setLayout(layoutScalarFieldAdvanced);
-
     // layout 3d
     chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
     txtView3DAngle = new QDoubleSpinBox(this);
@@ -849,7 +867,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     layout3D->addWidget(txtView3DHeight, 1, 2);
     layout3D->addWidget(chkView3DBackground, 1, 3);
 
-    QGroupBox *grp3D = new QGroupBox(tr("3D"));
+    QGroupBox *grp3D = new QGroupBox(tr("3D view"));
     grp3D->setLayout(layout3D);
 
     // layout deform shape
@@ -870,7 +888,6 @@ QWidget *PostprocessorView::controlsAdvanced()
 
     // layout postprocessor
     QVBoxLayout *layoutAdvanced = new QVBoxLayout();
-    layoutAdvanced->addWidget(grpScalarField);
     layoutAdvanced->addWidget(grp3D);
     layoutAdvanced->addWidget(grpDeformShape);
     layoutAdvanced->addStretch();
@@ -879,18 +896,13 @@ QWidget *PostprocessorView::controlsAdvanced()
     QWidget *advancedWidget = new QWidget(this);
     advancedWidget->setLayout(layoutAdvanced);
 
-    tbxAdvance = new QToolBox();
-    tbxAdvance->addItem(workspaceWidget, icon(""), tr("Workspace"));
-    tbxAdvance->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
-    tbxAdvance->addItem(contoursWidget, icon(""), tr("Contours"));
-    tbxAdvance->addItem(vectorFieldWidget, icon(""), tr("Vector field"));
-    tbxAdvance->addItem(orderWidget, icon(""), tr("Polynomial order"));
-    tbxAdvance->addItem(particleWidget, icon(""), tr("Particle tracing"));
-    tbxAdvance->addItem(advancedWidget, icon(""), tr("Advanced"));
+    tbxWorkspace = new QToolBox();
+    tbxWorkspace->addItem(workspaceWidget, icon(""), tr("Workspace"));
+    tbxWorkspace->addItem(advancedWidget, icon(""), tr("Advanced"));
 
-    // layout postprocessor
+    // layout workspace
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tbxAdvance);
+    layout->addWidget(tbxWorkspace);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -1087,6 +1099,9 @@ void PostprocessorView::doScalarFieldDefault()
     txtPaletteSteps->setValue(PALETTESTEPS);
     cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(LINEARIZER_QUALITY));
     chkShowScalarColorBar->setChecked(SCALARCOLORBAR);
+    chkScalarFieldRangeLog->setChecked(SCALARFIELDRANGELOG);
+    txtScalarFieldRangeBase->setValue(SCALARFIELDRANGEBASE);
+    txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
 }
 
 void PostprocessorView::doContoursDefault()
@@ -1141,10 +1156,6 @@ void PostprocessorView::doParticleDefault()
 void PostprocessorView::doAdvancedDefault()
 {
     logMessage("PostprocessorView::doAdvancedDefault()");
-
-    chkScalarFieldRangeLog->setChecked(SCALARFIELDRANGELOG);
-    txtScalarFieldRangeBase->setValue(SCALARFIELDRANGEBASE);
-    txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
 
     chkView3DLighting->setChecked(VIEW3DLIGHTING);
     txtView3DAngle->setValue(VIEW3DANGLE);
