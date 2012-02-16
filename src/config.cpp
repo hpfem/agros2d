@@ -117,12 +117,24 @@ void Config::loadWorkspace()
     showLabel = settings.value("SceneViewSettings/ShowLabel", SHOWLABEL).toBool();
 }
 
+void Config::loadPostprocessor(QDomElement *config)
+{
+    if (config)
+        eleConfig = config;
+
+    loadPostprocessor();
+
+    eleConfig = NULL;
+}
+
 void Config::loadPostprocessor()
-{    
+{
+    QSettings settings;
+
     // linearizer quality
     linearizerQuality = readConfig("SceneViewSettings/LinearizerQuality", LINEARIZER_QUALITY);
 
-    // countour
+    // contour
     contoursCount = readConfig("SceneViewSettings/ContoursCount", CONTOURSCOUNT);
 
     // scalar view
@@ -146,9 +158,9 @@ void Config::loadPostprocessor()
     orderLabel = readConfig("SceneViewSettings/OrderLabel", ORDERLABEL);
 
     // deformations
-    deformScalar = readConfig("SceneViewSettings/DeformScalar", true);
-    deformContour = readConfig("SceneViewSettings/DeformContour", true);
-    deformVector = readConfig("SceneViewSettings/DeformVector", true);
+    deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
+    deformContour = settings.value("SceneViewSettings/DeformContour", true).toBool();
+    deformVector = settings.value("SceneViewSettings/DeformVector", true).toBool();
 
     // particle tracing
     particleIncludeGravitation = readConfig("SceneViewSettings/ParticleIncludeGravitation", PARTICLEINCLUDEGRAVITATION);
@@ -170,10 +182,10 @@ void Config::loadPostprocessor()
     particleDragReferenceArea = readConfig("SceneViewSettings/ParticleDragReferenceArea", PARTICLEDRAGREFERENCEAREA);
 
     // 3d
-    scalarView3DLighting = readConfig("SceneViewSettings/ScalarView3DLighting", false);
-    scalarView3DAngle = readConfig("SceneViewSettings/ScalarView3DAngle", 270);
-    scalarView3DBackground = readConfig("SceneViewSettings/ScalarView3DBackground", true);
-    scalarView3DHeight = readConfig("SceneViewSettings/ScalarView3DHeight", 4.0);
+    scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
+    scalarView3DAngle = settings.value("SceneViewSettings/ScalarView3DAngle", 270).toDouble();
+    scalarView3DBackground = settings.value("SceneViewSettings/ScalarView3DBackground", true).toBool();
+    scalarView3DHeight = settings.value("SceneViewSettings/ScalarView3DHeight", 4.0).toDouble();
 }
 
 void Config::loadAdvanced()
@@ -200,31 +212,11 @@ void Config::loadAdvanced()
     globalScript = settings.value("Python/GlobalScript", "").toString();
 }
 
-void Config::loadPostprocessor(QDomElement *config)
-{
-    if (config)
-        eleConfig = config;
-
-    loadPostprocessor();
-
-    eleConfig = NULL;
-}
-
 void Config::save()
 {
     saveWorkspace();
     savePostprocessor();
     saveAdvanced();
-}
-
-void Config::savePostprocessor(QDomElement *config)
-{
-    if (config)
-        eleConfig = config;
-
-    savePostprocessor();
-
-    eleConfig = NULL;
 }
 
 void Config::saveWorkspace()
@@ -303,12 +295,24 @@ void Config::saveWorkspace()
     settings.setValue("SceneViewSettings/ShowLabel", showLabel);
 }
 
+void Config::savePostprocessor(QDomElement *config)
+{
+    if (config)
+        eleConfig = config;
+
+    savePostprocessor();
+
+    eleConfig = NULL;
+}
+
 void Config::savePostprocessor()
 {
-    // linearizer quality
-    writeConfig("SceneViewSettings/LinearizerQuality", linearizerQuality);
+    QSettings settings;
 
-    // countour
+    // linearizer quality
+    settings.setValue("SceneViewSettings/LinearizerQuality", linearizerQuality);
+
+    // contour
     writeConfig("SceneViewSettings/ContoursCount", contoursCount);
 
     // scalar view
@@ -332,9 +336,9 @@ void Config::savePostprocessor()
     writeConfig("SceneViewSettings/OrderLabel", orderLabel);
 
     // deformations
-    writeConfig("SceneViewSettings/DeformScalar", deformScalar);
-    writeConfig("SceneViewSettings/DeformContour", deformContour);
-    writeConfig("SceneViewSettings/DeformVector", deformVector);
+    settings.setValue("SceneViewSettings/DeformScalar", deformScalar);
+    settings.setValue("SceneViewSettings/DeformContour", deformContour);
+    settings.setValue("SceneViewSettings/DeformVector", deformVector);
 
     // particle tracing
     writeConfig("SceneViewSettings/ParticleIncludeGravitation", particleIncludeGravitation);
@@ -356,10 +360,10 @@ void Config::savePostprocessor()
     writeConfig("SceneViewSettings/ParticleDragReferenceArea", particleDragReferenceArea);
 
     // 3d
-    writeConfig("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
-    writeConfig("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
-    writeConfig("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
-    writeConfig("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
+    settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
+    settings.setValue("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
+    settings.setValue("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
+    settings.setValue("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
 }
 
 void Config::saveAdvanced()
@@ -429,9 +433,6 @@ void Config::writeConfig(const QString &key, bool value)
         QString att = key; att.replace("/", "_");
         eleConfig->setAttribute(att, value);
     }
-
-    QSettings settings;
-    settings.setValue(key, value);
 }
 
 void Config::writeConfig(const QString &key, int value)
@@ -441,9 +442,6 @@ void Config::writeConfig(const QString &key, int value)
         QString att = key; att.replace("/", "_");
         eleConfig->setAttribute(att, value);
     }
-
-    QSettings settings;
-    settings.setValue(key, value);
 }
 
 void Config::writeConfig(const QString &key, double value)
@@ -453,7 +451,4 @@ void Config::writeConfig(const QString &key, double value)
         QString att = key; att.replace("/", "_");
         eleConfig->setAttribute(att, value);
     }
-
-    QSettings settings;
-    settings.setValue(key, value);
 }
