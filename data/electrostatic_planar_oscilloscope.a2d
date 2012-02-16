@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="unnamed" date="2012-01-22" polynomialorder="2" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="2" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="1.0">
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Electrostatic Osciloscope" date="2012-01-22" polynomialorder="2" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="2" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="1.0">
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>

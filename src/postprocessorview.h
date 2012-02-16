@@ -39,7 +39,8 @@ private:
     SceneView *m_sceneView;
 
     QWidget *basic;
-    QWidget *advanced;
+    QWidget *postprocessor;
+    QWidget *workspace;
 
     // basic
     // show
@@ -70,6 +71,9 @@ private:
     SLineEditDouble *txtScalarFieldRangeMax;
     QLabel *lblScalarFieldRangeMinError;
     QLabel *lblScalarFieldRangeMaxError;
+    QCheckBox *chkScalarFieldRangeLog;
+    SLineEditDouble *txtScalarFieldRangeBase;
+    QSpinBox *txtScalarDecimalPlace;
 
     // vector field
     QComboBox *cmbVectorFieldVariable;
@@ -143,9 +147,6 @@ private:
     SLineEditDouble *txtParticleDragReferenceArea;
 
     // advanced
-    QCheckBox *chkScalarFieldRangeLog;
-    SLineEditDouble *txtScalarFieldRangeBase;
-    QSpinBox *txtScalarDecimalPlace;
     QCheckBox *chkView3DLighting;
     QDoubleSpinBox *txtView3DAngle;
     QCheckBox *chkView3DBackground;
@@ -154,7 +155,8 @@ private:
     QCheckBox *chkDeformContour;
     QCheckBox *chkDeformVector;
 
-    QToolBox *tbxAdvance;
+    QToolBox *tbxPostprocessor;
+    QToolBox *tbxWorkspace;
     QPushButton *btnOK;
 
     void loadBasic();
@@ -164,7 +166,8 @@ private:
 
     void createControls();
     QWidget *controlsBasic();
-    QWidget *controlsAdvanced();
+    QWidget *controlsPosprocessor();
+    QWidget *controlsWorkspace();
 
 signals:
     void apply();
