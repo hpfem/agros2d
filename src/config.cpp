@@ -384,7 +384,7 @@ bool Config::readConfig(const QString &key, bool defaultValue)
             return (eleConfig->attribute(att).toInt() == 1) ? true : false;
     }
 
-    return defaultValue
+    return defaultValue;
 }
 
 int Config::readConfig(const QString &key, int defaultValue)
@@ -396,7 +396,7 @@ int Config::readConfig(const QString &key, int defaultValue)
             return eleConfig->attribute(att).toInt();
     }
 
-    return defaultValue
+    return defaultValue;
 }
 
 double Config::readConfig(const QString &key, double defaultValue)
@@ -408,7 +408,7 @@ double Config::readConfig(const QString &key, double defaultValue)
             return eleConfig->attribute(att).toDouble();
     }
 
-    return defaultValue
+    return defaultValue;
 }
 
 void Config::writeConfig(const QString &key, bool value)
