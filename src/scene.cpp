@@ -898,11 +898,12 @@ void Scene::transformTranslate(const Point &point, bool copy)
             double ud = node->point.x * cos(angle) + node->point.y * sin(angle);
 
             QMap<int, double> mapka;
-            mapka.insert(index,ud);
+            mapka.insert(index, ud);
 
+            qDebug("Index = %d", index);
+            qDebug("ud = %f", ud);
             //sortedNodes.append(nodes.at(index));
-            double num1 = mapka[index];
-            qDebug()<<num1;
+
         }
 
 
