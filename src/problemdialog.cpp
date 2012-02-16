@@ -164,7 +164,7 @@ void FieldWidget::createContent()
 
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
-    connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), m_problemDialog, SLOT(doFindCouplings()));
+    //connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), m_problemDialog, SLOT(doFindCouplings()));
 
     connect(cmbLinearityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doLinearityTypeChanged(int)));
 
@@ -390,6 +390,7 @@ CouplingsWidget::CouplingsWidget(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingIn
     QWidget(parent), m_couplingInfos(couplingInfos)
 {
     connect(parent, SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
+    layoutTable = NULL;
     createContent();
     load();
 }
@@ -398,32 +399,22 @@ void CouplingsWidget::createContent()
 {
     int minWidth = 130;
 
-    // table
+    if(layoutTable)
+    {
+        save();
+        delete layoutTable;
+        qDeleteAll(this->children());
+    }
+
     layoutTable = new QGridLayout();
     layoutTable->setColumnMinimumWidth(0, minWidth);
     layoutTable->setColumnStretch(1, 1);
-
-    createComboBoxes();
-
-    setLayout(layoutTable);
-}
-
-void CouplingsWidget::createComboBoxes()
-{
-//    QLayoutItem *wItem;
-//    while ((wItem = layoutTable->takeAt(0)) != 0)
-//          delete wItem;
-
-//    foreach(QComboBox* cb, m_comboBoxes)
-//    {
-//        layoutTable->removeWidget(cb);
-//    }
 
     m_comboBoxes.clear();
     int line = 0;
     foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
     {
-        cout << "adding coupling box " << couplingInfo->coupling()->name << endl;
+//        cout << "adding coupling box " << couplingInfo->coupling()->name << endl;
         layoutTable->addWidget(new QLabel(/*tr(*/QString::fromStdString(couplingInfo->coupling()->name)/*)*/), line, 0);
         m_comboBoxes[couplingInfo] = new QComboBox();
         layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
@@ -431,14 +422,15 @@ void CouplingsWidget::createComboBoxes()
     }
 
     fillComboBox();
+    load();
 
+    setLayout(layoutTable);
 }
+
 
 void CouplingsWidget::doFieldsChanged()
 {
-    createComboBoxes();
-    //layoutTable->addWidget(new QLabel("extra"), 1, 0);
-    //createContent();
+    createContent();
 }
 
 void CouplingsWidget::fillComboBox()
@@ -455,7 +447,7 @@ void CouplingsWidget::load()
 {
     foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
     {
-        cout << "loading couplings widget " << couplingInfo->coupling()->name << endl;
+//        cout << "loading couplings widget " << couplingInfo->coupling()->name << ", value " << couplingTypeString(couplingInfo->couplingType()).toStdString() << endl;
         m_comboBoxes[couplingInfo]->setCurrentIndex(couplingInfo->couplingType());
     }
 }
@@ -464,8 +456,11 @@ void CouplingsWidget::save()
 {
     foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
     {
-        cout << "saving couplings widget " << couplingInfo->coupling()->name << endl;
-        couplingInfo->setCouplingType((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
+        if(m_comboBoxes.contains(couplingInfo))
+        {
+//            cout << "saving couplings widget " << couplingInfo->coupling()->name << " value " << couplingTypeString((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt()).toStdString() << endl;
+            couplingInfo->setCouplingType((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
+        }
     }
 }
 

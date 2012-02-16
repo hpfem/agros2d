@@ -16,11 +16,14 @@ CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField) :
     m_couplingType = CouplingType_Weak;
     m_coupling = NULL;
 
+//    cout << "couplingInfo ctor, type " << couplingTypeString(m_couplingType).toStdString() << endl;
+
     reload();
 }
 
 CouplingInfo::~CouplingInfo()
 {
+//    cout << "DESTRUCTOR !!!!!!!!!!!!!!!!" << endl;
     if(m_coupling)
         delete m_coupling;
 }
@@ -29,6 +32,7 @@ void CouplingInfo::setCouplingType(CouplingType couplingType)
 {
     m_couplingType = couplingType;
 
+//    cout << "set type " << couplingTypeString(m_couplingType).toStdString() << endl;
     reload();
 }
 
