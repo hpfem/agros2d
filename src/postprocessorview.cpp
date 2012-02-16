@@ -972,6 +972,8 @@ void PostprocessorView::setControls()
     bool isMeshed = Util::scene()->sceneSolution()->isMeshed();
     bool isSolved = Util::scene()->sceneSolution()->isSolved();
 
+    postprocessor->setEnabled(isSolved);
+
     chkShowGeometry->setEnabled(true);
 
     chkShowInitialMesh->setEnabled(isMeshed);
@@ -993,8 +995,11 @@ void PostprocessorView::setControls()
     radPostprocessorOrder->setEnabled(isSolved);
     radPostprocessorScalarField3D->setEnabled(isSolved);
     radPostprocessorScalarField3DSolid->setEnabled(isSolved);
-    radPostprocessorParticleTracing3D->setEnabled(chkShowParticleTracing->isEnabled());
     radPostprocessorModel->setEnabled(isSolved);
+
+    radPostprocessorParticleTracing3D->setEnabled(chkShowParticleTracing->isEnabled());
+    tbxPostprocessor->setItemEnabled(3, chkShowParticleTracing->isEnabled()); // FIXME - index
+
 
     cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
 
