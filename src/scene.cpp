@@ -885,29 +885,27 @@ void Scene::transformTranslate(const Point &point, bool copy)
     // sorted list of nodes for translate
     QList<SceneNode *> sortedNodes;
 
+    // vypocet uhlu vektoru posunuti
     double angle = point.angle();
-    double max_ud = 0;
-    double ud = 0;
+    qDebug("Angle ve stupnich = %f", (angle*180)/M_PI);
 
     foreach (SceneNode *node, nodes)
     {
         if (node->isSelected)
         {
-            ud = node->point.x * cos(angle) + node->point.y * sin(angle);
-            max_ud = qMax(max_ud, ud);
+            int index = nodes.indexOf(node);
+            // Parkova transformace - prumet vektoru bodu do realne osy vektoru posunuti
+            double ud = node->point.x * cos(angle) + node->point.y * sin(angle);
 
-            qDebug()<<max_ud;
+            QMap<int, double> mapka;
+            mapka.insert(index,ud);
 
-            if (max_ud == ud)
-            {
-                int index = nodes.indexOf(node);
-                sortedNodes.append(nodes.at(index));
-            }
-            /* else
-            {
-                sortedNodes.append(nodes);
-            }*/
+            //sortedNodes.append(nodes.at(index));
+            double num1 = mapka[index];
+            qDebug()<<num1;
         }
+
+
     }
 
     foreach (SceneNode *node, sortedNodes)
