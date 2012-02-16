@@ -168,13 +168,11 @@ public:
 
     void load();
     void loadWorkspace();
-    void loadPostprocessor();
     void loadPostprocessor(QDomElement *config);
     void loadAdvanced();
 
     void save();
     void saveWorkspace();
-    void savePostprocessor();
     void savePostprocessor(QDomElement *config);
     void saveAdvanced();
 
