@@ -1112,6 +1112,7 @@ void SceneView::paintGeometry()
                 glBegin(GL_POINTS);
                 glVertex2d(node->point.x, node->point.y);
                 glEnd();
+
             }
         }
 
@@ -4545,10 +4546,23 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     m_scene->transformTranslate(dp, false);
                     updateGL();
                 }
+
+                foreach (SceneNode *node, m_scene->nodes)
+                {
+                    m_scene->checkNodeConnect(node);
+                }
+
+                foreach (SceneNode *node, m_scene->nodes)
+                {                    
+                    m_scene->checkNode(node);
+                }
+
                 foreach (SceneEdge *edge, m_scene->edges)
                 {
                     m_scene->checkEdge(edge);
                 }
+
+                updateGL();
             }
             else if (m_sceneMode == SceneMode_OperateOnEdges)
             {
@@ -4595,10 +4609,23 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     m_scene->transformTranslate(dp, false);
                     updateGL();
                 }
+
+                foreach (SceneNode *node, m_scene->nodes)
+                {
+                    m_scene->checkNodeConnect(node);
+                }
+
+                foreach (SceneNode *node, m_scene->nodes)
+                {
+                    m_scene->checkNode(node);
+                }
+
                 foreach (SceneEdge *edge, m_scene->edges)
                 {
                     m_scene->checkEdge(edge);
                 }
+
+                updateGL();
             }
             else if (m_sceneMode == SceneMode_OperateOnLabels)
             {
@@ -4622,7 +4649,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
         if (Util::config()->showRulers)
             updateGL();
-    }
+    }    
 }
 
 void SceneView::wheelEvent(QWheelEvent *event)
