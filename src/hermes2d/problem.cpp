@@ -236,6 +236,8 @@ const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
 void Problem::createStructure()
 {
     Util::scene()->synchronizeCouplings();
+
+    //copy lists, items will be removed from them
     QList<FieldInfo *> fieldInfos = Util::scene()->fieldInfos().values();
     QList<CouplingInfo* > couplingInfos = Util::scene()->couplingInfos().values();
 
@@ -243,7 +245,24 @@ void Problem::createStructure()
         QList<FieldInfo*> blockFieldInfos;
         QList<CouplingInfo*> blockCouplingInfos;
 
-        blockFieldInfos.push_back(fieldInfos.takeLast());
+        //first find one field, that is not weakly coupled and dependent on other fields
+        bool dependent;
+        foreach(FieldInfo* fi, fieldInfos)
+        {
+            dependent = false;
+
+            foreach(CouplingInfo* ci, couplingInfos)
+            {
+                if(ci->isWeak() && (ci->targetField() == fi) && fieldInfos.contains(ci->sourceField()))
+                    dependent = true;
+            }
+
+            if(! dependent){
+                blockFieldInfos.push_back(fieldInfos.takeLast());
+                break;
+            }
+        }
+        assert(! dependent);
 
         bool added = true;
         while(added)
