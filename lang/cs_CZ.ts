@@ -213,24 +213,24 @@
 <context>
     <name>CheckVersion</name>
     <message>
-        <location filename="../src/util.cpp" line="1863"/>
+        <location filename="../src/util.cpp" line="1762"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
         <translation>&lt;b&gt;Nová verze aplikace.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Aktuální verze: %1&lt;br/&gt;Nová verze: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1856"/>
-        <location filename="../src/util.cpp" line="1871"/>
-        <location filename="../src/util.cpp" line="1875"/>
+        <location filename="../src/util.cpp" line="1755"/>
+        <location filename="../src/util.cpp" line="1770"/>
+        <location filename="../src/util.cpp" line="1774"/>
         <source>New version</source>
         <translation>Nová verze</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1856"/>
+        <location filename="../src/util.cpp" line="1755"/>
         <source>File is corrupted or network is disconnected.</source>
         <translation>Soubor je poškozen nebo není připojena síť.</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1875"/>
+        <location filename="../src/util.cpp" line="1774"/>
         <source>You are using actual version.</source>
         <translation>Používáte aktuální verzi aplikace.</translation>
     </message>
@@ -6023,57 +6023,61 @@ Chcete tyto změny uložit?</translation>
         <translation>Nastavení problému</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="729"/>
+        <location filename="../src/scene.cpp" line="720"/>
         <source>unnamed</source>
         <translation>nepojmenovaný</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="799"/>
+        <location filename="../src/scene.cpp" line="790"/>
         <source>Delete selected</source>
         <translation>Smazat vybrané</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="805"/>
+        <location filename="../src/scene.cpp" line="796"/>
         <source>Remove node</source>
         <translation>Smazat uzel</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="874"/>
+        <location filename="../src/scene.cpp" line="865"/>
         <source>Translation</source>
         <translation>Posun</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="951"/>
+        <location filename="../src/scene.cpp" line="942"/>
         <source>Rotation</source>
         <translation>Otočení</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1022"/>
+        <location filename="../src/scene.cpp" line="1013"/>
         <source>Scale</source>
         <translation>Zvětšení/zmenšení</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1400"/>
+        <location filename="../src/scene.cpp" line="1391"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
         <translation>Soubor &apos;%1&apos; nelze otevřít (%2).</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1430"/>
+        <location filename="../src/scene.cpp" line="1421"/>
         <source>For opening file &apos;%1&apos; is required Agros2D version 2.0 or higher.</source>
         <translation>Pro otevření souboru &apos;%1&apos; je vyžadován Agros2D verze 2.0 nebo vyšší.</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1808"/>
+        <location filename="../src/scene.cpp" line="1799"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation>Soubor &apos;%1&apos; nelze uložit (%2).</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1876"/>
-        <source>There are crossings in the geometry (green highlighted). Remove the crossings first.</source>
-        <translation>V geometrii jsou zelenou barvou vyznačeny hrany, které se kříží. Je nutné tato křížení odstranit.</translation>
+        <location filename="../src/scene.cpp" line="1942"/>
+        <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1884"/>
+        <source>There are crossings in the geometry (green highlighted). Remove the crossings first.</source>
+        <translation type="obsolete">V geometrii jsou zelenou barvou vyznačeny hrany, které se kříží. Je nutné tato křížení odstranit.</translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="1950"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation>V geometrii jsou červeně vyznačeny uzly, které nejsou spojeny s žádnou hranou. Je nutné tyto body odstranit.</translation>
     </message>
@@ -6086,12 +6090,12 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">V geometrii jsou uzly označené červenou barvou, které nejsou připojeny k žádné hraně. Je nutné tyto uzly odstranit.</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1889"/>
+        <location filename="../src/scene.cpp" line="1955"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation>V geometrii jsou uzly označené červenou barvou, které leží na některých hranách, ale nejsou s nimi propojeny. Je nutné tyto uzly odstranit.</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1416"/>
+        <location filename="../src/scene.cpp" line="1407"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
         <translation>Soubor &apos;%1&apos; není platným souborem Agros2D.</translation>
     </message>
@@ -7096,7 +7100,7 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="193"/>
-        <location filename="../src/sceneview.cpp" line="3391"/>
+        <location filename="../src/sceneview.cpp" line="3392"/>
         <source>Operate on nodes</source>
         <translation>Práce s uzly</translation>
     </message>
@@ -7107,7 +7111,7 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="198"/>
-        <location filename="../src/sceneview.cpp" line="3394"/>
+        <location filename="../src/sceneview.cpp" line="3395"/>
         <source>Operate on edges</source>
         <translation>Práce s hranami</translation>
     </message>
@@ -7123,7 +7127,7 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="208"/>
-        <location filename="../src/sceneview.cpp" line="3416"/>
+        <location filename="../src/sceneview.cpp" line="3417"/>
         <source>Postprocessor</source>
         <translation>Postprocesor</translation>
     </message>
@@ -7193,7 +7197,7 @@ Chcete tyto změny uložit?</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3368"/>
+        <location filename="../src/sceneview.cpp" line="3369"/>
         <source>Vel.</source>
         <translation>Rychlost</translation>
     </message>
@@ -7206,50 +7210,50 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">Projekce</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3410"/>
+        <location filename="../src/sceneview.cpp" line="3411"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3413"/>
+        <location filename="../src/sceneview.cpp" line="3414"/>
         <source>Polynomial order</source>
         <translation>Řád polynomu</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3716"/>
-        <location filename="../src/sceneview.cpp" line="3756"/>
+        <location filename="../src/sceneview.cpp" line="3717"/>
+        <location filename="../src/sceneview.cpp" line="3757"/>
         <source>Undefined: %1.</source>
         <translation>Nedefinováno: %1.</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4113"/>
-        <location filename="../src/sceneview.cpp" line="4163"/>
+        <location filename="../src/sceneview.cpp" line="4114"/>
+        <location filename="../src/sceneview.cpp" line="4164"/>
         <source>Node</source>
         <translation>Uzel</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4113"/>
-        <location filename="../src/sceneview.cpp" line="4163"/>
+        <location filename="../src/sceneview.cpp" line="4114"/>
+        <location filename="../src/sceneview.cpp" line="4164"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation>Radiální složka musí být větší nebo rovna nule.</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4416"/>
+        <location filename="../src/sceneview.cpp" line="4417"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation>&lt;h3&gt;Uzel&lt;/h3&gt;Bod: [%1; %2]&lt;br/&gt;Index: %3</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4431"/>
+        <location filename="../src/sceneview.cpp" line="4432"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation>&lt;h3&gt;Hrana&lt;/h3&gt;Body: [%1; %2] - [%3; %4]&lt;br/&gt;Hraniční podmínka: %5&lt;br/&gt;Úhel: %6 st.&lt;br/&gt;Index: %7 %8</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4451"/>
+        <location filename="../src/sceneview.cpp" line="4452"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation>&lt;h3&gt;Značka oblasti&lt;/h3&gt;Bod: [%1; %2]&lt;br/&gt;Materiál: %3&lt;br/&gt;Obsah elementu: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Řád polynomu: %5&lt;br/&gt;Index: %6 %7</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="5377"/>
+        <location filename="../src/sceneview.cpp" line="5404"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Obrázek nelze uložit do souboru s názvem &apos;%1&apos;.</translation>
     </message>
@@ -7265,7 +7269,7 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="203"/>
-        <location filename="../src/sceneview.cpp" line="3397"/>
+        <location filename="../src/sceneview.cpp" line="3398"/>
         <source>Operate on labels</source>
         <translation>Práce se značkami oblastí</translation>
     </message>

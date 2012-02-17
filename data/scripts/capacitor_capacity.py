@@ -67,7 +67,6 @@ pl.plot(r, C)
 pl.grid(True)
 pl.xlabel("$r\,\mathrm{(m)}$")
 pl.ylabel("$C\,\mathrm{(F)}$")
-pl.show()
 pl.savefig("capacity.png", dpi=60)
 pl.close()
 

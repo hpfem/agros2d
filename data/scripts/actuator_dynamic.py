@@ -106,7 +106,6 @@ pl.grid(1)
 pl.xlabel("$t\,\mathrm{(s)}$")
 pl.ylabel("$v\,\mathrm{(m/s)}$")
 pl.xlim([0, 0.07])
-pl.show()
 pl.savefig("chart.png", dpi=60)
 pl.close()
 

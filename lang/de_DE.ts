@@ -247,24 +247,24 @@
 <context>
     <name>CheckVersion</name>
     <message>
-        <location filename="../src/util.cpp" line="1856"/>
-        <location filename="../src/util.cpp" line="1871"/>
-        <location filename="../src/util.cpp" line="1875"/>
+        <location filename="../src/util.cpp" line="1755"/>
+        <location filename="../src/util.cpp" line="1770"/>
+        <location filename="../src/util.cpp" line="1774"/>
         <source>New version</source>
         <translation>Neue Version</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1856"/>
+        <location filename="../src/util.cpp" line="1755"/>
         <source>File is corrupted or network is disconnected.</source>
         <translation>Die Datei ist beschädigt oder das Netz ist nicht verbunden.</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1863"/>
+        <location filename="../src/util.cpp" line="1762"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
         <translation>&lt;b&gt;Neue Version ist zugänglich.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Verwendet Version: %1&lt;br/&gt;Neue Version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1875"/>
+        <location filename="../src/util.cpp" line="1774"/>
         <source>You are using actual version.</source>
         <translation>Sie benutzen aktuelle Version.</translation>
     </message>
@@ -6766,67 +6766,67 @@ Do you want to save your changes?</source>
         <translation type="unfinished">Einstellung des Problems</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="729"/>
+        <location filename="../src/scene.cpp" line="720"/>
         <source>unnamed</source>
         <translation type="unfinished">unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="799"/>
+        <location filename="../src/scene.cpp" line="790"/>
         <source>Delete selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="805"/>
+        <location filename="../src/scene.cpp" line="796"/>
         <source>Remove node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="874"/>
+        <location filename="../src/scene.cpp" line="865"/>
         <source>Translation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="951"/>
+        <location filename="../src/scene.cpp" line="942"/>
         <source>Rotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1022"/>
+        <location filename="../src/scene.cpp" line="1013"/>
         <source>Scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1400"/>
+        <location filename="../src/scene.cpp" line="1391"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1416"/>
+        <location filename="../src/scene.cpp" line="1407"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1430"/>
+        <location filename="../src/scene.cpp" line="1421"/>
         <source>For opening file &apos;%1&apos; is required Agros2D version 2.0 or higher.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1808"/>
+        <location filename="../src/scene.cpp" line="1799"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1876"/>
-        <source>There are crossings in the geometry (green highlighted). Remove the crossings first.</source>
+        <location filename="../src/scene.cpp" line="1942"/>
+        <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1884"/>
+        <location filename="../src/scene.cpp" line="1950"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1889"/>
+        <location filename="../src/scene.cpp" line="1955"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7839,7 +7839,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="193"/>
-        <location filename="../src/sceneview.cpp" line="3391"/>
+        <location filename="../src/sceneview.cpp" line="3392"/>
         <source>Operate on nodes</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7850,7 +7850,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="198"/>
-        <location filename="../src/sceneview.cpp" line="3394"/>
+        <location filename="../src/sceneview.cpp" line="3395"/>
         <source>Operate on edges</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7861,7 +7861,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="203"/>
-        <location filename="../src/sceneview.cpp" line="3397"/>
+        <location filename="../src/sceneview.cpp" line="3398"/>
         <source>Operate on labels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7872,7 +7872,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="208"/>
-        <location filename="../src/sceneview.cpp" line="3416"/>
+        <location filename="../src/sceneview.cpp" line="3417"/>
         <source>Postprocessor</source>
         <translation>Postprozessor</translation>
     </message>
@@ -7952,55 +7952,55 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3368"/>
+        <location filename="../src/sceneview.cpp" line="3369"/>
         <source>Vel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3410"/>
+        <location filename="../src/sceneview.cpp" line="3411"/>
         <source>Model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3413"/>
+        <location filename="../src/sceneview.cpp" line="3414"/>
         <source>Polynomial order</source>
         <translation>Zehnerpotenz des Polynoms</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3716"/>
-        <location filename="../src/sceneview.cpp" line="3756"/>
+        <location filename="../src/sceneview.cpp" line="3717"/>
+        <location filename="../src/sceneview.cpp" line="3757"/>
         <source>Undefined: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4113"/>
-        <location filename="../src/sceneview.cpp" line="4163"/>
+        <location filename="../src/sceneview.cpp" line="4114"/>
+        <location filename="../src/sceneview.cpp" line="4164"/>
         <source>Node</source>
         <translation>Knoten</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4113"/>
-        <location filename="../src/sceneview.cpp" line="4163"/>
+        <location filename="../src/sceneview.cpp" line="4114"/>
+        <location filename="../src/sceneview.cpp" line="4164"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4416"/>
+        <location filename="../src/sceneview.cpp" line="4417"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4431"/>
+        <location filename="../src/sceneview.cpp" line="4432"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4451"/>
+        <location filename="../src/sceneview.cpp" line="4452"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="5377"/>
+        <location filename="../src/sceneview.cpp" line="5404"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>

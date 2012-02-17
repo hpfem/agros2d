@@ -17,12 +17,10 @@ t = arange(0, 5*L/R, L/R/10)
 y = odeint(func, y0, t)
 
 # chart
-pl.close()
 pl.plot(t, y)
-pl.grid(1)
+pl.grid(True)
 pl.xlabel("$t\,\mathrm{(s)}$")
 pl.ylabel("$i\,\mathrm{(A)}$")
-pl.show()
 pl.savefig("diff_equation.png", dpi=60)
 pl.close()
 
