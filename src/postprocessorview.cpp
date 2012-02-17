@@ -734,7 +734,7 @@ QWidget *PostprocessorView::controlsPosprocessor()
     gridLayoutParticle->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
     gridLayoutParticle->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
     gridLayoutParticle->addWidget(txtParticleNumberOfParticles, 2, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Particles radius (m):")), 3, 0);
+    gridLayoutParticle->addWidget(new QLabel(tr("Particles dispersion (m):")), 3, 0);
     gridLayoutParticle->addWidget(txtParticleStartingRadius, 3, 1);
     gridLayoutParticle->addWidget(new QLabel(tr("Mass (kg):")), 4, 0);
     gridLayoutParticle->addWidget(txtParticleMass, 4, 1);

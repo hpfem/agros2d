@@ -75,6 +75,7 @@ private slots:
     void doViewQuick2DScalarView();
     void doViewQuick3DScalarView();
     void doViewQuick3DScalarViewSolid();
+    void doViewQuick3DParticleTracing();
     void doViewQuick3DModel();
     void doViewQuick(SceneViewPostprocessorShow show);
 
@@ -171,6 +172,7 @@ private:
     QAction *actViewQuick2DScalarView;
     QAction *actViewQuick3DScalarView;
     QAction *actViewQuick3DScalarViewSolid;
+    QAction *actViewQuick3DParticleTracing;
     QAction *actViewQuick3DModel;
 
     QAction *actScriptEditor;

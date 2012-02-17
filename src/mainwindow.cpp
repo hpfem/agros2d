@@ -361,8 +361,12 @@ void MainWindow::createActions()
     actViewQuick3DScalarViewSolid->setShortcut(QKeySequence(tr("Ctrl+5")));
     connect(actViewQuick3DScalarViewSolid, SIGNAL(triggered()), this, SLOT(doViewQuick3DScalarViewSolid()));
 
+    actViewQuick3DParticleTracing = new QAction(icon(""), tr("3D: Particle tracing"), this);
+    actViewQuick3DParticleTracing->setShortcut(QKeySequence(tr("Ctrl+6")));
+    connect(actViewQuick3DParticleTracing, SIGNAL(triggered()), this, SLOT(doViewQuick3DParticleTracing()));
+
     actViewQuick3DModel = new QAction(icon(""), tr("3D: Model"), this);
-    actViewQuick3DModel->setShortcut(QKeySequence(tr("Ctrl+6")));
+    actViewQuick3DModel->setShortcut(QKeySequence(tr("Ctrl+7")));
     connect(actViewQuick3DModel, SIGNAL(triggered()), this, SLOT(doViewQuick3DModel()));
 }
 
@@ -442,6 +446,7 @@ void MainWindow::createMenus()
     mnuViewQuickView->addAction(actViewQuick2DScalarView);
     mnuViewQuickView->addAction(actViewQuick3DScalarView);
     mnuViewQuickView->addAction(actViewQuick3DScalarViewSolid);
+    mnuViewQuickView->addAction(actViewQuick3DParticleTracing);
     mnuViewQuickView->addAction(actViewQuick3DModel);
     mnuView->addMenu(mnuViewQuickView);
     mnuView->addSeparator();
@@ -1247,6 +1252,9 @@ void MainWindow::doInvalidated()
     actViewQuick2DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actViewQuick3DScalarView->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actViewQuick3DScalarViewSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actViewQuick3DParticleTracing->setEnabled(Util::scene()->sceneSolution()->isSolved() &&
+                                              Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState &&
+                                              Util::scene()->problemInfo()->hermes()->hasParticleTracing());
     actViewQuick3DModel->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
@@ -1506,33 +1514,52 @@ void MainWindow::doViewQuick2DNone()
 
 void MainWindow::doViewQuick2DOrder()
 {
-    sceneView->sceneViewSettings().showInitialMesh = true;
-    sceneView->sceneViewSettings().showSolutionMesh = true;
-    doViewQuick(SceneViewPostprocessorShow_Order);
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        sceneView->sceneViewSettings().showInitialMesh = true;
+        sceneView->sceneViewSettings().showSolutionMesh = true;
+        doViewQuick(SceneViewPostprocessorShow_Order);
+    }
 }
 
 void MainWindow::doViewQuick2DScalarView()
 {
-    sceneView->sceneViewSettings().showInitialMesh = false;
-    sceneView->sceneViewSettings().showSolutionMesh = false;
-    doViewQuick(SceneViewPostprocessorShow_ScalarView);
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        sceneView->sceneViewSettings().showInitialMesh = false;
+        sceneView->sceneViewSettings().showSolutionMesh = false;
+        doViewQuick(SceneViewPostprocessorShow_ScalarView);
+    }
 }
 
 void MainWindow::doViewQuick3DScalarView()
 {
-    sceneView->sceneViewSettings().showInitialMesh = false;
-    sceneView->sceneViewSettings().showSolutionMesh = false;
-    doViewQuick(SceneViewPostprocessorShow_ScalarView3D);
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        sceneView->sceneViewSettings().showInitialMesh = false;
+        sceneView->sceneViewSettings().showSolutionMesh = false;
+        doViewQuick(SceneViewPostprocessorShow_ScalarView3D);
+    }
 }
 
 void MainWindow::doViewQuick3DScalarViewSolid()
 {
-    doViewQuick(SceneViewPostprocessorShow_ScalarView3DSolid);
+    if (Util::scene()->sceneSolution()->isSolved())
+        doViewQuick(SceneViewPostprocessorShow_ScalarView3DSolid);
+}
+
+void MainWindow::doViewQuick3DParticleTracing()
+{
+    if (Util::scene()->sceneSolution()->isSolved() &&
+            Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState &&
+            Util::scene()->problemInfo()->hermes()->hasParticleTracing())
+        doViewQuick(SceneViewPostprocessorShow_ParticleTracing3D);
 }
 
 void MainWindow::doViewQuick3DModel()
 {
-    doViewQuick(SceneViewPostprocessorShow_Model);
+    if (Util::scene()->sceneSolution()->isSolved())
+        doViewQuick(SceneViewPostprocessorShow_Model);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

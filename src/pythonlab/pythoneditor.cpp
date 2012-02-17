@@ -433,8 +433,8 @@ void PythonEditorDialog::createActions()
 
     QSettings settings;
     actCheckPyLint = new QAction(icon("checkbox"), tr("&Check Python script (PyLint)"), this);
-    actCheckPyLint->setEnabled(settings.value("PythonEditorWidget/EnablePyLint", true).toBool());
-    actCheckPyLint->setShortcut(QKeySequence(tr("Alt+C")));
+    // actCheckPyLint->setEnabled(settings.value("PythonEditorWidget/EnablePyLint", true).toBool());
+    // actCheckPyLint->setShortcut(QKeySequence(tr("Alt+C")));
 
     actOptionsEnablePyFlakes = new QAction(icon(""), tr("PyFlakes enabled"), this);
     // FIXME - script control
@@ -525,7 +525,7 @@ void PythonEditorDialog::createControls()
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunPython);
-    mnuTools->addAction(actCheckPyLint);
+    // mnuTools->addAction(actCheckPyLint);
     mnuTools->addSeparator();
     mnuTools->addAction(actReplaceTabsWithSpaces);
 

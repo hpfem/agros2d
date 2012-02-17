@@ -213,24 +213,24 @@
 <context>
     <name>CheckVersion</name>
     <message>
-        <location filename="../src/util.cpp" line="1755"/>
-        <location filename="../src/util.cpp" line="1770"/>
-        <location filename="../src/util.cpp" line="1774"/>
+        <location filename="../src/util.cpp" line="1853"/>
+        <location filename="../src/util.cpp" line="1868"/>
+        <location filename="../src/util.cpp" line="1872"/>
         <source>New version</source>
         <translation>Nowa wersja</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1755"/>
+        <location filename="../src/util.cpp" line="1853"/>
         <source>File is corrupted or network is disconnected.</source>
         <translation>Plik jest uszkodzony lub wystąpił problem z siecią.</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1762"/>
+        <location filename="../src/util.cpp" line="1860"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
         <translation>&lt;b&gt;Dostępna jest nowa wersja.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Bieżąca wersja: %1&lt;br/&gt;Nowa wersja: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1774"/>
+        <location filename="../src/util.cpp" line="1872"/>
         <source>You are using actual version.</source>
         <translation>Używasz aktualnej wersji.</translation>
     </message>
@@ -2024,7 +2024,7 @@
         <translation>Ctrl+5</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="364"/>
+        <location filename="../src/mainwindow.cpp" line="368"/>
         <source>3D: Model</source>
         <translation>3D: Model</translation>
     </message>
@@ -2034,22 +2034,22 @@
         <translation>Ctrl+6</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="418"/>
+        <location filename="../src/mainwindow.cpp" line="422"/>
         <source>Projection</source>
         <translation>Rzut</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="423"/>
+        <location filename="../src/mainwindow.cpp" line="427"/>
         <source>Panels</source>
         <translation>Panele</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="439"/>
+        <location filename="../src/mainwindow.cpp" line="443"/>
         <source>Quick view</source>
         <translation>Szybka zmiana</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1353"/>
+        <location filename="../src/mainwindow.cpp" line="1358"/>
         <source>Export mesh file</source>
         <translation>Eksport pliku siatki</translation>
     </message>
@@ -2111,7 +2111,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="226"/>
-        <location filename="../src/mainwindow.cpp" line="1048"/>
+        <location filename="../src/mainwindow.cpp" line="1053"/>
         <source>Export image to file</source>
         <translation>Eksport obrazu do pliku</translation>
     </message>
@@ -2167,7 +2167,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="261"/>
-        <location filename="../src/mainwindow.cpp" line="501"/>
+        <location filename="../src/mainwindow.cpp" line="506"/>
         <source>&amp;Help</source>
         <translation>&amp;Pomoc</translation>
     </message>
@@ -2358,29 +2358,39 @@
         <translation>Pokaż dziennik aplikacji</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="374"/>
+        <location filename="../src/mainwindow.cpp" line="364"/>
+        <source>3D: Particle tracing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="369"/>
+        <source>Ctrl+7</source>
+        <translation type="unfinished">Ctrl+7</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="378"/>
         <source>Import/Export</source>
         <translation>Import/Eksport</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="461"/>
+        <location filename="../src/mainwindow.cpp" line="466"/>
         <source>&amp;Add</source>
         <translation>&amp;Dodaj</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1400"/>
-        <location filename="../src/mainwindow.cpp" line="1432"/>
+        <location filename="../src/mainwindow.cpp" line="1405"/>
+        <location filename="../src/mainwindow.cpp" line="1437"/>
         <source>Export vtk file</source>
         <translation>Eksport pliku vtk</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1400"/>
-        <location filename="../src/mainwindow.cpp" line="1432"/>
+        <location filename="../src/mainwindow.cpp" line="1405"/>
+        <location filename="../src/mainwindow.cpp" line="1437"/>
         <source>VTK files (*.vtk)</source>
         <translation>Pliki VTK (*.vtk)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="373"/>
+        <location filename="../src/mainwindow.cpp" line="377"/>
         <source>&amp;Recent files</source>
         <translation>&amp;Ostatnie pliki</translation>
     </message>
@@ -2390,210 +2400,210 @@
         <translation>Wczytaj obraz w tło</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="384"/>
+        <location filename="../src/mainwindow.cpp" line="388"/>
         <source>Colaboration</source>
         <translation>Współpraca</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="389"/>
+        <location filename="../src/mainwindow.cpp" line="393"/>
         <source>&amp;File</source>
         <translation>&amp;Plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="408"/>
+        <location filename="../src/mainwindow.cpp" line="412"/>
         <source>E&amp;dit</source>
         <translation>E&amp;dycja</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="432"/>
+        <location filename="../src/mainwindow.cpp" line="436"/>
         <source>&amp;View</source>
         <translation>&amp;Widok</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="455"/>
+        <location filename="../src/mainwindow.cpp" line="460"/>
         <source>&amp;Problem</source>
         <translation>&amp;Problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="484"/>
+        <location filename="../src/mainwindow.cpp" line="489"/>
         <source>&amp;Tools</source>
         <translation>N&amp;arzędzia</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="527"/>
+        <location filename="../src/mainwindow.cpp" line="532"/>
         <source>File</source>
         <translation>Plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="537"/>
+        <location filename="../src/mainwindow.cpp" line="542"/>
         <source>Edit</source>
         <translation>Edycja</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="551"/>
+        <location filename="../src/mainwindow.cpp" line="556"/>
         <source>View</source>
         <translation>Widok</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="562"/>
+        <location filename="../src/mainwindow.cpp" line="567"/>
         <source>Problem</source>
         <translation>Problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="584"/>
+        <location filename="../src/mainwindow.cpp" line="589"/>
         <source>Tools</source>
         <translation>Narzędzia</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="593"/>
+        <location filename="../src/mainwindow.cpp" line="598"/>
         <source>Transient</source>
         <translation>Czasowa</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="599"/>
+        <location filename="../src/mainwindow.cpp" line="604"/>
         <source>Time step:</source>
         <translation>Czas:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="624"/>
+        <location filename="../src/mainwindow.cpp" line="629"/>
         <source>Ready</source>
         <translation>Gotowy</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="696"/>
+        <location filename="../src/mainwindow.cpp" line="701"/>
         <source>Position: [%1; %2]</source>
         <translation>Pozycja: [%1; %2]</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="710"/>
+        <location filename="../src/mainwindow.cpp" line="715"/>
         <source>Mode: Add node</source>
         <translation>Tryb: Dodawanie węzłów</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="713"/>
+        <location filename="../src/mainwindow.cpp" line="718"/>
         <source>Mode: Add edge</source>
         <translation>Tryb: Dodawanie krawędzi</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="716"/>
+        <location filename="../src/mainwindow.cpp" line="721"/>
         <source>Mode: Add label</source>
         <translation>Tryb: Dodawanie etykiet</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="724"/>
+        <location filename="../src/mainwindow.cpp" line="729"/>
         <source>Mode: Pan</source>
         <translation>Tryb: Przesunięcie</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="727"/>
+        <location filename="../src/mainwindow.cpp" line="732"/>
         <source>Mode: Rotate</source>
         <translation>Tryb: Obrót</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="734"/>
+        <location filename="../src/mainwindow.cpp" line="739"/>
         <source>Mode: Move node</source>
         <translation>Tryb: Przesunięcie węzła</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="737"/>
+        <location filename="../src/mainwindow.cpp" line="742"/>
         <source>Mode: Move edge</source>
         <translation>Tryb: Przesunięcie krawędzi</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="740"/>
+        <location filename="../src/mainwindow.cpp" line="745"/>
         <source>Mode: Move label</source>
         <translation>Tryb: Przesunięcie etykiety</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="840"/>
+        <location filename="../src/mainwindow.cpp" line="845"/>
         <source>Open file</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="840"/>
+        <location filename="../src/mainwindow.cpp" line="845"/>
         <source>Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)</source>
         <translation>Pliki Agros2D (*.a2d *.py);;Pliki danych Agros2D (*.a2d);;Skrypty Python (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="877"/>
-        <location filename="../src/mainwindow.cpp" line="881"/>
-        <location filename="../src/mainwindow.cpp" line="1196"/>
+        <location filename="../src/mainwindow.cpp" line="882"/>
+        <location filename="../src/mainwindow.cpp" line="886"/>
+        <location filename="../src/mainwindow.cpp" line="1201"/>
         <source>File open</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="877"/>
+        <location filename="../src/mainwindow.cpp" line="882"/>
         <source>Unknown suffix.</source>
         <translation>Nieznane rozszerzenie</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="881"/>
+        <location filename="../src/mainwindow.cpp" line="886"/>
         <source>File &apos;%1&apos; is not found.</source>
         <translation>Nie znaleziono pliku &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="950"/>
+        <location filename="../src/mainwindow.cpp" line="955"/>
         <source>Save file</source>
         <translation>Zapisz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="950"/>
+        <location filename="../src/mainwindow.cpp" line="955"/>
         <source>Agros2D files (*.a2d)</source>
         <translation>Pliki Agros2D (*.a2d)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1010"/>
+        <location filename="../src/mainwindow.cpp" line="1015"/>
         <source>Import file</source>
         <translation>Import pliku</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1010"/>
-        <location filename="../src/mainwindow.cpp" line="1029"/>
+        <location filename="../src/mainwindow.cpp" line="1015"/>
+        <location filename="../src/mainwindow.cpp" line="1034"/>
         <source>DXF files (*.dxf)</source>
         <translation>DXF files (*.dxf)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1029"/>
+        <location filename="../src/mainwindow.cpp" line="1034"/>
         <source>Export file</source>
         <translation>Eksport pliku</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1048"/>
+        <location filename="../src/mainwindow.cpp" line="1053"/>
         <source>PNG files (*.png)</source>
         <translation>PNG files (*.png)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1169"/>
+        <location filename="../src/mainwindow.cpp" line="1174"/>
         <source>Open File</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1169"/>
+        <location filename="../src/mainwindow.cpp" line="1174"/>
         <source>Python script (*.py)</source>
         <translation>Skrypt Python (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1196"/>
+        <location filename="../src/mainwindow.cpp" line="1201"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Nie znaleziono pliku &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1257"/>
+        <location filename="../src/mainwindow.cpp" line="1262"/>
         <source>Problem Type: %1</source>
         <translation>Typ problemu: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1258"/>
+        <location filename="../src/mainwindow.cpp" line="1263"/>
         <source>Physic Field: %1</source>
         <translation>Fizyka: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1259"/>
+        <location filename="../src/mainwindow.cpp" line="1264"/>
         <source>Analysis type: %1</source>
         <translation>Typ analizy: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1353"/>
+        <location filename="../src/mainwindow.cpp" line="1358"/>
         <source>Mesh files (*.mesh)</source>
         <translation>Plik siatki (*.mesh)</translation>
     </message>
@@ -3136,7 +3146,7 @@
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="737"/>
-        <source>Particles radius (m):</source>
+        <source>Particles dispersion (m):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3753,347 +3763,347 @@
 <context>
     <name>PythonEditorDialog</name>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="349"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="355"/>
         <source>&amp;New</source>
         <translation type="unfinished">&amp;Nowy</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="353"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="359"/>
         <source>&amp;Open...</source>
         <translation type="unfinished">&amp;Otwórz...</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="357"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="363"/>
         <source>&amp;Save</source>
         <translation type="unfinished">&amp;Zapisz</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="361"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="367"/>
         <source>Save &amp;as...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="365"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="371"/>
         <source>Save console output as...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="371"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="377"/>
         <source>&amp;Close</source>
         <translation type="unfinished">&amp;Zamknij</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="375"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="381"/>
         <source>&amp;Print</source>
         <translation type="unfinished">&amp;Drukuj</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="379"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="385"/>
         <source>&amp;Undo</source>
         <translation type="unfinished">&amp;Cofnij</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="382"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="388"/>
         <source>&amp;Redo</source>
         <translation type="unfinished">&amp;Ponów</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="385"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="391"/>
         <source>Cu&amp;t</source>
         <translation type="unfinished">&amp;Wytnij</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="389"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="395"/>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;Kopiuj</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="393"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="399"/>
         <source>&amp;Paste</source>
         <translation type="unfinished">&amp;Wklej</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="396"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="402"/>
         <source>&amp;Find</source>
         <translation type="unfinished">&amp;Znajdź</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="400"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="406"/>
         <source>Find &amp;next</source>
         <translation type="unfinished">Znajdź &amp;następny</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="404"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="408"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="410"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="414"/>
         <source>Replace</source>
         <translation type="unfinished">Zastąp</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="412"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="418"/>
         <source>Indent</source>
         <translation type="unfinished">Wcięcie</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="413"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="419"/>
         <source>Unindent</source>
         <translation type="unfinished">Bez wcięcia</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="415"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="421"/>
         <source>Comment</source>
         <translation type="unfinished">Zakomentuj</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="417"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="423"/>
         <source>Uncomment</source>
         <translation type="unfinished">Odkomentuj</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="418"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="424"/>
         <source>Ctrl+U</source>
         <translation type="unfinished">Ctrl+U</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="420"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="426"/>
         <source>Goto line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="421"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="427"/>
         <source>Alt+G</source>
         <translation type="unfinished">Alt+G</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="423"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="429"/>
         <source>&amp;Run Python script</source>
         <translation type="unfinished">&amp;Uruchom skrypt Pythona</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="424"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="430"/>
         <source>Ctrl+R</source>
         <translation type="unfinished">Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="426"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="432"/>
         <source>Replace tabs with spaces</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="429"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="435"/>
         <source>&amp;Check Python script (PyLint)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="431"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="437"/>
         <source>Alt+C</source>
         <translation type="unfinished">Alt+C</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="433"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="439"/>
         <source>PyFlakes enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="438"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="446"/>
         <source>PyLint enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="443"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="453"/>
         <source>Print stacktrace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="448"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="459"/>
         <source>User module deleter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="453"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="464"/>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="454"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="465"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished">Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="455"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="466"/>
         <source>Exit editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="458"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="528"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="469"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="541"/>
         <source>&amp;Help</source>
         <translation type="unfinished">&amp;Pomoc</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="462"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="473"/>
         <source>&amp;Keyword List</source>
         <translation type="unfinished">Słowa &amp;kluczowe</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="466"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="477"/>
         <source>About &amp;PythonLab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="467"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="478"/>
         <source>Show the application&apos;s About box</source>
         <translation type="unfinished">Pokaż okno informacyjne</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="471"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="482"/>
         <source>About &amp;Qt</source>
         <translation type="unfinished">O &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="472"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="483"/>
         <source>Show the Qt library&apos;s About box</source>
         <translation type="unfinished">Pokaż okno o bibliotece Qt</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="479"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="490"/>
         <source>&amp;Recent files</source>
         <translation type="unfinished">&amp;Ostatnie pliki</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="481"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="492"/>
         <source>&amp;File</source>
         <translation type="unfinished">&amp;Plik</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="495"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="506"/>
         <source>&amp;Edit</source>
         <translation type="unfinished">&amp;Edycja</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="515"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="526"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="521"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="532"/>
         <source>&amp;Options</source>
         <translation type="unfinished">&amp;Opcje</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="538"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="551"/>
         <source>File</source>
         <translation type="unfinished">Plik</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="548"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="561"/>
         <source>Edit</source>
         <translation type="unfinished">Edycja</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="561"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="574"/>
         <source>Tools</source>
         <translation type="unfinished">Narzędzia</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="580"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="594"/>
         <source>Path</source>
         <translation type="unfinished">Katalog</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="586"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="600"/>
         <source>Working directory: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="597"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="611"/>
         <source>Add new document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="641"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="655"/>
         <source>File browser</source>
         <translation type="unfinished">Wybór pliku</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="664"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="678"/>
         <source>Ready</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="797"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="812"/>
         <source>Select directory</source>
         <translation type="unfinished">Wybierz katalog</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="804"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1026"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1103"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1124"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="819"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1041"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1118"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1139"/>
         <source>Untitled</source>
         <translation type="unfinished">Bez nazwy</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="817"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="832"/>
         <source>Open File</source>
         <translation type="unfinished">Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="817"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="878"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="914"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="832"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="893"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="929"/>
         <source>Python files (*.py)</source>
         <translation type="unfinished">Pliki Pythona (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="834"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="849"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="834"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="849"/>
         <source>Script is already opened.</source>
         <translation type="unfinished">Skrypt jest już otwarty.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="878"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="914"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="931"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="893"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="929"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="946"/>
         <source>Save file</source>
         <translation type="unfinished">Zapisz plik</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="900"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="915"/>
         <source>File &apos;%1&apos; cannot be saved.</source>
         <translation type="unfinished">Nie można zapisać pliku &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="931"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="946"/>
         <source>Html files (*.html)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="960"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="975"/>
         <source>Print Document</source>
         <translation type="unfinished">Drukuj dokument</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1036"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1051"/>
         <source>Application</source>
         <translation type="unfinished">Aplikacja</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1036"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1051"/>
         <source>File &apos;%1&apos; has been modified.
 Do you want to save your changes?</source>
         <translation type="unfinished">Plik &apos;%1&apos; został zmieniony. Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1109"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1124"/>
         <source>Python Lab - %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1117"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1132"/>
         <source>Line: %1, Col: %2</source>
         <translation type="unfinished">Wiersz: %1, Kolumna: %2</translation>
     </message>
@@ -4101,25 +4111,25 @@ Do you want to save your changes?</source>
 <context>
     <name>PythonEditorWidget</name>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="138"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="183"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="144"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="189"/>
         <source>Convention</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="141"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="188"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="147"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="194"/>
         <source>Warning</source>
         <translation type="unfinished">Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="145"/>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="193"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="151"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="199"/>
         <source>Error</source>
         <translation type="unfinished">Błąd</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="152"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="158"/>
         <source>Could not read PyLint output.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6081,17 +6091,17 @@ Do you want to save your changes?</source>
         <translation>Nie można zapisać pliku &apos;%1&apos; (%2).</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1942"/>
+        <location filename="../src/scene.cpp" line="1940"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1950"/>
+        <location filename="../src/scene.cpp" line="1948"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1955"/>
+        <location filename="../src/scene.cpp" line="1953"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7265,12 +7275,12 @@ Do you want to save your changes?</source>
 <context>
     <name>ScriptEditor</name>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1439"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1454"/>
         <source>Goto line</source>
         <translation>Skocz do linii</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1439"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1454"/>
         <source>Line number:</source>
         <translation>Numer linii</translation>
     </message>
@@ -7568,27 +7578,27 @@ Do you want to save your changes?</source>
 <context>
     <name>SearchWidget</name>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1691"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1706"/>
         <source>Search for:</source>
         <translation type="unfinished">Szukaj:</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1692"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1707"/>
         <source>Replace with:</source>
         <translation type="unfinished">Zastąp przez:</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1699"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1714"/>
         <source>Find</source>
         <translation type="unfinished">Znajdź</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1703"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1718"/>
         <source>Replace all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1706"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1721"/>
         <source>Hide</source>
         <translation type="unfinished"></translation>
     </message>
