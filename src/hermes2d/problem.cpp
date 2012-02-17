@@ -114,7 +114,7 @@ void Block::solve()
         //************************************************************
         //*************************************************************
 
-        QList<SolutionArray<double>* > solutionArrays;
+        QList<SolutionArray<double> > solutionArrays;
         for(int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
             solutionArrays.push_back(m_solutionList->at(i + offset(field)));
 

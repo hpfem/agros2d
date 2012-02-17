@@ -75,8 +75,8 @@ void SceneSolution<Scalar>::clear(bool all)
     {
         //m_timeStep = -1;
 
-        for (int i = 0; i < m_solutionArrayList.size(); i++)
-            delete m_solutionArrayList.at(i);
+//        for (int i = 0; i < m_solutionArrayList.size(); i++)
+//            delete m_solutionArrayList.at(i);
         m_solutionArrayList.clear();
 
         // mesh
@@ -216,7 +216,7 @@ void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement element)
 }
 
 template <typename Scalar>
-SolutionArray<Scalar> *SceneSolution<Scalar>::solutionArray(int i)
+SolutionArray<Scalar> SceneSolution<Scalar>::solutionArray(int i)
 {
     logMessage("SceneSolution::solutionArray()");
 
@@ -241,7 +241,7 @@ Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
 {
     logMessage("SceneSolution::sln()");
 
-    return solutionArray(i)->sln.get();
+    return solutionArray(i).sln.get();
 }
 
 template <typename Scalar>
@@ -249,7 +249,7 @@ Hermes::Hermes2D::Space<Scalar> *SceneSolution<Scalar>::space(int i)
 {
     logMessage("SceneSolution::space()");
 
-    return solutionArray(i)->space.get();
+    return solutionArray(i).space.get();
 }
 
 //template <typename Scalar>
@@ -348,12 +348,12 @@ void SceneSolution<Scalar>::setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial)
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> *> solutionArrayList)
+void SceneSolution<Scalar>::setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> > solutionArrayList)
 {
     logMessage("SceneSolution::setSolutionArrayList()");
 
-    for (int i = 0; i < m_solutionArrayList.size(); i++)
-        delete m_solutionArrayList.at(i);
+//    for (int i = 0; i < m_solutionArrayList.size(); i++)
+//        delete m_solutionArrayList.at(i);
     m_solutionArrayList.clear();
 
     m_solutionArrayList = solutionArrayList;
@@ -600,17 +600,17 @@ void SceneSolution<Scalar>::processOrder()
     logMessage("SceneSolution::processOrder()");
 
     if (Util::problem()->isSolved())
-        setOrderView(m_solutionArrayList.at(0)->space);
+        setOrderView(m_solutionArrayList.at(0).space);
                 //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::setSolutionArray(QList<SolutionArray<Scalar> *> solutionArrays)
+void SceneSolution<Scalar>::setSolutionArray(QList<SolutionArray<Scalar> > solutionArrays)
 {
     assert(solutionArrays.size() == fieldInfo()->module()->number_of_solution());
 
     for(int i = 0; i < solutionArrays.size(); i++)
-        m_solutionArrayList.push_back(new SolutionArray<Scalar>(*solutionArrays[i]));
+        m_solutionArrayList.push_back(solutionArrays[i]);
 }
 
 template class SceneSolution<double>;

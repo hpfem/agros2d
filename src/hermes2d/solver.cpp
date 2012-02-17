@@ -131,7 +131,7 @@ void SolutionArrayList<Scalar>::init(ProgressItemSolve *progressItemSolve, WeakF
 }
 
 template <typename Scalar>
-SolutionArray<Scalar>* SolutionArrayList<Scalar>::at(int i)
+SolutionArray<Scalar> SolutionArrayList<Scalar>::at(int i)
 {
     if(i >= listOfSolutionArrays.size()){
         printf("i %d, size %d\n", i, listOfSolutionArrays.size());
@@ -146,12 +146,12 @@ void SolutionArrayList<Scalar>::clear()
     printf("clear solution list, size %d\n", listOfSolutionArrays.size());
     //TODO memory leak!
     //TODO ale pada to na delete space ...
-    for(int i=0; i < listOfSolutionArrays.size(); i++){
-        assert(listOfSolutionArrays.at(i) != NULL);
-        delete listOfSolutionArrays.at(i);
-    }
+//    for(int i=0; i < listOfSolutionArrays.size(); i++){
+//        assert(listOfSolutionArrays.at(i) != NULL);
+//        delete listOfSolutionArrays.at(i);
+//    }
     listOfSolutionArrays.clear();
-    printf("cleared, size %d\n", listOfSolutionArrays.size());
+//    printf("cleared, size %d\n", listOfSolutionArrays.size());
 }
 
 template <typename Scalar>
@@ -681,28 +681,28 @@ void SolutionArrayList<Scalar>::solve()
 template <typename Scalar>
 void SolutionArrayList<Scalar>::recordSolution(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space, double adaptiveError, double adaptiveSteps, double time)
 {
-    SolutionArray<Scalar> *solution = new SolutionArray<Scalar>();
+    SolutionArray<Scalar> solution;
 
     assert(sln);
     if (sln->get_type() == Hermes::Hermes2D::HERMES_EXACT)
     {
-        solution->sln = sln;
+        solution.sln = sln;
     }
     else
     {
-        solution->sln = shared_ptr<Solution<Scalar> >(new Solution<Scalar>());
-        solution->sln->copy(sln.get());
+        solution.sln = shared_ptr<Solution<Scalar> >(new Solution<Scalar>());
+        solution.sln->copy(sln.get());
     }
 
     assert(space);
     //solution->space = new Hermes::Hermes2D::Space<Scalar>();
     //solution->space = space->dup(space->get_mesh());
-    solution->space = space;
+    solution.space = space;
 
 
-    solution->adaptiveError = adaptiveError;
-    solution->adaptiveSteps = adaptiveSteps;
-    solution->time = time;
+    solution.adaptiveError = adaptiveError;
+    solution.adaptiveSteps = adaptiveSteps;
+    solution.time = time;
 
     listOfSolutionArrays.push_back(solution);
     printf("record solution, %d\n", size());

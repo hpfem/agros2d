@@ -66,16 +66,16 @@ public:
     //TODO in the future, SceneSolution will hold only one SolutionArray, not arrays for all time levels
 
     //TODO temp
-    void setSolutionArray(QList<SolutionArray<Scalar>* > solutionArrays);
+    void setSolutionArray(QList<SolutionArray<Scalar> > solutionArrays);
 
     FieldInfo* fieldInfo() { return m_fieldInfo; }
 
     // solution
-    SolutionArray<Scalar> *solutionArray(int i = -1);
+    SolutionArray<Scalar> solutionArray(int i = -1);
     Hermes::Hermes2D::Solution<Scalar> *sln(int i = -1);
     Hermes::Hermes2D::Space<Scalar> *space(int i = -1);
-    void setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> *> solutionArrayList);
-    inline Hermes::vector<SolutionArray<Scalar> *> solutionArrayList() { return m_solutionArrayList; }
+    void setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> > solutionArrayList);
+    inline Hermes::vector<SolutionArray<Scalar> > solutionArrayList() { return m_solutionArrayList; }
 
     // mesh
     inline Hermes::Hermes2D::Views::Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
@@ -118,7 +118,7 @@ public:
 
 private:
     // general solution array
-    Hermes::vector<SolutionArray<Scalar> *> m_solutionArrayList;
+    Hermes::vector<SolutionArray<Scalar> > m_solutionArrayList;
 
     // mesh
     Hermes::Hermes2D::Views::Linearizer m_linSolutionMeshView;

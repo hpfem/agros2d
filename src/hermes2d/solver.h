@@ -86,16 +86,16 @@ class SolutionArrayList
 public:
     void init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, Block* block);
     void clear();
-    SolutionArray<Scalar>* at(int i);
+    SolutionArray<Scalar> at(int i);
     int size() { return listOfSolutionArrays.size(); }
-    Hermes::vector<SolutionArray<Scalar> *> get_list() { return listOfSolutionArrays; }
-    Hermes::Hermes2D::Solution<Scalar>* sln(int index) const {return listOfSolutionArrays.at(index)->sln.get();}
+    Hermes::vector<SolutionArray<Scalar> > get_list() { return listOfSolutionArrays; }
+    Hermes::Hermes2D::Solution<Scalar>* sln(int index) const {return listOfSolutionArrays.at(index).sln.get();}
     void solve();
     void doAdaptivityStep();
     void doTimeStep();
 
 private:
-    Hermes::vector<SolutionArray<Scalar> *> listOfSolutionArrays;
+    Hermes::vector<SolutionArray<Scalar> > listOfSolutionArrays;
 
     //FieldInfo *m_fieldInfo;
     Block* m_block;
