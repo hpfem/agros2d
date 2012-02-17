@@ -39,7 +39,8 @@ private:
     SceneView *m_sceneView;
 
     QWidget *basic;
-    QWidget *advanced;
+    QWidget *postprocessor;
+    QWidget *workspace;
 
     // basic
     // show
@@ -52,10 +53,12 @@ private:
     QRadioButton *radPostprocessorScalarField3D;
     QRadioButton *radPostprocessorScalarField3DSolid;
     QRadioButton *radPostprocessorModel;
+    QRadioButton *radPostprocessorParticleTracing3D;
     QRadioButton *radPostprocessorOrder;
 
     QCheckBox *chkShowContours;
     QCheckBox *chkShowVectors;
+    QCheckBox *chkShowParticleTracing;
     QCheckBox *chkShowSolutionMesh;
 
     // scalar field
@@ -81,6 +84,12 @@ private:
     QCheckBox *chkShowGrid;
     QCheckBox *chkSnapToGrid;
 
+    // general view
+    QCheckBox *chkZoomToMouse;
+    QSpinBox *txtGeometryNodeSize;
+    QSpinBox *txtGeometryEdgeWidth;
+    QSpinBox *txtGeometryLabelSize;
+
     // scene font
     QLabel *lblSceneFontExample;
     QPushButton *btnSceneFont;
@@ -91,11 +100,14 @@ private:
     QCheckBox *chkShowLabel;
 
     // scalar field
-    QCheckBox *chkShowScalarScale;
+    QCheckBox *chkShowScalarColorBar;
     QComboBox *cmbPalette;
     QCheckBox *chkPaletteFilter;
     QSpinBox *txtPaletteSteps;
     QComboBox *cmbLinearizerQuality;
+    QCheckBox *chkScalarFieldRangeLog;
+    SLineEditDouble *txtScalarFieldRangeBase;
+    QSpinBox *txtScalarDecimalPlace;
 
     // contours
     QSpinBox *txtContoursCount;
@@ -111,7 +123,41 @@ private:
     QComboBox *cmbOrderPaletteOrder;
     QCheckBox *chkOrderLabel;
 
-    QToolBox *tbxAdvance;
+    // particle tracing
+    QCheckBox *chkParticleIncludeGravitation;
+    QSpinBox *txtParticleNumberOfParticles;
+    SLineEditDouble *txtParticleStartingRadius;
+    SLineEditDouble *txtParticleMass;
+    SLineEditDouble *txtParticleConstant;
+    SLineEditDouble *txtParticlePointX;
+    SLineEditDouble *txtParticlePointY;
+    SLineEditDouble *txtParticleVelocityX;
+    SLineEditDouble *txtParticleVelocityY;
+    SLineEditDouble *txtParticleMaximumRelativeError;
+    QCheckBox *chkParticleTerminateOnDifferentMaterial;
+    QLabel *lblParticlePointX;
+    QLabel *lblParticlePointY;
+    QLabel *lblParticleVelocityX;
+    QLabel *lblParticleVelocityY;
+    QLabel *lblParticleMotionEquations;
+    QCheckBox *chkParticleColorByVelocity;
+    QCheckBox *chkParticleShowPoints;
+    QSpinBox *txtParticleMaximumSteps;
+    SLineEditDouble *txtParticleDragDensity;
+    SLineEditDouble *txtParticleDragCoefficient;
+    SLineEditDouble *txtParticleDragReferenceArea;
+
+    // advanced
+    QCheckBox *chkView3DLighting;
+    QDoubleSpinBox *txtView3DAngle;
+    QCheckBox *chkView3DBackground;
+    QDoubleSpinBox *txtView3DHeight;
+    QCheckBox *chkDeformScalar;
+    QCheckBox *chkDeformContour;
+    QCheckBox *chkDeformVector;
+
+    QToolBox *tbxWorkspace;
+    QToolBox *tbxPostprocessor;
     QPushButton *btnOK;
 
     void loadBasic();
@@ -121,7 +167,8 @@ private:
 
     void createControls();
     QWidget *controlsBasic();
-    QWidget *controlsAdvanced();
+    QWidget *controlsPosprocessor();
+    QWidget *controlsWorkspace();
 
 signals:
     void apply();
@@ -142,9 +189,12 @@ private slots:
     void doScalarFieldDefault();
     void doContoursDefault();
     void doVectorFieldDefault();
+    void doAdvancedDefault();
+    void doParticleDefault();
     void doOrderDefault();
     void doSceneFont();
     void doShowGridChanged();
+    void doScalarFieldLog(int state);
 };
 
 #endif // SCENEVIEWDIALOG_H

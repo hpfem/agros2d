@@ -37,7 +37,6 @@ public:
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-    void doScalarFieldLog(int state);
     void doClearApplicationLog();
     void doClearCommandHistory();
     void doAdaptivityDefault();
@@ -94,14 +93,8 @@ private:
     // experimental features
     QCheckBox *chkExperimentalFeatures;
 
-    // general view
-    QCheckBox *chkZoomToMouse;
-
     // geometry
     QSpinBox *txtMeshAngleSegmentsCount;
-    SLineEditDouble *txtGeometryNodeSize;
-    SLineEditDouble *txtGeometryEdgeWidth;
-    SLineEditDouble *txtGeometryLabelSize;
     QCheckBox *chkMeshCurvilinearElements;
 
     // scene font
@@ -121,37 +114,6 @@ private:
     ColorButton *colorSolutionMesh;
     ColorButton *colorHighlighted;
     ColorButton *colorSelected;
-
-    // grid
-    QLineEdit *txtGridStep;
-    // show grid
-    QCheckBox *chkShowGrid;
-    // snap to grid
-    QCheckBox *chkSnapToGrid;
-    // rulers
-    QCheckBox *chkRulers;
-
-    // axes
-    QCheckBox *chkShowAxes;
-
-    // label
-    QCheckBox *chkShowLabel;
-
-    // scalar view
-    QCheckBox *chkScalarFieldRangeLog;
-    QLineEdit *txtScalarFieldRangeBase;
-    QSpinBox *txtScalarDecimalPlace;
-
-    // 3d
-    QCheckBox *chkView3DLighting;
-    QDoubleSpinBox *txtView3DAngle;
-    QCheckBox *chkView3DBackground;
-    QDoubleSpinBox *txtView3DHeight;
-
-    // deform shape
-    QCheckBox *chkDeformScalar;
-    QCheckBox *chkDeformContour;
-    QCheckBox *chkDeformVector;
 
     // adaptivity
     QLabel *lblMaxDofs;
@@ -178,7 +140,6 @@ private:
 
     void createControls();
     QWidget *createMainWidget();
-    QWidget *createViewWidget();
     QWidget *createSolverWidget();
     QWidget *createColorsWidget();
     QWidget *createGlobalScriptWidget();

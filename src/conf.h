@@ -115,6 +115,24 @@ public:
     // rulers
     bool showRulers;
 
+    // particle tracing
+    bool particleIncludeGravitation;
+    double particleMass;
+    double particleConstant;
+    double particleMaximumRelativeError;
+    int particleMaximumSteps;
+    bool particleTerminateOnDifferentMaterial;
+    Point particleStart;
+    Point particleStartVelocity;
+    Point particleAcceleration;
+    int particleNumberOfParticles;
+    double particleStartingRadius;
+    bool particleColorByVelocity;
+    bool particleShowPoints;
+    double particleDragDensity;
+    double particleDragCoefficient;
+    double particleDragReferenceArea;
+
     // colors
     QColor colorBackground;
     QColor colorGrid;
@@ -127,7 +145,9 @@ public:
     QColor colorInitialMesh;
     QColor colorSolutionMesh;
     QColor colorHighlighted;
+    QColor colorCrossed;
     QColor colorSelected;
+    QColor colorNotConnected;
 
     // adaptivity
     int maxDofs;
@@ -148,7 +168,24 @@ public:
     bool showExperimentalFeatures;
 
     void load();
+    void loadWorkspace();
+    void loadPostprocessor(QDomElement *config);
+    void loadAdvanced();
+
     void save();
+    void saveWorkspace();
+    void savePostprocessor(QDomElement *config);
+    void saveAdvanced();
+
+private:
+    QDomElement *eleConfig;
+
+    bool readConfig(const QString &key, bool defaultValue);
+    int readConfig(const QString &key, int defaultValue);
+    double readConfig(const QString &key, double defaultValue);
+    void writeConfig(const QString &key, bool value);
+    void writeConfig(const QString &key, int value);
+    void writeConfig(const QString &key, double value);
 };
 
 #endif // CONFIG_H

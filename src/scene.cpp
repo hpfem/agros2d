@@ -455,7 +455,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     clearSolutions();
 
     // check if edge doesn't exists
-    if(SceneEdge* existing = edges->get(edge)){
+    if (SceneEdge* existing = edges->get(edge)){
         delete edge;
         return existing;
     }
