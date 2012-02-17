@@ -3250,30 +3250,35 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="434"/>
-        <location filename="../src/problemdialog.cpp" line="443"/>
-        <location filename="../src/problemdialog.cpp" line="449"/>
-        <location filename="../src/problemdialog.cpp" line="455"/>
+        <location filename="../src/problemdialog.cpp" line="436"/>
+        <source>Some nodes are placed outside the permitted area (coordinate x must be positive).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/problemdialog.cpp" line="445"/>
+        <location filename="../src/problemdialog.cpp" line="454"/>
+        <location filename="../src/problemdialog.cpp" line="460"/>
+        <location filename="../src/problemdialog.cpp" line="466"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="434"/>
+        <location filename="../src/problemdialog.cpp" line="445"/>
         <source>Frequency cannot be negative.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="443"/>
+        <location filename="../src/problemdialog.cpp" line="454"/>
         <source>Time step must be positive.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="449"/>
+        <location filename="../src/problemdialog.cpp" line="460"/>
         <source>Total time must be positive.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="455"/>
+        <location filename="../src/problemdialog.cpp" line="466"/>
         <source>Time step is greater then total time.</source>
         <translation></translation>
     </message>
@@ -4039,7 +4044,8 @@ Do you want to save your changes?</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/problemdialog.cpp" line="466"/>
+        <location filename="../src/problemdialog.cpp" line="436"/>
+        <location filename="../src/problemdialog.cpp" line="477"/>
         <location filename="../src/value.cpp" line="48"/>
         <source>Error</source>
         <translation></translation>

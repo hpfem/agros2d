@@ -4108,30 +4108,35 @@
         <translation>&amp;Nein</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="434"/>
-        <location filename="../src/problemdialog.cpp" line="443"/>
-        <location filename="../src/problemdialog.cpp" line="449"/>
-        <location filename="../src/problemdialog.cpp" line="455"/>
+        <location filename="../src/problemdialog.cpp" line="436"/>
+        <source>Some nodes are placed outside the permitted area (coordinate x must be positive).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/problemdialog.cpp" line="445"/>
+        <location filename="../src/problemdialog.cpp" line="454"/>
+        <location filename="../src/problemdialog.cpp" line="460"/>
+        <location filename="../src/problemdialog.cpp" line="466"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="434"/>
+        <location filename="../src/problemdialog.cpp" line="445"/>
         <source>Frequency cannot be negative.</source>
         <translation>Die Frequenz kann nicht negativ sein.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="443"/>
+        <location filename="../src/problemdialog.cpp" line="454"/>
         <source>Time step must be positive.</source>
         <translation>Der Zeitschritt muss positiv sein.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="449"/>
+        <location filename="../src/problemdialog.cpp" line="460"/>
         <source>Total time must be positive.</source>
         <translation>Die Gesamtzeit muss positiv sein.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="455"/>
+        <location filename="../src/problemdialog.cpp" line="466"/>
         <source>Time step is greater then total time.</source>
         <translation>Der Zeitschritt ist länger als die Gesamtzeit.</translation>
     </message>
@@ -4953,7 +4958,8 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Zeitschritt: %1/%2</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="466"/>
+        <location filename="../src/problemdialog.cpp" line="436"/>
+        <location filename="../src/problemdialog.cpp" line="477"/>
         <location filename="../src/value.cpp" line="48"/>
         <source>Error</source>
         <translation>Fehler</translation>
