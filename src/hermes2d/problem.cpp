@@ -431,30 +431,11 @@ void Problem::solve(SolverMode solverMode)
     }
 
 
-    /// TODO Coupling
     foreach(Block* block, m_blocks)
     {
         block->solveInit();
         block->solve();
     }
-
-//    const int elastTODO = 0;  //TODO temp
-//    const int heatTODO = 1;   //TODO temp
-
-//    if(hardCoupling)
-//    {
-//        m_blocks[0]->solveInit();
-//        m_blocks[0]->solve();
-//    }
-//    else
-//    {
-//        m_blocks[heatTODO]->solveInit();
-//        m_blocks[heatTODO]->solve();
-
-//        m_blocks[elastTODO]->solveInit(m_blocks[heatTODO]->m_solutionList->at(0)->sln.get());
-//        m_blocks[elastTODO]->solve();
-//    }
-
 
     // delete temp file
     if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
@@ -473,23 +454,6 @@ void Problem::solve(SolverMode solverMode)
     emit timeStepChanged(false);
 
     postprocess();
-
-    //    if (!solve_init_variables())
-    //        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
-
-    //    WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
-
-    //    SolverAgros<double> solutionAgros(progressItemSolve, &wf);
-
-    //    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(); //TODO PK <double>
-    //    return solutionArrayList;
-
-
-//    foreach(Block* block, m_blocks)
-//    {
-//        block->solveInit();
-//        block->solve();
-//    }
 
 }
 
