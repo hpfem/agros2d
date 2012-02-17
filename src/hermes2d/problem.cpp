@@ -105,24 +105,23 @@ void Block::solve()
 
         Util::scene()->sceneSolution(fieldInfo)->setMeshInitial(Util::problem()->meshInitial());
 
-
-        //************************************************************
-        //*************************************************************
-        // TODO solutionArrays by mel byt seznam objektu, ne ukazatelu!
-        // TODO jinak nedava smysl pouziti shared_ptr uvnitr
-        // TODO zkusit to hned jak se to rozchodi
-        //************************************************************
-        //*************************************************************
-
+        // contains solution arrays for all components of the field
         QList<SolutionArray<double> > solutionArrays;
-        for(int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
-            solutionArrays.push_back(m_solutionList->at(i + offset(field)));
 
+        for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
+        {
+            solutionArrays.push_back(m_solutionList->at(component + offset(field)));
+
+        }
+
+        // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
         Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(solutionArrays);
 
         //TODO
         // internal storage, should be rewriten
         //TODO
+        parentProblem()->saveSolution(fieldInfo, 0, 0, solutionArrays);
+
 
     }
 }
@@ -225,6 +224,11 @@ Problem::Problem()
 //    m_progressItemSolveAdaptiveStep = new ProgressItemSolveAdaptiveStep();
 //    m_progressItemProcessView = new ProgressItemProcessView();
 
+}
+
+void Problem::saveSolution(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, QList<SolutionArray<double> > solution)
+{
+    m_solutions[fieldInfo] = solution;
 }
 
 const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
@@ -331,7 +335,7 @@ void Problem::createStructure()
 
 SolutionArray<double> Problem::solution(FieldInfo *fieldInfo, int component, int timeStep, int adaptivityStep)
 {
-    assert(0); //dodelat
+    return m_solutions[fieldInfo].at(component);
 }
 
 void Problem::mesh()

@@ -65,6 +65,7 @@ public:
 //    Field* couplingTargetField(Coupling* coupling) const;
 
     Field* field(FieldInfo* fieldInfo) const;
+    inline Problem* parentProblem() const {return m_parentProblem; }
 
 public:
 //private:
@@ -109,7 +110,7 @@ public:
 
     // should store all solutionArrays that have been calculated
     SolutionArray<double> solution(FieldInfo* fieldInfo, int component=0, int timeStep = 0, int adaptivityStep = 0);
-    void setSolution(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, QList<SolutionArray<double> > solution);
+    void saveSolution(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, QList<SolutionArray<double> > solution);
 
     // progress dialog
     ProgressDialog* progressDialog();
@@ -154,6 +155,8 @@ public:
     //TODO move to Field
     Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
 
+    //TODO temporary, has to be extedned for time dependent and adaptive solutions
+    QMap<FieldInfo*, QList<SolutionArray<double> > > m_solutions;
 
 };
 
