@@ -884,10 +884,13 @@ void Scene::transformTranslate(const Point &point, bool copy)
 
     // sorted list of nodes for translate
     QList<SceneNode *> sortedNodes;
+    QMap<int, double> mapka;
+    QList<double> testList;
 
     // vypocet uhlu vektoru posunuti
     double angle = point.angle();
     qDebug("Angle ve stupnich = %f", (angle*180)/M_PI);
+    double ud;
 
     foreach (SceneNode *node, nodes)
     {
@@ -895,19 +898,21 @@ void Scene::transformTranslate(const Point &point, bool copy)
         {
             int index = nodes.indexOf(node);
             // Parkova transformace - prumet vektoru bodu do realne osy vektoru posunuti
-            double ud = node->point.x * cos(angle) + node->point.y * sin(angle);
+            ud = node->point.x * cos(angle) + node->point.y * sin(angle);
 
-            QMap<int, double> mapka;
             mapka.insert(index, ud);
+            testList.append(ud);
 
-            qDebug("Index = %d", index);
-            qDebug("ud = %f", ud);
+            //qDebug("ud = %f", ud);
+            //qDebug("Index = %d", index);
             //sortedNodes.append(nodes.at(index));
-
         }
-
-
     }
+    qSort(testList.begin(),testList.end());
+    qDebug()<<testList.value(0);
+    qDebug()<<testList.value(1);
+    qDebug()<<testList.value(2);
+    qDebug()<<testList.value(3);
 
     foreach (SceneNode *node, sortedNodes)
     {
