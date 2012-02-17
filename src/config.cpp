@@ -37,10 +37,7 @@ Config::~Config()
 void Config::load()
 {
     loadWorkspace();
-
-    QDomElement defaultPostprocessorConfig; // FIXME
-    loadPostprocessor(&defaultPostprocessorConfig.toElement());
-
+    loadPostprocessor(NULL);
     loadAdvanced();
 }
 

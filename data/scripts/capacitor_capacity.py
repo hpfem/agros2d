@@ -49,25 +49,27 @@ r = []
 C = []
 print("C = f(r) (F):")
 for i in range(15):
-	if i > 0:
-		selectedge(6, 7, 8)
-		moveselection(dr, 0, False)
+    if i > 0:
+        selectedge(6, 7, 8)
+        moveselection(dr, 0, False)
 
-	solve()
-	result = volumeintegral(0, 1, 2)
+    solve()
+    result = volumeintegral(0, 1, 2)
 
-	r.append(r1 + (i*dr))
-	C.append(2*2*result["We"]/(U^2))
-	print(r[-1], C[-1])
+    r.append(r1 + (i*dr))
+    C.append(2*2*result["We"]/(U^2))
+    print(r[-1], C[-1])
 
 # plot chart
-try:
-	import pylab as pl
+import pylab as pl
 
-	pl.plot(r, C)
-	pl.grid(1)
-	pl.xlabel("r (m)")
-	pl.ylabel("C (F)")
-	pl.show()
-except ImportError as err:
-	print("Script error: " + err.message)
+pl.plot(r, C)
+pl.grid(True)
+pl.xlabel("$r\,\mathrm{(m)}$")
+pl.ylabel("$C\,\mathrm{(F)}$")
+pl.show()
+pl.savefig("capacity.png", dpi=60)
+pl.close()
+
+# show in console
+pythonlab.image("capacity.png")

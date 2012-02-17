@@ -62,51 +62,53 @@ for i in range(N):
 	Fz.append(result["Fy"])
 	print(z[-1], Fz[-1])
 
-try:
-	import pylab as pl
-	import numpy as np
-	from scipy import interpolate
-	from scipy.integrate import odeint
-	
-	# static characteristic
-	# interpolate 
-	fint = interpolate.interp1d(z, Fz, 1)
-	
-	# plot
-	zint = np.linspace(0, zmax)
-	Fzint = fint(zint)
-	
-	pl.subplot(3,1,1)
-	pl.plot(z, Fz, 'o', zint, Fzint, '-')
-	pl.grid(1)
-	pl.xlabel("$z\,\mathrm{(s)}$")
-	pl.ylabel("$F_\mathrm{L}\,\mathrm{(m)}$")
-	
-	# dynamic characteristic
-	# initial condition
-	y0 = [0, 0]
-	
-	def func(y, t):
-		return [y[1], fint(y[0])/(1.781e-5*7800)]
-	
-	# differential equation
-	t = np.linspace(0, 0.08)
-	y = odeint(func, y0, t)
-	
-	# plot
-	pl.subplot(3,1,2)
-	pl.plot(t, y[:,0])
-	pl.grid(1)
-	pl.xlabel("$t\,\mathrm{(s)}$")
-	pl.ylabel("$z\,\mathrm{(m)}$")
-	pl.xlim([0, 0.07])
-	
-	pl.subplot(3,1,3)
-	pl.plot(t, y[:,1])
-	pl.grid(1)
-	pl.xlabel("$t\,\mathrm{(s)}$")
-	pl.ylabel("$v\,\mathrm{(m/s)}$")
-	pl.xlim([0, 0.07])
-	pl.show()
-except ImportError as err:
-	print("Script error: " + err.message)
+import pylab as pl
+import numpy as np
+from scipy import interpolate
+from scipy.integrate import odeint
+
+# static characteristic
+# interpolate 
+fint = interpolate.interp1d(z, Fz, 1)
+
+# plot
+zint = np.linspace(0, zmax)
+Fzint = fint(zint)
+
+pl.subplot(3,1,1)
+pl.plot(z, Fz, 'o', zint, Fzint, '-')
+pl.grid(1)
+pl.xlabel("$z\,\mathrm{(s)}$")
+pl.ylabel("$F_\mathrm{L}\,\mathrm{(m)}$")
+
+# dynamic characteristic
+# initial condition
+y0 = [0, 0]
+
+def func(y, t):
+	return [y[1], fint(y[0])/(1.781e-5*7800)]
+
+# differential equation
+t = np.linspace(0, 0.08)
+y = odeint(func, y0, t)
+
+# plot
+pl.subplot(3,1,2)
+pl.plot(t, y[:,0])
+pl.grid(1)
+pl.xlabel("$t\,\mathrm{(s)}$")
+pl.ylabel("$z\,\mathrm{(m)}$")
+pl.xlim([0, 0.07])
+
+pl.subplot(3,1,3)
+pl.plot(t, y[:,1])
+pl.grid(1)
+pl.xlabel("$t\,\mathrm{(s)}$")
+pl.ylabel("$v\,\mathrm{(m/s)}$")
+pl.xlim([0, 0.07])
+pl.show()
+pl.savefig("chart.png", dpi=60)
+pl.close()
+
+# show in console
+pythonlab.image("chart.png")
