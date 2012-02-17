@@ -36,9 +36,10 @@ PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *pare
 
     createControls();
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
-    timer->start(4000);
+    // FIXME - script control
+    //QTimer *timer = new QTimer(this);
+    //connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
+    //timer->start(4000);
 
     txtEditor->setAcceptDrops(false);
 }
@@ -46,8 +47,10 @@ PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *pare
 PythonEditorWidget::~PythonEditorWidget()
 {
     QSettings settings;
-    settings.setValue("PythonEditorWidget/SplitterState", splitter->saveState());
-    settings.setValue("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry());
+
+    // FIXME - script control
+    //settings.setValue("PythonEditorWidget/SplitterState", splitter->saveState());
+    //settings.setValue("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry());
     settings.setValue("PythonEditorWidget/EditorHeight", txtEditor->height());
 }
 
@@ -63,33 +66,36 @@ void PythonEditorWidget::createControls()
     QWidget *editor = new QWidget();
     editor->setLayout(layoutEditor);
 
-    splitter = new QSplitter(this);
-    splitter->setOrientation(Qt::Vertical);
-    splitter->addWidget(editor);
+    // FIXME - script control
+    //splitter = new QSplitter(this);
+    //splitter->setOrientation(Qt::Vertical);
+    //splitter->addWidget(editor);
+
+    //trvPyLint = new QTreeWidget(this);
+    //trvPyLint->setHeaderHidden(true);
+    //trvPyLint->setMouseTracking(true);
+    //trvPyLint->setColumnCount(1);
+    //trvPyLint->setIndentation(12);
+    //connect(trvPyLint, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLine(QTreeWidgetItem *, int)));
+
+    //splitter->addWidget(trvPyLint);
+
+    //QSizePolicy policy = splitter->sizePolicy();
+    //policy.setHorizontalStretch(0.2);
+    //policy.setVerticalStretch(1.0);
+    //splitter->setSizePolicy(policy);
 
     QSettings settings;
-    trvPyLint = new QTreeWidget(this);
-    trvPyLint->setHeaderHidden(true);
-    trvPyLint->setMouseTracking(true);
-    trvPyLint->setColumnCount(1);
-    trvPyLint->setIndentation(12);
-    connect(trvPyLint, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLine(QTreeWidgetItem *, int)));
-
-    splitter->addWidget(trvPyLint);
-
-    QSizePolicy policy = splitter->sizePolicy();
-    policy.setHorizontalStretch(0.2);
-    policy.setVerticalStretch(1.0);
-    splitter->setSizePolicy(policy);
-
-    splitter->restoreState(settings.value("PythonEditorWidget/SplitterState", splitter->saveState()).toByteArray());
-    splitter->restoreGeometry(settings.value("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry()).toByteArray());
+    //splitter->restoreState(settings.value("PythonEditorWidget/SplitterState", splitter->saveState()).toByteArray());
+    //splitter->restoreGeometry(settings.value("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry()).toByteArray());
     txtEditor->resize(txtEditor->width(), settings.value("PythonEditorWidget/EditorHeight").toInt());
 
     // contents
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(1);
-    layout->addWidget(splitter);
+    // FIXME - script control
+    //layout->addWidget(splitter);
+    layout->addWidget(editor);
 
     setLayout(layout);
 }
@@ -431,19 +437,24 @@ void PythonEditorDialog::createActions()
     actCheckPyLint->setShortcut(QKeySequence(tr("Alt+C")));
 
     actOptionsEnablePyFlakes = new QAction(icon(""), tr("PyFlakes enabled"), this);
-    actOptionsEnablePyFlakes->setCheckable(true);
-    actOptionsEnablePyFlakes->setChecked(settings.value("PythonEditorWidget/EnablePyFlakes", true).toBool());
-    connect(actOptionsEnablePyFlakes, SIGNAL(triggered()), this, SLOT(doOptionsEnablePyFlakes()));
+    // FIXME - script control
+    //actOptionsEnablePyFlakes->setCheckable(true);
+    //actOptionsEnablePyFlakes->setChecked(settings.value("PythonEditorWidget/EnablePyFlakes", true).toBool());
+    //actOptionsEnablePyFlakes->setChecked(false);
+    //connect(actOptionsEnablePyFlakes, SIGNAL(triggered()), this, SLOT(doOptionsEnablePyFlakes()));
 
     actOptionsEnablePyLint = new QAction(icon(""), tr("PyLint enabled"), this);
-    actOptionsEnablePyLint->setCheckable(true);
-    actOptionsEnablePyLint->setChecked(settings.value("PythonEditorWidget/EnablePyLint", true).toBool());
-    connect(actOptionsEnablePyLint, SIGNAL(triggered()), this, SLOT(doOptionsEnablePyLint()));
+    // FIXME - script control
+    //actOptionsEnablePyLint->setCheckable(true);
+    //actOptionsEnablePyLint->setChecked(settings.value("PythonEditorWidget/EnablePyLint", true).toBool());
+    //actOptionsEnablePyLint->setChecked(false);
+    //connect(actOptionsEnablePyLint, SIGNAL(triggered()), this, SLOT(doOptionsEnablePyLint()));
 
     actOptionsPrintStacktrace = new QAction(icon(""), tr("Print stacktrace"), this);
-    actOptionsPrintStacktrace->setCheckable(true);
-    actOptionsPrintStacktrace->setChecked(settings.value("PythonEditorWidget/PrintStacktrace", true).toBool());
-    connect(actOptionsPrintStacktrace, SIGNAL(triggered()), this, SLOT(doOptionsPrintStacktrace()));
+    // FIXME - script control
+    //actOptionsPrintStacktrace->setCheckable(true);
+    //actOptionsPrintStacktrace->setChecked(settings.value("PythonEditorWidget/PrintStacktrace", true).toBool());
+    //connect(actOptionsPrintStacktrace, SIGNAL(triggered()), this, SLOT(doOptionsPrintStacktrace()));
 
     actOptionsEnableUserModuleDeleter = new QAction(icon(""), tr("User module deleter"), this);
     actOptionsEnableUserModuleDeleter->setCheckable(true);
@@ -519,11 +530,13 @@ void PythonEditorDialog::createControls()
     mnuTools->addAction(actReplaceTabsWithSpaces);
 
     mnuOptions = menuBar()->addMenu(tr("&Options"));
-    mnuOptions->addAction(actOptionsEnablePyFlakes);
-    mnuOptions->addAction(actOptionsEnablePyLint);
+    // FIXME - script control
+    //mnuOptions->addAction(actOptionsEnablePyFlakes);
+    //mnuOptions->addAction(actOptionsEnablePyLint);
     mnuOptions->addAction(actOptionsEnableUserModuleDeleter);
-    mnuOptions->addSeparator();
-    mnuOptions->addAction(actOptionsPrintStacktrace);
+    // FIXME - script control
+    //mnuOptions->addSeparator();
+    //mnuOptions->addAction(actOptionsPrintStacktrace);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     // mnuHelp->addAction(actHelp);
@@ -565,7 +578,8 @@ void PythonEditorDialog::createControls()
 #endif
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actRunPython);
-    tlbTools->addAction(actCheckPyLint);
+    // FIXME - script control
+    //tlbTools->addAction(actCheckPyLint);
 
     // path
     QLineEdit *txtPath = new QLineEdit(this);
@@ -742,8 +756,9 @@ void PythonEditorDialog::doPyLintPython()
     if (!scriptEditorWidget()->fileName.isEmpty())
         filBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName).absolutePath());
 
+    // FIXME - script control
     // analyse by pylint
-    scriptEditorWidget()->pyLintAnalyse();
+    //scriptEditorWidget()->pyLintAnalyse();
 
     txtEditor->setFocus();
     activateWindow();
@@ -869,7 +884,7 @@ void PythonEditorDialog::doFileOpenRecent(QAction *action)
 }
 
 void PythonEditorDialog::doFileSave()
-{    
+{
     QSettings settings;
     QString dir = settings.value("General/LastDir", "data").toString();
 

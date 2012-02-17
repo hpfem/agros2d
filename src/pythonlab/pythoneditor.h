@@ -49,7 +49,8 @@ public:
     ScriptEditor *txtEditor;
     QTreeWidget *trvPyLint;
     SearchWidget *searchWidget;
-    QSplitter *splitter;
+    // FIXME - script control
+    //QSplitter *splitter;
 
     PythonEditorWidget(PythonEngine *pythonEngine, QWidget *parent);
     ~PythonEditorWidget();
@@ -65,8 +66,8 @@ private:
     void createEngine();
 
 private slots:
-    void pyLintAnalyseStopped(int exitCode);    
-    void doHighlightLine(QTreeWidgetItem *item, int role);   
+    void pyLintAnalyseStopped(int exitCode);
+    void doHighlightLine(QTreeWidgetItem *item, int role);
 };
 
 class PythonEditorDialog : public QMainWindow
