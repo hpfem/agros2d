@@ -1564,21 +1564,119 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
 
     if ((angle1 > 0.0) && (angle2 > 0.0))
     {
+        if((p1s == p2e) || (p1s==p2s) || (p1e == p2e) || (p1e==p2s))
         {
+            // Crossing of arcs is impossible
+        }
+        else
+        {
+            {
                 // Calculate distance between centres of circle
                 float distance = (center1 - center2).magnitude();
+                float dx = center2.x - center1.x;
+                float dy = center2.y - center1.y;
 
-                //No intersections
-                if (((distance > (radius1 + radius2)) || (distance < std::abs(radius1 - radius2))))
-                 {
 
-                 }
+                if ((distance > (radius1 + radius2)))
+                {
+                    //No intersections
+                }
 
-                //
-                if (distance = (radius1 + radius2))
-                 {
+                else
+                {
 
-                 }
+                    // Determine the distance from point 0 to point 2.
+                    double a = ((radius1*radius1) - (radius2*radius2) + (distance*distance)) / (2.0 * distance);
+
+                    // Determine the coordinates of point 2.
+                    Point middle;
+                    middle.x = center1.x + (dx * a/distance);
+                    middle.y = center1.y + (dy * a/distance);
+
+                    // Determine the distance from point 2 to either of the
+                    // intersection points.
+                    double h = std::sqrt((radius1 * radius1) - (a*a));
+
+                    // Now determine the offsets of the intersection points from
+                    // point 2.
+                    double rx = -dy * (h/distance);
+                    double ry =  dx * (h/distance);
+
+                    /* Determine the absolute intersection points. */
+                    Point p1(middle.x + rx, middle.y + ry);
+                    Point p2(middle.x - rx, middle.y - ry);
+
+                    double angle1_1 = (p1e - center1).angle();
+                    double angle2_1 = (p1s - center1).angle();
+
+                    double angle1_2 = (p2e - center2).angle();
+                    double angle2_2 = (p2s - center2).angle();
+
+                    double iangle1_1 = (p1 - center1).angle();
+                    double iangle2_1 = (p2 - center1).angle();
+
+                    double iangle1_2 = (p1 - center2).angle();
+                    double iangle2_2 = (p2 - center2).angle();
+
+                    if (std::abs((angle2_1 - angle1_1)) > M_PI)
+                    {
+                        if (iangle2_1 > 0 )
+                            iangle2_1 -= angle2_1;
+                        else
+                            iangle2_1 +=  M_PI;
+                        if (iangle1_1 > 0 )
+                            iangle1_1 -= angle2_1;
+                        else
+                            iangle1_1 +=  M_PI;
+                        if (angle1_1 > 0)
+                            angle1_1  -= angle2_1;
+                        else
+                            angle1_1  +=  M_PI;
+                        angle2_1 = 0;
+                    }
+
+                    if (std::abs((angle2_2 - angle1_2)) > M_PI)
+                    {
+                        if (iangle2_2 > 0 )
+                            iangle2_2 -= angle2_2;
+                        else
+                            iangle2_2 +=  M_PI;
+                        if (iangle1_2 > 0 )
+                            iangle1_2 -= angle2_2;
+                        else
+                            iangle1_2 +=  M_PI;
+                        if (angle1_2 > 0)
+                            angle1_2  -= angle2_2;
+                        else
+                            angle1_2  +=  M_PI;
+                        angle2_2 = 0;
+                    }
+
+                    if (angle2_1 < angle1_1)
+                    {
+                        double temp = angle1_1;
+                        angle1_1 = angle2_1;
+                        angle2_1 = temp;
+                    }
+
+                    if (angle2_2 < angle1_2)
+                    {
+                        double temp = angle1_2;
+                        angle1_2 = angle2_2;
+                        angle2_2 = temp;
+                    }
+
+                    if ((iangle1_1 < angle2_1) && (iangle1_1 > angle1_1) && (iangle1_2 < angle2_2) && (iangle1_2 > angle1_2)
+                            && (p1 != p1s) && (p1 != p1e))
+                        out.append(p1);
+
+                    if ((iangle2_1 < angle2_1) && (iangle2_1 > angle1_1) && (iangle2_2 < angle2_2) && (iangle2_2 > angle1_2)
+                            && (p2 != p1s) && (p2 != p1e))
+                        out.append(p2);
+
+                }
+
+            }
 
         }
 

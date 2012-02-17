@@ -1852,16 +1852,14 @@ void Scene::checkNodeConnect(SceneNode *node)
                 SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, boundaries[0], 0, 0);
                 edge->angle = edgeAngle;
                 SceneEdge *edgeAdded = addEdge(edge);
-                edge->lyingNodes.clear();
-                qDebug() << edge->isLyingNode() << ",  " << edge->isCrossed();
+                edge->lyingNodes.clear();                
             }
         }
     }
 
     if(isConnected)
     {
-        removeNode(node);
-        qDebug() << "removed";
+        removeNode(node);        
     }
 }
 
