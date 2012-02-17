@@ -960,7 +960,7 @@ void SceneView::paintRulersHints()
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(contextWidth(), contextHeight()));
 
-    glColor3d(1.0, 0.0, 0.0);
+    glColor3d(0.0, 0.53, 0.0);
 
     Point p = position(m_lastPos.x(), m_lastPos.y());
 
