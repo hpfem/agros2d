@@ -294,6 +294,8 @@ public:
     inline CouplingInfo* couplingInfo(FieldInfo* sourceField, FieldInfo* targetField);
     inline void setCouplingInfos(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos) { m_couplingInfos = couplingInfos; }
 
+    void synchronizeCouplings();
+
     bool hasField(QString field) { return m_fieldInfos.contains(field); }
 
     void addField(FieldInfo *field);

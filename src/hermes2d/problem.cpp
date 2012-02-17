@@ -235,6 +235,7 @@ const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
 
 void Problem::createStructure()
 {
+    Util::scene()->synchronizeCouplings();
     QList<FieldInfo *> fieldInfos = Util::scene()->fieldInfos().values();
     QList<CouplingInfo* > couplingInfos = Util::scene()->couplingInfos().values();
 

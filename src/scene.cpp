@@ -41,6 +41,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/coupling.h"
 
 void ProblemInfo::clear()
 {
@@ -1917,4 +1918,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     setlocale(LC_NUMERIC, plocale);
 
     return ErrorResult();
+}
+
+void Scene::synchronizeCouplings()
+{
+    CouplingInfo::synchronizeCouplings(m_fieldInfos, m_couplingInfos);
 }

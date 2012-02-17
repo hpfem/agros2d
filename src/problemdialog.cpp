@@ -568,35 +568,7 @@ void FieldTabWidget::doRemoveFieldRequested(int index)
 
 void FieldTabWidget::doFindCouplings()
 {
-    // add missing
-    foreach(FieldInfo* sourceField, m_fieldInfos)
-    {
-        foreach(FieldInfo* targetField, m_fieldInfos)
-        {
-            if(sourceField == targetField)
-                continue;
-            QPair<FieldInfo*, FieldInfo*> fieldInfosPair(sourceField, targetField);
-            if(isCouplingAvailable(sourceField, targetField)){
-                if(! m_couplingInfos.contains(fieldInfosPair))
-                {
-                    m_couplingInfos[fieldInfosPair] = new CouplingInfo(sourceField, targetField);
-                }
-            }
-        }
-    }
-
-    // remove extra
-    foreach(CouplingInfo* couplingInfo, m_couplingInfos)
-    {
-        if(! (m_fieldInfos.contains(couplingInfo->sourceField()->fieldId()) &&
-              m_fieldInfos.contains(couplingInfo->targetField()->fieldId()) &&
-              isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
-        {
-            cout << "removing info" << endl;
-            m_couplingInfos.remove(QPair<FieldInfo*, FieldInfo*>(couplingInfo->sourceField(), couplingInfo->targetField()));
-        }
-    }
-
+    CouplingInfo::synchronizeCouplings(m_fieldInfos, m_couplingInfos);
     updateCouplingTab();
 }
 

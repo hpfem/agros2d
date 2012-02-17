@@ -43,6 +43,7 @@ private:
 
 };
 
+
 //// available couplings
 //QMap<QPair<FieldInfo*, FieldInfo*>, CouplingInfo* > availableCouplings();
 
@@ -78,6 +79,9 @@ public:
     /// reloads the Coupling ("module"). Should be called when couplingType or AnalysisType of either fields changes
     void reload();
 
+    /// goes through field infos and adds/removes coupling infos accordingly
+    static void synchronizeCouplings(QMap<QString, FieldInfo *>& fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >& couplingInfos);
+
 private:
     /// module
     Coupling *m_coupling;
@@ -95,6 +99,7 @@ private:
     CouplingType m_couplingType;
 
 };
+
 
 //}
 //}
