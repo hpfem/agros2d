@@ -8,7 +8,7 @@ langPath="./lang"
 temporaryDirectory="./tmp"
 debianizedFiles="./data ./debian ./lang ./src ./hermes_common ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
 
-version="1.9"
+version="2.0"
 
 case "$1" in
 	help )
