@@ -1046,6 +1046,16 @@ void PostprocessorView::setControls()
     chkShowSolutionMesh->setEnabled(isSolved && (cmbScalarFieldVariable->count() > 0));
     chkShowContours->setEnabled(isSolved);
     chkShowVectors->setEnabled(isSolved && (cmbVectorFieldVariable->count() > 0));
+    // if (Util::scene()->problemInfo()->hermes()->hasParticleTracing())
+    // {
+        // chkShowParticleTracing->setEnabled(isSolved && (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState));
+        chkShowParticleTracing->setEnabled(isSolved);
+    // }
+    // else
+    // {
+    //     chkShowParticleTracing->setEnabled(false);
+    //     chkShowParticleTracing->setChecked(false);
+    // }
 
     radPostprocessorNone->setEnabled(isSolved);
     radPostprocessorScalarField->setEnabled(isSolved);
@@ -1053,6 +1063,7 @@ void PostprocessorView::setControls()
     radPostprocessorScalarField3D->setEnabled(isSolved);
     radPostprocessorScalarField3DSolid->setEnabled(isSolved);
     radPostprocessorModel->setEnabled(isSolved);
+    radPostprocessorParticleTracing3D->setEnabled(chkShowParticleTracing->isEnabled());
 
     //    cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
 
