@@ -23,123 +23,165 @@
 #ifndef NOGLUT
 
 #include <GL/freeglut.h>
-#include "../h2d_common.h"
+#include "hermes2d_common_defs.h"
 #include "base_view.h"
+#include "filter.h"
 
-BaseView::BaseView(const char* title, WinGeom* wg)
+namespace Hermes
+{
+  namespace Hermes2D
+  {
+    namespace Views
+    {
+      template<typename Scalar>
+      BaseView<Scalar>::BaseView(const char* title, WinGeom* wg)
         : ScalarView((char*) title, wg)
-{
-  pss = NULL;
-  sln = NULL;
-  space = NULL;
-  show_edges = true;
-  basic_title.assign(title);
-}
+      {
+        pss = NULL;
+        sln = NULL;
+        space = NULL;
+        this->show_edges = true;
+        basic_title.assign(title);
+      }
 
-BaseView::BaseView(char* title, WinGeom* wg)
+      template<typename Scalar>
+      BaseView<Scalar>::BaseView(char* title, WinGeom* wg)
         : ScalarView(title, wg)
-{
-  pss = NULL;
-  sln = NULL;
-  space = NULL;
-  show_edges = true;
-  basic_title.assign(title);
-}
+      {
+        pss = NULL;
+        sln = NULL;
+        space = NULL;
+        this->show_edges = true;
+        basic_title.assign(title);
+      }
 
-void BaseView::show(const Space* space, double eps, int item)
-{
-  free();
-  int order_increase = 0;
-  this->space = space->dup(space->get_mesh(), order_increase);
-  pss = new PrecalcShapeset(this->space->get_shapeset());
-  sln = new Solution();
-  ndof = this->space->get_num_dofs();
-  base_index = 0;
-  this->eps = eps;
-  this->item = item;
-  update_solution();
-}
+      template<typename Scalar>
+      void BaseView<Scalar>::show(const Space<Scalar>* space, double eps, int item)
+      {
+        free();
+        int order_increase = 0;
+        this->space = space->dup(space->get_mesh(), order_increase);
+        pss = new PrecalcShapeset(this->space->shapeset);
+        sln = new Solution<Scalar>();
+        ndof = this->space->get_num_dofs();
+        base_index = 0;
+        this->eps = eps;
+        this->item = item;
+        update_solution();
+      }
 
-void BaseView::free()
-{
-  if (pss != NULL) { delete pss; pss = NULL; }
-  if (sln != NULL) { delete sln; sln = NULL; }
-  if (space != NULL) { delete space; space = NULL; }
-}
+      template<typename Scalar>
+      void BaseView<Scalar>::free()
+      {
+        if (pss != NULL) { delete pss; pss = NULL; }
+        if (sln != NULL) { delete sln; sln = NULL; }
+        if (space != NULL) { delete space; space = NULL; }
+      }
 
-void BaseView::update_solution()
-{
-  scalar* coeffs = new scalar[ndof];
-  memset(coeffs, 0, sizeof(scalar) * ndof);
-  if (base_index >= 0)
-  {
-    if (base_index < ndof) coeffs[base_index] = 1.0;
-    Solution::vector_to_solution(coeffs, space, sln, pss, false);
+      template<>
+      void BaseView<double>::update_solution()
+      {
+        double* coeffs = new double[ndof];
+        memset(coeffs, 0, sizeof(double) * ndof);
+        if (base_index >= 0)
+        {
+          if (base_index < ndof) coeffs[base_index] = 1.0;
+          Solution<double>::vector_to_solution(coeffs, space, sln, pss, false);
+        }
+        else
+        {
+          Solution<double>::vector_to_solution(coeffs, space, sln, pss, true);
+        }
+
+        ScalarView::show(sln, eps, item);
+        update_title();
+
+        delete [] coeffs;
+      }
+      template<>
+      void BaseView<std::complex<double> >::update_solution()
+      {
+        std::complex<double>* coeffs = new std::complex<double>[ndof];
+        memset(coeffs, 0, sizeof(std::complex<double>) * ndof);
+        if (base_index >= 0)
+        {
+          if (base_index < ndof) coeffs[base_index] = 1.0;
+          Solution<std::complex<double> >::vector_to_solution(coeffs, space, sln, pss, false);
+        }
+        else
+        {
+          Solution<std::complex<double> >::vector_to_solution(coeffs, space, sln, pss, true);
+        }
+
+        Hermes::Hermes2D::RealFilter filter(sln);
+
+        ScalarView::show(&filter, eps, item);
+        update_title();
+
+        delete [] coeffs;
+      }
+
+      template<typename Scalar>
+      void BaseView<Scalar>::update_title()
+      {
+        std::stringstream str;
+        str << basic_title << " - dof = " << base_index;
+        if (base_index < 0)
+          str << " (Dirichlet lift)";
+        View::set_title(str.str().c_str());
+      }
+
+      template<typename Scalar>
+      void BaseView<Scalar>::on_special_key(int key, int x, int y)
+      {
+        switch (key)
+        {
+        case GLUT_KEY_LEFT:
+          if (base_index > -1) base_index--;
+          update_solution();
+          break;
+
+        case GLUT_KEY_RIGHT:
+          if (base_index < ndof-1) base_index++;
+          update_solution();
+          break;
+
+        default:
+          ScalarView::on_special_key(key, x, y);
+        }
+      }
+
+
+      template<typename Scalar>
+      const char* BaseView<Scalar>::get_help_text() const
+      {
+        return
+          "BaseView\n\n"
+          "Controls:\n"
+          "  Left mouse - pan\n"
+          "  Right mouse - zoom\n"
+          "  Left arrow - previous basis function\n"
+          "  Right arrow - next basis function\n"
+          "  3 - toggle 3D mode\n"
+          "  C - center image\n"
+          "  F - toggle smooth palette\n"
+          "  H - render high-quality frame\n"
+          "  M - toggle mesh\n"
+          "  P - cycle palettes\n"
+          "  S - save screenshot\n"
+          "  F1 - this help\n"
+          "  Esc, Q - quit\n\n"
+          "3D mode:\n"
+          "  Left mouse - rotate\n"
+          "  Right mouse - zoom\n"
+          "  Middle mouse - pan\n"
+          "  * - increase Z scale\n"
+          "  / - decrease Z scale";
+      }
+
+      template class HERMES_API BaseView<double>;
+      template class HERMES_API BaseView<std::complex<double> >;
+    }
   }
-  else
-  {
-    Solution::vector_to_solution(coeffs, space, sln, pss, true);
-  }
-
-  ScalarView::show(sln, eps, item);
-  update_title();
-
-  delete [] coeffs;
 }
-
-void BaseView::update_title()
-{
-  std::stringstream str;
-  str << basic_title << " - dof = " << base_index;
-  if (base_index < 0)
-    str << " (Dirichlet lift)";
-  View::set_title(str.str().c_str());
-}
-
-void BaseView::on_special_key(int key, int x, int y)
-{
-  switch (key)
-  {
-    case GLUT_KEY_LEFT:
-      if (base_index > -1) base_index--;
-      update_solution();
-      break;
-
-    case GLUT_KEY_RIGHT:
-      if (base_index < ndof-1) base_index++;
-      update_solution();
-      break;
-
-    default:
-      ScalarView::on_special_key(key, x, y);
-  }
-}
-
-
-const char* BaseView::get_help_text() const
-{
-  return
-  "BaseView\n\n"
-  "Controls:\n"
-  "  Left mouse - pan\n"
-  "  Right mouse - zoom\n"
-  "  Left arrow - previous basis function\n"
-  "  Right arrow - next basis function\n"
-  "  3 - toggle 3D mode\n"
-  "  C - center image\n"
-  "  F - toggle smooth palette\n"
-  "  H - render high-quality frame\n"
-  "  M - toggle mesh\n"
-  "  P - cycle palettes\n"
-  "  S - save screenshot\n"
-  "  F1 - this help\n"
-  "  Esc, Q - quit\n\n"
-  "3D mode:\n"
-  "  Left mouse - rotate\n"
-  "  Right mouse - zoom\n"
-  "  Middle mouse - pan\n"
-  "  * - increase Z scale\n"
-  "  / - decrease Z scale";
-}
-
 #endif // NOGLUT

@@ -22,91 +22,147 @@
 #ifndef NOGLUT
 
 #include <GL/freeglut.h>
-#include "../h2d_common.h"
+#include "hermes2d_common_defs.h"
 #include "vector_base_view.h"
+#include "space.h"
+#include "precalc.h"
+#include "filter.h"
 
-void VectorBaseView::show(Space* space)
+namespace Hermes
 {
-  free();
-  pss = new PrecalcShapeset(space->get_shapeset());
-  sln = new Solution();
-  this->space = space;
-  ndof = space->get_num_dofs();
-  base_index = 0;
-  update_solution();
-}
-
-
-void VectorBaseView::free()
-{
-  if (pss != NULL) { delete pss; pss = NULL; }
-  if (sln != NULL) { delete sln; sln = NULL; }
-}
-
-
-void VectorBaseView::update_solution()
-{
-  scalar* coeffs = new scalar[ndof + 1];
-  memset(coeffs, 0, sizeof(scalar) * (ndof + 1));
-  if (base_index >= -1 && base_index < ndof)
-    coeffs[base_index + 1] = 1.0;
-  Solution::vector_to_solution(coeffs, space, sln, pss);
-
-  VectorView::show(sln,  sln, 0.001, H2D_FN_VAL_0, H2D_FN_VAL_1);
-  update_title();
-
-  delete [] coeffs;
-}
-
-
-void VectorBaseView::update_title()
-{
-  std::stringstream str;
-  str << basic_title << " - dof = " << base_index;
-  if (base_index < 0)
-    str << " (Dirichlet lift)";
-  View::set_title(str.str().c_str());
-}
-
-
-void VectorBaseView::on_special_key(int key, int x, int y)
-{
-  switch (key)
+  namespace Hermes2D
   {
-    case GLUT_KEY_LEFT:
-      if (base_index > -1) base_index--;
-      update_solution();
-      break;
+    namespace Views
+    {
+      template<typename Scalar>
+      void VectorBaseView<Scalar>::show(Space<Scalar>* space)
+      {
+        free();
+        pss = new PrecalcShapeset(space->shapeset);
+        sln = new Solution<Scalar>();
+        this->space = space;
+        ndof = space->get_num_dofs();
+        base_index = 0;
+        update_solution();
+      }
 
-    case GLUT_KEY_RIGHT:
-      if (base_index < ndof-1) base_index++;
-      update_solution();
-      break;
+      template<typename Scalar>
+      VectorBaseView<Scalar>::VectorBaseView(const char* title, WinGeom* wg)
+        : VectorView(title, wg) { pss = NULL; sln = NULL; this->lines = false; basic_title.assign(title); }
 
-    default:
-      VectorView::on_special_key(key, x, y);
+      template<typename Scalar>
+      VectorBaseView<Scalar>::VectorBaseView(char* title, WinGeom* wg)
+        : VectorView(title, wg) { pss = NULL; sln = NULL; this->lines = false; basic_title.assign(title); }
+
+      template<typename Scalar>
+      void VectorBaseView<Scalar>::set_title(const char* t) {
+        if (basic_title.length() == 0)
+          basic_title.assign(t);
+        View::set_title(t);
+      }
+
+      template<typename Scalar>
+      VectorBaseView<Scalar>::~VectorBaseView() 
+      { 
+        free(); 
+      }
+
+      template<typename Scalar>
+      void VectorBaseView<Scalar>::free()
+      {
+        if (pss != NULL) { delete pss; pss = NULL; }
+        if (sln != NULL) { delete sln; sln = NULL; }
+      }
+
+
+      template<>
+      void VectorBaseView<double>::update_solution()
+      {
+        double* coeffs = new double[ndof + 1];
+        memset(coeffs, 0, sizeof(double) * (ndof + 1));
+        if (base_index >= -1 && base_index < ndof)
+          coeffs[base_index + 1] = 1.0;
+        Solution<double>::vector_to_solution(coeffs, space, sln, pss);
+
+        VectorView::show(sln, sln, 0.001, H2D_FN_VAL_0, H2D_FN_VAL_1);
+        update_title();
+
+        delete [] coeffs;
+      }
+      template<>
+      void VectorBaseView<std::complex<double> >::update_solution()
+      {
+        std::complex<double> * coeffs = new std::complex<double> [ndof + 1];
+        memset(coeffs, 0, sizeof(std::complex<double> ) * (ndof + 1));
+        if (base_index >= -1 && base_index < ndof)
+          coeffs[base_index + 1] = 1.0;
+        Solution<std::complex<double> >::vector_to_solution(coeffs, space, sln, pss);
+
+        Hermes::Hermes2D::RealFilter filter(sln);
+
+        this->VectorView::show(&filter, &filter, 0.001, H2D_FN_VAL_0, H2D_FN_VAL_1);
+        update_title();
+
+        delete [] coeffs;
+      }
+
+
+      template<typename Scalar>
+      void VectorBaseView<Scalar>::update_title()
+      {
+        std::stringstream str;
+        str << basic_title << " - dof = " << base_index;
+        if (base_index < 0)
+          str << " (Dirichlet lift)";
+        View::set_title(str.str().c_str());
+      }
+
+
+      template<typename Scalar>
+      void VectorBaseView<Scalar>::on_special_key(int key, int x, int y)
+      {
+        switch (key)
+        {
+        case GLUT_KEY_LEFT:
+          if (base_index > -1) base_index--;
+          update_solution();
+          break;
+
+        case GLUT_KEY_RIGHT:
+          if (base_index < ndof-1) base_index++;
+          update_solution();
+          break;
+
+        default:
+          VectorView::on_special_key(key, x, y);
+        }
+      }
+
+
+      template<typename Scalar>
+      const char* VectorBaseView<Scalar>::get_help_text() const
+      {
+        return
+          "VectorBaseView\n\n"
+          "Controls:\n"
+          "  Left mouse - pan\n"
+          "  Right mouse - zoom\n"
+          "  Left arrow - previous basis function\n"
+          "  Right arrow - next basis function\n"
+          "  C - center image\n"
+          "  F - toggle smooth palette\n"
+          "  X - toggle hexagonal grid\n"
+          "  H - render high-quality frame\n"
+          "  M - toggle mesh\n"
+          "  P - cycle palettes\n"
+          "  S - save screenshot\n"
+          "  F1 - this help\n"
+          "  Esc, Q - quit";
+      }
+
+      template class HERMES_API VectorBaseView<double>;
+      template class HERMES_API VectorBaseView<std::complex<double> >;
+    }
   }
 }
-
-
-const char* VectorBaseView::get_help_text() const
-{
-  return
-  "VectorBaseView\n\n"
-  "Controls:\n"
-  "  Left mouse - pan\n"
-  "  Right mouse - zoom\n"
-  "  Left arrow - previous basis function\n"
-  "  Right arrow - next basis function\n"
-  "  C - center image\n"
-  "  F - toggle smooth palette\n"
-  "  X - toggle hexagonal grid\n"
-  "  H - render high-quality frame\n"
-  "  M - toggle mesh\n"
-  "  P - cycle palettes\n"
-  "  S - save screenshot\n"
-  "  F1 - this help\n"
-  "  Esc, Q - quit";
-}
-
-#endif // NOGLUT
+#endif
