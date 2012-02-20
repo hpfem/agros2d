@@ -1562,9 +1562,10 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
 {   
     QList<Point> out;
 
+    // Crossing of two arcs
     if ((angle1 > 0.0) && (angle2 > 0.0))
     {
-        if((p1s == p2e) || (p1s==p2s) || (p1e == p2e) || (p1e==p2s))
+        if(((p1s == p2e) && (p1e == p2s)) || ((p1e == p2e) && (p1s == p2s)))
         {
             // Crossing of arcs is impossible
         }
@@ -1582,9 +1583,8 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
                     //No intersections
                 }
 
-                else
+                if ((distance < (radius1 + radius2)))
                 {
-
                     // Determine the distance from point 0 to point 2.
                     double a = ((radius1*radius1) - (radius2*radius2) + (distance*distance)) / (2.0 * distance);
 
@@ -1666,24 +1666,31 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
                         angle2_2 = temp;
                     }
 
-                    if ((iangle1_1 < angle2_1) && (iangle1_1 > angle1_1) && (iangle1_2 < angle2_2) && (iangle1_2 > angle1_2)
-                            && (p1 != p1s) && (p1 != p1e))
-                        out.append(p1);
+                    if ((iangle1_1 < angle2_1) && (iangle1_1 > angle1_1) && (iangle1_2 < angle2_2) && (iangle1_2 > angle1_2))
+                    {
+                        if(((p1 - p1s).magnitude() > EPS_ZERO_COARSE) &&
+                           ((p1 - p1e).magnitude() > EPS_ZERO_COARSE) &&
+                           ((p1 - p2e).magnitude() > EPS_ZERO_COARSE) &&
+                           ((p1 - p2s).magnitude() > EPS_ZERO_COARSE))
+                            out.append(p1);
+                    }
 
-                    if ((iangle2_1 < angle2_1) && (iangle2_1 > angle1_1) && (iangle2_2 < angle2_2) && (iangle2_2 > angle1_2)
-                            && (p2 != p1s) && (p2 != p1e))
-                        out.append(p2);
-
+                    if ((iangle2_1 < angle2_1) && (iangle2_1 > angle1_1) && (iangle2_2 < angle2_2) && (iangle2_2 > angle1_2))
+                    {
+                        if(((p2 - p1s).magnitude() > EPS_ZERO_COARSE) &&
+                           ((p2 - p1e).magnitude() > EPS_ZERO_COARSE) &&
+                           ((p2 - p2e).magnitude() > EPS_ZERO_COARSE) &&
+                           ((p2 - p2s).magnitude() > EPS_ZERO_COARSE))
+                           out.append(p2);
+                    }
                 }
-
             }
-
         }
-
     }
     else
     {
         if (angle2 > 0.0)
+        // crossing of arc and line
         {
             double dx = p1e.x - p1s.x;  // component of direction vector of the line
             double dy = p1e.y - p1s.y;  // component of direction vector of the line
@@ -1709,15 +1716,24 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
             Point p1(i1x, i1y);     // possible intersection point
             Point p2(i2x, i2y);     // possible intersection point
 
-            double t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
-            double t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent
+            double t1;
+            double t2;
 
+            if (dx != dy)
+            {
+               t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
+               t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent
+            }
+            else
+            {
+                t1 = (p1.x - p1s.x) / dx; // tangent
+                t2 = (p2.x - p1s.x) / dx; // tangent
+            }
 
             double angle1 = (p2e - center2).angle();
             double angle2 = (p2s - center2).angle();
             double iangle1 = (p1 - center2).angle();
             double iangle2 = (p2 - center2).angle();
-
 
             if (std::abs((angle2 - angle1)) > M_PI)
             {
@@ -1735,7 +1751,6 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
                     angle1  +=  M_PI;
                 angle2 = 0;
             }
-
 
             if (angle2 < angle1)
             {
