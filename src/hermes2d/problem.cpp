@@ -258,7 +258,8 @@ void Problem::createStructure()
             }
 
             if(! dependent){
-                blockFieldInfos.push_back(fieldInfos.takeLast());
+                blockFieldInfos.push_back(fi);
+                fieldInfos.removeOne(fi);
                 break;
             }
         }

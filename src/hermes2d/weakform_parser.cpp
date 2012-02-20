@@ -118,6 +118,8 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
 
     // coupling
     parser->parser[0]->DefineVar("source", &source);
+    parser->parser[0]->DefineVar("sourced" + Util::scene()->problemInfo()->labelX().toLower().toStdString() , &sourcedx);
+    parser->parser[0]->DefineVar("sourced" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &sourcedy);
 
     parser->setParserVariables(material, boundary);
 
@@ -296,8 +298,11 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         }
 
         //TODO TEMPORARY... has to be solved with respect to passing previous time solutions....
-        if (ext->get_nf() > 0)
+        if (ext->get_nf() > 0){
             source = ext->fn[0]->val[i];
+            sourcedx = ext->fn[0]->dx[i];
+            sourcedy = ext->fn[0]->dy[i];
+        }
 
         try
         {
