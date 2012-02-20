@@ -22,7 +22,8 @@
 
 #include "util.h"
 
-class SceneView;
+class SceneViewPost2D;
+class SceneViewPost3D;
 class SLineEditDouble;
 
 class PostprocessorView : public QDockWidget
@@ -30,13 +31,16 @@ class PostprocessorView : public QDockWidget
     Q_OBJECT
 
 public:
-    PostprocessorView(SceneView *sceneView, QWidget *parent);
+    PostprocessorView(SceneViewPost2D *scenePost2D,
+                      SceneViewPost3D *scenePost3D,
+                      QWidget *parent);
 
 private slots:
     void doApply();
 
 private:
-    SceneView *m_sceneView;
+    SceneViewPost2D *m_scenePost2D;
+    SceneViewPost3D *m_scenePost3D;
 
     QWidget *basic;
     QWidget *postprocessor;

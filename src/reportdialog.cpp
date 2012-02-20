@@ -23,13 +23,13 @@
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenesolution.h"
-#include "sceneview.h"
+#include "sceneview_common.h"
 #include "scenemarkerdialog.h"
 #include "pythonlabagros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 
-ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
+ReportDialog::ReportDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(parent)
 {
     logMessage("ReportDialog::ReportDialog()");
 

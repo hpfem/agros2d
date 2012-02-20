@@ -39,23 +39,25 @@ void TooltipView::loadTooltip(const QString &html)
     txtView->setText(html);
 }
 
-void TooltipView::loadTooltip(SceneMode sceneMode)
+void TooltipView::loadTooltipPost2D()
+{
+    loadTooltip(tr("Tooltip_Postprocessor"));
+}
+
+void TooltipView::loadTooltip(SceneGeometryMode sceneMode)
 {
     logMessage("TooltipView::loadTooltip()");
 
     switch (sceneMode)
     {
-    case SceneMode_OperateOnNodes:
+    case SceneGeometryMode_OperateOnNodes:
         loadTooltip(tr("Tooltip_OperateOnNodes"));
         break;
-    case SceneMode_OperateOnEdges:
+    case SceneGeometryMode_OperateOnEdges:
         loadTooltip(tr("Tooltip_OperateOnEdges"));
         break;
-    case SceneMode_OperateOnLabels:
+    case SceneGeometryMode_OperateOnLabels:
         loadTooltip(tr("Tooltip_OperateOnLabels"));
-        break;
-    case SceneMode_Postprocessor:
-        loadTooltip(tr("Tooltip_Postprocessor"));
         break;
     }
 }

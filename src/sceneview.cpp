@@ -308,7 +308,7 @@ void SceneView::createMenu()
     mnuModeGroup->addAction(actSceneModePostprocessor);
     */
 
-    //mnuScene->addAction() (m_scene->actNewNode);
+    mnuScene->addAction(m_scene->actNewNode);
     mnuScene->addAction(m_scene->actNewEdge);
     mnuScene->addAction(m_scene->actNewLabel);
     mnuScene->addSeparator();

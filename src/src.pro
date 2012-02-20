@@ -68,7 +68,13 @@ SOURCES += util.cpp \
     scenemarkerdialog.cpp \
     scenebasic.cpp \
     sceneinfoview.cpp \
-    sceneview.cpp \
+    # sceneview.cpp \
+    sceneview_common.cpp \
+    sceneview_common2d.cpp \
+    sceneview_common3d.cpp \
+    sceneview_geometry.cpp \
+    sceneview_post2d.cpp \
+    sceneview_post3d.cpp \
     progressdialog.cpp \
     chartdialog.cpp \
     problemdialog.cpp \
@@ -124,7 +130,13 @@ HEADERS += util.h \
     scenemarker.h \
     scenemarkerdialog.h \
     sceneview_data.h \
-    sceneview.h \
+    # sceneview.h \
+    sceneview_common.h \
+    sceneview_common2d.h \
+    sceneview_common3d.h \
+    sceneview_geometry.h \
+    sceneview_post2d.h \
+    sceneview_post3d.h \
     progressdialog.h \
     chartdialog.h \
     problemdialog.h \

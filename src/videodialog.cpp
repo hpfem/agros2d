@@ -22,10 +22,10 @@
 #include "gui.h"
 #include "scene.h"
 #include "scenesolution.h"
-#include "sceneview.h"
+#include "sceneview_common.h"
 #include "hermes2d/problem.h"
 
-VideoDialog::VideoDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
+VideoDialog::VideoDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(parent)
 {
     logMessage("VideoDialog::VideoDialog()");
 

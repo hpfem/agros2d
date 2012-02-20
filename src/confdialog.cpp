@@ -22,7 +22,7 @@
 #include "gui.h"
 
 #include "scene.h"
-#include "sceneview.h"
+#include "sceneview_common.h"
 #include "pythonlabagros.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)

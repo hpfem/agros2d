@@ -24,7 +24,7 @@
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
-#include "sceneview.h"
+#include "sceneview_geometry.h"
 #include "scenesolution.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
@@ -34,11 +34,11 @@
 #include "hermes2d/problem.h"
 #include "ctemplate/template.h"
 
-SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget(tr("Problem"), parent)
+SceneInfoView::SceneInfoView(SceneViewGeometry *sceneView, QWidget *parent): QDockWidget(tr("Problem"), parent)
 {
     logMessage("SceneInfoView::SceneInfoView()");
 
-    this->m_sceneView = sceneView;
+    this->m_sceneViewGeometry = sceneView;
 
     setMinimumWidth(160);
     setObjectName("SceneInfoView");
@@ -498,15 +498,15 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
         {
             if (dynamic_cast<SceneNode *>(objectBasic))
-                m_sceneView->actSceneModeNode->trigger();
+                m_sceneViewGeometry->actSceneModeNode->trigger();
             if (dynamic_cast<SceneEdge *>(objectBasic))
-                m_sceneView->actSceneModeEdge->trigger();
+                m_sceneViewGeometry->actSceneModeEdge->trigger();
             if (dynamic_cast<SceneLabel *>(objectBasic))
-                m_sceneView->actSceneModeLabel->trigger();
+                m_sceneViewGeometry->actSceneModeLabel->trigger();
 
             objectBasic->isSelected = true;
-            m_sceneView->refresh();
-            m_sceneView->setFocus();
+            m_sceneViewGeometry->refresh();
+            m_sceneViewGeometry->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
@@ -516,12 +516,12 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
         {
             // select all edges
-            m_sceneView->actSceneModeEdge->trigger();
+            m_sceneViewGeometry->actSceneModeEdge->trigger();
 
             Util::scene()->edges->haveMarker(objectBoundary).setSelected();
 
-            m_sceneView->refresh();
-            m_sceneView->setFocus();
+            m_sceneViewGeometry->refresh();
+            m_sceneViewGeometry->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
@@ -531,12 +531,12 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
         {
             // select all labels
-            m_sceneView->actSceneModeLabel->trigger();
+            m_sceneViewGeometry->actSceneModeLabel->trigger();
 
             Util::scene()->labels->haveMarker(objectMaterial).setSelected();
 
-            m_sceneView->refresh();
-            m_sceneView->setFocus();
+            m_sceneViewGeometry->refresh();
+            m_sceneViewGeometry->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
@@ -562,7 +562,7 @@ void SceneInfoView::doProperties()
         {
             if (objectBasic->showDialog(this) == QDialog::Accepted)
             {
-                m_sceneView->refresh();
+                m_sceneViewGeometry->refresh();
                 doInvalidated();
             }
         }
@@ -572,7 +572,7 @@ void SceneInfoView::doProperties()
         {
             if (objectBoundary->showDialog(this) == QDialog::Accepted)
             {
-                m_sceneView->refresh();
+                m_sceneViewGeometry->refresh();
                 doInvalidated();
             }
         }
@@ -582,7 +582,7 @@ void SceneInfoView::doProperties()
         {
             if (objectMaterial->showDialog(this) == QDialog::Accepted)
             {
-                m_sceneView->refresh();
+                m_sceneViewGeometry->refresh();
                 doInvalidated();
             }
         }
@@ -625,6 +625,6 @@ void SceneInfoView::doDelete()
             Util::scene()->removeMaterial(objectMaterial);
         }
 
-        m_sceneView->refresh();
+        m_sceneViewGeometry->refresh();
     }
 }

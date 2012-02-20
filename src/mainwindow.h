@@ -22,7 +22,9 @@
 
 #include "util.h"
 
-class SceneView;
+class SceneViewPost2D;
+class SceneViewPost3D;
+class SceneViewGeometry;
 class SceneInfoView;
 class ResultsView;
 class VolumeIntegralValueView;
@@ -107,7 +109,6 @@ private slots:
     void doCheckVersion();
     void doAbout();
     void doInvalidated();
-    void doSceneModeChanged(SceneMode sceneMode);
     void doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
 
     void doTimeStepChanged(int index);
@@ -204,7 +205,15 @@ private:
 
     QComboBox *cmbTimeStep;
 
-    SceneView *sceneView;
+    // pointers to actions (geometry, post2d and post3d)
+    QAction *actSceneZoomIn;
+    QAction *actSceneZoomOut;
+    QAction *actSceneZoomBestFit;
+    QAction *actSceneZoomRegion;
+
+    SceneViewGeometry *sceneViewGeometry;
+    SceneViewPost2D *sceneViewPost2D;
+    SceneViewPost3D *sceneViewPost3D;
     SceneInfoView *sceneInfoView;
     ResultsView *resultsView;
     PostprocessorView *postprocessorView;
@@ -218,6 +227,11 @@ private:
     VideoDialog *videoDialog;
     LogDialog *logDialog;
     ServerDownloadDialog *collaborationDownloadDialog;
+
+    QTabWidget *tabView;
+    QWidget *widgetViewGeometry;
+    QWidget *widgetViewPost2D;
+    QWidget *widgetViewPost3D;
 
     void setRecentFiles();
 

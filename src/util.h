@@ -461,12 +461,11 @@ enum Mode
     Mode_02
 };
 
-enum SceneMode
+enum SceneGeometryMode
 {
-    SceneMode_OperateOnNodes,
-    SceneMode_OperateOnEdges,
-    SceneMode_OperateOnLabels,
-    SceneMode_Postprocessor
+    SceneGeometryMode_OperateOnNodes,
+    SceneGeometryMode_OperateOnEdges,
+    SceneGeometryMode_OperateOnLabels
 };
 
 enum MouseSceneMode
@@ -528,6 +527,7 @@ enum SceneViewPostprocessorShow
     SceneViewPostprocessorShow_ScalarView3D,
     SceneViewPostprocessorShow_ScalarView3DSolid,
     SceneViewPostprocessorShow_Model,
+    SceneViewPostprocessorShow_ParticleTracing,
     SceneViewPostprocessorShow_Order
 };
 

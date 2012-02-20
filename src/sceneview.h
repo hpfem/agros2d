@@ -144,7 +144,7 @@ public:
     SceneLabel *findClosestLabel(const Point &point);
 
     inline SceneViewSettings &sceneViewSettings() { return m_sceneViewSettings; }
-    inline SceneMode sceneMode() const { return m_sceneMode; }
+    inline SceneGeometryMode sceneMode() const { return m_sceneMode; }
 
     ErrorResult saveGeometryToFile(const QString &fileName, int format);
     ErrorResult saveImageToFile(const QString &fileName, int w = 0, int h = 0);    
@@ -171,7 +171,7 @@ signals:
     void mouseMoved(const QPointF &position);
     void mousePressed();
     void mousePressed(const Point &point);
-    void sceneModeChanged(SceneMode sceneMode);
+    void sceneModeChanged(SceneGeometryMode sceneMode);
     void postprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
     void mouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
@@ -217,7 +217,7 @@ private:
 
     SceneNode *m_nodeLast;
 
-    SceneMode m_sceneMode;
+    SceneGeometryMode m_sceneMode;
     SceneViewSettings m_sceneViewSettings;
 
     double m_texScale, m_texShift;

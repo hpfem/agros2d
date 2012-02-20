@@ -655,14 +655,7 @@ void ProblemDialog::createControls()
     tabType->addTab(createControlsStartupScript(), icon(""), tr("Startup script"));
     tabType->addTab(createControlsDescription(), icon(""), tr("Description"));
 
-    // dialog buttons
-    QPushButton *btnAddField = new QPushButton(tr("Add field"));
-    btnAddField->setDefault(false);
-    btnAddField->setVisible(false);
-    connect(btnAddField, SIGNAL(clicked()), this, SLOT(doAddField()));
-
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    buttonBox->addButton(btnAddField, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -770,8 +763,17 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutName->addWidget(txtName, 0, 1);
 
     // fields
+    QToolButton *btnNewField = new QToolButton(this);
+    btnNewField->setAutoRaise(true);
+    btnNewField->setToolTip(tr("Add new document"));
+    btnNewField->setIcon(icon("tabadd"));
+    btnNewField->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    connect(btnNewField, SIGNAL(clicked()), this, SLOT(doAddField()));
+
     tabFields = new FieldTabWidget(this, m_fieldInfos, m_couplingInfos);
     tabFields->setTabsClosable(true);
+    tabFields->setCornerWidget(btnNewField, Qt::TopLeftCorner);
+    tabFields->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
     layoutProblem->addLayout(layoutName);

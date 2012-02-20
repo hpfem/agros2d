@@ -23,13 +23,13 @@
 #include "util.h"
 
 class Scene;
-class SceneView;
+class SceneViewCommon;
 
 class SceneBasicSelectDialog : public QDialog
 {
     Q_OBJECT
 public:
-    SceneBasicSelectDialog(SceneView *sceneView, QWidget *parent = 0);
+    SceneBasicSelectDialog(SceneViewCommon *sceneView, QWidget *parent = 0);
 
 private slots:
     void doAccept();
@@ -39,7 +39,7 @@ protected:
     void createControls();
 
 private:
-    SceneView *m_sceneView;
+    SceneViewCommon *m_sceneView;
 
     QWidget *widEdge;
 

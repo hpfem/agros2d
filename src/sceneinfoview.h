@@ -24,7 +24,7 @@
 
 #include <QWebView>
 
-class SceneView;
+class SceneViewGeometry;
 
 class SceneInfoView : public QDockWidget
 {
@@ -36,14 +36,14 @@ public slots:
     void doDelete();
 
 public:
-    SceneInfoView(SceneView *sceneView, QWidget *parent = 0);
+    SceneInfoView(SceneViewGeometry *sceneView, QWidget *parent = 0);
     ~SceneInfoView();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
 
 private:
-    SceneView *m_sceneView;
+    SceneViewGeometry *m_sceneViewGeometry;
 
     QTreeWidget *trvWidget;
     QWebView *webView;

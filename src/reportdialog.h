@@ -24,20 +24,20 @@
 
 class ValueLineEdit;
 
-class SceneView;
+class SceneViewCommon;
 
 class ReportDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    ReportDialog(SceneView *sceneView, QWidget *parent = 0);
+    ReportDialog(SceneViewCommon *sceneView, QWidget *parent = 0);
     ~ReportDialog();
 
     void showDialog();
 
 private:
-    SceneView *m_sceneView;
+    SceneViewCommon *m_sceneView;
 
     void createControls();
     void setControls();
