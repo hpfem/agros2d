@@ -8,6 +8,22 @@
 #include "util.h"
 #include "mainwindow.h"
 
+//TODO attemp to redefine notify
+
+//class MyApplication : public QApplication
+//{
+//public:
+//    bool notify(QObject *, QEvent *);
+//    MyApplication(int argc, char **argv) : QApplication(argc, argv) {}
+//};
+
+//bool MyApplication::notify(QObject *, QEvent *)
+//{
+//    cout << "notify" << endl;
+//}
+
+
+
 int main(int argc, char *argv[])
 {
     // start application
