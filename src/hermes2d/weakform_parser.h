@@ -94,6 +94,8 @@ public:
 
     //coupled field
     mutable double source;
+    mutable double sourcedx;
+    mutable double sourcedy;
 
     ParserForm(FieldInfo *fieldInfo);
     ~ParserForm();

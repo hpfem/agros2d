@@ -12,7 +12,7 @@
         <weakforms>
             <weakform couplingtype="weak" sourceanalysis="steadystate"  targetanalysis="steadystate" >
                 <vector i="1" j="1" planar="- gamma * (sourcedx * sourcedx + sourcedy * sourcedy) * vval"
-                                    axi="- gamma * (sourcedr * sourcedr + sourcedz * sourcedz) * r * vval" />
+                                    axi="- 100000 * (sourcedr * sourcedr + sourcedz * sourcedz) * r * vval" />
             </weakform>
 
             <weakform couplingtype="hard" sourceanalysis="steadystate"  targetanalysis="steadystate" >
