@@ -427,6 +427,17 @@ bool ProblemDialog::save()
     }
 
     // check values
+    if ((ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt() == ProblemType_Axisymmetric)
+    {
+        for (int i = 0; i<Util::scene()->nodes.count(); i++)
+        {
+            if (Util::scene()->nodes[i]->point.x < 0.0)
+            {
+                QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), tr("Some nodes are placed outside the permitted area (coordinate x must be positive)."));
+                return false;
+            }
+        }
+    }
     if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Harmonic)
     {
         if (txtFrequency->value() < 0)
@@ -469,9 +480,10 @@ bool ProblemDialog::save()
     }
 
     // save properties
-    m_problemInfo->problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
     m_problemInfo->name = txtName->text();
     m_problemInfo->date = dtmDate->date();
+
+    m_problemInfo->problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
     m_problemInfo->numberOfRefinements = txtNumberOfRefinements->value();
     m_problemInfo->polynomialOrder = txtPolynomialOrder->value();
     m_problemInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();

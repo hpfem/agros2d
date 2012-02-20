@@ -134,6 +134,9 @@ for i in range(N+1):
 		modifymaterial("Coil -",  Jext, 0, 1, 0, 0, 0, 0, 0, 0)
 
 pl.plot(phi, T)
-pl.xlabel("phi (deg.)")
-pl.ylabel("torque (Nm)")
-pl.show()
+pl.xlabel("$\\phi~\mathrm{(deg.)}$")
+pl.ylabel("$T~\mathrm{(Nm)}")
+pl.close()
+
+# show in console
+pythonlab.image("torque.png")

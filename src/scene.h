@@ -213,6 +213,8 @@ public:
     ErrorResult writeToFile(const QString &fileName);
 
     void checkEdge(SceneEdge *edge);
+    void checkNode(SceneNode *node);
+    void checkNodeConnect(SceneNode *node);
     ErrorResult checkGeometryResult();
 
     inline QUndoStack *undoStack() const { return m_undoStack; }

@@ -295,21 +295,12 @@ SceneNode *Scene::addNode(SceneNode *node)
             return nodeCheck;
         }
     }
+
     nodes.append(node);
     if (!scriptIsRunning()) emit invalidated();
 
-    // control if node is not lying on the edge
-    foreach (SceneEdge *edge, edges)
-    {
-        if ((edge->nodeStart == node) || (edge->nodeEnd == node))
-            continue;
-
-        if (edge->distance(node->point) < EPS_ZERO)
-        {
-            node->lyingEdges.append(edge);
-            edge->lyingNodes.append(node);
-        }
-    }
+    checkNodeConnect(node);
+    checkNode(node);
 
     return node;
 }
@@ -1866,9 +1857,81 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     return ErrorResult();
 }
 
+
+void Scene::checkNodeConnect(SceneNode *node)
+{
+    bool isConnected = false;
+    foreach (SceneNode *nodeCheck, nodes)
+    {
+        if ((nodeCheck->distance(node->point) < EPS_ZERO) && (nodeCheck != node))
+        {
+            isConnected = true;
+            foreach(SceneEdge *edgeCheck, node->connectedEdges)
+            {
+
+                SceneNode * nodeStart;
+                SceneNode * nodeEnd;
+                if (edgeCheck->nodeStart->point == node->point)
+                {
+                    nodeStart = nodeCheck;
+                    nodeEnd = edgeCheck->nodeEnd;
+                }
+                if (edgeCheck->nodeEnd->point == node->point)
+                {
+                    nodeStart = edgeCheck->nodeStart;
+                    nodeEnd = nodeCheck;
+                }
+
+                double edgeAngle = edgeCheck->angle;
+                removeEdge(edgeCheck);
+                SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, boundaries[0], 0, 0);
+                edge->angle = edgeAngle;
+                SceneEdge *edgeAdded = addEdge(edge);
+                edge->lyingNodes.clear();                
+            }
+        }
+    }
+
+    if(isConnected)
+    {
+        removeNode(node);        
+    }
+}
+
+void Scene::checkNode(SceneNode *node)
+// control if node is not lying on the edge
+{
+
+    foreach (SceneEdge *edge, node->lyingEdges)
+    {
+        edge->lyingNodes.removeOne(node);
+    }
+
+    node->lyingEdges.clear();
+
+    foreach (SceneEdge *edge, edges)
+    {
+        if ((edge->nodeStart == node) || (edge->nodeEnd == node))
+            continue;
+
+        if ((edge->distance(node->point) < EPS_ZERO))
+        {
+            node->lyingEdges.append(edge);
+            edge->lyingNodes.append(node);
+        }
+
+    }
+}
+
 void Scene::checkEdge(SceneEdge *edge)
 {
     // clear all crossings
+
+    foreach (SceneEdge *edgeCheck, edge->crossedEdges)
+    {
+        edgeCheck->crossedEdges.removeOne(edge);
+    }
+
     edge->crossedEdges.clear();
 
     foreach (SceneEdge *edgeCheck, this->edges)
@@ -1878,7 +1941,7 @@ void Scene::checkEdge(SceneEdge *edge)
             QList<Point> intersects;
 
             // ToDo: Improve
-            // ToDo: Add control of crossing two arcs
+            // ToDo: Add check of crossings of two arcs
             if(edge->angle > 0)
                 intersects = intersection(edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
                                           edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle,
@@ -1895,8 +1958,9 @@ void Scene::checkEdge(SceneEdge *edge)
 
             if (intersects.count() > 0)
             {
-                edgeCheck->crossedEdges.append(edge);
+                edgeCheck->crossedEdges.append(edge);                
                 edge->crossedEdges.append(edgeCheck);
+
             }
         }
     }
@@ -1908,7 +1972,7 @@ ErrorResult Scene::checkGeometryResult()
     {
         if (edge->crossedEdges.count() != 0)
         {
-            return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (green highlighted). Remove the crossings first."));
+            return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (red highlighted). Remove the crossings first."));
         }
     }
 

@@ -289,11 +289,13 @@ void PostprocessorView::createControls()
 
     // tab widget
     basic = controlsBasic();
-    advanced = controlsAdvanced();
+    postprocessor = controlsPosprocessor();
+    workspace = controlsWorkspace();
 
     QTabWidget *tabType = new QTabWidget(this);
     tabType->addTab(basic, icon(""), tr("Basic"));
-    tabType->addTab(advanced, icon(""), tr("Advanced"));
+    tabType->addTab(postprocessor, icon(""), tr("Postprocessor"));
+    tabType->addTab(workspace, icon(""), tr("Workspace"));
 
     // dialog buttons
     btnOK = new QPushButton(tr("Apply"));
@@ -453,11 +455,322 @@ QWidget *PostprocessorView::controlsBasic()
     return widget;
 }
 
-QWidget *PostprocessorView::controlsAdvanced()
+QWidget *PostprocessorView::controlsPosprocessor()
 {
     logMessage("PostprocessorView::controlsAdvanced()");
 
     double minWidth = 110;
+
+    // scalar field
+    // palette
+    cmbPalette = new QComboBox();
+    cmbPalette->addItem(tr("Jet"), Palette_Jet);
+    cmbPalette->addItem(tr("Hot"), Palette_Hot);
+    cmbPalette->addItem(tr("Copper"), Palette_Copper);
+    cmbPalette->addItem(tr("Cool"), Palette_Cool);
+    cmbPalette->addItem(tr("Bone"), Palette_Bone);
+    cmbPalette->addItem(tr("Pink"), Palette_Pink);
+    cmbPalette->addItem(tr("Spring"), Palette_Spring);
+    cmbPalette->addItem(tr("Summer"), Palette_Summer);
+    cmbPalette->addItem(tr("Autumn"), Palette_Autumn);
+    cmbPalette->addItem(tr("Winter"), Palette_Winter);
+    cmbPalette->addItem(tr("HSV"), Palette_HSV);
+    cmbPalette->addItem(tr("B/W ascending"), Palette_BWAsc);
+    cmbPalette->addItem(tr("B/W descending"), Palette_BWDesc);
+
+    // quality
+    cmbLinearizerQuality = new QComboBox();
+    cmbLinearizerQuality->addItem(tr("Extremely coarse"), 0.01);
+    cmbLinearizerQuality->addItem(tr("Extra coarse"), 0.007);
+    cmbLinearizerQuality->addItem(tr("Coarser"), 0.003);
+    cmbLinearizerQuality->addItem(tr("Coarse"), 0.001);
+    cmbLinearizerQuality->addItem(tr("Normal"), LINEARIZER_QUALITY);
+    cmbLinearizerQuality->addItem(tr("Fine"), 0.0001);
+    cmbLinearizerQuality->addItem(tr("Finer"), 0.0006);
+    cmbLinearizerQuality->addItem(tr("Extra fine"), 0.00001);
+
+    chkPaletteFilter = new QCheckBox(tr("Filter"));
+    connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
+
+    // steps
+    txtPaletteSteps = new QSpinBox(this);
+    txtPaletteSteps->setMinimum(5);
+    txtPaletteSteps->setMaximum(100);
+
+    // log scale
+    chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
+    txtScalarFieldRangeBase = new SLineEditDouble(SCALARFIELDRANGEBASE);
+    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
+
+    QGridLayout *gridLayoutScalarFieldPalette = new QGridLayout();
+    gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Palette:")), 0, 0);
+    gridLayoutScalarFieldPalette->addWidget(cmbPalette, 0, 1, 1, 2);
+    gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Quality:")), 1, 0);
+    gridLayoutScalarFieldPalette->addWidget(cmbLinearizerQuality, 1, 1, 1, 2);
+    gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Steps:")), 2, 0);
+    gridLayoutScalarFieldPalette->addWidget(txtPaletteSteps, 2, 1);
+    gridLayoutScalarFieldPalette->addWidget(chkPaletteFilter, 2, 2);
+    gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Base:")), 3, 0);
+    gridLayoutScalarFieldPalette->addWidget(txtScalarFieldRangeBase, 3, 1);
+    gridLayoutScalarFieldPalette->addWidget(chkScalarFieldRangeLog, 3, 2);
+
+    QGroupBox *grpScalarFieldPallete = new QGroupBox(tr("Palette"));
+    grpScalarFieldPallete->setLayout(gridLayoutScalarFieldPalette);
+
+    // decimal places
+    txtScalarDecimalPlace = new QSpinBox(this);
+    txtScalarDecimalPlace->setMinimum(1);
+    txtScalarDecimalPlace->setMaximum(10);
+
+    // color bar
+    chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
+
+    QGridLayout *gridLayoutScalarFieldColorbar = new QGridLayout();
+    gridLayoutScalarFieldColorbar->addWidget(new QLabel(tr("Decimal places:")), 0, 0);
+    gridLayoutScalarFieldColorbar->addWidget(txtScalarDecimalPlace, 0, 1);
+    gridLayoutScalarFieldColorbar->addWidget(chkShowScalarColorBar, 1, 0, 1, 2);
+
+    QGroupBox *grpScalarFieldColorbar = new QGroupBox(tr("Colorbar"));
+    grpScalarFieldColorbar->setLayout(gridLayoutScalarFieldColorbar);
+
+    QPushButton *btnScalarFieldDefault = new QPushButton(tr("Default"));
+    connect(btnScalarFieldDefault, SIGNAL(clicked()), this, SLOT(doScalarFieldDefault()));
+
+    QVBoxLayout *layoutScalarField = new QVBoxLayout();
+    layoutScalarField->addWidget(grpScalarFieldPallete);
+    layoutScalarField->addWidget(grpScalarFieldColorbar);
+    layoutScalarField->addStretch();
+    layoutScalarField->addWidget(btnScalarFieldDefault, 0, Qt::AlignLeft);
+
+    QWidget *scalarFieldWidget = new QWidget();
+    scalarFieldWidget->setLayout(layoutScalarField);
+
+    // contours and vectors
+    // contours
+    txtContoursCount = new QSpinBox(this);
+    txtContoursCount->setMinimum(1);
+    txtContoursCount->setMaximum(100);
+
+    // vectors
+    chkVectorProportional = new QCheckBox(tr("Proportional"), this);
+    chkVectorColor = new QCheckBox(tr("Color (b/w)"), this);
+    txtVectorCount = new QSpinBox(this);
+    txtVectorCount->setMinimum(1);
+    txtVectorCount->setMaximum(500);
+    txtVectorScale = new QDoubleSpinBox(this);
+    txtVectorScale->setDecimals(2);
+    txtVectorScale->setSingleStep(0.1);
+    txtVectorScale->setMinimum(0);
+    txtVectorScale->setMaximum(20);
+
+    QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
+    connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
+
+    QGridLayout *gridLayoutContours = new QGridLayout();
+    gridLayoutContours->setColumnMinimumWidth(0, minWidth);
+    gridLayoutContours->setColumnStretch(1, 1);
+    gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
+    gridLayoutContours->addWidget(txtContoursCount, 0, 1);
+
+    QGroupBox *grpContours = new QGroupBox(tr("Contours"));
+    grpContours->setLayout(gridLayoutContours);
+
+    QGridLayout *gridLayoutVectors = new QGridLayout();
+    gridLayoutVectors->addWidget(new QLabel(tr("Vectors:")), 0, 0);
+    gridLayoutVectors->addWidget(txtVectorCount, 0, 1);
+    gridLayoutVectors->addWidget(chkVectorProportional, 0, 2);
+    gridLayoutVectors->addWidget(new QLabel(tr("Scale:")), 1, 0);
+    gridLayoutVectors->addWidget(txtVectorScale, 1, 1);
+    gridLayoutVectors->addWidget(chkVectorColor, 1, 2);
+
+    QGroupBox *grpVectors = new QGroupBox(tr("Vectors"));
+    grpVectors->setLayout(gridLayoutVectors);
+
+    QVBoxLayout *layoutContoursVectors = new QVBoxLayout();
+    layoutContoursVectors->addWidget(grpContours);
+    layoutContoursVectors->addWidget(grpVectors);
+    layoutContoursVectors->addStretch();
+    layoutContoursVectors->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
+
+    QWidget *contoursVectorsWidget = new QWidget();
+    contoursVectorsWidget->setLayout(layoutContoursVectors);
+
+    // polynomial order
+    // palette
+    cmbOrderPaletteOrder = new QComboBox();
+    cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
+    cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
+    cmbOrderPaletteOrder->addItem(tr("Copper"), PaletteOrder_Copper);
+    cmbOrderPaletteOrder->addItem(tr("Hot"), PaletteOrder_Hot);
+    cmbOrderPaletteOrder->addItem(tr("Cool"), PaletteOrder_Cool);
+    cmbOrderPaletteOrder->addItem(tr("Bone"), PaletteOrder_Bone);
+    cmbOrderPaletteOrder->addItem(tr("Pink"), PaletteOrder_Pink);
+    cmbOrderPaletteOrder->addItem(tr("Spring"), PaletteOrder_Spring);
+    cmbOrderPaletteOrder->addItem(tr("Summer"), PaletteOrder_Summer);
+    cmbOrderPaletteOrder->addItem(tr("Autumn"), PaletteOrder_Autumn);
+    cmbOrderPaletteOrder->addItem(tr("Winter"), PaletteOrder_Winter);
+    cmbOrderPaletteOrder->addItem(tr("HSV"), PaletteOrder_HSV);
+    cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
+    cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
+
+    // scale
+    chkShowOrderScale = new QCheckBox(tr("Show scale"), this);
+    chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
+
+    QPushButton *btnOrderDefault = new QPushButton(tr("Default"));
+    connect(btnOrderDefault, SIGNAL(clicked()), this, SLOT(doOrderDefault()));
+
+    QGridLayout *gridLayoutOrder = new QGridLayout();
+    gridLayoutOrder->setColumnMinimumWidth(0, minWidth);
+    gridLayoutOrder->setColumnStretch(1, 1);
+    gridLayoutOrder->addWidget(new QLabel(tr("Palette:")), 0, 0);
+    gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
+    gridLayoutOrder->addWidget(chkShowOrderScale, 1, 0, 1, 2);
+    gridLayoutOrder->addWidget(chkOrderLabel, 2, 0, 1, 2);
+
+    QVBoxLayout *layoutOrder = new QVBoxLayout();
+    layoutOrder->addLayout(gridLayoutOrder);
+    layoutOrder->addStretch();
+    layoutOrder->addWidget(btnOrderDefault, 0, Qt::AlignLeft);
+
+    QWidget *orderWidget = new QWidget();
+    orderWidget->setLayout(layoutOrder);
+
+    // particle tracing
+    chkParticleIncludeGravitation = new QCheckBox(tr("Include gravitation"));
+    txtParticleNumberOfParticles = new QSpinBox(this);
+    txtParticleNumberOfParticles->setMinimum(1);
+    txtParticleNumberOfParticles->setMaximum(200);
+    txtParticleStartingRadius = new SLineEditDouble();
+    txtParticleMass = new SLineEditDouble();
+    txtParticleConstant = new SLineEditDouble();
+    txtParticlePointX = new SLineEditDouble();
+    txtParticlePointY = new SLineEditDouble();
+    txtParticleVelocityX = new SLineEditDouble();
+    txtParticleVelocityY = new SLineEditDouble();
+    txtParticleMaximumRelativeError = new SLineEditDouble();
+    chkParticleTerminateOnDifferentMaterial = new QCheckBox(tr("Terminate on different material"));
+    lblParticlePointX = new QLabel();
+    lblParticlePointY = new QLabel();
+    lblParticleVelocityX = new QLabel();
+    lblParticleVelocityY = new QLabel();
+    chkParticleColorByVelocity = new QCheckBox(tr("Line color is controlled by velocity"));
+    chkParticleShowPoints = new QCheckBox(tr("Show points"));
+    txtParticleMaximumSteps = new QSpinBox();
+    txtParticleMaximumSteps->setMinimum(100);
+    txtParticleMaximumSteps->setMaximum(100000);
+    txtParticleMaximumSteps->setSingleStep(100);
+    txtParticleDragDensity = new SLineEditDouble();
+    txtParticleDragCoefficient = new SLineEditDouble();
+    txtParticleDragReferenceArea = new SLineEditDouble();
+    lblParticleMotionEquations = new QLabel();
+
+    QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
+    connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
+
+    // Lorentz force
+    QGridLayout *gridLayoutLorentzForce = new QGridLayout();
+    gridLayoutLorentzForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    gridLayoutLorentzForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>L</sub> = <i>Q</i> (<i><b>E</b></i> + <i><b>v</b></i> x <i><b>B</b></i>)")), 0, 1);
+    gridLayoutLorentzForce->addWidget(new QLabel(tr("Charge (C):")), 1, 0);
+    gridLayoutLorentzForce->addWidget(txtParticleConstant, 1, 1);
+
+    QGroupBox *grpLorentzForce = new QGroupBox(tr("Lorentz Force"));
+    grpLorentzForce->setLayout(gridLayoutLorentzForce);
+
+    // drag force
+    QGridLayout *gridLayoutDragForce = new QGridLayout();
+    gridLayoutDragForce->setColumnMinimumWidth(0, minWidth);
+    gridLayoutDragForce->setColumnStretch(1, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    gridLayoutDragForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>D</sub> = - &frac12; <i>&rho;</i> <i>v</i><sup>2</sup> <i>C</i><sub>D</sub> <i>S</i> &sdot; <i><b>v</b></i><sub>0</sub>")), 0, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Density (kg/m<sup>3</sup>):")), 1, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragDensity, 1, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Reference area (m<sup>2</sup>):")), 2, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragReferenceArea, 2, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Coefficient (-):")), 3, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragCoefficient, 3, 1);
+
+    QGroupBox *grpDragForce = new QGroupBox(tr("Drag force"));
+    grpDragForce->setLayout(gridLayoutDragForce);
+
+    // initial particle position
+    QGridLayout *gridLayoutInitialPosition = new QGridLayout();
+    gridLayoutInitialPosition->addWidget(lblParticlePointX, 0, 0);
+    gridLayoutInitialPosition->addWidget(txtParticlePointX, 0, 1);
+    gridLayoutInitialPosition->addWidget(lblParticlePointY, 1, 0);
+    gridLayoutInitialPosition->addWidget(txtParticlePointY, 1, 1);
+
+    QGroupBox *grpInitialPosition = new QGroupBox(tr("Initial particle position"));
+    grpInitialPosition->setLayout(gridLayoutInitialPosition);
+
+    // initial particle velocity
+    QGridLayout *gridLayoutInitialVelocity = new QGridLayout();
+    gridLayoutInitialVelocity->addWidget(lblParticleVelocityX, 0, 0);
+    gridLayoutInitialVelocity->addWidget(txtParticleVelocityX, 0, 1);
+    gridLayoutInitialVelocity->addWidget(lblParticleVelocityY, 1, 0);
+    gridLayoutInitialVelocity->addWidget(txtParticleVelocityY, 1, 1);
+
+    QGroupBox *grpInitialVelocity = new QGroupBox(tr("Initial particle velocity"));
+    grpInitialVelocity->setLayout(gridLayoutInitialVelocity);
+
+    // advanced
+    QGridLayout *gridLayoutAdvanced = new QGridLayout();
+    gridLayoutAdvanced->addWidget(chkParticleIncludeGravitation, 0, 0);
+    gridLayoutAdvanced->addWidget(new QLabel(QString("<i><b>F</b></i><sub>G</sub> = (0, m g<sub>0</sub>, 0))")), 0, 1);
+    gridLayoutAdvanced->addWidget(chkParticleTerminateOnDifferentMaterial, 1, 0, 1, 2);
+    gridLayoutAdvanced->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
+    gridLayoutAdvanced->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
+    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum relative error (%):")), 4, 0);
+    gridLayoutAdvanced->addWidget(txtParticleMaximumRelativeError, 4, 1);
+    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum steps:")), 5, 0);
+    gridLayoutAdvanced->addWidget(txtParticleMaximumSteps, 5, 1);
+
+    QGroupBox *grpAdvanced = new QGroupBox(tr("Advanced"));
+    grpAdvanced->setLayout(gridLayoutAdvanced);
+
+    QGridLayout *gridLayoutParticle = new QGridLayout();
+    gridLayoutParticle->addWidget(new QLabel(tr("Equations:")), 0, 0);
+    gridLayoutParticle->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
+    gridLayoutParticle->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
+    gridLayoutParticle->addWidget(txtParticleNumberOfParticles, 2, 1);
+    gridLayoutParticle->addWidget(new QLabel(tr("Particles dispersion (m):")), 3, 0);
+    gridLayoutParticle->addWidget(txtParticleStartingRadius, 3, 1);
+    gridLayoutParticle->addWidget(new QLabel(tr("Mass (kg):")), 4, 0);
+    gridLayoutParticle->addWidget(txtParticleMass, 4, 1);
+    gridLayoutParticle->addWidget(grpInitialPosition, 5, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpInitialVelocity, 6, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpLorentzForce, 7, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpDragForce, 8, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpAdvanced, 9, 0, 1, 2);
+
+    QVBoxLayout *layoutParticle = new QVBoxLayout();
+    layoutParticle->addLayout(gridLayoutParticle);
+    layoutParticle->addStretch();
+    layoutParticle->addWidget(btnParticleDefault, 0, Qt::AlignLeft);
+
+    QWidget *particleWidget = new QWidget();
+    particleWidget->setLayout(layoutParticle);
+
+    tbxPostprocessor = new QToolBox();
+    tbxPostprocessor->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
+    tbxPostprocessor->addItem(contoursVectorsWidget, icon(""), tr("Contours and vectors"));
+    tbxPostprocessor->addItem(orderWidget, icon(""), tr("Polynomial order"));
+    tbxPostprocessor->addItem(particleWidget, icon(""), tr("Particle tracing"));
+
+    // layout postprocessor
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(tbxPostprocessor);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
+QWidget *PostprocessorView::controlsWorkspace()
+{
+    logMessage("PostprocessorView::controlsWorkspace()");
 
     // workspace
     txtGridStep = new QLineEdit("0.1");
@@ -538,295 +851,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     QWidget *workspaceWidget = new QWidget();
     workspaceWidget->setLayout(layoutWorkspace);
 
-    // scalar field
-    cmbPalette = new QComboBox();
-    cmbPalette->addItem(tr("Jet"), Palette_Jet);
-    cmbPalette->addItem(tr("Hot"), Palette_Hot);
-    cmbPalette->addItem(tr("Copper"), Palette_Copper);
-    cmbPalette->addItem(tr("Hot"), Palette_Hot);
-    cmbPalette->addItem(tr("Cool"), Palette_Cool);
-    cmbPalette->addItem(tr("Bone"), Palette_Bone);
-    cmbPalette->addItem(tr("Pink"), Palette_Pink);
-    cmbPalette->addItem(tr("Spring"), Palette_Spring);
-    cmbPalette->addItem(tr("Summer"), Palette_Summer);
-    cmbPalette->addItem(tr("Autumn"), Palette_Autumn);
-    cmbPalette->addItem(tr("Winter"), Palette_Winter);
-    cmbPalette->addItem(tr("HSV"), Palette_HSV);
-    cmbPalette->addItem(tr("B/W ascending"), Palette_BWAsc);
-    cmbPalette->addItem(tr("B/W descending"), Palette_BWDesc);
-
-    cmbLinearizerQuality = new QComboBox();
-    cmbLinearizerQuality->addItem(tr("Extremely coarse"), 0.01);
-    cmbLinearizerQuality->addItem(tr("Extra coarse"), 0.007);
-    cmbLinearizerQuality->addItem(tr("Coarser"), 0.003);
-    cmbLinearizerQuality->addItem(tr("Coarse"), 0.001);
-    cmbLinearizerQuality->addItem(tr("Normal"), LINEARIZER_QUALITY);
-    cmbLinearizerQuality->addItem(tr("Fine"), 0.0001);
-    cmbLinearizerQuality->addItem(tr("Finer"), 0.0006);
-    cmbLinearizerQuality->addItem(tr("Extra fine"), 0.00001);
-
-    chkPaletteFilter = new QCheckBox(tr("Filter"));
-    connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
-
-    txtPaletteSteps = new QSpinBox(this);
-    txtPaletteSteps->setMinimum(5);
-    txtPaletteSteps->setMaximum(100);
-
-    chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
-
-    QPushButton *btnScalarFieldDefault = new QPushButton(tr("Default"));
-    connect(btnScalarFieldDefault, SIGNAL(clicked()), this, SLOT(doScalarFieldDefault()));
-
-    QGridLayout *gridLayoutScalarField = new QGridLayout();
-    gridLayoutScalarField->setColumnMinimumWidth(0, minWidth);
-    gridLayoutScalarField->setColumnStretch(1, 1);
-    gridLayoutScalarField->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    gridLayoutScalarField->addWidget(cmbPalette, 0, 1, 1, 2);
-    gridLayoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 0);
-    gridLayoutScalarField->addWidget(txtPaletteSteps, 1, 1);
-    gridLayoutScalarField->addWidget(chkPaletteFilter, 1, 2);
-    gridLayoutScalarField->addWidget(new QLabel(tr("Quality:")), 2, 0);
-    gridLayoutScalarField->addWidget(cmbLinearizerQuality, 2, 1, 1, 2);
-    gridLayoutScalarField->addWidget(chkShowScalarColorBar, 3, 0, 1, 2);
-
-    QVBoxLayout *layoutScalarField = new QVBoxLayout();
-    layoutScalarField->addLayout(gridLayoutScalarField);
-    layoutScalarField->addStretch();
-    layoutScalarField->addWidget(btnScalarFieldDefault, 0, Qt::AlignLeft);
-
-    QWidget *scalarFieldWidget = new QWidget();
-    scalarFieldWidget->setLayout(layoutScalarField);
-
-    // contours
-    txtContoursCount = new QSpinBox(this);
-    txtContoursCount->setMinimum(1);
-    txtContoursCount->setMaximum(100);
-
-    QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
-    connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursDefault()));
-
-    QGridLayout *gridLayoutContours = new QGridLayout();
-    gridLayoutContours->setColumnMinimumWidth(0, minWidth);
-    gridLayoutContours->setColumnStretch(1, 1);
-    gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
-    gridLayoutContours->addWidget(txtContoursCount, 0, 1);
-
-    QVBoxLayout *layoutContours = new QVBoxLayout();
-    layoutContours->addLayout(gridLayoutContours);
-    layoutContours->addStretch();
-    layoutContours->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
-
-    QWidget *contoursWidget = new QWidget();
-    contoursWidget->setLayout(layoutContours);
-
-    // vector field
-    chkVectorProportional = new QCheckBox(tr("Proportional"), this);
-    chkVectorColor = new QCheckBox(tr("Color (b/w)"), this);
-    txtVectorCount = new QSpinBox(this);
-    txtVectorCount->setMinimum(1);
-    txtVectorCount->setMaximum(500);
-    txtVectorScale = new QDoubleSpinBox(this);
-    txtVectorScale->setDecimals(2);
-    txtVectorScale->setSingleStep(0.1);
-    txtVectorScale->setMinimum(0);
-    txtVectorScale->setMaximum(20);
-
-    QPushButton *btnVectorFieldDefault = new QPushButton(tr("Default"));
-    connect(btnVectorFieldDefault, SIGNAL(clicked()), this, SLOT(doVectorFieldDefault()));
-
-    QGridLayout *gridLayoutVectorField = new QGridLayout();
-    gridLayoutVectorField->setColumnMinimumWidth(0, minWidth);
-    gridLayoutVectorField->setColumnStretch(1, 1);
-    gridLayoutVectorField->addWidget(new QLabel(tr("Vectors:")), 0, 0);
-    gridLayoutVectorField->addWidget(txtVectorCount, 0, 1);
-    gridLayoutVectorField->addWidget(chkVectorProportional, 0, 2);
-    gridLayoutVectorField->addWidget(new QLabel(tr("Scale:")), 1, 0);
-    gridLayoutVectorField->addWidget(txtVectorScale, 1, 1);
-    gridLayoutVectorField->addWidget(chkVectorColor, 1, 2);
-
-    QVBoxLayout *layoutVectorField = new QVBoxLayout();
-    layoutVectorField->addLayout(gridLayoutVectorField);
-    layoutVectorField->addStretch();
-    layoutVectorField->addWidget(btnVectorFieldDefault, 0, Qt::AlignLeft);
-
-    QWidget *vectorFieldWidget = new QWidget();
-    vectorFieldWidget->setLayout(layoutVectorField);
-
-    // polynomial order
-    cmbOrderPaletteOrder = new QComboBox();
-    cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
-    cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
-    cmbOrderPaletteOrder->addItem(tr("Copper"), PaletteOrder_Copper);
-    cmbOrderPaletteOrder->addItem(tr("Hot"), PaletteOrder_Hot);
-    cmbOrderPaletteOrder->addItem(tr("Cool"), PaletteOrder_Cool);
-    cmbOrderPaletteOrder->addItem(tr("Bone"), PaletteOrder_Bone);
-    cmbOrderPaletteOrder->addItem(tr("Pink"), PaletteOrder_Pink);
-    cmbOrderPaletteOrder->addItem(tr("Spring"), PaletteOrder_Spring);
-    cmbOrderPaletteOrder->addItem(tr("Summer"), PaletteOrder_Summer);
-    cmbOrderPaletteOrder->addItem(tr("Autumn"), PaletteOrder_Autumn);
-    cmbOrderPaletteOrder->addItem(tr("Winter"), PaletteOrder_Winter);
-    cmbOrderPaletteOrder->addItem(tr("HSV"), PaletteOrder_HSV);
-    cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
-    cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
-
-    chkShowOrderScale = new QCheckBox(tr("Show scale"), this);
-    chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
-
-    QPushButton *btnOrderDefault = new QPushButton(tr("Default"));
-    connect(btnOrderDefault, SIGNAL(clicked()), this, SLOT(doOrderDefault()));
-
-    QGridLayout *gridLayoutOrder = new QGridLayout();
-    gridLayoutOrder->setColumnMinimumWidth(0, minWidth);
-    gridLayoutOrder->setColumnStretch(1, 1);
-    gridLayoutOrder->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
-    gridLayoutOrder->addWidget(chkShowOrderScale, 1, 0, 1, 2);
-    gridLayoutOrder->addWidget(chkOrderLabel, 2, 0, 1, 2);
-
-    QVBoxLayout *layoutOrder = new QVBoxLayout();
-    layoutOrder->addLayout(gridLayoutOrder);
-    layoutOrder->addStretch();
-    layoutOrder->addWidget(btnOrderDefault, 0, Qt::AlignLeft);
-
-    QWidget *orderWidget = new QWidget();
-    orderWidget->setLayout(layoutOrder);
-
-    // particle tracing
-    chkParticleIncludeGravitation = new QCheckBox(tr("Include gravitation"));
-    txtParticleNumberOfParticles = new QSpinBox(this);
-    txtParticleNumberOfParticles->setMinimum(1);
-    txtParticleNumberOfParticles->setMaximum(200);
-    txtParticleStartingRadius = new SLineEditDouble();
-    txtParticleMass = new SLineEditDouble();
-    txtParticleConstant = new SLineEditDouble();
-    txtParticlePointX = new SLineEditDouble();
-    txtParticlePointY = new SLineEditDouble();
-    txtParticleVelocityX = new SLineEditDouble();
-    txtParticleVelocityY = new SLineEditDouble();
-    txtParticleMaximumRelativeError = new SLineEditDouble();
-    chkParticleTerminateOnDifferentMaterial = new QCheckBox(tr("Terminate on different material"));
-    lblParticlePointX = new QLabel();
-    lblParticlePointY = new QLabel();
-    lblParticleVelocityX = new QLabel();
-    lblParticleVelocityY = new QLabel();
-    chkParticleColorByVelocity = new QCheckBox(tr("Line color is controlled by velocity"));
-    chkParticleShowPoints = new QCheckBox(tr("Show points"));
-    txtParticleMaximumSteps = new QSpinBox();
-    txtParticleMaximumSteps->setMinimum(100);
-    txtParticleMaximumSteps->setMaximum(100000);
-    txtParticleMaximumSteps->setSingleStep(100);
-    txtParticleDragDensity = new SLineEditDouble();
-    txtParticleDragCoefficient = new SLineEditDouble();
-    txtParticleDragReferenceArea = new SLineEditDouble();
-    lblParticleMotionEquations = new QLabel();
-
-    QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
-    connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
-
-    // Lorentz force
-    QGridLayout *gridLayoutLorentzForce = new QGridLayout();
-    gridLayoutLorentzForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
-    gridLayoutLorentzForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>L</sub> = <i>Q</i> (<i><b>E</b></i> + <i><b>v</b></i> x <i><b>B</b></i>)")), 0, 1);
-    gridLayoutLorentzForce->addWidget(new QLabel(tr("Charge (C):")), 1, 0);
-    gridLayoutLorentzForce->addWidget(txtParticleConstant, 1, 1);
-
-    QGroupBox *grpLorentzForce = new QGroupBox(tr("Lorentz Force"));
-    grpLorentzForce->setLayout(gridLayoutLorentzForce);
-
-    // drag force
-    QGridLayout *gridLayoutDragForce = new QGridLayout();
-    gridLayoutDragForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
-    gridLayoutDragForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>D</sub> = - &frac12; <i>&rho;</i> <i>v</i><sup>2</sup> <i>C</i><sub>D</sub> <i>S</i> &sdot; <i><b>v</b></i><sub>0</sub>")), 0, 1);
-    gridLayoutDragForce->addWidget(new QLabel(tr("Density (kg/m<sup>3</sup>):")), 1, 0);
-    gridLayoutDragForce->addWidget(txtParticleDragDensity, 1, 1);
-    gridLayoutDragForce->addWidget(new QLabel(tr("Reference area (m<sup>2</sup>):")), 2, 0);
-    gridLayoutDragForce->addWidget(txtParticleDragReferenceArea, 2, 1);
-    gridLayoutDragForce->addWidget(new QLabel(tr("Coefficient (-):")), 3, 0);
-    gridLayoutDragForce->addWidget(txtParticleDragCoefficient, 3, 1);
-
-    QGroupBox *grpDragForce = new QGroupBox(tr("Drag force"));
-    grpDragForce->setLayout(gridLayoutDragForce);
-
-    // initial particle position
-    QGridLayout *gridLayoutInitialPosition = new QGridLayout();
-    gridLayoutInitialPosition->addWidget(lblParticlePointX, 0, 0);
-    gridLayoutInitialPosition->addWidget(txtParticlePointX, 0, 1);
-    gridLayoutInitialPosition->addWidget(lblParticlePointY, 1, 0);
-    gridLayoutInitialPosition->addWidget(txtParticlePointY, 1, 1);
-
-    QGroupBox *grpInitialPosition = new QGroupBox(tr("Initial particle position"));
-    grpInitialPosition->setLayout(gridLayoutInitialPosition);
-
-    // initial particle velocity
-    QGridLayout *gridLayoutInitialVelocity = new QGridLayout();
-    gridLayoutInitialVelocity->addWidget(lblParticleVelocityX, 0, 0);
-    gridLayoutInitialVelocity->addWidget(txtParticleVelocityX, 0, 1);
-    gridLayoutInitialVelocity->addWidget(lblParticleVelocityY, 1, 0);
-    gridLayoutInitialVelocity->addWidget(txtParticleVelocityY, 1, 1);
-
-    QGroupBox *grpInitialVelocity = new QGroupBox(tr("Initial particle velocity"));
-    grpInitialVelocity->setLayout(gridLayoutInitialVelocity);
-
     // advanced
-    QGridLayout *gridLayoutAdvanced = new QGridLayout();
-    gridLayoutAdvanced->addWidget(chkParticleIncludeGravitation, 0, 0);
-    gridLayoutAdvanced->addWidget(new QLabel(QString("<i><b>F</b></i><sub>G</sub> = (0, m g<sub>0</sub>, 0))")), 0, 1);
-    gridLayoutAdvanced->addWidget(chkParticleTerminateOnDifferentMaterial, 1, 0, 1, 2);
-    gridLayoutAdvanced->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
-    gridLayoutAdvanced->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
-    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum relative error (%):")), 4, 0);
-    gridLayoutAdvanced->addWidget(txtParticleMaximumRelativeError, 4, 1);
-    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum steps:")), 5, 0);
-    gridLayoutAdvanced->addWidget(txtParticleMaximumSteps, 5, 1);
-
-    QGroupBox *grpAdvanced = new QGroupBox(tr("Advanced"));
-    grpAdvanced->setLayout(gridLayoutAdvanced);
-
-    QGridLayout *gridLayoutParticle = new QGridLayout();
-    gridLayoutParticle->setColumnMinimumWidth(0, minWidth);
-    gridLayoutParticle->setColumnStretch(1, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Equations:")), 0, 0);
-    gridLayoutParticle->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
-    gridLayoutParticle->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
-    gridLayoutParticle->addWidget(txtParticleNumberOfParticles, 2, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Particles radius (m):")), 3, 0);
-    gridLayoutParticle->addWidget(txtParticleStartingRadius, 3, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Mass (kg):")), 4, 0);
-    gridLayoutParticle->addWidget(txtParticleMass, 4, 1);
-    gridLayoutParticle->addWidget(grpInitialPosition, 5, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpInitialVelocity, 6, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpLorentzForce, 7, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpDragForce, 8, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpAdvanced, 9, 0, 1, 2);
-
-    QVBoxLayout *layoutParticle = new QVBoxLayout();
-    layoutParticle->addLayout(gridLayoutParticle);
-    layoutParticle->addStretch();
-    layoutParticle->addWidget(btnParticleDefault, 0, Qt::AlignLeft);
-
-    QWidget *particleWidget = new QWidget();
-    particleWidget->setLayout(layoutParticle);
-
-    // advanced
-    // scalar view log scale
-    chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
-    txtScalarFieldRangeBase = new SLineEditDouble(SCALARFIELDRANGEBASE);
-    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
-
-    txtScalarDecimalPlace = new QSpinBox(this);
-    txtScalarDecimalPlace->setMinimum(1);
-    txtScalarDecimalPlace->setMaximum(10);
-
-    QGridLayout *layoutScalarFieldAdvanced = new QGridLayout();
-    layoutScalarFieldAdvanced->addWidget(new QLabel(tr("Base:")), 0, 0);
-    layoutScalarFieldAdvanced->addWidget(txtScalarFieldRangeBase, 0, 1);
-    layoutScalarFieldAdvanced->addWidget(chkScalarFieldRangeLog, 0, 2);
-    layoutScalarFieldAdvanced->addWidget(new QLabel(tr("Decimal places:")), 1, 0);
-    layoutScalarFieldAdvanced->addWidget(txtScalarDecimalPlace, 1, 1);
-
-    QGroupBox *grpScalarField = new QGroupBox(tr("Scalar view"));
-    grpScalarField->setLayout(layoutScalarFieldAdvanced);
-
     // layout 3d
     chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
     txtView3DAngle = new QDoubleSpinBox(this);
@@ -849,7 +874,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     layout3D->addWidget(txtView3DHeight, 1, 2);
     layout3D->addWidget(chkView3DBackground, 1, 3);
 
-    QGroupBox *grp3D = new QGroupBox(tr("3D"));
+    QGroupBox *grp3D = new QGroupBox(tr("3D view"));
     grp3D->setLayout(layout3D);
 
     // layout deform shape
@@ -870,7 +895,6 @@ QWidget *PostprocessorView::controlsAdvanced()
 
     // layout postprocessor
     QVBoxLayout *layoutAdvanced = new QVBoxLayout();
-    layoutAdvanced->addWidget(grpScalarField);
     layoutAdvanced->addWidget(grp3D);
     layoutAdvanced->addWidget(grpDeformShape);
     layoutAdvanced->addStretch();
@@ -879,18 +903,13 @@ QWidget *PostprocessorView::controlsAdvanced()
     QWidget *advancedWidget = new QWidget(this);
     advancedWidget->setLayout(layoutAdvanced);
 
-    tbxAdvance = new QToolBox();
-    tbxAdvance->addItem(workspaceWidget, icon(""), tr("Workspace"));
-    tbxAdvance->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
-    tbxAdvance->addItem(contoursWidget, icon(""), tr("Contours"));
-    tbxAdvance->addItem(vectorFieldWidget, icon(""), tr("Vector field"));
-    tbxAdvance->addItem(orderWidget, icon(""), tr("Polynomial order"));
-    tbxAdvance->addItem(particleWidget, icon(""), tr("Particle tracing"));
-    tbxAdvance->addItem(advancedWidget, icon(""), tr("Advanced"));
+    tbxWorkspace = new QToolBox();
+    tbxWorkspace->addItem(workspaceWidget, icon(""), tr("Workspace"));
+    tbxWorkspace->addItem(advancedWidget, icon(""), tr("Advanced"));
 
-    // layout postprocessor
+    // layout workspace
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tbxAdvance);
+    layout->addWidget(tbxWorkspace);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -953,6 +972,8 @@ void PostprocessorView::setControls()
     bool isMeshed = Util::scene()->sceneSolution()->isMeshed();
     bool isSolved = Util::scene()->sceneSolution()->isSolved();
 
+    postprocessor->setEnabled(isSolved);
+
     chkShowGeometry->setEnabled(true);
 
     chkShowInitialMesh->setEnabled(isMeshed);
@@ -974,8 +995,11 @@ void PostprocessorView::setControls()
     radPostprocessorOrder->setEnabled(isSolved);
     radPostprocessorScalarField3D->setEnabled(isSolved);
     radPostprocessorScalarField3DSolid->setEnabled(isSolved);
-    radPostprocessorParticleTracing3D->setEnabled(chkShowParticleTracing->isEnabled());
     radPostprocessorModel->setEnabled(isSolved);
+
+    radPostprocessorParticleTracing3D->setEnabled(chkShowParticleTracing->isEnabled());
+    tbxPostprocessor->setItemEnabled(3, chkShowParticleTracing->isEnabled()); // FIXME - index
+
 
     cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
 
@@ -996,6 +1020,7 @@ void PostprocessorView::setControls()
     }
 
     if (isSolved && (radPostprocessorScalarField3D->isChecked() ||
+                     radPostprocessorParticleTracing3D->isChecked() ||
                      radPostprocessorScalarField3DSolid->isChecked() ||
                      radPostprocessorModel->isChecked()))
     {
@@ -1086,19 +1111,16 @@ void PostprocessorView::doScalarFieldDefault()
     txtPaletteSteps->setValue(PALETTESTEPS);
     cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(LINEARIZER_QUALITY));
     chkShowScalarColorBar->setChecked(SCALARCOLORBAR);
+    chkScalarFieldRangeLog->setChecked(SCALARFIELDRANGELOG);
+    txtScalarFieldRangeBase->setValue(SCALARFIELDRANGEBASE);
+    txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
 }
 
-void PostprocessorView::doContoursDefault()
+void PostprocessorView::doContoursVectorsDefault()
 {
-    logMessage("PostprocessorView::doContoursDefault()");
+    logMessage("PostprocessorView::doContoursVectorsDefault()");
 
     txtContoursCount->setValue(CONTOURSCOUNT);
-}
-
-void PostprocessorView::doVectorFieldDefault()
-{
-    logMessage("PostprocessorView::doVecotrFieldDefault()");
-
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
     txtVectorCount->setValue(VECTORNUMBER);
@@ -1140,10 +1162,6 @@ void PostprocessorView::doParticleDefault()
 void PostprocessorView::doAdvancedDefault()
 {
     logMessage("PostprocessorView::doAdvancedDefault()");
-
-    chkScalarFieldRangeLog->setChecked(SCALARFIELDRANGELOG);
-    txtScalarFieldRangeBase->setValue(SCALARFIELDRANGEBASE);
-    txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
 
     chkView3DLighting->setChecked(VIEW3DLIGHTING);
     txtView3DAngle->setValue(VIEW3DANGLE);
