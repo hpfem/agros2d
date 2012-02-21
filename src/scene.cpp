@@ -1939,7 +1939,7 @@ ErrorResult Scene::checkGeometryResult()
         QSet<int> nodes;
         foreach (SceneNode *node, this->nodes)
         {
-            if (node->point.x < 0.0)
+            if (node->point.x < - EPS_ZERO)
                 nodes.insert(this->nodes.indexOf(node));
         }
 
