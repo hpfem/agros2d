@@ -73,22 +73,22 @@ void PostprocessorView::loadBasic()
 
     // scalar field
     //TODO
-//    cmbScalarFieldVariable->setCurrentIndex(cmbScalarFieldVariable->findData(QString::fromStdString(m_scenePost2D->sceneViewSettings().scalarPhysicFieldVariable)));
-//    doScalarFieldVariable(cmbScalarFieldVariable->currentIndex());
-//    cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(m_scenePost2D->sceneViewSettings().scalarPhysicFieldVariableComp));
-//    if (cmbScalarFieldVariableComp->currentIndex() == -1)
-//        cmbScalarFieldVariableComp->setCurrentIndex(0);
-//    chkScalarFieldRangeAuto->setChecked(m_scenePost2D->sceneViewSettings().scalarRangeAuto);
-//    doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
-//    txtScalarFieldRangeMin->setText(QString::number(m_scenePost2D->sceneViewSettings().scalarRangeMin));
-//    txtScalarFieldRangeMax->setText(QString::number(m_scenePost2D->sceneViewSettings().scalarRangeMax));
+    cmbScalarFieldVariable->setCurrentIndex(cmbScalarFieldVariable->findData(QString::fromStdString(m_scenePost2D->sceneViewSettings().scalarPhysicFieldVariable)));
+    doScalarFieldVariable(cmbScalarFieldVariable->currentIndex());
+    cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(m_scenePost2D->sceneViewSettings().scalarPhysicFieldVariableComp));
+    if (cmbScalarFieldVariableComp->currentIndex() == -1)
+        cmbScalarFieldVariableComp->setCurrentIndex(0);
+    chkScalarFieldRangeAuto->setChecked(m_scenePost2D->sceneViewSettings().scalarRangeAuto);
+    doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
+    txtScalarFieldRangeMin->setText(QString::number(m_scenePost2D->sceneViewSettings().scalarRangeMin));
+    txtScalarFieldRangeMax->setText(QString::number(m_scenePost2D->sceneViewSettings().scalarRangeMax));
 
     // vector field
     //TODO
-//    cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(QString::fromStdString(m_scenePost2D->sceneViewSettings().vectorPhysicFieldVariable)));
+    cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(QString::fromStdString(m_scenePost2D->sceneViewSettings().vectorPhysicFieldVariable)));
 
     // transient view
-    //cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
+    // cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
 
     setControls();
 }
