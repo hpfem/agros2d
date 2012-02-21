@@ -17,9 +17,9 @@
 
             <weakform couplingtype="hard" sourceanalysis="steadystate"  targetanalysis="steadystate" >
                 <matrix i="2" j="1" planar ="gamma * (udx * udx + udy * udy) * vval"
-                                    axi = "100000 * (udr * udr + udz * udz) * vval" />
+                                    axi = "100000 * (udr * udr + udz * udz) * r * vval" />
                 <vector i="2" j="1" planar ="- gamma * (updx * updx + updy * updy) * vval"
-                                    axi = "- 100000 * (updr * updr + updz * updz) * vval" />
+                                    axi = "- 100000 * (updr * updr + updz * updz) * r * vval" />
             </weakform>
 
         </weakforms>
