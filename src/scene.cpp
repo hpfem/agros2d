@@ -1933,6 +1933,29 @@ void Scene::checkEdge(SceneEdge *edge)
 
 ErrorResult Scene::checkGeometryResult()
 {
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+    {
+        // check for nodes with r < 0
+        QSet<int> nodes;
+        foreach (SceneNode *node, this->nodes)
+        {
+            if (node->point.x < 0.0)
+                nodes.insert(this->nodes.indexOf(node));
+        }
+
+        if (nodes.count() > 0)
+        {
+            QString indices;
+            foreach (int index, nodes)
+                indices += QString::number(index) + ", ";
+            indices = indices.left(indices.length() - 2);
+
+            nodes.clear();
+            return ErrorResult(ErrorResultType_Critical, tr("There are nodes '%1' with negative radial component.").arg(indices));
+        }
+        nodes.clear();
+    }
+
     foreach (SceneEdge *edge, this->edges)
     {
         if (edge->crossedEdges.count() != 0)
@@ -1953,5 +1976,6 @@ ErrorResult Scene::checkGeometryResult()
             return ErrorResult(ErrorResultType_Critical, tr("There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first."));
         }
     }
+
     return ErrorResult();
 }

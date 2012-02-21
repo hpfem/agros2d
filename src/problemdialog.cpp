@@ -433,8 +433,8 @@ bool ProblemDialog::save()
         {
             if (Util::scene()->nodes[i]->point.x < 0.0)
             {
-                QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), tr("Some nodes are placed outside the permitted area (coordinate x must be positive)."));
-                return false;
+                QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), tr("Some nodes are placed outside the permitted area (coordinate x must be positive)."));
+                break;
             }
         }
     }
