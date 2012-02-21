@@ -900,18 +900,25 @@ void Scene::transformTranslate(const Point &point, bool copy)
             //qDebug()<<pairList.value(pair.first);
 
             // Setrizeni pairListu dle ud od nejmensi po nejvetsi
-            qSort(pairList.begin(),pairList.end());
+            qSort(pairList.begin(),pairList.end()); // FIX
 
-            //sortedNodes.append(nodes.at(index));
         }
     }
+
+    for (int i = 0; i < 4; i++)
+    {
+        int indexNode = pairList.at(i).first;
+        sortedNodes.append(nodes.at(indexNode));
+        qDebug()<<indexNode;
+    }
+/*
     qDebug()<<pairList.value(0);
     qDebug()<<pairList.value(1);
     qDebug()<<pairList.value(2);
     qDebug()<<pairList.at(2).first;
     qDebug()<<pairList.at(2).second;
     qDebug()<<pairList.value(3);
-
+*/
     foreach (SceneNode *node, sortedNodes)
     {
         if (node->isSelected)
