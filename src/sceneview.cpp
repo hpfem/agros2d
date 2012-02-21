@@ -4547,10 +4547,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     updateGL();
                 }
 
-                foreach (SceneNode *node, m_scene->nodes)
-                {
-                    m_scene->checkNodeConnect(node);
-                }
+//                foreach (SceneNode *node, m_scene->nodes)
+//                {
+//                    m_scene->checkNodeConnect(node);
+//                }
 
                 foreach (SceneNode *node, m_scene->nodes)
                 {                    
@@ -4610,10 +4610,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     updateGL();
                 }
 
-                foreach (SceneNode *node, m_scene->nodes)
-                {
-                    m_scene->checkNodeConnect(node);
-                }
+//                foreach (SceneNode *node, m_scene->nodes)
+//                {
+//                    m_scene->checkNodeConnect(node);
+//                }
 
                 foreach (SceneNode *node, m_scene->nodes)
                 {

@@ -1719,7 +1719,7 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
             double t1;
             double t2;
 
-            if (dx != dy)
+            if ((dx - dy) > EPS_ZERO)
             {
                t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
                t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent
@@ -1763,21 +1763,21 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
             if  ((bb4ac==0) && dist1 < radius2 && dist2 < radius2)
             {
                 // 1 solution: tangent (bb4ac == 0)
-                if ((p2s.angle() < p1.angle()) && (p1.angle() < p2e.angle()) && (p1 != p2s) && (p1 != p2e))
+                if ((p2s.angle() <= p1.angle()) && (p1.angle() <= p2e.angle()) && (p1 != p2s) && (p1 != p2e))
                     out.append(p1);
             }
 
             if ((t2 > 0) && (t2 < 1))
             {
                 // 1 solution: One Point in the circle
-                if ((iangle2 < angle2) && (iangle2 > angle1) && (p2 != p2s) && (p2 != p2e))
+                if ((iangle2 <= angle2) && (iangle2 >= angle1) && ((p2 -  p2s).magnitude() > EPS_ZERO) && ((p2 - p2e).magnitude() > EPS_ZERO))
                     out.append(p2);
             }
 
             if ((t1 > 0) && (t1 < 1))
             {
                 // 1 solution: One Point in the circle
-                if ((iangle1 < angle2) && (iangle1 > angle1)&& (p1 != p2s) && (p1 != p2e))
+                if ((iangle1 <= angle2) && (iangle1 >= angle1) && ((p1 - p2s).magnitude() > EPS_ZERO) && ((p1 - p2e).magnitude() > EPS_ZERO))
                     out.append(p1);
             }
         }
