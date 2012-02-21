@@ -66,6 +66,8 @@ public:
     bool isConnected() const { return connectedEdges.length() > 0; }
     QList<SceneEdge *> connectedEdges;
     bool isLyingOnEdges() const { return lyingEdges.length() > 0; }
+    bool isOutsideArea() const;
+    bool isError();
     QList<SceneEdge *> lyingEdges;
 
     double distance(const Point &point) const;
@@ -93,7 +95,8 @@ public:
     QList<SceneEdge *> crossedEdges;
     bool isLyingNode() const { return lyingNodes.length() > 0; }
     QList<SceneNode *> lyingNodes;
-
+    bool isOutsideArea() const;
+    bool isError() const;
     Point center() const;
     double radius() const;
     double distance(const Point &point) const;

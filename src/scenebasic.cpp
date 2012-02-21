@@ -65,6 +65,17 @@ int SceneNode::showDialog(QWidget *parent, bool isNew)
     return dialog->exec();
 }
 
+bool SceneNode::isOutsideArea() const
+{
+    return  (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric) &&
+            (this->point.x < - EPS_ZERO);
+}
+
+bool SceneNode::isError()
+{
+    return (this->isLyingOnEdges() || !this->isConnected() || this->isOutsideArea());
+}
+
 // *************************************************************************************************************************************
 
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *marker, double angle, int refineTowardsEdge)
@@ -97,7 +108,7 @@ double SceneEdge::distance(const Point &point) const
     if (isStraight())
     {
         double t = ((point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y)) /
-                   ((nodeEnd->point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (nodeEnd->point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y));
+                ((nodeEnd->point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (nodeEnd->point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y));
 
         if (t > 1.0) t = 1.0;
         if (t < 0.0) t = 0.0;
@@ -153,6 +164,16 @@ int SceneEdge::showDialog(QWidget *parent, bool isNew)
 
     SceneEdgeDialog *dialog = new SceneEdgeDialog(this, parent, isNew);
     return dialog->exec();
+}
+
+bool SceneEdge::isOutsideArea() const
+{
+    return (nodeStart->isOutsideArea() || nodeEnd->isOutsideArea());
+}
+
+bool SceneEdge::isError() const
+{
+    return (this->isLyingNode() || this->isOutsideArea() || isCrossed());
 }
 
 // *************************************************************************************************************************************
@@ -342,8 +363,8 @@ void DSceneNode::doEditingFinished()
 
     lblDistance->setText(QString("%1 m").arg(sqrt(sqr(txtPointX->number()) + sqr(txtPointY->number()))));
     lblAngle->setText(QString("%1 deg.").arg(
-            (sqrt(sqr(txtPointX->number()) + sqr(txtPointY->number())) > EPS_ZERO)
-            ? atan2(txtPointY->number(), txtPointX->number()) / M_PI * 180.0 : 0.0));
+                          (sqrt(sqr(txtPointX->number()) + sqr(txtPointY->number())) > EPS_ZERO)
+                          ? atan2(txtPointY->number(), txtPointX->number()) / M_PI * 180.0 : 0.0));
 }
 
 // *************************************************************************************************************************************
