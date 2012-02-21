@@ -83,11 +83,8 @@ bool Block::solveInit(Hermes::Hermes2D::Solution<double> *sourceSolution)
         if(! field->solveInitVariables())
             assert(0); //TODO co to znamena?
     }
-    assert(m_couplings.size() <= 1);
-    if(m_couplings.size())
-        m_wf = new WeakFormAgros<double>(this, sourceSolution);
-    else
-        m_wf = new WeakFormAgros<double>(this);
+
+    m_wf = new WeakFormAgros<double>(this);
 
     m_solutionList->init(m_progressItemSolve, m_wf, this);
     m_solutionList->clear();
@@ -311,47 +308,6 @@ void Problem::createStructure()
         m_blocks.append(new Block(blockFieldInfos, blockCouplingInfos, m_progressItemSolve, this));
     }
 
-
-    /// TODO Coupling
-//    if(hardCoupling) //TODO information about coupling method move to some CouplingInfo ...
-//    {
-//        QList<FieldInfo*> fieldInfosParam;
-//        foreach(FieldInfo* fi, fieldInfos)
-//        {
-//            fieldInfosParam.append(fi);
-//        }
-////        //TODO create order in fields and use previous cycle
-////        fieldInfosParam.append(Util::scene()->fieldInfo("heat"));
-////        fieldInfosParam.append(Util::scene()->fieldInfo("elasticity"));
-
-//        //TODO temporary
-//        Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
-//        heatElastCoup->read("resources/couplings/heat-elasticity-hard.xml");
-//        QList<Coupling*> couplingsParam;
-//        couplingsParam.append(heatElastCoup);
-
-//        m_blocks.append(new Block(fieldInfosParam, couplingsParam, m_progressItemSolve, this));
-//    }
-//    else
-//    {
-//        //TODO temporary
-//        Coupling *heatElastCoup = new Coupling(CoordinateType_Planar);
-//        heatElastCoup->read("resources/couplings/heat-elasticity.xml");
-//        //m_couplings.push_back(heatElastCoup);
-
-//        foreach(FieldInfo* fi, fieldInfos)
-//        {
-//            QList<FieldInfo*> fieldInfosParam;
-//            fieldInfosParam.append(fi);
-
-//            //TODO temporary
-//            QList<Coupling*> couplingsParam;
-//            if(fi == Util::scene()->fieldInfo("elasticity"))
-//                couplingsParam.append(heatElastCoup);
-//            m_blocks.append(new Block(fieldInfosParam, couplingsParam, m_progressItemSolve));
-//        }
-
-//    }
 }
 
 SolutionArray<double> Problem::solution(FieldInfo *fieldInfo, int component, int timeStep, int adaptivityStep)

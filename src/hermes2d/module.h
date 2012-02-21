@@ -98,7 +98,7 @@ public:
     //TODO
     //TODO coupling a sourceSolution asi obalit do nejake tridy
     //TODO mozna by se melo udelat neco jako CouplingInfo (obdoba fieldInfo), a tam by se teprv ziskal Coupling, jako se ziska Module
-    WeakFormAgros(Block* block, Hermes::Hermes2D::Solution<Scalar>* sourceSolution = NULL);
+    WeakFormAgros(Block* block);
 
     void registerForms();
 
@@ -110,7 +110,6 @@ private:
     void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;
-    Hermes::Hermes2D::Solution<Scalar>* m_sourceSolution;
 };
 
 namespace Hermes

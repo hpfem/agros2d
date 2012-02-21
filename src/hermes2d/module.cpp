@@ -109,9 +109,8 @@ std::map<std::string, std::string> availableAnalyses(std::string fieldId)
 }
 
 template <typename Scalar>
-WeakFormAgros<Scalar>::WeakFormAgros(Block* block, Hermes::Hermes2D::Solution<Scalar>* sourceSolution) :
-        Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()),
-        m_block(block), m_sourceSolution(sourceSolution)
+WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
+        Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block)
 {
 }
 
