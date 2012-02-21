@@ -875,8 +875,8 @@ void Scene::transformTranslate(const Point &point, bool copy)
 
     // sorted list of nodes for translate
     QList<SceneNode *> sortedNodes;
-    QList<QPair<int, double> > pairList;
-    QPair<int, double> pair;
+    QList<QPair<double, int> > pairList;
+    QPair<double, int> pair;
 
     // vypocet uhlu vektoru posunuti
     double angle = point.angle();
@@ -894,24 +894,25 @@ void Scene::transformTranslate(const Point &point, bool copy)
             //qDebug("Index = %d", index);
 
             // Zapis dvojic do pairList
-            pair.first=index;
-            pair.second=ud;
+            pair.first=ud;
+            pair.second=index;
             pairList.append(pair);
             //qDebug()<<pairList.value(pair.first);
 
             // Setrizeni pairListu dle ud od nejmensi po nejvetsi
-            qSort(pairList.begin(),pairList.end()); // FIX
+            qSort(pairList.begin(),pairList.end(), qGreater<QPair<double, int> >()); // FIX
 
         }
     }
 
     for (int i = 0; i < 4; i++)
     {
-        int indexNode = pairList.at(i).first;
+        int indexNode = pairList.at(i).second;
         sortedNodes.append(nodes.at(indexNode));
         qDebug()<<indexNode;
     }
 /*
+    qDebug()<<pairList.value(pair.first);
     qDebug()<<pairList.value(0);
     qDebug()<<pairList.value(1);
     qDebug()<<pairList.value(2);
