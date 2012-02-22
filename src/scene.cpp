@@ -873,40 +873,29 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
-    //  final sorted list of nodes for translate
+    //  sorted list of nodes for translate
     QList<SceneNode *> sortedNodes;
-    // list of pairs
-    QList<QPair<double, int> > pairList;
-    QPair<double, int> pair;
-
-    // calculation of transform vector angle
-    double angle = point.angle();
-    //qDebug("Angle ve stupnich = %f", (angle*180)/M_PI);
+    // list of pairs (value of Park transformation and node)
+    QList<QPair<double, SceneNode *> > pairList;
+    QPair<double, SceneNode *> pair;
 
     foreach (SceneNode *node, nodes)
     {
         if (node->isSelected)
         {
-            int index = nodes.indexOf(node);
             // Park transformation - projection of the point vector to the real axis of the displacement vector
-            double ud = node->point.x * cos(angle) + node->point.y * sin(angle);
-            //qDebug("ud = %f", ud);
-            //qDebug("Index = %d", index);
-
-            pair.first=ud;
-            pair.second=index;
+            pair.first=node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
+            pair.second=node;
             pairList.append(pair);
 
             // sort of pairList
-            qSort(pairList.begin(),pairList.end(), qGreater<QPair<double, int> >()); // FIX
+            qSort(pairList.begin(),pairList.end(), qGreater<QPair<double, SceneNode *> >());
         }
     }
 
     for (int i = 0; i < nodes.count(); i++)
     {
-        int indexNode = pairList.at(i).second;
-        sortedNodes.append(nodes.at(indexNode));
-        //qDebug()<<indexNode;
+        sortedNodes.append(pairList.at(i).second);
     }
 
     foreach (SceneNode *node, sortedNodes)
@@ -931,7 +920,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
-    // delete lists of sorted nodes
+    // delete lists of pairs and sorted nodes
     QList:sortedNodes.clear();
     Qlist:pairList.clear();
 
