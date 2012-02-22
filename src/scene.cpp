@@ -1931,6 +1931,19 @@ void Scene::checkEdge(SceneEdge *edge)
     }
 }
 
+void Scene::checkGeometry()
+{
+    foreach (SceneNode *node, this->nodes)
+    {
+        this->checkNode(node);
+    }
+
+    foreach (SceneEdge *edge, this->edges)
+    {
+        this->checkEdge(edge);
+    }
+}
+
 ErrorResult Scene::checkGeometryResult()
 {
     if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
@@ -1955,6 +1968,8 @@ ErrorResult Scene::checkGeometryResult()
         }
         nodes.clear();
     }
+
+    checkGeometry();
 
     foreach (SceneEdge *edge, this->edges)
     {

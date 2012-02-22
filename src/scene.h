@@ -215,6 +215,7 @@ public:
     void checkEdge(SceneEdge *edge);
     void checkNode(SceneNode *node);
     void checkNodeConnect(SceneNode *node);
+    void checkGeometry();
     ErrorResult checkGeometryResult();
 
     inline QUndoStack *undoStack() const { return m_undoStack; }

@@ -1562,6 +1562,11 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
 {   
     QList<Point> out;
 
+    double dx = p1e.x - p1s.x;  // component of direction vector of the line
+    double dy = p1e.y - p1s.y;  // component of direction vector of the line
+    double a = dx * dx + dy * dy;
+    double tol = sqrt(a)/1e4;
+
     // Crossing of two arcs
     if ((angle1 > 0.0) && (angle2 > 0.0))
     {
@@ -1668,19 +1673,19 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
 
                     if ((iangle1_1 < angle2_1) && (iangle1_1 > angle1_1) && (iangle1_2 < angle2_2) && (iangle1_2 > angle1_2))
                     {
-                        if(((p1 - p1s).magnitude() > EPS_ZERO_COARSE) &&
-                           ((p1 - p1e).magnitude() > EPS_ZERO_COARSE) &&
-                           ((p1 - p2e).magnitude() > EPS_ZERO_COARSE) &&
-                           ((p1 - p2s).magnitude() > EPS_ZERO_COARSE))
+                        if(((p1 - p1s).magnitude() > tol) &&
+                           ((p1 - p1e).magnitude() > tol) &&
+                           ((p1 - p2e).magnitude() > tol) &&
+                           ((p1 - p2s).magnitude() > tol))
                             out.append(p1);
                     }
 
                     if ((iangle2_1 < angle2_1) && (iangle2_1 > angle1_1) && (iangle2_2 < angle2_2) && (iangle2_2 > angle1_2))
                     {
-                        if(((p2 - p1s).magnitude() > EPS_ZERO_COARSE) &&
-                           ((p2 - p1e).magnitude() > EPS_ZERO_COARSE) &&
-                           ((p2 - p2e).magnitude() > EPS_ZERO_COARSE) &&
-                           ((p2 - p2s).magnitude() > EPS_ZERO_COARSE))
+                        if(((p2 - p1s).magnitude() > tol) &&
+                           ((p2 - p1e).magnitude() > tol) &&
+                           ((p2 - p2e).magnitude() > tol) &&
+                           ((p2 - p2s).magnitude() > tol))
                            out.append(p2);
                     }
                 }
@@ -1692,10 +1697,6 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
         if (angle2 > 0.0)
         // crossing of arc and line
         {
-            double dx = p1e.x - p1s.x;  // component of direction vector of the line
-            double dy = p1e.y - p1s.y;  // component of direction vector of the line
-            double a = dx * dx + dy * dy;
-
             double b = 2 * (dx * (p1s.x - center2.x) + dy * (p1s.y - center2.y));
             double c = p1s.x * p1s.x + p1s.y * p1s.y + center2.x * center2.x + center2.y * center2.y - 2 * (center2.x * p1s.x + center2.y * p1s.y)-(radius2 * radius2);
 
@@ -1719,7 +1720,7 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
             double t1;
             double t2;
 
-            if ((dx - dy) > EPS_ZERO)
+            if ((dx - dy) > tol)
             {
                t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
                t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent
@@ -1730,54 +1731,65 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
                 t2 = (p2.x - p1s.x) / dx; // tangent
             }
 
-            double angle1 = (p2e - center2).angle();
-            double angle2 = (p2s - center2).angle();
+            double angle_1 = (p2e - center2).angle();
+            double angle_2 = (p2s - center2).angle();
             double iangle1 = (p1 - center2).angle();
             double iangle2 = (p2 - center2).angle();
 
-            if (std::abs((angle2 - angle1)) > M_PI)
+            bool isBetween1 = false;
+            bool isBetween2 = false;
+
+            if (angle_2 < angle_1)
             {
-                if (iangle2 > 0 )
-                    iangle2 -= angle2;
-                else
-                    iangle2 +=  M_PI;
-                if (iangle1 > 0 )
-                    iangle1 -= angle2;
-                else
-                    iangle1 +=  M_PI;
-                if (angle1 > 0)
-                    angle1  -= angle2;
-                else
-                    angle1  +=  M_PI;
-                angle2 = 0;
+                double temp = angle_1;
+                angle_1 = angle_2;
+                angle_2 = temp;
             }
 
-            if (angle2 < angle1)
+            // angle_1  3. quadrant, angle_2 2.quadrant
+            if ((angle_1 <= - M_PI_2) && (angle_2 >= M_PI_2))
             {
-                double temp = angle1;
-                angle1 = angle2;
-                angle2 = temp;
+                if((iangle1 <= angle_1) || (iangle1 >= angle_2))
+                {
+                   isBetween1 =  true;
+                }
+                if((iangle2 <= angle_1) || (iangle2 >= angle_2))
+                {
+                   isBetween2 =  true;
+                }
+
+            } else
+            {
+                if((iangle1 >= angle_1) && (iangle1 <= angle_2))
+                {
+                   isBetween1 =  true;
+                }
+
+                if((iangle2 >= angle_1) && (iangle2 <= angle_2))
+                {
+                   isBetween2 =  true;
+                }
             }
 
 
-            if  ((bb4ac==0) && dist1 < radius2 && dist2 < radius2)
-            {
-                // 1 solution: tangent (bb4ac == 0)
-                if ((p2s.angle() <= p1.angle()) && (p1.angle() <= p2e.angle()) && (p1 != p2s) && (p1 != p2e))
-                    out.append(p1);
-            }
+//            if  ((bb4ac==0) && dist1 < radius2 && dist2 < radius2)
+//            {
+//                // 1 solution: tangent (bb4ac == 0)
+//                if ((p2s.angle() <= p1.angle()) && (p1.angle() <= p2e.angle()) && (p1 != p2s) && (p1 != p2e))
+//                    out.append(p1);
+//            }
 
-            if ((t2 > 0) && (t2 < 1))
+            if ((t2 >= 0) && (t2 <= 1))
             {
                 // 1 solution: One Point in the circle
-                if ((iangle2 <= angle2) && (iangle2 >= angle1) && ((p2 -  p2s).magnitude() > EPS_ZERO) && ((p2 - p2e).magnitude() > EPS_ZERO))
+                if (isBetween2 && ((p2 -  p2s).magnitude() > tol) && ((p2 - p2e).magnitude() > tol))
                     out.append(p2);
             }
 
-            if ((t1 > 0) && (t1 < 1))
+            if ((t1 >= 0) && (t1 <= 1))
             {
                 // 1 solution: One Point in the circle
-                if ((iangle1 <= angle2) && (iangle1 >= angle1) && ((p1 - p2s).magnitude() > EPS_ZERO) && ((p1 - p2e).magnitude() > EPS_ZERO))
+                if (isBetween1 && ((p1 - p2s).magnitude() > tol) && ((p1 - p2e).magnitude() > tol))
                     out.append(p1);
             }
         }
