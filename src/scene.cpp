@@ -873,53 +873,42 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
-    // sorted list of nodes for translate
+    //  final sorted list of nodes for translate
     QList<SceneNode *> sortedNodes;
+    // list of pairs
     QList<QPair<double, int> > pairList;
     QPair<double, int> pair;
 
-    // vypocet uhlu vektoru posunuti
+    // calculation of transform vector angle
     double angle = point.angle();
-    qDebug("Angle ve stupnich = %f", (angle*180)/M_PI);
-    double ud;
+    //qDebug("Angle ve stupnich = %f", (angle*180)/M_PI);
 
     foreach (SceneNode *node, nodes)
     {
         if (node->isSelected)
         {
             int index = nodes.indexOf(node);
-            // Parkova transformace - prumet vektoru bodu do realne osy vektoru posunuti
-            ud = node->point.x * cos(angle) + node->point.y * sin(angle);
+            // Park transformation - projection of the point vector to the real axis of the displacement vector
+            double ud = node->point.x * cos(angle) + node->point.y * sin(angle);
             //qDebug("ud = %f", ud);
             //qDebug("Index = %d", index);
 
-            // Zapis dvojic do pairList
             pair.first=ud;
             pair.second=index;
             pairList.append(pair);
-            //qDebug()<<pairList.value(pair.first);
 
-            // Setrizeni pairListu dle ud od nejmensi po nejvetsi
+            // sort of pairList
             qSort(pairList.begin(),pairList.end(), qGreater<QPair<double, int> >()); // FIX
-
         }
     }
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < nodes.count(); i++)
     {
         int indexNode = pairList.at(i).second;
         sortedNodes.append(nodes.at(indexNode));
-        qDebug()<<indexNode;
+        //qDebug()<<indexNode;
     }
-/*
-    qDebug()<<pairList.value(pair.first);
-    qDebug()<<pairList.value(0);
-    qDebug()<<pairList.value(1);
-    qDebug()<<pairList.value(2);
-    qDebug()<<pairList.at(2).first;
-    qDebug()<<pairList.at(2).second;
-    qDebug()<<pairList.value(3);
-*/
+
     foreach (SceneNode *node, sortedNodes)
     {
         if (node->isSelected)
@@ -942,8 +931,9 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
-    // delete list of nodes
+    // delete lists of sorted nodes
     QList:sortedNodes.clear();
+    Qlist:pairList.clear();
 
     foreach (SceneLabel *label, labels)
     {
