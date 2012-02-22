@@ -252,9 +252,8 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             // load mesh
             Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
 
-            QSet<int> boundaries;
-
             // check that all boundary edges have a marker assigned
+            QSet<int> boundaries;
             for (int i = 0; i < mesh->get_max_node_id(); i++)
             {
                 Node *node = mesh->get_node(i);
@@ -283,6 +282,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
                 m_isError = true;
                 return;
             }
+            boundaries.clear();
 
             refineMesh(mesh, true, true);
 

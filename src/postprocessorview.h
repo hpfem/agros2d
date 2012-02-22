@@ -166,7 +166,7 @@ private:
 
     void createControls();
     QWidget *controlsBasic();
-    QWidget *controlsPosprocessor();
+    QWidget *controlsPostprocessor();
     QWidget *controlsWorkspace();
 
 signals:

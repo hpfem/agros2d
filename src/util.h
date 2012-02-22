@@ -43,6 +43,7 @@
 
 // zero
 #define EPS_ZERO 1e-10
+#define EPS_ZERO_COARSE 1e-7
 
 // physical constants
 #define EPS0 8.854e-12

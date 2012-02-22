@@ -1022,7 +1022,7 @@ void SceneView::paintGeometry()
                   Util::config()->colorEdges.blueF());
         glLineWidth(Util::config()->edgeWidth);
 
-        if ((edge->isCrossed()) || (edge->isLyingNode()))
+        if (edge->isError())
         {
             glColor3d(Util::config()->colorCrossed.redF(),
                       Util::config()->colorCrossed.greenF(),
@@ -1087,10 +1087,10 @@ void SceneView::paintGeometry()
             glVertex2d(node->point.x, node->point.y);
             glEnd();
 
-            if ((node->isSelected) || (node->isHighlighted) || (!node->isConnected()) || (node->isLyingOnEdges()))
+            if ((node->isSelected) || (node->isHighlighted) || node->isError())
             {
 
-                if ((!node->isConnected()) || (node->isLyingOnEdges()))
+                if (node->isError())
                 {
                     glColor3d(Util::config()->colorNotConnected.redF(),
                               Util::config()->colorNotConnected.greenF(),
@@ -4525,19 +4525,21 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                 {
                     if (fabs(len.x) > Util::config()->gridStep)
                     {
-                        foreach (SceneNode *node, m_scene->nodes)
-                            if (node->isSelected)
-                                node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                        dp.x = (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                        dp.y = 0;
                         len.x = 0;
+
+                        m_scene->transformTranslate(dp, false);
                         updateGL();
                     }
 
                     if (fabs(len.y) > Util::config()->gridStep)
                     {
-                        foreach (SceneNode *node, m_scene->nodes)
-                            if (node->isSelected)
-                                node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                        dp.x = 0;
+                        dp.y = (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                         len.y = 0;
+
+                        m_scene->transformTranslate(dp, false);
                         updateGL();
                     }
                 }
@@ -4547,10 +4549,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     updateGL();
                 }
 
-                foreach (SceneNode *node, m_scene->nodes)
-                {
-                    m_scene->checkNodeConnect(node);
-                }
+//                foreach (SceneNode *node, m_scene->nodes)
+//                {
+//                    m_scene->checkNodeConnect(node);
+//                }
 
                 foreach (SceneNode *node, m_scene->nodes)
                 {                    
@@ -4561,8 +4563,6 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                 {
                     m_scene->checkEdge(edge);
                 }
-
-                updateGL();
             }
             else if (m_sceneMode == SceneMode_OperateOnEdges)
             {
@@ -4610,10 +4610,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     updateGL();
                 }
 
-                foreach (SceneNode *node, m_scene->nodes)
-                {
-                    m_scene->checkNodeConnect(node);
-                }
+//                foreach (SceneNode *node, m_scene->nodes)
+//                {
+//                    m_scene->checkNodeConnect(node);
+//                }
 
                 foreach (SceneNode *node, m_scene->nodes)
                 {

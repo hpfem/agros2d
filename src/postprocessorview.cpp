@@ -289,7 +289,7 @@ void PostprocessorView::createControls()
 
     // tab widget
     basic = controlsBasic();
-    postprocessor = controlsPosprocessor();
+    postprocessor = controlsPostprocessor();
     workspace = controlsWorkspace();
 
     QTabWidget *tabType = new QTabWidget(this);
@@ -455,7 +455,7 @@ QWidget *PostprocessorView::controlsBasic()
     return widget;
 }
 
-QWidget *PostprocessorView::controlsPosprocessor()
+QWidget *PostprocessorView::controlsPostprocessor()
 {
     logMessage("PostprocessorView::controlsAdvanced()");
 
@@ -996,10 +996,7 @@ void PostprocessorView::setControls()
     radPostprocessorScalarField3D->setEnabled(isSolved);
     radPostprocessorScalarField3DSolid->setEnabled(isSolved);
     radPostprocessorModel->setEnabled(isSolved);
-
     radPostprocessorParticleTracing3D->setEnabled(chkShowParticleTracing->isEnabled());
-    tbxPostprocessor->setItemEnabled(3, chkShowParticleTracing->isEnabled()); // FIXME - index
-
 
     cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
 
@@ -1086,7 +1083,6 @@ void PostprocessorView::doWorkspaceDefault()
 
     txtGridStep->setText(QString::number(GRIDSTEP));
     chkShowGrid->setChecked(SHOWGRID);
-    chkSnapToGrid->setEnabled(SHOWGRID);
     chkSnapToGrid->setChecked(SNAPTOGRID);
 
     lblSceneFontExample->setFont(FONT);
