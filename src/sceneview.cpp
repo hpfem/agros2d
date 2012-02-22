@@ -4549,10 +4549,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     updateGL();
                 }
 
-//                foreach (SceneNode *node, m_scene->nodes)
-//                {
-//                    m_scene->checkNodeConnect(node);
-//                }
+                //                foreach (SceneNode *node, m_scene->nodes)
+                //                {
+                //                    m_scene->checkNodeConnect(node);
+                //                }
 
                 foreach (SceneNode *node, m_scene->nodes)
                 {                    
@@ -4580,11 +4580,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                 edge->nodeStart->isSelected = true;
                                 edge->nodeEnd->isSelected = true;
                             }
-                        foreach (SceneNode *node, m_scene->nodes)
-                            if (node->isSelected)
-                                node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
-
+                        dp.x = (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                        dp.y = 0;
                         len.x = 0;
+                        m_scene->transformTranslate(dp, false);
                         updateGL();
                     }
 
@@ -4596,11 +4595,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                 edge->nodeStart->isSelected = true;
                                 edge->nodeEnd->isSelected = true;
                             }
-                        foreach (SceneNode *node, m_scene->nodes)
-                            if (node->isSelected)
-                                node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
-
+                        dp.y = (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                        dp.x = 0;
                         len.y = 0;
+                        m_scene->transformTranslate(dp, false);
                         updateGL();
                     }
                 }
@@ -4610,10 +4608,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     updateGL();
                 }
 
-//                foreach (SceneNode *node, m_scene->nodes)
-//                {
-//                    m_scene->checkNodeConnect(node);
-//                }
+                //                foreach (SceneNode *node, m_scene->nodes)
+                //                {
+                //                    m_scene->checkNodeConnect(node);
+                //                }
 
                 foreach (SceneNode *node, m_scene->nodes)
                 {
