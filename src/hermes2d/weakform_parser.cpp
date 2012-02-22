@@ -125,7 +125,6 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
 
     for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
     {
-        cout << "calling DefineVar with " << it->first << ", value: " << it->second << endl;
         parser->parser[0]->DefineVar(it->first, &it->second);
     }
 }
