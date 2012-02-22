@@ -64,12 +64,6 @@ void SceneViewGeometry::createActionsGeometry()
     actSceneModeLabel->setStatusTip(tr("Operate on labels"));
     actSceneModeLabel->setCheckable(true);
 
-    actSceneModeGroup = new QActionGroup(this);
-    actSceneModeGroup->addAction(actSceneModeNode);
-    actSceneModeGroup->addAction(actSceneModeEdge);
-    actSceneModeGroup->addAction(actSceneModeLabel);
-    connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doSceneGeometryModeSet(QAction *)));
-
     // select region
     actSceneViewSelectRegion = new QAction(icon("scene-select-region"), tr("&Select region"), this);
     actSceneViewSelectRegion->setStatusTip(tr("Select region"));

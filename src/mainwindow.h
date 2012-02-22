@@ -211,6 +211,9 @@ private:
     QAction *actSceneZoomBestFit;
     QAction *actSceneZoomRegion;
 
+    // scene mode
+    QActionGroup *actSceneModeGroup;
+
     SceneViewGeometry *sceneViewGeometry;
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
@@ -228,7 +231,7 @@ private:
     LogDialog *logDialog;
     ServerDownloadDialog *collaborationDownloadDialog;
 
-    QTabWidget *tabView;
+    QStackedWidget *tabView;
     QWidget *widgetViewGeometry;
     QWidget *widgetViewPost2D;
     QWidget *widgetViewPost3D;

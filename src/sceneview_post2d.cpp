@@ -49,6 +49,12 @@ SceneViewPost2D::~SceneViewPost2D()
 
 void SceneViewPost2D::createActionsPost2D()
 {
+    // scene mode
+    actSceneModePost2D = new QAction(icon("scene-post2d"), tr("Postprocessor 2D"), this);
+    actSceneModePost2D->setShortcut(Qt::Key_F7);
+    actSceneModePost2D->setStatusTip(tr("Postprocessor 2D"));
+    actSceneModePost2D->setCheckable(true);
+
     actSceneViewSelectByMarker = new QAction(icon(""), tr("Select by marker"), this);
     actSceneViewSelectByMarker->setStatusTip(tr("Select by marker"));
     connect(actSceneViewSelectByMarker, SIGNAL(triggered()), this, SLOT(doSelectMarker()));

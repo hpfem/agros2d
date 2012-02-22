@@ -34,6 +34,8 @@ public:
     SceneViewPost3D(QWidget *parent = 0);
     ~SceneViewPost3D();
 
+    QAction *actSceneModePost3D;
+
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
 

@@ -36,6 +36,8 @@ public:
     SceneViewPost2D(QWidget *parent = 0);
     ~SceneViewPost2D();
 
+    QAction *actSceneModePost2D;
+
     QActionGroup *actShowGroup;
     QAction *actShowContours;
     QAction *actShowVectors;

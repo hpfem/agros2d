@@ -39,7 +39,6 @@ public:
 
     QAction *actSceneViewSelectRegion;
 
-    QActionGroup *actSceneModeGroup;
     QAction *actSceneModeNode;
     QAction *actSceneModeEdge;
     QAction *actSceneModeLabel;

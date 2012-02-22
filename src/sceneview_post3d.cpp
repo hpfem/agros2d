@@ -70,7 +70,10 @@ SceneViewPost3D::~SceneViewPost3D()
 
 void SceneViewPost3D::createActionsPost3D()
 {
-
+    actSceneModePost3D = new QAction(icon("scene-post3d"), tr("Postprocessor 3D"), this);
+    actSceneModePost3D->setShortcut(Qt::Key_F7);
+    actSceneModePost3D->setStatusTip(tr("Postprocessor 3D"));
+    actSceneModePost3D->setCheckable(true);
 }
 
 void SceneViewPost3D::mousePressEvent(QMouseEvent *event)

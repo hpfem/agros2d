@@ -81,8 +81,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // geometry
     connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
-    connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), this, SLOT(doScenModeChanged(SceneGeometryMode)));
     connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
+    connect(actSceneModeGroup, SIGNAL(triggered(QAction*)), this, SLOT(doInvalidated()));
+    connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), sceneViewGeometry, SLOT(doSceneGeometryModeSet(QAction *)));
 
     // postprocessor 2d
     connect(sceneViewPost2D, SIGNAL(mousePressed()), resultsView, SLOT(doShowResults()));
@@ -414,7 +415,16 @@ void MainWindow::createActions()
 
     actSceneZoomRegion = new QAction(icon("zoom-fit-best"), tr("Zoom region"), this);
     actSceneZoomRegion->setStatusTip(tr("Zoom region"));
-    actSceneZoomRegion->setCheckable(true);}
+    actSceneZoomRegion->setCheckable(true);
+
+    actSceneModeGroup = new QActionGroup(this);
+    actSceneModeGroup->addAction(sceneViewGeometry->actSceneModeNode);
+    actSceneModeGroup->addAction(sceneViewGeometry->actSceneModeEdge);
+    actSceneModeGroup->addAction(sceneViewGeometry->actSceneModeLabel);
+    actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
+    actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
+}
+
 
 void MainWindow::doFieldsChanged()
 {
@@ -515,6 +525,8 @@ void MainWindow::createMenus()
     mnuProblem->addAction(sceneViewGeometry->actSceneModeNode);
     mnuProblem->addAction(sceneViewGeometry->actSceneModeEdge);
     mnuProblem->addAction(sceneViewGeometry->actSceneModeLabel);
+    mnuProblem->addAction(sceneViewPost2D->actSceneModePost2D);
+    mnuProblem->addAction(sceneViewPost3D->actSceneModePost3D);
     mnuProblem->addSeparator();
     QMenu *mnuAdd = new QMenu(tr("&Add"), this);
     mnuProblem->addMenu(mnuAdd);
@@ -628,6 +640,8 @@ void MainWindow::createToolBars()
     tlbProblem->addAction(sceneViewGeometry->actSceneModeNode);
     tlbProblem->addAction(sceneViewGeometry->actSceneModeEdge);
     tlbProblem->addAction(sceneViewGeometry->actSceneModeLabel);
+    tlbProblem->addAction(sceneViewPost2D->actSceneModePost2D);
+    tlbProblem->addAction(sceneViewPost3D->actSceneModePost3D);
     tlbProblem->addSeparator();
     tlbProblem->addAction(sceneViewGeometry->actSceneViewSelectRegion);
     tlbProblem->addAction(Util::scene()->actTransform);
@@ -724,10 +738,10 @@ void MainWindow::createScene()
     widgetViewGeometry = new QWidget;
     widgetViewGeometry->setLayout(layoutViewGeometry);
 
-    tabView = new QTabWidget();
-    tabView->addTab(widgetViewGeometry, "Geometry");
-    tabView->addTab(widgetViewPost2D, "Postprocesor 2D");
-    tabView->addTab(widgetViewPost3D, "Postprocesor 3D");
+    tabView = new QStackedWidget();
+    tabView->addWidget(widgetViewGeometry);
+    tabView->addWidget(widgetViewPost2D);
+    tabView->addWidget(widgetViewPost3D);
 
     setCentralWidget(tabView);
 }
@@ -1405,7 +1419,6 @@ void MainWindow::doInvalidated()
     // set controls
     Util::scene()->actTransform->setEnabled(false);
 
-    sceneViewGeometry->actSceneModeGroup->setEnabled(false);
     sceneViewGeometry->actSceneViewSelectRegion->setEnabled(false);
 
     sceneViewPost2D->actPostprocessorModeGroup->setEnabled(false);
@@ -1420,11 +1433,11 @@ void MainWindow::doInvalidated()
     sceneViewPost2D->actSceneZoomRegion = NULL;
     sceneViewPost3D->actSceneZoomRegion = NULL;
 
-    if (tabView->currentWidget() == widgetViewGeometry)
+    if (sceneViewGeometry->actSceneModeNode->isChecked() || sceneViewGeometry->actSceneModeEdge->isChecked() || sceneViewGeometry->actSceneModeLabel->isChecked())
     {
+        tabView->setCurrentWidget(widgetViewGeometry);
         Util::scene()->actTransform->setEnabled(true);
 
-        sceneViewGeometry->actSceneModeGroup->setEnabled(true);
         sceneViewGeometry->actSceneViewSelectRegion->setEnabled(true);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomIn()));
@@ -1432,8 +1445,10 @@ void MainWindow::doInvalidated()
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomBestFit()));
         sceneViewGeometry->actSceneZoomRegion = actSceneZoomRegion;
     }
-    if (tabView->currentWidget() == widgetViewPost2D)
+    if (sceneViewPost2D->actSceneModePost2D->isChecked())
     {
+        tabView->setCurrentWidget(widgetViewPost2D);
+
         sceneViewPost2D->actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
         sceneViewPost2D->actSceneViewSelectByMarker->setEnabled(Util::problem()->isSolved());
 
@@ -1442,8 +1457,10 @@ void MainWindow::doInvalidated()
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewPost2D, SLOT(doZoomBestFit()));
         sceneViewPost2D->actSceneZoomRegion = actSceneZoomRegion;
     }
-    if (tabView->currentWidget() == widgetViewPost3D)
+    if (sceneViewPost3D->actSceneModePost3D->isChecked())
     {
+        tabView->setCurrentWidget(widgetViewPost3D);
+
         sceneViewPost3D->actSetProjectionXY->setEnabled(true);
         sceneViewPost3D->actSetProjectionXZ->setEnabled(true);
         sceneViewPost3D->actSetProjectionYZ->setEnabled(true);
