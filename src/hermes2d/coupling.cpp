@@ -16,8 +16,6 @@ CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField) :
     m_couplingType = CouplingType_Weak;
     m_coupling = NULL;
 
-//    cout << "couplingInfo ctor, type " << couplingTypeString(m_couplingType).toStdString() << endl;
-
     reload();
 }
 
@@ -43,43 +41,6 @@ void CouplingInfo::reload()
 
     m_coupling = couplingFactory(m_sourceField, m_targetField, m_couplingType);
 }
-
-//QMap<QPair<QString, QString >, QString > availableCouplings()
-//{
-//    QMap<QPair<QString, QString >, QString > couplings;
-//    DIR *dp;
-//    if ((dp = opendir((datadir()+ COUPLINGROOT).toStdString().c_str())) == NULL)
-//        error("Couplings dir '%s' doesn't exists", (datadir() + ROOT).toStdString().c_str());
-
-//    struct dirent *dirp;
-//    while ((dirp = readdir(dp)) != NULL)
-//    {
-//        std::string filename = dirp->d_name;
-
-//        // skip current and parent dir
-//        if (filename == "." || filename == "..")
-//            continue;
-
-//        if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
-//        {
-//            // read name
-//            rapidxml::file<> file_data((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename).c_str());
-
-//            // parse xml
-//            rapidxml::xml_document<> doc;
-//            doc.parse<0>(file_data.data());
-
-//            // module name
-//            QString sourceFieldStr(doc.first_node("coupling")->first_node("general")->first_node("modules")->first_node("source")->first_attribute("id")->value());
-//            QString targetFieldStr(doc.first_node("coupling")->first_node("general")->first_node("modules")->first_node("target")->first_attribute("id")->value());
-//            couplings[QPair<QString, QString>(sourceFieldStr, targetFieldStr)] =
-//        }
-//    }
-//    closedir(dp);
-
-
-//    return modules;
-//}
 
 bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
 {
@@ -252,18 +213,6 @@ Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, Coupli
 
     CoordinateType coordinateType = sourceField->coordinateType();
     Coupling *coupling = new Coupling(coordinateType, couplingType, sourceField->analysisType(), targetField->analysisType());
-
-//    // try to open custom module
-//    if (id == "custom")
-//    {
-//        ifstream ifile_custom(filename_custom.c_str());
-//        if (!ifile_custom)
-//            coupling->read(datadir().toStdString() + "/resources/custom.xml");
-//        else
-//            coupling->read(filename_custom);
-
-//        return coupling;
-//    }
 
     // open default module
     std::string filename_default = (datadir() + COUPLINGROOT + "/" + sourceField->fieldId() + "-" +

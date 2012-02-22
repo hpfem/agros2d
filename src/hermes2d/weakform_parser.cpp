@@ -137,6 +137,11 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
                                                              Hermes::Hermes2D::SymFlag sym,
                                                              std::string expression,
                                                              Material *material)
+//TODO kam vsude probubla material
+// ->fieldInfo z materialu se v Parser form pouziva k projiti vsech fieldInfo->module->material_type_variables popr. module->get_boundary_type
+// m_material .. pouzije se pro ziskani hodnot promennych
+// initParser -> set parser variables ... take hodnoty promennych
+
     : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(material->getFieldInfo()), m_material(material)
 {
     initParser(material, NULL);
