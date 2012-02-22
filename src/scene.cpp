@@ -873,8 +873,6 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
-    //  sorted list of nodes for translate
-    QList<SceneNode *> sortedNodes;
     // list of pairs (value of Park transformation and node)
     QList<QPair<double, SceneNode *> > pairList;
     QPair<double, SceneNode *> pair;
@@ -884,22 +882,19 @@ void Scene::transformTranslate(const Point &point, bool copy)
         if (node->isSelected)
         {
             // Park transformation - projection of the point vector to the real axis of the displacement vector
-            pair.first=node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
-            pair.second=node;
+            pair.first = node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
+            pair.second = node;
             pairList.append(pair);
-
-            // sort of pairList
-            qSort(pairList.begin(),pairList.end(), qGreater<QPair<double, SceneNode *> >());
         }
     }
 
-    for (int i = 0; i < nodes.count(); i++)
-    {
-        sortedNodes.append(pairList.at(i).second);
-    }
+    // sort of pairList
+    qSort(pairList.begin(), pairList.end(), qGreater<QPair<double, SceneNode *> >());
 
-    foreach (SceneNode *node, sortedNodes)
+    for (int i = 0; i < pairList.count(); i++)
     {
+        SceneNode *node = pairList[i].second;
+
         if (node->isSelected)
         {
             Point pointNew = node->point + point;
@@ -920,9 +915,8 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
-    // delete lists of pairs and sorted nodes
-    QList:sortedNodes.clear();
-    Qlist:pairList.clear();
+    // clear lists of pairs
+    pairList.clear();
 
     foreach (SceneLabel *label, labels)
     {
