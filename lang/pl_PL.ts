@@ -2360,12 +2360,12 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="364"/>
         <source>3D: Particle tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>3D: Śledzenie cząsteczek</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="369"/>
         <source>Ctrl+7</source>
-        <translation type="unfinished">Ctrl+7</translation>
+        <translation>Ctrl+7</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="378"/>
@@ -2784,7 +2784,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="757"/>
         <source>Contours and vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Izolinie i wektory</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="778"/>
@@ -2799,7 +2799,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="781"/>
         <source>Zoom to mouse pointer</source>
-        <translation type="unfinished">Zbliżenie na wskaźnik myszy</translation>
+        <translation>Zbliżenie na wskaźnik myszy</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="784"/>
@@ -2824,17 +2824,17 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="817"/>
         <source>Node size:</source>
-        <translation type="unfinished">Rozmiar węzła:</translation>
+        <translation>Rozmiar węzła:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="819"/>
         <source>Edge width:</source>
-        <translation type="unfinished">Szerokość krawędzi:</translation>
+        <translation>Szerokość krawędzi:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="821"/>
         <source>Label size:</source>
-        <translation type="unfinished">Rozmiar etykiety:</translation>
+        <translation>Rozmiar etykiety:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="828"/>
@@ -2865,7 +2865,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="297"/>
         <source>Postprocessor</source>
-        <translation type="unfinished">Wyniki</translation>
+        <translation>Wyniki</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="470"/>
@@ -2969,17 +2969,17 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="517"/>
         <source>Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="526"/>
         <source>Show colorbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż skale kolorów</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="533"/>
         <source>Colorbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala kolorów</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="617"/>
@@ -3081,113 +3081,113 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="652"/>
         <source>Terminate on different material</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakończ na innym materiale</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="657"/>
         <source>Line color is controlled by velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor linii związany z prędkością</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="658"/>
         <source>Show points</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż punkty</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="673"/>
         <location filename="../src/postprocessorview.cpp" line="685"/>
         <source>Equation:</source>
-        <translation type="unfinished">Równanie:</translation>
+        <translation>Równanie:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="675"/>
         <source>Charge (C):</source>
-        <translation type="unfinished"></translation>
+        <translation>Ładunek [C]:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="678"/>
         <source>Lorentz Force</source>
-        <translation type="unfinished"></translation>
+        <translation>Siła Lorentza</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="687"/>
         <source>Density (kg/m&lt;sup&gt;3&lt;/sup&gt;):</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość (kg/m&lt;sup&gt;3&lt;/sup&gt;):</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="689"/>
         <source>Reference area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
-        <translation type="unfinished"></translation>
+        <translation>Powierzchnia odziaływania (m&lt;sup&gt;2&lt;/sup&gt;):</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="691"/>
         <source>Coefficient (-):</source>
-        <translation type="unfinished"></translation>
+        <translation>Współczynnik (-):</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="694"/>
         <source>Drag force</source>
-        <translation type="unfinished"></translation>
+        <translation>Siła oporu</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="724"/>
         <source>Maximum relative error (%):</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalny błąd względny (%):</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="726"/>
         <source>Maximum steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna liczba kroków:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="733"/>
         <source>Equations:</source>
-        <translation type="unfinished"></translation>
+        <translation>Równania:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="737"/>
         <source>Particles dispersion (m):</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozproszenie cząsteczek (m):</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="739"/>
         <source>Mass (kg):</source>
-        <translation type="unfinished"></translation>
+        <translation>Masa (kg):</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="501"/>
         <source>Log. scale</source>
-        <translation type="unfinished">Skala log.</translation>
+        <translation>Skala log.</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="513"/>
         <source>Base:</source>
-        <translation type="unfinished">Podstawa:</translation>
+        <translation>Podstawa:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="529"/>
         <source>Decimal places:</source>
-        <translation type="unfinished">Liczba miejsc po przecinku:</translation>
+        <translation>Liczba miejsc po przecinku:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="856"/>
         <source>Ligthing</source>
-        <translation type="unfinished">Oświetlenie</translation>
+        <translation>Oświetlenie</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="862"/>
         <source>Gradient background</source>
-        <translation type="unfinished">Gradient w tle</translation>
+        <translation>Gradient w tle</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="870"/>
         <source>Angle:</source>
-        <translation type="unfinished">Kąt:</translation>
+        <translation>Kąt:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="873"/>
         <source>Height:</source>
-        <translation type="unfinished">Wysokość:</translation>
+        <translation>Wysokość:</translation>
     </message>
     <message>
         <source>3D</source>
@@ -3196,7 +3196,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="890"/>
         <source>Deform shape</source>
-        <translation type="unfinished">Deformacja</translation>
+        <translation>Deformacja</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="298"/>
@@ -3207,7 +3207,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="877"/>
         <source>3D view</source>
-        <translation type="unfinished"></translation>
+        <translation>Widok 3D</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="930"/>
@@ -3395,7 +3395,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="436"/>
         <source>Some nodes are placed outside the permitted area (coordinate x must be positive).</source>
-        <translation type="unfinished"></translation>
+        <translation>Węzły poza dozwolonym obszarem (współrzędna x musi być dodatnia).</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="445"/>
@@ -3558,7 +3558,7 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="280"/>
         <source>Boundary edges &apos;%1&apos; does not have a boundary marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Krawędź brzegowa &apos;%1&apos; nie ma ustawionego warunku brzegowego</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="312"/>
@@ -3707,7 +3707,7 @@
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="22"/>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przeglądarka</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="38"/>
