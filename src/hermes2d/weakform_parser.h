@@ -116,7 +116,8 @@ public:
                               std::string area,
                               Hermes::Hermes2D::SymFlag sym,
                               std::string expression,
-                              Material *material);
+                              Material *material,
+                              Material *material2);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -124,6 +125,7 @@ public:
                             Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
 private:
     Material *m_material;
+    Material *m_material2;
 };
 
 template<typename Scalar>

@@ -134,7 +134,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WFType type, const std::string &prob
 
 template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, const std::string &area,
-                                                  Hermes::Hermes2D::SymFlag sym, string expression, Marker* marker)
+                                                  Hermes::Hermes2D::SymFlag sym, string expression, Marker* marker, Material* markerSecond)
 {
     cout << "factory form (" << i << ", " << j << "), area: " << area << " -> " << expression << ", marker " << marker->getName() <<  endl;
     if(type == WFType_MatVol)
@@ -142,7 +142,8 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
                                                      area,
                                                      sym,
                                                      expression,
-                                                     (SceneMaterial*) marker);
+                                                     (SceneMaterial*) marker,
+                                                     markerSecond);
     else if(type == WFType_MatSurf)
         return new CustomParserMatrixFormSurf<Scalar>(i, j,
                                                      area,
@@ -153,6 +154,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
                                                      area,
                                                      expression,
                                                      (SceneMaterial*) marker);
+//                                                     markerSecond);
     else if(type == WFType_VecSurf)
         return new CustomParserVectorFormSurf<Scalar>(i, j,
                                                      area,
@@ -179,7 +181,7 @@ void WeakFormAgros<Scalar>::addForm(WFType type, Hermes::Hermes2D::Form<Scalar> 
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area, Marker* marker, ParserFormExpression *form, int offsetI, int offsetJ)
+void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area, ParserFormExpression *form, int offsetI, int offsetJ, Marker* marker, SceneMaterial* marker_second)
 {
     //TODO zatim jen interpretovane formy. Pak se musi nejak rozlisit, jestli je registrovana forma z modulu nebo ze zdruzeni
 //    string problemId = fieldInfo->fieldId().toStdString() + "_" +
@@ -201,7 +203,7 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
     // interpreted form
 //    if (!custom_form || fieldInfo->weakFormsType == WeakFormsType_Interpreted)
 //    {
-        custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym, form->expression, marker);
+        custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym, form->expression, marker, marker_second);
 //    }
 
 
@@ -237,9 +239,9 @@ void WeakFormAgros<Scalar>::registerForms()
         FieldInfo* fieldInfo = field->fieldInfo();
 
         // boundary conditions
-        for (int i = 0; i<Util::scene()->edges->count(); i++)
+        for (int edgeNum = 0; edgeNum<Util::scene()->edges->count(); edgeNum++)
         {
-            SceneBoundary *boundary = Util::scene()->edges->at(i)->getMarker(fieldInfo);
+            SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->getMarker(fieldInfo);
 
             if (boundary && boundary != Util::scene()->boundaries->getNone(fieldInfo))
             {
@@ -248,50 +250,51 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_matrix_surface.begin();
                      it < boundary_type->weakform_matrix_surface.end(); ++it)
                 {
-                    registerForm(WFType_MatSurf, field, QString::number(i).toStdString(), boundary,
-                                 (ParserFormExpression *) *it, m_block->offset(field), m_block->offset(field));
+                    registerForm(WFType_MatSurf, field, QString::number(edgeNum).toStdString(), (ParserFormExpression *) *it,
+                                 m_block->offset(field), m_block->offset(field), boundary);
                 }
 
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_vector_surface.begin();
                      it < boundary_type->weakform_vector_surface.end(); ++it)
                 {
-                    registerForm(WFType_VecSurf, field, QString::number(i).toStdString(), boundary,
-                                 (ParserFormExpression *) *it, m_block->offset(field), m_block->offset(field));
+                    registerForm(WFType_VecSurf, field, QString::number(edgeNum).toStdString(), (ParserFormExpression *) *it,
+                                 m_block->offset(field), m_block->offset(field), boundary);
                 }
             }
         }
 
         // materials
-        for (int i = 0; i<Util::scene()->labels->count(); i++)
+        for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
-            SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(fieldInfo);
+            SceneMaterial *material = Util::scene()->labels->at(labelNum)->getMarker(fieldInfo);
 
             if (material && material != Util::scene()->materials->getNone(fieldInfo))
             {
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_matrix_volume.begin();
                      it < fieldInfo->module()->weakform_matrix_volume.end(); ++it)
                 {
-                    registerForm(WFType_MatVol, field, QString::number(i).toStdString(), material,
-                                 (ParserFormExpression *) *it, m_block->offset(field), m_block->offset(field));
+                    registerForm(WFType_MatVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                 m_block->offset(field), m_block->offset(field), material);
 
                 }
 
-                Hermes::vector<ParserFormExpression *> weakform_vector_volume = fieldInfo->module()->weakform_vector_volume;
-
-
+                for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_vector_volume.begin();
+                     it < fieldInfo->module()->weakform_vector_volume.end(); ++it)
+                {
+                    registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                 m_block->offset(field), m_block->offset(field), material);
+                }
 
                 foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
                 {
-                    weakform_vector_volume.insert(weakform_vector_volume.begin(), couplingInfo->coupling()->weakform_vector_volume.begin(),
-                                                                      couplingInfo->coupling()->weakform_vector_volume.end());
+                     for (Hermes::vector<ParserFormExpression *>::iterator it = couplingInfo->coupling()->weakform_vector_volume.begin();
+                          it < couplingInfo->coupling()->weakform_vector_volume.end(); ++it)
+                    {
+                         registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                      m_block->offset(field), m_block->offset(field), material, Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()));
+                    }
 
-                }
 
-                for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_vector_volume.begin();
-                     it < weakform_vector_volume.end(); ++it)
-                {
-                    registerForm(WFType_VecVol, field, QString::number(i).toStdString(), material,
-                                 (ParserFormExpression *) *it, m_block->offset(field), m_block->offset(field));
                 }
 
             }
@@ -299,8 +302,7 @@ void WeakFormAgros<Scalar>::registerForms()
     }
 
 
-    /// TODO hard coupling
-    //if(m_block->m_couplings.size() && (hardCoupling))
+    // hard coupling
     foreach(CouplingInfo* couplingInfo, m_block->m_couplings)
     {
         assert(couplingInfo->isHard());
@@ -308,37 +310,35 @@ void WeakFormAgros<Scalar>::registerForms()
         Field* sourceField = m_block->field(couplingInfo->sourceField());
         Field* targetField = m_block->field(couplingInfo->targetField());
 
-        //TODO
-        for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();
-             it < coupling->weakform_matrix_volume.end(); ++it)
+
+        for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
-            //TODO
-            // jak vybirat material pro sdruzeni? Melo by se vzit "sjednoceni" materialu obou poli?
-            int i = 0;
-            SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(targetField->fieldInfo());
-            //TODO
-            //TODO
+            SceneMaterial *sourceMaterial = Util::scene()->labels->at(labelNum)->getMarker(sourceField->fieldInfo());
+            SceneMaterial *targetMaterial = Util::scene()->labels->at(labelNum)->getMarker(targetField->fieldInfo());
 
-            registerForm(WFType_MatVol, sourceField, QString::number(i).toStdString(), material,
-                         (ParserFormExpression *) *it, m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField));
-        }
+            if (sourceMaterial && (sourceMaterial != Util::scene()->materials->getNone(sourceField->fieldInfo()))
+                    && targetMaterial && (targetMaterial != Util::scene()->materials->getNone(targetField->fieldInfo())))
+            {
 
-        for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_vector_volume.begin();
-             it < coupling->weakform_vector_volume.end(); ++it)
-        {
-            //TODO
-            //TODO
-            // jak vybirat material pro sdruzeni? Melo by se vzit "sjednoceni" materialu obou poli?
-            int i = 0;
-            SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(targetField->fieldInfo());
-            //TODO
-            //TODO
+                for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();
+                     it < coupling->weakform_matrix_volume.end(); ++it)
+                {
+                    registerForm(WFType_MatVol, sourceField, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                 m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField),
+                                 sourceMaterial, targetMaterial);
+                }
 
-            registerForm(WFType_VecVol, sourceField, QString::number(i).toStdString(), material,
-                         (ParserFormExpression *) *it, m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField));
+                for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_vector_volume.begin();
+                     it < coupling->weakform_vector_volume.end(); ++it)
+                {
+                    registerForm(WFType_VecVol, sourceField, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                 m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField),
+                                 sourceMaterial, targetMaterial);
+
+                }
+            }
         }
     }
-
 }
 
 // ***********************************************************************************************
@@ -1116,7 +1116,7 @@ Hermes::Hermes2D::GeomType convertProblemType(CoordinateType problemType)
 
 // *********************************************************************************************************************************************
 
-Parser::Parser(FieldInfo *fieldInfo) : fieldInfo(fieldInfo)
+Parser::Parser(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
 
 }
@@ -1130,23 +1130,34 @@ Parser::~Parser()
     parser.clear();
 }
 
-void Parser::setParserVariables(Material *material, Boundary *boundary, double value, double dx, double dy)
+void Parser::setParserVariables(Material* material, Boundary *boundary, double value, double dx, double dy)
+{
+    Hermes::vector<Material *> materials;
+    if(material)
+        materials.push_back(material);
+    setParserVariables(materials, boundary, value, dx, dy);
+}
+
+void Parser::setParserVariables(Hermes::vector<Material *> materialMarkers, Boundary *boundary, double value, double dx, double dy)
 {    
     //TODO zkontrolovat volani value, proc u boundary neni derivace, ...
-    if (material)
+    if (materialMarkers.size())
     {
-        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials =  fieldInfo->module()->material_type_variables;
-        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+        for(Hermes::vector<Material *>::iterator markerIter = materialMarkers.begin(); markerIter != materialMarkers.end(); ++markerIter)
         {
-            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-            parser_variables[variable->shortname] = material->getValue(variable->id).value(value);
-            parser_variables["d" + variable->shortname] = material->getValue(variable->id).derivative(value);
+            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = (*markerIter)->getFieldInfo()->module()->material_type_variables;
+            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+            {
+                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+                parser_variables[variable->shortname] = (*markerIter)->getValue(variable->id).value(value);
+                parser_variables["d" + variable->shortname] = (*markerIter)->getValue(variable->id).derivative(value);
+            }
         }
     }
 
     if (boundary)
     {
-        Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
+        Hermes::Module::BoundaryType *boundary_type = m_fieldInfo->module()->get_boundary_type(boundary->getType());
         for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
@@ -1159,7 +1170,7 @@ void Parser::setParserVariables(Material *material, Boundary *boundary, double v
 
 void Parser::initParserMaterialVariables()
 {
-    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = fieldInfo->module()->material_type_variables;
+    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = m_fieldInfo->module()->material_type_variables;
     for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
     {
         Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
@@ -1172,20 +1183,20 @@ void Parser::initParserMaterialVariables()
             ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
 }
 
-void Parser::initParserBoundaryVariables(Boundary *boundary)
-{
-    Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
-    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-    {
-        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-        parser_variables[variable->shortname] = 0.0;
-    }
+//void Parser::initParserBoundaryVariables(Boundary *boundary)
+//{
+//    Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
+//    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+//    {
+//        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+//        parser_variables[variable->shortname] = 0.0;
+//    }
 
-    // set material variables
-    for (std::map<std::string, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
-        for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
-            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
-}
+//    // set material variables
+//    for (std::map<std::string, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
+//        for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
+//            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
+//}
 
 // *********************************************************************************************************************************************
 

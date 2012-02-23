@@ -106,7 +106,7 @@ public:
     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
-    void registerForm(WFType type, Field* field, string area, Marker* marker, ParserFormExpression* form, int offsetI, int offsetJ);
+    void registerForm(WFType type, Field* field, string area, ParserFormExpression* form, int offsetI, int offsetJ, Marker* marker, SceneMaterial* marker_second = NULL);
     void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;
@@ -422,6 +422,9 @@ std::map<std::string, std::string> availableModules();
 // available analyses
 std::map<std::string, std::string> availableAnalyses(std::string fieldId);
 
+
+/// TODO not good - contains fieldInfo, but may receive more materials (related to different fields
+/// TODO fieldInfo shoud be removed, but other things depend on it
 class Parser
 {
 public:
@@ -432,13 +435,23 @@ public:
     Parser(FieldInfo *fieldInfo);
     ~Parser();
 
-    void initParserBoundaryVariables(Boundary *boundary);
+    //not used at all
+    //void initParserBoundaryVariables(Boundary *boundary);
+
+    // should be called only for postprocessing - uses m_fieldInfo!
+    //TODO bad
     void initParserMaterialVariables();
-    void setParserVariables(Material *material, Boundary *boundary,
+
+    // can be called with more materials - coupling - does not use m_fieldInfo, takes fieldInfo from materials
+    //TODO bad
+    void setParserVariables(Hermes::vector<Material *> materials, Boundary *boundary,
+                            double value = 0.0, double dx = 0.0, double dy = 0.0);
+
+    void setParserVariables(Material* materials, Boundary *boundary,
                             double value = 0.0, double dx = 0.0, double dy = 0.0);
 
 private:
-    FieldInfo *fieldInfo;
+    FieldInfo* m_fieldInfo;
 };
 
 template <typename Scalar>
