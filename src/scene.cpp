@@ -859,10 +859,12 @@ void Scene::transformTranslate(const Point &point, bool copy)
 {
     logMessage("Scene::transformTranslate()");
 
-    // clear solution
     m_sceneSolution->clear();
-
     m_undoStack->beginMacro(tr("Translation"));
+
+    // nodes, edges
+    QList<SceneEdge *> selectedEdges;
+    QList<QPair<double, SceneNode *> > selectedNodes;
 
     foreach (SceneEdge *edge, edges)
     {
@@ -870,77 +872,52 @@ void Scene::transformTranslate(const Point &point, bool copy)
         {
             edge->nodeStart->isSelected = true;
             edge->nodeEnd->isSelected = true;
+            selectedEdges.append(edge);
         }
     }
-
-    // list of pairs (value of Park transformation and node)
-    QList<QPair<double, SceneNode *> > pairList;
-    QPair<double, SceneNode *> pair;
 
     foreach (SceneNode *node, nodes)
     {
         if (node->isSelected)
         {
-            // Park transformation - projection of the point vector to the real axis of the displacement vector
-            pair.first = node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
-            pair.second = node;
-            pairList.append(pair);
-        }
-    }
+            Point newPoint = node->point + point;
+            QPair<double, SceneNode *> pair;
 
-    // sort of pairList
-    qSort(pairList.begin(), pairList.end(), qGreater<QPair<double, SceneNode *> >());
-
-    for (int i = 0; i < pairList.count(); i++)
-    {
-        SceneNode *node = pairList[i].second;
-
-        if (node->isSelected)
-        {
-            Point pointNew = node->point + point;
-            if (!copy)
+            if (!getNode(newPoint))
             {
-                if (!getNode(pointNew))
-                {
-                    m_undoStack->push(new SceneNodeCommandEdit(node->point, pointNew));
-                    node->point = pointNew;
-                }
+                // Park transformation - projection of the point vector to the real axis of the displacement vector
+                pair.first = node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
+                pair.second = node;
+                selectedNodes.append(pair);
             }
             else
-            {
-                SceneNode *nodeNew = new SceneNode(pointNew);
-                SceneNode *nodeAdded = addNode(nodeNew);
-                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
-            }
+                return;
         }
     }
 
-    // clear lists of pairs
-    pairList.clear();
+    qSort(selectedNodes.begin(), selectedNodes.end(), qGreater<QPair<double, SceneNode *> >());
 
-    foreach (SceneLabel *label, labels)
+    for (int i = 0; i < selectedNodes.count(); i++)
     {
-        if (label->isSelected)
+        SceneNode *node = selectedNodes[i].second;
+        Point newPoint = node->point + point;
+
+        if (!copy)
         {
-            Point pointNew = label->point + point;
-            if (!copy)
-            {
-                if (!getLabel(pointNew))
-                {
-                    m_undoStack->push(new SceneLabelCommandEdit(label->point, pointNew));
-                    label->point = pointNew;
-                }
-            }
-            else
-            {
-                SceneLabel *labelNew = new SceneLabel(pointNew, label->material, label->area, label->polynomialOrder);
-                SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->material->name, labelNew->area, label->polynomialOrder));
-            }
+            m_undoStack->push(new SceneNodeCommandEdit(node->point, newPoint));
+            node->point = newPoint;
+        }
+        else
+        {
+            SceneNode *nodeNew = new SceneNode(newPoint);
+            SceneNode *nodeAdded = addNode(nodeNew);
+
+            if (nodeAdded == nodeNew)
+                m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
         }
     }
 
-    foreach(SceneEdge *edge, edges)
+    foreach (SceneEdge *edge, selectedEdges)
     {
         if (edge->isSelected)
         {
@@ -950,8 +927,56 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
-    m_undoStack->endMacro();
+    selectedEdges.clear();
+    selectedNodes.clear();
 
+    // labels
+    QList<QPair<double, SceneLabel *> > selectedLabels;
+
+    foreach (SceneLabel *label, labels)
+    {
+        if (label->isSelected)
+        {
+            Point newPoint = label->point + point;
+            QPair<double, SceneLabel *> pair;
+
+            if (!getLabel(newPoint))
+            {
+                // Park transformation - projection of the point vector to the real axis of the displacement vector
+                pair.first = label->point.x * cos(point.angle()) + label->point.y * sin(point.angle());
+                pair.second = label;
+                selectedLabels.append(pair);
+            }
+            else
+                return;
+        }
+    }
+
+    qSort(selectedLabels.begin(), selectedLabels.end(), qGreater<QPair<double, SceneLabel *> >());
+
+    for (int i = 0; i < selectedLabels.count(); i++)
+    {
+        SceneLabel *label = selectedLabels[i].second;
+        Point newPoint = label->point + point;
+
+        if (!copy)
+        {
+            m_undoStack->push(new SceneLabelCommandEdit(label->point, newPoint));
+            label->point = newPoint;
+        }
+        else
+        {
+            SceneLabel *labelNew = new SceneLabel(newPoint, label->material, label->area, label->polynomialOrder);
+            SceneLabel *labelAdded = addLabel(labelNew);
+
+            if (labelAdded == labelNew)
+                m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->material->name, labelNew->area, label->polynomialOrder));
+        }
+    }
+
+    selectedLabels.clear();
+
+    m_undoStack->endMacro();
     emit invalidated();
 }
 
