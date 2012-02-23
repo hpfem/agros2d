@@ -100,7 +100,7 @@ public:
     ParserForm(FieldInfo *fieldInfo);
     ~ParserForm();
 
-    void initParser(Material *material, Boundary *boundary);
+    void initParser(Hermes::vector<Material *> materials, Boundary *boundary);
 
 protected:
     FieldInfo *m_fieldInfo;
@@ -134,7 +134,8 @@ class CustomParserVectorFormVol : public Hermes::Hermes2D::VectorFormVol<Scalar>
 public:
     CustomParserVectorFormVol(unsigned int i, unsigned int j,
                               std::string area, std::string expression,
-                              Material *material);
+                              Material *material,
+                              Material *material2);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -142,6 +143,7 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
 private:
     Material *m_material;
+    Material *m_material2;
     unsigned int j;
 };
 

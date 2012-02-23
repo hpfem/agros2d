@@ -153,8 +153,8 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
         return new CustomParserVectorFormVol<Scalar>(i, j,
                                                      area,
                                                      expression,
-                                                     (SceneMaterial*) marker);
-//                                                     markerSecond);
+                                                     (SceneMaterial*) marker,
+                                                     markerSecond);
     else if(type == WFType_VecSurf)
         return new CustomParserVectorFormSurf<Scalar>(i, j,
                                                      area,
