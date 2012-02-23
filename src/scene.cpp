@@ -855,32 +855,15 @@ void Scene::highlightNone()
         label->isHighlighted = false;
 }
 
-void Scene::transformTranslate(const Point &point, bool copy)
+void Scene::moveSelectedNodes(Point diference, bool copy)
 {
-    logMessage("Scene::transformTranslate()");
-
-    m_sceneSolution->clear();
-    m_undoStack->beginMacro(tr("Translation"));
-
-    // nodes, edges
-    QList<SceneEdge *> selectedEdges;
     QList<QPair<double, SceneNode *> > selectedNodes;
-
-    foreach (SceneEdge *edge, edges)
-    {
-        if (edge->isSelected)
-        {
-            edge->nodeStart->isSelected = true;
-            edge->nodeEnd->isSelected = true;
-            selectedEdges.append(edge);
-        }
-    }
 
     foreach (SceneNode *node, nodes)
     {
         if (node->isSelected)
         {
-            Point newPoint = node->point + point;
+            Point newPoint = node->point + diference;
             QPair<double, SceneNode *> pair;
 
             SceneNode *obstructNode = getNode(newPoint);
@@ -888,7 +871,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
                 return;
 
             // Park transformation - projection of the point vector to the real axis of the displacement vector
-            pair.first = node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
+            pair.first = node->point.x * cos(diference.angle()) + node->point.y * sin(diference.angle());
             pair.second = node;
             selectedNodes.append(pair);
         }
@@ -899,7 +882,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
     for (int i = 0; i < selectedNodes.count(); i++)
     {
         SceneNode *node = selectedNodes[i].second;
-        Point newPoint = node->point + point;
+        Point newPoint = node->point + diference;
 
         if (!copy)
         {
@@ -916,27 +899,18 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
-    foreach (SceneEdge *edge, selectedEdges)
-    {
-        if (edge->isSelected)
-        {
-            edge->nodeStart->isSelected = false;
-            edge->nodeEnd->isSelected = false;
-            this->checkEdge(edge);
-        }
-    }
-
-    selectedEdges.clear();
     selectedNodes.clear();
+}
 
-    // labels
+void Scene::moveSelectedLabels(Point diference, bool copy)
+{
     QList<QPair<double, SceneLabel *> > selectedLabels;
 
     foreach (SceneLabel *label, labels)
     {
         if (label->isSelected)
         {
-            Point newPoint = label->point + point;
+            Point newPoint = label->point + diference;
             QPair<double, SceneLabel *> pair;
 
             SceneLabel *obstructLabel = getLabel(newPoint);
@@ -944,7 +918,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
                 return;
 
             // Park transformation - projection of the point vector to the real axis of the displacement vector
-            pair.first = label->point.x * cos(point.angle()) + label->point.y * sin(point.angle());
+            pair.first = label->point.x * cos(diference.angle()) + label->point.y * sin(diference.angle());
             pair.second = label;
             selectedLabels.append(pair);
         }
@@ -955,7 +929,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
     for (int i = 0; i < selectedLabels.count(); i++)
     {
         SceneLabel *label = selectedLabels[i].second;
-        Point newPoint = label->point + point;
+        Point newPoint = label->point + diference;
 
         if (!copy)
         {
@@ -973,6 +947,44 @@ void Scene::transformTranslate(const Point &point, bool copy)
     }
 
     selectedLabels.clear();
+}
+
+void Scene::transformTranslate(const Point &point, bool copy)
+{
+    logMessage("Scene::transformTranslate()");
+
+    m_sceneSolution->clear();
+    m_undoStack->beginMacro(tr("Translation"));
+
+    // nodes, edges
+    QList<SceneEdge *> selectedEdges;
+
+    foreach (SceneEdge *edge, edges)
+    {
+        if (edge->isSelected)
+        {
+            edge->nodeStart->isSelected = true;
+            edge->nodeEnd->isSelected = true;
+            selectedEdges.append(edge);
+        }
+    }
+
+    moveSelectedNodes(point, copy);
+
+    foreach (SceneEdge *edge, selectedEdges)
+    {
+        if (edge->isSelected)
+        {
+            edge->nodeStart->isSelected = false;
+            edge->nodeEnd->isSelected = false;
+            this->checkEdge(edge);
+        }
+    }
+
+    selectedEdges.clear();
+
+    // labels
+    moveSelectedLabels(point, copy);
 
     m_undoStack->endMacro();
     emit invalidated();
@@ -982,9 +994,7 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
 {
     logMessage("Scene::transformRotate()");
 
-    // clear solution
     m_sceneSolution->clear();
-
     m_undoStack->beginMacro(tr("Rotation"));
 
     foreach (SceneEdge *edge, edges)
