@@ -47,7 +47,7 @@
 
     <surface>
         <quantity id="heat_temperature" shortname="T" />
-        <quantity id="heat_heat_flux" shortname="f" />
+        <quantity id="heat_heat_flux" shortname="ff" />
         <quantity id="heat_convection_heat_transfer_coefficient" shortname="h"/>
         <quantity id="heat_convection_external_temperature" shortname="Te" />
         <quantity id="heat_radiation_emissivity" shortname="eps"/>
@@ -71,8 +71,8 @@
 
                     <matrix i="1" j="1" planar="h * uval * vval + SIGMA0 * eps * uval*uval*uval*uval * vval"
                                         axi="h * r * uval * vval + SIGMA0 * eps * r * uval*uval*uval*uval * vval" symmetric="1" />
-                    <vector i="1" j="1" planar="((- f - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval"
-                                        axi="r * ((- f - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval" />
+                    <vector i="1" j="1" planar="((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval"
+                                        axi="r * ((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval" />
                 </boundary>
             </weakform>
         
@@ -93,8 +93,8 @@
 
                		<matrix i="1" j="1" planar="h * uval * vval + SIGMA0 * eps * uval*uval*uval*uval * vval"
                                         axi="h * r * uval * vval + SIGMA0 * eps * r * uval*uval*uval*uval * vval" symmetric="1" />
-                    <vector i="1" j="1" planar="((- f - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval"
-                                        axi="r * ((- f - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval" />
+                    <vector i="1" j="1" planar="((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval"
+                                        axi="r * ((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval" />
                 </boundary>
             </weakform>
         </weakforms>

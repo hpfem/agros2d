@@ -82,7 +82,7 @@ ParserForm::~ParserForm()
     delete parser;
 }
 
-void ParserForm::initParser(Material *material, Boundary *boundary)
+void ParserForm::initParser(Hermes::vector<Material *> materials, Boundary *boundary)
 {
     parser->parser.push_back(m_fieldInfo->module()->get_parser(m_fieldInfo));
 
@@ -121,11 +121,10 @@ void ParserForm::initParser(Material *material, Boundary *boundary)
     parser->parser[0]->DefineVar("sourced" + Util::scene()->problemInfo()->labelX().toLower().toStdString() , &sourcedx);
     parser->parser[0]->DefineVar("sourced" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &sourcedy);
 
-    parser->setParserVariables(material, boundary);
+    parser->setParserVariables(materials, boundary);
 
     for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
     {
-        cout << "calling DefineVar with " << it->first << ", value: " << it->second << endl;
         parser->parser[0]->DefineVar(it->first, &it->second);
     }
 }
@@ -137,10 +136,21 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
                                                              std::string area,
                                                              Hermes::Hermes2D::SymFlag sym,
                                                              std::string expression,
-                                                             Material *material)
-    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(material->getFieldInfo()), m_material(material)
+                                                             Material *material,
+                                                             Material *material2)
+//TODO kam vsude probubla material
+// ->fieldInfo z materialu se v Parser form pouziva k projiti vsech fieldInfo->module->material_type_variables popr. module->get_boundary_type
+// m_material .. pouzije se pro ziskani hodnot promennych
+// initParser -> set parser variables ... take hodnoty promennych
+
+    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(material->getFieldInfo()),
+      m_material(material), m_material2(material2)
 {
-    initParser(material, NULL);
+    Hermes::vector<Material *> materials;
+    materials.push_back(material);
+    if(material2)
+        materials.push_back(material2);
+    initParser(materials, NULL);
 
     parser->parser[0]->SetExpr(expression);
 }
@@ -236,10 +246,15 @@ Hermes::Ord CustomParserMatrixFormVol<Scalar>::ord(int n, double *wt, Hermes::He
 template <typename Scalar>
 CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, unsigned int j,
                                                              std::string area, std::string expression,
-                                                             Material *material)
-    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm(material->getFieldInfo()), m_material(material), j(j)
+                                                             Material *material,
+                                                             Material *material2)
+    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm(material->getFieldInfo()), m_material(material), m_material2(material2), j(j)
 {
-    initParser(material, NULL);
+    Hermes::vector<Material *> materials;
+    materials.push_back(material);
+    if(material2)
+        materials.push_back(material2);
+    initParser(materials, NULL);
 
     parser->parser[0]->SetExpr(expression);
 }
