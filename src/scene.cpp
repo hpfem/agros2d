@@ -883,15 +883,14 @@ void Scene::transformTranslate(const Point &point, bool copy)
             Point newPoint = node->point + point;
             QPair<double, SceneNode *> pair;
 
-            if (!getNode(newPoint))
-            {
-                // Park transformation - projection of the point vector to the real axis of the displacement vector
-                pair.first = node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
-                pair.second = node;
-                selectedNodes.append(pair);
-            }
-            else
+            SceneNode *obstructNode = getNode(newPoint);
+            if (obstructNode && !obstructNode->isSelected)
                 return;
+
+            // Park transformation - projection of the point vector to the real axis of the displacement vector
+            pair.first = node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
+            pair.second = node;
+            selectedNodes.append(pair);
         }
     }
 
@@ -940,15 +939,14 @@ void Scene::transformTranslate(const Point &point, bool copy)
             Point newPoint = label->point + point;
             QPair<double, SceneLabel *> pair;
 
-            if (!getLabel(newPoint))
-            {
-                // Park transformation - projection of the point vector to the real axis of the displacement vector
-                pair.first = label->point.x * cos(point.angle()) + label->point.y * sin(point.angle());
-                pair.second = label;
-                selectedLabels.append(pair);
-            }
-            else
+            SceneLabel *obstructLabel = getLabel(newPoint);
+            if (obstructLabel && !obstructLabel->isSelected)
                 return;
+
+            // Park transformation - projection of the point vector to the real axis of the displacement vector
+            pair.first = label->point.x * cos(point.angle()) + label->point.y * sin(point.angle());
+            pair.second = label;
+            selectedLabels.append(pair);
         }
     }
 
