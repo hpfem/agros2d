@@ -1556,15 +1556,45 @@ Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e)
     return NULL;
 }
 
+//   Function tests if angle specified by the third parameter is between angles
+//   angle_1 and angle_2
+bool isBetween(double angle_1, double angle_2, double angle)
+{
+    // angle_1 has to be lower then angle_2
+    if (angle_2 < angle_1)
+    {
+        double temp = angle_1;
+        angle_1 = angle_2;
+        angle_2 = temp;
+    }
+
+    // angle_1 is in the third quadrant, angle_2 is in the second quadrant
+    if ((angle_1 <= - M_PI_2) && (angle_2 >= M_PI_2))
+    {
+        if((angle <= angle_1) || (angle >= angle_2))
+        {
+           return true;
+        }
+
+    } else
+    {
+        if((angle >= angle_1) && (angle <= angle_2))
+        {
+           return true;
+        }
+    }
+    return false;
+}
+
 
 QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, double angle1,
                           Point p2s, Point p2e, Point center2, double radius2, double angle2)
 {   
     QList<Point> out;
 
-    double dx = p1e.x - p1s.x;  // component of direction vector of the line
-    double dy = p1e.y - p1s.y;  // component of direction vector of the line
-    double a = dx * dx + dy * dy;
+    double dx = p1e.x - p1s.x;      // component of direction vector of the line
+    double dy = p1e.y - p1s.y;      // component of direction vector of the line
+    double a = dx * dx + dy * dy;   // square of the length of direction vector
     double tol = sqrt(a)/1e4;
 
     // Crossing of two arcs
@@ -1572,7 +1602,7 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
     {
         if(((p1s == p2e) && (p1e == p2s)) || ((p1e == p2e) && (p1s == p2s)))
         {
-            // Crossing of arcs is impossible
+            // Crossing of arcs is not possible
         }
         else
         {
@@ -1581,12 +1611,6 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
                 float distance = (center1 - center2).magnitude();
                 float dx = center2.x - center1.x;
                 float dy = center2.y - center1.y;
-
-
-                if ((distance > (radius1 + radius2)))
-                {
-                    //No intersections
-                }
 
                 if ((distance < (radius1 + radius2)))
                 {
@@ -1607,71 +1631,28 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
                     double rx = -dy * (h/distance);
                     double ry =  dx * (h/distance);
 
-                    /* Determine the absolute intersection points. */
+                    // Determine the absolute intersection points.
                     Point p1(middle.x + rx, middle.y + ry);
                     Point p2(middle.x - rx, middle.y - ry);
 
+                    // Angles of starting and end points due to center of the arc 1
                     double angle1_1 = (p1e - center1).angle();
                     double angle2_1 = (p1s - center1).angle();
 
+                    // Angles of starting and end points due to center of the arc 2
                     double angle1_2 = (p2e - center2).angle();
                     double angle2_2 = (p2s - center2).angle();
 
+                    // Angles of intersection points due to center of the arc 1
                     double iangle1_1 = (p1 - center1).angle();
                     double iangle2_1 = (p2 - center1).angle();
 
+                    // Angles of intersection points due to center of the arc 2
                     double iangle1_2 = (p1 - center2).angle();
                     double iangle2_2 = (p2 - center2).angle();
 
-                    if (std::abs((angle2_1 - angle1_1)) > M_PI)
-                    {
-                        if (iangle2_1 > 0 )
-                            iangle2_1 -= angle2_1;
-                        else
-                            iangle2_1 +=  M_PI;
-                        if (iangle1_1 > 0 )
-                            iangle1_1 -= angle2_1;
-                        else
-                            iangle1_1 +=  M_PI;
-                        if (angle1_1 > 0)
-                            angle1_1  -= angle2_1;
-                        else
-                            angle1_1  +=  M_PI;
-                        angle2_1 = 0;
-                    }
-
-                    if (std::abs((angle2_2 - angle1_2)) > M_PI)
-                    {
-                        if (iangle2_2 > 0 )
-                            iangle2_2 -= angle2_2;
-                        else
-                            iangle2_2 +=  M_PI;
-                        if (iangle1_2 > 0 )
-                            iangle1_2 -= angle2_2;
-                        else
-                            iangle1_2 +=  M_PI;
-                        if (angle1_2 > 0)
-                            angle1_2  -= angle2_2;
-                        else
-                            angle1_2  +=  M_PI;
-                        angle2_2 = 0;
-                    }
-
-                    if (angle2_1 < angle1_1)
-                    {
-                        double temp = angle1_1;
-                        angle1_1 = angle2_1;
-                        angle2_1 = temp;
-                    }
-
-                    if (angle2_2 < angle1_2)
-                    {
-                        double temp = angle1_2;
-                        angle1_2 = angle2_2;
-                        angle2_2 = temp;
-                    }
-
-                    if ((iangle1_1 < angle2_1) && (iangle1_1 > angle1_1) && (iangle1_2 < angle2_2) && (iangle1_2 > angle1_2))
+                    // Test if intersection 1 lies on arc
+                    if ((isBetween(angle1_1 , angle2_1, iangle1_1) && isBetween(angle1_2 , angle2_2, iangle1_2)))
                     {
                         if(((p1 - p1s).magnitude() > tol) &&
                            ((p1 - p1e).magnitude() > tol) &&
@@ -1680,7 +1661,8 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
                             out.append(p1);
                     }
 
-                    if ((iangle2_1 < angle2_1) && (iangle2_1 > angle1_1) && (iangle2_2 < angle2_2) && (iangle2_2 > angle1_2))
+                    // Test if intersection 1 lies on arc
+                    if (isBetween(angle1_1, angle2_1, iangle2_1) && isBetween(angle1_2, angle2_2, iangle2_2))
                     {
                         if(((p2 - p1s).magnitude() > tol) &&
                            ((p2 - p1e).magnitude() > tol) &&
@@ -1711,8 +1693,6 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
             double i2x = p1s.x + mu2*(dx);
             double i2y = p1s.y + mu2*(dy);
 
-            double dist1 = sqrt((center2.x-p1s.x)*(center2.x-p1s.x)+(center2.y-p1s.y)*(center2.y-p1s.y));
-            double dist2 = sqrt((center2.x-p1e.x)*(center2.x-p1e.x)+(center2.y-p1e.y)*(center2.y-p1e.y));
 
             Point p1(i1x, i1y);     // possible intersection point
             Point p2(i2x, i2y);     // possible intersection point
@@ -1736,61 +1716,19 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
             double iangle1 = (p1 - center2).angle();
             double iangle2 = (p2 - center2).angle();
 
-            bool isBetween1 = false;
-            bool isBetween2 = false;
-
-            if (angle_2 < angle_1)
-            {
-                double temp = angle_1;
-                angle_1 = angle_2;
-                angle_2 = temp;
-            }
-
-            // angle_1  3. quadrant, angle_2 2.quadrant
-            if ((angle_1 <= - M_PI_2) && (angle_2 >= M_PI_2))
-            {
-                if((iangle1 <= angle_1) || (iangle1 >= angle_2))
-                {
-                   isBetween1 =  true;
-                }
-                if((iangle2 <= angle_1) || (iangle2 >= angle_2))
-                {
-                   isBetween2 =  true;
-                }
-
-            } else
-            {
-                if((iangle1 >= angle_1) && (iangle1 <= angle_2))
-                {
-                   isBetween1 =  true;
-                }
-
-                if((iangle2 >= angle_1) && (iangle2 <= angle_2))
-                {
-                   isBetween2 =  true;
-                }
-            }
-
-
-//            if  ((bb4ac==0) && dist1 < radius2 && dist2 < radius2)
-//            {
-//                // 1 solution: tangent (bb4ac == 0)
-//                if ((p2s.angle() <= p1.angle()) && (p1.angle() <= p2e.angle()) && (p1 != p2s) && (p1 != p2e))
-//                    out.append(p1);
-//            }
-
-            if ((t2 >= 0) && (t2 <= 1))
-            {
-                // 1 solution: One Point in the circle
-                if (isBetween2 && ((p2 -  p2s).magnitude() > tol) && ((p2 - p2e).magnitude() > tol))
-                    out.append(p2);
-            }
 
             if ((t1 >= 0) && (t1 <= 1))
             {
                 // 1 solution: One Point in the circle
-                if (isBetween1 && ((p1 - p2s).magnitude() > tol) && ((p1 - p2e).magnitude() > tol))
+                if (isBetween(angle_1, angle_2, iangle1) && ((p1 - p2s).magnitude() > tol) && ((p1 - p2e).magnitude() > tol))
                     out.append(p1);
+            }
+
+            if ((t2 >= 0) && (t2 <= 1))
+            {
+                // 1 solution: One Point in the circle
+                if (isBetween(angle_1, angle_2, iangle2) && ((p2 -  p2s).magnitude() > tol) && ((p2 - p2e).magnitude() > tol))
+                    out.append(p2);
             }
         }
         else
@@ -1804,7 +1742,6 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
     }
     return out;
 }
-
 
 static CheckVersion *checkVersion = NULL;
 void checkForNewVersion(bool quiet)
