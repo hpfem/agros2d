@@ -1069,15 +1069,27 @@ void SceneView::paintGeometry()
     {
         foreach (SceneNode *node, m_scene->nodes)
         {
-            glColor3d(Util::config()->colorNodes.redF(),
-                      Util::config()->colorNodes.greenF(),
-                      Util::config()->colorNodes.blueF());
-            glPointSize(Util::config()->nodeSize);
+            // border
+            if (node->isError())
+            {
+                glColor3d(Util::config()->colorNotConnected.redF(),
+                          Util::config()->colorNotConnected.greenF(),
+                          Util::config()->colorNotConnected.blueF());
+                glPointSize(Util::config()->nodeSize + 2.0);
+            }
+            else
+            {
+                glColor3d(Util::config()->colorNodes.redF(),
+                          Util::config()->colorNodes.greenF(),
+                          Util::config()->colorNodes.blueF());
+                glPointSize(Util::config()->nodeSize);
+            }
 
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
             glEnd();
 
+            // inner part
             glColor3d(Util::config()->colorBackground.redF(),
                       Util::config()->colorBackground.greenF(),
                       Util::config()->colorBackground.blueF());
@@ -1089,16 +1101,7 @@ void SceneView::paintGeometry()
 
             if ((node->isSelected) || (node->isHighlighted) || node->isError())
             {
-
-                if (node->isError())
-                {
-                    glColor3d(Util::config()->colorNotConnected.redF(),
-                              Util::config()->colorNotConnected.greenF(),
-                              Util::config()->colorNotConnected.blueF());
-                    glPointSize(Util::config()->nodeSize + 2);
-                }
-                else
-                    glPointSize(Util::config()->nodeSize - 2.0);
+                glPointSize(Util::config()->nodeSize - 2.0);
 
                 if (node->isHighlighted)
                     glColor3d(Util::config()->colorHighlighted.redF(),
