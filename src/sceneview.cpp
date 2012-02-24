@@ -4348,7 +4348,7 @@ void SceneView::mouseReleaseEvent(QMouseEvent *event)
 
     emit mouseSceneModeChanged(MouseSceneMode_Nothing);
 
-    //updateGL();
+    updateGL();
 }
 
 void SceneView::mouseMoveEvent(QMouseEvent *event)

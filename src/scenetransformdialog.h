@@ -34,7 +34,7 @@ public:
 private slots:
     void doAccept();
     void doReject();
-    void doApply();
+    void doTransform();
 
 protected:
     void createControls();

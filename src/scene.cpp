@@ -855,14 +855,10 @@ void Scene::highlightNone()
         label->isHighlighted = false;
 }
 
-void Scene::transformTranslate(const Point &point, bool copy)
+void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
 {
-    logMessage("Scene::transformTranslate()");
-
-    // clear solution
-    m_sceneSolution->clear();
-
-    m_undoStack->beginMacro(tr("Translation"));
+    QList<SceneEdge *> selectedEdges;
+    QList<QPair<double, SceneNode *> > selectedNodes;
 
     foreach (SceneEdge *edge, edges)
     {
@@ -870,77 +866,86 @@ void Scene::transformTranslate(const Point &point, bool copy)
         {
             edge->nodeStart->isSelected = true;
             edge->nodeEnd->isSelected = true;
+            selectedEdges.append(edge);
         }
     }
-
-    // list of pairs (value of Park transformation and node)
-    QList<QPair<double, SceneNode *> > pairList;
-    QPair<double, SceneNode *> pair;
 
     foreach (SceneNode *node, nodes)
     {
         if (node->isSelected)
         {
+            QPair<double, SceneNode *> pair;
+
+            Point newPoint;
+            if (mode == SceneTransformMode_Translate)
+            {
+                newPoint = node->point + point;
+            }
+            else if (mode == SceneTransformMode_Rotate)
+            {
+                double distanceNode = (node->point - point).magnitude();
+                double angleNode = (node->point - point).angle()/M_PI*180;
+
+                newPoint = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
+            }
+            else if (mode == SceneTransformMode_Scale)
+            {
+                newPoint = point + (node->point - point) * scaleFactor;
+            }
+
+            SceneNode *obstructNode = getNode(newPoint);
+            if (obstructNode && !obstructNode->isSelected)
+                return;
+
             // Park transformation - projection of the point vector to the real axis of the displacement vector
             pair.first = node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
             pair.second = node;
-            pairList.append(pair);
+            selectedNodes.append(pair);
         }
     }
 
-    // sort of pairList
-    qSort(pairList.begin(), pairList.end(), qGreater<QPair<double, SceneNode *> >());
+    qSort(selectedNodes.begin(), selectedNodes.end(), qGreater<QPair<double, SceneNode *> >());
 
-    for (int i = 0; i < pairList.count(); i++)
+    for (int i = 0; i < selectedNodes.count(); i++)
     {
-        SceneNode *node = pairList[i].second;
+        SceneNode *node = selectedNodes[i].second;
 
-        if (node->isSelected)
+        Point newPoint;
+        if (mode == SceneTransformMode_Translate)
         {
-            Point pointNew = node->point + point;
-            if (!copy)
-            {
-                if (!getNode(pointNew))
-                {
-                    m_undoStack->push(new SceneNodeCommandEdit(node->point, pointNew));
-                    node->point = pointNew;
-                }
-            }
-            else
-            {
-                SceneNode *nodeNew = new SceneNode(pointNew);
-                SceneNode *nodeAdded = addNode(nodeNew);
-                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
-            }
+            newPoint = node->point + point;
+        }
+        else if (mode == SceneTransformMode_Rotate)
+        {
+            double distanceNode = (node->point - point).magnitude();
+            double angleNode = (node->point - point).angle()/M_PI*180;
+
+            newPoint = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
+        }
+        else if (mode == SceneTransformMode_Scale)
+        {
+            newPoint = point + (node->point - point) * scaleFactor;
+        }
+
+        if (!copy)
+        {
+            m_undoStack->push(new SceneNodeCommandEdit(node->point, newPoint));
+            node->point = newPoint;
+        }
+        else
+        {
+            SceneNode *nodeNew = new SceneNode(newPoint);
+            SceneNode *nodeAdded = addNode(nodeNew);
+
+            if (nodeAdded == nodeNew)
+                m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
+
+            nodeAdded->isSelected = true;
+            node->isSelected = false;
         }
     }
 
-    // clear lists of pairs
-    pairList.clear();
-
-    foreach (SceneLabel *label, labels)
-    {
-        if (label->isSelected)
-        {
-            Point pointNew = label->point + point;
-            if (!copy)
-            {
-                if (!getLabel(pointNew))
-                {
-                    m_undoStack->push(new SceneLabelCommandEdit(label->point, pointNew));
-                    label->point = pointNew;
-                }
-            }
-            else
-            {
-                SceneLabel *labelNew = new SceneLabel(pointNew, label->material, label->area, label->polynomialOrder);
-                SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->material->name, labelNew->area, label->polynomialOrder));
-            }
-        }
-    }
-
-    foreach(SceneEdge *edge, edges)
+    foreach (SceneEdge *edge, selectedEdges)
     {
         if (edge->isSelected)
         {
@@ -950,8 +955,103 @@ void Scene::transformTranslate(const Point &point, bool copy)
         }
     }
 
-    m_undoStack->endMacro();
+    selectedNodes.clear();
+    selectedEdges.clear();
+}
 
+void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+{
+    QList<QPair<double, SceneLabel *> > selectedLabels;
+
+    foreach (SceneLabel *label, labels)
+    {
+        if (label->isSelected)
+        {
+            QPair<double, SceneLabel *> pair;
+
+            Point newPoint;
+            if (mode == SceneTransformMode_Translate)
+            {
+                newPoint = label->point + point;
+            }
+            else if (mode == SceneTransformMode_Rotate)
+            {
+                double distanceLabel = (label->point - point).magnitude();
+                double angleLabel = (label->point - point).angle()/M_PI*180;
+
+                newPoint = point + Point(distanceLabel * cos((angleLabel + angle)/180.0*M_PI), distanceLabel * sin((angleLabel + angle)/180.0*M_PI));
+            }
+            else if (mode == SceneTransformMode_Scale)
+            {
+                newPoint = point + (label->point - point) * scaleFactor;
+            }
+
+            SceneLabel *obstructLabel = getLabel(newPoint);
+            if (obstructLabel && !obstructLabel->isSelected)
+                return;
+
+            // Park transformation - projection of the point vector to the real axis of the displacement vector
+            pair.first = label->point.x * cos(point.angle()) + label->point.y * sin(point.angle());
+            pair.second = label;
+            selectedLabels.append(pair);
+        }
+    }
+
+    qSort(selectedLabels.begin(), selectedLabels.end(), qGreater<QPair<double, SceneLabel *> >());
+
+    for (int i = 0; i < selectedLabels.count(); i++)
+    {
+        SceneLabel *label = selectedLabels[i].second;
+
+        Point newPoint;
+        if (mode == SceneTransformMode_Translate)
+        {
+            newPoint = label->point + point;
+        }
+        else if (mode == SceneTransformMode_Rotate)
+        {
+            double distanceLabel = (label->point - point).magnitude();
+            double angleLabel = (label->point - point).angle()/M_PI*180;
+
+            newPoint = point + Point(distanceLabel * cos((angleLabel + angle)/180.0*M_PI), distanceLabel * sin((angleLabel + angle)/180.0*M_PI));
+        }
+        else if (mode == SceneTransformMode_Scale)
+        {
+            newPoint = point + (label->point - point) * scaleFactor;
+        }
+
+        if (!copy)
+        {
+            m_undoStack->push(new SceneLabelCommandEdit(label->point, newPoint));
+            label->point = newPoint;
+        }
+        else
+        {
+            SceneLabel *labelNew = new SceneLabel(newPoint, label->material, label->area, label->polynomialOrder);
+            SceneLabel *labelAdded = addLabel(labelNew);
+
+            if (labelAdded == labelNew)
+                m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->material->name, labelNew->area, label->polynomialOrder));
+
+            labelAdded->isSelected = true;
+            label->isSelected = false;
+        }
+    }
+
+    selectedLabels.clear();
+}
+
+void Scene::transformTranslate(const Point &point, bool copy)
+{
+    logMessage("Scene::transformTranslate()");
+
+    m_sceneSolution->clear();
+    m_undoStack->beginMacro(tr("Translation"));
+
+    moveSelectedNodes(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
+    moveSelectedLabels(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
+
+    m_undoStack->endMacro();
     emit invalidated();
 }
 
@@ -959,70 +1059,13 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
 {
     logMessage("Scene::transformRotate()");
 
-    // clear solution
     m_sceneSolution->clear();
-
     m_undoStack->beginMacro(tr("Rotation"));
 
-    foreach (SceneEdge *edge, edges)
-    {
-        if (edge->isSelected)
-        {
-            edge->nodeStart->isSelected = true;
-            edge->nodeEnd->isSelected = true;
-        }
-    }
-
-    foreach (SceneNode *node, nodes)
-        if (node->isSelected)
-        {
-            double distanceNode = (node->point - point).magnitude();
-            double angleNode = (node->point - point).angle()/M_PI*180;
-
-            Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
-            if (!copy)
-            {
-                node->point = pointNew;
-            }
-            else
-            {
-                SceneNode *nodeNew = new SceneNode(pointNew);
-                SceneNode *nodeAdded = addNode(nodeNew);
-                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
-            }
-        }
-
-    foreach (SceneLabel *label, labels)
-        if (label->isSelected)
-        {
-            double distanceNode = (label->point - point).magnitude();
-            double angleNode = (label->point - point).angle()/M_PI*180;
-
-            Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
-            if (!copy)
-            {
-                label->point = pointNew;
-            }
-            else
-            {
-                SceneLabel *labelNew = new SceneLabel(pointNew, label->material, label->area, label->polynomialOrder);
-                SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->material->name, labelNew->area, labelNew->polynomialOrder));
-            }
-        }
-
-    foreach(SceneEdge *edge, edges)
-    {
-        if (edge->isSelected)
-        {
-            edge->nodeStart->isSelected = false;
-            edge->nodeEnd->isSelected = false;
-            this->checkEdge(edge);
-        }
-    }
+    moveSelectedNodes(SceneTransformMode_Rotate, point, angle, 0.0, copy);
+    moveSelectedLabels(SceneTransformMode_Rotate, point, angle, 0.0, copy);
 
     m_undoStack->endMacro();
-
     emit invalidated();
 }
 
@@ -1030,65 +1073,13 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 {
     logMessage("Scene::transformScale()");
 
-    // clear solution
     m_sceneSolution->clear();
-
     m_undoStack->beginMacro(tr("Scale"));
 
-    foreach (SceneEdge *edge, edges)
-    {
-        if (edge->isSelected)
-        {
-            edge->nodeStart->isSelected = true;
-            edge->nodeEnd->isSelected = true;
-        }
-    }
+    moveSelectedNodes(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
+    moveSelectedLabels(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
 
-    foreach (SceneNode *node, nodes)
-        if (node->isSelected)
-        {
-            Point pointNew = point + (node->point - point) * scaleFactor;
-            if (!copy)
-            {
-                node->point = pointNew;
-            }
-            else
-            {
-                SceneNode *nodeNew = new SceneNode(pointNew);
-                SceneNode *nodeAdded = addNode(nodeNew);
-                if (nodeAdded == nodeNew) m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
-            }
-        }
-
-    foreach (SceneLabel *label, labels)
-        if (label->isSelected)
-        {
-            Point pointNew = point + (label->point - point) * scaleFactor;
-            if (!copy)
-            {
-                label->point = pointNew;
-            }
-            else
-            {
-                SceneLabel *labelNew = new SceneLabel(pointNew, label->material, label->area, label->polynomialOrder);
-                SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->material->name, labelNew->area, labelNew->polynomialOrder));
-            }
-        }
-
-    foreach(SceneEdge *edge, edges)
-    {
-        if (edge->isSelected)
-        {
-            edge->nodeStart->isSelected = false;
-            edge->nodeEnd->isSelected = false;
-            this->checkEdge(edge);
-        }
-    }
-
-    // ToDo: Zdá se, že nefunguje UNDO pro změnu měřítka.
     m_undoStack->endMacro();
-
     emit invalidated();
 }
 
