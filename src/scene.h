@@ -197,8 +197,8 @@ public:
     void highlightNone();
     void deleteSelected();
 
-    void moveSelectedNodes(Point diference, bool copy);
-    void moveSelectedLabels(Point diference, bool copy);
+    void moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
+    void moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     void transformTranslate(const Point &point, bool copy);
     void transformRotate(const Point &point, double angle, bool copy);
     void transformScale(const Point &point, double scaleFactor, bool copy);
