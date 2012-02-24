@@ -939,6 +939,9 @@ void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
 
             if (nodeAdded == nodeNew)
                 m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
+
+            nodeAdded->isSelected = true;
+            node->isSelected = false;
         }
     }
 
@@ -1029,6 +1032,9 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
 
             if (labelAdded == labelNew)
                 m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->material->name, labelNew->area, label->polynomialOrder));
+
+            labelAdded->isSelected = true;
+            label->isSelected = false;
         }
     }
 
