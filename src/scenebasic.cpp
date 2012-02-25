@@ -47,7 +47,7 @@ SceneNode::SceneNode(const Point &point) : SceneBasic()
 {
     logMessage("SceneNode::SceneNode()");
 
-    this->point = point;    
+    this->point = point;
 }
 
 double SceneNode::distance(const Point &point) const
@@ -82,8 +82,8 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *ma
     : SceneBasic()
 {
     logMessage("SceneEdge::SceneEdge()");
-    this->nodeStart = nodeStart;    
-    this->nodeEnd = nodeEnd;    
+    this->nodeStart = nodeStart;
+    this->nodeEnd = nodeEnd;
     this->boundary = marker;
     this->angle = angle;
     this->refineTowardsEdge = refineTowardsEdge;
