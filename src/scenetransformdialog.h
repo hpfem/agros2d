@@ -32,8 +32,7 @@ public:
     SceneTransformDialog(QWidget *parent = 0);
 
 private slots:
-    void doAccept();
-    void doReject();
+    void doClose();
     void doTransform();
 
 protected:

@@ -855,7 +855,7 @@ void Scene::highlightNone()
         label->isHighlighted = false;
 }
 
-void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
 {
     QList<SceneEdge *> selectedEdges;
     QList<QPair<double, SceneNode *> > selectedNodes;
@@ -904,6 +904,7 @@ void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
         }
     }
 
+    // sort selected nodes
     qSort(selectedNodes.begin(), selectedNodes.end(), qGreater<QPair<double, SceneNode *> >());
 
     for (int i = 0; i < selectedNodes.count(); i++)
@@ -952,6 +953,51 @@ void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
             edge->nodeStart->isSelected = false;
             edge->nodeEnd->isSelected = false;
             this->checkEdge(edge);
+
+            // add new edge
+            if (copy)
+            {
+                Point newPointStart;
+                Point newPointEnd;
+                if (mode == SceneTransformMode_Translate)
+                {
+                    newPointStart = edge->nodeStart->point + point;
+                    newPointEnd = edge->nodeEnd->point + point;
+                }
+                else if (mode == SceneTransformMode_Rotate)
+                {
+                    double distanceNodeStart = (edge->nodeStart->point - point).magnitude();
+                    double angleNodeStart = (edge->nodeStart->point - point).angle()/M_PI*180;
+
+                    newPointStart = point + Point(distanceNodeStart * cos((angleNodeStart + angle)/180.0*M_PI), distanceNodeStart * sin((angleNodeStart + angle)/180.0*M_PI));
+
+                    double distanceNodeEnd = (edge->nodeEnd->point - point).magnitude();
+                    double angleNodeEnd = (edge->nodeEnd->point - point).angle()/M_PI*180;
+
+                    newPointEnd = point + Point(distanceNodeEnd * cos((angleNodeEnd + angle)/180.0*M_PI), distanceNodeEnd * sin((angleNodeEnd + angle)/180.0*M_PI));
+                }
+                else if (mode == SceneTransformMode_Scale)
+                {
+                    newPointStart = point + (edge->nodeStart->point - point) * scaleFactor;
+                    newPointEnd = point + (edge->nodeEnd->point - point) * scaleFactor;
+                }
+
+                // add new edge
+                SceneNode *newNodeStart = getNode(newPointStart);
+                SceneNode *newNodeEnd = getNode(newPointEnd);
+                if (newNodeStart && newNodeEnd)
+                {
+                    SceneEdge *newEdge = new SceneEdge(newNodeStart, newNodeEnd,
+                                                       edge->boundary, edge->angle, edge->refineTowardsEdge);
+                    addEdge(newEdge);
+
+                    m_undoStack->push(new SceneEdgeCommandAdd(newEdge->nodeStart->point,
+                                                              newEdge->nodeEnd->point,
+                                                              newEdge->boundary->name,
+                                                              newEdge->angle,
+                                                              newEdge->refineTowardsEdge));
+                }
+            }
         }
     }
 
@@ -1048,7 +1094,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
     m_sceneSolution->clear();
     m_undoStack->beginMacro(tr("Translation"));
 
-    moveSelectedNodes(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
+    moveSelectedNodesAndEdges(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
     moveSelectedLabels(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
 
     m_undoStack->endMacro();
@@ -1062,7 +1108,7 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
     m_sceneSolution->clear();
     m_undoStack->beginMacro(tr("Rotation"));
 
-    moveSelectedNodes(SceneTransformMode_Rotate, point, angle, 0.0, copy);
+    moveSelectedNodesAndEdges(SceneTransformMode_Rotate, point, angle, 0.0, copy);
     moveSelectedLabels(SceneTransformMode_Rotate, point, angle, 0.0, copy);
 
     m_undoStack->endMacro();
@@ -1076,7 +1122,7 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
     m_sceneSolution->clear();
     m_undoStack->beginMacro(tr("Scale"));
 
-    moveSelectedNodes(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
+    moveSelectedNodesAndEdges(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
     moveSelectedLabels(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
 
     m_undoStack->endMacro();

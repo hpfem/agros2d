@@ -89,10 +89,9 @@ void SceneTransformDialog::createControls()
     chkCopy = new QCheckBox(tr("Copy objects"));
 
     // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Apply | QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Apply | QDialogButtonBox::Close);
     connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(doTransform()));
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doClose()));
 
     // tab widget
     tabWidget = new QTabWidget();
@@ -109,19 +108,11 @@ void SceneTransformDialog::createControls()
     setLayout(layout);
 }
 
-void SceneTransformDialog::doAccept()
+void SceneTransformDialog::doClose()
 {
-    logMessage("SceneTransformDialog::doAccept()");
+    logMessage("SceneTransformDialog::doClose()");
 
-    doTransform();
-    accept();
-}
-
-void SceneTransformDialog::doReject()
-{
-    logMessage("SceneTransformDialog::doReject()");
-
-    reject();
+    close();
 }
 
 void SceneTransformDialog::doTransform()
