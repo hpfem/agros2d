@@ -1161,6 +1161,7 @@ void setGUIStyle(const QString &styleName)
 void setLanguage(const QString &locale)
 {
     logMessage("setLanguage()");
+    // qDebug() << "Locale: " << locale;
 
     // non latin-1 chars
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
@@ -1168,7 +1169,7 @@ void setLanguage(const QString &locale)
     QTranslator *qtTranslator = new QTranslator();
     QTranslator *appTranslator = new QTranslator();
 
-    QString country = locale.section('_',0,0);
+    QString country = locale.section('_', 0, 0);
     if (QFile::exists(QLibraryInfo::location(QLibraryInfo::TranslationsPath) + "/qt_" + country + ".qm"))
         qtTranslator->load(QLibraryInfo::location(QLibraryInfo::TranslationsPath) + "/qt_" + country + ".qm");
     else if (QFile::exists(datadir() + "/lang/qt_" + country + ".qm"))
@@ -1419,7 +1420,7 @@ void logOutput(QtMsgType type, const char *msg)
     // string
     fprintf(stderr, "%s\n", str.toStdString().c_str());
 
-    if (Util::config()->enabledApplicationLog)
+    if (Util::singleton() && Util::config()->enabledApplicationLog)
     {
         QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
         QDir("/").mkpath(location);
