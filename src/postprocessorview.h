@@ -42,28 +42,27 @@ private:
     SceneViewPost2D *m_scenePost2D;
     SceneViewPost3D *m_scenePost3D;
 
-    QWidget *basic;
     QWidget *postprocessor;
     QWidget *workspace;
 
     // basic
+    QComboBox *cmbFieldInfo;
+
     // show
-    QCheckBox *chkShowGeometry;
-    QCheckBox *chkShowInitialMesh;
+    QCheckBox *chkShowInitialMeshView;
+    QCheckBox *chkShowSolutionMeshView;
+    QCheckBox *chkShowContourView;
+    QCheckBox *chkShowScalarView;
+    QCheckBox *chkShowOrderView;
+    QCheckBox *chkShowVectorView;
+    QCheckBox *chkShowParticleView;
 
-    QButtonGroup *butPostprocessorGroup;
-    QRadioButton *radPostprocessorNone;
-    QRadioButton *radPostprocessorScalarField;
-    QRadioButton *radPostprocessorScalarField3D;
-    QRadioButton *radPostprocessorScalarField3DSolid;
-    QRadioButton *radPostprocessorModel;
-    QRadioButton *radPostprocessorParticleTracing3D;
-    QRadioButton *radPostprocessorOrder;
-
-    QCheckBox *chkShowContours;
-    QCheckBox *chkShowVectors;
-    QCheckBox *chkShowParticleTracing;
-    QCheckBox *chkShowSolutionMesh;
+    QButtonGroup *butPost3DGroup;
+    QRadioButton *radPost3DNone;
+    QRadioButton *radPost3DScalarField3D;
+    QRadioButton *radPost3DScalarField3DSolid;
+    QRadioButton *radPost3DModel;
+    QRadioButton *radPost3DParticleTracing;
 
     // scalar field
     QComboBox *cmbScalarFieldVariable;
@@ -114,6 +113,7 @@ private:
     QSpinBox *txtScalarDecimalPlace;
 
     // contours
+    QComboBox *cmbContourVariable;
     QSpinBox *txtContoursCount;
 
     // vector field
@@ -170,8 +170,7 @@ private:
     void saveAdvanced();
 
     void createControls();
-    QWidget *controlsBasic();
-    QWidget *controlsPosprocessor();
+    QWidget *controlsPostprocessor();
     QWidget *controlsWorkspace();
 
 signals:
@@ -182,6 +181,7 @@ public slots:
     void setControls();
 
 private slots:
+    void doFieldInfo(int index);
     void doScalarFieldVariable(int index);
     void doScalarFieldVariableComp(int index);
     void doScalarFieldRangeAuto(int state);

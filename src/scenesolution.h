@@ -27,31 +27,17 @@ class Scene;
 class SceneMaterial;
 
 template <typename Scalar>
-class ViewScalarFilter;
-
-template <typename Scalar>
 struct SolutionArray;
 
 class FieldInfo;
 
-class SceneSolutionQT : public QObject
-{
-    Q_OBJECT
-
-signals:
-    void processedSolutionMesh();
-    void processedRangeContour();
-    void processedRangeScalar();
-    void processedRangeVector();
-
-
-};
-
+int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point);
+int findElementInVectorizer(Hermes::Hermes2D::Views::Vectorizer &vecVectorView, const Point &point);
 
 /// TODO in the future, this class should only encapsulate solution and provide methods for its visualisation
 /// all code related to meshing and solving should be moved to Problem, Block and Field
 template <typename Scalar>
-class SceneSolution : public SceneSolutionQT, Hermes::Hermes2D::Solution<Scalar>
+class SceneSolution : public Hermes::Hermes2D::Solution<Scalar>
 {
 public:
     SceneSolution(FieldInfo* fieldInfo);
@@ -77,69 +63,9 @@ public:
     void setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> > solutionArrayList);
     inline Hermes::vector<SolutionArray<Scalar> > solutionArrayList() { return m_solutionArrayList; }
 
-    // mesh
-    inline Hermes::Hermes2D::Views::Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
-    inline Hermes::Hermes2D::Views::Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
-    Hermes::Hermes2D::Mesh* meshInitial() { return m_meshInitial; }
-    void setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial);
-
-
-    // contour
-    inline ViewScalarFilter<Scalar> *slnContourView() { return m_slnContourView; }
-    void setSlnContourView(ViewScalarFilter<Scalar> *slnScalarView);
-    inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
-
-    // scalar view
-    inline ViewScalarFilter<Scalar> *slnScalarView() { return m_slnScalarView; }
-    void setSlnScalarView(ViewScalarFilter<Scalar> *slnScalarView);
-    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
-
-    // vector view
-    void setSlnVectorView(ViewScalarFilter<Scalar> *slnVectorXView, ViewScalarFilter<Scalar> *slnVectorYView);
-    inline ViewScalarFilter<Scalar> *slnVectorViewX() { return m_slnVectorXView; }
-    inline ViewScalarFilter<Scalar> *slnVectorViewY() { return m_slnVectorYView; }
-    inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
-
-    // order view
-    void setOrderView(shared_ptr<Hermes::Hermes2D::Space<Scalar> > space);
-    Hermes::Hermes2D::Views::Orderizer &ordView() { return m_orderView; }
-
-    int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point) const;
-    int findElementInVectorizer(Hermes::Hermes2D::Views::Vectorizer &vecVectorView, const Point &point) const;
-
-    // process
-    void processView(bool showViewProgress);
-    void processSolutionMesh();
-    void processRangeContour();
-    void processRangeScalar();
-    void processRangeVector();
-    void processOrder();
-
-
 private:
     // general solution array
     Hermes::vector<SolutionArray<Scalar> > m_solutionArrayList;
-
-    // mesh
-    Hermes::Hermes2D::Views::Linearizer m_linSolutionMeshView;
-    Hermes::Hermes2D::Views::Linearizer m_linInitialMeshView;
-    Hermes::Hermes2D::Mesh* m_meshInitial;
-
-    // contour
-    ViewScalarFilter<Scalar> *m_slnContourView; // scalar view solution
-    Hermes::Hermes2D::Views::Linearizer m_linContourView;
-
-    // scalar view
-    ViewScalarFilter<Scalar> *m_slnScalarView; // scalar view solution
-    Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
-
-    // vector view
-    ViewScalarFilter<Scalar> *m_slnVectorXView; // vector view solution - x
-    ViewScalarFilter<Scalar> *m_slnVectorYView; // vector view solution - y
-    Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
-
-    // order view
-    Hermes::Hermes2D::Views::Orderizer m_orderView;
 
     FieldInfo* m_fieldInfo;
 };

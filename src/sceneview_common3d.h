@@ -22,9 +22,9 @@
 
 #include <QGLWidget>
 
-#include "sceneview_common.h"
+#include "sceneview_post.h"
 
-class SceneViewCommon3D : public SceneViewCommon
+class SceneViewCommon3D : public SceneViewPostInterface
 {
     Q_OBJECT
 
@@ -35,7 +35,6 @@ public slots:
     void doSetProjectionXZ();
     void doSetProjectionYZ();
 
-    void doInvalidated();
 public:
     SceneViewCommon3D(QWidget *parent = 0);
     ~SceneViewCommon3D();

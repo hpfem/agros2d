@@ -100,15 +100,12 @@ void Block::solve()
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
-        Util::scene()->sceneSolution(fieldInfo)->setMeshInitial(Util::problem()->meshInitial());
-
         // contains solution arrays for all components of the field
         QList<SolutionArray<double> > solutionArrays;
 
         for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
         {
             solutionArrays.push_back(m_solutionList->at(component + offset(field)));
-
         }
 
         // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
@@ -118,8 +115,6 @@ void Block::solve()
         // internal storage, should be rewriten
         //TODO
         parentProblem()->saveSolution(fieldInfo, 0, 0, solutionArrays);
-
-
     }
 }
 
@@ -127,7 +122,7 @@ int Block::numSolutions() const
 {
     int num = 0;
 
-    foreach(Field* field, m_fields)
+    foreach (Field *field, m_fields)
     {
         num += field->fieldInfo()->module()->number_of_solution();
     }
@@ -215,6 +210,8 @@ Problem::Problem()
     m_timeStep = 0;
     m_isSolved = false;
     m_isSolving = false;
+
+    m_meshInitial = NULL; //TODO move to field
 //    m_progressDialog = new ProgressDialog();
 //    m_progressItemMesh = new ProgressItemMesh();
 //    m_progressItemSolve = new ProgressItemSolve();
@@ -321,12 +318,6 @@ void Problem::mesh()
     pim->mesh();
 }
 
-void Problem::postprocess()
-{
-    ProgressItemProcessView* pipv = new ProgressItemProcessView();
-    pipv->run();
-}
-
 void Problem::solve(SolverMode solverMode)
 {
     logMessage("SceneSolution::solve()");
@@ -381,17 +372,14 @@ void Problem::solve(SolverMode solverMode)
     Util::scene()->createSolutions();
 
     assert(isMeshed());
-    if (isMeshed())
-    {
-        InitialCondition<double> initial(m_meshInitial, 0.0);
-        Util::scene()->activeSceneSolution()->linInitialMeshView().process_solution(&initial);
-    }
 
-
-    foreach(Block* block, m_blocks)
+    if (solverMode == SolverMode_MeshAndSolve)
     {
-        block->solveInit();
-        block->solve();
+        foreach (Block* block, m_blocks)
+        {
+            block->solveInit();
+            block->solve();
+        }
     }
 
     // delete temp file
@@ -401,17 +389,16 @@ void Problem::solve(SolverMode solverMode)
         Util::scene()->problemInfo()->fileName = "";
     }
 
-
     // close indicator progress
     Indicator::closeProgress();
 
     m_isSolving = false;
-    m_isSolved = true;
-    emit solved();
-    emit timeStepChanged(false);
-
-    postprocess();
-
+    if (solverMode == SolverMode_MeshAndSolve)
+    {
+        m_isSolved = true;
+        emit solved();
+        emit timeStepChanged(false);
+    }
 }
 
 ProgressDialog* Problem::progressDialog()

@@ -733,9 +733,10 @@ void Hermes::Module::Module::read(std::string filename)
         }
 
         // custom local variable
-        Hermes::Module::LocalVariable *customLocalVariable = new Hermes::Module::LocalVariable("custom", "Custom", "custom", "-");
-        customLocalVariable->expression.scalar = "value1";
-        view_scalar_variables.push_back(customLocalVariable);
+        //TODO
+        //Hermes::Module::LocalVariable *customLocalVariable = new Hermes::Module::LocalVariable("custom", "Custom", "custom", "-");
+        //customLocalVariable->expression.scalar = "value1";
+        //view_scalar_variables.push_back(customLocalVariable);
 
         // scalar variables
         rapidxml::xml_node<> *view = doc.first_node("module")->first_node("postprocessor")->first_node("view");

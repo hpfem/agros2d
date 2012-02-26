@@ -25,6 +25,7 @@
 class SceneViewPost2D;
 class SceneViewPost3D;
 class SceneViewGeometry;
+class SceneViewMesh;
 class SceneInfoView;
 class ResultsView;
 class VolumeIntegralValueView;
@@ -77,8 +78,9 @@ private slots:
     void doViewQuick2DScalarView();
     void doViewQuick3DScalarView();
     void doViewQuick3DScalarViewSolid();
+    void doViewQuick3DParticleTracing();
     void doViewQuick3DModel();
-    void doViewQuick(SceneViewPostprocessorShow show);
+    void doViewQuick();
     void doSceneMouseMoved(const QPointF &position);
     void doMouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
@@ -215,6 +217,7 @@ private:
     QActionGroup *actSceneModeGroup;
 
     SceneViewGeometry *sceneViewGeometry;
+    SceneViewMesh *sceneViewMesh;
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
     SceneInfoView *sceneInfoView;
@@ -231,10 +234,7 @@ private:
     LogDialog *logDialog;
     ServerDownloadDialog *collaborationDownloadDialog;
 
-    QStackedWidget *tabView;
-    QWidget *widgetViewGeometry;
-    QWidget *widgetViewPost2D;
-    QWidget *widgetViewPost3D;
+    QStackedLayout *tabLayout;
 
     void setRecentFiles();
 

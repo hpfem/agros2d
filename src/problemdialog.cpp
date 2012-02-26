@@ -399,7 +399,7 @@ void CouplingsWidget::createContent()
 {
     int minWidth = 130;
 
-    if(layoutTable)
+    if (layoutTable)
     {
         save();
         delete layoutTable;
@@ -414,7 +414,6 @@ void CouplingsWidget::createContent()
     int line = 0;
     foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
     {
-//        cout << "adding coupling box " << couplingInfo->coupling()->name << endl;
         layoutTable->addWidget(new QLabel(/*tr(*/QString::fromStdString(couplingInfo->coupling()->name)/*)*/), line, 0);
         m_comboBoxes[couplingInfo] = new QComboBox();
         layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
@@ -484,7 +483,7 @@ FieldTabWidget::FieldTabWidget(QWidget *parent,  QMap<QString, FieldInfo *> fiel
 
 void FieldTabWidget::updateCouplingTab()
 {
-    if(m_haveCouplingsTab)
+    if (m_haveCouplingsTab)
     {
         if (m_couplingInfos.size()){
         }

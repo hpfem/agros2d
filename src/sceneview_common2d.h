@@ -22,9 +22,9 @@
 
 #include <QGLWidget>
 
-#include "sceneview_common.h"
+#include "sceneview_post.h"
 
-class SceneViewCommon2D : public SceneViewCommon
+class SceneViewCommon2D : public SceneViewPostInterface
 {
     Q_OBJECT
 
@@ -71,18 +71,8 @@ protected:
     void paintRulers(); // paint rulers
     void paintRulersHints();
 
-    void paintInitialMesh();
-
-    inline Point position(double x, double y) const
-    {
-        return position(Point(x, y));
-    }
-
-    inline Point position(const Point &point) const
-    {
-        return Point((2.0/contextWidth()*point.x-1)/m_scale2d*aspect()+m_offset2d.x,
-                     -(2.0/contextHeight()*point.y-1)/m_scale2d+m_offset2d.y);
-    }
+    inline Point position(double x, double y) const { return position(Point(x, y)); }
+    Point position(const Point &point) const;
 
 private:
 };

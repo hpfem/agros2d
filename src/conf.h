@@ -49,8 +49,6 @@ public:
     double nodeSize;
     double edgeWidth;
     double labelSize;
-    int angleSegmentsCount;
-    bool curvilinearElements;
 
     // font
     QFont sceneFont;
@@ -61,6 +59,12 @@ public:
     // delete files
     bool deleteTriangleMeshFiles;
     bool deleteHermes2DMeshFile;
+
+    // mesh
+    bool showInitialMeshView;
+    bool showSolutionMeshView;
+    int angleSegmentsCount;
+    bool curvilinearElements;
 
     // grid
     bool showGrid;
@@ -73,25 +77,43 @@ public:
     // label
     bool showLabel;
 
+    QString activeField;
+
     // linearizer quality
     double linearizerQuality;
 
+    // post3d
+    SceneViewPost3DShow showPost3D;
+
     // contour
+    bool showContourView;
+    QString contourVariable;
     int contoursCount;
 
     // scalar view
+    bool showScalarView;
+    QString scalarVariable;
+    PhysicFieldVariableComp scalarVariableComp;
+    // QString scalarVariable3D;
+    // PhysicFieldVariableComp scalarVariable3DComp;
+    bool scalarRangeAuto;
+    double scalarRangeMin;
+    double scalarRangeMax;
     bool scalarRangeLog;
     double scalarRangeBase;
     int scalarDecimalPlace;
 
     // vector view
+    bool showVectorView;
+    QString vectorVariable;
     bool vectorProportional;
     bool vectorColor;
     int vectorCount;
     double vectorScale;
 
     // order view
-    bool showOrderScale;
+    bool showOrderView;
+    bool showOrderColorBar;
     PaletteOrderType orderPaletteOrderType;
     bool orderLabel;
 
@@ -107,7 +129,7 @@ public:
     double scalarView3DHeight;
 
     // palette
-    bool showScalarScale;
+    bool showScalarColorBar;
     PaletteType paletteType;
     int paletteSteps;
     bool paletteFilter;
@@ -116,6 +138,7 @@ public:
     bool showRulers;
 
     // particle tracing
+    bool showParticleView;
     bool particleIncludeGravitation;
     double particleMass;
     double particleConstant;
@@ -183,9 +206,11 @@ private:
     bool readConfig(const QString &key, bool defaultValue);
     int readConfig(const QString &key, int defaultValue);
     double readConfig(const QString &key, double defaultValue);
+    QString readConfig(const QString &key, const QString &defaultValue);
     void writeConfig(const QString &key, bool value);
     void writeConfig(const QString &key, int value);
     void writeConfig(const QString &key, double value);
+    void writeConfig(const QString &key, const QString &value);
 };
 
 #endif // CONFIG_H

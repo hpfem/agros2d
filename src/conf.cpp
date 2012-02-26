@@ -102,16 +102,16 @@ void Config::loadWorkspace()
     colorNotConnected = settings.value("SceneViewSettings/ColorCrossed", COLORNOTCONNECTED).value<QColor>();
 
     // geometry
-    nodeSize = settings.value("SceneViewSettings/NodeSize", 6.0).toDouble();
-    edgeWidth = settings.value("SceneViewSettings/EdgeWidth", 2.0).toDouble();
-    labelSize = settings.value("SceneViewSettings/LabelSize", 6.0).toDouble();
+    nodeSize = settings.value("SceneViewSettings/NodeSize", GEOMETRYNODESIZE).toDouble();
+    edgeWidth = settings.value("SceneViewSettings/EdgeWidth", GEOMETRYEDGEWIDTH).toDouble();
+    labelSize = settings.value("SceneViewSettings/LabelSize", GEOMETRYLABELSIZE).toDouble();
 
     // font
     sceneFont = settings.value("SceneViewSettings/SceneFont", FONT).value<QFont>();
 
     // mesh
-    angleSegmentsCount = settings.value("SceneViewSettings/AngleSegmentsCount", 3).toInt();
-    curvilinearElements = settings.value("SceneViewSettings/CurvilinearElements", true).toBool();
+    angleSegmentsCount = settings.value("SceneViewSettings/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT).toInt();
+    curvilinearElements = settings.value("SceneViewSettings/MeshCurvilinearElements", MESHCURVILINEARELEMENTS).toBool();
 
     // grid
     showGrid = settings.value("SceneViewSettings/ShowGrid", SHOWGRID).toBool();
@@ -145,33 +145,56 @@ void Config::loadWorkspace()
 
 void Config::loadPostprocessor(QDomElement *config)
 {
-    if (config)
-        eleConfig = config;
+    eleConfig = config;
+
+    // active field
+    activeField = readConfig("SceneViewSettings/ActiveField", QString());
+
+    // view
+    showPost3D = (SceneViewPost3DShow) readConfig("SceneViewSettings/ShowPost3D", (int) SCALARSHOWPOST3D);
+
+    // mesh
+    showInitialMeshView = readConfig("SceneViewSettings/ShowInitialMeshView", SHOWINITIALMESHVIEW);
+    showSolutionMeshView = readConfig("SceneViewSettings/ShowSolutionMeshView", SHOWSOLUTIONMESHVIEW);
 
     // contour
+    showContourView = readConfig("SceneViewSettings/ShowContourView", SHOWCONTOURVIEW);
+    contourVariable = readConfig("SceneViewSettings/ContourVariable", QString());
     contoursCount = readConfig("SceneViewSettings/ContoursCount", CONTOURSCOUNT);
 
     // scalar view
-    showScalarScale = readConfig("SceneViewSettings/ShowScalarScale", true);
+    showScalarView = readConfig("SceneViewSettings/ShowScalarView", SHOWSCALARVIEW);
+    showScalarColorBar = readConfig("SceneViewSettings/ShowScalarColorBar", SHOWSCALARCOLORBAR);
+    scalarVariable = readConfig("SceneViewSettings/ScalarVariable", QString());
+    scalarVariableComp = (PhysicFieldVariableComp) readConfig("SceneViewSettings/ScalarVariableComp", (int) PhysicFieldVariableComp_Scalar);
+    // scalarVariable3D = readConfig("SceneViewSettings/ScalarVariable3D", QString());
+    // scalarVariable3DComp = (PhysicFieldVariableComp) readConfig("SceneViewSettings/ScalarVariable3DComp", (int) PhysicFieldVariableComp_Scalar);
     paletteType = (PaletteType) readConfig("SceneViewSettings/PaletteType", PALETTETYPE);
     paletteFilter = readConfig("SceneViewSettings/PaletteFilter", PALETTEFILTER);
     paletteSteps = readConfig("SceneViewSettings/PaletteSteps", PALETTESTEPS);
     scalarRangeLog = readConfig("SceneViewSettings/ScalarRangeLog", SCALARFIELDRANGELOG);
     scalarRangeBase = readConfig("SceneViewSettings/ScalarRangeBase", SCALARFIELDRANGEBASE);
     scalarDecimalPlace = readConfig("SceneViewSettings/ScalarDecimalPlace", SCALARDECIMALPLACE);
+    scalarRangeAuto = readConfig("SceneViewSettings/ScalarRangeAuto", SCALARRANGEAUTO);
+    scalarRangeMin = readConfig("SceneViewSettings/ScalarRangeMin", SCALARRANGEMIN);
+    scalarRangeMax = readConfig("SceneViewSettings/ScalarRangeMax", SCALARRANGEMAX);
 
     // vector view
+    showVectorView = readConfig("SceneViewSettings/ShowVectorView", SHOWVECTORVIEW);
+    vectorVariable = readConfig("SceneViewSettings/VectorVariable", QString());
     vectorProportional = readConfig("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL);
     vectorColor = readConfig("SceneViewSettings/VectorColor", VECTORCOLOR);
     vectorCount = readConfig("SceneViewSettings/VectorNumber", VECTORNUMBER);
     vectorScale = readConfig("SceneViewSettings/VectorScale", VECTORSCALE);
 
     // order view
-    showOrderScale = readConfig("SceneViewSettings/ShowOrderScale", true);
+    showOrderView = readConfig("SceneViewSettings/ShowOrderView", SHOWORDERVIEW);
+    showOrderColorBar = readConfig("SceneViewSettings/ShowOrderColorBar", SHOWORDERCOLORBAR);
     orderPaletteOrderType = (PaletteOrderType) readConfig("SceneViewSettings/OrderPaletteOrderType", ORDERPALETTEORDERTYPE);
     orderLabel = readConfig("SceneViewSettings/OrderLabel", ORDERLABEL);
 
     // particle tracing
+    showParticleView = readConfig("SceneViewSettings/ShowParticleView", SHOWPARTICLEVIEW);
     particleIncludeGravitation = readConfig("SceneViewSettings/ParticleIncludeGravitation", PARTICLEINCLUDEGRAVITATION);
     particleMass = readConfig("SceneViewSettings/ParticleMass", PARTICLEMASS);
     particleConstant = readConfig("SceneViewSettings/ParticleConstant", PARTICLECONSTANT);
@@ -278,8 +301,8 @@ void Config::saveWorkspace()
     settings.setValue("SceneViewSettings/SceneFont", sceneFont);
 
     // mesh
-    settings.setValue("SceneViewSettings/AngleSegmentsCount", angleSegmentsCount);
-    settings.setValue("SceneViewSettings/CurvilinearElements", curvilinearElements);
+    settings.setValue("SceneViewSettings/MeshAngleSegmentsCount", angleSegmentsCount);
+    settings.setValue("SceneViewSettings/MeshCurvilinearElements", curvilinearElements);
 
     // grid
     settings.setValue("SceneViewSettings/ShowGrid", showGrid);
@@ -316,33 +339,55 @@ void Config::saveWorkspace()
 
 void Config::savePostprocessor(QDomElement *config)
 {
-    if (config)
-        eleConfig = config;
+    eleConfig = config;
+
+    // active field
+    writeConfig("SceneViewSettings/ActiveField", activeField);
+
+    // mesh
+    writeConfig("SceneViewSettings/ShowInitialMeshView", showInitialMeshView);
+    writeConfig("SceneViewSettings/ShowSolutionMeshView", showSolutionMeshView);
+
+    writeConfig("SceneViewSettings/ShowPost3D", showPost3D);
 
     // contour
+    writeConfig("SceneViewSettings/ContourVariable", contourVariable);
+    writeConfig("SceneViewSettings/ShowContourView", showContourView);
     writeConfig("SceneViewSettings/ContoursCount", contoursCount);
 
     // scalar view
-    writeConfig("SceneViewSettings/ShowScalarScale", showScalarScale);
+    writeConfig("SceneViewSettings/ShowScalarView", showScalarView);
+    writeConfig("SceneViewSettings/ShowScalarColorBar", showScalarColorBar);
+    writeConfig("SceneViewSettings/ScalarVariable", scalarVariable);
+    writeConfig("SceneViewSettings/ScalarVariableComp", scalarVariableComp);
+    // writeConfig("SceneViewSettings/ScalarVariable3D", scalarVariable3D);
+    // writeConfig("SceneViewSettings/ScalarVariable3DComp", scalarVariable3DComp);
     writeConfig("SceneViewSettings/PaletteType", paletteType);
     writeConfig("SceneViewSettings/PaletteFilter", paletteFilter);
     writeConfig("SceneViewSettings/PaletteSteps", paletteSteps);
     writeConfig("SceneViewSettings/ScalarRangeLog", scalarRangeLog);
     writeConfig("SceneViewSettings/ScalarRangeBase", scalarRangeBase);
     writeConfig("SceneViewSettings/ScalarDecimalPlace", scalarDecimalPlace);
+    writeConfig("SceneViewSettings/ScalarRangeAuto", scalarRangeAuto);
+    writeConfig("SceneViewSettings/ScalarRangeMin", scalarRangeMin);
+    writeConfig("SceneViewSettings/ScalarRangeMax", scalarRangeMax);
 
     // vector view
+    writeConfig("SceneViewSettings/ShowVectorView", showVectorView);
+    writeConfig("SceneViewSettings/VectorVariable", vectorVariable);
     writeConfig("SceneViewSettings/VectorProportional", vectorProportional);
     writeConfig("SceneViewSettings/VectorColor", vectorColor);
     writeConfig("SceneViewSettings/VectorNumber", vectorCount);
     writeConfig("SceneViewSettings/VectorScale", vectorScale);
 
     // order view
-    writeConfig("SceneViewSettings/ShowOrderScale", showOrderScale);
+    writeConfig("SceneViewSettings/ShowOrderView", showOrderView);
+    writeConfig("SceneViewSettings/ShowOrderColorBar", showOrderColorBar);
     writeConfig("SceneViewSettings/OrderPaletteOrderType", orderPaletteOrderType);
     writeConfig("SceneViewSettings/OrderLabel", orderLabel);
 
     // particle tracing
+    writeConfig("SceneViewSettings/ShowParticleView", showParticleView);
     writeConfig("SceneViewSettings/ParticleIncludeGravitation", particleIncludeGravitation);
     writeConfig("SceneViewSettings/ParticleMass", particleMass);
     writeConfig("SceneViewSettings/ParticleConstant", particleConstant);
@@ -421,29 +466,38 @@ double Config::readConfig(const QString &key, double defaultValue)
     return defaultValue;
 }
 
-void Config::writeConfig(const QString &key, bool value)
+QString Config::readConfig(const QString &key, const QString &defaultValue)
 {
     if (eleConfig)
     {
         QString att = key; att.replace("/", "_");
-        eleConfig->setAttribute(att, value);
+        if (eleConfig->hasAttribute(att))
+            return eleConfig->attribute(att);
     }
+
+    return defaultValue;
+}
+
+void Config::writeConfig(const QString &key, bool value)
+{
+    QString att = key; att.replace("/", "_");
+    eleConfig->setAttribute(att, value);
 }
 
 void Config::writeConfig(const QString &key, int value)
 {
-    if (eleConfig)
-    {
-        QString att = key; att.replace("/", "_");
-        eleConfig->setAttribute(att, value);
-    }
+    QString att = key; att.replace("/", "_");
+    eleConfig->setAttribute(att, value);
 }
 
 void Config::writeConfig(const QString &key, double value)
 {
-    if (eleConfig)
-    {
-        QString att = key; att.replace("/", "_");
-        eleConfig->setAttribute(att, value);
-    }
+    QString att = key; att.replace("/", "_");
+    eleConfig->setAttribute(att, value);
+}
+
+void Config::writeConfig(const QString &key, const QString &value)
+{
+    QString att = key; att.replace("/", "_");
+    eleConfig->setAttribute(att, value);
 }

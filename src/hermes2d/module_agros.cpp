@@ -31,6 +31,17 @@ void Hermes::Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbField
     fillComboBox(cmbFieldVariable, view_scalar_variables);
 }
 
+void Hermes::Module::ModuleAgros::fillComboBoxContourVariable(QComboBox *cmbFieldVariable)
+{
+    for(Hermes::vector<LocalVariable *>::iterator it = view_scalar_variables.begin(); it < view_scalar_variables.end(); ++it )
+    {
+        Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
+        if (variable->is_scalar)
+            cmbFieldVariable->addItem(QString::fromStdString(variable->name),
+                                      QString::fromStdString(variable->id));
+    }
+}
+
 void Hermes::Module::ModuleAgros::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 {
     fillComboBox(cmbFieldVariable, view_vector_variables);

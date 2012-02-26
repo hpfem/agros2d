@@ -68,7 +68,7 @@ void LocalPointValue::calculate()
 
     if (Util::problem()->isSolved())
     {
-        int index = sceneSolution->findElementInMesh(Util::problem()->meshInitial(), point);
+        int index = findElementInMesh(Util::problem()->meshInitial(), point);
         if (index != -1)
         {
             // find marker

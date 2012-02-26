@@ -43,6 +43,7 @@ public:
     ModuleAgros(CoordinateType problemType, AnalysisType analysisType) : Module(problemType, analysisType) {}
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
+    void fillComboBoxContourVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxBoundaryCondition(QComboBox *cmbFieldVariable);
     void fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable);

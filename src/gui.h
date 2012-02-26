@@ -36,10 +36,14 @@
 
 #include "util.h"
 
+class FieldInfo;
+
 void readPixmap(QLabel *lblEquation, const QString &name);
 QLabel *createLabel(const QString &label, const QString &toolTip = "");
-void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
-void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
+void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo);
+void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable);
+void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable);
+void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable);
 void fillComboBoxTimeStep(QComboBox *cmbFieldVariable);
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 

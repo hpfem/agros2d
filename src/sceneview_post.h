@@ -17,45 +17,42 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef SCENEVIEWPOST3D_H
-#define SCENEVIEWPOST3D_H
+#ifndef SCENEVIEW_POST_H
+#define SCENEVIEW_POST_H
 
 #include "util.h"
-#include "sceneview_common3d.h"
+#include "sceneview_common.h"
 
 template <typename Scalar> class SceneSolution;
 
-class SceneViewPost3D : public SceneViewCommon3D
+class SceneViewPostInterface : public SceneViewCommon
 {
     Q_OBJECT
 
-public slots:
-    virtual void doInvalidated();
-    virtual void doDefaultValues();
-
 public:
-    SceneViewPost3D(QWidget *parent = 0);
-    ~SceneViewPost3D();
+    SceneViewPostInterface(QWidget *parent = 0);
 
-    QAction *actSceneModePost3D;
 
 protected:
-    virtual void mousePressEvent(QMouseEvent *event);
+    SceneSolution<double> *m_sceneSolution;
 
-    virtual void paintGL();
-    virtual void resizeGL(int w, int h);
+    double m_texScale;
+    double m_texShift;
 
-    void paintScalarField3D(); // paint scalar field 3d surface
-    void paintScalarField3DSolid(); // paint scalar field 3d solid
+    void paintScalarFieldColorBar(double min, double max);
 
-private:
-    // gl lists
-    int m_listScalarField3D;
-    int m_listScalarField3DSolid;
-    int m_listParticleTracing;
-    int m_listModel;
+    // palette
+    const double *paletteColor(double x) const;
+    const double *paletteColorOrder(int n) const;
+    void paletteCreate();
+    void paletteFilter();
+    void paletteUpdateTexAdjust();
 
-    void createActionsPost3D();
+public slots:
+    void timeStepChanged(bool showViewProgress = false);
+
+protected slots:
+    virtual void clearGLLists() {}
 };
 
-#endif // SCENEVIEWPOST3D_H
+#endif // SCENEVIEW_POST_H

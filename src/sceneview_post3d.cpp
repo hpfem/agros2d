@@ -55,13 +55,18 @@ static void computeNormal(double p0x, double p0y, double p0z,
     // double p[3] = { nx*l, ny*l, nz*l };
 }
 
-SceneViewPost3D::SceneViewPost3D(QWidget *parent)
-    : SceneViewCommon3D(parent)
+SceneViewPost3D::SceneViewPost3D(QWidget *parent) : SceneViewCommon3D(parent),
+    m_listScalarField3D(-1),
+    m_listScalarField3DSolid(-1),
+    m_listParticleTracing(-1),
+    m_listModel(-1)
 {
     createActionsPost3D();
 
-    connect(m_scene, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
-    connect(m_scene, SIGNAL(defaultValues()), this, SLOT(doDefaultValues()));
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+    connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(doDefaultValues()));
+
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
 }
 
 SceneViewPost3D::~SceneViewPost3D()
@@ -79,13 +84,12 @@ void SceneViewPost3D::createActionsPost3D()
 void SceneViewPost3D::mousePressEvent(QMouseEvent *event)
 {
     SceneViewCommon3D::mousePressEvent(event);
-
-
 }
 
 void SceneViewPost3D::paintGL()
 {
-    logMessage("SceneViewCommon::paintGL()");
+    if (!isVisible()) return;
+    makeCurrent();
 
     glClearColor(Util::config()->colorBackground.redF(),
                  Util::config()->colorBackground.greenF(),
@@ -94,39 +98,43 @@ void SceneViewPost3D::paintGL()
 
     if (Util::problem()->isMeshed())
     {
-        if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model) paintScalarField3DSolid();
+        if (Util::config()->showPost3D == SceneViewPost3DShow_Model) paintScalarField3DSolid();
     }
 
     if (Util::problem()->isSolved())
     {
-        if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D) paintScalarField3D();
-        if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid) paintScalarField3DSolid();
+        if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3D) paintScalarField3D();
+        if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3DSolid) paintScalarField3DSolid();
 
-        if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-                m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
-            paintScalarFieldColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
+        if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3D ||
+                Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3DSolid)
+            paintScalarFieldColorBar(Util::config()->scalarRangeMin, Util::config()->scalarRangeMax);
     }
 
     if (Util::config()->showLabel)
     {
-        switch (m_sceneViewSettings.postprocessorShow)
+        switch (Util::config()->showPost3D)
         {
-        case SceneViewPostprocessorShow_ScalarView3D:
-        case SceneViewPostprocessorShow_ScalarView3DSolid:
+        case SceneViewPost3DShow_ScalarView3D:
+        case SceneViewPost3DShow_ScalarView3DSolid:
         {
             if (Util::problem()->isSolved())
             {
-                QString text = QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable != "" ? Util::scene()->activeViewField()->module()->get_variable(m_sceneViewSettings.scalarPhysicFieldVariable)->name : "");
-                if (m_sceneViewSettings.scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar)
-                    text += " - " + physicFieldVariableCompString(m_sceneViewSettings.scalarPhysicFieldVariableComp);
-                paintSceneModeLabel(text);
+                Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
+                if (localVariable)
+                {
+                    QString text = Util::config()->scalarVariable != "" ? QString::fromStdString(localVariable->name) : "";
+                    if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
+                        text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
+                    paintSceneModeLabel(text);
+                }
             }
         }
             break;
-        case SceneViewPostprocessorShow_Model:
+        case SceneViewPost3DShow_Model:
             paintSceneModeLabel(tr("Model"));
             break;
-        case SceneViewPostprocessorShow_ParticleTracing:
+        case SceneViewPost3DShow_ParticleTracing:
             paintSceneModeLabel(tr("Particle tracing"));
             break;
         default:
@@ -151,10 +159,11 @@ void SceneViewPost3D::paintScalarField3D()
 {
     logMessage("SceneViewCommon::paintScalarField3D()");
 
-    if (!m_isSolutionPrepared) return;
+    if (!Util::problem()->isSolved()) return;
 
     loadProjection3d(true);
 
+    /*
     if (m_listScalarField3D == -1)
     {
         m_listScalarField3D = glGenLists(1);
@@ -165,21 +174,21 @@ void SceneViewPost3D::paintScalarField3D()
         glEnable(GL_DEPTH_TEST);
 
         // range
-        double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
+        double irange = 1.0 / (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin);
         // special case: constant solution
-        if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < EPS_ZERO)
+        if (fabs(Util::config()->scalarRangeMin - Util::config()->scalarRangeMax) < EPS_ZERO)
         {
             irange = 1.0;
         }
 
-        m_scene->activeSceneSolution()->linScalarView().lock_data();
+        Util::scene()->activeSceneSolution()->linScalarView().lock_data();
 
-        double3* linVert = m_scene->activeSceneSolution()->linScalarView().get_vertices();
-        int3* linTris = m_scene->activeSceneSolution()->linScalarView().get_triangles();
+        double3* linVert = Util::scene()->activeSceneSolution()->linScalarView().get_vertices();
+        int3* linTris = Util::scene()->activeSceneSolution()->linScalarView().get_triangles();
         Point point[3];
         double value[3];
 
-        double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
+        double max = qMax(Util::scene()->boundingBox().width(), Util::scene()->boundingBox().height());
 
         if (Util::config()->scalarView3DLighting)
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -187,7 +196,7 @@ void SceneViewPost3D::paintScalarField3D()
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
         glPushMatrix();
-        glScaled(1.0, 1.0, max / Util::config()->scalarView3DHeight * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
+        glScaled(1.0, 1.0, max / Util::config()->scalarView3DHeight * 1.0/(fabs(Util::config()->scalarRangeMin - Util::config()->scalarRangeMax)));
 
         initLighting();
         // init normal
@@ -204,7 +213,7 @@ void SceneViewPost3D::paintScalarField3D()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
+        for (int i = 0; i < Util::scene()->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
         {
             point[0].x = linVert[linTris[i][0]][0];
             point[0].y = linVert[linTris[i][0]][1];
@@ -216,10 +225,10 @@ void SceneViewPost3D::paintScalarField3D()
             point[2].y = linVert[linTris[i][2]][1];
             value[2]   = linVert[linTris[i][2]][2];
 
-            if (!m_sceneViewSettings.scalarRangeAuto)
+            if (!Util::config()->scalarRangeAuto)
             {
                 double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                     continue;
             }
 
@@ -227,17 +236,17 @@ void SceneViewPost3D::paintScalarField3D()
 
             if (Util::config()->scalarView3DLighting)
             {
-                computeNormal(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin),
-                              point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin),
-                              point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin),
+                computeNormal(point[0].x, point[0].y, - delta - (value[0] - Util::config()->scalarRangeMin),
+                              point[1].x, point[1].y, - delta - (value[1] - Util::config()->scalarRangeMin),
+                              point[2].x, point[2].y, - delta - (value[2] - Util::config()->scalarRangeMin),
                               normal);
 
                 glNormal3d(normal[0], normal[1], normal[2]);
             }
             for (int j = 0; j < 3; j++)
             {
-                glTexCoord1d((value[j] - m_sceneViewSettings.scalarRangeMin) * irange);
-                glVertex3d(point[j].x, point[j].y, - delta - (value[j] - m_sceneViewSettings.scalarRangeMin));
+                glTexCoord1d((value[j] - Util::config()->scalarRangeMin) * irange);
+                glVertex3d(point[j].x, point[j].y, - delta - (value[j] - Util::config()->scalarRangeMin));
             }
         }
         glEnd();
@@ -253,14 +262,14 @@ void SceneViewPost3D::paintScalarField3D()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4d(0.5, 0.5, 0.5, 0.3);
 
-        m_scene->activeSceneSolution()->linInitialMeshView().lock_data();
+        Util::scene()->activeSceneSolution()->linInitialMeshView().lock_data();
 
-        double3* linVertMesh = m_scene->activeSceneSolution()->linInitialMeshView().get_vertices();
-        int3* linTrisMesh = m_scene->activeSceneSolution()->linInitialMeshView().get_triangles();
+        double3* linVertMesh = Util::scene()->activeSceneSolution()->linInitialMeshView().get_vertices();
+        int3* linTrisMesh = Util::scene()->activeSceneSolution()->linInitialMeshView().get_triangles();
 
         // triangles
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->activeSceneSolution()->linInitialMeshView().get_num_triangles(); i++)
+        for (int i = 0; i < Util::scene()->activeSceneSolution()->linInitialMeshView().get_num_triangles(); i++)
         {
             glVertex2d(linVertMesh[linTrisMesh[i][0]][0], linVertMesh[linTrisMesh[i][0]][1]);
             glVertex2d(linVertMesh[linTrisMesh[i][1]][0], linVertMesh[linTrisMesh[i][1]][1]);
@@ -268,13 +277,13 @@ void SceneViewPost3D::paintScalarField3D()
         }
         glEnd();
 
-        m_scene->activeSceneSolution()->linInitialMeshView().unlock_data();
+        Util::scene()->activeSceneSolution()->linInitialMeshView().unlock_data();
 
         glDisable(GL_BLEND);
         glDisable(GL_POLYGON_OFFSET_FILL);
 
         // geometry - edges
-        foreach (SceneEdge *edge, m_scene->edges->items())
+        foreach (SceneEdge *edge, Util::scene()->edges->items())
         {
 
             glColor3d(Util::config()->colorEdges.redF(),
@@ -311,7 +320,7 @@ void SceneViewPost3D::paintScalarField3D()
 
         glPopMatrix();
 
-        m_scene->activeSceneSolution()->linScalarView().unlock_data();
+        Util::scene()->activeSceneSolution()->linScalarView().unlock_data();
 
         glEndList();
 
@@ -321,46 +330,47 @@ void SceneViewPost3D::paintScalarField3D()
     {
         glCallList(m_listScalarField3D);
     }
+    */
 }
 
 void SceneViewPost3D::paintScalarField3DSolid()
 {
     logMessage("SceneViewCommon::paintScalarField3DSolid()");
 
-    if (!m_isSolutionPrepared) return;
+    if (!Util::problem()->isSolved()) return;
 
     loadProjection3d(true);
-
+    /*
     if (m_listScalarField3DSolid == -1)
     {
         m_listScalarField3DSolid = glGenLists(1);
         glNewList(m_listScalarField3DSolid, GL_COMPILE);
 
-        bool isModel = (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model);
+        bool isModel = (Util::config()->showPost3D == SceneViewPost3DShow_Model);
 
         // gradient background
         paintBackground();
         glEnable(GL_DEPTH_TEST);
 
-        RectPoint rect = m_scene->boundingBox();
+        RectPoint rect = Util::scene()->boundingBox();
         double max = qMax(rect.width(), rect.height());
         double depth = max / Util::config()->scalarView3DHeight;
 
         // range
-        double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
+        double irange = 1.0 / (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin);
         // special case: constant solution
-        if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < EPS_ZERO)
+        if (fabs(Util::config()->scalarRangeMin - Util::config()->scalarRangeMax) < EPS_ZERO)
         {
             irange = 1.0;
         }
 
         double phi = Util::config()->scalarView3DAngle;
 
-        m_scene->activeSceneSolution()->linScalarView().lock_data();
+        Util::scene()->activeSceneSolution()->linScalarView().lock_data();
 
-        double3* linVert = m_scene->activeSceneSolution()->linScalarView().get_vertices();
-        int3* linTris = m_scene->activeSceneSolution()->linScalarView().get_triangles();
-        int3* linEdges = m_scene->activeSceneSolution()->linScalarView().get_edges();
+        double3* linVert = Util::scene()->activeSceneSolution()->linScalarView().get_vertices();
+        int3* linTris = Util::scene()->activeSceneSolution()->linScalarView().get_triangles();
+        int3* linEdges = Util::scene()->activeSceneSolution()->linScalarView().get_edges();
         Point point[3];
         double value[3];
 
@@ -389,10 +399,10 @@ void SceneViewPost3D::paintScalarField3DSolid()
         // init normals
         double* normal = new double[3];
 
-        if (m_scene->problemInfo()->coordinateType == CoordinateType_Planar)
+        if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < Util::scene()->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -401,10 +411,10 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     value[j]   = linVert[linTris[i][j]][2];
                 }
 
-                if (!m_sceneViewSettings.scalarRangeAuto)
+                if (!Util::config()->scalarRangeAuto)
                 {
                     double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                    if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                         continue;
                 }
 
@@ -420,7 +430,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
                 for (int j = 0; j < 3; j++)
                 {
-                    if (!isModel) glTexCoord1d((value[j] - m_sceneViewSettings.scalarRangeMin) * irange);
+                    if (!isModel) glTexCoord1d((value[j] - Util::config()->scalarRangeMin) * irange);
                     glVertex3d(point[j].x, point[j].y, -depth/2.0);
                 }
 
@@ -436,7 +446,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
                 for (int j = 0; j < 3; j++)
                 {
-                    if (!isModel) glTexCoord1d((value[j] - m_sceneViewSettings.scalarRangeMin) * irange);
+                    if (!isModel) glTexCoord1d((value[j] - Util::config()->scalarRangeMin) * irange);
                     glVertex3d(point[j].x, point[j].y, depth/2.0);
                 }
             }
@@ -444,7 +454,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
             // length
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < Util::scene()->activeSceneSolution()->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -456,10 +466,10 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     value[j]   = linVert[linEdges[i][j]][2];
                 }
 
-                if (!m_sceneViewSettings.scalarRangeAuto)
+                if (!Util::config()->scalarRangeAuto)
                 {
                     double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                    if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                         continue;
                 }
 
@@ -472,13 +482,13 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     glNormal3d(normal[0], normal[1], normal[2]);
                 }
 
-                if (!isModel) glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
+                if (!isModel) glTexCoord1d((value[0] - Util::config()->scalarRangeMin) * irange);
                 glVertex3d(point[0].x, point[0].y, -depth/2.0);
-                if (!isModel) glTexCoord1d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange);
+                if (!isModel) glTexCoord1d((value[1] - Util::config()->scalarRangeMin) * irange);
                 glVertex3d(point[1].x, point[1].y, -depth/2.0);
-                if (!isModel) glTexCoord1d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange);
+                if (!isModel) glTexCoord1d((value[1] - Util::config()->scalarRangeMin) * irange);
                 glVertex3d(point[1].x, point[1].y, depth/2.0);
-                if (!isModel) glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
+                if (!isModel) glTexCoord1d((value[0] - Util::config()->scalarRangeMin) * irange);
                 glVertex3d(point[0].x, point[0].y, depth/2.0);
             }
             glEnd();
@@ -487,7 +497,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         {
             // side
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < Util::scene()->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -496,10 +506,10 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     value[j]   = linVert[linTris[i][j]][2];
                 }
 
-                if (!m_sceneViewSettings.scalarRangeAuto)
+                if (!Util::config()->scalarRangeAuto)
                 {
                     double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                    if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                         continue;
                 }
 
@@ -514,11 +524,11 @@ void SceneViewPost3D::paintScalarField3DSolid()
                         glNormal3d(normal[0], normal[1], normal[2]);
                     }
 
-                    glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
+                    glTexCoord1d((value[0] - Util::config()->scalarRangeMin) * irange);
                     glVertex3d(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI));
-                    glTexCoord1d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange);
+                    glTexCoord1d((value[1] - Util::config()->scalarRangeMin) * irange);
                     glVertex3d(point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI));
-                    glTexCoord1d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange);
+                    glTexCoord1d((value[2] - Util::config()->scalarRangeMin) * irange);
                     glVertex3d(point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI));
                 }
             }
@@ -526,7 +536,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
             // symmetry
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < Util::scene()->activeSceneSolution()->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -538,10 +548,10 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     value[j]   = linVert[linEdges[i][j]][2];
                 }
 
-                if (!m_sceneViewSettings.scalarRangeAuto)
+                if (!Util::config()->scalarRangeAuto)
                 {
                     double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                    if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                         continue;
                 }
 
@@ -559,13 +569,13 @@ void SceneViewPost3D::paintScalarField3DSolid()
                         glNormal3d(normal[0], normal[1], normal[2]);
                     }
 
-                    if (!isModel) glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
+                    if (!isModel) glTexCoord1d((value[0] - Util::config()->scalarRangeMin) * irange);
                     glVertex3d(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI));
-                    if (!isModel) glTexCoord1d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange);
+                    if (!isModel) glTexCoord1d((value[1] - Util::config()->scalarRangeMin) * irange);
                     glVertex3d(point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI));
-                    if (!isModel) glTexCoord1d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange);
+                    if (!isModel) glTexCoord1d((value[1] - Util::config()->scalarRangeMin) * irange);
                     glVertex3d(point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI));
-                    if (!isModel) glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
+                    if (!isModel) glTexCoord1d((value[0] - Util::config()->scalarRangeMin) * irange);
                     glVertex3d(point[0].x * cos((j+1)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+1)*step/180.0*M_PI));
                 }
             }
@@ -589,7 +599,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         }
 
         // geometry
-        if (m_scene->problemInfo()->coordinateType == CoordinateType_Planar)
+        if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
         {
             glColor3d(Util::config()->colorEdges.redF(),
                       Util::config()->colorEdges.greenF(),
@@ -597,7 +607,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
             glLineWidth(Util::config()->edgeWidth);
 
             // top and bottom
-            foreach (SceneEdge *edge, m_scene->edges->items())
+            foreach (SceneEdge *edge, Util::scene()->edges->items())
             {
                 for (int j = 0; j < 2; j++)
                 {
@@ -633,7 +643,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
             // side
             glBegin(GL_LINES);
-            foreach (SceneNode *node, m_scene->nodes->items())
+            foreach (SceneNode *node, Util::scene()->nodes->items())
             {
                 glVertex3d(node->point.x, node->point.y,  depth/2.0);
                 glVertex3d(node->point.x, node->point.y, -depth/2.0);
@@ -651,7 +661,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
             glLineWidth(Util::config()->edgeWidth);
 
             // top
-            foreach (SceneEdge *edge, m_scene->edges->items())
+            foreach (SceneEdge *edge, Util::scene()->edges->items())
             {
                 for (int j = 0; j < 2; j++)
                 {
@@ -686,7 +696,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
             }
 
             // side
-            foreach (SceneNode *node, m_scene->nodes->items())
+            foreach (SceneNode *node, Util::scene()->nodes->items())
             {
                 int count = 30;
                 double step = phi/count;
@@ -707,7 +717,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         glPopMatrix();
 
-        m_scene->activeSceneSolution()->linScalarView().unlock_data();
+        Util::scene()->activeSceneSolution()->linScalarView().unlock_data();
 
         glEndList();
 
@@ -717,6 +727,24 @@ void SceneViewPost3D::paintScalarField3DSolid()
     {
         glCallList(m_listScalarField3DSolid);
     }
+    */
+}
+
+void SceneViewPost3D::doInvalidated()
+{
+    if (m_listScalarField3D != -1) glDeleteLists(m_listScalarField3D, 1);
+    if (m_listScalarField3DSolid != -1) glDeleteLists(m_listScalarField3DSolid, 1);
+    if (m_listModel != -1) glDeleteLists(m_listModel, 1);
+    if (m_listScalarField3DSolid != -1) glDeleteLists(m_listScalarField3DSolid, 1);
+
+    m_listScalarField3D = -1;
+    m_listScalarField3DSolid = -1;
+    m_listModel = -1;
+    m_listScalarField3DSolid = -1;
+
+    // if (Util::problem()->isSolved()) m_post3DHermes->solved();
+
+    SceneViewCommon::doInvalidated();
 }
 
 void SceneViewPost3D::doDefaultValues()

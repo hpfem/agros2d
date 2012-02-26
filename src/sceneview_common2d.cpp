@@ -35,7 +35,7 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
-SceneViewCommon2D::SceneViewCommon2D(QWidget *parent): SceneViewCommon(parent)
+SceneViewCommon2D::SceneViewCommon2D(QWidget *parent): SceneViewPostInterface(parent)
 {
 
 }
@@ -49,7 +49,6 @@ void SceneViewCommon2D::doDefaultValues()
     logMessage("SceneViewCommon::doDefaultValues()");
 
     m_zoomRegion = false;
-    m_isSolutionPrepared = false;
 
     // 2d
     m_scale2d = 1.0;
@@ -65,6 +64,14 @@ void SceneViewCommon2D::doDefaultValues()
     doZoomBestFit();
 
     SceneViewCommon::doDefaultValues();
+}
+
+Point SceneViewCommon2D::position(const Point &point) const
+{
+    // qDebug() << "width(): " << width() << "height(): " << height() << "m_scale2d:" << m_scale2d << "m_offset2d:" << m_offset2d.toString();
+
+    return Point((2.0/width()*point.x-1)/m_scale2d*aspect()+m_offset2d.x,
+                 -(2.0/height()*point.y-1)/m_scale2d+m_offset2d.y);
 }
 
 void SceneViewCommon2D::loadProjection2d(bool setScene) const
@@ -85,7 +92,6 @@ void SceneViewCommon2D::loadProjection2d(bool setScene) const
     }
 }
 
-
 SceneNode *SceneViewCommon2D::findClosestNode(const Point &point)
 {
     logMessage("SceneViewCommon::findClosestNode()");
@@ -93,7 +99,7 @@ SceneNode *SceneViewCommon2D::findClosestNode(const Point &point)
     SceneNode *nodeClosest = NULL;
 
     double distance = numeric_limits<double>::max();
-    foreach (SceneNode *node, m_scene->nodes->items())
+    foreach (SceneNode *node, Util::scene()->nodes->items())
     {
         double nodeDistance = node->distance(point);
         if (node->distance(point) < distance)
@@ -113,7 +119,7 @@ SceneEdge *SceneViewCommon2D::findClosestEdge(const Point &point)
     SceneEdge *edgeClosest = NULL;
 
     double distance = numeric_limits<double>::max();
-    foreach (SceneEdge *edge, m_scene->edges->items())
+    foreach (SceneEdge *edge, Util::scene()->edges->items())
     {
         double edgeDistance = edge->distance(point);
         if (edge->distance(point) < distance)
@@ -133,7 +139,7 @@ SceneLabel *SceneViewCommon2D::findClosestLabel(const Point &point)
     SceneLabel *labelClosest = NULL;
 
     double distance = numeric_limits<double>::max();
-    foreach (SceneLabel *label, m_scene->labels->items())
+    foreach (SceneLabel *label, Util::scene()->labels->items())
     {
         double labelDistance = label->distance(point);
         if (label->distance(point) < distance)
@@ -182,7 +188,7 @@ void SceneViewCommon2D::paintGrid()
     loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
-    Point cornerMax = position(Point(contextWidth(), contextHeight()));
+    Point cornerMax = position(Point(width(), height()));
 
     glDisable(GL_DEPTH_TEST);
 
@@ -256,7 +262,7 @@ void SceneViewCommon2D::paintGrid()
     glEnd();
     glDisable(GL_LINE_STIPPLE);
 
-    if (m_scene->problemInfo()->coordinateType == CoordinateType_Axisymmetric)
+    if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric)
     {
         drawBlend(cornerMin,
                   Point(0, cornerMax.y),
@@ -275,7 +281,7 @@ void SceneViewCommon2D::paintGrid()
     glVertex2d(0, cornerMin.y);
     glVertex2d(0, cornerMax.y);
     // x axis
-    glVertex2d(((m_scene->problemInfo()->coordinateType == CoordinateType_Axisymmetric) ? 0 : cornerMin.x), 0);
+    glVertex2d(((Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric) ? 0 : cornerMin.x), 0);
     glVertex2d(cornerMax.x, 0);
     glEnd();
 }
@@ -286,8 +292,8 @@ void SceneViewCommon2D::paintAxes()
 
     loadProjection2d();
 
-    glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
-    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
+    glScaled(2.0 / width(), 2.0 / height(), 1.0);
+    glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -296,8 +302,8 @@ void SceneViewCommon2D::paintAxes()
               Util::config()->colorCross.greenF(),
               Util::config()->colorCross.blueF());
 
-    Point border = (Util::config()->showRulers) ? Point((m_rulersAreaWidth.x/4.0 + m_rulersNumbersWidth/2.0)*m_scale2d/aspect()*contextWidth() + 20.0,
-                                                        - (m_rulersAreaWidth.y/4.0)*m_scale2d*contextHeight() + 20.0)
+    Point border = (Util::config()->showRulers) ? Point((m_rulersAreaWidth.x/4.0 + m_rulersNumbersWidth/2.0)*m_scale2d/aspect()*width() + 20.0,
+                                                        - (m_rulersAreaWidth.y/4.0)*m_scale2d*height() + 20.0)
                                                 : Point(10.0, 10.0);
 
     // x-axis
@@ -344,7 +350,7 @@ void SceneViewCommon2D::paintRulers()
     loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
-    Point cornerMax = position(Point(contextWidth(), contextHeight()));
+    Point cornerMax = position(Point(width(), height()));
 
     double gridStep = Util::config()->gridStep;
     if (gridStep < EPS_ZERO)
@@ -364,10 +370,10 @@ void SceneViewCommon2D::paintRulers()
         QFont fontLabel = font();
         fontLabel.setPointSize(fontLabel.pointSize() - 1);
 
-        m_rulersNumbersWidth = (2.0/contextWidth()*QFontMetrics(fontLabel).width(QString::number(5*gridStep)))/m_scale2d*aspect();
+        m_rulersNumbersWidth = (2.0/width()*QFontMetrics(fontLabel).width(QString::number(5*gridStep)))/m_scale2d*aspect();
 
-        m_rulersAreaWidth = Point((2.0/contextWidth()*fontLabel.pointSize()*2.0)/m_scale2d*aspect(),
-                                  -(2.0/contextHeight()*fontLabel.pointSize()*2.0)/m_scale2d);
+        m_rulersAreaWidth = Point((2.0/width()*fontLabel.pointSize()*2.0)/m_scale2d*aspect(),
+                                  -(2.0/height()*fontLabel.pointSize()*2.0)/m_scale2d);
 
         // area background
         drawBlend(Point(cornerMin.x, cornerMax.y - m_rulersAreaWidth.y),
@@ -469,7 +475,7 @@ void SceneViewCommon2D::paintRulers()
             if (i % heavyLine == 0)
             {
                 QString text = QString::number(i*gridStep);
-                double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).width(text) / 6.0)/m_scale2d*aspect();
+                double size = 2.0/width()*(QFontMetrics(fontLabel).width(text) / 6.0)/m_scale2d*aspect();
                 renderTextPos(i*gridStep + size, cornerMax.y, text, false, fontLabel);
             }
         }
@@ -481,7 +487,7 @@ void SceneViewCommon2D::paintRulers()
             if (i % heavyLine == 0)
             {
                 QString text = QString::number(i*gridStep);
-                double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).width(text) / 6.0)/m_scale2d*aspect();
+                double size = 2.0/width()*(QFontMetrics(fontLabel).width(text) / 6.0)/m_scale2d*aspect();
                 renderTextPos(i*gridStep + size, cornerMax.y, text, false, fontLabel);
             }
         }
@@ -495,7 +501,7 @@ void SceneViewCommon2D::paintRulers()
             if (i % heavyLine == 0)
             {
                 QString text = QString::number(i*gridStep);
-                double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).height() * 7.0 / 6.0)/m_scale2d;
+                double size = 2.0/width()*(QFontMetrics(fontLabel).height() * 7.0 / 6.0)/m_scale2d;
                 renderTextPos(cornerMin.x + m_rulersAreaWidth.x / 20.0, i*gridStep - size, text, false, fontLabel);
             }
 
@@ -508,7 +514,7 @@ void SceneViewCommon2D::paintRulers()
             if (i % heavyLine == 0)
             {
                 QString text = QString::number(i*gridStep);
-                double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).height() * 7.0 / 6.0)/m_scale2d;
+                double size = 2.0/width()*(QFontMetrics(fontLabel).height() * 7.0 / 6.0)/m_scale2d;
                 renderTextPos(cornerMin.x + m_rulersAreaWidth.x / 20.0, i*gridStep - size, text, false, fontLabel);
             }
         }
@@ -522,7 +528,7 @@ void SceneViewCommon2D::paintRulersHints()
     loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
-    Point cornerMax = position(Point(contextWidth(), contextHeight()));
+    Point cornerMax = position(Point(width(), height()));
 
     glColor3d(0.0, 0.53, 0.0);
 
@@ -540,38 +546,6 @@ void SceneViewCommon2D::paintRulersHints()
     glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x * 2.0/3.0, snapPoint.y + m_rulersAreaWidth.y * 2.0/7.0);
     glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x * 2.0/3.0, snapPoint.y - m_rulersAreaWidth.y * 2.0/7.0);
     glEnd();
-}
-
-void SceneViewCommon2D::paintInitialMesh()
-{
-    logMessage("SceneViewCommon::paintInitialMesh()");
-
-    if (!Util::problem()->isMeshed()) return;
-
-    loadProjection2d(true);
-
-    m_scene->activeSceneSolution()->linInitialMeshView().lock_data();
-
-    double3* linVert = m_scene->activeSceneSolution()->linInitialMeshView().get_vertices();
-    int3* linEdges = m_scene->activeSceneSolution()->linInitialMeshView().get_edges();
-
-    // draw initial mesh
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3d(Util::config()->colorInitialMesh.redF(),
-              Util::config()->colorInitialMesh.greenF(),
-              Util::config()->colorInitialMesh.blueF());
-    glLineWidth(1.3);
-
-    // triangles
-    glBegin(GL_LINES);
-    for (int i = 0; i < m_scene->activeSceneSolution()->linInitialMeshView().get_num_edges(); i++)
-    {
-        glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
-        glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
-    }
-    glEnd();
-
-    m_scene->activeSceneSolution()->linInitialMeshView().unlock_data();
 }
 
 void SceneViewCommon2D::paintZoomRegion()
@@ -604,7 +578,7 @@ void SceneViewCommon2D::keyPressEvent(QKeyEvent *event)
     if ((event->modifiers() & Qt::ControlModifier) && (event->modifiers() & Qt::ShiftModifier))
         emit mouseSceneModeChanged(MouseSceneMode_Move);
 
-    Point stepTemp = position(Point(contextWidth(), contextHeight()));
+    Point stepTemp = position(Point(width(), height()));
     stepTemp.x = stepTemp.x - m_offset2d.x;
     stepTemp.y = stepTemp.y - m_offset2d.y;
     double step = qMin(stepTemp.x, stepTemp.y) / 10.0;
@@ -648,7 +622,7 @@ void SceneViewCommon2D::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Escape:
     {
         m_nodeLast = NULL;
-        m_scene->selectNone();
+        Util::scene()->selectNone();
         emit mousePressed();
         refresh();
     }
@@ -659,7 +633,7 @@ void SceneViewCommon2D::keyPressEvent(QKeyEvent *event)
         if ((event->modifiers() & Qt::ShiftModifier) && (event->modifiers() & Qt::ControlModifier))
         {
             Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
-            m_scene->doNewNode(p);
+            Util::scene()->doNewNode(p);
         }
     }
         break;
@@ -669,7 +643,7 @@ void SceneViewCommon2D::keyPressEvent(QKeyEvent *event)
         if ((event->modifiers() & Qt::ShiftModifier) && (event->modifiers() & Qt::ControlModifier))
         {
             Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
-            m_scene->doNewLabel(p);
+            Util::scene()->doNewLabel(p);
         }
     }
         break;
@@ -700,8 +674,8 @@ void SceneViewCommon2D::renderTextPos(double x, double y,
     if (fnt != QFont())
         fontLocal = fnt;
 
-    Point size(2.0/contextWidth()*QFontMetrics(fontLocal).width(" ")/m_scale2d*aspect(),
-               2.0/contextHeight()*QFontMetrics(fontLocal).height()/m_scale2d);
+    Point size(2.0/width()*QFontMetrics(fontLocal).width(" ")/m_scale2d*aspect(),
+               2.0/height()*QFontMetrics(fontLocal).height()/m_scale2d);
 
     if (blend)
     {
@@ -741,12 +715,13 @@ void SceneViewCommon2D::doZoomRegion(const Point &start, const Point &end)
     double sceneWidth = end.x-start.x;
     double sceneHeight = end.y-start.y;
 
-    double maxScene = (((double) ((Util::config()->showRulers) ? contextWidth()-m_rulersNumbersWidth-m_rulersAreaWidth.x : contextWidth()) / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
+    double maxScene = (((double) ((Util::config()->showRulers) ? width()-m_rulersNumbersWidth-m_rulersAreaWidth.x :
+                                                                 width()) / (double) height()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
 
     if (maxScene > 0.0)
         m_scale2d = 1.85/maxScene;
 
-    setZoom(0);
+    setZoom(0);   
 }
 
 void SceneViewCommon2D::mousePressEvent(QMouseEvent *event)
@@ -837,8 +812,8 @@ void SceneViewCommon2D::mouseMoveEvent(QMouseEvent *event)
     {
         setCursor(Qt::PointingHandCursor);
 
-        m_offset2d.x -= 2.0/contextWidth() * dx/m_scale2d*aspect();
-        m_offset2d.y += 2.0/contextHeight() * dy/m_scale2d;
+        m_offset2d.x -= 2.0/width() * dx/m_scale2d*aspect();
+        m_offset2d.y += 2.0/height() * dy/m_scale2d;
 
         emit mouseSceneModeChanged(MouseSceneMode_Pan);
 
@@ -856,16 +831,16 @@ void SceneViewCommon2D::wheelEvent(QWheelEvent *event)
     if (Util::config()->zoomToMouse)
     {
         Point posMouse;
-        posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale2d*aspect(),
-                         -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale2d);
+        posMouse = Point((2.0/width()*(event->pos().x() - width()/2.0))/m_scale2d*aspect(),
+                         -(2.0/height()*(event->pos().y() - height()/2.0))/m_scale2d);
 
         m_offset2d.x += posMouse.x;
         m_offset2d.y += posMouse.y;
 
         m_scale2d = m_scale2d * pow(1.2, event->delta()/150.0);
 
-        posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale2d*aspect(),
-                         -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale2d);
+        posMouse = Point((2.0/width()*(event->pos().x() - width()/2.0))/m_scale2d*aspect(),
+                         -(2.0/height()*(event->pos().y() - height()/2.0))/m_scale2d);
 
         m_offset2d.x -= posMouse.x;
         m_offset2d.y -= posMouse.y;
