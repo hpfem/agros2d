@@ -59,7 +59,7 @@ public slots:
     void doSnapToGrid();
     void doShowRulers();
     virtual void doInvalidated();
-    virtual void doDefaultValues();
+    virtual void clear();
     void doSetChartLine(const ChartLine &chartLine);
 
     void refresh();

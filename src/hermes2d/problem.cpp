@@ -59,10 +59,10 @@ bool Field::solveInitVariables()
 Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, ProgressItemSolve* progressItemSolve, Problem* parent) :
     m_progressItemSolve(progressItemSolve), m_couplings(couplings), m_parentProblem(parent)
 {
-    foreach(FieldInfo* fi, fieldInfos)
+    foreach (FieldInfo* fi, fieldInfos)
     {
         Field* field = new Field(fi);
-        foreach(CouplingInfo* couplingInfo, Util::scene()->couplingInfos())
+        foreach (CouplingInfo* couplingInfo, Util::scene()->couplingInfos())
         {
             if(couplingInfo->isWeak() && (couplingInfo->targetField() == fi))
             {
@@ -78,7 +78,7 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, Prog
 
 bool Block::solveInit(Hermes::Hermes2D::Solution<double> *sourceSolution)
 {
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         if(! field->solveInitVariables())
             assert(0); //TODO co to znamena?
@@ -96,7 +96,7 @@ void Block::solve()
     cout << "num elem pri prirazeni do scene solution " <<  Util::problem()->meshInitial()->get_num_active_elements() << endl;
 
     //TODO predelat ukazatele na Solution na shared_ptr
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
@@ -134,7 +134,7 @@ int Block::offset(Field *fieldParam) const
 {
     int offset = 0;
 
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         if(field == fieldParam)
             return offset;
@@ -148,7 +148,7 @@ int Block::offset(Field *fieldParam) const
 LinearityType Block::linearityType() const
 {
     int linear = 0, newton = 0;
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if(fieldInfo->linearityType == LinearityType_Linear)
@@ -170,7 +170,7 @@ double Block::nonlinearTolerance() const
 {
     double tolerance = 10e20;
 
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if(fieldInfo->nonlinearTolerance < tolerance)
@@ -184,7 +184,7 @@ int Block::nonlinearSteps() const
 {
     int steps = 0;
 
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if(fieldInfo->nonlinearSteps > steps)
@@ -196,7 +196,7 @@ int Block::nonlinearSteps() const
 
 Field* Block::field(FieldInfo *fieldInfo) const
 {
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         if(fieldInfo == field->fieldInfo())
             return field;
@@ -211,13 +211,25 @@ Problem::Problem()
     m_isSolved = false;
     m_isSolving = false;
 
-    m_meshInitial = NULL; //TODO move to field
-//    m_progressDialog = new ProgressDialog();
-//    m_progressItemMesh = new ProgressItemMesh();
-//    m_progressItemSolve = new ProgressItemSolve();
-//    m_progressItemSolveAdaptiveStep = new ProgressItemSolveAdaptiveStep();
-//    m_progressItemProcessView = new ProgressItemProcessView();
+    m_meshInitial = NULL;
+}
 
+Problem::~Problem()
+{
+    clear();
+}
+
+void Problem::clear()
+{
+    if (m_meshInitial)
+        delete m_meshInitial;
+    m_meshInitial = NULL;
+
+    // solution array memory leak ??
+
+    m_timeStep = 0;
+    m_isSolved = false;
+    m_isSolving = false;
 }
 
 void Problem::saveSolution(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, QList<SolutionArray<double> > solution)
@@ -235,17 +247,17 @@ void Problem::createStructure()
     QList<FieldInfo *> fieldInfos = Util::scene()->fieldInfos().values();
     QList<CouplingInfo* > couplingInfos = Util::scene()->couplingInfos().values();
 
-    while(!fieldInfos.empty()){
+    while (!fieldInfos.empty()){
         QList<FieldInfo*> blockFieldInfos;
         QList<CouplingInfo*> blockCouplingInfos;
 
         //first find one field, that is not weakly coupled and dependent on other fields
         bool dependent;
-        foreach(FieldInfo* fi, fieldInfos)
+        foreach (FieldInfo* fi, fieldInfos)
         {
             dependent = false;
 
-            foreach(CouplingInfo* ci, couplingInfos)
+            foreach (CouplingInfo* ci, couplingInfos)
             {
                 if(ci->isWeak() && (ci->targetField() == fi) && fieldInfos.contains(ci->sourceField()))
                     dependent = true;
@@ -265,9 +277,9 @@ void Problem::createStructure()
             added = false;
 
             // first check whether there is related coupling
-            foreach(CouplingInfo* checkedCouplingInfo, couplingInfos)
+            foreach (CouplingInfo* checkedCouplingInfo, couplingInfos)
             {
-                foreach(FieldInfo* checkedFieldInfo, blockFieldInfos)
+                foreach (FieldInfo* checkedFieldInfo, blockFieldInfos)
                 {
                     if(checkedCouplingInfo->isHard() && checkedCouplingInfo->isRelated(checkedFieldInfo))
                     {
@@ -280,9 +292,9 @@ void Problem::createStructure()
             }
 
             // check for fields related to allready included couplings
-            foreach(FieldInfo* checkedFieldInfo, fieldInfos)
+            foreach (FieldInfo* checkedFieldInfo, fieldInfos)
             {
-                foreach(CouplingInfo* checkedCouplingInfo, blockCouplingInfos)
+                foreach (CouplingInfo* checkedCouplingInfo, blockCouplingInfos)
                 {
                     if(checkedCouplingInfo->isHard() && checkedCouplingInfo->isRelated(checkedFieldInfo))
                     {
@@ -338,29 +350,6 @@ void Problem::solve(SolverMode solverMode)
     ErrorResult result = Util::scene()->writeToFile(tempProblemFileName() + ".a2d");
     if (result.isError())
         result.showDialog();
-
-//    if (solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve)
-//    {
-//        m_progressDialog->clear();
-//        m_progressDialog->appendProgressItem(m_progressItemMesh);
-//        if (solverMode == SolverMode_MeshAndSolve)
-//        {
-//            m_progressDialog->appendProgressItem(m_progressItemSolve);
-//            m_progressDialog->appendProgressItem(m_progressItemProcessView);
-//        }
-//    }
-//    else if (solverMode == SolverMode_SolveAdaptiveStep)
-//    {
-//        m_progressDialog->appendProgressItem(m_progressItemSolveAdaptiveStep);
-//        m_progressDialog->appendProgressItem(m_progressItemProcessView);
-//    }
-
-//    if (m_progressDialog->run())
-//    {
-//        setTimeStep(timeStepCount() - 1);
-//        //emit meshed();
-//        //emit solved();
-//    }
 
     createStructure();
 

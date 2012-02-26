@@ -87,9 +87,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
     connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), sceneViewGeometry, SLOT(doSceneGeometryModeSet(QAction *)));
+    connect(Util::scene(), SIGNAL(cleared()), sceneViewGeometry, SLOT(doDefaultValues()));
 
     // mesh
     connect(postprocessorView, SIGNAL(apply()), sceneViewMesh, SLOT(doInvalidated()));
+    connect(Util::scene(), SIGNAL(cleared()), postprocessorView, SLOT(doDefaultValues()));
 
     // postprocessor 2d
     connect(sceneViewPost2D, SIGNAL(mousePressed()), resultsView, SLOT(doShowResults()));
@@ -98,16 +100,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(postprocessorView, SIGNAL(apply()), sceneViewPost2D, SLOT(doInvalidated()));
     connect(resultsView->btnSelectMarker, SIGNAL(clicked()), sceneViewPost2D->actSceneViewSelectByMarker, SLOT(trigger()));
+    connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(doDefaultValues()));
 
     // postprocessor 3d
     //
 
     connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
-    sceneViewGeometry->doDefaultValues();
-    sceneViewMesh->doDefaultValues();
-    sceneViewPost2D->doDefaultValues();
-    sceneViewPost3D->doDefaultValues();
+    sceneViewGeometry->clear();
+    sceneViewMesh->clear();
+    sceneViewPost2D->clear();
+    sceneViewPost3D->clear();
 
     connect(chartDialog, SIGNAL(setChartLine(ChartLine)), sceneViewPost2D, SLOT(doSetChartLine(ChartLine)));
 
@@ -1081,10 +1084,10 @@ void MainWindow::doDocumentClose()
     */
 
     Util::scene()->clear();
-    sceneViewGeometry->doDefaultValues();
-    sceneViewMesh->doDefaultValues();
-    sceneViewPost2D->doDefaultValues();
-    sceneViewPost3D->doDefaultValues();
+    sceneViewGeometry->clear();
+    sceneViewMesh->clear();
+    sceneViewPost2D->clear();
+    sceneViewPost3D->clear();
     Util::scene()->refresh();
 
     sceneViewGeometry->actSceneModeNode->trigger();

@@ -44,7 +44,7 @@ SceneViewCommon2D::~SceneViewCommon2D()
 {
 }
 
-void SceneViewCommon2D::doDefaultValues()
+void SceneViewCommon2D::clear()
 {
     logMessage("SceneViewCommon::doDefaultValues()");
 
@@ -63,7 +63,7 @@ void SceneViewCommon2D::doDefaultValues()
     doInvalidated();
     doZoomBestFit();
 
-    SceneViewCommon::doDefaultValues();
+    SceneViewCommon::clear();
 }
 
 Point SceneViewCommon2D::position(const Point &point) const

@@ -31,7 +31,7 @@ class SceneViewPost3D : public SceneViewCommon3D
 
 public slots:
     virtual void doInvalidated();
-    virtual void doDefaultValues();
+    virtual void clear();
 
 public:
     SceneViewPost3D(QWidget *parent = 0);

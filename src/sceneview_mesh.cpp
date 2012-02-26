@@ -126,9 +126,11 @@ void SceneViewMesh::doInvalidated()
     SceneViewCommon::doInvalidated();
 }
 
-void SceneViewMesh::doDefaultValues()
+void SceneViewMesh::clear()
 {
-    SceneViewCommon2D::doDefaultValues();
+    m_meshHermes->clear();
+
+    SceneViewCommon2D::clear();
 }
 
 void SceneViewMesh::paintGL()

@@ -231,15 +231,15 @@ Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, Coupli
 void CouplingInfo::synchronizeCouplings(QMap<QString, FieldInfo *>& fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >& couplingInfos)
 {
     // add missing
-    foreach(FieldInfo* sourceField, fieldInfos)
+    foreach (FieldInfo* sourceField, fieldInfos)
     {
-        foreach(FieldInfo* targetField, fieldInfos)
+        foreach (FieldInfo* targetField, fieldInfos)
         {
             if(sourceField == targetField)
                 continue;
             QPair<FieldInfo*, FieldInfo*> fieldInfosPair(sourceField, targetField);
-            if(isCouplingAvailable(sourceField, targetField)){
-                if(! couplingInfos.contains(fieldInfosPair))
+            if (isCouplingAvailable(sourceField, targetField)){
+                if (!couplingInfos.contains(fieldInfosPair))
                 {
                     couplingInfos[fieldInfosPair] = new CouplingInfo(sourceField, targetField);
                 }
@@ -248,7 +248,7 @@ void CouplingInfo::synchronizeCouplings(QMap<QString, FieldInfo *>& fieldInfos, 
     }
 
     // remove extra
-    foreach(CouplingInfo* couplingInfo, couplingInfos)
+    foreach (CouplingInfo* couplingInfo, couplingInfos)
     {
         if(! (fieldInfos.contains(couplingInfo->sourceField()->fieldId()) &&
               fieldInfos.contains(couplingInfo->targetField()->fieldId()) &&

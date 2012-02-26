@@ -207,6 +207,7 @@ public slots:
 
 signals:
     void invalidated();
+    void cleared();
 
     /// emited when an field is added or removed. Menus need to adjusted
     void fieldsChanged();

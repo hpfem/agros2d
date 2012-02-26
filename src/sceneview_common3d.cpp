@@ -60,7 +60,7 @@ SceneViewCommon3D::~SceneViewCommon3D()
 {
 }
 
-void SceneViewCommon3D::doDefaultValues()
+void SceneViewCommon3D::clear()
 {
     logMessage("SceneViewCommon::doDefaultValues()");
 
@@ -75,7 +75,7 @@ void SceneViewCommon3D::doDefaultValues()
     doInvalidated();
     doZoomBestFit();
 
-    SceneViewCommon::doDefaultValues();
+    SceneViewCommon::clear();
 }
 
 void SceneViewCommon3D::paintBackground()

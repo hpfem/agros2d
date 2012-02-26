@@ -654,7 +654,12 @@ void ProblemDialog::createControls()
     tabType->addTab(createControlsStartupScript(), icon(""), tr("Startup script"));
     tabType->addTab(createControlsDescription(), icon(""), tr("Description"));
 
+    QPushButton *btnNewField = new QPushButton(this);
+    btnNewField->setText(tr("Add field"));
+    connect(btnNewField, SIGNAL(clicked()), this, SLOT(doAddField()));
+
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox->addButton(btnNewField, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -764,7 +769,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     // fields
     QToolButton *btnNewField = new QToolButton(this);
     btnNewField->setAutoRaise(true);
-    btnNewField->setToolTip(tr("Add new document"));
+    btnNewField->setToolTip(tr("Add field"));
     btnNewField->setIcon(icon("tabadd"));
     btnNewField->setToolButtonStyle(Qt::ToolButtonIconOnly);
     connect(btnNewField, SIGNAL(clicked()), this, SLOT(doAddField()));

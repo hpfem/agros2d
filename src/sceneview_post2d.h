@@ -88,7 +88,7 @@ public slots:
     void doSelectMarker();
     void doPostprocessorModeGroup(QAction *action);
     virtual void doInvalidated();
-    virtual void doDefaultValues();
+    virtual void clear();
 
 public:
     SceneViewPost2D(QWidget *parent = 0);

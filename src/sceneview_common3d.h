@@ -29,7 +29,7 @@ class SceneViewCommon3D : public SceneViewPostInterface
     Q_OBJECT
 
 public slots:
-    virtual void doDefaultValues();
+    virtual void clear();
 
     void doSetProjectionXY();
     void doSetProjectionXZ();

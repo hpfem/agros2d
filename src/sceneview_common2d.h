@@ -29,7 +29,7 @@ class SceneViewCommon2D : public SceneViewPostInterface
     Q_OBJECT
 
 public slots:
-    virtual void doDefaultValues();
+    virtual void clear();
 
 public:
     SceneViewCommon2D(QWidget *parent = 0);

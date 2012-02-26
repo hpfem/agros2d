@@ -73,7 +73,7 @@ public:
 
 public slots:
     virtual void doInvalidated();
-    virtual void doDefaultValues();
+    virtual void clear();
 
 protected:
     virtual void paintGL();

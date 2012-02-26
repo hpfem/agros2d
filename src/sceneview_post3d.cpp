@@ -64,7 +64,7 @@ SceneViewPost3D::SceneViewPost3D(QWidget *parent) : SceneViewCommon3D(parent),
     createActionsPost3D();
 
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
-    connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(doDefaultValues()));
+    connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
 
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
 }
@@ -747,7 +747,7 @@ void SceneViewPost3D::doInvalidated()
     SceneViewCommon::doInvalidated();
 }
 
-void SceneViewPost3D::doDefaultValues()
+void SceneViewPost3D::clear()
 {
-    SceneViewCommon3D::doDefaultValues();
+    SceneViewCommon3D::clear();
 }

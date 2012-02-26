@@ -237,7 +237,7 @@ void SceneViewCommon::doSetChartLine(const ChartLine &chartLine)
     updateGL();
 }
 
-void SceneViewCommon::doDefaultValues()
+void SceneViewCommon::clear()
 {
     logMessage("SceneViewCommon::doDefaultValues()");
 

@@ -93,11 +93,15 @@ signals:
 
 public:
     Problem();
-    ~Problem() {}
+    ~Problem();
+
+    // clear problem
+    void clear();
+
     void createStructure();
 
+    // mesh
     void mesh();
-
     // solve
     void solve(SolverMode solverMode);
 
@@ -109,7 +113,7 @@ public:
     ProgressDialog* progressDialog();
 
     inline Hermes::Hermes2D::Mesh *meshInitial() { return m_meshInitial; }
-    inline void setMeshInitial(Hermes::Hermes2D::Mesh* mesh) {m_meshInitial = mesh; }
+    inline void setMeshInitial(Hermes::Hermes2D::Mesh* mesh) { m_meshInitial = mesh; }
 
     // time TODO zatim tady, ale asi presunout
     void setTimeStep(int timeStep, bool showViewProgress = true) { assert(0); }

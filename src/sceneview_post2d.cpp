@@ -183,7 +183,7 @@ SceneViewPost2D::SceneViewPost2D(QWidget *parent) : SceneViewMesh(parent),
     createActionsPost2D();
 
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
-    connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(doDefaultValues()));
+    connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
 
     m_post2DHermes = new Post2DHermes();
 
@@ -1009,11 +1009,13 @@ void SceneViewPost2D::doInvalidated()
     SceneViewCommon::doInvalidated();
 }
 
-void SceneViewPost2D::doDefaultValues()
+void SceneViewPost2D::clear()
 {
+    m_post2DHermes->clear();
+
     actPostprocessorModeLocalPointValue->trigger();
 
-    SceneViewCommon2D::doDefaultValues();
+    SceneViewCommon2D::clear();
 }
 
 void SceneViewPost2D::doSelectMarker()

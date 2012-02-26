@@ -141,9 +141,9 @@ void SceneViewGeometry::doSelectBasic()
     sceneBasicSelectDialog.exec();
 }
 
-void SceneViewGeometry::doDefaultValues()
+void SceneViewGeometry::clear()
 {
-    SceneViewCommon2D::doDefaultValues();
+    SceneViewCommon2D::clear();
 
     m_selectRegion = false;
 
