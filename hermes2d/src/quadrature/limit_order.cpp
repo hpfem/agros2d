@@ -1,4 +1,4 @@
-#include "hermes2d_common_defs.h"
+#include "global.h"
 #include "quad_all.h"
 #include "limit_order.h"
 
@@ -43,7 +43,6 @@ namespace Hermes
 
     HERMES_API int  g_max_order;
     HERMES_API int  g_safe_max_order;
-    HERMES_API int* g_order_table = NULL;
 
     HERMES_API void set_order_limit_table(int* tri_table, int* quad_table, int n)
     {
@@ -52,12 +51,10 @@ namespace Hermes
       g_order_table_quad = quad_table;
     }
 
-    HERMES_API void update_limit_table(int mode)
+    HERMES_API void update_limit_table(ElementMode2D mode)
     {
-      g_quad_2d_std.set_mode(mode);
-      g_max_order = g_quad_2d_std.get_max_order();
-      g_safe_max_order = g_quad_2d_std.get_safe_max_order();
-      g_order_table = (mode == HERMES_MODE_TRIANGLE) ? g_order_table_tri : g_order_table_quad;
+      g_max_order = g_quad_2d_std.get_max_order(mode);
+      g_safe_max_order = g_quad_2d_std.get_safe_max_order(mode);
     }
 
     HERMES_API void reset_warn_order()
@@ -74,21 +71,27 @@ namespace Hermes
       }
     }
 
-    HERMES_API void limit_order(int& o)
+    HERMES_API void limit_order(int& o, ElementMode2D mode)
     {
-      if (o > g_safe_max_order) 
+      if (o > g_quad_2d_std.get_safe_max_order(mode)) 
       { 
-        o = g_safe_max_order;
+        o = g_quad_2d_std.get_safe_max_order(mode);
         warn_order();
       }
-      o = g_order_table[o];
+      if(mode == HERMES_MODE_TRIANGLE)
+        o = g_order_table_tri[o];
+      else
+        o = g_order_table_quad[o];
     }
 
-    HERMES_API void limit_order_nowarn(int& o)
+    HERMES_API void limit_order_nowarn(int& o, ElementMode2D mode)
     {
-      if (o > g_safe_max_order)
-        o = g_safe_max_order;
-      o = g_order_table[o];
+      if (o > g_quad_2d_std.get_safe_max_order(mode))
+        o = g_quad_2d_std.get_safe_max_order(mode);
+      if(mode == HERMES_MODE_TRIANGLE)
+        o = g_order_table_tri[o];
+      else
+        o = g_order_table_quad[o];
     }
   }
 }

@@ -54,14 +54,14 @@ void MeshHermes::processOrder()
 void MeshHermes::processInitialMesh()
 {
     // init linearizer for initial mesh
-    InitialCondition<double> initial(Util::problem()->meshInitial(), 0.0);
+    Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->meshInitial());
     m_linInitialMeshView.process_solution(&initial);
 }
 
 void MeshHermes::processSolutionMesh()
 {
     // init linearizer for solution mesh
-    InitialCondition<double> solution(Util::scene()->activeSceneSolution()->sln(0)->get_mesh(), 0.0);
+    Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeSceneSolution()->sln(0)->get_mesh());
     m_linSolutionMeshView.process_solution(&solution);
 }
 

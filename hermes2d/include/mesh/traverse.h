@@ -51,21 +51,57 @@ namespace Hermes
       Element* e;
       uint64_t idx;
     };
+    
+      
+    static const uint64_t ONE = (uint64_t) 1 << 63;
 
+    struct Rect
+    {
+      uint64_t l, b, r, t;
+    };
 
+      
     /// Traverse is a multi-mesh traversal utility class. Given N meshes sharing the
     /// same base mesh it walks through all (pseudo-)elements of the union of all
     /// the N meshes.
     ///
     class HERMES_API Traverse
     {
+    public:
+      Traverse(bool master = false);
     private:
+      class State
+      {
+      public:
+        Element** e;
+        bool bnd[4];
+        Element* rep;
+        ~State();
+      private:
+        State();
+        void operator=(const State * other);
+        void push_transform(int son, int i, bool is_triangle = false);
+        uint64_t get_transform(int i);
+        bool visited;
+        uint64_t* sub_idx;
+        Rect  cr;
+        Rect* er;
+        int num;
+        int isurf;
+      friend class Traverse;
+      friend class Views::Linearizer;
+      friend class Views::Vectorizer;
+      template<typename Scalar> friend class DiscreteProblem;
+      };
 
       void begin(int n, Mesh** meshes, Transformable** fn = NULL);
       void finish();
 
-      Element** get_next_state(bool* bnd, SurfPos* surf_pos);
+      State* get_next_state(int* top_by_ref = NULL, int* id_by_ref = NULL);
+      int get_num_states(Hermes::vector<Mesh*> meshes);
       inline Element*  get_base() const { return base; }
+
+      void init_transforms(State* s, int i);
 
       UniData** construct_union_mesh(Mesh* unimesh);
       
@@ -85,10 +121,14 @@ namespace Hermes
       UniData** unidata;
       int udsize;
 
-      State* push_state();
-      void set_boundary_info(State* s, bool* bnd, SurfPos* surf_pos);
+      State* push_state(int* top_by_ref = NULL);
+      void set_boundary_info(State* s);
       void union_recurrent(Rect* cr, Element** e, Rect* er, uint64_t* idx, Element* uni);
       uint64_t init_idx(Rect* cr, Rect* er);
+
+      void free_state(State* state);
+
+      bool master;
 
       Mesh* unimesh;
       template<typename T> friend class Adapt;

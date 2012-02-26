@@ -228,7 +228,6 @@ namespace Hermes
         return new DefaultJacobianDiffusion<Scalar>(*this);
       }
 
-
       template<typename Scalar>
       DefaultJacobianAdvection<Scalar>::DefaultJacobianAdvection(int i, int j, std::string area,
         Hermes1DFunction<Scalar>* coeff1,
@@ -547,7 +546,6 @@ namespace Hermes
         return new DefaultResidualDiffusion<Scalar>(*this);
       }
 
-
       template<typename Scalar>
       DefaultResidualAdvection<Scalar>::DefaultResidualAdvection(int i, std::string area,
         Hermes1DFunction<Scalar>* coeff1,
@@ -616,7 +614,6 @@ namespace Hermes
       {
         return new DefaultResidualAdvection<Scalar>(*this);
       }
-
 
       template<typename Scalar>
       DefaultMatrixFormSurf<Scalar>::DefaultMatrixFormSurf(int i, int j, std::string area,
@@ -697,13 +694,11 @@ namespace Hermes
         return result;
       }
 
-      // This is to make the form usable in rk_time_step_newton().
       template<typename Scalar>
       MatrixFormSurf<Scalar>* DefaultMatrixFormSurf<Scalar>::clone()
       {
         return new DefaultMatrixFormSurf<Scalar>(*this);
       }
-
 
       template<typename Scalar>
       DefaultJacobianFormSurf<Scalar>::DefaultJacobianFormSurf(int i, int j, std::string area,
@@ -764,7 +759,6 @@ namespace Hermes
       {
         return new DefaultJacobianFormSurf<Scalar>(*this);
       }
-
 
       template<typename Scalar>
       DefaultVectorFormSurf<Scalar>::DefaultVectorFormSurf(int i, std::string area,
@@ -850,61 +844,6 @@ namespace Hermes
       {
         return new DefaultVectorFormSurf<Scalar>(*this);
       }
-
-
-      template<typename Scalar>
-      DefaultMultiComponentVectorFormSurf<Scalar>::DefaultMultiComponentVectorFormSurf(Hermes::vector<unsigned int> coordinates,
-        std::string area,
-        Hermes::vector<Scalar> coeffs,
-        GeomType gt)
-        : MultiComponentVectorFormSurf<Scalar>(coordinates, area), coeffs(coeffs), gt(gt)
-      {
-      }
-
-      template<typename Scalar>
-      DefaultMultiComponentVectorFormSurf<Scalar>::DefaultMultiComponentVectorFormSurf(Hermes::vector<unsigned int> coordinates,
-        Hermes::vector<std::string> areas,
-        Hermes::vector<Scalar> coeffs, GeomType gt)
-        : MultiComponentVectorFormSurf<Scalar>(coordinates, areas), coeffs(coeffs), gt(gt)
-      {
-      }
-
-      template<typename Scalar>
-      void DefaultMultiComponentVectorFormSurf<Scalar>::value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-        Geom<double> *e, ExtData<Scalar> *ext,
-        Hermes::vector<Scalar>& result) const
-      {
-        Scalar result_base = 0;
-        if (gt == HERMES_PLANAR)
-          result_base = int_v<double>(n, wt, v);
-        else
-          if (gt == HERMES_AXISYM_X)
-            result_base = int_y_v<double>(n, wt, v, e);
-          else
-            result_base = int_x_v<double>(n, wt, v, e);
-
-        for(unsigned int result_i = 0; result_i < this->coordinates.size(); result_i++)
-          result.push_back(result_base * coeffs[result_i]);
-      }
-
-      template<typename Scalar>
-      Ord DefaultMultiComponentVectorFormSurf<Scalar>::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
-        Geom<Ord> *e, ExtData<Ord> *ext) const
-      {
-        if (gt == HERMES_PLANAR)
-          return int_v<Ord>(n, wt, v);
-        else
-          if (gt == HERMES_AXISYM_X)
-            return int_y_v<Ord>(n, wt, v, e);
-          else
-            return int_x_v<Ord>(n, wt, v, e);
-      }
-
-      /*
-      VectorFormSurf<Scalar>* DefaultMultiComponentVectorFormSurf<Scalar>::clone() {
-      return new DefaultMultiComponentVectorFormSurf<Scalar>(*this);
-      }
-      */
 
       template<typename Scalar>
       DefaultResidualSurf<Scalar>::DefaultResidualSurf(int i, std::string area,
@@ -1042,8 +981,6 @@ namespace Hermes
       template class HERMES_API DefaultVectorFormVol<std::complex<double> >;
       template class HERMES_API DefaultJacobianFormSurf<double>;
       template class HERMES_API DefaultJacobianFormSurf<std::complex<double> >;
-      template class HERMES_API DefaultMultiComponentVectorFormSurf<double>;
-      template class HERMES_API DefaultMultiComponentVectorFormSurf<std::complex<double> >;
       template class HERMES_API DefaultWeakFormLaplace<double>;
       template class HERMES_API DefaultWeakFormLaplace<std::complex<double> >;
       template class HERMES_API DefaultWeakFormPoisson<double>;

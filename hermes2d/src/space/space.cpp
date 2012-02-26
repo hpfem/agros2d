@@ -34,7 +34,7 @@ namespace Hermes
     unsigned g_space_seq = 0;
 
     template<typename Scalar>
-    Space<Scalar>::Space(Mesh* mesh, Shapeset* shapeset, EssentialBCs<Scalar>* essential_bcs, Ord2 p_init)
+    Space<Scalar>::Space(Mesh* mesh, Shapeset* shapeset, EssentialBCs<Scalar>* essential_bcs, int p_init)
       : shapeset(shapeset), essential_bcs(essential_bcs), mesh(mesh)
     {
       _F_;
@@ -250,7 +250,24 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    int Space<Scalar>::get_num_dofs(Hermes::vector<Space<Scalar>*> spaces)
+    {
+      _F_;
+      int ndof = 0;
+      for (unsigned int i = 0; i<spaces.size(); i++) {
+        ndof += spaces[i]->get_num_dofs();
+      }
+      return ndof;
+    }
+
+    template<typename Scalar>
     int Space<Scalar>::get_num_dofs(const Space<Scalar>* space)
+    {
+      return space->get_num_dofs();
+    }
+
+    template<typename Scalar>
+    int Space<Scalar>::get_num_dofs(Space<Scalar>* space)
     {
       return space->get_num_dofs();
     }
@@ -290,24 +307,20 @@ namespace Hermes
     {
       _F_;
       if(marker == HERMES_ANY)
-        set_uniform_order_internal(Ord2(order, order), -1234);
+        set_uniform_order_internal(order, -1234);
       else
-        set_uniform_order_internal(Ord2(order, order), mesh->element_markers_conversion.get_internal_marker(marker).marker);
+        set_uniform_order_internal(order, mesh->element_markers_conversion.get_internal_marker(marker).marker);
 
       // since space changed, enumerate basis functions
       this->assign_dofs();
     }
 
     template<typename Scalar>
-    void Space<Scalar>::set_uniform_order_internal(Ord2 order, int marker)
+    void Space<Scalar>::set_uniform_order_internal(int order, int marker)
     {
       _F_;
       resize_tables();
-      if (order.order_h < 0 || order.order_v < 0)
-        error("Hermes::Order cannot be negative.");
-      if (order.order_h > 10 || order.order_v > 10)
-        error("Hermes::Order = %d x %d, maximum is 10.", order.order_h, order.order_v);
-      int quad_order = H2D_MAKE_QUAD_ORDER(order.order_h, order.order_v);
+      int quad_order = H2D_MAKE_QUAD_ORDER(order, order);
 
       Element* e;
       for_all_active_elements(e, mesh)
@@ -316,10 +329,7 @@ namespace Hermes
         {
           ElementData* ed = &edata[e->id];
           if (e->is_triangle())
-            if(order.order_h != order.order_v)
-              error("Hermes::Orders do not match and triangles are present in the mesh.");
-            else
-              ed->order = order.order_h;
+            ed->order = order;
           else
             ed->order = quad_order;
         }
@@ -389,7 +399,10 @@ namespace Hermes
           set_element_order_internal(e->id, std::max<int>(horizontal_min_order, get_element_order(e->id) + horizontal_order_change));
         }
         else
-          set_element_order_internal(e->id, H2D_MAKE_QUAD_ORDER(std::max<int>(H2D_GET_H_ORDER(get_element_order(e->id)) + horizontal_order_change, horizontal_min_order), std::max<int>(H2D_GET_V_ORDER(get_element_order(e->id)) + vertical_order_change, vertical_min_order)));
+          if(get_element_order(e->id) == -1)
+            set_element_order_internal(e->id, H2D_MAKE_QUAD_ORDER(horizontal_min_order, vertical_min_order));
+          else
+            set_element_order_internal(e->id, H2D_MAKE_QUAD_ORDER(std::max<int>(H2D_GET_H_ORDER(get_element_order(e->id)) + horizontal_order_change, horizontal_min_order), std::max<int>(H2D_GET_V_ORDER(get_element_order(e->id)) + vertical_order_change, vertical_min_order)));
       }
       assign_dofs();
     }
@@ -755,7 +768,6 @@ namespace Hermes
 
       // add vertex, edge and bubble functions to the assembly list
       al->cnt = 0;
-      shapeset->set_mode(e->get_mode());
       for (unsigned int i = 0; i < e->get_num_surf(); i++)
         get_vertex_assembly_list(e, i, al);
       for (unsigned int i = 0; i < e->get_num_surf(); i++)
@@ -771,7 +783,6 @@ namespace Hermes
     {
       _F_;
       al->cnt = 0;
-      shapeset->set_mode(e->get_mode());
       get_vertex_assembly_list(e, surf_num, al);
       get_vertex_assembly_list(e, e->next_vert(surf_num), al);
       get_boundary_assembly_list_internal(e, surf_num, al);
@@ -788,7 +799,7 @@ namespace Hermes
 
       if (!ed->n) return;
 
-      int* indices = shapeset->get_bubble_indices(ed->order);
+      int* indices = shapeset->get_bubble_indices(ed->order, e->get_mode());
       for (int i = 0, dof = ed->bdof; i < ed->n; i++, dof += stride, indices++)
         al->add_triplet(*indices, dof, 1.0);
     }
@@ -812,21 +823,19 @@ namespace Hermes
       int component = (get_type() == HERMES_HDIV_SPACE) ? 1 : 0;
 
       Quad1DStd quad1d;
-      //shapeset->set_mode(HERMES_MODE_TRIANGLE);
-      shapeset->set_mode(HERMES_MODE_QUAD);
       for (int i = 0; i < n; i++)
       {
         for (int j = i; j < n; j++)
         {
           int o = i + j + 4;
           double2* pt = quad1d.get_points(o);
-          int ii = shapeset->get_edge_index(0, 0, i + nv);
-          int ij = shapeset->get_edge_index(0, 0, j + nv);
+          int ii = shapeset->get_edge_index(0, 0, i + nv, HERMES_MODE_QUAD);
+          int ij = shapeset->get_edge_index(0, 0, j + nv, HERMES_MODE_QUAD);
           double val = 0.0;
           for (int k = 0; k < quad1d.get_num_points(o); k++)
           {
-            val += pt[k][1] * shapeset->get_fn_value(ii, pt[k][0], -1.0, component)
-              * shapeset->get_fn_value(ij, pt[k][0], -1.0, component);
+            val += pt[k][1] * shapeset->get_fn_value(ii, pt[k][0], -1.0, component, HERMES_MODE_QUAD)
+              * shapeset->get_fn_value(ij, pt[k][0], -1.0, component, HERMES_MODE_QUAD);
           }
           mat[i][j] = val;
         }
@@ -900,7 +909,7 @@ namespace Hermes
     {
       _F_;
       for (unsigned int i = 0; i < bc_data.size(); i++)
-        ::free(bc_data[i]);
+        delete (bc_data[i]);
       bc_data.clear();
     }
 

@@ -23,6 +23,7 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    enum SpaceType;
     /// \brief Caches precalculated shape function values.
     ///
     /// PrecalcShapeset is a cache of precalculated shape function values.
@@ -76,9 +77,6 @@ namespace Hermes
       /// Returns a pointer to the shapeset which is being precalculated.
       Shapeset* get_shapeset() const;
 
-      /// Internal. Use set_active_element() instead.
-      void set_mode(int mode);
-
       /// For internal use only.
       void set_master_transform();
 
@@ -102,8 +100,6 @@ namespace Hermes
       /// quadrature table selector (0-7), mode of the shape function (triangle/quad),
       /// and shape function index to a table from the middle layer.
       LightArray<std::map<uint64_t, LightArray<Node*>*>*> tables;
-
-      int mode;
 
       int index;
 

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "hermes2d_common_defs.h"
+#include "global.h"
 #include "mesh.h"
 #include "hash.h"
 
@@ -69,7 +69,7 @@ namespace Hermes
     /// Returns the total number of nodes stored.
     int HashTable::get_num_nodes() const 
     {
-      return nodes.get_num_items();
+      return nodes.get_num_items(); 
     }
 
     /// Returns the maximum node id number plus one.

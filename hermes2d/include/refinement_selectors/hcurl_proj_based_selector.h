@@ -37,6 +37,9 @@ namespace Hermes
         *  \param[in] max_order A maximum order which considered. If ::H2DRS_DEFAULT_ORDER, a maximum order supported by the selector is used, see HcurlProjBasedSelector::H2DRS_MAX_HCURL_ORDER.
         *  \param[in] user_shapeset A shapeset. If NULL, it will use internal instance of the class HcurlShapeset. */
         HcurlProjBasedSelector(CandList cand_list = H2D_HP_ANISO, double conv_exp = 1.0, int max_order = H2DRS_DEFAULT_ORDER, HcurlShapeset* user_shapeset = NULL);
+        
+        /// Cloning for paralelism.
+        virtual Selector<std::complex<double> >* clone();
 
         /// Destructor.
         virtual ~HcurlProjBasedSelector();
@@ -66,15 +69,15 @@ namespace Hermes
 
         /// Calculates values of shape function at GIP for all transformations.
         /**  Overriden function. For details, see ProjBasedSelector::precalc_shapes(). */
-        virtual void precalc_shapes(const double3* gip_points, const int num_gip_points, const Trf* trfs, const int num_noni_trfs, const Hermes::vector<ShapeInx>& shapes, const int max_shape_inx, TrfShape& svals);
+        virtual void precalc_shapes(const double3* gip_points, const int num_gip_points, const Trf* trfs, const int num_noni_trfs, const Hermes::vector<ShapeInx>& shapes, const int max_shape_inx, TrfShape& svals, ElementMode2D mode);
 
         /// Calculates values of orthogonalized shape function at GIP for all transformations.
         /**  Overriden function. For details, see ProjBasedSelector::precalc_ortho_shapes(). */
-        virtual void precalc_ortho_shapes(const double3* gip_points, const int num_gip_points, const Trf* trfs, const int num_noni_trfs, const Hermes::vector<ShapeInx>& shapes, const int max_shape_inx, TrfShape& svals);
+        virtual void precalc_ortho_shapes(const double3* gip_points, const int num_gip_points, const Trf* trfs, const int num_noni_trfs, const Hermes::vector<ShapeInx>& shapes, const int max_shape_inx, TrfShape& svals, ElementMode2D mode);
 
         /// Builds projection matrix using a given set of shapes.
         /**  Overriden function. For details, see ProjBasedSelector::build_projection_matrix(). */
-        virtual double** build_projection_matrix(double3* gip_points, int num_gip_points, const int* shape_inx, const int num_shapes);
+        virtual double** build_projection_matrix(double3* gip_points, int num_gip_points, const int* shape_inx, const int num_shapes, ElementMode2D mode);
 
         /// Evaluates a value of the right-hande side in a subdomain.
         /**  Overriden function. For details, see ProjBasedSelector::evaluate_rhs_subdomain(). */
@@ -83,8 +86,6 @@ namespace Hermes
         /// Evaluates an squared error of a projection of an element of a candidate onto subdomains.
         /**  Overriden function. For details, see ProjBasedSelector::evaluate_error_squared_subdomain(). */
         virtual double evaluate_error_squared_subdomain(Element* sub_elem, const ElemGIP& sub_gip, const ElemSubTrf& sub_trf, const ElemProj& elem_proj);
-
-        static HcurlShapeset default_shapeset; ///< A default shapeset.
       };
     }
   }

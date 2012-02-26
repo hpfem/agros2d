@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "hermes2d_common_defs.h"
+#include "global.h"
 #include "quad_all.h"
 
 namespace Hermes
@@ -2488,8 +2488,6 @@ namespace Hermes
 
     Quad2DStd::Quad2DStd()
     {
-      mode = HERMES_MODE_TRIANGLE;
-
       ref_vert[0][0][0] = -1.0;
       ref_vert[0][0][1] = -1.0;
       ref_vert[0][1][0] =  1.0;

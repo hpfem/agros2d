@@ -236,14 +236,7 @@ namespace Hermes
         // Assemble the block Jacobian matrix of the stationary residual F.
         // Diagonal blocks are created even if empty, so that matrix_left can be added later.
         bool force_diagonal_blocks = true;
-        bool add_dir_lift = false;
-        stage_dp_right.assemble(u_ext_vec, NULL, vector_right, force_diagonal_blocks, add_dir_lift);
-
-        std::ofstream rhs_out("rhs_out");
-        for(int i = 0; i < vector_right->length(); i++)
-          if(std::abs(vector_right->get(i)) > 1E-5)
-            rhs_out << i << ':' <<  vector_right->get(i) << std::endl;
-        rhs_out.close();
+        stage_dp_right.assemble(u_ext_vec, NULL, vector_right, force_diagonal_blocks);
 
         // Finalizing the residual vector.
         vector_right->add_vector(vector_left);
@@ -261,9 +254,9 @@ namespace Hermes
           // Translate residual vector into residual functions.
           Hermes::vector<bool> add_dir_lift_vector;
           add_dir_lift_vector.reserve(1);
-          add_dir_lift_vector.push_back(add_dir_lift);
+          add_dir_lift_vector.push_back(false);
           Solution<Scalar>::vector_to_solutions(vector_right, stage_dp_right.get_spaces(),
-            residuals_vector, add_dir_lift_vector);
+            residuals_vector);
           residual_norm = Global<Scalar>::calc_norms(residuals_vector);
         }
 
@@ -294,14 +287,7 @@ namespace Hermes
           // Assemble the block Jacobian matrix of the stationary residual F
           // Diagonal blocks are created even if empty, so that matrix_left
           // can be added later.
-          stage_dp_right.assemble(u_ext_vec, matrix_right, NULL, force_diagonal_blocks, add_dir_lift);
-
-          std::ofstream mat_out("mat_out");
-          for(int i = 0; i < vector_right->length(); i++)
-            for(int j = 0; j < vector_right->length(); j++)
-              if(std::abs(matrix_right->get(i,j)) > 1E-5)
-                mat_out << i << ',' << j << ':' <<  matrix_right->get(i,j) << std::endl;
-          mat_out.close();
+          stage_dp_right.assemble(u_ext_vec, matrix_right, NULL, force_diagonal_blocks);
 
           // Adding the block mass matrix M to matrix_right. This completes the
           // resulting tensor Jacobian.
@@ -326,7 +312,7 @@ namespace Hermes
       // If max number of iterations was exceeded, fail.
       if (it >= newton_max_iter)
       {
-        throw Exceptions::ValueException("newton iterations", it, newton_max_iter);
+        throw Exceptions::ValueException("Newton iterations", it, newton_max_iter);
       }
 
       // Project previous time level solution on the stage space,
@@ -358,7 +344,7 @@ namespace Hermes
       {
         for (int i = 0; i < ndof; i++)
         {
-          coeff_vec[i] = 0;
+          coeff_vec[i] = 0.;
           for (unsigned int j = 0; j < num_stages; j++)
             coeff_vec[i] += (bt->get_B(j) - bt->get_B2(j)) * K_vector[j * ndof + i];
           coeff_vec[i] *= time_step;

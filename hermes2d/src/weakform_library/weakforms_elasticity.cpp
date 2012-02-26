@@ -52,6 +52,12 @@ namespace Hermes
       }
 
       template<typename Scalar>
+      MatrixFormVol<Scalar>* DefaultJacobianElasticity_0_0<Scalar>::clone()
+      {
+        return new DefaultJacobianElasticity_0_0<Scalar>(this->i, this->j, this->areas[0], this->lambda, this->mu);
+      }
+
+      template<typename Scalar>
       DefaultJacobianElasticity_0_1<Scalar>::DefaultJacobianElasticity_0_1
         (unsigned int i, unsigned int j, double lambda, double mu)
         : MatrixFormVol<Scalar>(i, j, HERMES_ANY, HERMES_SYM), lambda(lambda), mu(mu)
@@ -79,6 +85,12 @@ namespace Hermes
       {
         return lambda * int_dudy_dvdx<Ord, Ord>(n, wt, u, v) +
           mu * int_dudx_dvdy<Ord, Ord>(n, wt, u, v);
+      }
+
+      template<typename Scalar>
+      MatrixFormVol<Scalar>* DefaultJacobianElasticity_0_1<Scalar>::clone()
+      {
+        return new DefaultJacobianElasticity_0_1<Scalar>(this->i, this->j, this->areas[0], this->lambda, this->mu);
       }
 
       template<typename Scalar>
@@ -112,6 +124,12 @@ namespace Hermes
       }
 
       template<typename Scalar>
+      VectorFormVol<Scalar>* DefaultResidualElasticity_0_0<Scalar>::clone()
+      {
+        return new DefaultResidualElasticity_0_0<Scalar>(this->i, this->areas[0], this->lambda, this->mu);
+      }
+
+      template<typename Scalar>
       DefaultResidualElasticity_0_1<Scalar>::DefaultResidualElasticity_0_1
         (unsigned int i, double lambda, double mu)
         : VectorFormVol<Scalar>(i), lambda(lambda), mu(mu)
@@ -139,6 +157,12 @@ namespace Hermes
       {
         return lambda * int_dudy_dvdx<Ord, Ord>(n, wt, u_ext[1], v) +
           mu * int_dudx_dvdy<Ord, Ord>(n, wt, u_ext[1], v);
+      }
+      
+      template<typename Scalar>
+      VectorFormVol<Scalar>* DefaultResidualElasticity_0_1<Scalar>::clone()
+      {
+        return new DefaultResidualElasticity_0_1<Scalar>(this->i, this->areas[0], this->lambda, this->mu);
       }
 
       template<typename Scalar>
@@ -171,6 +195,11 @@ namespace Hermes
           lambda * int_dudx_dvdy<Ord, Ord>(n, wt, u_ext[0], v);
       }
 
+      template<typename Scalar>
+      VectorFormVol<Scalar>* DefaultResidualElasticity_1_0<Scalar>::clone()
+      {
+        return new DefaultResidualElasticity_1_0<Scalar>(this->i, this->areas[0], this->lambda, this->mu);
+      }
 
       template<typename Scalar>
       DefaultResidualElasticity_1_1<Scalar>::DefaultResidualElasticity_1_1
@@ -200,6 +229,13 @@ namespace Hermes
       {
         return (2*mu + lambda) * int_dudy_dvdy<Ord, Ord>(n, wt, u_ext[1], v) +
           mu * int_dudx_dvdx<Ord, Ord>(n, wt, u_ext[1], v);
+      }
+
+      
+      template<typename Scalar>
+      VectorFormVol<Scalar>* DefaultResidualElasticity_1_1<Scalar>::clone()
+      {
+        return new DefaultResidualElasticity_1_1<Scalar>(this->i, this->areas[0], this->lambda, this->mu);
       }
 
       template<typename Scalar>
@@ -233,106 +269,9 @@ namespace Hermes
       }
 
       template<typename Scalar>
-      DefaultJacobianElasticity_00_11<Scalar>::DefaultJacobianElasticity_00_11
-        (Hermes::vector<std::pair<unsigned int, unsigned int> >coordinates, double lambda, double mu)
-        : MultiComponentMatrixFormVol<Scalar>(coordinates, HERMES_ANY, HERMES_SYM), lambda(lambda), mu(mu)
+      MatrixFormVol<Scalar>* DefaultJacobianElasticity_1_1<Scalar>::clone()
       {
-      }
-
-      template<typename Scalar>
-      DefaultJacobianElasticity_00_11<Scalar>::DefaultJacobianElasticity_00_11
-        (Hermes::vector<std::pair<unsigned int, unsigned int> >coordinates, std::string area, double lambda, double mu)
-        : MultiComponentMatrixFormVol<Scalar>(coordinates, area, HERMES_SYM), lambda(lambda), mu(mu)
-      {
-      }
-
-      template<typename Scalar>
-      void DefaultJacobianElasticity_00_11<Scalar>::value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-        Geom<double> *e, ExtData<Scalar> *ext, Hermes::vector<Scalar>& result) const
-      {
-        Scalar result_0_0 = 0;
-        Scalar result_1_1 = 0;
-        for (int i = 0; i < n; i++)
-        {
-          result_0_0 += wt[i] * ((lambda + 2*mu) * u->dx[i] * v->dx[i] + mu * u->dy[i] * v->dy[i]);
-          result_1_1 += wt[i] * (mu * u->dx[i] * v->dx[i] + (lambda + 2*mu) * u->dy[i] * v->dy[i]);
-        }
-        result.push_back(result_0_0);
-        result.push_back(result_1_1);
-      }
-
-      template<typename Scalar>
-      Ord DefaultJacobianElasticity_00_11<Scalar>::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
-        Geom<Ord> *e, ExtData<Ord> *ext) const
-      {
-        Hermes::vector<Ord> result;
-        Ord result_0_0(0);
-        Ord result_1_1(0);
-        for (int i = 0; i < n; i++)
-        {
-          result_0_0 += wt[i] * ((lambda + 2*mu) * u->dx[i] * v->dx[i] + mu * u->dy[i] * v->dy[i]);
-          result_1_1 += wt[i] * (mu * u->dx[i] * v->dx[i] + (lambda + 2*mu) * u->dy[i] * v->dy[i]);
-        }
-        result.push_back(result_0_0);
-        result.push_back(result_1_1);
-
-        // Choose the maximum order.
-        Ord to_return = result[0];
-        if(result[1] > to_return)
-          to_return = result[1];
-        return to_return;
-      }
-
-
-      template<typename Scalar>
-      DefaultResidualElasticity_00_11<Scalar>::DefaultResidualElasticity_00_11
-        (Hermes::vector<unsigned int> coordinates, double lambda, double mu)
-        : MultiComponentVectorFormVol<Scalar>(coordinates), lambda(lambda), mu(mu)
-      {
-      }
-
-      template<typename Scalar>
-      DefaultResidualElasticity_00_11<Scalar>::DefaultResidualElasticity_00_11
-        (Hermes::vector<unsigned int> coordinates, std::string area, double lambda, double mu)
-        : MultiComponentVectorFormVol<Scalar>(coordinates, area), lambda(lambda), mu(mu)
-      {
-      }
-
-      template<typename Scalar>
-      void DefaultResidualElasticity_00_11<Scalar>::value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-        Geom<double> *e, ExtData<Scalar> *ext, Hermes::vector<Scalar>& result) const
-      {
-        Scalar result_0 = 0;
-        Scalar result_1 = 0;
-        for (int i = 0; i < n; i++)
-        {
-          result_0 += wt[i] * ((lambda + 2*mu) * u_ext[0]->dx[i] * v->dx[i] + mu * u_ext[0]->dy[i] * v->dy[i]);
-          result_1 += wt[i] * (mu * u_ext[1]->dx[i] * v->dx[i] + (lambda + 2*mu) * u_ext[1]->dy[i] * v->dy[i]);
-        }
-        result.push_back(result_0);
-        result.push_back(result_1);
-      }
-
-      template<typename Scalar>
-      Ord DefaultResidualElasticity_00_11<Scalar>::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
-        Geom<Ord> *e, ExtData<Ord> *ext) const
-      {
-        Hermes::vector<Ord> result;
-        Ord result_0(0);
-        Ord result_1(0);
-        for (int i = 0; i < n; i++)
-        {
-          result_0 += wt[i] * ((lambda + 2*mu) * u_ext[0]->dx[i] * v->dx[i] + mu * u_ext[0]->dy[i] * v->dy[i]);
-          result_1 += wt[i] * (mu * u_ext[1]->dx[i] * v->dx[i] + (lambda + 2*mu) * u_ext[1]->dy[i] * v->dy[i]);
-        }
-        result.push_back(result_0);
-        result.push_back(result_1);
-
-        // Choose the maximum order.
-        Ord to_return = result[0];
-        if(result[1] > to_return)
-          to_return = result[1];
-        return to_return;
+        return new DefaultJacobianElasticity_1_1<Scalar>(this->i, this->j, this->areas[0], this->lambda, this->mu);
       }
 
       template class HERMES_API DefaultJacobianElasticity_0_0<double>;
@@ -342,8 +281,6 @@ namespace Hermes
       template class HERMES_API DefaultResidualElasticity_1_0<double>;
       template class HERMES_API DefaultResidualElasticity_1_1<double>;
       template class HERMES_API DefaultJacobianElasticity_1_1<double>;
-      template class HERMES_API DefaultJacobianElasticity_00_11<double>;
-      template class HERMES_API DefaultResidualElasticity_00_11<double>;
     };
   }
 }

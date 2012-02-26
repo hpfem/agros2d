@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "hermes2d_common_defs.h"
+#include "global.h"
 #include "space_l2.h"
 #include "matrix.h"
 #include "quad_all.h"
@@ -25,7 +25,7 @@ namespace Hermes
   namespace Hermes2D
   {
     template<typename Scalar>
-    void L2Space<Scalar>::init(Shapeset* shapeset, Ord2 p_init)
+    void L2Space<Scalar>::init(Shapeset* shapeset, int p_init)
     {
       if (shapeset == NULL)
       {
@@ -36,7 +36,7 @@ namespace Hermes
       lsize = 0;
 
       // set uniform poly order in elements
-      if (p_init.order_h < 0 || p_init.order_v < 0) error("P_INIT must be >= 0 in an L2 space.");
+      if (p_init < 0) error("P_INIT must be >= 0 in an L2 space.");
       else this->set_uniform_order_internal(p_init, HERMES_ANY_INT);
 
       // enumerate basis functions
@@ -45,10 +45,10 @@ namespace Hermes
 
     template<typename Scalar>
     L2Space<Scalar>::L2Space(Mesh* mesh, int p_init, Shapeset* shapeset)
-      : Space<Scalar>(mesh, shapeset, NULL, Ord2(p_init, p_init))
+      : Space<Scalar>(mesh, shapeset, NULL, p_init)
     {
       _F_;
-      init(shapeset, Ord2(p_init, p_init));
+      init(shapeset, p_init);
     }
 
     template<typename Scalar>
@@ -124,10 +124,9 @@ namespace Hermes
       Element* e;
       for_all_active_elements(e, this->mesh)
       {
-        this->shapeset->set_mode(e->get_mode());
         typename Space<Scalar>::ElementData* ed = &this->edata[e->id];
         ed->bdof = this->next_dof;
-        ed->n = this->shapeset->get_num_bubbles(ed->order); //FIXME: this function might return invalid value because retrieved bubble functions for non-uniform orders might be invalid for the given order.
+        ed->n = this->shapeset->get_num_bubbles(ed->order, e->get_mode()); //FIXME: this function might return invalid value because retrieved bubble functions for non-uniform orders might be invalid for the given order.
         this->next_dof += ed->n * this->stride;
       }
     }
@@ -148,7 +147,6 @@ namespace Hermes
 
       // add bubble functions to the assembly list
       al->cnt = 0;
-      this->shapeset->set_mode(e->get_mode());
       get_bubble_assembly_list(e, al);
       
       for(unsigned int i = 0; i < al->cnt; i++)
@@ -162,7 +160,7 @@ namespace Hermes
       typename Space<Scalar>::ElementData* ed = &this->edata[e->id];
       if (!ed->n) return;
 
-      int* indices = this->shapeset->get_bubble_indices(ed->order);
+      int* indices = this->shapeset->get_bubble_indices(ed->order, e->get_mode());
       for (int i = 0, dof = ed->bdof; i < ed->n; i++, dof += this->stride)
       {
         //printf("triplet: %d, %d, %f\n", *indices, dof, 1.0);

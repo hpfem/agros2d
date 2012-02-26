@@ -16,7 +16,7 @@
 #ifndef __H2D_MESH_H
 #define __H2D_MESH_H
 
-#include "../hermes2d_common_defs.h"
+#include "../global.h"
 #include "curved.h"
 #include "hash.h"
 
@@ -24,6 +24,12 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    enum ///< node types
+    {
+      HERMES_TYPE_VERTEX = 0,
+      HERMES_TYPE_EDGE = 1
+    };
+
     class Element;
     class HashTable;
     template<typename Scalar> class Space;
@@ -115,11 +121,11 @@ namespace Hermes
       Element();
 
       int id;              ///< element id number
-      unsigned active:1;   ///< 0 = active, no sons; 1 = inactive (refined), has sons
-      unsigned used:1;     ///< array item usage flag
+      bool active;   ///< 0 = active, no sons; 1 = inactive (refined), has sons
+      bool used;     ///< array item usage flag
       Element* parent;     ///< pointer to the parent element for the current son
       bool visited;        ///< true if the element has been visited during assembling
-      int get_num_surf();  ///< returns number of edges (same as number of vertices)
+      unsigned int get_num_surf();  ///< returns number of edges (same as number of vertices)
       
       /// Calculates the area of the element. For curved elements, this is only
       /// an approximation: the curvature is not accounted for.
@@ -141,12 +147,16 @@ namespace Hermes
 
       // returns the edge orientation. This works for the unconstrained edges.
       int get_edge_orientation(int ie) const;
-      int  get_mode() const;
+      ElementMode2D  get_mode() const;
 
       bool is_triangle() const;
       bool is_quad() const;
       bool is_curved() const;
       int get_nvert() const;
+      
+      bool hsplit() const;
+      bool vsplit() const;
+      bool bsplit() const;
 
     protected:
       int iro_cache;     ///< increase in integration order, see RefMap::calc_inv_ref_order()
@@ -154,10 +164,6 @@ namespace Hermes
       // helper functions to obtain the index of the next or previous vertex/edge
       int next_vert(int i) const;
       int prev_vert(int i) const;
-
-      bool hsplit() const;
-      bool vsplit() const;
-      bool bsplit() const;
 
       /// Returns a pointer to the neighboring element across the edge 'ie', or
       /// NULL if it does not exist or is across an irregular edge.
@@ -204,7 +210,6 @@ namespace Hermes
       friend class Views::Vectorizer;
       friend bool is_twin_nurbs(Element* e, int i);
       friend int rtb_criterion(Element* e);
-      friend int get_split_and_sons(Element* e, Rect* cr, Rect* er, int4& sons);
       friend CurvMap* create_son_curv_map(Element* e, int son);
     };
 

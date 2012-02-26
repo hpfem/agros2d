@@ -26,6 +26,7 @@
 #include "../mesh/element_to_refine.h"
 #include "../refinement_selectors/selector.h"
 #include "exceptions.h"
+#include "../global.h"
 
 namespace Hermes
 {
@@ -45,6 +46,8 @@ namespace Hermes
     *
     */
 
+    template<typename Scalar> class Global;
+
     /// Evaluation of an error between a (coarse) solution and a reference solution and adaptivity. \ingroup g_adapt
     /** The class provides basic functionality necessary to adaptively refine elements.
     *  Given a reference solution and a coarse solution, it calculates error estimates
@@ -61,13 +64,13 @@ namespace Hermes
       virtual ~Adapt();  ///< Destructor. Deallocates allocated private data.
 
       /// Matrix forms for error calculation.
-      class HERMES_API MatrixFormVolError
+      class HERMES_API MatrixFormVolError : public MatrixFormVol<Scalar>
       {
       public:
         /// Empty constructor.
-        MatrixFormVolError();
+        MatrixFormVolError(int i, int j);
         /// Constructor that takes the norm identification.
-        MatrixFormVolError(ProjNormType type);
+        MatrixFormVolError(int i, int j, ProjNormType type);
 
         /// Error bilinear form callback function.
         virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[],
@@ -79,6 +82,7 @@ namespace Hermes
           Func<Hermes::Ord> *u, Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e,
           ExtData<Hermes::Ord> *ext) const;
 
+        virtual MatrixFormVol<Scalar>* clone();
 
       protected:
         /// Norm used.
@@ -148,8 +152,7 @@ namespace Hermes
         unsigned int error_flags = HERMES_TOTAL_ERROR_REL | HERMES_ELEMENT_ERROR_REL);
 
       /// Refines elements based on results from calc_err_est().
-      /** The behavior of adaptivity can be controlled through methods should_ignore_element()
-      *  and can_refine_element() which are inteteded to be overridden if neccessary.
+      /** 
       *  \param[in] refinement_selectors Vector of selectors.
       *  \param[in] thr A threshold. The meaning of the threshold is defined by the parameter strat.
       *  \param[in] strat A strategy. It specifies a stop condition which quits processing elements in the Adapt::regular_queue. Possible values are 0, 1, 2, and 3.
@@ -161,8 +164,7 @@ namespace Hermes
         int regularize = -1, double to_be_processed = 0.0);
 
       /// Refines elements based on results from calc_err_est().
-      /** The behavior of adaptivity can be controlled through methods should_ignore_element()
-      *  and can_refine_element() which are inteteded to be overridden if neccessary.
+      /** 
       *  \param[in] refinement_selector A pointer to a selector which will select a refinement.
       *  \param[in] thr A threshold. The meaning of the threshold is defined by the parameter strat.
       *  \param[in] strat A strategy. It specifies a stop condition which quits processing elements in the Adapt::regular_queue. Possible values are 0, 1, 2, and 3.
@@ -172,11 +174,6 @@ namespace Hermes
       *  \return True if no element was refined. In usual case, this indicates that adaptivity is not able to refine anything and the adaptivity loop should end. */
       bool adapt(RefinementSelectors::Selector<Scalar>* refinement_selector, double thr, int strat = 0,
         int regularize = -1, double to_be_processed = 0.0);
-
-      /// Unrefines the elements with the smallest error.
-      /** \note This method is provided just for backward compatibility reasons. Currently, it is not used by the library.
-      *  \param[in] thr A stop condition relative error threshold. */
-      void unrefine(double thr);
 
       /// Returns a squared error of an element.
       /** \param[in] A component index.
@@ -212,25 +209,6 @@ namespace Hermes
       Hermes::vector<ElementReference> regular_queue; ///< A queue of elements which should be processes. The queue had to be filled by the method fill_regular_queue().
       std::vector<ElementToRefine> last_refinements; ///< A vector of refinements generated during the last finished execution of the method adapt().
 
-      /// Returns true if a given element should be ignored and not processed through refinement selection.
-      /** Overload this method to omit some elements from processing.
-      *  \param[in] inx_element An index of an element in the regular queue. -1 if the element cames from the priority queue.
-      *  \param[in] mesh A mesh that contains the element.
-      *  \param[in] element A pointer to the element.
-      *  \return True if the element should be skipped. */
-      virtual bool should_ignore_element(const int inx_element, const Mesh* mesh, const Element* element) const;
-
-      /// Returns true if a given element can be refined using proposed refinement.
-      /** Overload this method to
-      *  - avoid application of a refinement even thought a selector considered this refinement as the optimal one,
-      *  - suggest a new refinement despite that the selector was not able to select a refinement.
-      *  \param[in] mesh A mesh that contains the element.
-      *  \param[in] e A point to the element.
-      *  \param[in] refined True if a refinement of the element was found.
-      *  \param[in, out] elem_ref The proposed refinement. Change a value of this parameter to select a different refinement.
-      *  \return True if the element should not be refined using the refinement. */
-      virtual bool can_refine_element(Mesh* mesh, Element* e, bool refined, ElementToRefine& elem_ref) const;
-
       /// Fixes refinements of a mesh which is shared among multiple components of a multimesh.
       /** If a mesh is shared among components, it has to be refined similarly in order to avoid inconsistency.
       *  \param[in] meshes An array of meshes of components.
@@ -238,7 +216,7 @@ namespace Hermes
       *  \param[in] idx A 2D array that translates a pair (a component index, an element id) to an index of a refinement in the vector of refinements. If the index is below zero, a given element was not refined.
       *  \param[in] refinement_selector A selected used by the adaptivity. The selector is used to correct orders of modified refinements using RefinementSelectors::Selector::update_shared_mesh_orders(). */
       void fix_shared_mesh_refinements(Mesh** meshes, std::vector<ElementToRefine>& elems_to_refine, int** idx,
-        Hermes::vector<RefinementSelectors::Selector<Scalar>*> refinement_selectors);
+        RefinementSelectors::Selector<Scalar>*** refinement_selectors);
 
       /// Enforces the same order to an element of a mesh which is shared among multiple components.
       /** \param[in] meshes An array of meshes of components. */

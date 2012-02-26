@@ -136,18 +136,18 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
                                                              std::string area,
                                                              Hermes::Hermes2D::SymFlag sym,
                                                              std::string expression,
-                                                             Material *material,
+                                                             Material *material1,
                                                              Material *material2)
 //TODO kam vsude probubla material
 // ->fieldInfo z materialu se v Parser form pouziva k projiti vsech fieldInfo->module->material_type_variables popr. module->get_boundary_type
 // m_material .. pouzije se pro ziskani hodnot promennych
 // initParser -> set parser variables ... take hodnoty promennych
 
-    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(material->getFieldInfo()),
-      m_material(material), m_material2(material2)
+    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(material1->getFieldInfo()),
+      m_material1(material1), m_material2(material2)
 {
     Hermes::vector<Material *> materials;
-    materials.push_back(material);
+    materials.push_back(material1);
     if(material2)
         materials.push_back(material2);
     initParser(materials, NULL);
@@ -187,7 +187,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-                Value value = m_material->getValue(variable->id);
+                Value value = m_material1->getValue(variable->id);
 
                 // table
                 if (value.table->size() > 0)
@@ -244,14 +244,21 @@ Hermes::Ord CustomParserMatrixFormVol<Scalar>::ord(int n, double *wt, Hermes::He
 }
 
 template <typename Scalar>
+CustomParserMatrixFormVol<Scalar>* CustomParserMatrixFormVol<Scalar>::clone()
+{
+    return new CustomParserMatrixFormVol(this->i, this->j, this->areas[0], (Hermes::Hermes2D::SymFlag) this->sym, parser->parser[0]->GetExpr(),
+                                         this->m_material1, this->m_material2);
+}
+
+template <typename Scalar>
 CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, unsigned int j,
                                                              std::string area, std::string expression,
-                                                             Material *material,
+                                                             Material *material1,
                                                              Material *material2)
-    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm(material->getFieldInfo()), m_material(material), m_material2(material2), j(j)
+    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), ParserForm(material1->getFieldInfo()), m_material1(material1), m_material2(material2), j(j)
 {
     Hermes::vector<Material *> materials;
-    materials.push_back(material);
+    materials.push_back(material1);
     if(material2)
         materials.push_back(material2);
     initParser(materials, NULL);
@@ -287,12 +294,12 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-                Value value = m_material->getValue(variable->id);
+                Value value = m_material1->getValue(variable->id);
 
                 // table
                 if (value.table->size() > 0)
                 {
-                    parser->parser_variables[variable->shortname] = m_material->getValue(variable->id).value(pupval);
+                    parser->parser_variables[variable->shortname] = m_material1->getValue(variable->id).value(pupval);
                 }
 
                 // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
@@ -348,13 +355,21 @@ Hermes::Ord CustomParserVectorFormVol<Scalar>::ord(int n, double *wt, Hermes::He
     return result;
 }
 
+
+template <typename Scalar>
+CustomParserVectorFormVol<Scalar>* CustomParserVectorFormVol<Scalar>::clone()
+{
+    return new CustomParserVectorFormVol(this->i, this->j, this->areas[0], parser->parser[0]->GetExpr(),
+                                         this->m_material1, this->m_material2);
+}
+
 // **********************************************************************************************
 
 template <typename Scalar>
 CustomParserMatrixFormSurf<Scalar>::CustomParserMatrixFormSurf(unsigned int i, unsigned int j,
                                                                std::string area, std::string expression,
                                                                Boundary *boundary)
-    : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j, area), ParserForm(boundary->getFieldInfo())
+    : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j, area), ParserForm(boundary->getFieldInfo()), m_boundary(boundary)
 {
     initParser(NULL, boundary);
 
@@ -423,10 +438,17 @@ Hermes::Ord CustomParserMatrixFormSurf<Scalar>::ord(int n, double *wt, Hermes::H
 }
 
 template <typename Scalar>
+CustomParserMatrixFormSurf<Scalar>* CustomParserMatrixFormSurf<Scalar>::clone()
+{
+    return new CustomParserMatrixFormSurf(this->i, this->j, this->areas[0], parser->parser[0]->GetExpr(),
+                                          this->m_boundary);
+}
+
+template <typename Scalar>
 CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i, unsigned int j,
                                                                std::string area, std::string expression,
                                                                Boundary *boundary)
-    : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), ParserForm(boundary->getFieldInfo()), j(j)
+    : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), ParserForm(boundary->getFieldInfo()), j(j), m_boundary(boundary)
 {
     initParser(NULL, boundary);
 
@@ -493,6 +515,13 @@ Hermes::Ord CustomParserVectorFormSurf<Scalar>::ord(int n, double *wt, Hermes::H
         result += v->dx[i] + v->dy[i];
 
     return result;
+}
+
+template <typename Scalar>
+CustomParserVectorFormSurf<Scalar>* CustomParserVectorFormSurf<Scalar>::clone()
+{
+    return new CustomParserVectorFormSurf(this->i, this->j, this->areas[0], parser->parser[0]->GetExpr(),
+                                          this->m_boundary);
 }
 
 // **********************************************************************************************

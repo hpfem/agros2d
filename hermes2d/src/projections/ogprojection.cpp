@@ -37,7 +37,8 @@ namespace Hermes
       _F_
 
       // Sanity check.
-      if(space == NULL) error("this->space == NULL in project_internal().");
+      if(space == NULL) 
+        error("this->space == NULL in project_internal().");
 
       // Get dimension of the space.
       int ndof = space->get_num_dofs();
@@ -54,7 +55,15 @@ namespace Hermes
       newton.set_verbose_output(false);
 
       // Perform Newton iteration.
-      newton.solve(coeff_vec, newton_tol, newton_max_iter);
+      try
+      {
+        newton.solve(coeff_vec, newton_tol, newton_max_iter);
+      }
+      catch(Hermes::Exceptions::Exception e)
+      {
+        e.printMsg();
+        error("Newton's iteration in projection failed.");
+      }
 
       delete [] coeff_vec;
 

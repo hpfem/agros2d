@@ -15,6 +15,7 @@
 
 #ifndef __H2D_REFINEMENT_ORDER_PERMUTATOR_H
 #define __H2D_REFINEMENT_ORDER_PERMUTATOR_H
+
 namespace Hermes
 {
   namespace Hermes2D

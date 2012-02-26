@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "hermes2d_common_defs.h"
+#include "global.h"
 #include "quad_all.h"
 #include "precalc.h"
 #include "mesh.h"
@@ -46,10 +46,8 @@ namespace Hermes
 
     void PrecalcShapeset::update_max_index()
     {
-      shapeset->set_mode(HERMES_MODE_TRIANGLE);
-      max_index[0] = shapeset->get_max_index();
-      shapeset->set_mode(HERMES_MODE_QUAD);
-      max_index[1] = shapeset->get_max_index();
+      max_index[0] = shapeset->get_max_index(HERMES_MODE_TRIANGLE);
+      max_index[1] = shapeset->get_max_index(HERMES_MODE_QUAD);
     }
 
 
@@ -74,7 +72,7 @@ namespace Hermes
     void PrecalcShapeset::set_active_shape(int index)
     {
       // Key creation.
-      unsigned key = cur_quad | (mode << 3) | ((unsigned) (max_index[mode] - index) << 4);
+      unsigned key = cur_quad | (element->get_mode() << 3) | ((unsigned) (max_index[element->get_mode()] - index) << 4);
 
       if(master_pss == NULL)
       {
@@ -93,27 +91,14 @@ namespace Hermes
       update_nodes_ptr();
 
       this->index = index;
-      order = std::max(H2D_GET_H_ORDER(shapeset->get_order(index)), H2D_GET_V_ORDER(shapeset->get_order(index)));
+      order = std::max(H2D_GET_H_ORDER(shapeset->get_order(index, element->get_mode())), H2D_GET_V_ORDER(shapeset->get_order(index, element->get_mode())));
     }
 
 
     void PrecalcShapeset::set_active_element(Element* e)
     {
-      mode = e->get_mode();
-      shapeset->set_mode(mode);
-      get_quad_2d()->set_mode(mode);
-      element = e;
+      Transformable::set_active_element(e);
     }
-
-
-    void PrecalcShapeset::set_mode(int mode)  // used in curved.cpp
-    {
-      this->mode = mode;
-      shapeset->set_mode(mode);
-      get_quad_2d()->set_mode(mode);
-      element = NULL;
-    }
-
 
     void PrecalcShapeset::precalculate(int order, int mask)
     {
@@ -121,10 +106,8 @@ namespace Hermes
 
       // initialization
       Quad2D* quad = get_quad_2d();
-      quad->set_mode(mode);
-      check_order(quad, order);
-      int np = quad->get_num_points(order);
-      double3* pt = quad->get_points(order);
+      int np = quad->get_num_points(order, this->element->get_mode());
+      double3* pt = quad->get_points(order, this->element->get_mode());
 
       int oldmask = (cur_node != NULL) ? cur_node->mask : 0;
       int newmask = mask | oldmask;
@@ -142,7 +125,7 @@ namespace Hermes
             else
               for (i = 0; i < np; i++)
                 node->values[j][k][i] = shapeset->get_value(k, index, ctm->m[0] * pt[i][0] + ctm->t[0],
-                ctm->m[1] * pt[i][1] + ctm->t[1], j);
+                ctm->m[1] * pt[i][1] + ctm->t[1], j, element->get_mode());
           }
         }
       }
@@ -229,7 +212,7 @@ namespace Hermes
 
     int PrecalcShapeset::get_edge_fn_order(int edge) 
     {
-      return Global<double>::make_edge_order(mode, edge, shapeset->get_order(index)); 
+      return H2D_MAKE_EDGE_ORDER(element->get_mode(), edge, shapeset->get_order(index, element->get_mode()));
     }
 
     bool PrecalcShapeset::is_slave() const

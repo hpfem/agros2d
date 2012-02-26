@@ -6,6 +6,7 @@ CONFIG += staticlib
 CONFIG += debug
 DEFINES += NOGLUT
 DEFINES += WITH_UMFPACK
+DEFINES += "NUM_THREADS=4"
 
 INCLUDEPATH += include \
                include/adapt \
@@ -51,7 +52,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/solvers/umfpack_solver.cpp \
                 ../hermes_common/src/solvers/precond_ml.cpp \
                 ../hermes_common/src/solvers/precond_ifpack.cpp \
-          src/forms.cpp \
+                src/forms.cpp \
                 src/asmlist.cpp \
                 src/newton_solver.cpp \
                 src/picard_solver.cpp \
@@ -125,10 +126,10 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/weakform/weakform.cpp  \
                 src/neighbor.cpp \
                 src/graph.cpp \
-                src/hermes2d_common_defs.cpp   \
                 src/discrete_problem.cpp \
                 src/runge_kutta.cpp \
-                src/spline.cpp
+                src/spline.cpp \
+                src/global.cpp
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS

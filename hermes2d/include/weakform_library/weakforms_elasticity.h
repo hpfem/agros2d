@@ -47,6 +47,7 @@ namespace Hermes
         virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
           Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
 
+        virtual MatrixFormVol<Scalar>* clone();
       private:
         double lambda, mu;
       };
@@ -64,6 +65,7 @@ namespace Hermes
         virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u,
           Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
 
+        virtual MatrixFormVol<Scalar>* clone();
       private:
         double lambda, mu;
       };
@@ -81,6 +83,7 @@ namespace Hermes
         virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
           Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
 
+        virtual VectorFormVol<Scalar>* clone();
       private:
         double lambda, mu;
       };
@@ -98,6 +101,7 @@ namespace Hermes
         virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
           Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
 
+        virtual VectorFormVol<Scalar>* clone();
       private:
         double lambda, mu;
       };
@@ -115,6 +119,7 @@ namespace Hermes
         virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
           Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
 
+        virtual VectorFormVol<Scalar>* clone();
       private:
         double lambda, mu;
       };
@@ -132,6 +137,7 @@ namespace Hermes
         virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
           Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
 
+        virtual VectorFormVol<Scalar>* clone();
       private:
         double lambda, mu;
       };
@@ -149,45 +155,7 @@ namespace Hermes
         virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
           Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
 
-      private:
-        double lambda, mu;
-      };
-
-      template<typename Scalar>
-      class HERMES_API DefaultJacobianElasticity_00_11
-        : public MultiComponentMatrixFormVol<Scalar>
-      {
-      public:
-        DefaultJacobianElasticity_00_11
-          (Hermes::vector<std::pair<unsigned int, unsigned int> >coordinates, double lambda, double mu);
-        DefaultJacobianElasticity_00_11
-          (Hermes::vector<std::pair<unsigned int, unsigned int> >coordinates, std::string area, double lambda, double mu);
-
-        virtual void value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-          Geom<double> *e, ExtData<Scalar> *ext, Hermes::vector<Scalar>& result) const;
-
-        virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
-          Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
-
-      private:
-        double lambda, mu;
-      };
-
-      template<typename Scalar>
-      class HERMES_API DefaultResidualElasticity_00_11 : public MultiComponentVectorFormVol<Scalar>
-      {
-      public:
-        DefaultResidualElasticity_00_11
-          (Hermes::vector<unsigned int> coordinates, double lambda, double mu);
-        DefaultResidualElasticity_00_11
-          (Hermes::vector<unsigned int> coordinates, std::string area, double lambda, double mu);
-
-        virtual void value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-          Geom<double> *e, ExtData<Scalar> *ext, Hermes::vector<Scalar>& result) const;
-
-        virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
-          Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const;
-
+        virtual MatrixFormVol<Scalar>* clone();
       private:
         double lambda, mu;
       };
