@@ -77,16 +77,38 @@ void PostprocessorView::loadBasic()
 
     // contour field
     cmbContourVariable->setCurrentIndex(cmbContourVariable->findData(Util::config()->contourVariable));
+    if (cmbContourVariable->currentIndex() == -1 && cmbContourVariable->count() > 0)
+    {
+        // set first variable
+        cmbContourVariable->setCurrentIndex(0);
+        Util::config()->contourVariable = cmbContourVariable->itemData(cmbContourVariable->currentIndex()).toString();
+    }
 
     // scalar field
     cmbScalarFieldVariable->setCurrentIndex(cmbScalarFieldVariable->findData(Util::config()->scalarVariable));
+    if (cmbScalarFieldVariable->currentIndex() == -1 && cmbScalarFieldVariable->count() > 0)
+    {
+        // set first variable
+        cmbScalarFieldVariable->setCurrentIndex(0);
+        Util::config()->scalarVariable = cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString();
+    }
     doScalarFieldVariable(cmbScalarFieldVariable->currentIndex());
     cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(Util::config()->scalarVariableComp));
     if (cmbScalarFieldVariableComp->currentIndex() == -1)
+    {
+        // set first component
         cmbScalarFieldVariableComp->setCurrentIndex(0);
+        Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
+    }
 
     // vector field
     cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(Util::config()->vectorVariable));
+    if (cmbVectorFieldVariable->currentIndex() == -1 && cmbVectorFieldVariable->count() > 0)
+    {
+        // set first variable
+        cmbVectorFieldVariable->setCurrentIndex(0);
+        Util::config()->vectorVariable = cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toString();
+    }
 
     // transient view
     // cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
