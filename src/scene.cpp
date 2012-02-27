@@ -1498,12 +1498,15 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                                                         name.toStdString(),
                                                         type.toStdString());
 
+            cout << "reading bc " << name.toStdString() << ", type " << type.toStdString() << endl;
+
             Hermes::Module::BoundaryType *boundary_type = field->module()->get_boundary_type(type.toStdString());
             for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin();
                  it < boundary_type->variables.end(); ++it)
             {
                 Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
 
+                cout << "setting variable " << variable->id << " to " <<  (element.toElement().attribute(QString::fromStdString(variable->id), "0")).toStdString() << endl;
                 boundary->setValue(variable->id,
                                    Value(element.toElement().attribute(QString::fromStdString(variable->id), "0")));
             }

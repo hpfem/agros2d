@@ -169,11 +169,11 @@ void SolutionArrayList<Scalar>::readMesh()
 template <typename Scalar>
 void SolutionArrayList<Scalar>::createSpace()
 {
-    printf("---- createSpace()\n");
+    cout << "---- createSpace()" << endl;
     // essential boundary conditions
-    Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs; //TODO PK <double>
+    Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs;
     for (int i = 0; i < m_block->numSolutions(); i++)
-        bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());  //TODO PK <double>
+        bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());
 
     foreach(Field* field, m_block->m_fields)
     {
@@ -188,7 +188,7 @@ void SolutionArrayList<Scalar>::createSpace()
                 //printf(" ---- chci typ %s\n", boundary->getType().data());
                 Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
 
-                printf(" ---- bdr type %s\n", boundary_type->id.data(), boundary_type->name.data());
+                cout << " ---- bdr type " << boundary_type->id.data() << ", " << boundary_type->name.data() << endl;
                 for (Hermes::vector<ParserFormEssential *>::iterator it = boundary_type->essential.begin();
                      it < boundary_type->essential.end(); ++it)
                 {

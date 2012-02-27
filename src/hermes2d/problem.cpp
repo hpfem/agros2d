@@ -92,6 +92,7 @@ bool Block::solveInit(Hermes::Hermes2D::Solution<double> *sourceSolution)
 
 void Block::solve()
 {
+    cout << "############ Block::Solve() ################" << endl;
     m_solutionList->solve();
     cout << "num elem pri prirazeni do scene solution " <<  Util::problem()->meshInitial()->get_num_active_elements() << endl;
 
@@ -333,6 +334,8 @@ void Problem::mesh()
 void Problem::solve(SolverMode solverMode)
 {
     logMessage("SceneSolution::solve()");
+
+    cout << "####***##### PROBLEM::Solve() #####******#####" << endl;
 
     setVerbose(true);
 

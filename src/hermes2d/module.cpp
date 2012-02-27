@@ -1163,7 +1163,7 @@ void Parser::setParserVariables(Hermes::vector<Material *> materialMarkers, Boun
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
             parser_variables[variable->shortname] = boundary->getValue(variable->id).value(0.0);
-            cout << "setParserVariables: shortname: " << variable->shortname << ", id: " << variable->id << ", value: " << boundary->getValue(variable->id).value(0.0) << endl;
+            //cout << "setParserVariables: shortname: " << variable->shortname << ", id: " << variable->id << ", value: " << boundary->getValue(variable->id).value(0.0) << endl;
         }
     }
 

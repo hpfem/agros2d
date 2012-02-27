@@ -322,7 +322,7 @@
                 <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
-                    <boundary heat_heat_transfer_coefficient="4" external_temperature="" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Interior">
+                    <boundary heat_convection_heat_transfer_coefficient="4" heat_convection_external_temperature="21" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Interior">
                         <edge edge="14"/>
                         <edge edge="15"/>
                         <edge edge="16"/>
@@ -380,7 +380,7 @@
                         <edge edge="151"/>
                         <edge edge="152"/>
                     </boundary>
-                    <boundary heat_heat_transfer_coefficient="25" external_temperature="" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Exterior">
+                    <boundary heat_convection_heat_transfer_coefficient="25" heat_convection_external_temperature="-15" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Exterior">
                         <edge edge="36"/>
                         <edge edge="37"/>
                         <edge edge="38"/>
