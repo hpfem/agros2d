@@ -22,7 +22,7 @@
 #ifndef __H2D_BASE_VIEW_H
 #define __H2D_BASE_VIEW_H
 
-#include "../hermes2d_common_defs.h"
+#include "../global.h"
 #include "scalar_view.h"
 #include "../space/space.h"
 #include "../shapeset/precalc.h"
@@ -73,6 +73,17 @@ namespace Hermes
         virtual const char* get_help_text() const;
 
       };
+#else
+      template<typename Scalar>
+      class HERMES_API BaseView : public ScalarView
+      {
+      public:
+        BaseView(const char* title = "BaseView", WinGeom* wg = NULL) { error("GLUT disabled."); }
+        BaseView(char* title, WinGeom* wg = NULL) { error("GLUT disabled."); }
+
+        void show(const Space<Scalar>* space, double eps = HERMES_EPS_LOW, int item = H2D_FN_VAL_0) { error("GLUT disabled."); }
+      };
+      
 #endif
     }
   }

@@ -49,7 +49,7 @@ namespace Hermes
         OrderView(char* title, WinGeom* wg = NULL);
 
         template<typename Scalar>
-        void show(Space<Scalar>* space);
+        void show(const Space<Scalar>* space);
 
       protected:
 
@@ -69,6 +69,20 @@ namespace Hermes
         virtual int measure_scale_labels();
         virtual const char* get_help_text() const;
 
+      };
+#else
+      class HERMES_API OrderView : public View
+      {
+      public:
+
+        OrderView(const char* title = "OrderView", WinGeom* wg = NULL) { error("GLUT disabled."); }
+        //#ifndef _MSC_VER
+        //	OrderView(const char* title = "OrderView", WinGeom* wg = NULL);
+        //#endif
+        OrderView(char* title, WinGeom* wg = NULL) { error("GLUT disabled."); }
+
+        template<typename Scalar>
+        void show(const Space<Scalar>* space) { error("GLUT disabled."); }
       };
 #endif
     }

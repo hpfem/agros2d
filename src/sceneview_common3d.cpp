@@ -35,7 +35,7 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
-SceneViewCommon3D::SceneViewCommon3D(QWidget *parent): SceneViewCommon(parent)
+SceneViewCommon3D::SceneViewCommon3D(QWidget *parent): SceneViewPostInterface(parent)
 {
     createActions();
 }
@@ -60,11 +60,9 @@ SceneViewCommon3D::~SceneViewCommon3D()
 {
 }
 
-void SceneViewCommon3D::doDefaultValues()
+void SceneViewCommon3D::clear()
 {
     logMessage("SceneViewCommon::doDefaultValues()");
-
-    m_isSolutionPrepared = false;
 
     // 3d
     m_scale3d = 0.6;
@@ -74,12 +72,10 @@ void SceneViewCommon3D::doDefaultValues()
     m_rotation3d.y = -35.0;
     m_rotation3d.z = 0.0;
 
-    m_sceneViewSettings.defaultValues();
-
     doInvalidated();
     doZoomBestFit();
 
-    SceneViewCommon::doDefaultValues();
+    SceneViewCommon::clear();
 }
 
 void SceneViewCommon3D::paintBackground()
@@ -142,7 +138,7 @@ void SceneViewCommon3D::loadProjection3d(bool setScene) const
         glRotated(m_rotation3d.y, 0.0, 0.0, 1.0);
 
         RectPoint rect = Util::scene()->boundingBox();
-        if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D)
+        if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3D)
         {
             glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
         }
@@ -173,7 +169,7 @@ void SceneViewCommon3D::initLighting()
 {
     logMessage("SceneViewCommon::initLighting()");
 
-    if (Util::config()->scalarView3DLighting || m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model)
+    if (Util::config()->scalarView3DLighting || Util::config()->showPost3D == SceneViewPost3DShow_Model)
     {
         // environment
         float light_specular[] = {  1.0f, 1.0f, 1.0f, 1.0f };
@@ -256,8 +252,8 @@ void SceneViewCommon3D::mouseMoveEvent(QMouseEvent *event)
     {
         setCursor(Qt::PointingHandCursor);
 
-        m_offset3d.x -= 2.0/contextWidth() * dx*aspect();
-        m_offset3d.y += 2.0/contextHeight() * dy;
+        m_offset3d.x -= 2.0/width() * dx*aspect();
+        m_offset3d.y += 2.0/height() * dy;
 
         emit mouseSceneModeChanged(MouseSceneMode_Pan);
 
@@ -315,8 +311,4 @@ void SceneViewCommon3D::doSetProjectionYZ()
     m_rotation3d.x = m_rotation3d.y = 90.0;
     m_rotation3d.z = 0.0;
     updateGL();
-}
-
-void SceneViewCommon3D::doInvalidated()
-{
 }

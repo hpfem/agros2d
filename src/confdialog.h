@@ -143,6 +143,8 @@ private:
     QWidget *createSolverWidget();
     QWidget *createColorsWidget();
     QWidget *createGlobalScriptWidget();
+
+    void fillComboBoxPhysicField(QComboBox *cmbPhysicField);
 };
 
 // *************************************************************************

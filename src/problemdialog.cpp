@@ -399,7 +399,7 @@ void CouplingsWidget::createContent()
 {
     int minWidth = 130;
 
-    if(layoutTable)
+    if (layoutTable)
     {
         save();
         delete layoutTable;
@@ -414,7 +414,6 @@ void CouplingsWidget::createContent()
     int line = 0;
     foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
     {
-//        cout << "adding coupling box " << couplingInfo->coupling()->name << endl;
         layoutTable->addWidget(new QLabel(/*tr(*/QString::fromStdString(couplingInfo->coupling()->name)/*)*/), line, 0);
         m_comboBoxes[couplingInfo] = new QComboBox();
         layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
@@ -484,7 +483,7 @@ FieldTabWidget::FieldTabWidget(QWidget *parent,  QMap<QString, FieldInfo *> fiel
 
 void FieldTabWidget::updateCouplingTab()
 {
-    if(m_haveCouplingsTab)
+    if (m_haveCouplingsTab)
     {
         if (m_couplingInfos.size()){
         }
@@ -655,7 +654,12 @@ void ProblemDialog::createControls()
     tabType->addTab(createControlsStartupScript(), icon(""), tr("Startup script"));
     tabType->addTab(createControlsDescription(), icon(""), tr("Description"));
 
+    QPushButton *btnNewField = new QPushButton(this);
+    btnNewField->setText(tr("Add field"));
+    connect(btnNewField, SIGNAL(clicked()), this, SLOT(doAddField()));
+
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox->addButton(btnNewField, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -765,7 +769,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     // fields
     QToolButton *btnNewField = new QToolButton(this);
     btnNewField->setAutoRaise(true);
-    btnNewField->setToolTip(tr("Add new document"));
+    btnNewField->setToolTip(tr("Add field"));
     btnNewField->setIcon(icon("tabadd"));
     btnNewField->setToolButtonStyle(Qt::ToolButtonIconOnly);
     connect(btnNewField, SIGNAL(clicked()), this, SLOT(doAddField()));

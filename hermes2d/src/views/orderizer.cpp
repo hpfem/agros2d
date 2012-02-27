@@ -48,7 +48,6 @@ namespace Hermes
 
         Quad2DOrd()
         {
-          mode = HERMES_MODE_TRIANGLE;
           max_order[0] = max_order[1] = 1;
           num_tables[0] = num_tables[1] = 2;
           tables = ord_tables;
@@ -103,7 +102,7 @@ namespace Hermes
       }
 
       template<typename Scalar>
-      void Orderizer::process_space(Space<Scalar>* space)
+      void Orderizer::process_space(const Space<Scalar>* space)
       {
         // sanity check
         if (space == NULL) error("Space is NULL in Orderizer:process_solution().");
@@ -156,8 +155,8 @@ namespace Hermes
           double* x = refmap.get_phys_x(type);
           double* y = refmap.get_phys_y(type);
 
-          double3* pt = quad_ord.get_points(type);
-          int np = quad_ord.get_num_points(type);
+          double3* pt = quad_ord.get_points(type, e->get_mode());
+          int np = quad_ord.get_num_points(type, e->get_mode());
           int id[80];
           assert(np <= 80);
 
@@ -221,7 +220,7 @@ namespace Hermes
       }
 
       template<typename Scalar>
-      void Orderizer::save_orders_vtk(Space<Scalar>* space, const char* file_name)
+      void Orderizer::save_orders_vtk(const Space<Scalar>* space, const char* file_name)
       {
         process_space(space);
 
@@ -296,10 +295,10 @@ namespace Hermes
         return this->vertex_count;
       }
 
-      template HERMES_API void Orderizer::save_orders_vtk<double>(Space<double>* space, const char* file_name);
-      template HERMES_API void Orderizer::save_orders_vtk<std::complex<double> >(Space<std::complex<double> >* space, const char* file_name);
-      template HERMES_API void Orderizer::process_space<double>(Space<double>* space);
-      template HERMES_API void Orderizer::process_space<std::complex<double> >(Space<std::complex<double> >* space);
+      template HERMES_API void Orderizer::save_orders_vtk<double>(const Space<double>* space, const char* file_name);
+      template HERMES_API void Orderizer::save_orders_vtk<std::complex<double> >(const Space<std::complex<double> >* space, const char* file_name);
+      template HERMES_API void Orderizer::process_space<double>(const Space<double>* space);
+      template HERMES_API void Orderizer::process_space<std::complex<double> >(const Space<std::complex<double> >* space);
     }
   }
 }

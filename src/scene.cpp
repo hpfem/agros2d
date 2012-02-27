@@ -288,7 +288,7 @@ Scene::Scene()
     m_problemInfo = new ProblemInfo();
     m_undoStack = new QUndoStack(this);
     //m_sceneSolution = new SceneSolution<double>();
-    m_activeViewField = 0;
+    m_activeViewField = NULL;
 
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
 
@@ -312,7 +312,6 @@ Scene::~Scene()
 
     clear();
 
-    clearSolutions();
     delete m_undoStack;
 
     // TODO write destructors or use shared_ptrs...
@@ -388,7 +387,7 @@ void Scene::createActions()
 
 void Scene::clearSolutions()
 {
-    foreach(SceneSolution<double>* sceneSolution, m_sceneSolutions)
+    foreach (SceneSolution<double>* sceneSolution, m_sceneSolutions)
     {
         sceneSolution->clear();
     }
@@ -603,6 +602,16 @@ void Scene::clear()
 
     blockSignals(true);
 
+    // clear problem
+    //TODO - not good
+    if (Util::singleton() && Util::problem())
+        Util::problem()->clear();
+
+    // clear couplings
+    foreach (CouplingInfo* couplingInfo, m_couplingInfos)
+        delete couplingInfo;
+    m_couplingInfos.clear();
+
     m_undoStack->clear();
 
     clearSolutions();
@@ -615,8 +624,10 @@ void Scene::clear()
         delete i.value();
     }
     m_fieldInfos.clear();
+
     //TODO - allow "no field"
-    addField(new FieldInfo(m_problemInfo));
+    m_activeViewField = new FieldInfo(m_problemInfo);
+    addField(m_activeViewField);
 
     // geometry
     nodes->clear();
@@ -633,6 +644,8 @@ void Scene::clear()
     addMaterial(new SceneMaterialNone());
 
     blockSignals(false);
+
+    emit cleared();
 
     emit fileNameChanged(tr("unnamed"));
     emit invalidated();
@@ -1054,60 +1067,20 @@ void Scene::doProblemProperties()
 {
     logMessage("Scene::doProblemProperties()");
 
-    QString scalar = "";
-    QString vector = "";
-    PhysicFieldVariableComp scalarComp = PhysicFieldVariableComp_Undefined;
+    ProblemDialog problemDialog(m_problemInfo, m_fieldInfos, m_couplingInfos,
+                                false, QApplication::activeWindow());
+    if (problemDialog.showDialog() == QDialog::Accepted)
+    {
+        emit invalidated();
+    }
 
-    // previous value
-    scalar = QString::fromStdString(sceneView()->sceneViewSettings().scalarPhysicFieldVariable);
-    scalarComp = sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp;
-    vector = QString::fromStdString(sceneView()->sceneViewSettings().vectorPhysicFieldVariable);
-
-    ProblemDialog problemDialog(m_problemInfo, m_fieldInfos, m_couplingInfos, false, QApplication::activeWindow());
-    // if (problemDialog.showDialog() == QDialog::Accepted)
-
-    problemDialog.showDialog();
-
+    /*
     //TODO - allow "no field"
     FieldInfo *fieldInfo = Util::scene()->fieldInfos().values().at(0);
-
-    // contour
-    sceneView()->sceneViewSettings().contourPhysicFieldVariable = fieldInfo->module()->view_default_scalar_variable->id;
-
-    // scalar view
-    // determines whether the selected field exists
-    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = fieldInfo->module()->view_scalar_variables.begin();
-         it < fieldInfo->module()->view_scalar_variables.end(); ++it )
-    {
-        Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-        if (variable->id == scalar.toStdString())
-        {
-            sceneView()->sceneViewSettings().scalarPhysicFieldVariable = variable->id;
-            sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = scalarComp;
-        }
-    }
-    if (sceneView()->sceneViewSettings().scalarPhysicFieldVariable == "")
-    {
-        sceneView()->sceneViewSettings().scalarPhysicFieldVariable = fieldInfo->module()->view_default_scalar_variable->id;
-        sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = fieldInfo->module()->view_default_scalar_variable_comp();
-        sceneView()->sceneViewSettings().scalarRangeAuto = true;
-    }
-
-    // vector view
-    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = fieldInfo->module()->view_vector_variables.begin();
-         it < fieldInfo->module()->view_vector_variables.end(); ++it )
-    {
-        Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-        if (variable->id == vector.toStdString())
-            sceneView()->sceneViewSettings().vectorPhysicFieldVariable = variable->id;
-    }
-    if (sceneView()->sceneViewSettings().vectorPhysicFieldVariable == "")
-        sceneView()->sceneViewSettings().vectorPhysicFieldVariable = fieldInfo->module()->view_default_vector_variable->id;
-
-    emit invalidated();
+    */
 }
 
-void Scene::addBoundartAndMaterialMenuItems(QMenu* menu, QWidget* parent)
+void Scene::addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent)
 {
     if (Util::scene()->fieldInfos().count() == 1)
     {
@@ -1604,8 +1577,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         nodeField = nodeField.nextSibling();
     }
 
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
+    // read config
+    QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
+    Util::config()->loadPostprocessor(&config);
 
     blockSignals(false);
 
@@ -1614,7 +1588,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     emit defaultValues();
 
     // mesh
-
     if (eleDoc.elementsByTagName("mesh").count() > 0)
     {
         QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
@@ -1902,6 +1875,11 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved (%2).").
                            arg(fileName).
                            arg(file.errorString()));
+
+    // save config
+    QDomElement eleConfig = doc.createElement("config");
+    eleDoc.appendChild(eleConfig);
+    Util::config()->savePostprocessor(&eleConfig);
 
     QTextStream out(&file);
     doc.save(out, 4);

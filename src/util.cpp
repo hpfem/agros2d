@@ -32,7 +32,7 @@ bool verbose = false;
 
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
-static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
+static QHash<SceneViewPost3DShow, QString> sceneViewPost3DShowList;
 static QHash<WeakFormsType, QString> weakFormsTypeList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
@@ -55,8 +55,8 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QString modeToStringKey(Mode mode) { return modeList[mode]; }
 Mode modeFromStringKey(const QString &mode) { return modeList.key(mode); }
 
-QString sceneViewPostprocessorShowToStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList[sceneViewPostprocessorShow]; }
-SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString &sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList.key(sceneViewPostprocessorShow); }
+QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow) { return sceneViewPost3DShowList[sceneViewPost3DShow]; }
+SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow) { return sceneViewPost3DShowList.key(sceneViewPost3DShow); }
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
@@ -116,12 +116,13 @@ void initLists()
     modeList.insert(Mode_01, "mode_01");
     modeList.insert(Mode_02, "mode_02");
 
-    // SCENEVIEW_POSTPROCESSOR_SHOW
-    sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");
-    sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_None, "none");
-    sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_ScalarView, "scalar");
-    sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_ScalarView3D, "scalar3d");
-    sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Order, "order");
+    // post3d
+    sceneViewPost3DShowList.insert(SceneViewPost3DShow_Undefined, "");
+    sceneViewPost3DShowList.insert(SceneViewPost3DShow_None, "none");
+    sceneViewPost3DShowList.insert(SceneViewPost3DShow_ScalarView3D, "scalar");
+    sceneViewPost3DShowList.insert(SceneViewPost3DShow_ScalarView3DSolid, "scalarsolid");
+    sceneViewPost3DShowList.insert(SceneViewPost3DShow_ParticleTracing, "particletracing");
+    sceneViewPost3DShowList.insert(SceneViewPost3DShow_Model, "model");
 
     // ADAPTIVITYTYPE
     adaptivityTypeList.insert(AdaptivityType_Undefined, "");
@@ -321,30 +322,6 @@ QString linearityTypeString(LinearityType linearityType)
         std::cerr << "Linearity type '" + QString::number(linearityType).toStdString() + "' is not implemented. linearityTypeString(LinearityType linearityType)" << endl;
         throw;
     }
-}
-
-void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
-{
-    logMessage("fillComboBoxPhysicField()");
-
-    // block signals
-    cmbPhysicField->blockSignals(true);
-
-    cmbPhysicField->clear();
-    std::map<std::string, std::string> modules = availableModules();
-    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
-        cmbPhysicField->addItem(QString::fromStdString(it->second), QString::fromStdString(it->first));
-
-    // unblock signals
-    cmbPhysicField->blockSignals(false);
-
-    // FIXME - experimental features
-    // if (Util::config()->showExperimentalFeatures)
-
-    // default physic field
-    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Util::config()->defaultPhysicField));
-    if (cmbPhysicField->currentIndex() == -1)
-        cmbPhysicField->setCurrentIndex(0);
 }
 
 void setGUIStyle(const QString &styleName)

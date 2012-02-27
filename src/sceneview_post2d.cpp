@@ -34,21 +34,176 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
-SceneViewPost2D::SceneViewPost2D(QWidget *parent)
-    : SceneViewCommon2D(parent)
+Post2DHermes::Post2DHermes()
+{
+    m_slnContourView = NULL;
+    m_slnScalarView = NULL;
+    m_slnVectorXView = NULL;
+    m_slnVectorYView = NULL;
+}
+
+
+Post2DHermes::~Post2DHermes()
+{
+    clear();
+}
+
+void Post2DHermes::clear()
+{
+    // countour
+    if (m_slnContourView)
+    {
+        delete m_slnContourView;
+        m_slnContourView = NULL;
+    }
+
+    // scalar
+    if (m_slnScalarView)
+    {
+        delete m_slnScalarView;
+        m_slnScalarView = NULL;
+    }
+
+    // vector
+    if (m_slnVectorXView)
+    {
+        delete m_slnVectorXView;
+        m_slnVectorXView = NULL;
+    }
+    if (m_slnVectorYView)
+    {
+        delete m_slnVectorYView;
+        m_slnVectorYView = NULL;
+    }
+}
+
+void Post2DHermes::processRangeContour()
+{
+    if (Util::problem()->isSolved() && Util::config()->contourVariable != "")
+    {
+        if (m_slnContourView)
+        {
+            delete m_slnContourView;
+            m_slnContourView = NULL;
+        }
+
+        if (Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable.toStdString())->is_scalar)
+            m_slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable.toStdString()),
+                                                                                              PhysicFieldVariableComp_Scalar);
+        else
+            m_slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable.toStdString()),
+                                                                                              PhysicFieldVariableComp_Magnitude);
+
+        m_linContourView.process_solution(m_slnContourView,
+                                          Hermes::Hermes2D::H2D_FN_VAL_0,
+                                          Util::config()->linearizerQuality);
+
+        // deformed shape
+        if (Util::config()->deformContour)
+            Util::scene()->activeViewField()->module()->deform_shape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
+    }
+}
+
+void Post2DHermes::processRangeScalar()
+{
+    logMessage("SceneSolution::processRangeScalar()");
+
+    if (Util::problem()->isSolved() && Util::config()->scalarVariable != "")
+    {
+        if (m_slnScalarView)
+        {
+            delete m_slnScalarView;
+            m_slnScalarView = NULL;
+        }
+
+        m_slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
+                                                                                                                    Util::config()->scalarVariableComp);
+
+        m_linScalarView.process_solution(m_slnScalarView,
+                                          Hermes::Hermes2D::H2D_FN_VAL_0,
+                                          Util::config()->linearizerQuality);
+
+         // deformed shape
+         if (Util::config()->deformScalar)
+             Util::scene()->activeViewField()->module()->deform_shape(m_linScalarView.get_vertices(),
+                                                                      m_linScalarView.get_num_vertices());
+    }
+}
+
+void Post2DHermes::processRangeVector()
+{
+    logMessage("SceneSolution::processRangeVector()");
+
+    if (Util::problem()->isSolved() && Util::config()->vectorVariable != "")
+    {
+        if (m_slnVectorXView)
+        {
+            delete m_slnVectorXView;
+            m_slnVectorXView = NULL;
+        }
+        if (m_slnVectorYView)
+        {
+            delete m_slnVectorYView;
+            m_slnVectorYView = NULL;
+        }
+
+        m_slnVectorXView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->vectorVariable.toStdString()),
+                                                                                                                     PhysicFieldVariableComp_X);
+
+        m_slnVectorYView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->vectorVariable.toStdString()),
+                                                                                                                     PhysicFieldVariableComp_Y);
+
+        m_vecVectorView.process_solution(m_slnVectorXView, m_slnVectorYView,
+                                         Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
+                                         Hermes::Hermes2D::Views::HERMES_EPS_LOW);
+
+        // deformed shape
+        if (Util::config()->deformVector)
+            Util::scene()->activeViewField()->module()->deform_shape(m_vecVectorView.get_vertices(),
+                                                                     m_vecVectorView.get_num_vertices());
+    }
+}
+
+void Post2DHermes::solved()
+{
+    qDebug("Post2DHermes::solved()");
+
+    processRangeContour();
+    processRangeScalar();
+    // processRangeVector();
+}
+
+// ************************************************************************************************
+
+SceneViewPost2D::SceneViewPost2D(QWidget *parent) : SceneViewMesh(parent),
+    m_listContours(-1),
+    m_listVectors(-1),
+    m_listScalarField(-1)
 {
     createActionsPost2D();
 
-    connect(m_scene, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
-    connect(m_scene, SIGNAL(defaultValues()), this, SLOT(doDefaultValues()));
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+    connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
+
+    m_post2DHermes = new Post2DHermes();
+
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
 }
 
 SceneViewPost2D::~SceneViewPost2D()
 {
+    if (m_post2DHermes)
+        delete m_post2DHermes;
 }
 
 void SceneViewPost2D::createActionsPost2D()
 {
+    // scene mode
+    actSceneModePost2D = new QAction(icon("scene-post2d"), tr("Postprocessor 2D"), this);
+    actSceneModePost2D->setShortcut(Qt::Key_F7);
+    actSceneModePost2D->setStatusTip(tr("Postprocessor 2D"));
+    actSceneModePost2D->setCheckable(true);
+
     actSceneViewSelectByMarker = new QAction(icon(""), tr("Select by marker"), this);
     actSceneViewSelectByMarker->setStatusTip(tr("Select by marker"));
     connect(actSceneViewSelectByMarker, SIGNAL(triggered()), this, SLOT(doSelectMarker()));
@@ -102,14 +257,14 @@ void SceneViewPost2D::keyPressEvent(QKeyEvent *event)
             // select volume integral area
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
-                m_scene->selectAll(SceneGeometryMode_OperateOnLabels);
+                Util::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
                 emit mousePressed();
             }
 
             // select surface integral area
             if (actPostprocessorModeSurfaceIntegral->isChecked())
             {
-                m_scene->selectAll(SceneGeometryMode_OperateOnEdges);
+                Util::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
                 emit mousePressed();
             }
 
@@ -136,13 +291,14 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
     // select volume integral area
     if (actPostprocessorModeVolumeIntegral->isChecked())
     {
-        int index = m_scene->activeSceneSolution()->findElementInMesh(m_scene->activeSceneSolution()->meshInitial(), p);
+        int index = findElementInMesh(Util::problem()->meshInitial(), p);
         if (index != -1)
         {
             //  find label marker
-            int labelIndex = atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(m_scene->activeSceneSolution()->meshInitial()->get_element_fast(index)->marker).marker.c_str());
+            int labelIndex = atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(
+                                      Util::problem()->meshInitial()->get_element_fast(index)->marker).marker.c_str());
 
-            m_scene->labels->at(labelIndex)->isSelected = !m_scene->labels->at(labelIndex)->isSelected;
+            Util::scene()->labels->at(labelIndex)->isSelected = !Util::scene()->labels->at(labelIndex)->isSelected;
             updateGL();
         }
         emit mousePressed();
@@ -162,7 +318,8 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
 
 void SceneViewPost2D::paintGL()
 {
-    logMessage("SceneViewCommon::paintGL()");
+    if (!isVisible()) return;
+    makeCurrent();
 
     glClearColor(Util::config()->colorBackground.redF(),
                  Util::config()->colorBackground.greenF(),
@@ -177,22 +334,13 @@ void SceneViewPost2D::paintGL()
     // view
     if (Util::problem()->isSolved())
     {
-        if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView) paintScalarField();
-        if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) paintOrder();
-
-        if (m_sceneViewSettings.showContours) paintContours();
-        if (m_sceneViewSettings.showVectors) paintVectors();
-        if (m_sceneViewSettings.showSolutionMesh) paintSolutionMesh();
-    }
-
-    // initial mesh
-    if (Util::problem()->isMeshed())
-    {
-        if (m_sceneViewSettings.showInitialMesh) paintInitialMesh();
+        if (Util::config()->showScalarView) paintScalarField();
+        if (Util::config()->showContourView) paintContours();
+        if (Util::config()->showVectorView) paintVectors();
     }
 
     // geometry
-    if (m_sceneViewSettings.showGeometry) paintGeometry();
+    paintGeometry();
 
     if (Util::problem()->isSolved())
     {
@@ -200,8 +348,8 @@ void SceneViewPost2D::paintGL()
         if (actPostprocessorModeSurfaceIntegral->isChecked()) paintPostprocessorSelectedSurface();
 
         // bars
-        if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView) paintScalarFieldColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
-        if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) paintOrderColorBar();
+        if (Util::config()->showScalarView && Util::config()->showScalarColorBar)
+            paintScalarFieldColorBar(Util::config()->scalarRangeMin, Util::config()->scalarRangeMax);
     }
 
     // rulers
@@ -219,21 +367,24 @@ void SceneViewPost2D::paintGL()
 
     if (Util::config()->showLabel)
     {
-        switch (m_sceneViewSettings.postprocessorShow)
+        if (Util::problem()->isSolved())
         {
-        case SceneViewPostprocessorShow_ScalarView:
-        {
-            if (Util::problem()->isSolved())
+            if (Util::config()->showScalarView)
+
             {
-                QString text = QString::fromStdString(m_sceneViewSettings.scalarPhysicFieldVariable != "" ? Util::scene()->activeViewField()->module()->get_variable(m_sceneViewSettings.scalarPhysicFieldVariable)->name : "");
-                if (m_sceneViewSettings.scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar)
-                    text += " - " + physicFieldVariableCompString(m_sceneViewSettings.scalarPhysicFieldVariableComp);
-                paintSceneModeLabel(text);
+                Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
+                if (localVariable)
+                {
+                    QString text = Util::config()->scalarVariable != "" ? QString::fromStdString(localVariable->name) : "";
+                    if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
+                        text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
+                    paintSceneModeLabel(text);
+                }
             }
-        }
-            break;
-        default:
-            paintSceneModeLabel(tr("Postprocessor 2D"));
+            else
+            {
+                paintSceneModeLabel(tr("Postprocessor 2D"));
+            }
         }
     }
 }
@@ -257,7 +408,7 @@ void SceneViewPost2D::paintGeometry()
     loadProjection2d(true);
 
     // edges
-    foreach (SceneEdge *edge, m_scene->edges->items())
+    foreach (SceneEdge *edge, Util::scene()->edges->items())
     {
         glColor3d(Util::config()->colorEdges.redF(),
                   Util::config()->colorEdges.greenF(),
@@ -312,7 +463,7 @@ void SceneViewPost2D::paintChartLine()
         double angle = atan2(points.at(points.length() - 1).y - points.at(points.length() - 2).y,
                              points.at(points.length() - 1).x - points.at(points.length() - 2).x);
 
-        RectPoint rect = m_scene->boundingBox();
+        RectPoint rect = Util::scene()->boundingBox();
         double dm = (rect.width() + rect.height()) / 40.0;
 
         // head of an arrow
@@ -329,229 +480,31 @@ void SceneViewPost2D::paintChartLine()
     glEnd();
 }
 
-void SceneViewPost2D::paintSolutionMesh()
-{
-    logMessage("SceneViewCommon::paintSolutionMesh()");
-
-    if (!m_isSolutionPrepared) return;
-
-    loadProjection2d(true);
-
-    Util::scene()->activeSceneSolution()->linSolutionMeshView().lock_data();
-
-    double3* linVert = Util::scene()->activeSceneSolution()->linSolutionMeshView().get_vertices();
-    int3* linEdges = Util::scene()->activeSceneSolution()->linSolutionMeshView().get_edges();
-
-    // draw initial mesh
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3d(Util::config()->colorSolutionMesh.redF(),
-              Util::config()->colorSolutionMesh.greenF(),
-              Util::config()->colorSolutionMesh.blueF());
-    glLineWidth(1.3);
-
-    // triangles
-    // qDebug() << Util::problem()->linSolutionMeshView().get_num_edges();
-    glBegin(GL_LINES);
-    for (int i = 0; i < Util::scene()->activeSceneSolution()->linSolutionMeshView().get_num_edges(); i++)
-    {
-        glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
-        glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
-    }
-    glEnd();
-
-    Util::scene()->activeSceneSolution()->linSolutionMeshView().unlock_data();
-
-}
-
-void SceneViewPost2D::paintOrder()
-{
-    logMessage("SceneViewCommon::paintOrder()");
-
-    if (!m_isSolutionPrepared) return;
-
-    loadProjection2d(true);
-
-    if (m_listOrder == -1)
-    {
-        m_listOrder = glGenLists(1);
-        glNewList(m_listOrder, GL_COMPILE);
-
-        // order scalar view
-        m_scene->activeSceneSolution()->ordView().lock_data();
-
-        double3* vert = m_scene->activeSceneSolution()->ordView().get_vertices();
-        int3* tris = m_scene->activeSceneSolution()->ordView().get_triangles();
-
-        // draw mesh
-        int min = 11;
-        int max = 1;
-        for (int i = 0; i < m_scene->activeSceneSolution()->ordView().get_num_triangles(); i++)
-        {
-            if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
-            if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
-        }
-
-        glEnable(GL_POLYGON_OFFSET_FILL);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-        // triangles
-        glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->activeSceneSolution()->ordView().get_num_triangles(); i++)
-        {
-            int color = vert[tris[i][0]][2];
-            glColor3d(paletteColorOrder(color)[0], paletteColorOrder(color)[1], paletteColorOrder(color)[2]);
-
-            glVertex2d(vert[tris[i][0]][0], vert[tris[i][0]][1]);
-            glVertex2d(vert[tris[i][1]][0], vert[tris[i][1]][1]);
-            glVertex2d(vert[tris[i][2]][0], vert[tris[i][2]][1]);
-        }
-        glEnd();
-
-        glDisable(GL_POLYGON_OFFSET_FILL);
-
-        glEndList();
-
-        glCallList(m_listOrder);
-    }
-    else
-    {
-        glCallList(m_listOrder);
-    }
-
-    // paint labels
-    if (Util::config()->orderLabel)
-    {
-        QFont fontLabel = font();
-        fontLabel.setPointSize(fontLabel.pointSize() - 3);
-
-        m_scene->activeSceneSolution()->ordView().lock_data();
-
-        double3* vert = m_scene->activeSceneSolution()->ordView().get_vertices();
-        int* lvert;
-        char** ltext;
-        double2* lbox;
-        int nl = m_scene->activeSceneSolution()->ordView().get_labels(lvert, ltext, lbox);
-
-        Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale2d*aspect(),
-                   (2.0/contextHeight()*fontMetrics().height())/m_scale2d);
-
-        for (int i = 0; i < nl; i++)
-        {
-            glColor3d(1, 1, 1);
-            // if (lbox[i][0]/m_scale*aspect() > size.x && lbox[i][1]/m_scale > size.y)
-            {
-                renderText(vert[lvert[i]][0] - size.x / 2.0,
-                           vert[lvert[i]][1] - size.y / 2.0,
-                           0.0,
-                           ltext[i],
-                           fontLabel);
-            }
-        }
-
-        m_scene->activeSceneSolution()->ordView().unlock_data();
-    }
-}
-
-void SceneViewPost2D::paintOrderColorBar()
-{
-    logMessage("SceneViewCommon::paintOrderColorBar()");
-
-    if (!m_isSolutionPrepared || !Util::config()->showOrderScale) return;
-
-    // order scalar view
-    m_scene->activeSceneSolution()->ordView().lock_data();
-
-    double3* vert = m_scene->activeSceneSolution()->ordView().get_vertices();
-    int3* tris = m_scene->activeSceneSolution()->ordView().get_triangles();
-
-    int min = 11;
-    int max = 1;
-    for (int i = 0; i < m_scene->activeSceneSolution()->ordView().get_num_triangles(); i++)
-    {
-        if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
-        if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
-    }
-
-    m_scene->activeSceneSolution()->ordView().unlock_data();
-
-    // order color map
-    loadProjectionViewPort();
-
-    glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
-    glTranslated(- contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
-
-    // dimensions
-    int textWidth = fontMetrics().width("00");
-    int textHeight = fontMetrics().height();
-    Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? - (m_rulersAreaWidth.y/4.0)*m_scale2d*contextHeight() + 20.0 : 10.0);
-    double scaleLeft = (contextWidth() - (20 + 3 * textWidth));
-
-    // blended rectangle
-    drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
-              0.91, 0.91, 0.91);
-
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    // bars
-    glBegin(GL_QUADS);
-    for (int i = 1; i < max+1; i++)
-    {
-        glColor3d(0.0, 0.0, 0.0);
-        glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 10 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
-        glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
-
-        glColor3d(paletteColorOrder(i)[0], paletteColorOrder(i)[1], paletteColorOrder(i)[2]);
-        glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 12 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
-        glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
-    }
-    glEnd();
-
-    glDisable(GL_POLYGON_OFFSET_FILL);
-
-    // labels
-    glColor3d(1.0, 1.0, 1.0);
-    for (int i = 1; i < max + 1; i++)
-    {
-        int sizeNumber = fontMetrics().width(QString::number(i));
-        renderText(scaleLeft + 10 + 1.5 * textWidth - sizeNumber,
-                   scaleBorder.y + 10.0 + (i-1)*(2.0 * textHeight) + textHeight / 2.0,
-                   0.0,
-                   QString::number(i));
-    }
-}
-
 void SceneViewPost2D::paintScalarField()
 {
     logMessage("SceneViewCommon::paintScalarField()");
 
-    if (!m_isSolutionPrepared) return;
+    if (!Util::problem()->isSolved()) return;
 
     loadProjection2d(true);
 
     if (m_listScalarField == -1)
     {
-        // qDebug() << "SceneViewCommon::paintScalarField(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
+        // qDebug() << "SceneViewCommon::paintScalarField(), min = " << Util::config()->scalarRangeMin << ", max = " << Util::config()->scalarRangeMax;
 
         m_listScalarField = glGenLists(1);
         glNewList(m_listScalarField, GL_COMPILE);
 
         // range
-        double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
+        double irange = 1.0 / (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin);
         // special case: constant solution
-        if (fabs(m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin) < EPS_ZERO)
+        if (fabs(Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) < EPS_ZERO)
             irange = 1.0;
 
-        m_scene->activeSceneSolution()->linScalarView().lock_data();
+        m_post2DHermes->linScalarView().lock_data();
 
-        double3* linVert = m_scene->activeSceneSolution()->linScalarView().get_vertices();
-        int3* linTris = m_scene->activeSceneSolution()->linScalarView().get_triangles();
+        double3* linVert = m_post2DHermes->linScalarView().get_vertices();
+        int3* linTris = m_post2DHermes->linScalarView().get_triangles();
         Point point[3];
         double value[3];
 
@@ -559,7 +512,6 @@ void SceneViewPost2D::paintScalarField()
         glEnable(GL_TEXTURE_1D);
         glBindTexture(GL_TEXTURE_1D, 1);
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         // set texture transformation matrix
         glMatrixMode(GL_TEXTURE);
@@ -568,7 +520,7 @@ void SceneViewPost2D::paintScalarField()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
+        for (int i = 0; i < m_post2DHermes->linScalarView().get_num_triangles(); i++)
         {
             for (int j = 0; j < 3; j++)
             {
@@ -577,19 +529,19 @@ void SceneViewPost2D::paintScalarField()
                 value[j]   = linVert[linTris[i][j]][2];
             }
 
-            if (!m_sceneViewSettings.scalarRangeAuto)
+            if (!Util::config()->scalarRangeAuto)
             {
                 double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                     continue;
             }
 
             for (int j = 0; j < 3; j++)
             {
                 if (Util::config()->scalarRangeLog)
-                    glTexCoord1d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[j] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase));
+                    glTexCoord1d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[j] - Util::config()->scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase));
                 else
-                    glTexCoord1d((value[j] - m_sceneViewSettings.scalarRangeMin) * irange);
+                    glTexCoord1d((value[j] - Util::config()->scalarRangeMin) * irange);
                 glVertex2d(point[j].x, point[j].y);
             }
         }
@@ -603,7 +555,7 @@ void SceneViewPost2D::paintScalarField()
         glLoadIdentity();
         glMatrixMode(GL_MODELVIEW);
 
-        m_scene->activeSceneSolution()->linScalarView().unlock_data();
+        m_post2DHermes->linScalarView().unlock_data();
 
         glEndList();
 
@@ -619,7 +571,7 @@ void SceneViewPost2D::paintContours()
 {
     logMessage("SceneViewCommon::paintContours()");
 
-    if (!m_isSolutionPrepared) return;
+    if (!Util::problem()->isSolved()) return;
 
     loadProjection2d(true);
 
@@ -628,17 +580,17 @@ void SceneViewPost2D::paintContours()
         m_listContours = glGenLists(1);
         glNewList(m_listContours, GL_COMPILE);
 
-        m_scene->activeSceneSolution()->linContourView().lock_data();
+        m_post2DHermes->linContourView().lock_data();
 
-        double3* tvert = m_scene->activeSceneSolution()->linContourView().get_vertices();
-        int3* tris = m_scene->activeSceneSolution()->linContourView().get_triangles();
+        double3* tvert = m_post2DHermes->linContourView().get_vertices();
+        int3* tris = m_post2DHermes->linContourView().get_triangles();
 
         // transform variable
         double rangeMin =  numeric_limits<double>::max();
         double rangeMax = -numeric_limits<double>::max();
 
-        double3* vert = new double3[m_scene->activeSceneSolution()->linContourView().get_num_vertices()];
-        for (int i = 0; i < m_scene->activeSceneSolution()->linContourView().get_num_vertices(); i++)
+        double3* vert = new double3[m_post2DHermes->linContourView().get_num_vertices()];
+        for (int i = 0; i < m_post2DHermes->linContourView().get_num_vertices(); i++)
         {
             vert[i][0] = tvert[i][0];
             vert[i][1] = tvert[i][1];
@@ -658,7 +610,7 @@ void SceneViewPost2D::paintContours()
                   Util::config()->colorContours.blueF());
 
         glBegin(GL_LINES);
-        for (int i = 0; i < m_scene->activeSceneSolution()->linContourView().get_num_triangles(); i++)
+        for (int i = 0; i < m_post2DHermes->linContourView().get_num_triangles(); i++)
         {
             if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))
             {
@@ -669,7 +621,7 @@ void SceneViewPost2D::paintContours()
 
         delete vert;
 
-        m_scene->activeSceneSolution()->linContourView().unlock_data();
+        m_post2DHermes->linContourView().unlock_data();
 
         glEndList();
 
@@ -734,7 +686,7 @@ void SceneViewPost2D::paintVectors()
 {
     logMessage("SceneViewCommon::paintVectors()");
 
-    if (!m_isSolutionPrepared) return;
+    if (!Util::problem()->isSolved()) return;
 
     loadProjection2d(true);
 
@@ -743,8 +695,8 @@ void SceneViewPost2D::paintVectors()
         m_listVectors = glGenLists(1);
         glNewList(m_listVectors, GL_COMPILE);
 
-        double vectorRangeMin = m_scene->activeSceneSolution()->vecVectorView().get_min_value();
-        double vectorRangeMax = m_scene->activeSceneSolution()->vecVectorView().get_max_value();
+        double vectorRangeMin = m_post2DHermes->vecVectorView().get_min_value();
+        double vectorRangeMax = m_post2DHermes->vecVectorView().get_max_value();
 
         //Add 20% margin to the range
         double vectorRange = vectorRangeMax - vectorRangeMin;
@@ -756,20 +708,20 @@ void SceneViewPost2D::paintVectors()
         double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
         // if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
 
-        RectPoint rect = m_scene->boundingBox();
+        RectPoint rect = Util::scene()->boundingBox();
         double gs = (rect.width() + rect.height()) / Util::config()->vectorCount;
 
         // paint
-        m_scene->activeSceneSolution()->vecVectorView().lock_data();
+        m_post2DHermes->vecVectorView().lock_data();
 
-        double4* vecVert = m_scene->activeSceneSolution()->vecVectorView().get_vertices();
-        int3* vecTris = m_scene->activeSceneSolution()->vecVectorView().get_triangles();
+        double4* vecVert = m_post2DHermes->vecVectorView().get_vertices();
+        int3* vecTris = m_post2DHermes->vecVectorView().get_triangles();
 
         glEnable(GL_POLYGON_OFFSET_FILL);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->activeSceneSolution()->vecVectorView().get_num_triangles(); i++)
+        for (int i = 0; i < m_post2DHermes->vecVectorView().get_num_triangles(); i++)
         {
             Point a(vecVert[vecTris[i][0]][0], vecVert[vecTris[i][0]][1]);
             Point b(vecVert[vecTris[i][1]][0], vecVert[vecTris[i][1]][1]);
@@ -899,7 +851,7 @@ void SceneViewPost2D::paintVectors()
 
         glDisable(GL_POLYGON_OFFSET_FILL);
 
-        m_scene->activeSceneSolution()->vecVectorView().unlock_data();
+        m_post2DHermes->vecVectorView().unlock_data();
 
         glEndList();
 
@@ -929,10 +881,10 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
               0.5);
 
     // triangles
-    for (int i = 0; i < m_scene->activeSceneSolution()->meshInitial()->get_num_active_elements(); i++)
+    for (int i = 0; i < Util::problem()->meshInitial()->get_num_active_elements(); i++)
     {
-        Hermes::Hermes2D::Element *element = m_scene->activeSceneSolution()->meshInitial()->get_element(i);
-        if (m_scene->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected)
+        Hermes::Hermes2D::Element *element = Util::problem()->meshInitial()->get_element(i);
+        if (Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected)
         {
             if (element->is_triangle())
             {
@@ -962,12 +914,12 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
     /*
     logMessage("SceneViewCommon::paintPostprocessorSelectedVolume()");
 
-    if (!m_scene->activeSceneSolution()->isMeshed()) return;
+    if (!m_post2DHermes->isMeshed()) return;
 
-    m_scene->activeSceneSolution()->linInitialMeshView().lock_data();
+    m_post2DHermes->linInitialMeshView().lock_data();
 
-    double3* linVert = m_scene->activeSceneSolution()->linInitialMeshView().get_vertices();
-    int3* linTris = m_scene->activeSceneSolution()->linInitialMeshView().get_triangles();
+    double3* linVert = m_post2DHermes->linInitialMeshView().get_vertices();
+    int3* linTris = m_post2DHermes->linInitialMeshView().get_triangles();
 
     // draw initial mesh
     glEnable(GL_POLYGON_OFFSET_FILL);
@@ -984,7 +936,7 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < Util::problem()->linSolutionMeshView().get_num_triangles(); i++)
     {
-        if (m_scene->labels[element->marker - 1]->isSelected)
+        if (Util::scene()->labels[element->marker - 1]->isSelected)
         {
             glVertex2d(linVert[linTris[i][0]][0], linVert[linTris[i][0]][1]);
             glVertex2d(linVert[linTris[i][1]][0], linVert[linTris[i][1]][1]);
@@ -1005,7 +957,7 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
     logMessage("SceneViewCommon::paintPostprocessorSelectedSurface()");
 
     // edges
-    foreach (SceneEdge *edge, m_scene->edges->items()) {
+    foreach (SceneEdge *edge, Util::scene()->edges->items()) {
         glColor3d(Util::config()->colorSelected.redF(), Util::config()->colorSelected.greenF(), Util::config()->colorSelected.blueF());
         glLineWidth(3.0);
 
@@ -1031,11 +983,39 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
     }
 }
 
-void SceneViewPost2D::doDefaultValues()
+void SceneViewPost2D::doInvalidated()
 {
+    if (m_listContours != -1) glDeleteLists(m_listContours, 1);
+    if (m_listVectors != -1) glDeleteLists(m_listVectors, 1);
+    if (m_listScalarField != -1) glDeleteLists(m_listScalarField, 1);
+
+    m_listContours = -1;
+    m_listVectors = -1;
+    m_listScalarField = -1;
+
+    paletteFilter();
+    paletteUpdateTexAdjust();
+    paletteCreate();
+
+    if (Util::problem()->isSolved() && Util::config()->scalarRangeAuto)
+    {
+        Util::config()->scalarRangeMin = m_post2DHermes->linScalarView().get_min_value();
+        Util::config()->scalarRangeMax = m_post2DHermes->linScalarView().get_max_value();
+        // cout << "setting limits (" << Util::config()->scalarRangeMin << ", " << Util::config()->scalarRangeMax << ")" << endl;
+    }
+
+    if (Util::problem()->isSolved()) m_post2DHermes->solved();
+
+    SceneViewCommon::doInvalidated();
+}
+
+void SceneViewPost2D::clear()
+{
+    m_post2DHermes->clear();
+
     actPostprocessorModeLocalPointValue->trigger();
 
-    SceneViewCommon2D::doDefaultValues();
+    SceneViewCommon2D::clear();
 }
 
 void SceneViewPost2D::doSelectMarker()
@@ -1057,18 +1037,17 @@ void SceneViewPost2D::doPostprocessorModeGroup(QAction *action)
     if (actPostprocessorModeVolumeIntegral->isChecked())
         emit postprocessorModeGroupChanged(SceneModePostprocessor_VolumeIntegral);
 
-    m_scene->selectNone();
+    Util::scene()->selectNone();
     updateGL();
 }
-
 
 void SceneViewPost2D::doShowGroup(QAction *action)
 {
     logMessage("SceneViewCommon::doShowGroup()");
 
-    m_sceneViewSettings.showContours = actShowContours->isChecked();
-    m_sceneViewSettings.showVectors = actShowVectors->isChecked();
-    m_sceneViewSettings.showSolutionMesh = actShowSolutionMesh->isChecked();
+    Util::config()->showSolutionMeshView = actShowSolutionMesh->isChecked();
+    Util::config()->showContourView = actShowContours->isChecked();
+    Util::config()->showVectorView = actShowVectors->isChecked();
 
     doInvalidated();
 }

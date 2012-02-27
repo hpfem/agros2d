@@ -38,6 +38,8 @@ namespace Hermes
       class Orderizer;
       class OrderView;
     };
+    class Shapeset;
+
     /// \brief Represents a finite element space over a domain.
     ///
     /// The Space class represents a finite element space over a domain defined by 'mesh', spanned
@@ -97,7 +99,7 @@ namespace Hermes
     class HERMES_API Space
     {
     public:
-      Space(Mesh* mesh, Shapeset* shapeset, EssentialBCs<Scalar>* essential_bcs, Ord2 p_init);
+      Space(Mesh* mesh, Shapeset* shapeset, EssentialBCs<Scalar>* essential_bcs, int p_init);
 
       virtual ~Space();
 
@@ -142,9 +144,11 @@ namespace Hermes
 
       /// \brief Returns the number of basis functions contained in the spaces.
       static int get_num_dofs(Hermes::vector<const Space<Scalar>*> spaces);
+      static int get_num_dofs(Hermes::vector<Space<Scalar>*> spaces);
       
       /// \brief Returns the number of basis functions contained in the space.
       static int get_num_dofs(const Space<Scalar>* space);
+      static int get_num_dofs(Space<Scalar>* space);
 
       Mesh* get_mesh() const;
 
@@ -210,7 +214,7 @@ namespace Hermes
 
       /// Sets the same polynomial order for all elements in the mesh. Does not
       /// call assign_dofs(). For internal use.
-      void set_uniform_order_internal(Ord2 order, int marker);
+      void set_uniform_order_internal(int order, int marker);
 
       virtual void free();
 
@@ -345,7 +349,7 @@ namespace Hermes
 
       friend class Adapt<Scalar>;
       friend class DiscreteProblem<Scalar>;
-      template<typename T> friend class Continuity;
+      template<typename T> friend class CalculationContinuity;
 
       /// Saves this space into a file.
       bool save(const char *filename) const;

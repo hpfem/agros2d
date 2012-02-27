@@ -55,7 +55,24 @@ void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const 
     item->setTextAlignment(2, Qt::AlignLeft);
 }
 
-void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
+void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo)
+{
+    logMessage("fillComboBoxFieldInfo()");
+
+    // store variable
+    QString fieldId = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
+
+    // clear combo
+    cmbFieldInfo->clear();
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        cmbFieldInfo->addItem(QString::fromStdString(fieldInfo->module()->name), fieldInfo->fieldId());
+
+    cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(fieldId));
+    if (cmbFieldInfo->currentIndex() == -1)
+        cmbFieldInfo->setCurrentIndex(0);
+}
+
+void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
     logMessage("fillComboBoxScalarVariable()");
 
@@ -64,15 +81,30 @@ void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 
     // clear combo
     cmbFieldVariable->clear();
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-        fieldInfo->module()->fillComboBoxScalarVariable(cmbFieldVariable);
+    fieldInfo->module()->fillComboBoxScalarVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
         cmbFieldVariable->setCurrentIndex(0);
 }
 
-void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
+void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
+{
+    logMessage("fillComboBoxContourVariable()");
+
+    // store variable
+    QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
+
+    // clear combo
+    cmbFieldVariable->clear();
+    fieldInfo->module()->fillComboBoxContourVariable(cmbFieldVariable);
+
+    cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
+    if (cmbFieldVariable->currentIndex() == -1)
+        cmbFieldVariable->setCurrentIndex(0);
+}
+
+void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
     logMessage("fillComboBoxVectorVariable()");
 
@@ -81,8 +113,7 @@ void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 
     // clear combo
     cmbFieldVariable->clear();
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-        fieldInfo->module()->fillComboBoxVectorVariable(cmbFieldVariable);
+    fieldInfo->module()->fillComboBoxVectorVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)

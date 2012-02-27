@@ -16,7 +16,7 @@
 #include "umfpack.h"
 #include "adapt.h"
 #include "hermes2d.h"
-#include "hermes2d_common_defs.h"
+#include "global.h"
 #include "limit_order.h"
 #include "solution.h"
 #include "discrete_problem.h"
@@ -88,7 +88,7 @@ namespace Hermes
 
       for (int i = 0; i < this->num; i++)
       {
-        error_form[i][i] = new MatrixFormVolError(proj_norms[i]);
+        error_form[i][i] = new MatrixFormVolError(i, i, proj_norms[i]);
         norm_form[i][i] = error_form[i][i];
         own_forms[i][i] = true;
       }
@@ -134,7 +134,7 @@ namespace Hermes
       }
 
       // assign norm weak forms  according to norms selection
-      error_form[0][0] = new MatrixFormVolError(proj_norm);
+      error_form[0][0] = new MatrixFormVolError(0, 0, proj_norm);
       norm_form[0][0] = error_form[0][0];
       own_forms[0][0] = true;
     }
@@ -166,8 +166,6 @@ namespace Hermes
         throw Exceptions::NullException(1);
       if (spaces.size() != refinement_selectors.size())
         throw Exceptions::LengthException(1, refinement_selectors.size(), spaces.size());
-
-      Hermes::TimePeriod cpu_time;
 
       //get meshes
       int max_id = -1;
@@ -205,113 +203,172 @@ namespace Hermes
       elem_inx_to_proc.reserve(num_act_elems);
 
       //adaptivity loop
-      double error_squared_threshod = -1; //an error threshold that breaks the adaptivity loop in a case of strategy 1
-      int num_exam_elem = 0; //a number of examined elements
+      double error_squared_threshold = -1; //an error threshold that breaks the adaptivity loop in a case of strategy 1
       int num_ignored_elem = 0; //a number of ignored elements
       int num_not_changed = 0; //a number of element that were not changed
       int num_priority_elem = 0; //a number of elements that were processed using priority queue
 
-      bool first_regular_element = true; //true if first regular element was not processed yet
-      int inx_regular_element = 0;
-      while (inx_regular_element < num_act_elems || !priority_queue.empty())
+      
+      // Structures traversed in reality using strategies.
+      Hermes::vector<int> ids;
+      Hermes::vector<int> components;
+      Hermes::vector<int> current_orders;
+      bool first_regular_element = true; // true if first regular element was not processed yet
+      bool error_level_reached = false;
+
+      for(int inx_regular_element = 0; inx_regular_element < num_act_elems || !priority_queue.empty();)
       {
         int id, comp, inx_element;
 
-        //get element identification
+        // Process the queuse(s) to see what elements to really refine.
         if (priority_queue.empty())
         {
           id = regular_queue[inx_regular_element].id;
           comp = regular_queue[inx_regular_element].comp;
-          inx_element = inx_regular_element;
           inx_regular_element++;
+
+          // Get info linked with the element
+          double err_squared = errors[comp][id];
+            
+          if (first_regular_element)
+          {
+            error_squared_threshold = thr * err_squared;
+            first_regular_element = false;
+          }
+          
+          // first refinement strategy:
+          // refine elements until prescribed amount of error is processed
+          // if more elements have similar error refine all to keep the mesh symmetric
+          if ((strat == 0) && (processed_error_squared > sqrt(thr) * errors_squared_sum)
+            && fabs((err_squared - err0_squared)/err0_squared) > 1e-3) 
+            error_level_reached = true;
+
+          // second refinement strategy:
+          // refine all elements whose error is bigger than some portion of maximal error
+          if ((strat == 1) && (err_squared < error_squared_threshold))
+            error_level_reached = true;
+
+          if ((strat == 2) && (err_squared < thr))
+            error_level_reached = true;
+
+          if ((strat == 3) && ((err_squared < error_squared_threshold) || (processed_error_squared > 1.5 * to_be_processed)))
+            error_level_reached = true;
+
+          // Insert the element only if it complies with the strategy.
+          if(!error_level_reached)
+          {
+            err0_squared = err_squared;
+            processed_error_squared += err_squared;
+            ids.push_back(id);
+            components.push_back(comp);
+            current_orders.push_back(this->spaces[comp]->get_element_order(id));
+            spaces[comp]->edata[id].changed_in_last_adaptation = true;
+          }
         }
+        // Priority - refine no matter what.
         else
         {
           id = priority_queue.front().id;
           comp = priority_queue.front().comp;
-          inx_element = -1;
           priority_queue.pop();
-          num_priority_elem++;
-        }
-        num_exam_elem++;
 
-        //get info linked with the element
-        double err_squared = errors[comp][id];
-        Mesh* mesh = meshes[comp];
-        Element* e = mesh->get_element(id);
-
-        if (!should_ignore_element(inx_element, mesh, e))
-        {
-          //check if adaptivity loop should end
-          if (inx_element >= 0)
-          {
-            //prepare error threshold for strategy 1
-            if (first_regular_element)
-            {
-              error_squared_threshod = thr * err_squared;
-              first_regular_element = false;
-            }
-
-            // first refinement strategy:
-            // refine elements until prescribed amount of error is processed
-            // if more elements have similar error refine all to keep the mesh symmetric
-            if ((strat == 0) && (processed_error_squared > sqrt(thr) * errors_squared_sum)
-              && fabs((err_squared - err0_squared)/err0_squared) > 1e-3) break;
-
-            // second refinement strategy:
-            // refine all elements whose error is bigger than some portion of maximal error
-            if ((strat == 1) && (err_squared < error_squared_threshod)) break;
-
-            if ((strat == 2) && (err_squared < thr)) break;
-
-            if ((strat == 3) &&
-              ( (err_squared < error_squared_threshod) ||
-              ( processed_error_squared > 1.5 * to_be_processed )) ) break;
-          }
-
-          // get refinement suggestion
-          ElementToRefine elem_ref(id, comp);
-          int current = this->spaces[comp]->get_element_order(id);
-          // rsln[comp] may be unset if refinement_selectors[comp] == HOnlySelector or POnlySelector
-          bool refined = refinement_selectors[comp]->select_refinement(e, current, rsln[comp], elem_ref);
-
-          //add to a list of elements that are going to be refined
-          if (can_refine_element(mesh, e, refined, elem_ref) )
-          {
-            idx[id][comp] = (int)elem_inx_to_proc.size();
-            elem_inx_to_proc.push_back(elem_ref);
-            err0_squared = err_squared;
-            processed_error_squared += err_squared;
-            spaces[comp]->edata[elem_ref.id].changed_in_last_adaptation = true;
-          }
-          else
-          {
-            debug_log("Element (id:%d, comp:%d) not changed", e->id, comp);
-            num_not_changed++;
-          }
-        }
-        else
-        {
-          num_ignored_elem++;
+          // Insert into appropripate arrays.
+          ids.push_back(id);
+          components.push_back(comp);
+          current_orders.push_back(this->spaces[comp]->get_element_order(id));
+          spaces[comp]->edata[id].changed_in_last_adaptation = true;
         }
       }
 
-      verbose("Examined elements: %d", num_exam_elem);
-      verbose(" Elements taken from priority queue: %d", num_priority_elem);
-      verbose(" Ignored elements: %d", num_ignored_elem);
-      verbose(" Not changed elements: %d", num_not_changed);
-      verbose(" Elements to process: %d", elem_inx_to_proc.size());
-      bool done = false;
-      if (num_exam_elem == 0)
-        done = true;
-      else if (elem_inx_to_proc.empty())
+      if (ids.empty())
       {
-        warn("None of the elements selected for refinement could be refined. Adaptivity step not successful, returning 'true'.");
-        done = true;
+        warn("None of the elements selected for refinement was refined. Adaptivity step successful, returning 'true'.");
+        return true;
+      }
+
+      // RefinementSelectors cloning.
+      RefinementSelectors::Selector<Scalar>*** global_refinement_selectors = new RefinementSelectors::Selector<Scalar>**[Global<Scalar>::Hermes_omp_get_max_threads()];
+
+      for(unsigned int i = 0; i < Global<Scalar>::Hermes_omp_get_max_threads(); i++)
+      {
+        global_refinement_selectors[i] = new RefinementSelectors::Selector<Scalar>*[refinement_selectors.size()];
+        for (unsigned int j = 0; j < refinement_selectors.size(); j++)
+        {
+          global_refinement_selectors[i][j] = refinement_selectors[j]->clone();
+          if(dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(global_refinement_selectors[i][j]) != NULL)
+          {
+            dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(global_refinement_selectors[i][j])->cached_shape_vals_valid = dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(refinement_selectors[j])->cached_shape_vals_valid;
+            dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(global_refinement_selectors[i][j])->cached_shape_ortho_vals = dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(refinement_selectors[j])->cached_shape_ortho_vals;
+            dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(global_refinement_selectors[i][j])->cached_shape_vals = dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(refinement_selectors[j])->cached_shape_vals;
+          }
+          if(dynamic_cast<RefinementSelectors::OptimumSelector<Scalar>*>(global_refinement_selectors[i][j]) != NULL)
+            dynamic_cast<RefinementSelectors::OptimumSelector<Scalar>*>(global_refinement_selectors[i][j])->num_shapes = dynamic_cast<RefinementSelectors::OptimumSelector<Scalar>*>(refinement_selectors[j])->num_shapes;
+        }
+      }
+
+      // Solution cloning.
+      Solution<Scalar>*** rslns = new Solution<Scalar>**[Global<Scalar>::Hermes_omp_get_max_threads()];
+
+      for(unsigned int i = 0; i < Global<Scalar>::Hermes_omp_get_max_threads(); i++)
+      {
+        rslns[i] = new Solution<Scalar>*[this->num];
+        for (int j = 0; j < this->num; j++)
+        {
+          rslns[i][j] = dynamic_cast<Solution<Scalar>*>(rsln[j]->clone());
+        }
+      }
+
+      RefinementSelectors::Selector<Scalar>** current_refinement_selectors;
+      Solution<Scalar>** current_rslns;
+      int id_to_refine;
+#define CHUNKSIZE 1
+#pragma omp parallel shared(ids, components, elem_inx_to_proc, meshes, current_orders) private(current_refinement_selectors, current_rslns, id_to_refine)
+      {
+#pragma omp for schedule(dynamic, CHUNKSIZE)
+        for(id_to_refine = 0; id_to_refine < ids.size(); id_to_refine++)
+        {
+          current_refinement_selectors = global_refinement_selectors[omp_get_thread_num()];
+          current_rslns = rslns[omp_get_thread_num()];
+        
+          Mesh* mesh = meshes[components[id_to_refine]];
+          Element* e = mesh->get_element(ids[id_to_refine]);
+
+          // Get refinement suggestion
+          ElementToRefine elem_ref(ids[id_to_refine], components[id_to_refine]);
+          
+          // rsln[comp] may be unset if refinement_selectors[comp] == HOnlySelector or POnlySelector
+          bool refined = current_refinement_selectors[components[id_to_refine]]->select_refinement(e, current_orders[id_to_refine], current_rslns[components[id_to_refine]], elem_ref);
+
+          //add to a list of elements that are going to be refined
+#pragma omp critical (elem_inx_to_proc)
+          {
+            idx[ids[id_to_refine]][components[id_to_refine]] = (int)elem_inx_to_proc.size();
+            elem_inx_to_proc.push_back(elem_ref);
+          }
+        }
       }
 
       //fix refinement if multimesh is used
-      fix_shared_mesh_refinements(meshes, elem_inx_to_proc, idx, refinement_selectors);
+      fix_shared_mesh_refinements(meshes, elem_inx_to_proc, idx, global_refinement_selectors);
+
+      for(unsigned int i = 0; i < omp_get_num_threads(); i++)
+      {
+        for (unsigned int j = 0; j < refinement_selectors.size(); j++)
+          delete global_refinement_selectors[i][j];
+        delete [] global_refinement_selectors[i];
+      }
+      delete [] global_refinement_selectors;
+
+      for(unsigned int i = 0; i < Global<Scalar>::Hermes_omp_get_max_threads(); i++)
+      {
+        if(rslns[i] != NULL)
+        {
+          for (unsigned int j = 0; j < this->num; j++)
+            delete rslns[i][j];
+          delete [] rslns[i];
+        }
+      }
+      delete [] rslns;
 
       for(int i = 0; i < max_id; i++)
         delete [] idx[i];
@@ -344,32 +401,34 @@ namespace Hermes
         if (rsln[j] != NULL)
           rsln[j]->enable_transform(true);
 
-      verbose("Refined elements: %d", elem_inx_to_proc.size());
-      report_time("Refined elements in: %g s", cpu_time.tick().last());
-
       //store for the user to retrieve
       last_refinements.swap(elem_inx_to_proc);
 
       have_errors = false;
-      if (strat == 2 && done == true)
+      if (strat == 2)
         have_errors = true; // space without changes
 
       // since space changed, assign dofs:
       for(unsigned int i = 0; i < this->spaces.size(); i++)
         this->spaces[i]->assign_dofs();
 
-      return done;
+      return false;
     }
 
     template<typename Scalar>
-    Adapt<Scalar>::MatrixFormVolError::MatrixFormVolError()
+    Adapt<Scalar>::MatrixFormVolError::MatrixFormVolError(int i, int j) : MatrixFormVol<Scalar>(i, j)
     {
     }
 
     template<typename Scalar>
-    Adapt<Scalar>::MatrixFormVolError::MatrixFormVolError(ProjNormType type)
+    MatrixFormVol<Scalar>* Adapt<Scalar>::MatrixFormVolError::clone()
     {
-      this->projNormType = type;
+      return new MatrixFormVolError(*this);
+    }
+
+    template<typename Scalar>
+    Adapt<Scalar>::MatrixFormVolError::MatrixFormVolError(int i, int j, ProjNormType type) : MatrixFormVol<Scalar>(i, j), projNormType(type)
+    {
     }
 
     template<typename Scalar>
@@ -540,74 +599,79 @@ namespace Hermes
 
     template<typename Scalar>
     void Adapt<Scalar>::fix_shared_mesh_refinements(Mesh** meshes, std::vector<ElementToRefine>& elems_to_refine,
-      int** idx, Hermes::vector<RefinementSelectors::Selector<Scalar> *> refinement_selectors)
+      int** idx, RefinementSelectors::Selector<Scalar> *** refinement_selectors)
     {
       int num_elem_to_proc = elems_to_refine.size();
-      for(int inx = 0; inx < num_elem_to_proc; inx++)
-      {
-        ElementToRefine& elem_ref = elems_to_refine[inx];
-        int current_quad_order = this->spaces[elem_ref.comp]->get_element_order(elem_ref.id);
-        Element* current_elem = meshes[elem_ref.comp]->get_element(elem_ref.id);
 
-        //select a refinement used by all components that share a mesh which is about to be refined
-        int selected_refinement = elem_ref.split;
-        for (int j = 0; j < this->num; j++)
+      RefinementSelectors::Selector<Scalar>** current_refinement_selectors;
+
+      #pragma omp parallel private(current_refinement_selectors)
+        for(int inx = 0; inx < num_elem_to_proc; inx++)
         {
-          if (selected_refinement == H2D_REFINEMENT_H) break; // iso refinement is max what can be recieved
-          if (j != elem_ref.comp && meshes[j] == meshes[elem_ref.comp]) { // if a mesh is shared
-            int ii = idx[elem_ref.id][j];
-            if (ii >= 0) { // and the sample element is about to be refined by another compoment
-              const ElementToRefine& elem_ref_ii = elems_to_refine[ii];
-              if (elem_ref_ii.split != selected_refinement && elem_ref_ii.split != H2D_REFINEMENT_P) { //select more complicated refinement
-                if ((elem_ref_ii.split == H2D_REFINEMENT_ANISO_H || elem_ref_ii.split == H2D_REFINEMENT_ANISO_V) && selected_refinement == H2D_REFINEMENT_P)
-                  selected_refinement = elem_ref_ii.split;
-                else
-                  selected_refinement = H2D_REFINEMENT_H;
-              }
-            }
-          }
-        }
+          current_refinement_selectors = refinement_selectors[omp_get_thread_num()];
+          ElementToRefine& elem_ref = elems_to_refine[inx];
+          int current_quad_order = this->spaces[elem_ref.comp]->get_element_order(elem_ref.id);
+          Element* current_elem = meshes[elem_ref.comp]->get_element(elem_ref.id);
 
-        //fix other refinements according to the selected refinement
-        if (selected_refinement != H2D_REFINEMENT_P)
-        {
-          //get suggested orders for the selected refinement
-          const int* suggested_orders = NULL;
-          if (selected_refinement == H2D_REFINEMENT_H)
-            suggested_orders = elem_ref.q;
-
-          //update orders
+          //select a refinement used by all components that share a mesh which is about to be refined
+          int selected_refinement = elem_ref.split;
           for (int j = 0; j < this->num; j++)
           {
-            if (j != elem_ref.comp && meshes[j] == meshes[elem_ref.comp]) { // if components share the mesh
-              // change currently processed refinement
-              if (elem_ref.split != selected_refinement)
-              {
-                elem_ref.split = selected_refinement;
-                refinement_selectors[j]->generate_shared_mesh_orders(current_elem, current_quad_order, elem_ref.split, elem_ref.p, suggested_orders);
-              }
-
-              // change other refinements
+            if (selected_refinement == H2D_REFINEMENT_H) break; // iso refinement is max what can be recieved
+            if (j != elem_ref.comp && meshes[j] == meshes[elem_ref.comp]) { // if a mesh is shared
               int ii = idx[elem_ref.id][j];
-              if (ii >= 0)
-              {
-                ElementToRefine& elem_ref_ii = elems_to_refine[ii];
-                if (elem_ref_ii.split != selected_refinement)
-                {
-                  elem_ref_ii.split = selected_refinement;
-                  refinement_selectors[j]->generate_shared_mesh_orders(current_elem, current_quad_order, elem_ref_ii.split, elem_ref_ii.p, suggested_orders);
+              if (ii >= 0) { // and the sample element is about to be refined by another compoment
+                const ElementToRefine& elem_ref_ii = elems_to_refine[ii];
+                if (elem_ref_ii.split != selected_refinement && elem_ref_ii.split != H2D_REFINEMENT_P) { //select more complicated refinement
+                  if ((elem_ref_ii.split == H2D_REFINEMENT_ANISO_H || elem_ref_ii.split == H2D_REFINEMENT_ANISO_V) && selected_refinement == H2D_REFINEMENT_P)
+                    selected_refinement = elem_ref_ii.split;
+                  else
+                    selected_refinement = H2D_REFINEMENT_H;
                 }
               }
-              else { // element (of the other comp.) not refined at all: assign refinement
-                ElementToRefine elem_ref_new(elem_ref.id, j);
-                elem_ref_new.split = selected_refinement;
-                refinement_selectors[j]->generate_shared_mesh_orders(current_elem, current_quad_order, elem_ref_new.split, elem_ref_new.p, suggested_orders);
-                elems_to_refine.push_back(elem_ref_new);
+            }
+          }
+
+          //fix other refinements according to the selected refinement
+          if (selected_refinement != H2D_REFINEMENT_P)
+          {
+            //get suggested orders for the selected refinement
+            const int* suggested_orders = NULL;
+            if (selected_refinement == H2D_REFINEMENT_H)
+              suggested_orders = elem_ref.q;
+
+            //update orders
+            for (int j = 0; j < this->num; j++)
+            {
+              if (j != elem_ref.comp && meshes[j] == meshes[elem_ref.comp]) { // if components share the mesh
+                // change currently processed refinement
+                if (elem_ref.split != selected_refinement)
+                {
+                  elem_ref.split = selected_refinement;
+                  current_refinement_selectors[j]->generate_shared_mesh_orders(current_elem, current_quad_order, elem_ref.split, elem_ref.p, suggested_orders);
+                }
+
+                // change other refinements
+                int ii = idx[elem_ref.id][j];
+                if (ii >= 0)
+                {
+                  ElementToRefine& elem_ref_ii = elems_to_refine[ii];
+                  if (elem_ref_ii.split != selected_refinement)
+                  {
+                    elem_ref_ii.split = selected_refinement;
+                    current_refinement_selectors[j]->generate_shared_mesh_orders(current_elem, current_quad_order, elem_ref_ii.split, elem_ref_ii.p, suggested_orders);
+                  }
+                }
+                else { // element (of the other comp.) not refined at all: assign refinement
+                  ElementToRefine elem_ref_new(elem_ref.id, j);
+                  elem_ref_new.split = selected_refinement;
+                  current_refinement_selectors[j]->generate_shared_mesh_orders(current_elem, current_quad_order, elem_ref_new.split, elem_ref_new.p, suggested_orders);
+                  elems_to_refine.push_back(elem_ref_new);
+                }
               }
             }
           }
         }
-      }
     }
 
     template<typename Scalar>
@@ -621,18 +685,6 @@ namespace Hermes
     const Hermes::vector<typename Adapt<Scalar>::ElementReference>& Adapt<Scalar>::get_regular_queue() const
     {
       return regular_queue;
-    };
-
-    template<typename Scalar>
-    bool Adapt<Scalar>::should_ignore_element(const int inx_element, const Mesh* mesh, const Element* element) const
-    {
-      return false;
-    };
-
-    template<typename Scalar>
-    bool Adapt<Scalar>::can_refine_element(Mesh* mesh, Element* e, bool refined, ElementToRefine& elem_ref) const
-    {
-      return refined;
     };
 
     template<typename Scalar>
@@ -710,123 +762,6 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void Adapt<Scalar>::unrefine(double thr)
-    {
-      if (!have_errors)
-        error("Element errors have to be calculated first, see Adapt<Scalar>::calc_err_est().");
-      if (this->num > 2) error("Unrefine implemented for two spaces only.");
-
-      Mesh* mesh[2];
-      mesh[0] = this->spaces[0]->get_mesh();
-      mesh[1] = this->spaces[1]->get_mesh();
-
-
-      int k = 0;
-      if (mesh[0] == mesh[1]) // single mesh
-      {
-        Element* e;
-        for_all_inactive_elements(e, mesh[0])
-        {
-          bool found = true;
-          for (int i = 0; i < 4; i++)
-            if (e->sons[i] != NULL && ((!e->sons[i]->active) || (e->sons[i]->is_curved())))
-            { found = false;  break; }
-
-            if (found)
-            {
-              double sum1_squared = 0.0, sum2_squared = 0.0;
-              int max1 = 0, max2 = 0;
-              for (int i = 0; i < H2D_MAX_ELEMENT_SONS; i++)
-                if (e->sons[i] != NULL)
-                {
-                  sum1_squared += errors[0][e->sons[i]->id];
-                  sum2_squared += errors[1][e->sons[i]->id];
-                  int oo = this->spaces[0]->get_element_order(e->sons[i]->id);
-                  if (oo > max1) max1 = oo;
-                  oo = this->spaces[1]->get_element_order(e->sons[i]->id);
-                  if (oo > max2) max2 = oo;
-                }
-                if ((sum1_squared < thr * errors[regular_queue[0].comp][regular_queue[0].id]) &&
-                  (sum2_squared < thr * errors[regular_queue[0].comp][regular_queue[0].id]))
-                {
-                  mesh[0]->unrefine_element_id(e->id);
-                  mesh[1]->unrefine_element_id(e->id);
-                  errors[0][e->id] = sum1_squared;
-                  errors[1][e->id] = sum2_squared;
-                  this->spaces[0]->set_element_order_internal(e->id, max1);
-                  this->spaces[1]->set_element_order_internal(e->id, max2);
-                  k++; // number of unrefined elements
-                }
-            }
-        }
-        for_all_active_elements(e, mesh[0])
-        {
-          for (int i = 0; i < 2; i++)
-            if (errors[i][e->id] < thr/4 * errors[regular_queue[0].comp][regular_queue[0].id])
-            {
-              int oo = H2D_GET_H_ORDER(this->spaces[i]->get_element_order(e->id));
-              this->spaces[i]->set_element_order_internal(e->id, std::max(oo - 1, 1));
-              k++;
-            }
-        }
-      }
-      else // multimesh
-      {
-        for (int m = 0; m < 2; m++)
-        {
-          Element* e;
-          for_all_inactive_elements(e, mesh[m])
-          {
-            bool found = true;
-            for (int i = 0; i < H2D_MAX_ELEMENT_SONS; i++)
-            {
-              if (e->sons[i] != NULL && ((!e->sons[i]->active) || (e->sons[i]->is_curved())))
-              {
-                found = false;
-                break;
-              }
-            }
-
-            if (found)
-            {
-              double sum_squared = 0.0;
-              int max = 0;
-              for (int i = 0; i < 4; i++)
-              {
-                if (e->sons[i] != NULL)
-                {
-                  sum_squared += errors[m][e->sons[i]->id];
-                  int oo = this->spaces[m]->get_element_order(e->sons[i]->id);
-                  if (oo > max) max = oo;
-                }
-              }
-
-              if ((sum_squared < thr * errors[regular_queue[0].comp][regular_queue[0].id]))
-                //if ((sum < 0.1 * thr))
-              {
-                mesh[m]->unrefine_element_id(e->id);
-                errors[m][e->id] = sum_squared;
-                this->spaces[m]->set_element_order_internal(e->id, max);
-                k++; // number of unrefined elements
-              }
-            }
-          }
-          for_all_active_elements(e, mesh[m])
-          {
-            if (errors[m][e->id] < thr/4 * errors[regular_queue[0].comp][regular_queue[0].id])
-            {
-              int oo = H2D_GET_H_ORDER(this->spaces[m]->get_element_order(e->id));
-              this->spaces[m]->set_element_order_internal(e->id, std::max(oo - 1, 1));
-              k++;
-            }
-          }
-        }
-      }
-      verbose("Unrefined %d elements.", k);
-      have_errors = false;
-    }
-
-    template<typename Scalar>
     void Adapt<Scalar>::set_error_form(int i, int j, typename Adapt<Scalar>::MatrixFormVolError* form)
     {
       error_if(i < 0 || i >= this->num || j < 0 || j >= this->num,
@@ -885,12 +820,12 @@ namespace Hermes
       if(static_cast<Solution<Scalar>*>(rsln1) || static_cast<Solution<Scalar>*>(rsln2))
       {
         if(static_cast<Solution<Scalar>*>(rsln1)->get_type() == HERMES_EXACT)
-        { limit_order_nowarn(order); }
+        { limit_order_nowarn(order, rv1->get_active_element()->get_mode()); }
         else
-          limit_order(order);
+          limit_order(order, rv1->get_active_element()->get_mode());
       }
       else
-        limit_order(order);
+        limit_order(order, rv1->get_active_element()->get_mode());
 
       ou->free_ord(); delete ou;
       ov->free_ord(); delete ov;
@@ -898,8 +833,8 @@ namespace Hermes
 
       // eval the form
       Quad2D* quad = sln1->get_quad_2d();
-      double3* pt = quad->get_points(order);
-      int np = quad->get_num_points(order);
+      double3* pt = quad->get_points(order, sln1->get_active_element()->get_mode());
+      int np = quad->get_num_points(order, sln1->get_active_element()->get_mode());
 
       // init geometry and jacobian*weights
       Geom<double>* e = init_geom_vol(rrv1, order);
@@ -949,12 +884,12 @@ namespace Hermes
       if(static_cast<Solution<Scalar>*>(rsln1) || static_cast<Solution<Scalar>*>(rsln2))
       {
         if(static_cast<Solution<Scalar>*>(rsln1)->get_type() == HERMES_EXACT)
-        { limit_order_nowarn(order);  }
+        { limit_order_nowarn(order, rrv1->get_active_element()->get_mode());  }
         else
-          limit_order(order);
+          limit_order(order, rrv1->get_active_element()->get_mode());
       }
       else
-        limit_order(order);
+        limit_order(order, rrv1->get_active_element()->get_mode());
 
       ou->free_ord(); delete ou;
       ov->free_ord(); delete ov;
@@ -962,8 +897,8 @@ namespace Hermes
 
       // eval the form
       Quad2D* quad = rsln1->get_quad_2d();
-      double3* pt = quad->get_points(order);
-      int np = quad->get_num_points(order);
+      double3* pt = quad->get_points(order, rrv1->get_active_element()->get_mode());
+      int np = quad->get_num_points(order, rrv1->get_active_element()->get_mode());
 
       // init geometry and jacobian*weights
       Geom<double>* e = init_geom_vol(rrv1, order);
@@ -996,8 +931,6 @@ namespace Hermes
       int n = slns.size();
       if (n != this->num) EXIT("Wrong number of solutions.");
 
-      Hermes::TimePeriod tmr;
-
       Solution<Scalar>* rslns_original[H2D_MAX_COMPONENTS];
       Solution<Scalar>* slns_original[H2D_MAX_COMPONENTS];
 
@@ -1020,7 +953,7 @@ namespace Hermes
       // Prepare multi-mesh traversal and error arrays.
       Mesh **meshes = new Mesh *[2 * num];
       Transformable **tr = new Transformable *[2 * num];
-      Traverse trav;
+      Traverse trav(true);
       num_act_elems = 0;
       for (i = 0; i < num; i++)
       {
@@ -1049,9 +982,9 @@ namespace Hermes
       double total_error = 0.0;
 
       // Calculate error.
-      Element **ee;
+      Traverse::State * ee;
       trav.begin(2 * num, meshes, tr);
-      while ((ee = trav.get_next_state(NULL, NULL)) != NULL)
+      while ((ee = trav.get_next_state()) != NULL)
       {
         for (i = 0; i < num; i++)
         {
@@ -1068,7 +1001,7 @@ namespace Hermes
               total_error += err;
               errors_components[i] += err;
               if(solutions_for_adapt)
-                this->errors[i][ee[i]->id] += err;
+                this->errors[i][ee->e[i]->id] += err;
             }
           }
         }
@@ -1092,9 +1025,6 @@ namespace Hermes
           }
         }
       }
-
-      tmr.tick();
-      error_time = tmr.accumulated();
 
       // Make the error relative if needed.
       if(solutions_for_adapt)

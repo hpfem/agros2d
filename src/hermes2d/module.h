@@ -465,6 +465,8 @@ public:
 
     double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
 
+    ViewScalarFilter<Scalar>* clone();
+
 protected:
     typename Hermes::Hermes2D::Function<Scalar>::Node* node;
 

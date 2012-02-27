@@ -45,7 +45,6 @@ namespace Hermes
 
       Quad2DCheb()
       {
-        mode = HERMES_MODE_TRIANGLE;
         max_order[0]  = max_order[1]  = 10;
         num_tables[0] = num_tables[1] = 11;
         tables = cheb_tab;
@@ -56,15 +55,15 @@ namespace Hermes
 
         int i, j, k, n, m;
         double3* pt;
-        for (mode = 0; mode <= 1; mode++)
+        for (int mode_i = 0; mode_i <= 1; mode_i++)
         {
           for (k = 0; k <= 10; k++)
           {
-            np[mode][k] = n = mode ? sqr(k + 1) : (k + 1)*(k + 2)/2;
-            tables[mode][k] = pt = new double3[n];
+            np[mode_i][k] = n = mode_i ? sqr(k + 1) : (k + 1)*(k + 2)/2;
+            tables[mode_i][k] = pt = new double3[n];
 
             for (i = k, m = 0; i >= 0; i--)
-              for (j = k; j >= (mode ? 0 : k-i); j--, m++) {
+              for (j = k; j >= (mode_i ? 0 : k-i); j--, m++) {
                 pt[m][0] = k ? cos(j * M_PI / k) : 1.0;
                 pt[m][1] = k ? cos(i * M_PI / k) : 1.0;
                 pt[m][2] = 1.0;
@@ -75,9 +74,9 @@ namespace Hermes
 
       ~Quad2DCheb()
       {
-        for (int mode = 0; mode <= 1; mode++)
+        for (int mode_i = 0; mode_i <= 1; mode_i++)
           for (int k = 1; k <= 10; k++)
-            delete[] tables[mode][k];
+            delete[] tables[mode_i][k];
       }
 
       virtual void dummy_fn() {}
@@ -226,12 +225,20 @@ namespace Hermes
           this->sln_vector[i] = sln->sln_vector[i];
       }
       else // Const, exact handled differently.
-        error("Undefined or exact solutions can not be copied into an instance of Solution already coming from computation.");
+        error("Undefined or exact solutions cannot be copied into an instance of Solution already coming from computation.");
 
       space = sln->space;
       space_seq = sln->space_seq;
 
       this->element = NULL;
+    }
+
+    template<typename Scalar>
+    MeshFunction<Scalar>* Solution<Scalar>::clone()
+    {
+      Solution<Scalar>* sln = new Solution<Scalar>();
+      sln->copy(this);
+      return sln;
     }
 
     template<typename Scalar>
@@ -466,9 +473,8 @@ namespace Hermes
       for_all_active_elements(e, this->mesh)
       {
         this->mode = e->get_mode();
-        quad->set_mode(this->mode);
         o = elem_orders[e->id];
-        int np = quad->get_num_points(o);
+        int np = quad->get_num_points(o, e->get_mode());
 
         AsmList<Scalar> al;
         space->get_element_assembly_list(e, &al);
@@ -941,8 +947,7 @@ namespace Hermes
       int i, j, k, l;
       struct Function<Scalar>::Node* node = NULL;
       Quad2D* quad = this->quads[this->cur_quad];
-      quad->set_mode(this->mode);
-      int np = quad->get_num_points(order);
+      int np = quad->get_num_points(order, this->mode);
 
       if (sln_type == HERMES_SLN)
       {
@@ -972,7 +977,7 @@ namespace Hermes
         Scalar* x = new Scalar[np];
         Scalar* y = new Scalar[np];
         Scalar* tx = new Scalar[np];
-        double3* pt = quad->get_points(order);
+        double3* pt = quad->get_points(order, this->element->get_mode());
         for (i = 0; i < np; i++)
         {
           x[i] = pt[i][0] * this->ctm->m[0] + this->ctm->t[0];

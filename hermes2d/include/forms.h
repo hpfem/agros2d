@@ -18,7 +18,7 @@
 #ifndef __H2D_FORMS_H
 #define __H2D_FORMS_H
 
-#include "hermes2d_common_defs.h"
+#include "global.h"
 #include "quadrature/quad.h"
 #include "function/function.h"
 #include "function/solution.h"
@@ -82,6 +82,8 @@ namespace Hermes
       
       void subtract(const Func<T>& func);
       void add(T* attribute, T* other_attribute);
+
+      int get_num_gip() const;
 
     protected:
       const int num_gip; ///< Number of integration points used by this intance.
@@ -227,7 +229,8 @@ namespace Hermes
 
       friend Geom<Hermes::Ord>* init_geom_ord();
       friend Geom<double>* init_geom_vol(RefMap *rm, const int order);
-      friend Geom<double>* init_geom_surf(RefMap *rm, SurfPos* surf_pos, const int order);
+      friend Geom<double>* init_geom_surf(RefMap *rm, int isurf, int marker, const int order, double3*& tan);
+
       template<typename Scalar> friend class DiscreteProblem;
       template<typename Scalar> friend class InterfaceGeom;
       template<typename Scalar> friend class KellyTypeAdapt;
@@ -271,7 +274,8 @@ namespace Hermes
     /// Init element geometry for volumetric integrals.
     HERMES_API Geom<double>* init_geom_vol(RefMap *rm, const int order);
     /// Init element geometry for surface integrals.
-    HERMES_API Geom<double>* init_geom_surf(RefMap *rm, SurfPos* surf_pos, const int order);
+    HERMES_API Geom<double>* init_geom_surf(RefMap *rm, int isurf, int marker, const int order, double3*& tan);
+
 
     /// Init the function for calculation the integration order.
     HERMES_API Func<Hermes::Ord>* init_fn_ord(const int order);

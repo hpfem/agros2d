@@ -45,8 +45,7 @@ namespace Hermes
 
     protected:
       virtual int get_edge_order(Element* e, int edge) const {
-        // There are no continuity constraints on shape functions in L2.
-        return Global<Scalar>::make_edge_order( e->get_mode(), edge, this->edata[e->id].order );
+        return H2D_MAKE_EDGE_ORDER(e->get_mode(), edge, this->edata[e->id].order);
       }
 
       virtual void set_shapeset(Shapeset* shapeset);
@@ -54,7 +53,7 @@ namespace Hermes
       virtual SpaceType get_type() const { return HERMES_L2_SPACE; }
 
       /// Common code for the constructors.
-      void init(Shapeset* shapeset, Ord2 p_init);
+      void init(Shapeset* shapeset, int p_init);
       
       struct L2Data
       {

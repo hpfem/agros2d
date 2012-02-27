@@ -116,9 +116,6 @@ void writeStringContentByteArray(const QString &fileName, QByteArray content);
 // append to the file
 void appendToFile(const QString &fileName, const QString &str);
 
-// fill physic field combo box
-void fillComboBoxPhysicField(QComboBox *cmbPhysicField);
-
 // check for new version
 void checkForNewVersion(bool quiet = false);
 
@@ -187,6 +184,14 @@ struct Point
 
         return Point(mx, my);
     }
+
+    QString toString() const
+    {
+        return QString("x = %1, y = %2, magnitude = %3").
+                arg(x).
+                arg(y).
+                arg(magnitude());
+    }
 };
 
 // return center
@@ -210,6 +215,8 @@ struct Point3
     inline Point3 operator-(const Point3 &vec) const { return Point3(x - vec.x, y - vec.y, z - vec.z); }
     inline Point3 operator*(double num) const { return Point3(x * num, y * num, z * num); }
     inline Point3 operator/(double num) const { return Point3(x / num, y / num, z / num); }
+    inline double operator&(const Point3 &vec) const { return x*vec.x + y*vec.y + z*vec.z; } // dot product
+    inline Point3 operator%(const Point3 &vec) const { return Point3(- z*vec.y, z*vec.x, x*vec.y - y*vec.x); } // cross product
 
     inline double magnitude() const { return sqrt(x * x + y * y); }
     inline double anglexy() const { return atan2(y, x); }
@@ -225,6 +232,15 @@ struct Point3
         double mz = z/m;
 
         return Point3(mx, my, mz);
+    }
+
+    QString toString()
+    {
+        return QString("x = %1, y = %2, z = %3, magnitude = %4").
+                arg(x).
+                arg(y).
+                arg(z).
+                arg(magnitude());
     }
 };
 
@@ -519,16 +535,14 @@ enum PaletteOrderType
     PaletteOrder_BWDesc
 };
 
-enum SceneViewPostprocessorShow
+enum SceneViewPost3DShow
 {
-    SceneViewPostprocessorShow_Undefined,
-    SceneViewPostprocessorShow_None,
-    SceneViewPostprocessorShow_ScalarView,
-    SceneViewPostprocessorShow_ScalarView3D,
-    SceneViewPostprocessorShow_ScalarView3DSolid,
-    SceneViewPostprocessorShow_Model,
-    SceneViewPostprocessorShow_ParticleTracing,
-    SceneViewPostprocessorShow_Order
+    SceneViewPost3DShow_Undefined,
+    SceneViewPost3DShow_None,
+    SceneViewPost3DShow_ScalarView3D,
+    SceneViewPost3DShow_ScalarView3DSolid,
+    SceneViewPost3DShow_Model,
+    SceneViewPost3DShow_ParticleTracing
 };
 
 // captions
@@ -584,8 +598,8 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QString modeToStringKey(Mode teMode);
 Mode modeFromStringKey(const QString &teMode);
 
-QString sceneViewPostprocessorShowToStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow);
-SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString &sceneViewPostprocessorShow);
+QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow);
+SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow);
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
@@ -642,26 +656,39 @@ const int GEOMETRYNODESIZE = 6;
 const int GEOMETRYEDGEWIDTH = 2;
 const int GEOMETRYLABELSIZE = 6;
 
-// posprocessor
+// mesh
+const bool SHOWINITIALMESHVIEW = true;
+const bool SHOWSOLUTIONMESHVIEW = false;
+const int MESHANGLESEGMENTSCOUNT = 3;
+const bool MESHCURVILINEARELEMENTS = true;
+
+// post2d
+
+// post3d
+const SceneViewPost3DShow SCALARSHOWPOST3D = SceneViewPost3DShow_ScalarView3D;
+
 const double LINEARIZER_QUALITY = 0.0006;
 
+const bool SHOWCONTOURVIEW = false;
 const int CONTOURSCOUNT = 15;
 
 const PaletteType PALETTETYPE = Palette_Jet;
 const bool PALETTEFILTER = false;
 const int PALETTESTEPS = 30;
-const bool SCALARCOLORBAR = true;
 
+const bool SHOWVECTORVIEW = false;
 const bool VECTORPROPORTIONAL = true;
 const bool VECTORCOLOR = true;
 const int VECTORNUMBER = 50;
 const double VECTORSCALE = 0.6;
 
-const bool ORDERSCALE = true;
+const bool SHOWORDERVIEW = true;
+const bool SHOWORDERCOLORBAR = true;
 const PaletteOrderType ORDERPALETTEORDERTYPE = PaletteOrder_Hermes;
 const bool ORDERLABEL = false;
 
 // particle
+const bool SHOWPARTICLEVIEW = false;
 const bool PARTICLEINCLUDEGRAVITATION = true;
 const int PARTICLENUMBEROFPARTICLES = 5;
 const double PARTICLESTARTINGRADIUS = 0;
@@ -680,10 +707,15 @@ const double PARTICLEDRAGDENSITY = 1.2041;
 const double PARTICLEDRAGCOEFFICIENT = 0.0;
 const double PARTICLEDRAGREFERENCEAREA = 1e-6;
 
-// advanced
+// scalarview
+const bool SHOWSCALARVIEW = true;
+const bool SHOWSCALARCOLORBAR = true;
 const bool SCALARFIELDRANGELOG = false;
 const int SCALARFIELDRANGEBASE = 10;
 const int SCALARDECIMALPLACE = 2;
+const bool SCALARRANGEAUTO = true;
+const double SCALARRANGEMIN = 0.0;
+const double SCALARRANGEMAX = 1.0;
 
 const bool VIEW3DLIGHTING = false;
 const double VIEW3DANGLE = 230.0;

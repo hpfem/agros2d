@@ -13,19 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "hermes2d_common_defs.h"
+#include "global.h"
 #include "mesh.h"
 #include "refmap.h"
-#include "shapeset/shapeset_h1_all.h"
 
 namespace Hermes
 {
   namespace Hermes2D
   {
-    H1ShapesetJacobi ref_map_shapeset;
-    PrecalcShapeset ref_map_pss(&ref_map_shapeset);
-
-    RefMap::RefMap()
+    RefMap::RefMap() : ref_map_shapeset(H1ShapesetJacobi()), ref_map_pss(PrecalcShapeset(&ref_map_shapeset))
     {
       quad_2d = NULL;
       num_tables = 0;
@@ -93,7 +89,8 @@ namespace Hermes
     /// jacobian elements.
     double2x2* RefMap::get_inv_ref_map(int order)
     {
-      if (cur_node->inv_ref_map[order] == NULL) calc_inv_ref_map(order);
+      if (cur_node->inv_ref_map[order] == NULL) 
+        calc_inv_ref_map(order);
       return cur_node->inv_ref_map[order];
     }
 
@@ -132,7 +129,7 @@ namespace Hermes
       if(quad_2d == NULL)
         error("2d quadrature wasn't set.");
       if (order == -1)
-        order = quad_2d->get_edge_points(edge);
+        order = quad_2d->get_edge_points(edge, quad_2d->get_max_order(element->get_mode()), element->get_mode());
 
       // NOTE: Hermes::Order-based caching of geometric data is already employed in DiscreteProblem.
       if(cur_node->tan[edge] != NULL)
@@ -157,14 +154,12 @@ namespace Hermes
       if (e != element) free();
 
       ref_map_pss.set_active_element(e);
-      quad_2d->set_mode(e->get_mode());
-      num_tables = quad_2d->get_num_tables();
+      num_tables = quad_2d->get_num_tables(e->get_mode());
       assert(num_tables <= H2D_MAX_TABLES);
 
       if (e == element) return;
-      element = e;
+      Transformable::set_active_element(e);
 
-      reset_transform();
       update_cur_node();
 
       is_const = !element->is_curved() &&
@@ -173,7 +168,7 @@ namespace Hermes
       // prepare the shapes and coefficients of the reference map
       int j, k = 0;
       for (unsigned int i = 0; i < e->get_num_surf(); i++)
-        indices[k++] = ref_map_shapeset.get_vertex_index(i);
+        indices[k++] = ref_map_shapeset.get_vertex_index(i, e->get_mode());
 
       // straight-edged element
       if (e->cm == NULL)
@@ -191,18 +186,18 @@ namespace Hermes
         int o = e->cm->order;
         for (unsigned int i = 0; i < e->get_num_surf(); i++)
           for (j = 2; j <= o; j++)
-            indices[k++] = ref_map_shapeset.get_edge_index(i, 0, j);
+            indices[k++] = ref_map_shapeset.get_edge_index(i, 0, j, e->get_mode());
 
         if (e->is_quad()) o = H2D_MAKE_QUAD_ORDER(o, o);
-        memcpy(indices + k, ref_map_shapeset.get_bubble_indices(o),
-          ref_map_shapeset.get_num_bubbles(o) * sizeof(int));
+        memcpy(indices + k, ref_map_shapeset.get_bubble_indices(o, e->get_mode()),
+          ref_map_shapeset.get_num_bubbles(o, e->get_mode()) * sizeof(int));
 
         coeffs = e->cm->coeffs;
         nc = e->cm->nc;
       }
 
       // calculate the order of the inverse reference map
-      if (element->iro_cache == -1 && quad_2d->get_max_order() > 1)
+      if (element->iro_cache == -1 && quad_2d->get_max_order(e->get_mode()) > 1)
       {
         element->iro_cache = is_const ? 0 : calc_inv_ref_order();
       }
@@ -229,7 +224,7 @@ namespace Hermes
     void RefMap::calc_inv_ref_map(int order)
     {
       assert(quad_2d != NULL);
-      int i, j, np = quad_2d->get_num_points(order);
+      int i, j, np = quad_2d->get_num_points(order, element->get_mode());
 
       // construct jacobi matrices of the direct reference map for all integration points
 
@@ -259,7 +254,8 @@ namespace Hermes
       {
         jac[i] = (m[i][0][0] * m[i][1][1] - m[i][0][1] * m[i][1][0]);
         double ij = 1.0 / jac[i];
-        error_if(!finite(ij), "1/jac[%d] is infinity when calculating inv. ref. map for order %d (jac = %g)", i, order);
+        if(!finite(ij))
+          error("1/jac[%d] is infinity when calculating inv. ref. map for order %d (jac = %g)", i, order);
         assert_msg(ij == ij, "1/jac[%d] is NaN when calculating inv. ref. map for order %d (jac = %g)", i, order);
 
         // invert and transpose the matrix
@@ -277,7 +273,7 @@ namespace Hermes
     void RefMap::calc_second_ref_map(int order)
     {
       assert(quad_2d != NULL);
-      int i, j, np = quad_2d->get_num_points(order);
+      int i, j, np = quad_2d->get_num_points(order, element->get_mode());
 
       double3x2* k = new double3x2[np];
       memset(k, 0, np * sizeof(double3x2));
@@ -362,7 +358,7 @@ namespace Hermes
     void RefMap::calc_phys_x(int order)
     {
       // transform all x coordinates of the integration points
-      int i, j, np = quad_2d->get_num_points(order);
+      int i, j, np = quad_2d->get_num_points(order, element->get_mode());
       double* x = cur_node->phys_x[order] = new double[np];
       memset(x, 0, np * sizeof(double));
       ref_map_pss.force_transform(sub_idx, ctm);
@@ -379,7 +375,7 @@ namespace Hermes
     void RefMap::calc_phys_y(int order)
     {
       // transform all y coordinates of the integration points
-      int i, j, np = quad_2d->get_num_points(order);
+      int i, j, np = quad_2d->get_num_points(order, element->get_mode());
       double* y = cur_node->phys_y[order] = new double[np];
       memset(y, 0, np * sizeof(double));
       ref_map_pss.force_transform(sub_idx, ctm);
@@ -396,7 +392,7 @@ namespace Hermes
     void RefMap::calc_tangent(int edge, int eo)
     {
       int i, j;
-      int np = quad_2d->get_num_points(eo);
+      int np = quad_2d->get_num_points(eo, element->get_mode());
       double3* tan = cur_node->tan[edge] = new double3[np];
       int a = edge, b = element->next_vert(edge);
 
@@ -417,7 +413,7 @@ namespace Hermes
       else
       {
         // construct jacobi matrices of the direct reference map at integration points along the edge
-        static double2x2 m[15];
+        double2x2 m[15];
         assert(np <= 15);
         memset(m, 0, np*sizeof(double2x2));
         ref_map_pss.force_transform(sub_idx, ctm);
@@ -437,8 +433,8 @@ namespace Hermes
         }
 
         // multiply them by the vector of the reference edge
-        double2* v1 = ref_map_shapeset.get_ref_vertex(a);
-        double2* v2 = ref_map_shapeset.get_ref_vertex(b);
+        double2* v1 = ref_map_shapeset.get_ref_vertex(a, element->get_mode());
+        double2* v2 = ref_map_shapeset.get_ref_vertex(b, element->get_mode());
 
         double ex = (*v2)[0] - (*v1)[0];
         double ey = (*v2)[1] - (*v1)[1];
@@ -459,13 +455,13 @@ namespace Hermes
     int RefMap::calc_inv_ref_order()
     {
       Quad2D* quad = get_quad_2d();
-      int i, o, mo = quad->get_max_order();
+      int i, o, mo = quad->get_max_order(element->get_mode());
 
       // check first the positivity of the jacobian
-      double3* pt = quad->get_points(mo);
+      double3* pt = quad->get_points(mo, element->get_mode());
       double2x2* m = get_inv_ref_map(mo);
       double* jac = get_jacobian(mo);
-      for (i = 0; i < quad->get_num_points(mo); i++)
+      for (i = 0; i < quad->get_num_points(mo, element->get_mode()); i++)
         if (jac[i] <= 0.0)
           error("Element #%d is concave or badly oriented.", element->id);
 
@@ -473,7 +469,7 @@ namespace Hermes
       // (with grad_u == grad_v == (1, 1)) using the maximum integration rule
       double exact1 = 0.0;
       double exact2 = 0.0;
-      for (i = 0; i < quad->get_num_points(mo); i++, m++)
+      for (i = 0; i < quad->get_num_points(mo, element->get_mode()); i++, m++)
       {
         exact1 += pt[i][2] * jac[i] * (sqr((*m)[0][0] + (*m)[0][1]) + sqr((*m)[1][0] + (*m)[1][1]));
         exact2 += pt[i][2] / jac[i];
@@ -481,12 +477,12 @@ namespace Hermes
       // find sufficient quadrature degree
       for (o = 0; o < mo; o++)
       {
-        pt = quad->get_points(o);
+        pt = quad->get_points(o, element->get_mode());
         m = get_inv_ref_map(o);
         jac = get_jacobian(o);
         double result1 = 0.0;
         double result2 = 0.0;
-        for (i = 0; i < quad->get_num_points(o); i++, m++)
+        for (i = 0; i < quad->get_num_points(o, element->get_mode()); i++, m++)
         {
           result1 += pt[i][2] * jac[i] * (sqr((*m)[0][0] + (*m)[0][1]) + sqr((*m)[1][0] + (*m)[1][1]));
           result2 += pt[i][2] / jac[i] ;
@@ -508,12 +504,12 @@ namespace Hermes
       x = y = 0;
       for (int i = 0; i < nc; i++)
       {
-        double val = ref_map_shapeset.get_fn_value(indices[i], xi1, xi2, 0);
+        double val = ref_map_shapeset.get_fn_value(indices[i], xi1, xi2, 0, element->get_mode());
         x += coeffs[i][0] * val;
         y += coeffs[i][1] * val;
 
-        double dx =  ref_map_shapeset.get_dx_value(indices[i], xi1, xi2, 0);
-        double dy =  ref_map_shapeset.get_dy_value(indices[i], xi1, xi2, 0);
+        double dx =  ref_map_shapeset.get_dx_value(indices[i], xi1, xi2, 0, element->get_mode());
+        double dy =  ref_map_shapeset.get_dy_value(indices[i], xi1, xi2, 0, element->get_mode());
         tmp[0][0] += coeffs[i][0] * dx;
         tmp[0][1] += coeffs[i][0] * dy;
         tmp[1][0] += coeffs[i][1] * dx;
@@ -535,15 +531,15 @@ namespace Hermes
       x = y = 0;
       for (int i = 0; i < nc; i++)
       {
-        double val = ref_map_shapeset.get_fn_value(indices[i], xi1, xi2, 0);
+        double val = ref_map_shapeset.get_fn_value(indices[i], xi1, xi2, 0, element->get_mode());
         x += coeffs[i][0] * val;
         y += coeffs[i][1] * val;
 
         double dxy, dxx, dyy;
 
-        dxx = ref_map_shapeset.get_dxx_value(indices[i], xi1, xi2, 0);
-        dxy = ref_map_shapeset.get_dxy_value(indices[i], xi1, xi2, 0);
-        dyy = ref_map_shapeset.get_dxy_value(indices[i], xi1, xi2, 0);
+        dxx = ref_map_shapeset.get_dxx_value(indices[i], xi1, xi2, 0, element->get_mode());
+        dxy = ref_map_shapeset.get_dxy_value(indices[i], xi1, xi2, 0, element->get_mode());
+        dyy = ref_map_shapeset.get_dxy_value(indices[i], xi1, xi2, 0, element->get_mode());
 
         k[0][0] += coeffs[i][0] * dxx;
         k[0][1] += coeffs[i][1] * dxx;

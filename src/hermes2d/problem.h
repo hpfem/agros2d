@@ -91,22 +91,19 @@ signals:
     void meshed();
     void solved();
 
-    void processedRangeContour();
-    void processedRangeScalar();
-    void processedRangeVector();
-
-
 public:
     Problem();
-    ~Problem() {}
+    ~Problem();
+
+    // clear problem
+    void clear();
+
     void createStructure();
 
+    // mesh
     void mesh();
-
     // solve
     void solve(SolverMode solverMode);
-
-    void postprocess();
 
     // should store all solutionArrays that have been calculated
     SolutionArray<double> solution(FieldInfo* fieldInfo, int component=0, int timeStep = 0, int adaptivityStep = 0);
@@ -116,8 +113,7 @@ public:
     ProgressDialog* progressDialog();
 
     inline Hermes::Hermes2D::Mesh *meshInitial() { return m_meshInitial; }
-    inline void setMeshInitial(Hermes::Hermes2D::Mesh* mesh) {m_meshInitial = mesh; }
-
+    inline void setMeshInitial(Hermes::Hermes2D::Mesh* mesh) { m_meshInitial = mesh; }
 
     // time TODO zatim tady, ale asi presunout
     void setTimeStep(int timeStep, bool showViewProgress = true) { assert(0); }

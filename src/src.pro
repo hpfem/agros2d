@@ -6,16 +6,18 @@ QT += opengl \
     svg \
     xmlpatterns
 
-DEFINES += VERSION_MAJOR=1
-DEFINES += VERSION_MINOR=9
-DEFINES += VERSION_SUB=2
+DEFINES += VERSION_MAJOR=3
+DEFINES += VERSION_MINOR=0
+DEFINES += VERSION_SUB=0
 DEFINES += VERSION_GIT=823
-DEFINES += VERSION_YEAR=2011
-DEFINES += VERSION_MONTH=5
-DEFINES += VERSION_DAY=23
+DEFINES += VERSION_YEAR=2012
+DEFINES += VERSION_MONTH=2
+DEFINES += VERSION_DAY=26
 
 DEFINES += NO_THREADS
 DEFINES += WEAKFORM_FACTORY
+
+QMAKE_LFLAGS += -fopenmp
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -72,7 +74,9 @@ SOURCES += util.cpp \
     sceneview_common.cpp \
     sceneview_common2d.cpp \
     sceneview_common3d.cpp \
+    sceneview_mesh.cpp \
     sceneview_geometry.cpp \
+    sceneview_post.cpp \
     sceneview_post2d.cpp \
     sceneview_post3d.cpp \
     progressdialog.cpp \
@@ -135,6 +139,8 @@ HEADERS += util.h \
     sceneview_common2d.h \
     sceneview_common3d.h \
     sceneview_geometry.h \
+    sceneview_mesh.h \
+    sceneview_post.h \
     sceneview_post2d.h \
     sceneview_post3d.h \
     progressdialog.h \

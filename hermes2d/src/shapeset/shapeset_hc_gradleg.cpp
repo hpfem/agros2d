@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "hermes2d_common_defs.h"
+#include "global.h"
 #include "shapeset_common.h"
 #include "shapeset_hc_all.h"
 namespace Hermes
@@ -15806,17 +15806,13 @@ namespace Hermes
       gradleg_quad_index_to_order
     };
 
-
-
     void check_gradleg_tri(Shapeset* shapeset)
     {
-      shapeset->set_mode(HERMES_MODE_TRIANGLE);
       for (int i = 1; i <= 10; i++)
-    {
-        int nb = shapeset->get_num_bubbles(i);
+      {
+        int nb = shapeset->get_num_bubbles(i, HERMES_MODE_TRIANGLE);
         if (nb != 3*(i-1) + (i-1)*(i-2))
           error("Wrong bubble count");
-
       }
 
       int size_a  = sizeof(gradleg_tri_fn_a)  / sizeof(Shapeset::shape_fn_t);
@@ -15832,9 +15828,6 @@ namespace Hermes
       if (size_a != gradleg_tri_bubble_indices[10][gradleg_tri_bubble_count[10]-1] + 1)
         error("Bad index of last bubble");
     }
-
-
-
 
     HcurlShapesetGradLeg::HcurlShapesetGradLeg()
     {
@@ -15878,7 +15871,6 @@ namespace Hermes
       comb_table = NULL;
 
       check_gradleg_tri(this);
-      set_mode(HERMES_MODE_TRIANGLE);
     }
   }
 }

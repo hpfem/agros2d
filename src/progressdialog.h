@@ -217,22 +217,6 @@ protected slots:
     void solve();
 };
 
-class ProgressItemProcessView : public ProgressItem
-{
-    Q_OBJECT
-private:
-
-private slots:
-    void process();
-
-public:
-    ProgressItemProcessView();
-
-    void setSteps();
-
-    bool run(bool quiet = false);
-};
-
 class ProgressDialog : public QDialog
 {
     Q_OBJECT

@@ -28,7 +28,7 @@ class SceneViewGeometry : public SceneViewCommon2D
     Q_OBJECT
 
 public slots:
-    virtual void doDefaultValues();
+    virtual void clear();
     void doSceneGeometryModeSet(QAction *action);
     void doSelectBasic();
     void doSceneObjectProperties();
@@ -39,7 +39,6 @@ public:
 
     QAction *actSceneViewSelectRegion;
 
-    QActionGroup *actSceneModeGroup;
     QAction *actSceneModeNode;
     QAction *actSceneModeEdge;
     QAction *actSceneModeLabel;

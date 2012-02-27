@@ -733,9 +733,10 @@ void Hermes::Module::Module::read(std::string filename)
         }
 
         // custom local variable
-        Hermes::Module::LocalVariable *customLocalVariable = new Hermes::Module::LocalVariable("custom", "Custom", "custom", "-");
-        customLocalVariable->expression.scalar = "value1";
-        view_scalar_variables.push_back(customLocalVariable);
+        //TODO
+        //Hermes::Module::LocalVariable *customLocalVariable = new Hermes::Module::LocalVariable("custom", "Custom", "custom", "-");
+        //customLocalVariable->expression.scalar = "value1";
+        //view_scalar_variables.push_back(customLocalVariable);
 
         // scalar variables
         rapidxml::xml_node<> *view = doc.first_node("module")->first_node("postprocessor")->first_node("view");
@@ -1262,7 +1263,8 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
         bool isLinear = (m_fieldInfo->linearityType == LinearityType_Linear);
 
         Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
-        int np = quad->get_num_points(order);
+        int np = quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_TRIANGLE) +
+                 quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_QUAD);
         node = Hermes::Hermes2D::Function<Scalar>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
 
         double **value = new double*[m_fieldInfo->module()->number_of_solution()];
@@ -1326,6 +1328,17 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
         }
         Hermes::Hermes2D::Function<Scalar>::nodes->add(node, order);
         Hermes::Hermes2D::Function<Scalar>::cur_node = node;
+}
+
+template <typename Scalar>
+ViewScalarFilter<Scalar>* ViewScalarFilter<Scalar>::clone()
+{
+    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> slns;
+
+    for (int i = 0; i < this->num; i++)
+        slns.push_back(this->sln[i]);
+
+    return new ViewScalarFilter(m_fieldInfo, slns, parser->parser[0]->GetExpr());
 }
 
 template class WeakFormAgros<double>;

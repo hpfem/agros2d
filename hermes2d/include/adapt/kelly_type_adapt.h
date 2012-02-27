@@ -87,7 +87,7 @@ namespace Hermes
       ///   - Geom\<double\> *e,     ... geometric data of the currently processed element
       ///   - ExtData\<Scalar\> *ext ... external functions (currently unused).
       ///
-      class HERMES_API ErrorEstimatorForm
+      class HERMES_API ErrorEstimatorForm : public Form<Scalar>
       {
       public:
         int i; ///< Component.
@@ -208,15 +208,15 @@ namespace Hermes
       ///                       If not specified, they are defined according to the spaces.
       ///
       ///
-      KellyTypeAdapt(Hermes::vector<Space<Scalar>*> spaces_,
-                     bool ignore_visited_segments_ = true,
+      KellyTypeAdapt(Hermes::vector<Space<Scalar>*> spaces,
+                     bool ignore_visited_segments = true,
                      Hermes::vector<const InterfaceEstimatorScalingFunction*>
                        interface_scaling_fns_ = Hermes::vector<const InterfaceEstimatorScalingFunction*>(),
                      Hermes::vector<ProjNormType> norms_ = Hermes::vector<ProjNormType>());
 
 
-      KellyTypeAdapt(Space<Scalar>* space_,
-                     bool ignore_visited_segments_ = true,
+      KellyTypeAdapt(Space<Scalar>* space,
+                     bool ignore_visited_segments = true,
                      const InterfaceEstimatorScalingFunction* interface_scaling_fn_ = NULL,
                      ProjNormType norm_ = HERMES_UNSET_NORM);
 

@@ -59,10 +59,10 @@ bool Field::solveInitVariables()
 Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, ProgressItemSolve* progressItemSolve, Problem* parent) :
     m_progressItemSolve(progressItemSolve), m_couplings(couplings), m_parentProblem(parent)
 {
-    foreach(FieldInfo* fi, fieldInfos)
+    foreach (FieldInfo* fi, fieldInfos)
     {
         Field* field = new Field(fi);
-        foreach(CouplingInfo* couplingInfo, Util::scene()->couplingInfos())
+        foreach (CouplingInfo* couplingInfo, Util::scene()->couplingInfos())
         {
             if(couplingInfo->isWeak() && (couplingInfo->targetField() == fi))
             {
@@ -78,7 +78,7 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, Prog
 
 bool Block::solveInit(Hermes::Hermes2D::Solution<double> *sourceSolution)
 {
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         if(! field->solveInitVariables())
             assert(0); //TODO co to znamena?
@@ -96,11 +96,9 @@ void Block::solve()
     cout << "num elem pri prirazeni do scene solution " <<  Util::problem()->meshInitial()->get_num_active_elements() << endl;
 
     //TODO predelat ukazatele na Solution na shared_ptr
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-
-        Util::scene()->sceneSolution(fieldInfo)->setMeshInitial(Util::problem()->meshInitial());
 
         // contains solution arrays for all components of the field
         QList<SolutionArray<double> > solutionArrays;
@@ -108,7 +106,6 @@ void Block::solve()
         for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
         {
             solutionArrays.push_back(m_solutionList->at(component + offset(field)));
-
         }
 
         // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
@@ -118,8 +115,6 @@ void Block::solve()
         // internal storage, should be rewriten
         //TODO
         parentProblem()->saveSolution(fieldInfo, 0, 0, solutionArrays);
-
-
     }
 }
 
@@ -127,7 +122,7 @@ int Block::numSolutions() const
 {
     int num = 0;
 
-    foreach(Field* field, m_fields)
+    foreach (Field *field, m_fields)
     {
         num += field->fieldInfo()->module()->number_of_solution();
     }
@@ -139,7 +134,7 @@ int Block::offset(Field *fieldParam) const
 {
     int offset = 0;
 
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         if(field == fieldParam)
             return offset;
@@ -153,7 +148,7 @@ int Block::offset(Field *fieldParam) const
 LinearityType Block::linearityType() const
 {
     int linear = 0, newton = 0;
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if(fieldInfo->linearityType == LinearityType_Linear)
@@ -175,7 +170,7 @@ double Block::nonlinearTolerance() const
 {
     double tolerance = 10e20;
 
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if(fieldInfo->nonlinearTolerance < tolerance)
@@ -189,7 +184,7 @@ int Block::nonlinearSteps() const
 {
     int steps = 0;
 
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if(fieldInfo->nonlinearSteps > steps)
@@ -201,7 +196,7 @@ int Block::nonlinearSteps() const
 
 Field* Block::field(FieldInfo *fieldInfo) const
 {
-    foreach(Field* field, m_fields)
+    foreach (Field* field, m_fields)
     {
         if(fieldInfo == field->fieldInfo())
             return field;
@@ -215,12 +210,26 @@ Problem::Problem()
     m_timeStep = 0;
     m_isSolved = false;
     m_isSolving = false;
-//    m_progressDialog = new ProgressDialog();
-//    m_progressItemMesh = new ProgressItemMesh();
-//    m_progressItemSolve = new ProgressItemSolve();
-//    m_progressItemSolveAdaptiveStep = new ProgressItemSolveAdaptiveStep();
-//    m_progressItemProcessView = new ProgressItemProcessView();
 
+    m_meshInitial = NULL;
+}
+
+Problem::~Problem()
+{
+    clear();
+}
+
+void Problem::clear()
+{
+    if (m_meshInitial)
+        delete m_meshInitial;
+    m_meshInitial = NULL;
+
+    // solution array memory leak ??
+
+    m_timeStep = 0;
+    m_isSolved = false;
+    m_isSolving = false;
 }
 
 void Problem::saveSolution(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, QList<SolutionArray<double> > solution)
@@ -238,17 +247,17 @@ void Problem::createStructure()
     QList<FieldInfo *> fieldInfos = Util::scene()->fieldInfos().values();
     QList<CouplingInfo* > couplingInfos = Util::scene()->couplingInfos().values();
 
-    while(!fieldInfos.empty()){
+    while (!fieldInfos.empty()){
         QList<FieldInfo*> blockFieldInfos;
         QList<CouplingInfo*> blockCouplingInfos;
 
         //first find one field, that is not weakly coupled and dependent on other fields
         bool dependent;
-        foreach(FieldInfo* fi, fieldInfos)
+        foreach (FieldInfo* fi, fieldInfos)
         {
             dependent = false;
 
-            foreach(CouplingInfo* ci, couplingInfos)
+            foreach (CouplingInfo* ci, couplingInfos)
             {
                 if(ci->isWeak() && (ci->targetField() == fi) && fieldInfos.contains(ci->sourceField()))
                     dependent = true;
@@ -268,9 +277,9 @@ void Problem::createStructure()
             added = false;
 
             // first check whether there is related coupling
-            foreach(CouplingInfo* checkedCouplingInfo, couplingInfos)
+            foreach (CouplingInfo* checkedCouplingInfo, couplingInfos)
             {
-                foreach(FieldInfo* checkedFieldInfo, blockFieldInfos)
+                foreach (FieldInfo* checkedFieldInfo, blockFieldInfos)
                 {
                     if(checkedCouplingInfo->isHard() && checkedCouplingInfo->isRelated(checkedFieldInfo))
                     {
@@ -283,9 +292,9 @@ void Problem::createStructure()
             }
 
             // check for fields related to allready included couplings
-            foreach(FieldInfo* checkedFieldInfo, fieldInfos)
+            foreach (FieldInfo* checkedFieldInfo, fieldInfos)
             {
-                foreach(CouplingInfo* checkedCouplingInfo, blockCouplingInfos)
+                foreach (CouplingInfo* checkedCouplingInfo, blockCouplingInfos)
                 {
                     if(checkedCouplingInfo->isHard() && checkedCouplingInfo->isRelated(checkedFieldInfo))
                     {
@@ -321,12 +330,6 @@ void Problem::mesh()
     pim->mesh();
 }
 
-void Problem::postprocess()
-{
-    ProgressItemProcessView* pipv = new ProgressItemProcessView();
-    pipv->run();
-}
-
 void Problem::solve(SolverMode solverMode)
 {
     logMessage("SceneSolution::solve()");
@@ -348,29 +351,6 @@ void Problem::solve(SolverMode solverMode)
     if (result.isError())
         result.showDialog();
 
-//    if (solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve)
-//    {
-//        m_progressDialog->clear();
-//        m_progressDialog->appendProgressItem(m_progressItemMesh);
-//        if (solverMode == SolverMode_MeshAndSolve)
-//        {
-//            m_progressDialog->appendProgressItem(m_progressItemSolve);
-//            m_progressDialog->appendProgressItem(m_progressItemProcessView);
-//        }
-//    }
-//    else if (solverMode == SolverMode_SolveAdaptiveStep)
-//    {
-//        m_progressDialog->appendProgressItem(m_progressItemSolveAdaptiveStep);
-//        m_progressDialog->appendProgressItem(m_progressItemProcessView);
-//    }
-
-//    if (m_progressDialog->run())
-//    {
-//        setTimeStep(timeStepCount() - 1);
-//        //emit meshed();
-//        //emit solved();
-//    }
-
     createStructure();
 
     Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
@@ -381,17 +361,14 @@ void Problem::solve(SolverMode solverMode)
     Util::scene()->createSolutions();
 
     assert(isMeshed());
-    if (isMeshed())
-    {
-        InitialCondition<double> initial(m_meshInitial, 0.0);
-        Util::scene()->activeSceneSolution()->linInitialMeshView().process_solution(&initial);
-    }
 
-
-    foreach(Block* block, m_blocks)
+    if (solverMode == SolverMode_MeshAndSolve)
     {
-        block->solveInit();
-        block->solve();
+        foreach (Block* block, m_blocks)
+        {
+            block->solveInit();
+            block->solve();
+        }
     }
 
     // delete temp file
@@ -401,17 +378,16 @@ void Problem::solve(SolverMode solverMode)
         Util::scene()->problemInfo()->fileName = "";
     }
 
-
     // close indicator progress
     Indicator::closeProgress();
 
     m_isSolving = false;
-    m_isSolved = true;
-    emit solved();
-    emit timeStepChanged(false);
-
-    postprocess();
-
+    if (solverMode == SolverMode_MeshAndSolve)
+    {
+        m_isSolved = true;
+        emit solved();
+        emit timeStepChanged(false);
+    }
 }
 
 ProgressDialog* Problem::progressDialog()

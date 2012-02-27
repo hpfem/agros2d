@@ -1,5 +1,5 @@
 #define HERMES_REPORT_WARN
-#include "hermes2d_common_defs.h"
+#include "global.h"
 #include "solution.h"
 #include "discrete_problem.h"
 #include "quad_all.h"
@@ -24,6 +24,10 @@ namespace Hermes
         error_weight_p(H2DRS_DEFAULT_ERR_WEIGHT_P),
         error_weight_aniso(H2DRS_DEFAULT_ERR_WEIGHT_ANISO)
       {
+        cached_shape_vals_valid = new bool[2];
+        cached_shape_ortho_vals = new TrfShape[2];
+        cached_shape_vals = new TrfShape[2];
+
         //clean svals initialization state
         std::fill(cached_shape_vals_valid, cached_shape_vals_valid + H2D_NUM_MODES, false);
 
@@ -52,6 +56,10 @@ namespace Hermes
               if (proj_matrix_cache[m][i][k] != NULL)
                 delete[] proj_matrix_cache[m][i][k];
             }
+
+        delete [] cached_shape_vals_valid;
+        delete [] cached_shape_ortho_vals;
+        delete [] cached_shape_vals;
       }
 
       template<typename Scalar>
@@ -227,14 +235,13 @@ namespace Hermes
         assert_msg(info_p.is_empty() || (H2D_GET_H_ORDER(info_p.max_quad_order) <= H2DRS_MAX_ORDER && H2D_GET_V_ORDER(info_p.max_quad_order) <= H2DRS_MAX_ORDER), "Maximum allowed order of a son of P-candidate is %d but order (H:%d, V:%d) requested.", H2DRS_MAX_ORDER, H2D_GET_H_ORDER(info_p.max_quad_order), H2D_GET_V_ORDER(info_p.max_quad_order));
         assert_msg(info_aniso.is_empty() || (H2D_GET_H_ORDER(info_aniso.max_quad_order) <= H2DRS_MAX_ORDER && H2D_GET_V_ORDER(info_aniso.max_quad_order) <= H2DRS_MAX_ORDER), "Maximum allowed order of a son of ANISO-candidate is %d but order (H:%d, V:%d) requested.", H2DRS_MAX_ORDER, H2D_GET_H_ORDER(info_aniso.max_quad_order), H2D_GET_V_ORDER(info_aniso.max_quad_order));
 
-        int mode = e->get_mode();
+        ElementMode2D mode = e->get_mode();
 
         // select quadrature, obtain integration points and weights
         Quad2D* quad = &g_quad_2d_std;
-        quad->set_mode(mode);
         rsln->set_quad_2d(quad);
-        double3* gip_points = quad->get_points(H2DRS_INTR_GIP_ORDER);
-        int num_gip_points = quad->get_num_points(H2DRS_INTR_GIP_ORDER);
+        double3* gip_points = quad->get_points(H2DRS_INTR_GIP_ORDER, mode);
+        int num_gip_points = quad->get_num_points(H2DRS_INTR_GIP_ORDER, mode);
 
         // everything is done on the reference domain
         rsln->enable_transform(false);
@@ -273,22 +280,26 @@ namespace Hermes
 
         // precalculate values of shape functions
         TrfShape empty_shape_vals;
-        if (!cached_shape_vals_valid[mode])
-        {
-          precalc_ortho_shapes(gip_points, num_gip_points, trfs, num_noni_trfs, this->shape_indices[mode], this->max_shape_inx[mode], cached_shape_ortho_vals[mode]);
-          precalc_shapes(gip_points, num_gip_points, trfs, num_noni_trfs, this->shape_indices[mode], this->max_shape_inx[mode], cached_shape_vals[mode]);
-          cached_shape_vals_valid[mode] = true;
 
-          //issue a warning if ortho values are defined and the selected cand_list might benefit from that but it cannot because elements do not have uniform orders
-          if (!warn_uniform_orders && mode == HERMES_MODE_QUAD && !cached_shape_ortho_vals[mode][H2D_TRF_IDENTITY].empty())
+#pragma omp critical (cached_shape_vals_valid)
+        {
+          if (!cached_shape_vals_valid[mode])
           {
-            warn_uniform_orders = true;
-            if (this->cand_list == H2D_H_ISO || this->cand_list == H2D_H_ANISO || this->cand_list == H2D_P_ISO || this->cand_list == H2D_HP_ISO || this->cand_list == H2D_HP_ANISO_H)
-            {
-              warn_if(!info_h.uniform_orders || !info_aniso.uniform_orders || !info_p.uniform_orders, "Possible inefficiency: %s might be more efficient if the input mesh contains elements with uniform orders strictly.", get_cand_list_str(this->cand_list));
-            }
+            precalc_ortho_shapes(gip_points, num_gip_points, trfs, num_noni_trfs, this->shape_indices[mode], this->max_shape_inx[mode], cached_shape_ortho_vals[mode], mode);
+            precalc_shapes(gip_points, num_gip_points, trfs, num_noni_trfs, this->shape_indices[mode], this->max_shape_inx[mode], cached_shape_vals[mode], mode);
+            cached_shape_vals_valid[mode] = true;
           }
         }
+        //issue a warning if ortho values are defined and the selected cand_list might benefit from that but it cannot because elements do not have uniform orders
+        if (!warn_uniform_orders && mode == HERMES_MODE_QUAD && !cached_shape_ortho_vals[mode][H2D_TRF_IDENTITY].empty())
+        {
+          warn_uniform_orders = true;
+          if (this->cand_list == H2D_H_ISO || this->cand_list == H2D_H_ANISO || this->cand_list == H2D_P_ISO || this->cand_list == H2D_HP_ISO || this->cand_list == H2D_HP_ANISO_H)
+          {
+            warn_if(!info_h.uniform_orders || !info_aniso.uniform_orders || !info_p.uniform_orders, "Possible inefficiency: %s might be more efficient if the input mesh contains elements with uniform orders strictly.", get_cand_list_str(this->cand_list));
+          }
+        }
+          
         TrfShape& svals = cached_shape_vals[mode];
         TrfShape& ortho_svals = cached_shape_ortho_vals[mode];
 
@@ -342,7 +353,7 @@ namespace Hermes
       }
 
       template<typename Scalar>
-      void ProjBasedSelector<Scalar>::calc_error_cand_element(const int mode
+      void ProjBasedSelector<Scalar>::calc_error_cand_element(const ElementMode2D mode
         , double3* gip_points, int num_gip_points
         , const int num_sub, Element** sub_domains, Trf** sub_trfs, Scalar*** sub_rvals
         , Hermes::vector<TrfShapeExp>** sub_nonortho_svals, Hermes::vector<TrfShapeExp>** sub_ortho_svals
@@ -408,7 +419,7 @@ namespace Hermes
             if (!use_ortho)
             {
               if (proj_matrices[order_h][order_v] == NULL)
-                proj_matrices[order_h][order_v] = build_projection_matrix(gip_points, num_gip_points, shape_inxs, num_shapes);
+                proj_matrices[order_h][order_v] = build_projection_matrix(gip_points, num_gip_points, shape_inxs, num_shapes, mode);
               copy_matrix(proj_matrix, proj_matrices[order_h][order_v], num_shapes, num_shapes); //copy projection matrix because original matrix will be modified
             }
 

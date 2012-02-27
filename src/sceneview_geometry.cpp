@@ -64,12 +64,6 @@ void SceneViewGeometry::createActionsGeometry()
     actSceneModeLabel->setStatusTip(tr("Operate on labels"));
     actSceneModeLabel->setCheckable(true);
 
-    actSceneModeGroup = new QActionGroup(this);
-    actSceneModeGroup->addAction(actSceneModeNode);
-    actSceneModeGroup->addAction(actSceneModeEdge);
-    actSceneModeGroup->addAction(actSceneModeLabel);
-    connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doSceneGeometryModeSet(QAction *)));
-
     // select region
     actSceneViewSelectRegion = new QAction(icon("scene-select-region"), tr("&Select region"), this);
     actSceneViewSelectRegion->setStatusTip(tr("Select region"));
@@ -87,14 +81,14 @@ void SceneViewGeometry::createMenuGeometry()
 
     mnuScene = new QMenu(this);
 
-    mnuScene->addAction(m_scene->actNewNode);
-    mnuScene->addAction(m_scene->actNewEdge);
-    mnuScene->addAction(m_scene->actNewLabel);
+    mnuScene->addAction(Util::scene()->actNewNode);
+    mnuScene->addAction(Util::scene()->actNewEdge);
+    mnuScene->addAction(Util::scene()->actNewLabel);
     mnuScene->addSeparator();
-    Util::scene()->addBoundartAndMaterialMenuItems(mnuScene, this);
+    Util::scene()->addBoundaryAndMaterialMenuItems(mnuScene, this);
     mnuScene->addSeparator();
     mnuScene->addAction(actSceneViewSelectRegion);
-    mnuScene->addAction(m_scene->actTransform);
+    mnuScene->addAction(Util::scene()->actTransform);
     mnuScene->addSeparator();
     mnuScene->addAction(actSceneObjectProperties);
 }
@@ -105,38 +99,38 @@ void SceneViewGeometry::doSceneObjectProperties()
 
     if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
     {
-        if (m_scene->selectedCount() > 1)
+        if (Util::scene()->selectedCount() > 1)
         {
             SceneBoundarySelectDialog boundaryDialog(this);
             boundaryDialog.exec();
         }
-        if (m_scene->selectedCount() == 1)
+        if (Util::scene()->selectedCount() == 1)
         {
-            for (int i = 0; i < m_scene->edges->length(); i++)
+            for (int i = 0; i < Util::scene()->edges->length(); i++)
             {
-                if (m_scene->edges->at(i)->isSelected)
-                    m_scene->edges->at(i)->showDialog(this);
+                if (Util::scene()->edges->at(i)->isSelected)
+                    Util::scene()->edges->at(i)->showDialog(this);
             }
         }
     }
     if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
     {
-        if (m_scene->selectedCount() > 1)
+        if (Util::scene()->selectedCount() > 1)
         {
             SceneMaterialSelectDialog materialDialog(this);
             materialDialog.exec();
         }
-        if (m_scene->selectedCount() == 1)
+        if (Util::scene()->selectedCount() == 1)
         {
-            for (int i = 0; i < m_scene->labels->length(); i++)
+            for (int i = 0; i < Util::scene()->labels->length(); i++)
             {
-                if (m_scene->labels->at(i)->isSelected)
-                    m_scene->labels->at(i)->showDialog(this);
+                if (Util::scene()->labels->at(i)->isSelected)
+                    Util::scene()->labels->at(i)->showDialog(this);
             }
         }
     }
 
-    m_scene->selectNone();
+    Util::scene()->selectNone();
 }
 
 void SceneViewGeometry::doSelectBasic()
@@ -147,9 +141,9 @@ void SceneViewGeometry::doSelectBasic()
     sceneBasicSelectDialog.exec();
 }
 
-void SceneViewGeometry::doDefaultValues()
+void SceneViewGeometry::clear()
 {
-    SceneViewCommon2D::doDefaultValues();
+    SceneViewCommon2D::clear();
 
     m_selectRegion = false;
 
@@ -164,8 +158,8 @@ void SceneViewGeometry::doSceneGeometryModeSet(QAction *action)
     if (actSceneModeEdge->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnEdges;
     if (actSceneModeLabel->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnLabels;
 
-    m_scene->highlightNone();
-    m_scene->selectNone();
+    Util::scene()->highlightNone();
+    Util::scene()->selectNone();
     m_nodeLast = NULL;
 
     doInvalidated();
@@ -177,23 +171,23 @@ void SceneViewGeometry::selectRegion(const Point &start, const Point &end)
 {
     logMessage("SceneViewCommon::selectRegion()");
 
-    m_scene->selectNone();
+    Util::scene()->selectNone();
 
     switch (m_sceneMode)
     {
     case SceneGeometryMode_OperateOnNodes:
-        foreach (SceneNode *node, m_scene->nodes->items())
+        foreach (SceneNode *node, Util::scene()->nodes->items())
             if (node->point.x >= start.x && node->point.x <= end.x && node->point.y >= start.y && node->point.y <= end.y)
                 node->isSelected = true;
         break;
     case SceneGeometryMode_OperateOnEdges:
-        foreach (SceneEdge *edge, m_scene->edges->items())
+        foreach (SceneEdge *edge, Util::scene()->edges->items())
             if (edge->nodeStart->point.x >= start.x && edge->nodeStart->point.x <= end.x && edge->nodeStart->point.y >= start.y && edge->nodeStart->point.y <= end.y &&
                     edge->nodeEnd->point.x >= start.x && edge->nodeEnd->point.x <= end.x && edge->nodeEnd->point.y >= start.y && edge->nodeEnd->point.y <= end.y)
                 edge->isSelected = true;
         break;
     case SceneGeometryMode_OperateOnLabels:
-        foreach (SceneLabel *label, m_scene->labels->items())
+        foreach (SceneLabel *label, Util::scene()->labels->items())
             if (label->point.x >= start.x && label->point.x <= end.x && label->point.y >= start.y && label->point.y <= end.y)
                 label->isSelected = true;
         break;
@@ -217,7 +211,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
     if ((event->modifiers() == 0)
             || ((event->modifiers() & Qt::ControlModifier)
                 && (event->modifiers() & Qt::ShiftModifier)
-                && (m_scene->selectedCount() == 0)))
+                && (Util::scene()->selectedCount() == 0)))
     {
         // highlight scene objects
         if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
@@ -226,12 +220,12 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
             SceneNode *node = findClosestNode(p);
             if (node)
             {
-                m_scene->highlightNone();
+                Util::scene()->highlightNone();
                 node->isHighlighted = true;
                 setToolTip(tr("<h3>Node</h3>Point: [%1; %2]<br/>Index: %3").
                            arg(node->point.x, 0, 'g', 3).
                            arg(node->point.y, 0, 'g', 3).
-                           arg(m_scene->nodes->items().indexOf(node)));
+                           arg(Util::scene()->nodes->items().indexOf(node)));
                 updateGL();
             }
         }
@@ -250,7 +244,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 
-                m_scene->highlightNone();
+                Util::scene()->highlightNone();
                 edge->isHighlighted = true;
                 setToolTip(tr("<h3>Edge</h3><b>Point:</b> [%1; %2] - [%3; %4]<br/><b>Boundary conditions:</b> %5<br/><b>Angle:</b> %6 deg.<br/><b>Refine towards edge:</b> %7<br/><b>Index:</b> %8").
                            arg(edge->nodeStart->point.x, 0, 'g', 3).
@@ -260,7 +254,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
                            arg(str).
                            arg(edge->angle, 0, 'f', 0).
                            arg(edge->refineTowardsEdge, 0, 'g', 3).
-                           arg(m_scene->edges->items().indexOf(edge)));
+                           arg(Util::scene()->edges->items().indexOf(edge)));
                 updateGL();
             }
         }
@@ -279,7 +273,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 
-                m_scene->highlightNone();
+                Util::scene()->highlightNone();
                 label->isHighlighted = true;
                 setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Triangle area:</b> %4 m<sup>2</sup><br/><b>Polynomial order:</b> %5<br/><b>Index:</b> %6").
                            arg(label->point.x, 0, 'g', 3).
@@ -287,7 +281,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
                            arg(str).
                            arg(label->area, 0, 'g', 3).
                            arg(label->polynomialOrder).
-                           arg(m_scene->labels->items().indexOf(label)));
+                           arg(Util::scene()->labels->items().indexOf(label)));
                 updateGL();
             }
         }
@@ -303,7 +297,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
             SceneNode *node = findClosestNode(p);
             if (node)
             {
-                m_scene->highlightNone();
+                Util::scene()->highlightNone();
                 node->isHighlighted = true;
                 updateGL();
             }
@@ -326,7 +320,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
     if ((event->buttons() & Qt::LeftButton)
             && ((event->modifiers() & Qt::ControlModifier) && (event->modifiers() & Qt::ShiftModifier)))
     {
-        Point dp = Point(2.0/contextWidth() * dx/m_scale2d*aspect(), -2.0/contextHeight() * dy/m_scale2d);
+        Point dp = Point(2.0/width() * dx/m_scale2d*aspect(), -2.0/height() * dy/m_scale2d);
 
         if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
         {
@@ -338,7 +332,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
             {
                 if (fabs(len.x) > Util::config()->gridStep)
                 {
-                    foreach (SceneNode *node, m_scene->nodes->items())
+                    foreach (SceneNode *node, Util::scene()->nodes->items())
                         if (node->isSelected)
                             node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                     len.x = 0;
@@ -347,7 +341,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
 
                 if (fabs(len.y) > Util::config()->gridStep)
                 {
-                    foreach (SceneNode *node, m_scene->nodes->items())
+                    foreach (SceneNode *node, Util::scene()->nodes->items())
                         if (node->isSelected)
                             node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                     len.y = 0;
@@ -356,7 +350,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
             }
             else
             {
-                m_scene->transformTranslate(dp, false);
+                Util::scene()->transformTranslate(dp, false);
                 updateGL();
             }
         }
@@ -370,13 +364,13 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
             {
                 if (fabs(len.x) > Util::config()->gridStep)
                 {
-                    foreach (SceneEdge *edge, m_scene->edges->items())
+                    foreach (SceneEdge *edge, Util::scene()->edges->items())
                         if (edge->isSelected)
                         {
                             edge->nodeStart->isSelected = true;
                             edge->nodeEnd->isSelected = true;
                         }
-                    foreach (SceneNode *node, m_scene->nodes->items())
+                    foreach (SceneNode *node, Util::scene()->nodes->items())
                         if (node->isSelected)
                             node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
 
@@ -386,14 +380,14 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
 
                 if (fabs(len.y) > Util::config()->gridStep)
                 {
-                    foreach (SceneEdge *edge, m_scene->edges->items())
-                        foreach (SceneEdge *edge, m_scene->edges->items())
+                    foreach (SceneEdge *edge, Util::scene()->edges->items())
+                        foreach (SceneEdge *edge, Util::scene()->edges->items())
                             if (edge->isSelected)
                             {
                                 edge->nodeStart->isSelected = true;
                                 edge->nodeEnd->isSelected = true;
                             }
-                    foreach (SceneNode *node, m_scene->nodes->items())
+                    foreach (SceneNode *node, Util::scene()->nodes->items())
                         if (node->isSelected)
                             node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
 
@@ -403,13 +397,13 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
             }
             else
             {
-                m_scene->transformTranslate(dp, false);
+                Util::scene()->transformTranslate(dp, false);
                 updateGL();
             }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
-            m_scene->transformTranslate(dp, false);
+            Util::scene()->transformTranslate(dp, false);
             updateGL();
         }
     }
@@ -481,8 +475,8 @@ void SceneViewGeometry::mousePressEvent(QMouseEvent *event)
             else
             {
                 SceneNode *node = new SceneNode(pointNode);
-                SceneNode *nodeAdded = m_scene->addNode(node);
-                if (nodeAdded == node) m_scene->undoStack()->push(new SceneNodeCommandAdd(node->point));
+                SceneNode *nodeAdded = Util::scene()->addNode(node);
+                if (nodeAdded == node) Util::scene()->undoStack()->push(new SceneNodeCommandAdd(node->point));
                 updateGL();
             }
         }
@@ -502,8 +496,8 @@ void SceneViewGeometry::mousePressEvent(QMouseEvent *event)
                     if (node != m_nodeLast)
                     {
                         SceneEdge *edge = new SceneEdge(m_nodeLast, node, 0, 0); //TODO - do it better
-                        SceneEdge *edgeAdded = m_scene->addEdge(edge);
-                        if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
+                        SceneEdge *edgeAdded = Util::scene()->addEdge(edge);
+                        if (edgeAdded == edge) Util::scene()->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                                                                   edge->nodeEnd->point,
                                                                                                   "TODO",
                                                                                                   edge->angle,
@@ -530,8 +524,8 @@ void SceneViewGeometry::mousePressEvent(QMouseEvent *event)
             else
             {
                 SceneLabel *label = new SceneLabel(p, 0, 0); //TODO - do it better
-                SceneLabel *labelAdded = m_scene->addLabel(label);
-                if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point,
+                SceneLabel *labelAdded = Util::scene()->addLabel(label);
+                if (labelAdded == label) Util::scene()->undoStack()->push(new SceneLabelCommandAdd(label->point,
                                                                                              "TODO",
                                                                                              label->area,
                                                                                              label->polynomialOrder));
@@ -545,7 +539,7 @@ void SceneViewGeometry::mousePressEvent(QMouseEvent *event)
     if ((event->button() & Qt::LeftButton) && ((event->modifiers() == 0)
                                                || ((event->modifiers() & Qt::ControlModifier)
                                                    && (event->modifiers() & Qt::ShiftModifier)
-                                                   && (m_scene->selectedCount() == 0))))
+                                                   && (Util::scene()->selectedCount() == 0))))
     {
         // select scene objects
         if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
@@ -606,7 +600,7 @@ void SceneViewGeometry::mouseReleaseEvent(QMouseEvent *event)
     // move by mouse - select none
     if ((event->modifiers() & Qt::ControlModifier) && (event->modifiers() & Qt::ShiftModifier))
     {
-        m_scene->selectNone();
+        Util::scene()->selectNone();
     }
 
     SceneViewCommon2D::mouseReleaseEvent(event);
@@ -621,7 +615,7 @@ void SceneViewGeometry::mouseDoubleClickEvent(QMouseEvent *event)
         if (event->button() & Qt::LeftButton)
         {
             // select scene objects
-            m_scene->selectNone();
+            Util::scene()->selectNone();
             if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
             {
                 // select the closest node
@@ -664,7 +658,7 @@ void SceneViewGeometry::mouseDoubleClickEvent(QMouseEvent *event)
                     }
                 }
             }
-            m_scene->selectNone();
+            Util::scene()->selectNone();
             updateGL();
         }
     }
@@ -680,7 +674,7 @@ void SceneViewGeometry::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_Delete:
     {
-        m_scene->deleteSelected();
+        Util::scene()->deleteSelected();
     }
         break;
     case Qt::Key_Space:
@@ -693,7 +687,7 @@ void SceneViewGeometry::keyPressEvent(QKeyEvent *event)
         // select all
         if (event->modifiers() & Qt::ControlModifier)
         {
-            m_scene->selectAll(m_sceneMode);
+            Util::scene()->selectAll(m_sceneMode);
 
             refresh();
         }
@@ -725,11 +719,11 @@ void SceneViewGeometry::contextMenuEvent(QContextMenuEvent *event)
 
     // set boundary context menu
     if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
-        actSceneObjectProperties->setEnabled(m_scene->selectedCount() > 0);
+        actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
 
     // set material context menu
     if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
-        actSceneObjectProperties->setEnabled(m_scene->selectedCount() > 0);
+        actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
 
     if (mnuScene)
         delete mnuScene;
@@ -745,7 +739,7 @@ void SceneViewGeometry::paintRulersHintsEdges()
     loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
-    Point cornerMax = position(Point(contextWidth(), contextHeight()));
+    Point cornerMax = position(Point(width(), height()));
 
     glColor3d(0.0, 0.53, 0.0);
 
@@ -790,9 +784,8 @@ void SceneViewGeometry::paintRulersHintsEdges()
 
 void SceneViewGeometry::paintGL()
 {
-    logMessage("SceneViewCommon::paintGL()");
-
-    assert(this);
+    if (!isVisible()) return;
+    makeCurrent();
 
     glClearColor(Util::config()->colorBackground.redF(),
                  Util::config()->colorBackground.greenF(),
@@ -807,11 +800,8 @@ void SceneViewGeometry::paintGL()
     // grid
     if (Util::config()->showGrid) paintGrid();
 
-    // initial mesh
-    if (m_sceneViewSettings.showInitialMesh) paintInitialMesh();
-
     // geometry
-    if (m_sceneViewSettings.showGeometry) paintGeometry();
+    paintGeometry();
 
     // rulers
     if (Util::config()->showRulers)
@@ -851,7 +841,7 @@ void SceneViewGeometry::paintGeometry()
     loadProjection2d(true);
 
     // edges
-    foreach (SceneEdge *edge, m_scene->edges->items())
+    foreach (SceneEdge *edge, Util::scene()->edges->items())
     {
         if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         {
@@ -904,7 +894,7 @@ void SceneViewGeometry::paintGeometry()
     }
 
     // nodes
-    foreach (SceneNode *node, m_scene->nodes->items())
+    foreach (SceneNode *node, Util::scene()->nodes->items())
     {
         glColor3d(Util::config()->colorNodes.redF(),
                   Util::config()->colorNodes.greenF(),
@@ -946,7 +936,7 @@ void SceneViewGeometry::paintGeometry()
     glLineWidth(1.0);
 
     // labels
-    foreach (SceneLabel *label, m_scene->labels->items())
+    foreach (SceneLabel *label, Util::scene()->labels->items())
     {
         glColor3d(Util::config()->colorLabels.redF(),
                   Util::config()->colorLabels.greenF(),
@@ -995,14 +985,14 @@ void SceneViewGeometry::paintGeometry()
                 str = str.left(str.length() - 2);
 
             Point point;
-            point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(str)/m_scale2d/2.0;
-            point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale2d;
+            point.x = 2.0/width()*aspect()*fontMetrics().width(str)/m_scale2d/2.0;
+            point.y = 2.0/height()*fontMetrics().height()/m_scale2d;
 
             renderTextPos(label->point.x-point.x, label->point.y-point.y, str, false);
         }
 
         // area size
-        if ((m_sceneMode == SceneGeometryMode_OperateOnLabels) || (m_sceneViewSettings.showInitialMesh))
+        if ((m_sceneMode == SceneGeometryMode_OperateOnLabels) || (Util::config()->showInitialMeshView))
         {
             double radius = sqrt(label->area/M_PI);
             glColor3d(0, 0.95, 0.9);
@@ -1057,7 +1047,7 @@ void SceneViewGeometry::paintEdgeLine()
                       Util::config()->colorEdges.blueF());
 
             // check for crossing
-            foreach (SceneEdge *edge, m_scene->edges->items())
+            foreach (SceneEdge *edge, Util::scene()->edges->items())
             {
                 QList<Point> intersects = intersection(p, m_nodeLast->point,
                                                        m_nodeLast->point, 0, 0,

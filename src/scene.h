@@ -207,6 +207,7 @@ public slots:
 
 signals:
     void invalidated();
+    void cleared();
 
     /// emited when an field is added or removed. Menus need to adjusted
     void fieldsChanged();
@@ -312,7 +313,7 @@ public:
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
 
-    void addBoundartAndMaterialMenuItems(QMenu* menu, QWidget* parent);
+    void addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent);
 
     inline QUndoStack *undoStack() const { return m_undoStack; }
 

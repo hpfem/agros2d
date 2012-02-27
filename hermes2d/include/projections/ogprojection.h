@@ -100,7 +100,6 @@ namespace Hermes
           Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(), bool delete_old_mesh = false, 
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
-      
     protected:
       /// Underlying function for global orthogonal projection.
       /// Not intended for the user. NOTE: the weak form here must be
@@ -159,6 +158,11 @@ namespace Hermes
             error("Unknown projection type");
             return Hermes::Ord();
           }
+        }
+
+        MatrixFormVol<Scalar>* clone()
+        {
+          return new ProjectionMatrixFormVol(*this);
         }
 
       private:
@@ -275,6 +279,11 @@ namespace Hermes
             error("Unknown projection type");
             return Hermes::Ord();
           }
+        }
+
+        VectorFormVol<Scalar>* clone()
+        {
+          return new ProjectionVectorFormVol(*this);
         }
 
       private:

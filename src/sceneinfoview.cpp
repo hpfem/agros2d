@@ -109,7 +109,7 @@ void SceneInfoView::createMenu()
     mnuInfo->addAction(Util::scene()->actNewEdge);
     mnuInfo->addAction(Util::scene()->actNewLabel);
     mnuInfo->addSeparator();
-    Util::scene()->addBoundartAndMaterialMenuItems(mnuInfo, this);
+    Util::scene()->addBoundaryAndMaterialMenuItems(mnuInfo, this);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actDelete);
     mnuInfo->addSeparator();
@@ -334,7 +334,6 @@ void SceneInfoView::doInvalidated()
         fieldBoundaryConditionsNode->setExpanded(true);
 
         QList<QTreeWidgetItem *> listMarkes;
-//        foreach (SceneBoundary *boundary, fieldInfo->module()->boundaries().items())
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(fieldBoundaryConditionsNode);
@@ -353,7 +352,6 @@ void SceneInfoView::doInvalidated()
         fieldMaterialsNode->setExpanded(true);
 
         QList<QTreeWidgetItem *> listMaterials;
-//        foreach (SceneMaterial *material, fieldInfo->module()->materials().items())
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(fieldMaterialsNode);
@@ -565,6 +563,7 @@ void SceneInfoView::doProperties()
                 m_sceneViewGeometry->refresh();
                 doInvalidated();
             }
+            return;
         }
 
         // edge marker
@@ -573,8 +572,9 @@ void SceneInfoView::doProperties()
             if (objectBoundary->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneViewGeometry->refresh();
-                doInvalidated();
+                doInvalidated();                
             }
+            return;
         }
 
         // label marker
@@ -585,6 +585,7 @@ void SceneInfoView::doProperties()
                 m_sceneViewGeometry->refresh();
                 doInvalidated();
             }
+            return;
         }
     }
 }

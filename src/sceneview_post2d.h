@@ -21,20 +21,80 @@
 #define SCENEVIEWPOST2D_H
 
 #include "util.h"
-#include "sceneview_common2d.h"
+#include "sceneview_mesh.h"
 
-class SceneViewPost2D : public SceneViewCommon2D
+template <typename Scalar> class SceneSolution;
+template <typename Scalar> class ViewScalarFilter;
+
+class FieldInfo;
+
+class Post2DHermes : public QObject
+{
+    Q_OBJECT
+
+public:
+    Post2DHermes();
+    ~Post2DHermes();
+
+    void clear();
+
+     // contour
+    inline ViewScalarFilter<double> *slnContourView() { return m_slnContourView; }
+    inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
+
+    // scalar view
+    inline ViewScalarFilter<double> *slnScalarView() { return m_slnScalarView; }
+    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
+
+    // vector view
+    inline ViewScalarFilter<double> *slnVectorViewX() { return m_slnVectorXView; }
+    inline ViewScalarFilter<double> *slnVectorViewY() { return m_slnVectorYView; }
+    inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
+
+public slots:
+    virtual void solved();
+
+private:
+    // mesh
+    Hermes::Hermes2D::Views::Linearizer m_linSolutionMeshView;
+
+    // contour
+    ViewScalarFilter<double> *m_slnContourView; // scalar view solution
+    Hermes::Hermes2D::Views::Linearizer m_linContourView;
+
+    // scalar view
+    ViewScalarFilter<double> *m_slnScalarView; // scalar view solution
+    Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
+
+    // vector view
+    ViewScalarFilter<double> *m_slnVectorXView; // vector view solution - x
+    ViewScalarFilter<double> *m_slnVectorYView; // vector view solution - y
+    Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
+
+    // order view
+    Hermes::Hermes2D::Views::Orderizer m_orderView;
+
+    // process
+    void processRangeContour();
+    void processRangeScalar();
+    void processRangeVector();
+};
+
+class SceneViewPost2D : public SceneViewMesh
 {
     Q_OBJECT
 
 public slots:   
     void doSelectMarker();
-    virtual void doDefaultValues();
     void doPostprocessorModeGroup(QAction *action);
+    virtual void doInvalidated();
+    virtual void clear();
 
 public:
     SceneViewPost2D(QWidget *parent = 0);
     ~SceneViewPost2D();
+
+    QAction *actSceneModePost2D;
 
     QActionGroup *actShowGroup;
     QAction *actShowContours;
@@ -59,18 +119,22 @@ protected:
 
     void paintGeometry(); // paint edges
 
-    void paintSolutionMesh();
     void paintScalarField(); // paint scalar field surface
     void paintContours(); // paint scalar field contours
     void paintContoursTri(double3* vert, int3* tri, double step);
     void paintVectors(); // paint vector field vectors
-    void paintOrder();
-    void paintOrderColorBar();
 
     void paintPostprocessorSelectedVolume(); // paint selected volume for integration
     void paintPostprocessorSelectedSurface(); // paint selected surface for integration
 
 private:
+    // gl lists
+    int m_listContours;
+    int m_listVectors;
+    int m_listScalarField;
+
+    Post2DHermes *m_post2DHermes;
+
     void createActionsPost2D();
 
 private slots:

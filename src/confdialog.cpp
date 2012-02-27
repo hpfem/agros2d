@@ -24,6 +24,7 @@
 #include "scene.h"
 #include "sceneview_common.h"
 #include "pythonlabagros.h"
+#include "hermes2d/module.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
@@ -592,6 +593,27 @@ QWidget *ConfigDialog::createGlobalScriptWidget()
     viewWidget->setLayout(layout);
 
     return viewWidget;
+}
+
+void ConfigDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
+{
+    logMessage("fillComboBoxPhysicField()");
+
+    // block signals
+    cmbPhysicField->blockSignals(true);
+
+    cmbPhysicField->clear();
+    std::map<std::string, std::string> modules = availableModules();
+    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
+        cmbPhysicField->addItem(QString::fromStdString(it->second), QString::fromStdString(it->first));
+
+    // unblock signals
+    cmbPhysicField->blockSignals(false);
+
+    // default physic field
+    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Util::config()->defaultPhysicField));
+    if (cmbPhysicField->currentIndex() == -1)
+        cmbPhysicField->setCurrentIndex(0);
 }
 
 void ConfigDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)

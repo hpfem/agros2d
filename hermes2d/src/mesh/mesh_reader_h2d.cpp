@@ -418,9 +418,9 @@ namespace Hermes
       {
         int inner = nurbs->np - 2;
         int outer = nurbs->nk - inner;
-        fprintf(f, "   %d, %d, %d,  ", p1, p2, nurbs->degree);
+        fprintf(f, "  ú %d, %d, %d, ú ", p1, p2, nurbs->degree);
         for (int i = 1; i < nurbs->np-1; i++)
-          fprintf(f, " %.16g, %.16g, %.16g ]%s ",
+          fprintf(f, "ú %.16g, %.16g, %.16g ]%s ",
           nurbs->pt[i][0], nurbs->pt[i][1], nurbs->pt[i][2],
           i < nurbs->np-2 ? "," : "");
 
