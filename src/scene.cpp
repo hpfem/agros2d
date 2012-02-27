@@ -1024,6 +1024,8 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
             if (mode == SceneTransformMode_Translate)
             {
                 newPoint = label->point + point;
+                // projection of the point to the real axis of the displacement vector
+                pair.first = label->point.x * cos(point.angle()) + label->point.y * sin(point.angle());
             }
             else if (mode == SceneTransformMode_Rotate)
             {
@@ -1031,18 +1033,20 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
                 double angleLabel = (label->point - point).angle()/M_PI*180;
 
                 newPoint = point + Point(distanceLabel * cos((angleLabel + angle)/180.0*M_PI), distanceLabel * sin((angleLabel + angle)/180.0*M_PI));
+
+                // projection of the point to the tangential axis of the displacement vector
+                pair.first = 0;
             }
             else if (mode == SceneTransformMode_Scale)
             {
                 newPoint = point + (label->point - point) * scaleFactor;
+                pair.first = ((abs(scaleFactor) > 1) ? 1.0 : -1.0) * (label->point - point).magnitude();
             }
 
             SceneLabel *obstructLabel = getLabel(newPoint);
             if (obstructLabel && !obstructLabel->isSelected)
                 return;
 
-            // Park transformation - projection of the point vector to the real axis of the displacement vector
-            pair.first = label->point.x * cos(point.angle()) + label->point.y * sin(point.angle());
             pair.second = label;
             selectedLabels.append(pair);
         }
