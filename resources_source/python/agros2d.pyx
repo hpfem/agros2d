@@ -222,9 +222,10 @@ cdef class Field:
     cdef PyField *thisptr
 
     # Field(field_id, analysis_type, number_of_refinements, polynomial_order, linearity_type, nonlinear_tolerance, nonlinear_steps, adaptivity_type, adaptivity_tolerance, adaptivity_steps, initial_condition, weak_forms)
-    def __cinit__(self, char *field_id, char *analysis_type, int number_of_refinements = 0, int polynomial_order = 1, char *linearity_type = "linear",
+    def __cinit__(self, Problem problem, char *field_id, char *analysis_type, int number_of_refinements = 0, int polynomial_order = 1, char *linearity_type = "linear",
                   double nonlinear_tolerance = 0.001, int nonlinear_steps = 10, char *adaptivity_type = "disabled", double adaptivity_tolerance = 1,
                   int adaptivity_steps = 1, double initial_condition = 0.0, char *weak_forms = "compiled"):
+        # todo - more problems
         self.thisptr = new PyField(field_id, analysis_type, number_of_refinements, polynomial_order, linearity_type, nonlinear_tolerance,
                                    nonlinear_steps, adaptivity_type, adaptivity_tolerance, adaptivity_steps, initial_condition, weak_forms)
     def __dealloc__(self):
@@ -365,7 +366,8 @@ cdef class Geometry:
     cdef PyGeometry *thisptr
 
     # Geometry()
-    def __cinit__(self):
+    def __cinit__(self, Problem problem):
+        # todo - more problems
         self.thisptr = new PyGeometry()
     def __dealloc__(self):
         del self.thisptr

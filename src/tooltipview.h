@@ -30,7 +30,8 @@ public:
 
 public slots:
     void loadTooltip(const QString &html);
-    void loadTooltip(SceneMode sceneMode);
+    void loadTooltipPost2D();
+    void loadTooltip(SceneGeometryMode sceneMode);
 
 private:
      QTextEdit *txtView;

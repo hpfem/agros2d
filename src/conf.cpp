@@ -17,10 +17,11 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "conf.h"
+#include "config.h"
+#include "scene.h"
 #include "hermes2d/module.h"
 
-Config::Config()
+Config::Config() : eleConfig(NULL)
 {
     logMessage("Config::Config()");
 
@@ -36,8 +37,13 @@ Config::~Config()
 
 void Config::load()
 {
-    logMessage("Config::load()");
+    loadWorkspace();
+    loadPostprocessor(NULL);
+    loadAdvanced();
+}
 
+void Config::loadWorkspace()
+{
     QSettings settings;
 
     // experimental features
@@ -46,7 +52,7 @@ void Config::load()
     // general
     guiStyle = settings.value("General/GUIStyle").toString();
     language = settings.value("General/Language", QLocale::system().name()).toString();
-    defaultPhysicField =  settings.value("General/DefaultPhysicField", "electrostatics").toString();
+    defaultPhysicField = settings.value("General/DefaultPhysicField", "electrostatics").toString();
 
     bool check = false;
     std::map<std::string, std::string> modules = availableModules();
@@ -92,6 +98,8 @@ void Config::load()
     colorSolutionMesh = settings.value("SceneViewSettings/ColorSolutionMesh", COLORSOLUTIONMESH).value<QColor>();
     colorHighlighted = settings.value("SceneViewSettings/ColorHighlighted", COLORHIGHLIGHTED).value<QColor>();
     colorSelected = settings.value("SceneViewSettings/ColorSelected", COLORSELECTED).value<QColor>();
+    colorCrossed = settings.value("SceneViewSettings/ColorCrossed", COLORCROSSED).value<QColor>();
+    colorNotConnected = settings.value("SceneViewSettings/ColorCrossed", COLORNOTCONNECTED).value<QColor>();
 
     // geometry
     nodeSize = settings.value("SceneViewSettings/NodeSize", 6.0).toDouble();
@@ -108,6 +116,7 @@ void Config::load()
     // grid
     showGrid = settings.value("SceneViewSettings/ShowGrid", SHOWGRID).toBool();
     gridStep = settings.value("SceneViewSettings/GridStep", GRIDSTEP).toDouble();
+
     // rulers
     showRulers = settings.value("SceneViewSettings/ShowRulers", SHOWRULERS).toBool();
     // snap to grid
@@ -122,39 +131,71 @@ void Config::load()
     // linearizer quality
     linearizerQuality = settings.value("SceneViewSettings/LinearizerQuality", LINEARIZER_QUALITY).toDouble();
 
-    // countour
-    contoursCount = settings.value("SceneViewSettings/ContoursCount", CONTOURSCOUNT).toInt();
-
-    // scalar view
-    showScalarScale = settings.value("SceneViewSettings/ShowScalarScale", true).toBool();
-    paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", PALETTETYPE).toInt();
-    paletteFilter = settings.value("SceneViewSettings/PaletteFilter", PALETTEFILTER).toBool();
-    paletteSteps = settings.value("SceneViewSettings/PaletteSteps", PALETTESTEPS).toInt();
-    scalarRangeLog = settings.value("SceneViewSettings/ScalarRangeLog", SCALARRANGELOG).toBool();
-    scalarRangeBase = settings.value("SceneViewSettings/ScalarRangeBase", SCALARRANGEBASE).toDouble();
-    scalarDecimalPlace = settings.value("SceneViewSettings/ScalarDecimalPlace", SCALARDECIMALPLACE).toDouble();
-
-    // vector view
-    vectorProportional = settings.value("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL).toBool();
-    vectorColor = settings.value("SceneViewSettings/VectorColor", VECTORCOLOR).toBool();
-    vectorCount = settings.value("SceneViewSettings/VectorNumber", VECTORNUMBER).toInt();
-    vectorScale = settings.value("SceneViewSettings/VectorScale", VECTORSCALE).toDouble();
-
-    // order view
-    showOrderScale = settings.value("SceneViewSettings/ShowOrderScale", true).toBool();
-    orderPaletteOrderType = (PaletteOrderType) settings.value("SceneViewSettings/OrderPaletteOrderType", ORDERPALETTEORDERTYPE).toInt();
-    orderLabel = settings.value("SceneViewSettings/OrderLabel", ORDERLABEL).toBool();
-
-    // deformations
-    deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
-    deformContour = settings.value("SceneViewSettings/DeformContour", true).toBool();
-    deformVector = settings.value("SceneViewSettings/DeformVector", true).toBool();
-
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
     scalarView3DAngle = settings.value("SceneViewSettings/ScalarView3DAngle", 270).toDouble();
     scalarView3DBackground = settings.value("SceneViewSettings/ScalarView3DBackground", true).toBool();
     scalarView3DHeight = settings.value("SceneViewSettings/ScalarView3DHeight", 4.0).toDouble();
+
+    // deformations
+    deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
+    deformContour = settings.value("SceneViewSettings/DeformContour", true).toBool();
+    deformVector = settings.value("SceneViewSettings/DeformVector", true).toBool();
+}
+
+void Config::loadPostprocessor(QDomElement *config)
+{
+    if (config)
+        eleConfig = config;
+
+    // contour
+    contoursCount = readConfig("SceneViewSettings/ContoursCount", CONTOURSCOUNT);
+
+    // scalar view
+    showScalarScale = readConfig("SceneViewSettings/ShowScalarScale", true);
+    paletteType = (PaletteType) readConfig("SceneViewSettings/PaletteType", PALETTETYPE);
+    paletteFilter = readConfig("SceneViewSettings/PaletteFilter", PALETTEFILTER);
+    paletteSteps = readConfig("SceneViewSettings/PaletteSteps", PALETTESTEPS);
+    scalarRangeLog = readConfig("SceneViewSettings/ScalarRangeLog", SCALARFIELDRANGELOG);
+    scalarRangeBase = readConfig("SceneViewSettings/ScalarRangeBase", SCALARFIELDRANGEBASE);
+    scalarDecimalPlace = readConfig("SceneViewSettings/ScalarDecimalPlace", SCALARDECIMALPLACE);
+
+    // vector view
+    vectorProportional = readConfig("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL);
+    vectorColor = readConfig("SceneViewSettings/VectorColor", VECTORCOLOR);
+    vectorCount = readConfig("SceneViewSettings/VectorNumber", VECTORNUMBER);
+    vectorScale = readConfig("SceneViewSettings/VectorScale", VECTORSCALE);
+
+    // order view
+    showOrderScale = readConfig("SceneViewSettings/ShowOrderScale", true);
+    orderPaletteOrderType = (PaletteOrderType) readConfig("SceneViewSettings/OrderPaletteOrderType", ORDERPALETTEORDERTYPE);
+    orderLabel = readConfig("SceneViewSettings/OrderLabel", ORDERLABEL);
+
+    // particle tracing
+    particleIncludeGravitation = readConfig("SceneViewSettings/ParticleIncludeGravitation", PARTICLEINCLUDEGRAVITATION);
+    particleMass = readConfig("SceneViewSettings/ParticleMass", PARTICLEMASS);
+    particleConstant = readConfig("SceneViewSettings/ParticleConstant", PARTICLECONSTANT);
+    particleStart.x = readConfig("SceneViewSettings/ParticleStartX", PARTICLESTARTX);
+    particleStart.y = readConfig("SceneViewSettings/ParticleStartY", PARTICLESTARTY);
+    particleStartVelocity.x = readConfig("SceneViewSettings/ParticleStartVelocityX", PARTICLESTARTVELOCITYX);
+    particleStartVelocity.y = readConfig("SceneViewSettings/ParticleStartVelocityY", PARTICLESTARTVELOCITYY);
+    particleNumberOfParticles = readConfig("SceneViewSettings/ParticleNumberOfParticles", PARTICLENUMBEROFPARTICLES);
+    particleStartingRadius = readConfig("SceneViewSettings/ParticleStartingRadius", PARTICLESTARTINGRADIUS);
+    particleTerminateOnDifferentMaterial = readConfig("SceneViewSettings/ParticleTerminateOnDifferentMaterial", PARTICLETERMINATEONDIFFERENTMATERIAL);
+    particleMaximumRelativeError = readConfig("SceneViewSettings/ParticleMaximumRelativeError", PARTICLEMAXIMUMRELATIVEERROR);
+    particleShowPoints = readConfig("SceneViewSettings/ParticleShowPoints", PARTICLESHOWPOINTS);
+    particleColorByVelocity = readConfig("SceneViewSettings/ParticleColorByVelocity", PARTICLECOLORBYVELOCITY);
+    particleMaximumSteps = readConfig("SceneViewSettings/ParticleMaximumSteps", PARTICLEMAXIMUMSTEPS);
+    particleDragDensity = readConfig("SceneViewSettings/ParticleDragDensity", PARTICLEDRAGDENSITY);
+    particleDragCoefficient = readConfig("SceneViewSettings/ParticleDragCoefficient", PARTICLEDRAGCOEFFICIENT);
+    particleDragReferenceArea = readConfig("SceneViewSettings/ParticleDragReferenceArea", PARTICLEDRAGREFERENCEAREA);
+
+    eleConfig = NULL;
+}
+
+void Config::loadAdvanced()
+{
+    QSettings settings;
 
     // adaptivity
     maxDofs = settings.value("Adaptivity/MaxDofs", MAX_DOFS).toInt();
@@ -178,8 +219,12 @@ void Config::load()
 
 void Config::save()
 {
-    logMessage("Config::Save()");
+    saveWorkspace();
+    saveAdvanced();
+}
 
+void Config::saveWorkspace()
+{
     QSettings settings;
 
     // experimental features
@@ -257,39 +302,71 @@ void Config::save()
     // linearizer quality
     settings.setValue("SceneViewSettings/LinearizerQuality", linearizerQuality);
 
-    // countour
-    settings.setValue("SceneViewSettings/ContoursCount", contoursCount);
-
-    // scalar view
-    settings.setValue("SceneViewSettings/ShowScalarScale", showScalarScale);
-    settings.setValue("SceneViewSettings/PaletteType", paletteType);
-    settings.setValue("SceneViewSettings/PaletteFilter", paletteFilter);
-    settings.setValue("SceneViewSettings/PaletteSteps", paletteSteps);
-    settings.setValue("SceneViewSettings/ScalarRangeLog", scalarRangeLog);
-    settings.setValue("SceneViewSettings/ScalarRangeBase", scalarRangeBase);
-    settings.setValue("SceneViewSettings/ScalarDecimalPlace", scalarDecimalPlace);
-
-    // vector view
-    settings.setValue("SceneViewSettings/VectorProportional", vectorProportional);
-    settings.setValue("SceneViewSettings/VectorColor", vectorColor);
-    settings.setValue("SceneViewSettings/VectorNumber", vectorCount);
-    settings.setValue("SceneViewSettings/VectorScale", vectorScale);
-
-    // order view
-    settings.setValue("SceneViewSettings/ShowOrderScale", showOrderScale);
-    settings.setValue("SceneViewSettings/OrderPaletteOrderType", orderPaletteOrderType);
-    settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
-
-    // deformations
-    settings.setValue("SceneViewSettings/DeformScalar", deformScalar);
-    settings.setValue("SceneViewSettings/DeformContour", deformContour);
-    settings.setValue("SceneViewSettings/DeformVector", deformVector);
-
     // 3d
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
     settings.setValue("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
     settings.setValue("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
     settings.setValue("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
+
+    // deformations
+    settings.setValue("SceneViewSettings/DeformScalar", deformScalar);
+    settings.setValue("SceneViewSettings/DeformContour", deformContour);
+    settings.setValue("SceneViewSettings/DeformVector", deformVector);
+}
+
+void Config::savePostprocessor(QDomElement *config)
+{
+    if (config)
+        eleConfig = config;
+
+    // contour
+    writeConfig("SceneViewSettings/ContoursCount", contoursCount);
+
+    // scalar view
+    writeConfig("SceneViewSettings/ShowScalarScale", showScalarScale);
+    writeConfig("SceneViewSettings/PaletteType", paletteType);
+    writeConfig("SceneViewSettings/PaletteFilter", paletteFilter);
+    writeConfig("SceneViewSettings/PaletteSteps", paletteSteps);
+    writeConfig("SceneViewSettings/ScalarRangeLog", scalarRangeLog);
+    writeConfig("SceneViewSettings/ScalarRangeBase", scalarRangeBase);
+    writeConfig("SceneViewSettings/ScalarDecimalPlace", scalarDecimalPlace);
+
+    // vector view
+    writeConfig("SceneViewSettings/VectorProportional", vectorProportional);
+    writeConfig("SceneViewSettings/VectorColor", vectorColor);
+    writeConfig("SceneViewSettings/VectorNumber", vectorCount);
+    writeConfig("SceneViewSettings/VectorScale", vectorScale);
+
+    // order view
+    writeConfig("SceneViewSettings/ShowOrderScale", showOrderScale);
+    writeConfig("SceneViewSettings/OrderPaletteOrderType", orderPaletteOrderType);
+    writeConfig("SceneViewSettings/OrderLabel", orderLabel);
+
+    // particle tracing
+    writeConfig("SceneViewSettings/ParticleIncludeGravitation", particleIncludeGravitation);
+    writeConfig("SceneViewSettings/ParticleMass", particleMass);
+    writeConfig("SceneViewSettings/ParticleConstant", particleConstant);
+    writeConfig("SceneViewSettings/ParticleStartX", particleStart.x);
+    writeConfig("SceneViewSettings/ParticleStartY", particleStart.y);
+    writeConfig("SceneViewSettings/ParticleStartVelocityX", particleStartVelocity.x);
+    writeConfig("SceneViewSettings/ParticleStartVelocityY", particleStartVelocity.y);
+    writeConfig("SceneViewSettings/ParticleNumberOfParticles", particleNumberOfParticles);
+    writeConfig("SceneViewSettings/ParticleStartingRadius", particleStartingRadius);
+    writeConfig("SceneViewSettings/ParticleTerminateOnDifferentMaterial", particleTerminateOnDifferentMaterial);
+    writeConfig("SceneViewSettings/ParticleMaximumRelativeError", particleMaximumRelativeError);
+    writeConfig("SceneViewSettings/ParticleShowPoints", particleShowPoints);
+    writeConfig("SceneViewSettings/ParticleColorByVelocity", particleColorByVelocity);
+    writeConfig("SceneViewSettings/ParticleMaximumSteps", particleMaximumSteps);
+    writeConfig("SceneViewSettings/ParticleDragDensity", particleDragDensity);
+    writeConfig("SceneViewSettings/ParticleDragCoefficient", particleDragCoefficient);
+    writeConfig("SceneViewSettings/ParticleDragReferenceArea", particleDragReferenceArea);
+
+    eleConfig = NULL;
+}
+
+void Config::saveAdvanced()
+{
+    QSettings settings;
 
     // adaptivity
     settings.setValue("Adaptivity/MaxDofs", maxDofs);
@@ -306,4 +383,67 @@ void Config::save()
 
     // global script
     settings.setValue("Python/GlobalScript", globalScript);
+}
+
+bool Config::readConfig(const QString &key, bool defaultValue)
+{
+    if (eleConfig)
+    {
+        QString att = key; att.replace("/", "_");
+        if (eleConfig->hasAttribute(att))
+            return (eleConfig->attribute(att).toInt() == 1) ? true : false;
+    }
+
+    return defaultValue;
+}
+
+int Config::readConfig(const QString &key, int defaultValue)
+{
+    if (eleConfig)
+    {
+        QString att = key; att.replace("/", "_");
+        if (eleConfig->hasAttribute(att))
+            return eleConfig->attribute(att).toInt();
+    }
+
+    return defaultValue;
+}
+
+double Config::readConfig(const QString &key, double defaultValue)
+{
+    if (eleConfig)
+    {
+        QString att = key; att.replace("/", "_");
+        if (eleConfig->hasAttribute(att))
+            return eleConfig->attribute(att).toDouble();
+    }
+
+    return defaultValue;
+}
+
+void Config::writeConfig(const QString &key, bool value)
+{
+    if (eleConfig)
+    {
+        QString att = key; att.replace("/", "_");
+        eleConfig->setAttribute(att, value);
+    }
+}
+
+void Config::writeConfig(const QString &key, int value)
+{
+    if (eleConfig)
+    {
+        QString att = key; att.replace("/", "_");
+        eleConfig->setAttribute(att, value);
+    }
+}
+
+void Config::writeConfig(const QString &key, double value)
+{
+    if (eleConfig)
+    {
+        QString att = key; att.replace("/", "_");
+        eleConfig->setAttribute(att, value);
+    }
 }

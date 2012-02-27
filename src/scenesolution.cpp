@@ -21,7 +21,8 @@
 
 #include "scene.h"
 #include "scenemarkerdialog.h"
-#include "sceneview.h"
+#include "sceneview_post2d.h"
+#include "sceneview_post3d.h"
 #include "progressdialog.h"
 #include "hermes2d/solver.h"
 #include "hermes2d/module.h"
@@ -52,11 +53,11 @@ SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldIn
 template <typename Scalar>
 SceneSolution<Scalar>::~SceneSolution()
 {
-//    delete m_progressDialog;
-//    delete m_progressItemMesh;
-//    delete m_progressItemSolve;
-//    delete m_progressItemSolveAdaptiveStep;
-//    delete m_progressItemProcessView;
+    //    delete m_progressDialog;
+    //    delete m_progressItemMesh;
+    //    delete m_progressItemSolve;
+    //    delete m_progressItemSolveAdaptiveStep;
+    //    delete m_progressItemProcessView;
 }
 
 template <typename Scalar>
@@ -64,19 +65,19 @@ void SceneSolution<Scalar>::clear(bool all)
 {
     logMessage("SceneSolution::clear()");
 
-//     m_linInitialMeshView.free();
-//     m_linSolutionMeshView.free();
-//     m_linContourView.free();
-//     m_linScalarView.free();
-//     m_vecVectorView.free();
+    //     m_linInitialMeshView.free();
+    //     m_linSolutionMeshView.free();
+    //     m_linContourView.free();
+    //     m_linScalarView.free();
+    //     m_vecVectorView.free();
 
     // solution array
     if (all)
     {
         //m_timeStep = -1;
 
-//        for (int i = 0; i < m_solutionArrayList.size(); i++)
-//            delete m_solutionArrayList.at(i);
+        //        for (int i = 0; i < m_solutionArrayList.size(); i++)
+        //            delete m_solutionArrayList.at(i);
         m_solutionArrayList.clear();
 
         // mesh
@@ -142,77 +143,77 @@ void SceneSolution<Scalar>::saveMeshInitial(QDomDocument *doc, QDomElement eleme
     logMessage("SceneSolution::saveMeshInitial()");
 
     assert(0);
-//    if (isMeshed())
-//    {
-//        QString fileName = tempProblemFileName() + ".mesh";
+    //    if (isMeshed())
+    //    {
+    //        QString fileName = tempProblemFileName() + ".mesh";
 
-//        writeMeshFromFile(fileName, m_meshInitial);
+    //        writeMeshFromFile(fileName, m_meshInitial);
 
-//        // read content
-//        QDomText text = doc->createTextNode(readFileContentByteArray(fileName).toBase64());
-//        element.appendChild(text);
-//    }
+    //        // read content
+    //        QDomText text = doc->createTextNode(readFileContentByteArray(fileName).toBase64());
+    //        element.appendChild(text);
+    //    }
 }
 
 template <typename Scalar>
 void SceneSolution<Scalar>::loadSolution(QDomElement element)
 {
     assert(0); //TODO
-//    logMessage("SceneSolution::loadSolution()");
+    //    logMessage("SceneSolution::loadSolution()");
 
-//    Hermes::vector<SolutionArray<Scalar> *> solutionArrayList;
+    //    Hermes::vector<SolutionArray<Scalar> *> solutionArrayList;
 
-//    // constant solution cannot be saved
-//    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
-//    {
-//        Util::scene()->problemInfo()->initialCondition.evaluate(true);
+    //    // constant solution cannot be saved
+    //    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
+    //    {
+    //        Util::scene()->problemInfo()->initialCondition.evaluate(true);
 
-//        SolutionArray<Scalar> *solutionArray = new SolutionArray<Scalar>();
-//        // solutionArray->order = new Hermes::Hermes2D::Views::Orderizer();
-//        solutionArray->sln = new Hermes::Hermes2D::Solution<Scalar>();
-//        // FIXME
-//        // solutionArray->sln->set_const(Util::scene()->sceneSolution()->meshInitial(), Util::scene()->problemInfo()->initialCondition.number());
-//        solutionArray->adaptiveError = 0.0;
-//        solutionArray->adaptiveSteps = 0.0;
-//        solutionArray->time = 0.0;
+    //        SolutionArray<Scalar> *solutionArray = new SolutionArray<Scalar>();
+    //        // solutionArray->order = new Hermes::Hermes2D::Views::Orderizer();
+    //        solutionArray->sln = new Hermes::Hermes2D::Solution<Scalar>();
+    //        // FIXME
+    //        // solutionArray->sln->set_const(Util::scene()->sceneSolution()->meshInitial(), Util::scene()->problemInfo()->initialCondition.number());
+    //        solutionArray->adaptiveError = 0.0;
+    //        solutionArray->adaptiveSteps = 0.0;
+    //        solutionArray->time = 0.0;
 
-//        solutionArrayList.push_back(solutionArray);
-//    }
+    //        solutionArrayList.push_back(solutionArray);
+    //    }
 
-//    QDomNode n = element.firstChild();
-//    while(!n.isNull())
-//    {
-//        SolutionArray<Scalar> *solutionArray = new SolutionArray<Scalar>();
-//        solutionArray->load(n.toElement());
+    //    QDomNode n = element.firstChild();
+    //    while(!n.isNull())
+    //    {
+    //        SolutionArray<Scalar> *solutionArray = new SolutionArray<Scalar>();
+    //        solutionArray->load(n.toElement());
 
-//        // add to the array
-//        solutionArrayList.push_back(solutionArray);
+    //        // add to the array
+    //        solutionArrayList.push_back(solutionArray);
 
-//        n = n.nextSibling();
-//    }
+    //        n = n.nextSibling();
+    //    }
 
-//    if (solutionArrayList.size() > 0)
-//        setSolutionArrayList(solutionArrayList);
+    //    if (solutionArrayList.size() > 0)
+    //        setSolutionArrayList(solutionArrayList);
 }
 
 template <typename Scalar>
 void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement element)
 {
     assert(0); //TODO
-//    logMessage("SceneSolution::saveSolution()");
+    //    logMessage("SceneSolution::saveSolution()");
 
-//    if (isSolved())
-//    {
-//        // constant solution cannot be saved
-//        int start = (Util::scene()->problemInfo()->analysisType() != AnalysisType_Transient) ? 0 : 1;
+    //    if (isSolved())
+    //    {
+    //        // constant solution cannot be saved
+    //        int start = (Util::scene()->problemInfo()->analysisType() != AnalysisType_Transient) ? 0 : 1;
 
-//        for (int i = start; i < timeStepCount(); i++)
-//        {
-//            QDomNode eleSolution = doc->createElement("solution");
-//            m_solutionArrayList.at(i)->save(doc, eleSolution.toElement());
-//            element.appendChild(eleSolution);
-//        }
-//    }
+    //        for (int i = start; i < timeStepCount(); i++)
+    //        {
+    //            QDomNode eleSolution = doc->createElement("solution");
+    //            m_solutionArrayList.at(i)->save(doc, eleSolution.toElement());
+    //            element.appendChild(eleSolution);
+    //        }
+    //    }
 }
 
 template <typename Scalar>
@@ -220,20 +221,20 @@ SolutionArray<Scalar> SceneSolution<Scalar>::solutionArray(int i)
 {
     logMessage("SceneSolution::solutionArray()");
 
-//    assert(i == 0);
+    //    assert(i == 0);
     return m_solutionArrayList.at(i);
 
-//    int currentTimeStep = i;
-//    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())
-//    {
-//        // default
-//        if (currentTimeStep == -1)
-//            currentTimeStep = m_timeStep * Util::scene()->fieldInfo("TODO")->module()->number_of_solution();
+    //    int currentTimeStep = i;
+    //    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())
+    //    {
+    //        // default
+    //        if (currentTimeStep == -1)
+    //            currentTimeStep = m_timeStep * Util::scene()->fieldInfo("TODO")->module()->number_of_solution();
 
-//        if (m_solutionArrayList.at(currentTimeStep))
-//            return m_solutionArrayList.at(currentTimeStep);
-//    }
-//    return NULL;
+    //        if (m_solutionArrayList.at(currentTimeStep))
+    //            return m_solutionArrayList.at(currentTimeStep);
+    //    }
+    //    return NULL;
 }
 
 template <typename Scalar>
@@ -352,8 +353,8 @@ void SceneSolution<Scalar>::setSolutionArrayList(Hermes::vector<SolutionArray<Sc
 {
     logMessage("SceneSolution::setSolutionArrayList()");
 
-//    for (int i = 0; i < m_solutionArrayList.size(); i++)
-//        delete m_solutionArrayList.at(i);
+    //    for (int i = 0; i < m_solutionArrayList.size(); i++)
+    //        delete m_solutionArrayList.at(i);
     m_solutionArrayList.clear();
 
     m_solutionArrayList = solutionArrayList;
@@ -437,7 +438,7 @@ void SceneSolution<Scalar>::setSlnScalarView(ViewScalarFilter<Scalar> *slnScalar
     // deformed shape
     if (Util::config()->deformScalar)
         m_fieldInfo->module()->deform_shape(m_linScalarView.get_vertices(),
-                                                             m_linScalarView.get_num_vertices());
+                                            m_linScalarView.get_num_vertices());
 }
 
 template <typename Scalar>
@@ -466,7 +467,7 @@ void SceneSolution<Scalar>::setSlnVectorView(ViewScalarFilter<Scalar> *slnVector
     // deformed shape
     if (Util::config()->deformVector)
         m_fieldInfo->module()->deform_shape(m_vecVectorView.get_vertices(),
-                                                             m_vecVectorView.get_num_vertices());
+                                            m_vecVectorView.get_num_vertices());
 }
 
 template <typename Scalar>
@@ -514,17 +515,17 @@ void SceneSolution<Scalar>::processView(bool showViewProgress)
     }
 
 
-//    if (showViewProgress)
-//    {
-//        m_progressDialog->clear();
-//        m_progressDialog->appendProgressItem(m_progressItemProcessView);
-//        m_progressDialog->run(showViewProgress);
-//    }
-//    else
-//    {
-//        m_progressItemProcessView->setSteps();
-//        m_progressItemProcessView->run(true);
-//    }
+    //    if (showViewProgress)
+    //    {
+    //        m_progressDialog->clear();
+    //        m_progressDialog->appendProgressItem(m_progressItemProcessView);
+    //        m_progressDialog->run(showViewProgress);
+    //    }
+    //    else
+    //    {
+    //        m_progressItemProcessView->setSteps();
+    //        m_progressItemProcessView->run(true);
+    //    }
 }
 
 template <typename Scalar>
@@ -551,10 +552,10 @@ void SceneSolution<Scalar>::processRangeContour()
         ViewScalarFilter<Scalar> *viewScalarFilter;
         if (m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable)->is_scalar)
             viewScalarFilter = m_fieldInfo->module()->view_scalar_filter(m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable),
-                                                                                          PhysicFieldVariableComp_Scalar);
+                                                                         PhysicFieldVariableComp_Scalar);
         else
             viewScalarFilter = m_fieldInfo->module()->view_scalar_filter(m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().contourPhysicFieldVariable),
-                                                                                          PhysicFieldVariableComp_Magnitude);
+                                                                         PhysicFieldVariableComp_Magnitude);
 
         setSlnContourView(viewScalarFilter);
         emit processedRangeContour();
@@ -569,7 +570,7 @@ void SceneSolution<Scalar>::processRangeScalar()
     if (Util::problem()->isSolved() && sceneView()->sceneViewSettings().scalarPhysicFieldVariable != "")
     {
         ViewScalarFilter<Scalar> *viewScalarFilter = m_fieldInfo->module()->view_scalar_filter(m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().scalarPhysicFieldVariable),
-                                                                                                                sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
+                                                                                               sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
 
         setSlnScalarView(viewScalarFilter);
         emit processedRangeScalar();
@@ -584,10 +585,10 @@ void SceneSolution<Scalar>::processRangeVector()
     if (Util::problem()->isSolved() && sceneView()->sceneViewSettings().vectorPhysicFieldVariable != "")
     {
         ViewScalarFilter<Scalar> *viewVectorXFilter = m_fieldInfo->module()->view_scalar_filter(m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().vectorPhysicFieldVariable),
-                                                                                                                 PhysicFieldVariableComp_X);
+                                                                                                PhysicFieldVariableComp_X);
 
         ViewScalarFilter<Scalar> *viewVectorYFilter = m_fieldInfo->module()->view_scalar_filter(m_fieldInfo->module()->get_variable(sceneView()->sceneViewSettings().vectorPhysicFieldVariable),
-                                                                                                                 PhysicFieldVariableComp_Y);
+                                                                                                PhysicFieldVariableComp_Y);
 
         setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
         emit processedRangeVector();
@@ -601,7 +602,7 @@ void SceneSolution<Scalar>::processOrder()
 
     if (Util::problem()->isSolved())
         setOrderView(m_solutionArrayList.at(0).space);
-                //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
+    //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
 }
 
 template <typename Scalar>

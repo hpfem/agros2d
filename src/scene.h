@@ -270,7 +270,7 @@ public:
     RectPoint boundingBox() const;
 
     void selectNone();
-    void selectAll(SceneMode sceneMode);
+    void selectAll(SceneGeometryMode sceneMode);
     int selectedCount();
     void highlightNone();
     void deleteSelected();

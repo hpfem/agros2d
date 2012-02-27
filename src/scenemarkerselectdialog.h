@@ -23,13 +23,13 @@
 #include "util.h"
 
 class Scene;
-class SceneView;
+class SceneViewCommon;
 
 class SceneMarkerSelectDialog : public QDialog
 {
     Q_OBJECT
 public:
-    SceneMarkerSelectDialog(SceneView *sceneView, QWidget *parent = 0);
+    SceneMarkerSelectDialog(SceneViewCommon *sceneView, QWidget *parent = 0);
 
 private slots:
     void doAccept();
@@ -39,7 +39,7 @@ protected:
     void createControls();
 
 private:
-    SceneView *m_sceneView;
+    SceneViewCommon *m_sceneView;
 
     QTabWidget* tabWidget;
 

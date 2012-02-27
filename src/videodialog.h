@@ -24,21 +24,21 @@
 
 class SLineEditDouble;
 
-class SceneView;
+class SceneViewCommon;
 
 class VideoDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    VideoDialog(SceneView *sceneView, QWidget *parent = 0);
+    VideoDialog(SceneViewCommon *sceneView, QWidget *parent = 0);
     ~VideoDialog();
 
     void showDialog();
 
 private:
     int m_timeStep;
-    SceneView *m_sceneView;
+    SceneViewCommon *m_sceneView;
 
     QString commandFFmpeg;
     QString outputFile;

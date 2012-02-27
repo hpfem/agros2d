@@ -24,11 +24,11 @@
 #include "scenebasic.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
-#include "sceneview.h"
+#include "sceneview_common.h"
 #include "hermes2d/module.h"
 
 
-SceneBasicSelectDialog::SceneBasicSelectDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
+SceneBasicSelectDialog::SceneBasicSelectDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(parent)
 {
     logMessage("SceneBasicSelectDialog::SceneBasicSelectDialog()");
 

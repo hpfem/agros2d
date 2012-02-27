@@ -18,7 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scene.h"
-#include "sceneview.h"
+#include "sceneview_common.h"
 
 #include "util.h"
 #include "scenebasic.h"
@@ -455,7 +455,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     clearSolutions();
 
     // check if edge doesn't exists
-    if(SceneEdge* existing = edges->get(edge)){
+    if (SceneEdge* existing = edges->get(edge)){
         delete edge;
         return existing;
     }
@@ -661,7 +661,7 @@ void Scene::selectNone()
     labels->setSelected(false);
 }
 
-void Scene::selectAll(SceneMode sceneMode)
+void Scene::selectAll(SceneGeometryMode sceneMode)
 {
     logMessage("Scene::selectAll()");
 
@@ -669,13 +669,13 @@ void Scene::selectAll(SceneMode sceneMode)
 
     switch (sceneMode)
     {
-    case SceneMode_OperateOnNodes:
+    case SceneGeometryMode_OperateOnNodes:
         nodes->setSelected();
         break;
-    case SceneMode_OperateOnEdges:
+    case SceneGeometryMode_OperateOnEdges:
         edges->setSelected();
         break;
-    case SceneMode_OperateOnLabels:
+    case SceneGeometryMode_OperateOnLabels:
         labels->setSelected();
         break;
     }
