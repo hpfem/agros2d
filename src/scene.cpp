@@ -880,6 +880,8 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
             if (mode == SceneTransformMode_Translate)
             {
                 newPoint = node->point + point;
+                // projection of the point to the real axis of the displacement vector
+                pair.first = node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
             }
             else if (mode == SceneTransformMode_Rotate)
             {
@@ -887,18 +889,21 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
                 double angleNode = (node->point - point).angle()/M_PI*180;
 
                 newPoint = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
+
+                // projection of the point to the tangential axis of the displacement vector
+                pair.first = 0;
             }
             else if (mode == SceneTransformMode_Scale)
             {
                 newPoint = point + (node->point - point) * scaleFactor;
+                //
+                pair.first = ((abs(scaleFactor) > 1) ? 1.0 : -1.0) * (node->point - point).magnitude();
             }
 
             SceneNode *obstructNode = getNode(newPoint);
             if (obstructNode && !obstructNode->isSelected)
                 return;
 
-            // Park transformation - projection of the point vector to the real axis of the displacement vector
-            pair.first = node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
             pair.second = node;
             selectedNodes.append(pair);
         }
