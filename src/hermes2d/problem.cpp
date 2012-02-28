@@ -242,6 +242,12 @@ const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
 
 void Problem::createStructure()
 {
+    foreach(Block* block, m_blocks)
+    {
+        delete block;
+    }
+    m_blocks.clear();
+
     Util::scene()->synchronizeCouplings();
 
     //copy lists, items will be removed from them
@@ -264,6 +270,7 @@ void Problem::createStructure()
                     dependent = true;
             }
 
+            // this field is not weakly dependent, we can put it into this block
             if(! dependent){
                 blockFieldInfos.push_back(fi);
                 fieldInfos.removeOne(fi);
@@ -272,6 +279,7 @@ void Problem::createStructure()
         }
         assert(! dependent);
 
+        // find hardly coupled fields to construct block
         bool added = true;
         while(added)
         {

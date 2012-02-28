@@ -134,8 +134,6 @@ public:
 //private:
     QList<Block*> m_blocks;
 
-    QList<CouplingInfo*> m_couplings;
-
     // progress dialog
     ProgressDialog *m_progressDialog;
     ProgressItemMesh *m_progressItemMesh;
