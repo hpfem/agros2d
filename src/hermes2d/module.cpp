@@ -250,14 +250,14 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_matrix_surface.begin();
                      it < boundary_type->weakform_matrix_surface.end(); ++it)
                 {
-                    registerForm(WFType_MatSurf, field, QString::number(edgeNum).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_MatSurf, field, QString::number(edgeNum + 1).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), boundary);
                 }
 
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_vector_surface.begin();
                      it < boundary_type->weakform_vector_surface.end(); ++it)
                 {
-                    registerForm(WFType_VecSurf, field, QString::number(edgeNum).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_VecSurf, field, QString::number(edgeNum + 1).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), boundary);
                 }
             }
