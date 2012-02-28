@@ -134,12 +134,12 @@
                 <adaptivity adaptivity_type="disabled" max_dofs="" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
                 <boundaries>
-                    <boundary heat_heat_transfer_coefficient="25" external_temperature="" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Exterior">
+                    <boundary heat_convection_heat_transfer_coefficient="25" heat_convection_external_temperature="-15" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Exterior">
                         <edge edge="8"/>
                         <edge edge="32"/>
                         <edge edge="33"/>
                     </boundary>
-                    <boundary heat_heat_transfer_coefficient="4" external_temperature="" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Interior">
+                    <boundary heat_convection_heat_transfer_coefficient="4" heat_convection_external_temperature="21" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Interior">
                         <edge edge="1"/>
                         <edge edge="2"/>
                         <edge edge="7"/>
@@ -150,7 +150,7 @@
                         <edge edge="23"/>
                         <edge edge="24"/>
                     </boundary>
-                    <boundary heat_heat_transfer_coefficient="0" external_temperature="" type="heat_heat_flux" heat_heat_flux="0" id="3" name="Border">
+                    <boundary heat_convection_heat_transfer_coefficient="0" heat_convection_external_temperature="0" type="heat_heat_flux" heat_heat_flux="0" id="3" name="Border">
                         <edge edge="34"/>
                         <edge edge="35"/>
                         <edge edge="36"/>
