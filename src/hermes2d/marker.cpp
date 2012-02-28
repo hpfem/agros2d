@@ -70,6 +70,7 @@ QString Marker::fieldId()
 Boundary::Boundary(FieldInfo *fieldInfo, std::string name, std::string type,
                    std::map<std::string, Value> values) : Marker(fieldInfo, name)
 {
+    cout << "boundary constructor, name: " << name << ", type: " << type << endl;
     // name and type
     setType(type);
     this->values = values;
