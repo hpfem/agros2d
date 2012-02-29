@@ -1069,15 +1069,27 @@ void SceneView::paintGeometry()
     {
         foreach (SceneNode *node, m_scene->nodes)
         {
-            glColor3d(Util::config()->colorNodes.redF(),
-                      Util::config()->colorNodes.greenF(),
-                      Util::config()->colorNodes.blueF());
-            glPointSize(Util::config()->nodeSize);
+            // border
+            if (node->isError())
+            {
+                glColor3d(Util::config()->colorNotConnected.redF(),
+                          Util::config()->colorNotConnected.greenF(),
+                          Util::config()->colorNotConnected.blueF());
+                glPointSize(Util::config()->nodeSize + 2.0);
+            }
+            else
+            {
+                glColor3d(Util::config()->colorNodes.redF(),
+                          Util::config()->colorNodes.greenF(),
+                          Util::config()->colorNodes.blueF());
+                glPointSize(Util::config()->nodeSize);
+            }
 
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
             glEnd();
 
+            // inner part
             glColor3d(Util::config()->colorBackground.redF(),
                       Util::config()->colorBackground.greenF(),
                       Util::config()->colorBackground.blueF());
@@ -1089,16 +1101,7 @@ void SceneView::paintGeometry()
 
             if ((node->isSelected) || (node->isHighlighted) || node->isError())
             {
-
-                if (node->isError())
-                {
-                    glColor3d(Util::config()->colorNotConnected.redF(),
-                              Util::config()->colorNotConnected.greenF(),
-                              Util::config()->colorNotConnected.blueF());
-                    glPointSize(Util::config()->nodeSize + 2);
-                }
-                else
-                    glPointSize(Util::config()->nodeSize - 2.0);
+                glPointSize(Util::config()->nodeSize - 2.0);
 
                 if (node->isHighlighted)
                     glColor3d(Util::config()->colorHighlighted.redF(),
@@ -4001,9 +4004,8 @@ void SceneView::keyReleaseEvent(QKeyEvent *event)
     else
     {
         m_nodeLast = NULL;
-
         m_snapToGrid = false;
-        updateGL();
+        //updateGL();
     }
 
     emit mouseSceneModeChanged(MouseSceneMode_Nothing);
@@ -4067,7 +4069,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                         int labelIndex = atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker).c_str());
 
                         m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
-                        updateGL();
+                        //updateGL();
                     }
                     emit mousePressed();
                 }
@@ -4078,7 +4080,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     SceneEdge *edge = findClosestEdge(p);
 
                     edge->isSelected = !edge->isSelected;
-                    updateGL();
+                    //updateGL();
 
                     emit mousePressed();
                 }
@@ -4119,7 +4121,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     SceneNode *node = new SceneNode(pointNode);
                     SceneNode *nodeAdded = m_scene->addNode(node);
                     if (nodeAdded == node) m_scene->undoStack()->push(new SceneNodeCommandAdd(node->point));
-                    updateGL();
+                    //updateGL();
                 }
             }
             if (m_sceneMode == SceneMode_OperateOnEdges)
@@ -4151,7 +4153,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                         m_nodeLast = NULL;
                     }
 
-                    updateGL();
+                    //updateGL();
                 }
             }
             // add label directly by mouse click
@@ -4172,7 +4174,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                                                                                                  label->material->name,
                                                                                                  label->area,
                                                                                                  label->polynomialOrder));
-                    updateGL();
+                    //updateGL();
                 }
             }
         }
@@ -4192,7 +4194,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 if (node)
                 {
                     node->isSelected = !node->isSelected;
-                    updateGL();
+                    //updateGL();
                 }
             }
 
@@ -4203,7 +4205,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 if (edge)
                 {
                     edge->isSelected = !edge->isSelected;
-                    updateGL();
+                    //updateGL();
                 }
             }
 
@@ -4214,11 +4216,13 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 if (label)
                 {
                     label->isSelected = !label->isSelected;
-                    updateGL();
+                    //updateGL();
                 }
             }
         }
     }
+
+    updateGL();
 }
 
 void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
@@ -4255,11 +4259,14 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
                     if (node)
                     {
                         node->isSelected = true;
+                        /*
                         updateGL();
                         if (node->showDialog(this) == QDialog::Accepted)
                         {
                             updateGL();
                         }
+                        */
+                        node->showDialog(this);
                     }
                 }
                 if (m_sceneMode == SceneMode_OperateOnEdges)
@@ -4269,11 +4276,14 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
                     if (edge)
                     {
                         edge->isSelected = true;
+                        /*
                         updateGL();
                         if (edge->showDialog(this) == QDialog::Accepted)
                         {
                             updateGL();
                         }
+                        */
+                        edge->showDialog(this);
                     }
                 }
                 if (m_sceneMode == SceneMode_OperateOnLabels)
@@ -4283,15 +4293,18 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
                     if (label)
                     {
                         label->isSelected = true;
+                        /*
                         updateGL();
                         if (label->showDialog(this) == QDialog::Accepted)
                         {
                             updateGL();
                         }
+                        */
+                        label->showDialog(this);
                     }
                 }
                 m_scene->selectNone();
-                updateGL();
+                //updateGL();
             }
         }
     }
@@ -4366,8 +4379,6 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             m_offset3d.y += 2.0/contextHeight() * dy;
 
             emit mouseSceneModeChanged(MouseSceneMode_Pan);
-
-            updateGL();
         }
 
         // rotate
@@ -4380,8 +4391,6 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             m_rotation3d.y += dx;
 
             emit mouseSceneModeChanged(MouseSceneMode_Rotate);
-
-            updateGL();
         }
         if ((event->buttons() & Qt::LeftButton)
                 && (!(event->modifiers() & Qt::ShiftModifier) && (event->modifiers() & Qt::ControlModifier)))
@@ -4391,9 +4400,9 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             m_rotation3d.z -= dy;
 
             emit mouseSceneModeChanged(MouseSceneMode_Rotate);
-
-            updateGL();
         }
+
+        updateGL();
     }
     else
     {
@@ -4418,7 +4427,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                arg(node->point.x, 0, 'g', 3).
                                arg(node->point.y, 0, 'g', 3).
                                arg(m_scene->nodes.indexOf(node)));
-                    updateGL();
+                    //updateGL();
                 }
             }
             if (m_sceneMode == SceneMode_OperateOnEdges)
@@ -4438,7 +4447,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                arg(edge->angle, 0, 'f', 0).
                                arg(m_scene->edges.indexOf(edge)).
                                arg(edge->boundary->html()));
-                    updateGL();
+                    //updateGL();
                 }
             }
             if (m_sceneMode == SceneMode_OperateOnLabels)
@@ -4457,7 +4466,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                arg(label->polynomialOrder).
                                arg(m_scene->labels.indexOf(label)).
                                arg(label->material->html()));
-                    updateGL();
+                    //updateGL();
                 }
             }
         }
@@ -4474,14 +4483,16 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                 {
                     m_scene->highlightNone();
                     node->isHighlighted = true;
-                    updateGL();
+                    //updateGL();
                 }
             }
         }
 
         // zoom or select region
+        /*
         if (m_region)
             updateGL();
+        */
 
         // snap to grid - nodes
         m_snapToGrid = ((Util::config()->snapToGrid)
@@ -4490,10 +4501,12 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
         if (m_snapToGrid && !(event->modifiers() & Qt::ControlModifier))
         {
             m_snapToGrid = false;
-            updateGL();
+            //updateGL();
         }
+        /*
         if (m_snapToGrid && (event->modifiers() & Qt::ControlModifier))
             updateGL();
+        */
 
         // pan - middle button or shift + left mouse
         if ((event->buttons() & Qt::MidButton)
@@ -4506,7 +4519,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
             emit mouseSceneModeChanged(MouseSceneMode_Pan);
 
-            updateGL();
+            //updateGL();
         }
 
         // move nodes and labels directly by mouse - left mouse + control + shift
@@ -4530,7 +4543,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                         len.x = 0;
 
                         m_scene->transformTranslate(dp, false);
-                        updateGL();
+                        //updateGL();
                     }
 
                     if (fabs(len.y) > Util::config()->gridStep)
@@ -4540,13 +4553,13 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                         len.y = 0;
 
                         m_scene->transformTranslate(dp, false);
-                        updateGL();
+                        //updateGL();
                     }
                 }
                 else
                 {
                     m_scene->transformTranslate(dp, false);
-                    updateGL();
+                    //updateGL();
                 }
 
                 //                foreach (SceneNode *node, m_scene->nodes)
@@ -4555,7 +4568,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                 //                }
 
                 foreach (SceneNode *node, m_scene->nodes)
-                {                    
+                {
                     m_scene->checkNode(node);
                 }
 
@@ -4584,7 +4597,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                         dp.y = 0;
                         len.x = 0;
                         m_scene->transformTranslate(dp, false);
-                        updateGL();
+                        //updateGL();
                     }
 
                     if (fabs(len.y) > Util::config()->gridStep)
@@ -4599,13 +4612,13 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                         dp.x = 0;
                         len.y = 0;
                         m_scene->transformTranslate(dp, false);
-                        updateGL();
+                        //updateGL();
                     }
                 }
                 else
                 {
                     m_scene->transformTranslate(dp, false);
-                    updateGL();
+                    //updateGL();
                 }
 
                 //                foreach (SceneNode *node, m_scene->nodes)
@@ -4623,12 +4636,12 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     m_scene->checkEdge(edge);
                 }
 
-                updateGL();
+                //updateGL();
             }
             else if (m_sceneMode == SceneMode_OperateOnLabels)
             {
                 m_scene->transformTranslate(dp, false);
-                updateGL();
+                //updateGL();
             }
         }
 
@@ -4645,9 +4658,13 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             emit mouseMoved(QPointF(p.x, p.y));
         }
 
+        /*
         if (Util::config()->showRulers)
             updateGL();
-    }    
+        */
+
+        updateGL();
+    }
 }
 
 void SceneView::wheelEvent(QWheelEvent *event)
@@ -5462,7 +5479,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
 
         m_scene->sceneSolution()->processSolutionMesh();
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
-        updateGL();
+        //updateGL();
 
         m_sceneViewSettings.showInitialMesh = true;
         m_sceneViewSettings.showSolutionMesh = true;
@@ -5476,7 +5493,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
         m_scene->sceneSolution()->processRangeContour();
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
         m_sceneViewSettings.showContours = true;
-        updateGL();
+        //updateGL();
         ErrorResult resultContourView = saveImageToFile(path + "/contourview.png", w, h);
         if (resultContourView.isError())
             resultContourView.showDialog();
@@ -5487,7 +5504,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
         m_sceneViewSettings.showVectors = true;
         m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->hermes()->vectorPhysicFieldVariable();
-        updateGL();
+        //updateGL();
         ErrorResult resultVectorView = saveImageToFile(path + "/vectorview.png", w, h);
         if (resultVectorView.isError())
             resultVectorView.showDialog();
@@ -5495,7 +5512,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
 
         // order
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_Order;
-        updateGL();
+        //updateGL();
         ErrorResult resultOrder = saveImageToFile(path + "/order.png", w, h);
         if (resultOrder.isError())
             resultOrder.showDialog();
@@ -5514,7 +5531,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
         m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->hermes()->vectorPhysicFieldVariable();
 
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_ScalarView;
-        updateGL();
+        //updateGL();
         ErrorResult resultScalarView = saveImageToFile(path + "/scalarview.png", w, h);
         if (resultScalarView.isError())
             resultScalarView.showDialog();

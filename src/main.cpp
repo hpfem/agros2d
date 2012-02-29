@@ -102,7 +102,9 @@ int main(int argc, char *argv[])
     setGUIStyle(settings.value("General/GUIStyle").value<QString>());
 
     // language
-    QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();
+    // QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();
+    QLocale localeUser;
+    QString locale = settings.value("General/Language", localeUser.name()).value<QString>();
     setLanguage(locale);
 
     // init indicator (ubuntu - unity, windows - overlay icon, macosx - ???)

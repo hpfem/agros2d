@@ -707,6 +707,13 @@ enum SceneViewPostprocessorShow
     SceneViewPostprocessorShow_Order
 };
 
+enum SceneTransformMode
+{
+    SceneTransformMode_Translate,
+    SceneTransformMode_Rotate,
+    SceneTransformMode_Scale
+};
+
 // captions
 QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable);
 QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable);
