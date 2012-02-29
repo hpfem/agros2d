@@ -355,7 +355,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="344"/>
         <source>Check new version during startup.</source>
-        <translation>Podczas uruchomienia sprawdź dostępność nowej wersji.</translation>
+        <translation>Podczas uruchomienia sprawdź dostępność nowej wersji</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="378"/>
@@ -3117,7 +3117,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="689"/>
         <source>Reference area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
-        <translation>Powierzchnia odziaływania (m&lt;sup&gt;2&lt;/sup&gt;):</translation>
+        <translation type="unfinished">Powierzchnia (m&lt;sup&gt;2&lt;/sup&gt;):</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="691"/>
@@ -6087,7 +6087,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scene.cpp" line="1508"/>
         <source>This problem uses functionality under development. You must first enable experimental features in application options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkcjonalność w wersji rozwojowej. Włącz funcje eksperymentalne.</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1873"/>
@@ -6097,7 +6097,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scene.cpp" line="2041"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
-        <translation type="unfinished"></translation>
+        <translation>Węzły &apos;%1&apos; mają ujemną współrzędną radialną.</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="2052"/>
