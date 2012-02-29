@@ -42,12 +42,12 @@
     <message>
         <location filename="../src/gui.cpp" line="728"/>
         <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;Hermes&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Discussion: &lt;a href=&quot;http://groups.google.com/group/agros2d/&quot;&gt;http://groups.google.com/group/agros2d/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KÅ¯s&lt;/b&gt; - developer (Institute of Thermomechanics ASCR, Prague)&lt;br/&gt;&lt;b&gt;David PÃ¡nek&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D jest programem służącym modelowania zagadnień polowych. Rozwiązywanie równań różniczkowych cząstkowych oparte jest o bibliotekę &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;Hermes&lt;/a&gt;, która wykorzystuje metodę elementów skończonych wraz z automatyczną adaptacją stopnia i rozmiarów elementów (&lt;i&gt;hp&lt;/i&gt;-FEM).&lt;br/&gt;&lt;br/&gt;Strona projektu: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Dyskusja: &lt;a href=&quot;http://groups.google.com/group/agros2d/&quot;&gt;http://groups.google.com/group/agros2d/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - główny programista (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; - programista, dokumentacja (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KÅ¯s&lt;/b&gt; - programista (Institute of Thermomechanics ASCR, Prague)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - programista - moduł RF (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polskie tłumaczenie (Politechnika Warszawska)&lt;br/&gt;&lt;b&gt;Vaclav Kotlan&lt;/b&gt; - niemieckie tłumaczenie (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="770"/>
         <source>&lt;h3&gt;Hermes&lt;/h3&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors (Hermes2D):&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Strona projektu Hermes&lt;/h3&gt;: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy (Hermes2D):&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
@@ -3707,57 +3707,57 @@
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="22"/>
         <source>Browser</source>
-        <translation type="unfinished">Przeglądarka</translation>
+        <translation>Przeglądarka</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="38"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="38"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="38"/>
         <source>Value</source>
-        <translation type="unfinished">Wartość</translation>
+        <translation>Wartość</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="57"/>
         <source>Copy name</source>
-        <translation type="unfinished"></translation>
+        <translation>Skopiuj nazwę</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="60"/>
         <source>Copy value</source>
-        <translation type="unfinished">Skopiuj wartość</translation>
+        <translation>Skopiuj wartość</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="63"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Usuń</translation>
+        <translation>&amp;Usuń</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="103"/>
         <source>Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmienne</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="107"/>
         <source>Other</source>
-        <translation type="unfinished">Inne</translation>
+        <translation>Inne</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="111"/>
         <source>Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkcje</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythonbrowser.cpp" line="115"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasy</translation>
     </message>
 </context>
 <context>
@@ -3765,274 +3765,274 @@
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="355"/>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;Nowy</translation>
+        <translation>&amp;Nowy</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="359"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished">&amp;Otwórz...</translation>
+        <translation>&amp;Otwórz...</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="363"/>
         <source>&amp;Save</source>
-        <translation type="unfinished">&amp;Zapisz</translation>
+        <translation>&amp;Zapisz</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="367"/>
         <source>Save &amp;as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz &amp;jako...</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="371"/>
         <source>Save console output as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz wyjście konsoli jako...</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="377"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Zamknij</translation>
+        <translation>&amp;Zamknij</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="381"/>
         <source>&amp;Print</source>
-        <translation type="unfinished">&amp;Drukuj</translation>
+        <translation>&amp;Drukuj</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="385"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Cofnij</translation>
+        <translation>&amp;Cofnij</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="388"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Ponów</translation>
+        <translation>&amp;Ponów</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="391"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">&amp;Wytnij</translation>
+        <translation>&amp;Wytnij</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="395"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Kopiuj</translation>
+        <translation>&amp;Kopiuj</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="399"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Wklej</translation>
+        <translation>&amp;Wklej</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="402"/>
         <source>&amp;Find</source>
-        <translation type="unfinished">&amp;Znajdź</translation>
+        <translation>&amp;Znajdź</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="406"/>
         <source>Find &amp;next</source>
-        <translation type="unfinished">Znajdź &amp;następny</translation>
+        <translation>Znajdź &amp;następny</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="410"/>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="414"/>
         <source>Replace</source>
-        <translation type="unfinished">Zastąp</translation>
+        <translation>Zastąp</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="418"/>
         <source>Indent</source>
-        <translation type="unfinished">Wcięcie</translation>
+        <translation>Wcięcie</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="419"/>
         <source>Unindent</source>
-        <translation type="unfinished">Bez wcięcia</translation>
+        <translation>Bez wcięcia</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="421"/>
         <source>Comment</source>
-        <translation type="unfinished">Zakomentuj</translation>
+        <translation>Zakomentuj</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="423"/>
         <source>Uncomment</source>
-        <translation type="unfinished">Odkomentuj</translation>
+        <translation>Odkomentuj</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="424"/>
         <source>Ctrl+U</source>
-        <translation type="unfinished">Ctrl+U</translation>
+        <translation>Ctrl+U</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="426"/>
         <source>Goto line</source>
-        <translation type="unfinished"></translation>
+        <translation>Przejdź do linii</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="427"/>
         <source>Alt+G</source>
-        <translation type="unfinished">Alt+G</translation>
+        <translation>Alt+G</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="429"/>
         <source>&amp;Run Python script</source>
-        <translation type="unfinished">&amp;Uruchom skrypt Pythona</translation>
+        <translation>&amp;Uruchom skrypt Pythona</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="430"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished">Ctrl+R</translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="432"/>
         <source>Replace tabs with spaces</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamień tabulatory na spacje</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="435"/>
         <source>&amp;Check Python script (PyLint)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sprawdź skrypt Pythona (PyLint)</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="437"/>
         <source>Alt+C</source>
-        <translation type="unfinished">Alt+C</translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="439"/>
         <source>PyFlakes enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Włączone PyFlakes</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="446"/>
         <source>PyLint enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Włączone PyLint</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="453"/>
         <source>Print stacktrace</source>
-        <translation type="unfinished"></translation>
+        <translation>Wypisz stacktrace</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="459"/>
         <source>User module deleter</source>
-        <translation type="unfinished"></translation>
+        <translation>Kasowanie modułu użytkownika</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="464"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>Wy&amp;jście</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="465"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished">Ctrl+Q</translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="466"/>
         <source>Exit editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjdź z edytora</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="469"/>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="541"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Pomoc</translation>
+        <translation>&amp;Pomoc</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="473"/>
         <source>&amp;Keyword List</source>
-        <translation type="unfinished">Słowa &amp;kluczowe</translation>
+        <translation>Słowa &amp;kluczowe</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="477"/>
         <source>About &amp;PythonLab</source>
-        <translation type="unfinished"></translation>
+        <translation>O &amp;PythonLab</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="478"/>
         <source>Show the application&apos;s About box</source>
-        <translation type="unfinished">Pokaż okno informacyjne</translation>
+        <translation>Pokaż okno informacyjne</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="482"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished">O &amp;Qt</translation>
+        <translation>O &amp;Qt</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="483"/>
         <source>Show the Qt library&apos;s About box</source>
-        <translation type="unfinished">Pokaż okno o bibliotece Qt</translation>
+        <translation>Pokaż okno o bibliotece Qt</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="490"/>
         <source>&amp;Recent files</source>
-        <translation type="unfinished">&amp;Ostatnie pliki</translation>
+        <translation>&amp;Ostatnie pliki</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="492"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Plik</translation>
+        <translation>&amp;Plik</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="506"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Edycja</translation>
+        <translation>&amp;Edycja</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="526"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Narzędzia</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="532"/>
         <source>&amp;Options</source>
-        <translation type="unfinished">&amp;Opcje</translation>
+        <translation>&amp;Opcje</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="551"/>
         <source>File</source>
-        <translation type="unfinished">Plik</translation>
+        <translation>Plik</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="561"/>
         <source>Edit</source>
-        <translation type="unfinished">Edycja</translation>
+        <translation>Edycja</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="574"/>
         <source>Tools</source>
-        <translation type="unfinished">Narzędzia</translation>
+        <translation>Narzędzia</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="594"/>
         <source>Path</source>
-        <translation type="unfinished">Katalog</translation>
+        <translation>Katalog</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="600"/>
         <source>Working directory: </source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog roboczy: </translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="611"/>
         <source>Add new document</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz nowy dokument</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="655"/>
         <source>File browser</source>
-        <translation type="unfinished">Wybór pliku</translation>
+        <translation>Wybór pliku</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="678"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Gotowy</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="812"/>
         <source>Select directory</source>
-        <translation type="unfinished">Wybierz katalog</translation>
+        <translation>Wybierz katalog</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="819"/>
@@ -4040,72 +4040,72 @@
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1118"/>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1139"/>
         <source>Untitled</source>
-        <translation type="unfinished">Bez nazwy</translation>
+        <translation>Bez nazwy</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="832"/>
         <source>Open File</source>
-        <translation type="unfinished">Otwórz plik</translation>
+        <translation>Otwórz plik</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="832"/>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="893"/>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="929"/>
         <source>Python files (*.py)</source>
-        <translation type="unfinished">Pliki Pythona (*.py)</translation>
+        <translation>Pliki Pythona (*.py)</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="849"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacje</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="849"/>
         <source>Script is already opened.</source>
-        <translation type="unfinished">Skrypt jest już otwarty.</translation>
+        <translation>Skrypt jest już otwarty.</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="893"/>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="929"/>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="946"/>
         <source>Save file</source>
-        <translation type="unfinished">Zapisz plik</translation>
+        <translation>Zapisz plik</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="915"/>
         <source>File &apos;%1&apos; cannot be saved.</source>
-        <translation type="unfinished">Nie można zapisać pliku &apos;%1&apos;.</translation>
+        <translation>Nie można zapisać pliku &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="946"/>
         <source>Html files (*.html)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki Html (*.html)</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="975"/>
         <source>Print Document</source>
-        <translation type="unfinished">Drukuj dokument</translation>
+        <translation>Drukuj dokument</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1051"/>
         <source>Application</source>
-        <translation type="unfinished">Aplikacja</translation>
+        <translation>Aplikacja</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1051"/>
         <source>File &apos;%1&apos; has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished">Plik &apos;%1&apos; został zmieniony. Czy chcesz zapisać zmiany?</translation>
+        <translation>Plik &apos;%1&apos; został zmieniony. Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1124"/>
         <source>Python Lab - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Python Lab - %1</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1132"/>
         <source>Line: %1, Col: %2</source>
-        <translation type="unfinished">Wiersz: %1, Kolumna: %2</translation>
+        <translation>Wiersz: %1, Kolumna: %2</translation>
     </message>
 </context>
 <context>
@@ -4114,24 +4114,24 @@ Do you want to save your changes?</source>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="144"/>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="189"/>
         <source>Convention</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwencja</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="147"/>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="194"/>
         <source>Warning</source>
-        <translation type="unfinished">Ostrzeżenie</translation>
+        <translation>Ostrzeżenie</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="151"/>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="199"/>
         <source>Error</source>
-        <translation type="unfinished">Błąd</translation>
+        <translation>Błąd</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="158"/>
         <source>Could not read PyLint output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można otworzyć pliku wyjściowego z PyLint.</translation>
     </message>
 </context>
 <context>
@@ -4139,12 +4139,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="1214"/>
         <source>&amp;Create script from model</source>
-        <translation type="unfinished">&amp;Stwórz skrypt z modelu</translation>
+        <translation>&amp;Stwórz skrypt z modelu</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="1215"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished">Ctrl+M</translation>
+        <translation>Ctrl+M</translation>
     </message>
 </context>
 <context>
@@ -4152,7 +4152,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/pythonlab/pythonconsole.cpp" line="682"/>
         <source>Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Konsola</translation>
     </message>
 </context>
 <context>
@@ -4160,7 +4160,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/pythonlab/pythonconsole.cpp" line="713"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Historia</translation>
     </message>
 </context>
 <context>
@@ -6093,17 +6093,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scene.cpp" line="1940"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń przecięcia krawędzi (zaznaczone na czerwono).</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1948"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Węzły nie połączone z żadną krawędzią (zaznaczone na czerwono). Wszystkie węzły powinny być wykorzystane.</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1953"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń węzły leżące na krawędzi, ale z nią nie połączone.</translation>
     </message>
 </context>
 <context>
@@ -7216,12 +7216,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/sceneview.cpp" line="988"/>
         <source>%1, %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="3369"/>
         <source>Vel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Prędkość</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="3411"/>
@@ -7580,27 +7580,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1706"/>
         <source>Search for:</source>
-        <translation type="unfinished">Szukaj:</translation>
+        <translation>Szukaj:</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1707"/>
         <source>Replace with:</source>
-        <translation type="unfinished">Zastąp przez:</translation>
+        <translation>Zastąp przez:</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1714"/>
         <source>Find</source>
-        <translation type="unfinished">Znajdź</translation>
+        <translation>Znajdź</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1718"/>
         <source>Replace all</source>
-        <translation type="unfinished"></translation>
+        <translation>Zastąp wszystkie</translation>
     </message>
     <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="1721"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukryj</translation>
     </message>
 </context>
 <context>
