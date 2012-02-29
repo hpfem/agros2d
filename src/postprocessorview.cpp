@@ -146,8 +146,8 @@ void PostprocessorView::loadAdvanced()
 
     lblParticlePointX->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelX()));
     lblParticlePointY->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelY()));
-    lblParticleVelocityX->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelX()));
-    lblParticleVelocityY->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelY()));
+    lblParticleVelocityX->setText(QString("%1 (m/s):").arg(Util::scene()->problemInfo()->labelX()));
+    lblParticleVelocityY->setText(QString("%1 (m/s):").arg(Util::scene()->problemInfo()->labelY()));
 
     if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         lblParticleMotionEquations->setText(QString("<i>x</i>\" = <i>F</i><sub>x</sub> / <i>m</i>, &nbsp; <i>y</i>\" = <i>F</i><sub>y</sub> / <i>m</i>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>"));
