@@ -26,8 +26,10 @@ addmaterial("Coil +", Jext, 0, 1, 0, 0, 0, 0, 0, 0)
 addmaterial("Coil -", -Jext, 0, 1, 0, 0, 0, 0, 0, 0)
 
 # edges
-addedge(0.018, -0.023, 0.018, 0.023, 103.906, "none")
-addedge(-0.018, 0.023, -0.018, -0.023, 103.906, "none")
+addedge(0.018, -0.023, 0.0292062, 0, 51.953, "none")
+addedge(0.0292062, 0, 0.018, 0.023, 51.953, "none")
+addedge(-0.018, 0.023, -0.0292062, 0, 51.953, "none")
+addedge(-0.0292062, 0, -0.018, -0.023, 51.953, "none")
 addedge(-0.018, 0.01, -0.018, 0.023, 0, "none")
 addedge(-0.018, 0.01, 0.018, 0.01, 0, "none")
 addedge(0.018, 0.01, 0.018, 0.023, 0, "none")
@@ -50,8 +52,6 @@ addedge(0.0045, 0.0185, 0.0045, 0.0105, 0, "none")
 addedge(0.0045, 0.0105, 0.0175, 0.0105, 0, "none")
 addedge(0.0175, 0.0105, 0.0175, 0.0185, 0, "none")
 addedge(0.0175, 0.0185, 0.0045, 0.0185, 0, "none")
-addedge(0.023, -0.02, 0.023, 0.02, 82.0182, "none")
-addedge(-0.023, 0.02, -0.023, -0.02, 82.0182, "none")
 addedge(-0.023, 0.03, -0.023, 0.02, 0, "none")
 addedge(-0.065, 0.03, -0.065, -0.03, 0, "none")
 addedge(-0.065, -0.03, -0.023, -0.03, 0, "none")
@@ -84,6 +84,10 @@ addedge(0, -0.14, 0.2, 0.06, 90, "A = 0")
 addedge(0.2, 0.06, 0, 0.26, 90, "A = 0")
 addedge(0, 0.26, -0.2, 0.06, 90, "A = 0")
 addedge(-0.2, 0.06, 0, -0.14, 90, "A = 0")
+addedge(0.023, -0.02, 0.0304795, 0, 41.0091, "none")
+addedge(0.0304795, 0, 0.023, 0.02, 41.0091, "none")
+addedge(-0.023, 0.02, -0.0304795, 0, 41.0091, "none")
+addedge(-0.0304795, 0, -0.023, -0.02, 41.0091, "none")
 
 # labels
 addlabel(0, 0, 0, 0, "Armature")
@@ -111,19 +115,19 @@ for i in range(N+1):
 	showscalar("scalar", "magnetic_flux_density_real", "magnitude", 0, 0.8)
 	saveimage("img_" + "%02d" % (i)	+ ".png")
 
-	result = surfaceintegral(0, 1, 2, 3, 4, 5, 6, 7)
+	result = surfaceintegral(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 
 	phi.append(i*dphi)
 	T.append(result["T"] * length)
 	print(phi[-1], T[-1])
 
-	selectedge(0, 1, 2, 3, 4, 5, 6, 7)
+	selectedge(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 	rotateselection(0, 0, dphi, False)
 
-	selectedge(8, 9, 10, 11, 12, 13, 14, 15)
+	selectedge(10, 11, 12, 13, 14, 15, 16, 17)
 	rotateselection(0, 0, dphi, False)
 
-	selectedge(16, 17, 18, 19, 20, 21, 22, 23)
+	selectedge(18, 19, 20, 21, 22, 23, 24, 25)
 	rotateselection(0, 0, dphi, False)
 
 	selectlabel(1, 2, 3, 4)
@@ -133,9 +137,12 @@ for i in range(N+1):
 		modifymaterial("Coil +", -Jext, 0, 1, 0, 0, 0, 0, 0, 0)
 		modifymaterial("Coil -",  Jext, 0, 1, 0, 0, 0, 0, 0, 0)
 
+import pylab as pl
+
 pl.plot(phi, T)
-pl.xlabel("$\\phi~\mathrm{(deg.)}$")
+pl.xlabel("$\\varphi~\mathrm{(deg.)}$")
 pl.ylabel("$T~\mathrm{(Nm)}")
+pl.savefig("torque.png", dpi=60)
 pl.close()
 
 # show in console
