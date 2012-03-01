@@ -106,7 +106,7 @@ public:
 
     // should store all solutionArrays that have been calculated
     SolutionArray<double> solution(FieldInfo* fieldInfo, int component=0, int timeStep = 0, int adaptivityStep = 0);
-    void saveSolution(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, QList<SolutionArray<double> > solution);
+    void saveSolution(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, MultiSolutionArray<double> solution);
 
     // progress dialog
     ProgressDialog* progressDialog();
@@ -149,7 +149,7 @@ public:
     Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
 
     //TODO temporary, has to be extedned for time dependent and adaptive solutions
-    QMap<FieldInfo*, QList<SolutionArray<double> > > m_solutions;
+    QMap<FieldInfo*, MultiSolutionArray<double> > m_multiSolutions;
 
 };
 

@@ -96,7 +96,7 @@ SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldIn
 {
     logMessage("SceneSolution::SceneSolution()");
 
-
+    m_solutionArrayList = new MultiSolutionArray<Scalar>;
     //m_timeStep = -1;
     //m_isSolving = false;
 }
@@ -104,6 +104,7 @@ SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldIn
 template <typename Scalar>
 SceneSolution<Scalar>::~SceneSolution()
 {
+    delete m_solutionArrayList;
 }
 
 template <typename Scalar>
@@ -118,7 +119,7 @@ void SceneSolution<Scalar>::clear(bool all)
 
         //        for (int i = 0; i < m_solutionArrayList.size(); i++)
         //            delete m_solutionArrayList.at(i);
-        m_solutionArrayList.clear();
+        //m_solutionArrayList.clear();
 
 
     }
@@ -227,42 +228,42 @@ void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement element)
     //    }
 }
 
-template <typename Scalar>
-SolutionArray<Scalar> SceneSolution<Scalar>::solutionArray(int i)
-{
-    logMessage("SceneSolution::solutionArray()");
+//template <typename Scalar>
+//SolutionArray<Scalar> SceneSolution<Scalar>::solutionArray(int i)
+//{
+//    logMessage("SceneSolution::solutionArray()");
 
-    //    assert(i == 0);
-    return m_solutionArrayList.at(i);
+//    //    assert(i == 0);
+//    return m_solutionArrayList.at(i);
 
-    //    int currentTimeStep = i;
-    //    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())
-    //    {
-    //        // default
-    //        if (currentTimeStep == -1)
-    //            currentTimeStep = m_timeStep * Util::scene()->fieldInfo("TODO")->module()->number_of_solution();
+//    //    int currentTimeStep = i;
+//    //    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->fieldInfo("TODO")->module()->number_of_solution())
+//    //    {
+//    //        // default
+//    //        if (currentTimeStep == -1)
+//    //            currentTimeStep = m_timeStep * Util::scene()->fieldInfo("TODO")->module()->number_of_solution();
 
-    //        if (m_solutionArrayList.at(currentTimeStep))
-    //            return m_solutionArrayList.at(currentTimeStep);
-    //    }
-    //    return NULL;
-}
+//    //        if (m_solutionArrayList.at(currentTimeStep))
+//    //            return m_solutionArrayList.at(currentTimeStep);
+//    //    }
+//    //    return NULL;
+//}
 
-template <typename Scalar>
-Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
-{
-    logMessage("SceneSolution::sln()");
+//template <typename Scalar>
+//Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
+//{
+//    logMessage("SceneSolution::sln()");
 
-    return solutionArray(i).sln.get();
-}
+//    return solutionArray(i).sln.get();
+//}
 
-template <typename Scalar>
-Hermes::Hermes2D::Space<Scalar> *SceneSolution<Scalar>::space(int i)
-{
-    logMessage("SceneSolution::space()");
+//template <typename Scalar>
+//Hermes::Hermes2D::Space<Scalar> *SceneSolution<Scalar>::space(int i)
+//{
+//    logMessage("SceneSolution::space()");
 
-    return solutionArray(i).space.get();
-}
+//    return solutionArray(i).space.get();
+//}
 
 //template <typename Scalar>
 //double SceneSolution<Scalar>::adaptiveError()
@@ -298,20 +299,20 @@ void SceneSolution<Scalar>::setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial)
 */
 
 
-template <typename Scalar>
-void SceneSolution<Scalar>::setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> > solutionArrayList)
-{
-    logMessage("SceneSolution::setSolutionArrayList()");
+//template <typename Scalar>
+//void SceneSolution<Scalar>::setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> > solutionArrayList)
+//{
+//    logMessage("SceneSolution::setSolutionArrayList()");
 
-    //    for (int i = 0; i < m_solutionArrayList.size(); i++)
-    //        delete m_solutionArrayList.at(i);
-    m_solutionArrayList.clear();
+//    //    for (int i = 0; i < m_solutionArrayList.size(); i++)
+//    //        delete m_solutionArrayList.at(i);
+//    m_solutionArrayList.clear();
 
-    m_solutionArrayList = solutionArrayList;
+//    m_solutionArrayList = solutionArrayList;
 
-    // if (!isSolving())
-    //setTimeStep(timeStepCount() - 1);
-}
+//    // if (!isSolving())
+//    //setTimeStep(timeStepCount() - 1);
+//}
 
 //template <typename Scalar>
 //void SceneSolution<Scalar>::setTimeStep(int timeStep, bool showViewProgress)
@@ -395,13 +396,13 @@ void SceneSolution<Scalar>::processView(bool showViewProgress)
 }
 */
 
-template <typename Scalar>
-void SceneSolution<Scalar>::setSolutionArray(QList<SolutionArray<Scalar> > solutionArrays)
-{
-    assert(solutionArrays.size() == fieldInfo()->module()->number_of_solution());
+//template <typename Scalar>
+//void SceneSolution<Scalar>::setSolutionArray(MultiSolutionArray<Scalar> solutionArrays)
+//{
+//    assert(solutionArrays.size() == fieldInfo()->module()->number_of_solution());
 
-    for(int i = 0; i < solutionArrays.size(); i++)
-        m_solutionArrayList.push_back(solutionArrays[i]);
-}
+//    for(int i = 0; i < solutionArrays.size(); i++)
+//        m_solutionArrayList.push_back(solutionArrays[i]);
+//}
 
 template class SceneSolution<double>;

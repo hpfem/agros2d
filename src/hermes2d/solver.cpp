@@ -29,6 +29,9 @@
 #include "module_agros.h"
 #include "weakform_parser.h"
 
+//TODO will be removed after putting code to sceneSolution
+#include "scenesolution.h"
+
 using namespace Hermes::Hermes2D;
 
 template <typename Scalar>
@@ -119,7 +122,7 @@ void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
 template <typename Scalar>
 void MultiSolutionArray<Scalar>::add(SolutionArray<Scalar> solutionArray, int component)
 {
-    assert(!m_solutionArrays.contains(component));
+    //assert(!m_solutionArrays.contains(component));
     m_solutionArrays.push_back(solutionArray);
 }
 
@@ -404,11 +407,26 @@ void Solver<Scalar>::solve(SolverConfig config)
     if (!isError)
     {
 
-        //TODO dodelat ukladani do Problemu
+        //TODO predelat ukazatele na Solution na shared_ptr
+        foreach (Field* field, m_block->m_fields)
+        {
+            FieldInfo* fieldInfo = field->fieldInfo();
 
-//        for (int i = 0; i < m_block->numSolutions(); i++){
-//            recordSolution(solution.at(i), space.at(i), error, actualAdaptivitySteps, 0.);
-//        }
+            MultiSolutionArray<Scalar> multiSolutionArray;
+            for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
+            {
+                int position = component + m_block->offset(field);
+                SolutionArray<Scalar> solutionArray(solution.at(position), space.at(position));
+                multiSolutionArray.add(solutionArray);
+            }
+
+            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
+            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray);
+
+            m_block->parentProblem()->saveSolution(fieldInfo, 0, 0, multiSolutionArray);
+        }
+
+
     }
 
     //cleanup();

@@ -82,7 +82,7 @@ template <typename Scalar>
 class MultiSolutionArray
 {
 public:
-    SolutionArray<Scalar> solutionArray(int component) {assert(m_solutionArrays.contains(component)); return m_solutionArrays.at(component);}
+    SolutionArray<Scalar> comp(int component) {/*assert(m_solutionArrays.has(component));*/ return m_solutionArrays.at(component);}
     void add(SolutionArray<Scalar> solutionArray, int component = 0);
 
 private:

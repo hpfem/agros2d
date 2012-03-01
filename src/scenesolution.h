@@ -29,6 +29,9 @@ class SceneMaterial;
 template <typename Scalar>
 struct SolutionArray;
 
+template <typename Scalar>
+struct MultiSolutionArray;
+
 class FieldInfo;
 
 int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point);
@@ -52,20 +55,22 @@ public:
     //TODO in the future, SceneSolution will hold only one SolutionArray, not arrays for all time levels
 
     //TODO temp
-    void setSolutionArray(QList<SolutionArray<Scalar> > solutionArrays);
+    void setSolutionArray(MultiSolutionArray<Scalar> solutionArrays) { *m_solutionArrayList = solutionArrays; }
 
     FieldInfo* fieldInfo() { return m_fieldInfo; }
 
     // solution
-    SolutionArray<Scalar> solutionArray(int i = -1);
-    Hermes::Hermes2D::Solution<Scalar> *sln(int i = -1);
-    Hermes::Hermes2D::Space<Scalar> *space(int i = -1);
-    void setSolutionArrayList(Hermes::vector<SolutionArray<Scalar> > solutionArrayList);
-    inline Hermes::vector<SolutionArray<Scalar> > solutionArrayList() { return m_solutionArrayList; }
+    SolutionArray<Scalar> solutionArray(int i/* = -1*/) { return m_solutionArrayList->comp(i); }
+
+    //TODO remove .. naked pointers
+    //Hermes::Hermes2D::Solution<Scalar> *sln(int i/* = -1*/) {return m_solutionArrayList->comp(i).sln.get();}
+    Hermes::Hermes2D::Space<Scalar> *space(int i/* = -1*/){return m_solutionArrayList->comp(i).space.get();}
+
+    inline MultiSolutionArray<Scalar> solutionArrayList() { return m_solutionArrayList; }
 
 private:
     // general solution array
-    Hermes::vector<SolutionArray<Scalar> > m_solutionArrayList;
+    MultiSolutionArray<Scalar>* m_solutionArrayList;
 
     FieldInfo* m_fieldInfo;
 };

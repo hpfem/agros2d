@@ -235,9 +235,9 @@ void Problem::clear()
     m_isSolving = false;
 }
 
-void Problem::saveSolution(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, QList<SolutionArray<double> > solution)
+void Problem::saveSolution(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, MultiSolutionArray<double> multiSolution)
 {
-    m_solutions[fieldInfo] = solution;
+    m_multiSolutions[fieldInfo] = multiSolution;
 }
 
 const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
@@ -332,7 +332,7 @@ void Problem::createStructure()
 
 SolutionArray<double> Problem::solution(FieldInfo *fieldInfo, int component, int timeStep, int adaptivityStep)
 {
-    return m_solutions[fieldInfo].at(component);
+    return m_multiSolutions[fieldInfo].comp(component);
 }
 
 void Problem::mesh()
