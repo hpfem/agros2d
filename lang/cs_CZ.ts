@@ -6084,7 +6084,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../src/scene.cpp" line="1508"/>
         <source>This problem uses functionality under development. You must first enable experimental features in application options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Problém vyžaduje funkcionalitu ve vývoji. Pro zpřístupnění je potřeba nejprve zapnout podporu v nastavení aplikace.</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1873"/>
@@ -6094,7 +6094,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../src/scene.cpp" line="2041"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
-        <translation type="unfinished"></translation>
+        <translation>Radiální souřadnice uzlů &apos;%1&apos; je záporná.</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="2052"/>
