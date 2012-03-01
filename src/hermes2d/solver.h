@@ -78,25 +78,42 @@ struct SolutionArray
     void save(QDomDocument *doc, QDomElement element);
 };
 
+template <typename Scalar>
+class MultiSolutionArray
+{
+public:
+    SolutionArray<Scalar> solutionArray(int component) {assert(m_solutionArrays.contains(component)); return m_solutionArrays.at(component);}
+    void add(SolutionArray<Scalar> solutionArray, int component = 0);
+
+private:
+    QList<SolutionArray<Scalar> > m_solutionArrays;
+};
+
+enum SolverAction
+{
+    SolverAction_Solve,
+    SolverAction_AdaptivityStep,
+    SolverAction_TimeStep
+};
+
+struct SolverConfig
+{
+    SolverAction action;
+    //TODO more...
+};
 
 // solve
 template <typename Scalar>
-class SolutionArrayList
+class Solver
 {
 public:
     void init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, Block* block);
     void clear();
-    SolutionArray<Scalar> at(int i);
-    int size() { return listOfSolutionArrays.size(); }
-    Hermes::vector<SolutionArray<Scalar> > get_list() { return listOfSolutionArrays; }
-    Hermes::Hermes2D::Solution<Scalar>* sln(int index) const {return listOfSolutionArrays.at(index).sln.get();}
-    void solve();
+    void solve(SolverConfig config);
     void doAdaptivityStep();
     void doTimeStep();
 
 private:
-    Hermes::vector<SolutionArray<Scalar> > listOfSolutionArrays;
-
     //FieldInfo *m_fieldInfo;
     Block* m_block;
 
@@ -131,16 +148,6 @@ private:
     bool solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                          Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
 
-    //  returns false if adaptivity should be ended
-    bool performAdaptivityStep(double &error, int stepI, int &actualAdaptivitySteps, int maxAdaptivitySteps);
-    void prepareTimestepping();
-
-    void recordSolution(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0);
-
-    bool solveLinear(Hermes::Hermes2D::DiscreteProblem<Scalar> *dp,
-                     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space,
-                     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solution,
-                     Hermes::Solvers::LinearSolver<Scalar> *solver, SparseMatrix<Scalar> *matrix, Vector<Scalar> *rhs);
 };
 
 #endif // SOLVER_H

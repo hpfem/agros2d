@@ -73,11 +73,15 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, Prog
         m_fields.append(field);
     }
 
-    m_solutionList = new SolutionArrayList<double>;
 }
 
-bool Block::solveInit(Hermes::Hermes2D::Solution<double> *sourceSolution)
+
+void Block::solve()
 {
+    cout << "############ Block::Solve() ################" << endl;
+
+    Solver<double> solver;
+
     foreach (Field* field, m_fields)
     {
         if(! field->solveInitVariables())
@@ -86,37 +90,35 @@ bool Block::solveInit(Hermes::Hermes2D::Solution<double> *sourceSolution)
 
     m_wf = new WeakFormAgros<double>(this);
 
-    m_solutionList->init(m_progressItemSolve, m_wf, this);
-    m_solutionList->clear();
-}
+    solver.init(m_progressItemSolve, m_wf, this);
 
-void Block::solve()
-{
-    cout << "############ Block::Solve() ################" << endl;
-    m_solutionList->solve();
-    cout << "num elem pri prirazeni do scene solution " <<  Util::problem()->meshInitial()->get_num_active_elements() << endl;
+    solver.solve(SolverConfig());
 
-    //TODO predelat ukazatele na Solution na shared_ptr
-    foreach (Field* field, m_fields)
-    {
-        FieldInfo* fieldInfo = field->fieldInfo();
 
-        // contains solution arrays for all components of the field
-        QList<SolutionArray<double> > solutionArrays;
+    //TODO ulozit v solveru!!!
 
-        for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
-        {
-            solutionArrays.push_back(m_solutionList->at(component + offset(field)));
-        }
 
-        // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
-        Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(solutionArrays);
+//    //TODO predelat ukazatele na Solution na shared_ptr
+//    foreach (Field* field, m_fields)
+//    {
+//        FieldInfo* fieldInfo = field->fieldInfo();
 
-        //TODO
-        // internal storage, should be rewriten
-        //TODO
-        parentProblem()->saveSolution(fieldInfo, 0, 0, solutionArrays);
-    }
+//        // contains solution arrays for all components of the field
+//        QList<SolutionArray<double> > solutionArrays;
+
+//        for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
+//        {
+//            solutionArrays.push_back(m_solutionList->at(component + offset(field)));
+//        }
+
+//        // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
+//        Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(solutionArrays);
+
+//        //TODO
+//        // internal storage, should be rewriten
+//        //TODO
+//        parentProblem()->saveSolution(fieldInfo, 0, 0, solutionArrays);
+//    }
 }
 
 int Block::numSolutions() const
@@ -377,7 +379,6 @@ void Problem::solve(SolverMode solverMode)
     {
         foreach (Block* block, m_blocks)
         {
-            block->solveInit();
             block->solve();
         }
     }

@@ -47,7 +47,6 @@ class Block
 public:
     Block(QList<FieldInfo*> fieldInfos, QList<CouplingInfo*> couplings, ProgressItemSolve* progressItemSolve, Problem* parent);
 
-    bool solveInit(Hermes::Hermes2D::Solution<double>* sourceSolution = NULL);
     void solve();
 
     int numSolutions() const;
