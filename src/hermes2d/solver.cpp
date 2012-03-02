@@ -333,7 +333,7 @@ void Solver<Scalar>::solve(SolverConfig config)
             SolutionID solutionID;
             solutionID.fieldInfo = fieldInfo;
 
-            m_block->parentProblem()->saveSolution(solutionID, multiSolutionArray);
+            Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
         }
 
 

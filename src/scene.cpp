@@ -236,6 +236,7 @@ Util::Util()
     m_scriptEngineRemote = new ScriptEngineRemote();
 
     m_problem = new Problem();
+    m_solutionStore = new SolutionStore();
 
     // completer
     m_completer = new QCompleter();
@@ -265,6 +266,7 @@ Util::~Util()
     delete m_config;
     delete m_scriptEngineRemote;
     delete m_problem;
+    delete m_solutionStore;
 }
 
 void Util::createSingleton()

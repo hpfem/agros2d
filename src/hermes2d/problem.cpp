@@ -224,7 +224,7 @@ Problem::~Problem()
 
 void Problem::clear()
 {
-    m_multiSolutions.clear();
+    Util::solutionStore()->clearAll();
 
     if (m_meshInitial)
         delete m_meshInitial;
@@ -234,12 +234,6 @@ void Problem::clear()
     m_timeStep = 0;
     m_isSolved = false;
     m_isSolving = false;
-}
-
-void Problem::saveSolution(SolutionID solutionID,  MultiSolutionArray<double> multiSolution)
-{
-    assert(!m_multiSolutions.contains(solutionID));
-    m_multiSolutions[solutionID] = multiSolution;
 }
 
 const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
@@ -332,11 +326,6 @@ void Problem::createStructure()
 
 }
 
-SolutionArray<double> Problem::solution(SolutionID solutionID, int component)
-{
-    return m_multiSolutions[solutionID].component(component);
-}
-
 void Problem::mesh()
 {
     ProgressItemMesh* pim = new ProgressItemMesh();
@@ -410,4 +399,31 @@ ProgressDialog* Problem::progressDialog()
     return m_progressDialog;
 }
 
+//*************************************************************************************************
+
+void SolutionStore::clearAll()
+{
+    m_multiSolutions.clear();
+}
+
+void SolutionStore::clearOne(SolutionID solutionID)
+{
+    m_multiSolutions.remove(solutionID);
+}
+
+SolutionArray<double> SolutionStore::solution(SolutionID solutionID, int component)
+{
+    return m_multiSolutions[solutionID].component(component);
+}
+
+MultiSolutionArray<double> SolutionStore::multiSolution(SolutionID solutionID)
+{
+    return m_multiSolutions[solutionID];
+}
+
+void SolutionStore::saveSolution(SolutionID solutionID,  MultiSolutionArray<double> multiSolution)
+{
+    assert(!m_multiSolutions.contains(solutionID));
+    m_multiSolutions[solutionID] = multiSolution;
+}
 

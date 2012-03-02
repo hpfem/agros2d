@@ -97,10 +97,6 @@ public:
     // solve
     void solve(SolverMode solverMode);
 
-    // should store all solutionArrays that have been calculated
-    SolutionArray<double> solution(SolutionID solutionID, int component=0);
-    void saveSolution(SolutionID, MultiSolutionArray<double> solution);
-
     // progress dialog
     ProgressDialog* progressDialog();
 
@@ -141,9 +137,20 @@ public:
     //TODO move to Field
     Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
 
-    //TODO temporary, has to be extedned for time dependent and adaptive solutions
-    QMap<SolutionID, MultiSolutionArray<double> > m_multiSolutions;
+};
 
+class SolutionStore
+{
+public:
+    SolutionArray<double> solution(SolutionID solutionID, int component=0);
+    MultiSolutionArray<double> multiSolution(SolutionID solutionID);
+    void saveSolution(SolutionID, MultiSolutionArray<double> solution);
+
+    void clearAll();
+    void clearOne(SolutionID solutionID);
+
+private:
+    QMap<SolutionID, MultiSolutionArray<double> > m_multiSolutions;
 };
 
 #endif // PROBLEM_H

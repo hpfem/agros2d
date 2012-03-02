@@ -54,6 +54,7 @@ class ProgressItemSolve;
 class CouplingInfo;
 
 class Problem;
+class SolutionStore;
 
 namespace Hermes
 {
@@ -350,6 +351,7 @@ public:
     static inline QCompleter *completer() { return Util::singleton()->m_completer; }
     static inline Config *config() { return Util::singleton()->m_config; }
     static inline Problem *problem() { return Util::singleton()->m_problem; }
+    static inline SolutionStore *solutionStore() { return Util::singleton()->m_solutionStore; }
 
 protected:
     Util();
@@ -364,6 +366,7 @@ private:
     QCompleter *m_completer;
     Config *m_config;
     Problem *m_problem;
+    SolutionStore *m_solutionStore;
     ScriptEngineRemote *m_scriptEngineRemote;
 };
 

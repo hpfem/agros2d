@@ -72,7 +72,7 @@ enum SolverAction
 struct SolverConfig
 {
     SolverAction action;
-    //TODO more...
+    double timeStep;
 };
 
 // solve
