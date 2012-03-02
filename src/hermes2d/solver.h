@@ -22,6 +22,7 @@
 
 #include <tr1/memory>
 #include "util.h"
+#include "solutiontypes.h"
 
 using namespace std::tr1;
 class Block;
@@ -60,37 +61,6 @@ class FieldInfo;
 template <typename Scalar>
 class WeakFormAgros;
 
-template <typename Scalar>
-struct SolutionArray
-{
-    double time;
-    double adaptiveError;
-    int adaptiveSteps;
-
-    shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln;
-    shared_ptr<Hermes::Hermes2D::Space<Scalar> > space;
-
-    SolutionArray();
-    SolutionArray(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space,
-                  double adaptiveError, double adaptiveSteps, double time);
-    ~SolutionArray();
-
-    void load(QDomElement element);
-    void save(QDomDocument *doc, QDomElement element);
-};
-
-template <typename Scalar>
-class MultiSolutionArray
-{
-public:
-    SolutionArray<Scalar> component(int component);
-
-    //add next component
-    void addComponent(SolutionArray<Scalar> solutionArray);
-
-private:
-    QList<SolutionArray<Scalar> > m_solutionArrays;
-};
 
 enum SolverAction
 {

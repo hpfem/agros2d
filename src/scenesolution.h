@@ -22,6 +22,7 @@
 
 #include "util.h"
 #include "hermes2d.h"
+#include "hermes2d/solutiontypes.h"
 
 class Scene;
 class SceneMaterial;
@@ -55,22 +56,22 @@ public:
     //TODO in the future, SceneSolution will hold only one SolutionArray, not arrays for all time levels
 
     //TODO temp
-    void setSolutionArray(MultiSolutionArray<Scalar> solutionArrays) { *m_solutionArrayList = solutionArrays; }
+    void setSolutionArray(MultiSolutionArray<Scalar> solutionArrays) { m_solutionArrayList = solutionArrays; }
 
     FieldInfo* fieldInfo() { return m_fieldInfo; }
 
     // solution
-    SolutionArray<Scalar> solutionArray(int i/* = -1*/) { return m_solutionArrayList->component(i); }
+    SolutionArray<Scalar> solutionArray(int i/* = -1*/) { return m_solutionArrayList.component(i); }
 
     //TODO remove .. naked pointers
     Hermes::Hermes2D::Solution<Scalar> *sln(int i/* = -1*/);
     Hermes::Hermes2D::Space<Scalar> *space(int i/* = -1*/);
 
-    inline MultiSolutionArray<Scalar> solutionArrayList() { return *m_solutionArrayList; }
+    inline MultiSolutionArray<Scalar> solutionArrayList() { return m_solutionArrayList; }
 
 private:
     // general solution array
-    MultiSolutionArray<Scalar>* m_solutionArrayList;
+    MultiSolutionArray<Scalar> m_solutionArrayList;
 
     FieldInfo* m_fieldInfo;
 };

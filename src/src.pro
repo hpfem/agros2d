@@ -109,7 +109,8 @@ SOURCES += util.cpp \
     sceneedge.cpp \
     scenelabel.cpp \
     scenenode.cpp \
-    hermes2d/coupling.cpp
+    hermes2d/coupling.cpp \
+    hermes2d/solutiontypes.cpp
 
 HEADERS += util.h \
     value.h \
@@ -174,7 +175,8 @@ HEADERS += util.h \
     sceneedge.h \
     scenelabel.h \
     scenenode.h \
-    hermes2d/coupling.h
+    hermes2d/coupling.h \
+    hermes2d/solutiontypes.h
 
 INCLUDEPATH += . \
     ../lib \

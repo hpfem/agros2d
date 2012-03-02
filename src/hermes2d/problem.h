@@ -2,16 +2,10 @@
 #define PROBLEM_H
 
 #include "util.h"
-#include "solver.h"
+#include "solutiontypes.h"
 
 template <typename Scalar>
 class WeakFormAgros;
-
-template <typename Scalar>
-class SolutionArrayList;
-
-template <typename Scalar>
-class SolutionArray;
 
 class FieldInfo;
 class CouplingInfo;
@@ -71,7 +65,6 @@ public:
     Problem* m_parentProblem;
 
     WeakFormAgros<double> *m_wf;
-    SolutionArrayList<double> *m_solutionList;
 
     QList<Field*> m_fields;
     QList<CouplingInfo*> m_couplings;
@@ -105,8 +98,8 @@ public:
     void solve(SolverMode solverMode);
 
     // should store all solutionArrays that have been calculated
-    SolutionArray<double> solution(FieldInfo* fieldInfo, int component=0, int timeStep = 0, int adaptivityStep = 0);
-    void saveSolution(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, MultiSolutionArray<double> solution);
+    SolutionArray<double> solution(SolutionID solutionID, int component=0);
+    void saveSolution(SolutionID, MultiSolutionArray<double> solution);
 
     // progress dialog
     ProgressDialog* progressDialog();
@@ -124,10 +117,10 @@ public:
     bool isMeshed()  const {  return m_meshInitial; }
     bool isSolving() const { return m_isSolving; }
 
-    inline int timeElapsed() const { return m_timeElapsed; }
-    double adaptiveError() const { return 0; }
-    int adaptiveSteps() const { return 0; }
-    inline void setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
+//    inline int timeElapsed() const { return m_timeElapsed; }
+//    double adaptiveError() const { return 0; }
+//    int adaptiveSteps() const { return 0; }
+//    inline void setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
 
 public:
 //private:
@@ -149,7 +142,7 @@ public:
     Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
 
     //TODO temporary, has to be extedned for time dependent and adaptive solutions
-    QMap<FieldInfo*, MultiSolutionArray<double> > m_multiSolutions;
+    QMap<SolutionID, MultiSolutionArray<double> > m_multiSolutions;
 
 };
 

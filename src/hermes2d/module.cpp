@@ -39,7 +39,7 @@
 #include "newton_solver.h"
 #include "picard_solver.h"
 
-#include "solver.h"
+//#include "solver.h"
 
 #include <dirent.h>
 
@@ -217,7 +217,8 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
 
         foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
         {
-            custom_form->ext.push_back(Util::problem()->solution(couplingInfo->sourceField()).sln.get());
+            SolutionID solutionID(couplingInfo->sourceField(), 0, 0, SolutionType_Normal);
+            custom_form->ext.push_back(Util::problem()->solution(solutionID).sln.get());
         }
 
 

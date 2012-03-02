@@ -224,7 +224,6 @@ Problem::~Problem()
 
 void Problem::clear()
 {
-    cout << "\n\nProblem::clear()\n\n\n";
     m_multiSolutions.clear();
 
     if (m_meshInitial)
@@ -237,10 +236,10 @@ void Problem::clear()
     m_isSolving = false;
 }
 
-void Problem::saveSolution(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, MultiSolutionArray<double> multiSolution)
+void Problem::saveSolution(SolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
-    assert(!m_multiSolutions.contains(fieldInfo));
-    m_multiSolutions[fieldInfo] = multiSolution;
+    assert(!m_multiSolutions.contains(solutionID));
+    m_multiSolutions[solutionID] = multiSolution;
 }
 
 const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
@@ -333,9 +332,9 @@ void Problem::createStructure()
 
 }
 
-SolutionArray<double> Problem::solution(FieldInfo *fieldInfo, int component, int timeStep, int adaptivityStep)
+SolutionArray<double> Problem::solution(SolutionID solutionID, int component)
 {
-    return m_multiSolutions[fieldInfo].component(component);
+    return m_multiSolutions[solutionID].component(component);
 }
 
 void Problem::mesh()

@@ -96,7 +96,6 @@ SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldIn
 {
     logMessage("SceneSolution::SceneSolution()");
 
-    m_solutionArrayList = new MultiSolutionArray<Scalar>;
     //m_timeStep = -1;
     //m_isSolving = false;
 }
@@ -104,7 +103,6 @@ SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldIn
 template <typename Scalar>
 SceneSolution<Scalar>::~SceneSolution()
 {
-    delete m_solutionArrayList;
 }
 
 template <typename Scalar>
@@ -260,13 +258,13 @@ void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement element)
 template <typename Scalar>
 Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
 {
-    return m_solutionArrayList->component(i).sln.get();
+    return m_solutionArrayList.component(i).sln.get();
 }
 
 template <typename Scalar>
 Hermes::Hermes2D::Space<Scalar> *SceneSolution<Scalar>::space(int i)
 {
-    return m_solutionArrayList->component(i).space.get();
+    return m_solutionArrayList.component(i).space.get();
 }
 
 //template <typename Scalar>
