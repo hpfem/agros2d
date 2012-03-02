@@ -123,7 +123,7 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_MagneticFieldReal, "magnetic_magnetic_field_real");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_MagneticFieldImag, "magnetic_magnetic_field_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_MagneticField, "magnetic_magnetic_field");
-    physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_CurrentDensityReal, "magnetic_current_density_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_CurrentDensityReal, "magnetic_current_density_real");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_CurrentDensityImag, "magnetic_current_density_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_CurrentDensity, "magnetic_current_density");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformReal, "magnetic_current_density_induced_transform_real");
@@ -1529,29 +1529,30 @@ Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle)
 //   angle_1 and angle_2
 bool isBetween(double angle_1, double angle_2, double angle)
 {
+    // tolerance 1e-3 degree
+    double tol = 1e-3 * M_PI / 180;
+
     // angle_1 has to be lower then angle_2
     if (angle_2 < angle_1)
     {
-        // swap angles
         double temp = angle_1;
         angle_1 = angle_2;
         angle_2 = temp;
     }
 
     // angle_1 is in the third quadrant, angle_2 is in the second quadrant
-    if ((angle_1 <= - M_PI_2) && (angle_2 >= M_PI_2))
+    if ((angle_1 <= - (M_PI_2 - tol) ) && (angle_2 >= (M_PI_2 - tol)))
     {
-        if ((angle <= angle_1) || (angle >= angle_2))
+        if((angle <= angle_1) || (angle >= angle_2))
         {
-            return true;
+           return true;
         }
 
-    }
-    else
+    } else
     {
-        if ((angle >= angle_1) && (angle <= angle_2))
+        if((angle >= angle_1) && (angle <= angle_2))
         {
-            return true;
+           return true;
         }
     }
     return false;
