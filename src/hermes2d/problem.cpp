@@ -224,11 +224,13 @@ Problem::~Problem()
 
 void Problem::clear()
 {
+    cout << "\n\nProblem::clear()\n\n\n";
+    m_multiSolutions.clear();
+
     if (m_meshInitial)
         delete m_meshInitial;
     m_meshInitial = NULL;
 
-    // solution array memory leak ??
 
     m_timeStep = 0;
     m_isSolved = false;
@@ -237,6 +239,7 @@ void Problem::clear()
 
 void Problem::saveSolution(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, MultiSolutionArray<double> multiSolution)
 {
+    assert(!m_multiSolutions.contains(fieldInfo));
     m_multiSolutions[fieldInfo] = multiSolution;
 }
 
@@ -332,7 +335,7 @@ void Problem::createStructure()
 
 SolutionArray<double> Problem::solution(FieldInfo *fieldInfo, int component, int timeStep, int adaptivityStep)
 {
-    return m_multiSolutions[fieldInfo].comp(component);
+    return m_multiSolutions[fieldInfo].component(component);
 }
 
 void Problem::mesh()
@@ -351,6 +354,7 @@ void Problem::solve(SolverMode solverMode)
 
     if (isSolving()) return;
 
+    clear();
     m_isSolving = true;
 
     // clear problem

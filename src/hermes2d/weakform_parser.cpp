@@ -490,12 +490,12 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         {
 //            if(parser->parser[0]->Eval())
 //            {
-            cout << "area " <<  this->areas[0] << "  ";
-                for(std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
-                {
-                    cout << (*it).first << "=" << (*it).second << ", ";
-                }
-                cout << "*****expresion***** " << parser->parser[0]->GetExpr() << ", value -> " << parser->parser[0]->Eval() << endl;
+//            cout << "area " <<  this->areas[0] << "  ";
+//                for(std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
+//                {
+//                    cout << (*it).first << "=" << (*it).second << ", ";
+//                }
+//                cout << "*****expresion***** " << parser->parser[0]->GetExpr() << ", value -> " << parser->parser[0]->Eval() << endl;
 //            }
 
             result += wt[i] * parser->parser[0]->Eval();

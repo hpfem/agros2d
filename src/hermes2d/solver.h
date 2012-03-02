@@ -71,7 +71,8 @@ struct SolutionArray
     shared_ptr<Hermes::Hermes2D::Space<Scalar> > space;
 
     SolutionArray();
-    SolutionArray(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space);
+    SolutionArray(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space,
+                  double adaptiveError, double adaptiveSteps, double time);
     ~SolutionArray();
 
     void load(QDomElement element);
@@ -82,8 +83,10 @@ template <typename Scalar>
 class MultiSolutionArray
 {
 public:
-    SolutionArray<Scalar> comp(int component) {/*assert(m_solutionArrays.has(component));*/ return m_solutionArrays.at(component);}
-    void add(SolutionArray<Scalar> solutionArray, int component = 0);
+    SolutionArray<Scalar> component(int component);
+
+    //add next component
+    void addComponent(SolutionArray<Scalar> solutionArray);
 
 private:
     QList<SolutionArray<Scalar> > m_solutionArrays;

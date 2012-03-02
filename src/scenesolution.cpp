@@ -257,6 +257,18 @@ void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement element)
 //    return solutionArray(i).sln.get();
 //}
 
+template <typename Scalar>
+Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
+{
+    return m_solutionArrayList->component(i).sln.get();
+}
+
+template <typename Scalar>
+Hermes::Hermes2D::Space<Scalar> *SceneSolution<Scalar>::space(int i)
+{
+    return m_solutionArrayList->component(i).space.get();
+}
+
 //template <typename Scalar>
 //Hermes::Hermes2D::Space<Scalar> *SceneSolution<Scalar>::space(int i)
 //{

@@ -60,13 +60,13 @@ public:
     FieldInfo* fieldInfo() { return m_fieldInfo; }
 
     // solution
-    SolutionArray<Scalar> solutionArray(int i/* = -1*/) { return m_solutionArrayList->comp(i); }
+    SolutionArray<Scalar> solutionArray(int i/* = -1*/) { return m_solutionArrayList->component(i); }
 
     //TODO remove .. naked pointers
-    //Hermes::Hermes2D::Solution<Scalar> *sln(int i/* = -1*/) {return m_solutionArrayList->comp(i).sln.get();}
-    Hermes::Hermes2D::Space<Scalar> *space(int i/* = -1*/){return m_solutionArrayList->comp(i).space.get();}
+    Hermes::Hermes2D::Solution<Scalar> *sln(int i/* = -1*/);
+    Hermes::Hermes2D::Space<Scalar> *space(int i/* = -1*/);
 
-    inline MultiSolutionArray<Scalar> solutionArrayList() { return m_solutionArrayList; }
+    inline MultiSolutionArray<Scalar> solutionArrayList() { return *m_solutionArrayList; }
 
 private:
     // general solution array

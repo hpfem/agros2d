@@ -48,6 +48,17 @@ SolutionArray<Scalar>::SolutionArray()
 }
 
 template <typename Scalar>
+SolutionArray<Scalar>::SolutionArray(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space,
+                                     double adaptiveError, double adaptiveSteps, double time)
+{
+    this->sln = sln;
+    this->space = space;
+    this->adaptiveError = adaptiveError;
+    this->adaptiveSteps = adaptiveSteps;
+    this->time = time;
+}
+
+template <typename Scalar>
 SolutionArray<Scalar>::~SolutionArray()
 {
     logMessage("SolutionArray::~SolutionArray()");
@@ -120,10 +131,16 @@ void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
 
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::add(SolutionArray<Scalar> solutionArray, int component)
+void MultiSolutionArray<Scalar>::addComponent(SolutionArray<Scalar> solutionArray)
 {
-    //assert(!m_solutionArrays.contains(component));
     m_solutionArrays.push_back(solutionArray);
+}
+
+template <typename Scalar>
+SolutionArray<Scalar> MultiSolutionArray<Scalar>::component(int component)
+{
+    assert(m_solutionArrays.size() > component);
+    return m_solutionArrays.at(component);
 }
 
 // *********************************************************************************************
@@ -416,8 +433,8 @@ void Solver<Scalar>::solve(SolverConfig config)
             for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
             {
                 int position = component + m_block->offset(field);
-                SolutionArray<Scalar> solutionArray(solution.at(position), space.at(position));
-                multiSolutionArray.add(solutionArray);
+                SolutionArray<Scalar> solutionArray(solution.at(position), space.at(position), 0, 0, 0);
+                multiSolutionArray.addComponent(solutionArray);
             }
 
             // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
@@ -441,3 +458,4 @@ void Solver<Scalar>::solve(SolverConfig config)
 
 template class Solver<double>;
 template class SolutionArray<double>;
+template class MultiSolutionArray<double>;
