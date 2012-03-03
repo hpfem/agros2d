@@ -83,6 +83,24 @@ private:
     QLocalSocket *m_client_socket;
 };
 
+// cython classes
+class PyParticleTracing
+{
+public:
+    PyParticleTracing() {}
+    ~PyParticleTracing() {}
+
+    void solve();
+
+    inline int length() { return positions.length(); }
+    void x(std::vector<double> &x);
+
+private:
+    // position and velocity
+    QList<Point3> positions;
+    QList<Point3> velocities;
+};
+
 // cython functions
 void pythonMessage(char *str);
 char *pythonInput(char *str);

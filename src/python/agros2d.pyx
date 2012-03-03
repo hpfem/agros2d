@@ -1,5 +1,8 @@
 # from hermes2d import *
 
+from libcpp.vector cimport vector
+cdef vector[double] vectd
+
 # script functions
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
@@ -8,6 +11,15 @@ cdef extern from "limits.h":
     int c_DOUBLE_MAX "DOUBLE_MAX"
 
 cdef extern from "../pythonlabagros.h":
+    # PyParticleTracing
+    cdef cppclass PyParticleTracing:
+        PyParticleTracing()
+
+        void solve() except +
+
+        int length()
+        void x(vector[double] values)
+
     void pythonMessage(char *str)
     char *pythonVersion()
     char *pythonInput(char *str)
@@ -71,6 +83,38 @@ cdef extern from "../pythonlabagros.h":
     void pythonSetTimeStep(int timestep) except +
     int pythonTimeStepCount()
     void pythonSaveImage(char *str, int w, int h) except +
+
+# particle tracing
+cdef class ParticleTracing:
+    cdef PyParticleTracing *thisptr
+
+    def __cinit__(self):
+        self.thisptr = new PyParticleTracing()
+    def __dealloc__(self):
+        del self.thisptr
+
+    # solve
+    def solve(self):
+        self.thisptr.solve()
+
+    def length(self):
+        return self.thisptr.length()
+
+    # x
+    def x(self):
+        out = list()
+        cdef vector[double] values
+        self.thisptr.x(values)
+        for i in range(self.thisptr.length()):
+            out.append(values[i])
+        return out
+
+    # frequency
+    # property frequency:
+    #     def __get__(self):
+    #         return self.thisptr.getFrequency()
+    #     def __set__(self, frequency):
+    #         self.thisptr.setFrequency(frequency)
 
 # system
 

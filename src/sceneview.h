@@ -262,12 +262,6 @@ private:
     QAction *actShowParticleTracing;
     QAction *actShowSolutionMesh;
 
-    // compute particle path
-    void newtonEquations(double step, Point3 position, Point3 velicity, Point3 *newposition, Point3 *newvelocity);
-    void computeParticleTracingPath(QList<Point3> *positions,
-                                    QList<Point3> *velocities,
-                                    bool randomPoint = false);
-
     void createActions();
     void createMenu();
 

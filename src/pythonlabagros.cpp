@@ -20,7 +20,7 @@
 #include "pythonlabagros.h"
 
 #include <Python.h>
-#include "python/agros2d.c"
+#include "python/agros2d.cpp"
 
 #include "util.h"
 #include "scene.h"
@@ -253,6 +253,30 @@ void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError
     &index[90], &index[91], &index[92], &index[93], &index[94], &index[95], &index[96], &index[97], &index[98], &index[99]  \
     )) \
     // FIX ********************************************************************************************************************************************************************
+
+// particle tracing
+void PyParticleTracing::solve()
+{
+    qDebug() << "particle tracing";
+
+    if (!Util::scene()->sceneSolution()->isSolved())
+        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+
+    // clear
+    positions.clear();
+    velocities.clear();
+
+    Util::scene()->computeParticleTracingPath(&positions, &velocities, false);
+}
+
+void PyParticleTracing::x(std::vector<double> &x)
+{
+    std::vector<double> out;
+    for (int i = 0; i < length(); i++)
+        out.push_back(positions[i].x);
+
+    x = out;
+}
 
 // version()
 char *pythonVersion()
