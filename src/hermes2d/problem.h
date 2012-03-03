@@ -146,6 +146,13 @@ public:
     MultiSolutionArray<double> multiSolution(SolutionID solutionID);
     void saveSolution(SolutionID, MultiSolutionArray<double> solution);
 
+    int lastTimeStep(FieldInfo* fieldInfo);
+    int lastTimeStep(Block* block);
+
+    // last adaptive step for given time step. If time step not given, last time step used implicitly
+    int lastAdaptiveStep(FieldInfo* fieldInfo, int timeStep = -1);
+    int lastAdaptiveStep(Block* block, int timeStep = -1);
+
     void clearAll();
     void clearOne(SolutionID solutionID);
 

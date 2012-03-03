@@ -427,3 +427,54 @@ void SolutionStore::saveSolution(SolutionID solutionID,  MultiSolutionArray<doub
     m_multiSolutions[solutionID] = multiSolution;
 }
 
+int SolutionStore::lastTimeStep(FieldInfo *fieldInfo)
+{
+    int timeStep = -1;
+    foreach(SolutionID sid, m_multiSolutions.keys())
+    {
+        if((sid.fieldInfo == fieldInfo) && (sid.timeStep > timeStep))
+            timeStep = sid.timeStep;
+    }
+
+    return timeStep;
+}
+
+int SolutionStore::lastTimeStep(Block *block)
+{
+    int timeStep = lastTimeStep(block->m_fields.at(0)->fieldInfo());
+
+    foreach(Field* field, block->m_fields)
+    {
+        assert(lastTimeStep(field->fieldInfo()) == timeStep);
+    }
+
+    return timeStep;
+}
+
+int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, int timeStep)
+{
+    if(timeStep == -1)
+        timeStep = lastTimeStep(fieldInfo);
+
+    int adaptiveStep = -1;
+    foreach(SolutionID sid, m_multiSolutions.keys())
+    {
+        if((sid.fieldInfo == fieldInfo) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
+            adaptiveStep = sid.adaptivityStep;
+    }
+
+    return adaptiveStep;
+}
+
+int SolutionStore::lastAdaptiveStep(Block *block, int timeStep)
+{
+    int adaptiveStep = lastAdaptiveStep(block->m_fields.at(0)->fieldInfo());
+
+    foreach(Field* field, block->m_fields)
+    {
+        assert(lastAdaptiveStep(field->fieldInfo()) == adaptiveStep);
+    }
+
+    return adaptiveStep;
+}
+

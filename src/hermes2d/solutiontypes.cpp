@@ -111,6 +111,27 @@ SolutionArray<Scalar> MultiSolutionArray<Scalar>::component(int component)
     return m_solutionArrays.at(component);
 }
 
+template <typename Scalar>
+void MultiSolutionArray<Scalar>::append(MultiSolutionArray<Scalar> msa)
+{
+    foreach(SolutionArray<Scalar> sa, msa.m_solutionArrays)
+    {
+        addComponent(sa);
+    }
+}
+
+template <typename Scalar>
+Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > MultiSolutionArray<Scalar>::createCopyOfSpaces()
+{
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaces;
+
+    foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
+    {
+        spaces.push_back(solutionArray.space);
+    }
+
+    return spaces;
+}
+
 template class SolutionArray<double>;
 template class MultiSolutionArray<double>;
-

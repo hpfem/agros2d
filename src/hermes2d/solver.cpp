@@ -45,20 +45,24 @@ void Solver<Scalar>::init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Sc
 }
 
 template <typename Scalar>
-void Solver<Scalar>::readMesh()
+Mesh* Solver<Scalar>::readMesh()
 {
     // load the mesh file
     cout << "reading mesh in solver " << tempProblemFileName().toStdString() + ".xml" << endl;
-    mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+    Mesh* mesh = readMeshFromFile(tempProblemFileName() + ".xml");
 
     refineMesh(m_block->m_fields.at(0)->fieldInfo(), mesh, true, true);  //TODO multimesh
     Util::problem()->setMeshInitial(mesh);
+
+    return mesh;
 }
 
 
 template <typename Scalar>
-void Solver<Scalar>::createSpace()
+Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > Solver<Scalar>::createSpace(Mesh* mesh)
 {
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
+
     cout << "---- createSpace()" << endl;
     // essential boundary conditions
     Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs;
@@ -143,6 +147,8 @@ void Solver<Scalar>::createSpace()
             }
         }
     }
+
+    return space;
 }
 
 template <typename Scalar>
@@ -171,15 +177,35 @@ void Solver<Scalar>::createSolutions(bool copyPrevious)
     }
 }
 
+template <typename Scalar>
+void Solver<Scalar>::createInitialSolution(Mesh* mesh, Hermes::vector<shared_ptr<Space<Scalar> > > space)
+{
+    int totalComp = 0;
+    foreach(Field* field, m_block->m_fields)
+    {
+        MultiSolutionArray<Scalar> initialMSA;
+        for (int comp = 0; comp < field->fieldInfo()->module()->number_of_solution(); comp++)
+        {
+            // nonlinear - initial solution
+            // solution.at(i)->set_const(mesh, 0.0);
+
+            // constant initial solution
+            InitialCondition<double> *initial = new InitialCondition<double>(mesh, field->fieldInfo()->initialCondition.number());
+            SolutionArray<Scalar> solutionArray(shared_ptr<Solution<Scalar> >(initial), space.at(totalComp), 0, 0, 0);
+            initialMSA.addComponent(solutionArray);
+            totalComp++;
+        }
+    }
+}
 
 int DEBUG_COUNTER = 0;
 
 template <typename Scalar>
-bool Solver<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
-                                     Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam)
+bool Solver<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Space<Scalar> > > &spaceParam,
+                                     Hermes::vector<shared_ptr<Solution<Scalar> > > &solutionParam)
 {
     // Initialize the FE problem.
-    Hermes::Hermes2D::DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(spaceParam)));
+    DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(spaceParam)));
 
     // Linear solver
     if (m_block->linearityType() == LinearityType_Linear)
@@ -194,7 +220,7 @@ bool Solver<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D:
 
         if (solver->solve())
         {
-            Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(solver->get_sln_vector(), castConst(desmartize(spaceParam)), desmartize(solutionParam));
+            Solution<Scalar>::vector_to_solutions(solver->get_sln_vector(), castConst(desmartize(spaceParam)), desmartize(solutionParam));
 
             for(int i = 0; i < solver->get_matrix_size(); i++)
                 cout << solver->get_sln_vector()[i] << ", ";
@@ -212,7 +238,7 @@ bool Solver<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D:
             fclose(f);
             DEBUG_COUNTER++;
 
-            Hermes::Hermes2D::Views::Linearizer lin;
+            Views::Linearizer lin;
             bool mode_3D = true;
             lin.save_solution_vtk(solutionParam[0].get(), "sln.vtk", "SLN", mode_3D);
         }
@@ -231,11 +257,11 @@ bool Solver<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D:
     if (m_block->linearityType() == LinearityType_Newton)
     {
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
-        Hermes::Hermes2D::NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
+        NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
         //newton.set_max_allowed_residual_norm(1e15);
         try
         {
-            int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(spaceParam)));
+            int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(spaceParam)));
 
             // Initial coefficient vector for the Newton's method.
             Scalar* coeff_vec = new Scalar[ndof];
@@ -244,7 +270,7 @@ bool Solver<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D:
             cout << "solving with nonlinear tolerance " << m_block->nonlinearTolerance() << " and nonlin steps " << m_block->nonlinearSteps() << endl;
             newton.solve(coeff_vec, m_block->nonlinearTolerance(), m_block->nonlinearSteps());
 
-            Hermes::Hermes2D::Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(spaceParam)), desmartize(solutionParam));
+            Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(spaceParam)), desmartize(solutionParam));
 
 //            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
 //                                             arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
@@ -272,15 +298,43 @@ bool Solver<Scalar>::solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D:
 template <typename Scalar>
 void Solver<Scalar>::solve(SolverConfig config)
 {
-    QTime time;
+    //  QTime time;
 
-    double error = 0.0;
+    //  double error = 0.0;
 
-    // read mesh from file
-    readMesh();
+    // mesh file
+    Mesh *mesh;
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
 
-    // create essential boundary conditions and space
-    createSpace();
+
+    int lastTimeStep = Util::solutionStore()->lastTimeStep(m_block);
+    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(m_block);
+
+    if((config.action == SolverAction_Solve) ||
+            ((config.action == SolverAction_TimeStep) && (lastTimeStep < 1)))
+    {
+        // read mesh from file
+        mesh = readMesh();
+
+        // create essential boundary conditions and space
+        space = createSpace(mesh);
+    }
+    else if((config.action == SolverAction_TimeStep) && (lastTimeStep >= 1))
+    {
+        foreach(Field* field, m_block->m_fields)
+        {
+            SolutionID fieldSolutionID(field->fieldInfo(), lastTimeStep, lastAdaptiveStep, SolutionType_Normal);
+            Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > fieldSpace = Util::solutionStore()->multiSolution(fieldSolutionID).createCopyOfSpaces();
+            space.insert(space.end(), fieldSpace.begin(), fieldSpace.end());
+        }
+    }
+    else
+        assert(0);
+
+    if((config.action == SolverAction_TimeStep) && (lastTimeStep < 1))
+    {
+        createInitialSolution(mesh, space);
+    }
 
     qDebug() << "nodes: " << mesh->get_num_nodes();
     qDebug() << "elements: " << mesh->get_num_elements();
