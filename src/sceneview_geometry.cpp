@@ -196,10 +196,10 @@ void SceneViewGeometry::selectRegion(const Point &start, const Point &end)
 
 void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
 {
-    SceneViewCommon2D::mouseMoveEvent(event);
-
     int dx = event->x() - m_lastPos.x();
     int dy = event->y() - m_lastPos.y();
+
+    SceneViewCommon2D::mouseMoveEvent(event);
 
     m_lastPos = event->pos();
 
@@ -336,7 +336,6 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
                         if (node->isSelected)
                             node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                     len.x = 0;
-                    updateGL();
                 }
 
                 if (fabs(len.y) > Util::config()->gridStep)
@@ -345,18 +344,15 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
                         if (node->isSelected)
                             node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                     len.y = 0;
-                    updateGL();
                 }
             }
             else
             {
                 Util::scene()->transformTranslate(dp, false);
-                updateGL();
             }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         {
-            // mouse move length memory
             static Point len;
             len = len + dp;
 
@@ -364,48 +360,33 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
             {
                 if (fabs(len.x) > Util::config()->gridStep)
                 {
-                    foreach (SceneEdge *edge, Util::scene()->edges->items())
-                        if (edge->isSelected)
-                        {
-                            edge->nodeStart->isSelected = true;
-                            edge->nodeEnd->isSelected = true;
-                        }
-                    foreach (SceneNode *node, Util::scene()->nodes->items())
-                        if (node->isSelected)
-                            node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
-
+                    dp.x = (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                    dp.y = 0;
                     len.x = 0;
-                    updateGL();
+
+                    Util::scene()->transformTranslate(dp, false);
                 }
 
                 if (fabs(len.y) > Util::config()->gridStep)
                 {
-                    foreach (SceneEdge *edge, Util::scene()->edges->items())
-                        foreach (SceneEdge *edge, Util::scene()->edges->items())
-                            if (edge->isSelected)
-                            {
-                                edge->nodeStart->isSelected = true;
-                                edge->nodeEnd->isSelected = true;
-                            }
-                    foreach (SceneNode *node, Util::scene()->nodes->items())
-                        if (node->isSelected)
-                            node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
-
+                    dp.x = 0;
+                    dp.y = (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                     len.y = 0;
-                    updateGL();
+
+                    Util::scene()->transformTranslate(dp, false);
                 }
             }
             else
             {
                 Util::scene()->transformTranslate(dp, false);
-                updateGL();
             }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             Util::scene()->transformTranslate(dp, false);
-            updateGL();
         }
+
+        updateGL();
     }
 
     if (m_snapToGrid)

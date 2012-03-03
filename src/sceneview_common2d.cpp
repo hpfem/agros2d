@@ -707,19 +707,20 @@ void SceneViewCommon2D::setZoom(double power)
 
 void SceneViewCommon2D::doZoomRegion(const Point &start, const Point &end)
 {
-    if (fabs(end.x-start.x) < EPS_ZERO || fabs(end.y-start.y) < EPS_ZERO) return;
+    if (fabs(end.x-start.x) < EPS_ZERO || fabs(end.y-start.y) < EPS_ZERO)
+        return;
 
-    m_offset2d.x = ((Util::config()->showRulers) ? start.x+end.x-m_rulersNumbersWidth-m_rulersAreaWidth.x : start.x+end.x)/2.0;
-    m_offset2d.y = (start.y+end.y)/2.0;
+    m_offset2d.x = ((Util::config()->showRulers) ? start.x+end.x - m_rulersNumbersWidth - m_rulersAreaWidth.x : start.x + end.x) / 2.0;
+    m_offset2d.y = (start.y + end.y)/2.0;
 
     double sceneWidth = end.x-start.x;
     double sceneHeight = end.y-start.y;
 
-    double maxScene = (((double) ((Util::config()->showRulers) ? width()-m_rulersNumbersWidth-m_rulersAreaWidth.x :
+    double maxScene = (((double) ((Util::config()->showRulers) ? width() - m_rulersNumbersWidth - m_rulersAreaWidth.x :
                                                                  width()) / (double) height()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
 
     if (maxScene > 0.0)
-        m_scale2d = 1.85/maxScene;
+        m_scale2d = 1.8/maxScene;
 
     setZoom(0);   
 }

@@ -545,6 +545,13 @@ enum SceneViewPost3DShow
     SceneViewPost3DShow_ParticleTracing
 };
 
+enum SceneTransformMode
+{
+    SceneTransformMode_Translate,
+    SceneTransformMode_Rotate,
+    SceneTransformMode_Scale
+};
+
 // captions
 QString analysisTypeString(AnalysisType analysisType);
 QString teModeString(Mode teMode);

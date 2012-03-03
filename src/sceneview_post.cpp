@@ -285,7 +285,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
     int textHeight = fontMetrics().height();
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // height() - 20.0
-    Point scaleBorder = Point(10.0, 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 30.0 : 10.0);
     double scaleLeft = (width() - (45.0 + textWidth));
     int numTicks = 11;
 
@@ -314,7 +314,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
     glBegin(GL_QUADS);
-    if (fabs(Util::config()->scalarRangeMin - Util::config()->scalarRangeMax) > EPS_ZERO)
+    if (fabs(min - max) > EPS_ZERO)
         glTexCoord1d(m_texScale + m_texShift);
     else
         glTexCoord1d(m_texShift);
