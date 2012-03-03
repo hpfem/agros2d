@@ -18,22 +18,30 @@
 <div class="section">
 <table class="maintable">
 	<tr>
-		<td><b>Point</b></td><td>{{LABELX}}</td>
-		<td>{{POINTX}}</td><td>{{POINT_UNIT}}</td>
+		<td class="description"><b>Point</b></td>
+		<td class="quantity">{{LABELX}}</td>
+		<td>{{POINTX}}</td>
+		<td class="unit">{{POINT_UNIT}}</td>
 	</tr>
 	<tr>
-		<td></td><td>{{LABELY}}</td>
-		<td>{{POINTY}}</td><td>{{POINT_UNIT}}</td>
+		<td>&nbsp;</td>
+		<td class="quantity">{{LABELY}}</td>
+		<td>{{POINTY}}</td>
+		<td class="unit">{{POINT_UNIT}}</td>
 	</tr>
-
+</table>
+{{#FIELD}}
+<h3>{{FIELDNAME}}</h3>
+<table class="maintable">
 	{{#ITEM}}
 	<tr>
-		<td><b>{{NAME}}<b></td>
-		<td>{{SHORTNAME}}<sub>{{PART}}</sub></td>
-		<td>{{VALUE}}</td><td>{{UNIT}}</td>
+		<td class="description"><b>{{NAME}}<b></td>
+		<td class="quantity">{{SHORTNAME}}<sub>{{PART}}</sub></td>
+		<td class="unit">{{VALUE}}</td><td>{{UNIT}}</td>
 	</tr>
 	{{/ITEM}}
 </table>
+{{/FIELD}}
 </div>
 </body>
 </html>

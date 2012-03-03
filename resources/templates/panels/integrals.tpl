@@ -10,16 +10,19 @@
 <body>
 <h1>{{LABEL}}</h1>
 <div class="section">
+{{#FIELD}}
+<h3>{{FIELDNAME}}</h3>
 <table class="maintable">
 	{{#ITEM}}
 	<tr>
-		<td><b>{{NAME}}<b></td>
-		<td>{{SHORTNAME}}</td>
+		<td class="description"><b>{{NAME}}<b></td>
+		<td class="quantity">{{SHORTNAME}}</td>
 		<td>{{VALUE}}</td>
-		<td>{{UNIT}}</td>
+		<td class="unit">{{UNIT}}</td>
 	</tr>
 	{{/ITEM}}
 </table>
+{{/FIELD}}
 </div>
 </body>
 </html>

@@ -55,6 +55,84 @@ static void computeNormal(double p0x, double p0y, double p0z,
     // double p[3] = { nx*l, ny*l, nz*l };
 }
 
+
+Post3DHermes::Post3DHermes()
+{
+    m_slnScalarView = NULL;
+
+    m_scalarIsPrepared = false;
+}
+
+
+Post3DHermes::~Post3DHermes()
+{
+    clear();
+}
+
+void Post3DHermes::clear()
+{
+    // scalar
+    m_scalarIsPrepared = false;
+    if (m_slnScalarView)
+    {
+        delete m_slnScalarView;
+        m_slnScalarView = NULL;
+    }
+}
+
+void Post3DHermes::processInitialMesh()
+{
+    m_initialMeshIsPrepared = false;
+
+    if (Util::problem()->isMeshed())
+    {
+        // init linearizer for initial mesh
+        Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->meshInitial());
+        m_linInitialMeshView.process_solution(&initial);
+
+        m_initialMeshIsPrepared = true;
+    }
+}
+
+void Post3DHermes::processRangeScalar()
+{
+    processInitialMesh();
+
+    m_scalarIsPrepared = false;
+
+    if (Util::problem()->isSolved() && Util::config()->scalarVariable != "")
+    {
+        if (m_slnScalarView)
+        {
+            delete m_slnScalarView;
+            m_slnScalarView = NULL;
+        }
+
+        m_slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
+                                                                                                                    Util::config()->scalarVariableComp);
+
+        m_linScalarView.process_solution(m_slnScalarView,
+                                          Hermes::Hermes2D::H2D_FN_VAL_0,
+                                          Util::config()->linearizerQuality);
+
+         // deformed shape
+         if (Util::config()->deformScalar)
+             Util::scene()->activeViewField()->module()->deform_shape(m_linScalarView.get_vertices(),
+                                                                      m_linScalarView.get_num_vertices());
+
+         m_scalarIsPrepared = true;
+    }
+}
+
+void Post3DHermes::processSolved()
+{
+    qDebug("Post3DHermes::processSolved()");
+
+    QTimer::singleShot(0, this, SLOT(processRangeScalar()));
+}
+
+// ************************************************************************************************
+
 SceneViewPost3D::SceneViewPost3D(QWidget *parent) : SceneViewCommon3D(parent),
     m_listScalarField3D(-1),
     m_listScalarField3DSolid(-1),
@@ -65,6 +143,8 @@ SceneViewPost3D::SceneViewPost3D(QWidget *parent) : SceneViewCommon3D(parent),
 
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
     connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
+
+    m_post3DHermes = new Post3DHermes();
 
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
 }
@@ -149,9 +229,9 @@ void SceneViewPost3D::resizeGL(int w, int h)
 
     if (Util::problem()->isSolved())
     {
-        paletteFilter();
+        paletteFilter(textureScalar());
         paletteUpdateTexAdjust();
-        paletteCreate();
+        paletteCreate(textureScalar());
     }
 }
 
@@ -160,10 +240,10 @@ void SceneViewPost3D::paintScalarField3D()
     logMessage("SceneViewCommon::paintScalarField3D()");
 
     if (!Util::problem()->isSolved()) return;
+    if (!m_post3DHermes->scalarIsPrepared()) return;
 
     loadProjection3d(true);
 
-    /*
     if (m_listScalarField3D == -1)
     {
         m_listScalarField3D = glGenLists(1);
@@ -181,10 +261,10 @@ void SceneViewPost3D::paintScalarField3D()
             irange = 1.0;
         }
 
-        Util::scene()->activeSceneSolution()->linScalarView().lock_data();
+        m_post3DHermes->linScalarView().lock_data();
 
-        double3* linVert = Util::scene()->activeSceneSolution()->linScalarView().get_vertices();
-        int3* linTris = Util::scene()->activeSceneSolution()->linScalarView().get_triangles();
+        double3* linVert = m_post3DHermes->linScalarView().get_vertices();
+        int3* linTris = m_post3DHermes->linScalarView().get_triangles();
         Point point[3];
         double value[3];
 
@@ -204,7 +284,7 @@ void SceneViewPost3D::paintScalarField3D()
 
         // set texture for coloring
         glEnable(GL_TEXTURE_1D);
-        glBindTexture(GL_TEXTURE_1D, 1);
+        glBindTexture(GL_TEXTURE_1D, textureScalar());
 
         // set texture transformation matrix
         glMatrixMode(GL_TEXTURE);
@@ -213,7 +293,7 @@ void SceneViewPost3D::paintScalarField3D()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < Util::scene()->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
+        for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
         {
             point[0].x = linVert[linTris[i][0]][0];
             point[0].y = linVert[linTris[i][0]][1];
@@ -262,14 +342,14 @@ void SceneViewPost3D::paintScalarField3D()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4d(0.5, 0.5, 0.5, 0.3);
 
-        Util::scene()->activeSceneSolution()->linInitialMeshView().lock_data();
+        m_post3DHermes->linInitialMeshView().lock_data();
 
-        double3* linVertMesh = Util::scene()->activeSceneSolution()->linInitialMeshView().get_vertices();
-        int3* linTrisMesh = Util::scene()->activeSceneSolution()->linInitialMeshView().get_triangles();
+        double3* linVertMesh = m_post3DHermes->linInitialMeshView().get_vertices();
+        int3* linTrisMesh = m_post3DHermes->linInitialMeshView().get_triangles();
 
         // triangles
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < Util::scene()->activeSceneSolution()->linInitialMeshView().get_num_triangles(); i++)
+        for (int i = 0; i < m_post3DHermes->linInitialMeshView().get_num_triangles(); i++)
         {
             glVertex2d(linVertMesh[linTrisMesh[i][0]][0], linVertMesh[linTrisMesh[i][0]][1]);
             glVertex2d(linVertMesh[linTrisMesh[i][1]][0], linVertMesh[linTrisMesh[i][1]][1]);
@@ -277,7 +357,7 @@ void SceneViewPost3D::paintScalarField3D()
         }
         glEnd();
 
-        Util::scene()->activeSceneSolution()->linInitialMeshView().unlock_data();
+        m_post3DHermes->linInitialMeshView().unlock_data();
 
         glDisable(GL_BLEND);
         glDisable(GL_POLYGON_OFFSET_FILL);
@@ -320,7 +400,7 @@ void SceneViewPost3D::paintScalarField3D()
 
         glPopMatrix();
 
-        Util::scene()->activeSceneSolution()->linScalarView().unlock_data();
+        m_post3DHermes->linScalarView().unlock_data();
 
         glEndList();
 
@@ -330,7 +410,6 @@ void SceneViewPost3D::paintScalarField3D()
     {
         glCallList(m_listScalarField3D);
     }
-    */
 }
 
 void SceneViewPost3D::paintScalarField3DSolid()
@@ -338,9 +417,10 @@ void SceneViewPost3D::paintScalarField3DSolid()
     logMessage("SceneViewCommon::paintScalarField3DSolid()");
 
     if (!Util::problem()->isSolved()) return;
+    if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3DSolid && !m_post3DHermes->scalarIsPrepared()) return;
 
     loadProjection3d(true);
-    /*
+
     if (m_listScalarField3DSolid == -1)
     {
         m_listScalarField3DSolid = glGenLists(1);
@@ -366,11 +446,11 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         double phi = Util::config()->scalarView3DAngle;
 
-        Util::scene()->activeSceneSolution()->linScalarView().lock_data();
+        m_post3DHermes->linScalarView().lock_data();
 
-        double3* linVert = Util::scene()->activeSceneSolution()->linScalarView().get_vertices();
-        int3* linTris = Util::scene()->activeSceneSolution()->linScalarView().get_triangles();
-        int3* linEdges = Util::scene()->activeSceneSolution()->linScalarView().get_edges();
+        double3* linVert = m_post3DHermes->linScalarView().get_vertices();
+        int3* linTris = m_post3DHermes->linScalarView().get_triangles();
+        int3* linEdges = m_post3DHermes->linScalarView().get_edges();
         Point point[3];
         double value[3];
 
@@ -380,7 +460,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         if (!isModel)
         {
             glEnable(GL_TEXTURE_1D);
-            glBindTexture(GL_TEXTURE_1D, 1);
+            glBindTexture(GL_TEXTURE_1D, textureScalar());
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
             // set texture transformation matrix
@@ -402,7 +482,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < Util::scene()->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -454,7 +534,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
             // length
             glBegin(GL_QUADS);
-            for (int i = 0; i < Util::scene()->activeSceneSolution()->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -497,7 +577,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         {
             // side
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < Util::scene()->activeSceneSolution()->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -536,7 +616,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
             // symmetry
             glBegin(GL_QUADS);
-            for (int i = 0; i < Util::scene()->activeSceneSolution()->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -717,7 +797,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         glPopMatrix();
 
-        Util::scene()->activeSceneSolution()->linScalarView().unlock_data();
+        m_post3DHermes->linScalarView().unlock_data();
 
         glEndList();
 
@@ -727,7 +807,6 @@ void SceneViewPost3D::paintScalarField3DSolid()
     {
         glCallList(m_listScalarField3DSolid);
     }
-    */
 }
 
 void SceneViewPost3D::doInvalidated()
@@ -742,7 +821,15 @@ void SceneViewPost3D::doInvalidated()
     m_listModel = -1;
     m_listScalarField3DSolid = -1;
 
-    // if (Util::problem()->isSolved()) m_post3DHermes->solved();
+    if (Util::problem()->isSolved())
+        m_post3DHermes->processSolved();
+
+    // actions
+    actSceneModePost3D->setEnabled(Util::problem()->isSolved());
+    actSetProjectionXY->setEnabled(false);
+    actSetProjectionXZ->setEnabled(false);
+    actSetProjectionYZ->setEnabled(false);
+
 
     SceneViewCommon::doInvalidated();
 }

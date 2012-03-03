@@ -92,7 +92,9 @@ void PostprocessorView::loadBasic()
         cmbScalarFieldVariable->setCurrentIndex(0);
         Util::config()->scalarVariable = cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString();
     }
-    doScalarFieldVariable(cmbScalarFieldVariable->currentIndex());
+    if (cmbScalarFieldVariable->count() > 0)
+        doScalarFieldVariable(cmbScalarFieldVariable->currentIndex());
+
     cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(Util::config()->scalarVariableComp));
     if (cmbScalarFieldVariableComp->currentIndex() == -1)
     {
@@ -335,10 +337,12 @@ void PostprocessorView::createControls()
     logMessage("PostprocessorView::createControls()");
 
     // tab widget
+    basic = controlsBasic();
     postprocessor = controlsPostprocessor();
     workspace = controlsWorkspace();
 
     QTabWidget *tabType = new QTabWidget(this);
+    tabType->addTab(basic, icon(""), tr("Basic"));
     tabType->addTab(postprocessor, icon(""), tr("Postprocessor"));
     tabType->addTab(workspace, icon(""), tr("Workspace"));
 
@@ -362,10 +366,8 @@ void PostprocessorView::createControls()
     setWidget(widget);
 }
 
-QWidget *PostprocessorView::controlsPostprocessor()
+QWidget *PostprocessorView::controlsBasic()
 {
-    logMessage("PostprocessorView::controlsAdvanced()");
-
     double minWidth = 110;
 
     cmbFieldInfo = new QComboBox();
@@ -515,6 +517,20 @@ QWidget *PostprocessorView::controlsPostprocessor()
 
     QWidget *basicWidget = new QWidget(this);
     basicWidget->setLayout(layoutBasic);
+
+    // layout postprocessor
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(basicWidget);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
+QWidget *PostprocessorView::controlsPostprocessor()
+{
+    double minWidth = 110;
 
     // scalar field
     // palette
@@ -835,7 +851,6 @@ QWidget *PostprocessorView::controlsPostprocessor()
     particleWidget->setLayout(layoutParticle);
 
     tbxPostprocessor = new QToolBox();
-    tbxPostprocessor->addItem(basicWidget, icon(""), tr("Basic settings"));
     tbxPostprocessor->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
     tbxPostprocessor->addItem(contoursVectorsWidget, icon(""), tr("Contours and vectors"));
     tbxPostprocessor->addItem(orderWidget, icon(""), tr("Polynomial order"));
@@ -1018,11 +1033,15 @@ void PostprocessorView::doScalarFieldVariable(int index)
 {
     logMessage("PostprocessorView::doScalarFieldVariable()");
 
+    if (cmbFieldInfo->currentIndex() == -1)
+        return;
+
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
-    if (cmbScalarFieldVariable->currentIndex() != -1){
+    if (cmbScalarFieldVariable->currentIndex() != -1)
+    {
         QString variableName(cmbScalarFieldVariable->itemData(index).toString());
 
         QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
@@ -1054,6 +1073,9 @@ void PostprocessorView::doScalarFieldVariable(int index)
 
 void PostprocessorView::doScalarFieldVariableComp(int index)
 {
+    if (cmbScalarFieldVariable->currentIndex() == -1)
+        return;
+
     txtScalarFieldExpression->setText("");
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
@@ -1160,8 +1182,6 @@ void PostprocessorView::setControls()
 
 void PostprocessorView::updateControls()
 {
-    logMessage("PostprocessorView::updateControls()");
-
     fillComboBoxFieldInfo(cmbFieldInfo);
     doFieldInfo(cmbFieldInfo->currentIndex());
     //fillComboBoxTimeStep(cmbTimeStep);

@@ -20,14 +20,24 @@ h2 {
 	margin: 0;
 }
 
-table, tr, td {
-	font-size: 93%;
-	text-align: left;
+table, td, tr {
+	font-size: 93%;		
 	/*border: 1pt solid black;*/
+}
+ 
+td.description {
+	width: 150px;
+}
+
+td.quantity {
+	width: 50px;	
+}
+
+td.unit {	
 }
 
 .maintable {
-	width: 100%;
+	/* width: 100%;	 */
 }
 
 .section {

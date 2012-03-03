@@ -390,7 +390,7 @@ void Problem::solve(SolverMode solverMode)
     {
         m_isSolved = true;
         emit solved();
-        emit timeStepChanged(false);
+        //TODO emit timeStepChanged(false);
     }
 }
 

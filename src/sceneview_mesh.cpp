@@ -47,37 +47,64 @@ void MeshHermes::clear()
 
 void MeshHermes::processOrder()
 {
+    m_orderIsPrepared = false;
+
     // init linearizer for order view
-    m_orderView.process_space(Util::scene()->activeSceneSolution()->space(0));
+    if (Util::problem()->isSolved())
+    {
+        m_orderView.process_space(Util::scene()->activeSceneSolution()->space(0));
+
+        m_orderIsPrepared = true;
+    }
+
+    emit processed();
 }
 
 void MeshHermes::processInitialMesh()
 {
-    // init linearizer for initial mesh
-    Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->meshInitial());
-    m_linInitialMeshView.process_solution(&initial);
+    m_initialMeshIsPrepared = false;
+
+    if (Util::problem()->isMeshed())
+    {
+        // init linearizer for initial mesh
+        Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->meshInitial());
+        m_linInitialMeshView.process_solution(&initial);
+
+        m_initialMeshIsPrepared = true;
+
+        emit processed();
+    }
 }
 
 void MeshHermes::processSolutionMesh()
 {
-    // init linearizer for solution mesh
-    Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeSceneSolution()->sln(0)->get_mesh());
-    m_linSolutionMeshView.process_solution(&solution);
+    m_solutionMeshIsPrepared = false;
+
+    if (Util::problem()->isSolved())
+    {
+        // init linearizer for solution mesh
+        Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeSceneSolution()->sln(0)->get_mesh());
+        m_linSolutionMeshView.process_solution(&solution);
+
+        m_solutionMeshIsPrepared = true;
+
+        emit processed();
+    }    
 }
 
-void MeshHermes::meshed()
+void MeshHermes::processMeshed()
 {
-    qDebug("MeshHermes::meshed()");
+    qDebug("MeshHermes::processMeshed()");
 
-    processInitialMesh();
+    QTimer::singleShot(0, this, SLOT(processInitialMesh()));
 }
 
-void MeshHermes::solved()
+void MeshHermes::processSolved()
 {
-    qDebug("MeshHermes::solved()");
+    qDebug("MeshHermes::processSolved()");
 
-    processSolutionMesh();
-    processOrder();
+    QTimer::singleShot(0, this, SLOT(processSolutionMesh()));
+    QTimer::singleShot(0, this, SLOT(processOrder()));
     //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
 }
 
@@ -94,6 +121,8 @@ SceneViewMesh::SceneViewMesh(QWidget *parent): SceneViewCommon2D(parent),
 
     connect(Util::problem(), SIGNAL(meshed()), this, SLOT(doInvalidated()));
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
+
+    connect(m_meshHermes, SIGNAL(processed()), this, SLOT(updateGL()));
 }
 
 SceneViewMesh::~SceneViewMesh()
@@ -120,8 +149,14 @@ void SceneViewMesh::doInvalidated()
     m_listSolutionMesh = -1;
     m_listOrder = -1;
 
-    if (Util::problem()->isMeshed()) m_meshHermes->meshed();
-    if (Util::problem()->isSolved()) m_meshHermes->solved();
+    // actions
+    actSceneModeMesh->setEnabled(Util::problem()->isMeshed());
+
+    if (Util::problem()->isMeshed())
+        m_meshHermes->processMeshed();
+
+    if (Util::problem()->isSolved())
+        m_meshHermes->processSolved();
 
     SceneViewCommon::doInvalidated();
 }
@@ -218,6 +253,7 @@ void SceneViewMesh::paintGeometry()
 void SceneViewMesh::paintInitialMesh()
 {
     if (!Util::problem()->isMeshed()) return;
+    if (!m_meshHermes->initialMeshIsPrepared()) return;
 
     loadProjection2d(true);
 
@@ -248,6 +284,7 @@ void SceneViewMesh::paintInitialMesh()
 void SceneViewMesh::paintSolutionMesh()
 {
     if (!Util::problem()->isSolved()) return;
+    if (!m_meshHermes->solutionMeshIsPrepared()) return;
 
     loadProjection2d(true);
 
@@ -279,6 +316,7 @@ void SceneViewMesh::paintSolutionMesh()
 void SceneViewMesh::paintOrder()
 {
     if (!Util::problem()->isSolved()) return;
+    if (!m_meshHermes->orderIsPrepared()) return;
 
     loadProjection2d(true);
 

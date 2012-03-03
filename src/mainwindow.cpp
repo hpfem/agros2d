@@ -87,20 +87,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
     connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), sceneViewGeometry, SLOT(doSceneGeometryModeSet(QAction *)));
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewGeometry, SLOT(doDefaultValues()));
+    connect(Util::scene(), SIGNAL(cleared()), sceneViewGeometry, SLOT(clear()));
 
     // mesh
-    connect(postprocessorView, SIGNAL(apply()), sceneViewMesh, SLOT(doInvalidated()));
-    connect(Util::scene(), SIGNAL(cleared()), postprocessorView, SLOT(doDefaultValues()));
+    connect(Util::scene(), SIGNAL(cleared()), postprocessorView, SLOT(clear()));
+    connect(postprocessorView, SIGNAL(apply()), sceneViewMesh, SLOT(clear()));
 
     // postprocessor 2d
     connect(sceneViewPost2D, SIGNAL(mousePressed()), resultsView, SLOT(doShowResults()));
     connect(sceneViewPost2D, SIGNAL(mousePressed(const Point &)), resultsView, SLOT(doShowPoint(const Point &)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
-    connect(postprocessorView, SIGNAL(apply()), sceneViewPost2D, SLOT(doInvalidated()));
     connect(resultsView->btnSelectMarker, SIGNAL(clicked()), sceneViewPost2D->actSceneViewSelectByMarker, SLOT(trigger()));
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(doDefaultValues()));
+    connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(clear()));
+    connect(postprocessorView, SIGNAL(apply()), sceneViewPost2D, SLOT(clear()));
 
     // postprocessor 3d
     //
@@ -1420,15 +1420,6 @@ void MainWindow::doInvalidated()
     // set controls
     Util::scene()->actTransform->setEnabled(false);
 
-    sceneViewGeometry->actSceneViewSelectRegion->setEnabled(false);
-
-    sceneViewPost2D->actPostprocessorModeGroup->setEnabled(false);
-    sceneViewPost2D->actSceneViewSelectByMarker->setEnabled(false);
-
-    sceneViewPost3D->actSetProjectionXY->setEnabled(false);
-    sceneViewPost3D->actSetProjectionXZ->setEnabled(false);
-    sceneViewPost3D->actSetProjectionYZ->setEnabled(false);
-
     actSceneZoomRegion->setChecked(false);
     sceneViewGeometry->actSceneZoomRegion = NULL;
     sceneViewMesh->actSceneZoomRegion = NULL;
@@ -1439,8 +1430,6 @@ void MainWindow::doInvalidated()
     {
         tabLayout->setCurrentWidget(sceneViewGeometry);
         Util::scene()->actTransform->setEnabled(true);
-
-        sceneViewGeometry->actSceneViewSelectRegion->setEnabled(true);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomOut()));
@@ -1460,9 +1449,6 @@ void MainWindow::doInvalidated()
     {
         tabLayout->setCurrentWidget(sceneViewPost2D);
 
-        sceneViewPost2D->actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
-        sceneViewPost2D->actSceneViewSelectByMarker->setEnabled(Util::problem()->isSolved());
-
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPost2D, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPost2D, SLOT(doZoomOut()));
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewPost2D, SLOT(doZoomBestFit()));
@@ -1471,10 +1457,6 @@ void MainWindow::doInvalidated()
     if (sceneViewPost3D->actSceneModePost3D->isChecked())
     {
         tabLayout->setCurrentWidget(sceneViewPost3D);
-
-        sceneViewPost3D->actSetProjectionXY->setEnabled(true);
-        sceneViewPost3D->actSetProjectionXZ->setEnabled(true);
-        sceneViewPost3D->actSetProjectionYZ->setEnabled(true);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomOut()));
@@ -1495,7 +1477,7 @@ void MainWindow::doInvalidated()
     actExportVTKScalar->setEnabled(Util::problem()->isSolved());
     actExportVTKOrder->setEnabled(Util::problem()->isSolved());
 
-    postprocessorView->updateControls();
+    QTimer::singleShot(0, postprocessorView, SLOT(updateControls()));
 
     // set current timestep
 //    cmbTimeStep->setCurrentIndex(Util::problem()->timeStep());

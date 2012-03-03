@@ -24,6 +24,47 @@
 #include "sceneview_common3d.h"
 
 template <typename Scalar> class SceneSolution;
+template <typename Scalar> class ViewScalarFilter;
+
+class Post3DHermes : public QObject
+{
+    Q_OBJECT
+
+public:
+    Post3DHermes();
+    ~Post3DHermes();
+
+    void clear();
+
+    // initial mesh
+    inline bool initialMeshIsPrepared() { return m_initialMeshIsPrepared; }
+    inline Hermes::Hermes2D::Views::Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
+
+    // scalar view
+    inline bool scalarIsPrepared() { return m_scalarIsPrepared; }
+    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
+
+signals:
+    void processed();
+
+public slots:
+    virtual void processSolved();
+
+private:
+    // initial mesh
+    bool m_initialMeshIsPrepared;
+    Hermes::Hermes2D::Views::Linearizer m_linInitialMeshView;
+
+    // scalar view
+    bool m_scalarIsPrepared;
+    ViewScalarFilter<double> *m_slnScalarView; // scalar view solution
+    Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
+
+private slots:
+    // process
+    void processInitialMesh();
+    void processRangeScalar();
+};
 
 class SceneViewPost3D : public SceneViewCommon3D
 {
@@ -40,6 +81,8 @@ public:
     QAction *actSceneModePost3D;
 
 protected:
+    virtual int textureScalar() { return 3; }
+
     virtual void mousePressEvent(QMouseEvent *event);
 
     virtual void paintGL();
@@ -54,6 +97,8 @@ private:
     int m_listScalarField3DSolid;
     int m_listParticleTracing;
     int m_listModel;
+
+    Post3DHermes *m_post3DHermes;
 
     void createActionsPost3D();
 };

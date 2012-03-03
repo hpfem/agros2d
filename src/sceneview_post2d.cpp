@@ -40,6 +40,10 @@ Post2DHermes::Post2DHermes()
     m_slnScalarView = NULL;
     m_slnVectorXView = NULL;
     m_slnVectorYView = NULL;
+
+    m_contourIsPrepared = false;
+    m_scalarIsPrepared = false;
+    m_vectorIsPrepared = false;
 }
 
 
@@ -50,7 +54,8 @@ Post2DHermes::~Post2DHermes()
 
 void Post2DHermes::clear()
 {
-    // countour
+    // contour
+    m_contourIsPrepared = false;
     if (m_slnContourView)
     {
         delete m_slnContourView;
@@ -58,6 +63,7 @@ void Post2DHermes::clear()
     }
 
     // scalar
+    m_scalarIsPrepared = false;
     if (m_slnScalarView)
     {
         delete m_slnScalarView;
@@ -65,6 +71,7 @@ void Post2DHermes::clear()
     }
 
     // vector
+    m_vectorIsPrepared = false;
     if (m_slnVectorXView)
     {
         delete m_slnVectorXView;
@@ -79,6 +86,8 @@ void Post2DHermes::clear()
 
 void Post2DHermes::processRangeContour()
 {
+    m_contourIsPrepared = false;
+
     if (Util::problem()->isSolved() && Util::config()->contourVariable != "")
     {
         if (m_slnContourView)
@@ -101,12 +110,16 @@ void Post2DHermes::processRangeContour()
         // deformed shape
         if (Util::config()->deformContour)
             Util::scene()->activeViewField()->module()->deform_shape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
+
+        m_contourIsPrepared = true;
+
+        emit processed();
     }
 }
 
 void Post2DHermes::processRangeScalar()
 {
-    logMessage("SceneSolution::processRangeScalar()");
+    m_scalarIsPrepared = false;
 
     if (Util::problem()->isSolved() && Util::config()->scalarVariable != "")
     {
@@ -127,12 +140,16 @@ void Post2DHermes::processRangeScalar()
          if (Util::config()->deformScalar)
              Util::scene()->activeViewField()->module()->deform_shape(m_linScalarView.get_vertices(),
                                                                       m_linScalarView.get_num_vertices());
+
+         m_scalarIsPrepared = true;
+
+         emit processed();
     }
 }
 
 void Post2DHermes::processRangeVector()
 {
-    logMessage("SceneSolution::processRangeVector()");
+    m_vectorIsPrepared = false;
 
     if (Util::problem()->isSolved() && Util::config()->vectorVariable != "")
     {
@@ -161,16 +178,20 @@ void Post2DHermes::processRangeVector()
         if (Util::config()->deformVector)
             Util::scene()->activeViewField()->module()->deform_shape(m_vecVectorView.get_vertices(),
                                                                      m_vecVectorView.get_num_vertices());
+
+        m_vectorIsPrepared = true;
+
+        emit processed();
     }
 }
 
-void Post2DHermes::solved()
+void Post2DHermes::processSolved()
 {
-    qDebug("Post2DHermes::solved()");
+    qDebug("Post2DHermes::processSolved()");
 
-    processRangeContour();
-    processRangeScalar();
-    // processRangeVector();
+    QTimer::singleShot(0, this, SLOT(processRangeContour()));
+    QTimer::singleShot(0, this, SLOT(processRangeScalar()));
+    // QTimer::singleShot(0, this, SLOT(processRangeVector()));
 }
 
 // ************************************************************************************************
@@ -188,6 +209,8 @@ SceneViewPost2D::SceneViewPost2D(QWidget *parent) : SceneViewMesh(parent),
     m_post2DHermes = new Post2DHermes();
 
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
+
+    connect(m_post2DHermes, SIGNAL(processed()), this, SLOT(updateGL()));
 }
 
 SceneViewPost2D::~SceneViewPost2D()
@@ -391,20 +414,17 @@ void SceneViewPost2D::paintGL()
 
 void SceneViewPost2D::resizeGL(int w, int h)
 {
-    SceneViewCommon::resizeGL(w, h);
-
     if (Util::problem()->isSolved())
     {
-        paletteFilter();
-        paletteUpdateTexAdjust();
-        paletteCreate();
+        paletteFilter(textureScalar());
+        paletteCreate(textureScalar());
     }
+
+    SceneViewCommon::resizeGL(w, h);
 }
 
 void SceneViewPost2D::paintGeometry()
 {
-    logMessage("SceneViewCommon::paintGeometry()");
-
     loadProjection2d(true);
 
     // edges
@@ -485,6 +505,7 @@ void SceneViewPost2D::paintScalarField()
     logMessage("SceneViewCommon::paintScalarField()");
 
     if (!Util::problem()->isSolved()) return;
+    if (!m_post2DHermes->scalarIsPrepared()) return;
 
     loadProjection2d(true);
 
@@ -510,7 +531,7 @@ void SceneViewPost2D::paintScalarField()
 
         // set texture for coloring
         glEnable(GL_TEXTURE_1D);
-        glBindTexture(GL_TEXTURE_1D, 1);
+        glBindTexture(GL_TEXTURE_1D, textureScalar());
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
         // set texture transformation matrix
@@ -569,9 +590,8 @@ void SceneViewPost2D::paintScalarField()
 
 void SceneViewPost2D::paintContours()
 {
-    logMessage("SceneViewCommon::paintContours()");
-
     if (!Util::problem()->isSolved()) return;
+    if (!m_post2DHermes->contourIsPrepared()) return;
 
     loadProjection2d(true);
 
@@ -635,8 +655,6 @@ void SceneViewPost2D::paintContours()
 
 void SceneViewPost2D::paintContoursTri(double3* vert, int3* tri, double step)
 {
-    logMessage("SceneViewCommon::paintContoursTri()");
-
     // sort the vertices by their value, keep track of the permutation sign
     int i, idx[3], perm = 0;
     memcpy(idx, tri, sizeof(idx));
@@ -684,9 +702,8 @@ void SceneViewPost2D::paintContoursTri(double3* vert, int3* tri, double step)
 
 void SceneViewPost2D::paintVectors()
 {
-    logMessage("SceneViewCommon::paintVectors()");
-
     if (!Util::problem()->isSolved()) return;
+    if (!m_post2DHermes->vectorIsPrepared()) return;
 
     loadProjection2d(true);
 
@@ -865,8 +882,6 @@ void SceneViewPost2D::paintVectors()
 
 void SceneViewPost2D::paintPostprocessorSelectedVolume()
 {
-    logMessage("SceneViewCommon::paintPostprocessorSelectedVolume()");
-
     if (!Util::problem()->isMeshed()) return;
 
     glEnable(GL_POLYGON_OFFSET_FILL);
@@ -954,8 +969,6 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
 
 void SceneViewPost2D::paintPostprocessorSelectedSurface()
 {
-    logMessage("SceneViewCommon::paintPostprocessorSelectedSurface()");
-
     // edges
     foreach (SceneEdge *edge, Util::scene()->edges->items()) {
         glColor3d(Util::config()->colorSelected.redF(), Util::config()->colorSelected.greenF(), Util::config()->colorSelected.blueF());
@@ -993,18 +1006,25 @@ void SceneViewPost2D::doInvalidated()
     m_listVectors = -1;
     m_listScalarField = -1;
 
-    paletteFilter();
-    paletteUpdateTexAdjust();
-    paletteCreate();
-
-    if (Util::problem()->isSolved() && Util::config()->scalarRangeAuto)
+    if (Util::problem()->isSolved())
     {
-        Util::config()->scalarRangeMin = m_post2DHermes->linScalarView().get_min_value();
-        Util::config()->scalarRangeMax = m_post2DHermes->linScalarView().get_max_value();
-        // cout << "setting limits (" << Util::config()->scalarRangeMin << ", " << Util::config()->scalarRangeMax << ")" << endl;
+        paletteFilter(textureScalar());
+        paletteCreate(textureScalar());
+
+        m_post2DHermes->processSolved();
+
+        if (Util::config()->scalarRangeAuto)
+        {
+            Util::config()->scalarRangeMin = m_post2DHermes->linScalarView().get_min_value();
+            Util::config()->scalarRangeMax = m_post2DHermes->linScalarView().get_max_value();
+            // cout << "setting limits (" << Util::config()->scalarRangeMin << ", " << Util::config()->scalarRangeMax << ")" << endl;
+        }
     }
 
-    if (Util::problem()->isSolved()) m_post2DHermes->solved();
+    // actions
+    actSceneModePost2D->setEnabled(Util::problem()->isSolved());
+    actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
+    actSceneViewSelectByMarker->setEnabled(Util::problem()->isSolved());
 
     SceneViewCommon::doInvalidated();
 }

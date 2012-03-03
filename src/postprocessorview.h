@@ -42,6 +42,7 @@ private:
     SceneViewPost2D *m_scenePost2D;
     SceneViewPost3D *m_scenePost3D;
 
+    QWidget *basic;
     QWidget *postprocessor;
     QWidget *workspace;
 
@@ -170,6 +171,7 @@ private:
     void saveAdvanced();
 
     void createControls();
+    QWidget *controlsBasic();
     QWidget *controlsPostprocessor();
     QWidget *controlsWorkspace();
 

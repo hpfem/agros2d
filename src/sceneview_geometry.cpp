@@ -141,6 +141,14 @@ void SceneViewGeometry::doSelectBasic()
     sceneBasicSelectDialog.exec();
 }
 
+void SceneViewGeometry::doInvalidated()
+{
+    // actions
+    actSceneViewSelectRegion->setEnabled(actSceneModeNode->isChecked() || actSceneModeEdge->isChecked() || actSceneModeLabel->isChecked());
+
+    SceneViewCommon::doInvalidated();
+}
+
 void SceneViewGeometry::clear()
 {
     SceneViewCommon2D::clear();

@@ -38,42 +38,42 @@ public:
 
     void clear();
 
-     // contour
-    inline ViewScalarFilter<double> *slnContourView() { return m_slnContourView; }
+    // contour
+    inline bool contourIsPrepared() { return m_contourIsPrepared; }
     inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
 
     // scalar view
-    inline ViewScalarFilter<double> *slnScalarView() { return m_slnScalarView; }
+    inline bool scalarIsPrepared() { return m_scalarIsPrepared; }
     inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
 
     // vector view
-    inline ViewScalarFilter<double> *slnVectorViewX() { return m_slnVectorXView; }
-    inline ViewScalarFilter<double> *slnVectorViewY() { return m_slnVectorYView; }
+    inline bool vectorIsPrepared() { return m_vectorIsPrepared; }
     inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
 
+signals:
+    void processed();
+
 public slots:
-    virtual void solved();
+    virtual void processSolved();
 
 private:
-    // mesh
-    Hermes::Hermes2D::Views::Linearizer m_linSolutionMeshView;
-
     // contour
+    bool m_contourIsPrepared;
     ViewScalarFilter<double> *m_slnContourView; // scalar view solution
     Hermes::Hermes2D::Views::Linearizer m_linContourView;
 
     // scalar view
+    bool m_scalarIsPrepared;
     ViewScalarFilter<double> *m_slnScalarView; // scalar view solution
     Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
 
     // vector view
+    bool m_vectorIsPrepared;
     ViewScalarFilter<double> *m_slnVectorXView; // vector view solution - x
     ViewScalarFilter<double> *m_slnVectorYView; // vector view solution - y
     Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
 
-    // order view
-    Hermes::Hermes2D::Views::Orderizer m_orderView;
-
+private slots:
     // process
     void processRangeContour();
     void processRangeScalar();
@@ -109,6 +109,8 @@ public:
     QAction *actPostprocessorModeVolumeIntegral;
 
 protected:
+    virtual int textureScalar() { return 2; }
+
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
 

@@ -60,9 +60,6 @@ void SceneViewCommon2D::clear()
     deleteTexture(m_backgroundTexture);
     m_backgroundTexture = -1;
 
-    doInvalidated();
-    doZoomBestFit();
-
     SceneViewCommon::clear();
 }
 

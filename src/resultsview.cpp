@@ -24,6 +24,7 @@
 #include "hermes2d/volumeintegral.h"
 #include "hermes2d/surfaceintegral.h"
 #include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 #include "ctemplate/template.h"
 
@@ -133,11 +134,14 @@ void ResultsView::doShowVolumeIntegral()
 
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
+        ctemplate::TemplateDictionary *field = volumeIntegrals.AddSectionDictionary("FIELD");
+        field->SetValue("FIELDNAME", fieldInfo->module()->name);
+
         VolumeIntegralValue volumeIntegralValue(fieldInfo);
         for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue.values.begin();
              it != volumeIntegralValue.values.end(); ++it)
         {
-            ctemplate::TemplateDictionary *item = volumeIntegrals.AddSectionDictionary("ITEM");
+            ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
             item->SetValue("NAME", it->first->name);
             item->SetValue("SHORTNAME", it->first->shortname_html);
             item->SetValue("VALUE", QString("%1").arg(it->second, 0, 'e', 3).toStdString());
@@ -174,11 +178,14 @@ void ResultsView::doShowSurfaceIntegral()
 
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
+        ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");
+        field->SetValue("FIELDNAME", fieldInfo->module()->name);
+
         SurfaceIntegralValue surfaceIntegralValue(fieldInfo);
         for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue.values.begin();
              it != surfaceIntegralValue.values.end(); ++it)
         {
-            ctemplate::TemplateDictionary *item = surfaceIntegrals.AddSectionDictionary("ITEM");
+            ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
             item->SetValue("NAME", it->first->name);
             item->SetValue("SHORTNAME", it->first->shortname_html);
             item->SetValue("VALUE", QString("%1").arg(it->second, 0, 'e', 3).toStdString());
@@ -218,6 +225,9 @@ void ResultsView::doShowPoint()
 
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
+        ctemplate::TemplateDictionary *field = localPointValues.AddSectionDictionary("FIELD");
+        field->SetValue("FIELDNAME", fieldInfo->module()->name);
+
         LocalPointValue value(fieldInfo, m_point);
         for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin();
              it != value.values.end(); ++it)
@@ -225,7 +235,7 @@ void ResultsView::doShowPoint()
             if (it->first->is_scalar)
             {
                 // scalar variable
-                ctemplate::TemplateDictionary *item = localPointValues.AddSectionDictionary("ITEM");
+                ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
                 item->SetValue("NAME", it->first->name);
                 item->SetValue("SHORTNAME", it->first->shortname_html);
                 item->SetValue("VALUE", QString("%1").arg(it->second.scalar, 0, 'e', 3).toStdString());
@@ -234,17 +244,17 @@ void ResultsView::doShowPoint()
             else
             {
                 // vector variable
-                ctemplate::TemplateDictionary *itemMagnitude = localPointValues.AddSectionDictionary("ITEM");
+                ctemplate::TemplateDictionary *itemMagnitude = field->AddSectionDictionary("ITEM");
                 itemMagnitude->SetValue("NAME", it->first->name);
                 itemMagnitude->SetValue("SHORTNAME", it->first->shortname_html);
                 itemMagnitude->SetValue("VALUE", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3).toStdString());
                 itemMagnitude->SetValue("UNIT", it->first->unit_html);
-                ctemplate::TemplateDictionary *itemX = localPointValues.AddSectionDictionary("ITEM");
+                ctemplate::TemplateDictionary *itemX = field->AddSectionDictionary("ITEM");
                 itemX->SetValue("SHORTNAME", it->first->shortname_html);
                 itemX->SetValue("PART", Util::scene()->problemInfo()->labelX().toLower().toStdString());
                 itemX->SetValue("VALUE", QString("%1").arg(it->second.vector.x, 0, 'e', 3).toStdString());
                 itemX->SetValue("UNIT", it->first->unit_html);
-                ctemplate::TemplateDictionary *itemY = localPointValues.AddSectionDictionary("ITEM");
+                ctemplate::TemplateDictionary *itemY = field->AddSectionDictionary("ITEM");
                 itemY->SetValue("SHORTNAME", it->first->shortname_html);
                 itemY->SetValue("PART", Util::scene()->problemInfo()->labelY().toLower().toStdString());
                 itemY->SetValue("VALUE", QString("%1").arg(it->second.vector.y, 0, 'e', 3).toStdString());

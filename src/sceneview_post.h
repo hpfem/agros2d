@@ -39,13 +39,15 @@ protected:
     double m_texScale;
     double m_texShift;
 
+    virtual int textureScalar() { return -1; }
+
     void paintScalarFieldColorBar(double min, double max);
 
     // palette
     const double *paletteColor(double x) const;
     const double *paletteColorOrder(int n) const;
-    void paletteCreate();
-    void paletteFilter();
+    void paletteCreate(int texture);
+    void paletteFilter(int texture);
     void paletteUpdateTexAdjust();
 
 public slots:

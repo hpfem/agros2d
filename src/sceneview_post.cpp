@@ -53,13 +53,11 @@ void SceneViewPostInterface::timeStepChanged(bool showViewProgress)
         //m_sceneSolution->processView(showViewProgress);
     }
 
-    doInvalidated();
+    // doInvalidated();
 }
 
 const double* SceneViewPostInterface::paletteColor(double x) const
 {
-    logMessage("SceneViewCommon::paletteColor()");
-
     switch (Util::config()->paletteType)
     {
     case Palette_Jet:
@@ -183,8 +181,6 @@ const double* SceneViewPostInterface::paletteColor(double x) const
 
 const double* SceneViewPostInterface::paletteColorOrder(int n) const
 {
-    logMessage("SceneViewCommon::paletteColorOrder()");
-
     switch (Util::config()->orderPaletteOrderType)
     {
     case PaletteOrder_Hermes:
@@ -221,34 +217,29 @@ const double* SceneViewPostInterface::paletteColorOrder(int n) const
     }
 }
 
-void SceneViewPostInterface::paletteCreate()
+void SceneViewPostInterface::paletteCreate(int texture)
 {
-    logMessage("SceneViewCommon::paletteCreate()");
-
-    int i;
     unsigned char palette[256][3];
-    for (i = 0; i < Util::config()->paletteSteps; i++)
+    for (int i = 0; i < Util::config()->paletteSteps; i++)
     {
         const double* color = paletteColor((double) i / Util::config()->paletteSteps);
         palette[i][0] = (unsigned char) (color[0] * 255);
         palette[i][1] = (unsigned char) (color[1] * 255);
         palette[i][2] = (unsigned char) (color[2] * 255);
     }
-    for (i = Util::config()->paletteSteps; i < 256; i++)
+    for (int i = Util::config()->paletteSteps; i < 256; i++)
         memcpy(palette[i], palette[Util::config()->paletteSteps-1], 3);
 
-    glBindTexture(GL_TEXTURE_1D, 1);
+    glBindTexture(GL_TEXTURE_1D, texture);
     glTexImage1D(GL_TEXTURE_1D, 0, 3, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, palette);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 }
 
-void SceneViewPostInterface::paletteFilter()
+void SceneViewPostInterface::paletteFilter(int texture)
 {
-    logMessage("SceneViewCommon::paletteFilter()");
-
     int palFilter = Util::config()->paletteFilter ? GL_LINEAR : GL_NEAREST;
-    glBindTexture(GL_TEXTURE_1D, 1);
+    glBindTexture(GL_TEXTURE_1D, texture);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, palFilter);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, palFilter);
     paletteUpdateTexAdjust();
@@ -256,8 +247,6 @@ void SceneViewPostInterface::paletteFilter()
 
 void SceneViewPostInterface::paletteUpdateTexAdjust()
 {
-    logMessage("SceneViewCommon::paletteUpdateTexAdjust()");
-
     if (Util::config()->paletteFilter)
     {
         m_texScale = (double) (Util::config()->paletteSteps-1) / 256.0;
@@ -310,7 +299,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
 
     // palette
     glEnable(GL_TEXTURE_1D);
-    glBindTexture(GL_TEXTURE_1D, 1);
+    glBindTexture(GL_TEXTURE_1D, textureScalar());
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
     glBegin(GL_QUADS);
