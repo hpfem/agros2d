@@ -262,6 +262,7 @@ void pythonShowGrid(bool show);
 void pythonShowGeometry(bool show);
 void pythonShowInitialMesh(bool show);
 void pythonShowSolutionMesh(bool show);
+void pythonShowParticleTracing(bool show);
 void pythonShowContours(bool show);
 void pythonShowVectors(bool show);
 

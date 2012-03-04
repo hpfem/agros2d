@@ -111,6 +111,7 @@ cdef extern from "../pythonlabagros.h":
     void pythonShowGeometry(int show)
     void pythonShowInitialMesh(int show)
     void pythonShowSolutionMesh(int show)
+    void pythonShowParticleTracing(int show)
     void pythonShowContours(int show)
     void pythonShowVectors(int show)
 
@@ -384,6 +385,9 @@ def showinitialmesh(int show):
 
 def showsolutionmesh(int show):
     pythonShowSolutionMesh(int(show))
+
+def showparticletracing(int show):
+    pythonShowParticleTracing(int(show))
 
 def showcontours(int show):
     pythonShowContours(int(show))

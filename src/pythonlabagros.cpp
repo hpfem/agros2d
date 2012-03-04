@@ -260,8 +260,6 @@ void PyParticleTracing::solve()
     if (!Util::scene()->sceneSolution()->isSolved())
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
-    sceneView()->sceneViewSettings().showParticleTracing = true;
-
     // store values
     // double particleStartingRadius = Util::config()->particleStartingRadius;
     // int particleNumberOfParticles = Util::config()->particleNumberOfParticles;
@@ -1164,6 +1162,15 @@ void pythonShowSolutionMesh(bool show)
     logMessage("pythonShowSolutionMesh()");
 
     sceneView()->sceneViewSettings().showSolutionMesh = show;
+    sceneView()->doInvalidated();
+}
+
+// showparticletracing(show = {True, False})
+void pythonShowParticleTracing(bool show)
+{
+    logMessage("pythonShowParticleTracing()");
+
+    sceneView()->sceneViewSettings().showParticleTracing = show;
     sceneView()->doInvalidated();
 }
 
