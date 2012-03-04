@@ -181,7 +181,8 @@ void WeakFormAgros<Scalar>::addForm(WFType type, Hermes::Hermes2D::Form<Scalar> 
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area, ParserFormExpression *form, int offsetI, int offsetJ, Marker* marker, SceneMaterial* marker_second)
+void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area, ParserFormExpression *form, int offsetI, int offsetJ,
+                                         Marker* marker, SceneMaterial* marker_second, CouplingInfo* couplingInfo)
 {
     //TODO zatim jen interpretovane formy. Pak se musi nejak rozlisit, jestli je registrovana forma z modulu nebo ze zdruzeni
 //    string problemId = fieldInfo->fieldId().toStdString() + "_" +
@@ -206,21 +207,31 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
         custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym, form->expression, marker, marker_second);
 //    }
 
+    //Decide what solution to push, implicitly none
+    SolutionID solutionID(NULL, 0, 0, SolutionType_NonExisting);
 
-    //TODO zatim neuvazujeme transientni. Pak se musi vyresit, jakym zpusobem to vubec zadavat (do ktereho fieldInfa atp)
-//    if (fieldInfo->analysisType() == AnalysisType_Transient)
-//        for(int sol_comp = 0; sol_comp < fieldInfo->module()->number_of_solution(); sol_comp++)
-//            custom_form->ext.push_back(solution.at(solution.size() - fieldInfo->module()->number_of_solution() + sol_comp));
+    // weak coupling, push solutions
+    if(marker_second && couplingInfo)
+    {
+        // TODO at the present moment, it is impossible to have more sources !
+        assert(field->m_couplingSources.size() <= 1);
 
-
-        /// weak coupling ... push solution...
-
-        foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
+        solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionType_Finer);
+    }
+    else{
+        if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
         {
-            SolutionID solutionID(couplingInfo->sourceField(), 0, 0, SolutionType_Normal);
-            custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, 0).sln.get());
+            solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionType_Finer);
         }
+    }
 
+    if(solutionID.solutionType != SolutionType_NonExisting)
+    {
+        for(int comp = 0; comp < solutionID.fieldInfo->module()->number_of_solution(); comp++)
+        {
+            custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.get());
+        }
+    }
 
     if (custom_form)
     {
@@ -292,7 +303,8 @@ void WeakFormAgros<Scalar>::registerForms()
                           it < couplingInfo->coupling()->weakform_vector_volume.end(); ++it)
                     {
                          registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
-                                      m_block->offset(field), m_block->offset(field), material, Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()));
+                                      m_block->offset(field), m_block->offset(field), material,
+                                      Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
                     }
 
 

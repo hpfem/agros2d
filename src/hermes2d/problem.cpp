@@ -501,6 +501,8 @@ SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, Solu
         solutionIDNormal.solutionType = SolutionType_Normal;
         assert(m_multiSolutions.contains(solutionIDNormal));
     }
+
+    return solutionID;
 }
 
 SolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)

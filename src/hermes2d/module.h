@@ -107,7 +107,7 @@ public:
 
 private:
     void registerForm(WFType type, Field* field, string area, ParserFormExpression* form, int offsetI, int offsetJ,
-                      Marker* marker, SceneMaterial* marker_second = NULL /*,CouplingInfo* couplingInfo = NULL*/);
+                      Marker* marker, SceneMaterial* marker_second = NULL, CouplingInfo* couplingInfo = NULL);
     void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;
