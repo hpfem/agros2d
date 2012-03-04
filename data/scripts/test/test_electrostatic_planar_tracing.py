@@ -52,6 +52,9 @@ tracing.maximum_steps = 2000
 tracing.tolerance = 1e-8
 
 tracing.solve()
+x, y, z = tracing.positions()
+vx, vy, vz = tracing.velocities()
+
 showparticletracing(True)
 
 """
@@ -63,9 +66,6 @@ print("mass = {0} kg".format(tracing.mass))
 print("charge  {0} C".format(tracing.charge))
 print("drag force: rho = {0} kg/m3, area = {1} m2, coeff = {2}".format(tracing.drag_force_density, tracing.drag_force_reference_area, tracing.drag_force_coefficient))
 print("tolerance: steps = {0}, tolerance = {1}".format(tracing.maximum_steps, tracing.tolerance))
-
-x, y, z = tracing.positions()
-vx, vy, vz = tracing.velocities()
 
 print("end position and velocity")
 print("x", x[-1], "y", y[-1], "z", z[-1])
