@@ -3,6 +3,9 @@
 from libcpp.vector cimport vector
 cdef vector[double] vectd
 
+cdef extern from "math.h":
+    double sqrt(double value)
+
 # script functions
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
@@ -15,10 +18,41 @@ cdef extern from "../pythonlabagros.h":
     cdef cppclass PyParticleTracing:
         PyParticleTracing()
 
+        void setInitialPosition(double x, double y)
+        void initialPosition(double x, double y)
+
+        void setInitialVelocity(double x, double y)
+        void initialVelocity(double x, double y)
+
+        void setParticleMass(double mass)
+        double particleMass()
+
+        void setParticleCharge(double charge)
+        double particleCharge()
+
+        void setIncludeGravitation(int incl)
+        int includeGravitation()
+
+        void setTerminateOnDifferentMaterial(int terminate)
+        int terminateOnDifferentMaterial()
+
+        void setDragForceDensity(double rho)
+        double dragForceDensity()
+        void setDragForceReferenceArea(double area)
+        double dragForceReferenceArea()
+        void setDragForceCoefficient(double coeff)
+        double dragForceCoefficient()
+
+        void setMaximumTolerance(double tolerance)
+        double maximumTolerance()
+        void setMaximumSteps(int steps)
+        int maximumSteps()
+
         void solve() except +
 
         int length()
-        void x(vector[double] values)
+        void positions(vector[double] x, vector[double] y, vector[double] z)
+        void velocities(vector[double] x, vector[double] y, vector[double] z)
 
     void pythonMessage(char *str)
     char *pythonVersion()
@@ -97,24 +131,118 @@ cdef class ParticleTracing:
     def solve(self):
         self.thisptr.solve()
 
+    # length
     def length(self):
         return self.thisptr.length()
 
-    # x
-    def x(self):
-        out = list()
-        cdef vector[double] values
-        self.thisptr.x(values)
+    # positions - x, y, z or r, z, phi
+    def positions(self):
+        outx = list()
+        outy = list()
+        outz = list()
+        cdef vector[double] x
+        cdef vector[double] y
+        cdef vector[double] z
+        self.thisptr.positions(x, y, z)
         for i in range(self.thisptr.length()):
-            out.append(values[i])
-        return out
+            outx.append(x[i])
+            outy.append(y[i])
+            outz.append(z[i])
+        return outx, outy, outz
 
-    # frequency
-    # property frequency:
-    #     def __get__(self):
-    #         return self.thisptr.getFrequency()
-    #     def __set__(self, frequency):
-    #         self.thisptr.setFrequency(frequency)
+    # velocities - x, y, z or r, z, phi
+    def velocities(self):
+        outx = list()
+        outy = list()
+        outz = list()
+        cdef vector[double] x
+        cdef vector[double] y
+        cdef vector[double] z
+        self.thisptr.velocities(x, y, z)
+        for i in range(self.thisptr.length()):
+            outx.append(x[i])
+            outy.append(y[i])
+            outz.append(z[i])
+        return outx, outy, outz
+
+    # initial position
+    def initial_position(self):
+        cdef double x
+        cdef double y
+        self.thisptr.initialPosition(x, y)
+        return x, y
+    def set_initial_position(self, x, y):
+        self.thisptr.setInitialPosition(x, y)
+
+    # initial velocity
+    def initial_velocity(self):
+        cdef double x
+        cdef double y
+        self.thisptr.initialVelocity(x, y)
+        return x, y
+    def set_initial_velocity(self, x, y):
+        self.thisptr.setInitialVelocity(x, y)
+
+    # mass
+    property mass:
+        def __get__(self):
+            return self.thisptr.particleMass()
+        def __set__(self, mass):
+            self.thisptr.setParticleMass(mass)
+
+    # charge
+    property charge:
+        def __get__(self):
+            return self.thisptr.particleCharge()
+        def __set__(self, charge):
+            self.thisptr.setParticleCharge(charge)
+
+    # gravitational force
+    property include_gravitation:
+        def __get__(self):
+            return self.thisptr.includeGravitation()
+        def __set__(self, incl):
+            self.thisptr.setIncludeGravitation(incl)
+
+    # terminate on different material
+    property terminate_on_different_material:
+        def __get__(self):
+            return self.thisptr.terminateOnDifferentMaterial()
+        def __set__(self, terminate):
+            self.thisptr.setTerminateOnDifferentMaterial(terminate)
+
+    # drag force
+    property drag_force_density:
+        def __get__(self):
+            return self.thisptr.dragForceDensity()
+        def __set__(self, rho):
+            self.thisptr.setDragForceDensity(rho)
+
+    property drag_force_reference_area:
+        def __get__(self):
+            return self.thisptr.dragForceReferenceArea()
+        def __set__(self, area):
+            self.thisptr.setDragForceReferenceArea(area)
+
+    property drag_force_coefficient:
+        def __get__(self):
+            return self.thisptr.dragForceCoefficient()
+        def __set__(self, coeff):
+            self.thisptr.setDragForceCoefficient(coeff)
+
+    # maximum_steps
+    property maximum_steps:
+        def __get__(self):
+            return self.thisptr.maximumSteps()
+        def __set__(self, steps):
+            self.thisptr.setMaximumSteps(steps)
+
+    # tolerance
+    property tolerance:
+        def __get__(self):
+            return self.thisptr.maximumTolerance()
+        def __set__(self, tolerance):
+            self.thisptr.setMaximumTolerance(tolerance)
 
 # system
 

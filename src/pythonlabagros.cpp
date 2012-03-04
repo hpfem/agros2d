@@ -257,25 +257,64 @@ void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError
 // particle tracing
 void PyParticleTracing::solve()
 {
-    qDebug() << "particle tracing";
-
     if (!Util::scene()->sceneSolution()->isSolved())
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
-    // clear
-    positions.clear();
-    velocities.clear();
+    sceneView()->sceneViewSettings().showParticleTracing = true;
 
-    Util::scene()->computeParticleTracingPath(&positions, &velocities, false);
+    // store values
+    // double particleStartingRadius = Util::config()->particleStartingRadius;
+    // int particleNumberOfParticles = Util::config()->particleNumberOfParticles;
+    Util::config()->particleStartingRadius = 0.0;
+    Util::config()->particleNumberOfParticles = 1;
+
+    // clear
+    m_positions.clear();
+    m_velocities.clear();
+
+    Util::scene()->computeParticleTracingPath(&m_positions, &m_velocities, false);
+
+    // restore values
+    // Util::config()->particleStartingRadius = particleStartingRadius;
+    // Util::config()->particleNumberOfParticles = particleNumberOfParticles;
 }
 
-void PyParticleTracing::x(std::vector<double> &x)
+void PyParticleTracing::positions(std::vector<double> &x,
+                                  std::vector<double> &y,
+                                  std::vector<double> &z)
 {
-    std::vector<double> out;
+    std::vector<double> outX;
+    std::vector<double> outY;
+    std::vector<double> outZ;
     for (int i = 0; i < length(); i++)
-        out.push_back(positions[i].x);
+    {
+        outX.push_back(m_positions[i].x);
+        outY.push_back(m_positions[i].y);
+        outZ.push_back(m_positions[i].z);
+    }
 
-    x = out;
+    x = outX;
+    y = outY;
+    z = outZ;
+}
+
+void PyParticleTracing::velocities(std::vector<double> &x,
+                                   std::vector<double> &y,
+                                   std::vector<double> &z)
+{
+    std::vector<double> outX;
+    std::vector<double> outY;
+    std::vector<double> outZ;
+    for (int i = 0; i < length(); i++)
+    {
+        outX.push_back(m_velocities[i].x);
+        outY.push_back(m_velocities[i].y);
+        outZ.push_back(m_velocities[i].z);
+    }
+
+    x = outX;
+    y = outY;
+    z = outZ;
 }
 
 // version()

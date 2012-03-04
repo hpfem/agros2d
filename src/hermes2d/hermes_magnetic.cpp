@@ -832,18 +832,6 @@ Point3 HermesMagnetic::particleForce(Point3 point, Point3 velocity)
         return Point3(velocity.z * point.x * pointValue->B_real.y, // r
                       - velocity.z * point.x * pointValue->B_real.x, // z
                       velocity.y * pointValue->B_real.x - velocity.x * pointValue->B_real.y); // alpha
-
-        /*
-        Point3 fluxPlanar(pointValue->B_real.x * cos(point.z),
-                          pointValue->B_real.y,
-                          pointValue->B_real.x * sin(point.z));
-
-        Point3 forcePlanar(velocity.y * fluxPlanar.z - velocity.z * fluxPlanar.y,
-                           velocity.z * fluxPlanar.x - velocity.x * fluxPlanar.z,
-                           velocity.x * fluxPlanar.y - velocity.y * fluxPlanar.x);
-        */
-
-        // return forcePlanar;
     }
 }
 
