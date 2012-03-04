@@ -33,7 +33,6 @@ class Orderizer;
 }
 }
 }
-class Mesh;
 
 class Chart;
 class QwtPlotCurve;

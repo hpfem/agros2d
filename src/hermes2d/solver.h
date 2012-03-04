@@ -62,19 +62,6 @@ template <typename Scalar>
 class WeakFormAgros;
 
 
-enum SolverAction
-{
-    SolverAction_Solve,
-    SolverAction_AdaptivityStep,
-    SolverAction_TimeStep
-};
-
-struct SolverConfig
-{
-    SolverAction action;
-    double timeStep;
-};
-
 // solve
 template <typename Scalar>
 class Solver
@@ -93,14 +80,10 @@ private:
     // error
     bool isError;
 
-    // mesh file
-    Hermes::Hermes2D::Mesh *mesh;
-
     // weak form
     WeakFormAgros<Scalar> *m_wf;
     ProgressItemSolve *m_progressItemSolve;
 
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solution;
 
     // adaptivity
@@ -109,8 +92,9 @@ private:
     Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
-    void readMesh();
-    void createSpace();
+    Hermes::Hermes2D::Mesh* readMesh();
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > createSpace(Hermes::Hermes2D::Mesh* mesh);
+    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space);
 
     // if copyPrevious == true, last solutions will be used (intented for doAdaptivityStep function)
     void createSolutions(bool copyPrevious = false);
