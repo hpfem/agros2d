@@ -328,37 +328,43 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
                     arg(str.trimmed()).
                     arg(str.trimmed().length());
     }
-    // qDebug() << exp;
 
     // QTime time;
     // time.start();
-    PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+    PyObject *output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
     // qDebug() << time.elapsed();
 
     // parse result
-    PyObject *result = PyDict_GetItemString(m_dict, "result_rope_pythonlab");
-    if (result)
+    if (output)
     {
-        Py_INCREF(result);
-        PyObject *list;
-        if (PyArg_Parse(result, "O", &list))
+        PyObject *result = PyDict_GetItemString(m_dict, "result_rope_pythonlab");
+        if (result)
         {
-            int count = PyList_Size(list);
-            for (int i = 0; i < count; i++)
+            Py_INCREF(result);
+            PyObject *list;
+            if (PyArg_Parse(result, "O", &list))
             {
-                PyObject *item = PyList_GetItem(list, i);
+                int count = PyList_Size(list);
+                for (int i = 0; i < count; i++)
+                {
+                    PyObject *item = PyList_GetItem(list, i);
 
-                QString str = PyString_AsString(item);
+                    QString str = PyString_AsString(item);
 
-                // remove builtin methods
-                if (!str.startsWith("__"))
-                    out.append(str);
+                    // remove builtin methods
+                    if (!str.startsWith("__"))
+                        out.append(str);
+                }
             }
+            Py_DECREF(result);
         }
-        Py_DECREF(result);
-    }
 
-    PyRun_String("del result_rope_pythonlab", Py_single_input, m_dict, m_dict);
+        PyRun_String("del result_rope_pythonlab", Py_single_input, m_dict, m_dict);
+    }
+    else
+    {
+        PyErr_Clear();
+    }
 
     return out;
 }
@@ -395,7 +401,6 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
 
     return out;
 }
-
 
 ScriptResult PythonEngine::parseError()
 {    
@@ -474,10 +479,10 @@ QList<PythonVariable> PythonEngine::variableList()
 {
     QStringList filter_name;
     filter_name << "__builtins__" << "StdoutCatcher" << "python_engine_stdout" << "chdir"
-           << "python_engine_get_completion_file" << "python_engine_get_completion_string"
-           << "python_engine_get_completion_string_dot" << "PythonLabRopeProject"
-           << "pythonlab_rope_project"
-           << "python_engine_pyflakes_check";
+                << "python_engine_get_completion_file" << "python_engine_get_completion_string"
+                << "python_engine_get_completion_string_dot" << "PythonLabRopeProject"
+                << "pythonlab_rope_project"
+                << "python_engine_pyflakes_check";
 
     QStringList filter_type;
     filter_type << "builtin_function_or_method";
@@ -537,8 +542,8 @@ QList<PythonVariable> PythonEngine::variableList()
             var.value = PyString_AsString(PyObject_GetAttrString(value, "__name__"));
         }
         else if (var.type == "function"
-                || var.type == "instance"
-                || var.type == "classobj")
+                 || var.type == "instance"
+                 || var.type == "classobj")
         {
             // qDebug() << value->ob_type->tp_name;
         }
