@@ -87,7 +87,12 @@ void Post2DHermes::processRangeContour()
             m_slnContourView = NULL;
         }
 
-        if (Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable.toStdString())->is_scalar)
+        std::string variableName = Util::config()->contourVariable.toStdString();
+        Hermes::Module::LocalVariable* variable = Util::scene()->activeViewField()->module()->get_variable(variableName);
+        if(!variable)
+            cout << "error, trying to get variable " << variableName << " from module " << Util::scene()->activeViewField()->fieldId().toStdString() << endl;
+
+        if (variable->is_scalar)
             m_slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable.toStdString()),
                                                                                               PhysicFieldVariableComp_Scalar);
         else

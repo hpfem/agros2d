@@ -47,12 +47,15 @@ public:
     int offset(Field* field) const;
 
     LinearityType linearityType() const;
+    bool isTransient() const;
 
     // minimal nonlinear tolerance of individual fields
     double nonlinearTolerance() const;
 
     //maximal nonlinear steps of individual fields
     int nonlinearSteps() const;
+
+    double timeStep() const;
 
 //    Field* couplingSourceField(Coupling* coupling) const;
 //    Field* couplingTargetField(Coupling* coupling) const;

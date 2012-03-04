@@ -195,6 +195,8 @@ void Solver<Scalar>::createInitialSolution(Mesh* mesh, Hermes::vector<shared_ptr
             initialMSA.addComponent(solutionArray);
             totalComp++;
         }
+        SolutionID solutionID(field->fieldInfo(), 0, 0, SolutionType_Normal);
+        Util::solutionStore()->saveSolution(solutionID, initialMSA);
     }
 }
 

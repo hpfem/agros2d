@@ -106,6 +106,7 @@ public:
 //    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
+    //marker_second has to be specified for coupling forms. couplingInfo only for weak couplings
     void registerForm(WFType type, Field* field, string area, ParserFormExpression* form, int offsetI, int offsetJ,
                       Marker* marker, SceneMaterial* marker_second = NULL, CouplingInfo* couplingInfo = NULL);
     void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);

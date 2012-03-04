@@ -92,6 +92,14 @@ void Block::solve()
 
     solver.init(m_progressItemSolve, m_wf, this);
 
+    SolverConfig solverConfig;
+    if(this->isTransient()){
+        solverConfig.action = SolverAction_TimeStep;
+        solverConfig.timeStep = this->timeStep();
+    }
+    else
+        solverConfig.action = SolverAction_Solve;
+
     solver.solve(SolverConfig());
 
 
@@ -119,6 +127,17 @@ void Block::solve()
 //        //TODO
 //        parentProblem()->saveSolution(fieldInfo, 0, 0, solutionArrays);
 //    }
+}
+
+bool Block::isTransient() const
+{
+    foreach (Field *field, m_fields)
+    {
+        if(field->fieldInfo()->analysisType() == AnalysisType_Transient)
+            return true;
+    }
+
+    return false;
 }
 
 int Block::numSolutions() const
@@ -195,6 +214,26 @@ int Block::nonlinearSteps() const
     }
 
     return steps;
+}
+
+double Block::timeStep() const
+{
+    double step = 0;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if(fieldInfo->analysisType() == AnalysisType_Transient)
+        {
+            if (step == 0)
+                step = fieldInfo->timeStep().number();
+
+            //TODO zatim moc nevim
+            assert(step == fieldInfo->timeStep().number());
+        }
+    }
+
+    return step;
 }
 
 Field* Block::field(FieldInfo *fieldInfo) const
@@ -429,7 +468,7 @@ void SolutionStore::saveSolution(SolutionID solutionID,  MultiSolutionArray<doub
 
 int SolutionStore::lastTimeStep(FieldInfo *fieldInfo)
 {
-    int timeStep = -1;
+    int timeStep = -999;
     foreach(SolutionID sid, m_multiSolutions.keys())
     {
         if((sid.fieldInfo == fieldInfo) && (sid.timeStep > timeStep))
@@ -456,7 +495,7 @@ int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, int timeStep)
     if(timeStep == -1)
         timeStep = lastTimeStep(fieldInfo);
 
-    int adaptiveStep = -1;
+    int adaptiveStep = -999;
     foreach(SolutionID sid, m_multiSolutions.keys())
     {
         if((sid.fieldInfo == fieldInfo) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
