@@ -210,11 +210,14 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             pupdy = 0.0;
         }
 
-        if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+        if(! m_material2)
         {
-            puptval = ext->fn[this->j]->val[i];
-            puptdx = ext->fn[this->j]->dx[i];
-            puptdy = ext->fn[this->j]->dy[i];
+            if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+            {
+                puptval = ext->fn[this->j]->val[i];
+                puptdx = ext->fn[this->j]->dx[i];
+                puptdy = ext->fn[this->j]->dy[i];
+            }
         }
 
         try
@@ -315,18 +318,24 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             pupdy = 0.0;
         }
 
-        if (m_fieldInfo->analysisType() == AnalysisType_Transient)
-        {
-            puptval = ext->fn[this->j]->val[i];
-            puptdx = ext->fn[this->j]->dx[i];
-            puptdy = ext->fn[this->j]->dy[i];
+        //TODO There might be more sources (components! )
+        if(m_material2){
+            // we have material2 -> it is coupling form, without time parameter
+            if (ext->get_nf() > 0)
+            {
+                source = ext->fn[0]->val[i];
+                sourcedx = ext->fn[0]->dx[i];
+                sourcedy = ext->fn[0]->dy[i];
+            }
         }
-
-        //TODO TEMPORARY... has to be solved with respect to passing previous time solutions....
-        if (ext->get_nf() > 0){
-            source = ext->fn[0]->val[i];
-            sourcedx = ext->fn[0]->dx[i];
-            sourcedy = ext->fn[0]->dy[i];
+        else
+        {
+            if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+            {
+                puptval = ext->fn[this->j]->val[i];
+                puptdx = ext->fn[this->j]->dx[i];
+                puptdy = ext->fn[this->j]->dy[i];
+            }
         }
 
         try

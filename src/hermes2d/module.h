@@ -50,7 +50,7 @@ class ParserFormEssential;
 class ProgressItemSolve;
 
 class FieldInfo;
-struct Coupling;
+class CouplingInfo;
 
 template<typename Scalar>
 class InitialCondition : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
@@ -102,11 +102,12 @@ public:
 
     void registerForms();
 
-    // previous solution
-    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
+//    // previous solution
+//    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
-    void registerForm(WFType type, Field* field, string area, ParserFormExpression* form, int offsetI, int offsetJ, Marker* marker, SceneMaterial* marker_second = NULL);
+    void registerForm(WFType type, Field* field, string area, ParserFormExpression* form, int offsetI, int offsetJ,
+                      Marker* marker, SceneMaterial* marker_second = NULL /*,CouplingInfo* couplingInfo = NULL*/);
     void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;

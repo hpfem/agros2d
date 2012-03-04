@@ -218,7 +218,7 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
         foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
         {
             SolutionID solutionID(couplingInfo->sourceField(), 0, 0, SolutionType_Normal);
-            custom_form->ext.push_back(Util::solutionStore()->solution(solutionID).sln.get());
+            custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, 0).sln.get());
         }
 
 

@@ -62,19 +62,6 @@ template <typename Scalar>
 class WeakFormAgros;
 
 
-enum SolverAction
-{
-    SolverAction_Solve,
-    SolverAction_AdaptivityStep,
-    SolverAction_TimeStep
-};
-
-struct SolverConfig
-{
-    SolverAction action;
-    double timeStep;
-};
-
 // solve
 template <typename Scalar>
 class Solver

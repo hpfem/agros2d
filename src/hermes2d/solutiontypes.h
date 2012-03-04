@@ -49,7 +49,8 @@ private:
 enum SolutionType{
     SolutionType_Normal,
     SolutionType_Reference,
-    SolutionType_NonExisting
+    SolutionType_NonExisting,
+    SolutionType_Finer  // used to choose reference if exists, normal otherwise
 };
 
 //const int LAST_ADAPTIVITY_STEP = -1;
@@ -83,6 +84,24 @@ inline bool operator<(const SolutionID &sid1, const SolutionID &sid2)
 
     return sid1.solutionType < sid2.solutionType;
 }
+
+inline bool operator==(const SolutionID &sid1, const SolutionID &sid2)
+{
+    return !((sid1 < sid2) || (sid2 < sid1));
+}
+
+enum SolverAction
+{
+    SolverAction_Solve,
+    SolverAction_AdaptivityStep,
+    SolverAction_TimeStep
+};
+
+struct SolverConfig
+{
+    SolverAction action;
+    double timeStep;
+};
 
 
 #endif // SOLUTIONTYPES_H

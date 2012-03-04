@@ -24,9 +24,9 @@
         <description>This model is an example.</description>
         <startup_script/>
         <fields>
-            <field field_id="heat" initial_condition="10" polynomial_order="2" number_of_refinements="0" weakforms="interpreted" analysis_type="transient">
+            <field field_id="heat" initial_condition="10" polynomial_order="2" number_of_refinements="0" weak_forms="interpreted" analysis_type="transient">
                 <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
+                <solver nonlinear_steps="10" linearity_type="newton" nonlinear_tolerance="1e-3"/>
                 <boundaries>
                     <boundary heat_heat_transfer_coefficient="0" external_temperature="" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Insulation">
                         <edge edge="0"/>

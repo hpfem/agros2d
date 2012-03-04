@@ -478,3 +478,40 @@ int SolutionStore::lastAdaptiveStep(Block *block, int timeStep)
     return adaptiveStep;
 }
 
+SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionType solutionType)
+{
+    SolutionID solutionID;
+    solutionID.fieldInfo = fieldInfo;
+    solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo);
+    solutionID.timeStep = lastTimeStep(fieldInfo);
+    solutionID.solutionType = solutionType;
+    if(solutionType == SolutionType_Finer)
+    {
+        solutionID.solutionType = SolutionType_Reference;
+        if(! m_multiSolutions.contains(solutionID))
+        {
+            solutionID.solutionType = SolutionType_Normal;
+        }
+    }
+
+    assert(m_multiSolutions.contains(solutionID));
+    if(solutionType == SolutionType_Reference)
+    {
+        SolutionID solutionIDNormal = solutionID;
+        solutionIDNormal.solutionType = SolutionType_Normal;
+        assert(m_multiSolutions.contains(solutionIDNormal));
+    }
+}
+
+SolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
+{
+    SolutionID solutionID = lastTimeAndAdaptiveSolution(block->m_fields.at(0)->fieldInfo(), solutionType);
+
+    foreach(Field* field, block->m_fields)
+    {
+        assert(lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType) == solutionID);
+    }
+
+    return solutionID;
+}
+
