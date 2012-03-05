@@ -1374,7 +1374,7 @@ void SceneView::paintOrderColorBar()
     int textWidth = fontMetrics().width("00");
     int textHeight = fontMetrics().height();
     Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? - (m_rulersAreaWidth.y/4.0)*m_scale2d*contextHeight() + 20.0 : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers && !is3DMode()) ? 1.8*fontMetrics().height() : 10.0);
     double scaleLeft = (contextWidth() - (20 + 3 * textWidth));
 
     // blended rectangle
@@ -1432,7 +1432,7 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
     int textHeight = fontMetrics().height();
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 30.0 : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers && !is3DMode()) ? 1.8*fontMetrics().height() : 10.0);
     double scaleLeft = (contextWidth() - (45.0 + textWidth));
     int numTicks = 11;
 
@@ -3083,10 +3083,10 @@ void SceneView::paintParticleTracingColorBar(double min, double max)
     int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
     int textHeight = fontMetrics().height();
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 30.0 : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers && !is3DMode()) ? 1.8*fontMetrics().height() : 10.0);
     double scaleLeft = (contextWidth()
                         - (((m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
-                             m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) ? 170.0 : 45) + textWidth));
+                             m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) ? scaleSize.x : 0.0) + 45.0 + textWidth));
     int numTicks = 11;
 
     // blended rectangle
