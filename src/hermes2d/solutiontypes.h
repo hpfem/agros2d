@@ -90,6 +90,8 @@ inline bool operator==(const SolutionID &sid1, const SolutionID &sid2)
     return !((sid1 < sid2) || (sid2 < sid1));
 }
 
+ostream& operator<<(ostream& output, const SolutionID& id);
+
 enum SolverAction
 {
     SolverAction_Solve,

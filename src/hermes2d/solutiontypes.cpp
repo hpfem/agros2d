@@ -1,5 +1,5 @@
 #include "solutiontypes.h"
-
+#include "scene.h"
 using namespace Hermes::Hermes2D;
 
 template <typename Scalar>
@@ -132,6 +132,13 @@ Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > MultiSolutionArray
 
     return spaces;
 }
+
+ostream& operator<<(ostream& output, const SolutionID& id) {
+    output << "(" << id.fieldInfo->fieldId().toStdString() << ", timeStep " << id.timeStep << ", adaptStep " <<
+              id.adaptivityStep << ", type "<< id.solutionType << ")";
+    return output;
+}
+
 
 template class SolutionArray<double>;
 template class MultiSolutionArray<double>;

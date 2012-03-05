@@ -151,6 +151,9 @@ public:
     int lastTimeStep(FieldInfo* fieldInfo);
     int lastTimeStep(Block* block);
 
+    double lastTime(FieldInfo* fieldInfo);
+    double lastTime(Block* block);
+
     // last adaptive step for given time step. If time step not given, last time step used implicitly
     int lastAdaptiveStep(FieldInfo* fieldInfo, int timeStep = -1);
     int lastAdaptiveStep(Block* block, int timeStep = -1);

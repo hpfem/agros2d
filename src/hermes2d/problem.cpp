@@ -100,7 +100,7 @@ void Block::solve()
     else
         solverConfig.action = SolverAction_Solve;
 
-    solver.solve(SolverConfig());
+    solver.solve(solverConfig);
 
 
     //TODO ulozit v solveru!!!
@@ -440,6 +440,8 @@ ProgressDialog* Problem::progressDialog()
 
 //*************************************************************************************************
 
+const int notFoundSoFar = -999;
+
 void SolutionStore::clearAll()
 {
     m_multiSolutions.clear();
@@ -462,13 +464,14 @@ MultiSolutionArray<double> SolutionStore::multiSolution(SolutionID solutionID)
 
 void SolutionStore::saveSolution(SolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
+    cout << "Saving solution " << solutionID << endl;
     assert(!m_multiSolutions.contains(solutionID));
     m_multiSolutions[solutionID] = multiSolution;
 }
 
 int SolutionStore::lastTimeStep(FieldInfo *fieldInfo)
 {
-    int timeStep = -999;
+    int timeStep = notFoundSoFar;
     foreach(SolutionID sid, m_multiSolutions.keys())
     {
         if((sid.fieldInfo == fieldInfo) && (sid.timeStep > timeStep))
@@ -490,12 +493,44 @@ int SolutionStore::lastTimeStep(Block *block)
     return timeStep;
 }
 
+double SolutionStore::lastTime(FieldInfo *fieldInfo)
+{
+    int timeStep = lastTimeStep(fieldInfo);
+    double time = notFoundSoFar;
+
+    foreach(SolutionID id, m_multiSolutions.keys())
+    {
+        if((id.fieldInfo == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
+        {
+            if(time == notFoundSoFar)
+                time = m_multiSolutions[id].component(0).time;
+            else
+                assert(time == m_multiSolutions[id].component(0).time);
+        }
+    }
+    assert(time != notFoundSoFar);
+    return time;
+}
+
+double SolutionStore::lastTime(Block *block)
+{
+    double time = lastTime(block->m_fields.at(0)->fieldInfo());
+
+    foreach(Field* field, block->m_fields)
+    {
+        assert(lastTime(field->fieldInfo()) == time);
+    }
+
+    return time;
+
+}
+
 int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, int timeStep)
 {
     if(timeStep == -1)
         timeStep = lastTimeStep(fieldInfo);
 
-    int adaptiveStep = -999;
+    int adaptiveStep = notFoundSoFar;
     foreach(SolutionID sid, m_multiSolutions.keys())
     {
         if((sid.fieldInfo == fieldInfo) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
@@ -524,6 +559,9 @@ SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, Solu
     solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo);
     solutionID.timeStep = lastTimeStep(fieldInfo);
     solutionID.solutionType = solutionType;
+
+    cout << solutionID << endl;
+
     if(solutionType == SolutionType_Finer)
     {
         solutionID.solutionType = SolutionType_Reference;

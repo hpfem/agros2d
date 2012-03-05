@@ -356,7 +356,10 @@ void Solver<Scalar>::solve(SolverConfig config)
         return;
     }
 
-    int actualTime = 0.0;
+    double actualTime = 0.0;
+    if(config.action == SolverAction_TimeStep)
+        actualTime = Util::solutionStore()->lastTime(m_block) + config.timeStep;
+
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(space), actualTime);
     m_wf->set_current_time(actualTime);
 
@@ -379,7 +382,7 @@ void Solver<Scalar>::solve(SolverConfig config)
             for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
             {
                 int position = component + m_block->offset(field);
-                SolutionArray<Scalar> solutionArray(solution.at(position), space.at(position), 0, 0, 0);
+                SolutionArray<Scalar> solutionArray(solution.at(position), space.at(position), 0, 0, actualTime);
                 multiSolutionArray.addComponent(solutionArray);
             }
 
