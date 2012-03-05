@@ -1,5 +1,5 @@
 #include "solutiontypes.h"
-
+#include "scene.h"
 using namespace Hermes::Hermes2D;
 
 template <typename Scalar>
@@ -121,7 +121,7 @@ void MultiSolutionArray<Scalar>::append(MultiSolutionArray<Scalar> msa)
 }
 
 template <typename Scalar>
-Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > MultiSolutionArray<Scalar>::createCopyOfSpaces()
+Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > MultiSolutionArray<Scalar>::spaces()
 {
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaces;
 
@@ -132,6 +132,33 @@ Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > MultiSolutionArray
 
     return spaces;
 }
+
+template <typename Scalar>
+Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > MultiSolutionArray<Scalar>::solutions()
+{
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutions;
+
+    foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
+    {
+        solutions.push_back(solutionArray.sln);
+    }
+
+    return solutions;
+}
+
+template <typename Scalar>
+Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > MultiSolutionArray<Scalar>::solutionsNaked()
+{
+    return desmartize(solutions());
+}
+
+
+ostream& operator<<(ostream& output, const SolutionID& id) {
+    output << "(" << id.fieldInfo->fieldId().toStdString() << ", timeStep " << id.timeStep << ", adaptStep " <<
+              id.adaptivityStep << ", type "<< id.solutionType << ")";
+    return output;
+}
+
 
 template class SolutionArray<double>;
 template class MultiSolutionArray<double>;

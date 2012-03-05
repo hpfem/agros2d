@@ -92,7 +92,15 @@ void Block::solve()
 
     solver.init(m_progressItemSolve, m_wf, this);
 
-    solver.solve(SolverConfig());
+    SolverConfig solverConfig;
+    if(this->isTransient()){
+        solverConfig.action = SolverAction_TimeStep;
+        solverConfig.timeStep = this->timeStep();
+    }
+    else
+        solverConfig.action = SolverAction_Solve;
+
+    solver.solve(solverConfig);
 
 
     //TODO ulozit v solveru!!!
@@ -119,6 +127,17 @@ void Block::solve()
 //        //TODO
 //        parentProblem()->saveSolution(fieldInfo, 0, 0, solutionArrays);
 //    }
+}
+
+bool Block::isTransient() const
+{
+    foreach (Field *field, m_fields)
+    {
+        if(field->fieldInfo()->analysisType() == AnalysisType_Transient)
+            return true;
+    }
+
+    return false;
 }
 
 int Block::numSolutions() const
@@ -195,6 +214,26 @@ int Block::nonlinearSteps() const
     }
 
     return steps;
+}
+
+double Block::timeStep() const
+{
+    double step = 0;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if(fieldInfo->analysisType() == AnalysisType_Transient)
+        {
+            if (step == 0)
+                step = fieldInfo->timeStep().number();
+
+            //TODO zatim moc nevim
+            assert(step == fieldInfo->timeStep().number());
+        }
+    }
+
+    return step;
 }
 
 Field* Block::field(FieldInfo *fieldInfo) const
@@ -401,6 +440,8 @@ ProgressDialog* Problem::progressDialog()
 
 //*************************************************************************************************
 
+const int notFoundSoFar = -999;
+
 void SolutionStore::clearAll()
 {
     m_multiSolutions.clear();
@@ -423,13 +464,14 @@ MultiSolutionArray<double> SolutionStore::multiSolution(SolutionID solutionID)
 
 void SolutionStore::saveSolution(SolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
+    cout << "Saving solution " << solutionID << endl;
     assert(!m_multiSolutions.contains(solutionID));
     m_multiSolutions[solutionID] = multiSolution;
 }
 
 int SolutionStore::lastTimeStep(FieldInfo *fieldInfo)
 {
-    int timeStep = -1;
+    int timeStep = notFoundSoFar;
     foreach(SolutionID sid, m_multiSolutions.keys())
     {
         if((sid.fieldInfo == fieldInfo) && (sid.timeStep > timeStep))
@@ -451,12 +493,44 @@ int SolutionStore::lastTimeStep(Block *block)
     return timeStep;
 }
 
+double SolutionStore::lastTime(FieldInfo *fieldInfo)
+{
+    int timeStep = lastTimeStep(fieldInfo);
+    double time = notFoundSoFar;
+
+    foreach(SolutionID id, m_multiSolutions.keys())
+    {
+        if((id.fieldInfo == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
+        {
+            if(time == notFoundSoFar)
+                time = m_multiSolutions[id].component(0).time;
+            else
+                assert(time == m_multiSolutions[id].component(0).time);
+        }
+    }
+    assert(time != notFoundSoFar);
+    return time;
+}
+
+double SolutionStore::lastTime(Block *block)
+{
+    double time = lastTime(block->m_fields.at(0)->fieldInfo());
+
+    foreach(Field* field, block->m_fields)
+    {
+        assert(lastTime(field->fieldInfo()) == time);
+    }
+
+    return time;
+
+}
+
 int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, int timeStep)
 {
     if(timeStep == -1)
         timeStep = lastTimeStep(fieldInfo);
 
-    int adaptiveStep = -1;
+    int adaptiveStep = notFoundSoFar;
     foreach(SolutionID sid, m_multiSolutions.keys())
     {
         if((sid.fieldInfo == fieldInfo) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
@@ -485,6 +559,9 @@ SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, Solu
     solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo);
     solutionID.timeStep = lastTimeStep(fieldInfo);
     solutionID.solutionType = solutionType;
+
+    cout << solutionID << endl;
+
     if(solutionType == SolutionType_Finer)
     {
         solutionID.solutionType = SolutionType_Reference;
@@ -505,15 +582,15 @@ SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, Solu
     return solutionID;
 }
 
-SolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
-{
-    SolutionID solutionID = lastTimeAndAdaptiveSolution(block->m_fields.at(0)->fieldInfo(), solutionType);
+//SolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
+//{
+//    SolutionID solutionID = lastTimeAndAdaptiveSolution(block->m_fields.at(0)->fieldInfo(), solutionType);
 
-    foreach(Field* field, block->m_fields)
-    {
-        assert(lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType) == solutionID);
-    }
+//    foreach(Field* field, block->m_fields)
+//    {
+//        assert(lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType) == solutionID);
+//    }
 
-    return solutionID;
-}
+//    return solutionID;
+//}
 

@@ -47,12 +47,15 @@ public:
     int offset(Field* field) const;
 
     LinearityType linearityType() const;
+    bool isTransient() const;
 
     // minimal nonlinear tolerance of individual fields
     double nonlinearTolerance() const;
 
     //maximal nonlinear steps of individual fields
     int nonlinearSteps() const;
+
+    double timeStep() const;
 
 //    Field* couplingSourceField(Coupling* coupling) const;
 //    Field* couplingTargetField(Coupling* coupling) const;
@@ -148,12 +151,15 @@ public:
     int lastTimeStep(FieldInfo* fieldInfo);
     int lastTimeStep(Block* block);
 
+    double lastTime(FieldInfo* fieldInfo);
+    double lastTime(Block* block);
+
     // last adaptive step for given time step. If time step not given, last time step used implicitly
     int lastAdaptiveStep(FieldInfo* fieldInfo, int timeStep = -1);
     int lastAdaptiveStep(Block* block, int timeStep = -1);
 
     SolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionType solutionType);
-    SolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionType solutionType);
+//    SolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionType solutionType);
 
     void clearAll();
     void clearOne(SolutionID solutionID);
