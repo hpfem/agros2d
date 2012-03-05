@@ -1274,6 +1274,13 @@ void MainWindow::doInvalidated()
     // set current timestep
     cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
 
+    // close windows
+    if (!Util::scene()->sceneSolution()->isSolved())
+    {
+        chartDialog->close();
+        reportDialog->close();
+    }
+
     //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
     //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
 }
