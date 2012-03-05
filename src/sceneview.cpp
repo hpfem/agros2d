@@ -1477,7 +1477,7 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     // ticks
     glLineWidth(1.0);
     glBegin(GL_LINES);
-    for (int i = 1; i < numTicks+1; i++)
+    for (int i = 1; i < numTicks; i++)
     {
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
@@ -3120,7 +3120,7 @@ void SceneView::paintParticleTracingColorBar(double min, double max)
     glColor3d(0.0, 0.0, 0.0);
     glLineWidth(1.0);
     glBegin(GL_LINES);
-    for (int i = 1; i < numTicks+1; i++)
+    for (int i = 1; i < numTicks; i++)
     {
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
