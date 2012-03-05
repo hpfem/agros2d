@@ -582,15 +582,15 @@ SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, Solu
     return solutionID;
 }
 
-SolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
-{
-    SolutionID solutionID = lastTimeAndAdaptiveSolution(block->m_fields.at(0)->fieldInfo(), solutionType);
+//SolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
+//{
+//    SolutionID solutionID = lastTimeAndAdaptiveSolution(block->m_fields.at(0)->fieldInfo(), solutionType);
 
-    foreach(Field* field, block->m_fields)
-    {
-        assert(lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType) == solutionID);
-    }
+//    foreach(Field* field, block->m_fields)
+//    {
+//        assert(lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType) == solutionID);
+//    }
 
-    return solutionID;
-}
+//    return solutionID;
+//}
 

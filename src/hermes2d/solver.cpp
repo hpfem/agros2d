@@ -59,7 +59,7 @@ Mesh* Solver<Scalar>::readMesh()
 
 
 template <typename Scalar>
-Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > Solver<Scalar>::createSpace(Mesh* mesh)
+void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar> msa)
 {
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
 
@@ -148,12 +148,13 @@ Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > Solver<Scalar>::cr
         }
     }
 
-    return space;
+    msa.setSpaces(space);
 }
 
 template <typename Scalar>
-void Solver<Scalar>::createSolutions(bool copyPrevious)
+Hermes::vector<shared_ptr<Solution<Scalar> > > Solver<Scalar>::createSolution()
 {
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solution;
     foreach(Field* field, m_block->m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
@@ -163,18 +164,10 @@ void Solver<Scalar>::createSolutions(bool copyPrevious)
             // solution agros array
             Solution<double> *sln = new Solution<double>();
             solution.push_back(shared_ptr<Solution<double> >(sln));
-
-            // single adaptive step
-//            if (copyPrevious)
-//                sln->copy((listOfSolutionArrays.at(listOfSolutionArrays.size() - m_fieldInfo->module()->number_of_solution() + i)->sln).get());
-
-            if (fieldInfo->adaptivityType != AdaptivityType_None)
-            {
-                // reference solution
-                solutionReference.push_back(shared_ptr<Solution<Scalar> >(new Solution<Scalar>()));
-            }
         }
     }
+
+    return solution;
 }
 
 template <typename Scalar>
@@ -199,6 +192,28 @@ void Solver<Scalar>::createInitialSolution(Mesh* mesh, Hermes::vector<shared_ptr
         Util::solutionStore()->saveSolution(solutionID, initialMSA);
     }
 }
+
+template <typename Scalar>
+Hermes::vector<shared_ptr<Space<Scalar> > > Solver<Scalar>::createCoarseSpace()
+{
+    Hermes::vector<shared_ptr<Space<Scalar> > > space;
+
+    foreach(Field* field, m_block->m_fields)
+    {
+        MultiSolutionArray<Scalar> multiSolution = Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionType_Normal));
+        for(int comp = 0; comp < field->fieldInfo()->module()->number_of_solution(); comp++)
+        {
+            Space<Scalar>* oldSpace = multiSolution.component(comp).space.get();
+            Mesh* mesh = new Mesh();
+            mesh->copy(oldSpace->get_mesh());
+
+            space.push_back(shared_ptr<Space<Scalar> >(oldSpace->dup(mesh)));
+        }
+    }
+
+    return space;
+}
+
 
 int DEBUG_COUNTER = 0;
 
@@ -305,8 +320,16 @@ void Solver<Scalar>::solve(SolverConfig config)
     //  double error = 0.0;
 
     // mesh file
-    Mesh *mesh;
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
+    Mesh *mesh = NULL;
+//    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
+//    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solution;
+    MultiSolutionArray<Scalar> multiSolutionArray;
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaceCoarse;
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutionCoarse;
+
+    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
+    Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select;
+    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
 
     int lastTimeStep = Util::solutionStore()->lastTimeStep(m_block);
@@ -319,14 +342,14 @@ void Solver<Scalar>::solve(SolverConfig config)
         mesh = readMesh();
 
         // create essential boundary conditions and space
-        space = createSpace(mesh);
+        createSpace(mesh, multiSolutionArray);
     }
     else if((config.action == SolverAction_TimeStep) && (lastTimeStep >= 1))
     {
         foreach(Field* field, m_block->m_fields)
         {
             SolutionID fieldSolutionID(field->fieldInfo(), lastTimeStep, lastAdaptiveStep, SolutionType_Normal);
-            Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > fieldSpace = Util::solutionStore()->multiSolution(fieldSolutionID).createCopyOfSpaces();
+            Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > fieldSpace = Util::solutionStore()->multiSolution(fieldSolutionID).spaces();
             space.insert(space.end(), fieldSpace.begin(), fieldSpace.end());
         }
     }
@@ -338,12 +361,20 @@ void Solver<Scalar>::solve(SolverConfig config)
         createInitialSolution(mesh, space);
     }
 
-    qDebug() << "nodes: " << mesh->get_num_nodes();
-    qDebug() << "elements: " << mesh->get_num_elements();
+    if((config.action == SolverAction_AdaptivityStep))
+    {
+        solutionCoarse = createSolution();
+        spaceCoarse = createCoarseSpace();
+        // construct refined spaces
+        space = smartize(*Space<Scalar>::construct_refined_spaces(desmartize(spaceCoarse)));
+    }
+
+//    qDebug() << "nodes: " << mesh->get_num_nodes();
+//    qDebug() << "elements: " << mesh->get_num_elements();
     qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(space)));
 
     // create solutions
-    createSolutions();
+    solution = createSolution();
 
     // init selectors
     //initSelectors();
@@ -369,6 +400,47 @@ void Solver<Scalar>::solve(SolverConfig config)
     if (!solveOneProblem(space, solution))
         isError = true;
 
+    if((config.action == SolverAction_AdaptivityStep))
+    {
+//        // project the fine mesh solution onto the coarse mesh.
+//        Hermes::Hermes2D::OGProjection<Scalar>::project_global(spaceCoarse, solution, solutionCoarse, Util::scene()->problemInfo()->matrixSolver);
+
+//        // calculate element errors and total error estimate.
+//        Hermes::Hermes2D::Adapt<Scalar> adaptivity(spaceCoarse, projNormType);
+
+//        // calculate error estimate for each solution component and the total error estimate.
+//        double error = adaptivity.calc_err_est(solutionCoarse, solution) * 100;
+
+//        // emit signal
+////        m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
+////                                         arg(error, 0, 'f', 3).
+////                                         arg(i + 1).
+////                                         arg(maxAdaptivitySteps).
+////                                         arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
+////                                         arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
+
+//        cout << (QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
+//                 arg(error, 0, 'f', 3).
+//                 arg(lastAdaptiveStep + 1).
+//                 arg(1000).
+//                 arg(Space<Scalar>::get_num_dofs(spaceCoarse)).
+//                 arg(Space<Scalar>::get_num_dofs(space)), false, 1).toStdString() << endl;
+
+
+//        // add error to the list
+//        m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
+
+//        if (error < adaptivityTolerance || Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) >= adaptivityMaxDOFs)
+//        {
+//            break;
+//        }
+//        adaptivity.adapt(selector,
+//                         Util::config()->threshold,
+//                         Util::config()->strategy,
+//                         Util::config()->meshRegularity);
+
+    }
+
     // output
     if (!isError)
     {
@@ -391,6 +463,7 @@ void Solver<Scalar>::solve(SolverConfig config)
 
             SolutionID solutionID;
             solutionID.fieldInfo = fieldInfo;
+            solutionID.timeStep = lastTimeStep + 1;
 
             Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
         }

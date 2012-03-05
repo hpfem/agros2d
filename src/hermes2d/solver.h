@@ -27,34 +27,6 @@
 using namespace std::tr1;
 class Block;
 
-template <typename entity>
-Hermes::vector<entity*> desmartize(Hermes::vector<shared_ptr<entity> > smart_vec)
-{
-    Hermes::vector<entity*> vec;
-    for(int i = 0; i < smart_vec.size(); i++)
-        vec.push_back(smart_vec.at(i).get());
-    return vec;
-}
-
-template <typename entity>
-Hermes::vector<shared_ptr<entity> > smartize(Hermes::vector<entity*>  vec)
-{
-    Hermes::vector<shared_ptr<entity> > smart_vec;
-    for(int i = 0; i < vec.size(); i++)
-        smart_vec.push_back(shared_ptr<entity>(vec.at(i)));
-    return smart_vec;
-}
-
-template <typename Scalar>
-Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> castConst(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space)
-{
-    Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> out;
-    for (int i = 0; i < space.size(); i++)
-        out.push_back(const_cast<const Hermes::Hermes2D::Space<Scalar> *>(space.at(i)));
-
-    return out;
-}
-
 class ProgressItemSolve;
 class FieldInfo;
 
@@ -84,26 +56,22 @@ private:
     WeakFormAgros<Scalar> *m_wf;
     ProgressItemSolve *m_progressItemSolve;
 
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solution;
-
-    // adaptivity
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutionReference;
-    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
-    Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select;
-    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
     Hermes::Hermes2D::Mesh* readMesh();
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > createSpace(Hermes::Hermes2D::Mesh* mesh);
+    void createSpace(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar> msa);
     void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space);
-
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();
     // if copyPrevious == true, last solutions will be used (intented for doAdaptivityStep function)
-    void createSolutions(bool copyPrevious = false);
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > createSolution();
     void initSelectors();
 
     void cleanup();
 
     bool solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                          Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
+    void saveSolution(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
+                      Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
+                      double actualTime);
 
 };
 

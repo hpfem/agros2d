@@ -9,6 +9,34 @@
 
 class FieldInfo;
 
+template <typename entity>
+Hermes::vector<entity*> desmartize(Hermes::vector<shared_ptr<entity> > smart_vec)
+{
+    Hermes::vector<entity*> vec;
+    for(int i = 0; i < smart_vec.size(); i++)
+        vec.push_back(smart_vec.at(i).get());
+    return vec;
+}
+
+template <typename entity>
+Hermes::vector<shared_ptr<entity> > smartize(Hermes::vector<entity*>  vec)
+{
+    Hermes::vector<shared_ptr<entity> > smart_vec;
+    for(int i = 0; i < vec.size(); i++)
+        smart_vec.push_back(shared_ptr<entity>(vec.at(i)));
+    return smart_vec;
+}
+
+template <typename Scalar>
+Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> castConst(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space)
+{
+    Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> out;
+    for (int i = 0; i < space.size(); i++)
+        out.push_back(const_cast<const Hermes::Hermes2D::Space<Scalar> *>(space.at(i)));
+
+    return out;
+}
+
 template <typename Scalar>
 struct SolutionArray
 {
@@ -37,10 +65,17 @@ public:
     //add next component
     void addComponent(SolutionArray<Scalar> solutionArray);
 
+    void setSpaces(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaces);
+    void setSolutions(Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutions);
+
     void append(MultiSolutionArray<Scalar> msa);
 
     //creates copy of spaces, used in solver
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > createCopyOfSpaces();
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaces();
+    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutions();
+
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > spacesNaked();
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > solutionsNaked();
 
 private:
     QList<SolutionArray<Scalar> > m_solutionArrays;
@@ -91,6 +126,8 @@ inline bool operator==(const SolutionID &sid1, const SolutionID &sid2)
 }
 
 ostream& operator<<(ostream& output, const SolutionID& id);
+
+struct BlockSolutionID
 
 enum SolverAction
 {

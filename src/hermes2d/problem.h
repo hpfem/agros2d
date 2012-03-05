@@ -159,7 +159,7 @@ public:
     int lastAdaptiveStep(Block* block, int timeStep = -1);
 
     SolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionType solutionType);
-    SolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionType solutionType);
+//    SolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionType solutionType);
 
     void clearAll();
     void clearOne(SolutionID solutionID);
