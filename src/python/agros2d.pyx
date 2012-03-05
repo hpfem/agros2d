@@ -167,22 +167,24 @@ cdef class ParticleTracing:
         return outx, outy, outz
 
     # initial position
-    def initial_position(self):
-        cdef double x
-        cdef double y
-        self.thisptr.initialPosition(x, y)
-        return x, y
-    def set_initial_position(self, x, y):
-        self.thisptr.setInitialPosition(x, y)
+    property initial_position:
+        def __get__(self):
+            cdef double x
+            cdef double y
+            self.thisptr.initialPosition(x, y)
+            return x, y
+        def __set__(self, xy):
+            self.thisptr.setInitialPosition(xy[0], xy[1])
 
     # initial velocity
-    def initial_velocity(self):
-        cdef double x
-        cdef double y
-        self.thisptr.initialVelocity(x, y)
-        return x, y
-    def set_initial_velocity(self, x, y):
-        self.thisptr.setInitialVelocity(x, y)
+    property initial_velocity:
+        def __get__(self):
+            cdef double x
+            cdef double y
+            self.thisptr.initialVelocity(x, y)
+            return x, y
+        def __set__(self, xy):
+            self.thisptr.setInitialVelocity(xy[0], xy[1])
 
     # mass
     property mass:

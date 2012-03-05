@@ -41,8 +41,8 @@ zoombestfit()
 solve()
 
 tracing = ParticleTracing()
-tracing.set_initial_position(0.015, 0.0)
-tracing.set_initial_velocity(3e7, 0.0)
+tracing.initial_position = (0.015, 0.0)
+tracing.initial_velocity = (3e7, 0.0)
 tracing.mass = 9.109e-31
 tracing.charge = -1.602e-19
 tracing.drag_force_density = 1.2041
