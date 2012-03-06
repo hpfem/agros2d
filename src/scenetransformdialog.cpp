@@ -146,6 +146,12 @@ void SceneTransformDialog::doTransform()
         if (!txtScaleBasePointX->evaluate(false)) return;
         if (!txtScaleBasePointY->evaluate(false)) return;
         if (!txtScaleFactor->evaluate(false)) return;
+        if (abs(txtScaleFactor->number()) < EPS_ZERO)
+        {
+            QMessageBox::critical(this, tr("Scale factor"), tr("Scale factor should not be zero."));
+            return;
+        }
+
         Util::scene()->transformScale(Point(txtScaleBasePointX->number(), txtScaleBasePointY->number()), txtScaleFactor->number(), chkCopy->isChecked());
     }
 }
