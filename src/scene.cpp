@@ -146,6 +146,12 @@ void FieldInfo::setAnalysisType(AnalysisType analysisType)
 //        return 0;
 //}
 
+ostream& operator<<(ostream& output, FieldInfo& id)
+{
+    output << "FieldInfo " << id.fieldId().toStdString();
+    return output;
+}
+
 DxfFilter::DxfFilter(Scene *scene)
 {
     logMessage("DxfFilter::DxfFilter()");

@@ -75,6 +75,12 @@ public:
         return Hermes::Ord(0);
     }
 
+    Hermes::Hermes2D::MeshFunction<Scalar>* clone()
+    {
+      InitialCondition<Scalar>* ic = new InitialCondition<Scalar>(this->mesh, this->constant_value);
+      return ic;
+    }
+
 private:
     double constant_value;
 };

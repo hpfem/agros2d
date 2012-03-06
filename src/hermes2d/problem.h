@@ -60,6 +60,7 @@ public:
 //    Field* couplingSourceField(Coupling* coupling) const;
 //    Field* couplingTargetField(Coupling* coupling) const;
 
+    bool contains(FieldInfo* fieldInfo) const;
     Field* field(FieldInfo* fieldInfo) const;
     inline Problem* parentProblem() const {return m_parentProblem; }
 
@@ -73,6 +74,8 @@ public:
     QList<CouplingInfo*> m_couplings;
     ProgressItemSolve* m_progressItemSolve;
 };
+
+ostream& operator<<(ostream& output, const Block& id);
 
 /// intented as central for solution process
 /// shielded from gui and QT
@@ -144,9 +147,11 @@ public:
 class SolutionStore
 {
 public:
-    SolutionArray<double> solution(SolutionID solutionID, int component);
-    MultiSolutionArray<double> multiSolution(SolutionID solutionID);
-    void saveSolution(SolutionID, MultiSolutionArray<double> solution);
+    SolutionArray<double> solution(FieldSolutionID solutionID, int component);
+    MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID);
+    MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID);
+    void saveSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void saveSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
 
     int lastTimeStep(FieldInfo* fieldInfo);
     int lastTimeStep(Block* block);
@@ -158,14 +163,14 @@ public:
     int lastAdaptiveStep(FieldInfo* fieldInfo, int timeStep = -1);
     int lastAdaptiveStep(Block* block, int timeStep = -1);
 
-    SolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionType solutionType);
-//    SolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionType solutionType);
+    FieldSolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionType solutionType);
+//    FieldSolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionType solutionType);
 
     void clearAll();
-    void clearOne(SolutionID solutionID);
+    void clearOne(FieldSolutionID solutionID);
 
 private:
-    QMap<SolutionID, MultiSolutionArray<double> > m_multiSolutions;
+    QMap<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutions;
 };
 
 #endif // PROBLEM_H

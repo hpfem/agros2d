@@ -1,6 +1,21 @@
 #include "solutiontypes.h"
 #include "scene.h"
+#include "problem.h"
+#include "module_agros.h"
 using namespace Hermes::Hermes2D;
+
+FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
+{
+    bool contains = false;
+    foreach(Field* field, group->m_fields)
+    {
+        if(field->fieldInfo() == fieldInfo)
+            contains = true;
+    }
+    assert(contains);
+
+    return FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionType);
+}
 
 template <typename Scalar>
 SolutionArray<Scalar>::SolutionArray()
@@ -152,13 +167,65 @@ Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > MultiSolutionArray<Scalar>:
     return desmartize(solutions());
 }
 
-
-ostream& operator<<(ostream& output, const SolutionID& id) {
-    output << "(" << id.fieldInfo->fieldId().toStdString() << ", timeStep " << id.timeStep << ", adaptStep " <<
+template <typename Scalar>
+ostream& operator<<(ostream& output, const SolutionID<Scalar>& id) {
+    output << "(" << id.group << ", timeStep " << id.timeStep << ", adaptStep " <<
               id.adaptivityStep << ", type "<< id.solutionType << ")";
     return output;
 }
 
+template <typename Scalar>
+MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::copySpaces()
+{
+    MultiSolutionArray<Scalar> msa;
+    foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
+    {
+        msa.addComponent(SolutionArray<Scalar>(shared_ptr<Solution<Scalar> >(), solutionArray.space, 0, 0, 0));
+    }
+
+    return msa;
+}
+
+template <typename Scalar>
+void MultiSolutionArray<Scalar>::setSpace(shared_ptr<Hermes::Hermes2D::Space<Scalar> > space, int component)
+{
+
+    SolutionArray<Scalar> newSA(m_solutionArrays.at(component));
+    newSA.space = space;
+    m_solutionArrays.replace(component, newSA);
+}
+
+template <typename Scalar>
+void MultiSolutionArray<Scalar>::setSpaces(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaces)
+{
+    assert(m_solutionArrays.size() == spaces.size());
+    for(int comp = 0; comp < spaces.size(); comp++)
+    {
+        setSpace(spaces.at(comp), comp);
+    }
+}
+
+template <typename Scalar>
+void MultiSolutionArray<Scalar>::setSolution(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > solution, int component)
+{
+    SolutionArray<Scalar> newSA(m_solutionArrays.at(component));
+    newSA.sln = solution;
+    m_solutionArrays.replace(component, newSA);
+}
+
+template <typename Scalar>
+MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::fieldPart(Block *block, FieldInfo *fieldInfo)
+{
+    assert(block->contains(fieldInfo));
+    MultiSolutionArray<Scalar> msa;
+    int offset = block->offset(block->field(fieldInfo));
+    int numSol = fieldInfo->module()->number_of_solution();
+    for(int comp = offset; comp < offset + numSol; comp++)
+    {
+        msa.addComponent(this->component(comp));
+    }
+    return msa;
+}
 
 template class SolutionArray<double>;
 template class MultiSolutionArray<double>;

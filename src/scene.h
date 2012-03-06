@@ -156,6 +156,8 @@ private:
     AnalysisType m_analysisType;
 };
 
+ostream& operator<<(ostream& output, FieldInfo& id);
+
 class DxfFilter : public DL_CreationAdapter
 {
 public:

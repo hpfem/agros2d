@@ -236,6 +236,16 @@ double Block::timeStep() const
     return step;
 }
 
+bool Block::contains(FieldInfo *fieldInfo) const
+{
+    foreach(Field* field, m_fields)
+    {
+        if(field->fieldInfo() == fieldInfo)
+            return true;
+    }
+    return false;
+}
+
 Field* Block::field(FieldInfo *fieldInfo) const
 {
     foreach (Field* field, m_fields)
@@ -246,6 +256,13 @@ Field* Block::field(FieldInfo *fieldInfo) const
 
     return NULL;
 }
+
+ostream& operator<<(ostream& output, const Block& id)
+{
+    output << "Block ";
+    return output;
+}
+
 
 Problem::Problem()
 {
@@ -447,34 +464,57 @@ void SolutionStore::clearAll()
     m_multiSolutions.clear();
 }
 
-void SolutionStore::clearOne(SolutionID solutionID)
+void SolutionStore::clearOne(FieldSolutionID solutionID)
 {
     m_multiSolutions.remove(solutionID);
 }
 
-SolutionArray<double> SolutionStore::solution(SolutionID solutionID, int component)
+SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component)
 {
     return m_multiSolutions[solutionID].component(component);
 }
 
-MultiSolutionArray<double> SolutionStore::multiSolution(SolutionID solutionID)
+MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID)
 {
     return m_multiSolutions[solutionID];
 }
 
-void SolutionStore::saveSolution(SolutionID solutionID,  MultiSolutionArray<double> multiSolution)
+MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solutionID)
 {
-    cout << "Saving solution " << solutionID << endl;
+    MultiSolutionArray<double> msa;
+    foreach(Field *field, solutionID.group->m_fields)
+    {
+        msa.append(multiSolution(solutionID.fieldSolutionID(field->fieldInfo())));
+    }
+
+    return msa;
+}
+
+void SolutionStore::saveSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
+{
+    //cout << "Saving solution " << solutionID << endl;
     assert(!m_multiSolutions.contains(solutionID));
+    assert(solutionID.timeStep >= 0);
+    assert(solutionID.adaptivityStep >= 0);
     m_multiSolutions[solutionID] = multiSolution;
+}
+
+void SolutionStore::saveSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
+{
+    foreach(Field* field, solutionID.group->m_fields)
+    {
+        FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
+        MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
+        saveSolution(fieldSID, fieldMultiSolution);
+    }
 }
 
 int SolutionStore::lastTimeStep(FieldInfo *fieldInfo)
 {
     int timeStep = notFoundSoFar;
-    foreach(SolutionID sid, m_multiSolutions.keys())
+    foreach(FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.fieldInfo == fieldInfo) && (sid.timeStep > timeStep))
+        if((sid.group == fieldInfo) && (sid.timeStep > timeStep))
             timeStep = sid.timeStep;
     }
 
@@ -498,9 +538,9 @@ double SolutionStore::lastTime(FieldInfo *fieldInfo)
     int timeStep = lastTimeStep(fieldInfo);
     double time = notFoundSoFar;
 
-    foreach(SolutionID id, m_multiSolutions.keys())
+    foreach(FieldSolutionID id, m_multiSolutions.keys())
     {
-        if((id.fieldInfo == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
+        if((id.group == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
         {
             if(time == notFoundSoFar)
                 time = m_multiSolutions[id].component(0).time;
@@ -531,9 +571,9 @@ int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, int timeStep)
         timeStep = lastTimeStep(fieldInfo);
 
     int adaptiveStep = notFoundSoFar;
-    foreach(SolutionID sid, m_multiSolutions.keys())
+    foreach(FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.fieldInfo == fieldInfo) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
+        if((sid.group == fieldInfo) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
             adaptiveStep = sid.adaptivityStep;
     }
 
@@ -552,15 +592,15 @@ int SolutionStore::lastAdaptiveStep(Block *block, int timeStep)
     return adaptiveStep;
 }
 
-SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionType solutionType)
+FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionType solutionType)
 {
-    SolutionID solutionID;
-    solutionID.fieldInfo = fieldInfo;
+    FieldSolutionID solutionID;
+    solutionID.group = fieldInfo;
     solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo);
     solutionID.timeStep = lastTimeStep(fieldInfo);
     solutionID.solutionType = solutionType;
 
-    cout << solutionID << endl;
+    //cout << solutionID << endl;
 
     if(solutionType == SolutionType_Finer)
     {
@@ -574,7 +614,7 @@ SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, Solu
     assert(m_multiSolutions.contains(solutionID));
     if(solutionType == SolutionType_Reference)
     {
-        SolutionID solutionIDNormal = solutionID;
+        FieldSolutionID solutionIDNormal = solutionID;
         solutionIDNormal.solutionType = SolutionType_Normal;
         assert(m_multiSolutions.contains(solutionIDNormal));
     }
