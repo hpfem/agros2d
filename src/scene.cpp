@@ -31,7 +31,6 @@
 #include "volumeintegralview.h"
 
 #include "problemdialog.h"
-#include "scenetransformdialog.h"
 #include "scenemarkerselectdialog.h"
 #include "scenebasicselectdialog.h"
 #include "progressdialog.h"
@@ -267,7 +266,6 @@ void Scene::createActions()
 
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
-    connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
     actClearSolution = new QAction(icon(""), tr("Clear solution"), this);
     actClearSolution->setStatusTip(tr("Clear solution"));
@@ -1226,14 +1224,6 @@ void Scene::doNewMaterial()
         addMaterial(marker);
     else
         delete marker;
-}
-
-void Scene::doTransform()
-{
-    logMessage("Scene::doTransform()");
-
-    SceneTransformDialog sceneTransformDialog(QApplication::activeWindow());
-    sceneTransformDialog.exec();
 }
 
 void Scene::doClearSolution()

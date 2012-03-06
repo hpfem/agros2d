@@ -131,7 +131,6 @@ public slots:
     void doDeleteSelected();
     void doNewBoundary();
     void doNewMaterial();
-    void doTransform();
     void doClearSolution();
     void doProblemProperties();
 
