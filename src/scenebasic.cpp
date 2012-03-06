@@ -349,6 +349,8 @@ bool DSceneNode::save()
         if (sceneNode->point != point)
         {
             Util::scene()->undoStack()->push(new SceneNodeCommandEdit(sceneNode->point, point));
+
+            Util::scene()->doClearSolution();
         }
     }
 
@@ -531,6 +533,8 @@ bool SceneEdgeDialog::save()
             Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point, nodeStart->point, nodeEnd->point,
                                                                       sceneEdge->angle, txtAngle->number(),
                                                                       sceneEdge->refineTowardsEdge, txtRefineTowardsEdge->value()));
+
+            Util::scene()->doClearSolution();
         }
     }
 
@@ -748,6 +752,8 @@ bool SceneLabelDialog::save()
         if (sceneLabel->point != point)
         {
             Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point, point));
+
+            Util::scene()->doClearSolution();
         }
     }
 
