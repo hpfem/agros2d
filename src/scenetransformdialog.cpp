@@ -33,6 +33,15 @@ SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
 
     setMinimumSize(350, 225);
     setMaximumSize(minimumSize());
+
+    QSettings settings;
+    restoreGeometry(settings.value("SceneTransformDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+SceneTransformDialog::~SceneTransformDialog()
+{
+    QSettings settings;
+    settings.setValue("SceneTransformDialog/Geometry", saveGeometry());
 }
 
 void SceneTransformDialog::createControls()
@@ -88,10 +97,17 @@ void SceneTransformDialog::createControls()
     // copy
     chkCopy = new QCheckBox(tr("Copy objects"));
 
-    // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Apply | QDialogButtonBox::Close);
-    connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(doTransform()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doClose()));
+    // dialog buttons    
+    QPushButton *btnApply = new QPushButton(tr("Apply"));
+    btnApply->setDefault(true);
+    connect(btnApply, SIGNAL(clicked()), this, SLOT(doTransform()));
+    QPushButton *btnClose = new QPushButton(tr("Close"));
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
+
+    QHBoxLayout *layoutButtonBox = new QHBoxLayout();
+    layoutButtonBox->addStretch();
+    layoutButtonBox->addWidget(btnApply);
+    layoutButtonBox->addWidget(btnClose);
 
     // tab widget
     tabWidget = new QTabWidget();
@@ -103,7 +119,7 @@ void SceneTransformDialog::createControls()
     layout->addWidget(tabWidget);
     layout->addWidget(chkCopy);
     layout->addStretch();
-    layout->addWidget(buttonBox);
+    layout->addLayout(layoutButtonBox);
 
     setLayout(layout);
 }
@@ -139,6 +155,12 @@ void SceneTransformDialog::doTransform()
         if (!txtScaleBasePointX->evaluate(false)) return;
         if (!txtScaleBasePointY->evaluate(false)) return;
         if (!txtScaleFactor->evaluate(false)) return;
+        if (abs(txtScaleFactor->number()) < EPS_ZERO)
+        {
+            QMessageBox::critical(this, tr("Scale factor"), tr("Scale factor should not be zero."));
+            return;
+        }
+
         Util::scene()->transformScale(Point(txtScaleBasePointX->number(), txtScaleBasePointY->number()), txtScaleFactor->number(), chkCopy->isChecked());
     }
 }

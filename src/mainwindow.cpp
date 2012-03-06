@@ -36,6 +36,7 @@
 #include "problemdialog.h"
 #include "progressdialog.h"
 #include "collaboration.h"
+#include "scenetransformdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -56,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     videoDialog = new VideoDialog(sceneView, this);
     logDialog = new LogDialog(this);
     collaborationDownloadDialog = new ServerDownloadDialog(this);
+    sceneTransformDialog = new SceneTransformDialog(this);
 
     createActions();
     createViews();
@@ -80,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneView->doDefaultValues();
 
     connect(chartDialog, SIGNAL(setChartLine(ChartLine)), sceneView, SLOT(doSetChartLine(ChartLine)));
+    connect(Util::scene()->actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
     QSettings settings;
     restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
@@ -1138,6 +1141,13 @@ void MainWindow::doOptions()
     activateWindow();
 }
 
+void MainWindow::doTransform()
+{
+    logMessage("Scene::doTransform()");
+
+    sceneTransformDialog->show();
+}
+
 void MainWindow::doReport()
 {
     logMessage("MainWindow::doReport()");
@@ -1274,6 +1284,13 @@ void MainWindow::doInvalidated()
     // set current timestep
     cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
 
+    // close windows
+    if (!Util::scene()->sceneSolution()->isSolved())
+    {
+        chartDialog->close();
+        reportDialog->close();
+    }
+
     //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
     //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
 }
@@ -1285,6 +1302,10 @@ void MainWindow::doSceneModeChanged(SceneMode sceneMode)
         postprocessorView->raise();
     else
         sceneInfoView->raise();
+
+    // hide transform dialog
+    if (sceneMode == SceneMode_Postprocessor)
+        sceneTransformDialog->hide();
 }
 
 void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)

@@ -20,7 +20,7 @@
 #include "pythonlabagros.h"
 
 #include <Python.h>
-#include "python/agros2d.c"
+#include "python/agros2d.cpp"
 
 #include "util.h"
 #include "scene.h"
@@ -253,6 +253,67 @@ void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError
     &index[90], &index[91], &index[92], &index[93], &index[94], &index[95], &index[96], &index[97], &index[98], &index[99]  \
     )) \
     // FIX ********************************************************************************************************************************************************************
+
+// particle tracing
+void PyParticleTracing::solve()
+{
+    if (!Util::scene()->sceneSolution()->isSolved())
+        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+
+    // store values
+    // double particleStartingRadius = Util::config()->particleStartingRadius;
+    // int particleNumberOfParticles = Util::config()->particleNumberOfParticles;
+    Util::config()->particleStartingRadius = 0.0;
+    Util::config()->particleNumberOfParticles = 1;
+
+    // clear
+    m_positions.clear();
+    m_velocities.clear();
+
+    Util::scene()->computeParticleTracingPath(&m_positions, &m_velocities, false);
+
+    // restore values
+    // Util::config()->particleStartingRadius = particleStartingRadius;
+    // Util::config()->particleNumberOfParticles = particleNumberOfParticles;
+}
+
+void PyParticleTracing::positions(std::vector<double> &x,
+                                  std::vector<double> &y,
+                                  std::vector<double> &z)
+{
+    std::vector<double> outX;
+    std::vector<double> outY;
+    std::vector<double> outZ;
+    for (int i = 0; i < length(); i++)
+    {
+        outX.push_back(m_positions[i].x);
+        outY.push_back(m_positions[i].y);
+        outZ.push_back(m_positions[i].z);
+    }
+
+    x = outX;
+    y = outY;
+    z = outZ;
+}
+
+void PyParticleTracing::velocities(std::vector<double> &x,
+                                   std::vector<double> &y,
+                                   std::vector<double> &z)
+{
+    std::vector<double> outX;
+    std::vector<double> outY;
+    std::vector<double> outZ;
+    for (int i = 0; i < length(); i++)
+    {
+        outX.push_back(m_velocities[i].x);
+        outY.push_back(m_velocities[i].y);
+        outZ.push_back(m_velocities[i].z);
+    }
+
+    x = outX;
+    y = outY;
+    z = outZ;
+}
 
 // version()
 char *pythonVersion()
@@ -1101,6 +1162,15 @@ void pythonShowSolutionMesh(bool show)
     logMessage("pythonShowSolutionMesh()");
 
     sceneView()->sceneViewSettings().showSolutionMesh = show;
+    sceneView()->doInvalidated();
+}
+
+// showparticletracing(show = {True, False})
+void pythonShowParticleTracing(bool show)
+{
+    logMessage("pythonShowParticleTracing()");
+
+    sceneView()->sceneViewSettings().showParticleTracing = show;
     sceneView()->doInvalidated();
 }
 

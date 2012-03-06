@@ -38,6 +38,7 @@ class ReportDialog;
 class VideoDialog;
 class LogDialog;
 class ServerDownloadDialog;
+class SceneTransformDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -91,6 +92,7 @@ private slots:
     void doScriptEditorRunScript(const QString &fileName = "");
     void doScriptEditorRunCommand();
     void doOptions();
+    void doTransform();
     void doReport();
     void doCreateVideo();
     void doFullScreen();
@@ -215,6 +217,7 @@ private:
     VideoDialog *videoDialog;
     LogDialog *logDialog;
     ServerDownloadDialog *collaborationDownloadDialog;
+    SceneTransformDialog *sceneTransformDialog;
 
     void setRecentFiles();
 

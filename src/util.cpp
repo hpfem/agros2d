@@ -1541,7 +1541,7 @@ bool isBetween(double angle_1, double angle_2, double angle)
     }
 
     // angle_1 is in the third quadrant, angle_2 is in the second quadrant
-    if ((angle_1 <= - (M_PI_2 - tol) ) && (angle_2 >= (M_PI_2 - tol)))
+    if ((angle_1 <= - (M_PI/2.0 - tol) ) && (angle_2 >= (M_PI/2.0 - tol)))
     {
         if((angle <= angle_1) || (angle >= angle_2))
         {

@@ -31,7 +31,6 @@
 #include "volumeintegralview.h"
 
 #include "problemdialog.h"
-#include "scenetransformdialog.h"
 #include "scenemarkerselectdialog.h"
 #include "scenebasicselectdialog.h"
 #include "progressdialog.h"
@@ -267,7 +266,6 @@ void Scene::createActions()
 
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
-    connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
     actClearSolution = new QAction(icon(""), tr("Clear solution"), this);
     actClearSolution->setStatusTip(tr("Clear solution"));
@@ -575,13 +573,13 @@ void Scene::replaceBoundary(SceneBoundary *boundary)
     QString name = boundary->name;
 
     // add new marker
-    SceneBoundary *markerNew = Util::scene()->problemInfo()->hermes()->newBoundary();
-    Util::scene()->addBoundary(markerNew);
+    SceneBoundary *markerNew = problemInfo()->hermes()->newBoundary();
+    addBoundary(markerNew);
 
     // set edges to the new marker
-    for (int i = 0; i < Util::scene()->edges.count(); i++)
+    for (int i = 0; i < edges.count(); i++)
     {
-        SceneEdge *edge = Util::scene()->edges[i];
+        SceneEdge *edge = edges[i];
         if (edge->boundary == boundary)
         {
             edge->boundary = markerNew;
@@ -589,7 +587,7 @@ void Scene::replaceBoundary(SceneBoundary *boundary)
     }
 
     // remove old marker
-    Util::scene()->removeBoundary(boundary);
+    removeBoundary(boundary);
 
     // set original name
     markerNew->name = name;
@@ -665,13 +663,13 @@ void Scene::replaceMaterial(SceneMaterial *material)
     QString name = material->name;
 
     // add new marker
-    SceneMaterial *markerNew = Util::scene()->problemInfo()->hermes()->newMaterial();
-    Util::scene()->addMaterial(markerNew);
+    SceneMaterial *markerNew = problemInfo()->hermes()->newMaterial();
+    addMaterial(markerNew);
 
     // set labels to the new marker
-    for (int i = 0; i < Util::scene()->labels.count(); i++)
+    for (int i = 0; i < labels.count(); i++)
     {
-        SceneLabel *label = Util::scene()->labels[i];
+        SceneLabel *label = labels[i];
         if (label->material == material)
         {
             label->material = markerNew;
@@ -679,7 +677,7 @@ void Scene::replaceMaterial(SceneMaterial *material)
     }
 
     // remove old marker
-    Util::scene()->removeMaterial(material);
+    removeMaterial(material);
 
     // set original name
     markerNew->name = name;
@@ -1208,7 +1206,7 @@ void Scene::doNewBoundary()
 {
     logMessage("Scene::doNewBoundary()");
 
-    SceneBoundary *marker = Util::scene()->problemInfo()->hermes()->newBoundary();
+    SceneBoundary *marker = problemInfo()->hermes()->newBoundary();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addBoundary(marker);
@@ -1220,20 +1218,12 @@ void Scene::doNewMaterial()
 {
     logMessage("Scene::doNewMaterial()");
 
-    SceneMaterial *marker = Util::scene()->problemInfo()->hermes()->newMaterial();
+    SceneMaterial *marker = problemInfo()->hermes()->newMaterial();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addMaterial(marker);
     else
         delete marker;
-}
-
-void Scene::doTransform()
-{
-    logMessage("Scene::doTransform()");
-
-    SceneTransformDialog sceneTransformDialog(QApplication::activeWindow());
-    sceneTransformDialog.exec();
 }
 
 void Scene::doClearSolution()
@@ -1253,23 +1243,23 @@ void Scene::doProblemProperties()
     {
         // FIXME - add QList of variables
         QComboBox *cmbScalarFieldVariable = new QComboBox();
-        Util::scene()->problemInfo()->hermes()->fillComboBoxScalarVariable(cmbScalarFieldVariable);
+        problemInfo()->hermes()->fillComboBoxScalarVariable(cmbScalarFieldVariable);
         QComboBox *cmbVectorFieldVariable = new QComboBox();
-        Util::scene()->problemInfo()->hermes()->fillComboBoxVectorVariable(cmbVectorFieldVariable);
+        problemInfo()->hermes()->fillComboBoxVectorVariable(cmbVectorFieldVariable);
 
         // determines whether the selected field exists
         if (cmbScalarFieldVariable->findData(sceneView()->sceneViewSettings().contourPhysicFieldVariable) == -1)
-            sceneView()->sceneViewSettings().contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
+            sceneView()->sceneViewSettings().contourPhysicFieldVariable = problemInfo()->hermes()->contourPhysicFieldVariable();
 
         if (cmbScalarFieldVariable->findData(sceneView()->sceneViewSettings().scalarPhysicFieldVariable) == -1)
         {
-            sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable();
-            sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
+            sceneView()->sceneViewSettings().scalarPhysicFieldVariable = problemInfo()->hermes()->scalarPhysicFieldVariable();
+            sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = problemInfo()->hermes()->scalarPhysicFieldVariableComp();
             sceneView()->sceneViewSettings().scalarRangeAuto = true;
         }
 
         if (cmbVectorFieldVariable->findData(sceneView()->sceneViewSettings().vectorPhysicFieldVariable) == -1)
-            sceneView()->sceneViewSettings().vectorPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable();
+            sceneView()->sceneViewSettings().vectorPhysicFieldVariable = problemInfo()->hermes()->vectorPhysicFieldVariable();
 
         delete cmbScalarFieldVariable;
         delete cmbVectorFieldVariable;
@@ -1664,14 +1654,14 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     if (eleDoc.elementsByTagName("mesh").count() > 0)
     {
         QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
-        Util::scene()->sceneSolution()->loadMeshInitial(&eleMesh.toElement());
+        sceneSolution()->loadMeshInitial(&eleMesh.toElement());
     }
 
     // solutions
     if (eleDoc.elementsByTagName("solutions").count() > 0)
     {
         QDomNode eleSolutions = eleDoc.elementsByTagName("solutions").at(0);
-        Util::scene()->sceneSolution()->loadSolution(&eleSolutions.toElement());
+        sceneSolution()->loadSolution(&eleSolutions.toElement());
         emit invalidated();
     }
 
@@ -1858,12 +1848,12 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     {
         // mesh
         QDomNode eleMesh = doc.createElement("mesh");
-        Util::scene()->sceneSolution()->saveMeshInitial(&doc, &eleMesh.toElement());
+        sceneSolution()->saveMeshInitial(&doc, &eleMesh.toElement());
         eleDoc.appendChild(eleMesh);
 
         // solution
         QDomNode eleSolutions = doc.createElement("solutions");
-        Util::scene()->sceneSolution()->saveSolution(&doc, &eleSolutions.toElement());
+        sceneSolution()->saveSolution(&doc, &eleSolutions.toElement());
         eleDoc.appendChild(eleSolutions);
     }
 
@@ -2020,7 +2010,7 @@ void Scene::checkGeometry()
 
 ErrorResult Scene::checkGeometryResult()
 {
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+    if (problemInfo()->problemType == ProblemType_Axisymmetric)
     {
         // check for nodes with r < 0
         QSet<int> nodes;
@@ -2067,4 +2057,226 @@ ErrorResult Scene::checkGeometryResult()
     }
 
     return ErrorResult();
+}
+
+void Scene::newtonEquations(double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
+{
+    // Lorentz force
+    Point3 forceLorentz = problemInfo()->hermes()->particleForce(position, velocity)  * Util::config()->particleConstant;
+
+    // Gravitational force
+    Point3 forceGravitational;
+    if (Util::config()->particleIncludeGravitation)
+        forceGravitational = Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0);
+
+    // Drag force
+    Point3 velocityReal = (problemInfo()->problemType == ProblemType_Planar) ?
+                velocity : Point3(velocity.x, velocity.y, position.x * velocity.z);
+    Point3 forceDrag;
+    if (velocityReal.magnitude() > 0.0)
+        forceDrag = velocityReal.normalizePoint() *
+                - 0.5 * Util::config()->particleDragDensity * sqr(velocityReal.magnitude()) * Util::config()->particleDragCoefficient * Util::config()->particleDragReferenceArea;
+
+    // Total force
+    Point3 totalForce = forceLorentz + forceGravitational + forceDrag;
+
+    // Total acceleration
+    Point3 totalAccel = totalForce / Util::config()->particleMass;
+
+    if (problemInfo()->problemType == ProblemType_Planar)
+    {
+        // position
+        *newposition = velocity * step;
+
+        // velocity
+        *newvelocity = totalAccel * step;
+    }
+    else
+    {
+        (*newposition).x = velocity.x * step; // r
+        (*newposition).y = velocity.y * step; // z
+        (*newposition).z = velocity.z * step; // alpha
+
+        (*newvelocity).x = (totalAccel.x + sqr(velocity.z) * position.x) * step; // r
+        (*newvelocity).y = (totalAccel.y) * step; // z
+        (*newvelocity).z = (totalAccel.z / position.x - 2 / position.x * velocity.x * velocity.z) * step; // alpha
+    }
+}
+
+void Scene::computeParticleTracingPath(QList<Point3> *positions,
+                                           QList<Point3> *velocities,
+                                           bool randomPoint)
+{
+    QTime timePart;
+    timePart.start();
+
+    // initial position
+    Point3 p;
+    p.x = Util::config()->particleStart.x;
+    p.y = Util::config()->particleStart.y;
+
+    // random point
+    if (randomPoint)
+    {
+        int trials = 0;
+        while (true)
+        {
+            Point3 dp(rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
+                      rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
+                      (m_problemInfo->problemType == ProblemType_Planar) ? 0.0 : rand() * 2.0*M_PI / RAND_MAX);
+
+            p = Point3(-Util::config()->particleStartingRadius / 2,
+                       -Util::config()->particleStartingRadius / 2,
+                       (m_problemInfo->problemType == ProblemType_Planar) ? 0.0 : -1.0*M_PI) + p + dp;
+
+            int index = m_sceneSolution->findElementInMesh(m_sceneSolution->meshInitial(),
+                                                                          Point(p.x, p.y));
+
+            trials++;
+            if (index > 0 || trials > 10)
+                break;
+        }
+    }
+
+    // initial velocity
+    Point3 v;
+    v.x = Util::config()->particleStartVelocity.x;
+    v.y = Util::config()->particleStartVelocity.y;
+
+    int steps = 0;
+
+    // position and velocity cache
+    positions->append(p);
+    velocities->append(v);
+
+    double relErrorMin = (Util::config()->particleMaximumRelativeError > 0.0) ? Util::config()->particleMaximumRelativeError/100 : 1e-6;
+    double relErrorMax = 1e-3;
+    double dt = 1e-12;
+
+    int max_steps_iter = 0;
+    while (max_steps_iter < Util::config()->particleMaximumSteps)
+    {
+        max_steps_iter++;
+
+        double material = problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
+
+        steps++;
+
+        QTime time;
+        time.start();
+
+        // Runge-Kutta steps
+        Point3 np5;
+        Point3 nv5;
+
+        int max_steps_step = 0;
+        while (max_steps_step < 100)
+        {
+            // Runge-Kutta-Fehlberg adaptive method
+            Point3 k1np;
+            Point3 k1nv;
+            newtonEquations(dt,
+                            p,
+                            v,
+                            &k1np, &k1nv);
+
+            Point3 k2np;
+            Point3 k2nv;
+            newtonEquations(dt,
+                            p + k1np * 1/4,
+                            v + k1nv * 1/4,
+                            &k2np, &k2nv);
+
+            Point3 k3np;
+            Point3 k3nv;
+            newtonEquations(dt,
+                            p + k1np * 3/32 + k2np * 9/32,
+                            v + k1nv * 3/32 + k2nv * 9/32,
+                            &k3np, &k3nv);
+
+            Point3 k4np;
+            Point3 k4nv;
+            newtonEquations(dt,
+                            p + k1np * 1932/2197 - k2np * 7200/2197 + k3np * 7296/2197,
+                            v + k1nv * 1932/2197 - k2nv * 7200/2197 + k3nv * 7296/2197,
+                            &k4np, &k4nv);
+
+            Point3 k5np;
+            Point3 k5nv;
+            newtonEquations(dt,
+                            p + k1np * 439/216 - k2np * 8 + k3np * 3680/513 - k4np * 845/4104,
+                            v + k1nv * 439/216 - k2nv * 8 + k3nv * 3680/513 - k4nv * 845/4104,
+                            &k5np, &k5nv);
+
+            Point3 k6np;
+            Point3 k6nv;
+            newtonEquations(dt,
+                            p - k1np * 8/27 + k2np * 2 - k3np * 3544/2565 + k4np * 1859/4104 - k5np * 11/40,
+                            v - k1nv * 8/27 + k2nv * 2 - k3nv * 3544/2565 + k4nv * 1859/4104 - k5nv * 11/40,
+                            &k6np, &k6nv);
+
+            // Runge-Kutta order 4
+            Point3 np4 = p + k1np * 25/216 + k3np * 1408/2565 + k4np * 2197/4104 - k5np * 1/5;
+            // Point3 nv4 = v + k1nv * 25/216 + k3nv * 1408/2565 + k4nv * 2197/4104 - k5nv * 1/5;
+
+            // Runge-Kutta order 5
+            np5 = p + k1np * 16/135 + k3np * 6656/12825 + k4np * 28561/56430 - k5np * 9/50 + k5np * 2/55;
+            nv5 = v + k1nv * 16/135 + k3nv * 6656/12825 + k4nv * 28561/56430 - k5nv * 9/50 + k5nv * 2/55;
+
+            // optimal step estimation
+            double absError = abs(np5.magnitude() - np4.magnitude());
+            double relError = abs(absError / np5.magnitude());
+
+            // qDebug() << np5.toString();
+
+            // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", step: " << dt;
+
+            if (relError < relErrorMin || relError < EPS_ZERO)
+            {
+                // increase step
+                dt *= 2.0;
+                continue;
+            }
+            else if (relError > relErrorMax)
+            {
+                // decrease step
+                dt /= 2.0;
+                // continue;
+            }
+
+            break;
+        }
+
+        int index = sceneSolution()->findElementInMesh(sceneSolution()->meshInitial(),
+                                                                      Point(np5.x, np5.y));
+        if (index < 0)
+        {
+            break;
+        }
+        else if (Util::config()->particleTerminateOnDifferentMaterial)
+        {
+            double newMaterial = problemInfo()->hermes()->particleMaterial(Point(np5.x, np5.y));
+            if (abs(material - newMaterial) > EPS_ZERO)
+                break;
+        }
+
+        // new values
+        v = nv5;
+        p = np5;
+
+        // cache
+        positions->append(p);
+
+        if (problemInfo()->problemType == ProblemType_Planar)
+        {
+            velocities->append(v);
+        }
+        else
+        {
+            velocities->append(Point3(v.x, v.y, p.x * v.z)); // v_phi = omega * r
+        }
+    }
+
+    // qDebug() << "steps: " << steps;
+    // qDebug() << "total: " << timePart.elapsed();
 }
