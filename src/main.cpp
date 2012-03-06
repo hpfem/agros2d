@@ -40,6 +40,10 @@ int main(int argc, char *argv[])
     a.setAttribute(Qt::AA_DontShowIconsInMenus, true);
 #endif
 
+#ifdef Q_WS_WIN
+    a.addLibraryPath(QApplication::applicationDirPath() + QDir::separator() + "plugins");
+#endif
+
     // parameters
     QStringList args = QCoreApplication::arguments();
     if (args.count() == 2)
