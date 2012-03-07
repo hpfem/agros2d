@@ -342,7 +342,7 @@ void SceneView::resizeGL(int w, int h)
     }
 }
 
-void SceneView::loadProjection2d(bool setScene) const
+void SceneView::loadProjection2d(bool setScene)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -354,13 +354,17 @@ void SceneView::loadProjection2d(bool setScene) const
 
     if (setScene)
     {
+        // set max and min zoom
+        if (m_scale2d < 1e-9) m_scale2d = 1e-9;
+        if (m_scale2d > 1e6) m_scale2d = 1e6;
+
         glScaled(m_scale2d/aspect(), m_scale2d, m_scale2d);
 
         glTranslated(-m_offset2d.x, -m_offset2d.y, 0.0);
     }
 }
 
-void SceneView::loadProjection3d(bool setScene) const
+void SceneView::loadProjection3d(bool setScene)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -371,6 +375,10 @@ void SceneView::loadProjection3d(bool setScene) const
 
     if (setScene)
     {
+        // set max and min zoom
+        if (m_scale3d < 1e-9) m_scale3d = 1e-9;
+        if (m_scale3d > 1e6) m_scale3d = 1e6;
+
         glScaled(1.0/aspect(), 1.0, 0.1);
 
         // move to origin
@@ -457,7 +465,6 @@ void SceneView::paintGL()
         glDisable(GL_DEPTH_TEST);
 
         // background
-        // if (Util::config()->showGrid)
         paintBackgroundPixmap();
 
         // grid
@@ -613,8 +620,6 @@ void SceneView::paintBackgroundPixmap()
 
 void SceneView::paintGrid()
 {
-    logMessage("SceneView::paintGrid()");
-
     loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
@@ -634,20 +639,7 @@ void SceneView::paintGrid()
             ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
     {
         // vertical lines
-        for (int i = 0; i<cornerMax.x/Util::config()->gridStep; i++)
-        {
-            if (i % heavyLine == 0)
-                glColor3d(Util::config()->colorCross.redF(),
-                          Util::config()->colorCross.greenF(),
-                          Util::config()->colorCross.blueF());
-            else
-                glColor3d(Util::config()->colorGrid.redF(),
-                          Util::config()->colorGrid.greenF(),
-                          Util::config()->colorGrid.blueF());
-            glVertex2d(i*Util::config()->gridStep, cornerMin.y);
-            glVertex2d(i*Util::config()->gridStep, cornerMax.y);
-        }
-        for (int i = 0; i>cornerMin.x/Util::config()->gridStep; i--)
+        for (int i = cornerMin.x/Util::config()->gridStep - 1; i < cornerMax.x/Util::config()->gridStep + 1; i++)
         {
             if (i % heavyLine == 0)
                 glColor3d(Util::config()->colorCross.redF(),
@@ -662,7 +654,7 @@ void SceneView::paintGrid()
         }
 
         // horizontal lines
-        for (int i = 0; i<cornerMin.y/Util::config()->gridStep; i++)
+        for (int i = cornerMax.y/Util::config()->gridStep - 1; i < cornerMin.y/Util::config()->gridStep + 1; i++)
         {
             if (i % heavyLine == 0)
                 glColor3d(Util::config()->colorCross.redF(),
@@ -674,20 +666,7 @@ void SceneView::paintGrid()
                           Util::config()->colorGrid.blueF());
             glVertex2d(cornerMin.x, i*Util::config()->gridStep);
             glVertex2d(cornerMax.x, i*Util::config()->gridStep);
-        }
-        for (int i = 0; i>cornerMax.y/Util::config()->gridStep; i--)
-        {
-            if (i % heavyLine == 0)
-                glColor3d(Util::config()->colorCross.redF(),
-                          Util::config()->colorCross.greenF(),
-                          Util::config()->colorCross.blueF());
-            else
-                glColor3d(Util::config()->colorGrid.redF(),
-                          Util::config()->colorGrid.greenF(),
-                          Util::config()->colorGrid.blueF());
-            glVertex2d(cornerMin.x, i*Util::config()->gridStep);
-            glVertex2d(cornerMax.x, i*Util::config()->gridStep);
-        }
+        }        
     }
     glEnd();
     glDisable(GL_LINE_STIPPLE);
@@ -705,7 +684,7 @@ void SceneView::paintGrid()
     glColor3d(Util::config()->colorCross.redF(),
               Util::config()->colorCross.greenF(),
               Util::config()->colorCross.blueF());
-    glLineWidth(1.0);
+    glLineWidth(1.5);
     glBegin(GL_LINES);
     // y axis
     glVertex2d(0, cornerMin.y);
@@ -718,7 +697,7 @@ void SceneView::paintGrid()
 
 void SceneView::paintAxes()
 {
-    logMessage("SceneView::paintGrid()");
+    logMessage("SceneView::paintAxes()");
 
     loadProjection2d();
 
@@ -775,12 +754,13 @@ void SceneView::paintAxes()
 
 void SceneView::paintRulers()
 {
-    logMessage("SceneView::paintRulers()");
-
     loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(contextWidth(), contextHeight()));
+
+    m_rulersNumbersWidth = 0.0;
+    m_rulersAreaWidth = Point();
 
     double gridStep = Util::config()->gridStep;
     if (gridStep < EPS_ZERO)
@@ -788,9 +768,8 @@ void SceneView::paintRulers()
 
     while (((cornerMax.x-cornerMin.x)/gridStep + (cornerMin.y-cornerMax.y)/gridStep) > 200)
         gridStep *= 2.0;
-    while (((cornerMax.x-cornerMin.x)/gridStep + (cornerMin.y-cornerMax.y)/gridStep) < 60)
+    while (((cornerMax.x-cornerMin.x)/gridStep + (cornerMin.y-cornerMax.y)/gridStep) < 80)
         gridStep /= 2.0;
-
 
     if (((cornerMax.x-cornerMin.x)/gridStep > 0) && ((cornerMin.y-cornerMax.y)/gridStep > 0))
     {
@@ -800,7 +779,7 @@ void SceneView::paintRulers()
         QFont fontLabel = font();
         fontLabel.setPointSize(fontLabel.pointSize() - 1);
 
-        m_rulersNumbersWidth = (2.0/contextWidth()*QFontMetrics(fontLabel).width(QString::number(5*gridStep)))/m_scale2d*aspect();
+        m_rulersNumbersWidth = (2.0/contextWidth()*QFontMetrics(fontLabel).width("MMMMMMMM"))/m_scale2d*aspect();
 
         m_rulersAreaWidth = Point((2.0/contextWidth()*fontLabel.pointSize()*2.0)/m_scale2d*aspect(),
                                   -(2.0/contextHeight()*fontLabel.pointSize()*2.0)/m_scale2d);
@@ -826,61 +805,27 @@ void SceneView::paintRulers()
         glBegin(GL_LINES);
 
         // horizontal ticks
-        for (int i = 0; i<cornerMax.x/gridStep; i++)
+        for (int i = cornerMin.x/gridStep - 1; i < cornerMax.x/gridStep + 1; i++)
         {
-            if (i*gridStep < cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x)
-                continue;
-
-            if (i % heavyLine == 0)
+            if ((i*gridStep > cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x) && (i*gridStep < cornerMax.x))
             {
-                glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y);
-                glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y * 1.0/7.0);
+                if (i % heavyLine == 0)
+                {
+                    glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y);
+                    glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y * 1.0/7.0);
+                }
+                else
+                {
+                    glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y);
+                    glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y * 2.0/3.0);
+                }
             }
-            else
-            {
-                glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y);
-                glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y * 2.0/3.0);
-            }
-        }
-        for (int i = 0; i>cornerMin.x/gridStep; i--)
-        {
-            if (i*gridStep < cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x)
-                continue;
-
-            if (i % heavyLine == 0)
-            {
-                glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y);
-                glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y * 1.0/7.0);
-            }
-            else
-            {
-                glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y);
-                glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y * 2.0/3.0);
-            }
-
-        }
+        }       
 
         // vertical ticks
-        for (int i = 0; i<cornerMin.y/gridStep; i++)
+        for (int i = cornerMax.y/gridStep - 1; i < cornerMin.y/gridStep + 1; i++)
         {
-            if (i*gridStep < cornerMax.y - m_rulersAreaWidth.y)
-                continue;
-
-            if (i % heavyLine == 0)
-            {
-                glVertex2d(cornerMin.x + m_rulersAreaWidth.x * 1.0/7.0, i*gridStep);
-                glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x, i*gridStep);
-            }
-            else
-            {
-                glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x * 2.0/3.0, i*gridStep);
-                glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x, i*gridStep);
-            }
-
-        }
-        for (int i = 1; i>cornerMax.y/gridStep; i--)
-        {
-            if (i*gridStep < cornerMax.y - m_rulersAreaWidth.y)
+            if ((i*gridStep < cornerMax.y - m_rulersAreaWidth.y) || (i*gridStep > cornerMin.y))
                 continue;
 
             if (i % heavyLine == 0)
@@ -896,57 +841,60 @@ void SceneView::paintRulers()
         }
         glEnd();
 
+        // zero axes
+        glColor3d(Util::config()->colorCross.redF(),
+                  Util::config()->colorCross.greenF(),
+                  Util::config()->colorCross.blueF());
+
+        glLineWidth(1.5);
+        glBegin(GL_LINES);
+
+        glVertex2d(0.0, cornerMax.y - m_rulersAreaWidth.y);
+        glVertex2d(0.0, cornerMax.y - m_rulersAreaWidth.y * 1.0/7.0);
+
+        glVertex2d(cornerMin.x + m_rulersAreaWidth.x * 1.0/7.0, 0.0);
+        glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x, 0.0);
+
+        glEnd();
+
         // horizontal labels
-        for (int i = 0; i<cornerMax.x/gridStep; i++)
+        QString textsizehor = QString::number(gridStep);
+        double sizehor = 2.0/contextWidth()*(QFontMetrics(fontLabel).width(textsizehor) / 6.0)/m_scale2d*aspect();
+
+        for (int i = cornerMin.x/gridStep - 1; i < cornerMax.x/gridStep + 1; i++)
         {
-            if (i*gridStep < cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x)
+            if ((i*gridStep < cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x) || (i*gridStep > cornerMax.x))
                 continue;
 
             if (i % heavyLine == 0)
             {
-                QString text = QString::number(i*gridStep);
-                double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).width(text) / 6.0)/m_scale2d*aspect();
-                renderTextPos(i*gridStep + size, cornerMax.y, 0.0, text, false, fontLabel);
-            }
-        }
-        for (int i = 1; i>cornerMin.x/gridStep; i--)
-        {
-            if (i*gridStep < cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x)
-                continue;
-
-            if (i % heavyLine == 0)
-            {
-                QString text = QString::number(i*gridStep);
-                double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).width(text) / 6.0)/m_scale2d*aspect();
-                renderTextPos(i*gridStep + size, cornerMax.y, 0.0, text, false, fontLabel);
+                QString text;
+                if ((abs(gridStep) > 1e3 || abs(gridStep) < 1e-3) && i != 0)
+                    text = QString::number(i*gridStep, 'e', 2);
+                else
+                    text = QString::number(i*gridStep, 'f', 6);
+                renderTextPos(i*gridStep + sizehor, cornerMax.y, 0.0, QString(text + "        ").left(9), false, fontLabel);
             }
         }
 
         // vertical labels
-        for (int i = 0; i<cornerMin.y/gridStep; i++)
+        double sizever = 2.0/contextWidth()*(QFontMetrics(fontLabel).height() * 7.0 / 6.0)/m_scale2d;
+
+        for (int i = cornerMax.y/gridStep - 1; i < cornerMin.y/gridStep + 1; i++)
         {
-            if (i*gridStep < cornerMax.y - m_rulersAreaWidth.y)
+            if ((i*gridStep < cornerMax.y - m_rulersAreaWidth.y) || (i*gridStep > cornerMin.y))
                 continue;
 
             if (i % heavyLine == 0)
             {
-                QString text = QString::number(i*gridStep);
-                double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).height() * 7.0 / 6.0)/m_scale2d;
-                renderTextPos(cornerMin.x + m_rulersAreaWidth.x / 20.0, i*gridStep - size, 0.0, text, false, fontLabel);
+                QString text;
+                if ((abs(gridStep) > 1e3 || abs(gridStep) < 1e-3) && i != 0)
+                    text = QString::number(i*gridStep, 'e', 2);
+                else
+                    text = QString::number(i*gridStep, 'f', 7);
+                renderTextPos(cornerMin.x + m_rulersAreaWidth.x / 20.0, i*gridStep - sizever, 0.0, QString(((i >= 0) ? " " : "") + text + "        ").left(9), false, fontLabel);
             }
 
-        }
-        for (int i = 1; i>cornerMax.y/gridStep; i--)
-        {
-            if (i*gridStep < cornerMax.y - m_rulersAreaWidth.y)
-                continue;
-
-            if (i % heavyLine == 0)
-            {
-                QString text = QString::number(i*gridStep);
-                double size = 2.0/contextWidth()*(QFontMetrics(fontLabel).height() * 7.0 / 6.0)/m_scale2d;
-                renderTextPos(cornerMin.x + m_rulersAreaWidth.x / 20.0, i*gridStep - size, 0.0, text, false, fontLabel);
-            }
         }
     }
 }
@@ -1374,7 +1322,7 @@ void SceneView::paintOrderColorBar()
     int textWidth = fontMetrics().width("00");
     int textHeight = fontMetrics().height();
     Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? - (m_rulersAreaWidth.y/4.0)*m_scale2d*contextHeight() + 20.0 : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers && !is3DMode()) ? 1.8*fontMetrics().height() : 10.0);
     double scaleLeft = (contextWidth() - (20 + 3 * textWidth));
 
     // blended rectangle
@@ -1432,7 +1380,7 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
     int textHeight = fontMetrics().height();
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 30.0 : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers && !is3DMode()) ? 1.8*fontMetrics().height() : 10.0);
     double scaleLeft = (contextWidth() - (45.0 + textWidth));
     int numTicks = 11;
 
@@ -1477,7 +1425,7 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     // ticks
     glLineWidth(1.0);
     glBegin(GL_LINES);
-    for (int i = 1; i < numTicks+1; i++)
+    for (int i = 1; i < numTicks; i++)
     {
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
@@ -2482,228 +2430,6 @@ void SceneView::paintVectors()
     }
 }
 
-void SceneView::newtonEquations(double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
-{
-    // Lorentz force
-    Point3 forceLorentz = Util::scene()->problemInfo()->hermes()->particleForce(position, velocity)  * Util::config()->particleConstant;
-
-    // Gravitational force
-    Point3 forceGravitational;
-    if (Util::config()->particleIncludeGravitation)
-        forceGravitational = Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0);
-
-    // Drag force
-    Point3 velocityReal = (Util::scene()->problemInfo()->problemType == ProblemType_Planar) ?
-                velocity : Point3(velocity.x, velocity.y, position.x * velocity.z);
-    Point3 forceDrag;
-    if (velocityReal.magnitude() > 0.0)
-        forceDrag = velocityReal.normalizePoint() *
-                - 0.5 * Util::config()->particleDragDensity * sqr(velocityReal.magnitude()) * Util::config()->particleDragCoefficient * Util::config()->particleDragReferenceArea;
-
-    // Total force
-    Point3 totalForce = forceLorentz + forceGravitational + forceDrag;
-
-    // Total acceleration
-    Point3 totalAccel = totalForce / Util::config()->particleMass;
-
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-    {
-        // position
-        *newposition = velocity * step;
-
-        // velocity
-        *newvelocity = totalAccel * step;
-    }
-    else
-    {
-        (*newposition).x = velocity.x * step; // r
-        (*newposition).y = velocity.y * step; // z
-        (*newposition).z = velocity.z * step; // alpha
-
-        (*newvelocity).x = (totalAccel.x + sqr(velocity.z) * position.x) * step; // r
-        (*newvelocity).y = (totalAccel.y) * step; // z
-        (*newvelocity).z = (totalAccel.z / position.x - 2 / position.x * velocity.x * velocity.z) * step; // alpha
-    }
-}
-
-void SceneView::computeParticleTracingPath(QList<Point3> *positions,
-                                           QList<Point3> *velocities,
-                                           bool randomPoint)
-{
-    QTime timePart;
-    timePart.start();
-
-    // initial position
-    Point3 p;
-    p.x = Util::config()->particleStart.x;
-    p.y = Util::config()->particleStart.y;
-
-    // random point
-    if (randomPoint)
-    {
-        int trials = 0;
-        while (true)
-        {
-            Point3 dp(rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
-                      rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
-                      (m_scene->problemInfo()->problemType == ProblemType_Planar) ? 0.0 : rand() * 2.0*M_PI / RAND_MAX);
-
-            p = Point3(-Util::config()->particleStartingRadius / 2,
-                       -Util::config()->particleStartingRadius / 2,
-                       (m_scene->problemInfo()->problemType == ProblemType_Planar) ? 0.0 : -1.0*M_PI) + p + dp;
-
-            int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(),
-                                                                          Point(p.x, p.y));
-
-            trials++;
-            if (index > 0 || trials > 10)
-                break;
-        }
-    }
-
-    // initial velocity
-    Point3 v;
-    v.x = Util::config()->particleStartVelocity.x;
-    v.y = Util::config()->particleStartVelocity.y;
-
-    int steps = 0;
-
-    // position and velocity cache
-    positions->append(p);
-    velocities->append(v);
-
-    double relErrorMin = (Util::config()->particleMaximumRelativeError > 0.0) ? Util::config()->particleMaximumRelativeError/100 : 1e-6;
-    double relErrorMax = 1e-3;
-    double dt = 1e-12;
-
-    int max_steps_iter = 0;
-    while (max_steps_iter < Util::config()->particleMaximumSteps)
-    {
-        max_steps_iter++;
-
-        double material = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
-
-        steps++;
-
-        QTime time;
-        time.start();
-
-        // Runge-Kutta steps
-        Point3 np5;
-        Point3 nv5;
-
-        int max_steps_step = 0;
-        while (max_steps_step < 100)
-        {
-            // Runge-Kutta-Fehlberg adaptive method
-            Point3 k1np;
-            Point3 k1nv;
-            newtonEquations(dt,
-                            p,
-                            v,
-                            &k1np, &k1nv);
-
-            Point3 k2np;
-            Point3 k2nv;
-            newtonEquations(dt,
-                            p + k1np * 1/4,
-                            v + k1nv * 1/4,
-                            &k2np, &k2nv);
-
-            Point3 k3np;
-            Point3 k3nv;
-            newtonEquations(dt,
-                            p + k1np * 3/32 + k2np * 9/32,
-                            v + k1nv * 3/32 + k2nv * 9/32,
-                            &k3np, &k3nv);
-
-            Point3 k4np;
-            Point3 k4nv;
-            newtonEquations(dt,
-                            p + k1np * 1932/2197 - k2np * 7200/2197 + k3np * 7296/2197,
-                            v + k1nv * 1932/2197 - k2nv * 7200/2197 + k3nv * 7296/2197,
-                            &k4np, &k4nv);
-
-            Point3 k5np;
-            Point3 k5nv;
-            newtonEquations(dt,
-                            p + k1np * 439/216 - k2np * 8 + k3np * 3680/513 - k4np * 845/4104,
-                            v + k1nv * 439/216 - k2nv * 8 + k3nv * 3680/513 - k4nv * 845/4104,
-                            &k5np, &k5nv);
-
-            Point3 k6np;
-            Point3 k6nv;
-            newtonEquations(dt,
-                            p - k1np * 8/27 + k2np * 2 - k3np * 3544/2565 + k4np * 1859/4104 - k5np * 11/40,
-                            v - k1nv * 8/27 + k2nv * 2 - k3nv * 3544/2565 + k4nv * 1859/4104 - k5nv * 11/40,
-                            &k6np, &k6nv);
-
-            // Runge-Kutta order 4
-            Point3 np4 = p + k1np * 25/216 + k3np * 1408/2565 + k4np * 2197/4104 - k5np * 1/5;
-            // Point3 nv4 = v + k1nv * 25/216 + k3nv * 1408/2565 + k4nv * 2197/4104 - k5nv * 1/5;
-
-            // Runge-Kutta order 5
-            np5 = p + k1np * 16/135 + k3np * 6656/12825 + k4np * 28561/56430 - k5np * 9/50 + k5np * 2/55;
-            nv5 = v + k1nv * 16/135 + k3nv * 6656/12825 + k4nv * 28561/56430 - k5nv * 9/50 + k5nv * 2/55;
-
-            // optimal step estimation
-            double absError = abs(np5.magnitude() - np4.magnitude());
-            double relError = abs(absError / np5.magnitude());
-
-            // qDebug() << np5.toString();
-
-            // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", step: " << dt;
-
-            if (relError < relErrorMin || relError < EPS_ZERO)
-            {
-                // increase step
-                dt *= 2.0;
-                continue;
-            }
-            else if (relError > relErrorMax)
-            {
-                // decrease step
-                dt /= 2.0;
-                // continue;
-            }
-
-            break;
-        }
-
-        int index = Util::scene()->sceneSolution()->findElementInMesh(Util::scene()->sceneSolution()->meshInitial(),
-                                                                      Point(np5.x, np5.y));
-        if (index < 0)
-        {
-            break;
-        }
-        else if (Util::config()->particleTerminateOnDifferentMaterial)
-        {
-            double newMaterial = Util::scene()->problemInfo()->hermes()->particleMaterial(Point(np5.x, np5.y));
-            if (abs(material - newMaterial) > EPS_ZERO)
-                break;
-        }
-
-        // new values
-        v = nv5;
-        p = np5;
-
-        // cache
-        positions->append(p);
-
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-        {
-            velocities->append(v);
-        }
-        else
-        {
-            velocities->append(Point3(v.x, v.y, p.x * v.z)); // v_phi = omega * r
-        }
-    }
-
-    // qDebug() << "steps: " << steps;
-    // qDebug() << "total: " << timePart.elapsed();
-}
-
 void SceneView::paintParticleTracing()
 {
     if (!m_isSolutionPrepared) return;
@@ -2734,7 +2460,7 @@ void SceneView::paintParticleTracing()
             QList<Point3> positions;
             QList<Point3> velocities;
 
-            computeParticleTracingPath(&positions, &velocities, (k > 0));
+            Util::scene()->computeParticleTracingPath(&positions, &velocities, (k > 0));
 
             // velocity min and max value
             for (int i = 0; i < velocities.length(); i++)
@@ -3168,7 +2894,7 @@ void SceneView::paintParticleTracing3D()
             QList<Point3> positions;
             QList<Point3> velocities;
 
-            computeParticleTracingPath(&positions, &velocities, (k > 0));
+            Util::scene()->computeParticleTracingPath(&positions, &velocities, (k > 0));
 
             // velocity min and max value
             for (int i = 0; i < velocities.length(); i++)
@@ -3305,10 +3031,10 @@ void SceneView::paintParticleTracingColorBar(double min, double max)
     int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
     int textHeight = fontMetrics().height();
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 30.0 : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers && !is3DMode()) ? 1.8*fontMetrics().height() : 10.0);
     double scaleLeft = (contextWidth()
                         - (((m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
-                             m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) ? 170.0 : 45) + textWidth));
+                             m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) ? scaleSize.x : 0.0) + 45.0 + textWidth));
     int numTicks = 11;
 
     // blended rectangle
@@ -3342,7 +3068,7 @@ void SceneView::paintParticleTracingColorBar(double min, double max)
     glColor3d(0.0, 0.0, 0.0);
     glLineWidth(1.0);
     glBegin(GL_LINES);
-    for (int i = 1; i < numTicks+1; i++)
+    for (int i = 1; i < numTicks; i++)
     {
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
@@ -3611,7 +3337,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataJet[n];
     }
-    break;
+        break;
     case Palette_Copper:
     {
         if (x < 0.0) x = 0.0;
@@ -3620,7 +3346,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataCopper[n];
     }
-    break;
+        break;
     case Palette_Hot:
     {
         if (x < 0.0) x = 0.0;
@@ -3629,7 +3355,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataHot[n];
     }
-    break;
+        break;
     case Palette_Cool:
     {
         if (x < 0.0) x = 0.0;
@@ -3638,7 +3364,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataCool[n];
     }
-    break;
+        break;
     case Palette_Bone:
     {
         if (x < 0.0) x = 0.0;
@@ -3647,7 +3373,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataBone[n];
     }
-    break;
+        break;
     case Palette_Pink:
     {
         if (x < 0.0) x = 0.0;
@@ -3656,7 +3382,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataPink[n];
     }
-    break;
+        break;
     case Palette_Spring:
     {
         if (x < 0.0) x = 0.0;
@@ -3665,7 +3391,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataSpring[n];
     }
-    break;
+        break;
     case Palette_Summer:
     {
         if (x < 0.0) x = 0.0;
@@ -3674,7 +3400,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataSummer[n];
     }
-    break;
+        break;
     case Palette_Autumn:
     {
         if (x < 0.0) x = 0.0;
@@ -3683,7 +3409,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataAutumn[n];
     }
-    break;
+        break;
     case Palette_Winter:
     {
         if (x < 0.0) x = 0.0;
@@ -3692,7 +3418,7 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataWinter[n];
     }
-    break;
+        break;
     case Palette_HSV:
     {
         if (x < 0.0) x = 0.0;
@@ -3701,21 +3427,21 @@ const double* SceneView::paletteColor(double x) const
         int n = (int) x;
         return paletteDataHSV[n];
     }
-    break;
+        break;
     case Palette_BWAsc:
     {
         static double color[3];
         color[0] = color[1] = color[2] = x;
         return color;
     }
-    break;
+        break;
     case Palette_BWDesc:
     {
         static double color[3];
         color[0] = color[1] = color[2] = 1.0 - x;
         return color;
     }
-    break;
+        break;
     default:
         qWarning() << tr("Undefined: %1.").arg(Util::config()->paletteType);
         return NULL;
@@ -3885,45 +3611,45 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             m_offset2d.y += step;
             refresh();
         }
-        break;
+            break;
         case Qt::Key_Down:
         {
             m_offset2d.y -= step;
             refresh();
         }
-        break;
+            break;
         case Qt::Key_Left:
         {
             m_offset2d.x -= step;
             refresh();
         }
-        break;
+            break;
         case Qt::Key_Right:
         {
             m_offset2d.x += step;
             refresh();
         }
-        break;
+            break;
         case Qt::Key_Plus:
         {
             doZoomIn();
         }
-        break;
+            break;
         case Qt::Key_Minus:
         {
             doZoomOut();
         }
-        break;
+            break;
         case Qt::Key_Delete:
         {
             m_scene->deleteSelected();
         }
-        break;
+            break;
         case Qt::Key_Space:
         {
             doSceneObjectProperties();
         }
-        break;
+            break;
         case Qt::Key_Escape:
         {
             m_nodeLast = NULL;
@@ -3931,7 +3657,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             emit mousePressed();
             refresh();
         }
-        break;
+            break;
         case Qt::Key_N:
         {
             // add node with coordinates under mouse pointer
@@ -3941,7 +3667,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
                 m_scene->doNewNode(p);
             }
         }
-        break;
+            break;
         case Qt::Key_L:
         {
             // add label with coordinates under mouse pointer
@@ -3951,7 +3677,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
                 m_scene->doNewLabel(p);
             }
         }
-        break;
+            break;
         case Qt::Key_A:
         {
             // select all
@@ -3981,7 +3707,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
                 refresh();
             }
         }
-        break;
+            break;
         default:
             QGLWidget::keyPressEvent(event);
         }
@@ -4758,19 +4484,22 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
 
     if (fabs(end.x-start.x) < EPS_ZERO || fabs(end.y-start.y) < EPS_ZERO) return;
 
-    m_offset2d.x = ((Util::config()->showRulers) ? start.x+end.x-m_rulersNumbersWidth-m_rulersAreaWidth.x : start.x+end.x)/2.0;
-    m_offset2d.y = (start.y+end.y)/2.0;
-
     double sceneWidth = end.x-start.x;
     double sceneHeight = end.y-start.y;
 
-    double maxScene = (((double) ((Util::config()->showRulers) ? contextWidth()-m_rulersNumbersWidth-m_rulersAreaWidth.x : contextWidth()) / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
+    double maxScene = (((double) contextWidth() / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
 
     if (maxScene > 0.0)
     {
         m_scale2d = 1.85/maxScene;
         m_scale3d = 0.6 * m_scale2d;
     }
+
+    m_offset2d.x = (start.x+end.x)/2.0;
+    m_offset2d.y = (start.y+end.y)/2.0;
+    paintRulers();
+    m_offset2d.x = ((Util::config()->showRulers) ? start.x+end.x-m_rulersNumbersWidth-m_rulersAreaWidth.x : start.x+end.x)/2.0;
+    m_offset2d.y = (start.y+end.y)/2.0;
 
     setZoom(0);
 }

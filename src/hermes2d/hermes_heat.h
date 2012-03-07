@@ -111,6 +111,7 @@ class SurfaceIntegralValueHeat : public SurfaceIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void initSolutions();
 
 public:
     double averageTemperature;

@@ -131,7 +131,6 @@ public slots:
     void doDeleteSelected();
     void doNewBoundary();
     void doNewMaterial();
-    void doTransform();
     void doClearSolution();
     void doProblemProperties();
 
@@ -219,6 +218,12 @@ public:
     void checkNodeConnect(SceneNode *node);
     void checkGeometry();
     ErrorResult checkGeometryResult();
+
+    // compute particle path
+    void newtonEquations(double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity);
+    void computeParticleTracingPath(QList<Point3> *positions,
+                                    QList<Point3> *velocities,
+                                    bool randomPoint);
 
     inline QUndoStack *undoStack() const { return m_undoStack; }
 

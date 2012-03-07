@@ -676,9 +676,9 @@ void HermesAcoustic::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceInt
     itemPressure->setText(0, tr("Pressure"));
     itemPressure->setExpanded(true);
 
-    addTreeWidgetItemValue(itemPressure, tr("real:"), QString("%1").arg(surfaceIntegralValueAcoustic->pressureReal, 0, 'e', 3), "N");
-    addTreeWidgetItemValue(itemPressure, tr("imag:"), QString("%1").arg(surfaceIntegralValueAcoustic->pressureImag, 0, 'e', 3), "N");
-    addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(surfaceIntegralValueAcoustic->pressureReal) + sqr(surfaceIntegralValueAcoustic->pressureImag)), 0, 'e', 3), "N");
+    addTreeWidgetItemValue(itemPressure, tr("real:"), QString("%1").arg(surfaceIntegralValueAcoustic->pressureReal, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(itemPressure, tr("imag:"), QString("%1").arg(surfaceIntegralValueAcoustic->pressureImag, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(surfaceIntegralValueAcoustic->pressureReal) + sqr(surfaceIntegralValueAcoustic->pressureImag)), 0, 'e', 3), "Pa");
 }
 
 void HermesAcoustic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)
@@ -695,9 +695,9 @@ void HermesAcoustic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
     itemPressure->setText(0, tr("Pressure"));
     itemPressure->setExpanded(true);
 
-    addTreeWidgetItemValue(itemPressure, tr("real:"), QString("%1").arg(volumeIntegralValueAcoustic->pressureReal, 0, 'e', 3), "N");
-    addTreeWidgetItemValue(itemPressure, tr("imag:"), QString("%1").arg(volumeIntegralValueAcoustic->pressureImag, 0, 'e', 3), "N");
-    addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueAcoustic->pressureReal) + sqr(volumeIntegralValueAcoustic->pressureImag)), 0, 'e', 3), "N");
+    addTreeWidgetItemValue(itemPressure, tr("real:"), QString("%1").arg(volumeIntegralValueAcoustic->pressureReal, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(itemPressure, tr("imag:"), QString("%1").arg(volumeIntegralValueAcoustic->pressureImag, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueAcoustic->pressureReal) + sqr(volumeIntegralValueAcoustic->pressureImag)), 0, 'e', 3), "Pa");
 }
 
 ViewScalarFilter *HermesAcoustic::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
@@ -938,6 +938,12 @@ void SurfaceIntegralValueAcoustic::calculateVariables(int i)
         pressureImag += pt[i][2] * tan[i][2] * value2[i];
     else
         pressureImag += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * value2[i];
+}
+
+void SurfaceIntegralValueAcoustic::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
+    sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
 }
 
 QStringList SurfaceIntegralValueAcoustic::variables()

@@ -837,6 +837,12 @@ void SurfaceIntegralValueElasticity::calculateVariables(int i)
 
 }
 
+void SurfaceIntegralValueElasticity::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(0);
+    sln2 = Util::scene()->sceneSolution()->sln(1);
+}
+
 QStringList SurfaceIntegralValueElasticity::variables()
 {
     QStringList row;

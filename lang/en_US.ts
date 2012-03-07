@@ -205,24 +205,24 @@
 <context>
     <name>CheckVersion</name>
     <message>
-        <location filename="../src/util.cpp" line="1860"/>
+        <location filename="../src/util.cpp" line="1827"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1853"/>
-        <location filename="../src/util.cpp" line="1868"/>
-        <location filename="../src/util.cpp" line="1872"/>
+        <location filename="../src/util.cpp" line="1820"/>
+        <location filename="../src/util.cpp" line="1835"/>
+        <location filename="../src/util.cpp" line="1839"/>
         <source>New version</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1853"/>
+        <location filename="../src/util.cpp" line="1820"/>
         <source>File is corrupted or network is disconnected.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1872"/>
+        <location filename="../src/util.cpp" line="1839"/>
         <source>You are using actual version.</source>
         <translation></translation>
     </message>
@@ -637,23 +637,23 @@
 <context>
     <name>DSceneNode</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="288"/>
+        <location filename="../src/scenebasic.cpp" line="309"/>
         <source>Distance:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="289"/>
+        <location filename="../src/scenebasic.cpp" line="310"/>
         <source>Angle:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="322"/>
+        <location filename="../src/scenebasic.cpp" line="343"/>
         <source>Node already exists.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="250"/>
-        <location filename="../src/scenebasic.cpp" line="322"/>
+        <location filename="../src/scenebasic.cpp" line="271"/>
+        <location filename="../src/scenebasic.cpp" line="343"/>
         <source>Node</source>
         <translation></translation>
     </message>
@@ -1836,7 +1836,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1358"/>
+        <location filename="../src/mainwindow.cpp" line="1368"/>
         <source>Export mesh file</source>
         <translation></translation>
     </message>
@@ -2239,34 +2239,34 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1262"/>
+        <location filename="../src/mainwindow.cpp" line="1265"/>
         <source>Problem Type: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1263"/>
+        <location filename="../src/mainwindow.cpp" line="1266"/>
         <source>Physic Field: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1264"/>
+        <location filename="../src/mainwindow.cpp" line="1267"/>
         <source>Analysis type: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1358"/>
+        <location filename="../src/mainwindow.cpp" line="1368"/>
         <source>Mesh files (*.mesh)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1405"/>
-        <location filename="../src/mainwindow.cpp" line="1437"/>
+        <location filename="../src/mainwindow.cpp" line="1415"/>
+        <location filename="../src/mainwindow.cpp" line="1447"/>
         <source>Export vtk file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1405"/>
-        <location filename="../src/mainwindow.cpp" line="1437"/>
+        <location filename="../src/mainwindow.cpp" line="1415"/>
+        <location filename="../src/mainwindow.cpp" line="1447"/>
         <source>VTK files (*.vtk)</source>
         <translation></translation>
     </message>
@@ -3444,7 +3444,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="280"/>
+        <location filename="../src/progressdialog.cpp" line="279"/>
         <source>Boundary edges &apos;%1&apos; does not have a boundary marker</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3782,11 +3782,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="437"/>
-        <source>Alt+C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/pythonlab/pythoneditor.cpp" line="439"/>
         <source>PyFlakes enabled</source>
         <translation type="unfinished"></translation>
@@ -4025,12 +4020,12 @@ Do you want to save your changes?</source>
 <context>
     <name>PythonLabAgros</name>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1214"/>
+        <location filename="../src/pythonlabagros.cpp" line="1284"/>
         <source>&amp;Create script from model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1215"/>
+        <location filename="../src/pythonlabagros.cpp" line="1285"/>
         <source>Ctrl+M</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4061,122 +4056,122 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="278"/>
+        <location filename="../src/pythonlabagros.cpp" line="339"/>
         <source>Script input</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="290"/>
+        <location filename="../src/pythonlabagros.cpp" line="351"/>
         <source>Problem is not meshed.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="344"/>
+        <location filename="../src/pythonlabagros.cpp" line="405"/>
         <source>Problem type &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="351"/>
+        <location filename="../src/pythonlabagros.cpp" line="412"/>
         <source>Physic field &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="357"/>
+        <location filename="../src/pythonlabagros.cpp" line="418"/>
         <source>Number of refinements &apos;%1&apos; is out of range.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="363"/>
+        <location filename="../src/pythonlabagros.cpp" line="424"/>
         <source>Polynomial order &apos;%1&apos; is out of range.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="467"/>
-        <location filename="../src/pythonlabagros.cpp" line="504"/>
-        <location filename="../src/pythonlabagros.cpp" line="532"/>
+        <location filename="../src/pythonlabagros.cpp" line="528"/>
+        <location filename="../src/pythonlabagros.cpp" line="565"/>
+        <location filename="../src/pythonlabagros.cpp" line="593"/>
         <source>Index &apos;%1&apos; is out of range.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="488"/>
+        <location filename="../src/pythonlabagros.cpp" line="549"/>
         <source>Boundary &apos;%1&apos; is not defined.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="522"/>
+        <location filename="../src/pythonlabagros.cpp" line="583"/>
         <source>Material &apos;%1&apos; is not defined.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="556"/>
+        <location filename="../src/pythonlabagros.cpp" line="617"/>
         <source>Boundary marker already exists.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="651"/>
+        <location filename="../src/pythonlabagros.cpp" line="712"/>
         <source>Node index must be between 0 and &apos;%1&apos;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="694"/>
-        <location filename="../src/pythonlabagros.cpp" line="951"/>
+        <location filename="../src/pythonlabagros.cpp" line="755"/>
+        <location filename="../src/pythonlabagros.cpp" line="1012"/>
         <source>Edge index must be between 0 and &apos;%1&apos;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="737"/>
-        <location filename="../src/pythonlabagros.cpp" line="1001"/>
+        <location filename="../src/pythonlabagros.cpp" line="798"/>
+        <location filename="../src/pythonlabagros.cpp" line="1062"/>
         <source>Label index must be between 0 and &apos;%1&apos;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="888"/>
+        <location filename="../src/pythonlabagros.cpp" line="949"/>
         <source>Postprocessor mode &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1042"/>
+        <location filename="../src/pythonlabagros.cpp" line="1103"/>
         <source>Physic field variable &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1052"/>
+        <location filename="../src/pythonlabagros.cpp" line="1113"/>
         <source>Physic field variable is scalar variable.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="374"/>
+        <location filename="../src/pythonlabagros.cpp" line="435"/>
         <source>Adaptivity step &apos;%1&apos; is out of range.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="380"/>
+        <location filename="../src/pythonlabagros.cpp" line="441"/>
         <source>Adaptivity tolerance &apos;%1&apos; is out of range.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="388"/>
+        <location filename="../src/pythonlabagros.cpp" line="449"/>
         <source>The frequency can not be used for this problem.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="394"/>
-        <location filename="../src/pythonlabagros.cpp" line="399"/>
+        <location filename="../src/pythonlabagros.cpp" line="455"/>
+        <location filename="../src/pythonlabagros.cpp" line="460"/>
         <source>Analysis type &apos;%1&apos; is not implemented</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="405"/>
+        <location filename="../src/pythonlabagros.cpp" line="466"/>
         <source>Time step must be positive.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="411"/>
+        <location filename="../src/pythonlabagros.cpp" line="472"/>
         <source>Total time must be positive.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="484"/>
+        <location filename="../src/pythonlabagros.cpp" line="545"/>
         <source>Angle &apos;%1&apos; is out of range.</source>
         <translation></translation>
     </message>
@@ -4204,7 +4199,7 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="585"/>
+        <location filename="../src/pythonlabagros.cpp" line="646"/>
         <source>Label marker already exists.</source>
         <translation></translation>
     </message>
@@ -4221,54 +4216,55 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="866"/>
+        <location filename="../src/pythonlabagros.cpp" line="927"/>
         <source>Mode &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1143"/>
+        <location filename="../src/pythonlabagros.cpp" line="1213"/>
         <source>Time step must be between 0 and %1.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="300"/>
-        <location filename="../src/pythonlabagros.cpp" line="315"/>
-        <location filename="../src/pythonlabagros.cpp" line="864"/>
-        <location filename="../src/pythonlabagros.cpp" line="879"/>
-        <location filename="../src/pythonlabagros.cpp" line="922"/>
-        <location filename="../src/pythonlabagros.cpp" line="972"/>
-        <location filename="../src/pythonlabagros.cpp" line="1022"/>
-        <location filename="../src/pythonlabagros.cpp" line="1137"/>
+        <location filename="../src/pythonlabagros.cpp" line="261"/>
+        <location filename="../src/pythonlabagros.cpp" line="361"/>
+        <location filename="../src/pythonlabagros.cpp" line="376"/>
+        <location filename="../src/pythonlabagros.cpp" line="925"/>
+        <location filename="../src/pythonlabagros.cpp" line="940"/>
+        <location filename="../src/pythonlabagros.cpp" line="983"/>
+        <location filename="../src/pythonlabagros.cpp" line="1033"/>
+        <location filename="../src/pythonlabagros.cpp" line="1083"/>
+        <location filename="../src/pythonlabagros.cpp" line="1207"/>
         <source>Problem is not solved.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="270"/>
+        <location filename="../src/pythonlabagros.cpp" line="331"/>
         <source>Script message</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="368"/>
+        <location filename="../src/pythonlabagros.cpp" line="429"/>
         <source>Adaptivity type &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1037"/>
+        <location filename="../src/pythonlabagros.cpp" line="1098"/>
         <source>View type &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1044"/>
+        <location filename="../src/pythonlabagros.cpp" line="1105"/>
         <source>Physic field variable &apos;%1&apos; cannot be used with this field.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1140"/>
+        <location filename="../src/pythonlabagros.cpp" line="1210"/>
         <source>Solved problem is not transient.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1049"/>
+        <location filename="../src/pythonlabagros.cpp" line="1110"/>
         <source>Physic field variable component &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
@@ -4278,42 +4274,42 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="330"/>
+        <location filename="../src/util.h" line="331"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="333"/>
+        <location filename="../src/util.h" line="334"/>
         <source>Warning</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="336"/>
+        <location filename="../src/util.h" line="337"/>
         <source>Critical</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="729"/>
+        <location filename="../src/util.h" line="737"/>
         <source>H1 norm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="731"/>
+        <location filename="../src/util.h" line="739"/>
         <source>L2 norm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="733"/>
+        <location filename="../src/util.h" line="741"/>
         <source>H1 seminorm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="735"/>
+        <location filename="../src/util.h" line="743"/>
         <source>Hdiv norm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="737"/>
+        <location filename="../src/util.h" line="745"/>
         <source>Hcurl norm</source>
         <translation></translation>
     </message>
@@ -5934,52 +5930,62 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="865"/>
+        <location filename="../src/scene.cpp" line="1104"/>
         <source>Translation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="942"/>
+        <location filename="../src/scene.cpp" line="1118"/>
         <source>Rotation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1013"/>
+        <location filename="../src/scene.cpp" line="1132"/>
         <source>Scale</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1391"/>
+        <location filename="../src/scene.cpp" line="1460"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1421"/>
+        <location filename="../src/scene.cpp" line="1490"/>
         <source>For opening file &apos;%1&apos; is required Agros2D version 2.0 or higher.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1799"/>
+        <location filename="../src/scene.cpp" line="1508"/>
+        <source>This problem uses functionality under development. You must first enable experimental features in application options.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="1873"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1940"/>
+        <location filename="../src/scene.cpp" line="2041"/>
+        <source>There are nodes &apos;%1&apos; with negative radial component.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="2052"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1948"/>
+        <location filename="../src/scene.cpp" line="2060"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1953"/>
+        <location filename="../src/scene.cpp" line="2065"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1407"/>
+        <location filename="../src/scene.cpp" line="1476"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
         <translation></translation>
     </message>
@@ -6255,47 +6261,47 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneEdgeDialog</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="358"/>
+        <location filename="../src/scenebasic.cpp" line="379"/>
         <source>Edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="392"/>
+        <location filename="../src/scenebasic.cpp" line="413"/>
         <source>Start point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="393"/>
+        <location filename="../src/scenebasic.cpp" line="414"/>
         <source>End point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="394"/>
+        <location filename="../src/scenebasic.cpp" line="415"/>
         <source>Angle (deg.):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="396"/>
+        <location filename="../src/scenebasic.cpp" line="417"/>
         <source>Coordinates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="415"/>
+        <location filename="../src/scenebasic.cpp" line="436"/>
         <source>Refine towards edge:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="417"/>
+        <location filename="../src/scenebasic.cpp" line="438"/>
         <source>Mesh parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="422"/>
+        <location filename="../src/scenebasic.cpp" line="443"/>
         <source>Boundary condition:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="425"/>
+        <location filename="../src/scenebasic.cpp" line="446"/>
         <source>Length:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6303,17 +6309,17 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneEdgeMagneticDialog</name>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1066"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1054"/>
         <source>BC type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1118"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1106"/>
         <source>&lt;i&gt;A&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (Wb/m)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1126"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1114"/>
         <source>&lt;i&gt;K&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (A/m)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6467,37 +6473,37 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneLabelDialog</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="584"/>
+        <location filename="../src/scenebasic.cpp" line="605"/>
         <source>Label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="623"/>
+        <location filename="../src/scenebasic.cpp" line="644"/>
         <source>Coordinates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="638"/>
+        <location filename="../src/scenebasic.cpp" line="659"/>
         <source>Global order is %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="650"/>
+        <location filename="../src/scenebasic.cpp" line="671"/>
         <source>Triangle area (m):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="651"/>
+        <location filename="../src/scenebasic.cpp" line="672"/>
         <source>Polynomial order (-):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="653"/>
+        <location filename="../src/scenebasic.cpp" line="674"/>
         <source>Mesh parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="657"/>
+        <location filename="../src/scenebasic.cpp" line="678"/>
         <source>Material:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6756,80 +6762,80 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneMaterialMagneticDialog</name>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1179"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1167"/>
         <source>&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (T)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1180"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1168"/>
         <source>Rem. flux dens.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1182"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1170"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (deg.)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1183"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1171"/>
         <source>Direction of rem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1186"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1174"/>
         <source>Permanent magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1191"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1194"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1179"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1182"/>
         <source>&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (m/s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1192"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1195"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1201"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1180"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1183"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1189"/>
         <source>Velocity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1197"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1185"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (rad/s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1198"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1186"/>
         <source>Velocity angular</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1204"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1192"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1205"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1193"/>
         <source>Permeability</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1207"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1195"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (S/m)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1208"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1196"/>
         <source>Conductivity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1210"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1198"/>
         <source>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (A/m&lt;sup&gt;2&lt;/sup&gt;)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1211"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1199"/>
         <source>Current density</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6909,17 +6915,27 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="98"/>
+        <location filename="../src/scenetransformdialog.cpp" line="92"/>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scenetransformdialog.cpp" line="95"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scenetransformdialog.cpp" line="105"/>
         <source>Translate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="99"/>
+        <location filename="../src/scenetransformdialog.cpp" line="106"/>
         <source>Rotate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="100"/>
+        <location filename="../src/scenetransformdialog.cpp" line="107"/>
         <source>Scale</source>
         <translation></translation>
     </message>
@@ -6984,7 +7000,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="193"/>
-        <location filename="../src/sceneview.cpp" line="3392"/>
+        <location filename="../src/sceneview.cpp" line="3173"/>
         <source>Operate on nodes</source>
         <translation></translation>
     </message>
@@ -6995,7 +7011,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="198"/>
-        <location filename="../src/sceneview.cpp" line="3395"/>
+        <location filename="../src/sceneview.cpp" line="3176"/>
         <source>Operate on edges</source>
         <translation></translation>
     </message>
@@ -7011,7 +7027,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="208"/>
-        <location filename="../src/sceneview.cpp" line="3417"/>
+        <location filename="../src/sceneview.cpp" line="3198"/>
         <source>Postprocessor</source>
         <translation></translation>
     </message>
@@ -7081,55 +7097,55 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3369"/>
+        <location filename="../src/sceneview.cpp" line="3150"/>
         <source>Vel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3411"/>
+        <location filename="../src/sceneview.cpp" line="3192"/>
         <source>Model</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3414"/>
+        <location filename="../src/sceneview.cpp" line="3195"/>
         <source>Polynomial order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3717"/>
-        <location filename="../src/sceneview.cpp" line="3757"/>
+        <location filename="../src/sceneview.cpp" line="3498"/>
+        <location filename="../src/sceneview.cpp" line="3538"/>
         <source>Undefined: %1.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4114"/>
-        <location filename="../src/sceneview.cpp" line="4164"/>
+        <location filename="../src/sceneview.cpp" line="3894"/>
+        <location filename="../src/sceneview.cpp" line="3944"/>
         <source>Node</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4114"/>
-        <location filename="../src/sceneview.cpp" line="4164"/>
+        <location filename="../src/sceneview.cpp" line="3894"/>
+        <location filename="../src/sceneview.cpp" line="3944"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4417"/>
+        <location filename="../src/sceneview.cpp" line="4204"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4432"/>
+        <location filename="../src/sceneview.cpp" line="4219"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4452"/>
+        <location filename="../src/sceneview.cpp" line="4239"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="5404"/>
+        <location filename="../src/sceneview.cpp" line="5197"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation></translation>
     </message>
@@ -7145,7 +7161,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="203"/>
-        <location filename="../src/sceneview.cpp" line="3398"/>
+        <location filename="../src/sceneview.cpp" line="3179"/>
         <source>Operate on labels</source>
         <translation></translation>
     </message>

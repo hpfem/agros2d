@@ -491,6 +491,12 @@ void SurfaceIntegralValueCurrent::calculateVariables(int i)
     }
 }
 
+void SurfaceIntegralValueCurrent::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(0);
+    sln2 = NULL;
+}
+
 QStringList SurfaceIntegralValueCurrent::variables()
 {
     QStringList row;

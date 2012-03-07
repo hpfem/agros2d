@@ -514,6 +514,12 @@ void SurfaceIntegralValueElectrostatic::calculateVariables(int i)
     }
 }
 
+void SurfaceIntegralValueElectrostatic::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(0);
+    sln2 = NULL;
+}
+
 QStringList SurfaceIntegralValueElectrostatic::variables()
 {
     QStringList row;

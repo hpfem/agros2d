@@ -123,7 +123,7 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_MagneticFieldReal, "magnetic_magnetic_field_real");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_MagneticFieldImag, "magnetic_magnetic_field_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_MagneticField, "magnetic_magnetic_field");
-    physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_CurrentDensityReal, "magnetic_current_density_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_CurrentDensityReal, "magnetic_current_density_real");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_CurrentDensityImag, "magnetic_current_density_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_CurrentDensity, "magnetic_current_density");
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformReal, "magnetic_current_density_induced_transform_real");
@@ -1541,7 +1541,7 @@ bool isBetween(double angle_1, double angle_2, double angle)
     }
 
     // angle_1 is in the third quadrant, angle_2 is in the second quadrant
-    if ((angle_1 <= - (M_PI_2 - tol) ) && (angle_2 >= (M_PI_2 - tol)))
+    if ((angle_1 <= - (M_PI/2.0 - tol) ) && (angle_2 >= (M_PI/2.0 - tol)))
     {
         if((angle <= angle_1) || (angle >= angle_2))
         {

@@ -262,12 +262,6 @@ private:
     QAction *actShowParticleTracing;
     QAction *actShowSolutionMesh;
 
-    // compute particle path
-    void newtonEquations(double step, Point3 position, Point3 velicity, Point3 *newposition, Point3 *newvelocity);
-    void computeParticleTracingPath(QList<Point3> *positions,
-                                    QList<Point3> *velocities,
-                                    bool randomPoint = false);
-
     void createActions();
     void createMenu();
 
@@ -319,8 +313,8 @@ private:
     void setZoom(double power);
     void selectRegion(const Point &start, const Point &end);
 
-    void loadProjection2d(bool setScene = false) const;
-    void loadProjection3d(bool setScene = false) const;
+    void loadProjection2d(bool setScene = false);
+    void loadProjection3d(bool setScene = false);
 
     inline Point position(double x, double y) const
     {

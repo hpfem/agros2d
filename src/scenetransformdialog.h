@@ -30,6 +30,7 @@ class SceneTransformDialog : public QDialog
     Q_OBJECT
 public:
     SceneTransformDialog(QWidget *parent = 0);
+    ~SceneTransformDialog();
 
 private slots:
     void doClose();
