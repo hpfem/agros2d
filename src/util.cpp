@@ -1600,7 +1600,7 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
     double dx = p1e.x - p1s.x;      // component of direction vector of the line
     double dy = p1e.y - p1s.y;      // component of direction vector of the line
     double a = dx * dx + dy * dy;   // square of the length of direction vector
-    double tol = sqrt(a)/1e4;
+    double tol = 1e-7 * sqrt(a);
 
     // Crossing of two arcs
     if ((angle1 > 0.0) && (angle2 > 0.0))
@@ -1703,7 +1703,7 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
             double t1;
             double t2;
 
-            if ((dx - dy) > tol)
+            if (abs(dx - dy) > tol)
             {
                 t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
                 t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent
