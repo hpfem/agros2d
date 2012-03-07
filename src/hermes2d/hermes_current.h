@@ -115,6 +115,7 @@ class SurfaceIntegralValueCurrent : public SurfaceIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void initSolutions();
 
 public:
     double current;

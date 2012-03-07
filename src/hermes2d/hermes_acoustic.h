@@ -109,6 +109,7 @@ class SurfaceIntegralValueAcoustic : public SurfaceIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void initSolutions();
 
 public:
     double pressureReal;

@@ -116,6 +116,7 @@ class SurfaceIntegralValueElectrostatic : public SurfaceIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void initSolutions();
 
 public:
     double surfaceCharge;

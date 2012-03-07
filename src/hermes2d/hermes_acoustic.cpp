@@ -940,6 +940,12 @@ void SurfaceIntegralValueAcoustic::calculateVariables(int i)
         pressureImag += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * value2[i];
 }
 
+void SurfaceIntegralValueAcoustic::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
+    sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
+}
+
 QStringList SurfaceIntegralValueAcoustic::variables()
 {
     QStringList row;
