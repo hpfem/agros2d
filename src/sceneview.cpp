@@ -356,7 +356,7 @@ void SceneView::loadProjection2d(bool setScene)
     {
         // set max and min zoom
         if (m_scale2d < 1e-9) m_scale2d = 1e-9;
-        if (m_scale2d > 1e8) m_scale2d = 1e8;
+        if (m_scale2d > 1e6) m_scale2d = 1e6;
 
         glScaled(m_scale2d/aspect(), m_scale2d, m_scale2d);
 
@@ -377,7 +377,7 @@ void SceneView::loadProjection3d(bool setScene)
     {
         // set max and min zoom
         if (m_scale3d < 1e-9) m_scale3d = 1e-9;
-        if (m_scale3d > 1e8) m_scale3d = 1e8;
+        if (m_scale3d > 1e6) m_scale3d = 1e6;
 
         glScaled(1.0/aspect(), 1.0, 0.1);
 
@@ -620,8 +620,6 @@ void SceneView::paintBackgroundPixmap()
 
 void SceneView::paintGrid()
 {
-    logMessage("SceneView::paintGrid()");
-
     loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
@@ -686,7 +684,7 @@ void SceneView::paintGrid()
     glColor3d(Util::config()->colorCross.redF(),
               Util::config()->colorCross.greenF(),
               Util::config()->colorCross.blueF());
-    glLineWidth(1.0);
+    glLineWidth(1.5);
     glBegin(GL_LINES);
     // y axis
     glVertex2d(0, cornerMin.y);
@@ -699,7 +697,7 @@ void SceneView::paintGrid()
 
 void SceneView::paintAxes()
 {
-    logMessage("SceneView::paintGrid()");
+    logMessage("SceneView::paintAxes()");
 
     loadProjection2d();
 
@@ -822,7 +820,7 @@ void SceneView::paintRulers()
                     glVertex2d(i*gridStep, cornerMax.y - m_rulersAreaWidth.y * 2.0/3.0);
                 }
             }
-        }
+        }       
 
         // vertical ticks
         for (int i = cornerMax.y/gridStep - 1; i < cornerMin.y/gridStep + 1; i++)
@@ -841,9 +839,23 @@ void SceneView::paintRulers()
                 glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x, i*gridStep);
             }
         }
-
         glEnd();
 
+        // zero axes
+        glColor3d(Util::config()->colorCross.redF(),
+                  Util::config()->colorCross.greenF(),
+                  Util::config()->colorCross.blueF());
+
+        glLineWidth(1.5);
+        glBegin(GL_LINES);
+
+        glVertex2d(0.0, cornerMax.y - m_rulersAreaWidth.y);
+        glVertex2d(0.0, cornerMax.y - m_rulersAreaWidth.y * 1.0/7.0);
+
+        glVertex2d(cornerMin.x + m_rulersAreaWidth.x * 1.0/7.0, 0.0);
+        glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x, 0.0);
+
+        glEnd();
 
         // horizontal labels
         QString textsizehor = QString::number(gridStep);
@@ -857,14 +869,13 @@ void SceneView::paintRulers()
             if (i % heavyLine == 0)
             {
                 QString text;
-                if ((abs(i*gridStep) > 1e3 || abs(i*gridStep) < 1e-3) && i != 0)
+                if ((abs(gridStep) > 1e3 || abs(gridStep) < 1e-3) && i != 0)
                     text = QString::number(i*gridStep, 'e', 2);
                 else
-                    text = QString::number(i*gridStep, 'f', 7);
+                    text = QString::number(i*gridStep, 'f', 6);
                 renderTextPos(i*gridStep + sizehor, cornerMax.y, 0.0, QString(text + "        ").left(9), false, fontLabel);
             }
         }
-
 
         // vertical labels
         double sizever = 2.0/contextWidth()*(QFontMetrics(fontLabel).height() * 7.0 / 6.0)/m_scale2d;
@@ -877,11 +888,11 @@ void SceneView::paintRulers()
             if (i % heavyLine == 0)
             {
                 QString text;
-                if ((abs(i*gridStep) > 1e3 || abs(i*gridStep) < 1e-3) && i != 0)
+                if ((abs(gridStep) > 1e3 || abs(gridStep) < 1e-3) && i != 0)
                     text = QString::number(i*gridStep, 'e', 2);
                 else
                     text = QString::number(i*gridStep, 'f', 7);
-                renderTextPos(cornerMin.x + m_rulersAreaWidth.x / 20.0, i*gridStep - sizever, 0.0, QString(text + "        ").left(9), false, fontLabel);
+                renderTextPos(cornerMin.x + m_rulersAreaWidth.x / 20.0, i*gridStep - sizever, 0.0, QString(((i >= 0) ? " " : "") + text + "        ").left(9), false, fontLabel);
             }
 
         }
