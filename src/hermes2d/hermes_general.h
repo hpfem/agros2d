@@ -108,6 +108,7 @@ class SurfaceIntegralValueGeneral : public SurfaceIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void initSolutions();
 
 public:
     SurfaceIntegralValueGeneral();

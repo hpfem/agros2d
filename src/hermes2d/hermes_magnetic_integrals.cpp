@@ -436,6 +436,16 @@ void SurfaceIntegralValueMagnetic::calculateVariables(int i)
     }
 }
 
+void SurfaceIntegralValueMagnetic::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
+    sln2 = NULL;
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+        sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() - 1);
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+        sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
+}
+
 QStringList SurfaceIntegralValueMagnetic::variables()
 {
     QStringList row;

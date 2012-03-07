@@ -125,6 +125,7 @@ class SurfaceIntegralValueElasticity : public SurfaceIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void initSolutions();
 
 public:
     SurfaceIntegralValueElasticity();

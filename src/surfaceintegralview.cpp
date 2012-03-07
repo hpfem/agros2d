@@ -40,8 +40,9 @@ void SurfaceIntegralValue::calculate()
         return;
 
     Quad2D *quad = &g_quad_2d_std;
-    Solution *sln1 = Util::scene()->sceneSolution()->sln();
-    Solution *sln2;
+
+    initSolutions();
+
     if (sln2)
         sln2 = Util::scene()->sceneSolution()->sln(1);
 
