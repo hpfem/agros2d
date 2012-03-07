@@ -59,7 +59,7 @@ Mesh* Solver<Scalar>::readMesh()
 
 
 template <typename Scalar>
-void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar> msa)
+void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
 {
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
 
@@ -148,18 +148,19 @@ void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar> msa)
         }
     }
 
+    msa.createEmpty(space.size());
     msa.setSpaces(space);
 }
 
 template <typename Scalar>
-void  Solver<Scalar>::createNewSolutions(MultiSolutionArray<Scalar> msa)
+void  Solver<Scalar>::createNewSolutions(MultiSolutionArray<Scalar>& msa)
 {
     for(int comp = 0; comp < msa.size(); comp++)
         msa.setSolution(shared_ptr<Solution<double> >(new Solution<double>()), comp);
 }
 
 template <typename Scalar>
-void Solver<Scalar>::createInitialSolution(Mesh* mesh, MultiSolutionArray<Scalar> msa)
+void Solver<Scalar>::createInitialSolution(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
 {
     MultiSolutionArray<Scalar> msaInitial = msa.copySpaces();
     int totalComp = 0;
@@ -300,8 +301,63 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 }
 
 template <typename Scalar>
+void Solver<Scalar>::solveSimple(SolverConfig config)
+{
+    MultiSolutionArray<Scalar> multiSolutionArray;
+
+    // read mesh from file
+    Mesh *mesh = readMesh();
+
+    // create essential boundary conditions and space
+    createSpace(mesh, multiSolutionArray);
+
+    // create solutions
+    createNewSolutions(multiSolutionArray);
+
+    // check for DOFs
+    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
+    {
+        m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
+        //cleanup();
+        return;
+    }
+
+    double actualTime = 0.0;
+
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), actualTime);
+    m_wf->set_current_time(actualTime);
+
+    m_wf->delete_all();
+    m_wf->registerForms();
+
+    if (!solveOneProblem(multiSolutionArray))
+        isError = true;
+
+    // output
+    if (!isError)
+    {
+        foreach (Field* field, m_block->m_fields)
+        {
+            FieldInfo* fieldInfo = field->fieldInfo();
+            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
+            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
+        }
+
+        BlockSolutionID solutionID;
+        solutionID.group = m_block;
+        solutionID.timeStep = 0;
+
+        Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
+    }
+}
+
+template <typename Scalar>
 void Solver<Scalar>::solve(SolverConfig config)
 {
+    if(config.action == SolverAction_Solve)
+        solveSimple(config);
+    else
+        assert(0);
     //  QTime time;
 
     //  double error = 0.0;
@@ -428,8 +484,6 @@ void Solver<Scalar>::solve(SolverConfig config)
     // output
     if (!isError)
     {
-
-        //TODO predelat ukazatele na Solution na shared_ptr
         foreach (Field* field, m_block->m_fields)
         {
             FieldInfo* fieldInfo = field->fieldInfo();

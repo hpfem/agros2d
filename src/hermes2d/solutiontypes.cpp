@@ -112,6 +112,13 @@ void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
 
 // *********************************************************************************************
 
+template <typename Scalar>
+void MultiSolutionArray<Scalar>::createEmpty(int numComp)
+{
+    m_solutionArrays.clear();
+    for (int comp = 0; comp < numComp; comp++)
+        addComponent(SolutionArray<Scalar>());
+}
 
 template <typename Scalar>
 void MultiSolutionArray<Scalar>::addComponent(SolutionArray<Scalar> solutionArray)

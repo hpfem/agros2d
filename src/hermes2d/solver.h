@@ -56,13 +56,14 @@ private:
     WeakFormAgros<Scalar> *m_wf;
     ProgressItemSolve *m_progressItemSolve;
 
+    void solveSimple(SolverConfig config);
 
     Hermes::Hermes2D::Mesh* readMesh();
-    void createSpace(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar> msa);
-    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar> msa);
+    void createSpace(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar>& msa);
+    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar>& msa);
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();
     // if copyPrevious == true, last solutions will be used (intented for doAdaptivityStep function)
-    void createNewSolutions(MultiSolutionArray<Scalar> msa);
+    void createNewSolutions(MultiSolutionArray<Scalar>& msa);
     void initSelectors();
 
     void cleanup();

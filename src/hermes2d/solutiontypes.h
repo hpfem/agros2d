@@ -89,6 +89,8 @@ public:
 
     int size() {return m_solutionArrays.size(); }
 
+    void createEmpty(int numComp);
+
 private:
     QList<SolutionArray<Scalar> > m_solutionArrays;
 };
