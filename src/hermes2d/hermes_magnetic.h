@@ -145,6 +145,7 @@ class SurfaceIntegralValueMagnetic : public SurfaceIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void initSolutions();
 
 public:
     double forceMaxwellX;

@@ -25,6 +25,7 @@
 struct Element;
 
 class SceneMaterial;
+class Solution;
 
 class SurfaceIntegralValue
 {
@@ -40,10 +41,14 @@ protected:
 
     bool boundary;
 
+    Solution *sln1;
+    Solution *sln2;
+
     SceneMaterial *material;
 
     void calculate();
     virtual void calculateVariables(int i) = 0;
+    virtual void initSolutions() = 0;
 
 public:
     double length;

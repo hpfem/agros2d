@@ -1106,6 +1106,12 @@ void SurfaceIntegralValueRF::calculateVariables(int i)
 {
 }
 
+void SurfaceIntegralValueRF::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
+    sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
+}
+
 QStringList SurfaceIntegralValueRF::variables()
 {
     QStringList row;

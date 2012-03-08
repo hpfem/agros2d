@@ -697,6 +697,14 @@ void SurfaceIntegralValueHeat::calculateVariables(int i)
     }
 }
 
+void SurfaceIntegralValueHeat::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep());
+    sln2 = NULL;
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+        sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() - 1);
+}
+
 QStringList SurfaceIntegralValueHeat::variables()
 {
     QStringList row;
