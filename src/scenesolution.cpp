@@ -92,9 +92,11 @@ int findElementInVectorizer(Hermes::Hermes2D::Views::Vectorizer &vec, const Poin
 }
 
 template <typename Scalar>
-SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo) : m_fieldInfo(fieldInfo)
+SceneSolution<Scalar>::SceneSolution(FieldInfo* fieldInfo, MultiSolutionArray<Scalar> msa) : m_fieldInfo(fieldInfo), m_multiSolutionArray(msa)
 {
     logMessage("SceneSolution::SceneSolution()");
+
+    cout << "ctor SceneSolution " << fieldInfo << ", " << m_multiSolutionArray.size() << endl;
 
     //m_timeStep = -1;
     //m_isSolving = false;
@@ -106,26 +108,34 @@ SceneSolution<Scalar>::~SceneSolution()
 }
 
 template <typename Scalar>
-void SceneSolution<Scalar>::clear(bool all)
+void SceneSolution<Scalar>::updateSolutionArray(MultiSolutionArray<Scalar> msa)
 {
-    logMessage("SceneSolution::clear()");
-
-    // solution array
-    if (all)
-    {
-        //m_timeStep = -1;
-
-        //        for (int i = 0; i < m_solutionArrayList.size(); i++)
-        //            delete m_solutionArrayList.at(i);
-        //m_solutionArrayList.clear();
-
-
-    }
-
-
-
-    //m_progressDialog->clear();
+    //TODO hnus, jen docasne, kvuli tomu, ze nekde je vyzadovana existence sceneSolution jeste pred tim, nez je problem vyresen
+    if(msa.size() != m_multiSolutionArray.size())
+        m_multiSolutionArray = msa;
 }
+
+//template <typename Scalar>
+//void SceneSolution<Scalar>::clear(bool all)
+//{
+//    logMessage("SceneSolution::clear()");
+
+//    // solution array
+//    if (all)
+//    {
+//        //m_timeStep = -1;
+
+//        //        for (int i = 0; i < m_solutionArrayList.size(); i++)
+//        //            delete m_solutionArrayList.at(i);
+//        //m_solutionArrayList.clear();
+
+
+//    }
+
+
+
+//    //m_progressDialog->clear();
+//}
 
 
 template <typename Scalar>
@@ -258,13 +268,13 @@ void SceneSolution<Scalar>::saveSolution(QDomDocument *doc, QDomElement element)
 template <typename Scalar>
 Hermes::Hermes2D::Solution<Scalar> *SceneSolution<Scalar>::sln(int i)
 {
-    return m_solutionArrayList.component(i).sln.get();
+    return m_multiSolutionArray.component(i).sln.get();
 }
 
 template <typename Scalar>
 Hermes::Hermes2D::Space<Scalar> *SceneSolution<Scalar>::space(int i)
 {
-    return m_solutionArrayList.component(i).space.get();
+    return m_multiSolutionArray.component(i).space.get();
 }
 
 //template <typename Scalar>

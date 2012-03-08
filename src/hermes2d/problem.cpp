@@ -94,36 +94,11 @@ void Block::solve()
 
     if(this->isTransient()){
         solver.solveInitialTimeStep();
-        solver.solveTimeStep(this->timeStep());
-        solver.solveTimeStep(this->timeStep());
+        for(int i = 0; i < 5; i++)
+            solver.solveTimeStep(this->timeStep());
     }
     else
         solver.solveSimple();
-
-    //TODO ulozit v solveru!!!
-
-
-//    //TODO predelat ukazatele na Solution na shared_ptr
-//    foreach (Field* field, m_fields)
-//    {
-//        FieldInfo* fieldInfo = field->fieldInfo();
-
-//        // contains solution arrays for all components of the field
-//        QList<SolutionArray<double> > solutionArrays;
-
-//        for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
-//        {
-//            solutionArrays.push_back(m_solutionList->at(component + offset(field)));
-//        }
-
-//        // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
-//        Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(solutionArrays);
-
-//        //TODO
-//        // internal storage, should be rewriten
-//        //TODO
-//        parentProblem()->saveSolution(fieldInfo, 0, 0, solutionArrays);
-//    }
 }
 
 bool Block::isTransient() const
@@ -416,7 +391,8 @@ void Problem::solve(SolverMode solverMode)
     mesh();
     emit meshed();
 
-    Util::scene()->createSolutions();
+    Util::scene()->clearSolutions();
+    Util::solutionStore()->clearAll();
 
     assert(isMeshed());
 
@@ -468,12 +444,20 @@ void SolutionStore::clearOne(FieldSolutionID solutionID)
 
 SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component)
 {
-    return m_multiSolutions[solutionID].component(component);
+    return multiSolution(solutionID).component(component);
 }
 
 MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID)
 {
-    return m_multiSolutions[solutionID];
+    if(m_multiSolutions.contains(solutionID))
+        return m_multiSolutions[solutionID];
+
+    return MultiSolutionArray<double>();
+}
+
+bool SolutionStore::contains(FieldSolutionID solutionID)
+{
+    return m_multiSolutions.contains(solutionID);
 }
 
 MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solutionID)
@@ -489,7 +473,7 @@ MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solution
 
 void SolutionStore::saveSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
-    //cout << "Saving solution " << solutionID << endl;
+    cout << "$$$$$$$$  Saving solution " << solutionID << ", now solutions: " << m_multiSolutions.size() << endl;
     assert(!m_multiSolutions.contains(solutionID));
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);

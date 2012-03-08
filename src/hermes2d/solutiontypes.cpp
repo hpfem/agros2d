@@ -180,12 +180,13 @@ Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > MultiSolutionArray<Scalar>:
     return desmartize(solutions());
 }
 
-template <typename Scalar>
-ostream& operator<<(ostream& output, const SolutionID<Scalar>& id) {
-    output << "(" << id.group << ", timeStep " << id.timeStep << ", adaptStep " <<
-              id.adaptivityStep << ", type "<< id.solutionType << ")";
-    return output;
-}
+//template <typename Group>
+//ostream& operator<<(ostream& output, const SolutionID<Group>& id)
+//{
+//    output << "(" << id.group << ", timeStep " << id.timeStep << ", adaptStep " <<
+//              id.adaptivityStep << ", type "<< id.solutionType << ")";
+//    return output;
+//}
 
 template <typename Scalar>
 MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::copySpaces()
@@ -242,3 +243,4 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::fieldPart(Block *block, F
 
 template class SolutionArray<double>;
 template class MultiSolutionArray<double>;
+template class SolutionID<FieldInfo>;

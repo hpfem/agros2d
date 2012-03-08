@@ -23,6 +23,8 @@
 #include "util.h"
 #include "conf.h"
 
+#include "hermes2d/solutiontypes.h"
+
 #include <dl_dxf.h>
 #include <dl_creationadapter.h>
 
@@ -306,10 +308,23 @@ public:
     void removeField(FieldInfo *field);
 
     inline void refresh() { emit invalidated(); }
-    inline SceneSolution<double> *sceneSolution(FieldInfo* fieldInfo) const { return m_sceneSolutions[fieldInfo]; }
-    inline SceneSolution<double> *activeSceneSolution() const { return m_sceneSolutions[activeViewField()]; }
+//    inline SceneSolution<double> *sceneSolution(FieldInfo* fieldInfo) const { return m_sceneSolutions[fieldInfo]; }
+
+    //returns required scene solution or creates it, if it does not exist
+    inline SceneSolution<double>* sceneSolution(FieldSolutionID fsid);
+    inline SceneSolution<double> *activeSceneSolution();
+
+    // clears all solutions and remove them
+    void clearSolutions();
+
     inline FieldInfo* activeViewField() const { assert(m_activeViewField); return m_activeViewField; }
     void setActiveViewField(FieldInfo* fieldInfo) { m_activeViewField = fieldInfo; }
+    inline int activeTimeStep() const { return m_activeTimeStep; }
+    void setActiveTimeStep(int ts) { m_activeTimeStep = ts; }
+    inline int activeAdaptivityStep() const { return 0; } //TODO
+    //void setActiveAdaptivityStep(int ts) { m_activeAdaptivityStep = ts; }
+    inline SolutionType activeSolutionType() const { return SolutionType_Normal; } //TODO
+    //void setActiveTimeStep(int ts) { m_activeTimeStep = ts; }
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
@@ -320,7 +335,7 @@ public:
 
     inline QUndoStack *undoStack() const { return m_undoStack; }
 
-    void createSolutions();
+   // void createSolutions();
 
 private:
     QUndoStack *m_undoStack;
@@ -329,14 +344,12 @@ private:
     QMap<QString, FieldInfo *>  m_fieldInfos;
     QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >  m_couplingInfos;
 
-    QMap<FieldInfo*, SceneSolution<double>* > m_sceneSolutions;
+    QMap<FieldSolutionID, SceneSolution<double>* > m_sceneSolutions;
     FieldInfo* m_activeViewField;
+    int m_activeTimeStep;
+    int m_activeAdaptivityStep;
 
     void createActions();
-
-    // clears all solutions and remove them
-    void clearSolutions();
-
 
 private slots:
     void doInvalidated();

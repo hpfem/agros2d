@@ -148,6 +148,7 @@ class SolutionStore
 {
 public:
     SolutionArray<double> solution(FieldSolutionID solutionID, int component);
+    bool contains(FieldSolutionID solutionID);
     MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID);
     MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID);
     void saveSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);

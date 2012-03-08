@@ -27,6 +27,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/solutiontypes.h"
 
 LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : m_fieldInfo(fieldInfo), point(point)
 {
@@ -61,7 +62,9 @@ void LocalPointValue::calculate()
     values.clear();
 
     this->point = point;
-    SceneSolution<double>* sceneSolution = Util::scene()->sceneSolution(m_fieldInfo);
+    //TODO upravit parametry!!!
+    FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
+    SceneSolution<double>* sceneSolution = Util::scene()->sceneSolution(fsid);
     if (Util::problem()->isSolved() &&
             m_fieldInfo->analysisType() == AnalysisType_Transient)
         m_fieldInfo->module()->update_time_functions(Util::problem()->time());

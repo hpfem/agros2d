@@ -143,7 +143,12 @@ inline bool operator==(const SolutionID<Group> &sid1, const SolutionID<Group> &s
 }
 
 template <typename Group>
-ostream& operator<<(ostream& output, const SolutionID<Group>& id);
+ostream& operator<<(ostream& output, const SolutionID<Group>& id)
+{
+    output << "(" << *id.group << ", timeStep " << id.timeStep << ", adaptStep " <<
+              id.adaptivityStep << ", type "<< id.solutionType << ")";
+    return output;
+}
 
 //template class SolutionID<Block>;
 

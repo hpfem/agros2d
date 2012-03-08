@@ -336,12 +336,12 @@ void Solver<Scalar>::solveSimple()
     // output
     if (!isError)
     {
-        foreach (Field* field, m_block->m_fields)
-        {
-            FieldInfo* fieldInfo = field->fieldInfo();
-            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
-            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
-        }
+//        foreach (Field* field, m_block->m_fields)
+//        {
+//            FieldInfo* fieldInfo = field->fieldInfo();
+//            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
+//            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
+//        }
 
         BlockSolutionID solutionID;
         solutionID.group = m_block;
@@ -407,12 +407,12 @@ void Solver<Scalar>::solveTimeStep(double timeStep)
     // output
     if (!isError)
     {
-        foreach (Field* field, m_block->m_fields)
-        {
-            FieldInfo* fieldInfo = field->fieldInfo();
-            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
-            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
-        }
+//        foreach (Field* field, m_block->m_fields)
+//        {
+//            FieldInfo* fieldInfo = field->fieldInfo();
+//            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
+//            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
+//        }
 
         BlockSolutionID solutionID;
         solutionID.group = m_block;
@@ -552,12 +552,12 @@ void Solver<Scalar>::solve(SolverConfig config)
     // output
     if (!isError)
     {
-        foreach (Field* field, m_block->m_fields)
-        {
-            FieldInfo* fieldInfo = field->fieldInfo();
-            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
-            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
-        }
+//        foreach (Field* field, m_block->m_fields)
+//        {
+//            FieldInfo* fieldInfo = field->fieldInfo();
+//            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
+//            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
+//        }
 
         BlockSolutionID solutionID;
         solutionID.group = m_block;
