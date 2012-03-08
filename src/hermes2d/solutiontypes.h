@@ -90,6 +90,7 @@ public:
     int size() {return m_solutionArrays.size(); }
 
     void createEmpty(int numComp);
+    void setTime(double);
 
 private:
     QList<SolutionArray<Scalar> > m_solutionArrays;

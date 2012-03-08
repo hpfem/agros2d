@@ -816,7 +816,7 @@ void ChartDialog::doTimeStepChanged(int index)
 
     if (cmbTimeStep->currentIndex() != -1)
     {
-        Util::problem()->setTimeStep(cmbTimeStep->currentIndex());
+        Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
         doPlot();
     }
 }

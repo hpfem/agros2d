@@ -404,6 +404,8 @@ void Problem::solve(SolverMode solverMode)
         }
     }
 
+    Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField()));
+
     // delete temp file
     if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
     {
@@ -473,7 +475,7 @@ MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solution
 
 void SolutionStore::saveSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
-    cout << "$$$$$$$$  Saving solution " << solutionID << ", now solutions: " << m_multiSolutions.size() << endl;
+    cout << "$$$$$$$$  Saving solution " << solutionID << ", now solutions: " << m_multiSolutions.size() << ", time " << multiSolution.component(0).time << endl;
     assert(!m_multiSolutions.contains(solutionID));
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);
@@ -617,3 +619,19 @@ BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, Solutio
     return bsid;
 }
 
+QList<double> SolutionStore::timeLevels(FieldInfo *fieldInfo)
+{
+    QList<double> list;
+
+    foreach(FieldSolutionID fsid, m_multiSolutions.keys())
+    {
+        if(fsid.group == fieldInfo)
+        {
+            double time = m_multiSolutions[fsid].component(0).time;
+            if(!list.contains(time))
+                list.push_back(time);
+        }
+    }
+
+    return list;
+}

@@ -110,7 +110,7 @@ public:
     inline void setMeshInitial(Hermes::Hermes2D::Mesh* mesh) { m_meshInitial = mesh; }
 
     // time TODO zatim tady, ale asi presunout
-    void setTimeStep(int timeStep, bool showViewProgress = true) { assert(0); }
+    //void setTimeStep(int timeStep, bool showViewProgress = true) { assert(0); }
     inline int timeStep() const { return m_timeStep; }
     int timeStepCount() const { return 0; }
     double time() const { return 0; }
@@ -163,6 +163,8 @@ public:
     // last adaptive step for given time step. If time step not given, last time step used implicitly
     int lastAdaptiveStep(FieldInfo* fieldInfo, int timeStep = -1);
     int lastAdaptiveStep(Block* block, int timeStep = -1);
+
+    QList<double> timeLevels(FieldInfo* fieldInfo);
 
     FieldSolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionType solutionType);
     BlockSolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionType solutionType);

@@ -241,6 +241,17 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::fieldPart(Block *block, F
     return msa;
 }
 
+template <typename Scalar>
+void MultiSolutionArray<Scalar>::setTime(double time)
+{
+    for(int i = 0; i < m_solutionArrays.size(); i++)
+    {
+        SolutionArray<Scalar> newSA = m_solutionArrays.at(i);
+        newSA.time = time;
+        m_solutionArrays.replace(i, newSA);
+    }
+}
+
 template class SolutionArray<double>;
 template class MultiSolutionArray<double>;
 template class SolutionID<FieldInfo>;
