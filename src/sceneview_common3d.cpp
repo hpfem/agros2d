@@ -117,7 +117,7 @@ void SceneViewCommon3D::paintBackground()
     glPopMatrix();
 }
 
-void SceneViewCommon3D::loadProjection3d(bool setScene) const
+void SceneViewCommon3D::loadProjection3d(bool setScene)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -128,6 +128,10 @@ void SceneViewCommon3D::loadProjection3d(bool setScene) const
 
     if (setScene)
     {
+        // set max and min zoom
+        if (m_scale3d < 1e-9) m_scale3d = 1e-9;
+        if (m_scale3d > 1e6) m_scale3d = 1e6;
+
         glScaled(1.0/aspect(), 1.0, 0.1);
 
         // move to origin

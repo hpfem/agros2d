@@ -316,6 +316,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
     m_snapToGrid = ((Util::config()->snapToGrid)
                     && ((event->modifiers() & Qt::ControlModifier) && !(event->modifiers() & Qt::ShiftModifier))
                     && (m_sceneMode == SceneGeometryMode_OperateOnNodes));
+
     if (m_snapToGrid && !(event->modifiers() & Qt::ControlModifier))
     {
         m_snapToGrid = false;
@@ -723,8 +724,6 @@ void SceneViewGeometry::contextMenuEvent(QContextMenuEvent *event)
 
 void SceneViewGeometry::paintRulersHintsEdges()
 {
-    logMessage("SceneViewCommon::paintRulersHints()");
-
     loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
@@ -733,8 +732,8 @@ void SceneViewGeometry::paintRulersHintsEdges()
     glColor3d(0.0, 0.53, 0.0);
 
     Point p = position(m_lastPos.x(), m_lastPos.y());
-    Point snapPoint = p;
 
+    Point snapPoint = p;
     if (m_snapToGrid)
     {
         snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;

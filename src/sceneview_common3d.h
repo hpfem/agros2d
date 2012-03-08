@@ -43,7 +43,7 @@ public:
     QAction *actSetProjectionXZ;
     QAction *actSetProjectionYZ;
 
-    void loadProjection3d(bool setScene = false) const;
+    void loadProjection3d(bool setScene = false);
 protected:
     double m_scale3d; // scale
     Point m_offset3d; // offset

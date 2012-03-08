@@ -39,7 +39,7 @@ protected:
     double m_scale2d; // scale
     Point m_offset2d; // offset
 
-    void loadProjection2d(bool setScene = false) const;
+    void loadProjection2d(bool setScene = false);
 
     SceneNode *findClosestNode(const Point &point);
     SceneEdge *findClosestEdge(const Point &point);
