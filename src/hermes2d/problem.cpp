@@ -92,16 +92,13 @@ void Block::solve()
 
     solver.init(m_progressItemSolve, m_wf, this);
 
-    SolverConfig solverConfig;
     if(this->isTransient()){
-        solverConfig.action = SolverAction_TimeStep;
-        solverConfig.timeStep = this->timeStep();
+        solver.solveInitialTimeStep();
+        solver.solveTimeStep(this->timeStep());
+        solver.solveTimeStep(this->timeStep());
     }
     else
-        solverConfig.action = SolverAction_Solve;
-
-    solver.solve(solverConfig);
-
+        solver.solveSimple();
 
     //TODO ulozit v solveru!!!
 
@@ -622,15 +619,17 @@ FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo,
     return solutionID;
 }
 
-//SolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
-//{
-//    SolutionID solutionID = lastTimeAndAdaptiveSolution(block->m_fields.at(0)->fieldInfo(), solutionType);
+BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
+{
+    FieldSolutionID fsid = lastTimeAndAdaptiveSolution(block->m_fields.at(0)->fieldInfo(), solutionType);
+    BlockSolutionID bsid = fsid.blockSolutionID(block);
 
-//    foreach(Field* field, block->m_fields)
-//    {
-//        assert(lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType) == solutionID);
-//    }
 
-//    return solutionID;
-//}
+    foreach(Field* field, block->m_fields)
+    {
+        assert(fsid == lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType));
+    }
+
+    return bsid;
+}
 

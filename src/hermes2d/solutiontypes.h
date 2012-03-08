@@ -147,6 +147,8 @@ ostream& operator<<(ostream& output, const SolutionID<Group>& id);
 
 //template class SolutionID<Block>;
 
+class BlockSolutionID;
+
 class FieldSolutionID : public SolutionID<FieldInfo>
 {
 public:
@@ -154,6 +156,8 @@ public:
         SolutionID<FieldInfo>(fieldInfo, timeStep, adaptivityStep, solutionType) {}
 
     FieldSolutionID() : SolutionID<FieldInfo>() {}
+
+    BlockSolutionID blockSolutionID(Block* block);
 };
 
 class BlockSolutionID : public SolutionID<Block>

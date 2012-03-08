@@ -17,6 +17,12 @@ FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
     return FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionType);
 }
 
+BlockSolutionID FieldSolutionID::blockSolutionID(Block *block)
+{
+    assert(block->contains(this->group));
+    return BlockSolutionID(block, timeStep, adaptivityStep, solutionType);
+}
+
 template <typename Scalar>
 SolutionArray<Scalar>::SolutionArray()
 {
