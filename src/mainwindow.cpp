@@ -1398,7 +1398,7 @@ void MainWindow::doTimeStepChanged(int index)
 
     if (cmbTimeStep->currentIndex() != -1)
     {
-        Util::problem()->setTimeStep(cmbTimeStep->currentIndex(), false);
+        Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
         postprocessorView->updateControls();
     }
 }
@@ -1468,7 +1468,7 @@ void MainWindow::doInvalidated()
     actChart->setEnabled(Util::problem()->isSolved());
 //    actCreateVideo->setEnabled(Util::problem()->isSolved() && (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient));
     tlbTransient->setEnabled(Util::problem()->isSolved());
-//    fillComboBoxTimeStep(cmbTimeStep);
+    fillComboBoxTimeStep(cmbTimeStep);
 
 //    lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->name)));
     lblProblemType->setText(tr("Problem Type: %1").arg(coordinateTypeString(Util::scene()->problemInfo()->coordinateType)));
@@ -1697,7 +1697,7 @@ void MainWindow::doViewQuick()
 {
     // time step
     QApplication::processEvents();
-    Util::problem()->setTimeStep(cmbTimeStep->currentIndex(), false);
+    Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
 
     // switch to the postprocessor
     if (Util::problem()->isSolved())

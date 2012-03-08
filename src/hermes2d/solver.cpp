@@ -393,6 +393,7 @@ void Solver<Scalar>::solveTimeStep(double timeStep)
     }
 
     double actualTime = Util::solutionStore()->lastTime(m_block) + timeStep;
+    multiSolutionArray.setTime(actualTime);
 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), actualTime);
     m_wf->set_current_time(actualTime);
