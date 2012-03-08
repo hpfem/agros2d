@@ -557,6 +557,26 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
     Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, boundary, angle, 0));
 }
 
+void pythonAddEdgeNodes(int nodeStartIndex, int nodeEndIndex, double angle, char *marker)
+{
+    logMessage("pythonAddEdgeByNode()");
+
+    if (angle > 90.0 || angle < 0.0)
+        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+
+    SceneBoundary *boundary = Util::scene()->getBoundary(QString(marker));
+    if (!boundary)
+        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(marker).toStdString());
+
+    // start node
+    SceneNode *nodeStart = Util::scene()->nodes[nodeStartIndex];
+    // end node
+    SceneNode *nodeEnd = Util::scene()->nodes[nodeEndIndex];
+
+    // FIXME 0 -> variable
+    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, boundary, angle, 0));
+}
+
 void pythonDeleteEdge(int index)
 {
     logMessage("pythonDeleteEdge()");

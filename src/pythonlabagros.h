@@ -225,6 +225,7 @@ void pythonCloseDocument();
 
 void pythonAddNode(double x, double y);
 void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker);
+void pythonAddEdgeNodes(int nodeStartIndex, int nodeEndIndex, double angle, char *marker);
 void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *marker);
 
 void pythonDeleteNode(int index);
