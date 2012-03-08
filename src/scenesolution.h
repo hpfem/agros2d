@@ -41,13 +41,16 @@ int findElementInVectorizer(Hermes::Hermes2D::Views::Vectorizer &vecVectorView, 
 /// TODO in the future, this class should only encapsulate solution and provide methods for its visualisation
 /// all code related to meshing and solving should be moved to Problem, Block and Field
 template <typename Scalar>
-class SceneSolution : public Hermes::Hermes2D::Solution<Scalar>
+class SceneSolution //: public Hermes::Hermes2D::Solution<Scalar>
 {
 public:
-    SceneSolution(FieldInfo* fieldInfo);
+    SceneSolution(FieldInfo* fieldInfo, MultiSolutionArray<Scalar> msa);
     ~SceneSolution();
 
-    void clear(bool all = true);
+    //TODO hnus, jen docasne, kvuli tomu, ze nekde je vyzadovana existence sceneSolution jeste pred tim, nez je problem vyresen
+    void updateSolutionArray(MultiSolutionArray<Scalar> msa);
+
+//    void clear(bool all = true);
     void loadMeshInitial(QDomElement element);
     void saveMeshInitial(QDomDocument *doc, QDomElement element);
     void loadSolution(QDomElement element);
@@ -56,22 +59,22 @@ public:
     //TODO in the future, SceneSolution will hold only one SolutionArray, not arrays for all time levels
 
     //TODO temp
-    void setSolutionArray(MultiSolutionArray<Scalar> solutionArrays) { m_solutionArrayList = solutionArrays; }
+    //void setSolutionArray(MultiSolutionArray<Scalar> solutionArrays) { m_solutionArrayList = solutionArrays; }
 
     FieldInfo* fieldInfo() { return m_fieldInfo; }
 
     // solution
-    SolutionArray<Scalar> solutionArray(int i/* = -1*/) { return m_solutionArrayList.component(i); }
+    SolutionArray<Scalar> solutionArray(int i/* = -1*/) { return m_multiSolutionArray.component(i); }
 
     //TODO remove .. naked pointers
     Hermes::Hermes2D::Solution<Scalar> *sln(int i/* = -1*/);
     Hermes::Hermes2D::Space<Scalar> *space(int i/* = -1*/);
 
-    inline MultiSolutionArray<Scalar> solutionArrayList() { return m_solutionArrayList; }
+    inline MultiSolutionArray<Scalar> solutionArrayList() { return m_multiSolutionArray; }
 
 private:
     // general solution array
-    MultiSolutionArray<Scalar> m_solutionArrayList;
+    MultiSolutionArray<Scalar> m_multiSolutionArray;
 
     FieldInfo* m_fieldInfo;
 };

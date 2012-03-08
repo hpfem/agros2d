@@ -45,6 +45,10 @@ public:
     void doAdaptivityStep();
     void doTimeStep();
 
+    void solveSimple();
+    void solveTimeStep(double timeStep);
+    void solveInitialTimeStep();
+
 private:
     //FieldInfo *m_fieldInfo;
     Block* m_block;
@@ -56,19 +60,19 @@ private:
     WeakFormAgros<Scalar> *m_wf;
     ProgressItemSolve *m_progressItemSolve;
 
-
     Hermes::Hermes2D::Mesh* readMesh();
-    void createSpace(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar> msa);
-    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space);
+    void createSpace(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar>& msa);
+//    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar>& msa);
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();
     // if copyPrevious == true, last solutions will be used (intented for doAdaptivityStep function)
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > createSolution();
+    void createNewSolutions(MultiSolutionArray<Scalar>& msa);
     void initSelectors();
 
     void cleanup();
 
-    bool solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
-                         Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
+//    bool solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
+//                         Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
+    bool solveOneProblem(MultiSolutionArray<Scalar> msa);
     void saveSolution(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                       Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);

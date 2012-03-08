@@ -92,41 +92,13 @@ void Block::solve()
 
     solver.init(m_progressItemSolve, m_wf, this);
 
-    SolverConfig solverConfig;
     if(this->isTransient()){
-        solverConfig.action = SolverAction_TimeStep;
-        solverConfig.timeStep = this->timeStep();
+        solver.solveInitialTimeStep();
+        for(int i = 0; i < 5; i++)
+            solver.solveTimeStep(this->timeStep());
     }
     else
-        solverConfig.action = SolverAction_Solve;
-
-    solver.solve(solverConfig);
-
-
-    //TODO ulozit v solveru!!!
-
-
-//    //TODO predelat ukazatele na Solution na shared_ptr
-//    foreach (Field* field, m_fields)
-//    {
-//        FieldInfo* fieldInfo = field->fieldInfo();
-
-//        // contains solution arrays for all components of the field
-//        QList<SolutionArray<double> > solutionArrays;
-
-//        for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
-//        {
-//            solutionArrays.push_back(m_solutionList->at(component + offset(field)));
-//        }
-
-//        // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
-//        Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(solutionArrays);
-
-//        //TODO
-//        // internal storage, should be rewriten
-//        //TODO
-//        parentProblem()->saveSolution(fieldInfo, 0, 0, solutionArrays);
-//    }
+        solver.solveSimple();
 }
 
 bool Block::isTransient() const
@@ -236,6 +208,16 @@ double Block::timeStep() const
     return step;
 }
 
+bool Block::contains(FieldInfo *fieldInfo) const
+{
+    foreach(Field* field, m_fields)
+    {
+        if(field->fieldInfo() == fieldInfo)
+            return true;
+    }
+    return false;
+}
+
 Field* Block::field(FieldInfo *fieldInfo) const
 {
     foreach (Field* field, m_fields)
@@ -246,6 +228,13 @@ Field* Block::field(FieldInfo *fieldInfo) const
 
     return NULL;
 }
+
+ostream& operator<<(ostream& output, const Block& id)
+{
+    output << "Block ";
+    return output;
+}
+
 
 Problem::Problem()
 {
@@ -402,7 +391,8 @@ void Problem::solve(SolverMode solverMode)
     mesh();
     emit meshed();
 
-    Util::scene()->createSolutions();
+    Util::scene()->clearSolutions();
+    Util::solutionStore()->clearAll();
 
     assert(isMeshed());
 
@@ -447,34 +437,65 @@ void SolutionStore::clearAll()
     m_multiSolutions.clear();
 }
 
-void SolutionStore::clearOne(SolutionID solutionID)
+void SolutionStore::clearOne(FieldSolutionID solutionID)
 {
     m_multiSolutions.remove(solutionID);
 }
 
-SolutionArray<double> SolutionStore::solution(SolutionID solutionID, int component)
+SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component)
 {
-    return m_multiSolutions[solutionID].component(component);
+    return multiSolution(solutionID).component(component);
 }
 
-MultiSolutionArray<double> SolutionStore::multiSolution(SolutionID solutionID)
+MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID)
 {
-    return m_multiSolutions[solutionID];
+    if(m_multiSolutions.contains(solutionID))
+        return m_multiSolutions[solutionID];
+
+    return MultiSolutionArray<double>();
 }
 
-void SolutionStore::saveSolution(SolutionID solutionID,  MultiSolutionArray<double> multiSolution)
+bool SolutionStore::contains(FieldSolutionID solutionID)
 {
-    cout << "Saving solution " << solutionID << endl;
+    return m_multiSolutions.contains(solutionID);
+}
+
+MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solutionID)
+{
+    MultiSolutionArray<double> msa;
+    foreach(Field *field, solutionID.group->m_fields)
+    {
+        msa.append(multiSolution(solutionID.fieldSolutionID(field->fieldInfo())));
+    }
+
+    return msa;
+}
+
+void SolutionStore::saveSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
+{
+    cout << "$$$$$$$$  Saving solution " << solutionID << ", now solutions: " << m_multiSolutions.size() << endl;
     assert(!m_multiSolutions.contains(solutionID));
+    assert(solutionID.timeStep >= 0);
+    assert(solutionID.adaptivityStep >= 0);
     m_multiSolutions[solutionID] = multiSolution;
+}
+
+void SolutionStore::saveSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
+{
+    foreach(Field* field, solutionID.group->m_fields)
+    {
+        FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
+        MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
+        saveSolution(fieldSID, fieldMultiSolution);
+    }
 }
 
 int SolutionStore::lastTimeStep(FieldInfo *fieldInfo)
 {
     int timeStep = notFoundSoFar;
-    foreach(SolutionID sid, m_multiSolutions.keys())
+    foreach(FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.fieldInfo == fieldInfo) && (sid.timeStep > timeStep))
+        if((sid.group == fieldInfo) && (sid.timeStep > timeStep))
             timeStep = sid.timeStep;
     }
 
@@ -498,9 +519,9 @@ double SolutionStore::lastTime(FieldInfo *fieldInfo)
     int timeStep = lastTimeStep(fieldInfo);
     double time = notFoundSoFar;
 
-    foreach(SolutionID id, m_multiSolutions.keys())
+    foreach(FieldSolutionID id, m_multiSolutions.keys())
     {
-        if((id.fieldInfo == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
+        if((id.group == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
         {
             if(time == notFoundSoFar)
                 time = m_multiSolutions[id].component(0).time;
@@ -531,9 +552,9 @@ int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, int timeStep)
         timeStep = lastTimeStep(fieldInfo);
 
     int adaptiveStep = notFoundSoFar;
-    foreach(SolutionID sid, m_multiSolutions.keys())
+    foreach(FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.fieldInfo == fieldInfo) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
+        if((sid.group == fieldInfo) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
             adaptiveStep = sid.adaptivityStep;
     }
 
@@ -552,15 +573,15 @@ int SolutionStore::lastAdaptiveStep(Block *block, int timeStep)
     return adaptiveStep;
 }
 
-SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionType solutionType)
+FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionType solutionType)
 {
-    SolutionID solutionID;
-    solutionID.fieldInfo = fieldInfo;
+    FieldSolutionID solutionID;
+    solutionID.group = fieldInfo;
     solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo);
     solutionID.timeStep = lastTimeStep(fieldInfo);
     solutionID.solutionType = solutionType;
 
-    cout << solutionID << endl;
+    //cout << solutionID << endl;
 
     if(solutionType == SolutionType_Finer)
     {
@@ -574,7 +595,7 @@ SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, Solu
     assert(m_multiSolutions.contains(solutionID));
     if(solutionType == SolutionType_Reference)
     {
-        SolutionID solutionIDNormal = solutionID;
+        FieldSolutionID solutionIDNormal = solutionID;
         solutionIDNormal.solutionType = SolutionType_Normal;
         assert(m_multiSolutions.contains(solutionIDNormal));
     }
@@ -582,15 +603,17 @@ SolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, Solu
     return solutionID;
 }
 
-//SolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
-//{
-//    SolutionID solutionID = lastTimeAndAdaptiveSolution(block->m_fields.at(0)->fieldInfo(), solutionType);
+BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
+{
+    FieldSolutionID fsid = lastTimeAndAdaptiveSolution(block->m_fields.at(0)->fieldInfo(), solutionType);
+    BlockSolutionID bsid = fsid.blockSolutionID(block);
 
-//    foreach(Field* field, block->m_fields)
-//    {
-//        assert(lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType) == solutionID);
-//    }
 
-//    return solutionID;
-//}
+    foreach(Field* field, block->m_fields)
+    {
+        assert(fsid == lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType));
+    }
+
+    return bsid;
+}
 

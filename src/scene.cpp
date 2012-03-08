@@ -146,6 +146,12 @@ void FieldInfo::setAnalysisType(AnalysisType analysisType)
 //        return 0;
 //}
 
+ostream& operator<<(ostream& output, FieldInfo& id)
+{
+    output << "FieldInfo " << id.fieldId().toStdString();
+    return output;
+}
+
 DxfFilter::DxfFilter(Scene *scene)
 {
     logMessage("DxfFilter::DxfFilter()");
@@ -291,6 +297,7 @@ Scene::Scene()
     m_undoStack = new QUndoStack(this);
     //m_sceneSolution = new SceneSolution<double>();
     m_activeViewField = NULL;
+    m_activeTimeStep = 0;
 
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
 
@@ -391,19 +398,19 @@ void Scene::clearSolutions()
 {
     foreach (SceneSolution<double>* sceneSolution, m_sceneSolutions)
     {
-        sceneSolution->clear();
+        delete sceneSolution;
     }
     m_sceneSolutions.clear();
 }
 
-void Scene::createSolutions()
-{
-    clearSolutions();
-    foreach(FieldInfo* fi, fieldInfos())
-    {
-        m_sceneSolutions[fi] = new SceneSolution<double>(fi);
-    }
-}
+//void Scene::createSolutions()
+//{
+//    clearSolutions();
+//    foreach(FieldInfo* fi, fieldInfos())
+//    {
+//        m_sceneSolutions[fi] = new SceneSolution<double>(fi);
+//    }
+//}
 
 SceneNode *Scene::addNode(SceneNode *node)
 {
@@ -2006,4 +2013,27 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 void Scene::synchronizeCouplings()
 {
     CouplingInfo::synchronizeCouplings(m_fieldInfos, m_couplingInfos);
+}
+
+SceneSolution<double> *Scene::activeSceneSolution()
+{
+    return sceneSolution(FieldSolutionID(activeViewField(), activeTimeStep(), 0, SolutionType_Normal));
+}
+
+SceneSolution<double>* Scene::sceneSolution(FieldSolutionID fsid)
+{
+    if(! m_sceneSolutions.contains(fsid))
+    {
+        MultiSolutionArray<double> msa;
+        if(Util::solutionStore()->contains(fsid))
+            msa = Util::solutionStore()->multiSolution(fsid);
+        SceneSolution<double>* sceneSolution = new SceneSolution<double>(fsid.group, msa);
+        m_sceneSolutions.insert(fsid, sceneSolution);
+    }
+    else
+    {
+        m_sceneSolutions[fsid]->updateSolutionArray(Util::solutionStore()->multiSolution(fsid));
+    }
+
+    return m_sceneSolutions[fsid];
 }

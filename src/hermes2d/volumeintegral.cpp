@@ -34,8 +34,8 @@ VolumeIntegralValue::VolumeIntegralValue(FieldInfo *fieldInfo)
     initParser();
 
     assert(0); //TODO
-    for (int k = 0; k < fieldInfo->module()->number_of_solution(); k++)
-        sln.push_back(Util::scene()->sceneSolution(fieldInfo)->sln(k + (Util::problem()->timeStep() * fieldInfo->module()->number_of_solution())));
+//    for (int k = 0; k < fieldInfo->module()->number_of_solution(); k++)
+//        sln.push_back(Util::scene()->sceneSolution(fieldInfo)->sln(k + (Util::problem()->timeStep() * fieldInfo->module()->number_of_solution())));
 
     calculate();
 }

@@ -8,6 +8,7 @@
 /// this header file shoul be kept small, since it is included in other header files
 
 class FieldInfo;
+class Block;
 
 template <typename entity>
 Hermes::vector<entity*> desmartize(Hermes::vector<shared_ptr<entity> > smart_vec)
@@ -68,6 +69,9 @@ public:
     void setSpaces(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaces);
     void setSolutions(Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutions);
 
+    void setSpace(shared_ptr<Hermes::Hermes2D::Space<Scalar> > space, int component);
+    void setSolution(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > solution, int component);
+
     void append(MultiSolutionArray<Scalar> msa);
 
     //creates copy of spaces, used in solver
@@ -76,6 +80,16 @@ public:
 
     Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > spacesNaked();
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > solutionsNaked();
+
+    // returns the same multi solution array with spaces only (solutions are empty)
+    MultiSolutionArray<Scalar> copySpaces();
+
+    // returns only that part of list that corresponds to given field (as part of the given block)
+    MultiSolutionArray<Scalar> fieldPart(Block* block, FieldInfo* fieldInfo);
+
+    int size() {return m_solutionArrays.size(); }
+
+    void createEmpty(int numComp);
 
 private:
     QList<SolutionArray<Scalar> > m_solutionArrays;
@@ -92,24 +106,26 @@ enum SolutionType{
 //const int LAST_TIME_STEP = -1;
 
 /// !!!! In case of adding more data fields, update the following operator< !!!
+template <typename Group>
 struct SolutionID
 {
-    FieldInfo* fieldInfo;
+    Group* group;
     int timeStep;
     int adaptivityStep;
     SolutionType solutionType;
 
-    SolutionID() : fieldInfo(NULL), timeStep(0), adaptivityStep(0), solutionType(SolutionType_Normal) {}
-    SolutionID(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, SolutionType solutionType) :
-        fieldInfo(fieldInfo), timeStep(timeStep), adaptivityStep(adaptivityStep), solutionType(solutionType) {}
+    SolutionID() : group(NULL), timeStep(0), adaptivityStep(0), solutionType(SolutionType_Normal) {}
+    SolutionID(Group* group, int timeStep, int adaptivityStep, SolutionType solutionType) :
+        group(group), timeStep(timeStep), adaptivityStep(adaptivityStep), solutionType(solutionType) {}
 
     bool exists() {return solutionType != SolutionType_NonExisting; }
 };
 
-inline bool operator<(const SolutionID &sid1, const SolutionID &sid2)
+template <typename Group>
+inline bool operator<(const SolutionID<Group> &sid1, const SolutionID<Group> &sid2)
 {
-    if (sid1.fieldInfo != sid2.fieldInfo)
-        return sid1.fieldInfo < sid2.fieldInfo;
+    if (sid1.group != sid2.group)
+        return sid1.group < sid2.group;
 
     if (sid1.timeStep != sid2.timeStep)
         return sid1.timeStep < sid2.timeStep;
@@ -120,14 +136,45 @@ inline bool operator<(const SolutionID &sid1, const SolutionID &sid2)
     return sid1.solutionType < sid2.solutionType;
 }
 
-inline bool operator==(const SolutionID &sid1, const SolutionID &sid2)
+template <typename Group>
+inline bool operator==(const SolutionID<Group> &sid1, const SolutionID<Group> &sid2)
 {
     return !((sid1 < sid2) || (sid2 < sid1));
 }
 
-ostream& operator<<(ostream& output, const SolutionID& id);
+template <typename Group>
+ostream& operator<<(ostream& output, const SolutionID<Group>& id)
+{
+    output << "(" << *id.group << ", timeStep " << id.timeStep << ", adaptStep " <<
+              id.adaptivityStep << ", type "<< id.solutionType << ")";
+    return output;
+}
 
-struct BlockSolutionID
+//template class SolutionID<Block>;
+
+class BlockSolutionID;
+
+class FieldSolutionID : public SolutionID<FieldInfo>
+{
+public:
+    FieldSolutionID(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, SolutionType solutionType) :
+        SolutionID<FieldInfo>(fieldInfo, timeStep, adaptivityStep, solutionType) {}
+
+    FieldSolutionID() : SolutionID<FieldInfo>() {}
+
+    BlockSolutionID blockSolutionID(Block* block);
+};
+
+class BlockSolutionID : public SolutionID<Block>
+{
+public:
+    BlockSolutionID(Block* block, int timeStep, int adaptivityStep, SolutionType solutionType) :
+        SolutionID<Block>(block, timeStep, adaptivityStep, solutionType) {}
+
+    BlockSolutionID() : SolutionID<Block>() {}
+
+    FieldSolutionID fieldSolutionID(FieldInfo* fieldInfo);
+};
 
 enum SolverAction
 {

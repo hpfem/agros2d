@@ -208,7 +208,7 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
 //    }
 
     //Decide what solution to push, implicitly none
-    SolutionID solutionID(NULL, 0, 0, SolutionType_NonExisting);
+    FieldSolutionID solutionID(NULL, 0, 0, SolutionType_NonExisting);
 
     // weak coupling, push solutions
     if(marker_second && couplingInfo)
@@ -227,7 +227,7 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
 
     if(solutionID.solutionType != SolutionType_NonExisting)
     {
-        for(int comp = 0; comp < solutionID.fieldInfo->module()->number_of_solution(); comp++)
+        for(int comp = 0; comp < solutionID.group->module()->number_of_solution(); comp++)
         {
             custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.get());
         }
