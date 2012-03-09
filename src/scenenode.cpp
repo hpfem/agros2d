@@ -20,9 +20,9 @@
 #include "util.h"
 #include "scene.h"
 #include "scenenode.h"
+#include "sceneedge.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
-
 
 SceneNode::SceneNode(const Point &point) : SceneBasic()
 {
@@ -91,6 +91,14 @@ SceneNode* SceneNodeContainer::get(const Point &point) const
     }
 
     return NULL;
+}
+
+bool SceneNodeContainer::remove(SceneNode *item)
+{
+    // remove all edges connected to this node
+    Util::scene()->edges->removeConnectedToNode(item);
+
+    return SceneBasicContainer<SceneNode>::remove(item);
 }
 
 RectPoint SceneNodeContainer::boundingBox() const

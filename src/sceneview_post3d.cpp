@@ -826,10 +826,9 @@ void SceneViewPost3D::doInvalidated()
 
     // actions
     actSceneModePost3D->setEnabled(Util::problem()->isSolved());
-    actSetProjectionXY->setEnabled(false);
-    actSetProjectionXZ->setEnabled(false);
-    actSetProjectionYZ->setEnabled(false);
-
+    actSetProjectionXY->setEnabled(Util::problem()->isSolved());
+    actSetProjectionXZ->setEnabled(Util::problem()->isSolved());
+    actSetProjectionYZ->setEnabled(Util::problem()->isSolved());
 
     SceneViewCommon::doInvalidated();
 }

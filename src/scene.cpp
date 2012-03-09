@@ -438,9 +438,6 @@ void Scene::removeNode(SceneNode *node)
     // clear solution
     clearSolutions();
 
-    // remove all edges connected to this node
-    edges->removeConnectedToNode(node);
-
     nodes->remove(node);
     // delete node;
 

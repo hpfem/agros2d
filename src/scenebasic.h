@@ -69,7 +69,7 @@ public:
     QList<BasicType*> items() { return data; }
 
     bool add(BasicType *item);
-    bool remove(BasicType *item);
+    virtual bool remove(BasicType *item);
     BasicType *at(int i);
     inline int length() { return data.length(); }
     inline int count() {return length(); }

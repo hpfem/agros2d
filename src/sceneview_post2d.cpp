@@ -146,6 +146,12 @@ void Post2DHermes::processRangeScalar()
              Util::scene()->activeViewField()->module()->deform_shape(m_linScalarView.get_vertices(),
                                                                       m_linScalarView.get_num_vertices());
 
+         if (Util::config()->scalarRangeAuto)
+         {
+             Util::config()->scalarRangeMin = m_linScalarView.get_min_value();
+             Util::config()->scalarRangeMax = m_linScalarView.get_max_value();
+         }
+
          m_scalarIsPrepared = true;
 
          emit processed();
@@ -1017,13 +1023,6 @@ void SceneViewPost2D::doInvalidated()
         paletteCreate(textureScalar());
 
         m_post2DHermes->processSolved();
-
-        if (Util::config()->scalarRangeAuto)
-        {
-            Util::config()->scalarRangeMin = m_post2DHermes->linScalarView().get_min_value();
-            Util::config()->scalarRangeMax = m_post2DHermes->linScalarView().get_max_value();
-            // cout << "setting limits (" << Util::config()->scalarRangeMin << ", " << Util::config()->scalarRangeMax << ")" << endl;
-        }
     }
 
     // actions

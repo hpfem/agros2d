@@ -584,7 +584,7 @@ void SceneViewGeometry::mouseReleaseEvent(QMouseEvent *event)
         actSceneViewSelectRegion->setData(false);
     }
 
-    m_selectRegion = false;
+    m_selectRegion = false;    
     updateGL();
 
     // move by mouse - select none
@@ -695,10 +695,10 @@ void SceneViewGeometry::keyPressEvent(QKeyEvent *event)
 
 void SceneViewGeometry::keyReleaseEvent(QKeyEvent *event)
 {
-    SceneViewCommon2D::keyReleaseEvent(event);
-
     m_snapToGrid = false;
     updateGL();
+
+    SceneViewCommon2D::keyReleaseEvent(event);
 }
 
 void SceneViewGeometry::contextMenuEvent(QContextMenuEvent *event)
