@@ -115,7 +115,7 @@ void MarkerContainer<MarkerType>::doFieldsChanged()
 {
     foreach(FieldInfo* fieldInfo, noneMarkers.keys())
     {
-        if(! Util::scene()->fieldInfos().contains(fieldInfo->fieldId())){
+        if(! Util::scene()->fieldInfos().values().contains(fieldInfo)){
             delete noneMarkers[fieldInfo];
             noneMarkers.remove(fieldInfo);
             removeFieldMarkers(fieldInfo);
