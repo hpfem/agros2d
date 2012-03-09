@@ -58,8 +58,6 @@ static void computeNormal(double p0x, double p0y, double p0z,
 
 Post3DHermes::Post3DHermes()
 {
-    m_slnScalarView = NULL;
-
     m_scalarIsPrepared = false;
 }
 
@@ -71,13 +69,7 @@ Post3DHermes::~Post3DHermes()
 
 void Post3DHermes::clear()
 {
-    // scalar
     m_scalarIsPrepared = false;
-    if (m_slnScalarView)
-    {
-        delete m_slnScalarView;
-        m_slnScalarView = NULL;
-    }
 }
 
 void Post3DHermes::processInitialMesh()
@@ -102,25 +94,20 @@ void Post3DHermes::processRangeScalar()
 
     if (Util::problem()->isSolved() && Util::config()->scalarVariable != "")
     {
-        if (m_slnScalarView)
-        {
-            delete m_slnScalarView;
-            m_slnScalarView = NULL;
-        }
+        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
+                                                                                                                 Util::config()->scalarVariableComp);
 
-        m_slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
-                                                                                                                    Util::config()->scalarVariableComp);
+        m_linScalarView.process_solution(slnScalarView,
+                                         Hermes::Hermes2D::H2D_FN_VAL_0,
+                                         Util::config()->linearizerQuality);
 
-        m_linScalarView.process_solution(m_slnScalarView,
-                                          Hermes::Hermes2D::H2D_FN_VAL_0,
-                                          Util::config()->linearizerQuality);
+        // deformed shape
+        if (Util::config()->deformScalar)
+            Util::scene()->activeViewField()->module()->deform_shape(m_linScalarView.get_vertices(),
+                                                                     m_linScalarView.get_num_vertices());
+        delete slnScalarView;
 
-         // deformed shape
-         if (Util::config()->deformScalar)
-             Util::scene()->activeViewField()->module()->deform_shape(m_linScalarView.get_vertices(),
-                                                                      m_linScalarView.get_num_vertices());
-
-         m_scalarIsPrepared = true;
+        m_scalarIsPrepared = true;
     }
 }
 

@@ -57,7 +57,6 @@ private:
 
     // scalar view
     bool m_scalarIsPrepared;
-    ViewScalarFilter<double> *m_slnScalarView; // scalar view solution
     Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
 
 private slots:

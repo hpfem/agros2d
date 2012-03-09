@@ -59,18 +59,14 @@ public slots:
 private:
     // contour
     bool m_contourIsPrepared;
-    ViewScalarFilter<double> *m_slnContourView; // scalar view solution
     Hermes::Hermes2D::Views::Linearizer m_linContourView;
 
     // scalar view
     bool m_scalarIsPrepared;
-    ViewScalarFilter<double> *m_slnScalarView; // scalar view solution
     Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
 
     // vector view
     bool m_vectorIsPrepared;
-    ViewScalarFilter<double> *m_slnVectorXView; // vector view solution - x
-    ViewScalarFilter<double> *m_slnVectorYView; // vector view solution - y
     Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
 
 private slots:
