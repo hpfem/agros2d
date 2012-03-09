@@ -3247,185 +3247,185 @@
         <translation>Popis</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="268"/>
+        <location filename="../src/problemdialog.cpp" line="269"/>
         <source>Name:</source>
         <translation>Název:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="163"/>
+        <location filename="../src/problemdialog.cpp" line="164"/>
         <source>Date:</source>
         <translation>Datum:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="167"/>
+        <location filename="../src/problemdialog.cpp" line="168"/>
         <source>Problem type:</source>
         <translation>Typ problému:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="223"/>
+        <location filename="../src/problemdialog.cpp" line="224"/>
         <source>Adaptivity tolerance (%):</source>
         <translation>Tolerence adaptivity (%):</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="181"/>
+        <location filename="../src/problemdialog.cpp" line="182"/>
         <source>Frequency (Hz):</source>
         <translation>Frekvence (Hz):</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="169"/>
+        <location filename="../src/problemdialog.cpp" line="170"/>
         <source>Type of analysis:</source>
         <translation>Druh analýzy:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="173"/>
+        <location filename="../src/problemdialog.cpp" line="174"/>
         <source>Linearity:</source>
         <translation>Linearita:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="175"/>
+        <location filename="../src/problemdialog.cpp" line="176"/>
         <source>Linear solver:</source>
         <translation>Řešič:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="184"/>
+        <location filename="../src/problemdialog.cpp" line="185"/>
         <source>Harmonic analysis</source>
         <translation>Harmonická analýza</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="191"/>
+        <location filename="../src/problemdialog.cpp" line="192"/>
         <source>Time step (s):</source>
         <translation>Časový krok (s):</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="193"/>
+        <location filename="../src/problemdialog.cpp" line="194"/>
         <source>Total time (s):</source>
         <translation>Celkový čas (s):</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="195"/>
+        <location filename="../src/problemdialog.cpp" line="196"/>
         <source>Initial condition:</source>
         <translation>Počáteční podmínka:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="197"/>
+        <location filename="../src/problemdialog.cpp" line="198"/>
         <source>Steps:</source>
         <translation>Počet kroků:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="200"/>
+        <location filename="../src/problemdialog.cpp" line="201"/>
         <source>Transient analysis</source>
         <translation>Přechodný děj</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="207"/>
+        <location filename="../src/problemdialog.cpp" line="208"/>
         <source>Mesh type:</source>
         <translation>Typ sítě:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="214"/>
+        <location filename="../src/problemdialog.cpp" line="215"/>
         <source>Mesh parameters</source>
         <translation>Parametry sítě</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="226"/>
+        <location filename="../src/problemdialog.cpp" line="227"/>
         <source>Adaptivity</source>
         <translation>Adaptivita</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="233"/>
+        <location filename="../src/problemdialog.cpp" line="234"/>
         <source>Nonlin. tolerance (%):</source>
         <translation>Nelineární. tolerance (%):</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="235"/>
+        <location filename="../src/problemdialog.cpp" line="236"/>
         <source>Nonlin. steps:</source>
         <translation>Nelineární poč. kroků:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="238"/>
+        <location filename="../src/problemdialog.cpp" line="239"/>
         <source>Linearity</source>
         <translation>Linearita</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="275"/>
+        <location filename="../src/problemdialog.cpp" line="276"/>
         <source>Equation:</source>
         <translation>Rovnice:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="404"/>
+        <location filename="../src/problemdialog.cpp" line="405"/>
         <source>Change physical field type</source>
         <translation>Změna fyzikálního pole</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="404"/>
+        <location filename="../src/problemdialog.cpp" line="405"/>
         <source>Are you sure change physical field type?</source>
         <translation>Jste si jisti, že chcete změnit typ fyzickálního pole?</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="404"/>
+        <location filename="../src/problemdialog.cpp" line="405"/>
         <source>&amp;Yes</source>
         <translation>&amp;Ano</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="404"/>
+        <location filename="../src/problemdialog.cpp" line="405"/>
         <source>&amp;No</source>
         <translation>&amp;Ne</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="436"/>
+        <location filename="../src/problemdialog.cpp" line="437"/>
         <source>Some nodes are placed outside the permitted area (coordinate x must be positive).</source>
         <translation>Některé entity geometrie se nacházejí mimo povolenou oblast (souřadnice x musí být kladná).</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="445"/>
-        <location filename="../src/problemdialog.cpp" line="454"/>
-        <location filename="../src/problemdialog.cpp" line="460"/>
-        <location filename="../src/problemdialog.cpp" line="466"/>
+        <location filename="../src/problemdialog.cpp" line="446"/>
+        <location filename="../src/problemdialog.cpp" line="455"/>
+        <location filename="../src/problemdialog.cpp" line="461"/>
+        <location filename="../src/problemdialog.cpp" line="467"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="445"/>
+        <location filename="../src/problemdialog.cpp" line="446"/>
         <source>Frequency cannot be negative.</source>
         <translation>Frekvence nesmí být záporná.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="454"/>
+        <location filename="../src/problemdialog.cpp" line="455"/>
         <source>Time step must be positive.</source>
         <translation>Časový krok musí být kladný.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="460"/>
+        <location filename="../src/problemdialog.cpp" line="461"/>
         <source>Total time must be positive.</source>
         <translation>Celkový čas musí být kladný.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="466"/>
+        <location filename="../src/problemdialog.cpp" line="467"/>
         <source>Time step is greater then total time.</source>
         <translation>Časový krok je delší než celkový čas.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="165"/>
+        <location filename="../src/problemdialog.cpp" line="166"/>
         <source>Physic field:</source>
         <translation>Fyzikální pole:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="209"/>
+        <location filename="../src/problemdialog.cpp" line="210"/>
         <source>Number of refinements:</source>
         <translation>Počet zjemnění:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="211"/>
+        <location filename="../src/problemdialog.cpp" line="212"/>
         <source>Polynomial order:</source>
         <translation>Řád polynomu:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="171"/>
+        <location filename="../src/problemdialog.cpp" line="172"/>
         <source>Adaptivity:</source>
         <translation>Adaptivita:</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="221"/>
+        <location filename="../src/problemdialog.cpp" line="222"/>
         <source>Adaptivity steps:</source>
         <translation>Počet adaptivních kroků:</translation>
     </message>
@@ -4137,12 +4137,12 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>PythonLabAgros</name>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1376"/>
+        <location filename="../src/pythonlabagros.cpp" line="1403"/>
         <source>&amp;Create script from model</source>
         <translation>&amp;Vytvořit skript z modelu</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1377"/>
+        <location filename="../src/pythonlabagros.cpp" line="1404"/>
         <source>Ctrl+M</source>
         <translation></translation>
     </message>
@@ -4248,8 +4248,8 @@ Chcete tyto změny uložit?</translation>
         <translation>Vodivost</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="436"/>
-        <location filename="../src/problemdialog.cpp" line="477"/>
+        <location filename="../src/problemdialog.cpp" line="437"/>
+        <location filename="../src/problemdialog.cpp" line="478"/>
         <location filename="../src/value.cpp" line="48"/>
         <source>Error</source>
         <translation>Chyba</translation>
@@ -5356,48 +5356,60 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="641"/>
+        <location filename="../src/pythonlabagros.cpp" line="661"/>
         <source>Boundary &apos;%1&apos; is not defined.</source>
         <translation>Hraniční podmínka &apos;%1&apos; není podporována.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="675"/>
+        <location filename="../src/pythonlabagros.cpp" line="664"/>
+        <source>Geometry does not contain nodes.</source>
+        <translation>Geometrie neobsahuje žádné uzly.</translation>
+    </message>
+    <message>
+        <location filename="../src/pythonlabagros.cpp" line="667"/>
+        <location filename="../src/pythonlabagros.cpp" line="669"/>
+        <source>Node with index &apos;%1&apos; does not exist.</source>
+        <translation>Uzel s indexem &apos;%1&apos; není definován.</translation>
+    </message>
+    <message>
+        <location filename="../src/pythonlabagros.cpp" line="702"/>
         <source>Material &apos;%1&apos; is not defined.</source>
         <translation>Materiál &apos;%1&apos; není definována.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="709"/>
+        <location filename="../src/pythonlabagros.cpp" line="736"/>
         <source>Boundary marker already exists.</source>
         <translation>Hraniční podmínka již existuje.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="804"/>
+        <location filename="../src/pythonlabagros.cpp" line="831"/>
         <source>Node index must be between 0 and &apos;%1&apos;.</source>
         <translation>Index uzlu musí být v rozsahu 0 až &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="847"/>
-        <location filename="../src/pythonlabagros.cpp" line="1104"/>
+        <location filename="../src/pythonlabagros.cpp" line="874"/>
+        <location filename="../src/pythonlabagros.cpp" line="1131"/>
         <source>Edge index must be between 0 and &apos;%1&apos;.</source>
         <translation>Index hrany musí být v rozsahu 0 až &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="890"/>
-        <location filename="../src/pythonlabagros.cpp" line="1154"/>
+        <location filename="../src/pythonlabagros.cpp" line="917"/>
+        <location filename="../src/pythonlabagros.cpp" line="1181"/>
         <source>Label index must be between 0 and &apos;%1&apos;.</source>
         <translation>Index značky oblasti musí být v rozsahu 0 až &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1041"/>
+        <location filename="../src/pythonlabagros.cpp" line="1068"/>
         <source>Postprocessor mode &apos;%1&apos; is not implemented.</source>
         <translation>Mód postprocesoru &apos;%1&apos; není implementován.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1195"/>
+        <location filename="../src/pythonlabagros.cpp" line="1222"/>
         <source>Physic field variable &apos;%1&apos; is not implemented.</source>
         <translation>Veličina fyzikálního pole &apos;%1&apos; není implementována.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1205"/>
+        <location filename="../src/pythonlabagros.cpp" line="1232"/>
         <source>Physic field variable is scalar variable.</source>
         <translation>Proměnná je skalár.</translation>
     </message>
@@ -5409,42 +5421,42 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="323"/>
         <source>x coordinate is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Souřadnice X je mimo rozsah.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="325"/>
         <source>y coordinate is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Souřadnice Y je mimo rozsah.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="340"/>
         <source>Mass must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hmotnost částice musí být kladná.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="355"/>
         <source>Density cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Měrná hmotnost prostředí nesmí být záporná.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="364"/>
         <source>Area cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Efektivní plocha nesmí být záporná.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="373"/>
         <source>Coefficient cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koeficient nesmí být záporný.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="394"/>
         <source>Tolerance cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerance nesmí být záporná.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="403"/>
         <source>Maximum steps cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximální počet kroků nesmí být záporný.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="533"/>
@@ -5474,13 +5486,14 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="620"/>
-        <location filename="../src/pythonlabagros.cpp" line="657"/>
-        <location filename="../src/pythonlabagros.cpp" line="685"/>
+        <location filename="../src/pythonlabagros.cpp" line="684"/>
+        <location filename="../src/pythonlabagros.cpp" line="712"/>
         <source>Index &apos;%1&apos; is out of range.</source>
         <translation>Index &apos;%1&apos; je mimo rozsah.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="637"/>
+        <location filename="../src/pythonlabagros.cpp" line="657"/>
         <source>Angle &apos;%1&apos; is out of range.</source>
         <translation>Úhel &apos;%1&apos; je mimo rozsah.</translation>
     </message>
@@ -5508,7 +5521,7 @@ Chcete tyto změny uložit?</translation>
         <translation>Hraniční podmínka se jménem &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="738"/>
+        <location filename="../src/pythonlabagros.cpp" line="765"/>
         <source>Label marker already exists.</source>
         <translation>Popisek oblasti již existuje.</translation>
     </message>
@@ -5525,12 +5538,12 @@ Chcete tyto změny uložit?</translation>
         <translation>Značka oblasti se jménem &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1019"/>
+        <location filename="../src/pythonlabagros.cpp" line="1046"/>
         <source>Mode &apos;%1&apos; is not implemented.</source>
         <translation>Mod &apos;%1&apos; není implementován.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1305"/>
+        <location filename="../src/pythonlabagros.cpp" line="1332"/>
         <source>Time step must be between 0 and %1.</source>
         <translation>Časový krok musí být v intervalu od 0 do %1.</translation>
     </message>
@@ -5538,12 +5551,12 @@ Chcete tyto změny uložit?</translation>
         <location filename="../src/pythonlabagros.cpp" line="261"/>
         <location filename="../src/pythonlabagros.cpp" line="453"/>
         <location filename="../src/pythonlabagros.cpp" line="468"/>
-        <location filename="../src/pythonlabagros.cpp" line="1017"/>
-        <location filename="../src/pythonlabagros.cpp" line="1032"/>
-        <location filename="../src/pythonlabagros.cpp" line="1075"/>
-        <location filename="../src/pythonlabagros.cpp" line="1125"/>
-        <location filename="../src/pythonlabagros.cpp" line="1175"/>
-        <location filename="../src/pythonlabagros.cpp" line="1299"/>
+        <location filename="../src/pythonlabagros.cpp" line="1044"/>
+        <location filename="../src/pythonlabagros.cpp" line="1059"/>
+        <location filename="../src/pythonlabagros.cpp" line="1102"/>
+        <location filename="../src/pythonlabagros.cpp" line="1152"/>
+        <location filename="../src/pythonlabagros.cpp" line="1202"/>
+        <location filename="../src/pythonlabagros.cpp" line="1326"/>
         <source>Problem is not solved.</source>
         <translation>Problém nebyl vyřešen.</translation>
     </message>
@@ -5558,22 +5571,22 @@ Chcete tyto změny uložit?</translation>
         <translation>Typ adaptivity &apos;%1&apos; není implementován.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1190"/>
+        <location filename="../src/pythonlabagros.cpp" line="1217"/>
         <source>View type &apos;%1&apos; is not implemented.</source>
         <translation>Typ zobrazení &apos;%1&apos; není implementován.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1197"/>
+        <location filename="../src/pythonlabagros.cpp" line="1224"/>
         <source>Physic field variable &apos;%1&apos; cannot be used with this field.</source>
         <translation>Proměnná &apos;%1&apos; nelze použít v tomto typu pole.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1302"/>
+        <location filename="../src/pythonlabagros.cpp" line="1329"/>
         <source>Solved problem is not transient.</source>
         <translation>Řešený problém není přechodný děj.</translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1202"/>
+        <location filename="../src/pythonlabagros.cpp" line="1229"/>
         <source>Physic field variable component &apos;%1&apos; is not implemented.</source>
         <translation>Proměnná &apos;%1&apos; není implementována.</translation>
     </message>
@@ -5802,8 +5815,12 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="449"/>
-        <source>Boundaris conditions</source>
+        <source>Boundary conditions</source>
         <translation>Okrajové podmínky</translation>
+    </message>
+    <message>
+        <source>Boundaris conditions</source>
+        <translation type="obsolete">Okrajové podmínky</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="468"/>
@@ -6098,47 +6115,47 @@ Chcete tyto změny uložit?</translation>
         <translation>Smazat uzel</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1102"/>
+        <location filename="../src/scene.cpp" line="1108"/>
         <source>Translation</source>
         <translation>Posun</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1116"/>
+        <location filename="../src/scene.cpp" line="1122"/>
         <source>Rotation</source>
         <translation>Otočení</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1130"/>
+        <location filename="../src/scene.cpp" line="1136"/>
         <source>Scale</source>
         <translation>Zvětšení/zmenšení</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1450"/>
+        <location filename="../src/scene.cpp" line="1456"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
         <translation>Soubor &apos;%1&apos; nelze otevřít (%2).</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1480"/>
+        <location filename="../src/scene.cpp" line="1486"/>
         <source>For opening file &apos;%1&apos; is required Agros2D version 2.0 or higher.</source>
         <translation>Pro otevření souboru &apos;%1&apos; je vyžadován Agros2D verze 2.0 nebo vyšší.</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1498"/>
+        <location filename="../src/scene.cpp" line="1504"/>
         <source>This problem uses functionality under development. You must first enable experimental features in application options.</source>
         <translation>Problém vyžaduje funkcionalitu ve vývoji. Pro zpřístupnění je potřeba nejprve zapnout podporu v nastavení aplikace.</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1863"/>
+        <location filename="../src/scene.cpp" line="1869"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation>Soubor &apos;%1&apos; nelze uložit (%2).</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="2031"/>
+        <location filename="../src/scene.cpp" line="2037"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
         <translation>Radiální souřadnice uzlů &apos;%1&apos; je záporná.</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="2042"/>
+        <location filename="../src/scene.cpp" line="2048"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation>V geometrie jsou červenou barvou vyznačená křížení hran. Je nutné tato křížení odstranit.</translation>
     </message>
@@ -6147,7 +6164,7 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">V geometrii jsou zelenou barvou vyznačeny hrany, které se kříží. Je nutné tato křížení odstranit.</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="2050"/>
+        <location filename="../src/scene.cpp" line="2056"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation>V geometrii jsou červeně vyznačeny uzly, které nejsou spojeny s žádnou hranou. Je nutné tyto body odstranit.</translation>
     </message>
@@ -6160,12 +6177,12 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">V geometrii jsou uzly označené červenou barvou, které nejsou připojeny k žádné hraně. Je nutné tyto uzly odstranit.</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="2055"/>
+        <location filename="../src/scene.cpp" line="2061"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation>V geometrii jsou uzly označené červenou barvou, které leží na některých hranách, ale nejsou s nimi propojeny. Je nutné tyto uzly odstranit.</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1466"/>
+        <location filename="../src/scene.cpp" line="1472"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
         <translation>Soubor &apos;%1&apos; není platným souborem Agros2D.</translation>
     </message>
@@ -7122,12 +7139,12 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../src/scenetransformdialog.cpp" line="160"/>
         <source>Scale factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvětšení</translation>
     </message>
     <message>
         <location filename="../src/scenetransformdialog.cpp" line="160"/>
         <source>Scale factor should not be zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvětšení nesmí být nulové.</translation>
     </message>
 </context>
 <context>

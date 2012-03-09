@@ -3135,185 +3135,185 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="268"/>
+        <location filename="../src/problemdialog.cpp" line="269"/>
         <source>Name:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="163"/>
+        <location filename="../src/problemdialog.cpp" line="164"/>
         <source>Date:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="167"/>
+        <location filename="../src/problemdialog.cpp" line="168"/>
         <source>Problem type:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="223"/>
+        <location filename="../src/problemdialog.cpp" line="224"/>
         <source>Adaptivity tolerance (%):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="181"/>
+        <location filename="../src/problemdialog.cpp" line="182"/>
         <source>Frequency (Hz):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="169"/>
+        <location filename="../src/problemdialog.cpp" line="170"/>
         <source>Type of analysis:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="173"/>
+        <location filename="../src/problemdialog.cpp" line="174"/>
         <source>Linearity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="175"/>
+        <location filename="../src/problemdialog.cpp" line="176"/>
         <source>Linear solver:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="184"/>
+        <location filename="../src/problemdialog.cpp" line="185"/>
         <source>Harmonic analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="191"/>
+        <location filename="../src/problemdialog.cpp" line="192"/>
         <source>Time step (s):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="193"/>
+        <location filename="../src/problemdialog.cpp" line="194"/>
         <source>Total time (s):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="195"/>
+        <location filename="../src/problemdialog.cpp" line="196"/>
         <source>Initial condition:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="197"/>
+        <location filename="../src/problemdialog.cpp" line="198"/>
         <source>Steps:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="200"/>
+        <location filename="../src/problemdialog.cpp" line="201"/>
         <source>Transient analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="207"/>
+        <location filename="../src/problemdialog.cpp" line="208"/>
         <source>Mesh type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="214"/>
+        <location filename="../src/problemdialog.cpp" line="215"/>
         <source>Mesh parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="226"/>
+        <location filename="../src/problemdialog.cpp" line="227"/>
         <source>Adaptivity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="233"/>
+        <location filename="../src/problemdialog.cpp" line="234"/>
         <source>Nonlin. tolerance (%):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="235"/>
+        <location filename="../src/problemdialog.cpp" line="236"/>
         <source>Nonlin. steps:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="238"/>
+        <location filename="../src/problemdialog.cpp" line="239"/>
         <source>Linearity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="275"/>
+        <location filename="../src/problemdialog.cpp" line="276"/>
         <source>Equation:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="404"/>
+        <location filename="../src/problemdialog.cpp" line="405"/>
         <source>Change physical field type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="404"/>
+        <location filename="../src/problemdialog.cpp" line="405"/>
         <source>Are you sure change physical field type?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="404"/>
+        <location filename="../src/problemdialog.cpp" line="405"/>
         <source>&amp;Yes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="404"/>
+        <location filename="../src/problemdialog.cpp" line="405"/>
         <source>&amp;No</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="436"/>
+        <location filename="../src/problemdialog.cpp" line="437"/>
         <source>Some nodes are placed outside the permitted area (coordinate x must be positive).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="445"/>
-        <location filename="../src/problemdialog.cpp" line="454"/>
-        <location filename="../src/problemdialog.cpp" line="460"/>
-        <location filename="../src/problemdialog.cpp" line="466"/>
+        <location filename="../src/problemdialog.cpp" line="446"/>
+        <location filename="../src/problemdialog.cpp" line="455"/>
+        <location filename="../src/problemdialog.cpp" line="461"/>
+        <location filename="../src/problemdialog.cpp" line="467"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="445"/>
+        <location filename="../src/problemdialog.cpp" line="446"/>
         <source>Frequency cannot be negative.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="454"/>
+        <location filename="../src/problemdialog.cpp" line="455"/>
         <source>Time step must be positive.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="460"/>
+        <location filename="../src/problemdialog.cpp" line="461"/>
         <source>Total time must be positive.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="466"/>
+        <location filename="../src/problemdialog.cpp" line="467"/>
         <source>Time step is greater then total time.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="165"/>
+        <location filename="../src/problemdialog.cpp" line="166"/>
         <source>Physic field:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="209"/>
+        <location filename="../src/problemdialog.cpp" line="210"/>
         <source>Number of refinements:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="211"/>
+        <location filename="../src/problemdialog.cpp" line="212"/>
         <source>Polynomial order:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="171"/>
+        <location filename="../src/problemdialog.cpp" line="172"/>
         <source>Adaptivity:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="221"/>
+        <location filename="../src/problemdialog.cpp" line="222"/>
         <source>Adaptivity steps:</source>
         <translation></translation>
     </message>
@@ -4020,12 +4020,12 @@ Do you want to save your changes?</source>
 <context>
     <name>PythonLabAgros</name>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1376"/>
+        <location filename="../src/pythonlabagros.cpp" line="1403"/>
         <source>&amp;Create script from model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1377"/>
+        <location filename="../src/pythonlabagros.cpp" line="1404"/>
         <source>Ctrl+M</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4049,8 +4049,8 @@ Do you want to save your changes?</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/problemdialog.cpp" line="436"/>
-        <location filename="../src/problemdialog.cpp" line="477"/>
+        <location filename="../src/problemdialog.cpp" line="437"/>
+        <location filename="../src/problemdialog.cpp" line="478"/>
         <location filename="../src/value.cpp" line="48"/>
         <source>Error</source>
         <translation></translation>
@@ -4087,55 +4087,67 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="620"/>
-        <location filename="../src/pythonlabagros.cpp" line="657"/>
-        <location filename="../src/pythonlabagros.cpp" line="685"/>
+        <location filename="../src/pythonlabagros.cpp" line="684"/>
+        <location filename="../src/pythonlabagros.cpp" line="712"/>
         <source>Index &apos;%1&apos; is out of range.</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="641"/>
+        <location filename="../src/pythonlabagros.cpp" line="661"/>
         <source>Boundary &apos;%1&apos; is not defined.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="675"/>
+        <location filename="../src/pythonlabagros.cpp" line="664"/>
+        <source>Geometry does not contain nodes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/pythonlabagros.cpp" line="667"/>
+        <location filename="../src/pythonlabagros.cpp" line="669"/>
+        <source>Node with index &apos;%1&apos; does not exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/pythonlabagros.cpp" line="702"/>
         <source>Material &apos;%1&apos; is not defined.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="709"/>
+        <location filename="../src/pythonlabagros.cpp" line="736"/>
         <source>Boundary marker already exists.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="804"/>
+        <location filename="../src/pythonlabagros.cpp" line="831"/>
         <source>Node index must be between 0 and &apos;%1&apos;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="847"/>
-        <location filename="../src/pythonlabagros.cpp" line="1104"/>
+        <location filename="../src/pythonlabagros.cpp" line="874"/>
+        <location filename="../src/pythonlabagros.cpp" line="1131"/>
         <source>Edge index must be between 0 and &apos;%1&apos;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="890"/>
-        <location filename="../src/pythonlabagros.cpp" line="1154"/>
+        <location filename="../src/pythonlabagros.cpp" line="917"/>
+        <location filename="../src/pythonlabagros.cpp" line="1181"/>
         <source>Label index must be between 0 and &apos;%1&apos;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1041"/>
+        <location filename="../src/pythonlabagros.cpp" line="1068"/>
         <source>Postprocessor mode &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1195"/>
+        <location filename="../src/pythonlabagros.cpp" line="1222"/>
         <source>Physic field variable &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1205"/>
+        <location filename="../src/pythonlabagros.cpp" line="1232"/>
         <source>Physic field variable is scalar variable.</source>
         <translation></translation>
     </message>
@@ -4212,6 +4224,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="637"/>
+        <location filename="../src/pythonlabagros.cpp" line="657"/>
         <source>Angle &apos;%1&apos; is out of range.</source>
         <translation></translation>
     </message>
@@ -4239,7 +4252,7 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="738"/>
+        <location filename="../src/pythonlabagros.cpp" line="765"/>
         <source>Label marker already exists.</source>
         <translation></translation>
     </message>
@@ -4256,12 +4269,12 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1019"/>
+        <location filename="../src/pythonlabagros.cpp" line="1046"/>
         <source>Mode &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1305"/>
+        <location filename="../src/pythonlabagros.cpp" line="1332"/>
         <source>Time step must be between 0 and %1.</source>
         <translation></translation>
     </message>
@@ -4269,12 +4282,12 @@ Do you want to save your changes?</source>
         <location filename="../src/pythonlabagros.cpp" line="261"/>
         <location filename="../src/pythonlabagros.cpp" line="453"/>
         <location filename="../src/pythonlabagros.cpp" line="468"/>
-        <location filename="../src/pythonlabagros.cpp" line="1017"/>
-        <location filename="../src/pythonlabagros.cpp" line="1032"/>
-        <location filename="../src/pythonlabagros.cpp" line="1075"/>
-        <location filename="../src/pythonlabagros.cpp" line="1125"/>
-        <location filename="../src/pythonlabagros.cpp" line="1175"/>
-        <location filename="../src/pythonlabagros.cpp" line="1299"/>
+        <location filename="../src/pythonlabagros.cpp" line="1044"/>
+        <location filename="../src/pythonlabagros.cpp" line="1059"/>
+        <location filename="../src/pythonlabagros.cpp" line="1102"/>
+        <location filename="../src/pythonlabagros.cpp" line="1152"/>
+        <location filename="../src/pythonlabagros.cpp" line="1202"/>
+        <location filename="../src/pythonlabagros.cpp" line="1326"/>
         <source>Problem is not solved.</source>
         <translation></translation>
     </message>
@@ -4289,22 +4302,22 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1190"/>
+        <location filename="../src/pythonlabagros.cpp" line="1217"/>
         <source>View type &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1197"/>
+        <location filename="../src/pythonlabagros.cpp" line="1224"/>
         <source>Physic field variable &apos;%1&apos; cannot be used with this field.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1302"/>
+        <location filename="../src/pythonlabagros.cpp" line="1329"/>
         <source>Solved problem is not transient.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/pythonlabagros.cpp" line="1202"/>
+        <location filename="../src/pythonlabagros.cpp" line="1229"/>
         <source>Physic field variable component &apos;%1&apos; is not implemented.</source>
         <translation></translation>
     </message>
@@ -5674,8 +5687,8 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="449"/>
-        <source>Boundaris conditions</source>
-        <translation></translation>
+        <source>Boundary conditions</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="468"/>
@@ -5970,62 +5983,62 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1102"/>
+        <location filename="../src/scene.cpp" line="1108"/>
         <source>Translation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1116"/>
+        <location filename="../src/scene.cpp" line="1122"/>
         <source>Rotation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1130"/>
+        <location filename="../src/scene.cpp" line="1136"/>
         <source>Scale</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1450"/>
+        <location filename="../src/scene.cpp" line="1456"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1480"/>
+        <location filename="../src/scene.cpp" line="1486"/>
         <source>For opening file &apos;%1&apos; is required Agros2D version 2.0 or higher.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1498"/>
+        <location filename="../src/scene.cpp" line="1504"/>
         <source>This problem uses functionality under development. You must first enable experimental features in application options.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1863"/>
+        <location filename="../src/scene.cpp" line="1869"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="2031"/>
+        <location filename="../src/scene.cpp" line="2037"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="2042"/>
+        <location filename="../src/scene.cpp" line="2048"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="2050"/>
+        <location filename="../src/scene.cpp" line="2056"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="2055"/>
+        <location filename="../src/scene.cpp" line="2061"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1466"/>
+        <location filename="../src/scene.cpp" line="1472"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
         <translation></translation>
     </message>
