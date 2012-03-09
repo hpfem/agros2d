@@ -196,9 +196,59 @@ namespace Hermes
       MagFilter(Hermes::vector<MeshFunction<Scalar>*> solutions, Hermes::vector<int> items = *(new Hermes::vector<int>));
 
       MagFilter(MeshFunction<Scalar>* sln1, int item1 = H2D_FN_VAL); ///< for vector-valued sln1
+      virtual MeshFunction<Scalar>* clone();
 
     protected:
       virtual void filter_fn(int n, Hermes::vector<Scalar*> values, Scalar* result);
+    };
+
+    /// TopValFilter takes functions and puts a threshold on their highest values.
+    class HERMES_API TopValFilter : public SimpleFilter<double>
+    {
+    public:
+      TopValFilter() {};
+
+      TopValFilter(Hermes::vector<MeshFunction<double>*> solutions, Hermes::vector<double> limits, Hermes::vector<int> items = *(new Hermes::vector<int>));
+
+      TopValFilter(MeshFunction<double>* sln, double limit, int item = H2D_FN_VAL_0); ///< for vector-valued sln1
+      virtual MeshFunction<double>* clone();
+
+    protected:
+      virtual void filter_fn(int n, Hermes::vector<double*> values, double* result);
+      Hermes::vector<double> limits;
+    };
+
+    /// BottomValFilter takes functions and puts a threshold on their lowest values.
+    class HERMES_API BottomValFilter : public SimpleFilter<double>
+    {
+    public:
+      BottomValFilter() {};
+
+      BottomValFilter(Hermes::vector<MeshFunction<double>*> solutions, Hermes::vector<double> limits, Hermes::vector<int> items = *(new Hermes::vector<int>));
+
+      BottomValFilter(MeshFunction<double>* sln, double limit, int item = H2D_FN_VAL_0); ///< for vector-valued sln1
+      virtual MeshFunction<double>* clone();
+
+    protected:
+      virtual void filter_fn(int n, Hermes::vector<double*> values, double* result);
+      Hermes::vector<double> limits;
+    };
+
+    /// ValFilter takes functions and puts a threshold on their lowest AND highest values.
+    class HERMES_API ValFilter : public SimpleFilter<double>
+    {
+    public:
+      ValFilter() {};
+
+      ValFilter(Hermes::vector<MeshFunction<double>*> solutions, Hermes::vector<double> low_limits, Hermes::vector<double> high_limits, Hermes::vector<int> items = *(new Hermes::vector<int>));
+
+      ValFilter(MeshFunction<double>* sln, double low_limit, double high_limit, int item = H2D_FN_VAL_0); ///< for vector-valued sln1
+      virtual MeshFunction<double>* clone();
+
+    protected:
+      virtual void filter_fn(int n, Hermes::vector<double*> values, double* result);
+      Hermes::vector<double> low_limits;
+      Hermes::vector<double> high_limits;
     };
 
 
@@ -221,6 +271,7 @@ namespace Hermes
     {
     public:
       SumFilter(Hermes::vector<MeshFunction<Scalar>*> solutions, Hermes::vector<int> items = *(new Hermes::vector<int>));
+      virtual MeshFunction<Scalar>* clone();
 
     protected:
       virtual void filter_fn(int n, Hermes::vector<Scalar*> values, Scalar* result);
@@ -233,6 +284,7 @@ namespace Hermes
     {
     public:
       SquareFilter(Hermes::vector<MeshFunction<Scalar>*> solutions, Hermes::vector<int> items = *(new Hermes::vector<int>));
+      virtual MeshFunction<Scalar>* clone();
 
     protected:
       virtual void filter_fn(int n, Hermes::vector<Scalar*> values, Scalar* result);
@@ -270,6 +322,7 @@ namespace Hermes
     public:
       ImagFilter(MeshFunction<std::complex<double> >* solution, int item = H2D_FN_VAL_0);
 
+      virtual MeshFunction<double>* clone();
     protected:
       virtual void filter_fn(int n, std::complex<double>* values, double* result);
     };
@@ -335,6 +388,7 @@ namespace Hermes
       LinearFilter(MeshFunction<Scalar>* older, MeshFunction<Scalar>* old, double tau_frac = 1);
 
       virtual Scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0);
+      virtual MeshFunction<Scalar>* clone();
 
     protected:
       double tau_frac;

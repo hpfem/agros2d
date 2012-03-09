@@ -243,7 +243,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void NeighborSearch<Scalar>::set_active_edge_multimesh(const int& edge)
+    bool NeighborSearch<Scalar>::set_active_edge_multimesh(const int& edge)
     {
       _F_;
       Hermes::vector<unsigned int> transformations = get_transforms(original_central_el_transform);
@@ -252,6 +252,7 @@ namespace Hermes
       {
         set_active_edge(edge);
         update_according_to_sub_idx(transformations);
+        return true;
       }
       // Intra-element edge.
       else
@@ -270,8 +271,8 @@ namespace Hermes
         n_neighbors = 1;
         neighbors.push_back(neighb_el);
         neighborhood_type = H2D_DG_NO_TRANSF;
+        return false;
       }
-      return;
     }
 
     template<typename Scalar>
@@ -789,12 +790,9 @@ namespace Hermes
     typename NeighborSearch<Scalar>::ExtendedShapeset* NeighborSearch<Scalar>::create_extended_asmlist(const Space<Scalar>*space, AsmList<Scalar>* al)
     {
       _F_;
-      if (supported_shapes == NULL)
-        supported_shapes = new ExtendedShapeset(this, al, space);
-      else
-        supported_shapes->update(this, space);
+      ExtendedShapeset* new_supp_shapes = new ExtendedShapeset(this, al, space);
 
-      return supported_shapes;
+      return new_supp_shapes;
     }
 
     template<typename Scalar>
@@ -960,7 +958,8 @@ namespace Hermes
     template<typename Scalar>
     NeighborSearch<Scalar>::ExtendedShapeset::~ExtendedShapeset() 
     {
-      delete [] dof; delete neighbor_al;
+      delete [] dof;
+      delete neighbor_al;
     }
 
     template<typename Scalar>

@@ -33,7 +33,7 @@ namespace Hermes
       this->init();
     }
 
-      template<typename Scalar>
+    template<typename Scalar>
     Filter<Scalar>::Filter(const Hermes::vector<MeshFunction<Scalar>*>& solutions) : MeshFunction<Scalar>()
     {
       this->num = solutions.size();
@@ -556,6 +556,145 @@ namespace Hermes
         error("The single-argument constructor is intended for vector-valued solutions.");
     };
 
+    template<typename Scalar>
+    MeshFunction<Scalar>* MagFilter<Scalar>::clone()
+    {
+      Hermes::vector<MeshFunction<Scalar>*> slns;
+      Hermes::vector<int> items;
+      for(int i = 0; i < this->num; i++)
+      {
+        slns.push_back(this->sln[i]->clone());
+        items.push_back(this->item[i]);
+      }
+      MagFilter<Scalar>* filter = new MagFilter<Scalar>(slns, items);
+      return filter;
+    }
+
+
+    void TopValFilter::filter_fn(int n, Hermes::vector<double*> values, double* result)
+    {
+      for (int i = 0; i < n; i++)
+      {
+        result[i] = 0;
+        for(unsigned int j = 0; j < values.size(); j++)
+          if(values.at(j)[i] > limits[j])
+            result[i] = limits[j];
+          else
+            result[i] = values.at(j)[i];
+      }
+    };
+
+    TopValFilter::TopValFilter(Hermes::vector<MeshFunction<double>*> solutions, Hermes::vector<double> limits, Hermes::vector<int> items) : SimpleFilter<double>(solutions, items), limits(limits)
+    {
+    };
+
+    TopValFilter::TopValFilter(MeshFunction<double>* sln, double limit, int item)
+      : SimpleFilter<double>()
+    {
+      this->limits.push_back(limit);
+      this->sln[0] = sln;
+      this->item[0] = item;
+      this->num = 1;
+      Filter<double>::init();
+    };
+
+    MeshFunction<double>* TopValFilter::clone()
+    {
+      Hermes::vector<MeshFunction<double>*> slns;
+      Hermes::vector<int> items;
+      for(int i = 0; i < this->num; i++)
+      {
+        slns.push_back(this->sln[i]->clone());
+        items.push_back(this->item[i]);
+      }
+      TopValFilter* filter = new TopValFilter(slns, limits, items);
+      return filter;
+    }
+
+    void BottomValFilter::filter_fn(int n, Hermes::vector<double*> values, double* result)
+    {
+      for (int i = 0; i < n; i++)
+      {
+        result[i] = 0;
+        for(unsigned int j = 0; j < values.size(); j++)
+          if(values.at(j)[i] < limits[j])
+            result[i] = limits[j];
+          else
+            result[i] = values.at(j)[i];
+      }
+    };
+
+    BottomValFilter::BottomValFilter(Hermes::vector<MeshFunction<double>*> solutions, Hermes::vector<double> limits, Hermes::vector<int> items) : SimpleFilter<double>(solutions, items), limits(limits)
+    {
+    };
+
+    BottomValFilter::BottomValFilter(MeshFunction<double>* sln, double limit, int item)
+      : SimpleFilter<double>()
+    {
+      this->limits.push_back(limit);
+      this->sln[0] = sln;
+      this->item[0] = item;
+      this->num = 1;
+      Filter<double>::init();
+    };
+
+    MeshFunction<double>* BottomValFilter::clone()
+    {
+      Hermes::vector<MeshFunction<double>*> slns;
+      Hermes::vector<int> items;
+      for(int i = 0; i < this->num; i++)
+      {
+        slns.push_back(this->sln[i]->clone());
+        items.push_back(this->item[i]);
+      }
+      BottomValFilter* filter = new BottomValFilter(slns, limits, items);
+      return filter;
+    }
+
+    void ValFilter::filter_fn(int n, Hermes::vector<double*> values, double* result)
+    {
+      for (int i = 0; i < n; i++)
+      {
+        result[i] = 0;
+        for(unsigned int j = 0; j < values.size(); j++)
+          if(values.at(j)[i] < low_limits[j])
+            result[i] = low_limits[j];
+          else
+            if(values.at(j)[i] > high_limits[j])
+              result[i] = high_limits[j];
+            else
+              result[i] = values.at(j)[i];
+      }
+    };
+    
+    ValFilter::ValFilter(Hermes::vector<MeshFunction<double>*> solutions, Hermes::vector<double> low_limits, Hermes::vector<double> high_limits, Hermes::vector<int> items) : SimpleFilter<double>(solutions, items), low_limits(low_limits), high_limits(high_limits)
+    {
+    };
+
+    ValFilter::ValFilter(MeshFunction<double>* sln, double low_limit, double high_limit, int item)
+      : SimpleFilter<double>()
+    {
+      this->low_limits.push_back(low_limit);
+      this->high_limits.push_back(high_limit);
+      this->sln[0] = sln;
+      this->item[0] = item;
+      this->num = 1;
+      Filter<double>::init();
+    };
+
+    MeshFunction<double>* ValFilter::clone()
+    {
+      Hermes::vector<MeshFunction<double>*> slns;
+      Hermes::vector<int> items;
+      for(int i = 0; i < this->num; i++)
+      {
+        slns.push_back(this->sln[i]->clone());
+        items.push_back(this->item[i]);
+      }
+      ValFilter* filter = new ValFilter(slns, low_limits, high_limits, items);
+      return filter;
+    }
+
 
     template<typename Scalar>
     void DiffFilter<Scalar>::filter_fn(int n, Hermes::vector<Scalar*> values, Scalar* result)
@@ -595,6 +734,19 @@ namespace Hermes
     template<typename Scalar>
     SumFilter<Scalar>::SumFilter(Hermes::vector<MeshFunction<Scalar>*> solutions, Hermes::vector<int> items) : SimpleFilter<Scalar>(solutions, items) {}
 
+    template<typename Scalar>
+    MeshFunction<Scalar>* SumFilter<Scalar>::clone()
+    {
+      Hermes::vector<MeshFunction<Scalar>*> slns;
+      Hermes::vector<int> items;
+      for(int i = 0; i < this->num; i++)
+      {
+        slns.push_back(this->sln[i]->clone());
+        items.push_back(this->item[i]);
+      }
+      SumFilter<Scalar>* filter = new SumFilter<Scalar>(slns, items);
+      return filter;
+    }
 
     template<>
     void SquareFilter<double>::filter_fn(int n, Hermes::vector<double *> v1, double* result)
@@ -617,6 +769,20 @@ namespace Hermes
       if (solutions.size() > 1)
         error("SquareFilter only supports one MeshFunction.");
     };
+
+    template<typename Scalar>
+    MeshFunction<Scalar>* SquareFilter<Scalar>::clone()
+    {
+      Hermes::vector<MeshFunction<Scalar>*> slns;
+      Hermes::vector<int> items;
+      for(int i = 0; i < this->num; i++)
+      {
+        slns.push_back(this->sln[i]->clone());
+        items.push_back(this->item[i]);
+      }
+      SquareFilter<Scalar>* filter = new SquareFilter<Scalar>(slns, items);
+      return filter;
+    }
 
     void AbsFilter::filter_fn(int n, Hermes::vector<double*> v1, double * result)
     {
@@ -687,6 +853,12 @@ namespace Hermes
       : ComplexFilter(solution, item)
     {
     };
+
+    MeshFunction<double>* ImagFilter::clone()
+    {
+      ImagFilter* filter = new ImagFilter(this->sln_complex->clone(), this->item);
+      return filter;
+    }
 
     void ComplexAbsFilter::filter_fn(int n, std::complex<double>* values, double* result)
     {

@@ -49,6 +49,7 @@ namespace Hermes
       T *dy0, *dy1;      ///< Components of the gradient of a vector field.
       T *curl;           ///< Components of the curl of a vector field.
       T *div;            ///< Components of the div of a vector field.
+      uint64_t sub_idx;  ///< Sub-element transformation.
       
       /// Methods designed for discontinuous functions, return errors here.
       virtual T& get_val_central(int k) const { error(ERR_UNDEFINED_NEIGHBORING_ELEMENTS); return * new T; }
@@ -202,6 +203,7 @@ namespace Hermes
       ///< (undefined for element).
       T *tx, *ty;       ///< Tangents [in physical domain]. Only for edge.
       int id;           ///< ID number of the element (undefined for edge).
+      int isurf;        ///< Order number of an edge of the element.
 
       /// Methods designed for discontinuous functions, return errors here.
       virtual int get_neighbor_marker() const { error(ERR_UNDEFINED_NEIGHBORING_ELEMENTS); return -1; }
