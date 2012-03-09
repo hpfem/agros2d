@@ -190,7 +190,7 @@ private slots:
     void doAdvancedDefault();
     void doParticleDefault();
     void doSceneFont();
-    void doShowGridChanged();
+    //void doShowGridChanged();
     void doScalarFieldLog(int state);
 };
 

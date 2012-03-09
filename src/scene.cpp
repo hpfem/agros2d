@@ -999,6 +999,12 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
                                                               newEdge->boundary->name,
                                                               newEdge->angle,
                                                               newEdge->refineTowardsEdge));
+
+                    newEdge->isSelected = true;
+                    newEdge->nodeStart->isSelected = false;
+                    newEdge->nodeEnd->isSelected = false;
+
+                    edge->isSelected = false;
                 }
             }
         }

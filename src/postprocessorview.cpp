@@ -776,7 +776,7 @@ QWidget *PostprocessorView::controlsWorkspace()
     txtGridStep = new QLineEdit("0.1");
     txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
     chkShowGrid = new QCheckBox(tr("Show grid"));
-    connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
+    //connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
     chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
 
@@ -1222,10 +1222,12 @@ void PostprocessorView::doSceneFont()
     }
 }
 
+/*
 void PostprocessorView::doShowGridChanged()
 {
     chkSnapToGrid->setEnabled(chkShowGrid->isChecked());
 }
+*/
 
 void PostprocessorView::doScalarFieldLog(int state)
 {
