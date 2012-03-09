@@ -568,12 +568,19 @@ void pythonAddEdgeNodes(int nodeStartIndex, int nodeEndIndex, double angle, char
     if (!boundary)
         throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(marker).toStdString());
 
+    if (Util::scene()->nodes.isEmpty())
+        throw out_of_range(QObject::tr("Geometry does not contain nodes.").toStdString());
+
+    if (nodeStartIndex > (Util::scene()->nodes.length() - 1) || nodeStartIndex < 0)
+        throw out_of_range(QObject::tr("Node with index '%1' does not exist.").arg(nodeStartIndex).toStdString());
+    if (nodeEndIndex > (Util::scene()->nodes.length() - 1) || nodeEndIndex < 0)
+        throw out_of_range(QObject::tr("Node with index '%1' does not exist.").arg(nodeEndIndex).toStdString());
+
     // start node
     SceneNode *nodeStart = Util::scene()->nodes[nodeStartIndex];
     // end node
     SceneNode *nodeEnd = Util::scene()->nodes[nodeEndIndex];
 
-    // FIXME 0 -> variable
     Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, boundary, angle, 0));
 }
 
