@@ -116,7 +116,8 @@ QWidget *ProblemDialog::createControlsGeneral()
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
-    txtAdaptivityTolerance = new SLineEditDouble(1);
+    txtAdaptivityTolerance = new SLineEditDouble(1, true);
+    txtAdaptivityTolerance->setBottom(0.0);
     cmbMatrixSolver = new QComboBox();
 
     // mesh
