@@ -446,7 +446,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
         destination.replace("[PhysicalProperties.Label]", "<h2>" + tr("Physical Properties") + "</h2>", Qt::CaseSensitive);
         destination.replace("[Materials.Label]", "<h3>" + tr("Materials") + "</h3>", Qt::CaseSensitive);
         destination.replace("[Materials]", htmlMaterials(), Qt::CaseSensitive);
-        destination.replace("[Boundaries.Label]", "<h3>" + tr("Boundaris conditions") + "</h3>", Qt::CaseSensitive);
+        destination.replace("[Boundaries.Label]", "<h3>" + tr("Boundaries conditions") + "</h3>", Qt::CaseSensitive);
         destination.replace("[Boundaries]", htmlBoundaries(), Qt::CaseSensitive);
     }
     else
