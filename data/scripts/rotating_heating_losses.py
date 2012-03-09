@@ -105,8 +105,9 @@ pl.plot(r, Pj)
 pl.grid(1)
 pl.xlabel("$r\,\mathrm{(m)}$")
 pl.ylabel("$P_\mathrm{j}\,\mathrm{(W/m^3)}$")
-pl.savefig("chart.png", dpi=60)
+fn_chart = pythonlab.tempname("png")
+pl.savefig(fn_chart, dpi=60)
 pl.close()
 
 # show in console
-pythonlab.image("chart.png")
+pythonlab.image(fn_chart)

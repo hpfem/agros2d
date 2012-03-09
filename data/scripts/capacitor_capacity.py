@@ -67,8 +67,9 @@ pl.plot(r, C)
 pl.grid(True)
 pl.xlabel("$r\,\mathrm{(m)}$")
 pl.ylabel("$C\,\mathrm{(F)}$")
-pl.savefig("capacity.png", dpi=60)
+fn_capacity = pythonlab.tempname("png")
+pl.savefig(fn_capacity, dpi=60)
 pl.close()
 
 # show in console
-pythonlab.image("capacity.png")
+pythonlab.image(fn_capacity)
