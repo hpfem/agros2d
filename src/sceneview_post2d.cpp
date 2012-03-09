@@ -157,7 +157,7 @@ void Post2DHermes::processSolved()
 
     QTimer::singleShot(0, this, SLOT(processRangeContour()));
     QTimer::singleShot(0, this, SLOT(processRangeScalar()));
-    // QTimer::singleShot(0, this, SLOT(processRangeVector()));
+    QTimer::singleShot(0, this, SLOT(processRangeVector()));
 }
 
 // ************************************************************************************************
