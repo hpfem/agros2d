@@ -142,8 +142,9 @@ import pylab as pl
 pl.plot(phi, T)
 pl.xlabel("$\\varphi~\mathrm{(deg.)}$")
 pl.ylabel("$T~\mathrm{(Nm)}")
-pl.savefig("torque.png", dpi=60)
+fn_torque = pythonlab.tempname("png")
+pl.savefig(fn_torque, dpi=60)
 pl.close()
 
 # show in console
-pythonlab.image("torque.png")
+pythonlab.image(fn_torque)

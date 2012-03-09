@@ -21,8 +21,9 @@ pl.plot(t, y)
 pl.grid(True)
 pl.xlabel("$t\,\mathrm{(s)}$")
 pl.ylabel("$i\,\mathrm{(A)}$")
-pl.savefig("diff_equation.png", dpi=60)
+fn_diff_equation = pythonlab.tempname("png")
+pl.savefig(fn_diff_equation, dpi=60)
 pl.close()
 
 # show in console
-pythonlab.image("diff_equation.png")
+pythonlab.image(fn_diff_equation)
