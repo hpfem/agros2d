@@ -106,8 +106,9 @@ pl.grid(1)
 pl.xlabel("$t\,\mathrm{(s)}$")
 pl.ylabel("$v\,\mathrm{(m/s)}$")
 pl.xlim([0, 0.07])
-pl.savefig("chart.png", dpi=60)
+fn_chart = pythonlab.tempname("png")
+pl.savefig(fn_chart, dpi=60)
 pl.close()
 
 # show in console
-pythonlab.image("chart.png")
+pythonlab.image(fn_chart)

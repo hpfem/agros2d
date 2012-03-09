@@ -69,15 +69,32 @@ static PyObject* pythonClear(PyObject* self, PyObject* pArgs)
     return NULL;
 }
 
+static PyObject *pythonTempname(PyObject* self, PyObject* pArgs)
+{
+    QString tempDir = tempProblemDir() + "/temp/";
+    QDir(tempDir).mkdir(tempDir);
+
+    QString tempName = QUuid::createUuid().toString().remove("{").remove("}");
+
+    char *str = "";
+    if (PyArg_ParseTuple(pArgs, "|s", &str))
+    {
+        if (str != "")
+            tempName = tempName + "." + str;
+    }
+
+    return PyString_FromString((tempDir + tempName).toStdString().c_str());
+}
+
 static PyMethodDef pythonEngineFuntions[] =
 {
     {"__stdout__", pythonStdout, METH_VARARGS, "__stdout__(str)"},
     {"image", pythonShowFigure, METH_VARARGS, "image(file)"},
     {"clear", pythonClear, METH_NOARGS, "clear()"},
     {"html", pythonInsertHtml, METH_VARARGS, "html(str)"},
+    {"tempname", pythonTempname, METH_VARARGS, "tempname(extension = \"\")"},
     {NULL, NULL, 0, NULL}
 };
-
 
 // ****************************************************************************
 

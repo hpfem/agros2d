@@ -315,6 +315,98 @@ void PyParticleTracing::velocities(std::vector<double> &x,
     z = outZ;
 }
 
+void PyParticleTracing::setInitialPosition(double x, double y)
+{
+    RectPoint rect = Util::scene()->boundingBox();
+
+    if (x < rect.start.x || x > rect.end.x)
+        throw out_of_range(QObject::tr("x coordinate is out of range.").toStdString());
+    if (y < rect.start.y || y > rect.end.y)
+        throw out_of_range(QObject::tr("y coordinate is out of range.").toStdString());
+
+    Util::config()->particleStart = Point(x, y);
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setInitialVelocity(double x, double y)
+{
+    Util::config()->particleStartVelocity = Point(x, y);
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setParticleMass(double mass)
+{
+    if (mass <= 0.0)
+        throw out_of_range(QObject::tr("Mass must be positive.").toStdString());
+
+    Util::config()->particleMass = mass;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setParticleCharge(double charge)
+{
+    Util::config()->particleConstant = charge;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setDragForceDensity(double rho)
+{
+    if (rho < 0.0)
+        throw out_of_range(QObject::tr("Density cannot be negative.").toStdString());
+
+    Util::config()->particleDragDensity = rho;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setDragForceReferenceArea(double area)
+{
+    if (area < 0.0)
+        throw out_of_range(QObject::tr("Area cannot be negative.").toStdString());
+
+    Util::config()->particleDragReferenceArea = area;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setDragForceCoefficient(double coeff)
+{
+    if (coeff < 0.0)
+        throw out_of_range(QObject::tr("Coefficient cannot be negative.").toStdString());
+
+    Util::config()->particleDragCoefficient = coeff;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setIncludeGravitation(int include)
+{
+    Util::config()->particleIncludeGravitation = include;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setTerminateOnDifferentMaterial(int terminate)
+{
+    Util::config()->particleTerminateOnDifferentMaterial = terminate;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setMaximumTolerance(double tolerance)
+{
+    if (tolerance < 0.0)
+       throw out_of_range(QObject::tr("Tolerance cannot be negative.").toStdString());
+
+    Util::config()->particleMaximumRelativeError = tolerance;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setMaximumSteps(int steps)
+{
+    if (steps < 0.0)
+        throw out_of_range(QObject::tr("Maximum steps cannot be negative.").toStdString());
+
+    Util::config()->particleMaximumSteps = steps;
+    Util::scene()->refresh();
+}
+
+
 // version()
 char *pythonVersion()
 {

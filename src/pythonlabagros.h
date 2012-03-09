@@ -91,107 +91,36 @@ public:
     PyParticleTracing() {}
     ~PyParticleTracing() {}
 
-    void setInitialPosition(double x, double y)
-    {
-        Util::config()->particleStart = Point(x, y);
-        Util::scene()->refresh();
-    }
+    void setInitialPosition(double x, double y);
     void initialPosition(double &x, double &y)
     {
         x = Util::config()->particleStart.x;
         y = Util::config()->particleStart.y;
     }
-    void setInitialVelocity(double x, double y)
-    {
-        Util::config()->particleStartVelocity = Point(x, y);
-        Util::scene()->refresh();
-    }
+    void setInitialVelocity(double x, double y);
     void initialVelocity(double &x, double &y)
     {
         x = Util::config()->particleStartVelocity.x;
         y = Util::config()->particleStartVelocity.y;
     }
-    void setParticleMass(double mass)
-    {
-        Util::config()->particleMass = mass;
-        Util::scene()->refresh();
-    }
-    double particleMass()
-    {
-        return Util::config()->particleMass;
-    }
-    void setParticleCharge(double charge)
-    {
-        Util::config()->particleConstant = charge;
-        Util::scene()->refresh();
-    }
-    double particleCharge()
-    {
-        return Util::config()->particleConstant;
-    }
-    void setDragForceDensity(double rho)
-    {
-        Util::config()->particleDragDensity = rho;
-        Util::scene()->refresh();
-    }
-    double dragForceDensity()
-    {
-        return Util::config()->particleDragDensity;
-    }
-    void setDragForceReferenceArea(double area)
-    {
-        Util::config()->particleDragReferenceArea = area;
-        Util::scene()->refresh();
-    }
-    double dragForceReferenceArea()
-    {
-        return Util::config()->particleDragReferenceArea;
-    }
-    void setDragForceCoefficient(double coeff)
-    {
-        Util::config()->particleDragCoefficient = coeff;
-        Util::scene()->refresh();
-    }
-    double dragForceCoefficient()
-    {
-        return Util::config()->particleDragCoefficient;
-    }
-    void setIncludeGravitation(int include)
-    {
-        Util::config()->particleIncludeGravitation = include;
-        Util::scene()->refresh();
-    }
-    int includeGravitation()
-    {
-        return Util::config()->particleIncludeGravitation;
-    }
-    void setTerminateOnDifferentMaterial(int terminate)
-    {
-        Util::config()->particleTerminateOnDifferentMaterial = terminate;
-        Util::scene()->refresh();
-    }
-    int terminateOnDifferentMaterial()
-    {
-        return Util::config()->particleTerminateOnDifferentMaterial;
-    }
-    void setMaximumTolerance(double tolerance)
-    {
-        Util::config()->particleMaximumRelativeError = tolerance;
-        Util::scene()->refresh();
-    }
-    double maximumTolerance()
-    {
-        return Util::config()->particleMaximumRelativeError;
-    }
-    void setMaximumSteps(int steps)
-    {
-        Util::config()->particleMaximumSteps = steps;
-        Util::scene()->refresh();
-    }
-    int maximumSteps()
-    {
-        return Util::config()->particleMaximumSteps;
-    }
+    void setParticleMass(double mass);
+    double particleMass() { return Util::config()->particleMass; }
+    void setParticleCharge(double charge);
+    double particleCharge() { return Util::config()->particleConstant; }
+    void setDragForceDensity(double rho);
+    double dragForceDensity() { return Util::config()->particleDragDensity; }
+    void setDragForceReferenceArea(double area);
+    double dragForceReferenceArea() { return Util::config()->particleDragReferenceArea; }
+    void setDragForceCoefficient(double coeff);
+    double dragForceCoefficient() { return Util::config()->particleDragCoefficient; }
+    void setIncludeGravitation(int include);
+    int includeGravitation() { return Util::config()->particleIncludeGravitation; }
+    void setTerminateOnDifferentMaterial(int terminate);
+    int terminateOnDifferentMaterial() { return Util::config()->particleTerminateOnDifferentMaterial; }
+    void setMaximumTolerance(double tolerance);
+    double maximumTolerance() { return Util::config()->particleMaximumRelativeError; }
+    void setMaximumSteps(int steps);
+    int maximumSteps() { return Util::config()->particleMaximumSteps; }
 
     void solve();
 

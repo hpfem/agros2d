@@ -18,13 +18,13 @@ cdef extern from "../pythonlabagros.h":
     cdef cppclass PyParticleTracing:
         PyParticleTracing()
 
-        void setInitialPosition(double x, double y)
+        void setInitialPosition(double x, double y) except +
         void initialPosition(double x, double y)
 
         void setInitialVelocity(double x, double y)
         void initialVelocity(double x, double y)
 
-        void setParticleMass(double mass)
+        void setParticleMass(double mass) except +
         double particleMass()
 
         void setParticleCharge(double charge)
@@ -36,16 +36,16 @@ cdef extern from "../pythonlabagros.h":
         void setTerminateOnDifferentMaterial(int terminate)
         int terminateOnDifferentMaterial()
 
-        void setDragForceDensity(double rho)
+        void setDragForceDensity(double rho) except +
         double dragForceDensity()
-        void setDragForceReferenceArea(double area)
+        void setDragForceReferenceArea(double area) except +
         double dragForceReferenceArea()
-        void setDragForceCoefficient(double coeff)
+        void setDragForceCoefficient(double coeff) except +
         double dragForceCoefficient()
 
-        void setMaximumTolerance(double tolerance)
+        void setMaximumTolerance(double tolerance) except +
         double maximumTolerance()
-        void setMaximumSteps(int steps)
+        void setMaximumSteps(int steps) except +
         int maximumSteps()
 
         void solve() except +
