@@ -94,7 +94,7 @@ void Block::solve()
 
     if(this->isTransient()){
         solver.solveInitialTimeStep();
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 40; i++)
             solver.solveTimeStep(this->timeStep());
     }
     else

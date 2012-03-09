@@ -336,13 +336,6 @@ void Solver<Scalar>::solveSimple()
     // output
     if (!isError)
     {
-//        foreach (Field* field, m_block->m_fields)
-//        {
-//            FieldInfo* fieldInfo = field->fieldInfo();
-//            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
-//            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
-//        }
-
         BlockSolutionID solutionID;
         solutionID.group = m_block;
         solutionID.timeStep = 0;
@@ -395,7 +388,13 @@ void Solver<Scalar>::solveTimeStep(double timeStep)
     double actualTime = Util::solutionStore()->lastTime(m_block) + timeStep;
     multiSolutionArray.setTime(actualTime);
 
+    // update essential bc values
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), actualTime);
+
+    // update timedep values
+    foreach(Field* field, m_block->m_fields)
+        field->fieldInfo()->module()->update_time_functions(actualTime);
+
     m_wf->set_current_time(actualTime);
 
     m_wf->delete_all();
@@ -404,17 +403,9 @@ void Solver<Scalar>::solveTimeStep(double timeStep)
     if (!solveOneProblem(multiSolutionArray))
         isError = true;
 
-
     // output
     if (!isError)
     {
-//        foreach (Field* field, m_block->m_fields)
-//        {
-//            FieldInfo* fieldInfo = field->fieldInfo();
-//            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
-//            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
-//        }
-
         BlockSolutionID solutionID;
         solutionID.group = m_block;
         solutionID.timeStep = previousSolutionID.timeStep + 1;
