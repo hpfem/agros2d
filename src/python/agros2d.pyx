@@ -33,8 +33,10 @@ cdef extern from "../pythonlabagros.h":
         void setIncludeGravitation(int incl)
         int includeGravitation()
 
-        void setTerminateOnDifferentMaterial(int terminate)
-        int terminateOnDifferentMaterial()
+        void setReflectOnDifferentMaterial(int Reflect)
+        int reflectOnDifferentMaterial()
+        void setCoefficientOfRestitution(double coeff)
+        double coefficientOfRestitution()
 
         void setDragForceDensity(double rho) except +
         double dragForceDensity()
@@ -45,8 +47,10 @@ cdef extern from "../pythonlabagros.h":
 
         void setMaximumTolerance(double tolerance) except +
         double maximumTolerance()
-        void setMaximumSteps(int steps) except +
-        int maximumSteps()
+        void setMaximumNumberOfSteps(int steps) except +
+        int maximumNumberOfSteps()
+        void setMinimumStep(double step) except +
+        double minimumStep()
 
         void solve() except +
 
@@ -64,7 +68,7 @@ cdef extern from "../pythonlabagros.h":
     # Solution *pythonSolutionObject() except +
 
     void pythonNewDocument(char *name, char *type, char *physicfield,
-                           int numberofrefinements, int polynomialorder, char *adaptivitytype,
+                           int numberoflinements, int polynomialorder, char *adaptivitytype,
                            double adaptivitysteps, double adaptivitytolerance,
                            double frequency,
                            char *analysistype, double timestep, double totaltime, double initialcondition) except +
@@ -208,12 +212,18 @@ cdef class ParticleTracing:
         def __set__(self, incl):
             self.thisptr.setIncludeGravitation(incl)
 
-    # terminate on different material
-    property terminate_on_different_material:
+    # reflect on different material
+    property reflect_on_different_material:
         def __get__(self):
-            return self.thisptr.terminateOnDifferentMaterial()
-        def __set__(self, terminate):
-            self.thisptr.setTerminateOnDifferentMaterial(terminate)
+            return self.thisptr.reflectOnDifferentMaterial()
+        def __set__(self, Reflect):
+            self.thisptr.setReflectOnDifferentMaterial(Reflect)
+
+    property coefficient_of_restitution:
+        def __get__(self):
+            return self.thisptr.coefficientOfRestitution()
+        def __set__(self, coeff):
+            self.thisptr.setCoefficientOfRestitution(coeff)
 
     # drag force
     property drag_force_density:
@@ -234,12 +244,12 @@ cdef class ParticleTracing:
         def __set__(self, coeff):
             self.thisptr.setDragForceCoefficient(coeff)
 
-    # maximum_steps
-    property maximum_steps:
+    # maximum number of steps
+    property maximum_number_of_steps:
         def __get__(self):
-            return self.thisptr.maximumSteps()
+            return self.thisptr.maximumNumberOfSteps()
         def __set__(self, steps):
-            self.thisptr.setMaximumSteps(steps)
+            self.thisptr.setMaximumNumberOfSteps(steps)
 
     # tolerance
     property tolerance:
@@ -248,6 +258,12 @@ cdef class ParticleTracing:
         def __set__(self, tolerance):
             self.thisptr.setMaximumTolerance(tolerance)
 
+    # minimum step
+    property minimum_step:
+        def __get__(self):
+            return self.thisptr.minimumStep()
+        def __set__(self, step):
+            self.thisptr.setMinimumStep(step)
 # system
 
 def version():

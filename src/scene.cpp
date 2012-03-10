@@ -1977,7 +1977,7 @@ void Scene::checkEdge(SceneEdge *edge)
 
             // ToDo: Improve
             // ToDo: Add check of crossings of two arcs
-            if(edge->angle > 0)
+            if (edge->angle > 0)
                 intersects = intersection(edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
                                           edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle,
                                           edge->nodeStart->point, edge->nodeEnd->point,
@@ -2110,8 +2110,8 @@ void Scene::newtonEquations(double step, Point3 position, Point3 velocity, Point
 }
 
 void Scene::computeParticleTracingPath(QList<Point3> *positions,
-                                           QList<Point3> *velocities,
-                                           bool randomPoint)
+                                       QList<Point3> *velocities,
+                                       bool randomPoint)
 {
     QTime timePart;
     timePart.start();
@@ -2136,7 +2136,7 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
                        (m_problemInfo->problemType == ProblemType_Planar) ? 0.0 : -1.0*M_PI) + p + dp;
 
             int index = m_sceneSolution->findElementInMesh(m_sceneSolution->meshInitial(),
-                                                                          Point(p.x, p.y));
+                                                           Point(p.x, p.y));
 
             trials++;
             if (index > 0 || trials > 10)
@@ -2155,12 +2155,15 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
     positions->append(p);
     velocities->append(v);
 
+    RectPoint bound = boundingBox();
+
+    double minStep = (Util::config()->particleMinimumStep > 0.0) ? Util::config()->particleMinimumStep : min(bound.width(), bound.height()) / 80.0;
     double relErrorMin = (Util::config()->particleMaximumRelativeError > 0.0) ? Util::config()->particleMaximumRelativeError/100 : 1e-6;
     double relErrorMax = 1e-3;
-    double dt = 1e-12;
+    double dt = 1e-11;
 
     int max_steps_iter = 0;
-    while (max_steps_iter < Util::config()->particleMaximumSteps)
+    while (max_steps_iter < Util::config()->particleMaximumNumberOfSteps)
     {
         max_steps_iter++;
 
@@ -2226,44 +2229,97 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
             // Point3 nv4 = v + k1nv * 25/216 + k3nv * 1408/2565 + k4nv * 2197/4104 - k5nv * 1/5;
 
             // Runge-Kutta order 5
-            np5 = p + k1np * 16/135 + k3np * 6656/12825 + k4np * 28561/56430 - k5np * 9/50 + k5np * 2/55;
-            nv5 = v + k1nv * 16/135 + k3nv * 6656/12825 + k4nv * 28561/56430 - k5nv * 9/50 + k5nv * 2/55;
+            np5 = p + k1np * 16/135 + k3np * 6656/12825 + k4np * 28561/56430 - k5np * 9/50 + k6np * 2/55;
+            nv5 = v + k1nv * 16/135 + k3nv * 6656/12825 + k4nv * 28561/56430 - k5nv * 9/50 + k6nv * 2/55;
 
             // optimal step estimation
             double absError = abs(np5.magnitude() - np4.magnitude());
             double relError = abs(absError / np5.magnitude());
+            double currentStep = (p - np5).magnitude();
 
             // qDebug() << np5.toString();
+            // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", time step: " << dt << "current step: " << currentStep;
 
-            // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", step: " << dt;
-
-            if (relError < relErrorMin || relError < EPS_ZERO)
+            // minimum step
+            if ((currentStep > minStep) || (relError > relErrorMax))
+            {
+                // decrease step
+                dt /= 3.0;
+                continue;
+            }
+            // relative tolerance
+            else if ((relError < relErrorMin || relError < EPS_ZERO))
             {
                 // increase step
                 dt *= 2.0;
-                continue;
             }
-            else if (relError > relErrorMax)
-            {
-                // decrease step
-                dt /= 2.0;
-                // continue;
-            }
-
             break;
         }
 
         int index = sceneSolution()->findElementInMesh(sceneSolution()->meshInitial(),
-                                                                      Point(np5.x, np5.y));
+                                                       Point(np5.x, np5.y));
+
+        bool reflect = false;
+        // reflect on boundary
         if (index < 0)
         {
-            break;
+            if (Util::config()->particleReflectOnBoundary)
+                reflect = true;
+            else
+                break;
         }
-        else if (Util::config()->particleTerminateOnDifferentMaterial)
+
+        // reflect different material
+        if (Util::config()->particleReflectOnDifferentMaterial)
         {
             double newMaterial = problemInfo()->hermes()->particleMaterial(Point(np5.x, np5.y));
             if (abs(material - newMaterial) > EPS_ZERO)
+                reflect = true;
+        }
+
+        if (reflect)
+        {
+            if (Util::config()->particleCoefficientOfRestitution < EPS_ZERO)
+            {
+                // stop simulation
                 break;
+            }
+
+            foreach (SceneEdge *edge, edges)
+            {
+                QList<Point> intersects = intersection(Point(p.x, p.y), Point(np5.x, np5.y),
+                                                       Point(), 0.0, 0.0,
+                                                       edge->nodeStart->point, edge->nodeEnd->point,
+                                                       edge->center(), edge->radius(), edge->angle);
+
+                if (intersects.length() > 0)
+                {
+                    // input vector moved to the origin
+                    Point vectin = Point(np5.x, np5.y) - intersects[0];
+
+                    // tangent vector
+                    Point tangent;
+                    if (edge->angle > 0)
+                        tangent = (Point(intersects[0].x - (intersects[0].y - edge->center().y),
+                                         intersects[0].y - (intersects[0].x - edge->center().x))).normalizePoint();
+                    else
+                        tangent = (edge->nodeStart->point - edge->nodeEnd->point).normalizePoint();
+
+                    // output point
+                    np5.x = intersects[0].x + ((sqr(tangent.x) - sqr(tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y);
+                    np5.y = intersects[0].y + (2.0*tangent.x*tangent.y * vectin.x + (sqr(tangent.y) - sqr(tangent.x)) * vectin.y);
+
+                    // output vector
+                    Point vectout = (Point(np5.x, np5.y) - intersects[0]).normalizePoint();
+
+                    // velocity in the direction of output vector
+                    Point3 oldv = nv5;
+                    nv5.x = vectout.x * oldv.magnitude() * Util::config()->particleCoefficientOfRestitution;
+                    nv5.y = vectout.y * oldv.magnitude() * Util::config()->particleCoefficientOfRestitution;
+
+                    break;
+                }
+            }
         }
 
         // new values
@@ -2283,6 +2339,5 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
         }
     }
 
-    // qDebug() << "steps: " << steps;
-    // qDebug() << "total: " << timePart.elapsed();
+    // qDebug() << "steps: " << steps << "total: " << timePart.elapsed();
 }

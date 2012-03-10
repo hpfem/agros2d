@@ -190,7 +190,8 @@ struct Point
 
 bool intersection(Point p, Point p1s, Point p1e);
 Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e);
-QList<Point> intersection(Point, Point, Point,  double, double, Point, Point, Point, double, double);
+QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, double angle1,
+                          Point p2s, Point p2e, Point center2, double radius2, double angle2);
 
 // return center
 Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
@@ -857,11 +858,14 @@ const double PARTICLESTARTVELOCITYX = 0;
 const double PARTICLESTARTVELOCITYY = 0;
 const double PARTICLEMASS = 9.109e-31; // mass of the electron
 const double PARTICLECONSTANT = 1.602e-19; // charge of the electron
-const double PARTICLETERMINATEONDIFFERENTMATERIAL = true;
+const bool PARTICLEREFLECTONDIFFERENTMATERIAL = true;
+const bool PARTICLEREFLECTONBOUNDARY = false;
+const double PARTICLECOEFFICIENTOFRESTITUTION = 0.0;
 const double PARTICLEMAXIMUMRELATIVEERROR = 0.0;
 const bool PARTICLECOLORBYVELOCITY = true;
 const bool PARTICLESHOWPOINTS = false;
-const int PARTICLEMAXIMUMSTEPS = 1000;
+const int PARTICLEMAXIMUMNUMBEROFSTEPS = 1000;
+const double PARTICLEMINIMUMSTEP = 0;
 const double PARTICLEDRAGDENSITY = 1.2041;
 const double PARTICLEDRAGCOEFFICIENT = 0.0;
 const double PARTICLEDRAGREFERENCEAREA = 1e-6;

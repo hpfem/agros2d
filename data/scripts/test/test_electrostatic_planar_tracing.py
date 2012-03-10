@@ -48,8 +48,13 @@ tracing.charge = -1.602e-19
 tracing.drag_force_density = 1.2041
 tracing.drag_force_reference_area = 0.0
 tracing.drag_force_coefficient = 0.0
-tracing.maximum_steps = 2000
-tracing.tolerance = 1e-8
+
+tracing.reflect_on_different_material = True
+tracing.coefficient_of_restitution = 0.0
+
+tracing.maximum_number_of_steps = 2000
+tracing.minimum_step = 1e-3
+tracing.tolerance = 0
 
 tracing.solve()
 x, y, z = tracing.positions()

@@ -96,15 +96,11 @@ Point SceneEdge::center() const
 
 double SceneEdge::radius() const
 {
-    logMessage("SceneEdge::radius()");
-
     return (center() - nodeStart->point).magnitude();
 }
 
 double SceneEdge::distance(const Point &point) const
 {
-    logMessage("SceneEdge::distance()");
-
     if (isStraight())
     {
         double t = ((point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y)) /

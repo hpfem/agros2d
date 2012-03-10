@@ -132,8 +132,9 @@ private:
     SLineEditDouble *txtParticlePointY;
     SLineEditDouble *txtParticleVelocityX;
     SLineEditDouble *txtParticleVelocityY;
-    SLineEditDouble *txtParticleMaximumRelativeError;
-    QCheckBox *chkParticleTerminateOnDifferentMaterial;
+    QCheckBox *chkParticleReflectOnDifferentMaterial;
+    QCheckBox *chkParticleReflectOnBoundary;
+    SLineEditDouble *txtParticleCoefficientOfRestitution;
     QLabel *lblParticlePointX;
     QLabel *lblParticlePointY;
     QLabel *lblParticleVelocityX;
@@ -141,7 +142,9 @@ private:
     QLabel *lblParticleMotionEquations;
     QCheckBox *chkParticleColorByVelocity;
     QCheckBox *chkParticleShowPoints;
-    QSpinBox *txtParticleMaximumSteps;
+    SLineEditDouble *txtParticleMaximumRelativeError;
+    SLineEditDouble *txtParticleMinimumStep;
+    QSpinBox *txtParticleMaximumNumberOfSteps;
     SLineEditDouble *txtParticleDragDensity;
     SLineEditDouble *txtParticleDragCoefficient;
     SLineEditDouble *txtParticleDragReferenceArea;

@@ -271,6 +271,7 @@ void PyParticleTracing::solve()
     m_velocities.clear();
 
     Util::scene()->computeParticleTracingPath(&m_positions, &m_velocities, false);
+    sceneView()->doInvalidated();
 
     // restore values
     // Util::config()->particleStartingRadius = particleStartingRadius;
@@ -382,9 +383,18 @@ void PyParticleTracing::setIncludeGravitation(int include)
     Util::scene()->refresh();
 }
 
-void PyParticleTracing::setTerminateOnDifferentMaterial(int terminate)
+void PyParticleTracing::setReflectOnDifferentMaterial(int reflect)
 {
-    Util::config()->particleTerminateOnDifferentMaterial = terminate;
+    Util::config()->particleReflectOnDifferentMaterial = reflect;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setCoefficientOfRestitution(double coeff)
+{
+    if (coeff < 0.0)
+       throw out_of_range(QObject::tr("Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).").toStdString());
+
+    Util::config()->particleCoefficientOfRestitution = coeff;
     Util::scene()->refresh();
 }
 
@@ -397,15 +407,23 @@ void PyParticleTracing::setMaximumTolerance(double tolerance)
     Util::scene()->refresh();
 }
 
-void PyParticleTracing::setMaximumSteps(int steps)
+void PyParticleTracing::setMaximumNumberOfSteps(int steps)
 {
     if (steps < 0.0)
-        throw out_of_range(QObject::tr("Maximum steps cannot be negative.").toStdString());
+        throw out_of_range(QObject::tr("Maximum number of steps cannot be negative.").toStdString());
 
-    Util::config()->particleMaximumSteps = steps;
+    Util::config()->particleMaximumNumberOfSteps = steps;
     Util::scene()->refresh();
 }
 
+void PyParticleTracing::setMinimumStep(int step)
+{
+    if (step < 0.0)
+        throw out_of_range(QObject::tr("Minimum step cannot be negative.").toStdString());
+
+    Util::config()->particleMinimumStep = step;
+    Util::scene()->refresh();
+}
 
 // version()
 char *pythonVersion()
@@ -1290,7 +1308,7 @@ void pythonShowParticleTracing(bool show)
     logMessage("pythonShowParticleTracing()");
 
     sceneView()->sceneViewSettings().showParticleTracing = show;
-    sceneView()->doInvalidated();
+    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
 }
 
 // showcontours(show = {True, False})

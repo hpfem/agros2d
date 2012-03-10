@@ -81,7 +81,7 @@ void SceneViewSettings::defaultValues()
 
     showContours = false;
     showVectors = false;
-    showParticleTracing = false;
+    showParticleTracing = true;
     showSolutionMesh = false;
 
     contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
@@ -2520,7 +2520,7 @@ void SceneView::paintParticleTracing()
 
                 glPointSize(Util::config()->nodeSize * 4.0/5.0);
                 glBegin(GL_POINTS);
-                for (int i = 0; i < positionsList.length() - 1; i++)
+                for (int i = 0; i < positionsList[k].length() - 1; i++)
                 {
                     glVertex2d(positionsList[k][i].x, positionsList[k][i].y);
                 }
@@ -3284,7 +3284,7 @@ void SceneView::paintEdgeLine()
             foreach (SceneEdge *edge, m_scene->edges)
             {
                 QList<Point> intersects = intersection(p, m_nodeLast->point,
-                                                       m_nodeLast->point, 0, 0,
+                                                       Point(), 0, 0,
                                                        edge->nodeStart->point, edge->nodeEnd->point,
                                                        edge->center(), edge->radius(), edge->angle);
 

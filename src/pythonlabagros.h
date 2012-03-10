@@ -115,12 +115,16 @@ public:
     double dragForceCoefficient() { return Util::config()->particleDragCoefficient; }
     void setIncludeGravitation(int include);
     int includeGravitation() { return Util::config()->particleIncludeGravitation; }
-    void setTerminateOnDifferentMaterial(int terminate);
-    int terminateOnDifferentMaterial() { return Util::config()->particleTerminateOnDifferentMaterial; }
+    void setReflectOnDifferentMaterial(int reflect);
+    int reflectOnDifferentMaterial() { return Util::config()->particleReflectOnDifferentMaterial; }
+    void setCoefficientOfRestitution(double coeff);
+    int coefficientOfRestitution() { return Util::config()->particleCoefficientOfRestitution; }
     void setMaximumTolerance(double tolerance);
     double maximumTolerance() { return Util::config()->particleMaximumRelativeError; }
-    void setMaximumSteps(int steps);
-    int maximumSteps() { return Util::config()->particleMaximumSteps; }
+    void setMaximumNumberOfSteps(int steps);
+    int maximumNumberOfSteps() { return Util::config()->particleMaximumNumberOfSteps; }
+    void setMinimumStep(int step);
+    int minimumStep() { return Util::config()->particleMinimumStep; }
 
     void solve();
 
