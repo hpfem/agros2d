@@ -117,6 +117,8 @@ public:
     int includeGravitation() { return Util::config()->particleIncludeGravitation; }
     void setReflectOnDifferentMaterial(int reflect);
     int reflectOnDifferentMaterial() { return Util::config()->particleReflectOnDifferentMaterial; }
+    void setReflectOnBoundary(int reflect);
+    int reflectOnBoundary() { return Util::config()->particleReflectOnBoundary; }
     void setCoefficientOfRestitution(double coeff);
     int coefficientOfRestitution() { return Util::config()->particleCoefficientOfRestitution; }
     void setMaximumTolerance(double tolerance);

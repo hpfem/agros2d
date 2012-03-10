@@ -50,6 +50,7 @@ tracing.drag_force_reference_area = 0.0
 tracing.drag_force_coefficient = 0.0
 
 tracing.reflect_on_different_material = True
+tracing.reflect_on_boundary = False
 tracing.coefficient_of_restitution = 0.0
 
 tracing.maximum_number_of_steps = 2000

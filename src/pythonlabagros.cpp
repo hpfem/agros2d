@@ -389,6 +389,12 @@ void PyParticleTracing::setReflectOnDifferentMaterial(int reflect)
     Util::scene()->refresh();
 }
 
+void PyParticleTracing::setReflectOnBoundary(int reflect)
+{
+    Util::config()->particleReflectOnBoundary = reflect;
+    Util::scene()->refresh();
+}
+
 void PyParticleTracing::setCoefficientOfRestitution(double coeff)
 {
     if (coeff < 0.0)

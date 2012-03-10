@@ -33,8 +33,10 @@ cdef extern from "../pythonlabagros.h":
         void setIncludeGravitation(int incl)
         int includeGravitation()
 
-        void setReflectOnDifferentMaterial(int Reflect)
+        void setReflectOnDifferentMaterial(int reflect)
         int reflectOnDifferentMaterial()
+        void setReflectOnBoundary(int reflect)
+        int reflectOnBoundary()
         void setCoefficientOfRestitution(double coeff)
         double coefficientOfRestitution()
 
@@ -216,8 +218,15 @@ cdef class ParticleTracing:
     property reflect_on_different_material:
         def __get__(self):
             return self.thisptr.reflectOnDifferentMaterial()
-        def __set__(self, Reflect):
-            self.thisptr.setReflectOnDifferentMaterial(Reflect)
+        def __set__(self, reflect):
+            self.thisptr.setReflectOnDifferentMaterial(reflect)
+
+    # reflect on boundary
+    property reflect_on_boundary:
+        def __get__(self):
+            return self.thisptr.reflectOnBoundary()
+        def __set__(self, reflect):
+            self.thisptr.setReflectOnBoundary(reflect)
 
     property coefficient_of_restitution:
         def __get__(self):
