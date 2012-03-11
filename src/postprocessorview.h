@@ -38,6 +38,7 @@ private slots:
 private:
     SceneView *m_sceneView;
 
+    QTabWidget *tabType;
     QWidget *basic;
     QWidget *postprocessor;
     QWidget *workspace;

@@ -298,7 +298,7 @@ void PostprocessorView::createControls()
     postprocessor = controlsPostprocessor();
     workspace = controlsWorkspace();
 
-    QTabWidget *tabType = new QTabWidget(this);
+    tabType = new QTabWidget(this);
     tabType->addTab(basic, icon(""), tr("Basic"));
     tabType->addTab(postprocessor, icon(""), tr("Postprocessor"));
     tabType->addTab(workspace, icon(""), tr("Workspace"));
@@ -1095,7 +1095,8 @@ void PostprocessorView::doApply()
 
     // switch to the postprocessor
     if (Util::scene()->sceneSolution()->isSolved())
-        m_sceneView->actSceneModePostprocessor->trigger();
+        if (tabType->currentWidget() != workspace)
+            m_sceneView->actSceneModePostprocessor->trigger();
 
     emit apply();
 
