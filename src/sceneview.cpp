@@ -81,7 +81,7 @@ void SceneViewSettings::defaultValues()
 
     showContours = false;
     showVectors = false;
-    showParticleTracing = true;
+    showParticleTracing = false;
     showSolutionMesh = false;
 
     contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
