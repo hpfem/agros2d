@@ -7348,7 +7348,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../src/sceneview.cpp" line="3096"/>
         <source>Vel.</source>
-        <translation>Rychlost</translation>
+        <translation>Rychl.</translation>
     </message>
     <message>
         <source>Mode</source>
