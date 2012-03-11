@@ -18,6 +18,9 @@ class ProgressItemProcessView;
 
 class Problem;
 
+template <typename Scalar>
+class Solver;
+
 class Field
 {
 public:
@@ -41,7 +44,7 @@ class Block
 public:
     Block(QList<FieldInfo*> fieldInfos, QList<CouplingInfo*> couplings, ProgressItemSolve* progressItemSolve, Problem* parent);
 
-    void solve();
+    Solver<double>* prepareSolver();
 
     int numSolutions() const;
     int offset(Field* field) const;
@@ -56,6 +59,7 @@ public:
     int nonlinearSteps() const;
 
     double timeStep() const;
+    int numTimeSteps() const;
 
 //    Field* couplingSourceField(Coupling* coupling) const;
 //    Field* couplingTargetField(Coupling* coupling) const;
