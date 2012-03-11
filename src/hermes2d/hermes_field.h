@@ -115,7 +115,6 @@ public:
     virtual inline void deformShape(double4* linVert, int count) {}
 
     virtual inline Point3 particleForce(Point3 point, Point3 velocity = Point3()) { return Point3(); }
-    virtual inline double particleMaterial(Point point) { return 0.0; }
 };
 
 HermesField *hermesFieldFactory(PhysicField physicField);

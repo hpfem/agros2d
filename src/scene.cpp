@@ -2167,8 +2167,6 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
     {
         max_steps_iter++;
 
-        double material = problemInfo()->hermes()->particleMaterial(Point(p.x, p.y));
-
         steps++;
 
         QTime time;
@@ -2256,69 +2254,57 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
             break;
         }
 
-        int index = sceneSolution()->findElementInMesh(sceneSolution()->meshInitial(),
-                                                       Point(np5.x, np5.y));
-
-        bool reflect = false;
-        // reflect on boundary
-        if (index < 0)
+        SceneEdge *crossingEdge = NULL;
+        Point intersect;
+        foreach (SceneEdge *edge, edges)
         {
-            if (Util::config()->particleReflectOnBoundary)
-                reflect = true;
-            else
+            QList<Point> intersects = intersection(Point(p.x, p.y), Point(np5.x, np5.y),
+                                                   Point(), 0.0, 0.0,
+                                                   edge->nodeStart->point, edge->nodeEnd->point,
+                                                   edge->center(), edge->radius(), edge->angle);
+
+            if (intersects.length() > 0)
+            {
+                crossingEdge = edge;
+                intersect = intersects[0];
+
                 break;
+            }
         }
 
-        // reflect different material
-        if (Util::config()->particleReflectOnDifferentMaterial)
+        if (crossingEdge)
         {
-            double newMaterial = problemInfo()->hermes()->particleMaterial(Point(np5.x, np5.y));
-            if (abs(material - newMaterial) > EPS_ZERO)
-                reflect = true;
-        }
-
-        if (reflect)
-        {
-            if (Util::config()->particleCoefficientOfRestitution < EPS_ZERO)
+            if ((Util::config()->particleCoefficientOfRestitution < EPS_ZERO) ||
+                    (crossingEdge->boundary == Util::scene()->boundaries[0] && !Util::config()->particleReflectOnDifferentMaterial) ||
+                    (crossingEdge->boundary != Util::scene()->boundaries[0] && !Util::config()->particleReflectOnBoundary))
             {
                 // stop simulation
                 break;
             }
-
-            foreach (SceneEdge *edge, edges)
+            else
             {
-                QList<Point> intersects = intersection(Point(p.x, p.y), Point(np5.x, np5.y),
-                                                       Point(), 0.0, 0.0,
-                                                       edge->nodeStart->point, edge->nodeEnd->point,
-                                                       edge->center(), edge->radius(), edge->angle);
+                // input vector moved to the origin
+                Point vectin = Point(np5.x, np5.y) - intersect;
 
-                if (intersects.length() > 0)
-                {
-                    // input vector moved to the origin
-                    Point vectin = Point(np5.x, np5.y) - intersects[0];
+                // tangent vector
+                Point tangent;
+                if (crossingEdge->angle > 0)
+                    tangent = (Point( (intersect.y - crossingEdge->center().y),
+                                     -(intersect.x - crossingEdge->center().x))).normalizePoint();
+                else
+                    tangent = (crossingEdge->nodeStart->point - crossingEdge->nodeEnd->point).normalizePoint();
 
-                    // tangent vector
-                    Point tangent;
-                    if (edge->angle > 0)
-                        tangent = (Point(intersects[0].x - (intersects[0].y - edge->center().y),
-                                         intersects[0].y - (intersects[0].x - edge->center().x))).normalizePoint();
-                    else
-                        tangent = (edge->nodeStart->point - edge->nodeEnd->point).normalizePoint();
+                // output point
+                np5.x = intersect.x + ((sqr(tangent.x) - sqr(tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y);
+                np5.y = intersect.y + (2.0*tangent.x*tangent.y * vectin.x + (sqr(tangent.y) - sqr(tangent.x)) * vectin.y);
 
-                    // output point
-                    np5.x = intersects[0].x + ((sqr(tangent.x) - sqr(tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y);
-                    np5.y = intersects[0].y + (2.0*tangent.x*tangent.y * vectin.x + (sqr(tangent.y) - sqr(tangent.x)) * vectin.y);
+                // output vector
+                Point vectout = (Point(np5.x, np5.y) - intersect).normalizePoint();
 
-                    // output vector
-                    Point vectout = (Point(np5.x, np5.y) - intersects[0]).normalizePoint();
-
-                    // velocity in the direction of output vector
-                    Point3 oldv = nv5;
-                    nv5.x = vectout.x * oldv.magnitude() * Util::config()->particleCoefficientOfRestitution;
-                    nv5.y = vectout.y * oldv.magnitude() * Util::config()->particleCoefficientOfRestitution;
-
-                    break;
-                }
+                // velocity in the direction of output vector
+                Point3 oldv = nv5;
+                nv5.x = vectout.x * oldv.magnitude() * Util::config()->particleCoefficientOfRestitution;
+                nv5.y = vectout.y * oldv.magnitude() * Util::config()->particleCoefficientOfRestitution;
             }
         }
 
