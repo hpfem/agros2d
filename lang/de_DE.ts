@@ -354,7 +354,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="323"/>
         <source>Clear application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Aufzeichnung der Applikation löschen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="327"/>
@@ -622,7 +622,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="412"/>
         <source>Maximum number of DOFs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum Anzahl FGe:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="529"/>
@@ -3189,17 +3189,17 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="718"/>
         <source>Mode: Add node</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus: Knoten zugeben</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="721"/>
         <source>Mode: Add edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus: Kante zugeben</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="724"/>
         <source>Mode: Add label</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus: Bezeichnung zugeben</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="732"/>
@@ -4110,7 +4110,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="239"/>
         <source>Linearity</source>
-        <translation type="unfinished"></translation>
+        <translation>Linearität</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="276"/>
@@ -4909,7 +4909,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/pythonlab/pythonconsole.cpp" line="713"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Geschichte</translation>
     </message>
 </context>
 <context>
@@ -4967,7 +4967,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="335"/>
         <source>Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivität Relativer Fehler: (Schritt: %2/%3, FGe: %4/%5) %1%</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="435"/>
@@ -6447,7 +6447,7 @@ Do you want to save your changes?</source>
         <location filename="../src/reportdialog.cpp" line="69"/>
         <location filename="../src/reportdialog.cpp" line="536"/>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="72"/>
@@ -6638,7 +6638,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/reportdialog.cpp" line="449"/>
         <source>Boundary conditions</source>
-        <translation type="unfinished">Randbedingungen</translation>
+        <translation>Randbedingungen</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="468"/>
@@ -6673,7 +6673,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/reportdialog.cpp" line="497"/>
         <source>Elements:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemente:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="498"/>
@@ -6683,7 +6683,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/reportdialog.cpp" line="499"/>
         <source>Elapsed time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Verstrichene Zeit:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="503"/>
@@ -6739,7 +6739,7 @@ Do you want to save your changes?</source>
         <location filename="../src/reportdialog.cpp" line="666"/>
         <location filename="../src/reportdialog.cpp" line="693"/>
         <source>Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marker</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="692"/>
@@ -6874,7 +6874,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scene.cpp" line="788"/>
         <source>Delete selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Löschen ausgewählte</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="794"/>
@@ -6884,12 +6884,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scene.cpp" line="1108"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Übersetzung</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1122"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotation</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1136"/>
@@ -6947,7 +6947,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scenebasicselectdialog.cpp" line="33"/>
         <source>Select edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Kante</translation>
     </message>
 </context>
 <context>
@@ -7079,7 +7079,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="785"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (C/m&lt;sup&gt;2&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (C/m&lt;sup&gt;2&lt;/sup&gt;)</translation>
     </message>
 </context>
 <context>
@@ -7087,17 +7087,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="614"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ der Randbedingung:</translation>
+        <translation>Typ der Randbedingung:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="658"/>
         <source>&lt;i&gt;u&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;u&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="665"/>
         <source>&lt;i&gt;g&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;g&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (-)</translation>
     </message>
 </context>
 <context>
@@ -7105,47 +7105,47 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="966"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ der Randbedingung:</translation>
+        <translation>Typ der Randbedingung:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="968"/>
         <source>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="969"/>
         <source>Temperature</source>
-        <translation type="unfinished">Temperatur</translation>
+        <translation>Temperatur</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="971"/>
         <source>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (W/m&lt;sup&gt;2&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (W/m&lt;sup&gt;2&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="972"/>
         <source>Heat flux</source>
-        <translation type="unfinished">Wärmefluss</translation>
+        <translation>Wärmefluss</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="974"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (W/m&lt;sup&gt;2&lt;/sup&gt;Â·K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (W/m&lt;sup&gt;2&lt;/sup&gt;Â·K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="975"/>
         <source>Heat transfer coef.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koeffizient der Wärmeübertragung</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="977"/>
         <source>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="978"/>
         <source>External temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Externe Temperatur</translation>
     </message>
 </context>
 <context>
@@ -7153,48 +7153,48 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1592"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ der Randbedingung:</translation>
+        <translation>Typ der Randbedingung:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1596"/>
         <source>Mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1688"/>
         <source>&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt;</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1691"/>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1702"/>
         <source> + j </source>
-        <translation type="unfinished"></translation>
+        <translation>+ j </translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1699"/>
         <source>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1717"/>
         <source>&lt;i&gt;P&lt;/i&gt; (W):</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;P&lt;/i&gt; (W):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1718"/>
         <source>Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Leistung</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1720"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (Â°):</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (Â°):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="1721"/>
         <source>Phase</source>
-        <translation type="unfinished"></translation>
+        <translation>Phase</translation>
     </message>
 </context>
 <context>
@@ -7206,12 +7206,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scenemarker.cpp" line="334"/>
         <source>Boundary condition</source>
-        <translation type="unfinished">Randbedingung</translation>
+        <translation>Randbedingung</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="372"/>
         <source>Boundary:</source>
-        <translation type="unfinished"></translation>
+        <translation>Grenze:</translation>
     </message>
 </context>
 <context>
@@ -7219,47 +7219,47 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scenebasic.cpp" line="377"/>
         <source>Edge</source>
-        <translation type="unfinished">Kante</translation>
+        <translation>Kante</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="411"/>
         <source>Start point:</source>
-        <translation type="unfinished">Anfangspunkt:</translation>
+        <translation>Anfangspunkt:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="412"/>
         <source>End point:</source>
-        <translation type="unfinished">Endpunkt:</translation>
+        <translation>Endpunkt:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="413"/>
         <source>Angle (deg.):</source>
-        <translation type="unfinished">Winkel (gr.):</translation>
+        <translation>Winkel (gr.):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="415"/>
         <source>Coordinates</source>
-        <translation type="unfinished">Koordinaten</translation>
+        <translation>Koordinaten</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="434"/>
         <source>Refine towards edge:</source>
-        <translation type="unfinished">Verfeinerung des Netzen zu den Kanten:</translation>
+        <translation>Verfeinerung des Netzen zu den Kanten:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="436"/>
         <source>Mesh parameters</source>
-        <translation type="unfinished">Parametern des Netzes</translation>
+        <translation>Parametern des Netzes</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="441"/>
         <source>Boundary condition:</source>
-        <translation type="unfinished">Randbedingung:</translation>
+        <translation>Randbedingung:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="444"/>
         <source>Length:</source>
-        <translation type="unfinished">Länge:</translation>
+        <translation>Länge:</translation>
     </message>
 </context>
 <context>
@@ -7267,17 +7267,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1047"/>
         <source>BC type:</source>
-        <translation type="unfinished">Typ der Randbedingung:</translation>
+        <translation>Typ der Randbedingung:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1099"/>
         <source>&lt;i&gt;A&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (Wb/m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;A&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (Wb/m)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1107"/>
         <source>&lt;i&gt;K&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (A/m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;K&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (A/m)</translation>
     </message>
 </context>
 <context>
@@ -7286,17 +7286,17 @@ Do you want to save your changes?</source>
         <location filename="../src/sceneinfoview.cpp" line="26"/>
         <location filename="../src/sceneinfoview.cpp" line="106"/>
         <source>Problem</source>
-        <translation type="unfinished">Problem</translation>
+        <translation>Problem</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="64"/>
         <source>&amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="65"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="68"/>
@@ -7306,7 +7306,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="69"/>
         <source>Delete item</source>
-        <translation type="unfinished"></translation>
+        <translation>Element löschen</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="110"/>
@@ -7326,7 +7326,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="127"/>
         <source>Materials</source>
-        <translation type="unfinished">Materialen</translation>
+        <translation>Materialen</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="133"/>
@@ -7366,12 +7366,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="188"/>
         <source>Analysis: </source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="191"/>
         <source>Adaptivity: </source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivität:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="194"/>
@@ -7381,7 +7381,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="200"/>
         <source>Initial mesh</source>
-        <translation type="unfinished">Anfangsnetz</translation>
+        <translation>Anfangsnetz</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="204"/>
@@ -7393,12 +7393,12 @@ Do you want to save your changes?</source>
         <location filename="../src/sceneinfoview.cpp" line="207"/>
         <location filename="../src/sceneinfoview.cpp" line="219"/>
         <source>Elements: </source>
-        <translation type="unfinished"></translation>
+        <translation>Elemente:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="212"/>
         <source>Solved mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Gelöstes Netz</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="224"/>
@@ -7408,7 +7408,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="228"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="231"/>
@@ -7418,12 +7418,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="237"/>
         <source>DOFs: </source>
-        <translation type="unfinished"></translation>
+        <translation>FGe:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="242"/>
         <source>Time elapsed: </source>
-        <translation type="unfinished"></translation>
+        <translation>Verstrichene Zeit:</translation>
     </message>
 </context>
 <context>
@@ -7431,37 +7431,37 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scenebasic.cpp" line="605"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichen des Gebietes</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="644"/>
         <source>Coordinates</source>
-        <translation type="unfinished">Koordinaten</translation>
+        <translation>Koordinaten</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="659"/>
         <source>Global order is %1.</source>
-        <translation type="unfinished">Globale Zehnerpotenz ist %1.</translation>
+        <translation>Globale Zehnerpotenz ist %1.</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="671"/>
         <source>Triangle area (m):</source>
-        <translation type="unfinished">Inhalt des Elementes (m):</translation>
+        <translation>Inhalt des Elementes (m):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="672"/>
         <source>Polynomial order (-):</source>
-        <translation type="unfinished">Zehnerpotenz des Polynoms (-):</translation>
+        <translation>Zehnerpotenz des Polynoms (-):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="674"/>
         <source>Mesh parameters</source>
-        <translation type="unfinished">Parametern des Netzes</translation>
+        <translation>Parametern des Netzes</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="678"/>
         <source>Material:</source>
-        <translation type="unfinished">Material:</translation>
+        <translation>Material:</translation>
     </message>
 </context>
 <context>
@@ -7469,17 +7469,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scenemarkerselectdialog.cpp" line="33"/>
         <source>Select by marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen durch Marker</translation>
     </message>
     <message>
         <location filename="../src/scenemarkerselectdialog.cpp" line="84"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Oberfläche</translation>
     </message>
     <message>
         <location filename="../src/scenemarkerselectdialog.cpp" line="85"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volumen</translation>
     </message>
 </context>
 <context>
@@ -7487,22 +7487,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1314"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (kg/m&lt;sup&gt;3&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (kg/m&lt;sup&gt;3&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1315"/>
         <source>Mass density</source>
-        <translation type="unfinished"></translation>
+        <translation>Massendichte</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1317"/>
         <source>&lt;i&gt;c&lt;/i&gt; (m/s)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;c&lt;/i&gt; (m/s)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1318"/>
         <source>Speed of sound</source>
-        <translation type="unfinished">Schallgeschwindigkeit</translation>
+        <translation>Schallgeschwindigkeit</translation>
     </message>
 </context>
 <context>
@@ -7510,12 +7510,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="792"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (S/m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (S/m)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="793"/>
         <source>Conductivity</source>
-        <translation type="unfinished">Leitfähigkeit</translation>
+        <translation>Leitfähigkeit</translation>
     </message>
 </context>
 <context>
@@ -7523,27 +7523,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scenemarker.cpp" line="236"/>
         <source>Equation:</source>
-        <translation type="unfinished">Gleichung:</translation>
+        <translation>Gleichung:</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="250"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="232"/>
         <source>Material</source>
-        <translation type="unfinished">Material</translation>
+        <translation>Material</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="298"/>
         <source>Material marker</source>
-        <translation type="unfinished">Name des Materials</translation>
+        <translation>Name des Materials</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="298"/>
         <source>Material marker name already exists.</source>
-        <translation type="unfinished">Der Name des Materials existiert schon.</translation>
+        <translation>Der Name des Materials existiert schon.</translation>
     </message>
 </context>
 <context>
@@ -7552,43 +7552,43 @@ Do you want to save your changes?</source>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1310"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1313"/>
         <source>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N/m&lt;sup&gt;3&lt;/sup&gt;)</source>
-        <translation type="unfinished">&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N/m&lt;sup&gt;2&lt;/sup&gt;) {1&lt;?} {3&lt;?}</translation>
+        <translation>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N/m&lt;sup&gt;2&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1311"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1314"/>
         <source>Force</source>
-        <translation type="unfinished">Stärke</translation>
+        <translation>Stärke</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1317"/>
         <source>Volumetric forces</source>
-        <translation type="unfinished">Volumetrische Kräfte</translation>
+        <translation>Volumetrische Kräfte</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1322"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;T&lt;/sub&gt; (1/K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;T&lt;/sub&gt; (1/K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1323"/>
         <source>Thermal exp. coef.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koeffizient der Wärmeausdehnung</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1325"/>
         <source>&lt;i&gt;T&lt;/i&gt; (K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;T&lt;/i&gt; (K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1326"/>
         <source>Temperature</source>
-        <translation type="unfinished">Temperatur</translation>
+        <translation>Temperatur</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1328"/>
         <source>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt; (K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt; (K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1329"/>
@@ -7598,32 +7598,32 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1332"/>
         <source>Thermal expansion</source>
-        <translation type="unfinished"></translation>
+        <translation>Wärmeausdehnung</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1336"/>
         <source>Lame&apos;s coefficients:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lame-Koefizient:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1343"/>
         <source>&lt;i&gt;E&lt;/i&gt; (Pa)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;E&lt;/i&gt; (Pa)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1344"/>
         <source>Young modulus</source>
-        <translation type="unfinished"></translation>
+        <translation>Young-modull</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1346"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1347"/>
         <source>Poisson number</source>
-        <translation type="unfinished"></translation>
+        <translation>Poissonzahl</translation>
     </message>
 </context>
 <context>
@@ -7631,7 +7631,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="814"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="815"/>
@@ -7641,12 +7641,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="817"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (C/m&lt;sup&gt;3&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (C/m&lt;sup&gt;3&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="818"/>
         <source>Charge density</source>
-        <translation type="unfinished"></translation>
+        <translation>Ladungsdichte</translation>
     </message>
 </context>
 <context>
@@ -7654,22 +7654,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="699"/>
         <source>&lt;i&gt;c&lt;/i&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;c&lt;/i&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="700"/>
         <source>Constant</source>
-        <translation type="unfinished">Konstante</translation>
+        <translation>Konstante</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="702"/>
         <source>&lt;i&gt;r&lt;/i&gt; (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;r&lt;/i&gt; (-)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="703"/>
         <source>Rightside</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechte Seite</translation>
     </message>
 </context>
 <context>
@@ -7677,42 +7677,42 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1100"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (W/mÂ·K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (W/mÂ·K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1101"/>
         <source>Thermal conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Thermische Leifähigkeit</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1103"/>
         <source>&lt;i&gt;Q&lt;/i&gt; (W/m&lt;sup&gt;3&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;Q&lt;/i&gt; (W/m&lt;sup&gt;3&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1104"/>
         <source>Volume heat</source>
-        <translation type="unfinished"></translation>
+        <translation>Volumetrische Wärme</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1106"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (kg/m&lt;sup&gt;3&lt;/sup&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; (kg/m&lt;sup&gt;3&lt;/sup&gt;)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1107"/>
         <source>Mass density</source>
-        <translation type="unfinished"></translation>
+        <translation>Massendichte</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1109"/>
         <source>&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;p&lt;/sub&gt; (J/kgÂ·K)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;p&lt;/sub&gt; (J/kgÂ·K)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1110"/>
         <source>Specific heat</source>
-        <translation type="unfinished"></translation>
+        <translation>Spezifische Wärme</translation>
     </message>
 </context>
 <context>
