@@ -345,6 +345,101 @@ void Solver<Scalar>::solveSimple()
 }
 
 template <typename Scalar>
+void Solver<Scalar>::solveInitialAdaptivityStep()
+{
+    MultiSolutionArray<Scalar> msa;
+    MultiSolutionArray<Scalar> msaRef;
+
+    // read mesh from file
+    Mesh *mesh = readMesh();
+
+    // create essential boundary conditions and space
+    createSpace(mesh, msa);
+
+    // create solutions
+    createNewSolutions(msa);
+
+    // check for DOFs
+    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) == 0)
+    {
+        m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
+        //cleanup();
+        return;
+    }
+
+    double actualTime = 0.0;
+
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msa.spaces()), actualTime);
+    m_wf->set_current_time(actualTime);
+
+    m_wf->delete_all();
+    m_wf->registerForms();
+
+
+//    // construct refined spaces
+//    Hermes::vector<Space<Scalar> *> spaceReference
+//            = *Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()));
+
+    msaRef.setSpaces(smartize(*Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()))));
+
+    // create solutions
+    createNewSolutions(msaRef);
+
+    // solve reference problem
+    if (!solveOneProblem(msaRef))
+    {
+        isError = true;
+       // break;
+    }
+
+    // project the fine mesh solution onto the coarse mesh.
+    Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()), msaRef.solutionsNaked(), msa.solutionsNaked(), Util::scene()->problemInfo()->matrixSolver);
+
+//    // calculate element errors and total error estimate.
+//    Hermes::Hermes2D::Adapt<Scalar> adaptivity(space, projNormType);
+
+//    // calculate error estimate for each solution component and the total error estimate.
+//    error = adaptivity.calc_err_est(solution, solutionReference) * 100;
+
+//    // emit signal
+//    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
+//                                     arg(error, 0, 'f', 3).
+//                                     arg(i + 1).
+//                                     arg(maxAdaptivitySteps).
+//                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
+//                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
+//    // add error to the list
+//    m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
+
+//    if (error < adaptivityTolerance || Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) >= adaptivityMaxDOFs)
+//    {
+//        break;
+//    }
+//    adaptivity.adapt(selector,
+//                     Util::config()->threshold,
+//                     Util::config()->strategy,
+//                     Util::config()->meshRegularity);
+
+//    actualAdaptivitySteps = i + 1;
+
+
+
+    // output
+    if (!isError)
+    {
+        BlockSolutionID solutionID;
+        solutionID.group = m_block;
+        solutionID.timeStep = 0;
+
+        Util::solutionStore()->saveSolution(solutionID, msa);
+
+        solutionID.solutionType = SolutionType_Reference;
+        Util::solutionStore()->saveSolution(solutionID, msaRef);
+    }
+
+}
+
+template <typename Scalar>
 void Solver<Scalar>::solveInitialTimeStep()
 {
     MultiSolutionArray<Scalar> multiSolutionArray;

@@ -52,6 +52,10 @@ public:
     LinearityType linearityType() const;
     bool isTransient() const;
 
+    AdaptivityType adaptivityType() const;
+    int adaptivitySteps() const;
+    double adaptivityTolerance() const;
+
     // minimal nonlinear tolerance of individual fields
     double nonlinearTolerance() const;
 

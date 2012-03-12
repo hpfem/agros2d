@@ -102,6 +102,42 @@ bool Block::isTransient() const
     return false;
 }
 
+AdaptivityType Block::adaptivityType() const
+{
+    AdaptivityType at = m_fields.at(0)->fieldInfo()->adaptivityType;
+
+    foreach (Field *field, m_fields)
+    {
+        assert(field->fieldInfo()->adaptivityType == at);
+    }
+
+    return at;
+}
+
+int Block::adaptivitySteps() const
+{
+    int as = m_fields.at(0)->fieldInfo()->adaptivitySteps;
+
+    foreach (Field *field, m_fields)
+    {
+        assert(field->fieldInfo()->adaptivitySteps == as);
+    }
+
+    return as;
+}
+
+double Block::adaptivityTolerance() const
+{
+    double at = m_fields.at(0)->fieldInfo()->adaptivityTolerance;
+
+    foreach (Field *field, m_fields)
+    {
+        assert(field->fieldInfo()->adaptivityTolerance == at);
+    }
+
+    return at;
+}
+
 int Block::numSolutions() const
 {
     int num = 0;
@@ -420,7 +456,14 @@ void Problem::solve(SolverMode solverMode)
                     solver->solveTimeStep(block->timeStep());
             }
             else
-                solver->solveSimple();
+            {
+                if(block->adaptivityType() == AdaptivityType_None)
+                    solver->solveSimple();
+                else
+                {
+                    solver->solveInitialAdaptivityStep();
+                }
+            }
 
         }
 

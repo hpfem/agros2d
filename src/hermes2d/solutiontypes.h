@@ -78,8 +78,8 @@ public:
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaces();
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutions();
 
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > spacesNaked();
-    Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > solutionsNaked();
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > spacesNaked() { return desmartize(spaces()); }
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > solutionsNaked() {return desmartize(solutions()); }
 
     // returns the same multi solution array with spaces only (solutions are empty)
     MultiSolutionArray<Scalar> copySpaces();

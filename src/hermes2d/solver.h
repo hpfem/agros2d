@@ -49,6 +49,9 @@ public:
     void solveTimeStep(double timeStep);
     void solveInitialTimeStep();
 
+    void solveInitialAdaptivityStep();
+    void solveAdaptivityStep();
+
 private:
     //FieldInfo *m_fieldInfo;
     Block* m_block;

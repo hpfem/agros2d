@@ -174,11 +174,11 @@ Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > MultiSolutionAr
     return solutions;
 }
 
-template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > MultiSolutionArray<Scalar>::solutionsNaked()
-{
-    return desmartize(solutions());
-}
+//template <typename Scalar>
+//Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > MultiSolutionArray<Scalar>::solutionsNaked()
+//{
+//    return desmartize(solutions());
+//}
 
 //template <typename Group>
 //ostream& operator<<(ostream& output, const SolutionID<Group>& id)
