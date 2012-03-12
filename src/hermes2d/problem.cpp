@@ -72,15 +72,11 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, Prog
 
         m_fields.append(field);
     }
-
 }
 
-
-void Block::solve()
+Solver<double>* Block::prepareSolver()
 {
-    cout << "############ Block::Solve() ################" << endl;
-
-    Solver<double> solver;
+    Solver<double>* solver = new Solver<double>;
 
     foreach (Field* field, m_fields)
     {
@@ -90,15 +86,9 @@ void Block::solve()
 
     m_wf = new WeakFormAgros<double>(this);
 
-    solver.init(m_progressItemSolve, m_wf, this);
+    solver->init(m_progressItemSolve, m_wf, this);
 
-    if(this->isTransient()){
-        solver.solveInitialTimeStep();
-        for(int i = 0; i < 40; i++)
-            solver.solveTimeStep(this->timeStep());
-    }
-    else
-        solver.solveSimple();
+    return solver;
 }
 
 bool Block::isTransient() const
@@ -186,6 +176,21 @@ int Block::nonlinearSteps() const
     }
 
     return steps;
+}
+
+int Block::numTimeSteps() const
+{
+    int timeSteps = 0;
+    foreach(Field* field, m_fields)
+    {
+        if(field->fieldInfo()->analysisType() == AnalysisType_Transient)
+        {
+            int fieldTimeSteps = floor(field->fieldInfo()->timeTotal().number() / field->fieldInfo()->timeStep().number());
+            if(fieldTimeSteps > timeSteps)
+                timeSteps = fieldTimeSteps;
+        }
+    }
+    return timeSteps;
 }
 
 double Block::timeStep() const
@@ -396,12 +401,29 @@ void Problem::solve(SolverMode solverMode)
 
     assert(isMeshed());
 
+    QMap<Block*, Solver<double>* > solvers;
+
     if (solverMode == SolverMode_MeshAndSolve)
     {
         foreach (Block* block, m_blocks)
         {
-            block->solve();
+            solvers[block] = block->prepareSolver();
         }
+
+        foreach (Block* block, m_blocks)
+        {
+            Solver<double>* solver = solvers[block];
+
+            if(block->isTransient()){
+                solver->solveInitialTimeStep();
+                for(int i = 0; i < block->numTimeSteps(); i++)
+                    solver->solveTimeStep(block->timeStep());
+            }
+            else
+                solver->solveSimple();
+
+        }
+
     }
 
     Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField()));
@@ -613,7 +635,7 @@ BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, Solutio
 
     foreach(Field* field, block->m_fields)
     {
-        assert(fsid == lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType));
+        assert(bsid == lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType).blockSolutionID(block));
     }
 
     return bsid;
