@@ -1597,9 +1597,8 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
 {   
     QList<Point> out;
 
-    double dx = p1e.x - p1s.x;      // component of direction vector of the line
-    double dy = p1e.y - p1s.y;      // component of direction vector of the line
-    double a = dx * dx + dy * dy;   // square of the length of direction vector
+    Point dif = p1e - p1s;      // direction vector of the line
+    double a = sqr(dif.x) + sqr(dif.y);   // square of the length of direction vector
     double tol = 1e-7 * sqrt(a);
 
     // Crossing of two arcs
@@ -1682,43 +1681,36 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
         if (angle2 > 0.0)
             // crossing of arc and line
         {
-            double b = 2 * (dx * (p1s.x - center2.x) + dy * (p1s.y - center2.y));
-            double c = p1s.x * p1s.x + p1s.y * p1s.y + center2.x * center2.x + center2.y * center2.y - 2 * (center2.x * p1s.x + center2.y * p1s.y)-(radius2 * radius2);
+            double b = 2 * (dif.x * (p1s.x - center2.x) + dif.y * (p1s.y - center2.y));
+            double c = sqr(p1s.x) + sqr(p1s.y) + sqr(center2.x) + sqr(center2.y) - 2.0 * (center2.x * p1s.x + center2.y * p1s.y) - sqr(radius2);
 
-            double bb4ac = b * b - 4 * a * c;
+            double bb4ac = sqr(b) - 4 * a * c;
 
             double mu1 = (-b + sqrt(bb4ac)) / (2*a);
             double mu2 = (-b - sqrt(bb4ac)) / (2*a);
 
-            double i1x = p1s.x + mu1*(dx);
-            double i1y = p1s.y + mu1*(dy);
-
-            double i2x = p1s.x + mu2*(dx);
-            double i2y = p1s.y + mu2*(dy);
-
-
-            Point p1(i1x, i1y);     // possible intersection point
-            Point p2(i2x, i2y);     // possible intersection point
+            // possible intersection points
+            Point p1 = p1s + dif * mu1;
+            Point p2 = p1s + dif * mu2;
 
             double t1;
             double t2;
 
-            if (abs(dx - dy) > tol)
+            if (abs(dif.x - dif.y) > tol)
             {
-                t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
-                t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent
+                 t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dif.x - dif.y); // tangent
+                 t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dif.x - dif.y); // tangent
             }
             else
             {
-                t1 = (p1.x - p1s.x) / dx; // tangent
-                t2 = (p2.x - p1s.x) / dx; // tangent
+                t1 = (p1.x - p1s.x) / dif.x; // tangent
+                t2 = (p2.x - p1s.x) / dif.x; // tangent
             }
 
             double angle_1 = (p2e - center2).angle();
             double angle_2 = (p2s - center2).angle();
             double iangle1 = (p1 - center2).angle();
             double iangle2 = (p2 - center2).angle();
-
 
             if ((t1 >= 0) && (t1 <= 1))
             {

@@ -64,6 +64,8 @@ public:
             delete m_validator;
     }
 
+    inline void setBottom(double value) { if (m_validator) m_validator->setBottom(value); }
+    inline void setTop(double value) { if (m_validator) m_validator->setTop(value); }
     inline double value() { return text().toDouble(); }
     inline void setValue(double value) { setText(QString::number(value)); }
 

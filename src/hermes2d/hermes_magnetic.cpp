@@ -835,13 +835,6 @@ Point3 HermesMagnetic::particleForce(Point3 point, Point3 velocity)
     }
 }
 
-double HermesMagnetic::particleMaterial(Point point)
-{
-    LocalPointValueMagnetic *pointValue = dynamic_cast<LocalPointValueMagnetic *>(localPointValue(point));
-
-    return pointValue->permeability;
-}
-
 QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolve)
 {
     // transient

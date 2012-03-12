@@ -26,8 +26,8 @@
             <node x="0.03999999999999999" y="-0.011" id="7"/>
             <node x="0.075" y="-0.022" id="8"/>
             <node x="0.075" y="0.022" id="9"/>
-            <node x="0.076" y="0.023" id="10"/>
-            <node x="0.076" y="-0.023" id="11"/>
+            <node x="0.079" y="0.026" id="10"/>
+            <node x="0.079" y="-0.026" id="11"/>
             <node x="0" y="-0.06" id="12"/>
             <node x="0.1179999999999999" y="-0.06" id="13"/>
             <node x="0" y="0.05999999999999997" id="14"/>
@@ -52,11 +52,11 @@
             <edge end="5" refine_towards="0" marker="2" id="15" start="4" angle="0"/>
         </edges>
         <labels>
-            <label x="0.0758439514662647" y="0.02197631623294621" polynomialorder="0" marker="2" id="0" area="0"/>
+            <label x="0.08052061257986461" y="0.02162556664942622" polynomialorder="0" marker="2" id="0" area="0"/>
             <label x="0.04607758193020119" y="0.01051771936731456" polynomialorder="0" marker="0" id="1" area="0"/>
             <label x="0.04509495744732421" y="-0.01050886254671532" polynomialorder="0" marker="0" id="2" area="0"/>
             <label x="0.1095073" y="0.050865" polynomialorder="0" marker="1" id="3" area="0"/>
         </labels>
     </geometry>
-    <config SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_VectorColor="1" SceneViewSettings_PaletteType="7" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleStartVelocityX="30000000" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_PaletteSteps="20" SceneViewSettings_ShowOrderScale="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_ParticleStartingRadius="0.01" SceneViewSettings_ParticleMaximumSteps="1000" SceneViewSettings_ShowScalarScale="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_PaletteFilter="1" SceneViewSettings_ParticleTerminateOnDifferentMaterial="1" SceneViewSettings_ParticleMaximumRelativeError="1e-07" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0.015" SceneViewSettings_ParticleIncludeGravitation="1" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_VectorNumber="50"/>
+    <config SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ParticleCoefficientOfRestitution="0" SceneViewSettings_ParticleMinimumStep="0.003" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_VectorColor="1" SceneViewSettings_PaletteType="7" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ParticleNumberOfParticles="1" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleStartVelocityX="30000000" SceneViewSettings_ParticleReflectOnBoundary="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_PaletteSteps="20" SceneViewSettings_ShowOrderScale="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_ParticleStartingRadius="0.01" SceneViewSettings_ShowScalarScale="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_PaletteFilter="1" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_ParticleMaximumNumberOfSteps="2000" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0.015" SceneViewSettings_ParticleIncludeGravitation="1" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_VectorNumber="50" SceneViewSettings_ParticleReflectOnDifferentMaterial="1"/>
 </document>

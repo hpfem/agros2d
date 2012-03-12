@@ -2257,21 +2257,21 @@ void SceneView::paintVectors()
 
     if (m_listVectors == -1)
     {
-        m_listVectors = glGenLists(1);
-        glNewList(m_listVectors, GL_COMPILE);
-
         double vectorRangeMin = m_scene->sceneSolution()->vecVectorView().get_min_value();
         double vectorRangeMax = m_scene->sceneSolution()->vecVectorView().get_max_value();
 
-        //Add 20% margin to the range
+        // add 20% margin to the range
         double vectorRange = vectorRangeMax - vectorRangeMin;
         vectorRangeMin = vectorRangeMin - 0.2*vectorRange;
         vectorRangeMax = vectorRangeMax + 0.2*vectorRange;
+        if (fabs(vectorRange) < EPS_ZERO) return;
+
+        m_listVectors = glGenLists(1);
+        glNewList(m_listVectors, GL_COMPILE);
 
         // qDebug() << "SceneView::paintVectors(), min = " << vectorRangeMin << ", max = " << vectorRangeMax;
 
         double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
-        // if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
 
         RectPoint rect = m_scene->boundingBox();
         double gs = (rect.width() + rect.height()) / Util::config()->vectorCount;
@@ -2520,7 +2520,7 @@ void SceneView::paintParticleTracing()
 
                 glPointSize(Util::config()->nodeSize * 4.0/5.0);
                 glBegin(GL_POINTS);
-                for (int i = 0; i < positionsList.length() - 1; i++)
+                for (int i = 0; i < positionsList[k].length() - 1; i++)
                 {
                     glVertex2d(positionsList[k][i].x, positionsList[k][i].y);
                 }
@@ -3284,7 +3284,7 @@ void SceneView::paintEdgeLine()
             foreach (SceneEdge *edge, m_scene->edges)
             {
                 QList<Point> intersects = intersection(p, m_nodeLast->point,
-                                                       m_nodeLast->point, 0, 0,
+                                                       Point(), 0, 0,
                                                        edge->nodeStart->point, edge->nodeEnd->point,
                                                        edge->center(), edge->radius(), edge->angle);
 

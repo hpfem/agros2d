@@ -115,12 +115,18 @@ public:
     double dragForceCoefficient() { return Util::config()->particleDragCoefficient; }
     void setIncludeGravitation(int include);
     int includeGravitation() { return Util::config()->particleIncludeGravitation; }
-    void setTerminateOnDifferentMaterial(int terminate);
-    int terminateOnDifferentMaterial() { return Util::config()->particleTerminateOnDifferentMaterial; }
+    void setReflectOnDifferentMaterial(int reflect);
+    int reflectOnDifferentMaterial() { return Util::config()->particleReflectOnDifferentMaterial; }
+    void setReflectOnBoundary(int reflect);
+    int reflectOnBoundary() { return Util::config()->particleReflectOnBoundary; }
+    void setCoefficientOfRestitution(double coeff);
+    int coefficientOfRestitution() { return Util::config()->particleCoefficientOfRestitution; }
     void setMaximumTolerance(double tolerance);
     double maximumTolerance() { return Util::config()->particleMaximumRelativeError; }
-    void setMaximumSteps(int steps);
-    int maximumSteps() { return Util::config()->particleMaximumSteps; }
+    void setMaximumNumberOfSteps(int steps);
+    int maximumNumberOfSteps() { return Util::config()->particleMaximumNumberOfSteps; }
+    void setMinimumStep(int step);
+    int minimumStep() { return Util::config()->particleMinimumStep; }
 
     void solve();
 
@@ -154,6 +160,7 @@ void pythonCloseDocument();
 
 void pythonAddNode(double x, double y);
 void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker);
+void pythonAddEdgeNodes(int nodeStartIndex, int nodeEndIndex, double angle, char *marker);
 void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *marker);
 
 void pythonDeleteNode(int index);

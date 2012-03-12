@@ -271,6 +271,7 @@ void PyParticleTracing::solve()
     m_velocities.clear();
 
     Util::scene()->computeParticleTracingPath(&m_positions, &m_velocities, false);
+    sceneView()->doInvalidated();
 
     // restore values
     // Util::config()->particleStartingRadius = particleStartingRadius;
@@ -382,9 +383,24 @@ void PyParticleTracing::setIncludeGravitation(int include)
     Util::scene()->refresh();
 }
 
-void PyParticleTracing::setTerminateOnDifferentMaterial(int terminate)
+void PyParticleTracing::setReflectOnDifferentMaterial(int reflect)
 {
-    Util::config()->particleTerminateOnDifferentMaterial = terminate;
+    Util::config()->particleReflectOnDifferentMaterial = reflect;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setReflectOnBoundary(int reflect)
+{
+    Util::config()->particleReflectOnBoundary = reflect;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setCoefficientOfRestitution(double coeff)
+{
+    if (coeff < 0.0)
+       throw out_of_range(QObject::tr("Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).").toStdString());
+
+    Util::config()->particleCoefficientOfRestitution = coeff;
     Util::scene()->refresh();
 }
 
@@ -397,15 +413,23 @@ void PyParticleTracing::setMaximumTolerance(double tolerance)
     Util::scene()->refresh();
 }
 
-void PyParticleTracing::setMaximumSteps(int steps)
+void PyParticleTracing::setMaximumNumberOfSteps(int steps)
 {
     if (steps < 0.0)
-        throw out_of_range(QObject::tr("Maximum steps cannot be negative.").toStdString());
+        throw out_of_range(QObject::tr("Maximum number of steps cannot be negative.").toStdString());
 
-    Util::config()->particleMaximumSteps = steps;
+    Util::config()->particleMaximumNumberOfSteps = steps;
     Util::scene()->refresh();
 }
 
+void PyParticleTracing::setMinimumStep(int step)
+{
+    if (step < 0.0)
+        throw out_of_range(QObject::tr("Minimum step cannot be negative.").toStdString());
+
+    Util::config()->particleMinimumStep = step;
+    Util::scene()->refresh();
+}
 
 // version()
 char *pythonVersion()
@@ -646,6 +670,33 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
     SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
 
     // FIXME 0 -> variable
+    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, boundary, angle, 0));
+}
+
+void pythonAddEdgeNodes(int nodeStartIndex, int nodeEndIndex, double angle, char *marker)
+{
+    logMessage("pythonAddEdgeByNode()");
+
+    if (angle > 90.0 || angle < 0.0)
+        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+
+    SceneBoundary *boundary = Util::scene()->getBoundary(QString(marker));
+    if (!boundary)
+        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(marker).toStdString());
+
+    if (Util::scene()->nodes.isEmpty())
+        throw out_of_range(QObject::tr("Geometry does not contain nodes.").toStdString());
+
+    if (nodeStartIndex > (Util::scene()->nodes.length() - 1) || nodeStartIndex < 0)
+        throw out_of_range(QObject::tr("Node with index '%1' does not exist.").arg(nodeStartIndex).toStdString());
+    if (nodeEndIndex > (Util::scene()->nodes.length() - 1) || nodeEndIndex < 0)
+        throw out_of_range(QObject::tr("Node with index '%1' does not exist.").arg(nodeEndIndex).toStdString());
+
+    // start node
+    SceneNode *nodeStart = Util::scene()->nodes[nodeStartIndex];
+    // end node
+    SceneNode *nodeEnd = Util::scene()->nodes[nodeEndIndex];
+
     Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, boundary, angle, 0));
 }
 
@@ -1263,7 +1314,7 @@ void pythonShowParticleTracing(bool show)
     logMessage("pythonShowParticleTracing()");
 
     sceneView()->sceneViewSettings().showParticleTracing = show;
-    sceneView()->doInvalidated();
+    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
 }
 
 // showcontours(show = {True, False})
