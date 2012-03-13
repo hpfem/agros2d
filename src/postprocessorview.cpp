@@ -502,6 +502,21 @@ QWidget *PostprocessorView::controlsPostprocessor()
     QGroupBox *grpTransient = new QGroupBox(tr("Transient analysis"));
     grpTransient->setLayout(layoutTransient);
 
+    // adaptivity
+    cmbAdaptivityStep = new QComboBox(this);
+    cmbSolutionType = new QComboBox(this);
+
+    QGridLayout *layoutAdaptivity = new QGridLayout();
+    layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
+    layoutAdaptivity->setColumnStretch(1, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity step:")), 0, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityStep, 0, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("SolutionType:")), 1, 0);
+    layoutAdaptivity->addWidget(cmbSolutionType, 1, 1);
+
+    QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
+    grpAdaptivity->setLayout(layoutAdaptivity);
+
     QVBoxLayout *layoutBasic = new QVBoxLayout();
     layoutBasic->addLayout(layoutField);
     layoutBasic->addWidget(grpShowMesh);
@@ -511,6 +526,7 @@ QWidget *PostprocessorView::controlsPostprocessor()
     layoutBasic->addWidget(grpScalarField);
     layoutBasic->addWidget(grpVectorField);
     layoutBasic->addWidget(grpTransient);
+    layoutBasic->addWidget(grpAdaptivity);
     layoutBasic->addStretch();
 
     QWidget *basicWidget = new QWidget(this);

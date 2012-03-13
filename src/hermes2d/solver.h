@@ -51,6 +51,7 @@ public:
 
     void solveInitialAdaptivityStep();
     void solveAdaptivityStep();
+    bool solveAdaptSpace();
 
 private:
     //FieldInfo *m_fieldInfo;

@@ -45,6 +45,8 @@ void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariab
 void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable);
 void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable);
 void fillComboBoxTimeStep(QComboBox *cmbFieldVariable);
+void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable);
+void fillComboBoxSolutionType(QComboBox *cmbFieldVariable);
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 
 class SLineEditDouble : public QLineEdit

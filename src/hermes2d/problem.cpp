@@ -462,6 +462,7 @@ void Problem::solve(SolverMode solverMode)
                 else
                 {
                     solver->solveInitialAdaptivityStep();
+                    //solver->solveAdaptivityStep();
                 }
             }
 
