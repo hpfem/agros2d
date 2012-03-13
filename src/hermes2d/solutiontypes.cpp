@@ -212,6 +212,13 @@ void MultiSolutionArray<Scalar>::setSpace(shared_ptr<Hermes::Hermes2D::Space<Sca
 template <typename Scalar>
 void MultiSolutionArray<Scalar>::setSpaces(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaces)
 {
+    if(m_solutionArrays.size() == 0)
+    {
+        for(int comp = 0; comp < spaces.size(); comp++)
+        {
+            m_solutionArrays.push_back(SolutionArray<Scalar>());
+        }
+    }
     assert(m_solutionArrays.size() == spaces.size());
     for(int comp = 0; comp < spaces.size(); comp++)
     {

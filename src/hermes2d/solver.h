@@ -51,6 +51,7 @@ public:
 
     void solveInitialAdaptivityStep();
     void solveAdaptivityStep();
+    bool solveAdaptSpace();
 
 private:
     //FieldInfo *m_fieldInfo;
@@ -69,7 +70,9 @@ private:
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();
     // if copyPrevious == true, last solutions will be used (intented for doAdaptivityStep function)
     void createNewSolutions(MultiSolutionArray<Scalar>& msa);
-    void initSelectors();
+    void initSelectors(Hermes::vector<Hermes::Hermes2D::ProjNormType>& projNormType,
+                       Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selector);
+    void deleteSelectors(Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selector);
 
     void cleanup();
 

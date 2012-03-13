@@ -83,6 +83,10 @@ private:
     // transient
     QComboBox *cmbTimeStep;
 
+    // adaptivity
+    QComboBox *cmbAdaptivityStep;
+    QComboBox *cmbSolutionType;
+
     // grid
     QLineEdit *txtGridStep;
     QCheckBox *chkShowGrid;

@@ -146,6 +146,31 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
     cmbFieldVariable->blockSignals(false);
 }
 
+void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
+{
+    logMessage("fillComboBoxAdaptivityStep()");
+
+    cmbFieldVariable->blockSignals(true);
+
+    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep());
+
+    // store variable
+    int adaptivityStep = cmbFieldVariable->currentIndex();
+    if (adaptivityStep == -1)
+        adaptivityStep = lastAdaptiveStep;
+
+    // clear combo
+    cmbFieldVariable->clear();
+
+    for(int step = 0; step < lastAdaptiveStep; step++)
+    {
+        cmbFieldVariable->addItem(QString::number(step), step);
+    }
+
+    cmbFieldVariable->setCurrentIndex(adaptivityStep);
+    cmbFieldVariable->blockSignals(false);
+}
+
 // ***********************************************************************************************************
 
 Chart::Chart(QWidget *parent) : QwtPlot(parent)

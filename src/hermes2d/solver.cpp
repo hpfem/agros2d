@@ -159,6 +159,53 @@ void  Solver<Scalar>::createNewSolutions(MultiSolutionArray<Scalar>& msa)
         msa.setSolution(shared_ptr<Solution<double> >(new Solution<double>()), comp);
 }
 
+template <typename Scalar>
+void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
+                                   Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selector)
+{
+    // set adaptivity selector
+    RefinementSelectors::Selector<Scalar> *select = NULL;
+
+    // create types of projection and selectors
+    for (int i = 0; i < m_block->numSolutions(); i++)
+    {
+        if (m_block->adaptivityType() != AdaptivityType_None)
+        {
+            // add norm
+            projNormType.push_back(Util::config()->projNormType);
+
+            switch (m_block->adaptivityType())
+            {
+            case AdaptivityType_H:
+                select = new Hermes::Hermes2D::RefinementSelectors::HOnlySelector<Scalar>();
+                break;
+            case AdaptivityType_P:
+                select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
+                                                                                                Util::config()->convExp,
+                                                                                                H2DRS_DEFAULT_ORDER);
+                break;
+            case AdaptivityType_HP:
+                select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
+                                                                                                Util::config()->convExp,
+                                                                                                H2DRS_DEFAULT_ORDER);
+                break;
+            }
+            // add refinement selector
+            selector.push_back(select);
+        }
+    }
+}
+
+template <typename Scalar>
+void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selector)
+{
+    foreach(RefinementSelectors::Selector<Scalar> *select, selector)
+    {
+        delete select;
+    }
+    selector.clear();
+}
+
 //template <typename Scalar>
 //void Solver<Scalar>::createInitialSolution(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
 //{
@@ -392,14 +439,18 @@ void Solver<Scalar>::solveInitialAdaptivityStep()
        // break;
     }
 
+    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
+    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
+    initSelectors(projNormType, selector);
+
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()), msaRef.solutionsNaked(), msa.solutionsNaked(), Util::scene()->problemInfo()->matrixSolver);
 
-//    // calculate element errors and total error estimate.
-//    Hermes::Hermes2D::Adapt<Scalar> adaptivity(space, projNormType);
+    // calculate element errors and total error estimate.
+    Hermes::Hermes2D::Adapt<Scalar> adaptivity(msa.spacesNaked(), projNormType);
 
-//    // calculate error estimate for each solution component and the total error estimate.
-//    error = adaptivity.calc_err_est(solution, solutionReference) * 100;
+    // calculate error estimate for each solution component and the total error estimate.
+    double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
 
 //    // emit signal
 //    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
@@ -411,14 +462,13 @@ void Solver<Scalar>::solveInitialAdaptivityStep()
 //    // add error to the list
 //    m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
 
-//    if (error < adaptivityTolerance || Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) >= adaptivityMaxDOFs)
-//    {
-//        break;
-//    }
-//    adaptivity.adapt(selector,
-//                     Util::config()->threshold,
-//                     Util::config()->strategy,
-//                     Util::config()->meshRegularity);
+    if (error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msa.spacesNaked()) < Util::config()->maxDofs)
+    {
+        adaptivity.adapt(selector,
+                         Util::config()->threshold,
+                         Util::config()->strategy,
+                         Util::config()->meshRegularity);
+    }
 
 //    actualAdaptivitySteps = i + 1;
 
@@ -437,7 +487,56 @@ void Solver<Scalar>::solveInitialAdaptivityStep()
         Util::solutionStore()->saveSolution(solutionID, msaRef);
     }
 
+    deleteSelectors(selector);
 }
+
+template <typename Scalar>
+bool Solver<Scalar>::solveAdaptSpace()
+{
+    BlockSolutionID previousSolutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionType_Normal);
+    BlockSolutionID previousRefSolutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionType_Reference);
+
+    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(previousSolutionID);
+    MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(previousRefSolutionID);;
+    MultiSolutionArray<Scalar> msaNew = msa.copySpaces();
+
+
+    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
+    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
+    initSelectors(projNormType, selector);
+
+    // calculate element errors and total error estimate.
+    Hermes::Hermes2D::Adapt<Scalar> adaptivity(msaNew.spacesNaked(), projNormType);
+
+    // TODO calculating error twice!
+    // calculate error estimate for each solution component and the total error estimate.
+    double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
+
+//    // emit signal
+//    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
+//                                     arg(error, 0, 'f', 3).
+//                                     arg(i + 1).
+//                                     arg(maxAdaptivitySteps).
+//                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
+//                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
+//    // add error to the list
+//    m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
+
+    if (error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msa.spacesNaked()) < Util::config()->maxDofs)
+    {
+        adaptivity.adapt(selector,
+                         Util::config()->threshold,
+                         Util::config()->strategy,
+                         Util::config()->meshRegularity);
+
+        previousSolutionID.adaptivityStep++;
+        Util::solutionStore()->saveSolution(previousSolutionID, msaNew);
+        return true;
+    }
+
+    return false;
+}
+
 
 template <typename Scalar>
 void Solver<Scalar>::solveInitialTimeStep()
