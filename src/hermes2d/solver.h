@@ -50,8 +50,7 @@ public:
     void solveInitialTimeStep();
 
     void solveInitialAdaptivityStep();
-    void solveAdaptivityStep();
-    bool solveAdaptSpace();
+    bool solveAdaptivityStep();
 
 private:
     //FieldInfo *m_fieldInfo;

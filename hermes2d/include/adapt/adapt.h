@@ -200,7 +200,7 @@ namespace Hermes
       /// Apply a vector of refinements.
       /** \param[in] A vector of refinements to apply. */
       virtual void apply_refinements(std::vector<ElementToRefine>& elems_to_refine);
-
+public:
       /// Returns a vector of refinements generated during the last execution of the method adapt().
       /** \return A vector of refinements generated during the last execution of the method adapt(). The returned vector might change or become invalid after the next execution of the method adadpt(). */
       const std::vector<ElementToRefine>& get_last_refinements() const; ///< Returns last refinements.
