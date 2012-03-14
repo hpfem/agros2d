@@ -313,7 +313,7 @@ private:
         }
 
         double c_squared;
-    };    
+    };
 };
 
 class CustomAcousticPressureBC : public EssentialBoundaryCondition
@@ -439,7 +439,7 @@ LocalPointValue *HermesAcoustic::localPointValue(const Point &point)
 QStringList HermesAcoustic::localPointValueHeader()
 {
     QStringList headers;
-    headers << "X" << "Y" << "p_real" << "p_imag" << "p" << "Lp" << "rho" << "c";
+    headers << "X" << "Y" << "p_real" << "p_imag" << "p" << "Lp" << "rho" << "c" << "W" << "Lw";
     return QStringList(headers);
 }
 
@@ -463,7 +463,7 @@ VolumeIntegralValue *HermesAcoustic::volumeIntegralValue()
 QStringList HermesAcoustic::volumeIntegralValueHeader()
 {
     QStringList headers;
-    headers << "V" << "S" << "p_real" << "p_imag";
+    headers << "V" << "S" << "p_real" << "p_imag" << "W" << "Lw" ;
     return QStringList(headers);
 }
 
@@ -587,6 +587,8 @@ void HermesAcoustic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
         // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalAcceleration), PhysicFieldVariable_Acoustic_LocalAcceleration);
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Density), PhysicFieldVariable_Acoustic_Density);
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Speed), PhysicFieldVariable_Acoustic_Speed);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Energy), PhysicFieldVariable_Acoustic_Energy);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_EnergyLevel), PhysicFieldVariable_Acoustic_EnergyLevel);
     }
     // transient
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
@@ -601,6 +603,8 @@ void HermesAcoustic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
         // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalAcceleration), PhysicFieldVariable_Acoustic_LocalAcceleration);
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Density), PhysicFieldVariable_Acoustic_Density);
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Speed), PhysicFieldVariable_Acoustic_Speed);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Energy), PhysicFieldVariable_Acoustic_Energy);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_EnergyLevel), PhysicFieldVariable_Acoustic_EnergyLevel);
     }
 }
 
@@ -634,6 +638,14 @@ void HermesAcoustic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loc
         addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueAcoustic->pressure_real) + sqr(localPointValueAcoustic->pressure_imag)), 0, 'e', 3), "Pa");
 
         addTreeWidgetItemValue(acousticNode, tr("Sound pressure level:"), QString("%1").arg(localPointValueAcoustic->pressureLevel, 0, 'f', 2), "dB");
+
+        // energy
+        QTreeWidgetItem *itemEnergy = new QTreeWidgetItem(acousticNode);
+        itemEnergy->setText(0, tr("Sound Energy"));
+        itemEnergy->setExpanded(true);
+
+        addTreeWidgetItemValue(itemEnergy, tr("Energy:"), QString("%1").arg(localPointValueAcoustic->energy, 0, 'e', 3), "J/m3");
+        addTreeWidgetItemValue(itemEnergy, tr("Energy Level:"), QString("%1").arg(localPointValueAcoustic->energyLevel, 0, 'e', 3), "dB");
 
         // Local velocity
         /*
@@ -698,6 +710,15 @@ void HermesAcoustic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
     addTreeWidgetItemValue(itemPressure, tr("real:"), QString("%1").arg(volumeIntegralValueAcoustic->pressureReal, 0, 'e', 3), "Pa");
     addTreeWidgetItemValue(itemPressure, tr("imag:"), QString("%1").arg(volumeIntegralValueAcoustic->pressureImag, 0, 'e', 3), "Pa");
     addTreeWidgetItemValue(itemPressure, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueAcoustic->pressureReal) + sqr(volumeIntegralValueAcoustic->pressureImag)), 0, 'e', 3), "Pa");
+
+    // energy
+    QTreeWidgetItem *itemEnergy = new QTreeWidgetItem(magneticNode);
+    itemEnergy->setText(0, tr("Sound Energy"));
+    itemEnergy->setExpanded(true);
+
+    addTreeWidgetItemValue(itemEnergy, tr("Energy:"), QString("%1").arg(volumeIntegralValueAcoustic->energy, 0, 'e', 3), "J");
+    addTreeWidgetItemValue(itemEnergy, tr("Energy Level:"), QString("%1").arg(volumeIntegralValueAcoustic->energyLevel, 0, 'e', 3), "dB");
+
 }
 
 ViewScalarFilter *HermesAcoustic::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
@@ -796,6 +817,8 @@ LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPoin
     pressure_real = 0;
     pressure_imag = 0;
     pressureLevel = 0;
+    energy = 0;
+    energyLevel = 0;
     localAccelaration = Point();
     localVelocity = Point();
 
@@ -807,7 +830,7 @@ LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPoin
         SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(valueReal.marker);
         // solution
         if (marker)
-        {            
+        {
             density = marker->density.number;
             speed = marker->speed.number;
 
@@ -833,6 +856,9 @@ LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPoin
 
                 pressureLevel = (sqrt(sqr(valueReal.value) + sqr(valueImag.value)) > PRESSURE_MIN_AIR) ?
                             20.0 * log10(sqrt(sqr(valueReal.value) + sqr(valueImag.value)) / sqrt(2.0) / PRESSURE_MIN_AIR) : 0.0;
+                energy = (sqr(valueReal.value) + sqr(valueImag.value)) / ( 2 * density * sqr(speed));
+                energyLevel = ((sqr(valueReal.value) + sqr(valueImag.value)) > SOUND_ENERGY_DENSITY_REF) ?
+                            10.0 * log10(((sqr(valueReal.value) + sqr(valueImag.value)) / ( 2 * density * sqr(speed))) / SOUND_ENERGY_DENSITY_REF) : 0.0;
             }
             if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
             {
@@ -888,6 +914,10 @@ double LocalPointValueAcoustic::variableValue(PhysicFieldVariable physicFieldVar
         return density;
     case PhysicFieldVariable_Acoustic_Speed:
         return speed;
+    case PhysicFieldVariable_Acoustic_Energy:
+        return energy;
+    case PhysicFieldVariable_Acoustic_EnergyLevel:
+        return energyLevel;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueAcoustic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
         throw;
@@ -905,7 +935,9 @@ QStringList LocalPointValueAcoustic::variables()
            QString("%1").arg(sqrt(sqr(pressure_real) + sqr(pressure_imag)), 0, 'e', 5) <<
            QString("%1").arg(pressureLevel, 0, 'e', 5) <<
            QString("%1").arg(density, 0, 'f', 2) <<
-           QString("%1").arg(speed, 0, 'f', 2);
+           QString("%1").arg(speed, 0, 'f', 2) <<
+           QString("%1").arg(energy, 0, 'e', 5) <<
+           QString("%1").arg(energyLevel, 0, 'e', 5);
     // QString("%1").arg(localAccelaration.x, 0, 'e', 5) <<
     // QString("%1").arg(localAccelaration.y, 0, 'e', 5);
 
@@ -963,6 +995,8 @@ VolumeIntegralValueAcoustic::VolumeIntegralValueAcoustic() : VolumeIntegralValue
 {
     pressureReal = 0.0;
     pressureImag = 0.0;
+    energy = 0.0;
+    energyLevel = 0.0;
 
     calculate();
 }
@@ -992,6 +1026,19 @@ void VolumeIntegralValueAcoustic::calculateVariables(int i)
         h1_integrate_expression(2 * M_PI * x[i] * value2[i]);
     }
     pressureImag += result;
+
+    result = 0.0;
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+    {
+        h1_integrate_expression((sqr(value1[i]) + sqr(value2[i])) / (2 * (marker->density.number) * sqr(marker->speed.number)));
+    }
+    else
+    {
+        h1_integrate_expression(2 * M_PI * x[i] * ((sqr(value1[i]) + sqr(value2[i])) / (2 * (marker->density.number) * sqr(marker->speed.number))));
+    }
+    energy += result;
+
+    energyLevel = ((energy > SOUND_ENERGY_DENSITY_REF) ? 10.0 * log10(energy / SOUND_ENERGY_DENSITY_REF): 0.0);
 }
 
 void VolumeIntegralValueAcoustic::initSolutions()
@@ -1006,7 +1053,9 @@ QStringList VolumeIntegralValueAcoustic::variables()
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
            QString("%1").arg(crossSection, 0, 'e', 5) <<
            QString("%1").arg(pressureReal, 0, 'e', 5) <<
-           QString("%1").arg(pressureImag, 0, 'e', 5);
+           QString("%1").arg(pressureImag, 0, 'e', 5) <<
+           QString("%1").arg(energy, 0, 'e', 5) <<
+           QString("%1").arg(energyLevel, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -1099,6 +1148,26 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
     {
         SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
         node->values[0][0][i] = marker->speed.number;
+    }
+        break;
+    case PhysicFieldVariable_Acoustic_Energy:
+    {
+        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
+
+        node->values[0][0][i] = (sqr(value1[i]) + sqr(value2[i])) / ( 2 * marker->density.number * sqr(marker->speed.number));
+    }
+        break;
+    case PhysicFieldVariable_Acoustic_EnergyLevel:
+    {
+        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
+
+        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+            node->values[0][0][i] = ((sqr(value1[i]) + sqr(value2[i])) > SOUND_ENERGY_DENSITY_REF) ?
+                        10.0 * log10(((sqr(value1[i]) + sqr(value2[i])) / ( 2 * marker->density.number * sqr(marker->speed.number))) / SOUND_ENERGY_DENSITY_REF) : 0.0;
+
+        else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+            node->values[0][0][i] = (value1[i] > SOUND_ENERGY_DENSITY_REF) ?
+                        10.0 * log10((value1[i] / ( 2 * marker->density.number * sqr(marker->speed.number))) / SOUND_ENERGY_DENSITY_REF) : 0.0;
     }
         break;
     default:

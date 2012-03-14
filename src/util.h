@@ -49,6 +49,7 @@
 #define EPS0 8.854e-12
 #define MU0 4*M_PI*1e-7
 #define PRESSURE_MIN_AIR 20e-6
+#define SOUND_ENERGY_DENSITY_REF 10e-12
 #define GRAVITATIONAL_ACCELERATION 9.81
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)
@@ -507,7 +508,9 @@ enum PhysicFieldVariable
     PhysicFieldVariable_Acoustic_LocalAcceleration,
     PhysicFieldVariable_Acoustic_PressureLevel,
     PhysicFieldVariable_Acoustic_Density,
-    PhysicFieldVariable_Acoustic_Speed
+    PhysicFieldVariable_Acoustic_Speed,
+    PhysicFieldVariable_Acoustic_Energy,
+    PhysicFieldVariable_Acoustic_EnergyLevel
 };
 
 
@@ -629,6 +632,8 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_Acoustic_PressureLevel:
     case PhysicFieldVariable_Acoustic_Density:
     case PhysicFieldVariable_Acoustic_Speed:
+    case PhysicFieldVariable_Acoustic_Energy:
+    case PhysicFieldVariable_Acoustic_EnergyLevel:
         return true;
         break;
     default:
