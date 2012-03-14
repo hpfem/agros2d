@@ -128,6 +128,7 @@ protected:
 public:
     double pressureReal;
     double pressureImag;
+    double pressureEnergy;
 
     VolumeIntegralValueAcoustic();
     QStringList variables();
