@@ -62,7 +62,9 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Acoustic_LocalAcceleration ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Acoustic_PressureLevel ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Acoustic_Density ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_Speed); }
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_Speed ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_Energy ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_EnergyLevel); }
 
     SceneBoundary *newBoundary();
     SceneBoundary *newBoundary(PyObject *self, PyObject *args);
@@ -97,6 +99,8 @@ public:
     double pressure_real;
     double pressure_imag;
     double pressureLevel;
+    double energy;
+    double energyLevel;
     Point localVelocity;
     Point localAccelaration;
 
@@ -128,7 +132,8 @@ protected:
 public:
     double pressureReal;
     double pressureImag;
-    double pressureEnergy;
+    double energy;
+    double energyLevel;
 
     VolumeIntegralValueAcoustic();
     QStringList variables();

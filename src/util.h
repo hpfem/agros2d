@@ -508,7 +508,9 @@ enum PhysicFieldVariable
     PhysicFieldVariable_Acoustic_LocalAcceleration,
     PhysicFieldVariable_Acoustic_PressureLevel,
     PhysicFieldVariable_Acoustic_Density,
-    PhysicFieldVariable_Acoustic_Speed
+    PhysicFieldVariable_Acoustic_Speed,
+    PhysicFieldVariable_Acoustic_Energy,
+    PhysicFieldVariable_Acoustic_EnergyLevel
 };
 
 
@@ -630,6 +632,8 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_Acoustic_PressureLevel:
     case PhysicFieldVariable_Acoustic_Density:
     case PhysicFieldVariable_Acoustic_Speed:
+    case PhysicFieldVariable_Acoustic_Energy:
+    case PhysicFieldVariable_Acoustic_EnergyLevel:
         return true;
         break;
     default:

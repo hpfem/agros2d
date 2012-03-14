@@ -460,6 +460,10 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Density");
     case PhysicFieldVariable_Acoustic_Speed:
         return QObject::tr("Speed of sound");
+    case PhysicFieldVariable_Acoustic_Energy:
+        return QObject::tr("Sound energy");
+    case PhysicFieldVariable_Acoustic_EnergyLevel:
+        return QObject::tr("Sound energy level");
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
     }
@@ -656,6 +660,10 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("rho");
     case PhysicFieldVariable_Acoustic_Speed:
         return QObject::tr("v");
+    case PhysicFieldVariable_Acoustic_Energy:
+        return QObject::tr("W");
+    case PhysicFieldVariable_Acoustic_EnergyLevel:
+        return QObject::tr("Lw");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -846,6 +854,10 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("kg/m3");
     case PhysicFieldVariable_Acoustic_Speed:
         return QObject::tr("m/s");
+    case PhysicFieldVariable_Acoustic_Energy:
+        return QObject::tr("J");
+    case PhysicFieldVariable_Acoustic_EnergyLevel:
+        return QObject::tr("dB");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -1594,7 +1606,7 @@ Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e)
 
 QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, double angle1,
                           Point p2s, Point p2e, Point center2, double radius2, double angle2)
-{   
+{
     QList<Point> out;
 
     Point dif = p1e - p1s;      // direction vector of the line
