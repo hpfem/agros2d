@@ -439,7 +439,7 @@ LocalPointValue *HermesAcoustic::localPointValue(const Point &point)
 QStringList HermesAcoustic::localPointValueHeader()
 {
     QStringList headers;
-    headers << "X" << "Y" << "p_real" << "p_imag" << "p" << "Lp" << "rho" << "c" << "W" << "Lw";
+    headers << "X" << "Y" << "p_real" << "p_imag" << "p" << "Lp" << "rho" << "c" << "w" << "Lw";
     return QStringList(headers);
 }
 
@@ -641,11 +641,11 @@ void HermesAcoustic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loc
 
         // energy
         QTreeWidgetItem *itemEnergy = new QTreeWidgetItem(acousticNode);
-        itemEnergy->setText(0, tr("Sound Energy"));
+        itemEnergy->setText(0, tr("Sound energy"));
         itemEnergy->setExpanded(true);
 
         addTreeWidgetItemValue(itemEnergy, tr("Energy:"), QString("%1").arg(localPointValueAcoustic->energy, 0, 'e', 3), "J/m3");
-        addTreeWidgetItemValue(itemEnergy, tr("Energy Level:"), QString("%1").arg(localPointValueAcoustic->energyLevel, 0, 'e', 3), "dB");
+        addTreeWidgetItemValue(itemEnergy, tr("Energy level:"), QString("%1").arg(localPointValueAcoustic->energyLevel, 0, 'e', 3), "dB");
 
         // Local velocity
         /*
@@ -713,11 +713,11 @@ void HermesAcoustic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
 
     // energy
     QTreeWidgetItem *itemEnergy = new QTreeWidgetItem(magneticNode);
-    itemEnergy->setText(0, tr("Sound Energy"));
+    itemEnergy->setText(0, tr("Sound energy"));
     itemEnergy->setExpanded(true);
 
     addTreeWidgetItemValue(itemEnergy, tr("Energy:"), QString("%1").arg(volumeIntegralValueAcoustic->energy, 0, 'e', 3), "J");
-    addTreeWidgetItemValue(itemEnergy, tr("Energy Level:"), QString("%1").arg(volumeIntegralValueAcoustic->energyLevel, 0, 'e', 3), "dB");
+    addTreeWidgetItemValue(itemEnergy, tr("Energy level:"), QString("%1").arg(volumeIntegralValueAcoustic->energyLevel, 0, 'e', 3), "dB");
 
 }
 
@@ -854,8 +854,8 @@ LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPoin
                 localVelocity.x = localAccelaration.x / (2 * M_PI * frequency);
                 localVelocity.y = localAccelaration.y / (2 * M_PI * frequency);
 
-                pressureLevel = (sqrt(sqr(valueReal.value) + sqr(valueImag.value)) > PRESSURE_MIN_AIR) ?
-                            20.0 * log10(sqrt(sqr(valueReal.value) + sqr(valueImag.value)) / sqrt(2.0) / PRESSURE_MIN_AIR) : 0.0;
+                pressureLevel = (sqrt(sqr(valueReal.value) + sqr(valueImag.value)) > PRESSURE_AIR_REF) ?
+                            20.0 * log10(sqrt(sqr(valueReal.value) + sqr(valueImag.value)) / sqrt(2.0) / PRESSURE_AIR_REF) : 0.0;
                 energy = (sqr(valueReal.value) + sqr(valueImag.value)) / ( 2 * density * sqr(speed));
                 energyLevel = ((sqr(valueReal.value) + sqr(valueImag.value)) > SOUND_ENERGY_DENSITY_REF) ?
                             10.0 * log10(((sqr(valueReal.value) + sqr(valueImag.value)) / ( 2 * density * sqr(speed))) / SOUND_ENERGY_DENSITY_REF) : 0.0;
@@ -866,7 +866,7 @@ LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPoin
 
                 pressure_real = valueReal.value;
 
-                pressureLevel = (valueReal.value > PRESSURE_MIN_AIR) ? 20.0 * log10(valueReal.value / PRESSURE_MIN_AIR) : 0.0;
+                pressureLevel = (valueReal.value > PRESSURE_AIR_REF) ? 20.0 * log10(valueReal.value / PRESSURE_AIR_REF) : 0.0;
             }
         }
     }
@@ -1038,7 +1038,16 @@ void VolumeIntegralValueAcoustic::calculateVariables(int i)
     }
     energy += result;
 
-    energyLevel = ((energy > SOUND_ENERGY_DENSITY_REF) ? 10.0 * log10(energy / SOUND_ENERGY_DENSITY_REF): 0.0);
+    result = 0.0;
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+    {
+        h1_integrate_expression(10.0 * log10((sqr(value1[i]) + sqr(value2[i])) / (2 * (marker->density.number) * sqr(marker->speed.number)) / SOUND_ENERGY_DENSITY_REF));
+    }
+    else
+    {
+        h1_integrate_expression(2 * M_PI * x[i] * 10.0 * log10(((sqr(value1[i]) + sqr(value2[i])) / (2 * (marker->density.number) * sqr(marker->speed.number))) / SOUND_ENERGY_DENSITY_REF));
+    }
+    energyLevel += result;
 }
 
 void VolumeIntegralValueAcoustic::initSolutions()
@@ -1083,11 +1092,11 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
     case PhysicFieldVariable_Acoustic_PressureLevel:
     {
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-            node->values[0][0][i] = (sqrt(sqr(value1[i]) + sqr(value2[i])) > PRESSURE_MIN_AIR) ?
-                        20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(2.0) / PRESSURE_MIN_AIR) : 0.0;
+            node->values[0][0][i] = (sqrt(sqr(value1[i]) + sqr(value2[i])) > PRESSURE_AIR_REF) ?
+                        20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(2.0) / PRESSURE_AIR_REF) : 0.0;
         else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-            node->values[0][0][i] = (value1[i] > PRESSURE_MIN_AIR) ?
-                        20.0 * log10(value1[i] / PRESSURE_MIN_AIR) : 0.0;
+            node->values[0][0][i] = (value1[i] > PRESSURE_AIR_REF) ?
+                        20.0 * log10(value1[i] / PRESSURE_AIR_REF) : 0.0;
     }
         break;
     case PhysicFieldVariable_Acoustic_LocalVelocity:

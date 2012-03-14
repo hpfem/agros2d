@@ -48,8 +48,8 @@
 // physical constants
 #define EPS0 8.854e-12
 #define MU0 4*M_PI*1e-7
-#define PRESSURE_MIN_AIR 20e-6
-#define SOUND_ENERGY_DENSITY_REF 10e-12
+#define PRESSURE_AIR_REF 20e-6
+#define SOUND_ENERGY_DENSITY_REF 1e-12
 #define GRAVITATIONAL_ACCELERATION 9.81
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)

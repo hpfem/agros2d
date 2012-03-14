@@ -175,7 +175,7 @@ public:
         }
 
         virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
-                             Geom<double> *e, ExtData<scalar> *ext) const {            
+                             Geom<double> *e, ExtData<scalar> *ext) const {
             SceneMaterialRF *material = dynamic_cast<SceneMaterialRF *>(Util::scene()->labels[atoi(Util::scene()->sceneSolution()->meshInitial()->get_element_markers_conversion().get_user_marker(e->elem_marker).c_str())]->material);
 
             double mu = material->permeability.number * MU0;
@@ -805,6 +805,8 @@ void HermesRF::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralVal
     QTreeWidgetItem *magneticNode = new QTreeWidgetItem(trvWidget);
     magneticNode->setText(0, tr("RF field"));
     magneticNode->setExpanded(true);
+
+    addTreeWidgetItemValue(magneticNode, tr("Energy avg.:"), QString("%1").arg(volumeIntegralValueRF->energy, 0, 'e', 3), tr("J"));
 }
 
 ViewScalarFilter *HermesRF::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
@@ -831,7 +833,7 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
         if (!boundary->value_real.evaluate()) return QList<SolutionArray *>();
         if (!boundary->value_imag.evaluate()) return QList<SolutionArray *>();
         if (!boundary->power.evaluate()) return QList<SolutionArray *>();
-        if (!boundary->phase.evaluate()) return QList<SolutionArray *>();        
+        if (!boundary->phase.evaluate()) return QList<SolutionArray *>();
     }
 
     // materials
@@ -1064,33 +1066,33 @@ QStringList LocalPointValueRF::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
-           QString("%1").arg(point.y, 0, 'e', 5) <<
-           QString("%1").arg(electric_field_real, 0, 'e', 5) <<
-           QString("%1").arg(electric_field_imag, 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(electric_field_real) + sqr(electric_field_imag)), 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(flux_density_real.x) + sqr(flux_density_imag.x) + sqr(flux_density_real.y) + sqr(flux_density_imag.y)), 0, 'e', 5) <<
-           QString("%1").arg(flux_density_real.x, 0, 'e', 5) <<
-           QString("%1").arg(flux_density_real.y, 0, 'e', 5) <<
-           QString("%1").arg(flux_density_real.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(flux_density_imag.x, 0, 'e', 5) <<
-           QString("%1").arg(flux_density_imag.y, 0, 'e', 5) <<
-           QString("%1").arg(flux_density_imag.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(magnetic_field_real.x) + sqr(magnetic_field_imag.x) + sqr(magnetic_field_real.y) + sqr(magnetic_field_imag.y)), 0, 'e', 5) <<
-           QString("%1").arg(magnetic_field_real.x, 0, 'e', 5) <<
-           QString("%1").arg(magnetic_field_real.y, 0, 'e', 5) <<
-           QString("%1").arg(magnetic_field_real.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(magnetic_field_imag.x, 0, 'e', 5) <<
-           QString("%1").arg(magnetic_field_imag.y, 0, 'e', 5) <<
-           QString("%1").arg(magnetic_field_imag.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(poynting_vector.x, 0, 'e', 5) <<
-           QString("%1").arg(poynting_vector.y, 0, 'e', 5) <<
-           QString("%1").arg(poynting_vector.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(permittivity, 0, 'e', 5) <<
-           QString("%1").arg(permeability, 0, 'f', 3) <<
-           QString("%1").arg(conductivity, 0, 'e', 5) <<
-           QString("%1").arg(current_density_real, 0, 'e', 5) <<
-           QString("%1").arg(current_density_imag, 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(current_density_real) + sqr(current_density_imag)), 0, 'e', 5);
+            QString("%1").arg(point.y, 0, 'e', 5) <<
+            QString("%1").arg(electric_field_real, 0, 'e', 5) <<
+            QString("%1").arg(electric_field_imag, 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(electric_field_real) + sqr(electric_field_imag)), 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(flux_density_real.x) + sqr(flux_density_imag.x) + sqr(flux_density_real.y) + sqr(flux_density_imag.y)), 0, 'e', 5) <<
+            QString("%1").arg(flux_density_real.x, 0, 'e', 5) <<
+            QString("%1").arg(flux_density_real.y, 0, 'e', 5) <<
+            QString("%1").arg(flux_density_real.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(flux_density_imag.x, 0, 'e', 5) <<
+            QString("%1").arg(flux_density_imag.y, 0, 'e', 5) <<
+            QString("%1").arg(flux_density_imag.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(magnetic_field_real.x) + sqr(magnetic_field_imag.x) + sqr(magnetic_field_real.y) + sqr(magnetic_field_imag.y)), 0, 'e', 5) <<
+            QString("%1").arg(magnetic_field_real.x, 0, 'e', 5) <<
+            QString("%1").arg(magnetic_field_real.y, 0, 'e', 5) <<
+            QString("%1").arg(magnetic_field_real.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(magnetic_field_imag.x, 0, 'e', 5) <<
+            QString("%1").arg(magnetic_field_imag.y, 0, 'e', 5) <<
+            QString("%1").arg(magnetic_field_imag.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(poynting_vector.x, 0, 'e', 5) <<
+            QString("%1").arg(poynting_vector.y, 0, 'e', 5) <<
+            QString("%1").arg(poynting_vector.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(permittivity, 0, 'e', 5) <<
+            QString("%1").arg(permeability, 0, 'f', 3) <<
+            QString("%1").arg(conductivity, 0, 'e', 5) <<
+            QString("%1").arg(current_density_real, 0, 'e', 5) <<
+            QString("%1").arg(current_density_imag, 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(current_density_real) + sqr(current_density_imag)), 0, 'e', 5);
 
     return QStringList(row);
 }
@@ -1116,7 +1118,7 @@ QStringList SurfaceIntegralValueRF::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
-           QString("%1").arg(surface, 0, 'e', 5);
+            QString("%1").arg(surface, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -1130,6 +1132,22 @@ VolumeIntegralValueRF::VolumeIntegralValueRF() : VolumeIntegralValue()
 
 void VolumeIntegralValueRF::calculateVariables(int i)
 {
+    SceneMaterialRF *marker = dynamic_cast<SceneMaterialRF *>(material);
+
+    // energy
+    result = 0.0;
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+    {
+        h1_integrate_expression(0.25 * (sqr(value1[i]) + sqr(value2[i])) * EPS0)
+    }
+    else
+    {
+        /*
+        h1_integrate_expression((2 * M_PI * x[i] * 0.25 * sqr(sqrt(sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)))) / (marker->permeability.number * MU0))
+                                + (2 * M_PI * x[i] * 0.25 * sqr(sqrt(sqr(dudy2[i]) + sqr(dudx2[i] + ((x[i] > 0) ? value2[i] / x[i] : 0.0)))) / (marker->permeability.number * MU0)))
+        */
+    }
+    energy += result;
 }
 
 void VolumeIntegralValueRF::initSolutions()
@@ -1142,7 +1160,7 @@ QStringList VolumeIntegralValueRF::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-           QString("%1").arg(crossSection, 0, 'e', 5);
+            QString("%1").arg(crossSection, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -1462,7 +1480,7 @@ QString SceneBoundaryRF::script()
     if (type == (PhysicFieldBC_RF_Port))
         return QString("addboundary(\"%1\", \"%2\", %3, %4, \"%5\")").
                 arg(name).
-                arg(physicFieldBCToStringKey(type)).                
+                arg(physicFieldBCToStringKey(type)).
                 arg(power.text).
                 arg(phase.text).
                 arg(modeToStringKey(mode));
