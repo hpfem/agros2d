@@ -398,6 +398,7 @@ void Solver<Scalar>::solveInitialAdaptivityStep()
 
     // read mesh from file
     Mesh *mesh = readMesh();
+    cout << "address of the mesh " << mesh << endl;
 
     // create essential boundary conditions and space
     createSpace(mesh, msa);
@@ -468,11 +469,12 @@ bool Solver<Scalar>::solveAdaptivityStep()
         Util::solutionStore()->saveSolution(solutionID, msaRef);
     }
 
-//    MultiSolutionArray<Scalar> msaNew = msa.copySpaces();
-//    createNewSolutions(msaNew);
+    MultiSolutionArray<Scalar> msaNew = msa.copySpaces();
+    createNewSolutions(msaNew);
 
     // calculate element errors and total error estimate.
-    Adapt<Scalar> adaptivity(msa/*New*/.spacesNaked(), projNormType);
+    //cout << "adaptivity called with space " << msa.spacesNaked().at(0) << endl;
+    Adapt<Scalar> adaptivity(msaNew.spacesNaked(), projNormType);
 
     // calculate error estimate for each solution component and the total error estimate.
     double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
@@ -488,11 +490,13 @@ bool Solver<Scalar>::solveAdaptivityStep()
 //    // add error to the list
 //    m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
 
-    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msa/*New*/.spacesNaked()) < Util::config()->maxDofs;
+    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) < Util::config()->maxDofs;
     if (adapt)
     {
-        cout << "*** dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(msa/*New*/.spacesNaked())) << "tr " << Util::config()->threshold <<
+        cout << "*** dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << "tr " << Util::config()->threshold <<
                 ", st " << Util::config()->strategy << ", reg " << Util::config()->meshRegularity << endl;
+        Space<Scalar>* sp = msaNew.spacesNaked().at(0);
+        cout << "mesh address " << sp->get_mesh() << ", num elem " << sp->get_mesh()->get_num_elements() << endl;
         bool noref = adaptivity.adapt(selector,
                          Util::config()->threshold,
                          Util::config()->strategy,
@@ -500,18 +504,19 @@ bool Solver<Scalar>::solveAdaptivityStep()
 
         cout << "last refined " << adaptivity.get_last_refinements().size() << endl;
 
-        cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msa/*New*/.spacesNaked())) << ", noref " << noref << endl;
+        sp = msa.spacesNaked().at(0);
+        cout << "mesh address " << sp->get_mesh() << ", num elem " << sp->get_mesh()->get_num_elements() << endl;
+
+        cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
 
         solutionID.adaptivityStep++;
         solutionID.solutionType = SolutionType_Normal;
-        Util::solutionStore()->saveSolution(solutionID, msa/*New*/);
+        Util::solutionStore()->saveSolution(solutionID, msaNew);
     }
-
 
     deleteSelectors(selector);
     return adapt;
 }
-
 
 
 template <typename Scalar>
