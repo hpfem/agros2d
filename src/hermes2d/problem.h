@@ -161,6 +161,8 @@ public:
     MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID);
     void saveSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void saveSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
 
     int lastTimeStep(FieldInfo* fieldInfo);
     int lastTimeStep(Block* block);

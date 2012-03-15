@@ -462,7 +462,10 @@ void Problem::solve(SolverMode solverMode)
                 else
                 {
                     solver->solveInitialAdaptivityStep();
-                    //solver->solveAdaptivityStep();
+                    solver->solveAdaptivityStep();
+                    solver->solveAdaptivityStep();
+//                    while(solver->solveAdaptivityStep())
+//                        ;
                 }
             }
 
@@ -541,8 +544,13 @@ MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solution
 
 void SolutionStore::saveSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
-    cout << "$$$$$$$$  Saving solution " << solutionID << ", now solutions: " << m_multiSolutions.size() << ", time " << multiSolution.component(0).time << endl;
     assert(!m_multiSolutions.contains(solutionID));
+    replaceSolution(solutionID, multiSolution);
+}
+
+void SolutionStore::replaceSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
+{
+    cout << "$$$$$$$$  Saving solution " << solutionID << ", now solutions: " << m_multiSolutions.size() << ", time " << multiSolution.component(0).time << endl;
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);
     m_multiSolutions[solutionID] = multiSolution;
@@ -555,6 +563,16 @@ void SolutionStore::saveSolution(BlockSolutionID solutionID, MultiSolutionArray<
         FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
         MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
         saveSolution(fieldSID, fieldMultiSolution);
+    }
+}
+
+void SolutionStore::replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
+{
+    foreach(Field* field, solutionID.group->m_fields)
+    {
+        FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
+        MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
+        replaceSolution(fieldSID, fieldMultiSolution);
     }
 }
 
