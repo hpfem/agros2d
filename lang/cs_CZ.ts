@@ -2787,7 +2787,7 @@
         <location filename="../src/postprocessorview.cpp" line="347"/>
         <location filename="../src/postprocessorview.cpp" line="784"/>
         <source>Particle tracing</source>
-        <translation>Sledování pohybu částic</translation>
+        <translation>Pohyb částic</translation>
     </message>
     <message>
         <source>Particles area (m):</source>
@@ -7307,7 +7307,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../src/sceneview.cpp" line="249"/>
         <source>Particle tracing</source>
-        <translation>Sledování pohybu částic</translation>
+        <translation>Pohyb částic</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="261"/>
