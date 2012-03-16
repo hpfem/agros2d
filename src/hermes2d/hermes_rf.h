@@ -146,6 +146,8 @@ protected:
     void initSolutions();
 
 public:
+    double energy;
+
     VolumeIntegralValueRF();
     QStringList variables();
 };
