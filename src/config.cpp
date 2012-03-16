@@ -138,6 +138,7 @@ void Config::loadPostprocessor(QDomElement *config)
 
     // contour
     contoursCount = readConfig("SceneViewSettings/ContoursCount", CONTOURSCOUNT);
+    contourWidth = readConfig("SceneViewSettings/ContourWidth", CONTOURWIDTH);
 
     // scalar view
     showScalarScale = readConfig("SceneViewSettings/ShowScalarScale", true);
@@ -311,6 +312,7 @@ void Config::savePostprocessor(QDomElement *config)
 
     // contour
     writeConfig("SceneViewSettings/ContoursCount", contoursCount);
+    writeConfig("SceneViewSettings/ContourWidth", contourWidth);
 
     // scalar view
     writeConfig("SceneViewSettings/ShowScalarScale", showScalarScale);

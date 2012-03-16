@@ -77,6 +77,7 @@ public:
 
     // contour
     int contoursCount;
+    double contourWidth;
 
     // scalar view
     bool scalarRangeLog;

@@ -112,6 +112,7 @@ void PostprocessorView::loadAdvanced()
 
     // contours
     txtContoursCount->setValue(Util::config()->contoursCount);
+    txtContourWidth->setValue(Util::config()->contourWidth);
 
     // vector field
     chkVectorProportional->setChecked(Util::config()->vectorProportional);
@@ -236,6 +237,7 @@ void PostprocessorView::saveAdvanced()
 
     // contours
     Util::config()->contoursCount = txtContoursCount->value();
+    Util::config()->contourWidth = txtContourWidth->value();
 
     // vector field
     Util::config()->vectorProportional = chkVectorProportional->isChecked();
@@ -556,6 +558,10 @@ QWidget *PostprocessorView::controlsPostprocessor()
     txtContoursCount = new QSpinBox(this);
     txtContoursCount->setMinimum(1);
     txtContoursCount->setMaximum(100);
+    txtContourWidth = new QDoubleSpinBox(this);
+    txtContourWidth->setMinimum(0.1);
+    txtContourWidth->setMaximum(5.0);
+    txtContourWidth->setSingleStep(0.1);
 
     // vectors
     chkVectorProportional = new QCheckBox(tr("Proportional"), this);
@@ -577,6 +583,8 @@ QWidget *PostprocessorView::controlsPostprocessor()
     gridLayoutContours->setColumnStretch(1, 1);
     gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
     gridLayoutContours->addWidget(txtContoursCount, 0, 1);
+    gridLayoutContours->addWidget(new QLabel(tr("Contour width:")), 1, 0);
+    gridLayoutContours->addWidget(txtContourWidth, 1, 1);
 
     QGroupBox *grpContours = new QGroupBox(tr("Contours"));
     grpContours->setLayout(gridLayoutContours);
@@ -1143,6 +1151,8 @@ void PostprocessorView::doContoursVectorsDefault()
     logMessage("PostprocessorView::doContoursVectorsDefault()");
 
     txtContoursCount->setValue(CONTOURSCOUNT);
+    txtContourWidth->setValue(CONTOURWIDTH);
+
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
     txtVectorCount->setValue(VECTORNUMBER);

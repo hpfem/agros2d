@@ -2169,7 +2169,7 @@ void SceneView::paintContours()
         double step = (rangeMax-rangeMin)/Util::config()->contoursCount;
 
         // draw contours
-        glLineWidth(1.0);
+        glLineWidth(Util::config()->contourWidth);
         glColor3d(Util::config()->colorContours.redF(),
                   Util::config()->colorContours.greenF(),
                   Util::config()->colorContours.blueF());

@@ -838,6 +838,7 @@ const int GEOMETRYLABELSIZE = 6;
 const double LINEARIZER_QUALITY = 0.0006;
 
 const int CONTOURSCOUNT = 15;
+const double CONTOURWIDTH = 1.0;
 
 const PaletteType PALETTETYPE = Palette_Jet;
 const bool PALETTEFILTER = false;

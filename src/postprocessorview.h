@@ -111,6 +111,7 @@ private:
 
     // contours
     QSpinBox *txtContoursCount;
+    QDoubleSpinBox *txtContourWidth;
 
     // vector field
     QCheckBox *chkVectorProportional;
