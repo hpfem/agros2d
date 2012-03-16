@@ -2278,8 +2278,8 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
                     (crossingEdge->boundary == Util::scene()->boundaries[0] && !Util::config()->particleReflectOnDifferentMaterial) ||
                     (crossingEdge->boundary != Util::scene()->boundaries[0] && !Util::config()->particleReflectOnBoundary))
             {
-                // stop simulation
-                break;
+                np5.x = intersect.x;
+                np5.y = intersect.y;
             }
             else
             {
@@ -2322,6 +2322,17 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
         else
         {
             velocities->append(Point3(v.x, v.y, p.x * v.z)); // v_phi = omega * r
+        }
+
+        if (crossingEdge)
+        {
+            // stop simulation
+            if ((Util::config()->particleCoefficientOfRestitution < EPS_ZERO) ||
+                    (crossingEdge->boundary == Util::scene()->boundaries[0] && !Util::config()->particleReflectOnDifferentMaterial) ||
+                    (crossingEdge->boundary != Util::scene()->boundaries[0] && !Util::config()->particleReflectOnBoundary))
+            {
+                break;
+            }
         }
     }
 
