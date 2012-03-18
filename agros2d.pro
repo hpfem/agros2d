@@ -11,7 +11,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     isEmpty(PREFIX):PREFIX = /usr/local
 
     # install resources
-    system(rm `find resources/python -name "*.pyc"`)
+    system(find . -type f -name "*.pyc" -delete;)
     resources.path = $${PREFIX}/share/agros2d/resources
     resources.CONFIG = recursive
     resources.files = resources/*
