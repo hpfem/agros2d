@@ -461,11 +461,12 @@ void Problem::solve(SolverMode solverMode)
                     solver->solveSimple();
                 else
                 {
-                    solver->solveInitialAdaptivityStep();
-                    solver->solveAdaptivityStep();
-                    solver->solveAdaptivityStep();
-//                    while(solver->solveAdaptivityStep())
-//                        ;
+                    solver->solveInitialAdaptivityStep(0);
+                    solver->solveAdaptivityStep(0,1);
+                    solver->solveAdaptivityStep(0,2);
+//                    int adaptStep = 1;
+//                    while(solver->solveAdaptivityStep(0, adaptStep))
+//                        adaptStep++;
                 }
             }
 
@@ -473,7 +474,9 @@ void Problem::solve(SolverMode solverMode)
 
     }
 
-    Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField()));
+    Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal));
+    Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal));
+    cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal) << endl;
 
     // delete temp file
     if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
@@ -576,25 +579,25 @@ void SolutionStore::replaceSolution(BlockSolutionID solutionID, MultiSolutionArr
     }
 }
 
-int SolutionStore::lastTimeStep(FieldInfo *fieldInfo)
+int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionType solutionType)
 {
     int timeStep = notFoundSoFar;
     foreach(FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.group == fieldInfo) && (sid.timeStep > timeStep))
+        if((sid.group == fieldInfo) && (sid.solutionType == solutionType) && (sid.timeStep > timeStep))
             timeStep = sid.timeStep;
     }
 
     return timeStep;
 }
 
-int SolutionStore::lastTimeStep(Block *block)
+int SolutionStore::lastTimeStep(Block *block, SolutionType solutionType)
 {
-    int timeStep = lastTimeStep(block->m_fields.at(0)->fieldInfo());
+    int timeStep = lastTimeStep(block->m_fields.at(0)->fieldInfo(), solutionType);
 
     foreach(Field* field, block->m_fields)
     {
-        assert(lastTimeStep(field->fieldInfo()) == timeStep);
+        assert(lastTimeStep(field->fieldInfo(), solutionType) == timeStep);
     }
 
     return timeStep;
@@ -602,7 +605,7 @@ int SolutionStore::lastTimeStep(Block *block)
 
 double SolutionStore::lastTime(FieldInfo *fieldInfo)
 {
-    int timeStep = lastTimeStep(fieldInfo);
+    int timeStep = lastTimeStep(fieldInfo, SolutionType_Normal);
     double time = notFoundSoFar;
 
     foreach(FieldSolutionID id, m_multiSolutions.keys())
@@ -632,28 +635,28 @@ double SolutionStore::lastTime(Block *block)
 
 }
 
-int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, int timeStep)
+int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionType solutionType, int timeStep)
 {
     if(timeStep == -1)
-        timeStep = lastTimeStep(fieldInfo);
+        timeStep = lastTimeStep(fieldInfo, solutionType);
 
     int adaptiveStep = notFoundSoFar;
     foreach(FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.group == fieldInfo) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
+        if((sid.group == fieldInfo) && (sid.solutionType == solutionType) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
             adaptiveStep = sid.adaptivityStep;
     }
 
     return adaptiveStep;
 }
 
-int SolutionStore::lastAdaptiveStep(Block *block, int timeStep)
+int SolutionStore::lastAdaptiveStep(Block *block, SolutionType solutionType, int timeStep)
 {
-    int adaptiveStep = lastAdaptiveStep(block->m_fields.at(0)->fieldInfo());
+    int adaptiveStep = lastAdaptiveStep(block->m_fields.at(0)->fieldInfo(), solutionType, timeStep);
 
     foreach(Field* field, block->m_fields)
     {
-        assert(lastAdaptiveStep(field->fieldInfo()) == adaptiveStep);
+        assert(lastAdaptiveStep(field->fieldInfo(), solutionType, timeStep) == adaptiveStep);
     }
 
     return adaptiveStep;
@@ -663,8 +666,8 @@ FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo,
 {
     FieldSolutionID solutionID;
     solutionID.group = fieldInfo;
-    solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo);
-    solutionID.timeStep = lastTimeStep(fieldInfo);
+    solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo, solutionType);
+    solutionID.timeStep = lastTimeStep(fieldInfo, solutionType);
     solutionID.solutionType = solutionType;
 
     //cout << solutionID << endl;
