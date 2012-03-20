@@ -130,7 +130,7 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
     // store variable
     int timeStep = cmbFieldVariable->currentIndex();
     if (timeStep == -1)
-        timeStep = Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField());
+        timeStep = Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal);
 
     // clear combo
     cmbFieldVariable->clear();
@@ -152,7 +152,7 @@ void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
 
     cmbFieldVariable->blockSignals(true);
 
-    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep());
+    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal, Util::scene()->activeTimeStep());
 
     // store variable
     int adaptivityStep = cmbFieldVariable->currentIndex();
@@ -162,7 +162,7 @@ void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
     // clear combo
     cmbFieldVariable->clear();
 
-    for(int step = 0; step < lastAdaptiveStep; step++)
+    for(int step = 0; step <= lastAdaptiveStep; step++)
     {
         cmbFieldVariable->addItem(QString::number(step), step);
     }

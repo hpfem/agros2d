@@ -392,7 +392,7 @@ void Solver<Scalar>::solveSimple()
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveInitialAdaptivityStep()
+void Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
 {
     MultiSolutionArray<Scalar> msa;
 
@@ -406,15 +406,14 @@ void Solver<Scalar>::solveInitialAdaptivityStep()
     // create solutions
     createNewSolutions(msa);
 
-    BlockSolutionID solutionID;
-    solutionID.group = m_block;
+    BlockSolutionID solutionID(m_block, timeStep, 0, SolutionType_NonExisting);
     Util::solutionStore()->saveSolution(solutionID, msa);
 }
 
 template <typename Scalar>
-bool Solver<Scalar>::solveAdaptivityStep()
+bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 {
-    BlockSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionType_Normal);
+    BlockSolutionID solutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting);
 
     MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(solutionID);
     MultiSolutionArray<Scalar> msaRef;
@@ -463,6 +462,7 @@ bool Solver<Scalar>::solveAdaptivityStep()
     // output
     if (!isError)
     {
+        solutionID.solutionType = SolutionType_Normal;
         Util::solutionStore()->replaceSolution(solutionID, msa);
 
         solutionID.solutionType = SolutionType_Reference;
@@ -510,7 +510,7 @@ bool Solver<Scalar>::solveAdaptivityStep()
         cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
 
         solutionID.adaptivityStep++;
-        solutionID.solutionType = SolutionType_Normal;
+        solutionID.solutionType = SolutionType_NonExisting;
         Util::solutionStore()->saveSolution(solutionID, msaNew);
     }
 
@@ -610,8 +610,8 @@ void Solver<Scalar>::solve(SolverConfig config)
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
 
-    int lastTimeStep = Util::solutionStore()->lastTimeStep(m_block);
-    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(m_block);
+    int lastTimeStep = Util::solutionStore()->lastTimeStep(m_block, SolutionType_Normal);
+    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(m_block, SolutionType_Normal);
 
     if((config.action == SolverAction_Solve) ||
             ((config.action == SolverAction_TimeStep) && (lastTimeStep < 1)))

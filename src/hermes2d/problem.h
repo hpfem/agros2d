@@ -164,15 +164,15 @@ public:
     void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
 
-    int lastTimeStep(FieldInfo* fieldInfo);
-    int lastTimeStep(Block* block);
+    int lastTimeStep(FieldInfo* fieldInfo, SolutionType solutionType);
+    int lastTimeStep(Block* block, SolutionType solutionType);
 
     double lastTime(FieldInfo* fieldInfo);
     double lastTime(Block* block);
 
     // last adaptive step for given time step. If time step not given, last time step used implicitly
-    int lastAdaptiveStep(FieldInfo* fieldInfo, int timeStep = -1);
-    int lastAdaptiveStep(Block* block, int timeStep = -1);
+    int lastAdaptiveStep(FieldInfo* fieldInfo, SolutionType solutionType, int timeStep = -1);
+    int lastAdaptiveStep(Block* block, SolutionType solutionType, int timeStep = -1);
 
     QList<double> timeLevels(FieldInfo* fieldInfo);
 

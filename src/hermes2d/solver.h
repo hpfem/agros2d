@@ -49,8 +49,8 @@ public:
     void solveTimeStep(double timeStep);
     void solveInitialTimeStep();
 
-    void solveInitialAdaptivityStep();
-    bool solveAdaptivityStep();
+    void solveInitialAdaptivityStep(int timeStep);
+    bool solveAdaptivityStep(int timeStep, int adaptivityStep);
 
 private:
     //FieldInfo *m_fieldInfo;

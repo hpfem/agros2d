@@ -2014,13 +2014,15 @@ void Scene::synchronizeCouplings()
 
 SceneSolution<double> *Scene::activeSceneSolution()
 {
-    return sceneSolution(FieldSolutionID(activeViewField(), activeTimeStep(), 0, SolutionType_Normal));
+    return sceneSolution(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
 }
 
 SceneSolution<double>* Scene::sceneSolution(FieldSolutionID fsid)
 {
+    cout << "chci scene solution " << fsid << endl;
     if(! m_sceneSolutions.contains(fsid))
     {
+        cout << "vytvarim " << endl;
         MultiSolutionArray<double> msa;
         if(Util::solutionStore()->contains(fsid))
             msa = Util::solutionStore()->multiSolution(fsid);
@@ -2029,6 +2031,7 @@ SceneSolution<double>* Scene::sceneSolution(FieldSolutionID fsid)
     }
     else
     {
+        cout << "mam" << endl;
         m_sceneSolutions[fsid]->updateSolutionArray(Util::solutionStore()->multiSolution(fsid));
     }
 

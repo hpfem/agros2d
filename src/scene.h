@@ -323,8 +323,8 @@ public:
     void setActiveViewField(FieldInfo* fieldInfo) { m_activeViewField = fieldInfo; }
     inline int activeTimeStep() const { return m_activeTimeStep; }
     void setActiveTimeStep(int ts) { m_activeTimeStep = ts; }
-    inline int activeAdaptivityStep() const { return 0; } //TODO
-    //void setActiveAdaptivityStep(int ts) { m_activeAdaptivityStep = ts; }
+    inline int activeAdaptivityStep() const { return m_activeAdaptivityStep; } //TODO
+    void setActiveAdaptivityStep(int ts) { m_activeAdaptivityStep = ts; }
     inline SolutionType activeSolutionType() const { return SolutionType_Normal; } //TODO
     //void setActiveTimeStep(int ts) { m_activeTimeStep = ts; }
 
