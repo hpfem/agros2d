@@ -194,7 +194,11 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::copySpaces()
     MultiSolutionArray<Scalar> msa;
     foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
-        msa.addComponent(SolutionArray<Scalar>(shared_ptr<Solution<Scalar> >(), solutionArray.space, 0, 0, 0));
+        Space<Scalar>* oldSpace = solutionArray.space.get();
+        Mesh* newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
+        newMesh->copy(oldSpace->get_mesh());
+        Space<Scalar>* newSpace = oldSpace->dup(newMesh);
+        msa.addComponent(SolutionArray<Scalar>(shared_ptr<Solution<Scalar> >(), shared_ptr<Space<Scalar> >(newSpace), 0, 0, 0));
     }
 
     return msa;
