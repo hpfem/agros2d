@@ -462,17 +462,6 @@ void Problem::solve(SolverMode solverMode)
                 else
                 {
                     solver->solveInitialAdaptivityStep(0);
-//                    solver->solveAdaptivityStep(0,1);
-//                    solver->solveAdaptivityStep(0,2);
-//                    solver->solveAdaptivityStep(0,3);
-//                    solver->solveAdaptivityStep(0,4);
-//                    solver->solveAdaptivityStep(0,5);
-//                    solver->solveAdaptivityStep(0,6);
-//                    solver->solveAdaptivityStep(0,7);
-//                    solver->solveAdaptivityStep(0,8);
-//                    solver->solveAdaptivityStep(0,9);
-//                    solver->solveAdaptivityStep(0,10);
-//                    solver->solveAdaptivityStep(0,11);
                     int adaptStep = 1;
                     bool continueSolve = true;
                     while(continueSolve && (adaptStep <= block->adaptivitySteps())){
@@ -489,6 +478,7 @@ void Problem::solve(SolverMode solverMode)
 
     Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal));
     Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal));
+    Util::scene()->setActiveSolutionType(SolutionType_Normal);
     cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal) << endl;
 
     // delete temp file

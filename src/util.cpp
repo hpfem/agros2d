@@ -35,6 +35,7 @@ static QHash<Mode, QString> modeList;
 static QHash<SceneViewPost3DShow, QString> sceneViewPost3DShowList;
 static QHash<WeakFormsType, QString> weakFormsTypeList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
+static QHash<SolutionType, QString> solutionTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
 static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MeshType, QString> meshTypeList;
@@ -60,6 +61,9 @@ SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPos
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+
+QString solutionTypeToStringKey(SolutionType solutionType) { return solutionTypeList[solutionType]; }
+SolutionType solutionTypeFromStringKey(const QString &solutionType) { return solutionTypeList.key(solutionType); }
 
 QString linearityTypeToStringKey(LinearityType linearityType) { return linearityTypeList[linearityType]; }
 LinearityType linearityTypeFromStringKey(const QString &linearityType) { return linearityTypeList.key(linearityType); }
@@ -130,6 +134,10 @@ void initLists()
     adaptivityTypeList.insert(AdaptivityType_H, "h-adaptivity");
     adaptivityTypeList.insert(AdaptivityType_P, "p-adaptivity");
     adaptivityTypeList.insert(AdaptivityType_HP, "hp-adaptivity");
+
+    // SolutionType
+    solutionTypeList.insert(SolutionType_Normal, "normal");
+    solutionTypeList.insert(SolutionType_Reference, "reference");
 
     // MatrixSolverType
     matrixSolverTypeList.insert(Hermes::SOLVER_UMFPACK, "umfpack");

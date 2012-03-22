@@ -96,13 +96,6 @@ private:
     QList<SolutionArray<Scalar> > m_solutionArrays;
 };
 
-enum SolutionType{
-    SolutionType_Normal,
-    SolutionType_Reference,
-    SolutionType_NonExisting,
-    SolutionType_Finer  // used to choose reference if exists, normal otherwise
-};
-
 //const int LAST_ADAPTIVITY_STEP = -1;
 //const int LAST_TIME_STEP = -1;
 

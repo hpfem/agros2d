@@ -321,10 +321,10 @@ public:
     void setActiveViewField(FieldInfo* fieldInfo) { m_activeViewField = fieldInfo; }
     inline int activeTimeStep() const { return m_activeTimeStep; }
     void setActiveTimeStep(int ts) { m_activeTimeStep = ts; }
-    inline int activeAdaptivityStep() const { return m_activeAdaptivityStep; } //TODO
-    void setActiveAdaptivityStep(int ts) { m_activeAdaptivityStep = ts; }
-    inline SolutionType activeSolutionType() const { return SolutionType_Normal; } //TODO
-    //void setActiveTimeStep(int ts) { m_activeTimeStep = ts; }
+    inline int activeAdaptivityStep() const { return m_activeAdaptivityStep; }
+    void setActiveAdaptivityStep(int as) { m_activeAdaptivityStep = as; }
+    inline SolutionType activeSolutionType() const { return m_activeSolutionType; }
+    void setActiveSolutionType(SolutionType st) { m_activeSolutionType = st; }
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
@@ -348,6 +348,7 @@ private:
     FieldInfo* m_activeViewField;
     int m_activeTimeStep;
     int m_activeAdaptivityStep;
+    SolutionType m_activeSolutionType;
 
     void createActions();
 
