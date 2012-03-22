@@ -171,6 +171,42 @@ void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
     cmbFieldVariable->blockSignals(false);
 }
 
+void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
+{
+    logMessage("fillComboBoxSolutionType()");
+
+    cmbFieldVariable->blockSignals(true);
+
+    // store variable
+    SolutionType solutionType = (SolutionType) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+//    if (adaptivityStep == -1)
+//        adaptivityStep = lastAdaptiveStep;
+
+    // clear combo
+    cmbFieldVariable->clear();
+
+    int timeStep = Util::scene()->activeTimeStep();
+    int adaptivityStep = Util::scene()->activeAdaptivityStep();
+
+    //TODO je potreba udelat dynamicky, jak se vybira casovy a adaptivni krok ve formulari
+    if(Util::solutionStore()->contains(FieldSolutionID(Util::scene()->activeViewField(), timeStep, adaptivityStep, SolutionType_Normal)))
+    {
+        cmbFieldVariable->addItem(/*tr*/(solutionTypeToStringKey(SolutionType_Normal)), SolutionType_Normal);
+    }
+    if(Util::solutionStore()->contains(FieldSolutionID(Util::scene()->activeViewField(), timeStep, adaptivityStep, SolutionType_Reference)))
+    {
+        cmbFieldVariable->addItem(/*tr*/(solutionTypeToStringKey(SolutionType_Reference)), SolutionType_Reference);
+    }
+
+//    for(int step = 0; step <= lastAdaptiveStep; step++)
+//    {
+//        cmbFieldVariable->addItem(QString::number(step), step);
+//    }
+
+    cmbFieldVariable->setCurrentIndex(solutionType);
+    cmbFieldVariable->blockSignals(false);
+}
+
 // ***********************************************************************************************************
 
 Chart::Chart(QWidget *parent) : QwtPlot(parent)

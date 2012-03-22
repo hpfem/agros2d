@@ -131,7 +131,7 @@ void Coupling::read(std::string filename)
         // problem
         rapidxml::xml_node<> *general = doc.first_node("coupling")->first_node("general");
         id = general->first_attribute("id")->value();
-        name = QObject::tr(general->first_attribute("name")->value()).toStdString(); // FIXME - Qt dependence
+        name = QObject::tr(general->first_attribute("name")->value()).toStdString(); // FIXME: Qt dependence
         description = general->first_node("description")->value();
 
 

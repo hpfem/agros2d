@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     Util::createSingleton();
 
-    // fixme - curve elements from script doesn't work
+    // FIXME: curve elements from script doesn't work
     readMeshDirtyFix();
 
     createPythonEngine(new PythonEngineAgros());

@@ -62,7 +62,7 @@ void LocalPointValue::calculate()
     values.clear();
 
     this->point = point;
-    //TODO upravit parametry!!!
+    // TODO: upravit parametry!!!
     FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
     SceneSolution<double>* sceneSolution = Util::scene()->sceneSolution(fsid);
     if (Util::problem()->isSolved() &&

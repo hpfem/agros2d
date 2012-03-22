@@ -1202,6 +1202,7 @@ void PostprocessorView::updateControls()
     doFieldInfo(cmbFieldInfo->currentIndex());
     fillComboBoxTimeStep(cmbTimeStep);
     fillComboBoxAdaptivityStep(cmbAdaptivityStep);
+    fillComboBoxSolutionType(cmbSolutionType);
 
     loadBasic();
     loadAdvanced();
@@ -1227,6 +1228,7 @@ void PostprocessorView::doApply()
     //TODO timestep
     Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
     Util::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
+    Util::scene()->setActiveSolutionType((SolutionType)cmbSolutionType->currentIndex());
 
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
