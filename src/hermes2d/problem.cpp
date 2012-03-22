@@ -468,8 +468,11 @@ void Problem::solve(SolverMode solverMode)
 //                    solver->solveAdaptivityStep(0,4);
 //                    solver->solveAdaptivityStep(0,5);
                     int adaptStep = 1;
-                    while(solver->solveAdaptivityStep(0, adaptStep))
+                    bool continueSolve = true;
+                    while(continueSolve && (adaptStep <= 5)){
+                        continueSolve = solver->solveAdaptivityStep(0, adaptStep);
                         adaptStep++;
+                    }
                 }
             }
 
