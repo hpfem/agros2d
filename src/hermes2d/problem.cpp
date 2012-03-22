@@ -693,28 +693,25 @@ int SolutionStore::lastAdaptiveStep(Block *block, SolutionType solutionType, int
 FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionType solutionType)
 {
     FieldSolutionID solutionID;
-    solutionID.group = fieldInfo;
-    solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo, solutionType);
-    solutionID.timeStep = lastTimeStep(fieldInfo, solutionType);
-    solutionID.solutionType = solutionType;
-
-    //cout << solutionID << endl;
-
-    if(solutionType == SolutionType_Finer)
-    {
-        solutionID.solutionType = SolutionType_Reference;
-        if(! m_multiSolutions.contains(solutionID))
+    if(solutionType == SolutionType_Finer) {
+        FieldSolutionID solutionIDNormal = lastTimeAndAdaptiveSolution(fieldInfo, SolutionType_Normal);
+        FieldSolutionID solutionIDReference = lastTimeAndAdaptiveSolution(fieldInfo, SolutionType_Reference);
+        if((solutionIDNormal.timeStep > solutionIDReference.timeStep) ||
+           (solutionIDNormal.adaptivityStep > solutionIDReference.adaptivityStep))
         {
-            solutionID.solutionType = SolutionType_Normal;
+            solutionID = solutionIDNormal;
+        }
+        else
+        {
+            solutionID = solutionIDReference;
         }
     }
-
-    assert(m_multiSolutions.contains(solutionID));
-    if(solutionType == SolutionType_Reference)
+    else
     {
-        FieldSolutionID solutionIDNormal = solutionID;
-        solutionIDNormal.solutionType = SolutionType_Normal;
-        assert(m_multiSolutions.contains(solutionIDNormal));
+        solutionID.group = fieldInfo;
+        solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo, solutionType);
+        solutionID.timeStep = lastTimeStep(fieldInfo, solutionType);
+        solutionID.solutionType = solutionType;
     }
 
     return solutionID;
