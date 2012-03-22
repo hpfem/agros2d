@@ -163,6 +163,8 @@ public:
     void saveSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void removeSolution(FieldSolutionID solutionID);
+    void removeSolution(BlockSolutionID solutionID);
 
     int lastTimeStep(FieldInfo* fieldInfo, SolutionType solutionType);
     int lastTimeStep(Block* block, SolutionType solutionType);

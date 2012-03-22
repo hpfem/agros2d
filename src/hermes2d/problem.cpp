@@ -467,10 +467,17 @@ void Problem::solve(SolverMode solverMode)
 //                    solver->solveAdaptivityStep(0,3);
 //                    solver->solveAdaptivityStep(0,4);
 //                    solver->solveAdaptivityStep(0,5);
+//                    solver->solveAdaptivityStep(0,6);
+//                    solver->solveAdaptivityStep(0,7);
+//                    solver->solveAdaptivityStep(0,8);
+//                    solver->solveAdaptivityStep(0,9);
+//                    solver->solveAdaptivityStep(0,10);
+//                    solver->solveAdaptivityStep(0,11);
                     int adaptStep = 1;
                     bool continueSolve = true;
-                    while(continueSolve && (adaptStep <= 5)){
+                    while(continueSolve && (adaptStep <= block->adaptivitySteps())){
                         continueSolve = solver->solveAdaptivityStep(0, adaptStep);
+                        cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
                         adaptStep++;
                     }
                 }
@@ -557,6 +564,12 @@ void SolutionStore::saveSolution(FieldSolutionID solutionID,  MultiSolutionArray
     replaceSolution(solutionID, multiSolution);
 }
 
+void SolutionStore::removeSolution(FieldSolutionID solutionID)
+{
+    assert(m_multiSolutions.contains(solutionID));
+    m_multiSolutions.remove(solutionID);
+}
+
 void SolutionStore::replaceSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
     cout << "$$$$$$$$  Saving solution " << solutionID << ", now solutions: " << m_multiSolutions.size() << ", time " << multiSolution.component(0).time << endl;
@@ -582,6 +595,15 @@ void SolutionStore::replaceSolution(BlockSolutionID solutionID, MultiSolutionArr
         FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
         MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
         replaceSolution(fieldSID, fieldMultiSolution);
+    }
+}
+
+void SolutionStore::removeSolution(BlockSolutionID solutionID)
+{
+    foreach(Field* field, solutionID.group->m_fields)
+    {
+        FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
+        removeSolution(fieldSID);
     }
 }
 

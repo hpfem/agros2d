@@ -413,12 +413,11 @@ void Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
 template <typename Scalar>
 bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 {
-    BlockSolutionID solutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting);
 
-    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(solutionID);
+    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting));
     MultiSolutionArray<Scalar> msaRef;
 
-    cout << "solve adaptivity step " << solutionID << ", num dofs " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) << endl;
+    //cout << "solve adaptivity step " << solutionID << ", num dofs " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) << endl;
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) == 0)
@@ -462,11 +461,9 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     // output
     if (!isError)
     {
-        solutionID.solutionType = SolutionType_Normal;
-        Util::solutionStore()->replaceSolution(solutionID, msa);
-
-        solutionID.solutionType = SolutionType_Reference;
-        Util::solutionStore()->saveSolution(solutionID, msaRef);
+        Util::solutionStore()->removeSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting));
+        Util::solutionStore()->saveSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Normal), msa);
+        Util::solutionStore()->saveSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Reference), msaRef);
     }
 
     MultiSolutionArray<Scalar> msaNew = msa.copySpaces();
@@ -491,27 +488,20 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 //    m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
 
     bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) < Util::config()->maxDofs;
+    cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Util::config()->maxDofs << endl;
     if (adapt)
     {
         cout << "*** dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << "tr " << Util::config()->threshold <<
                 ", st " << Util::config()->strategy << ", reg " << Util::config()->meshRegularity << endl;
-        Space<Scalar>* sp = msaNew.spacesNaked().at(0);
-        cout << "mesh address " << sp->get_mesh() << ", num elem " << sp->get_mesh()->get_num_elements() << endl;
         bool noref = adaptivity.adapt(selector,
                          Util::config()->threshold,
                          Util::config()->strategy,
                          Util::config()->meshRegularity);
 
         cout << "last refined " << adaptivity.get_last_refinements().size() << endl;
-
-        sp = msa.spacesNaked().at(0);
-        cout << "mesh address " << sp->get_mesh() << ", num elem " << sp->get_mesh()->get_num_elements() << endl;
-
         cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
 
-        solutionID.adaptivityStep++;
-        solutionID.solutionType = SolutionType_NonExisting;
-        Util::solutionStore()->saveSolution(solutionID, msaNew);
+        Util::solutionStore()->saveSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionType_NonExisting), msaNew);
     }
 
     deleteSelectors(selector);
