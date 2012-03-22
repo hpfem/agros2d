@@ -24,6 +24,7 @@
                                     axi = "- gamma * f*f * (mur * MU0) * (mur * MU0) * (upval * upval) * r * vval" />
                 <vector i="3" j="1" planar ="- gamma * f*f * (mur * MU0) * (mur * MU0) * (upval * upval) * vval"
                                     axi = "- gamma * f*f * (mur * MU0) * (mur * MU0) * (upval * upval) * r * vval" />
+            </weakform>
 
             <weakform couplingtype="weak" sourceanalysis="harmonic"  targetanalysis="transient" >
                 <vector i="1" j="1" planar="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source1 * source1 + source2 * source2) * vval"
