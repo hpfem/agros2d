@@ -51,7 +51,9 @@
                         <edge edge="1"/>
                         <edge edge="2"/>
                     </boundary>
-                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" heat_temperature="0" id="2" name="zeroneum" heat_radiation_ambient_temperature="0"/>
+                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="zeroneum" heat_radiation_ambient_temperature="0">
+                        <edge edge="3"/>
+                    </boundary>
                 </boundaries>
                 <materials>
                     <material heat_volume_heat="0" heat_conductivity="385" id="1" name="new material">

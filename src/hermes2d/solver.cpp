@@ -434,7 +434,7 @@ bool Solver<Scalar>::solveSimple()
 template <typename Scalar>
 bool Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
 {
-    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve initial adaptivity step"));
+    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("initial adaptivity step"));
 
     // read mesh from file
     Mesh *mesh = readMesh();
@@ -453,14 +453,14 @@ bool Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
     BlockSolutionID solutionID(m_block, timeStep, 0, SolutionType_NonExisting);
     Util::solutionStore()->saveSolution(solutionID, msa);
 
+    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("initial adaptivity step"));
+
     return true;
 }
 
 template <typename Scalar>
 bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 {
-    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve next adaptivity step"));
-
     MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting));
     MultiSolutionArray<Scalar> msaRef;
 
@@ -503,7 +503,10 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
     initSelectors(projNormType, selector);
     // project the fine mesh solution onto the coarse mesh.
-    Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()), msaRef.solutionsNaked(), msa.solutionsNaked(), Util::scene()->problemInfo()->matrixSolver);
+    Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()),
+                                                           msaRef.solutionsNaked(),
+                                                           msa.solutionsNaked(),
+                                                           Util::scene()->problemInfo()->matrixSolver);
 
     // output
     if (!isError)
@@ -536,6 +539,8 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 
     bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) < Util::config()->maxDofs;
     cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Util::config()->maxDofs << endl;
+
+    double initialDOFs = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked());
     if (adapt)
     {
         cout << "*** dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << "tr " << Util::config()->threshold <<
@@ -550,6 +555,11 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 
         Util::solutionStore()->saveSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionType_NonExisting), msaNew);
     }
+
+    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
+                              arg(error).
+                              arg(initialDOFs).
+                              arg(Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked()))));
 
     deleteSelectors(selector);
     return adapt;
