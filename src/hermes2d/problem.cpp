@@ -77,7 +77,7 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, Prog
 
 Solver<double>* Block::prepareSolver()
 {
-    Util::log()->printDebug("Solver: prepare solver");
+    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("prepare solver"));
 
     Solver<double>* solver = new Solver<double>;
 
@@ -400,7 +400,7 @@ void Problem::createStructure()
 
 bool Problem::mesh()
 {
-    Util::log()->printMessage("Solver: mesh generation");
+    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
     MeshGeneratorTriangle* pim = new MeshGeneratorTriangle();
     return pim->mesh();
@@ -443,7 +443,7 @@ void Problem::solve(SolverMode solverMode)
 
         if (solverMode == SolverMode_MeshAndSolve)
         {
-            Util::log()->printMessage("Solver: solving problem");
+            Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
             foreach (Block* block, m_blocks)
             {

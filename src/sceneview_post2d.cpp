@@ -57,7 +57,7 @@ void Post2DHermes::clear()
 
 void Post2DHermes::processRangeContour()
 {
-    Util::log()->printMessage(QString("Post2DView: contour view (%1)").arg(Util::config()->contourVariable));
+    Util::log()->printMessage(tr("Post2DView"), tr("contour view (%1)").arg(Util::config()->contourVariable));
 
     m_contourIsPrepared = false;
 
@@ -94,7 +94,7 @@ void Post2DHermes::processRangeContour()
 
 void Post2DHermes::processRangeScalar()
 {
-    Util::log()->printMessage(QString("Post2DView: scalar view (%1)").arg(Util::config()->scalarVariable));
+    Util::log()->printMessage(tr("Post2DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
 
     m_scalarIsPrepared = false;
 
@@ -128,7 +128,7 @@ void Post2DHermes::processRangeScalar()
 
 void Post2DHermes::processRangeVector()
 {
-    Util::log()->printMessage(QString("Post2DView: vector view (%1)").arg(Util::config()->vectorVariable));
+    Util::log()->printMessage(tr("Post2DView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
 
     m_vectorIsPrepared = false;
 

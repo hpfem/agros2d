@@ -48,7 +48,7 @@ void MeshHermes::clear()
 
 void MeshHermes::processOrder()
 {
-    Util::log()->printMessage(QString("MeshView: order"));
+    Util::log()->printMessage(tr("MeshView"), tr("order"));
 
     m_orderIsPrepared = false;
 
@@ -65,7 +65,7 @@ void MeshHermes::processOrder()
 
 void MeshHermes::processInitialMesh()
 {
-    Util::log()->printMessage(QString("MeshView: initial mesh with %1 elements").arg(Util::problem()->meshInitial()->get_num_active_elements()));
+    Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->meshInitial()->get_num_active_elements()));
 
     m_initialMeshIsPrepared = false;
 
@@ -83,7 +83,7 @@ void MeshHermes::processInitialMesh()
 
 void MeshHermes::processSolutionMesh()
 {
-    Util::log()->printMessage(QString("MeshView: solution mesh with %1 elements").arg(Util::scene()->activeSceneSolution()->sln(0)->get_mesh()->get_num_active_elements()));
+    Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeSceneSolution()->sln(0)->get_mesh()->get_num_active_elements()));
 
     m_solutionMeshIsPrepared = false;
 

@@ -50,7 +50,7 @@ bool MeshGeneratorTriangle::mesh()
     // create triangle files
     if (writeToTriangle())
     {
-        Util::log()->printDebug(tr("Poly file was created"));
+        Util::log()->printDebug(tr("Mesh generator"), tr("Poly file was created"));
 
         // exec triangle
         QProcess processTriangle;
@@ -70,7 +70,7 @@ bool MeshGeneratorTriangle::mesh()
 
         if (!processTriangle.waitForStarted(100000))
         {
-            Util::log()->printError(tr("Could not start Triangle"));
+            Util::log()->printError(tr("Mesh generator"), tr("could not start Triangle"));
             processTriangle.kill();
 
             m_isError = true;
@@ -103,12 +103,12 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
 {
     if (exitCode == 0)
     {
-        Util::log()->printMessage(tr("Mesh files were created"));
+        Util::log()->printMessage(tr("Mesh generator"), tr("mesh files were created"));
 
         // convert triangle mesh to hermes mesh
         if (triangleToHermes2D())
         {
-            Util::log()->printMessage(tr("Mesh was converted to Hermes2D mesh file"));
+            Util::log()->printMessage(tr("Mesh generator"), tr("mesh was converted to Hermes2D mesh file"));
 
             // copy triangle files
             if ((!Util::config()->deleteHermes2DMeshFile) && (!Util::scene()->problemInfo()->fileName.isEmpty()))
@@ -126,7 +126,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".neigh");
             QFile::remove(tempProblemFileName() + ".triangle.out");
             QFile::remove(tempProblemFileName() + ".triangle.err");
-            Util::log()->printMessage(tr("Mesh files were deleted"));
+            Util::log()->printMessage(tr("Mesh generator"), tr("mesh files were deleted"));
 
             // load mesh
             Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
@@ -144,7 +144,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
     {
         m_isError = true;
         QString errorMessage = readFileContent(Util::scene()->problemInfo()->fileName + ".triangle.out");
-        Util::log()->printError(errorMessage);
+        Util::log()->printError(tr("Mesh generator"), errorMessage);
     }
 }
 
@@ -155,12 +155,12 @@ bool MeshGeneratorTriangle::writeToTriangle()
     // basic check
     if (Util::scene()->nodes->length() < 3)
     {
-        Util::log()->printError(tr("Invalid number of nodes (%1 < 3)").arg(Util::scene()->nodes->length()));
+        Util::log()->printError(tr("Mesh generator"), tr("invalid number of nodes (%1 < 3)").arg(Util::scene()->nodes->length()));
         return false;
     }
     if (Util::scene()->edges->length() < 3)
     {
-        Util::log()->printError(tr("Invalid number of edges (%1 < 3)").arg(Util::scene()->edges->length()));
+        Util::log()->printError(tr("Mesh generator"), tr("invalid number of edges (%1 < 3)").arg(Util::scene()->edges->length()));
         return false;
     }
     else
@@ -173,13 +173,13 @@ bool MeshGeneratorTriangle::writeToTriangle()
 
         if (count == 0)
         {
-            Util::log()->printError(tr("At least one boundary condition has to be assigned"));
+            Util::log()->printError(tr("Mesh generator"), tr("at least one boundary condition has to be assigned"));
             return false;
         }
     }
     if (Util::scene()->labels->length() < 1)
     {
-        Util::log()->printError(tr("Invalid number of labels (%1 < 1)").arg(Util::scene()->labels->length()));
+        Util::log()->printError(tr("Mesh generator"), tr("invalid number of labels (%1 < 1)").arg(Util::scene()->labels->length()));
         return false;
     }
     else
@@ -192,18 +192,18 @@ bool MeshGeneratorTriangle::writeToTriangle()
 
         if (count == 0)
         {
-            Util::log()->printError(tr("At least one material has to be assigned"));
+            Util::log()->printError(tr("Mesh generator"), tr("at least one material has to be assigned"));
             return false;
         }
     }
     if (Util::scene()->boundaries->length() < 2) // + none marker
     {
-        Util::log()->printError(tr("Invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries->length()));
+        Util::log()->printError(tr("Mesh generator"), tr("invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries->length()));
         return false;
     }
     if (Util::scene()->materials->length() < 2) // + none marker
     {
-        Util::log()->printError(tr("Invalid number of materials (%1 < 1)").arg(Util::scene()->materials->length()));
+        Util::log()->printError(tr("Mesh generator"), tr("invalid number of materials (%1 < 1)").arg(Util::scene()->materials->length()));
         return false;
     }
 
@@ -217,7 +217,7 @@ bool MeshGeneratorTriangle::writeToTriangle()
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        Util::log()->printError(tr("Could not create Triangle poly mesh file (%1)").arg(file.errorString()));
+        Util::log()->printError(tr("Mesh generator"), tr("could not create Triangle poly mesh file (%1)").arg(file.errorString()));
         return false;
     }
     QTextStream out(&file);
@@ -394,7 +394,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Util::log()->printError(tr("Could not read Triangle node file"));
+        Util::log()->printError(tr("Mesh generator"), tr("could not read Triangle node file"));
         return false;
     }
     QTextStream inNode(&fileNode);
@@ -402,7 +402,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     QFile fileEdge(tempProblemFileName() + ".edge");
     if (!fileEdge.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Util::log()->printError(tr("Could not read Triangle edge file"));
+        Util::log()->printError(tr("Mesh generator"), tr("could not read Triangle edge file"));
         return false;
     }
     QTextStream inEdge(&fileEdge);
@@ -410,7 +410,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     QFile fileEle(tempProblemFileName() + ".ele");
     if (!fileEle.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Util::log()->printError(tr("Could not read Triangle ele file"));
+        Util::log()->printError(tr("Mesh generator"), tr("could not read Triangle ele file"));
         return false;
     }
     QTextStream inEle(&fileEle);
@@ -418,7 +418,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     QFile fileNeigh(tempProblemFileName() + ".neigh");
     if (!fileNeigh.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Util::log()->printError(tr("Could not read Triangle neigh file"));
+        Util::log()->printError(tr("Mesh generator"), tr("could not read Triangle neigh file"));
         return false;
     }
     QTextStream inNeigh(&fileNeigh);
@@ -473,7 +473,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     // no edge marker
     if (edgeCountLinear < 1)
     {
-        Util::log()->printError(tr("Invalid number of edge markers"));
+        Util::log()->printError(tr("Mesh generator"), tr("invalid number of edge markers"));
         return false;
     }
 
@@ -509,7 +509,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
 
         if (elementList[i].marker == 0)
         {
-            Util::log()->printError(tr("Some areas have no label marker"));
+            Util::log()->printError(tr("Mesh generator"), tr("some areas have no label marker"));
             return false;
         }
 
@@ -535,7 +535,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     // no label marker
     if (elementList.count() < 1)
     {
-        Util::log()->printError(tr("Invalid number of label markers"));
+        Util::log()->printError(tr("Mesh generator"), tr("invalid number of label markers"));
         return false;
     }
 

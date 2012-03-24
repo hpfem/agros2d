@@ -65,8 +65,6 @@ Mesh* Solver<Scalar>::readMesh()
                 int tmp_marker = atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
                 int marker = (tmp_marker > 0) ? tmp_marker - 1 : - tmp_marker;
 
-                qDebug() << "bnd = " << node->bnd << ", marker = " << marker;
-
                 if (Util::scene()->edges->at(marker)->getMarker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
                     boundaries.insert(marker);
             }
@@ -80,7 +78,7 @@ Mesh* Solver<Scalar>::readMesh()
             markers += QString::number(marker) + ", ";
         markers = markers.left(markers.length() - 2);
 
-        Util::log()->printError(QObject::tr("Boundary edges '%1' does not have a boundary marker").arg(markers));
+        Util::log()->printError(QObject::tr("Solver"), QObject::tr("boundary edges '%1' does not have a boundary marker").arg(markers));
 
         delete mesh;
         return NULL;
@@ -386,7 +384,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 template <typename Scalar>
 bool Solver<Scalar>::solveSimple()
 {
-    Util::log()->printDebug(QString("Solver: solve"));
+    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve"));
 
     // read mesh from file
     Mesh *mesh = readMesh();
@@ -436,7 +434,7 @@ bool Solver<Scalar>::solveSimple()
 template <typename Scalar>
 bool Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
 {
-    Util::log()->printDebug(QString("Solver: solve initial adaptivity step"));
+    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve initial adaptivity step"));
 
     // read mesh from file
     Mesh *mesh = readMesh();
@@ -461,7 +459,7 @@ bool Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
 template <typename Scalar>
 bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 {
-    Util::log()->printDebug(QString("Solver: solve next adaptivity step"));
+    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve next adaptivity step"));
 
     MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting));
     MultiSolutionArray<Scalar> msaRef;
@@ -606,7 +604,7 @@ bool Solver<Scalar>::solveTimeStep(double timeStep)
 
     double actualTime = Util::solutionStore()->lastTime(m_block) + timeStep;
     multiSolutionArray.setTime(actualTime);
-    Util::log()->printDebug(QString("Solver: solve time step, actual time is %1 s").arg(actualTime));
+    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve time step, actual time is %1 s").arg(actualTime));
 
     // update essential bc values
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), actualTime);

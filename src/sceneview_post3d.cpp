@@ -89,7 +89,7 @@ void Post3DHermes::processInitialMesh()
 
 void Post3DHermes::processRangeScalar()
 {
-    Util::log()->printMessage(QString("Post3DView: scalar view (%1)").arg(Util::config()->scalarVariable));
+    Util::log()->printMessage(tr("Post3DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
 
     processInitialMesh();
 
