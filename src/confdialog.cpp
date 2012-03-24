@@ -651,18 +651,6 @@ void ConfigDialog::doClearApplicationLog()
     }
 }
 
-void ConfigDialog::doClearCommandHistory()
-{
-    logMessage("ConfigDialog::doClearCommandHistory()");
-
-    QSettings settings;
-    settings.setValue("CommandDialog/RecentCommands", QStringList());
-    QStringListModel *model = dynamic_cast<QStringListModel *>(Util::completer()->model());
-    model->setStringList(QStringList());
-
-    QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared successfully."));
-}
-
 void ConfigDialog::doAdaptivityDefault()
 {
     logMessage("ConfigDialog::doAdaptivityDefault()");

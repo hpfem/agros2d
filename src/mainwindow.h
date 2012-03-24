@@ -33,6 +33,7 @@ class SurfaceIntegralValueView;
 class PostprocessorView;
 class PythonScriptingConsoleView;
 class TooltipView;
+class LogView;
 
 class HelpDialog;
 class ChartDialog;
@@ -210,6 +211,7 @@ private:
     PostprocessorView *postprocessorView;
     PythonScriptingConsoleView *consoleView;
     TooltipView *tooltipView;
+    LogView *logView;
 
     HelpDialog *helpDialog;
     ChartDialog *chartDialog;

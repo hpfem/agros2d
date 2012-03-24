@@ -21,6 +21,7 @@
 #include "util.h"
 #include "scene.h"
 #include "scenesolution.h"
+#include "logview.h"
 
 #include "scenebasic.h"
 #include "scenenode.h"
@@ -47,6 +48,8 @@ void MeshHermes::clear()
 
 void MeshHermes::processOrder()
 {
+    Util::log()->printMessage(QString("MeshView: order"));
+
     m_orderIsPrepared = false;
 
     // init linearizer for order view
@@ -62,6 +65,8 @@ void MeshHermes::processOrder()
 
 void MeshHermes::processInitialMesh()
 {
+    Util::log()->printMessage(QString("MeshView: initial mesh with %1 elements").arg(Util::problem()->meshInitial()->get_num_active_elements()));
+
     m_initialMeshIsPrepared = false;
 
     if (Util::problem()->isMeshed())
@@ -78,6 +83,8 @@ void MeshHermes::processInitialMesh()
 
 void MeshHermes::processSolutionMesh()
 {
+    Util::log()->printMessage(QString("MeshView: solution mesh with %1 elements").arg(Util::scene()->activeSceneSolution()->sln(0)->get_mesh()->get_num_active_elements()));
+
     m_solutionMeshIsPrepared = false;
 
     if (Util::problem()->isSolved())
@@ -94,15 +101,11 @@ void MeshHermes::processSolutionMesh()
 
 void MeshHermes::processMeshed()
 {
-    qDebug("MeshHermes::processMeshed()");
-
     QTimer::singleShot(0, this, SLOT(processInitialMesh()));
 }
 
 void MeshHermes::processSolved()
 {
-    qDebug("MeshHermes::processSolved()");
-
     QTimer::singleShot(0, this, SLOT(processSolutionMesh()));
     QTimer::singleShot(0, this, SLOT(processOrder()));
     //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);

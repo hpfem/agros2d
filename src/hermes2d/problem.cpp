@@ -27,7 +27,8 @@
 #include "coupling.h"
 #include "solver.h"
 #include "progressdialog.h"
-
+#include "meshgenerator.h"
+#include "logview.h"
 
 Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
@@ -76,6 +77,8 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, Prog
 
 Solver<double>* Block::prepareSolver()
 {
+    Util::log()->printDebug("Solver: prepare solver");
+
     Solver<double>* solver = new Solver<double>;
 
     foreach (Field* field, m_fields)
@@ -395,24 +398,21 @@ void Problem::createStructure()
 
 }
 
-void Problem::mesh()
+bool Problem::mesh()
 {
-    ProgressItemMesh* pim = new ProgressItemMesh();
-    pim->mesh();
+    Util::log()->printMessage("Solver: mesh generation");
+
+    MeshGeneratorTriangle* pim = new MeshGeneratorTriangle();
+    return pim->mesh();
 }
 
 void Problem::solve(SolverMode solverMode)
 {
-    logMessage("SceneSolution::solve()");
-
-    cout << "####***##### PROBLEM::Solve() #####******#####" << endl;
-
-    setVerbose(true);
-
     if (isSolving()) return;
 
     clear();
     m_isSolving = true;
+    bool isError = false;
 
     // clear problem
     //clear(solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve);
@@ -429,75 +429,110 @@ void Problem::solve(SolverMode solverMode)
 
     Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
 
-    mesh();
-    emit meshed();
-
-    Util::scene()->clearSolutions();
-    Util::solutionStore()->clearAll();
-
-    assert(isMeshed());
-
-    QMap<Block*, Solver<double>* > solvers;
-
-    if (solverMode == SolverMode_MeshAndSolve)
+    isError = !mesh();
+    if (!isError)
     {
-        foreach (Block* block, m_blocks)
-        {
-            solvers[block] = block->prepareSolver();
-        }
+        emit meshed();
 
-        foreach (Block* block, m_blocks)
-        {
-            Solver<double>* solver = solvers[block];
+        Util::scene()->clearSolutions();
+        Util::solutionStore()->clearAll();
 
-            if(block->isTransient()){
-                solver->solveInitialTimeStep();
-                for(int i = 0; i < block->numTimeSteps(); i++)
-                    solver->solveTimeStep(block->timeStep());
-            }
-            else
+        assert(isMeshed());
+
+        QMap<Block*, Solver<double>* > solvers;
+
+        if (solverMode == SolverMode_MeshAndSolve)
+        {
+            Util::log()->printMessage("Solver: solving problem");
+
+            foreach (Block* block, m_blocks)
             {
-                if(block->adaptivityType() == AdaptivityType_None)
-                    solver->solveSimple();
+                solvers[block] = block->prepareSolver();
+            }
+
+            foreach (Block* block, m_blocks)
+            {
+                Solver<double>* solver = solvers[block];
+
+                if (block->isTransient())
+                {
+                    if (solver->solveInitialTimeStep())
+                    {
+                        for (int i = 0; i < block->numTimeSteps(); i++)
+                            if (!solver->solveTimeStep(block->timeStep()))
+                            {
+                                isError = true;
+                                break; // inner loop
+                            }
+                    }
+                    else
+                    {
+                        isError = true;
+                    }
+
+                    if (isError)
+                        break; // block solver loop
+                }
                 else
                 {
-                    solver->solveInitialAdaptivityStep(0);
-                    int adaptStep = 1;
-                    bool continueSolve = true;
-                    while(continueSolve && (adaptStep <= block->adaptivitySteps())){
-                        continueSolve = solver->solveAdaptivityStep(0, adaptStep);
-                        cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
-                        adaptStep++;
+                    if (block->adaptivityType() == AdaptivityType_None)
+                    {
+                        if (!solver->solveSimple())
+                        {
+                            isError = true;
+                            break; // block solver loop
+                        }
+                    }
+                    else
+                    {
+                        if (!solver->solveInitialAdaptivityStep(0))
+                        {
+                            isError = true;
+                            break; // block solver loop
+                        }
+                        int adaptStep = 1;
+                        bool continueSolve = true;
+                        while (continueSolve && (adaptStep <= block->adaptivitySteps()))
+                        {
+                            continueSolve = solver->solveAdaptivityStep(0, adaptStep);
+                            cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
+                            adaptStep++;
+                        }
                     }
                 }
             }
 
+            if (!isError)
+            {
+                Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal));
+                Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal));
+                Util::scene()->setActiveSolutionType(SolutionType_Normal);
+                cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal) << endl;
+            }
         }
 
+        // delete temp file
+        if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
+        {
+            QFile::remove(Util::scene()->problemInfo()->fileName);
+            Util::scene()->problemInfo()->fileName = "";
+        }
+
+        if (solverMode == SolverMode_MeshAndSolve)
+        {
+            if (!isError)
+            {
+                m_isSolved = true;
+                emit solved();
+                //TODO emit timeStepChanged(false);
+            }
+        }
     }
 
-    Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal));
-    Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal));
-    Util::scene()->setActiveSolutionType(SolutionType_Normal);
-    cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal) << endl;
-
-    // delete temp file
-    if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
-    {
-        QFile::remove(Util::scene()->problemInfo()->fileName);
-        Util::scene()->problemInfo()->fileName = "";
-    }
+    m_isSolving = false;
 
     // close indicator progress
     Indicator::closeProgress();
-
-    m_isSolving = false;
-    if (solverMode == SolverMode_MeshAndSolve)
-    {
-        m_isSolved = true;
-        emit solved();
-        //TODO emit timeStepChanged(false);
-    }
 }
 
 ProgressDialog* Problem::progressDialog()
@@ -687,7 +722,7 @@ FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo,
         FieldSolutionID solutionIDNormal = lastTimeAndAdaptiveSolution(fieldInfo, SolutionType_Normal);
         FieldSolutionID solutionIDReference = lastTimeAndAdaptiveSolution(fieldInfo, SolutionType_Reference);
         if((solutionIDNormal.timeStep > solutionIDReference.timeStep) ||
-           (solutionIDNormal.adaptivityStep > solutionIDReference.adaptivityStep))
+                (solutionIDNormal.adaptivityStep > solutionIDReference.adaptivityStep))
         {
             solutionID = solutionIDNormal;
         }

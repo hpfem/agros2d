@@ -21,6 +21,7 @@
 #include "sceneview_common.h"
 
 #include "util.h"
+#include "logview.h"
 #include "scenebasic.h"
 #include "scenenode.h"
 #include "sceneedge.h"
@@ -244,21 +245,12 @@ Util::Util()
     m_problem = new Problem();
     m_solutionStore = new SolutionStore();
 
-    // completer
-    m_completer = new QCompleter();
-    m_completer->setCaseSensitivity(Qt::CaseInsensitive);
-    m_completer->setCompletionMode(QCompleter::InlineCompletion);
-    m_completer->setModelSorting(QCompleter::UnsortedModel);
-    m_completer->setModel(new QStringListModel());
-
-    QSettings settings;
-    QStringList list = settings.value("CommandDialog/RecentCommands").value<QStringList>();
-    QStringListModel *model = dynamic_cast<QStringListModel *>(m_completer->model());
-    model->setStringList(list);
-
     // config
     m_config = new Config();
     m_config->load();
+
+    // log
+    m_log = new Log();
 
     initLists();
 }
@@ -268,11 +260,11 @@ Util::~Util()
     logMessage("Util::~Util()");
 
     delete m_scene;
-    delete m_completer;
     delete m_config;
     delete m_scriptEngineRemote;
     delete m_problem;
     delete m_solutionStore;
+    delete m_log;
 }
 
 void Util::createSingleton()

@@ -11,7 +11,7 @@ class FieldInfo;
 class CouplingInfo;
 
 class ProgressDialog;
-class ProgressItemMesh;
+class MeshGeneratorTriangle;
 class ProgressItemSolve;
 class ProgressItemSolveAdaptiveStep;
 class ProgressItemProcessView;
@@ -107,7 +107,7 @@ public:
     void createStructure();
 
     // mesh
-    void mesh();
+    bool mesh();
     // solve
     void solve(SolverMode solverMode);
 
@@ -138,7 +138,7 @@ public:
 
     // progress dialog
     ProgressDialog *m_progressDialog;
-    ProgressItemMesh *m_progressItemMesh;
+    MeshGeneratorTriangle *m_progressItemMesh;
     ProgressItemSolve *m_progressItemSolve;
     ProgressItemSolveAdaptiveStep *m_progressItemSolveAdaptiveStep;
     ProgressItemProcessView *m_progressItemProcessView;

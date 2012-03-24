@@ -22,6 +22,7 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "hermes2d/problem.h"
+#include "logview.h"
 
 #include "scenebasic.h"
 #include "scenenode.h"
@@ -56,6 +57,8 @@ void Post2DHermes::clear()
 
 void Post2DHermes::processRangeContour()
 {
+    Util::log()->printMessage(QString("Post2DView: contour view (%1)").arg(Util::config()->contourVariable));
+
     m_contourIsPrepared = false;
 
     if (Util::problem()->isSolved() && Util::config()->contourVariable != "")
@@ -91,6 +94,8 @@ void Post2DHermes::processRangeContour()
 
 void Post2DHermes::processRangeScalar()
 {
+    Util::log()->printMessage(QString("Post2DView: scalar view (%1)").arg(Util::config()->scalarVariable));
+
     m_scalarIsPrepared = false;
 
     if (Util::problem()->isSolved() && Util::config()->scalarVariable != "")
@@ -123,6 +128,8 @@ void Post2DHermes::processRangeScalar()
 
 void Post2DHermes::processRangeVector()
 {
+    Util::log()->printMessage(QString("Post2DView: vector view (%1)").arg(Util::config()->vectorVariable));
+
     m_vectorIsPrepared = false;
 
     if (Util::problem()->isSolved() && Util::config()->vectorVariable != "")
@@ -153,8 +160,6 @@ void Post2DHermes::processRangeVector()
 
 void Post2DHermes::processSolved()
 {
-    qDebug("Post2DHermes::processSolved()");
-
     QTimer::singleShot(0, this, SLOT(processRangeContour()));
     QTimer::singleShot(0, this, SLOT(processRangeScalar()));
     QTimer::singleShot(0, this, SLOT(processRangeVector()));

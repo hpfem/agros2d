@@ -57,6 +57,7 @@ class CouplingInfo;
 
 class Problem;
 class SolutionStore;
+class Log;
 
 namespace Hermes
 {
@@ -366,10 +367,10 @@ public:
     static void createSingleton();
     static Util* singleton();
     static inline Scene *scene() { return Util::singleton()->m_scene; }
-    static inline QCompleter *completer() { return Util::singleton()->m_completer; }
     static inline Config *config() { return Util::singleton()->m_config; }
     static inline Problem *problem() { return Util::singleton()->m_problem; }
     static inline SolutionStore *solutionStore() { return Util::singleton()->m_solutionStore; }
+    static inline Log *log() { return Util::singleton()->m_log; }
 
 protected:
     Util();
@@ -381,11 +382,11 @@ private:
     static Util *m_singleton;
 
     Scene *m_scene;
-    QCompleter *m_completer;
     Config *m_config;
     Problem *m_problem;
     SolutionStore *m_solutionStore;
     ScriptEngineRemote *m_scriptEngineRemote;
+    Log *m_log;
 };
 
 #endif /* SCENE_H */

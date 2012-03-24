@@ -22,6 +22,7 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "hermes2d/problem.h"
+#include "logview.h"
 
 #include "scenebasic.h"
 #include "scenenode.h"
@@ -88,6 +89,8 @@ void Post3DHermes::processInitialMesh()
 
 void Post3DHermes::processRangeScalar()
 {
+    Util::log()->printMessage(QString("Post3DView: scalar view (%1)").arg(Util::config()->scalarVariable));
+
     processInitialMesh();
 
     m_scalarIsPrepared = false;
@@ -113,8 +116,6 @@ void Post3DHermes::processRangeScalar()
 
 void Post3DHermes::processSolved()
 {
-    qDebug("Post3DHermes::processSolved()");
-
     QTimer::singleShot(0, this, SLOT(processRangeScalar()));
 }
 
@@ -809,7 +810,9 @@ void SceneViewPost3D::doInvalidated()
     m_listScalarField3DSolid = -1;
 
     if (Util::problem()->isSolved())
+    {
         m_post3DHermes->processSolved();
+    }
 
     // actions
     actSceneModePost3D->setEnabled(Util::problem()->isSolved());

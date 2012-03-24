@@ -37,7 +37,6 @@ class Orderizer;
 class Chart;
 class QwtPlotCurve;
 
-
 class ProgressItem : public QObject
 {
     Q_OBJECT
@@ -67,115 +66,6 @@ signals:
 protected slots:
     void showMessage(const QString &msg, bool isError, int position);
     virtual void cancelProgressItem() { m_isCanceled = true; }
-};
-
-class ProgressItemMesh : public ProgressItem
-{
-    Q_OBJECT
-
-private slots:
-    void meshTriangleCreated(int exitCode);
-    bool writeToTriangle();
-    bool triangleToHermes2D();
-
-public:
-    ProgressItemMesh();
-
-    void setSteps();
-
-    bool run(bool quiet = false);
-
-    void mesh();
-
-private:
-    struct MeshEdge
-    {
-        MeshEdge()
-        {
-            this->node[0] = -1;
-            this->node[1] = -1;
-            this->marker = -1;
-
-            this->isActive = true;
-            this->isUsed = true;
-        }
-
-        MeshEdge(int node_1, int node_2, int marker)
-        {
-            this->node[0] = node_1;
-            this->node[1] = node_2;
-            this->marker = marker;
-
-            this->isActive = true;
-            this->isUsed = true;
-        }
-
-        int node[2], marker;
-        bool isActive, isUsed;
-    };
-
-    struct MeshElement
-    {
-        MeshElement()
-        {
-            this->node[0] = -1;
-            this->node[1] = -1;
-            this->node[2] = -1;
-            this->node[3] = -1;
-            this->marker = -1;
-
-            this->isActive = true;
-            this->isUsed = true;
-        }
-
-        MeshElement(int node_1, int node_2, int node_3, int marker)
-        {
-            this->node[0] = node_1;
-            this->node[1] = node_2;
-            this->node[2] = node_3;
-            this->node[3] = -1;
-            this->marker = marker;
-
-            this->isActive = true;
-            this->isUsed = true;
-        }
-
-        MeshElement(int node_1, int node_2, int node_3, int node_4, int marker)
-        {
-            this->node[0] = node_1;
-            this->node[1] = node_2;
-            this->node[2] = node_3;
-            this->node[3] = node_4;
-            this->marker = marker;
-
-            this->isActive = true;
-            this->isUsed = true;
-        }
-
-        inline bool isTriangle() const { return (node[3] == -1); }
-
-        int node[4], marker;
-        bool isActive, isUsed;
-
-        int neigh[3];
-    };
-
-    /*
-    struct MeshNode
-    {
-        MeshNode(int n, double x, double y, int marker)
-        {
-            this->n = n;
-            this.x = x;
-            this.y = n;
-            this->marker = marker;
-        }
-
-        int n;
-        double x, y;
-        int marker;
-    };
-    */
 };
 
 class ProgressItemSolve : public ProgressItem

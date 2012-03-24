@@ -31,6 +31,7 @@
 #include "scenesolution.h"
 #include "sceneinfoview.h"
 #include "tooltipview.h"
+#include "logview.h"
 #include "postprocessorview.h"
 #include "chartdialog.h"
 #include "confdialog.h"
@@ -735,6 +736,10 @@ void MainWindow::createViews()
     tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
 
+    logView = new LogView(this);
+    logView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::LeftDockWidgetArea, logView);
+
     // tabify dock together
     tabifyDockWidget(sceneInfoView, postprocessorView);
 
@@ -1176,7 +1181,8 @@ void MainWindow::doCreateVideo()
 
 void MainWindow::doCreateMesh()
 {
-    logMessage("MainWindow::doCreateMesh()");
+    LogDialog2 *logDialog = new LogDialog2(this, tr("Mesh"));
+    logDialog->show();
 
     // create mesh
     Util::problem()->solve(SolverMode_Mesh);
@@ -1184,24 +1190,18 @@ void MainWindow::doCreateMesh()
     {
         // raise mesh viewer
         sceneViewMesh->actSceneModeMesh->trigger();
+
+        // successful run
+        logDialog->close();
     }
 
     doInvalidated();
 }
 
-void MainWindow::doFullScreen()
-{
-    logMessage("MainWindow::doFullScreen()");
-
-    if (isFullScreen())
-        showNormal();
-    else
-        showFullScreen();
-}
-
 void MainWindow::doSolve()
 {
-    logMessage("MainWindow::doSolve()");
+    LogDialog2 *logDialog = new LogDialog2(this, tr("Solver"));
+    logDialog->show();
 
     // solve problem
     Util::problem()->solve(SolverMode_MeshAndSolve);
@@ -1215,6 +1215,9 @@ void MainWindow::doSolve()
 
         // raise postprocessor
         postprocessorView->raise();
+
+        // successful run
+        logDialog->close();
     }
 
     doInvalidated();
@@ -1224,7 +1227,8 @@ void MainWindow::doSolve()
 
 void MainWindow::doSolveAdaptiveStep()
 {
-    logMessage("MainWindow::doSolveAdaptiveStep()");
+    LogDialog2 *logDialog = new LogDialog2(this, tr("Adaptive step"));
+    logDialog->show();
 
     // solve problem
     Util::problem()->solve(SolverMode_SolveAdaptiveStep);
@@ -1238,11 +1242,24 @@ void MainWindow::doSolveAdaptiveStep()
 
         // raise postprocessor
         postprocessorView->raise();
+
+        // successful run
+        logDialog->close();
     }
 
     doInvalidated();
     setFocus();
     activateWindow();
+}
+
+void MainWindow::doFullScreen()
+{
+    logMessage("MainWindow::doFullScreen()");
+
+    if (isFullScreen())
+        showNormal();
+    else
+        showFullScreen();
 }
 
 void MainWindow::doOptions()

@@ -28,6 +28,7 @@
 #include "scenemarkerdialog.h"
 #include "module_agros.h"
 #include "weakform_parser.h"
+#include "logview.h"
 
 //TODO will be removed after putting code to sceneSolution
 #include "scenesolution.h"
@@ -49,7 +50,42 @@ Mesh* Solver<Scalar>::readMesh()
 {
     // load the mesh file
     cout << "reading mesh in solver " << tempProblemFileName().toStdString() + ".xml" << endl;
-    Mesh* mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+    Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+
+    // check that all boundary edges have a marker assigned
+    QSet<int> boundaries;
+    for (int i = 0; i < mesh->get_max_node_id(); i++)
+    {
+        Node *node = mesh->get_node(i);
+
+        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        {
+            if ((node->used == 1 && node->ref < 2 && node->type == 1))
+            {
+                int tmp_marker = atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
+                int marker = (tmp_marker > 0) ? tmp_marker - 1 : - tmp_marker;
+
+                qDebug() << "bnd = " << node->bnd << ", marker = " << marker;
+
+                if (Util::scene()->edges->at(marker)->getMarker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
+                    boundaries.insert(marker);
+            }
+        }
+    }
+
+    if (boundaries.count() > 0)
+    {
+        QString markers;
+        foreach (int marker, boundaries)
+            markers += QString::number(marker) + ", ";
+        markers = markers.left(markers.length() - 2);
+
+        Util::log()->printError(QObject::tr("Boundary edges '%1' does not have a boundary marker").arg(markers));
+
+        delete mesh;
+        return NULL;
+    }
+    boundaries.clear();
 
     refineMesh(m_block->m_fields.at(0)->fieldInfo(), mesh, true, true);  //TODO multimesh
     Util::problem()->setMeshInitial(mesh);
@@ -324,10 +360,10 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
-//            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
-//                                             arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
-//            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
-//                                             arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
+            //            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
+            //                                             arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
+            //            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
+            //                                             arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
 
             //delete coeff_vec; //TODO nebo se to dela v resici???
         }
@@ -339,21 +375,25 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         }
     }
 
-//    if (m_fieldInfo->linearityType == LinearityType_Picard)
-//    {
-//    }
+    //    if (m_fieldInfo->linearityType == LinearityType_Picard)
+    //    {
+    //    }
 
     return true;
 
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveSimple()
+bool Solver<Scalar>::solveSimple()
 {
-    MultiSolutionArray<Scalar> multiSolutionArray;
+    Util::log()->printDebug(QString("Solver: solve"));
 
     // read mesh from file
     Mesh *mesh = readMesh();
+    if (!mesh)
+        return false;
+
+    MultiSolutionArray<Scalar> multiSolutionArray;
 
     // create essential boundary conditions and space
     createSpace(mesh, multiSolutionArray);
@@ -366,7 +406,7 @@ void Solver<Scalar>::solveSimple()
     {
         m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
         //cleanup();
-        return;
+        return false;
     }
 
     double actualTime = 0.0;
@@ -389,16 +429,22 @@ void Solver<Scalar>::solveSimple()
 
         Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
     }
+
+    return !isError;
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
+bool Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
 {
-    MultiSolutionArray<Scalar> msa;
+    Util::log()->printDebug(QString("Solver: solve initial adaptivity step"));
 
     // read mesh from file
     Mesh *mesh = readMesh();
+    if (!mesh)
+        return false;
     cout << "address of the mesh " << mesh << endl;
+
+    MultiSolutionArray<Scalar> msa;
 
     // create essential boundary conditions and space
     createSpace(mesh, msa);
@@ -408,11 +454,14 @@ void Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
 
     BlockSolutionID solutionID(m_block, timeStep, 0, SolutionType_NonExisting);
     Util::solutionStore()->saveSolution(solutionID, msa);
+
+    return true;
 }
 
 template <typename Scalar>
 bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 {
+    Util::log()->printDebug(QString("Solver: solve next adaptivity step"));
 
     MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting));
     MultiSolutionArray<Scalar> msaRef;
@@ -436,9 +485,9 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     m_wf->registerForms();
 
 
-//    // construct refined spaces
-//    Hermes::vector<Space<Scalar> *> spaceReference
-//            = *Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()));
+    //    // construct refined spaces
+    //    Hermes::vector<Space<Scalar> *> spaceReference
+    //            = *Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()));
 
     msaRef.setSpaces(smartize(*Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()))));
 
@@ -449,7 +498,7 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     if (!solveOneProblem(msaRef))
     {
         isError = true;
-       // break;
+        // break;
     }
 
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
@@ -477,15 +526,15 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
     cout << "ERROR " << error << endl;
 
-//    // emit signal
-//    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
-//                                     arg(error, 0, 'f', 3).
-//                                     arg(i + 1).
-//                                     arg(maxAdaptivitySteps).
-//                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
-//                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
-//    // add error to the list
-//    m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
+    //    // emit signal
+    //    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
+    //                                     arg(error, 0, 'f', 3).
+    //                                     arg(i + 1).
+    //                                     arg(maxAdaptivitySteps).
+    //                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
+    //                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
+    //    // add error to the list
+    //    m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
 
     bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) < Util::config()->maxDofs;
     cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Util::config()->maxDofs << endl;
@@ -494,9 +543,9 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
         cout << "*** dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << "tr " << Util::config()->threshold <<
                 ", st " << Util::config()->strategy << ", reg " << Util::config()->meshRegularity << endl;
         bool noref = adaptivity.adapt(selector,
-                         Util::config()->threshold,
-                         Util::config()->strategy,
-                         Util::config()->meshRegularity);
+                                      Util::config()->threshold,
+                                      Util::config()->strategy,
+                                      Util::config()->meshRegularity);
 
         cout << "last refined " << adaptivity.get_last_refinements().size() << endl;
         cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
@@ -510,12 +559,14 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 
 
 template <typename Scalar>
-void Solver<Scalar>::solveInitialTimeStep()
+bool Solver<Scalar>::solveInitialTimeStep()
 {
     MultiSolutionArray<Scalar> multiSolutionArray;
 
     // read mesh from file
-    Mesh* mesh = readMesh();
+    Mesh *mesh = readMesh();
+    if (!mesh)
+        return false;
 
     // create essential boundary conditions and space
     createSpace(mesh, multiSolutionArray);
@@ -531,12 +582,15 @@ void Solver<Scalar>::solveInitialTimeStep()
             totalComp++;
         }
     }
+
     BlockSolutionID solutionID(m_block, 0, 0, SolutionType_Normal);
     Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
+
+    return true;
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveTimeStep(double timeStep)
+bool Solver<Scalar>::solveTimeStep(double timeStep)
 {
     BlockSolutionID previousSolutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionType_Normal);
     MultiSolutionArray<Scalar> multiSolutionArray = Util::solutionStore()->multiSolution(previousSolutionID);
@@ -547,11 +601,12 @@ void Solver<Scalar>::solveTimeStep(double timeStep)
     {
         m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
         //cleanup();
-        return;
+        return false;
     }
 
     double actualTime = Util::solutionStore()->lastTime(m_block) + timeStep;
     multiSolutionArray.setTime(actualTime);
+    Util::log()->printDebug(QString("Solver: solve time step, actual time is %1 s").arg(actualTime));
 
     // update essential bc values
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), actualTime);
@@ -577,6 +632,8 @@ void Solver<Scalar>::solveTimeStep(double timeStep)
 
         Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
     }
+
+    return !isError;
 }
 
 template <typename Scalar>
@@ -589,8 +646,8 @@ void Solver<Scalar>::solve(SolverConfig config)
 
     // mesh file
     Mesh *mesh = NULL;
-//    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
-//    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solution;
+    //    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
+    //    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solution;
     MultiSolutionArray<Scalar> multiSolutionArray;
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaceCoarse;
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutionCoarse;
@@ -598,7 +655,6 @@ void Solver<Scalar>::solve(SolverConfig config)
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
     Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
-
 
     int lastTimeStep = Util::solutionStore()->lastTimeStep(m_block, SolutionType_Normal);
     int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(m_block, SolutionType_Normal);
@@ -628,15 +684,15 @@ void Solver<Scalar>::solve(SolverConfig config)
 
     if((config.action == SolverAction_AdaptivityStep))
     {
-//        solutionCoarse = createSolution();
-//        spaceCoarse = createCoarseSpace();
-//        // construct refined spaces
-//        space = smartize(*Space<Scalar>::construct_refined_spaces(desmartize(spaceCoarse)));
+        //        solutionCoarse = createSolution();
+        //        spaceCoarse = createCoarseSpace();
+        //        // construct refined spaces
+        //        space = smartize(*Space<Scalar>::construct_refined_spaces(desmartize(spaceCoarse)));
     }
 
-//    qDebug() << "nodes: " << mesh->get_num_nodes();
-//    qDebug() << "elements: " << mesh->get_num_elements();
-//    qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(space)));
+    //    qDebug() << "nodes: " << mesh->get_num_nodes();
+    //    qDebug() << "elements: " << mesh->get_num_elements();
+    //    qDebug() << "ndof: " << Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(space)));
 
     // create solutions
     createNewSolutions(multiSolutionArray);
@@ -667,54 +723,54 @@ void Solver<Scalar>::solve(SolverConfig config)
 
     if((config.action == SolverAction_AdaptivityStep))
     {
-//        // project the fine mesh solution onto the coarse mesh.
-//        Hermes::Hermes2D::OGProjection<Scalar>::project_global(spaceCoarse, solution, solutionCoarse, Util::scene()->problemInfo()->matrixSolver);
+        //        // project the fine mesh solution onto the coarse mesh.
+        //        Hermes::Hermes2D::OGProjection<Scalar>::project_global(spaceCoarse, solution, solutionCoarse, Util::scene()->problemInfo()->matrixSolver);
 
-//        // calculate element errors and total error estimate.
-//        Hermes::Hermes2D::Adapt<Scalar> adaptivity(spaceCoarse, projNormType);
+        //        // calculate element errors and total error estimate.
+        //        Hermes::Hermes2D::Adapt<Scalar> adaptivity(spaceCoarse, projNormType);
 
-//        // calculate error estimate for each solution component and the total error estimate.
-//        double error = adaptivity.calc_err_est(solutionCoarse, solution) * 100;
+        //        // calculate error estimate for each solution component and the total error estimate.
+        //        double error = adaptivity.calc_err_est(solutionCoarse, solution) * 100;
 
-//        // emit signal
-////        m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
-////                                         arg(error, 0, 'f', 3).
-////                                         arg(i + 1).
-////                                         arg(maxAdaptivitySteps).
-////                                         arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
-////                                         arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
+        //        // emit signal
+        ////        m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
+        ////                                         arg(error, 0, 'f', 3).
+        ////                                         arg(i + 1).
+        ////                                         arg(maxAdaptivitySteps).
+        ////                                         arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
+        ////                                         arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
 
-//        cout << (QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
-//                 arg(error, 0, 'f', 3).
-//                 arg(lastAdaptiveStep + 1).
-//                 arg(1000).
-//                 arg(Space<Scalar>::get_num_dofs(spaceCoarse)).
-//                 arg(Space<Scalar>::get_num_dofs(space)), false, 1).toStdString() << endl;
+        //        cout << (QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
+        //                 arg(error, 0, 'f', 3).
+        //                 arg(lastAdaptiveStep + 1).
+        //                 arg(1000).
+        //                 arg(Space<Scalar>::get_num_dofs(spaceCoarse)).
+        //                 arg(Space<Scalar>::get_num_dofs(space)), false, 1).toStdString() << endl;
 
 
-//        // add error to the list
-//        m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
+        //        // add error to the list
+        //        m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
 
-//        if (error < adaptivityTolerance || Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) >= adaptivityMaxDOFs)
-//        {
-//            break;
-//        }
-//        adaptivity.adapt(selector,
-//                         Util::config()->threshold,
-//                         Util::config()->strategy,
-//                         Util::config()->meshRegularity);
+        //        if (error < adaptivityTolerance || Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space) >= adaptivityMaxDOFs)
+        //        {
+        //            break;
+        //        }
+        //        adaptivity.adapt(selector,
+        //                         Util::config()->threshold,
+        //                         Util::config()->strategy,
+        //                         Util::config()->meshRegularity);
 
     }
 
     // output
     if (!isError)
     {
-//        foreach (Field* field, m_block->m_fields)
-//        {
-//            FieldInfo* fieldInfo = field->fieldInfo();
-//            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
-//            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
-//        }
+        //        foreach (Field* field, m_block->m_fields)
+        //        {
+        //            FieldInfo* fieldInfo = field->fieldInfo();
+        //            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
+        //            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray.fieldPart(m_block, fieldInfo));
+        //        }
 
         BlockSolutionID solutionID;
         solutionID.group = m_block;
@@ -722,27 +778,27 @@ void Solver<Scalar>::solve(SolverConfig config)
 
         Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
 
-//        foreach (Field* field, m_block->m_fields)
-//        {
-//            FieldInfo* fieldInfo = field->fieldInfo();
+        //        foreach (Field* field, m_block->m_fields)
+        //        {
+        //            FieldInfo* fieldInfo = field->fieldInfo();
 
-//            MultiSolutionArray<Scalar> multiSolutionArray;
-//            for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
-//            {
-//                int position = component + m_block->offset(field);
-//                SolutionArray<Scalar> solutionArray(solution.at(position), space.at(position), 0, 0, actualTime);
-//                multiSolutionArray.addComponent(solutionArray);
-//            }
+        //            MultiSolutionArray<Scalar> multiSolutionArray;
+        //            for(int component = 0; component < fieldInfo->module()->number_of_solution(); component++)
+        //            {
+        //                int position = component + m_block->offset(field);
+        //                SolutionArray<Scalar> solutionArray(solution.at(position), space.at(position), 0, 0, actualTime);
+        //                multiSolutionArray.addComponent(solutionArray);
+        //            }
 
-//            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
-//            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray);
+        //            // saving to sceneSolution .. in the future, sceneSolution should use solution from problems internal storage, see previous
+        //            Util::scene()->sceneSolution(fieldInfo)->setSolutionArray(multiSolutionArray);
 
-//            FieldSolutionID solutionID;
-//            solutionID.group = fieldInfo;
-//            solutionID.timeStep = lastTimeStep + 1;
+        //            FieldSolutionID solutionID;
+        //            solutionID.group = fieldInfo;
+        //            solutionID.timeStep = lastTimeStep + 1;
 
-//            Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
-//        }
+        //            Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
+        //        }
 
 
     }
