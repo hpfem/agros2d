@@ -39,6 +39,8 @@ public:
     SceneEdge *findClosestEdge(const Point &point);
     SceneLabel *findClosestLabel(const Point &point);
 
+    void doZoomRegion(const Point &start, const Point &end);
+
 protected:
     double m_scale2d; // scale
     Point m_offset2d; // offset
@@ -58,7 +60,6 @@ protected:
                        bool horizontal = true);
 
     void setZoom(double power);
-    void doZoomRegion(const Point &start, const Point &end);
 
     virtual void paintGL() = 0;
 

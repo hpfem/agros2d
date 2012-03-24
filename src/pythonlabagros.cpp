@@ -767,28 +767,28 @@ void PyGeometry::zoomBestFit()
 {
     logMessage("PyGeometry::zoomBestFit()");
 
-    // sceneView()->doZoomBestFit();
+    currentPythonEngineAgros()->sceneViewGeometry()->doZoomBestFit();
 }
 
 void PyGeometry::zoomIn()
 {
     logMessage("PyGeometry::zoomIn()");
 
-    // sceneView()->doZoomIn();
+    currentPythonEngineAgros()->sceneViewGeometry()->doZoomIn();
 }
 
 void PyGeometry::zoomOut()
 {
     logMessage("PyGeometry::zoomOut()");
 
-    // sceneView()->doZoomOut();
+    currentPythonEngineAgros()->sceneViewGeometry()->doZoomOut();
 }
 
 void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
 {
     logMessage("PyGeometry::zoomRegion()");
 
-    // sceneView()->doZoomRegion(Point(x1, y1), Point(x2, y2));
+    currentPythonEngineAgros()->sceneViewGeometry()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 char *pyVersion()
