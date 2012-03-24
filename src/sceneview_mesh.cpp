@@ -65,12 +65,12 @@ void MeshHermes::processOrder()
 
 void MeshHermes::processInitialMesh()
 {
-    Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->meshInitial()->get_num_active_elements()));
-
     m_initialMeshIsPrepared = false;
 
     if (Util::problem()->isMeshed())
     {
+        Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->meshInitial()->get_num_active_elements()));
+
         // init linearizer for initial mesh
         Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->meshInitial());
         m_linInitialMeshView.process_solution(&initial);
@@ -83,12 +83,12 @@ void MeshHermes::processInitialMesh()
 
 void MeshHermes::processSolutionMesh()
 {
-    Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeSceneSolution()->sln(0)->get_mesh()->get_num_active_elements()));
-
     m_solutionMeshIsPrepared = false;
 
     if (Util::problem()->isSolved())
     {
+        Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeSceneSolution()->sln(0)->get_mesh()->get_num_active_elements()));
+
         // init linearizer for solution mesh
         Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeSceneSolution()->sln(0)->get_mesh());
         m_linSolutionMeshView.process_solution(&solution);

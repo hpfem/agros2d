@@ -61,7 +61,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     readMeshDirtyFix();
 
     createPythonEngine(new PythonEngineAgros());
-    currentPythonEngine();
     createScene();
 
     chartDialog = new ChartDialog(this);
@@ -89,10 +88,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), sceneViewGeometry, SLOT(doSceneGeometryModeSet(QAction *)));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewGeometry, SLOT(clear()));
+    currentPythonEngineAgros()->setSceneViewGeometry(sceneViewGeometry);
 
     // mesh
     connect(Util::scene(), SIGNAL(cleared()), postprocessorView, SLOT(clear()));
     connect(postprocessorView, SIGNAL(apply()), sceneViewMesh, SLOT(clear()));
+    currentPythonEngineAgros()->setSceneViewMesh(sceneViewMesh);
 
     // postprocessor 2d
     connect(sceneViewPost2D, SIGNAL(mousePressed()), resultsView, SLOT(doShowResults()));
@@ -102,9 +103,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(resultsView->btnSelectMarker, SIGNAL(clicked()), sceneViewPost2D->actSceneViewSelectByMarker, SLOT(trigger()));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(clear()));
     connect(postprocessorView, SIGNAL(apply()), sceneViewPost2D, SLOT(clear()));
+    currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
 
     // postprocessor 3d
-    //
+    currentPythonEngineAgros()->setSceneViewPost3D(sceneViewPost3D);
 
     connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 

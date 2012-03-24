@@ -31,7 +31,7 @@
 
 int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
 {
-    logMessage("findElementInMesh()");
+    assert(mesh);
 
     for (int i = 0; i < mesh->get_num_active_elements(); i++)
     {

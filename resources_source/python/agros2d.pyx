@@ -217,14 +217,18 @@ cdef class Problem:
         def __set__(self, time_total):
             self.thisptr.setTimeTotal(time_total)
 
+    # solve
+    def solve(self):
+        self.thisptr.solve()
+
 # Field
 cdef class Field:
     cdef PyField *thisptr
 
     # Field(field_id, analysis_type, number_of_refinements, polynomial_order, linearity_type, nonlinear_tolerance, nonlinear_steps, adaptivity_type, adaptivity_tolerance, adaptivity_steps, initial_condition, weak_forms)
-    def __cinit__(self, Problem problem, char *field_id, char *analysis_type, int number_of_refinements = 0, int polynomial_order = 1, char *linearity_type = "linear",
+    def __cinit__(self, Problem problem, char *field_id, char *analysis_type, int number_of_refinements = 0, int polynomial_order = 1, char *linearity_type = "newton",
                   double nonlinear_tolerance = 0.001, int nonlinear_steps = 10, char *adaptivity_type = "disabled", double adaptivity_tolerance = 1,
-                  int adaptivity_steps = 1, double initial_condition = 0.0, char *weak_forms = "compiled"):
+                  int adaptivity_steps = 1, double initial_condition = 0.0, char *weak_forms = "interpreted"):
         # todo - more problems
         self.thisptr = new PyField(field_id, analysis_type, number_of_refinements, polynomial_order, linearity_type, nonlinear_tolerance,
                                    nonlinear_steps, adaptivity_type, adaptivity_tolerance, adaptivity_steps, initial_condition, weak_forms)
@@ -538,9 +542,6 @@ def save_image(char *str, int w = 0, int h = 0):
 
 def solutionfilename():
     return pythonSolutionFileName()
-
-def solve():
-    pythonSolve()
 
 def solveadaptivestep():
     pythonSolveAdaptiveStep()

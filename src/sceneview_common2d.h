@@ -35,15 +35,15 @@ public:
     SceneViewCommon2D(QWidget *parent = 0);
     ~SceneViewCommon2D();
 
+    SceneNode *findClosestNode(const Point &point);
+    SceneEdge *findClosestEdge(const Point &point);
+    SceneLabel *findClosestLabel(const Point &point);
+
 protected:
     double m_scale2d; // scale
     Point m_offset2d; // offset
 
     void loadProjection2d(bool setScene = false);
-
-    SceneNode *findClosestNode(const Point &point);
-    SceneEdge *findClosestEdge(const Point &point);
-    SceneLabel *findClosestLabel(const Point &point);
 
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);

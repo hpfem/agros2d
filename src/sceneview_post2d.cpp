@@ -42,7 +42,6 @@ Post2DHermes::Post2DHermes()
     m_vectorIsPrepared = false;
 }
 
-
 Post2DHermes::~Post2DHermes()
 {
     clear();
