@@ -29,12 +29,11 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 
-VolumeIntegralValue::VolumeIntegralValue(FieldInfo *fieldInfo)
+VolumeIntegralValue::VolumeIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
     parser = new Parser(fieldInfo);
     initParser();
 
-    // TODO: upravit parametry!!!
     FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
     SceneSolution<double> *sceneSolution = Util::scene()->sceneSolution(fsid);
     if (Util::problem()->isSolved() &&

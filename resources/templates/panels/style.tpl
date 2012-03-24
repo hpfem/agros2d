@@ -22,6 +22,7 @@ h2 {
 
 table, td, tr {
 	font-size: 93%;		
+	padding: 1pt 0pt 0pt 1pt;
 	/*border: 1pt solid black;*/
 }
  
@@ -41,7 +42,7 @@ td.unit {
 }
 
 .section {
-	padding: 2pt 0pt 10pt 2pt;
+	padding: 2pt 0pt 5pt 2pt;
 	margin: 0;
 }
 

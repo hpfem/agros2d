@@ -48,6 +48,7 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
     btnSelectMarker = new QPushButton(tr("Select by marker"));
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
+    btnLayout->addStretch();
     btnLayout->addWidget(btnPoint);
     btnLayout->addWidget(btnSelectMarker);
 

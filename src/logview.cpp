@@ -169,7 +169,6 @@ LogDialog2::LogDialog2(QWidget *parent, const QString &title) : QDialog(parent)
     createControls();
 
     setMinimumSize(550, 250);
-    setMaximumSize(minimumSize());
 
     QSettings settings;
     restoreGeometry(settings.value("LogDialog/Geometry", saveGeometry()).toByteArray());
