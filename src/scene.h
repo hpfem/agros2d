@@ -248,7 +248,6 @@ public:
     static void createSingleton();
     static Util* singleton();
     static inline Scene *scene() { return Util::singleton()->m_scene; }
-    static inline QCompleter *completer() { return Util::singleton()->m_completer; }
     static inline Config *config() { return Util::singleton()->m_config; }
 
 protected:
@@ -261,7 +260,6 @@ private:
     static Util *m_singleton;
 
     Scene *m_scene;
-    QCompleter *m_completer;
     Config *m_config;
     ScriptEngineRemote *m_scriptEngineRemote;
 };

@@ -163,18 +163,6 @@ Util::Util()
     // script remote
     m_scriptEngineRemote = new ScriptEngineRemote();
 
-    // completer
-    m_completer = new QCompleter();
-    m_completer->setCaseSensitivity(Qt::CaseInsensitive);
-    m_completer->setCompletionMode(QCompleter::InlineCompletion);
-    m_completer->setModelSorting(QCompleter::UnsortedModel);
-    m_completer->setModel(new QStringListModel());
-
-    QSettings settings;
-    QStringList list = settings.value("CommandDialog/RecentCommands").value<QStringList>();
-    QStringListModel *model = dynamic_cast<QStringListModel *>(m_completer->model());
-    model->setStringList(list);
-
     // config
     m_config = new Config();
     m_config->load();
@@ -187,7 +175,6 @@ Util::~Util()
     logMessage("Util::~Util()");
 
     delete m_scene;
-    delete m_completer;
     delete m_config;
     delete m_scriptEngineRemote;
 }

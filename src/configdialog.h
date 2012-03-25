@@ -38,7 +38,6 @@ public:
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void doClearApplicationLog();
-    void doClearCommandHistory();
     void doAdaptivityDefault();
     void doCommandsDefault();
     void doColorsDefault();
