@@ -31,8 +31,31 @@ SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
+
     setMinimumSize(350, 225);
     setMaximumSize(minimumSize());
+
+    QSettings settings;
+    restoreGeometry(settings.value("SceneTransformDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+SceneTransformDialog::~SceneTransformDialog()
+{
+    QSettings settings;
+    settings.setValue("SceneTransformDialog/Geometry", saveGeometry());
+}
+
+
+void SceneTransformDialog::showDialog()
+{
+    lstTranslateX->setText(Util::scene()->problemInfo()->labelX() + ":");
+    lstTranslateY->setText(Util::scene()->problemInfo()->labelY() + ":");
+    lstRotateBasePointX->setText(Util::scene()->problemInfo()->labelX() + ":");
+    lstRotateBasePointY->setText(Util::scene()->problemInfo()->labelY() + ":");
+    lstScaleBasePointX->setText(Util::scene()->problemInfo()->labelX() + ":");
+    lstScaleBasePointY->setText(Util::scene()->problemInfo()->labelY() + ":");
+
+    show();
 }
 
 void SceneTransformDialog::createControls()
@@ -43,10 +66,13 @@ void SceneTransformDialog::createControls()
     txtTranslateX = new ValueLineEdit();
     txtTranslateY = new ValueLineEdit();
 
+    lstTranslateX = new QLabel();
+    lstTranslateY = new QLabel();
+
     QGridLayout *layoutTranslate = new QGridLayout();
-    layoutTranslate->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
+    layoutTranslate->addWidget(lstTranslateX, 0, 0);
     layoutTranslate->addWidget(txtTranslateX, 0, 1);
-    layoutTranslate->addWidget(new QLabel(Util::scene()->problemInfo()->labelY() + ":"), 1, 0);
+    layoutTranslate->addWidget(lstTranslateY, 1, 0);
     layoutTranslate->addWidget(txtTranslateY, 1, 1);
     layoutTranslate->addWidget(new QLabel(""), 2, 0);
 
@@ -58,10 +84,13 @@ void SceneTransformDialog::createControls()
     txtRotateBasePointY = new ValueLineEdit();
     txtRotateAngle = new ValueLineEdit();
 
+    lstRotateBasePointX = new QLabel();
+    lstRotateBasePointY = new QLabel();
+
     QGridLayout *layoutRotate = new QGridLayout();
-    layoutRotate->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
+    layoutRotate->addWidget(lstRotateBasePointX, 0, 0);
     layoutRotate->addWidget(txtRotateBasePointX, 0, 1);
-    layoutRotate->addWidget(new QLabel(Util::scene()->problemInfo()->labelY() + ":"), 1, 0);
+    layoutRotate->addWidget(lstRotateBasePointY, 1, 0);
     layoutRotate->addWidget(txtRotateBasePointY, 1, 1);
     layoutRotate->addWidget(new QLabel(tr("Angle:")), 2, 0);
     layoutRotate->addWidget(txtRotateAngle, 2, 1);
@@ -74,10 +103,13 @@ void SceneTransformDialog::createControls()
     txtScaleBasePointY = new ValueLineEdit();
     txtScaleFactor = new ValueLineEdit();
 
+    lstScaleBasePointX = new QLabel();
+    lstScaleBasePointY = new QLabel();
+
     QGridLayout *layoutScale = new QGridLayout();
-    layoutScale->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
+    layoutScale->addWidget(lstScaleBasePointX, 0, 0);
     layoutScale->addWidget(txtScaleBasePointX, 0, 1);
-    layoutScale->addWidget(new QLabel(Util::scene()->problemInfo()->labelY() + ":"), 1, 0);
+    layoutScale->addWidget(lstScaleBasePointY, 1, 0);
     layoutScale->addWidget(txtScaleBasePointY, 1, 1);
     layoutScale->addWidget(new QLabel(tr("Scaling factor:")), 2, 0);
     layoutScale->addWidget(txtScaleFactor, 2, 1);

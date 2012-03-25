@@ -132,7 +132,6 @@ void PostprocessorView::loadAdvanced()
 
     chkShowAxes->setChecked(Util::config()->showAxes);
     chkShowRulers->setChecked(Util::config()->showRulers);
-    chkShowLabel->setChecked(Util::config()->showLabel);
 
     chkZoomToMouse->setChecked(Util::config()->zoomToMouse);
     txtGeometryNodeSize->setValue(Util::config()->nodeSize);
@@ -267,7 +266,6 @@ void PostprocessorView::saveAdvanced()
 
     Util::config()->showAxes = chkShowAxes->isChecked();
     Util::config()->showRulers = chkShowRulers->isChecked();
-    Util::config()->showLabel = chkShowLabel->isChecked();
 
     Util::config()->nodeSize = txtGeometryNodeSize->value();
     Util::config()->edgeWidth = txtGeometryEdgeWidth->value();
@@ -946,12 +944,10 @@ QWidget *PostprocessorView::controlsWorkspace()
     // other
     chkShowRulers = new QCheckBox(tr("Show rulers"));
     chkShowAxes = new QCheckBox(tr("Show axes"));
-    chkShowLabel = new QCheckBox(tr("Show label"));
 
     QVBoxLayout *layoutOther = new QVBoxLayout();
     layoutOther->addWidget(chkShowAxes);
     layoutOther->addWidget(chkShowRulers);
-    layoutOther->addWidget(chkShowLabel);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));
     grpOther->setLayout(layoutOther);
@@ -1275,7 +1271,6 @@ void PostprocessorView::doWorkspaceDefault()
 
     chkShowAxes->setChecked(SHOWAXES);
     chkShowRulers->setChecked(SHOWRULERS);
-    chkShowLabel->setChecked(SHOWLABEL);
 
     chkZoomToMouse->setChecked(ZOOMTOMOUSE);
     txtGeometryNodeSize->setValue(GEOMETRYNODESIZE);

@@ -849,7 +849,8 @@ void pyCloseDocument()
     // sceneView()->doDefaultValues();
     Util::scene()->refresh();
 
-    currentPythonEngineAgros()->sceneViewGeometry()->actSceneModeNode->trigger();
+    currentPythonEngineAgros()->sceneViewGeometry()->actSceneModeGeometry->trigger();
+
     currentPythonEngineAgros()->sceneViewGeometry()->doZoomBestFit();
     currentPythonEngineAgros()->sceneViewMesh()->doZoomBestFit();
     currentPythonEngineAgros()->sceneViewPost2D()->doZoomBestFit();
@@ -1229,7 +1230,7 @@ void pythonShowGrid(bool show)
 // showgeometry(show = {True, False})
 void pythonShowGeometry(bool show)
 {
-    currentPythonEngineAgros()->sceneViewGeometry()->actSceneModeNode->trigger();
+    currentPythonEngineAgros()->sceneViewGeometry()->actSceneModeGeometry->trigger();
     currentPythonEngineAgros()->sceneViewGeometry()->doInvalidated();
 }
 

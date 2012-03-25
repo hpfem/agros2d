@@ -74,9 +74,6 @@ public:
     // axes
     bool showAxes;
 
-    // label
-    bool showLabel;
-
     QString activeField;
 
     // linearizer quality

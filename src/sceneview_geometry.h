@@ -40,14 +40,20 @@ public:
 
     QAction *actSceneViewSelectRegion;
 
-    QAction *actSceneModeNode;
-    QAction *actSceneModeEdge;
-    QAction *actSceneModeLabel;
+    QAction *actSceneModeGeometry;
+
+    QActionGroup *actSceneModeGeometryGroup;
+    QAction *actOperateOnNodes;
+    QAction *actOperateOnEdges;
+    QAction *actOperateOnLabels;
 
     QAction *actSceneObjectProperties;
 
     inline SceneGeometryMode sceneMode() const { return m_sceneMode; }
     ErrorResult saveGeometryToFile(const QString &fileName, int format);
+
+    virtual QIcon iconView() { return icon("scene-geometry"); }
+    virtual QString labelView() { return tr("Geometry editor"); }
 
 protected:
     SceneGeometryMode m_sceneMode;

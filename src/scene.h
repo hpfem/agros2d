@@ -206,7 +206,6 @@ public slots:
     void doNewMaterial();
     void doNewMaterial(QString field);
 
-    void doTransform();
     void doClearSolution();
     void doProblemProperties();
     void doFieldsChanged();

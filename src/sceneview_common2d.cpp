@@ -759,6 +759,7 @@ void SceneViewCommon2D::mouseMoveEvent(QMouseEvent *event)
     }
 
     emit mouseMoved(QPointF(p.x, p.y));
+    emit labelRight(tr("Position: [%1; %2]").arg(p.x, 8, 'f', 5).arg(p.y, 8, 'f', 5));
 
     if (Util::config()->showRulers)
         updateGL();

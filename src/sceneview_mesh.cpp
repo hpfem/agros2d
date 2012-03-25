@@ -136,8 +136,8 @@ SceneViewMesh::~SceneViewMesh()
 void SceneViewMesh::createActionsMesh()
 {
     // scene mode
-    actSceneModeMesh = new QAction(icon("scene-mesh"), tr("Mesh"), this);
-    // actSceneModeMesh->setShortcut(Qt::Key_F7);
+    actSceneModeMesh = new QAction(iconView(), tr("Mesh"), this);
+    actSceneModeMesh->setShortcut(Qt::Key_F6);
     actSceneModeMesh->setStatusTip(tr("Mesh"));
     actSceneModeMesh->setCheckable(true);
 }
@@ -216,9 +216,6 @@ void SceneViewMesh::paintGL()
 
     // axes
     if (Util::config()->showAxes) paintAxes();
-
-    // label
-    if (Util::config()->showLabel) paintSceneModeLabel(tr("Mesh"));
 }
 
 void SceneViewMesh::paintGeometry()

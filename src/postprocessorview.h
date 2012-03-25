@@ -109,7 +109,6 @@ private:
     // workspace other
     QCheckBox *chkShowAxes;
     QCheckBox *chkShowRulers;
-    QCheckBox *chkShowLabel;
 
     // scalar field
     QCheckBox *chkShowScalarColorBar;

@@ -374,13 +374,12 @@ void Scene::createActions()
 
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
-    connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
     actClearSolutions = new QAction(icon(""), tr("Clear solution"), this);
     actClearSolutions->setStatusTip(tr("Clear solution"));
     connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(doClearSolution()));
 
-    actProblemProperties = new QAction(icon("document-properties"), tr("&Problem properties"), this);
+    actProblemProperties = new QAction(icon("document-properties"), tr("Properties"), this);
     actProblemProperties->setShortcut(tr("F12"));
     actProblemProperties->setStatusTip(tr("Problem properties"));
     connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
@@ -1143,14 +1142,6 @@ void Scene::removeField(FieldInfo *field)
 
     emit fieldsChanged();
     emit invalidated();
-}
-
-void Scene::doTransform()
-{
-    logMessage("Scene::doTransform()");
-
-    SceneTransformDialog sceneTransformDialog(QApplication::activeWindow());
-    sceneTransformDialog.exec();
 }
 
 void Scene::doClearSolution()

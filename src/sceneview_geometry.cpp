@@ -48,21 +48,29 @@ SceneViewGeometry::~SceneViewGeometry()
 
 void SceneViewGeometry::createActionsGeometry()
 {
+    actSceneModeGeometry = new QAction(iconView(), tr("Geometry"), this);
+    actSceneModeGeometry->setShortcut(Qt::Key_F5);
+    actSceneModeGeometry->setStatusTip(tr("Geometry editor"));
+    actSceneModeGeometry->setCheckable(true);
+
     // scene - operate on items
-    actSceneModeNode = new QAction(icon("scene-node"), tr("Operate on &nodes"), this);
-    actSceneModeNode->setShortcut(Qt::Key_F5);
-    actSceneModeNode->setStatusTip(tr("Operate on nodes"));
-    actSceneModeNode->setCheckable(true);
+    actOperateOnNodes = new QAction(icon("scene-node"), tr("Operate on &nodes"), this);
+    actOperateOnNodes->setStatusTip(tr("Operate on nodes"));
+    actOperateOnNodes->setCheckable(true);
 
-    actSceneModeEdge = new QAction(icon("scene-edge"), tr("Operate on &edges"), this);
-    actSceneModeEdge->setShortcut(Qt::Key_F6);
-    actSceneModeEdge->setStatusTip(tr("Operate on edges"));
-    actSceneModeEdge->setCheckable(true);
+    actOperateOnEdges = new QAction(icon("scene-edge"), tr("Operate on &edges"), this);
+    actOperateOnEdges->setStatusTip(tr("Operate on edges"));
+    actOperateOnEdges->setCheckable(true);
 
-    actSceneModeLabel = new QAction(icon("scene-label"), tr("Operate on &labels"), this);
-    actSceneModeLabel->setShortcut(Qt::Key_F7);
-    actSceneModeLabel->setStatusTip(tr("Operate on labels"));
-    actSceneModeLabel->setCheckable(true);
+    actOperateOnLabels = new QAction(icon("scene-label"), tr("Operate on &labels"), this);
+    actOperateOnLabels->setStatusTip(tr("Operate on labels"));
+    actOperateOnLabels->setCheckable(true);
+
+    actSceneModeGeometryGroup = new QActionGroup(this);
+    actSceneModeGeometryGroup->addAction(actOperateOnNodes);
+    actSceneModeGeometryGroup->addAction(actOperateOnEdges);
+    actSceneModeGeometryGroup->addAction(actOperateOnLabels);
+    connect(actSceneModeGeometryGroup, SIGNAL(triggered(QAction *)), this, SLOT(doSceneGeometryModeSet(QAction *)));
 
     // select region
     actSceneViewSelectRegion = new QAction(icon("scene-select-region"), tr("&Select region"), this);
@@ -144,7 +152,10 @@ void SceneViewGeometry::doSelectBasic()
 void SceneViewGeometry::doInvalidated()
 {
     // actions
-    actSceneViewSelectRegion->setEnabled(actSceneModeNode->isChecked() || actSceneModeEdge->isChecked() || actSceneModeLabel->isChecked());
+    actSceneViewSelectRegion->setEnabled(actSceneModeGeometry->isChecked());
+    actOperateOnNodes->setEnabled(actSceneModeGeometry->isChecked());
+    actOperateOnEdges->setEnabled(actSceneModeGeometry->isChecked());
+    actOperateOnLabels->setEnabled(actSceneModeGeometry->isChecked());
 
     SceneViewCommon::doInvalidated();
 }
@@ -160,11 +171,22 @@ void SceneViewGeometry::clear()
 
 void SceneViewGeometry::doSceneGeometryModeSet(QAction *action)
 {
-    logMessage("SceneViewCommon::doSceneModeSet()");
+    if (actOperateOnNodes->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnNodes;
+    if (actOperateOnEdges->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnEdges;
+    if (actOperateOnLabels->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnLabels;
 
-    if (actSceneModeNode->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnNodes;
-    if (actSceneModeEdge->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnEdges;
-    if (actSceneModeLabel->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnLabels;
+    switch (m_sceneMode)
+    {
+    case SceneGeometryMode_OperateOnNodes:
+        emit labelCenter(tr("Operate on nodes"));
+        break;
+    case SceneGeometryMode_OperateOnEdges:
+        emit labelCenter(tr("Operate on edges"));
+        break;
+    case SceneGeometryMode_OperateOnLabels:
+        emit labelCenter(tr("Operate on labels"));
+        break;
+    }
 
     Util::scene()->highlightNone();
     Util::scene()->selectNone();
@@ -804,22 +826,6 @@ void SceneViewGeometry::paintGL()
     paintZoomRegion();
     paintSnapToGrid();
     paintEdgeLine();
-
-    if (Util::config()->showLabel)
-    {
-        switch (m_sceneMode)
-        {
-        case SceneGeometryMode_OperateOnNodes:
-            paintSceneModeLabel(tr("Operate on nodes"));
-            break;
-        case SceneGeometryMode_OperateOnEdges:
-            paintSceneModeLabel(tr("Operate on edges"));
-            break;
-        case SceneGeometryMode_OperateOnLabels:
-            paintSceneModeLabel(tr("Operate on labels"));
-            break;
-        }
-    }
 }
 
 void SceneViewGeometry::paintGeometry()
@@ -1078,7 +1084,7 @@ ErrorResult SceneViewGeometry::saveGeometryToFile(const QString &fileName, int f
     // store old value
     SceneGeometryMode sceneMode = m_sceneMode;
     m_sceneMode == SceneGeometryMode_OperateOnNodes;
-    actSceneModeNode->trigger();
+    actOperateOnNodes->trigger();
 
     makeCurrent();
     int state = GL2PS_OVERFLOW;
@@ -1109,9 +1115,9 @@ ErrorResult SceneViewGeometry::saveGeometryToFile(const QString &fileName, int f
 
     // restore viewport
     m_sceneMode = sceneMode;
-    if (m_sceneMode == SceneGeometryMode_OperateOnNodes) actSceneModeNode->trigger();
-    if (m_sceneMode == SceneGeometryMode_OperateOnLabels) actSceneModeEdge->trigger();
-    if (m_sceneMode == SceneGeometryMode_OperateOnLabels) actSceneModeLabel->trigger();
+    if (m_sceneMode == SceneGeometryMode_OperateOnNodes) actOperateOnNodes->trigger();
+    if (m_sceneMode == SceneGeometryMode_OperateOnEdges) actOperateOnEdges->trigger();
+    if (m_sceneMode == SceneGeometryMode_OperateOnLabels) actOperateOnLabels->trigger();
 
     return ErrorResult();
 }

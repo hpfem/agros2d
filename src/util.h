@@ -667,7 +667,6 @@ const bool SNAPTOGRID = true;
 
 const bool SHOWAXES = true;
 const bool SHOWRULERS = true;
-const bool SHOWLABEL = true;
 const bool ZOOMTOMOUSE = true;
 
 const int GEOMETRYNODESIZE = 6;

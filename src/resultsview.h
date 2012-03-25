@@ -54,8 +54,8 @@ private:
     Point m_point;
 
     QPushButton *btnPoint;
-    QWebView *webView;
     QAction *actPoint;
+    QWebView *webView;
 
     void createActions();
 

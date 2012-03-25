@@ -495,12 +495,14 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         // geometry
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
         {
+            m_sceneViewGeometry->actSceneModeGeometry->trigger();
+
             if (dynamic_cast<SceneNode *>(objectBasic))
-                m_sceneViewGeometry->actSceneModeNode->trigger();
+                m_sceneViewGeometry->actOperateOnNodes->trigger();
             if (dynamic_cast<SceneEdge *>(objectBasic))
-                m_sceneViewGeometry->actSceneModeEdge->trigger();
+                m_sceneViewGeometry->actOperateOnEdges->trigger();
             if (dynamic_cast<SceneLabel *>(objectBasic))
-                m_sceneViewGeometry->actSceneModeLabel->trigger();
+                m_sceneViewGeometry->actOperateOnLabels->trigger();
 
             objectBasic->isSelected = true;
             m_sceneViewGeometry->refresh();
@@ -514,7 +516,7 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
         {
             // select all edges
-            m_sceneViewGeometry->actSceneModeEdge->trigger();
+            m_sceneViewGeometry->actOperateOnEdges->trigger();
 
             Util::scene()->edges->haveMarker(objectBoundary).setSelected();
 
@@ -529,7 +531,7 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
         {
             // select all labels
-            m_sceneViewGeometry->actSceneModeLabel->trigger();
+            m_sceneViewGeometry->actOperateOnLabels->trigger();
 
             Util::scene()->labels->haveMarker(objectMaterial).setSelected();
 
