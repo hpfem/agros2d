@@ -190,7 +190,7 @@ void ProgressItemMesh::mesh()
                               arg(triangleBinary).
                               arg(tempProblemFileName()));
 
-        if (!processTriangle.waitForStarted())
+        if (!processTriangle.waitForStarted(1000000))
         {
             emit message(tr("Could not start Triangle"), true, 0);
             processTriangle.kill();
