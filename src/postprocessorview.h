@@ -66,6 +66,7 @@ private:
     QRadioButton *radPost3DParticleTracing;
 
     // scalar field
+    QGroupBox *grpScalarField;
     QComboBox *cmbScalarFieldVariable;
     QComboBox *cmbScalarFieldVariableComp;
     QLineEdit *txtScalarFieldExpression;
@@ -78,14 +79,17 @@ private:
     QLabel *lblScalarFieldRangeMaxError;
 
     // vector field
+    QGroupBox *grpVectorField;
     QComboBox *cmbVectorFieldVariable;
 
     // transient
+    QGroupBox *grpTransient;
     QComboBox *cmbTimeStep;
 
     // adaptivity
+    QGroupBox *grpAdaptivity;
     QComboBox *cmbAdaptivityStep;
-    QComboBox *cmbSolutionType;
+    QComboBox *cmbAdaptivitySolutionType;
 
     // grid
     QLineEdit *txtGridStep;
@@ -118,6 +122,7 @@ private:
     QSpinBox *txtScalarDecimalPlace;
 
     // contours
+    QGroupBox *grpContourField;
     QComboBox *cmbContourVariable;
     QSpinBox *txtContoursCount;
 

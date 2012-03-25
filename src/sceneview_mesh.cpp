@@ -48,7 +48,7 @@ void MeshHermes::clear()
 
 void MeshHermes::processOrder()
 {
-    Util::log()->printMessage(tr("MeshView"), tr("order"));
+    Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
 
     m_orderIsPrepared = false;
 

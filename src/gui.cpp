@@ -162,9 +162,9 @@ void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
     // clear combo
     cmbFieldVariable->clear();
 
-    for(int step = 0; step <= lastAdaptiveStep; step++)
+    for (int step = 0; step <= lastAdaptiveStep; step++)
     {
-        cmbFieldVariable->addItem(QString::number(step), step);
+        cmbFieldVariable->addItem(QString::number(step + 1), step);
     }
 
     cmbFieldVariable->setCurrentIndex(adaptivityStep);

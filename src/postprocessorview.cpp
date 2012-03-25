@@ -374,8 +374,40 @@ QWidget *PostprocessorView::controlsBasic()
     connect(cmbFieldInfo, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldInfo(int)));
 
     QGridLayout *layoutField = new QGridLayout();
-    layoutField->addWidget(new QLabel(tr("Physical field:")), 0, 0);
+    layoutField->setColumnMinimumWidth(0, minWidth);
+    layoutField->setColumnStretch(1, 1);
+    layoutField->addWidget(new QLabel(tr("Field:")), 0, 0);
     layoutField->addWidget(cmbFieldInfo, 0, 1);
+
+    QGroupBox *grpField = new QGroupBox(tr("Physical field"));
+    grpField->setLayout(layoutField);
+
+    // transient
+    cmbTimeStep = new QComboBox(this);
+
+    QGridLayout *layoutTransient = new QGridLayout();
+    layoutTransient->setColumnMinimumWidth(0, minWidth);
+    layoutTransient->setColumnStretch(1, 1);
+    layoutTransient->addWidget(new QLabel(tr("Time step:")), 0, 0);
+    layoutTransient->addWidget(cmbTimeStep, 0, 1);
+
+    grpTransient = new QGroupBox(tr("Transient analysis"));
+    grpTransient->setLayout(layoutTransient);
+
+    // adaptivity
+    cmbAdaptivityStep = new QComboBox(this);
+    cmbAdaptivitySolutionType = new QComboBox(this);
+
+    QGridLayout *layoutAdaptivity = new QGridLayout();
+    layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
+    layoutAdaptivity->setColumnStretch(1, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity step:")), 0, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityStep, 0, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Solution type:")), 1, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivitySolutionType, 1, 1);
+
+    grpAdaptivity = new QGroupBox(tr("Adaptivity"));
+    grpAdaptivity->setLayout(layoutAdaptivity);
 
     // layout mesh
     chkShowInitialMeshView = new QCheckBox(tr("Initial mesh"));
@@ -465,7 +497,7 @@ QWidget *PostprocessorView::controlsBasic()
     layoutScalarField->addWidget(new QLabel(tr("Expression:")), 2, 0);
     layoutScalarField->addWidget(txtScalarFieldExpression, 2, 1, 1, 3);
 
-    QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
+    grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
 
     // contour field
@@ -477,7 +509,7 @@ QWidget *PostprocessorView::controlsBasic()
     layoutContourField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutContourField->addWidget(cmbContourVariable, 0, 1);
 
-    QGroupBox *grpContourField = new QGroupBox(tr("Contour field"));
+    grpContourField = new QGroupBox(tr("Contour field"));
     grpContourField->setLayout(layoutContourField);
 
     // vector field
@@ -489,46 +521,19 @@ QWidget *PostprocessorView::controlsBasic()
     layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutVectorField->addWidget(cmbVectorFieldVariable, 0, 1);
 
-    QGroupBox *grpVectorField = new QGroupBox(tr("Vector field"));
+    grpVectorField = new QGroupBox(tr("Vector field"));
     grpVectorField->setLayout(layoutVectorField);
 
-    // transient
-    cmbTimeStep = new QComboBox(this);
-
-    QGridLayout *layoutTransient = new QGridLayout();
-    layoutTransient->setColumnMinimumWidth(0, minWidth);
-    layoutTransient->setColumnStretch(1, 1);
-    layoutTransient->addWidget(new QLabel(tr("Time step:")), 0, 0);
-    layoutTransient->addWidget(cmbTimeStep, 0, 1);
-
-    QGroupBox *grpTransient = new QGroupBox(tr("Transient analysis"));
-    grpTransient->setLayout(layoutTransient);
-
-    // adaptivity
-    cmbAdaptivityStep = new QComboBox(this);
-    cmbSolutionType = new QComboBox(this);
-
-    QGridLayout *layoutAdaptivity = new QGridLayout();
-    layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
-    layoutAdaptivity->setColumnStretch(1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity step:")), 0, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityStep, 0, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("SolutionType:")), 1, 0);
-    layoutAdaptivity->addWidget(cmbSolutionType, 1, 1);
-
-    QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
-    grpAdaptivity->setLayout(layoutAdaptivity);
-
     QVBoxLayout *layoutBasic = new QVBoxLayout();
-    layoutBasic->addLayout(layoutField);
+    layoutBasic->addWidget(grpField);
+    layoutBasic->addWidget(grpTransient);
+    layoutBasic->addWidget(grpAdaptivity);
     layoutBasic->addWidget(grpShowMesh);
     layoutBasic->addWidget(grpShowPost2D);
     layoutBasic->addWidget(grpShowPost3D);
     layoutBasic->addWidget(grpContourField);
     layoutBasic->addWidget(grpScalarField);
     layoutBasic->addWidget(grpVectorField);
-    layoutBasic->addWidget(grpTransient);
-    layoutBasic->addWidget(grpAdaptivity);
     layoutBasic->addStretch();
 
     QWidget *basicWidget = new QWidget(this);
@@ -1153,6 +1158,14 @@ void PostprocessorView::setControls()
     bool isMeshed = Util::problem()->isMeshed();
     bool isSolved = Util::problem()->isSolved();
 
+    // transient group
+    int timeSteps = Util::solutionStore()->timeLevels(Util::scene()->activeViewField()).count();
+    grpTransient->setVisible(timeSteps > 1);
+
+    // adaptivity group
+    int lastStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal, Util::scene()->activeTimeStep());
+    grpAdaptivity->setVisible(lastStep > 0);
+
     chkShowInitialMeshView->setEnabled(isMeshed);
     chkShowSolutionMeshView->setEnabled(isSolved);
     chkShowOrderView->setEnabled(isSolved);
@@ -1176,13 +1189,21 @@ void PostprocessorView::setControls()
     radPost3DModel->setEnabled(isSolved);
     radPost3DParticleTracing->setEnabled(chkShowParticleView->isEnabled());
 
-    //    cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
-
+    grpContourField->setVisible(chkShowContourView->isEnabled() && chkShowContourView->isChecked());
     cmbContourVariable->setEnabled(chkShowContourView->isEnabled() && chkShowContourView->isChecked());
+
+    grpScalarField->setVisible(chkShowScalarView->isEnabled() && chkShowScalarView->isChecked());
     cmbScalarFieldVariable->setEnabled(false);
     cmbScalarFieldVariableComp->setEnabled(false);
     txtScalarFieldExpression->setEnabled(false);
+
+    grpVectorField->setVisible(chkShowVectorView->isEnabled() && chkShowVectorView->isChecked());
     cmbVectorFieldVariable->setEnabled(chkShowVectorView->isEnabled() && chkShowVectorView->isChecked());
+
+    cmbTimeStep->setEnabled(timeSteps > 1);
+
+    cmbAdaptivityStep->setEnabled(lastStep > 0);
+    cmbAdaptivitySolutionType->setEnabled(lastStep > 0);
 
     if (isSolved && (Util::config()->showScalarView ||
                      radPost3DScalarField3D->isChecked() ||
@@ -1202,7 +1223,7 @@ void PostprocessorView::updateControls()
     doFieldInfo(cmbFieldInfo->currentIndex());
     fillComboBoxTimeStep(cmbTimeStep);
     fillComboBoxAdaptivityStep(cmbAdaptivityStep);
-    fillComboBoxSolutionType(cmbSolutionType);
+    fillComboBoxSolutionType(cmbAdaptivitySolutionType);
 
     loadBasic();
     loadAdvanced();
@@ -1225,10 +1246,9 @@ void PostprocessorView::doApply()
     // time step
     QApplication::processEvents();
 
-    //TODO timestep
     Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
     Util::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
-    Util::scene()->setActiveSolutionType((SolutionType)cmbSolutionType->currentIndex());
+    Util::scene()->setActiveSolutionType((SolutionType)cmbAdaptivitySolutionType->currentIndex());
 
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
