@@ -986,7 +986,7 @@ void SceneViewPost2D::doInvalidated()
     actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
     actSceneViewSelectByMarker->setEnabled(Util::problem()->isSolved());
 
-    SceneViewCommon::doInvalidated();
+    SceneViewCommon2D::doInvalidated();
 }
 
 void SceneViewPost2D::clear()

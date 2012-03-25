@@ -614,21 +614,6 @@ void MainWindow::createToolBars()
     tlbFile->addAction(actDocumentOpen);
     tlbFile->addAction(actDocumentSave);
 
-    tlbEdit = addToolBar(tr("Edit"));
-    tlbEdit->setObjectName("Edit");
-    tlbEdit->setMovable(false);
-#ifdef Q_WS_MAC
-    tlbEdit->setFixedHeight(iconHeight);
-    tlbEdit->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
-#endif
-    tlbEdit->addAction(actUndo);
-    tlbEdit->addAction(actRedo);
-    tlbEdit->addSeparator();
-    // tlbEdit->addAction(actCut);
-    // tlbEdit->addAction(actCopy);
-    // tlbEdit->addAction(actPaste);
-    tlbEdit->addAction(Util::scene()->actDeleteSelected);
-
     tlbView = addToolBar(tr("View"));
     tlbView->setObjectName("View");
     tlbView->setMovable(false);
@@ -649,12 +634,17 @@ void MainWindow::createToolBars()
     tlbProblem->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
     tlbGeometry->addSeparator();
+    tlbGeometry->addAction(actUndo);
+    tlbGeometry->addAction(actRedo);
+    tlbGeometry->addSeparator();
     tlbGeometry->addAction(sceneViewGeometry->actOperateOnNodes);
     tlbGeometry->addAction(sceneViewGeometry->actOperateOnEdges);
     tlbGeometry->addAction(sceneViewGeometry->actOperateOnLabels);
     tlbGeometry->addSeparator();
     tlbGeometry->addAction(sceneViewGeometry->actSceneViewSelectRegion);
     tlbGeometry->addAction(Util::scene()->actTransform);
+    tlbGeometry->addSeparator();
+    tlbGeometry->addAction(Util::scene()->actDeleteSelected);
 
     tlbPost2D = addToolBar(tr("Postprocessor 2D"));
     tlbPost2D->setObjectName("Postprocessor 2D");
@@ -710,7 +700,7 @@ void MainWindow::createViews()
     resultsView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::RightDockWidgetArea, resultsView);
 
-    postprocessorView = new PostprocessorView(sceneViewPost2D, sceneViewPost3D, this);
+    postprocessorView = new PostprocessorView(sceneViewGeometry, sceneViewMesh, sceneViewPost2D, sceneViewPost3D, this);
     postprocessorView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, postprocessorView);
 
@@ -1430,7 +1420,7 @@ void MainWindow::doInvalidated()
         sceneTransformDialog->hide();
 
         postprocessorView->raise();
-        tlbGeometry->setVisible(true);
+        tlbPost2D->setVisible(true);
     }
     if (sceneViewPost3D->actSceneModePost3D->isChecked())
     {

@@ -75,7 +75,8 @@ protected:
     inline Point position(double x, double y) const { return position(Point(x, y)); }
     Point position(const Point &point) const;
 
-private:
+private slots:
+    void updatePosition(const Point &point);
 };
 
 #endif // SCENEVIEWCOMMON2D_H

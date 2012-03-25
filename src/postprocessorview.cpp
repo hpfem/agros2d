@@ -23,6 +23,8 @@
 
 #include "scene.h"
 #include "scenesolution.h"
+#include "sceneview_geometry.h"
+#include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
 #include "progressdialog.h"
@@ -30,12 +32,16 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
-PostprocessorView::PostprocessorView(SceneViewPost2D *scenePost2D,
+PostprocessorView::PostprocessorView(SceneViewGeometry *sceneGeometry,
+                                     SceneViewMesh *sceneMesh,
+                                     SceneViewPost2D *scenePost2D,
                                      SceneViewPost3D *scenePost3D,
                                      QWidget *parent) : QDockWidget(tr("View Properties"), parent)
 {
     logMessage("PostprocessorView::PostprocessorView()");
 
+    m_sceneGeometry = sceneGeometry;
+    m_sceneMesh = sceneMesh;
     m_scenePost2D = scenePost2D;
     m_scenePost3D = scenePost3D;
 
@@ -71,45 +77,45 @@ void PostprocessorView::loadBasic()
     radPost3DModel->setChecked(Util::config()->showPost3D == SceneViewPost3DShow_Model);
     doPostprocessorGroupClicked(butPost3DGroup->checkedButton());
 
-    chkShowContourView->setChecked(Util::config()->showContourView);
-    chkShowVectorView->setChecked(Util::config()->showVectorView);
-    chkShowScalarView->setChecked(Util::config()->showScalarView);
+    chkShowPost2DContourView->setChecked(Util::config()->showContourView);
+    chkShowPost2DVectorView->setChecked(Util::config()->showVectorView);
+    chkShowPost2DScalarView->setChecked(Util::config()->showScalarView);
 
     // contour field
-    cmbContourVariable->setCurrentIndex(cmbContourVariable->findData(Util::config()->contourVariable));
-    if (cmbContourVariable->currentIndex() == -1 && cmbContourVariable->count() > 0)
+    cmbPost2DContourVariable->setCurrentIndex(cmbPost2DContourVariable->findData(Util::config()->contourVariable));
+    if (cmbPost2DContourVariable->currentIndex() == -1 && cmbPost2DContourVariable->count() > 0)
     {
         // set first variable
-        cmbContourVariable->setCurrentIndex(0);
-        Util::config()->contourVariable = cmbContourVariable->itemData(cmbContourVariable->currentIndex()).toString();
+        cmbPost2DContourVariable->setCurrentIndex(0);
+        Util::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
     }
 
     // scalar field
-    cmbScalarFieldVariable->setCurrentIndex(cmbScalarFieldVariable->findData(Util::config()->scalarVariable));
-    if (cmbScalarFieldVariable->currentIndex() == -1 && cmbScalarFieldVariable->count() > 0)
+    cmbPost2DScalarFieldVariable->setCurrentIndex(cmbPost2DScalarFieldVariable->findData(Util::config()->scalarVariable));
+    if (cmbPost2DScalarFieldVariable->currentIndex() == -1 && cmbPost2DScalarFieldVariable->count() > 0)
     {
         // set first variable
-        cmbScalarFieldVariable->setCurrentIndex(0);
-        Util::config()->scalarVariable = cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString();
+        cmbPost2DScalarFieldVariable->setCurrentIndex(0);
+        Util::config()->scalarVariable = cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString();
     }
-    if (cmbScalarFieldVariable->count() > 0)
-        doScalarFieldVariable(cmbScalarFieldVariable->currentIndex());
+    if (cmbPost2DScalarFieldVariable->count() > 0)
+        doScalarFieldVariable(cmbPost2DScalarFieldVariable->currentIndex());
 
-    cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(Util::config()->scalarVariableComp));
-    if (cmbScalarFieldVariableComp->currentIndex() == -1)
+    cmbPost2DScalarFieldVariableComp->setCurrentIndex(cmbPost2DScalarFieldVariableComp->findData(Util::config()->scalarVariableComp));
+    if (cmbPost2DScalarFieldVariableComp->currentIndex() == -1)
     {
         // set first component
-        cmbScalarFieldVariableComp->setCurrentIndex(0);
-        Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
+        cmbPost2DScalarFieldVariableComp->setCurrentIndex(0);
+        Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
     }
 
     // vector field
-    cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(Util::config()->vectorVariable));
-    if (cmbVectorFieldVariable->currentIndex() == -1 && cmbVectorFieldVariable->count() > 0)
+    cmbPost2DVectorFieldVariable->setCurrentIndex(cmbPost2DVectorFieldVariable->findData(Util::config()->vectorVariable));
+    if (cmbPost2DVectorFieldVariable->currentIndex() == -1 && cmbPost2DVectorFieldVariable->count() > 0)
     {
         // set first variable
-        cmbVectorFieldVariable->setCurrentIndex(0);
-        Util::config()->vectorVariable = cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toString();
+        cmbPost2DVectorFieldVariable->setCurrentIndex(0);
+        Util::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
     }
 
     // transient view
@@ -229,26 +235,26 @@ void PostprocessorView::saveBasic()
     if (radPost3DScalarField3DSolid->isChecked()) Util::config()->showPost3D = SceneViewPost3DShow_ScalarView3DSolid;
     if (radPost3DModel->isChecked()) Util::config()->showPost3D = SceneViewPost3DShow_Model;
 
-    Util::config()->showContourView = chkShowContourView->isChecked();
-    Util::config()->showScalarView = chkShowScalarView->isChecked();
-    Util::config()->showVectorView = chkShowVectorView->isChecked();
+    Util::config()->showContourView = chkShowPost2DContourView->isChecked();
+    Util::config()->showScalarView = chkShowPost2DScalarView->isChecked();
+    Util::config()->showVectorView = chkShowPost2DVectorView->isChecked();
 
     // contour field
-    Util::config()->contourVariable = cmbContourVariable->itemData(cmbContourVariable->currentIndex()).toString();
+    Util::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
 
     // scalar field
-    Util::config()->scalarVariable = cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toString();
-    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
+    Util::config()->scalarVariable = cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString();
+    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
     Util::config()->scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
     Util::config()->scalarRangeMin = txtScalarFieldRangeMin->value();
     Util::config()->scalarRangeMax = txtScalarFieldRangeMax->value();
 
     Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
     if (physicFieldVariable && physicFieldVariable->id == "custom")
-        physicFieldVariable->expression.scalar = txtScalarFieldExpression->text().toStdString();
+        physicFieldVariable->expression.scalar = txtPost2DScalarFieldExpression->text().toStdString();
 
     // vector field
-    Util::config()->vectorVariable = cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toString();
+    Util::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
 }
 
 void PostprocessorView::saveAdvanced()
@@ -374,7 +380,7 @@ QWidget *PostprocessorView::controlsBasic()
     QGridLayout *layoutField = new QGridLayout();
     layoutField->setColumnMinimumWidth(0, minWidth);
     layoutField->setColumnStretch(1, 1);
-    layoutField->addWidget(new QLabel(tr("Field:")), 0, 0);
+    layoutField->addWidget(new QLabel(tr("Physical field:")), 0, 0);
     layoutField->addWidget(cmbFieldInfo, 0, 1);
 
     QGroupBox *grpField = new QGroupBox(tr("Physical field"));
@@ -421,29 +427,29 @@ QWidget *PostprocessorView::controlsBasic()
     layoutShowMesh->addLayout(layoutMesh);
     layoutShowMesh->addStretch();
 
-    QGroupBox *grpShowMesh = new QGroupBox(tr("Mesh and polynomial order"));
+    grpShowMesh = new QGroupBox(tr("Mesh and polynomial order"));
     grpShowMesh->setLayout(layoutShowMesh);
 
     // layout post2d
-    chkShowContourView = new QCheckBox(tr("Contours"));
-    connect(chkShowContourView, SIGNAL(clicked()), this, SLOT(setControls()));
-    chkShowVectorView = new QCheckBox(tr("Vectors"));
-    connect(chkShowVectorView, SIGNAL(clicked()), this, SLOT(setControls()));
-    chkShowScalarView = new QCheckBox(tr("Scalar view"));
-    connect(chkShowScalarView, SIGNAL(clicked()), this, SLOT(setControls()));
-    chkShowParticleView = new QCheckBox(tr("Particle tracing"));
+    chkShowPost2DContourView = new QCheckBox(tr("Contours"));
+    connect(chkShowPost2DContourView, SIGNAL(clicked()), this, SLOT(setControls()));
+    chkShowPost2DVectorView = new QCheckBox(tr("Vectors"));
+    connect(chkShowPost2DVectorView, SIGNAL(clicked()), this, SLOT(setControls()));
+    chkShowPost2DScalarView = new QCheckBox(tr("Scalar view"));
+    connect(chkShowPost2DScalarView, SIGNAL(clicked()), this, SLOT(setControls()));
+    chkShowPost2DParticleView = new QCheckBox(tr("Particle tracing"));
 
     QGridLayout *layoutPost2D = new QGridLayout();
-    layoutPost2D->addWidget(chkShowScalarView, 0, 0);
-    layoutPost2D->addWidget(chkShowParticleView, 1, 0);
-    layoutPost2D->addWidget(chkShowContourView, 0, 1);
-    layoutPost2D->addWidget(chkShowVectorView, 1, 1);
+    layoutPost2D->addWidget(chkShowPost2DScalarView, 0, 0);
+    layoutPost2D->addWidget(chkShowPost2DParticleView, 1, 0);
+    layoutPost2D->addWidget(chkShowPost2DContourView, 0, 1);
+    layoutPost2D->addWidget(chkShowPost2DVectorView, 1, 1);
 
     QHBoxLayout *layoutShowPost2D = new QHBoxLayout();
     layoutShowPost2D->addLayout(layoutPost2D);
     layoutShowPost2D->addStretch();
 
-    QGroupBox *grpShowPost2D = new QGroupBox(tr("Postprocessor 2D"));
+    grpShowPost2D = new QGroupBox(tr("Postprocessor 2D"));
     grpShowPost2D->setLayout(layoutShowPost2D);
 
     // layout post3d
@@ -472,15 +478,15 @@ QWidget *PostprocessorView::controlsBasic()
     layoutShowPost3D->addLayout(layoutPost3D);
     layoutShowPost3D->addStretch();
 
-    QGroupBox *grpShowPost3D = new QGroupBox(tr("Postprocessor 3D"));
+    grpShowPost3D = new QGroupBox(tr("Postprocessor 3D"));
     grpShowPost3D->setLayout(layoutShowPost3D);
 
     // layout scalar field
-    cmbScalarFieldVariable = new QComboBox();
-    connect(cmbScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
-    cmbScalarFieldVariableComp = new QComboBox();
-    connect(cmbScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
-    txtScalarFieldExpression = new QLineEdit();
+    cmbPost2DScalarFieldVariable = new QComboBox();
+    connect(cmbPost2DScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
+    cmbPost2DScalarFieldVariableComp = new QComboBox();
+    connect(cmbPost2DScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
+    txtPost2DScalarFieldExpression = new QLineEdit();
 
     chkScalarFieldRangeAuto = new QCheckBox(tr("Auto range"));
     connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
@@ -489,38 +495,38 @@ QWidget *PostprocessorView::controlsBasic()
     layoutScalarField->setColumnMinimumWidth(0, minWidth);
     layoutScalarField->setColumnStretch(1, 1);
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutScalarField->addWidget(cmbScalarFieldVariable, 0, 1, 1, 3);
+    layoutScalarField->addWidget(cmbPost2DScalarFieldVariable, 0, 1, 1, 3);
     layoutScalarField->addWidget(new QLabel(tr("Component:")), 1, 0);
-    layoutScalarField->addWidget(cmbScalarFieldVariableComp, 1, 1, 1, 3);
+    layoutScalarField->addWidget(cmbPost2DScalarFieldVariableComp, 1, 1, 1, 3);
     layoutScalarField->addWidget(new QLabel(tr("Expression:")), 2, 0);
-    layoutScalarField->addWidget(txtScalarFieldExpression, 2, 1, 1, 3);
+    layoutScalarField->addWidget(txtPost2DScalarFieldExpression, 2, 1, 1, 3);
 
-    grpScalarField = new QGroupBox(tr("Scalar field"));
-    grpScalarField->setLayout(layoutScalarField);
+    grpPost2DScalarField = new QGroupBox(tr("Scalar field"));
+    grpPost2DScalarField->setLayout(layoutScalarField);
 
     // contour field
-    cmbContourVariable = new QComboBox();
+    cmbPost2DContourVariable = new QComboBox();
 
     QGridLayout *layoutContourField = new QGridLayout();
     layoutContourField->setColumnMinimumWidth(0, minWidth);
     layoutContourField->setColumnStretch(1, 1);
     layoutContourField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutContourField->addWidget(cmbContourVariable, 0, 1);
+    layoutContourField->addWidget(cmbPost2DContourVariable, 0, 1);
 
-    grpContourField = new QGroupBox(tr("Contour field"));
-    grpContourField->setLayout(layoutContourField);
+    grpPost2DContourField = new QGroupBox(tr("Contour field"));
+    grpPost2DContourField->setLayout(layoutContourField);
 
     // vector field
-    cmbVectorFieldVariable = new QComboBox();
+    cmbPost2DVectorFieldVariable = new QComboBox();
 
     QGridLayout *layoutVectorField = new QGridLayout();
     layoutVectorField->setColumnMinimumWidth(0, minWidth);
     layoutVectorField->setColumnStretch(1, 1);
     layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutVectorField->addWidget(cmbVectorFieldVariable, 0, 1);
+    layoutVectorField->addWidget(cmbPost2DVectorFieldVariable, 0, 1);
 
-    grpVectorField = new QGroupBox(tr("Vector field"));
-    grpVectorField->setLayout(layoutVectorField);
+    grpPost2DVectorField = new QGroupBox(tr("Vector field"));
+    grpPost2DVectorField->setLayout(layoutVectorField);
 
     QVBoxLayout *layoutBasic = new QVBoxLayout();
     layoutBasic->addWidget(grpField);
@@ -529,9 +535,9 @@ QWidget *PostprocessorView::controlsBasic()
     layoutBasic->addWidget(grpShowMesh);
     layoutBasic->addWidget(grpShowPost2D);
     layoutBasic->addWidget(grpShowPost3D);
-    layoutBasic->addWidget(grpContourField);
-    layoutBasic->addWidget(grpScalarField);
-    layoutBasic->addWidget(grpVectorField);
+    layoutBasic->addWidget(grpPost2DScalarField);
+    layoutBasic->addWidget(grpPost2DContourField);
+    layoutBasic->addWidget(grpPost2DVectorField);
     layoutBasic->addStretch();
 
     QWidget *basicWidget = new QWidget(this);
@@ -1040,9 +1046,9 @@ void PostprocessorView::doFieldInfo(int index)
         FieldInfo *fieldInfo = Util::scene()->fieldInfo(fieldName);
         Util::scene()->setActiveViewField(fieldInfo);
 
-        fillComboBoxScalarVariable(fieldInfo, cmbScalarFieldVariable);
-        fillComboBoxContourVariable(fieldInfo, cmbContourVariable);
-        fillComboBoxVectorVariable(fieldInfo, cmbVectorFieldVariable);
+        fillComboBoxScalarVariable(fieldInfo, cmbPost2DScalarFieldVariable);
+        fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
+        fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
     }
 }
 
@@ -1053,13 +1059,13 @@ void PostprocessorView::doScalarFieldVariable(int index)
     if (cmbFieldInfo->currentIndex() == -1)
         return;
 
-    PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
+    PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
-    if (cmbScalarFieldVariable->currentIndex() != -1)
+    if (cmbPost2DScalarFieldVariable->currentIndex() != -1)
     {
-        QString variableName(cmbScalarFieldVariable->itemData(index).toString());
+        QString variableName(cmbPost2DScalarFieldVariable->itemData(index).toString());
 
         QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
         physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
@@ -1067,39 +1073,39 @@ void PostprocessorView::doScalarFieldVariable(int index)
 
     if (physicFieldVariable)
     {
-        cmbScalarFieldVariableComp->clear();
+        cmbPost2DScalarFieldVariableComp->clear();
         if (physicFieldVariable->is_scalar)
         {
-            cmbScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
+            cmbPost2DScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
         }
         else
         {
-            cmbScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-            cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
-            cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
+            cmbPost2DScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
+            cmbPost2DScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
+            cmbPost2DScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
         }
     }
 
-    if (cmbScalarFieldVariableComp->currentIndex() == -1)
-        cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(scalarFieldVariableComp));
-    if (cmbScalarFieldVariableComp->currentIndex() == -1)
-        cmbScalarFieldVariableComp->setCurrentIndex(0);
+    if (cmbPost2DScalarFieldVariableComp->currentIndex() == -1)
+        cmbPost2DScalarFieldVariableComp->setCurrentIndex(cmbPost2DScalarFieldVariableComp->findData(scalarFieldVariableComp));
+    if (cmbPost2DScalarFieldVariableComp->currentIndex() == -1)
+        cmbPost2DScalarFieldVariableComp->setCurrentIndex(0);
 
-    doScalarFieldVariableComp(cmbScalarFieldVariableComp->currentIndex());
+    doScalarFieldVariableComp(cmbPost2DScalarFieldVariableComp->currentIndex());
 }
 
 void PostprocessorView::doScalarFieldVariableComp(int index)
 {
-    if (cmbScalarFieldVariable->currentIndex() == -1)
+    if (cmbPost2DScalarFieldVariable->currentIndex() == -1)
         return;
 
-    txtScalarFieldExpression->setText("");
+    txtPost2DScalarFieldExpression->setText("");
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
     // TODO proc je tu index a cmb..->currentIndex?
-    if ((cmbScalarFieldVariable->currentIndex() != -1) && (index != -1)){
-        QString variableName(cmbScalarFieldVariable->itemData(index).toString());
+    if ((cmbPost2DScalarFieldVariable->currentIndex() != -1) && (index != -1)){
+        QString variableName(cmbPost2DScalarFieldVariable->itemData(index).toString());
 
         //TODO not good - relies on variable names begining with module name
         std::string fieldName(variableName.split("_")[0].toStdString());
@@ -1109,24 +1115,24 @@ void PostprocessorView::doScalarFieldVariableComp(int index)
 
     if (physicFieldVariable)
     {
-        txtScalarFieldExpression->setEnabled(physicFieldVariable->id == "custom");
+        txtPost2DScalarFieldExpression->setEnabled(physicFieldVariable->id == "custom");
 
         // expression
-        switch ((PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt())
+        switch ((PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt())
         {
         case PhysicFieldVariableComp_Scalar:
-            txtScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.scalar));
+            txtPost2DScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.scalar));
             break;
         case PhysicFieldVariableComp_Magnitude:
-            txtScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
-                                              arg(QString::fromStdString(physicFieldVariable->expression.comp_x)).
-                                              arg(QString::fromStdString(physicFieldVariable->expression.comp_y)));
+            txtPost2DScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
+                                                    arg(QString::fromStdString(physicFieldVariable->expression.comp_x)).
+                                                    arg(QString::fromStdString(physicFieldVariable->expression.comp_y)));
             break;
         case PhysicFieldVariableComp_X:
-            txtScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_x));
+            txtPost2DScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_x));
             break;
         case PhysicFieldVariableComp_Y:
-            txtScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_y));
+            txtPost2DScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_y));
             break;
         }
     }
@@ -1154,63 +1160,85 @@ void PostprocessorView::setControls()
     bool isMeshed = Util::problem()->isMeshed();
     bool isSolved = Util::problem()->isSolved();
 
+    grpShowMesh->setVisible(false);
+    grpShowPost2D->setVisible(false);
+    grpShowPost3D->setVisible(false);
+
+    grpPost2DContourField->setVisible(false);
+    grpPost2DScalarField->setVisible(false);
+    grpPost2DVectorField->setVisible(false);
+
+    if (m_sceneMesh->actSceneModeMesh->isChecked())
+    {
+        grpShowMesh->setVisible(true);
+
+        // mesh and order
+        chkShowInitialMeshView->setEnabled(isMeshed);
+        chkShowSolutionMeshView->setEnabled(isSolved);
+        chkShowOrderView->setEnabled(isSolved);
+    }
+
+    if (m_scenePost2D->actSceneModePost2D->isChecked())
+    {
+        // scalar view 2d
+        grpShowPost2D->setVisible(true);
+
+        chkShowPost2DContourView->setEnabled(isSolved && (cmbPost2DContourVariable->count() > 0));
+        chkShowPost2DScalarView->setEnabled(isSolved && (cmbPost2DScalarFieldVariable->count() > 0));
+        chkShowPost2DVectorView->setEnabled(isSolved && (cmbPost2DVectorFieldVariable->count() > 0));
+        // if (Util::scene()->problemInfo()->hermes()->hasParticleTracing())
+        // {
+        // chkShowParticleTracing->setEnabled(isSolved && (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState));
+        chkShowPost2DParticleView->setEnabled(isSolved);
+        // }
+        // else
+        // {
+        //     chkShowParticleTracing->setEnabled(false);
+        //     chkShowParticleTracing->setChecked(false);
+        // }
+
+        // contour
+        grpPost2DContourField->setVisible(true);
+        cmbPost2DContourVariable->setEnabled(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
+
+        // scalar view
+        grpPost2DScalarField->setVisible(true);
+        cmbPost2DScalarFieldVariable->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
+        cmbPost2DScalarFieldVariableComp->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
+        txtPost2DScalarFieldExpression->setEnabled(false);
+        if (chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked())
+        {
+            doScalarFieldRangeAuto(-1);
+            doScalarFieldVariableComp(cmbPost2DScalarFieldVariableComp->currentIndex());
+        }
+
+        grpPost2DVectorField->setVisible(true);
+        cmbPost2DVectorFieldVariable->setEnabled(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
+    }
+
+    if (m_scenePost3D->actSceneModePost3D->isChecked())
+    {
+        grpShowPost3D->setVisible(true);
+
+        // scalar view 3d
+        radPost3DNone->setEnabled(isSolved);
+        radPost3DScalarField3D->setEnabled(isSolved);
+        radPost3DScalarField3DSolid->setEnabled(isSolved);
+        radPost3DModel->setEnabled(isSolved);
+        radPost3DParticleTracing->setEnabled(chkShowPost2DParticleView->isEnabled());
+    }
+
+
     // transient group
     int timeSteps = Util::solutionStore()->timeLevels(Util::scene()->activeViewField()).count();
     grpTransient->setVisible(timeSteps > 1);
+    cmbTimeStep->setEnabled(timeSteps > 1);
 
     // adaptivity group
     int lastStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal, Util::scene()->activeTimeStep());
     grpAdaptivity->setVisible(lastStep > 0);
-
-    chkShowInitialMeshView->setEnabled(isMeshed);
-    chkShowSolutionMeshView->setEnabled(isSolved);
-    chkShowOrderView->setEnabled(isSolved);
-    chkShowContourView->setEnabled(isSolved && (cmbContourVariable->count() > 0));
-    chkShowScalarView->setEnabled(isSolved && (cmbScalarFieldVariable->count() > 0));
-    chkShowVectorView->setEnabled(isSolved && (cmbVectorFieldVariable->count() > 0));
-    // if (Util::scene()->problemInfo()->hermes()->hasParticleTracing())
-    // {
-        // chkShowParticleTracing->setEnabled(isSolved && (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState));
-        chkShowParticleView->setEnabled(isSolved);
-    // }
-    // else
-    // {
-    //     chkShowParticleTracing->setEnabled(false);
-    //     chkShowParticleTracing->setChecked(false);
-    // }
-
-    radPost3DNone->setEnabled(isSolved);
-    radPost3DScalarField3D->setEnabled(isSolved);
-    radPost3DScalarField3DSolid->setEnabled(isSolved);
-    radPost3DModel->setEnabled(isSolved);
-    radPost3DParticleTracing->setEnabled(chkShowParticleView->isEnabled());
-
-    grpContourField->setVisible(chkShowContourView->isEnabled() && chkShowContourView->isChecked());
-    cmbContourVariable->setEnabled(chkShowContourView->isEnabled() && chkShowContourView->isChecked());
-
-    grpScalarField->setVisible(chkShowScalarView->isEnabled() && chkShowScalarView->isChecked());
-    cmbScalarFieldVariable->setEnabled(false);
-    cmbScalarFieldVariableComp->setEnabled(false);
-    txtScalarFieldExpression->setEnabled(false);
-
-    grpVectorField->setVisible(chkShowVectorView->isEnabled() && chkShowVectorView->isChecked());
-    cmbVectorFieldVariable->setEnabled(chkShowVectorView->isEnabled() && chkShowVectorView->isChecked());
-
-    cmbTimeStep->setEnabled(timeSteps > 1);
-
     cmbAdaptivityStep->setEnabled(lastStep > 0);
     cmbAdaptivitySolutionType->setEnabled(lastStep > 0);
-
-    if (isSolved && (Util::config()->showScalarView ||
-                     radPost3DScalarField3D->isChecked() ||
-                     radPost3DScalarField3DSolid->isChecked()))
-    {
-        cmbScalarFieldVariable->setEnabled(true);
-        cmbScalarFieldVariableComp->setEnabled(true);
-
-        doScalarFieldRangeAuto(-1);
-        doScalarFieldVariableComp(cmbScalarFieldVariableComp->currentIndex());
-    }
 }
 
 void PostprocessorView::updateControls()

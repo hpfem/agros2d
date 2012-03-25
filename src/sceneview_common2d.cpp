@@ -37,7 +37,7 @@
 
 SceneViewCommon2D::SceneViewCommon2D(QWidget *parent): SceneViewPostInterface(parent)
 {
-
+    connect(this, SIGNAL(mouseMoved(Point)), this, SLOT(updatePosition(Point)));
 }
 
 SceneViewCommon2D::~SceneViewCommon2D()
@@ -61,6 +61,11 @@ void SceneViewCommon2D::clear()
     m_backgroundTexture = -1;
 
     SceneViewCommon::clear();
+}
+
+void SceneViewCommon2D::updatePosition(const Point &point)
+{
+    emit labelRight(tr("Position: [%1; %2]").arg(point.x, 8, 'f', 5).arg(point.y, 8, 'f', 5));
 }
 
 Point SceneViewCommon2D::position(const Point &point) const
@@ -637,9 +642,6 @@ void SceneViewCommon2D::setZoom(double power)
     m_scale2d = m_scale2d * pow(1.2, power);
 
     updateGL();
-
-    Point p(pos().x(), pos().y());
-    emit mouseMoved(QPointF(position(p).x, position(p).y));
 }
 
 void SceneViewCommon2D::doZoomRegion(const Point &start, const Point &end)
@@ -758,8 +760,7 @@ void SceneViewCommon2D::mouseMoveEvent(QMouseEvent *event)
         updateGL();
     }
 
-    emit mouseMoved(QPointF(p.x, p.y));
-    emit labelRight(tr("Position: [%1; %2]").arg(p.x, 8, 'f', 5).arg(p.y, 8, 'f', 5));
+    emit mouseMoved(p);
 
     if (Util::config()->showRulers)
         updateGL();

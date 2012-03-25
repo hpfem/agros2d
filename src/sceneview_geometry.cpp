@@ -426,11 +426,11 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
         snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
         snapPoint.y = floor(p.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
 
-        emit mouseMoved(QPointF(snapPoint.x, snapPoint.y));
+        emit mouseMoved(snapPoint);
     }
     else
     {
-        emit mouseMoved(QPointF(p.x, p.y));
+        emit mouseMoved(p);
     }
 }
 

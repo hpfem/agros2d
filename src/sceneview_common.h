@@ -112,7 +112,7 @@ public:
     virtual QString labelView() { return ""; }
 
 signals:
-    void mouseMoved(const QPointF &position);
+    void mouseMoved(const Point &position);
     void mousePressed();
     void mousePressed(const Point &point);
     void sceneGeometryModeChanged(SceneGeometryMode sceneMode);

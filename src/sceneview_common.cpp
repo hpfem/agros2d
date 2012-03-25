@@ -274,8 +274,6 @@ void SceneViewCommon::clear()
 
 void SceneViewCommon::doInvalidated()
 {
-    logMessage("SceneViewCommon::doInvalidated()");
-
     resize(((QWidget *) parent())->size());
 
     emit mousePressed();
