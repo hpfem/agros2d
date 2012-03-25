@@ -53,6 +53,7 @@ public:
     inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_RF_ElectricField ||
                                                                           physicFieldBC == PhysicFieldBC_RF_SurfaceCurrent ||
                                                                           physicFieldBC == PhysicFieldBC_RF_MatchedBoundary ||
+                                                                          physicFieldBC == PhysicFieldBC_RF_Scattering ||
                                                                           physicFieldBC == PhysicFieldBC_RF_Port); }
     inline bool teModeCheck(Mode teMode) { return (teMode == Mode_0 || teMode == Mode_01 || teMode == Mode_02); }
 

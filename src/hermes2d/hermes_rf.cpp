@@ -94,6 +94,19 @@ public:
                                                                                  - 1.0,
                                                                                  2 * M_PI * Util::scene()->problemInfo()->frequency));
                 }
+
+                // scattering
+                if (boundary->type == PhysicFieldBC_RF_Scattering)
+                {
+                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(0, 1,
+                                                                                 QString::number(i + 1).toStdString(),
+                                                                                 1.0,
+                                                                                 2 * M_PI * Util::scene()->problemInfo()->frequency));
+                    add_matrix_form_surf(new CustomMatrixFormSurfMatchedBoundary(1, 0,
+                                                                                 QString::number(i + 1).toStdString(),
+                                                                                 - 1.0,
+                                                                                 2 * M_PI * Util::scene()->problemInfo()->frequency));
+                }
             }
         }
 

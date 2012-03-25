@@ -537,6 +537,7 @@ enum PhysicFieldBC
     PhysicFieldBC_RF_ElectricField,
     PhysicFieldBC_RF_SurfaceCurrent,
     PhysicFieldBC_RF_MatchedBoundary,
+    PhysicFieldBC_RF_Scattering,
     PhysicFieldBC_RF_Port,
     PhysicFieldBC_Acoustic_Pressure,
     PhysicFieldBC_Acoustic_NormalAcceleration,
