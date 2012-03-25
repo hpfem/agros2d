@@ -288,7 +288,7 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_Electrostatic_ElectricField:
         return QObject::tr("Electric field");
     case PhysicFieldVariable_Electrostatic_Displacement:
-        return QObject::tr("Displacement");
+        return QObject::tr("Electric displacement");
     case PhysicFieldVariable_Electrostatic_EnergyDensity:
         return QObject::tr("Energy density");
     case PhysicFieldVariable_Electrostatic_Permittivity:
