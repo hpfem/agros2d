@@ -1145,7 +1145,7 @@ void MainWindow::doTransform()
 {
     logMessage("Scene::doTransform()");
 
-    sceneTransformDialog->show();
+    sceneTransformDialog->showDialog();
 }
 
 void MainWindow::doReport()
