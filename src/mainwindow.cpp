@@ -576,10 +576,10 @@ void MainWindow::createToolBars()
     leftToolBar->setObjectName("Problem");
     leftToolBar->setMovable(false);
     leftToolBar->setStyleSheet("QToolBar { border: 1px solid rgba(200, 200, 200, 255); }"
+                               "QToolBar:left, QToolBar:right { background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(60, 60, 60, 255), stop:1 rgba(90, 90, 90, 255)); }"
                                "QToolButton { color: rgba(230, 230, 230, 255); font: bold; font-size: 8pt; width: 60px; }"
-                               "QToolButton::hover { border: 0px; background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(60, 60, 60, 255), stop:0.5 rgba(110, 110, 110, 255), stop:1 rgba(90, 90, 90, 255)); }"
-                               "QToolButton::checked { color: rgba(20, 20, 20, 255); }"
-                               "QToolBar:left, QToolBar:right { background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(60, 60, 60, 255), stop:1 rgba(90, 90, 90, 255)); }");
+                               "QToolButton:checked:hover, QToolButton:hover { border: 0px; background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(60, 60, 60, 255), stop:0.5 rgba(110, 110, 110, 255), stop:1 rgba(90, 90, 90, 255)); }"
+                               "QToolButton:checked { color: rgba(20, 20, 20, 255); background-color: rgba(255, 255, 255, 100); }");
 
     leftToolBar->setIconSize(QSize(32, 32));
     leftToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -589,12 +589,12 @@ void MainWindow::createToolBars()
     leftToolBar->addAction(sceneViewPost2D->actSceneModePost2D);
     leftToolBar->addAction(sceneViewPost3D->actSceneModePost3D);
     leftToolBar->addWidget(spacing);
-    leftToolBar->addAction(Util::scene()->actProblemProperties);
-    leftToolBar->addAction(actScriptEditor);
-    leftToolBar->addSeparator();
     leftToolBar->addAction(actCreateMesh);
     leftToolBar->addAction(actSolve);
     leftToolBar->addAction(actSolveAdaptiveStep);
+    leftToolBar->addSeparator();
+    leftToolBar->addAction(actScriptEditor);
+    leftToolBar->addAction(Util::scene()->actProblemProperties);
 
     addToolBar(Qt::LeftToolBarArea, leftToolBar);
 
