@@ -882,19 +882,19 @@
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="644"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="716"/>
         <source>Sound energy</source>
-        <translation type="unfinished"></translation>
+        <translation>Energia dźwięku</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="648"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="720"/>
         <source>Energy level:</source>
-        <translation type="unfinished"></translation>
+        <translation>Poziom energii:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="647"/>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="719"/>
         <source>Energy:</source>
-        <translation type="unfinished">Energia:</translation>
+        <translation>Energia:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_acoustic.cpp" line="673"/>
@@ -1671,12 +1671,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="822"/>
         <source>Energy avg.:</source>
-        <translation type="unfinished">Średnia energia:</translation>
+        <translation>Średnia energia:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="822"/>
         <source>J</source>
-        <translation type="unfinished">J</translation>
+        <translation>J</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_rf.cpp" line="730"/>
@@ -2809,37 +2809,37 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="586"/>
         <source>Contour width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Grubość linii:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="667"/>
         <source>Reflect on different material</source>
-        <translation type="unfinished"></translation>
+        <translation>Odbicie na granicy materiałów</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="668"/>
         <source>Reflect on boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>Odbicie na brzegu</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="722"/>
         <source>Coefficient of restitution (-):</source>
-        <translation type="unfinished"></translation>
+        <translation>Współczynnik restytucji (-):</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="725"/>
         <source>Reflection</source>
-        <translation type="unfinished"></translation>
+        <translation>Odbicie</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="756"/>
         <source>Minimum step (m):</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimalny krok (m):</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="758"/>
         <source>Maximum number of steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna liczba kroków:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="790"/>
@@ -4290,52 +4290,52 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="324"/>
         <source>x coordinate is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>współrzędna x poza zakresem.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="326"/>
         <source>y coordinate is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>współrzędna y poza zakresem.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="341"/>
         <source>Mass must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Masa musi być dodatnia.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="356"/>
         <source>Density cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość nie może być ujemna.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="365"/>
         <source>Area cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Powierzchnia nie może być ujemna.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="374"/>
         <source>Coefficient cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Współczynnik nie może być ujemny.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="401"/>
         <source>Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).</source>
-        <translation type="unfinished"></translation>
+        <translation>Współczynnik restytucji musi zawiera się pomiędzy 0 (zderzenie niesprężyste) a 1 (zderzenie sprężyste).</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="410"/>
         <source>Tolerance cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancja nie może być ujemna.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="419"/>
         <source>Maximum number of steps cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna liczba kroków nie może być ujemna.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="428"/>
         <source>Minimum step cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimalny krok nie może być ujemny.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="521"/>
@@ -4415,13 +4415,13 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="688"/>
         <source>Geometry does not contain nodes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria nie zawiera węzłów.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="691"/>
         <location filename="../src/pythonlabagros.cpp" line="693"/>
         <source>Node with index &apos;%1&apos; does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Węzeł o indeksie &apos;%1&apos; nie istnieje.</translation>
     </message>
     <message>
         <location filename="../src/pythonlabagros.cpp" line="726"/>
@@ -4578,7 +4578,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/util.cpp" line="291"/>
         <source>Electric displacement</source>
-        <translation type="unfinished">Indukcja elektryczna</translation>
+        <translation>Indukcja elektryczna</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="295"/>
@@ -4885,12 +4885,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/util.cpp" line="465"/>
         <source>Sound energy</source>
-        <translation type="unfinished"></translation>
+        <translation>Energia dźwięku</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="467"/>
         <source>Sound energy level</source>
-        <translation type="unfinished"></translation>
+        <translation>Poziom energii dźwięku</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="480"/>
@@ -5192,12 +5192,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/util.cpp" line="665"/>
         <source>W</source>
-        <translation type="unfinished">W</translation>
+        <translation>W</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="667"/>
         <source>Lw</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="832"/>
@@ -5243,7 +5243,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/util.cpp" line="980"/>
         <source>Scattering boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>Brzeg rozpraszający</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="982"/>
@@ -7229,7 +7229,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scenetransformdialog.cpp" line="160"/>
         <source>Scale factor should not be zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Współczynnik skalowania nie może być równy zero.</translation>
     </message>
 </context>
 <context>
