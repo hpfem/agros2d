@@ -61,8 +61,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // FIXME: curve elements from script doesn't work
     readMeshDirtyFix();
 
-    createPythonEngine(new PythonEngineAgros());
     createScene();
+    createPythonEngine(new PythonEngineAgros());
 
     chartDialog = new ChartDialog(this);
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
@@ -359,7 +359,7 @@ void MainWindow::createActions()
 
     actScriptEditor = new QAction(icon("script-python"), tr("PythonLab"), this);
     actScriptEditor->setStatusTip(tr("Script editor"));
-    actScriptEditor->setShortcut(Qt::Key_F4);
+    actScriptEditor->setShortcut(Qt::Key_F9);
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
     actScriptEditorRunScript = new QAction(icon("script"), tr("Run &script..."), this);

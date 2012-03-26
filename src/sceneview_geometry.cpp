@@ -55,14 +55,17 @@ void SceneViewGeometry::createActionsGeometry()
 
     // scene - operate on items
     actOperateOnNodes = new QAction(icon("scene-node"), tr("Operate on &nodes"), this);
+    actOperateOnNodes->setShortcut(Qt::Key_F2);
     actOperateOnNodes->setStatusTip(tr("Operate on nodes"));
     actOperateOnNodes->setCheckable(true);
 
     actOperateOnEdges = new QAction(icon("scene-edge"), tr("Operate on &edges"), this);
+    actOperateOnEdges->setShortcut(Qt::Key_F3);
     actOperateOnEdges->setStatusTip(tr("Operate on edges"));
     actOperateOnEdges->setCheckable(true);
 
     actOperateOnLabels = new QAction(icon("scene-label"), tr("Operate on &labels"), this);
+    actOperateOnLabels->setShortcut(Qt::Key_F4);
     actOperateOnLabels->setStatusTip(tr("Operate on labels"));
     actOperateOnLabels->setCheckable(true);
 

@@ -20,7 +20,7 @@ electrostatic.add_material("Dieletric", {"electrostatic_permittivity" : 7, "elec
 electrostatic.add_material("Conductor", {"electrostatic_permittivity" : 15, "electrostatic_charge_density" : J})
 electrostatic.set_material("Conductor", {"electrostatic_permittivity" : 5})
 
-heat = agros2d.Field(problem,"heat", "steadystate")
+heat = agros2d.Field(problem, "heat", "steadystate")
 
 heat.add_boundary("Dirichlet", "heat_temperature", {"heat_temperature" : 20})
 heat.add_boundary("Neumann", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_heat_transfer_coefficient" : 5, "external_temperature": 20})
