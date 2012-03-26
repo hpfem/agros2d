@@ -31,6 +31,7 @@
 #include "scenesolution.h"
 #include "sceneinfoview.h"
 #include "tooltipview.h"
+#include "logview.h"
 #include "postprocessorview.h"
 #include "chartdialog.h"
 #include "confdialog.h"
@@ -47,6 +48,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "scenetransformdialog.h"
 
 #include "../lib/gl2ps/gl2ps.h"
 
@@ -56,12 +58,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     Util::createSingleton();
 
-    // fixme - curve elements from script doesn't work
+    // FIXME: curve elements from script doesn't work
     readMeshDirtyFix();
 
-    createPythonEngine(new PythonEngineAgros());
-    currentPythonEngine();
     createScene();
+    createPythonEngine(new PythonEngineAgros());
 
     chartDialog = new ChartDialog(this);
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
@@ -69,41 +70,43 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     videoDialog = new VideoDialog(sceneViewPost2D, this);
     logDialog = new LogDialog(this);
     collaborationDownloadDialog = new ServerDownloadDialog(this);
+    sceneTransformDialog = new SceneTransformDialog(this);
 
     createActions();
     createViews();
     createMenus();
     createToolBars();
-    createStatusBar();
 
     connect(tabLayout, SIGNAL(currentChanged(int)), this, SLOT(doInvalidated()));
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
     connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
+    connect(Util::scene()->actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
     connect(postprocessorView, SIGNAL(apply()), this, SLOT(doInvalidated()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doInvalidated()));
 
     // geometry
     connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
-    connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
-    connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), sceneViewGeometry, SLOT(doSceneGeometryModeSet(QAction *)));
+    connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));    
     connect(Util::scene(), SIGNAL(cleared()), sceneViewGeometry, SLOT(clear()));
+    currentPythonEngineAgros()->setSceneViewGeometry(sceneViewGeometry);
 
     // mesh
-    connect(Util::scene(), SIGNAL(cleared()), postprocessorView, SLOT(clear()));
+    connect(Util::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
     connect(postprocessorView, SIGNAL(apply()), sceneViewMesh, SLOT(clear()));
+    currentPythonEngineAgros()->setSceneViewMesh(sceneViewMesh);
 
     // postprocessor 2d
     connect(sceneViewPost2D, SIGNAL(mousePressed()), resultsView, SLOT(doShowResults()));
     connect(sceneViewPost2D, SIGNAL(mousePressed(const Point &)), resultsView, SLOT(doShowPoint(const Point &)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
-    connect(resultsView->btnSelectMarker, SIGNAL(clicked()), sceneViewPost2D->actSceneViewSelectByMarker, SLOT(trigger()));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(clear()));
     connect(postprocessorView, SIGNAL(apply()), sceneViewPost2D, SLOT(clear()));
+    currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
 
     // postprocessor 3d
-    //
+    currentPythonEngineAgros()->setSceneViewPost3D(sceneViewPost3D);
 
     connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
@@ -121,7 +124,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     Util::scene()->clear();
 
-    sceneViewGeometry->actSceneModeNode->trigger();
+    sceneViewGeometry->actSceneModeGeometry->trigger();
     sceneViewGeometry->doZoomBestFit();
 
     // set recent files
@@ -329,18 +332,18 @@ void MainWindow::createActions()
     actOptions->setMenuRole(QAction::PreferencesRole);
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
-    actCreateMesh = new QAction(icon("scene-mesh"), tr("&Mesh area"), this);
+    actCreateMesh = new QAction(icon("scene-mesh"), tr("&Mesh"), this);
     actCreateMesh->setShortcut(QKeySequence(tr("Alt+W")));
     actCreateMesh->setStatusTip(tr("Mesh area"));
     connect(actCreateMesh, SIGNAL(triggered()), this, SLOT(doCreateMesh()));
 
-    actSolve = new QAction(icon("run"), tr("&Solve problem"), this);
+    actSolve = new QAction(icon("run"), tr("&Solve"), this);
     actSolve->setShortcut(QKeySequence(tr("Alt+S")));
     actSolve->setStatusTip(tr("Solve problem"));
     connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolve()));
 
-    actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adaptive step"), this);
-    actSolveAdaptiveStep->setStatusTip(tr("Adaptive step"));
+    actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adapt. step"), this);
+    actSolveAdaptiveStep->setStatusTip(tr("Adaptivity step"));
     connect(actSolveAdaptiveStep, SIGNAL(triggered()), this, SLOT(doSolveAdaptiveStep()));
 
     actChart = new QAction(icon("chart"), tr("&Chart"), this);
@@ -354,9 +357,9 @@ void MainWindow::createActions()
     actDocumentOpenRecentGroup = new QActionGroup(this);
     connect(actDocumentOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doDocumentOpenRecent(QAction *)));
 
-    actScriptEditor = new QAction(icon("script-python"), tr("Script &editor"), this);
+    actScriptEditor = new QAction(icon("script-python"), tr("PythonLab"), this);
     actScriptEditor->setStatusTip(tr("Script editor"));
-    actScriptEditor->setShortcut(Qt::Key_F4);
+    actScriptEditor->setShortcut(Qt::Key_F9);
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
     actScriptEditorRunScript = new QAction(icon("script"), tr("Run &script..."), this);
@@ -403,9 +406,7 @@ void MainWindow::createActions()
     actSceneZoomRegion->setCheckable(true);
 
     actSceneModeGroup = new QActionGroup(this);
-    actSceneModeGroup->addAction(sceneViewGeometry->actSceneModeNode);
-    actSceneModeGroup->addAction(sceneViewGeometry->actSceneModeEdge);
-    actSceneModeGroup->addAction(sceneViewGeometry->actSceneModeLabel);
+    actSceneModeGroup->addAction(sceneViewGeometry->actSceneModeGeometry);
     actSceneModeGroup->addAction(sceneViewMesh->actSceneModeMesh);
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
@@ -467,6 +468,9 @@ void MainWindow::createMenus()
     mnuEdit->addAction(actRedo);
     mnuEdit->addSeparator();
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
+    mnuEdit->addSeparator();
+    mnuEdit->addAction(sceneViewGeometry->actSceneViewSelectRegion);
+    mnuEdit->addAction(Util::scene()->actTransform);
 #ifdef Q_WS_X11
     mnuEdit->addSeparator();
     mnuEdit->addAction(actOptions);
@@ -485,6 +489,11 @@ void MainWindow::createMenus()
     mnuShowPanels->addAction(tooltipView->toggleViewAction());
 
     mnuView = menuBar()->addMenu(tr("&View"));
+    mnuView->addAction(sceneViewGeometry->actSceneModeGeometry);
+    mnuView->addAction(sceneViewMesh->actSceneModeMesh);
+    mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
+    mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
+    mnuView->addSeparator();
     mnuView->addAction(actSceneZoomBestFit);
     mnuView->addAction(actSceneZoomIn);
     mnuView->addAction(actSceneZoomOut);
@@ -499,13 +508,6 @@ void MainWindow::createMenus()
     mnuView->addAction(actFullScreen);
 
     mnuProblem = menuBar()->addMenu(tr("&Problem"));
-    mnuProblem->addAction(sceneViewGeometry->actSceneModeNode);
-    mnuProblem->addAction(sceneViewGeometry->actSceneModeEdge);
-    mnuProblem->addAction(sceneViewGeometry->actSceneModeLabel);
-    mnuProblem->addAction(sceneViewMesh->actSceneModeMesh);
-    mnuProblem->addAction(sceneViewPost2D->actSceneModePost2D);
-    mnuProblem->addAction(sceneViewPost3D->actSceneModePost3D);
-    mnuProblem->addSeparator();
     QMenu *mnuAdd = new QMenu(tr("&Add"), this);
     mnuProblem->addMenu(mnuAdd);
     mnuAdd->addAction(Util::scene()->actNewNode);
@@ -513,9 +515,6 @@ void MainWindow::createMenus()
     mnuAdd->addAction(Util::scene()->actNewLabel);
     mnuAdd->addSeparator();
     Util::scene()->addBoundaryAndMaterialMenuItems(mnuAdd, this);
-    mnuProblem->addSeparator();
-    mnuProblem->addAction(sceneViewGeometry->actSceneViewSelectRegion);
-    mnuProblem->addAction(Util::scene()->actTransform);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeLocalPointValue);
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeSurfaceIntegral);
@@ -568,141 +567,120 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
-    logMessage("MainWindow::createToolBars()");
+    // spacing
+    QLabel *spacing = new QLabel;
+    spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+    // left toolbar
+    QToolBar *leftToolBar = new QToolBar();
+    leftToolBar->setObjectName("Problem");
+    leftToolBar->setMovable(false);
+    leftToolBar->setStyleSheet("QToolBar { border: 1px solid rgba(200, 200, 200, 255); }"
+                               "QToolBar:left, QToolBar:right { background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:1 rgba(120, 120, 120, 255)); }"
+                               "QToolButton { border: 0px; color: rgba(230, 230, 230, 255); font: bold; font-size: 8pt; width: 65px; }"
+                               "QToolButton:hover { border: 0px; background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:0.5 rgba(160, 160, 160, 255), stop:1 rgba(150, 150, 150, 255)); }"
+                               "QToolButton:checked:hover, QToolButton:checked { border: 0px; color: rgba(30, 30, 30, 255); background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(160, 160, 160, 255), stop:0.5 rgba(220, 220, 220, 255), stop:1 rgba(160, 160, 160, 255)); }");
+
+    leftToolBar->setIconSize(QSize(32, 32));
+    leftToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+    leftToolBar->addAction(sceneViewGeometry->actSceneModeGeometry);
+    leftToolBar->addAction(sceneViewMesh->actSceneModeMesh);
+    leftToolBar->addAction(sceneViewPost2D->actSceneModePost2D);
+    leftToolBar->addAction(sceneViewPost3D->actSceneModePost3D);
+    leftToolBar->addWidget(spacing);
+    leftToolBar->addAction(actCreateMesh);
+    leftToolBar->addAction(actSolve);
+    leftToolBar->addAction(actSolveAdaptiveStep);
+    leftToolBar->addSeparator();
+    leftToolBar->addAction(actScriptEditor);
+    leftToolBar->addAction(Util::scene()->actProblemProperties);
+
+    addToolBar(Qt::LeftToolBarArea, leftToolBar);
+
+    // top toolbar
 #ifdef Q_WS_MAC
     int iconHeight = 24;
 #endif
 
     tlbFile = addToolBar(tr("File"));
+    tlbFile->setObjectName("File");
+    tlbFile->setMovable(false);
 #ifdef Q_WS_MAC
     tlbFile->setFixedHeight(iconHeight);
     tlbFile->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
-    tlbFile->setObjectName("File");
     tlbFile->addAction(actDocumentNew);
     tlbFile->addAction(actDocumentOpen);
     tlbFile->addAction(actDocumentSave);
 
-    tlbEdit = addToolBar(tr("Edit"));
-#ifdef Q_WS_MAC
-    tlbEdit->setFixedHeight(iconHeight);
-    tlbEdit->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
-#endif
-    tlbEdit->setObjectName("Edit");
-    tlbEdit->addAction(actUndo);
-    tlbEdit->addAction(actRedo);
-    tlbEdit->addSeparator();
-    // tlbEdit->addAction(actCut);
-    // tlbEdit->addAction(actCopy);
-    // tlbEdit->addAction(actPaste);
-    tlbEdit->addAction(Util::scene()->actDeleteSelected);
-
     tlbView = addToolBar(tr("View"));
+    tlbView->setObjectName("View");
+    tlbView->setMovable(false);
 #ifdef Q_WS_MAC
     tlbView->setFixedHeight(iconHeight);
     tlbView->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
-    tlbView->setObjectName("View");
     tlbView->addAction(actSceneZoomBestFit);
     tlbView->addAction(actSceneZoomRegion);
     tlbView->addAction(actSceneZoomIn);
     tlbView->addAction(actSceneZoomOut);
 
-    tlbProblem = addToolBar(tr("Problem"));
+    tlbGeometry = addToolBar(tr("Geometry"));
+    tlbGeometry->setObjectName("Geometry");
+    tlbGeometry->setMovable(false);
 #ifdef Q_WS_MAC
     tlbProblem->setFixedHeight(iconHeight);
     tlbProblem->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
-    tlbProblem->setObjectName("Problem");
-    tlbProblem->addAction(sceneViewGeometry->actSceneModeNode);
-    tlbProblem->addAction(sceneViewGeometry->actSceneModeEdge);
-    tlbProblem->addAction(sceneViewGeometry->actSceneModeLabel);
-    tlbProblem->addAction(sceneViewMesh->actSceneModeMesh);
-    tlbProblem->addAction(sceneViewPost2D->actSceneModePost2D);
-    tlbProblem->addAction(sceneViewPost3D->actSceneModePost3D);
-    tlbProblem->addSeparator();
-    tlbProblem->addAction(sceneViewGeometry->actSceneViewSelectRegion);
-    tlbProblem->addAction(Util::scene()->actTransform);
-    tlbProblem->addSeparator();
-    tlbProblem->addAction(sceneViewPost2D->actPostprocessorModeLocalPointValue);
-    tlbProblem->addAction(sceneViewPost2D->actPostprocessorModeSurfaceIntegral);
-    tlbProblem->addAction(sceneViewPost2D->actPostprocessorModeVolumeIntegral);
-    tlbProblem->addSeparator();
-    tlbProblem->addAction(Util::scene()->actProblemProperties);
-    tlbProblem->addAction(actCreateMesh);
-    tlbProblem->addAction(actSolve);
-    tlbProblem->addAction(actSolveAdaptiveStep);
+    tlbGeometry->addSeparator();
+    tlbGeometry->addAction(actUndo);
+    tlbGeometry->addAction(actRedo);
+    tlbGeometry->addSeparator();
+    tlbGeometry->addAction(sceneViewGeometry->actOperateOnNodes);
+    tlbGeometry->addAction(sceneViewGeometry->actOperateOnEdges);
+    tlbGeometry->addAction(sceneViewGeometry->actOperateOnLabels);
+    tlbGeometry->addSeparator();
+    tlbGeometry->addAction(sceneViewGeometry->actSceneViewSelectRegion);
+    tlbGeometry->addAction(Util::scene()->actTransform);
+    tlbGeometry->addSeparator();
+    tlbGeometry->addAction(Util::scene()->actDeleteSelected);
 
-    tlbTools = addToolBar(tr("Tools"));
+    tlbPost2D = addToolBar(tr("Postprocessor 2D"));
+    tlbPost2D->setObjectName("Postprocessor 2D");
+    tlbPost2D->setMovable(false);
 #ifdef Q_WS_MAC
-    tlbTools->setFixedHeight(iconHeight);
-    tlbTools->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+    tlbPost2D->setFixedHeight(iconHeight);
+    tlbPost2D->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
-    tlbTools->setObjectName("Tools");
-    tlbTools->addAction(actChart);
-    tlbTools->addAction(actScriptEditor);
-
-    tlbTransient = addToolBar(tr("Transient"));
-#ifdef Q_WS_MAC
-    tlbTransient->setFixedHeight(iconHeight);
-    tlbTransient->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
-#endif
-    tlbTransient->setObjectName("Transient");
-    tlbTransient->addWidget(new QLabel(tr("Time step:") + " "));
-    cmbTimeStep = new QComboBox(this);
-    cmbTimeStep->setMinimumWidth(1.7*fontMetrics().width("0.00e+00"));
-    connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
-    tlbTransient->addWidget(cmbTimeStep);
-}
-
-void MainWindow::createStatusBar()
-{
-    logMessage("MainWindow::createStatusBar()");
-
-    lblMessage = new QLabel(statusBar());
-
-    lblPosition = new QLabel(statusBar());
-    lblPosition->setMinimumWidth(180);
-
-    lblMouseMode = new QLabel(statusBar());
-    lblMouseMode->setMinimumWidth(130);
-
-    lblProblemType = new QLabel(statusBar());
-
-    lblPhysicField = new QLabel(statusBar());
-
-    lblAnalysisType = new QLabel(statusBar());
-
-    statusBar()->showMessage(tr("Ready"));
-    statusBar()->addPermanentWidget(lblProblemType);
-    statusBar()->addPermanentWidget(lblPhysicField);
-    statusBar()->addPermanentWidget(lblAnalysisType);
-    statusBar()->addPermanentWidget(lblPosition);
-    statusBar()->addPermanentWidget(lblMouseMode);
-
-    connect(sceneViewPost2D, SIGNAL(mouseMoved(const QPointF &)), this, SLOT(doSceneMouseMoved(const QPointF &)));
-    connect(sceneViewPost2D, SIGNAL(mouseSceneModeChanged(MouseSceneMode)), this, SLOT(doMouseSceneModeChanged(MouseSceneMode)));
+    tlbPost2D->addSeparator();
+    tlbPost2D->addAction(sceneViewPost2D->actPostprocessorModeLocalPointValue);
+    tlbPost2D->addAction(sceneViewPost2D->actPostprocessorModeSurfaceIntegral);
+    tlbPost2D->addAction(sceneViewPost2D->actPostprocessorModeVolumeIntegral);
+    tlbPost2D->addSeparator();
+    tlbPost2D->addAction(sceneViewPost2D->actSceneViewSelectByMarker);
+    tlbPost2D->addAction(actChart);
 }
 
 void MainWindow::createScene()
 {
     logMessage("MainWindow::createScene()");
 
-    tabLayout = new QStackedLayout();
-
     sceneViewGeometry = new SceneViewGeometry(this);
     sceneViewMesh = new SceneViewMesh(this);
     sceneViewPost2D = new SceneViewPost2D(this);
     sceneViewPost3D = new SceneViewPost3D(this);
 
-    tabLayout->addWidget(sceneViewGeometry);
-    tabLayout->addWidget(sceneViewMesh);
-    tabLayout->addWidget(sceneViewPost2D);
-    tabLayout->addWidget(sceneViewPost3D);
+    sceneViewGeometryWidget = new SceneViewWidget(sceneViewGeometry, this);
+    sceneViewMeshWidget = new SceneViewWidget(sceneViewMesh, this);
+    sceneViewPost2DWidget = new SceneViewWidget(sceneViewPost2D, this);
+    sceneViewPost3DWidget = new SceneViewWidget(sceneViewPost3D, this);
 
-    tabLayout->setMargin(5);
+    tabLayout = new QStackedLayout();
+    tabLayout->addWidget(sceneViewGeometryWidget);
+    tabLayout->addWidget(sceneViewMeshWidget);
+    tabLayout->addWidget(sceneViewPost2DWidget);
+    tabLayout->addWidget(sceneViewPost3DWidget);
 
     QWidget *main = new QWidget();
     main->setLayout(tabLayout);
@@ -722,7 +700,7 @@ void MainWindow::createViews()
     resultsView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::RightDockWidgetArea, resultsView);
 
-    postprocessorView = new PostprocessorView(sceneViewPost2D, sceneViewPost3D, this);
+    postprocessorView = new PostprocessorView(sceneViewGeometry, sceneViewMesh, sceneViewPost2D, sceneViewPost3D, this);
     postprocessorView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, postprocessorView);
 
@@ -735,6 +713,10 @@ void MainWindow::createViews()
     tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
 
+    logView = new LogView(this);
+    logView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::LeftDockWidgetArea, logView);
+
     // tabify dock together
     tabifyDockWidget(sceneInfoView, postprocessorView);
 
@@ -742,13 +724,9 @@ void MainWindow::createViews()
     sceneInfoView->raise();
 }
 
-void MainWindow::doSceneMouseMoved(const QPointF &position)
-{
-    lblPosition->setText(tr("Position: [%1; %2]").arg(position.x(), 8, 'f', 5).arg(position.y(), 8, 'f', 5));
-}
-
 void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
 {
+    /*
     lblMouseMode->setText("Mode: -");
 
     switch (mouseSceneMode)
@@ -798,6 +776,7 @@ void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
     default:
         break;
     }
+    */
 }
 
 void MainWindow::setRecentFiles()
@@ -868,7 +847,7 @@ void MainWindow::doDocumentNew()
         Util::scene()->setProblemInfo(problemInfo);
         Util::scene()->refresh();
 
-        sceneViewGeometry->actSceneModeNode->trigger();
+        sceneViewGeometry->actOperateOnNodes->trigger();
         sceneViewGeometry->doZoomBestFit();
         sceneViewMesh->doZoomBestFit();
         sceneViewPost2D->doZoomBestFit();
@@ -911,7 +890,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             {
                 setRecentFiles();
 
-                sceneViewGeometry->actSceneModeNode->trigger();
+                sceneViewGeometry->actOperateOnNodes->trigger();
                 sceneViewGeometry->doZoomBestFit();
                 sceneViewMesh->doZoomBestFit();
                 sceneViewPost2D->doZoomBestFit();
@@ -961,7 +940,7 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
         {
             setRecentFiles();
 
-            sceneViewGeometry->actSceneModeNode->trigger();
+            sceneViewGeometry->actOperateOnNodes->trigger();
             sceneViewGeometry->doZoomBestFit();
             return;
         }
@@ -1057,7 +1036,7 @@ void MainWindow::doDocumentClose()
     sceneViewPost3D->clear();
     Util::scene()->refresh();
 
-    sceneViewGeometry->actSceneModeNode->trigger();
+    sceneViewGeometry->actOperateOnNodes->trigger();
     sceneViewGeometry->doZoomBestFit();
     sceneViewMesh->doZoomBestFit();
     sceneViewPost2D->doZoomBestFit();
@@ -1176,7 +1155,8 @@ void MainWindow::doCreateVideo()
 
 void MainWindow::doCreateMesh()
 {
-    logMessage("MainWindow::doCreateMesh()");
+    LogDialog2 *logDialog = new LogDialog2(this, tr("Mesh"));
+    logDialog->show();
 
     // create mesh
     Util::problem()->solve(SolverMode_Mesh);
@@ -1184,24 +1164,18 @@ void MainWindow::doCreateMesh()
     {
         // raise mesh viewer
         sceneViewMesh->actSceneModeMesh->trigger();
+
+        // successful run
+        logDialog->close();
     }
 
     doInvalidated();
 }
 
-void MainWindow::doFullScreen()
-{
-    logMessage("MainWindow::doFullScreen()");
-
-    if (isFullScreen())
-        showNormal();
-    else
-        showFullScreen();
-}
-
 void MainWindow::doSolve()
 {
-    logMessage("MainWindow::doSolve()");
+    LogDialog2 *logDialog = new LogDialog2(this, tr("Solver"));
+    logDialog->show();
 
     // solve problem
     Util::problem()->solve(SolverMode_MeshAndSolve);
@@ -1215,6 +1189,9 @@ void MainWindow::doSolve()
 
         // raise postprocessor
         postprocessorView->raise();
+
+        // successful run
+        logDialog->close();
     }
 
     doInvalidated();
@@ -1224,7 +1201,8 @@ void MainWindow::doSolve()
 
 void MainWindow::doSolveAdaptiveStep()
 {
-    logMessage("MainWindow::doSolveAdaptiveStep()");
+    LogDialog2 *logDialog = new LogDialog2(this, tr("Adaptive step"));
+    logDialog->show();
 
     // solve problem
     Util::problem()->solve(SolverMode_SolveAdaptiveStep);
@@ -1238,11 +1216,24 @@ void MainWindow::doSolveAdaptiveStep()
 
         // raise postprocessor
         postprocessorView->raise();
+
+        // successful run
+        logDialog->close();
     }
 
     doInvalidated();
     setFocus();
     activateWindow();
+}
+
+void MainWindow::doFullScreen()
+{
+    logMessage("MainWindow::doFullScreen()");
+
+    if (isFullScreen())
+        showNormal();
+    else
+        showFullScreen();
 }
 
 void MainWindow::doOptions()
@@ -1261,9 +1252,12 @@ void MainWindow::doOptions()
 
 void MainWindow::doReport()
 {
-    logMessage("MainWindow::doReport()");
-
     reportDialog->showDialog();
+}
+
+void MainWindow::doTransform()
+{
+    sceneTransformDialog->showDialog();
 }
 
 void MainWindow::doMaterialBrowser()
@@ -1386,53 +1380,65 @@ void MainWindow::doInvalidated()
     sceneViewPost2D->actSceneZoomRegion = NULL;
     sceneViewPost3D->actSceneZoomRegion = NULL;
 
-    if (sceneViewGeometry->actSceneModeNode->isChecked() || sceneViewGeometry->actSceneModeEdge->isChecked() || sceneViewGeometry->actSceneModeLabel->isChecked())
+    tlbGeometry->setVisible(false);
+    tlbPost2D->setVisible(false);
+
+    if (sceneViewGeometry->actSceneModeGeometry->isChecked())
     {
-        tabLayout->setCurrentWidget(sceneViewGeometry);
+        tabLayout->setCurrentWidget(sceneViewGeometryWidget);
         Util::scene()->actTransform->setEnabled(true);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomOut()));
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomBestFit()));
         sceneViewGeometry->actSceneZoomRegion = actSceneZoomRegion;
+
+        sceneInfoView->raise();
+        tlbGeometry->setVisible(true);
     }
     if (sceneViewMesh->actSceneModeMesh->isChecked())
     {
-        tabLayout->setCurrentWidget(sceneViewMesh);
+        tabLayout->setCurrentWidget(sceneViewMeshWidget);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewMesh, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewMesh, SLOT(doZoomOut()));
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewMesh, SLOT(doZoomBestFit()));
         sceneViewPost2D->actSceneZoomRegion = actSceneZoomRegion;
+
+        postprocessorView->raise();
     }
     if (sceneViewPost2D->actSceneModePost2D->isChecked())
     {
-        tabLayout->setCurrentWidget(sceneViewPost2D);
+        tabLayout->setCurrentWidget(sceneViewPost2DWidget);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPost2D, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPost2D, SLOT(doZoomOut()));
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewPost2D, SLOT(doZoomBestFit()));
         sceneViewPost2D->actSceneZoomRegion = actSceneZoomRegion;
+
+        // hide transform dialog
+        sceneTransformDialog->hide();
+
+        postprocessorView->raise();
+        tlbPost2D->setVisible(true);
     }
     if (sceneViewPost3D->actSceneModePost3D->isChecked())
     {
-        tabLayout->setCurrentWidget(sceneViewPost3D);
+        tabLayout->setCurrentWidget(sceneViewPost3DWidget);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomOut()));
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomBestFit()));
         actSceneZoomRegion->setEnabled(false);
+
+        // hide transform dialog
+        sceneTransformDialog->hide();
+
+        postprocessorView->raise();
     }
 
     //    actSolveAdaptiveStep->setEnabled(Util::problem()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
     actChart->setEnabled(Util::problem()->isSolved());
-    //    actCreateVideo->setEnabled(Util::problem()->isSolved() && (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient));
-    tlbTransient->setEnabled(Util::problem()->isSolved());
-    fillComboBoxTimeStep(cmbTimeStep);
-
-    //    lblPhysicField->setText(tr("Physic Field: %1").arg(QString::fromStdString(Util::scene()->fieldInfo("TODO")->module()->name)));
-    lblProblemType->setText(tr("Problem Type: %1").arg(coordinateTypeString(Util::scene()->problemInfo()->coordinateType)));
-    //    lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->fieldInfo("TODO")->analysisType())));
 
     actExportVTKScalar->setEnabled(Util::problem()->isSolved());
     actExportVTKOrder->setEnabled(Util::problem()->isSolved());

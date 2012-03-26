@@ -136,7 +136,7 @@ template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, const std::string &area,
                                                   Hermes::Hermes2D::SymFlag sym, string expression, Marker* marker, Material* markerSecond)
 {
-    cout << "factory form (" << i << ", " << j << "), area: " << area << " -> " << expression << ", marker " << marker->getName() <<  endl;
+    //cout << "factory form (" << i << ", " << j << "), area: " << area << " -> " << expression << ", marker " << marker->getName() <<  endl;
     if(type == WFType_MatVol)
         return new CustomParserMatrixFormVol<Scalar>(i, j,
                                                      area,

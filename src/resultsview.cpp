@@ -45,11 +45,9 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
     btnPoint->setMaximumSize(btnPoint->sizeHint());
     connect(btnPoint, SIGNAL(clicked()), this, SLOT(doPoint()));
 
-    btnSelectMarker = new QPushButton(tr("Select by marker"));
-
     QHBoxLayout *btnLayout = new QHBoxLayout();
+    btnLayout->addStretch();
     btnLayout->addWidget(btnPoint);
-    btnLayout->addWidget(btnSelectMarker);
 
     // main widget
     QVBoxLayout *layout = new QVBoxLayout();
@@ -88,7 +86,6 @@ void ResultsView::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneMo
     m_sceneModePostprocessor = sceneModePostprocessor;
 
     btnPoint->setEnabled(m_sceneModePostprocessor == SceneModePostprocessor_LocalValue);
-    btnSelectMarker->setEnabled(Util::problem()->isSolved() && m_sceneModePostprocessor != SceneModePostprocessor_LocalValue);
 }
 
 void ResultsView::doShowResults()

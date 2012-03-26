@@ -180,6 +180,11 @@ namespace Hermes
       *  \param[in] An element index.
       *  \return Squared error. Meaning of the error depends on parameters of the function calc_errors_internal(). */
       double get_element_error_squared(int component, int id) const;
+
+      /// Returns a vector of refinements generated during the last execution of the method adapt().
+      /** \return A vector of refinements generated during the last execution of the method adapt(). The returned vector might change or become invalid after the next execution of the method adadpt(). */
+      const std::vector<ElementToRefine>& get_last_refinements() const; ///< Returns last refinements.
+
     protected:
       
       /// A reference to an element.
@@ -200,10 +205,6 @@ namespace Hermes
       /// Apply a vector of refinements.
       /** \param[in] A vector of refinements to apply. */
       virtual void apply_refinements(std::vector<ElementToRefine>& elems_to_refine);
-public:
-      /// Returns a vector of refinements generated during the last execution of the method adapt().
-      /** \return A vector of refinements generated during the last execution of the method adapt(). The returned vector might change or become invalid after the next execution of the method adadpt(). */
-      const std::vector<ElementToRefine>& get_last_refinements() const; ///< Returns last refinements.
 
       std::queue<ElementReference> priority_queue; ///< A queue of priority elements. Elements in this queue are processed before the elements in the Adapt::regular_queue.
       Hermes::vector<ElementReference> regular_queue; ///< A queue of elements which should be processes. The queue had to be filled by the method fill_regular_queue().

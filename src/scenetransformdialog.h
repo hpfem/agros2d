@@ -30,6 +30,9 @@ class SceneTransformDialog : public QDialog
     Q_OBJECT
 public:
     SceneTransformDialog(QWidget *parent = 0);
+    ~SceneTransformDialog();
+
+    void showDialog();
 
 private slots:
     void doClose();
@@ -45,11 +48,19 @@ private:
     QWidget *widRotate;
     QWidget *widScale;
 
-    ValueLineEdit *txtTranslateX;
+    QLabel *lstTranslateX;
+    QLabel *lstTranslateY;
     ValueLineEdit *txtTranslateY;
+    ValueLineEdit *txtTranslateX;
+
+    QLabel *lstRotateBasePointX;
+    QLabel *lstRotateBasePointY;
     ValueLineEdit *txtRotateBasePointX;
     ValueLineEdit *txtRotateBasePointY;
     ValueLineEdit *txtRotateAngle;
+
+    QLabel *lstScaleBasePointX;
+    QLabel *lstScaleBasePointY;
     ValueLineEdit *txtScaleBasePointX;
     ValueLineEdit *txtScaleBasePointY;
     ValueLineEdit *txtScaleFactor;

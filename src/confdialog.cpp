@@ -330,13 +330,8 @@ QWidget *ConfigDialog::createMainWidget()
     cmdClearApplicationLog->setText(tr("Clear application log"));
     connect(cmdClearApplicationLog, SIGNAL(clicked()), this, SLOT(doClearApplicationLog()));
 
-    cmdClearCommandHistory = new QPushButton(mainWidget);
-    cmdClearCommandHistory->setText(tr("Clear command history"));
-    connect(cmdClearCommandHistory, SIGNAL(clicked()), this, SLOT(doClearCommandHistory()));
-
     QGridLayout *layoutClearButtons = new QGridLayout();
     layoutClearButtons->addWidget(cmdClearApplicationLog, 0, 0);
-    layoutClearButtons->addWidget(cmdClearCommandHistory, 0, 1);
 
     QVBoxLayout *layoutLogs = new QVBoxLayout();
     layoutLogs->addWidget(chkEnabledProgressLog);
@@ -649,18 +644,6 @@ void ConfigDialog::doClearApplicationLog()
 
         QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Application log was cleared successfully."));
     }
-}
-
-void ConfigDialog::doClearCommandHistory()
-{
-    logMessage("ConfigDialog::doClearCommandHistory()");
-
-    QSettings settings;
-    settings.setValue("CommandDialog/RecentCommands", QStringList());
-    QStringListModel *model = dynamic_cast<QStringListModel *>(Util::completer()->model());
-    model->setStringList(QStringList());
-
-    QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared successfully."));
 }
 
 void ConfigDialog::doAdaptivityDefault()

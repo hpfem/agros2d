@@ -130,7 +130,7 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
     // store variable
     int timeStep = cmbFieldVariable->currentIndex();
     if (timeStep == -1)
-        timeStep = Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField());
+        timeStep = Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal);
 
     // clear combo
     cmbFieldVariable->clear();
@@ -152,7 +152,7 @@ void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
 
     cmbFieldVariable->blockSignals(true);
 
-    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep());
+    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal, Util::scene()->activeTimeStep());
 
     // store variable
     int adaptivityStep = cmbFieldVariable->currentIndex();
@@ -162,12 +162,48 @@ void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
     // clear combo
     cmbFieldVariable->clear();
 
-    for(int step = 0; step < lastAdaptiveStep; step++)
+    for (int step = 0; step <= lastAdaptiveStep; step++)
     {
-        cmbFieldVariable->addItem(QString::number(step), step);
+        cmbFieldVariable->addItem(QString::number(step + 1), step);
     }
 
     cmbFieldVariable->setCurrentIndex(adaptivityStep);
+    cmbFieldVariable->blockSignals(false);
+}
+
+void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
+{
+    logMessage("fillComboBoxSolutionType()");
+
+    cmbFieldVariable->blockSignals(true);
+
+    // store variable
+    SolutionType solutionType = (SolutionType) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+//    if (adaptivityStep == -1)
+//        adaptivityStep = lastAdaptiveStep;
+
+    // clear combo
+    cmbFieldVariable->clear();
+
+    int timeStep = Util::scene()->activeTimeStep();
+    int adaptivityStep = Util::scene()->activeAdaptivityStep();
+
+    //TODO je potreba udelat dynamicky, jak se vybira casovy a adaptivni krok ve formulari
+    if(Util::solutionStore()->contains(FieldSolutionID(Util::scene()->activeViewField(), timeStep, adaptivityStep, SolutionType_Normal)))
+    {
+        cmbFieldVariable->addItem(/*tr*/(solutionTypeToStringKey(SolutionType_Normal)), SolutionType_Normal);
+    }
+    if(Util::solutionStore()->contains(FieldSolutionID(Util::scene()->activeViewField(), timeStep, adaptivityStep, SolutionType_Reference)))
+    {
+        cmbFieldVariable->addItem(/*tr*/(solutionTypeToStringKey(SolutionType_Reference)), SolutionType_Reference);
+    }
+
+//    for(int step = 0; step <= lastAdaptiveStep; step++)
+//    {
+//        cmbFieldVariable->addItem(QString::number(step), step);
+//    }
+
+    cmbFieldVariable->setCurrentIndex(solutionType);
     cmbFieldVariable->blockSignals(false);
 }
 

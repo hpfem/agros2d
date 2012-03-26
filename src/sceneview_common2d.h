@@ -35,15 +35,17 @@ public:
     SceneViewCommon2D(QWidget *parent = 0);
     ~SceneViewCommon2D();
 
+    SceneNode *findClosestNode(const Point &point);
+    SceneEdge *findClosestEdge(const Point &point);
+    SceneLabel *findClosestLabel(const Point &point);
+
+    void doZoomRegion(const Point &start, const Point &end);
+
 protected:
     double m_scale2d; // scale
     Point m_offset2d; // offset
 
     void loadProjection2d(bool setScene = false);
-
-    SceneNode *findClosestNode(const Point &point);
-    SceneEdge *findClosestEdge(const Point &point);
-    SceneLabel *findClosestLabel(const Point &point);
 
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
@@ -58,7 +60,6 @@ protected:
                        bool horizontal = true);
 
     void setZoom(double power);
-    void doZoomRegion(const Point &start, const Point &end);
 
     virtual void paintGL() = 0;
 
@@ -74,7 +75,8 @@ protected:
     inline Point position(double x, double y) const { return position(Point(x, y)); }
     Point position(const Point &point) const;
 
-private:
+private slots:
+    void updatePosition(const Point &point);
 };
 
 #endif // SCENEVIEWCOMMON2D_H

@@ -21,6 +21,7 @@
 #include "util.h"
 #include "scene.h"
 #include "scenesolution.h"
+#include "logview.h"
 
 #include "scenebasic.h"
 #include "scenenode.h"
@@ -47,6 +48,8 @@ void MeshHermes::clear()
 
 void MeshHermes::processOrder()
 {
+    Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
+
     m_orderIsPrepared = false;
 
     // init linearizer for order view
@@ -66,6 +69,8 @@ void MeshHermes::processInitialMesh()
 
     if (Util::problem()->isMeshed())
     {
+        Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->meshInitial()->get_num_active_elements()));
+
         // init linearizer for initial mesh
         Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->meshInitial());
         m_linInitialMeshView.process_solution(&initial);
@@ -82,6 +87,8 @@ void MeshHermes::processSolutionMesh()
 
     if (Util::problem()->isSolved())
     {
+        Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeSceneSolution()->sln(0)->get_mesh()->get_num_active_elements()));
+
         // init linearizer for solution mesh
         Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeSceneSolution()->sln(0)->get_mesh());
         m_linSolutionMeshView.process_solution(&solution);
@@ -94,15 +101,11 @@ void MeshHermes::processSolutionMesh()
 
 void MeshHermes::processMeshed()
 {
-    qDebug("MeshHermes::processMeshed()");
-
     QTimer::singleShot(0, this, SLOT(processInitialMesh()));
 }
 
 void MeshHermes::processSolved()
 {
-    qDebug("MeshHermes::processSolved()");
-
     QTimer::singleShot(0, this, SLOT(processSolutionMesh()));
     QTimer::singleShot(0, this, SLOT(processOrder()));
     //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
@@ -133,8 +136,8 @@ SceneViewMesh::~SceneViewMesh()
 void SceneViewMesh::createActionsMesh()
 {
     // scene mode
-    actSceneModeMesh = new QAction(icon("scene-mesh"), tr("Mesh"), this);
-    // actSceneModeMesh->setShortcut(Qt::Key_F7);
+    actSceneModeMesh = new QAction(iconView(), tr("Mesh"), this);
+    actSceneModeMesh->setShortcut(Qt::Key_F6);
     actSceneModeMesh->setStatusTip(tr("Mesh"));
     actSceneModeMesh->setCheckable(true);
 }
@@ -213,9 +216,6 @@ void SceneViewMesh::paintGL()
 
     // axes
     if (Util::config()->showAxes) paintAxes();
-
-    // label
-    if (Util::config()->showLabel) paintSceneModeLabel(tr("Mesh"));
 }
 
 void SceneViewMesh::paintGeometry()

@@ -125,9 +125,6 @@ void Config::loadWorkspace()
     // axes
     showAxes = settings.value("SceneViewSettings/ShowAxes", SHOWAXES).toBool();
 
-    // label
-    showLabel = settings.value("SceneViewSettings/ShowLabel", SHOWLABEL).toBool();
-
     // linearizer quality
     linearizerQuality = settings.value("SceneViewSettings/LinearizerQuality", LINEARIZER_QUALITY).toDouble();
 
@@ -318,9 +315,6 @@ void Config::saveWorkspace()
 
     // axes
     settings.setValue("SceneViewSettings/ShowAxes", showAxes);
-
-    // label
-    settings.setValue("SceneViewSettings/ShowLabel", showLabel);
 
     // linearizer quality
     settings.setValue("SceneViewSettings/LinearizerQuality", linearizerQuality);

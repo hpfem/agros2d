@@ -65,7 +65,6 @@ private:
     QCheckBox *chkFigureShowGrid;
     QCheckBox *chkFigureShowRulers;
     QCheckBox *chkFigureShowAxes;
-    QCheckBox *chkFigureShowLabel;
 
     QLineEdit *txtTemplate;
     QLineEdit *txtStyleSheet;

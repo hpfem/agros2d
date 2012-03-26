@@ -35,6 +35,65 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
+SceneViewWidget::SceneViewWidget(SceneViewCommon *widget, QWidget *parent) : QWidget(parent)
+{
+    // label
+    sceneViewLabelPixmap = new QLabel();
+    sceneViewLabelLeft = new QLabel();
+    sceneViewLabelCenter = new QLabel();
+    sceneViewLabelRight = new QLabel();
+
+    QHBoxLayout *sceneViewLabelLayout = new QHBoxLayout();
+    sceneViewLabelLayout->addWidget(sceneViewLabelPixmap);
+    sceneViewLabelLayout->addWidget(sceneViewLabelLeft);
+    sceneViewLabelLayout->addStretch(0.5);
+    sceneViewLabelLayout->addWidget(sceneViewLabelCenter);
+    sceneViewLabelLayout->addStretch(0.5);
+    sceneViewLabelLayout->addWidget(sceneViewLabelRight);
+
+    // view
+    QVBoxLayout *sceneViewLayout = new QVBoxLayout();
+    sceneViewLayout->addLayout(sceneViewLabelLayout);
+    sceneViewLayout->addWidget(widget);
+    sceneViewLayout->setStretch(1, 1);
+
+    setLayout(sceneViewLayout);
+
+    iconLeft(widget->iconView());
+    labelLeft(widget->labelView());
+
+    connect(widget, SIGNAL(labelCenter(QString)), this, SLOT(labelCenter(QString)));
+    connect(widget, SIGNAL(labelRight(QString)), this, SLOT(labelRight(QString)));
+}
+
+SceneViewWidget::~SceneViewWidget()
+{
+}
+
+void SceneViewWidget::labelLeft(const QString &left)
+{
+    sceneViewLabelLeft->setText(left);
+}
+
+void SceneViewWidget::labelCenter(const QString &center)
+{
+    sceneViewLabelCenter->setText(center);
+}
+
+void SceneViewWidget::labelRight(const QString &right)
+{
+    sceneViewLabelRight->setText(right);
+}
+
+void SceneViewWidget::iconLeft(const QIcon &left)
+{
+    QPixmap pixmap = left.pixmap(QSize(16, 16));
+    sceneViewLabelPixmap->setPixmap(pixmap);
+}
+
+
+// **********************************************************************************************
+
 SceneViewCommon::SceneViewCommon(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     logMessage("SceneViewCommon::SceneView()");
@@ -95,7 +154,7 @@ void SceneViewCommon::initializeGL()
     logMessage("SceneViewCommon::initializeGL()");
 
     glShadeModel(GL_SMOOTH);
-    glEnable(GL_NORMALIZE);    
+    glEnable(GL_NORMALIZE);
 }
 
 void SceneViewCommon::resizeGL(int w, int h)
@@ -130,41 +189,6 @@ void SceneViewCommon::loadProjectionViewPort()
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-}
-
-// paint *****************************************************************************************************************************
-
-void SceneViewCommon::paintSceneModeLabel(const QString &text)
-{
-    logMessage("SceneViewCommon::paintSceneModeLabel()");
-
-    loadProjectionViewPort();
-
-    glLoadIdentity();
-
-    glScaled(2.0/width(), 2.0/height(), 1.0);
-    glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
-
-    glDisable(GL_DEPTH_TEST);
-
-    // render viewport label
-    QFont fontLabel = font();
-    fontLabel.setPointSize(fontLabel.pointSize() + 1);
-
-    Point posText = Point((width()-QFontMetrics(fontLabel).width(text)) / 2.0,
-                          (height() - QFontMetrics(fontLabel).height() / 1.3));
-
-    // blended rectangle
-    double xs = posText.x - QFontMetrics(fontLabel).width(" ");
-    double ys = posText.y - QFontMetrics(fontLabel).height() / 3.0;
-    double xe = xs + QFontMetrics(fontLabel).width(text + "  ");
-    double ye = height();
-
-    drawBlend(Point(xs, ys), Point(xe, ye), 0.8, 0.8, 0.8, 0.93);
-
-    // text
-    glColor3d(0.0, 0.0, 0.0);
-    renderText(posText.x, posText.y, 0.0, text, fontLabel);
 }
 
 // events *****************************************************************************************************************************
@@ -250,8 +274,6 @@ void SceneViewCommon::clear()
 
 void SceneViewCommon::doInvalidated()
 {
-    logMessage("SceneViewCommon::doInvalidated()");
-
     resize(((QWidget *) parent())->size());
 
     emit mousePressed();

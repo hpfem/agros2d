@@ -50,11 +50,11 @@ public:
     // variables
     std::map<Hermes::Module::Integral *, double> values;
 
-    VolumeIntegralValue(FieldInfo *fieldInfo);
+    VolumeIntegralValue(FieldInfo *m_fieldInfo);
     ~VolumeIntegralValue();
 
 private:
-    FieldInfo *fieldInfo;
+    FieldInfo *m_fieldInfo;
 };
 
 #endif // VOLUMEINTEGRAL_H

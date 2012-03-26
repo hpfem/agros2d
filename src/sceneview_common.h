@@ -46,6 +46,28 @@ namespace Hermes
     }
 }
 
+class SceneViewCommon;
+
+class SceneViewWidget : public QWidget
+{
+    Q_OBJECT
+public:
+   SceneViewWidget(SceneViewCommon *widget, QWidget *parent = 0);
+   ~SceneViewWidget();
+
+public slots:
+   void labelLeft(const QString &left);
+   void labelCenter(const QString &center);
+   void labelRight(const QString &right);
+   void iconLeft(const QIcon &left);
+
+private:
+   QLabel *sceneViewLabelPixmap;
+   QLabel *sceneViewLabelLeft;
+   QLabel *sceneViewLabelCenter;
+   QLabel *sceneViewLabelRight;
+};
+
 class SceneViewCommon : public QGLWidget
 {
     Q_OBJECT
@@ -86,13 +108,19 @@ public:
 
     void setSceneFont();
 
+    virtual QIcon iconView() { return QIcon(); }
+    virtual QString labelView() { return ""; }
+
 signals:
-    void mouseMoved(const QPointF &position);
+    void mouseMoved(const Point &position);
     void mousePressed();
     void mousePressed(const Point &point);
     void sceneGeometryModeChanged(SceneGeometryMode sceneMode);
     void postprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
     void mouseSceneModeChanged(MouseSceneMode mouseSceneMode);
+
+    void labelCenter(const QString &center);
+    void labelRight(const QString &right);
 
 protected:
     void initializeGL();
@@ -132,8 +160,6 @@ protected:
 
     void createActions();
     void createMenu();
-
-    void paintSceneModeLabel(const QString &text);
 
     void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const;
     void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75) const;

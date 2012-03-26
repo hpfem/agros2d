@@ -22,6 +22,7 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "hermes2d/problem.h"
+#include "logview.h"
 
 #include "scenebasic.h"
 #include "scenenode.h"
@@ -41,7 +42,6 @@ Post2DHermes::Post2DHermes()
     m_vectorIsPrepared = false;
 }
 
-
 Post2DHermes::~Post2DHermes()
 {
     clear();
@@ -56,6 +56,8 @@ void Post2DHermes::clear()
 
 void Post2DHermes::processRangeContour()
 {
+    Util::log()->printMessage(tr("Post2DView"), tr("contour view (%1)").arg(Util::config()->contourVariable));
+
     m_contourIsPrepared = false;
 
     if (Util::problem()->isSolved() && Util::config()->contourVariable != "")
@@ -91,6 +93,8 @@ void Post2DHermes::processRangeContour()
 
 void Post2DHermes::processRangeScalar()
 {
+    Util::log()->printMessage(tr("Post2DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
+
     m_scalarIsPrepared = false;
 
     if (Util::problem()->isSolved() && Util::config()->scalarVariable != "")
@@ -123,6 +127,8 @@ void Post2DHermes::processRangeScalar()
 
 void Post2DHermes::processRangeVector()
 {
+    Util::log()->printMessage(tr("Post2DView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
+
     m_vectorIsPrepared = false;
 
     if (Util::problem()->isSolved() && Util::config()->vectorVariable != "")
@@ -153,8 +159,6 @@ void Post2DHermes::processRangeVector()
 
 void Post2DHermes::processSolved()
 {
-    qDebug("Post2DHermes::processSolved()");
-
     QTimer::singleShot(0, this, SLOT(processRangeContour()));
     QTimer::singleShot(0, this, SLOT(processRangeScalar()));
     QTimer::singleShot(0, this, SLOT(processRangeVector()));
@@ -177,6 +181,7 @@ SceneViewPost2D::SceneViewPost2D(QWidget *parent) : SceneViewMesh(parent),
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
 
     connect(m_post2DHermes, SIGNAL(processed()), this, SLOT(updateGL()));
+    // connect(this, SIGNAL(mouseSceneModeChanged(MouseSceneMode)), this, SLOT(doMouseSceneModeChanged(MouseSceneMode)));
 }
 
 SceneViewPost2D::~SceneViewPost2D()
@@ -188,7 +193,7 @@ SceneViewPost2D::~SceneViewPost2D()
 void SceneViewPost2D::createActionsPost2D()
 {
     // scene mode
-    actSceneModePost2D = new QAction(icon("scene-post2d"), tr("Postprocessor 2D"), this);
+    actSceneModePost2D = new QAction(iconView(), tr("Post 2D"), this);
     actSceneModePost2D->setShortcut(Qt::Key_F7);
     actSceneModePost2D->setStatusTip(tr("Postprocessor 2D"));
     actSceneModePost2D->setCheckable(true);
@@ -354,26 +359,22 @@ void SceneViewPost2D::paintGL()
     paintZoomRegion();
     paintChartLine();
 
-    if (Util::config()->showLabel)
+    if (Util::problem()->isSolved())
     {
-        if (Util::problem()->isSolved())
+        if (Util::config()->showScalarView)
         {
-            if (Util::config()->showScalarView)
-
+            Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
+            if (localVariable)
             {
-                Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
-                if (localVariable)
-                {
-                    QString text = Util::config()->scalarVariable != "" ? QString::fromStdString(localVariable->name) : "";
-                    if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
-                        text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
-                    paintSceneModeLabel(text);
-                }
+                QString text = Util::config()->scalarVariable != "" ? QString::fromStdString(localVariable->name) : "";
+                if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
+                    text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
+                emit labelCenter(text);
             }
-            else
-            {
-                paintSceneModeLabel(tr("Postprocessor 2D"));
-            }
+        }
+        else
+        {
+            emit labelCenter(tr("Postprocessor 2D"));
         }
     }
 }
@@ -985,7 +986,7 @@ void SceneViewPost2D::doInvalidated()
     actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
     actSceneViewSelectByMarker->setEnabled(Util::problem()->isSolved());
 
-    SceneViewCommon::doInvalidated();
+    SceneViewCommon2D::doInvalidated();
 }
 
 void SceneViewPost2D::clear()

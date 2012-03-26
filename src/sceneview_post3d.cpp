@@ -22,6 +22,7 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "hermes2d/problem.h"
+#include "logview.h"
 
 #include "scenebasic.h"
 #include "scenenode.h"
@@ -88,6 +89,8 @@ void Post3DHermes::processInitialMesh()
 
 void Post3DHermes::processRangeScalar()
 {
+    Util::log()->printMessage(tr("Post3DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
+
     processInitialMesh();
 
     m_scalarIsPrepared = false;
@@ -113,8 +116,6 @@ void Post3DHermes::processRangeScalar()
 
 void Post3DHermes::processSolved()
 {
-    qDebug("Post3DHermes::processSolved()");
-
     QTimer::singleShot(0, this, SLOT(processRangeScalar()));
 }
 
@@ -142,8 +143,8 @@ SceneViewPost3D::~SceneViewPost3D()
 
 void SceneViewPost3D::createActionsPost3D()
 {
-    actSceneModePost3D = new QAction(icon("scene-post3d"), tr("Postprocessor 3D"), this);
-    actSceneModePost3D->setShortcut(Qt::Key_F7);
+    actSceneModePost3D = new QAction(iconView(), tr("Post 3D"), this);
+    actSceneModePost3D->setShortcut(Qt::Key_F8);
     actSceneModePost3D->setStatusTip(tr("Postprocessor 3D"));
     actSceneModePost3D->setCheckable(true);
 }
@@ -178,35 +179,32 @@ void SceneViewPost3D::paintGL()
             paintScalarFieldColorBar(Util::config()->scalarRangeMin, Util::config()->scalarRangeMax);
     }
 
-    if (Util::config()->showLabel)
+    switch (Util::config()->showPost3D)
     {
-        switch (Util::config()->showPost3D)
+    case SceneViewPost3DShow_ScalarView3D:
+    case SceneViewPost3DShow_ScalarView3DSolid:
+    {
+        if (Util::problem()->isSolved())
         {
-        case SceneViewPost3DShow_ScalarView3D:
-        case SceneViewPost3DShow_ScalarView3DSolid:
-        {
-            if (Util::problem()->isSolved())
+            Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
+            if (localVariable)
             {
-                Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
-                if (localVariable)
-                {
-                    QString text = Util::config()->scalarVariable != "" ? QString::fromStdString(localVariable->name) : "";
-                    if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
-                        text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
-                    paintSceneModeLabel(text);
-                }
+                QString text = Util::config()->scalarVariable != "" ? QString::fromStdString(localVariable->name) : "";
+                if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
+                    text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
+                emit labelCenter(text);
             }
         }
-            break;
-        case SceneViewPost3DShow_Model:
-            paintSceneModeLabel(tr("Model"));
-            break;
-        case SceneViewPost3DShow_ParticleTracing:
-            paintSceneModeLabel(tr("Particle tracing"));
-            break;
-        default:
-            paintSceneModeLabel(tr("Postprocessor 3D"));
-        }
+    }
+        break;
+    case SceneViewPost3DShow_Model:
+        emit labelCenter(tr("Model"));
+        break;
+    case SceneViewPost3DShow_ParticleTracing:
+        emit labelCenter(tr("Particle tracing"));
+        break;
+    default:
+        emit labelCenter(tr("Postprocessor 3D"));
     }
 }
 
@@ -809,7 +807,9 @@ void SceneViewPost3D::doInvalidated()
     m_listScalarField3DSolid = -1;
 
     if (Util::problem()->isSolved())
+    {
         m_post3DHermes->processSolved();
+    }
 
     // actions
     actSceneModePost3D->setEnabled(Util::problem()->isSolved());

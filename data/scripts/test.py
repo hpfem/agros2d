@@ -6,7 +6,7 @@ Q = 1e4
 
 problem = agros2d.Problem("planar", name = "Test", time_step = 10, time_total = 60)
 
-electrostatic = agros2d.Field("electrostatic", "steadystate")
+electrostatic = agros2d.Field(problem, "electrostatic", "steadystate")
 
 electrostatic.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
 electrostatic.add_boundary("Dirichlet", "electrostatic_surface_charge_density")
@@ -20,7 +20,7 @@ electrostatic.add_material("Dieletric", {"electrostatic_permittivity" : 7, "elec
 electrostatic.add_material("Conductor", {"electrostatic_permittivity" : 15, "electrostatic_charge_density" : J})
 electrostatic.set_material("Conductor", {"electrostatic_permittivity" : 5})
 
-heat = agros2d.Field("heat", "transient")
+heat = agros2d.Field(problem, "heat", "steadystate")
 
 heat.add_boundary("Dirichlet", "heat_temperature", {"heat_temperature" : 20})
 heat.add_boundary("Neumann", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_heat_transfer_coefficient" : 5, "external_temperature": 20})
@@ -29,18 +29,18 @@ heat.set_boundary("Neumann", parameters = {"heat_heat_transfer_coefficient" : 2}
 heat.add_material("Conductor", {"heat_volume_heat" : Q, "heat_density" : 8700, "heat_conductivity" : 385, "heat_specific_heat" : 430})
 heat.set_material("Conductor", {"heat_volume_heat" : Q/3.0})
 
-geometry = agros2d.Geometry()
+geometry = agros2d.Geometry(problem)
 geometry.add_node(-1, -1)
 geometry.add_node(0, 0)
 geometry.remove_node(0)
 
 geometry.add_edge(0, 0, 1, 0, boundaries = {"electrostatic" : "Dirichlet", "heat" : "Dirichlet"})
-geometry.add_edge(1, 0, 1, 1, boundaries = {"electrostatic" : "Neumann"})
-geometry.add_edge(1, 1, 0, 1, boundaries = {"electrostatic" : "Neumann"})
+geometry.add_edge(1, 0, 1, 1, boundaries = {"electrostatic" : "Neumann", "heat" : "Neumann"})
+geometry.add_edge(1, 1, 0, 1, boundaries = {"electrostatic" : "Neumann", "heat" : "Neumann"})
 geometry.add_edge(0, 1, 0, 0, boundaries = {"electrostatic" : "Dirichlet", "heat" : "Dirichlet"})
-geometry.add_edge(0, 1, 1, 0, angle = 45, refinement = 2, boundaries = {"heat" : "Neumann"})
+geometry.add_edge(0, 1, 1, 0, angle = 45, refinement = 2)
 geometry.add_label(.25, .25, materials = {"electrostatic" : "Conductor", "heat" : "Conductor"})
-geometry.add_label(.75, .75, materials = {"electrostatic" : "Dieletric"})
+geometry.add_label(.75, .75, materials = {"electrostatic" : "Dieletric", "heat" : "Conductor"})
 
 geometry.select_nodes([0])
 geometry.select_nodes()
@@ -59,4 +59,9 @@ geometry.zoom_best_fit()
 
 #geometry.select_labels()
 #geometry.remove_selection()
+
+# mesh geometry
 geometry.mesh()
+
+# solve problem
+problem.solve()

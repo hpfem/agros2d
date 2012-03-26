@@ -21,6 +21,7 @@
 #include "sceneview_common.h"
 
 #include "util.h"
+#include "logview.h"
 #include "scenebasic.h"
 #include "scenenode.h"
 #include "sceneedge.h"
@@ -244,21 +245,12 @@ Util::Util()
     m_problem = new Problem();
     m_solutionStore = new SolutionStore();
 
-    // completer
-    m_completer = new QCompleter();
-    m_completer->setCaseSensitivity(Qt::CaseInsensitive);
-    m_completer->setCompletionMode(QCompleter::InlineCompletion);
-    m_completer->setModelSorting(QCompleter::UnsortedModel);
-    m_completer->setModel(new QStringListModel());
-
-    QSettings settings;
-    QStringList list = settings.value("CommandDialog/RecentCommands").value<QStringList>();
-    QStringListModel *model = dynamic_cast<QStringListModel *>(m_completer->model());
-    model->setStringList(list);
-
     // config
     m_config = new Config();
     m_config->load();
+
+    // log
+    m_log = new Log();
 
     initLists();
 }
@@ -268,11 +260,11 @@ Util::~Util()
     logMessage("Util::~Util()");
 
     delete m_scene;
-    delete m_completer;
     delete m_config;
     delete m_scriptEngineRemote;
     delete m_problem;
     delete m_solutionStore;
+    delete m_log;
 }
 
 void Util::createSingleton()
@@ -382,13 +374,12 @@ void Scene::createActions()
 
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
-    connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
     actClearSolutions = new QAction(icon(""), tr("Clear solution"), this);
     actClearSolutions->setStatusTip(tr("Clear solution"));
     connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(doClearSolution()));
 
-    actProblemProperties = new QAction(icon("document-properties"), tr("&Problem properties"), this);
+    actProblemProperties = new QAction(icon("document-properties"), tr("Properties"), this);
     actProblemProperties->setShortcut(tr("F12"));
     actProblemProperties->setStatusTip(tr("Problem properties"));
     connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
@@ -1151,14 +1142,6 @@ void Scene::removeField(FieldInfo *field)
 
     emit fieldsChanged();
     emit invalidated();
-}
-
-void Scene::doTransform()
-{
-    logMessage("Scene::doTransform()");
-
-    SceneTransformDialog sceneTransformDialog(QApplication::activeWindow());
-    sceneTransformDialog.exec();
 }
 
 void Scene::doClearSolution()
@@ -2014,13 +1997,15 @@ void Scene::synchronizeCouplings()
 
 SceneSolution<double> *Scene::activeSceneSolution()
 {
-    return sceneSolution(FieldSolutionID(activeViewField(), activeTimeStep(), 0, SolutionType_Normal));
+    return sceneSolution(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
 }
 
 SceneSolution<double>* Scene::sceneSolution(FieldSolutionID fsid)
 {
+    cout << "chci scene solution " << fsid << endl;
     if(! m_sceneSolutions.contains(fsid))
     {
+        cout << "vytvarim " << endl;
         MultiSolutionArray<double> msa;
         if(Util::solutionStore()->contains(fsid))
             msa = Util::solutionStore()->multiSolution(fsid);
@@ -2029,6 +2014,7 @@ SceneSolution<double>* Scene::sceneSolution(FieldSolutionID fsid)
     }
     else
     {
+        cout << "mam" << endl;
         m_sceneSolutions[fsid]->updateSolutionArray(Util::solutionStore()->multiSolution(fsid));
     }
 

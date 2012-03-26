@@ -28,6 +28,10 @@
 #include "scene.h"
 
 class Solution;
+class SceneViewGeometry;
+class SceneViewMesh;
+class SceneViewPost2D;
+class SceneViewPost3D;
 
 class PythonEngineAgros : public PythonEngine
 {
@@ -35,12 +39,27 @@ class PythonEngineAgros : public PythonEngine
 public:
     PythonEngineAgros() : PythonEngine() {}
 
+    inline void setSceneViewGeometry(SceneViewGeometry *sceneViewGeometry) { m_sceneViewGeometry = sceneViewGeometry; }
+    inline SceneViewGeometry *sceneViewGeometry() { assert(m_sceneViewGeometry); return m_sceneViewGeometry; }
+    inline void setSceneViewMesh(SceneViewMesh *sceneViewMesh) { m_sceneViewMesh = sceneViewMesh; }
+    inline SceneViewMesh *sceneViewMesh() { assert(m_sceneViewMesh); return m_sceneViewMesh; }
+    inline void setSceneViewPost2D(SceneViewPost2D *sceneViewPost2D) { assert(m_sceneViewPost2D); m_sceneViewPost2D = sceneViewPost2D; }
+    inline SceneViewPost2D *sceneViewPost2D() { return m_sceneViewPost2D; }
+    inline void setSceneViewPost3D(SceneViewPost3D *sceneViewPost3D) { m_sceneViewPost3D = sceneViewPost3D; }
+    inline SceneViewPost3D *sceneViewPost3D() { assert(m_sceneViewPost3D); return m_sceneViewPost3D; }
+
 protected:
     virtual void addCustomExtensions();
     virtual void runPythonHeader();
 
 private slots:
     void doExecutedScript();
+
+private:
+    SceneViewGeometry *m_sceneViewGeometry;
+    SceneViewMesh *m_sceneViewMesh;
+    SceneViewPost2D *m_sceneViewPost2D;
+    SceneViewPost3D *m_sceneViewPost3D;
 };
 
 class PythonLabAgros : public PythonEditorDialog
@@ -57,6 +76,9 @@ private slots:
 };
 
 bool scriptIsRunning();
+
+// current python engine agros
+PythonEngineAgros *currentPythonEngineAgros();
 
 QString createPythonFromModel();
 ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
@@ -120,7 +142,7 @@ class PyProblem {
         inline const double getTimeTotal() { return Util::scene()->problemInfo()->timeTotal.number(); }
         void setTimeTotal(const double timeTotal) { Util::scene()->problemInfo()->timeTotal = Value(QString::number(timeTotal)); }
 
-        void solve() { qDebug() << "Not now :)"; }
+        void solve();
 };
 
 // field
@@ -192,7 +214,7 @@ class PyField {
         void setMaterial(char *name, map<char*, double> parameters);
         void removeMaterial(char *name);
 
-        void solve() { qDebug() << "Not now :)"; }
+        void solve() { assert(0); qDebug() << "Not now :)"; }
 };
 
 // geometry
@@ -261,7 +283,6 @@ void pySaveImage(char *str, int w, int h);
 // cython functions
 char *pythonSolutionFileName();
 
-void pythonSolve();
 void pythonSolveAdaptiveStep();
 
 void pythonMode(char *str);

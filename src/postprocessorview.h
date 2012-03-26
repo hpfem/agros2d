@@ -22,6 +22,8 @@
 
 #include "util.h"
 
+class SceneViewGeometry;
+class SceneViewMesh;
 class SceneViewPost2D;
 class SceneViewPost3D;
 class SLineEditDouble;
@@ -31,7 +33,9 @@ class PostprocessorView : public QDockWidget
     Q_OBJECT
 
 public:
-    PostprocessorView(SceneViewPost2D *scenePost2D,
+    PostprocessorView(SceneViewGeometry *sceneGeometry,
+                      SceneViewMesh *sceneMesh,
+                      SceneViewPost2D *scenePost2D,
                       SceneViewPost3D *scenePost3D,
                       QWidget *parent);
 
@@ -39,6 +43,8 @@ private slots:
     void doApply();
 
 private:
+    SceneViewGeometry *m_sceneGeometry;
+    SceneViewMesh *m_sceneMesh;
     SceneViewPost2D *m_scenePost2D;
     SceneViewPost3D *m_scenePost3D;
 
@@ -49,14 +55,18 @@ private:
     // basic
     QComboBox *cmbFieldInfo;
 
+    QGroupBox *grpShowMesh;
+    QGroupBox *grpShowPost2D;
+    QGroupBox *grpShowPost3D;
+
     // show
     QCheckBox *chkShowInitialMeshView;
     QCheckBox *chkShowSolutionMeshView;
-    QCheckBox *chkShowContourView;
-    QCheckBox *chkShowScalarView;
+    QCheckBox *chkShowPost2DContourView;
+    QCheckBox *chkShowPost2DScalarView;
     QCheckBox *chkShowOrderView;
-    QCheckBox *chkShowVectorView;
-    QCheckBox *chkShowParticleView;
+    QCheckBox *chkShowPost2DVectorView;
+    QCheckBox *chkShowPost2DParticleView;
 
     QButtonGroup *butPost3DGroup;
     QRadioButton *radPost3DNone;
@@ -66,9 +76,10 @@ private:
     QRadioButton *radPost3DParticleTracing;
 
     // scalar field
-    QComboBox *cmbScalarFieldVariable;
-    QComboBox *cmbScalarFieldVariableComp;
-    QLineEdit *txtScalarFieldExpression;
+    QGroupBox *grpPost2DScalarField;
+    QComboBox *cmbPost2DScalarFieldVariable;
+    QComboBox *cmbPost2DScalarFieldVariableComp;
+    QLineEdit *txtPost2DScalarFieldExpression;
     QCheckBox *chkScalarFieldRangeAuto;
     QLabel *lblScalarFieldRangeMin;
     QLabel *lblScalarFieldRangeMax;
@@ -78,14 +89,17 @@ private:
     QLabel *lblScalarFieldRangeMaxError;
 
     // vector field
-    QComboBox *cmbVectorFieldVariable;
+    QGroupBox *grpPost2DVectorField;
+    QComboBox *cmbPost2DVectorFieldVariable;
 
     // transient
+    QGroupBox *grpTransient;
     QComboBox *cmbTimeStep;
 
     // adaptivity
+    QGroupBox *grpAdaptivity;
     QComboBox *cmbAdaptivityStep;
-    QComboBox *cmbSolutionType;
+    QComboBox *cmbAdaptivitySolutionType;
 
     // grid
     QLineEdit *txtGridStep;
@@ -105,7 +119,6 @@ private:
     // workspace other
     QCheckBox *chkShowAxes;
     QCheckBox *chkShowRulers;
-    QCheckBox *chkShowLabel;
 
     // scalar field
     QCheckBox *chkShowScalarColorBar;
@@ -118,7 +131,8 @@ private:
     QSpinBox *txtScalarDecimalPlace;
 
     // contours
-    QComboBox *cmbContourVariable;
+    QGroupBox *grpPost2DContourField;
+    QComboBox *cmbPost2DContourVariable;
     QSpinBox *txtContoursCount;
 
     // vector field

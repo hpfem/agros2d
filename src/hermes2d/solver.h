@@ -45,12 +45,12 @@ public:
     void doAdaptivityStep();
     void doTimeStep();
 
-    void solveSimple();
-    void solveTimeStep(double timeStep);
-    void solveInitialTimeStep();
+    bool solveSimple();
+    bool solveTimeStep(double timeStep);
+    bool solveInitialTimeStep();
 
-    void solveInitialAdaptivityStep();
-    bool solveAdaptivityStep();
+    bool solveInitialAdaptivityStep(int timeStep);
+    bool solveAdaptivityStep(int timeStep, int adaptivityStep);
 
 private:
     //FieldInfo *m_fieldInfo;

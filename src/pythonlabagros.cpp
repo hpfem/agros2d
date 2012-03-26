@@ -24,6 +24,10 @@
 
 #include "scene.h"
 #include "sceneview_common.h"
+#include "sceneview_geometry.h"
+#include "sceneview_mesh.h"
+#include "sceneview_post2d.h"
+#include "sceneview_post3d.h"
 #include "scenesolution.h"
 #include "scenenode.h"
 #include "sceneedge.h"
@@ -37,6 +41,12 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+
+// current python engine agros
+PythonEngineAgros *currentPythonEngineAgros()
+{
+    return static_cast<PythonEngineAgros *>(currentPythonEngine());
+}
 
 ScriptResult runPythonScript(const QString &script, const QString &fileName)
 {
@@ -64,7 +74,7 @@ bool scriptIsRunning()
 
 QString createPythonFromModel()
 {
-    assert(0); //TODO
+    assert(0); //TODO:
     //    logMessage("createPythonFromModel()");
 
     //    QString str;
@@ -306,11 +316,19 @@ PyProblem::PyProblem(char *coordinateType, char *name, char *meshType, char *mat
         throw invalid_argument(QObject::tr("The total time must be positive.").toStdString());
 }
 
+void PyProblem::solve()
+{
+    Util::problem()->solve(SolverMode_MeshAndSolve);
+    if (Util::problem()->isSolved())
+    {
+        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+        // Util::scene()->refresh();
+    }
+}
+
 PyField::PyField(char *fieldId, char *analysisType, int numberOfRefinements, int polynomialOrder, char *linearityType, double nonlinearTolerance, int nonlinearSteps,
                  char *adaptivityType, double adaptivityTolerance, int adaptivitySteps, double initialCondition, char *weakForms)
 {
-    logMessage("PyField::PyField()");
-
     m_fieldInfo = new FieldInfo(Util::scene()->problemInfo(), fieldId);
 
     m_fieldInfo->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
@@ -352,6 +370,8 @@ PyField::PyField(char *fieldId, char *analysisType, int numberOfRefinements, int
         throw invalid_argument(QObject::tr("Adaptivity steps must be higher than 1.").toStdString());
 
     m_fieldInfo->initialCondition = Value(QString::number(initialCondition));
+
+    // weakforms
     m_fieldInfo->weakFormsType = weakFormsTypeFromStringKey(QString(weakForms));
 
     Util::scene()->addField(fieldInfo());
@@ -650,42 +670,36 @@ void PyGeometry::selectNodePoint(double x, double y)
 {
     logMessage("PyGeometry::selectNodePoint()");
 
-    assert(0);
-    //TODO
-    //    SceneNode *node = sceneView()->findClosestNode(Point(x, y));
-    //    if (node)
-    //    {
-    //        node->isSelected = true;
-    //        // sceneView()->doInvalidated();
-    //    }
+    SceneNode *node = currentPythonEngineAgros()->sceneViewGeometry()->findClosestNode(Point(x, y));
+    if (node)
+    {
+        node->isSelected = true;
+        // sceneView()->doInvalidated();
+    }
 }
 
 void PyGeometry::selectEdgePoint(double x, double y)
 {
     logMessage("PyGeometry::selectEdgePoint()");
 
-    assert(0);
-    //TODO
-    //    SceneEdge *edge = sceneView()->findClosestEdge(Point(x, y));
-    //    if (edge)
-    //    {
-    //        edge->isSelected = true;
-    //        // sceneView()->doInvalidated();
-    //    }
+    SceneEdge *edge = currentPythonEngineAgros()->sceneViewGeometry()->findClosestEdge(Point(x, y));
+    if (edge)
+    {
+        edge->isSelected = true;
+        // sceneView()->doInvalidated();
+    }
 }
 
 void PyGeometry::selectLabelPoint(double x, double y)
 {
     logMessage("PyGeometry::selectLabelPoint()");
 
-    assert(0);
-    //TODO
-    //    SceneLabel *label = sceneView()->findClosestLabel(Point(x, y));
-    //    if (label)
-    //    {
-    //        label->isSelected = true;
-    //        // sceneView()->doInvalidated();
-    //    }
+    SceneLabel *label = currentPythonEngineAgros()->sceneViewGeometry()->findClosestLabel(Point(x, y));
+    if (label)
+    {
+        label->isSelected = true;
+        // sceneView()->doInvalidated();
+    }
 }
 
 void PyGeometry::selectNone()
@@ -732,7 +746,11 @@ void PyGeometry::mesh()
     logMessage("PyGeometry::mesh()");
 
     Util::problem()->solve(SolverMode_Mesh);
-    Util::scene()->refresh();
+    if (Util::problem()->isMeshed())
+    {
+        currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+        Util::scene()->refresh();
+    }
 }
 
 char *PyGeometry::meshFileName()
@@ -749,28 +767,28 @@ void PyGeometry::zoomBestFit()
 {
     logMessage("PyGeometry::zoomBestFit()");
 
-    // sceneView()->doZoomBestFit();
+    currentPythonEngineAgros()->sceneViewGeometry()->doZoomBestFit();
 }
 
 void PyGeometry::zoomIn()
 {
     logMessage("PyGeometry::zoomIn()");
 
-    // sceneView()->doZoomIn();
+    currentPythonEngineAgros()->sceneViewGeometry()->doZoomIn();
 }
 
 void PyGeometry::zoomOut()
 {
     logMessage("PyGeometry::zoomOut()");
 
-    // sceneView()->doZoomOut();
+    currentPythonEngineAgros()->sceneViewGeometry()->doZoomOut();
 }
 
 void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
 {
     logMessage("PyGeometry::zoomRegion()");
 
-    // sceneView()->doZoomRegion(Point(x1, y1), Point(x2, y2));
+    currentPythonEngineAgros()->sceneViewGeometry()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 char *pyVersion()
@@ -831,9 +849,12 @@ void pyCloseDocument()
     // sceneView()->doDefaultValues();
     Util::scene()->refresh();
 
-    //TODO
-    // sceneView()->actSceneModeNode->trigger();
-    // sceneView()->doZoomBestFit();
+    currentPythonEngineAgros()->sceneViewGeometry()->actSceneModeGeometry->trigger();
+
+    currentPythonEngineAgros()->sceneViewGeometry()->doZoomBestFit();
+    currentPythonEngineAgros()->sceneViewMesh()->doZoomBestFit();
+    currentPythonEngineAgros()->sceneViewPost2D()->doZoomBestFit();
+    currentPythonEngineAgros()->sceneViewPost3D()->doZoomBestFit();
 }
 
 void pySaveImage(char *str, int w, int h)
@@ -860,21 +881,6 @@ char *pythonSolutionFileName()
     }
     else
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
-}
-
-// solve()
-void pythonSolve()
-{
-    assert(0);
-
-    //    logMessage("pythonSolve()");
-
-    //    Util::scene()->sceneSolution()->solve(SolverMode_MeshAndSolve);
-    //    if (Util::scene()->sceneSolution()->isSolved())
-    //    {
-    //        // sceneView()->actSceneModePostprocessor->trigger();
-    //        Util::scene()->refresh();
-    //    }
 }
 
 // solveAdaptiveStep()
@@ -1224,31 +1230,30 @@ void pythonShowGrid(bool show)
 // showgeometry(show = {True, False})
 void pythonShowGeometry(bool show)
 {
-    logMessage("pythonShowGeometry()");
-
-    //TODO
-    // sceneView()->sceneViewSettings().showGeometry = show;
-    // sceneView()->doInvalidated();
+    currentPythonEngineAgros()->sceneViewGeometry()->actSceneModeGeometry->trigger();
+    currentPythonEngineAgros()->sceneViewGeometry()->doInvalidated();
 }
 
 // showinitialmesh(show = {True, False})
 void pythonShowInitialMesh(bool show)
 {
-    logMessage("pythonShowInitialMesh()");
-
-    //TODO
-    //sceneView()->sceneViewSettings().showInitialMesh = show;
-    //sceneView()->doInvalidated();
+    if (Util::problem()->isMeshed())
+    {
+        Util::config()->showInitialMeshView = true;
+        currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+        currentPythonEngineAgros()->sceneViewMesh()->doInvalidated();
+    }
 }
 
 // showsolutionmesh(show = {True, False})
 void pythonShowSolutionMesh(bool show)
 {
-    logMessage("pythonShowSolutionMesh()");
-
-    //TODO
-    //sceneView()->sceneViewSettings().showSolutionMesh = show;
-    //sceneView()->doInvalidated();
+    if (Util::problem()->isSolved())
+    {
+        Util::config()->showSolutionMeshView = true;
+        currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+        currentPythonEngineAgros()->sceneViewMesh()->doInvalidated();
+    }
 }
 
 // showcontours(show = {True, False})
@@ -1278,7 +1283,7 @@ void pythonShowVectors(bool show)
 // settimestep(level)
 void pythonSetTimeStep(int timestep)
 {
-    assert(0); //TODO
+    assert(0); //TODO:
     //    logMessage("pythonSetTimeStep()");
 
     //    if (Util::scene()->sceneSolution()->isSolved())

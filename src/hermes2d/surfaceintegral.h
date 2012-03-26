@@ -40,6 +40,8 @@ protected:
     // parser
     Parser *parser;
 
+    Hermes::vector<Hermes::Hermes2D::Solution<double> *> sln;
+
     void initParser();
     void calculate();
 
@@ -51,7 +53,7 @@ public:
     ~SurfaceIntegralValue();
 
 private:
-    FieldInfo *fieldInfo;
+    FieldInfo *m_fieldInfo;
 };
 
 #endif // SURFACEINTEGRAL_H

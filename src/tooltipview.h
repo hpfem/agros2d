@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef TOOLTIPVIEW_H
-#define TOOLTIPVIEW_H
+#ifndef LOGVIEW_H
+#define LOGVIEW_H
 
 #include "util.h"
 
@@ -28,7 +28,7 @@ class TooltipView : public QDockWidget
 public:
     TooltipView(QWidget *parent = 0);
 
-public slots:
+public slots:    
     void loadTooltip(const QString &html);
     void loadTooltipPost2D();
     void loadTooltip(SceneGeometryMode sceneMode);
@@ -37,4 +37,4 @@ private:
      QTextEdit *txtView;
 };
 
-#endif // TOOLTIPVIEW_H
+#endif // LOGVIEW_H

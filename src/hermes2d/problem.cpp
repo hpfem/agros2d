@@ -27,7 +27,8 @@
 #include "coupling.h"
 #include "solver.h"
 #include "progressdialog.h"
-
+#include "meshgenerator.h"
+#include "logview.h"
 
 Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
@@ -76,6 +77,8 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, Prog
 
 Solver<double>* Block::prepareSolver()
 {
+    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("prepare solver"));
+
     Solver<double>* solver = new Solver<double>;
 
     foreach (Field* field, m_fields)
@@ -395,24 +398,21 @@ void Problem::createStructure()
 
 }
 
-void Problem::mesh()
+bool Problem::mesh()
 {
-    ProgressItemMesh* pim = new ProgressItemMesh();
-    pim->mesh();
+    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
+
+    MeshGeneratorTriangle* pim = new MeshGeneratorTriangle();
+    return pim->mesh();
 }
 
 void Problem::solve(SolverMode solverMode)
 {
-    logMessage("SceneSolution::solve()");
-
-    cout << "####***##### PROBLEM::Solve() #####******#####" << endl;
-
-    setVerbose(true);
-
     if (isSolving()) return;
 
     clear();
     m_isSolving = true;
+    bool isError = false;
 
     // clear problem
     //clear(solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve);
@@ -429,69 +429,110 @@ void Problem::solve(SolverMode solverMode)
 
     Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
 
-    mesh();
-    emit meshed();
-
-    Util::scene()->clearSolutions();
-    Util::solutionStore()->clearAll();
-
-    assert(isMeshed());
-
-    QMap<Block*, Solver<double>* > solvers;
-
-    if (solverMode == SolverMode_MeshAndSolve)
+    isError = !mesh();
+    if (!isError)
     {
-        foreach (Block* block, m_blocks)
-        {
-            solvers[block] = block->prepareSolver();
-        }
+        emit meshed();
 
-        foreach (Block* block, m_blocks)
-        {
-            Solver<double>* solver = solvers[block];
+        Util::scene()->clearSolutions();
+        Util::solutionStore()->clearAll();
 
-            if(block->isTransient()){
-                solver->solveInitialTimeStep();
-                for(int i = 0; i < block->numTimeSteps(); i++)
-                    solver->solveTimeStep(block->timeStep());
-            }
-            else
+        assert(isMeshed());
+
+        QMap<Block*, Solver<double>* > solvers;
+
+        if (solverMode == SolverMode_MeshAndSolve)
+        {
+            Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
+
+            foreach (Block* block, m_blocks)
             {
-                if(block->adaptivityType() == AdaptivityType_None)
-                    solver->solveSimple();
+                solvers[block] = block->prepareSolver();
+            }
+
+            foreach (Block* block, m_blocks)
+            {
+                Solver<double>* solver = solvers[block];
+
+                if (block->isTransient())
+                {
+                    if (solver->solveInitialTimeStep())
+                    {
+                        for (int i = 0; i < block->numTimeSteps(); i++)
+                            if (!solver->solveTimeStep(block->timeStep()))
+                            {
+                                isError = true;
+                                break; // inner loop
+                            }
+                    }
+                    else
+                    {
+                        isError = true;
+                    }
+
+                    if (isError)
+                        break; // block solver loop
+                }
                 else
                 {
-                    solver->solveInitialAdaptivityStep();
-                    solver->solveAdaptivityStep();
-                    solver->solveAdaptivityStep();
-//                    while(solver->solveAdaptivityStep())
-//                        ;
+                    if (block->adaptivityType() == AdaptivityType_None)
+                    {
+                        if (!solver->solveSimple())
+                        {
+                            isError = true;
+                            break; // block solver loop
+                        }
+                    }
+                    else
+                    {
+                        if (!solver->solveInitialAdaptivityStep(0))
+                        {
+                            isError = true;
+                            break; // block solver loop
+                        }
+                        int adaptStep = 1;
+                        bool continueSolve = true;
+                        while (continueSolve && (adaptStep <= block->adaptivitySteps()))
+                        {
+                            continueSolve = solver->solveAdaptivityStep(0, adaptStep);
+                            cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
+                            adaptStep++;
+                        }
+                    }
                 }
             }
 
+            if (!isError)
+            {
+                Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal));
+                Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal));
+                Util::scene()->setActiveSolutionType(SolutionType_Normal);
+                cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal) << endl;
+            }
         }
 
+        // delete temp file
+        if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
+        {
+            QFile::remove(Util::scene()->problemInfo()->fileName);
+            Util::scene()->problemInfo()->fileName = "";
+        }
+
+        if (solverMode == SolverMode_MeshAndSolve)
+        {
+            if (!isError)
+            {
+                m_isSolved = true;
+                emit solved();
+                //TODO emit timeStepChanged(false);
+            }
+        }
     }
 
-    Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField()));
-
-    // delete temp file
-    if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
-    {
-        QFile::remove(Util::scene()->problemInfo()->fileName);
-        Util::scene()->problemInfo()->fileName = "";
-    }
+    m_isSolving = false;
 
     // close indicator progress
     Indicator::closeProgress();
-
-    m_isSolving = false;
-    if (solverMode == SolverMode_MeshAndSolve)
-    {
-        m_isSolved = true;
-        emit solved();
-        //TODO emit timeStepChanged(false);
-    }
 }
 
 ProgressDialog* Problem::progressDialog()
@@ -548,6 +589,12 @@ void SolutionStore::saveSolution(FieldSolutionID solutionID,  MultiSolutionArray
     replaceSolution(solutionID, multiSolution);
 }
 
+void SolutionStore::removeSolution(FieldSolutionID solutionID)
+{
+    assert(m_multiSolutions.contains(solutionID));
+    m_multiSolutions.remove(solutionID);
+}
+
 void SolutionStore::replaceSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
     cout << "$$$$$$$$  Saving solution " << solutionID << ", now solutions: " << m_multiSolutions.size() << ", time " << multiSolution.component(0).time << endl;
@@ -576,25 +623,34 @@ void SolutionStore::replaceSolution(BlockSolutionID solutionID, MultiSolutionArr
     }
 }
 
-int SolutionStore::lastTimeStep(FieldInfo *fieldInfo)
+void SolutionStore::removeSolution(BlockSolutionID solutionID)
+{
+    foreach(Field* field, solutionID.group->m_fields)
+    {
+        FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
+        removeSolution(fieldSID);
+    }
+}
+
+int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionType solutionType)
 {
     int timeStep = notFoundSoFar;
     foreach(FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.group == fieldInfo) && (sid.timeStep > timeStep))
+        if((sid.group == fieldInfo) && (sid.solutionType == solutionType) && (sid.timeStep > timeStep))
             timeStep = sid.timeStep;
     }
 
     return timeStep;
 }
 
-int SolutionStore::lastTimeStep(Block *block)
+int SolutionStore::lastTimeStep(Block *block, SolutionType solutionType)
 {
-    int timeStep = lastTimeStep(block->m_fields.at(0)->fieldInfo());
+    int timeStep = lastTimeStep(block->m_fields.at(0)->fieldInfo(), solutionType);
 
     foreach(Field* field, block->m_fields)
     {
-        assert(lastTimeStep(field->fieldInfo()) == timeStep);
+        assert(lastTimeStep(field->fieldInfo(), solutionType) == timeStep);
     }
 
     return timeStep;
@@ -602,7 +658,7 @@ int SolutionStore::lastTimeStep(Block *block)
 
 double SolutionStore::lastTime(FieldInfo *fieldInfo)
 {
-    int timeStep = lastTimeStep(fieldInfo);
+    int timeStep = lastTimeStep(fieldInfo, SolutionType_Normal);
     double time = notFoundSoFar;
 
     foreach(FieldSolutionID id, m_multiSolutions.keys())
@@ -632,28 +688,28 @@ double SolutionStore::lastTime(Block *block)
 
 }
 
-int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, int timeStep)
+int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionType solutionType, int timeStep)
 {
     if(timeStep == -1)
-        timeStep = lastTimeStep(fieldInfo);
+        timeStep = lastTimeStep(fieldInfo, solutionType);
 
     int adaptiveStep = notFoundSoFar;
     foreach(FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.group == fieldInfo) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
+        if((sid.group == fieldInfo) && (sid.solutionType == solutionType) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
             adaptiveStep = sid.adaptivityStep;
     }
 
     return adaptiveStep;
 }
 
-int SolutionStore::lastAdaptiveStep(Block *block, int timeStep)
+int SolutionStore::lastAdaptiveStep(Block *block, SolutionType solutionType, int timeStep)
 {
-    int adaptiveStep = lastAdaptiveStep(block->m_fields.at(0)->fieldInfo());
+    int adaptiveStep = lastAdaptiveStep(block->m_fields.at(0)->fieldInfo(), solutionType, timeStep);
 
     foreach(Field* field, block->m_fields)
     {
-        assert(lastAdaptiveStep(field->fieldInfo()) == adaptiveStep);
+        assert(lastAdaptiveStep(field->fieldInfo(), solutionType, timeStep) == adaptiveStep);
     }
 
     return adaptiveStep;
@@ -662,28 +718,25 @@ int SolutionStore::lastAdaptiveStep(Block *block, int timeStep)
 FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionType solutionType)
 {
     FieldSolutionID solutionID;
-    solutionID.group = fieldInfo;
-    solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo);
-    solutionID.timeStep = lastTimeStep(fieldInfo);
-    solutionID.solutionType = solutionType;
-
-    //cout << solutionID << endl;
-
-    if(solutionType == SolutionType_Finer)
-    {
-        solutionID.solutionType = SolutionType_Reference;
-        if(! m_multiSolutions.contains(solutionID))
+    if(solutionType == SolutionType_Finer) {
+        FieldSolutionID solutionIDNormal = lastTimeAndAdaptiveSolution(fieldInfo, SolutionType_Normal);
+        FieldSolutionID solutionIDReference = lastTimeAndAdaptiveSolution(fieldInfo, SolutionType_Reference);
+        if((solutionIDNormal.timeStep > solutionIDReference.timeStep) ||
+                (solutionIDNormal.adaptivityStep > solutionIDReference.adaptivityStep))
         {
-            solutionID.solutionType = SolutionType_Normal;
+            solutionID = solutionIDNormal;
+        }
+        else
+        {
+            solutionID = solutionIDReference;
         }
     }
-
-    assert(m_multiSolutions.contains(solutionID));
-    if(solutionType == SolutionType_Reference)
+    else
     {
-        FieldSolutionID solutionIDNormal = solutionID;
-        solutionIDNormal.solutionType = SolutionType_Normal;
-        assert(m_multiSolutions.contains(solutionIDNormal));
+        solutionID.group = fieldInfo;
+        solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo, solutionType);
+        solutionID.timeStep = lastTimeStep(fieldInfo, solutionType);
+        solutionID.solutionType = solutionType;
     }
 
     return solutionID;

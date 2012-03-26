@@ -88,7 +88,6 @@ void ReportDialog::createControls()
     chkFigureShowGrid = new QCheckBox(tr("Show grid"));
     chkFigureShowRulers = new QCheckBox(tr("Show rulers"));
     chkFigureShowAxes = new QCheckBox(tr("Show axes"));
-    chkFigureShowLabel = new QCheckBox(tr("Show label"));
 
     txtTemplate = new QLineEdit();
     connect(txtTemplate, SIGNAL(textChanged(QString)), this, SLOT(checkPaths()));
@@ -128,7 +127,6 @@ void ReportDialog::createControls()
     layoutFigureProperties->addWidget(chkFigureShowGrid, 2, 0, 1, 2);
     layoutFigureProperties->addWidget(chkFigureShowRulers, 3, 0, 1, 2);
     layoutFigureProperties->addWidget(chkFigureShowAxes, 4, 0, 1, 2);
-    layoutFigureProperties->addWidget(chkFigureShowLabel, 5, 0, 1, 2);
 
     QHBoxLayout *layoutFigures = new QHBoxLayout();
     layoutFigures->addLayout(layoutFigure);
@@ -204,7 +202,6 @@ void ReportDialog::defaultValues()
     chkFigureShowGrid->setChecked(Util::config()->showGrid);
     chkFigureShowRulers->setChecked(Util::config()->showRulers);
     chkFigureShowAxes->setChecked(Util::config()->showAxes);
-    chkFigureShowLabel->setChecked(Util::config()->showLabel);
 
     txtTemplate->setText(QString("%1/report/default.tpl").arg(datadir() + TEMPLATEROOT));
     txtStyleSheet->setText(QString("%1/report/default.css").arg(datadir() + TEMPLATEROOT));
@@ -252,7 +249,6 @@ void ReportDialog::resetControls()
     chkFigureShowGrid->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
     chkFigureShowRulers->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
     chkFigureShowAxes->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
-    chkFigureShowLabel->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
 }
 
 void ReportDialog::showDialog()

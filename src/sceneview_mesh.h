@@ -81,6 +81,9 @@ public:
 
     QAction *actSceneModeMesh;
 
+    virtual QIcon iconView() { return icon("scene-mesh"); }
+    virtual QString labelView() { return tr("Mesh and polynomial order view"); }
+
 public slots:
     virtual void doInvalidated();
     virtual void clear();

@@ -33,6 +33,7 @@ class SurfaceIntegralValueView;
 class PostprocessorView;
 class PythonScriptingConsoleView;
 class TooltipView;
+class LogView;
 
 class HelpDialog;
 class ChartDialog;
@@ -41,6 +42,8 @@ class ReportDialog;
 class VideoDialog;
 class LogDialog;
 class ServerDownloadDialog;
+class SceneTransformDialog;
+class SceneViewWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -73,7 +76,6 @@ private slots:
     void doExportVTKScalar();
     void doExportVTKOrder();
 
-    void doSceneMouseMoved(const QPointF &position);
     void doMouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
     void doCreateMesh();
@@ -86,6 +88,7 @@ private slots:
     void doScriptEditorRunScript(const QString &fileName = "");
     void doScriptEditorRunCommand();
     void doOptions();
+    void doTransform();
     void doReport();
     void doMaterialBrowser();
     void doCreateVideo();
@@ -131,9 +134,8 @@ private:
     QToolBar *tlbFile;
     QToolBar *tlbEdit;
     QToolBar *tlbView;
-    QToolBar *tlbProblem;
-    QToolBar *tlbTools;
-    QToolBar *tlbTransient;
+    QToolBar *tlbGeometry;
+    QToolBar *tlbPost2D;
 
     QAction *actDocumentNew;
     QAction *actDocumentOpen;
@@ -183,13 +185,6 @@ private:
     QAction *actAbout;
     QAction *actAboutQt;
 
-    QLabel *lblProblemType;
-    QLabel *lblPhysicField;
-    QLabel *lblMessage;
-    QLabel *lblPosition;
-    QLabel *lblMouseMode;
-    QLabel *lblAnalysisType;
-
     QComboBox *cmbTimeStep;
 
     // pointers to actions (geometry, post2d and post3d)
@@ -201,15 +196,22 @@ private:
     // scene mode
     QActionGroup *actSceneModeGroup;
 
+    SceneViewWidget *sceneViewGeometryWidget;
+    SceneViewWidget *sceneViewMeshWidget;
+    SceneViewWidget *sceneViewPost2DWidget;
+    SceneViewWidget *sceneViewPost3DWidget;
+
     SceneViewGeometry *sceneViewGeometry;
     SceneViewMesh *sceneViewMesh;
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
+
     SceneInfoView *sceneInfoView;
-    ResultsView *resultsView;
     PostprocessorView *postprocessorView;
+    ResultsView *resultsView;
     PythonScriptingConsoleView *consoleView;
     TooltipView *tooltipView;
+    LogView *logView;
 
     HelpDialog *helpDialog;
     ChartDialog *chartDialog;
@@ -218,6 +220,7 @@ private:
     VideoDialog *videoDialog;
     LogDialog *logDialog;
     ServerDownloadDialog *collaborationDownloadDialog;
+    SceneTransformDialog *sceneTransformDialog;
 
     QStackedLayout *tabLayout;
 
@@ -227,7 +230,6 @@ private:
     void createToolBox();
     void createMenus();
     void createToolBars();
-    void createStatusBar();
     void createScene();
     void createViews();   
 };
