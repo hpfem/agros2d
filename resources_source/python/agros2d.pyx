@@ -85,6 +85,8 @@ cdef extern from "../../src/pythonlabagros.h":
 
         void solve()
 
+        void localValues(double x, double y, map[char*, double] results) except +
+
     # PyGeometry
     cdef cppclass PyGeometry:
         PyGeometry()
@@ -364,6 +366,17 @@ cdef class Field:
 
     def remove_material(self, char *name):
         self.thisptr.removeMaterial(name)
+
+    def local_values(self, double x, double y):
+        out = dict()
+        cdef map[char*, double] results
+
+        self.thisptr.localValues(x, y, results)
+        #for i in range():
+            #out.append(results[i])
+
+        return out
+
 
 # Geometry
 cdef class Geometry:

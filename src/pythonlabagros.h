@@ -215,6 +215,8 @@ class PyField {
         void removeMaterial(char *name);
 
         void solve() { assert(0); qDebug() << "Not now :)"; }
+
+        void localValues(double x, double y, map<char*, double> &results);
 };
 
 // geometry

@@ -474,6 +474,40 @@ void PyField::removeMaterial(char *name)
     Util::scene()->removeMaterial(Util::scene()->getMaterial(QString(name)));
 }
 
+void PyField::localValues(double x, double y, map<char *, double> &results)
+{
+    Point point(x, y);
+
+    map<char*, double> values;
+    LocalPointValue value(fieldInfo(), point);
+    for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin(); it != value.values.end(); ++it)
+    {
+        if (it->first->is_scalar)
+        {
+            values[const_cast<char *>((it->first->shortname).c_str())] = it->second.scalar;
+        }
+    //                    else
+    //                    {
+    //                        // magnitude
+    //                        PyDict_SetItemString(dict,
+    //                                             QString::fromStdString(it->first->shortname).toStdString().c_str(),
+    //                                             Py_BuildValue("d", it->second.vector.magnitude()));
+
+    //                        // x
+    //                        PyDict_SetItemString(dict,
+    //                                             (QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower()).toStdString().c_str(),
+    //                                             Py_BuildValue("d", it->second.vector.x));
+
+    //                        // y
+    //                        PyDict_SetItemString(dict,
+    //                                             (QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower()).toStdString().c_str(),
+    //                                             Py_BuildValue("d", it->second.vector.y));
+    //                    }
+    }
+
+    results = values;
+}
+
 void PyGeometry::addNode(double x, double y)
 {
     logMessage("PyGeometry::addNode()");
