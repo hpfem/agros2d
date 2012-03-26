@@ -1,6 +1,7 @@
 from libcpp.vector cimport vector
 from libcpp.map cimport map
 from libcpp.pair cimport pair
+from cython.operator cimport preincrement as incr, dereference as deref
 
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
@@ -372,8 +373,10 @@ cdef class Field:
         cdef map[char*, double] results
 
         self.thisptr.localValues(x, y, results)
-        #for i in range():
-            #out.append(results[i])
+        it = results.begin()
+        while it != results.end():
+            out[deref(it).first] = deref(it).second
+            incr(it)
 
         return out
 
