@@ -66,5 +66,6 @@ geometry.mesh()
 # solve problem
 problem.solve()
 
-values = electrostatic.local_values(0, 0)
-print(values)
+results = electrostatic.local_values(0, 0)
+#print(results)
+#print(results["we"])

@@ -380,7 +380,6 @@ cdef class Field:
 
         return out
 
-
 # Geometry
 cdef class Geometry:
     cdef PyGeometry *thisptr

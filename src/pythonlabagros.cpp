@@ -486,23 +486,12 @@ void PyField::localValues(double x, double y, map<char *, double> &results)
         {
             values[const_cast<char *>((it->first->shortname).c_str())] = it->second.scalar;
         }
-    //                    else
-    //                    {
-    //                        // magnitude
-    //                        PyDict_SetItemString(dict,
-    //                                             QString::fromStdString(it->first->shortname).toStdString().c_str(),
-    //                                             Py_BuildValue("d", it->second.vector.magnitude()));
-
-    //                        // x
-    //                        PyDict_SetItemString(dict,
-    //                                             (QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower()).toStdString().c_str(),
-    //                                             Py_BuildValue("d", it->second.vector.x));
-
-    //                        // y
-    //                        PyDict_SetItemString(dict,
-    //                                             (QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower()).toStdString().c_str(),
-    //                                             Py_BuildValue("d", it->second.vector.y));
-    //                    }
+        else
+        {
+            values[const_cast<char *>((it->first->shortname).c_str())] = it->second.vector.magnitude();
+            values[const_cast<char *>((QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower()).toStdString().c_str())] = it->second.vector.x;
+            values[const_cast<char *>((QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower()).toStdString().c_str())] = it->second.vector.y;
+        }
     }
 
     results = values;
