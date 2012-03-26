@@ -574,6 +574,8 @@ void MainWindow::createToolBars()
     // left toolbar
     QToolBar *leftToolBar = new QToolBar();
     leftToolBar->setObjectName("Problem");
+    leftToolBar->setOrientation(Qt::Vertical);
+    leftToolBar->setAllowedAreas(Qt::LeftToolBarArea);
     leftToolBar->setMovable(false);
     leftToolBar->setStyleSheet("QToolBar { border: 1px solid rgba(200, 200, 200, 255); }"
                                "QToolBar:left, QToolBar:right { background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:1 rgba(120, 120, 120, 255)); }"
@@ -605,6 +607,8 @@ void MainWindow::createToolBars()
 
     tlbFile = addToolBar(tr("File"));
     tlbFile->setObjectName("File");
+    tlbFile->setOrientation(Qt::Horizontal);
+    tlbFile->setAllowedAreas(Qt::TopToolBarArea);
     tlbFile->setMovable(false);
 #ifdef Q_WS_MAC
     tlbFile->setFixedHeight(iconHeight);
@@ -616,6 +620,8 @@ void MainWindow::createToolBars()
 
     tlbView = addToolBar(tr("View"));
     tlbView->setObjectName("View");
+    tlbView->setOrientation(Qt::Horizontal);
+    tlbView->setAllowedAreas(Qt::TopToolBarArea);
     tlbView->setMovable(false);
 #ifdef Q_WS_MAC
     tlbView->setFixedHeight(iconHeight);
@@ -628,6 +634,8 @@ void MainWindow::createToolBars()
 
     tlbGeometry = addToolBar(tr("Geometry"));
     tlbGeometry->setObjectName("Geometry");
+    tlbGeometry->setOrientation(Qt::Horizontal);
+    tlbGeometry->setAllowedAreas(Qt::TopToolBarArea);
     tlbGeometry->setMovable(false);
 #ifdef Q_WS_MAC
     tlbProblem->setFixedHeight(iconHeight);
@@ -648,6 +656,8 @@ void MainWindow::createToolBars()
 
     tlbPost2D = addToolBar(tr("Postprocessor 2D"));
     tlbPost2D->setObjectName("Postprocessor 2D");
+    tlbPost2D->setOrientation(Qt::Horizontal);
+    tlbPost2D->setAllowedAreas(Qt::TopToolBarArea);
     tlbPost2D->setMovable(false);
 #ifdef Q_WS_MAC
     tlbPost2D->setFixedHeight(iconHeight);
