@@ -313,8 +313,8 @@ public:
 //    inline SceneSolution<double> *sceneSolution(FieldInfo* fieldInfo) const { return m_sceneSolutions[fieldInfo]; }
 
     //returns required scene solution or creates it, if it does not exist
-    inline SceneSolution<double>* sceneSolution(FieldSolutionID fsid);
-    inline SceneSolution<double> *activeSceneSolution();
+    SceneSolution<double>* sceneSolution(FieldSolutionID fsid);
+    SceneSolution<double> *activeSceneSolution();
 
     // clears all solutions and remove them
     void clearSolutions();
