@@ -190,7 +190,10 @@ template <typename Scalar>
 void  Solver<Scalar>::createNewSolutions(MultiSolutionArray<Scalar>& msa)
 {
     for(int comp = 0; comp < msa.size(); comp++)
-        msa.setSolution(shared_ptr<Solution<double> >(new Solution<double>()), comp);
+    {
+        Mesh* mesh = msa.component(comp).space->get_mesh();
+        msa.setSolution(shared_ptr<Solution<double> >(new Solution<double>(mesh)), comp);
+    }
 }
 
 template <typename Scalar>
