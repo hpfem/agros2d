@@ -453,7 +453,7 @@ cdef class Geometry:
         self.thisptr.removeEdge(index)
 
     # add_label(x, y, area, order, materials)
-    def add_label(self, double x, double y, double area = 0.0, int order = 1, materials = {}):
+    def add_label(self, double x, double y, double area = 0.0, int order = 0, materials = {}):
 
         cdef map[char*, char*] materials_map
         cdef pair[char*, char *] material

@@ -338,7 +338,7 @@ PyField::PyField(char *fieldId, char *analysisType, int numberOfRefinements, int
     else
         throw invalid_argument(QObject::tr("Number of refenements is out of range (0 - 5).").toStdString());
 
-    if (polynomialOrder >= 1 && polynomialOrder <= 10)
+    if (polynomialOrder > 0 && polynomialOrder <= 10)
         m_fieldInfo->polynomialOrder = polynomialOrder;
     else
         throw invalid_argument(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
@@ -648,8 +648,8 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
     if (area < 0.0)
         throw out_of_range(QObject::tr("Area must be positive.").toStdString());
 
-    if (order <= 0 || order >= 10)
-        throw out_of_range(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
+    if (order < 0 || order > 10)
+        throw out_of_range(QObject::tr("Polynomial order is out of range (0 - 10).").toStdString());
 
     SceneLabel *sceneLabel = new SceneLabel(Point(x, y), area, order);
 

@@ -576,7 +576,7 @@ void MainWindow::createToolBars()
     leftToolBar->setObjectName("Problem");
     leftToolBar->setOrientation(Qt::Vertical);
     leftToolBar->setAllowedAreas(Qt::LeftToolBarArea);
-    leftToolBar->setMovable(false);
+    // leftToolBar->setMovable(false);
     // fancy layout
     leftToolBar->setStyleSheet("QToolBar { border: 1px solid rgba(200, 200, 200, 255); }"
                                "QToolBar:left, QToolBar:right { background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:1 rgba(120, 120, 120, 255)); }"
@@ -612,7 +612,7 @@ void MainWindow::createToolBars()
     tlbFile->setObjectName("File");
     tlbFile->setOrientation(Qt::Horizontal);
     tlbFile->setAllowedAreas(Qt::TopToolBarArea);
-    tlbFile->setMovable(false);
+    // tlbFile->setMovable(false);
 #ifdef Q_WS_MAC
     tlbFile->setFixedHeight(iconHeight);
     tlbFile->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
@@ -625,7 +625,7 @@ void MainWindow::createToolBars()
     tlbView->setObjectName("View");
     tlbView->setOrientation(Qt::Horizontal);
     tlbView->setAllowedAreas(Qt::TopToolBarArea);
-    tlbView->setMovable(false);
+    // tlbView->setMovable(false);
 #ifdef Q_WS_MAC
     tlbView->setFixedHeight(iconHeight);
     tlbView->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
@@ -639,7 +639,7 @@ void MainWindow::createToolBars()
     tlbGeometry->setObjectName("Geometry");
     tlbGeometry->setOrientation(Qt::Horizontal);
     tlbGeometry->setAllowedAreas(Qt::TopToolBarArea);
-    tlbGeometry->setMovable(false);
+    // tlbGeometry->setMovable(false);
 #ifdef Q_WS_MAC
     tlbProblem->setFixedHeight(iconHeight);
     tlbProblem->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
@@ -661,7 +661,7 @@ void MainWindow::createToolBars()
     tlbPost2D->setObjectName("Postprocessor 2D");
     tlbPost2D->setOrientation(Qt::Horizontal);
     tlbPost2D->setAllowedAreas(Qt::TopToolBarArea);
-    tlbPost2D->setMovable(false);
+    // tlbPost2D->setMovable(false);
 #ifdef Q_WS_MAC
     tlbPost2D->setFixedHeight(iconHeight);
     tlbPost2D->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
