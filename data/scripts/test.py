@@ -65,3 +65,13 @@ geometry.mesh()
 
 # solve problem
 problem.solve()
+
+local_values = electrostatic.local_values(0, 0)
+print(local_values)
+#print(results["we"])
+
+surface_integrals = electrostatic.surface_integrals([1,2])
+print(surface_integrals)
+
+volume_integrals = electrostatic.volume_integrals()
+print(volume_integrals)
