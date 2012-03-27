@@ -217,6 +217,8 @@ class PyField {
         void solve() { assert(0); qDebug() << "Not now :)"; }
 
         void localValues(double x, double y, map<char*, double> &results);
+        void surfaceIntegrals(vector<int> edges, map<char *, double> &results);
+        void volumeIntegrals(vector<int> labels, map<char *, double> &results);
 };
 
 // geometry

@@ -87,6 +87,8 @@ cdef extern from "../../src/pythonlabagros.h":
         void solve()
 
         void localValues(double x, double y, map[char*, double] results) except +
+        void surfaceIntegrals(vector[int], map[char*, double] results) except +
+        void volumeIntegrals(vector[int], map[char*, double] results) except +
 
     # PyGeometry
     cdef cppclass PyGeometry:
@@ -368,11 +370,46 @@ cdef class Field:
     def remove_material(self, char *name):
         self.thisptr.removeMaterial(name)
 
+    # local values
     def local_values(self, double x, double y):
         out = dict()
         cdef map[char*, double] results
 
         self.thisptr.localValues(x, y, results)
+        it = results.begin()
+        while it != results.end():
+            out[deref(it).first] = deref(it).second
+            incr(it)
+
+        return out
+
+    # surface integrals
+    def surface_integrals(self, edges = []):
+        cdef vector[int] edges_vector
+        for i in edges:
+            edges_vector.push_back(i)
+
+        out = dict()
+        cdef map[char*, double] results
+
+        self.thisptr.surfaceIntegrals(edges_vector, results)
+        it = results.begin()
+        while it != results.end():
+            out[deref(it).first] = deref(it).second
+            incr(it)
+
+        return out
+
+    # volume integrals
+    def volume_integrals(self, labels = []):
+        cdef vector[int] labels_vector
+        for i in labels:
+            labels_vector.push_back(i)
+
+        out = dict()
+        cdef map[char*, double] results
+
+        self.thisptr.volumeIntegrals(labels_vector, results)
         it = results.begin()
         while it != results.end():
             out[deref(it).first] = deref(it).second

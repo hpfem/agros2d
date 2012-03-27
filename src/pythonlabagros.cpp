@@ -476,22 +476,126 @@ void PyField::removeMaterial(char *name)
 
 void PyField::localValues(double x, double y, map<char *, double> &results)
 {
-    Point point(x, y);
-
     map<char*, double> values;
-    LocalPointValue value(fieldInfo(), point);
-    for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin(); it != value.values.end(); ++it)
+
+    if (Util::problem()->isSolved())
     {
-        if (it->first->is_scalar)
+        // set mode
+        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+        currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeLocalPointValue->trigger();
+
+        Point point(x, y);
+
+        LocalPointValue value(fieldInfo(), point);
+        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin(); it != value.values.end(); ++it)
         {
-            values[const_cast<char *>((it->first->shortname).c_str())] = it->second.scalar;
+            if (it->first->is_scalar)
+            {
+                values[const_cast<char *>((it->first->shortname).c_str())] = it->second.scalar;
+            }
+            else
+            {
+                values[const_cast<char *>((it->first->shortname).c_str())] = it->second.vector.magnitude();
+                values[const_cast<char *>((QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower()).toStdString().c_str())] = it->second.vector.x;
+                values[const_cast<char *>((QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower()).toStdString().c_str())] = it->second.vector.y;
+            }
+        }
+    }
+    else
+    {
+        throw out_of_range(QObject::tr("Problem is not solved.").toStdString());
+    }
+
+    results = values;
+}
+
+void PyField::surfaceIntegrals(vector<int> edges, map<char *, double> &results)
+{
+    map<char*, double> values;
+
+    if (Util::problem()->isSolved())
+    {
+        // set mode
+        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+        currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeSurfaceIntegral->trigger();
+        Util::scene()->selectNone();
+
+        if (!edges.empty())
+        {
+            for (vector<int>::iterator it = edges.begin(); it != edges.end(); ++it)
+            {
+                if ((*it >= 0) && (*it < Util::scene()->edges->length()))
+                {
+                    Util::scene()->edges->at(*it)->isSelected = true;
+                }
+                else
+                {
+                    throw out_of_range(QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString());
+                    results = values;
+                    return;
+                }
+            }
         }
         else
         {
-            values[const_cast<char *>((it->first->shortname).c_str())] = it->second.vector.magnitude();
-            values[const_cast<char *>((QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower()).toStdString().c_str())] = it->second.vector.x;
-            values[const_cast<char *>((QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower()).toStdString().c_str())] = it->second.vector.y;
+            Util::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
+
+        SurfaceIntegralValue surfaceIntegral(fieldInfo());
+        for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegral.values.begin(); it != surfaceIntegral.values.end(); ++it)
+        {
+            values[const_cast<char *>((it->first->shortname).c_str())] = it->second;
+        }
+    }
+    else
+    {
+        throw out_of_range(QObject::tr("Problem is not solved.").toStdString());
+    }
+
+    results = values;
+}
+
+void PyField::volumeIntegrals(vector<int> labels, map<char *, double> &results)
+{
+    map<char*, double> values;
+
+    if (Util::problem()->isSolved())
+    {
+        // set mode
+        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+        currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeVolumeIntegral->trigger();
+        Util::scene()->selectNone();
+
+        if (!labels.empty())
+        {
+            for (vector<int>::iterator it = labels.begin(); it != labels.end(); ++it)
+            {
+                if ((*it >= 0) && (*it < Util::scene()->labels->length()))
+                {
+                    Util::scene()->labels->at(*it)->isSelected = true;
+                }
+                else
+                {
+                    throw out_of_range(QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels->length()-1).toStdString());
+                    results = values;
+                    return;
+                }
+            }
+        }
+        else
+        {
+            Util::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
+        }
+
+        VolumeIntegralValue volumeIntegral(fieldInfo());
+        for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegral.values.begin(); it != volumeIntegral.values.end(); ++it)
+        {
+            values[const_cast<char *>((it->first->shortname).c_str())] = it->second;
+        }
+    }
+    else
+    {
+        throw out_of_range(QObject::tr("Problem is not solved.").toStdString());
     }
 
     results = values;
@@ -979,198 +1083,6 @@ void pythonPostprocessorMode(char *str)
     //    // sceneView()->doInvalidated();
 }
 
-// result = pointresult(x, y)
-static PyObject *pythonPointResult(PyObject *self, PyObject *args)
-{
-    assert(0);
-    //    logMessage("pythonPointResult()");
-
-    //    if (Util::scene()->sceneSolution()->isSolved())
-    //    {
-    //        // sceneView()->actSceneModePostprocessor->trigger();
-
-    //        double x, y;
-    //        if (PyArg_ParseTuple(args, "dd", &x, &y))
-    //        {
-    //            PyObject *dict = PyDict_New();
-
-    //            // coordinates
-    //            PyDict_SetItemString(dict,
-    //                                 Util::scene()->problemInfo()->labelX().toLower().toStdString().c_str(),
-    //                                 Py_BuildValue("d", x));
-    //            PyDict_SetItemString(dict,
-    //                                 Util::scene()->problemInfo()->labelY().toLower().toStdString().c_str(),
-    //                                 Py_BuildValue("d", y));
-
-    //            Point point(x, y);
-
-    //            // local point variables
-    //            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-    //            {
-    //                LocalPointValue value(fieldInfo, point);
-    //                for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin(); it != value.values.end(); ++it)
-    //                {
-    //                    if (it->first->is_scalar)
-    //                    {
-    //                        // scalar
-    //                        PyDict_SetItemString(dict,
-    //                                             QString::fromStdString(it->first->shortname).toStdString().c_str(),
-    //                                             Py_BuildValue("d", it->second.scalar));
-    //                    }
-    //                    else
-    //                    {
-    //                        // magnitude
-    //                        PyDict_SetItemString(dict,
-    //                                             QString::fromStdString(it->first->shortname).toStdString().c_str(),
-    //                                             Py_BuildValue("d", it->second.vector.magnitude()));
-
-    //                        // x
-    //                        PyDict_SetItemString(dict,
-    //                                             (QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower()).toStdString().c_str(),
-    //                                             Py_BuildValue("d", it->second.vector.x));
-
-    //                        // y
-    //                        PyDict_SetItemString(dict,
-    //                                             (QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower()).toStdString().c_str(),
-    //                                             Py_BuildValue("d", it->second.vector.y));
-    //                    }
-    //                }
-    //            }
-
-    //            return dict;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Problem is not solved.").toStdString().c_str());
-    //    }
-    //    return NULL;
-}
-
-// result = surfaceintegral(list)
-static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
-{
-    assert(0);
-    //    logMessage("pythonSurfaceIntegral()");
-
-    //    if (Util::scene()->sceneSolution()->isSolved())
-    //    {
-    //        // set mode
-    //        // sceneView()->actSceneModePostprocessor->trigger();
-    //        // sceneView()->actPostprocessorModeSurfaceIntegral->trigger();
-    //        Util::scene()->selectNone();
-
-    //        PyObject *list;
-    //        if (PyArg_ParseTuple(args, "O", &list))
-    //        {
-    //            Py_ssize_t size = PyList_Size(list);
-    //            for (int i = 0; i < size; i++)
-    //            {
-    //                PyObject *value = PyList_GetItem(list, i);
-
-    //                int index;
-    //                PyArg_Parse(value, "i", &index);
-
-    //                if ((index >= 0) && index < Util::scene()->edges->length())
-    //                {
-    //                    Util::scene()->edges->at(index)->isSelected = true;
-    //                }
-    //                else
-    //                {
-    //                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString().c_str());
-    //                    return NULL;
-    //                }
-    //            }
-
-    //            PyObject *dict = PyDict_New();
-
-    //            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-    //            {
-    //                SurfaceIntegralValue surfaceIntegral(fieldInfo);
-    //                for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegral.values.begin(); it != surfaceIntegral.values.end(); ++it)
-    //                {
-    //                    PyDict_SetItemString(dict,
-    //                                         QString::fromStdString(it->first->shortname).toStdString().c_str(),
-    //                                         Py_BuildValue("d", it->second));
-    //                }
-    //            }
-
-    //            return dict;
-    //        }
-    //        else
-    //        {
-    //            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
-    //        }
-    //    }
-    //    else
-    //    {
-    //        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Problem is not solved.").toStdString().c_str());
-    //    }
-    //    return NULL;
-}
-
-// result = volumeintegral(list)
-static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
-{
-    assert(0);
-    //    logMessage("pythonVolumeIntegral()");
-
-    //    if (Util::scene()->sceneSolution()->isSolved())
-    //    {
-    //        // set mode
-    //        // sceneView()->actSceneModePostprocessor->trigger();
-    //        // sceneView()->actPostprocessorModeVolumeIntegral->trigger();
-    //        Util::scene()->selectNone();
-
-    //        PyObject *list;
-    //        if (PyArg_ParseTuple(args, "O", &list))
-    //        {
-    //            Py_ssize_t size = PyList_Size(list);
-    //            for (int i = 0; i < size; i++)
-    //            {
-    //                PyObject *value = PyList_GetItem(list, i);
-
-    //                int index;
-    //                PyArg_Parse(value, "i", &index);
-
-    //                if ((index >= 0) && index < Util::scene()->labels->length())
-    //                {
-    //                    Util::scene()->labels->at(index)->isSelected = true;
-    //                }
-    //                else
-    //                {
-    //                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels->length()-1).toStdString().c_str());
-    //                    return NULL;
-    //                }
-    //            }
-
-    //            PyObject *dict = PyDict_New();
-
-    //            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-    //            {
-    //                VolumeIntegralValue volumeIntegral(fieldInfo);
-    //                for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegral.values.begin(); it != volumeIntegral.values.end(); ++it)
-    //                {
-    //                    PyDict_SetItemString(dict,
-    //                                         QString::fromStdString(it->first->shortname).toStdString().c_str(),
-    //                                         Py_BuildValue("d", it->second));
-    //                }
-    //            }
-
-    //            return dict;
-    //        }
-    //        else
-    //        {
-    //            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Parameter is not a list.").toStdString().c_str());
-    //        }
-    //    }
-    //    else
-    //    {
-    //        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Problem is not solved.").toStdString().c_str());
-    //    }
-    //    return NULL;
-}
-
 // showscalar(type = { "none", "scalar", "scalar3d", "order" }, variable, component, rangemin, rangemax)
 void pythonShowScalar(char *type, char *variable, char *component, double rangemin, double rangemax)
 {
@@ -1332,22 +1244,12 @@ int pythonTimeStepCount()
     //    return Util::scene()->sceneSolution()->timeStepCount();
 }
 
-static PyMethodDef pythonMethodsAgros[] =
-{
-    {"pointresult", pythonPointResult, METH_VARARGS, "pointresult(x, y)"},
-    {"volumeintegral", pythonVolumeIntegral, METH_VARARGS, "volumeintegral(list)"},
-    {"surfaceintegral", pythonSurfaceIntegral, METH_VARARGS, "surfaceintegral(list)"},
-    {NULL, NULL, 0, NULL}
-};
-
 // *******************************************************************************************
 
 void PythonEngineAgros::addCustomExtensions()
 {
     // init agros cython extensions
     initagros2d();
-    // agros2d file
-    Py_InitModule("agros2d", pythonMethodsAgros);
 
     connect(this, SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
 }

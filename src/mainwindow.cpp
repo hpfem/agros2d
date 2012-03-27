@@ -577,11 +577,14 @@ void MainWindow::createToolBars()
     leftToolBar->setOrientation(Qt::Vertical);
     leftToolBar->setAllowedAreas(Qt::LeftToolBarArea);
     leftToolBar->setMovable(false);
+    // fancy layout
     leftToolBar->setStyleSheet("QToolBar { border: 1px solid rgba(200, 200, 200, 255); }"
                                "QToolBar:left, QToolBar:right { background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:1 rgba(120, 120, 120, 255)); }"
                                "QToolButton { border: 0px; color: rgba(230, 230, 230, 255); font: bold; font-size: 8pt; width: 65px; }"
                                "QToolButton:hover { border: 0px; background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:0.5 rgba(160, 160, 160, 255), stop:1 rgba(150, 150, 150, 255)); }"
                                "QToolButton:checked:hover, QToolButton:checked { border: 0px; color: rgba(30, 30, 30, 255); background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(160, 160, 160, 255), stop:0.5 rgba(220, 220, 220, 255), stop:1 rgba(160, 160, 160, 255)); }");
+    // system layout
+    // leftToolBar->setStyleSheet("QToolButton { font: bold; font-size: 8pt; width: 65px; }");
 
     leftToolBar->setIconSize(QSize(32, 32));
     leftToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
