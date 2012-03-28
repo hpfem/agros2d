@@ -30,7 +30,7 @@
         <startup_script></startup_script>
         <description></description>
         <fields>
-            <field field_id="electrostatic" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weak_forms="interpreted" analysis_type="steadystate">
+            <field field_id="electrostatic" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weak_forms="interpreted" analysis_type="steadystate">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>

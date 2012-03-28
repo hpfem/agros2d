@@ -51,6 +51,8 @@ Mesh* Solver<Scalar>::readMesh()
     // load the mesh file
     cout << "reading mesh in solver " << tempProblemFileName().toStdString() + ".xml" << endl;
     Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+//    cout << "reading mesh in solver CTVEREC" << endl;
+//    Mesh *mesh = readMeshFromFile("data/aa-electrostatic-ctverec.xml");
 
     // check that all boundary edges have a marker assigned
     QSet<int> boundaries;
@@ -347,6 +349,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
     {
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
         NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
+
         //newton.set_max_allowed_residual_norm(1e15);
         try
         {
