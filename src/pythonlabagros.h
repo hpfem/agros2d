@@ -43,7 +43,7 @@ public:
     inline SceneViewGeometry *sceneViewGeometry() { assert(m_sceneViewGeometry); return m_sceneViewGeometry; }
     inline void setSceneViewMesh(SceneViewMesh *sceneViewMesh) { m_sceneViewMesh = sceneViewMesh; }
     inline SceneViewMesh *sceneViewMesh() { assert(m_sceneViewMesh); return m_sceneViewMesh; }
-    inline void setSceneViewPost2D(SceneViewPost2D *sceneViewPost2D) { assert(m_sceneViewPost2D); m_sceneViewPost2D = sceneViewPost2D; }
+    inline void setSceneViewPost2D(SceneViewPost2D *sceneViewPost2D) { /*assert(m_sceneViewPost2D);*/ m_sceneViewPost2D = sceneViewPost2D; }
     inline SceneViewPost2D *sceneViewPost2D() { return m_sceneViewPost2D; }
     inline void setSceneViewPost3D(SceneViewPost3D *sceneViewPost3D) { m_sceneViewPost3D = sceneViewPost3D; }
     inline SceneViewPost3D *sceneViewPost3D() { assert(m_sceneViewPost3D); return m_sceneViewPost3D; }
