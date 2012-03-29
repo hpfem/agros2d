@@ -136,7 +136,7 @@ template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, const std::string &area,
                                                   Hermes::Hermes2D::SymFlag sym, string expression, Marker* marker, Material* markerSecond)
 {
-    //cout << "factory form (" << i << ", " << j << "), area: " << area << " -> " << expression << ", marker " << marker->getName() <<  endl;
+    cout << "factory form (" << i << ", " << j << "), area: " << area << " -> " << expression << ", marker " << marker->getName() <<  endl;
     if(type == WFType_MatVol)
         return new CustomParserMatrixFormVol<Scalar>(i, j,
                                                      area,
@@ -167,7 +167,10 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WFType type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    //cout << "pridavam vektorovou formu, i: " << form->i << ", j: " << form->j << ", expresion: " << form->expression << endl;
+    cout << "pridavam vektorovou formu, i: " << form->i << ", areas: "; /* ", j: " << form->j <<*/
+    for(int i = 0; i < form->areas.size(); i++)
+        cout << form->areas.at(i) << ", ";
+    cout << endl;
     if(type == WFType_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
     else if(type == WFType_MatSurf)

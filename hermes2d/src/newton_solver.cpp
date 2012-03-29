@@ -179,6 +179,7 @@ namespace Hermes
         FILE* f = fopen("jac.txt", "w");
         jacobian->dump(f, "jac");
         fprintf(f, "\n size %d\n", jacobian->get_size());
+        residual->dump(f, "res");
         fclose(f);
         if (this->timer != NULL)
         {

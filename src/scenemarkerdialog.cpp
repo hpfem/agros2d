@@ -697,7 +697,7 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
         cmbMaterial->addItem(QString::fromStdString(material->getName()),
                              material->variant());
     }
-    
+
     // select marker
     cmbMaterial->setCurrentIndex(-1);
 
@@ -705,7 +705,7 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
 
     if (material)
         cmbMaterial->setCurrentIndex(cmbMaterial->findData(material->variant()));
-    
+
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
@@ -728,7 +728,7 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
 void SceneMaterialSelectDialog::doAccept()
 {
     logMessage("SceneMaterialSelectDialog::doAccept()");
-    
+
     if (marker())
     {
         Util::scene()->labels->selected().addMarkerToAll(marker());

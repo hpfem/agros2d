@@ -362,6 +362,11 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             cout << "solving with nonlinear tolerance " << m_block->nonlinearTolerance() << " and nonlin steps " << m_block->nonlinearSteps() << endl;
             newton.solve(coeff_vec, m_block->nonlinearTolerance(), m_block->nonlinearSteps());
 
+            cout << "solution vector: ";
+            for(int i = 0; i < ndof; i++)
+                cout << coeff_vec[i] << ", ";
+            cout << endl;
+
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             //            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").

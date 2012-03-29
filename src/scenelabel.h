@@ -59,7 +59,7 @@ class SceneLabelDialog : public DSceneBasic
 
 public:
     SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew = false);
-
+    SceneLabelDialog(MarkedSceneBasicContainer<SceneMaterial, SceneLabel> labels, QWidget *parent);
 protected:
     QLayout *createContent();
 
@@ -74,6 +74,8 @@ private:
     QCheckBox *chkArea;
     QCheckBox *chkPolynomialOrder;
 
+    bool m_singleLabel;
+    MarkedSceneBasicContainer<SceneMaterial, SceneLabel> m_labels;
     QMap<FieldInfo*, QComboBox *> cmbMaterials;
     QMap<FieldInfo*, QPushButton *> btnMaterials;
 

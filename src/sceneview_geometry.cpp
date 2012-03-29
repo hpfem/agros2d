@@ -128,8 +128,11 @@ void SceneViewGeometry::doSceneObjectProperties()
     {
         if (Util::scene()->selectedCount() > 1)
         {
-            SceneMaterialSelectDialog materialDialog(this);
-            materialDialog.exec();
+            //SceneMaterialSelectDialog materialDialog(this);
+            //materialDialog.exec();
+            SceneLabelDialog *dialog = new SceneLabelDialog( Util::scene()->labels->selected(), this);
+            dialog->exec();
+
         }
         if (Util::scene()->selectedCount() == 1)
         {

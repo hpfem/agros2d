@@ -94,6 +94,7 @@ SceneLabelDialog::SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNe
     logMessage("DSceneLabel::DSceneLabel()");
 
     m_object = label;
+    m_singleLabel = true;
 
     setWindowIcon(icon("scene-label"));
     setWindowTitle(tr("Label"));
@@ -106,61 +107,27 @@ SceneLabelDialog::SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNe
     // setMaximumSize(sizeHint());
 }
 
+SceneLabelDialog::SceneLabelDialog(MarkedSceneBasicContainer<SceneMaterial, SceneLabel> labels, QWidget *parent) : DSceneBasic(parent, false)
+{
+    m_labels = labels;
+    m_object = NULL;
+    m_singleLabel = false;
+
+    setWindowIcon(icon("scene-label"));
+    setWindowTitle(tr("Labels"));
+
+    createControls();
+
+    load();
+
+    setMinimumSize(sizeHint());
+    // setMaximumSize(sizeHint());
+
+}
+
 QLayout* SceneLabelDialog::createContent()
 {
     logMessage("DSceneLabel::createContent()");
-
-    txtPointX = new ValueLineEdit();
-    txtPointY = new ValueLineEdit();
-    connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-
-    txtArea = new ValueLineEdit();
-    txtArea->setMinimum(0.0);
-    connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    txtPolynomialOrder = new QSpinBox(this);
-    txtPolynomialOrder->setMinimum(0);
-    txtPolynomialOrder->setMaximum(10);
-
-    // coordinates must be greater then or equal to 0 (axisymmetric case)
-    if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric)
-        txtPointX->setMinimum(0.0);
-
-    // coordinates
-    QFormLayout *layoutCoordinates = new QFormLayout();
-    layoutCoordinates->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
-    layoutCoordinates->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
-
-    QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
-    grpCoordinates->setLayout(layoutCoordinates);
-
-    // order
-    chkPolynomialOrder = new QCheckBox();
-    connect(chkPolynomialOrder, SIGNAL(stateChanged(int)), this, SLOT(doPolynomialOrder(int)));
-
-    QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
-    layoutPolynomialOrder->addWidget(chkPolynomialOrder);
-    layoutPolynomialOrder->addWidget(txtPolynomialOrder);
-
-    //TODO
-    //layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::scene()->problemInfo()->polynomialOrder)));
-    layoutPolynomialOrder->addWidget(new QLabel(tr("Global order TODO is %1.").arg(1)));
-
-    // area
-    chkArea = new QCheckBox();
-    connect(chkArea, SIGNAL(stateChanged(int)), this, SLOT(doArea(int)));
-
-    QHBoxLayout *layoutArea = new QHBoxLayout();
-    layoutArea->addWidget(chkArea);
-    layoutArea->addWidget(txtArea);
-
-    // mesh
-    QFormLayout *layoutMeshParameters = new QFormLayout();
-    layoutMeshParameters->addRow(tr("Triangle area (m):"), layoutArea);
-    layoutMeshParameters->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
-
-    QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
-    grpMeshParameters->setLayout(layoutMeshParameters);
 
     // markers
     QFormLayout *layoutMaterials = new QFormLayout();
@@ -189,8 +156,64 @@ QLayout* SceneLabelDialog::createContent()
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(grpMaterials);
-    layout->addRow(grpCoordinates);
-    layout->addRow(grpMeshParameters);
+
+    if(m_singleLabel)
+    {
+        txtPointX = new ValueLineEdit();
+        txtPointY = new ValueLineEdit();
+        connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+        connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+
+        txtArea = new ValueLineEdit();
+        txtArea->setMinimum(0.0);
+        connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+        txtPolynomialOrder = new QSpinBox(this);
+        txtPolynomialOrder->setMinimum(0);
+        txtPolynomialOrder->setMaximum(10);
+
+        // coordinates must be greater then or equal to 0 (axisymmetric case)
+        if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric)
+            txtPointX->setMinimum(0.0);
+
+        // coordinates
+        QFormLayout *layoutCoordinates = new QFormLayout();
+        layoutCoordinates->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
+        layoutCoordinates->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
+
+        QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
+        grpCoordinates->setLayout(layoutCoordinates);
+
+        // order
+        chkPolynomialOrder = new QCheckBox();
+        connect(chkPolynomialOrder, SIGNAL(stateChanged(int)), this, SLOT(doPolynomialOrder(int)));
+
+        QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
+        layoutPolynomialOrder->addWidget(chkPolynomialOrder);
+        layoutPolynomialOrder->addWidget(txtPolynomialOrder);
+
+        //TODO
+        //layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::scene()->problemInfo()->polynomialOrder)));
+        layoutPolynomialOrder->addWidget(new QLabel(tr("Global order TODO is %1.").arg(1)));
+
+        // area
+        chkArea = new QCheckBox();
+        connect(chkArea, SIGNAL(stateChanged(int)), this, SLOT(doArea(int)));
+
+        QHBoxLayout *layoutArea = new QHBoxLayout();
+        layoutArea->addWidget(chkArea);
+        layoutArea->addWidget(txtArea);
+
+        // mesh
+        QFormLayout *layoutMeshParameters = new QFormLayout();
+        layoutMeshParameters->addRow(tr("Triangle area (m):"), layoutArea);
+        layoutMeshParameters->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
+
+        QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
+        grpMeshParameters->setLayout(layoutMeshParameters);
+
+        layout->addRow(grpCoordinates);
+        layout->addRow(grpMeshParameters);
+    }
 
     fillComboBox();
 
@@ -223,22 +246,44 @@ bool SceneLabelDialog::load()
 {
     logMessage("DSceneLabel::load()");
 
-    SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
-
-    txtPointX->setNumber(sceneLabel->point.x);
-    txtPointY->setNumber(sceneLabel->point.y);
-    txtArea->setNumber(sceneLabel->area);
-    chkArea->setChecked(sceneLabel->area > 0.0);
-    txtArea->setEnabled(chkArea->isChecked());
-    txtPolynomialOrder->setValue(sceneLabel->polynomialOrder);
-    chkPolynomialOrder->setChecked(sceneLabel->polynomialOrder > 0);
-    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
-
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    if(m_singleLabel)
     {
-        cmbMaterials[fieldInfo]->setCurrentIndex(cmbMaterials[fieldInfo]->findData(sceneLabel->getMarker(fieldInfo)->variant()));
-    }
+        SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
+        txtPointX->setNumber(sceneLabel->point.x);
+        txtPointY->setNumber(sceneLabel->point.y);
+        txtArea->setNumber(sceneLabel->area);
+        chkArea->setChecked(sceneLabel->area > 0.0);
+        txtArea->setEnabled(chkArea->isChecked());
+        txtPolynomialOrder->setValue(sceneLabel->polynomialOrder);
+        chkPolynomialOrder->setChecked(sceneLabel->polynomialOrder > 0);
+        txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
+
+        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        {
+            cmbMaterials[fieldInfo]->setCurrentIndex(cmbMaterials[fieldInfo]->findData(sceneLabel->getMarker(fieldInfo)->variant()));
+        }
+    }
+    else
+    {
+        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        {
+            SceneMaterial* material = NULL;
+            bool match = true;
+            foreach(SceneLabel* label, m_labels.items())
+            {
+                if(material)
+                    match = match && (material == label->getMarker(fieldInfo));
+                else
+                    material = label->getMarker(fieldInfo);
+            }
+            if(match)
+                cmbMaterials[fieldInfo]->setCurrentIndex(cmbMaterials[fieldInfo]->findData(material->variant()));
+            else
+                cmbMaterials[fieldInfo]->setCurrentIndex(-1);
+        }
+
+    }
     return true;
 }
 
@@ -246,45 +291,61 @@ bool SceneLabelDialog::save()
 {
     logMessage("DSceneLabel::save()");
 
-    if (!txtPointX->evaluate(false)) return false;
-    if (!txtPointY->evaluate(false)) return false;
-    if (!txtArea->evaluate(false)) return false;
-
-    SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
-
-    Point point(txtPointX->number(), txtPointY->number());
-
-    // check if label doesn't exists
-    if (Util::scene()->getLabel(point) && ((sceneLabel->point != point) || isNew))
+    if(m_singleLabel)
     {
-        QMessageBox::warning(this, "Label", "Label already exists.");
-        return false;
-    }
+        if (!txtPointX->evaluate(false)) return false;
+        if (!txtPointY->evaluate(false)) return false;
+        if (!txtArea->evaluate(false)) return false;
 
-    // area
-    if (txtArea->value().number() < 0)
-    {
-        QMessageBox::warning(this, "Label", "Area must be positive or zero.");
-        txtArea->setFocus();
-        return false;
-    }
+        SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
+        Point point(txtPointX->number(), txtPointY->number());
 
-    if (!isNew)
-    {
-        if (sceneLabel->point != point)
+        // check if label doesn't exists
+        if (Util::scene()->getLabel(point) && ((sceneLabel->point != point) || isNew))
         {
-            Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point, point));
+            QMessageBox::warning(this, "Label", "Label already exists.");
+            return false;
+        }
+
+        // area
+        if (txtArea->value().number() < 0)
+        {
+            QMessageBox::warning(this, "Label", "Area must be positive or zero.");
+            txtArea->setFocus();
+            return false;
+        }
+
+
+        if (!isNew)
+        {
+            if (sceneLabel->point != point)
+            {
+                Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point, point));
+            }
+        }
+
+        sceneLabel->point = point;
+        sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
+        sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
+
+        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        {
+            sceneLabel->addMarker(cmbMaterials[fieldInfo]->itemData(cmbMaterials[fieldInfo]->currentIndex()).value<SceneMaterial *>());
         }
     }
-
-    sceneLabel->point = point;
-    sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
-    sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
-
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    else
     {
-        sceneLabel->addMarker(cmbMaterials[fieldInfo]->itemData(cmbMaterials[fieldInfo]->currentIndex()).value<SceneMaterial *>());
+        foreach (SceneLabel* label, m_labels.items())
+        {
+            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+            {
+                if(cmbMaterials[fieldInfo]->currentIndex() != -1)
+                    label->addMarker(cmbMaterials[fieldInfo]->itemData(cmbMaterials[fieldInfo]->currentIndex()).value<SceneMaterial *>());
+
+            }
+        }
+
     }
 
     return true;

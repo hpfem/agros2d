@@ -223,6 +223,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         try
         {
             result += wt[i] * parser->parser[0]->Eval();
+           // cout << "contrib " << wt[i] << " * " << parser->parser[0]->Eval() << endl;
         }
         catch (mu::Parser::exception_type &e)
         {
@@ -230,6 +231,8 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         }
     }
 
+    cout << "expression " << parser->parser[0]->GetExpr() << ", int. bodu " << n << endl;
+    cout << "parser matrix form vol result " << result << endl;
     return result;
 }
 
