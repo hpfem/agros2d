@@ -112,8 +112,11 @@ void SceneViewGeometry::doSceneObjectProperties()
     {
         if (Util::scene()->selectedCount() > 1)
         {
-            SceneBoundarySelectDialog boundaryDialog(this);
-            boundaryDialog.exec();
+//            SceneBoundarySelectDialog boundaryDialog(this);
+//            boundaryDialog.exec();
+            SceneEdgeDialog *dialog = new SceneEdgeDialog(Util::scene()->edges->selected(), this);
+            dialog->exec();
+
         }
         if (Util::scene()->selectedCount() == 1)
         {

@@ -175,6 +175,7 @@ SceneEdgeDialog::SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew) :
     logMessage("DSceneEdge::DSceneEdge()");
 
     m_object = edge;
+    m_singleEdge = true;
 
     setWindowIcon(icon("scene-edge"));
     setWindowTitle(tr("Edge"));
@@ -187,47 +188,27 @@ SceneEdgeDialog::SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew) :
     // setMaximumSize(sizeHint());
 }
 
+SceneEdgeDialog::SceneEdgeDialog(MarkedSceneBasicContainer<SceneBoundary, SceneEdge> edges, QWidget *parent) : DSceneBasic(parent, false)
+{
+    m_edges = edges;
+    m_object = NULL;
+    m_singleEdge = false;
+
+    setWindowIcon(icon("scene-edge"));
+    setWindowTitle(tr("Edges"));
+
+    createControls();
+
+    load();
+
+    setMinimumSize(sizeHint());
+    // setMaximumSize(sizeHint());
+
+}
+
 QLayout* SceneEdgeDialog::createContent()
 {
     logMessage("DSceneEdge::createContent()");
-
-    cmbNodeStart = new QComboBox();
-    cmbNodeEnd = new QComboBox();
-    connect(cmbNodeStart, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
-    connect(cmbNodeEnd, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
-    txtAngle = new ValueLineEdit();
-    txtAngle->setMinimum(0.0);
-    txtAngle->setMaximum(180.0);
-    connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    txtRefineTowardsEdge = new QSpinBox(this);
-    txtRefineTowardsEdge->setMinimum(0);
-    txtRefineTowardsEdge->setMaximum(10);
-    lblLength = new QLabel();
-
-    // coordinates
-    QFormLayout *layoutCoordinates = new QFormLayout();
-    layoutCoordinates->addRow(tr("Start point:"), cmbNodeStart);
-    layoutCoordinates->addRow(tr("End point:"), cmbNodeEnd);
-    layoutCoordinates->addRow(tr("Angle (deg.):"), txtAngle);
-
-    QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
-    grpCoordinates->setLayout(layoutCoordinates);
-
-    // refine towards edge
-    chkRefineTowardsEdge = new QCheckBox();
-    connect(chkRefineTowardsEdge, SIGNAL(stateChanged(int)), this, SLOT(doRefineTowardsEdge(int)));
-
-    QHBoxLayout *layoutRefineTowardsEdge = new QHBoxLayout();
-    layoutRefineTowardsEdge->addStretch(1);
-    layoutRefineTowardsEdge->addWidget(chkRefineTowardsEdge);
-    layoutRefineTowardsEdge->addWidget(txtRefineTowardsEdge);
-
-    // mesh
-    QFormLayout *layoutMeshParameters = new QFormLayout();
-    layoutMeshParameters->addRow(tr("Refine towards edge:"), layoutRefineTowardsEdge);
-
-    QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
-    grpMeshParameters->setLayout(layoutMeshParameters);
 
     // markers
     QFormLayout *layoutBoundaries = new QFormLayout();
@@ -257,9 +238,51 @@ QLayout* SceneEdgeDialog::createContent()
     // layout
     QFormLayout *layout = new QFormLayout();
     layout->addRow(grpBoundaries);
-    layout->addRow(grpCoordinates);
-    layout->addRow(grpMeshParameters);
-    layout->addRow(tr("Length:"), lblLength);
+
+    if(m_singleEdge)
+    {
+        cmbNodeStart = new QComboBox();
+        cmbNodeEnd = new QComboBox();
+        connect(cmbNodeStart, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
+        connect(cmbNodeEnd, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
+        txtAngle = new ValueLineEdit();
+        txtAngle->setMinimum(0.0);
+        txtAngle->setMaximum(180.0);
+        connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+        txtRefineTowardsEdge = new QSpinBox(this);
+        txtRefineTowardsEdge->setMinimum(0);
+        txtRefineTowardsEdge->setMaximum(10);
+        lblLength = new QLabel();
+
+        // coordinates
+        QFormLayout *layoutCoordinates = new QFormLayout();
+        layoutCoordinates->addRow(tr("Start point:"), cmbNodeStart);
+        layoutCoordinates->addRow(tr("End point:"), cmbNodeEnd);
+        layoutCoordinates->addRow(tr("Angle (deg.):"), txtAngle);
+
+        QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
+        grpCoordinates->setLayout(layoutCoordinates);
+
+        // refine towards edge
+        chkRefineTowardsEdge = new QCheckBox();
+        connect(chkRefineTowardsEdge, SIGNAL(stateChanged(int)), this, SLOT(doRefineTowardsEdge(int)));
+
+        QHBoxLayout *layoutRefineTowardsEdge = new QHBoxLayout();
+        layoutRefineTowardsEdge->addStretch(1);
+        layoutRefineTowardsEdge->addWidget(chkRefineTowardsEdge);
+        layoutRefineTowardsEdge->addWidget(txtRefineTowardsEdge);
+
+        // mesh
+        QFormLayout *layoutMeshParameters = new QFormLayout();
+        layoutMeshParameters->addRow(tr("Refine towards edge:"), layoutRefineTowardsEdge);
+
+        QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
+        grpMeshParameters->setLayout(layoutMeshParameters);
+
+        layout->addRow(grpCoordinates);
+        layout->addRow(grpMeshParameters);
+        layout->addRow(tr("Length:"), lblLength);
+    }
 
     fillComboBox();
 
@@ -270,21 +293,24 @@ void SceneEdgeDialog::fillComboBox()
 {
     logMessage("DSceneEdge::fillComboBox()");
 
-    // start and end nodes
-    cmbNodeStart->clear();
-    cmbNodeEnd->clear();
-    for (int i = 0; i<Util::scene()->nodes->length(); i++)
+    if(m_singleEdge)
     {
-        cmbNodeStart->addItem(QString("%1 - [%2; %3]").
-                              arg(i).
-                              arg(Util::scene()->nodes->at(i)->point.x, 0, 'e', 2).
-                              arg(Util::scene()->nodes->at(i)->point.y, 0, 'e', 2),
-                              Util::scene()->nodes->at(i)->variant());
-        cmbNodeEnd->addItem(QString("%1 - [%2; %3]").
-                            arg(i).
-                            arg(Util::scene()->nodes->at(i)->point.x, 0, 'e', 2).
-                            arg(Util::scene()->nodes->at(i)->point.y, 0, 'e', 2),
-                            Util::scene()->nodes->at(i)->variant());
+        // start and end nodes
+        cmbNodeStart->clear();
+        cmbNodeEnd->clear();
+        for (int i = 0; i<Util::scene()->nodes->length(); i++)
+        {
+            cmbNodeStart->addItem(QString("%1 - [%2; %3]").
+                                  arg(i).
+                                  arg(Util::scene()->nodes->at(i)->point.x, 0, 'e', 2).
+                                  arg(Util::scene()->nodes->at(i)->point.y, 0, 'e', 2),
+                                  Util::scene()->nodes->at(i)->variant());
+            cmbNodeEnd->addItem(QString("%1 - [%2; %3]").
+                                arg(i).
+                                arg(Util::scene()->nodes->at(i)->point.x, 0, 'e', 2).
+                                arg(Util::scene()->nodes->at(i)->point.y, 0, 'e', 2),
+                                Util::scene()->nodes->at(i)->variant());
+        }
     }
 
     // markers
@@ -307,74 +333,110 @@ void SceneEdgeDialog::fillComboBox()
 
 bool SceneEdgeDialog::load()
 {
-    //assert(0);//TODO
     logMessage("DSceneEdge::load()");
 
-    SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
-
-    cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart->variant()));
-    cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd->variant()));
-    txtAngle->setNumber(sceneEdge->angle);
-    chkRefineTowardsEdge->setChecked(sceneEdge->refineTowardsEdge > 0.0);
-    txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
-    txtRefineTowardsEdge->setValue(sceneEdge->refineTowardsEdge);
-
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    if(m_singleEdge)
     {
-        cmbBoundaries[fieldInfo]->setCurrentIndex(cmbBoundaries[fieldInfo]->findData(sceneEdge->getMarker(fieldInfo)->variant()));
+        SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
+
+        cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart->variant()));
+        cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd->variant()));
+        txtAngle->setNumber(sceneEdge->angle);
+        chkRefineTowardsEdge->setChecked(sceneEdge->refineTowardsEdge > 0.0);
+        txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
+        txtRefineTowardsEdge->setValue(sceneEdge->refineTowardsEdge);
+
+        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        {
+            cmbBoundaries[fieldInfo]->setCurrentIndex(cmbBoundaries[fieldInfo]->findData(sceneEdge->getMarker(fieldInfo)->variant()));
+        }
+
+        doNodeChanged(); //TODO what does this?
     }
+    else
+    {
+        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        {
+            SceneBoundary* boundary = NULL;
+            bool match = true;
+            foreach(SceneEdge* edge, m_edges.items())
+            {
+                if(boundary)
+                    match = match && (boundary == edge->getMarker(fieldInfo));
+                else
+                    boundary = edge->getMarker(fieldInfo);
+            }
+            if(match)
+                cmbBoundaries[fieldInfo]->setCurrentIndex(cmbBoundaries[fieldInfo]->findData(boundary->variant()));
+            else
+                cmbBoundaries[fieldInfo]->setCurrentIndex(-1);
+        }
 
-    doNodeChanged();
 
+    }
     return true;
 }
 
 bool SceneEdgeDialog::save()
 {
-    //    assert(0); //TODO
     logMessage("DSceneEdge::save()");
 
-    if (!txtAngle->evaluate(false)) return false;
-
-    SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
-
-    SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
-    SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
-
-    // check if edge doesn't exists
-    SceneEdge *edgeCheck = Util::scene()->getEdge(nodeStart->point, nodeEnd->point, txtAngle->number());
-    if ((edgeCheck) && ((sceneEdge != edgeCheck) || isNew))
+    if(m_singleEdge)
     {
-        QMessageBox::warning(this, "Edge", "Edge already exists.");
-        return false;
-    }
+        if (!txtAngle->evaluate(false)) return false;
 
-    if (nodeStart == nodeEnd)
-    {
-        QMessageBox::warning(this, "Edge", "Start and end node are same.");
-        return false;
-    }
+        SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
-    if (!isNew)
-    {
-        if ((sceneEdge->nodeStart != nodeStart) || (sceneEdge->nodeEnd != nodeEnd) || (sceneEdge->angle != txtAngle->number()))
+        SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
+        SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
+
+        // check if edge doesn't exists
+        SceneEdge *edgeCheck = Util::scene()->getEdge(nodeStart->point, nodeEnd->point, txtAngle->number());
+        if ((edgeCheck) && ((sceneEdge != edgeCheck) || isNew))
         {
-            Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point, nodeStart->point, nodeEnd->point,
-                                                                      sceneEdge->angle, txtAngle->number(),
-                                                                      sceneEdge->refineTowardsEdge, txtRefineTowardsEdge->value()));
+            QMessageBox::warning(this, "Edge", "Edge already exists.");
+            return false;
+        }
+
+        if (nodeStart == nodeEnd)
+        {
+            QMessageBox::warning(this, "Edge", "Start and end node are same.");
+            return false;
+        }
+
+        if (!isNew)
+        {
+            if ((sceneEdge->nodeStart != nodeStart) || (sceneEdge->nodeEnd != nodeEnd) || (sceneEdge->angle != txtAngle->number()))
+            {
+                Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point, nodeStart->point, nodeEnd->point,
+                                                                          sceneEdge->angle, txtAngle->number(),
+                                                                          sceneEdge->refineTowardsEdge, txtRefineTowardsEdge->value()));
+            }
+        }
+
+        sceneEdge->nodeStart = nodeStart;
+        sceneEdge->nodeEnd = nodeEnd;
+        sceneEdge->angle = txtAngle->number();
+        sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
+
+        foreach (QComboBox* cmbBoundary, cmbBoundaries)
+        {
+            sceneEdge->addMarker(cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>());
         }
     }
-
-    sceneEdge->nodeStart = nodeStart;
-    sceneEdge->nodeEnd = nodeEnd;
-    sceneEdge->angle = txtAngle->number();
-    sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
-
-    foreach (QComboBox* cmbBoundary, cmbBoundaries)
+    else
     {
-        sceneEdge->addMarker(cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>());
-    }
+        foreach (SceneEdge* edge, m_edges.items())
+        {
+            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+            {
+                if(cmbBoundaries[fieldInfo]->currentIndex() != -1)
+                    edge->addMarker(cmbBoundaries[fieldInfo]->itemData(cmbBoundaries[fieldInfo]->currentIndex()).value<SceneBoundary *>());
 
+            }
+        }
+
+    }
     return true;
 }
 
