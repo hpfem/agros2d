@@ -164,6 +164,8 @@ void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
             index++;
         }
 
+
+        cout << "****** create space" << endl;
         // create space
         for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
         {
@@ -174,12 +176,12 @@ void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
             foreach(SceneLabel* label, Util::scene()->labels->items()){
                 if (!label->getMarker(fieldInfo)->isNone())
                 {
-                    cout << "setting order to " << (label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder) << endl;
+                    cout << "on marker " << j << " setting order to " << (label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder) << endl;
                     space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder,
                                                    QString::number(j).toStdString());
+                    j++;
                 }
                 cout << "doooofs " << space.at(i)->get_num_dofs() << endl;
-                j++;
             }
         }
     }
@@ -361,11 +363,6 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 
             cout << "solving with nonlinear tolerance " << m_block->nonlinearTolerance() << " and nonlin steps " << m_block->nonlinearSteps() << endl;
             newton.solve(coeff_vec, m_block->nonlinearTolerance(), m_block->nonlinearSteps());
-
-            cout << "solution vector: ";
-            for(int i = 0; i < ndof; i++)
-                cout << coeff_vec[i] << ", ";
-            cout << endl;
 
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 

@@ -87,6 +87,19 @@ SceneLabel* SceneLabelContainer::get(const Point& point) const
     return NULL;
 }
 
+SceneLabel* SceneLabelContainer::atNotNoneHack(int i, FieldInfo* fieldInfo)
+{
+    int count = 0;
+    foreach(SceneLabel* label, items())
+    {
+        if(label->getMarker(fieldInfo)->isNone())
+            continue;
+        if(count == i)
+            return label;
+        count++;
+    }
+}
+
 // *************************************************************************************************************************************
 
 SceneLabelDialog::SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
