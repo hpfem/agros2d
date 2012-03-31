@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<mesh:mesh xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:element="XMLMesh" xsi:schemaLocation="XMLMesh /home/pkus/sources/agros2d/resources/xsd/mesh_h2d_xml.xsd" xmlns:mesh="XMLMesh">
+    <vertices>
+        <vertex x="-0.25" y="0.25" i="0"/>
+        <vertex x="-0.25" y="-0.25" i="1"/>
+        <vertex x="0.25" y="-0.25" i="2"/>
+        <vertex x="0.25" y="0.25" i="3"/>
+        <vertex x="-0.05" y="0.05" i="4"/>
+        <vertex x="-0.05" y="-0.05" i="5"/>
+        <vertex x="0.05" y="-0.05" i="6"/>
+        <vertex x="0.05" y="0.05" i="7"/>
+    </vertices>
+    <elements>
+        <element:quad v1="0" v2="1" v3="5" v4="4" marker="0"/>
+        <element:quad v1="1" v2="2" v3="6" v4="5" marker="0"/>
+        <element:quad v1="2" v2="3" v3="7" v4="6" marker="0"/>
+        <element:quad v1="0" v2="4" v3="7" v4="3" marker="0"/>
+    </elements>
+    <edges>
+        <edge v1="5" v2="4" marker="5"/>
+        <edge v1="4" v2="7" marker="8"/>
+        <edge v1="6" v2="5" marker="6"/>
+        <edge v1="7" v2="6" marker="7"/>
+        <edge v1="1" v2="2" marker="4"/>
+        <edge v1="2" v2="3" marker="3"/>
+        <edge v1="0" v2="1" marker="1"/>
+        <edge v1="3" v2="0" marker="2"/>
+    </edges>
+    <curves/>
+</mesh:mesh>

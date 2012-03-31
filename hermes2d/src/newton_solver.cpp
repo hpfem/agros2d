@@ -175,6 +175,12 @@ namespace Hermes
         }
         // Assemble just the jacobian.
         this->dp->assemble(coeff_vec, jacobian);
+        //assert(0);
+        FILE* f = fopen("jac.txt", "w");
+        jacobian->dump(f, "jac");
+        fprintf(f, "\n size %d\n", jacobian->get_size());
+        residual->dump(f, "res");
+        fclose(f);
         if (this->timer != NULL)
         {
           this->timer->tick();

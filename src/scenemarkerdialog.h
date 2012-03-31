@@ -62,21 +62,6 @@ public:
     int showDialog(QWidget *parent) { return 0; }
 };
 
-class SceneBoundarySelectDialog : public QDialog
-{
-    Q_OBJECT
-public:
-    SceneBoundarySelectDialog(QWidget *parent = 0);
-
-    inline SceneBoundary *boundary() { return (cmbBoundary->currentIndex() >= 0) ? cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>() : NULL; }
-
-protected slots:
-    void doAccept();
-
-private:
-    QComboBox *cmbBoundary;
-};
-
 template <class T>
 void deformShapeTemplate(T linVert, int count);
 
@@ -165,21 +150,6 @@ public:
     QString script() { return ""; }
     QMap<QString, QString> data() { return QMap<QString, QString>(); }
     int showDialog(QWidget *parent) { return 0; }
-};
-
-class SceneMaterialSelectDialog : public QDialog
-{
-    Q_OBJECT
-public:
-    SceneMaterialSelectDialog(QWidget *parent = 0);
-
-    inline SceneMaterial *marker() { return (cmbMaterial->currentIndex() >= 0) ? cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>() : NULL; }
-
-protected slots:
-    void doAccept();
-
-private:
-    QComboBox *cmbMaterial;
 };
 
 // *************************************************************************************************************************************

@@ -71,6 +71,7 @@ class SceneEdgeDialog : public DSceneBasic
 
 public:
     SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew);
+    SceneEdgeDialog(MarkedSceneBasicContainer<SceneBoundary, SceneEdge> edges, QWidget *parent);
 
 protected:
     QLayout *createContent();
@@ -87,6 +88,8 @@ private:
     QCheckBox *chkRefineTowardsEdge;
     QSpinBox *txtRefineTowardsEdge;
 
+    bool m_singleEdge;
+    MarkedSceneBasicContainer<SceneBoundary, SceneEdge> m_edges;
     QMap<FieldInfo*, QComboBox *> cmbBoundaries;
     QMap<FieldInfo*, QPushButton *> btnBoundaries;
 

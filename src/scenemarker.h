@@ -86,7 +86,7 @@ protected:
 //class UniqueMarkerContainer : public MarkerContainer<MarkerType>
 //{
 //public:
-//    /// If container allready contains marker corresponding to the same field, it is replaced, not added
+//    /// If container allready contains marker corresponding to the same field, it is repladded
 //    virtual void add(MarkerType *marker);
 //};
 

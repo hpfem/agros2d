@@ -51,6 +51,8 @@ Mesh* Solver<Scalar>::readMesh()
     // load the mesh file
     cout << "reading mesh in solver " << tempProblemFileName().toStdString() + ".xml" << endl;
     Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+//    cout << "reading mesh in solver CTVEREC" << endl;
+//    Mesh *mesh = readMeshFromFile("data/aa-electrostatic-ctverec.xml");
 
     // check that all boundary edges have a marker assigned
     QSet<int> boundaries;
@@ -162,6 +164,8 @@ void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
             index++;
         }
 
+
+        cout << "****** create space" << endl;
         // create space
         for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
         {
@@ -172,12 +176,12 @@ void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
             foreach(SceneLabel* label, Util::scene()->labels->items()){
                 if (!label->getMarker(fieldInfo)->isNone())
                 {
-                    cout << "setting order to " << (label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder) << endl;
+                    cout << "on marker " << j << " setting order to " << (label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder) << endl;
                     space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder,
                                                    QString::number(j).toStdString());
+                    j++;
                 }
                 cout << "doooofs " << space.at(i)->get_num_dofs() << endl;
-                j++;
             }
         }
     }
@@ -190,7 +194,10 @@ template <typename Scalar>
 void  Solver<Scalar>::createNewSolutions(MultiSolutionArray<Scalar>& msa)
 {
     for(int comp = 0; comp < msa.size(); comp++)
-        msa.setSolution(shared_ptr<Solution<double> >(new Solution<double>()), comp);
+    {
+        Mesh* mesh = msa.component(comp).space->get_mesh();
+        msa.setSolution(shared_ptr<Solution<double> >(new Solution<double>(mesh)), comp);
+    }
 }
 
 template <typename Scalar>
@@ -344,6 +351,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
     {
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
         NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
+
         //newton.set_max_allowed_residual_norm(1e15);
         try
         {

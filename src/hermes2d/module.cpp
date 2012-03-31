@@ -136,7 +136,7 @@ template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, const std::string &area,
                                                   Hermes::Hermes2D::SymFlag sym, string expression, Marker* marker, Material* markerSecond)
 {
-    //cout << "factory form (" << i << ", " << j << "), area: " << area << " -> " << expression << ", marker " << marker->getName() <<  endl;
+//    cout << "factory form (" << i << ", " << j << "), area: " << area << " -> " << expression << ", marker " << marker->getName() <<  endl;
     if(type == WFType_MatVol)
         return new CustomParserMatrixFormVol<Scalar>(i, j,
                                                      area,
@@ -167,7 +167,10 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WFType type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    //cout << "pridavam vektorovou formu, i: " << form->i << ", j: " << form->j << ", expresion: " << form->expression << endl;
+//    cout << "pridavam vektorovou formu, i: " << form->i << ", areas: "; /* ", j: " << form->j <<*/
+    for(int i = 0; i < form->areas.size(); i++)
+        cout << form->areas.at(i) << ", ";
+    cout << endl;
     if(type == WFType_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
     else if(type == WFType_MatSurf)
@@ -275,17 +278,19 @@ void WeakFormAgros<Scalar>::registerForms()
             }
         }
 
+        int notNoneLabelNumHack = 0;
         // materials
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
             SceneMaterial *material = Util::scene()->labels->at(labelNum)->getMarker(fieldInfo);
+//            cout << "registering label " << labelNum << ", material " << material << ", name " << material->getName() << ", marker for hermes " << notNoneLabelNumHack << endl;
 
             if (material && material != Util::scene()->materials->getNone(fieldInfo))
             {
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_matrix_volume.begin();
                      it < fieldInfo->module()->weakform_matrix_volume.end(); ++it)
                 {
-                    registerForm(WFType_MatVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_MatVol, field, QString::number(notNoneLabelNumHack).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), material);
 
                 }
@@ -293,7 +298,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_vector_volume.begin();
                      it < fieldInfo->module()->weakform_vector_volume.end(); ++it)
                 {
-                    registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_VecVol, field, QString::number(notNoneLabelNumHack).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), material);
                 }
 
@@ -302,7 +307,7 @@ void WeakFormAgros<Scalar>::registerForms()
                      for (Hermes::vector<ParserFormExpression *>::iterator it = couplingInfo->coupling()->weakform_vector_volume.begin();
                           it < couplingInfo->coupling()->weakform_vector_volume.end(); ++it)
                     {
-                         registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                         registerForm(WFType_VecVol, field, QString::number(notNoneLabelNumHack).toStdString(), (ParserFormExpression *) *it,
                                       m_block->offset(field), m_block->offset(field), material,
                                       Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
                     }
@@ -310,6 +315,7 @@ void WeakFormAgros<Scalar>::registerForms()
 
                 }
 
+                notNoneLabelNumHack++;
             }
         }
     }
@@ -1297,7 +1303,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
         double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
         Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
 
-        SceneMaterial *material = Util::scene()->labels->at(atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
+        SceneMaterial *material = Util::scene()->labels->atNotNoneHack(atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()), m_fieldInfo)->getMarker(m_fieldInfo);
         if (isLinear)
             parser->setParserVariables(material, NULL);
 

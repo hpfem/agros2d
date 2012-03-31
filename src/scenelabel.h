@@ -48,6 +48,11 @@ public:
     SceneLabel* get(SceneLabel* label) const;
     SceneLabel* get(const Point& point) const;
 
+    /// finds label at position i, but NOT COUNTING those labels, that have none marker in this field
+    /// "inverse" function to the mean, in which we skip labels with none materials in solver and register weak forms
+    /// this aditional mapping of markers between agros and hermes will be rewised when implementing subdomains
+    SceneLabel* atNotNoneHack(int i, FieldInfo* fieldInfo);
+
 };
 
 
@@ -59,7 +64,7 @@ class SceneLabelDialog : public DSceneBasic
 
 public:
     SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew = false);
-
+    SceneLabelDialog(MarkedSceneBasicContainer<SceneMaterial, SceneLabel> labels, QWidget *parent);
 protected:
     QLayout *createContent();
 
@@ -74,6 +79,8 @@ private:
     QCheckBox *chkArea;
     QCheckBox *chkPolynomialOrder;
 
+    bool m_singleLabel;
+    MarkedSceneBasicContainer<SceneMaterial, SceneLabel> m_labels;
     QMap<FieldInfo*, QComboBox *> cmbMaterials;
     QMap<FieldInfo*, QPushButton *> btnMaterials;
 
