@@ -603,9 +603,8 @@ void MainWindow::createToolBars()
     tlbLeftBar->addAction(actSolve);
     tlbLeftBar->addAction(actSolveAdaptiveStep);
     tlbLeftBar->addSeparator();
-    tlbLeftBar->addAction(actInfo);
     tlbLeftBar->addAction(actScriptEditor);
-    tlbLeftBar->addAction(Util::scene()->actProblemProperties);
+    tlbLeftBar->addAction(actInfo);
 
     addToolBar(Qt::LeftToolBarArea, tlbLeftBar);
 

@@ -46,6 +46,7 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
         if (!fields.contains(QString::fromStdString(it->first)))
         {
             QListWidgetItem *item = new QListWidgetItem(lstFields);
+            item->setIcon(icon("fields/" + QString::fromStdString(it->first)));
             item->setText(QString::fromStdString(it->second));
             item->setData(Qt::UserRole, QString::fromStdString(it->first));
 
@@ -130,6 +131,12 @@ FieldWidget::FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, Q
 
 void FieldWidget::createContent()
 {
+    QLabel *lblField = new QLabel(tr("Equations:"));
+
+    // QPixmap pixmap;
+    // pixmap.load(QString(":/fields/%1.png").arg(m_fieldInfo->fieldId()));
+    // lblField->setPixmap(pixmap.scaled(QSize(48, 48), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
     // equations
     lblEquationPixmap = new QLabel("");
     lblEquationPixmap->setMinimumHeight(50);
@@ -255,7 +262,8 @@ void FieldWidget::createContent()
     QGridLayout *layoutEquation = new QGridLayout();
     layoutEquation->setColumnMinimumWidth(0, minWidth);
     layoutEquation->setColumnStretch(1, 1);
-    layoutEquation->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    // layoutEquation->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    layoutEquation->addWidget(lblField, 0, 0);
     layoutEquation->addWidget(lblEquationPixmap, 0, 1, 1, 1, Qt::AlignLeft);
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
@@ -1030,7 +1038,6 @@ void ProblemDialog::doAddField()
         }
 
         tabFields->addFieldTab(fieldInfo);
-
     }
 
     tabFields->doFindCouplings();

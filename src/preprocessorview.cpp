@@ -102,13 +102,24 @@ void PreprocessorView::createMenu()
 void PreprocessorView::createControls()
 {
     tlbFields = new QToolBar(this);
-    tlbFields->setIconSize(QSize(48, 48));
+    tlbFields->setIconSize(QSize(36, 36));
+    tlbFields->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    tlbFields->setOrientation(Qt::Vertical);
+    // tlbFields->setStyleSheet("QToolButton { font-size: 8pt; }");
+
+    QVBoxLayout *layoutToolBar = new QVBoxLayout();
+    layoutToolBar->addWidget(tlbFields);
+    // layoutToolBar->addStretch();
 
     actFieldsGroup = new QActionGroup(this);
     connect(actFieldsGroup, SIGNAL(triggered(QAction *)), this, SLOT(doProblemDialog(QAction *)));
 
     webView = new QWebView(this);
     webView->setMinimumHeight(250);
+
+    QHBoxLayout *layoutInfo = new QHBoxLayout();
+    layoutInfo->addLayout(layoutToolBar);
+    layoutInfo->addWidget(webView);
 
     trvWidget = new QTreeWidget(this);
     trvWidget->setHeaderHidden(true);
@@ -119,8 +130,7 @@ void PreprocessorView::createControls()
     trvWidget->setIndentation(12);
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
-    layoutMain->addWidget(tlbFields);
-    layoutMain->addWidget(webView, 2);
+    layoutMain->addLayout(layoutInfo, 2);
     layoutMain->addWidget(trvWidget, 3);
 
     QWidget *main = new QWidget(this);
@@ -185,6 +195,7 @@ void PreprocessorView::doInvalidated()
 
     clearNodes();
 
+    // fields
     tlbFields->clear();
     actFieldsGroup->actions().clear();
 
@@ -197,6 +208,13 @@ void PreprocessorView::doInvalidated()
         actFieldsGroup->addAction(actField);
         tlbFields->addAction(actField);
     }
+    // spacing
+    QLabel *spacing = new QLabel;
+    spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    tlbFields->addWidget(spacing);
+
+    tlbFields->addAction(icon("tabadd"), tr("Add field"), this, SLOT(doAddField()));
+    tlbFields->addAction(Util::scene()->actProblemProperties);
 
     // markers
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
@@ -345,11 +363,33 @@ void PreprocessorView::doProblemDialog(QAction *action)
     FieldInfo *fieldInfo = Util::scene()->fieldInfo(action->data().toString());
     if (fieldInfo)
     {
-        FieldDialog *fieldDialog = new FieldDialog(fieldInfo, this);
-        if (fieldDialog->exec() == QDialog::Accepted)
+        FieldDialog fieldDialog(fieldInfo, this);
+        if (fieldDialog.exec() == QDialog::Accepted)
             doInvalidated();
+    }
+}
 
-        delete fieldDialog;
+void PreprocessorView::doAddField()
+{
+    // select field dialog
+    FieldSelectDialog dialog(Util::scene()->fieldInfos().keys(), this);
+    if (dialog.showDialog() == QDialog::Accepted)
+    {
+        // add field
+        FieldInfo *fieldInfo = new FieldInfo(Util::scene()->problemInfo(), dialog.selectedFieldId());
+
+        //
+        FieldDialog fieldDialog(fieldInfo, this);
+        if (fieldDialog.exec() == QDialog::Accepted)
+        {
+            Util::scene()->addField(fieldInfo);
+
+            doInvalidated();
+        }
+        else
+        {
+            delete fieldInfo;
+        }
     }
 }
 
