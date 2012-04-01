@@ -69,7 +69,6 @@ SOURCES += util.cpp \
     scenemarker.cpp \
     scenemarkerdialog.cpp \
     scenebasic.cpp \
-    sceneinfoview.cpp \
     # sceneview.cpp \
     sceneview_common.cpp \
     sceneview_common2d.cpp \
@@ -113,7 +112,8 @@ SOURCES += util.cpp \
     scenenode.cpp \
     hermes2d/coupling.cpp \
     hermes2d/solutiontypes.cpp \
-    preprocessorview.cpp
+    preprocessorview.cpp \
+    infowidget.cpp
 
 HEADERS += util.h \
     value.h \
@@ -134,7 +134,6 @@ HEADERS += util.h \
     pythonlabagros.h \
     mainwindow.h \
     scenebasic.h \
-    sceneinfoview.h \
     scenemarker.h \
     scenemarkerdialog.h \
     sceneview_data.h \
@@ -182,7 +181,8 @@ HEADERS += util.h \
     scenenode.h \
     hermes2d/coupling.h \
     hermes2d/solutiontypes.h \
-    preprocessorview.h
+    preprocessorview.h \
+    infowidget.h
 
 INCLUDEPATH += . \
     ../lib \

@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef SCENEINFOVIEW_H
-#define SCENEINFOVIEW_H
+#ifndef INFOWIDGET_H
+#define INFOWIDGET_H
 
 #include "util.h"
 
@@ -26,13 +26,13 @@
 
 class SceneViewGeometry;
 
-class SceneInfoWidget : public QWidget
+class InfoWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    SceneInfoWidget(SceneViewGeometry *sceneView, QWidget *parent = 0);
-    ~SceneInfoWidget();
+    InfoWidget(SceneViewGeometry *sceneView, QWidget *parent = 0);
+    ~InfoWidget();
 
 private:
     SceneViewGeometry *m_sceneViewGeometry;

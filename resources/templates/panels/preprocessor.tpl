@@ -6,29 +6,56 @@
 	<style type="text/css">
 		{{STYLESHEET}}
 	</style>
+	<style type="text/css">
+        * { margin: 0; padding: 0; }
+        #page-wrap { width: 960px; margin: 100px auto; }
+        .group:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
+        p { margin: 0 0 10px 0; }
+        
+        .tabs { list-style: none; }
+        .tabs li { display: inline; }
+        .tabs li a { color: black; float: left; display: block; padding: 4px 10px; margin-left: -1px; position: relative; left: 1px; background: white; text-decoration: none; }
+        .tabs li a:hover { background: #ccc; }
+
+ 		.tabbed-area { margin: 0 0 120px 0; }
+        .box-wrap { position: relative; min-height: 150px; }
+        .tabbed-area div div { background: white; padding: 20px; min-height: 150px; position: absolute; top: -1px; left: 0; width: 100%; }
+        .tabbed-area div div, .tabs li a { border: 1px solid #ccc; }
+        #box-one:target, #box-two:target, #box-three:target { z-index: 1; }
+
+		.adjacent { position: relative; margin-top: 50px; min-height: 300px; }
+		.adjacent div { border: 1px solid #ccc; background: white; padding: 20px; min-height: 150px; position: absolute; top: -1px; left: 0; width: 100%; }
+		.adjacent .tabs { position: absolute; bottom: 100%; left: 0; z-index: 2; }
+		.adjacent .tabs li a { background: -moz-linear-gradient(top, white, #eee); }
+		#box-thirteen:target,
+		#box-fourteen:target,
+		#box-fifteen:target { z-index: 1; }
+		#box-thirteen:target ~ .tabs a[href='#box-thirteen'],
+		#box-fourteen:target ~ .tabs a[href='#box-fourteen'],
+		#box-fifteen:target ~ .tabs a[href='#box-fifteen'] { background: white; border-bottom: 1px solid white; }
+	</style>
 </head>
 <body>
+
 <h1>{{BASIC_INFORMATION_LABEL}}</h1>
 <div class="section">
 <table class="maintable">
 	<tr>
-		<td><b>{{NAME_LABEL}}</b></td><td>{{NAME}}</td>
-	</tr>
-	<tr>
 		<td><b>{{COORDINATE_TYPE_LABEL}}</b></td><td>{{COORDINATE_TYPE}}</td>
 	</tr>
-	<tr>
-		<td><b>{{MESH_TYPE_LABEL}}</b></td><td>{{MESH_TYPE}}</td>
-	</tr>
+	{{#FREQUENCY}}
 	<tr>
 		<td><b>{{FREQUENCY_LABEL}}</b></td><td>{{FREQUENCY}}</td>
 	</tr>
+	{{/FREQUENCY}}
+	{{#TRANSIENT}}
 	<tr>
 		<td><b>{{TIME_STEP_LABEL}}</b></td><td>{{TIME_STEP}}</td>
 	</tr>
 	<tr>
 		<td><b>{{TIME_TOTAL_LABEL}}</b></td><td>{{TIME_TOTAL}}</td>
 	</tr>
+	{{/TRANSIENT}}	
 </table>
 </div>
 
@@ -82,39 +109,3 @@
 </body>
 </html>
 
-<!--
-{{#SOLUTION_SECTION}}
-<h1>{{SOLUTION_INFORMATION_LABEL}}</h1>
-<div class="section">
-<table class="maintable">
-	<tr><td colspan=2><h2>{{INITIAL_MESH_LABEL}}</h2></td></tr>
-	<tr><td colspan=2><div class="subsection">
-		<table>
-			<tr><td><b>{{INITIAL_MESH_NODES_LABEL}}</b></td><td>{{INITIAL_MESH_NODES}}</td></tr>
-			<tr><td><b>{{INITIAL_MESH_ELEMENTS_LABEL}}</b></td><td>{{INITIAL_MESH_ELEMENTS}}</td></tr>
-		</table>
-	</div></td></tr>
-	{{#SOLUTION_PARAMETERS_SECTION}}
-	<tr><td><b>{{ELAPSED_TIME_LABEL}}</b></td><td>{{ELAPSED_TIME}}</td></tr>
-	<tr><td><b>{{DOFS_LABEL}}</b></td><td>{{DOFS}}</td></tr>
-	{{#ADAPTIVITY_SECTION}}
-	<tr><td colspan=2><h2>{{ADAPTIVITY_LABEL}}</h2></td></tr>
-	<tr><td colspan=2><div class="subsection">
-		<table>
-			<tr><td><b>{{ADAPTIVITY_ERROR_LABEL}}</b></td><td>{{ADAPTIVITY_ERROR}}</td></tr>
-			<tr><td><b>{{ADAPTIVITY_TOLERANCE_LABEL}}</b></td><td>{{ADAPTIVITY_TOLERANCE}}</td></tr>
-		</table>
-	</div></td></tr>
-	<tr><td colspan=2><h2>{{SOLUTION_MESH_LABEL}}</h2></td></tr>
-	<tr><td colspan=2><div class="subsection">
-		<table>
-			<tr><td><b>{{SOLUTION_MESH_NODES_LABEL}}</b></td><td>{{SOLUTION_MESH_NODES}}</td></tr>
-			<tr><td><b>{{SOLUTION_MESH_ELEMENTS_LABEL}}</b></td><td>{{SOLUTION_MESH_ELEMENTS}}</td></tr>
-		</table>
-	</div></td></tr>
-	{{/ADAPTIVITY_SECTION}}
-	{{/SOLUTION_PARAMETERS_SECTION}}
-</table>
-</div>
-{{/SOLUTION_SECTION}}
--->

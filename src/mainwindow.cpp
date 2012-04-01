@@ -31,7 +31,7 @@
 #include "scenesolution.h"
 #include "tooltipview.h"
 #include "logview.h"
-#include "sceneinfoview.h"
+#include "infowidget.h"
 #include "preprocessorview.h"
 #include "postprocessorview.h"
 #include "chartdialog.h"
@@ -94,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // mesh
     connect(Util::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
-    connect(postprocessorView, SIGNAL(apply()), sceneViewMesh, SLOT(clear()));
+    connect(postprocessorView, SIGNAL(apply()), sceneViewMesh, SLOT(doInvalidated()));
     currentPythonEngineAgros()->setSceneViewMesh(sceneViewMesh);
 
     // postprocessor 2d
@@ -103,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(clear()));
-    connect(postprocessorView, SIGNAL(apply()), sceneViewPost2D, SLOT(clear()));
+    connect(postprocessorView, SIGNAL(apply()), sceneViewPost2D, SLOT(doInvalidated()));
     currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
 
     // postprocessor 3d
@@ -1260,7 +1260,7 @@ void MainWindow::doInformations()
     int w = 450;
     int h = height() - 80;
 
-    SceneInfoWidget *popup = new SceneInfoWidget(sceneViewGeometry, this);
+    InfoWidget *popup = new InfoWidget(sceneViewGeometry, this);
     popup->resize(w, h);
     popup->move(pos().x() + 75, pos().y() + 70);
     popup->setAttribute(Qt::WA_DeleteOnClose);

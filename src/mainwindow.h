@@ -26,7 +26,7 @@ class SceneViewPost2D;
 class SceneViewPost3D;
 class SceneViewGeometry;
 class SceneViewMesh;
-class SceneInfoWidget;
+class InfoWidget;
 class ResultsView;
 class VolumeIntegralValueView;
 class SurfaceIntegralValueView;

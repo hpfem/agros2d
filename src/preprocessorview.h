@@ -58,10 +58,14 @@ private:
     QAction *actProperties;
     QAction *actDelete;
     
-    QMenu *mnuInfo;
+    QMenu *mnuPreprocessor;
+    QWebView *webView;
+
+    QActionGroup *actFieldsGroup;
+    QToolBar *tlbFields;
 
     void createActions();
-    void createTreeView();
+    void createControls();
     void createMenu();
     void createToolBar();
 
@@ -71,6 +75,9 @@ private slots:
     void doContextMenu(const QPoint &pos);
     void doItemDoubleClicked(QTreeWidgetItem *item, int role);
     void doItemSelected(QTreeWidgetItem *item, int role);
+    void doProblemDialog(QAction *action);
+
+    void showInfo();
 };
 
 #endif // PREPROCESSORVIEW_H

@@ -87,7 +87,7 @@ class FieldWidget : public QWidget
 {
     Q_OBJECT
 public:
-    FieldWidget(const ProblemInfo *problemInfo, FieldInfo *m_fieldInfo, QWidget *parent, ProblemDialog* problemDialog);
+    FieldWidget(const ProblemInfo *problemInfo, FieldInfo *m_fieldInfo, QWidget *parent);
 
     // equation
     QLabel *equationImage;
@@ -104,9 +104,6 @@ private:
     // problem info
     const ProblemInfo *problemInfo;
     FieldInfo *m_fieldInfo;
-
-    //TODO how to do without it?
-    ProblemDialog* m_problemDialog;
 
     // main
     QComboBox *cmbAnalysisType;
@@ -141,6 +138,20 @@ private slots:
     void doAdaptivityChanged(int index);
     void doLinearityTypeChanged(int index);
     void doShowEquation();
+};
+
+class FieldDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    FieldDialog(FieldInfo * fieldInfo, QWidget *parent = 0);
+    ~FieldDialog();
+
+private:
+    FieldWidget *fieldWidget;
+
+private slots:
+    void doAccept();
 };
 
 class FieldTabWidget : public QTabWidget

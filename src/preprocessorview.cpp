@@ -20,6 +20,7 @@
 #include "preprocessorview.h"
 
 #include "scene.h"
+#include "logview.h"
 #include "scenebasic.h"
 #include "scenenode.h"
 #include "sceneedge.h"
@@ -28,6 +29,7 @@
 #include "scenesolution.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
+#include "problemdialog.h"
 #include "pythonlabagros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
@@ -46,10 +48,10 @@ PreprocessorView::PreprocessorView(SceneViewGeometry *sceneView, QWidget *parent
     createActions();
 
     // context menu
-    mnuInfo = new QMenu(this);
+    mnuPreprocessor = new QMenu(this);
 
     // boundary conditions, materials and geometry information
-    createTreeView();
+    createControls();
 
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
 
@@ -84,23 +86,30 @@ void PreprocessorView::createActions()
 
 void PreprocessorView::createMenu()
 {
-    logMessage("PreprocessorView::createMenu()");
+    mnuPreprocessor->clear();
 
-    mnuInfo->clear();
-
-    mnuInfo->addAction(Util::scene()->actNewNode);
-    mnuInfo->addAction(Util::scene()->actNewEdge);
-    mnuInfo->addAction(Util::scene()->actNewLabel);
-    mnuInfo->addSeparator();
-    Util::scene()->addBoundaryAndMaterialMenuItems(mnuInfo, this);
-    mnuInfo->addSeparator();
-    mnuInfo->addAction(actDelete);
-    mnuInfo->addSeparator();
-    mnuInfo->addAction(actProperties);
+    mnuPreprocessor->addAction(Util::scene()->actNewNode);
+    mnuPreprocessor->addAction(Util::scene()->actNewEdge);
+    mnuPreprocessor->addAction(Util::scene()->actNewLabel);
+    mnuPreprocessor->addSeparator();
+    Util::scene()->addBoundaryAndMaterialMenuItems(mnuPreprocessor, this);
+    mnuPreprocessor->addSeparator();
+    mnuPreprocessor->addAction(actDelete);
+    mnuPreprocessor->addSeparator();
+    mnuPreprocessor->addAction(actProperties);
 }
 
-void PreprocessorView::createTreeView()
+void PreprocessorView::createControls()
 {
+    tlbFields = new QToolBar(this);
+    tlbFields->setIconSize(QSize(48, 48));
+
+    actFieldsGroup = new QActionGroup(this);
+    connect(actFieldsGroup, SIGNAL(triggered(QAction *)), this, SLOT(doProblemDialog(QAction *)));
+
+    webView = new QWebView(this);
+    webView->setMinimumHeight(250);
+
     trvWidget = new QTreeWidget(this);
     trvWidget->setHeaderHidden(true);
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -109,7 +118,15 @@ void PreprocessorView::createTreeView()
     trvWidget->setColumnWidth(0, 150);
     trvWidget->setIndentation(12);
 
-    setWidget(trvWidget);
+    QVBoxLayout *layoutMain = new QVBoxLayout();
+    layoutMain->addWidget(tlbFields);
+    layoutMain->addWidget(webView, 2);
+    layoutMain->addWidget(trvWidget, 3);
+
+    QWidget *main = new QWidget(this);
+    main->setLayout(layoutMain);
+
+    setWidget(main);
 
     // boundary conditions
     boundaryConditionsNode = new QTreeWidgetItem(trvWidget);
@@ -160,8 +177,6 @@ void PreprocessorView::keyPressEvent(QKeyEvent *event)
 
 void PreprocessorView::doInvalidated()
 {
-    logMessage("PreprocessorView::doInvalidated()");
-
     // script speed improvement
     if (scriptIsRunning()) return;
 
@@ -169,6 +184,19 @@ void PreprocessorView::doInvalidated()
     setUpdatesEnabled(false);
 
     clearNodes();
+
+    tlbFields->clear();
+    actFieldsGroup->actions().clear();
+
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        QAction *actField = new QAction(QString::fromStdString(fieldInfo->module()->name), this);
+        actField->setIcon(icon(QString::fromStdString("fields/" + fieldInfo->module()->fieldid)));
+        actField->setData(QString::fromStdString(fieldInfo->module()->fieldid));
+
+        actFieldsGroup->addAction(actField);
+        tlbFields->addAction(actField);
+    }
 
     // markers
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
@@ -265,12 +293,12 @@ void PreprocessorView::doInvalidated()
 
     setUpdatesEnabled(true);
     blockSignals(false);
+
+    QTimer::singleShot(0, this, SLOT(showInfo()));
 }
 
 void PreprocessorView::clearNodes()
 {
-    logMessage("PreprocessorView::clearNodes()");
-
     blockSignals(true);
 
     // boundary conditions
@@ -312,6 +340,19 @@ void PreprocessorView::clearNodes()
     blockSignals(false);
 }
 
+void PreprocessorView::doProblemDialog(QAction *action)
+{
+    FieldInfo *fieldInfo = Util::scene()->fieldInfo(action->data().toString());
+    if (fieldInfo)
+    {
+        FieldDialog *fieldDialog = new FieldDialog(fieldInfo, this);
+        if (fieldDialog->exec() == QDialog::Accepted)
+            doInvalidated();
+
+        delete fieldDialog;
+    }
+}
+
 void PreprocessorView::doContextMenu(const QPoint &pos)
 {
     logMessage("PreprocessorView::doContextMenu()");
@@ -320,13 +361,11 @@ void PreprocessorView::doContextMenu(const QPoint &pos)
     doItemSelected(item, 0);
 
     trvWidget->setCurrentItem(item);
-    mnuInfo->exec(QCursor::pos());
+    mnuPreprocessor->exec(QCursor::pos());
 }
 
 void PreprocessorView::doItemSelected(QTreeWidgetItem *item, int role)
 {
-    logMessage("PreprocessorView::doItemSelected()");
-
     createMenu();
 
     actProperties->setEnabled(false);
@@ -419,7 +458,7 @@ void PreprocessorView::doProperties()
             if (objectBoundary->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneViewGeometry->refresh();
-                doInvalidated();                
+                doInvalidated();
             }
             return;
         }
@@ -475,4 +514,76 @@ void PreprocessorView::doDelete()
 
         m_sceneViewGeometry->refresh();
     }
+}
+
+void PreprocessorView::showInfo()
+{
+    // stylesheet
+    std::string style;
+    ctemplate::TemplateDictionary stylesheet("style");
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
+
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+
+    // template
+    std::string info;
+    ctemplate::TemplateDictionary problem("info");
+
+    problem.SetValue("STYLESHEET", style);
+    problem.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
+
+    problem.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
+    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType).toStdString());
+
+    if (Util::scene()->problemInfo()->frequency > 0)
+    {
+        problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
+        problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency).toStdString() + " Hz");
+        problem.ShowSection("FREQUENCY");
+    }
+    if (Util::scene()->problemInfo()->timeStep.number() > 0)
+    {
+        problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
+        problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep.number()).toStdString() + " s");
+        problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
+        problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal.number()).toStdString() + " s");
+        problem.ShowSection("TRANSIENT");
+    }
+
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        ctemplate::TemplateDictionary *field = problem.AddSectionDictionary("FIELD");
+
+        field->SetValue("PHYSICAL_FIELDID", fieldInfo->module()->fieldid);
+        field->SetValue("PHYSICAL_FIELD", fieldInfo->module()->name);
+
+        field->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
+        field->SetValue("ANALYSIS_TYPE", analysisTypeString(fieldInfo->analysisType()).toStdString());
+
+        field->SetValue("WEAK_FORMS_TYPE_LABEL", tr("Weak forms:").toStdString());
+        field->SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(fieldInfo->weakFormsType).toStdString());
+
+        field->SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());
+        field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->numberOfRefinements).toStdString());
+        field->SetValue("POLYNOMIAL_ORDER_LABEL", tr("Polynomial order:").toStdString());
+        field->SetValue("POLYNOMIAL_ORDER", QString::number(fieldInfo->polynomialOrder).toStdString());
+
+        field->SetValue("ADAPTIVITY_TYPE_LABEL", tr("Adaptivity:").toStdString());
+        field->SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(fieldInfo->adaptivityType).toStdString());
+
+        if (fieldInfo->adaptivityType != AdaptivityType_None)
+        {
+            field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
+            field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->adaptivitySteps).toStdString());
+            field->SetValue("ADAPTIVITY_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
+            field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance).toStdString());
+            field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
+        }
+    }
+
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/preprocessor.tpl", ctemplate::DO_NOT_STRIP, &problem, &info);
+    webView->setHtml(QString::fromStdString(info));
+
+    setFocus();
 }

@@ -17,7 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "sceneinfoview.h"
+#include "infowidget.h"
 
 #include "scene.h"
 #include "scenebasic.h"
@@ -34,12 +34,14 @@
 #include "hermes2d/problem.h"
 #include "ctemplate/template.h"
 
-SceneInfoWidget::SceneInfoWidget(SceneViewGeometry *sceneView, QWidget *parent): QWidget(parent)
+InfoWidget::InfoWidget(SceneViewGeometry *sceneView, QWidget *parent): QWidget(parent)
 {
     this->m_sceneViewGeometry = sceneView;
 
     setMinimumWidth(160);
     setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
+    // setWindowFlags(Qt::Popup | Qt::Dialog);
+    setAttribute(Qt::WA_DeleteOnClose);
 
     // problem information
     webView = new QWebView(this);
@@ -52,11 +54,11 @@ SceneInfoWidget::SceneInfoWidget(SceneViewGeometry *sceneView, QWidget *parent):
     QTimer::singleShot(0, this, SLOT(showInfo()));
 }
 
-SceneInfoWidget::~SceneInfoWidget()
+InfoWidget::~InfoWidget()
 {
 }
 
-void SceneInfoWidget::showInfo()
+void InfoWidget::showInfo()
 {
     // stylesheet
     std::string style;

@@ -121,8 +121,8 @@ void FieldSelectDialog::doItemDoubleClicked(QListWidgetItem *item)
 
 // ********************************************************************************************************
 
-FieldWidget::FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, QWidget *parent, ProblemDialog* problemDialog)
-    : QWidget(parent), problemInfo(problemInfo), m_fieldInfo(fieldInfo), m_problemDialog(problemDialog)
+FieldWidget::FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, QWidget *parent)
+    : QWidget(parent), problemInfo(problemInfo), m_fieldInfo(fieldInfo)
 {
     createContent();
     load();
@@ -446,7 +446,7 @@ void CouplingsWidget::load()
 {
     foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
     {
-//        cout << "loading couplings widget " << couplingInfo->coupling()->name << ", value " << couplingTypeString(couplingInfo->couplingType()).toStdString() << endl;
+        //        cout << "loading couplings widget " << couplingInfo->coupling()->name << ", value " << couplingTypeString(couplingInfo->couplingType()).toStdString() << endl;
         m_comboBoxes[couplingInfo]->setCurrentIndex(couplingInfo->couplingType());
     }
 }
@@ -457,7 +457,7 @@ void CouplingsWidget::save()
     {
         if(m_comboBoxes.contains(couplingInfo))
         {
-//            cout << "saving couplings widget " << couplingInfo->coupling()->name << " value " << couplingTypeString((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt()).toStdString() << endl;
+            //            cout << "saving couplings widget " << couplingInfo->coupling()->name << " value " << couplingTypeString((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt()).toStdString() << endl;
             couplingInfo->setCouplingType((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
         }
     }
@@ -505,20 +505,20 @@ void FieldTabWidget::updateCouplingTab()
 
 void FieldTabWidget::addFieldTab(FieldInfo *fieldInfo)
 {
-    FieldWidget* fieldWidget = new FieldWidget(((ProblemDialog*)parent())->problemInfo(), fieldInfo, this, (ProblemDialog*)parent());
+    FieldWidget* fieldWidget = new FieldWidget(((ProblemDialog*) parent())->problemInfo(), fieldInfo, this);
     m_fieldTabs[fieldInfo] = fieldWidget;
     m_fieldInfos[fieldInfo->fieldId()] = fieldInfo;
 
     // add widget
     //QTabWidget::addTab(fieldWidget, QString::fromStdString(fieldInfo->module()->name));
     int fieldPosition = count() - m_haveCouplingsTab;
-    insertTab(fieldPosition, fieldWidget, QString::fromStdString(fieldInfo->module()->name));
+    insertTab(fieldPosition, fieldWidget, icon("fields/" + fieldInfo->fieldId()), QString::fromStdString(fieldInfo->module()->name));
     setCurrentIndex(count() - 1 - m_haveCouplingsTab);
 
     doFindCouplings();
     emit fieldsChanged();
 
-//    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
+    //    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
 
 
 }
@@ -614,14 +614,49 @@ void FieldTabWidget::save()
 
 // ********************************************************************************************
 
+FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent)
+{
+    setWindowTitle(QString::fromStdString(fieldInfo->module()->name));
+
+    fieldWidget = new FieldWidget(Util::scene()->problemInfo(), fieldInfo, this);
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(fieldWidget);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+
+    setMaximumSize(sizeHint());
+
+    QSettings settings;
+    restoreGeometry(settings.value("FieldDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+FieldDialog::~FieldDialog()
+{
+    QSettings settings;
+    settings.setValue("FieldDialog/Geometry", saveGeometry());
+}
+
+void FieldDialog::doAccept()
+{
+    fieldWidget->save();
+    accept();
+}
+
+// ********************************************************************************************
+
 ProblemDialog::ProblemDialog(ProblemInfo *problemInfo,
                              QMap<QString, FieldInfo *> fieldInfos,
                              QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos,
                              bool isNewProblem,
                              QWidget *parent) : QDialog(parent)
 {
-    logMessage("ProblemDialog::ProblemDialog()");
-
     m_isNewProblem = isNewProblem;
     m_problemInfo = problemInfo;
     m_fieldInfos = fieldInfos;
