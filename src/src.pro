@@ -112,7 +112,8 @@ SOURCES += util.cpp \
     scenelabel.cpp \
     scenenode.cpp \
     hermes2d/coupling.cpp \
-    hermes2d/solutiontypes.cpp
+    hermes2d/solutiontypes.cpp \
+    preprocessorview.cpp
 
 HEADERS += util.h \
     value.h \
@@ -180,7 +181,8 @@ HEADERS += util.h \
     scenelabel.h \
     scenenode.h \
     hermes2d/coupling.h \
-    hermes2d/solutiontypes.h
+    hermes2d/solutiontypes.h \
+    preprocessorview.h
 
 INCLUDEPATH += . \
     ../lib \

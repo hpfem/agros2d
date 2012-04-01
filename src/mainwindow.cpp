@@ -29,9 +29,10 @@
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
 #include "scenesolution.h"
-#include "sceneinfoview.h"
 #include "tooltipview.h"
 #include "logview.h"
+#include "sceneinfoview.h"
+#include "preprocessorview.h"
 #include "postprocessorview.h"
 #include "chartdialog.h"
 #include "confdialog.h"
@@ -87,7 +88,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // geometry
     connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
-    connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));    
+    connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewGeometry, SLOT(clear()));
     currentPythonEngineAgros()->setSceneViewGeometry(sceneViewGeometry);
 
@@ -332,6 +333,10 @@ void MainWindow::createActions()
     actOptions->setMenuRole(QAction::PreferencesRole);
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
+    actInfo = new QAction(icon("scene-info"), tr("Info"), this);
+    actInfo->setShortcut(QKeySequence("Alt+I"));
+    connect(actInfo, SIGNAL(triggered()), this, SLOT(doInformations()));
+
     actCreateMesh = new QAction(icon("scene-mesh"), tr("&Mesh"), this);
     actCreateMesh->setShortcut(QKeySequence(tr("Alt+W")));
     actCreateMesh->setStatusTip(tr("Mesh area"));
@@ -482,7 +487,7 @@ void MainWindow::createMenus()
     mnuProjection->addAction(sceneViewPost3D->actSetProjectionYZ);
 
     QMenu *mnuShowPanels = new QMenu(tr("Panels"), this);
-    mnuShowPanels->addAction(sceneInfoView->toggleViewAction());
+    mnuShowPanels->addAction(preprocessorView->toggleViewAction());
     mnuShowPanels->addAction(resultsView->toggleViewAction());
     mnuShowPanels->addAction(postprocessorView->toggleViewAction());
     mnuShowPanels->addAction(consoleView->toggleViewAction());
@@ -572,36 +577,37 @@ void MainWindow::createToolBars()
     spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // left toolbar
-    QToolBar *leftToolBar = new QToolBar();
-    leftToolBar->setObjectName("Problem");
-    leftToolBar->setOrientation(Qt::Vertical);
-    leftToolBar->setAllowedAreas(Qt::LeftToolBarArea);
+    QToolBar *tlbLeftBar = new QToolBar();
+    tlbLeftBar->setObjectName("Problem");
+    tlbLeftBar->setOrientation(Qt::Vertical);
+    tlbLeftBar->setAllowedAreas(Qt::LeftToolBarArea);
     // leftToolBar->setMovable(false);
     // fancy layout
-    leftToolBar->setStyleSheet("QToolBar { border: 1px solid rgba(200, 200, 200, 255); }"
-                               "QToolBar:left, QToolBar:right { background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:1 rgba(120, 120, 120, 255)); }"
-                               "QToolButton { border: 0px; color: rgba(230, 230, 230, 255); font: bold; font-size: 8pt; width: 65px; }"
-                               "QToolButton:hover { border: 0px; background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:0.5 rgba(160, 160, 160, 255), stop:1 rgba(150, 150, 150, 255)); }"
-                               "QToolButton:checked:hover, QToolButton:checked { border: 0px; color: rgba(30, 30, 30, 255); background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(160, 160, 160, 255), stop:0.5 rgba(220, 220, 220, 255), stop:1 rgba(160, 160, 160, 255)); }");
+    tlbLeftBar->setStyleSheet("QToolBar { border: 1px solid rgba(200, 200, 200, 255); }"
+                              "QToolBar:left, QToolBar:right { background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:1 rgba(120, 120, 120, 255)); }"
+                              "QToolButton { border: 0px; color: rgba(230, 230, 230, 255); font: bold; font-size: 8pt; width: 65px; }"
+                              "QToolButton:hover { border: 0px; background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:0.5 rgba(160, 160, 160, 255), stop:1 rgba(150, 150, 150, 255)); }"
+                              "QToolButton:checked:hover, QToolButton:checked { border: 0px; color: rgba(30, 30, 30, 255); background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(160, 160, 160, 255), stop:0.5 rgba(220, 220, 220, 255), stop:1 rgba(160, 160, 160, 255)); }");
     // system layout
     // leftToolBar->setStyleSheet("QToolButton { font: bold; font-size: 8pt; width: 65px; }");
 
-    leftToolBar->setIconSize(QSize(32, 32));
-    leftToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    tlbLeftBar->setIconSize(QSize(32, 32));
+    tlbLeftBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    leftToolBar->addAction(sceneViewGeometry->actSceneModeGeometry);
-    leftToolBar->addAction(sceneViewMesh->actSceneModeMesh);
-    leftToolBar->addAction(sceneViewPost2D->actSceneModePost2D);
-    leftToolBar->addAction(sceneViewPost3D->actSceneModePost3D);
-    leftToolBar->addWidget(spacing);
-    leftToolBar->addAction(actCreateMesh);
-    leftToolBar->addAction(actSolve);
-    leftToolBar->addAction(actSolveAdaptiveStep);
-    leftToolBar->addSeparator();
-    leftToolBar->addAction(actScriptEditor);
-    leftToolBar->addAction(Util::scene()->actProblemProperties);
+    tlbLeftBar->addAction(sceneViewGeometry->actSceneModeGeometry);
+    tlbLeftBar->addAction(sceneViewMesh->actSceneModeMesh);
+    tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
+    tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
+    tlbLeftBar->addWidget(spacing);
+    tlbLeftBar->addAction(actCreateMesh);
+    tlbLeftBar->addAction(actSolve);
+    tlbLeftBar->addAction(actSolveAdaptiveStep);
+    tlbLeftBar->addSeparator();
+    tlbLeftBar->addAction(actInfo);
+    tlbLeftBar->addAction(actScriptEditor);
+    tlbLeftBar->addAction(Util::scene()->actProblemProperties);
 
-    addToolBar(Qt::LeftToolBarArea, leftToolBar);
+    addToolBar(Qt::LeftToolBarArea, tlbLeftBar);
 
     // top toolbar
 #ifdef Q_WS_MAC
@@ -705,16 +711,16 @@ void MainWindow::createViews()
 {
     logMessage("MainWindow::createViews()");
 
-    sceneInfoView = new SceneInfoView(sceneViewGeometry, this);
-    sceneInfoView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::LeftDockWidgetArea, sceneInfoView);
+    preprocessorView = new PreprocessorView(sceneViewGeometry, this);
+    preprocessorView->setAllowedAreas(Qt::LeftDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, preprocessorView);
 
     resultsView = new ResultsView(this);
     resultsView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::RightDockWidgetArea, resultsView);
 
     postprocessorView = new PostprocessorView(sceneViewGeometry, sceneViewMesh, sceneViewPost2D, sceneViewPost3D, this);
-    postprocessorView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    postprocessorView->setAllowedAreas(Qt::LeftDockWidgetArea);
     addDockWidget(Qt::LeftDockWidgetArea, postprocessorView);
 
     consoleView = new PythonScriptingConsoleView(currentPythonEngine(), this);
@@ -731,10 +737,10 @@ void MainWindow::createViews()
     addDockWidget(Qt::LeftDockWidgetArea, logView);
 
     // tabify dock together
-    tabifyDockWidget(sceneInfoView, postprocessorView);
+    tabifyDockWidget(preprocessorView, postprocessorView);
 
     // raise scene info view
-    sceneInfoView->raise();
+    preprocessorView->raise();
 }
 
 void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
@@ -1249,10 +1255,21 @@ void MainWindow::doFullScreen()
         showFullScreen();
 }
 
+void MainWindow::doInformations()
+{
+    int w = 450;
+    int h = height() - 80;
+
+    SceneInfoWidget *popup = new SceneInfoWidget(sceneViewGeometry, this);
+    popup->resize(w, h);
+    popup->move(pos().x() + 75, pos().y() + 70);
+    popup->setAttribute(Qt::WA_DeleteOnClose);
+
+    popup->show();
+}
+
 void MainWindow::doOptions()
 {
-    logMessage("MainWindow::doOptions()");
-
     ConfigDialog configDialog(this);
     if (configDialog.exec())
     {
@@ -1406,7 +1423,7 @@ void MainWindow::doInvalidated()
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomBestFit()));
         sceneViewGeometry->actSceneZoomRegion = actSceneZoomRegion;
 
-        sceneInfoView->raise();
+        preprocessorView->raise();
         tlbGeometry->setVisible(true);
     }
     if (sceneViewMesh->actSceneModeMesh->isChecked())

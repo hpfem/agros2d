@@ -55,10 +55,6 @@ private:
     // basic
     QComboBox *cmbFieldInfo;
 
-    QGroupBox *grpShowMesh;
-    QGroupBox *grpShowPost2D;
-    QGroupBox *grpShowPost3D;
-
     // show
     QCheckBox *chkShowInitialMeshView;
     QCheckBox *chkShowSolutionMeshView;
@@ -76,7 +72,6 @@ private:
     QRadioButton *radPost3DParticleTracing;
 
     // scalar field
-    QGroupBox *grpPost2DScalarField;
     QComboBox *cmbPost2DScalarFieldVariable;
     QComboBox *cmbPost2DScalarFieldVariableComp;
     QLineEdit *txtPost2DScalarFieldExpression;
@@ -89,7 +84,6 @@ private:
     QLabel *lblScalarFieldRangeMaxError;
 
     // vector field
-    QGroupBox *grpPost2DVectorField;
     QComboBox *cmbPost2DVectorFieldVariable;
 
     // transient
@@ -131,7 +125,6 @@ private:
     QSpinBox *txtScalarDecimalPlace;
 
     // contours
-    QGroupBox *grpPost2DContourField;
     QComboBox *cmbPost2DContourVariable;
     QSpinBox *txtContoursCount;
 
@@ -192,6 +185,15 @@ private:
     QWidget *controlsBasic();
     QWidget *controlsPostprocessor();
     QWidget *controlsWorkspace();
+
+    QStackedLayout *widgetsLayout;
+    QWidget *mesh;
+    QWidget *post2d;
+    QWidget *post3d;
+
+    QWidget *meshWidget();
+    QWidget *post2DWidget();
+    QWidget *post3DWidget();
 
 signals:
     void apply();

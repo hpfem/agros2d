@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef SCENEINFOVIEW_H
-#define SCENEINFOVIEW_H
+#ifndef PREPROCESSORVIEW_H
+#define PREPROCESSORVIEW_H
 
 #include "util.h"
 
@@ -26,21 +26,51 @@
 
 class SceneViewGeometry;
 
-class SceneInfoWidget : public QWidget
+class PreprocessorView : public QDockWidget
 {
     Q_OBJECT
 
+public slots:
+    void doInvalidated();
+    void doProperties();
+    void doDelete();
+
 public:
-    SceneInfoWidget(SceneViewGeometry *sceneView, QWidget *parent = 0);
-    ~SceneInfoWidget();
+    PreprocessorView(SceneViewGeometry *sceneView, QWidget *parent = 0);
+    ~PreprocessorView();
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
 
 private:
     SceneViewGeometry *m_sceneViewGeometry;
 
-    QWebView *webView;
+    QTreeWidget *trvWidget;
+
+    QTreeWidgetItem *boundaryConditionsNode;
+    QTreeWidgetItem *materialsNode;
+
+    QTreeWidgetItem *geometryNode;
+    QTreeWidgetItem *nodesNode;
+    QTreeWidgetItem *edgesNode;
+    QTreeWidgetItem *labelsNode;
+
+    QAction *actProperties;
+    QAction *actDelete;
+    
+    QMenu *mnuInfo;
+
+    void createActions();
+    void createTreeView();
+    void createMenu();
+    void createToolBar();
+
+    void clearNodes();
 
 private slots:
-    void showInfo();
+    void doContextMenu(const QPoint &pos);
+    void doItemDoubleClicked(QTreeWidgetItem *item, int role);
+    void doItemSelected(QTreeWidgetItem *item, int role);
 };
 
-#endif // SCENEINFOVIEW_H
+#endif // PREPROCESSORVIEW_H

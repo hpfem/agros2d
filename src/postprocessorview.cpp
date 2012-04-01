@@ -32,6 +32,9 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
+const double minWidth = 110;
+
+
 PostprocessorView::PostprocessorView(SceneViewGeometry *sceneGeometry,
                                      SceneViewMesh *sceneMesh,
                                      SceneViewPost2D *scenePost2D,
@@ -370,10 +373,165 @@ void PostprocessorView::createControls()
     setWidget(widget);
 }
 
+QWidget *PostprocessorView::meshWidget()
+{
+    // layout mesh
+    chkShowInitialMeshView = new QCheckBox(tr("Initial mesh"));
+    chkShowSolutionMeshView = new QCheckBox(tr("Solution mesh"));
+    chkShowOrderView = new QCheckBox(tr("Polynomial order"));
+
+    QGridLayout *layoutMesh = new QGridLayout();
+    layoutMesh->addWidget(chkShowInitialMeshView, 0, 0);
+    layoutMesh->addWidget(chkShowSolutionMeshView, 1, 0);
+    layoutMesh->addWidget(chkShowOrderView, 0, 1);
+
+    QHBoxLayout *layoutShowMesh = new QHBoxLayout();
+    layoutShowMesh->addLayout(layoutMesh);
+    layoutShowMesh->addStretch();
+
+    QGroupBox *grpShowMesh = new QGroupBox(tr("Mesh and polynomial order"));
+    grpShowMesh->setLayout(layoutShowMesh);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(grpShowMesh);
+    layout->addStretch();
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
+QWidget *PostprocessorView::post2DWidget()
+{
+    // layout post2d
+    chkShowPost2DContourView = new QCheckBox(tr("Contours"));
+    connect(chkShowPost2DContourView, SIGNAL(clicked()), this, SLOT(setControls()));
+    chkShowPost2DVectorView = new QCheckBox(tr("Vectors"));
+    connect(chkShowPost2DVectorView, SIGNAL(clicked()), this, SLOT(setControls()));
+    chkShowPost2DScalarView = new QCheckBox(tr("Scalar view"));
+    connect(chkShowPost2DScalarView, SIGNAL(clicked()), this, SLOT(setControls()));
+    chkShowPost2DParticleView = new QCheckBox(tr("Particle tracing"));
+
+    QGridLayout *layoutPost2D = new QGridLayout();
+    layoutPost2D->addWidget(chkShowPost2DScalarView, 0, 0);
+    layoutPost2D->addWidget(chkShowPost2DParticleView, 1, 0);
+    layoutPost2D->addWidget(chkShowPost2DContourView, 0, 1);
+    layoutPost2D->addWidget(chkShowPost2DVectorView, 1, 1);
+
+    QHBoxLayout *layoutShowPost2D = new QHBoxLayout();
+    layoutShowPost2D->addLayout(layoutPost2D);
+    layoutShowPost2D->addStretch();
+
+    QGroupBox *grpShowPost2D = new QGroupBox(tr("Postprocessor 2D"));
+    grpShowPost2D->setLayout(layoutShowPost2D);
+
+    // layout scalar field
+    cmbPost2DScalarFieldVariable = new QComboBox();
+    connect(cmbPost2DScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
+    cmbPost2DScalarFieldVariableComp = new QComboBox();
+    connect(cmbPost2DScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
+    txtPost2DScalarFieldExpression = new QLineEdit();
+
+    chkScalarFieldRangeAuto = new QCheckBox(tr("Auto range"));
+    connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
+
+    QGridLayout *layoutScalarField = new QGridLayout();
+    layoutScalarField->setColumnMinimumWidth(0, minWidth);
+    layoutScalarField->setColumnStretch(1, 1);
+    layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
+    layoutScalarField->addWidget(cmbPost2DScalarFieldVariable, 0, 1, 1, 3);
+    layoutScalarField->addWidget(new QLabel(tr("Component:")), 1, 0);
+    layoutScalarField->addWidget(cmbPost2DScalarFieldVariableComp, 1, 1, 1, 3);
+    layoutScalarField->addWidget(new QLabel(tr("Expression:")), 2, 0);
+    layoutScalarField->addWidget(txtPost2DScalarFieldExpression, 2, 1, 1, 3);
+
+    QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
+    grpScalarField->setLayout(layoutScalarField);
+
+    // contour field
+    cmbPost2DContourVariable = new QComboBox();
+
+    QGridLayout *layoutContourField = new QGridLayout();
+    layoutContourField->setColumnMinimumWidth(0, minWidth);
+    layoutContourField->setColumnStretch(1, 1);
+    layoutContourField->addWidget(new QLabel(tr("Variable:")), 0, 0);
+    layoutContourField->addWidget(cmbPost2DContourVariable, 0, 1);
+
+    QGroupBox *grpContourField = new QGroupBox(tr("Contour field"));
+    grpContourField->setLayout(layoutContourField);
+
+    // vector field
+    cmbPost2DVectorFieldVariable = new QComboBox();
+
+    QGridLayout *layoutVectorField = new QGridLayout();
+    layoutVectorField->setColumnMinimumWidth(0, minWidth);
+    layoutVectorField->setColumnStretch(1, 1);
+    layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);
+    layoutVectorField->addWidget(cmbPost2DVectorFieldVariable, 0, 1);
+
+    QGroupBox *grpVectorField = new QGroupBox(tr("Vector field"));
+    grpVectorField->setLayout(layoutVectorField);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(grpShowPost2D);
+    layout->addWidget(grpScalarField);
+    layout->addWidget(grpContourField);
+    layout->addWidget(grpVectorField);
+    layout->addStretch();
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
+QWidget *PostprocessorView::post3DWidget()
+{
+    // layout post3d
+    radPost3DNone = new QRadioButton(tr("None"), this);
+    radPost3DScalarField3D = new QRadioButton(tr("Scalar view"), this);
+    radPost3DScalarField3DSolid = new QRadioButton(tr("Scalar view solid"), this);
+    radPost3DParticleTracing = new QRadioButton(tr("Particle tracing"), this);
+    radPost3DModel = new QRadioButton("Model", this);
+
+    butPost3DGroup = new QButtonGroup(this);
+    butPost3DGroup->addButton(radPost3DNone);
+    butPost3DGroup->addButton(radPost3DScalarField3D);
+    butPost3DGroup->addButton(radPost3DScalarField3DSolid);
+    butPost3DGroup->addButton(radPost3DParticleTracing);
+    butPost3DGroup->addButton(radPost3DModel);
+    connect(butPost3DGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(doPostprocessorGroupClicked(QAbstractButton*)));
+
+    QGridLayout *layoutPost3D = new QGridLayout();
+    layoutPost3D->addWidget(radPost3DNone, 0, 0);
+    layoutPost3D->addWidget(radPost3DScalarField3D, 1, 0);
+    layoutPost3D->addWidget(radPost3DScalarField3DSolid, 2, 0);
+    layoutPost3D->addWidget(radPost3DParticleTracing, 1, 1);
+    layoutPost3D->addWidget(radPost3DModel, 2, 1);
+
+    QHBoxLayout *layoutShowPost3D = new QHBoxLayout();
+    layoutShowPost3D->addLayout(layoutPost3D);
+    layoutShowPost3D->addStretch();
+
+    QGroupBox *grpShowPost3D = new QGroupBox(tr("Postprocessor 3D"));
+    grpShowPost3D->setLayout(layoutShowPost3D);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(grpShowPost3D);
+    layout->addStretch();
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
 QWidget *PostprocessorView::controlsBasic()
 {
-    double minWidth = 110;
-
     cmbFieldInfo = new QComboBox();
     connect(cmbFieldInfo, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldInfo(int)));
 
@@ -413,131 +571,20 @@ QWidget *PostprocessorView::controlsBasic()
     grpAdaptivity = new QGroupBox(tr("Adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
 
-    // layout mesh
-    chkShowInitialMeshView = new QCheckBox(tr("Initial mesh"));
-    chkShowSolutionMeshView = new QCheckBox(tr("Solution mesh"));
-    chkShowOrderView = new QCheckBox(tr("Polynomial order"));
+    mesh = meshWidget();
+    post2d = post2DWidget();
+    post3d = post3DWidget();
 
-    QGridLayout *layoutMesh = new QGridLayout();
-    layoutMesh->addWidget(chkShowInitialMeshView, 0, 0);
-    layoutMesh->addWidget(chkShowSolutionMeshView, 1, 0);
-    layoutMesh->addWidget(chkShowOrderView, 0, 1);
-
-    QHBoxLayout *layoutShowMesh = new QHBoxLayout();
-    layoutShowMesh->addLayout(layoutMesh);
-    layoutShowMesh->addStretch();
-
-    grpShowMesh = new QGroupBox(tr("Mesh and polynomial order"));
-    grpShowMesh->setLayout(layoutShowMesh);
-
-    // layout post2d
-    chkShowPost2DContourView = new QCheckBox(tr("Contours"));
-    connect(chkShowPost2DContourView, SIGNAL(clicked()), this, SLOT(setControls()));
-    chkShowPost2DVectorView = new QCheckBox(tr("Vectors"));
-    connect(chkShowPost2DVectorView, SIGNAL(clicked()), this, SLOT(setControls()));
-    chkShowPost2DScalarView = new QCheckBox(tr("Scalar view"));
-    connect(chkShowPost2DScalarView, SIGNAL(clicked()), this, SLOT(setControls()));
-    chkShowPost2DParticleView = new QCheckBox(tr("Particle tracing"));
-
-    QGridLayout *layoutPost2D = new QGridLayout();
-    layoutPost2D->addWidget(chkShowPost2DScalarView, 0, 0);
-    layoutPost2D->addWidget(chkShowPost2DParticleView, 1, 0);
-    layoutPost2D->addWidget(chkShowPost2DContourView, 0, 1);
-    layoutPost2D->addWidget(chkShowPost2DVectorView, 1, 1);
-
-    QHBoxLayout *layoutShowPost2D = new QHBoxLayout();
-    layoutShowPost2D->addLayout(layoutPost2D);
-    layoutShowPost2D->addStretch();
-
-    grpShowPost2D = new QGroupBox(tr("Postprocessor 2D"));
-    grpShowPost2D->setLayout(layoutShowPost2D);
-
-    // layout post3d
-    radPost3DNone = new QRadioButton(tr("None"), this);
-    radPost3DScalarField3D = new QRadioButton(tr("Scalar view"), this);
-    radPost3DScalarField3DSolid = new QRadioButton(tr("Scalar view solid"), this);
-    radPost3DParticleTracing = new QRadioButton(tr("Particle tracing"), this);
-    radPost3DModel = new QRadioButton("Model", this);
-
-    butPost3DGroup = new QButtonGroup(this);
-    butPost3DGroup->addButton(radPost3DNone);
-    butPost3DGroup->addButton(radPost3DScalarField3D);
-    butPost3DGroup->addButton(radPost3DScalarField3DSolid);
-    butPost3DGroup->addButton(radPost3DParticleTracing);
-    butPost3DGroup->addButton(radPost3DModel);
-    connect(butPost3DGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(doPostprocessorGroupClicked(QAbstractButton*)));
-
-    QGridLayout *layoutPost3D = new QGridLayout();
-    layoutPost3D->addWidget(radPost3DNone, 0, 0);
-    layoutPost3D->addWidget(radPost3DScalarField3D, 1, 0);
-    layoutPost3D->addWidget(radPost3DScalarField3DSolid, 2, 0);
-    layoutPost3D->addWidget(radPost3DParticleTracing, 1, 1);
-    layoutPost3D->addWidget(radPost3DModel, 2, 1);
-
-    QHBoxLayout *layoutShowPost3D = new QHBoxLayout();
-    layoutShowPost3D->addLayout(layoutPost3D);
-    layoutShowPost3D->addStretch();
-
-    grpShowPost3D = new QGroupBox(tr("Postprocessor 3D"));
-    grpShowPost3D->setLayout(layoutShowPost3D);
-
-    // layout scalar field
-    cmbPost2DScalarFieldVariable = new QComboBox();
-    connect(cmbPost2DScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
-    cmbPost2DScalarFieldVariableComp = new QComboBox();
-    connect(cmbPost2DScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
-    txtPost2DScalarFieldExpression = new QLineEdit();
-
-    chkScalarFieldRangeAuto = new QCheckBox(tr("Auto range"));
-    connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
-
-    QGridLayout *layoutScalarField = new QGridLayout();
-    layoutScalarField->setColumnMinimumWidth(0, minWidth);
-    layoutScalarField->setColumnStretch(1, 1);
-    layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutScalarField->addWidget(cmbPost2DScalarFieldVariable, 0, 1, 1, 3);
-    layoutScalarField->addWidget(new QLabel(tr("Component:")), 1, 0);
-    layoutScalarField->addWidget(cmbPost2DScalarFieldVariableComp, 1, 1, 1, 3);
-    layoutScalarField->addWidget(new QLabel(tr("Expression:")), 2, 0);
-    layoutScalarField->addWidget(txtPost2DScalarFieldExpression, 2, 1, 1, 3);
-
-    grpPost2DScalarField = new QGroupBox(tr("Scalar field"));
-    grpPost2DScalarField->setLayout(layoutScalarField);
-
-    // contour field
-    cmbPost2DContourVariable = new QComboBox();
-
-    QGridLayout *layoutContourField = new QGridLayout();
-    layoutContourField->setColumnMinimumWidth(0, minWidth);
-    layoutContourField->setColumnStretch(1, 1);
-    layoutContourField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutContourField->addWidget(cmbPost2DContourVariable, 0, 1);
-
-    grpPost2DContourField = new QGroupBox(tr("Contour field"));
-    grpPost2DContourField->setLayout(layoutContourField);
-
-    // vector field
-    cmbPost2DVectorFieldVariable = new QComboBox();
-
-    QGridLayout *layoutVectorField = new QGridLayout();
-    layoutVectorField->setColumnMinimumWidth(0, minWidth);
-    layoutVectorField->setColumnStretch(1, 1);
-    layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutVectorField->addWidget(cmbPost2DVectorFieldVariable, 0, 1);
-
-    grpPost2DVectorField = new QGroupBox(tr("Vector field"));
-    grpPost2DVectorField->setLayout(layoutVectorField);
+    widgetsLayout = new QStackedLayout();
+    widgetsLayout->addWidget(mesh);
+    widgetsLayout->addWidget(post2d);
+    widgetsLayout->addWidget(post3d);
 
     QVBoxLayout *layoutBasic = new QVBoxLayout();
     layoutBasic->addWidget(grpField);
     layoutBasic->addWidget(grpTransient);
     layoutBasic->addWidget(grpAdaptivity);
-    layoutBasic->addWidget(grpShowMesh);
-    layoutBasic->addWidget(grpShowPost2D);
-    layoutBasic->addWidget(grpShowPost3D);
-    layoutBasic->addWidget(grpPost2DScalarField);
-    layoutBasic->addWidget(grpPost2DContourField);
-    layoutBasic->addWidget(grpPost2DVectorField);
+    layoutBasic->addLayout(widgetsLayout);
     layoutBasic->addStretch();
 
     QWidget *basicWidget = new QWidget(this);
@@ -555,8 +602,6 @@ QWidget *PostprocessorView::controlsBasic()
 
 QWidget *PostprocessorView::controlsPostprocessor()
 {
-    double minWidth = 110;
-
     // scalar field
     // palette
     cmbPalette = new QComboBox();
@@ -1160,17 +1205,9 @@ void PostprocessorView::setControls()
     bool isMeshed = Util::problem()->isMeshed();
     bool isSolved = Util::problem()->isSolved();
 
-    grpShowMesh->setVisible(false);
-    grpShowPost2D->setVisible(false);
-    grpShowPost3D->setVisible(false);
-
-    grpPost2DContourField->setVisible(false);
-    grpPost2DScalarField->setVisible(false);
-    grpPost2DVectorField->setVisible(false);
-
     if (m_sceneMesh->actSceneModeMesh->isChecked())
     {
-        grpShowMesh->setVisible(true);
+        widgetsLayout->setCurrentWidget(mesh);
 
         // mesh and order
         chkShowInitialMeshView->setEnabled(isMeshed);
@@ -1180,8 +1217,7 @@ void PostprocessorView::setControls()
 
     if (m_scenePost2D->actSceneModePost2D->isChecked())
     {
-        // scalar view 2d
-        grpShowPost2D->setVisible(true);
+        widgetsLayout->setCurrentWidget(post2d);
 
         chkShowPost2DContourView->setEnabled(isSolved && (cmbPost2DContourVariable->count() > 0));
         chkShowPost2DScalarView->setEnabled(isSolved && (cmbPost2DScalarFieldVariable->count() > 0));
@@ -1198,11 +1234,9 @@ void PostprocessorView::setControls()
         // }
 
         // contour
-        grpPost2DContourField->setVisible(true);
         cmbPost2DContourVariable->setEnabled(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
 
         // scalar view
-        grpPost2DScalarField->setVisible(true);
         cmbPost2DScalarFieldVariable->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
         cmbPost2DScalarFieldVariableComp->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
         txtPost2DScalarFieldExpression->setEnabled(false);
@@ -1212,13 +1246,12 @@ void PostprocessorView::setControls()
             doScalarFieldVariableComp(cmbPost2DScalarFieldVariableComp->currentIndex());
         }
 
-        grpPost2DVectorField->setVisible(true);
         cmbPost2DVectorFieldVariable->setEnabled(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
     }
 
     if (m_scenePost3D->actSceneModePost3D->isChecked())
     {
-        grpShowPost3D->setVisible(true);
+        widgetsLayout->setCurrentWidget(post3d);
 
         // scalar view 3d
         radPost3DNone->setEnabled(isSolved);

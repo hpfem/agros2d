@@ -26,10 +26,11 @@ class SceneViewPost2D;
 class SceneViewPost3D;
 class SceneViewGeometry;
 class SceneViewMesh;
-class SceneInfoView;
+class SceneInfoWidget;
 class ResultsView;
 class VolumeIntegralValueView;
 class SurfaceIntegralValueView;
+class PreprocessorView;
 class PostprocessorView;
 class PythonScriptingConsoleView;
 class TooltipView;
@@ -87,6 +88,7 @@ private slots:
     void doScriptEditor();
     void doScriptEditorRunScript(const QString &fileName = "");
     void doScriptEditorRunCommand();
+    void doInformations();
     void doOptions();
     void doTransform();
     void doReport();
@@ -161,6 +163,7 @@ private:
     QAction *actCopy;
 
     QAction *actOptions;
+    QAction *actInfo;
     QAction *actCreateMesh;
     QAction *actSolve;
     QAction *actSolveAdaptiveStep;
@@ -206,7 +209,7 @@ private:
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
 
-    SceneInfoView *sceneInfoView;
+    PreprocessorView *preprocessorView;
     PostprocessorView *postprocessorView;
     ResultsView *resultsView;
     PythonScriptingConsoleView *consoleView;
