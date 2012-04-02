@@ -1261,17 +1261,21 @@ void PostprocessorView::setControls()
         radPost3DParticleTracing->setEnabled(chkShowPost2DParticleView->isEnabled());
     }
 
+    grpTransient->setVisible(false);
+    grpAdaptivity->setVisible(false);
+    if (isSolved)
+    {
+        // transient group
+        int timeSteps = Util::solutionStore()->timeLevels(Util::scene()->activeViewField()).count();
+        grpTransient->setVisible(timeSteps > 1);
+        cmbTimeStep->setEnabled(timeSteps > 1);
 
-    // transient group
-    int timeSteps = Util::solutionStore()->timeLevels(Util::scene()->activeViewField()).count();
-    grpTransient->setVisible(timeSteps > 1);
-    cmbTimeStep->setEnabled(timeSteps > 1);
-
-    // adaptivity group
-    int lastStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal, Util::scene()->activeTimeStep());
-    grpAdaptivity->setVisible(lastStep > 0);
-    cmbAdaptivityStep->setEnabled(lastStep > 0);
-    cmbAdaptivitySolutionType->setEnabled(lastStep > 0);
+        // adaptivity group
+        int lastStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal, Util::scene()->activeTimeStep());
+        grpAdaptivity->setVisible(lastStep > 0);
+        cmbAdaptivityStep->setEnabled(lastStep > 0);
+        cmbAdaptivitySolutionType->setEnabled(lastStep > 0);
+    }
 }
 
 void PostprocessorView::updateControls()

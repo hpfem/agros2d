@@ -443,6 +443,12 @@ void Problem::solve(SolverMode solverMode)
 
         if (solverMode == SolverMode_MeshAndSolve)
         {
+            if (Util::scene()->fieldInfos().count() == 0)
+            {
+                Util::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
+                return;
+            }
+
             Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
             foreach (Block* block, m_blocks)

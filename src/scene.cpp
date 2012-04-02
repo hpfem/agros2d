@@ -48,7 +48,6 @@ void ProblemInfo::clear()
 {
     coordinateType = CoordinateType_Planar;
     name = QObject::tr("unnamed");
-    date = QDate::currentDate();
     fileName = "";
     startupscript = "";
     description = "";
@@ -623,8 +622,9 @@ void Scene::clear()
     m_fieldInfos.clear();
 
     //TODO - allow "no field"
-    m_activeViewField = new FieldInfo(m_problemInfo);
-    addField(m_activeViewField);
+    m_activeViewField = NULL;
+    // m_activeViewField = new FieldInfo(m_problemInfo);
+    // addField(m_activeViewField);
 
     // geometry
     nodes->clear();
@@ -1154,9 +1154,7 @@ void Scene::doClearSolution()
 
 void Scene::doProblemProperties()
 {
-    logMessage("Scene::doProblemProperties()");
-
-    ProblemDialog problemDialog(m_problemInfo, m_fieldInfos, m_couplingInfos,
+    ProblemDialog problemDialog(m_problemInfo,
                                 false, QApplication::activeWindow());
     if (problemDialog.showDialog() == QDialog::Accepted)
     {
@@ -1499,8 +1497,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // name
     m_problemInfo->name = eleProblemInfo.toElement().attribute("name");
-    // date
-    m_problemInfo->date = QDate::fromString(eleProblemInfo.toElement().attribute("date", QDate::currentDate().toString(Qt::ISODate)), Qt::ISODate);
     // coordinate type
     m_problemInfo->coordinateType = coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinate_type"));
     // mesh type
@@ -1695,6 +1691,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     }
     */
 
+    // couplings
+    synchronizeCouplings();
+
     // run script
     runPythonScript(m_problemInfo->startupscript);
 
@@ -1810,8 +1809,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
     // name
     eleProblem.setAttribute("name", m_problemInfo->name);
-    // date
-    eleProblem.setAttribute("date", m_problemInfo->date.toString(Qt::ISODate));
     // coordinate type
     eleProblem.setAttribute("coordinate_type", coordinateTypeToStringKey(m_problemInfo->coordinateType));
     // mesh type

@@ -37,6 +37,8 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
     m_selectedFieldId = "";
 
     lstFields = new QListWidget(this);
+    lstFields->setIconSize(QSize(32, 32));
+    // lstFields->setMinimumHeight((32+fontMetrics().height()*4)*2);
 
     std::map<std::string, std::string> modules = availableModules();
     for (std::map<std::string, std::string>::iterator it = modules.begin();
@@ -131,15 +133,15 @@ FieldWidget::FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, Q
 
 void FieldWidget::createContent()
 {
-    QLabel *lblField = new QLabel(tr("Equations:"));
-
-    // QPixmap pixmap;
-    // pixmap.load(QString(":/fields/%1.png").arg(m_fieldInfo->fieldId()));
-    // lblField->setPixmap(pixmap.scaled(QSize(48, 48), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    /*
+    QLabel *lblField = new QLabel();
+    QPixmap pixmap;
+    pixmap.load(QString(":/fields/%1.png").arg(m_fieldInfo->fieldId()));
+    lblField->setPixmap(pixmap.scaled(QSize(48, 48), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    */
 
     // equations
     lblEquationPixmap = new QLabel("");
-    lblEquationPixmap->setMinimumHeight(50);
 
     cmbAdaptivityType = new QComboBox();
     txtAdaptivitySteps = new QSpinBox(this);
@@ -181,15 +183,16 @@ void FieldWidget::createContent()
     int minWidth = 130;
 
     // table
-    QGridLayout *layoutTable = new QGridLayout();
-    layoutTable->setColumnMinimumWidth(0, minWidth);
-    layoutTable->setColumnStretch(1, 1);
-    layoutTable->addWidget(new QLabel(tr("Type of analysis:")), 0, 0);
-    layoutTable->addWidget(cmbAnalysisType, 0, 1);
-    layoutTable->addWidget(new QLabel(tr("Adaptivity:")), 1, 0);
-    layoutTable->addWidget(cmbAdaptivityType, 1, 1);
-    layoutTable->addWidget(new QLabel(tr("Weak forms:")), 2, 0);
-    layoutTable->addWidget(cmbWeakForms, 2, 1);
+    QGridLayout *layoutGeneral = new QGridLayout();
+    layoutGeneral->setColumnMinimumWidth(0, minWidth);
+    layoutGeneral->setColumnStretch(1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Type of analysis:")), 0, 0);
+    layoutGeneral->addWidget(cmbAnalysisType, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Weak forms:")), 2, 0);
+    layoutGeneral->addWidget(cmbWeakForms, 2, 1);
+
+    QGroupBox *grpGeneral = new QGroupBox(tr("General"));
+    grpGeneral->setLayout(layoutGeneral);
 
     // transient analysis
     QGridLayout *layoutTransientAnalysis = new QGridLayout();
@@ -217,10 +220,12 @@ void FieldWidget::createContent()
     QGridLayout *layoutAdaptivity = new QGridLayout();
     layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
     layoutAdaptivity->setColumnStretch(1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity steps:")), 0, 0);
-    layoutAdaptivity->addWidget(txtAdaptivitySteps, 0, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 1, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 1, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Type:")), 0, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityType, 0, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
+    layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
 
     QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
@@ -236,13 +241,12 @@ void FieldWidget::createContent()
     layoutLinearity->addWidget(new QLabel(tr("Steps:")), 2, 0);
     layoutLinearity->addWidget(txtNonlinearSteps, 2, 1);
 
-    QGroupBox *grpLinearity = new QGroupBox(tr("Newton solver"));
+    QGroupBox *grpLinearity = new QGroupBox(tr("Solver"));
     grpLinearity->setLayout(layoutLinearity);
-    // grpLinearity->setVisible(Util::config()->showExperimentalFeatures);
 
     // left
     QVBoxLayout *layoutLeft = new QVBoxLayout();
-    layoutLeft->addLayout(layoutTable);
+    layoutLeft->addWidget(grpGeneral);
     layoutLeft->addWidget(grpLinearity);
     layoutLeft->addStretch();
 
@@ -259,15 +263,14 @@ void FieldWidget::createContent()
     layoutPanel->addLayout(layoutRight);
 
     // equation
-    QGridLayout *layoutEquation = new QGridLayout();
-    layoutEquation->setColumnMinimumWidth(0, minWidth);
-    layoutEquation->setColumnStretch(1, 1);
-    // layoutEquation->addWidget(new QLabel(tr("Equation:")), 0, 0);
-    layoutEquation->addWidget(lblField, 0, 0);
-    layoutEquation->addWidget(lblEquationPixmap, 0, 1, 1, 1, Qt::AlignLeft);
+    QVBoxLayout *layoutEquation = new QVBoxLayout();
+    layoutEquation->addWidget(lblEquationPixmap);
+
+    QGroupBox *grpEquation = new QGroupBox(tr("Partial differential equation"));
+    grpEquation->setLayout(layoutEquation);
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
-    layoutProblem->addLayout(layoutEquation);
+    layoutProblem->addWidget(grpEquation);
     layoutProblem->addLayout(layoutPanel);
 
     setLayout(layoutProblem);
@@ -394,234 +397,6 @@ void FieldWidget::doLinearityTypeChanged(int index)
 
 // ********************************************************************************************
 
-CouplingsWidget::CouplingsWidget(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >* couplingInfos, QWidget *parent) :
-    QWidget(parent), m_couplingInfos(couplingInfos)
-{
-    connect(parent, SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
-    layoutTable = NULL;
-    createContent();
-    load();
-}
-
-void CouplingsWidget::createContent()
-{
-    int minWidth = 130;
-
-    if (layoutTable)
-    {
-        save();
-        delete layoutTable;
-        qDeleteAll(this->children());
-    }
-
-    layoutTable = new QGridLayout();
-    layoutTable->setColumnMinimumWidth(0, minWidth);
-    layoutTable->setColumnStretch(1, 1);
-
-    m_comboBoxes.clear();
-    int line = 0;
-    foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
-    {
-        layoutTable->addWidget(new QLabel(/*tr(*/QString::fromStdString(couplingInfo->coupling()->name)/*)*/), line, 0);
-        m_comboBoxes[couplingInfo] = new QComboBox();
-        layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
-        line++;
-    }
-
-    fillComboBox();
-    load();
-
-    setLayout(layoutTable);
-}
-
-
-void CouplingsWidget::doFieldsChanged()
-{
-    createContent();
-}
-
-void CouplingsWidget::fillComboBox()
-{
-    foreach(QComboBox* comboBox, m_comboBoxes)
-    {
-        comboBox->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
-        comboBox->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
-        comboBox->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
-    }
-}
-
-void CouplingsWidget::load()
-{
-    foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
-    {
-        //        cout << "loading couplings widget " << couplingInfo->coupling()->name << ", value " << couplingTypeString(couplingInfo->couplingType()).toStdString() << endl;
-        m_comboBoxes[couplingInfo]->setCurrentIndex(couplingInfo->couplingType());
-    }
-}
-
-void CouplingsWidget::save()
-{
-    foreach(CouplingInfo* couplingInfo, *m_couplingInfos)
-    {
-        if(m_comboBoxes.contains(couplingInfo))
-        {
-            //            cout << "saving couplings widget " << couplingInfo->coupling()->name << " value " << couplingTypeString((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt()).toStdString() << endl;
-            couplingInfo->setCouplingType((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
-        }
-    }
-}
-
-
-// ********************************************************************************************
-
-FieldTabWidget::FieldTabWidget(QWidget *parent,  QMap<QString, FieldInfo *> fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos)
-    : QTabWidget(parent), m_fieldInfos(fieldInfos), m_couplingInfos(couplingInfos)
-{
-    m_haveCouplingsTab = 0;
-
-    connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(doRemoveFieldRequested(int)));
-
-    foreach (FieldInfo *fieldInfo, m_fieldInfos)
-        addFieldTab(fieldInfo);
-
-    doFindCouplings();
-
-}
-
-
-void FieldTabWidget::updateCouplingTab()
-{
-    if (m_haveCouplingsTab)
-    {
-        if (m_couplingInfos.size()){
-        }
-        else
-        {
-            removeTab(count() - 1);
-            m_haveCouplingsTab = 0;
-        }
-    }
-    else
-    {
-        if (m_couplingInfos.size()){
-            addTab(new CouplingsWidget(&m_couplingInfos, this), "Couplings");
-            m_haveCouplingsTab = 1;
-        }
-
-    }
-}
-
-void FieldTabWidget::addFieldTab(FieldInfo *fieldInfo)
-{
-    FieldWidget* fieldWidget = new FieldWidget(((ProblemDialog*) parent())->problemInfo(), fieldInfo, this);
-    m_fieldTabs[fieldInfo] = fieldWidget;
-    m_fieldInfos[fieldInfo->fieldId()] = fieldInfo;
-
-    // add widget
-    //QTabWidget::addTab(fieldWidget, QString::fromStdString(fieldInfo->module()->name));
-    int fieldPosition = count() - m_haveCouplingsTab;
-    insertTab(fieldPosition, fieldWidget, icon("fields/" + fieldInfo->fieldId()), QString::fromStdString(fieldInfo->module()->name));
-    setCurrentIndex(count() - 1 - m_haveCouplingsTab);
-
-    doFindCouplings();
-    emit fieldsChanged();
-
-    //    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
-
-
-}
-
-void FieldTabWidget::removeFieldTab(FieldInfo *fieldInfo)
-{
-    for(int i = 0; i < count(); i++){
-        if(m_fieldTabs[fieldInfo] == widget(i)){
-            QTabWidget::removeTab(i);
-            return;
-        }
-    }
-
-    assert(0);
-}
-
-void FieldTabWidget::doRemoveFieldRequested(int index)
-{
-    if(m_haveCouplingsTab && (index == count()-1))
-        return;
-
-    // remove field
-    FieldWidget *wid = dynamic_cast<FieldWidget *>(widget(index));
-
-    if (QMessageBox::question(this, tr("Remove field"), tr("Are you sure to remove field '%1'?").
-                              arg(QString::fromStdString(wid->fieldInfo()->module()->name)),
-                              QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-    {
-        removeTab(index);
-
-        m_fieldInfos.remove(wid->fieldInfo()->fieldId());
-
-        // delete corresponding fileinfo (new field only)
-        if (!Util::scene()->fieldInfos().keys().contains(wid->fieldInfo()->fieldId()))
-            delete wid->fieldInfo();
-
-        // enable accept button
-        /// TODO
-        //buttonBox->button(QDialogButtonBox::Ok)->setEnabled(tabFields->count() > 0);
-
-        doFindCouplings();
-        emit fieldsChanged();
-    }
-}
-
-
-void FieldTabWidget::doFindCouplings()
-{
-    CouplingInfo::synchronizeCouplings(m_fieldInfos, m_couplingInfos);
-    updateCouplingTab();
-}
-
-
-void FieldTabWidget::save()
-{
-    for (int i = 0; i < count() - m_haveCouplingsTab; i++)
-        static_cast<FieldWidget *>(widget(i))->save();
-
-    // save couplings
-    if(m_haveCouplingsTab)
-        static_cast<CouplingsWidget *>(widget(count() - 1))->save();
-
-    // add missing fields
-    for (int i = 0; i < count() - m_haveCouplingsTab; i++)
-    {
-        FieldWidget *wid = static_cast<FieldWidget *>(widget(i));
-
-        // add missing field
-        if (!Util::scene()->hasField(wid->fieldInfo()->fieldId()))
-            Util::scene()->addField(wid->fieldInfo());
-    }
-
-    // remove deleted fields
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-    {
-        bool exists = false;
-        for (int i = 0; i < count() - m_haveCouplingsTab; i++)
-        {
-            FieldWidget *wid = static_cast<FieldWidget *>(widget(i));
-
-            if (fieldInfo->fieldId() == wid->fieldInfo()->fieldId())
-                exists = true;
-        }
-
-        // remove field
-        if (!exists)
-            Util::scene()->removeField(fieldInfo);
-    }
-
-    Util::scene()->setCouplingInfos(m_couplingInfos);
-
-}
-
-// ********************************************************************************************
-
 FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent)
 {
     setWindowTitle(QString::fromStdString(fieldInfo->module()->name));
@@ -659,16 +434,94 @@ void FieldDialog::doAccept()
 
 // ********************************************************************************************
 
+CouplingsWidget::CouplingsWidget(bool isNewProblem, QWidget *parent) : QWidget(parent), m_isNewProblem(isNewProblem)
+{
+    if (m_isNewProblem)
+    {
+        m_couplingInfos = QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >();
+    }
+    else
+    {
+        Util::scene()->synchronizeCouplings();
+        m_couplingInfos = Util::scene()->couplingInfos();
+    }
+
+    layoutTable = NULL;
+    createContent();
+    load();
+}
+
+void CouplingsWidget::createContent()
+{
+    int minWidth = 130;
+
+    if (layoutTable)
+    {
+        save();
+
+        delete layoutTable;
+        qDeleteAll(this->children());
+    }
+
+    layoutTable = new QGridLayout();
+    layoutTable->setColumnMinimumWidth(0, minWidth);
+    layoutTable->setColumnStretch(1, 1);
+
+    m_comboBoxes.clear();
+    int line = 0;
+    foreach (CouplingInfo *couplingInfo, m_couplingInfos)
+    {
+        layoutTable->addWidget(new QLabel(/*tr(*/QString::fromStdString(couplingInfo->coupling()->name)/*)*/), line, 0);
+        m_comboBoxes[couplingInfo] = new QComboBox();
+        layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
+        line++;
+    }
+
+    fillComboBox();
+    load();
+
+    setLayout(layoutTable);
+}
+
+void CouplingsWidget::fillComboBox()
+{
+    foreach(QComboBox* comboBox, m_comboBoxes)
+    {
+        comboBox->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
+        comboBox->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
+        comboBox->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
+    }
+}
+
+void CouplingsWidget::load()
+{
+    foreach(CouplingInfo *couplingInfo, m_couplingInfos)
+    {
+        m_comboBoxes[couplingInfo]->setCurrentIndex(couplingInfo->couplingType());
+    }
+}
+
+void CouplingsWidget::save()
+{
+    foreach(CouplingInfo *couplingInfo, m_couplingInfos)
+    {
+        if(m_comboBoxes.contains(couplingInfo))
+        {
+            couplingInfo->setCouplingType((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
+        }
+    }
+
+    Util::scene()->setCouplingInfos(m_couplingInfos);
+}
+
+// ********************************************************************************************
+
 ProblemDialog::ProblemDialog(ProblemInfo *problemInfo,
-                             QMap<QString, FieldInfo *> fieldInfos,
-                             QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos,
                              bool isNewProblem,
                              QWidget *parent) : QDialog(parent)
 {
     m_isNewProblem = isNewProblem;
     m_problemInfo = problemInfo;
-    m_fieldInfos = fieldInfos;
-    m_couplingInfos = couplingInfos;
 
     setWindowTitle(tr("Problem properties"));
 
@@ -689,20 +542,13 @@ int ProblemDialog::showDialog()
 
 void ProblemDialog::createControls()
 {
-    logMessage("ProblemDialog::createControls()");
-
     // tab
     QTabWidget *tabType = new QTabWidget();
     tabType->addTab(createControlsGeneral(), icon(""), tr("General"));
     tabType->addTab(createControlsStartupScript(), icon(""), tr("Startup script"));
     tabType->addTab(createControlsDescription(), icon(""), tr("Description"));
 
-    QPushButton *btnNewField = new QPushButton(this);
-    btnNewField->setText(tr("Add field"));
-    connect(btnNewField, SIGNAL(clicked()), this, SLOT(doAddField()));
-
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    buttonBox->addButton(btnNewField, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -724,9 +570,6 @@ QWidget *ProblemDialog::createControlsGeneral()
     // problem
     cmbCoordinateType = new QComboBox();
     txtName = new QLineEdit("");
-    dtmDate = new QDateTimeEdit();
-    dtmDate->setDisplayFormat("dd.MM.yyyy");
-    dtmDate->setCalendarPopup(true);
 
     // matrix solver
     cmbMatrixSolver = new QComboBox();
@@ -750,18 +593,28 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     int minWidth = 130;
 
-    // table
-    QGridLayout *layoutTable = new QGridLayout();
-    layoutTable->setColumnMinimumWidth(0, minWidth);
-    layoutTable->setColumnStretch(1, 1);
-    layoutTable->addWidget(new QLabel(tr("Date:")), 0, 0);
-    layoutTable->addWidget(dtmDate, 0, 1);
-    layoutTable->addWidget(new QLabel(tr("Coordinate type:")), 1, 0);
-    layoutTable->addWidget(cmbCoordinateType, 1, 1);
-    layoutTable->addWidget(new QLabel(tr("Linear solver:")), 2, 0);
-    layoutTable->addWidget(cmbMatrixSolver, 2, 1);
-    layoutTable->addWidget(new QLabel(tr("Mesh type:")), 3, 0);
-    layoutTable->addWidget(cmbMeshType, 3, 1);
+    // general
+    QGridLayout *layoutGeneral = new QGridLayout();
+    layoutGeneral->setColumnMinimumWidth(0, minWidth);
+    layoutGeneral->setColumnStretch(1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Coordinate type:")), 0, 0);
+    layoutGeneral->addWidget(cmbCoordinateType, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Linear solver:")), 1, 0);
+    layoutGeneral->addWidget(cmbMatrixSolver, 1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Mesh type:")), 2, 0);
+    layoutGeneral->addWidget(cmbMeshType, 2, 1);
+
+    QGroupBox *grpGeneral = new QGroupBox(tr("General"));
+    grpGeneral->setLayout(layoutGeneral);
+
+    // couplings
+    couplingsWidget = new CouplingsWidget(m_isNewProblem, this);
+
+    QVBoxLayout *layoutCouplings = new QVBoxLayout();
+    layoutCouplings->addWidget(couplingsWidget);
+
+    grpCouplings = new QGroupBox(tr("Couplings"));
+    grpCouplings->setLayout(layoutCouplings);
 
     // harmonic analysis
     QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
@@ -788,7 +641,8 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     // left
     QVBoxLayout *layoutLeft = new QVBoxLayout();
-    layoutLeft->addLayout(layoutTable);
+    layoutLeft->addWidget(grpGeneral);
+    layoutLeft->addWidget(grpCouplings);
     layoutLeft->addStretch();
 
     // right
@@ -809,23 +663,9 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutName->addWidget(new QLabel(tr("Name:")), 0, 0);
     layoutName->addWidget(txtName, 0, 1);
 
-    // fields
-    QToolButton *btnNewField = new QToolButton(this);
-    btnNewField->setAutoRaise(true);
-    btnNewField->setToolTip(tr("Add field"));
-    btnNewField->setIcon(icon("tabadd"));
-    btnNewField->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    connect(btnNewField, SIGNAL(clicked()), this, SLOT(doAddField()));
-
-    tabFields = new FieldTabWidget(this, m_fieldInfos, m_couplingInfos);
-    tabFields->setTabsClosable(true);
-    tabFields->setCornerWidget(btnNewField, Qt::TopLeftCorner);
-    tabFields->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
-
     QVBoxLayout *layoutProblem = new QVBoxLayout();
     layoutProblem->addLayout(layoutName);
     layoutProblem->addLayout(layoutPanel);
-    layoutProblem->addWidget(tabFields);
 
     QWidget *widMain = new QWidget();
     widMain->setLayout(layoutProblem);
@@ -882,11 +722,8 @@ void ProblemDialog::fillComboBox()
 
 void ProblemDialog::load()
 {
-    logMessage("ProblemDialog::load()");
-
     // main
     txtName->setText(m_problemInfo->name);
-    dtmDate->setDate(m_problemInfo->date);
     cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(m_problemInfo->coordinateType));
     if (cmbCoordinateType->currentIndex() == -1)
         cmbCoordinateType->setCurrentIndex(0);
@@ -904,6 +741,10 @@ void ProblemDialog::load()
     txtStartupScript->setPlainText(m_problemInfo->startupscript);
     // description
     txtDescription->setPlainText(m_problemInfo->description);
+
+    // couplings
+    couplingsWidget->load();
+    grpCouplings->setVisible(couplingsWidget->count() > 0);
 
     doTransientChanged();
 }
@@ -925,7 +766,6 @@ bool ProblemDialog::save()
 
     // save properties
     m_problemInfo->name = txtName->text();
-    m_problemInfo->date = dtmDate->date();
     m_problemInfo->coordinateType = (CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt();
     m_problemInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();
 
@@ -940,8 +780,8 @@ bool ProblemDialog::save()
     // matrix solver
     m_problemInfo->matrixSolver = (Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
 
-    // save fields
-    tabFields->save();
+    // save couplings
+    couplingsWidget->save();
 
     return true;
 }
@@ -988,18 +828,6 @@ void ProblemDialog::doOpenXML()
     //        QDesktopServices::openUrl(QUrl(fileName));
 }
 
-void ProblemDialog::doPhysicFieldChanged(int index)
-{
-    logMessage("ProblemDialog::doPhysicFieldChanged()");
-
-    // refresh modules
-    for (int i = 0; i < tabFields->fieldsCount(); i++)
-    {
-        FieldWidget *wid = dynamic_cast<FieldWidget *>(tabFields->widget(i));
-        wid->refresh();
-    }
-}
-
 void ProblemDialog::doTransientChanged()
 {
     logMessage("ProblemDialog::doTransientChanged()");
@@ -1009,37 +837,5 @@ void ProblemDialog::doTransientChanged()
     {
         lblTransientSteps->setText(QString("%1").arg(floor(txtTransientTimeTotal->number()/txtTransientTimeStep->number())));
     }
-}
-
-void ProblemDialog::doAddField()
-{
-    // used fields
-    QList<QString> fields;
-    for (int i = 0; i < tabFields->fieldsCount(); i++)
-    {
-        FieldWidget *wid = dynamic_cast<FieldWidget *>(tabFields->widget(i));
-        fields.append(wid->fieldInfo()->fieldId());
-    }
-
-    // select field dialog
-    FieldSelectDialog dialog(fields, this);
-    if (dialog.showDialog() == QDialog::Accepted)
-    {
-        FieldInfo *fieldInfo;
-        if (Util::scene()->fieldInfos().keys().contains(dialog.selectedFieldId()))
-        {
-            // existing field info main in collection
-            fieldInfo = Util::scene()->fieldInfo(dialog.selectedFieldId());
-        }
-        else
-        {
-            // new field info
-            fieldInfo = new FieldInfo(m_problemInfo, dialog.selectedFieldId());
-        }
-
-        tabFields->addFieldTab(fieldInfo);
-    }
-
-    tabFields->doFindCouplings();
 }
 

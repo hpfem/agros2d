@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <coupling xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
-    <general id ="heat-elasticity" name="Thermo-elasticity">
+    <general id ="heat-elasticity" name="Thermoelasticity">
         <description>Heat plus elasticity</description>
         <modules>
             <source id="heat" />

@@ -216,7 +216,6 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
         scriptResult = parseError();
     }
     Py_XDECREF(output);
-    Py_DECREF(Py_None);
 
     m_isRunning = false;
 
@@ -277,7 +276,6 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
         expressionResult.traceback = error.traceback;
     }
     Py_XDECREF(output);
-    Py_DECREF(Py_None);
 
     emit executedExpression();
 
@@ -362,8 +360,6 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
 
     PyRun_String("del result_rope_pythonlab", Py_single_input, m_dict, m_dict);
 
-    Py_DECREF(Py_None);
-
     return out;
 }
 
@@ -396,8 +392,6 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
     }
 
     PyRun_String("del result_pyflakes_pythonlab", Py_single_input, m_dict, m_dict);
-
-    Py_DECREF(Py_None);
 
     return out;
 }
