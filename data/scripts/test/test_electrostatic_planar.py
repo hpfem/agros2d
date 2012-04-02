@@ -49,7 +49,7 @@ geometry.add_label(12.3992, 0.556005, materials = {"electrostatic" : "Dieletric"
 geometry.zoom_best_fit()
 
 # solve problem
-# problem.solve()
+problem.solve()
 """
 # point value
 point = pointresult(13.257584, 11.117738)

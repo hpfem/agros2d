@@ -37,6 +37,8 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
     m_selectedFieldId = "";
 
     lstFields = new QListWidget(this);
+    lstFields->setIconSize(QSize(32, 32));
+    // lstFields->setMinimumHeight((32+fontMetrics().height()*4)*2);
 
     std::map<std::string, std::string> modules = availableModules();
     for (std::map<std::string, std::string>::iterator it = modules.begin();
@@ -139,7 +141,6 @@ void FieldWidget::createContent()
 
     // equations
     lblEquationPixmap = new QLabel("");
-    lblEquationPixmap->setMinimumHeight(50);
 
     cmbAdaptivityType = new QComboBox();
     txtAdaptivitySteps = new QSpinBox(this);
@@ -181,15 +182,16 @@ void FieldWidget::createContent()
     int minWidth = 130;
 
     // table
-    QGridLayout *layoutTable = new QGridLayout();
-    layoutTable->setColumnMinimumWidth(0, minWidth);
-    layoutTable->setColumnStretch(1, 1);
-    layoutTable->addWidget(new QLabel(tr("Type of analysis:")), 0, 0);
-    layoutTable->addWidget(cmbAnalysisType, 0, 1);
-    layoutTable->addWidget(new QLabel(tr("Adaptivity:")), 1, 0);
-    layoutTable->addWidget(cmbAdaptivityType, 1, 1);
-    layoutTable->addWidget(new QLabel(tr("Weak forms:")), 2, 0);
-    layoutTable->addWidget(cmbWeakForms, 2, 1);
+    QGridLayout *layoutGeneral = new QGridLayout();
+    layoutGeneral->setColumnMinimumWidth(0, minWidth);
+    layoutGeneral->setColumnStretch(1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Type of analysis:")), 0, 0);
+    layoutGeneral->addWidget(cmbAnalysisType, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Weak forms:")), 2, 0);
+    layoutGeneral->addWidget(cmbWeakForms, 2, 1);
+
+    QGroupBox *grpGeneral = new QGroupBox(tr("General"));
+    grpGeneral->setLayout(layoutGeneral);
 
     // transient analysis
     QGridLayout *layoutTransientAnalysis = new QGridLayout();
@@ -217,10 +219,12 @@ void FieldWidget::createContent()
     QGridLayout *layoutAdaptivity = new QGridLayout();
     layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
     layoutAdaptivity->setColumnStretch(1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity steps:")), 0, 0);
-    layoutAdaptivity->addWidget(txtAdaptivitySteps, 0, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 1, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 1, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Type:")), 0, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityType, 0, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
+    layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
 
     QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
@@ -238,11 +242,10 @@ void FieldWidget::createContent()
 
     QGroupBox *grpLinearity = new QGroupBox(tr("Newton solver"));
     grpLinearity->setLayout(layoutLinearity);
-    // grpLinearity->setVisible(Util::config()->showExperimentalFeatures);
 
     // left
     QVBoxLayout *layoutLeft = new QVBoxLayout();
-    layoutLeft->addLayout(layoutTable);
+    layoutLeft->addWidget(grpGeneral);
     layoutLeft->addWidget(grpLinearity);
     layoutLeft->addStretch();
 
@@ -259,15 +262,14 @@ void FieldWidget::createContent()
     layoutPanel->addLayout(layoutRight);
 
     // equation
-    QGridLayout *layoutEquation = new QGridLayout();
-    layoutEquation->setColumnMinimumWidth(0, minWidth);
-    layoutEquation->setColumnStretch(1, 1);
-    // layoutEquation->addWidget(new QLabel(tr("Equation:")), 0, 0);
-    layoutEquation->addWidget(lblField, 0, 0);
-    layoutEquation->addWidget(lblEquationPixmap, 0, 1, 1, 1, Qt::AlignLeft);
+    QVBoxLayout *layoutEquation = new QVBoxLayout();
+    layoutEquation->addWidget(lblEquationPixmap);
+
+    QGroupBox *grpEquation = new QGroupBox(tr("Partial differential equation"));
+    grpEquation->setLayout(layoutEquation);
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
-    layoutProblem->addLayout(layoutEquation);
+    layoutProblem->addWidget(grpEquation);
     layoutProblem->addLayout(layoutPanel);
 
     setLayout(layoutProblem);
