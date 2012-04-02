@@ -168,9 +168,9 @@ template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WFType type, Hermes::Hermes2D::Form<Scalar> *form)
 {
 //    cout << "pridavam vektorovou formu, i: " << form->i << ", areas: "; /* ", j: " << form->j <<*/
-    for(int i = 0; i < form->areas.size(); i++)
-        cout << form->areas.at(i) << ", ";
-    cout << endl;
+//    for(int i = 0; i < form->areas.size(); i++)
+//        cout << form->areas.at(i) << ", ";
+//    cout << endl;
     if(type == WFType_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
     else if(type == WFType_MatSurf)

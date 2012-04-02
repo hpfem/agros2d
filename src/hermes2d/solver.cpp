@@ -165,7 +165,6 @@ void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
         }
 
 
-        cout << "****** create space" << endl;
         // create space
         for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
         {
@@ -176,12 +175,10 @@ void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
             foreach(SceneLabel* label, Util::scene()->labels->items()){
                 if (!label->getMarker(fieldInfo)->isNone())
                 {
-                    cout << "on marker " << j << " setting order to " << (label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder) << endl;
                     space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder,
                                                    QString::number(j).toStdString());
                     j++;
                 }
-                cout << "doooofs " << space.at(i)->get_num_dofs() << endl;
             }
         }
     }
