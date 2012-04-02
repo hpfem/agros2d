@@ -47,8 +47,6 @@ QLabel *createLabel(const QString &label, const QString &toolTip)
 
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit)
 {
-    logMessage("addTreeWidgetItemValue()");
-
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
     item->setText(0, name);
     item->setText(1, text);
@@ -59,8 +57,6 @@ void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const 
 
 void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo)
 {
-    logMessage("fillComboBoxFieldInfo()");
-
     // store variable
     QString fieldId = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
 
@@ -76,7 +72,8 @@ void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo)
 
 void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
-    logMessage("fillComboBoxScalarVariable()");
+    if (!Util::problem()->isSolved())
+        return;
 
     // store variable
     QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
@@ -92,7 +89,8 @@ void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
 
 void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
-    logMessage("fillComboBoxContourVariable()");
+    if (!Util::problem()->isSolved())
+        return;
 
     // store variable
     QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
@@ -108,7 +106,8 @@ void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariab
 
 void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
-    logMessage("fillComboBoxVectorVariable()");
+    if (!Util::problem()->isSolved())
+        return;
 
     // store variable
     QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
@@ -124,7 +123,8 @@ void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
 
 void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 {
-    logMessage("fillComboBoxTimeStep()");
+    if (!Util::problem()->isSolved())
+        return;
 
     cmbFieldVariable->blockSignals(true);
 
@@ -149,7 +149,8 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
 void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
 {
-    logMessage("fillComboBoxAdaptivityStep()");
+    if (!Util::problem()->isSolved())
+        return;
 
     cmbFieldVariable->blockSignals(true);
 
@@ -174,7 +175,8 @@ void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
 
 void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
 {
-    logMessage("fillComboBoxSolutionType()");
+    if (!Util::problem()->isSolved())
+        return;
 
     cmbFieldVariable->blockSignals(true);
 

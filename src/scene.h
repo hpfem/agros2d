@@ -71,7 +71,6 @@ class ProblemInfo
 {
 public:
     QString name;
-    QDate date;
     QString fileName;
     CoordinateType coordinateType;
 
@@ -113,7 +112,6 @@ public:
     void setAnalysisType(AnalysisType analysisType);
 
     QString name() { return m_parent->name; }
-    QDate date() { return m_parent->date; }
     QString fileName() { return m_parent->fileName; }
     CoordinateType coordinateType() { return m_parent->coordinateType; }
     double frequency() { return m_parent->frequency; }

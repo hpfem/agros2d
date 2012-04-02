@@ -378,7 +378,6 @@ void PreprocessorView::doAddField()
         // add field
         FieldInfo *fieldInfo = new FieldInfo(Util::scene()->problemInfo(), dialog.selectedFieldId());
 
-        //
         FieldDialog fieldDialog(fieldInfo, this);
         if (fieldDialog.exec() == QDialog::Accepted)
         {

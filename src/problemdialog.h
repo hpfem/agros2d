@@ -61,17 +61,15 @@ class CouplingsWidget : public QWidget
 {
     Q_OBJECT
 public:
-    CouplingsWidget(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >* couplingInfos, QWidget *parent);
+    CouplingsWidget(bool isNewProblem, QWidget *parent);
 
     void createContent();
 
     void load();
     void save();
+    inline int count() { return m_couplingInfos.count(); }
 
     void refresh();
-
-public slots:
-    void doFieldsChanged();
 
 private:
     void createComboBoxes();
@@ -79,8 +77,10 @@ private:
 
     QGridLayout *layoutTable;
 
-    QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >* m_couplingInfos;
+    QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;
     QMap<CouplingInfo*, QComboBox*> m_comboBoxes;
+
+    bool m_isNewProblem;
 };
 
 class FieldWidget : public QWidget
@@ -154,74 +154,32 @@ private slots:
     void doAccept();
 };
 
-class FieldTabWidget : public QTabWidget
-{
-    Q_OBJECT
-public:
-    FieldTabWidget(QWidget *parent,  QMap<QString, FieldInfo *> fieldInfos,
-                QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos);
-
-    void addFieldTab(FieldInfo* fieldInfo);
-    void removeFieldTab(FieldInfo* fieldInfo);
-
-    void updateCouplingTab();
-
-    void save();
-    int fieldsCount() { return count() - m_haveCouplingsTab; }
-
-signals:
-    void fieldsChanged();
-
-public slots:
-    void doRemoveFieldRequested(int);
-
-    //called after field is added or removed or analysis type changed
-    void doFindCouplings();
-
-
-private:
-    int m_haveCouplingsTab;
-    QMap<FieldInfo*, FieldWidget*> m_fieldTabs;
-    QMap<QString, FieldInfo *>  m_fieldInfos;
-    QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;
-};
-
 class ProblemDialog: public QDialog
 {
     Q_OBJECT
 public:
-    ProblemDialog(ProblemInfo *problemInfo,
-                  QMap<QString, FieldInfo *> fieldInfos,
-                  QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos,
-                  bool isNewProblem, QWidget *parent = 0);
+    ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidget *parent = 0);
 
     int showDialog();
-    void removeField(FieldInfo *fieldInfo);
     ProblemInfo* problemInfo() {return m_problemInfo;}
 
 private slots:
-    void doPhysicFieldChanged(int index);
     void doTransientChanged();
     void doAccept();
     void doReject();
     void doOpenXML();
 
-    void doAddField();
-
 private:
     bool m_isNewProblem;
     ProblemInfo *m_problemInfo;
-    QMap<QString, FieldInfo *>  m_fieldInfos;
-    QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;
 
     QDialogButtonBox *buttonBox;
 
-    FieldTabWidget *tabFields;
+    CouplingsWidget *couplingsWidget;
 
     QLineEdit *txtName;
     QComboBox *cmbCoordinateType;
     QComboBox *cmbMeshType;
-    QDateTimeEdit *dtmDate;
     QComboBox *cmbMatrixSolver;
 
     // harmonic
@@ -237,6 +195,9 @@ private:
 
     // description
     QTextEdit *txtDescription;
+
+    // couplings
+    QGroupBox *grpCouplings;
 
     void createControls();
     QWidget *createControlsGeneral();

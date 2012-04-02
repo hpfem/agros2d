@@ -100,7 +100,8 @@ void ResultsView::doShowResults()
 
 void ResultsView::doShowPoint(const Point &point)
 {
-    logMessage("ResultsView::doShowPoint()");
+    if (!Util::problem()->isSolved())
+        return;
 
     // store point
     this->m_point = point;
@@ -109,8 +110,6 @@ void ResultsView::doShowPoint(const Point &point)
 
 void ResultsView::doShowVolumeIntegral()
 {
-    logMessage("ResultsView::doShowVolumeIntegral()");
-
     if (!Util::problem()->isSolved())
         return;
 
@@ -153,8 +152,6 @@ void ResultsView::doShowVolumeIntegral()
 
 void ResultsView::doShowSurfaceIntegral()
 {
-    logMessage("ResultsView::doShowSurfaceIntegral()");
-
     if (!Util::problem()->isSolved())
         return;
 
@@ -197,7 +194,8 @@ void ResultsView::doShowSurfaceIntegral()
 
 void ResultsView::doShowPoint()
 {
-    logMessage("ResultsView::doShowPoint()");
+    if (!Util::problem()->isSolved())
+        return;
 
     // stylesheet
     std::string style;
