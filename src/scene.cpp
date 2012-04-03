@@ -1578,12 +1578,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             QString name = element.toElement().attribute("name");
             QString type = element.toElement().attribute("type");
 
+            cout << "reading bc " << name.toStdString() << ", type " << type.toStdString() << endl;
+
             // read marker
             SceneBoundary *boundary = new SceneBoundary(field,
                                                         name.toStdString(),
                                                         type.toStdString());
-
-            cout << "reading bc " << name.toStdString() << ", type " << type.toStdString() << endl;
 
             Hermes::Module::BoundaryType *boundary_type = field->module()->get_boundary_type(type.toStdString());
             for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin();
@@ -1999,7 +1999,6 @@ SceneSolution<double> *Scene::activeSceneSolution()
 
 SceneSolution<double>* Scene::sceneSolution(FieldSolutionID fsid)
 {
-    cout << "chci scene solution " << fsid << endl;
     if(! m_sceneSolutions.contains(fsid))
     {
         cout << "vytvarim " << endl;
@@ -2011,7 +2010,6 @@ SceneSolution<double>* Scene::sceneSolution(FieldSolutionID fsid)
     }
     else
     {
-        cout << "mam" << endl;
         m_sceneSolutions[fsid]->updateSolutionArray(Util::solutionStore()->multiSolution(fsid));
     }
 
