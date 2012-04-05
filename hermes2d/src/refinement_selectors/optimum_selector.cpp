@@ -158,14 +158,27 @@ namespace Hermes
               {
                 used_shape_index[inx] = true;
                 indices.push_back(ShapeInx(1, 1, inx, H2DST_VERTEX));
-                for(int order_h_i = 2; order_h_i < H2DRS_MAX_ORDER + 2; order_h_i++)
-                  for(int order_v_i = 2; order_v_i < H2DRS_MAX_ORDER + 2; order_v_i++)
+                if(mode == HERMES_MODE_QUAD)
+                {
+                  for(int order_h_i = 2; order_h_i < H2DRS_MAX_ORDER + 2; order_h_i++)
+                    for(int order_v_i = 2; order_v_i < H2DRS_MAX_ORDER + 2; order_v_i++)
+                    {
+                      num_shapes[mode][order_h_i][order_v_i][H2DSI_VERTEX]++;
+                      num_shapes[mode][order_h_i][order_v_i][H2DSI_ANY]++;
+                    }
+                  num_shapes[mode][0][0][H2DSI_VERTEX]++;
+                  num_shapes[mode][0][0][H2DSI_ANY]++;
+                }
+                else
+                {
+                  for(int order_h_i = 1; order_h_i < H2DRS_MAX_ORDER + 1; order_h_i++)
                   {
-                    num_shapes[mode][order_h_i][order_v_i][H2DSI_VERTEX]++;
-                    num_shapes[mode][order_h_i][order_v_i][H2DSI_ANY]++;
+                    num_shapes[mode][order_h_i][0][H2DSI_VERTEX]++;
+                    num_shapes[mode][order_h_i][0][H2DSI_ANY]++;
                   }
-                num_shapes[mode][0][0][H2DSI_VERTEX]++;
-                num_shapes[mode][0][0][H2DSI_ANY]++;
+                  num_shapes[mode][0][0][H2DSI_VERTEX]++;
+                  num_shapes[mode][0][0][H2DSI_ANY]++;
+                }
                 has_vertex = true;
               }
             }
@@ -221,11 +234,10 @@ namespace Hermes
                   used_shape_index[inx] = true;
                   indices.push_back(ShapeInx(i, i, inx, H2DST_TRI_EDGE));
                   for(int order_h_i = i+1; order_h_i < H2DRS_MAX_ORDER + 2; order_h_i++)
-                    for(int order_v_i = i+1; order_v_i < H2DRS_MAX_ORDER + 2; order_v_i++)
-                    {
-                      num_shapes[mode][order_h_i][order_v_i][H2DSI_TRI_EDGE]++;
-                      num_shapes[mode][order_h_i][order_v_i][H2DSI_ANY]++;
-                    }
+                  {
+                    num_shapes[mode][order_h_i][0][H2DSI_TRI_EDGE]++;
+                    num_shapes[mode][order_h_i][0][H2DSI_ANY]++;
+                  }
                   num_shapes[mode][0][0][H2DSI_TRI_EDGE]++;
                   num_shapes[mode][0][0][H2DSI_ANY]++;
                   has_edge = true;
@@ -263,11 +275,10 @@ namespace Hermes
                   used_shape_index[inx_bubble] = true;
                   indices.push_back(ShapeInx(order, order, inx_bubble, H2DST_BUBBLE));
                   for(int order_h_i = order+1; order_h_i < H2DRS_MAX_ORDER + 2; order_h_i++)
-                    for(int order_v_i = order+1; order_v_i < H2DRS_MAX_ORDER + 2; order_v_i++)
-                    {
-                      num_shapes[mode][order_h_i][order_v_i][H2DSI_BUBBLE]++;
-                      num_shapes[mode][order_h_i][order_v_i][H2DSI_ANY]++;
-                    }
+                  {
+                    num_shapes[mode][order_h_i][0][H2DSI_BUBBLE]++;
+                    num_shapes[mode][order_h_i][0][H2DSI_ANY]++;
+                  }
                   num_shapes[mode][0][0][H2DSI_BUBBLE]++;
                   num_shapes[mode][0][0][H2DSI_ANY]++;
                   has_bubble = true;
@@ -576,9 +587,17 @@ namespace Hermes
         const int num_cands = (int)candidates.size();
         unrefined.score = 0;
         const double unrefined_dofs_exp = std::pow(unrefined.dofs, conv_exp);
+        std::cout << (std::string)"Element no. " << e->id << std::endl;
+        std::cout << (std::string)" unrefined split: " << unrefined.split << (std::string)", error: " << unrefined.error << (std::string)", dofs: " << unrefined.dofs << std::endl;
+        std::cout << (std::string)" unrefined p: " << unrefined.p[0] << ',' << unrefined.p[1] << ',' << unrefined.p[2] << ',' << unrefined.p[3] << std::endl;
+
         for (int i = 1; i < num_cands; i++)
         {
           Cand& cand = candidates[i];
+
+          std::cout << (std::string)"  candidate " << i << (std::string)" split: " << cand.split << (std::string)", error: " << cand.error << (std::string)", dofs: " << cand.dofs << std::endl;
+          std::cout << (std::string)"  candidate " << i << (std::string)" p: " << cand.p[0] << ',' << cand.p[1] << ',' << cand.p[2] << ',' << cand.p[3] << std::endl;
+
           if (cand.error < unrefined.error && cand.dofs > unrefined.dofs)
           {
             double delta_dof_exp = std::pow(cand.dofs - unrefined.dofs, conv_exp);
@@ -589,6 +608,7 @@ namespace Hermes
           else
             candidates[i].score = 0;
         }
+        std::cout << std::endl;
       }
 
       template<typename Scalar>
