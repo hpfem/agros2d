@@ -35,7 +35,7 @@
 const double minWidth = 110;
 
 
-PostprocessorView::PostprocessorView(SceneViewGeometry *sceneGeometry,
+PostprocessorView::PostprocessorView(SceneViewPreprocessor *sceneGeometry,
                                      SceneViewMesh *sceneMesh,
                                      SceneViewPost2D *scenePost2D,
                                      SceneViewPost3D *scenePost3D,

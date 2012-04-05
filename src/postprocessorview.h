@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class SceneViewGeometry;
+class SceneViewPreprocessor;
 class SceneViewMesh;
 class SceneViewPost2D;
 class SceneViewPost3D;
@@ -33,7 +33,7 @@ class PostprocessorView : public QDockWidget
     Q_OBJECT
 
 public:
-    PostprocessorView(SceneViewGeometry *sceneGeometry,
+    PostprocessorView(SceneViewPreprocessor *sceneGeometry,
                       SceneViewMesh *sceneMesh,
                       SceneViewPost2D *scenePost2D,
                       SceneViewPost3D *scenePost3D,
@@ -43,7 +43,7 @@ private slots:
     void doApply();
 
 private:
-    SceneViewGeometry *m_sceneGeometry;
+    SceneViewPreprocessor *m_sceneGeometry;
     SceneViewMesh *m_sceneMesh;
     SceneViewPost2D *m_scenePost2D;
     SceneViewPost3D *m_scenePost3D;

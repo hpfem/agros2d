@@ -38,7 +38,7 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
 
     lstFields = new QListWidget(this);
     lstFields->setIconSize(QSize(32, 32));
-    // lstFields->setMinimumHeight((32+fontMetrics().height()*4)*2);
+    lstFields->setMinimumHeight(36*8);
 
     std::map<std::string, std::string> modules = availableModules();
     for (std::map<std::string, std::string>::iterator it = modules.begin();
@@ -403,7 +403,14 @@ FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent
 
     fieldWidget = new FieldWidget(Util::scene()->problemInfo(), fieldInfo, this);
 
+    // dialog buttons
+    QPushButton *btnDeleteField = new QPushButton(tr("Delete field"));
+    btnDeleteField->setDefault(false);
+    btnDeleteField->setEnabled(Util::scene()->hasField(fieldInfo->fieldId()));
+    connect(btnDeleteField, SIGNAL(clicked()), this, SLOT(deleteField()));
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox->addButton(btnDeleteField, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
 
@@ -430,6 +437,16 @@ void FieldDialog::doAccept()
 {
     fieldWidget->save();
     accept();
+}
+
+void FieldDialog::deleteField()
+{
+    if (QMessageBox::question(this, tr("Delete"), tr("Physical field '%1' will be pernamently deleted. Are you sure?").
+                              arg(QString::fromStdString(fieldWidget->fieldInfo()->module()->name)), tr("&Yes"), tr("&No")) == 0)
+    {
+        Util::scene()->removeField(fieldWidget->fieldInfo());
+        accept();
+    }
 }
 
 // ********************************************************************************************

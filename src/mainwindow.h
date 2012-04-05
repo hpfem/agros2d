@@ -24,7 +24,7 @@
 
 class SceneViewPost2D;
 class SceneViewPost3D;
-class SceneViewGeometry;
+class SceneViewPreprocessor;
 class SceneViewMesh;
 class InfoWidget;
 class ResultsView;
@@ -204,7 +204,7 @@ private:
     SceneViewWidget *sceneViewPost2DWidget;
     SceneViewWidget *sceneViewPost3DWidget;
 
-    SceneViewGeometry *sceneViewGeometry;
+    SceneViewPreprocessor *sceneViewGeometry;
     SceneViewMesh *sceneViewMesh;
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;

@@ -125,7 +125,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     Util::scene()->clear();
 
-    sceneViewGeometry->actSceneModeGeometry->trigger();
+    sceneViewGeometry->actSceneModePreprocessor->trigger();
     sceneViewGeometry->doZoomBestFit();
 
     // set recent files
@@ -411,7 +411,7 @@ void MainWindow::createActions()
     actSceneZoomRegion->setCheckable(true);
 
     actSceneModeGroup = new QActionGroup(this);
-    actSceneModeGroup->addAction(sceneViewGeometry->actSceneModeGeometry);
+    actSceneModeGroup->addAction(sceneViewGeometry->actSceneModePreprocessor);
     actSceneModeGroup->addAction(sceneViewMesh->actSceneModeMesh);
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
@@ -494,7 +494,7 @@ void MainWindow::createMenus()
     mnuShowPanels->addAction(tooltipView->toggleViewAction());
 
     mnuView = menuBar()->addMenu(tr("&View"));
-    mnuView->addAction(sceneViewGeometry->actSceneModeGeometry);
+    mnuView->addAction(sceneViewGeometry->actSceneModePreprocessor);
     mnuView->addAction(sceneViewMesh->actSceneModeMesh);
     mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
@@ -578,7 +578,7 @@ void MainWindow::createToolBars()
 
     // left toolbar
     QToolBar *tlbLeftBar = new QToolBar();
-    tlbLeftBar->setObjectName("Problem");
+    tlbLeftBar->setObjectName("Left ToolBar");
     tlbLeftBar->setOrientation(Qt::Vertical);
     tlbLeftBar->setAllowedAreas(Qt::LeftToolBarArea);
     // leftToolBar->setMovable(false);
@@ -594,7 +594,7 @@ void MainWindow::createToolBars()
     tlbLeftBar->setIconSize(QSize(32, 32));
     tlbLeftBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    tlbLeftBar->addAction(sceneViewGeometry->actSceneModeGeometry);
+    tlbLeftBar->addAction(sceneViewGeometry->actSceneModePreprocessor);
     tlbLeftBar->addAction(sceneViewMesh->actSceneModeMesh);
     tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
     tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
@@ -684,7 +684,7 @@ void MainWindow::createScene()
 {
     logMessage("MainWindow::createScene()");
 
-    sceneViewGeometry = new SceneViewGeometry(this);
+    sceneViewGeometry = new SceneViewPreprocessor(this);
     sceneViewMesh = new SceneViewMesh(this);
     sceneViewPost2D = new SceneViewPost2D(this);
     sceneViewPost3D = new SceneViewPost3D(this);
@@ -1411,7 +1411,7 @@ void MainWindow::doInvalidated()
     tlbGeometry->setVisible(false);
     tlbPost2D->setVisible(false);
 
-    if (sceneViewGeometry->actSceneModeGeometry->isChecked())
+    if (sceneViewGeometry->actSceneModePreprocessor->isChecked())
     {
         tabLayout->setCurrentWidget(sceneViewGeometryWidget);
         Util::scene()->actTransform->setEnabled(true);

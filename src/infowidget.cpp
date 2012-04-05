@@ -34,7 +34,7 @@
 #include "hermes2d/problem.h"
 #include "ctemplate/template.h"
 
-InfoWidget::InfoWidget(SceneViewGeometry *sceneView, QWidget *parent): QWidget(parent)
+InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidget(parent)
 {
     this->m_sceneViewGeometry = sceneView;
 

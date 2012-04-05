@@ -36,7 +36,7 @@
 #include "hermes2d/problem.h"
 #include "ctemplate/template.h"
 
-PreprocessorView::PreprocessorView(SceneViewGeometry *sceneView, QWidget *parent): QDockWidget(tr("Preprocessor"), parent)
+PreprocessorView::PreprocessorView(SceneViewPreprocessor *sceneView, QWidget *parent): QDockWidget(tr("Preprocessor"), parent)
 {
     logMessage("PreprocessorView::PreprocessorView()");
 
@@ -65,10 +65,15 @@ PreprocessorView::PreprocessorView(SceneViewGeometry *sceneView, QWidget *parent
     connect(trvWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
 
     doItemSelected(NULL, Qt::UserRole);
+
+    QSettings settings;
+    splitter->restoreState(settings.value("PreprocessorView/SplitterState").toByteArray());
 }
 
 PreprocessorView::~PreprocessorView()
 {
+    QSettings settings;
+    settings.setValue("PreprocessorView/SplitterState", splitter->saveState());
 }
 
 void PreprocessorView::createActions()
@@ -118,8 +123,12 @@ void PreprocessorView::createControls()
     webView->setMinimumHeight(250);
 
     QHBoxLayout *layoutInfo = new QHBoxLayout();
+    layoutInfo->setMargin(0);
     layoutInfo->addLayout(layoutToolBar);
     layoutInfo->addWidget(webView);
+
+    QWidget *widgetInfo = new QWidget(this);
+    widgetInfo->setLayout(layoutInfo);
 
     trvWidget = new QTreeWidget(this);
     trvWidget->setHeaderHidden(true);
@@ -129,14 +138,20 @@ void PreprocessorView::createControls()
     trvWidget->setColumnWidth(0, 150);
     trvWidget->setIndentation(12);
 
+    splitter = new QSplitter(Qt::Vertical, this);
+    splitter->addWidget(widgetInfo);
+    splitter->addWidget(trvWidget);
+
+    /*
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->addLayout(layoutInfo, 2);
     layoutMain->addWidget(trvWidget, 3);
 
     QWidget *main = new QWidget(this);
     main->setLayout(layoutMain);
+    */
 
-    setWidget(main);
+    setWidget(splitter);
 
     // boundary conditions
     boundaryConditionsNode = new QTreeWidgetItem(trvWidget);
@@ -174,8 +189,6 @@ void PreprocessorView::createControls()
 
 void PreprocessorView::keyPressEvent(QKeyEvent *event)
 {
-    logMessage("PreprocessorView::keyPressEvent()");
-
     switch (event->key()) {
     case Qt::Key_Delete:
         doDelete();
@@ -418,7 +431,7 @@ void PreprocessorView::doItemSelected(QTreeWidgetItem *item, int role)
         // geometry
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
         {
-            m_sceneViewGeometry->actSceneModeGeometry->trigger();
+            m_sceneViewGeometry->actSceneModePreprocessor->trigger();
 
             if (dynamic_cast<SceneNode *>(objectBasic))
                 m_sceneViewGeometry->actOperateOnNodes->trigger();

@@ -24,18 +24,18 @@
 
 #include <QWebView>
 
-class SceneViewGeometry;
+class SceneViewPreprocessor;
 
 class InfoWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    InfoWidget(SceneViewGeometry *sceneView, QWidget *parent = 0);
+    InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent = 0);
     ~InfoWidget();
 
 private:
-    SceneViewGeometry *m_sceneViewGeometry;
+    SceneViewPreprocessor *m_sceneViewGeometry;
 
     QWebView *webView;
 

@@ -23,7 +23,7 @@
 #include "util.h"
 #include "sceneview_common2d.h"
 
-class SceneViewGeometry : public SceneViewCommon2D
+class SceneViewPreprocessor : public SceneViewCommon2D
 {
     Q_OBJECT
 
@@ -35,12 +35,12 @@ public slots:
     void doSceneObjectProperties();
 
 public:
-    SceneViewGeometry(QWidget *parent = 0);
-    ~SceneViewGeometry();
+    SceneViewPreprocessor(QWidget *parent = 0);
+    ~SceneViewPreprocessor();
 
     QAction *actSceneViewSelectRegion;
 
-    QAction *actSceneModeGeometry;
+    QAction *actSceneModePreprocessor;
 
     QActionGroup *actSceneModeGeometryGroup;
     QAction *actOperateOnNodes;

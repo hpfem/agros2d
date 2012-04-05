@@ -24,7 +24,7 @@
 
 #include <QWebView>
 
-class SceneViewGeometry;
+class SceneViewPreprocessor;
 
 class PreprocessorView : public QDockWidget
 {
@@ -36,14 +36,16 @@ public slots:
     void doDelete();
 
 public:
-    PreprocessorView(SceneViewGeometry *sceneView, QWidget *parent = 0);
+    PreprocessorView(SceneViewPreprocessor *sceneView, QWidget *parent = 0);
     ~PreprocessorView();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
 
 private:
-    SceneViewGeometry *m_sceneViewGeometry;
+    SceneViewPreprocessor *m_sceneViewGeometry;
+
+    QSplitter *splitter;
 
     QTreeWidget *trvWidget;
 

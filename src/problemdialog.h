@@ -152,6 +152,7 @@ private:
 
 private slots:
     void doAccept();
+    void deleteField();
 };
 
 class ProblemDialog: public QDialog

@@ -28,7 +28,7 @@
 #include "scene.h"
 
 class Solution;
-class SceneViewGeometry;
+class SceneViewPreprocessor;
 class SceneViewMesh;
 class SceneViewPost2D;
 class SceneViewPost3D;
@@ -39,8 +39,8 @@ class PythonEngineAgros : public PythonEngine
 public:
     PythonEngineAgros() : PythonEngine() {}
 
-    inline void setSceneViewGeometry(SceneViewGeometry *sceneViewGeometry) { assert(sceneViewGeometry); m_sceneViewGeometry = sceneViewGeometry; }
-    inline SceneViewGeometry *sceneViewGeometry() { assert(m_sceneViewGeometry); return m_sceneViewGeometry; }
+    inline void setSceneViewGeometry(SceneViewPreprocessor *sceneViewGeometry) { assert(sceneViewGeometry); m_sceneViewGeometry = sceneViewGeometry; }
+    inline SceneViewPreprocessor *sceneViewGeometry() { assert(m_sceneViewGeometry); return m_sceneViewGeometry; }
     inline void setSceneViewMesh(SceneViewMesh *sceneViewMesh) { assert(sceneViewMesh); m_sceneViewMesh = sceneViewMesh; }
     inline SceneViewMesh *sceneViewMesh() { assert(m_sceneViewMesh); return m_sceneViewMesh; }
     inline void setSceneViewPost2D(SceneViewPost2D *sceneViewPost2D) { assert(sceneViewPost2D); m_sceneViewPost2D = sceneViewPost2D; }
@@ -56,7 +56,7 @@ private slots:
     void doExecutedScript();
 
 private:
-    SceneViewGeometry *m_sceneViewGeometry;
+    SceneViewPreprocessor *m_sceneViewGeometry;
     SceneViewMesh *m_sceneViewMesh;
     SceneViewPost2D *m_sceneViewPost2D;
     SceneViewPost3D *m_sceneViewPost3D;

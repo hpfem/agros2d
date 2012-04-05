@@ -1140,6 +1140,8 @@ void Scene::removeField(FieldInfo *field)
     // remove from the collection
     m_fieldInfos.remove(field->fieldId());
 
+    synchronizeCouplings();
+
     emit fieldsChanged();
     emit invalidated();
 }

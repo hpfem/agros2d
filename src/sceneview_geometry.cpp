@@ -36,22 +36,22 @@
 
 #include "../lib/gl2ps/gl2ps.h"
 
-SceneViewGeometry::SceneViewGeometry(QWidget *parent): SceneViewCommon2D(parent)
+SceneViewPreprocessor::SceneViewPreprocessor(QWidget *parent): SceneViewCommon2D(parent)
 {
     createActionsGeometry();
     createMenuGeometry();
 }
 
-SceneViewGeometry::~SceneViewGeometry()
+SceneViewPreprocessor::~SceneViewPreprocessor()
 {
 }
 
-void SceneViewGeometry::createActionsGeometry()
+void SceneViewPreprocessor::createActionsGeometry()
 {
-    actSceneModeGeometry = new QAction(iconView(), tr("Geometry"), this);
-    actSceneModeGeometry->setShortcut(Qt::Key_F5);
-    actSceneModeGeometry->setStatusTip(tr("Geometry editor"));
-    actSceneModeGeometry->setCheckable(true);
+    actSceneModePreprocessor = new QAction(iconView(), tr("Preprocessor"), this);
+    actSceneModePreprocessor->setShortcut(Qt::Key_F5);
+    actSceneModePreprocessor->setStatusTip(tr("Preprocessor"));
+    actSceneModePreprocessor->setCheckable(true);
 
     // scene - operate on items
     actOperateOnNodes = new QAction(icon("scene-node"), tr("Operate on &nodes"), this);
@@ -86,7 +86,7 @@ void SceneViewGeometry::createActionsGeometry()
     connect(actSceneObjectProperties, SIGNAL(triggered()), this, SLOT(doSceneObjectProperties()));
 }
 
-void SceneViewGeometry::createMenuGeometry()
+void SceneViewPreprocessor::createMenuGeometry()
 {
     logMessage("SceneViewCommon::createMenu()");
 
@@ -104,7 +104,7 @@ void SceneViewGeometry::createMenuGeometry()
     mnuScene->addAction(actSceneObjectProperties);
 }
 
-void SceneViewGeometry::doSceneObjectProperties()
+void SceneViewPreprocessor::doSceneObjectProperties()
 {
     logMessage("SceneViewCommon::doSceneObjectProperties()");
 
@@ -146,7 +146,7 @@ void SceneViewGeometry::doSceneObjectProperties()
     Util::scene()->selectNone();
 }
 
-void SceneViewGeometry::doSelectBasic()
+void SceneViewPreprocessor::doSelectBasic()
 {
     logMessage("SceneViewCommon::doSelectBasic()");
 
@@ -154,18 +154,18 @@ void SceneViewGeometry::doSelectBasic()
     sceneBasicSelectDialog.exec();
 }
 
-void SceneViewGeometry::doInvalidated()
+void SceneViewPreprocessor::doInvalidated()
 {
     // actions
-    actSceneViewSelectRegion->setEnabled(actSceneModeGeometry->isChecked());
-    actOperateOnNodes->setEnabled(actSceneModeGeometry->isChecked());
-    actOperateOnEdges->setEnabled(actSceneModeGeometry->isChecked());
-    actOperateOnLabels->setEnabled(actSceneModeGeometry->isChecked());
+    actSceneViewSelectRegion->setEnabled(actSceneModePreprocessor->isChecked());
+    actOperateOnNodes->setEnabled(actSceneModePreprocessor->isChecked());
+    actOperateOnEdges->setEnabled(actSceneModePreprocessor->isChecked());
+    actOperateOnLabels->setEnabled(actSceneModePreprocessor->isChecked());
 
     SceneViewCommon::doInvalidated();
 }
 
-void SceneViewGeometry::clear()
+void SceneViewPreprocessor::clear()
 {
     SceneViewCommon2D::clear();
 
@@ -174,7 +174,7 @@ void SceneViewGeometry::clear()
     m_sceneMode = SceneGeometryMode_OperateOnNodes;
 }
 
-void SceneViewGeometry::doSceneGeometryModeSet(QAction *action)
+void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
 {
     if (actOperateOnNodes->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnNodes;
     if (actOperateOnEdges->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnEdges;
@@ -202,7 +202,7 @@ void SceneViewGeometry::doSceneGeometryModeSet(QAction *action)
     emit sceneGeometryModeChanged(m_sceneMode);
 }
 
-void SceneViewGeometry::selectRegion(const Point &start, const Point &end)
+void SceneViewPreprocessor::selectRegion(const Point &start, const Point &end)
 {
     logMessage("SceneViewCommon::selectRegion()");
 
@@ -229,7 +229,7 @@ void SceneViewGeometry::selectRegion(const Point &start, const Point &end)
     }
 }
 
-void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
+void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
 {
     int dx = event->x() - m_lastPos.x();
     int dy = event->y() - m_lastPos.y();
@@ -439,7 +439,7 @@ void SceneViewGeometry::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void SceneViewGeometry::mousePressEvent(QMouseEvent *event)
+void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
 {
     // select region
     if ((event->button() & Qt::LeftButton)
@@ -596,7 +596,7 @@ void SceneViewGeometry::mousePressEvent(QMouseEvent *event)
     SceneViewCommon2D::mousePressEvent(event);
 }
 
-void SceneViewGeometry::mouseReleaseEvent(QMouseEvent *event)
+void SceneViewPreprocessor::mouseReleaseEvent(QMouseEvent *event)
 {
     actSceneViewSelectRegion->setChecked(false);
 
@@ -623,7 +623,7 @@ void SceneViewGeometry::mouseReleaseEvent(QMouseEvent *event)
     SceneViewCommon2D::mouseReleaseEvent(event);
 }
 
-void SceneViewGeometry::mouseDoubleClickEvent(QMouseEvent *event)
+void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (!(event->modifiers() & Qt::ControlModifier))
     {
@@ -683,7 +683,7 @@ void SceneViewGeometry::mouseDoubleClickEvent(QMouseEvent *event)
     SceneViewCommon2D::mouseDoubleClickEvent(event);
 }
 
-void SceneViewGeometry::keyPressEvent(QKeyEvent *event)
+void SceneViewPreprocessor::keyPressEvent(QKeyEvent *event)
 {
     SceneViewCommon2D::keyPressEvent(event);
 
@@ -720,7 +720,7 @@ void SceneViewGeometry::keyPressEvent(QKeyEvent *event)
                     && (m_sceneMode == SceneGeometryMode_OperateOnNodes));
 }
 
-void SceneViewGeometry::keyReleaseEvent(QKeyEvent *event)
+void SceneViewPreprocessor::keyReleaseEvent(QKeyEvent *event)
 {
     m_snapToGrid = false;
     updateGL();
@@ -728,7 +728,7 @@ void SceneViewGeometry::keyReleaseEvent(QKeyEvent *event)
     SceneViewCommon2D::keyReleaseEvent(event);
 }
 
-void SceneViewGeometry::contextMenuEvent(QContextMenuEvent *event)
+void SceneViewPreprocessor::contextMenuEvent(QContextMenuEvent *event)
 {
     logMessage("SceneViewCommon::contextMenuEvent()");
 
@@ -749,7 +749,7 @@ void SceneViewGeometry::contextMenuEvent(QContextMenuEvent *event)
     mnuScene->exec(event->globalPos());
 }
 
-void SceneViewGeometry::paintRulersHintsEdges()
+void SceneViewPreprocessor::paintRulersHintsEdges()
 {
     loadProjection2d(true);
 
@@ -797,7 +797,7 @@ void SceneViewGeometry::paintRulersHintsEdges()
     glEnd();
 }
 
-void SceneViewGeometry::paintGL()
+void SceneViewPreprocessor::paintGL()
 {
     if (!isVisible()) return;
     makeCurrent();
@@ -833,7 +833,7 @@ void SceneViewGeometry::paintGL()
     paintEdgeLine();
 }
 
-void SceneViewGeometry::paintGeometry()
+void SceneViewPreprocessor::paintGeometry()
 {
     logMessage("SceneViewCommon::paintGeometry()");
 
@@ -1005,7 +1005,7 @@ void SceneViewGeometry::paintGeometry()
     }
 }
 
-void SceneViewGeometry::paintSnapToGrid()
+void SceneViewPreprocessor::paintSnapToGrid()
 {
     logMessage("SceneViewCommon::paintSnapToGrid()");
 
@@ -1029,7 +1029,7 @@ void SceneViewGeometry::paintSnapToGrid()
     }
 }
 
-void SceneViewGeometry::paintEdgeLine()
+void SceneViewPreprocessor::paintEdgeLine()
 {
     logMessage("SceneViewCommon::paintEdgeLine()");
 
@@ -1082,7 +1082,7 @@ void SceneViewGeometry::paintEdgeLine()
     }
 }
 
-ErrorResult SceneViewGeometry::saveGeometryToFile(const QString &fileName, int format)
+ErrorResult SceneViewPreprocessor::saveGeometryToFile(const QString &fileName, int format)
 {
     logMessage("SceneViewCommon::saveImageToFile()");
 
