@@ -107,13 +107,14 @@ SceneSolution<Scalar>::~SceneSolution()
 {
 }
 
-template <typename Scalar>
-void SceneSolution<Scalar>::updateSolutionArray(MultiSolutionArray<Scalar> msa)
-{
-    //TODO hnus, jen docasne, kvuli tomu, ze nekde je vyzadovana existence sceneSolution jeste pred tim, nez je problem vyresen
-    if(msa.size() != m_multiSolutionArray.size())
-        m_multiSolutionArray = msa;
-}
+//template <typename Scalar>
+//void SceneSolution<Scalar>::updateSolutionArray(MultiSolutionArray<Scalar> msa)
+//{
+////    //TODO hnus, jen docasne, kvuli tomu, ze nekde je vyzadovana existence sceneSolution jeste pred tim, nez je problem vyresen
+////    if(msa.size() != m_multiSolutionArray.size())
+//    assert(m_multiSolutionArray.size() == 0);
+//    m_multiSolutionArray = msa;
+//}
 
 //template <typename Scalar>
 //void SceneSolution<Scalar>::clear(bool all)

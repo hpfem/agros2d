@@ -47,19 +47,12 @@ public:
     SceneSolution(FieldInfo* fieldInfo, MultiSolutionArray<Scalar> msa);
     ~SceneSolution();
 
-    //TODO hnus, jen docasne, kvuli tomu, ze nekde je vyzadovana existence sceneSolution jeste pred tim, nez je problem vyresen
-    void updateSolutionArray(MultiSolutionArray<Scalar> msa);
-
 //    void clear(bool all = true);
     void loadMeshInitial(QDomElement element);
     void saveMeshInitial(QDomDocument *doc, QDomElement element);
     void loadSolution(QDomElement element);
     void saveSolution(QDomDocument *doc, QDomElement element);
 
-    //TODO in the future, SceneSolution will hold only one SolutionArray, not arrays for all time levels
-
-    //TODO temp
-    //void setSolutionArray(MultiSolutionArray<Scalar> solutionArrays) { m_solutionArrayList = solutionArrays; }
 
     FieldInfo* fieldInfo() { return m_fieldInfo; }
 

@@ -34,7 +34,7 @@ public:
 
 
 protected:
-    SceneSolution<double> *m_sceneSolution;
+   // SceneSolution<double> *m_sceneSolution;
 
     double m_texScale;
     double m_texShift;

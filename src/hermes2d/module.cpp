@@ -217,9 +217,10 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
     if(marker_second && couplingInfo)
     {
         // TODO at the present moment, it is impossible to have more sources !
-        assert(field->m_couplingSources.size() <= 1);
+        assert(field->m_couplingSources.size() <= 1);        
 
         solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionType_Finer);
+        assert(solutionID.group->module()->number_of_solution() <= maxSourceFieldComponents);
     }
     else{
         if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
@@ -302,6 +303,8 @@ void WeakFormAgros<Scalar>::registerForms()
                                  m_block->offset(field), m_block->offset(field), material);
                 }
 
+
+                //TODO proc je tu tohle? silne sdruzeni je dole, slabe by zadne formy mit nemelo....
                 foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
                 {
                      for (Hermes::vector<ParserFormExpression *>::iterator it = couplingInfo->coupling()->weakform_vector_volume.begin();
@@ -951,14 +954,13 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
 ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
-        Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
-        for (int k = 0; k < number_of_solution(); k++)
-        {
-            sln.push_back(Util::scene()->activeSceneSolution()->sln(
-                              k )); //+ (Util::scene()->sceneSolution()->timeStep() * m_fieldInfo->module()->number_of_solution())));
-            //TODO casove problemy
-        }
-        return new ViewScalarFilter<double>(Util::scene()->activeSceneSolution()->fieldInfo(), sln, get_expression(physicFieldVariable, physicFieldVariableComp));//TODO PK <double>
+    cout << "creating new viewScalarFilter for " << physicFieldVariable->name << endl;
+    Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
+    for (int k = 0; k < number_of_solution(); k++)
+    {
+        sln.push_back(Util::scene()->activeSceneSolution()->sln(k));
+    }
+    return new ViewScalarFilter<double>(Util::scene()->activeSceneSolution()->fieldInfo(), sln, get_expression(physicFieldVariable, physicFieldVariableComp));//TODO PK <double>
 }
 
 bool Hermes::Module::Module::solve_init_variables()

@@ -469,7 +469,7 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting));
     MultiSolutionArray<Scalar> msaRef;
 
-    //cout << "solve adaptivity step " << solutionID << ", num dofs " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) << endl;
+    cout << "solve adaptivity step " << adaptivityStep << endl;
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) == 0)
@@ -548,7 +548,7 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     double initialDOFs = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked());
     if (adapt)
     {
-        cout << "*** dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << "tr " << Util::config()->threshold <<
+        cout << "*** starting adaptivity. dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << "tr " << Util::config()->threshold <<
                 ", st " << Util::config()->strategy << ", reg " << Util::config()->meshRegularity << endl;
         bool noref = adaptivity.adapt(selector,
                                       Util::config()->threshold,

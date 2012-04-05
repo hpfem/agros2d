@@ -82,6 +82,7 @@ ParserForm::~ParserForm()
     delete parser;
 }
 
+
 void ParserForm::initParser(Hermes::vector<Material *> materials, Boundary *boundary)
 {
     parser->parser.push_back(m_fieldInfo->module()->get_parser(m_fieldInfo));
@@ -117,9 +118,12 @@ void ParserForm::initParser(Hermes::vector<Material *> materials, Boundary *boun
     parser->parser[0]->DefineVar("deltat", &pdeltat);
 
     // coupling
-    parser->parser[0]->DefineVar("source", &source);
-    parser->parser[0]->DefineVar("sourced" + Util::scene()->problemInfo()->labelX().toLower().toStdString() , &sourcedx);
-    parser->parser[0]->DefineVar("sourced" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &sourcedy);
+    for(int comp = 0; comp < maxSourceFieldComponents; comp++)
+    {
+        parser->parser[0]->DefineVar("source" + QString().setNum(comp).toStdString(), &source[comp]);
+        parser->parser[0]->DefineVar("sourced" + QString().setNum(comp).toStdString() + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &sourcedx[comp]);
+        parser->parser[0]->DefineVar("sourced" + QString().setNum(comp).toStdString() + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &sourcedy[comp]);
+    }
 
     parser->setParserVariables(materials, boundary);
 
@@ -318,14 +322,16 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             pupdy = 0.0;
         }
 
-        //TODO There might be more sources (components! )
         if(m_material2){
             // we have material2 -> it is coupling form, without time parameter
             if (ext->get_nf() > 0)
             {
-                source = ext->fn[0]->val[i];
-                sourcedx = ext->fn[0]->dx[i];
-                sourcedy = ext->fn[0]->dy[i];
+                for(int comp = 0; comp < ext->get_nf(); comp++)
+                {
+                    source[comp] = ext->fn[comp]->val[i];
+                    sourcedx[comp] = ext->fn[comp]->dx[i];
+                    sourcedy[comp] = ext->fn[comp]->dy[i];
+                }
             }
         }
         else

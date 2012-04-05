@@ -59,6 +59,7 @@ struct ParserFormExpression
     std::string expression;   
 };
 
+const int maxSourceFieldComponents = 2;
 
 class ParserForm
 {
@@ -93,9 +94,9 @@ public:
     mutable double pdeltat;
 
     //coupled field
-    mutable double source;
-    mutable double sourcedx;
-    mutable double sourcedy;
+    mutable double source[maxSourceFieldComponents];
+    mutable double sourcedx[maxSourceFieldComponents];
+    mutable double sourcedy[maxSourceFieldComponents];
 
     ParserForm(FieldInfo *fieldInfo);
     ~ParserForm();

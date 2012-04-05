@@ -2001,16 +2001,10 @@ SceneSolution<double>* Scene::sceneSolution(FieldSolutionID fsid)
 {
     if(! m_sceneSolutions.contains(fsid))
     {
-        cout << "vytvarim " << endl;
-        MultiSolutionArray<double> msa;
-        if(Util::solutionStore()->contains(fsid))
-            msa = Util::solutionStore()->multiSolution(fsid);
+        assert(Util::solutionStore()->contains(fsid));
+        MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(fsid);
         SceneSolution<double>* sceneSolution = new SceneSolution<double>(fsid.group, msa);
         m_sceneSolutions.insert(fsid, sceneSolution);
-    }
-    else
-    {
-        m_sceneSolutions[fsid]->updateSolutionArray(Util::solutionStore()->multiSolution(fsid));
     }
 
     return m_sceneSolutions[fsid];
