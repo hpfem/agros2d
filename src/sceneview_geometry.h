@@ -26,6 +26,8 @@
 class SceneViewPreprocessor : public SceneViewCommon2D
 {
     Q_OBJECT
+signals:
+    void sceneGeometryModeChanged(SceneGeometryMode sceneMode);
 
 public slots:
     virtual void clear();
@@ -49,8 +51,15 @@ public:
 
     QAction *actSceneObjectProperties;
 
+    // background image
+    QImage m_backgroundImage;
+    int m_backgroundTexture;
+    QRectF m_backgroundPosition;
+
     inline SceneGeometryMode sceneMode() const { return m_sceneMode; }
     ErrorResult saveGeometryToFile(const QString &fileName, int format);
+
+    void loadBackgroundImage(const QString &fileName, double x, double y, double w, double h);
 
     virtual QIcon iconView() { return icon("scene-geometry"); }
     virtual QString labelView() { return tr("Geometry editor"); }
@@ -76,6 +85,8 @@ protected:
 
     void paintGeometry(); // paint nodes, edges and labels
     void paintRulersHintsEdges();
+
+    void paintBackgroundPixmap();
 
 private:
     QMenu *mnuScene;

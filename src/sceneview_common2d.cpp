@@ -46,8 +46,6 @@ SceneViewCommon2D::~SceneViewCommon2D()
 
 void SceneViewCommon2D::clear()
 {
-    logMessage("SceneViewCommon::doDefaultValues()");
-
     m_zoomRegion = false;
 
     // 2d
@@ -56,9 +54,6 @@ void SceneViewCommon2D::clear()
 
     m_chartLine = ChartLine();
     m_nodeLast = NULL;
-
-    deleteTexture(m_backgroundTexture);
-    m_backgroundTexture = -1;
 
     SceneViewCommon::clear();
 }
@@ -156,35 +151,6 @@ SceneLabel *SceneViewCommon2D::findClosestLabel(const Point &point)
     }
 
     return labelClosest;
-}
-
-void SceneViewCommon2D::paintBackgroundPixmap()
-{
-    logMessage("SceneViewCommon::paintBackgroundPixmap()");
-
-    if (m_backgroundTexture != -1)
-    {
-        loadProjection2d(true);
-
-        glEnable(GL_TEXTURE_2D);
-
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        glBindTexture(GL_TEXTURE_2D, m_backgroundTexture);
-
-        glColor3d(1.0, 1.0, 1.0);
-
-        glBegin(GL_QUADS);
-        glTexCoord2d(0.0, 0.0); glVertex2d(m_backgroundPosition.x(), m_backgroundPosition.y());
-        glTexCoord2d(1.0, 0.0); glVertex2d(m_backgroundPosition.x() + m_backgroundPosition.width(), m_backgroundPosition.y());
-        glTexCoord2d(1.0, 1.0); glVertex2d(m_backgroundPosition.x() + m_backgroundPosition.width(), m_backgroundPosition.y() + m_backgroundPosition.height());
-        glTexCoord2d(0.0, 1.0); glVertex2d(m_backgroundPosition.x(), m_backgroundPosition.y() + m_backgroundPosition.height());
-        glEnd();
-
-        glDisable(GL_TEXTURE_2D);
-    }
 }
 
 void SceneViewCommon2D::paintGrid()

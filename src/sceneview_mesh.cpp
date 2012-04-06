@@ -152,6 +152,8 @@ void SceneViewMesh::doInvalidated()
     m_listSolutionMesh = -1;
     m_listOrder = -1;
 
+    m_meshHermes->clear();
+
     // actions
     actSceneModeMesh->setEnabled(Util::problem()->isMeshed());
 

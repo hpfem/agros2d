@@ -806,6 +806,8 @@ void SceneViewPost3D::doInvalidated()
     m_listModel = -1;
     m_listScalarField3DSolid = -1;
 
+    m_post3DHermes->clear();
+
     if (Util::problem()->isSolved())
     {
         m_post3DHermes->processSolved();
@@ -822,5 +824,7 @@ void SceneViewPost3D::doInvalidated()
 
 void SceneViewPost3D::clear()
 {
+    m_post3DHermes->clear();
+
     SceneViewCommon3D::clear();
 }

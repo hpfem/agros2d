@@ -164,15 +164,11 @@ void SceneViewCommon::resizeGL(int w, int h)
 
 void SceneViewCommon::setupViewport(int w, int h)
 {
-    logMessage("SceneViewCommon::setupViewport()");
-
     glViewport(0, 0, w, h);
 }
 
 QPixmap SceneViewCommon::renderScenePixmap(int w, int h, bool useContext)
 {
-    logMessage("SceneViewCommon::renderScenePixmap()");
-
     QPixmap pixmap = renderPixmap(w, h, useContext);
 
     resizeGL(width(), height());
@@ -263,11 +259,6 @@ void SceneViewCommon::doSetChartLine(const ChartLine &chartLine)
 
 void SceneViewCommon::clear()
 {
-    logMessage("SceneViewCommon::doDefaultValues()");
-
-    deleteTexture(m_backgroundTexture);
-    m_backgroundTexture = -1;
-
     doInvalidated();
     doZoomBestFit();
 }
@@ -284,16 +275,12 @@ void SceneViewCommon::doInvalidated()
 
 void SceneViewCommon::refresh()
 {
-    logMessage("SceneViewCommon::refresh()");
-
     paintGL();
     updateGL();
 }
 
 void SceneViewCommon::doMaterialGroup(QAction *action)
 {
-    logMessage("SceneViewCommon::doMaterialGroup()");
-
     if (SceneMaterial *material = action->data().value<SceneMaterial *>())
         Util::scene()->setMaterial(material);
 }
@@ -353,25 +340,6 @@ void SceneViewCommon::drawBlend(Point start, Point end, double red, double green
 
     // retrieve color
     glColor4d(color[0], color[1], color[2], color[3]);
-}
-
-void SceneViewCommon::loadBackgroundImage(const QString &fileName, double x, double y, double w, double h)
-{
-    logMessage("SceneViewCommon::loadBackgroundImage()");
-
-    // delete texture
-    if (m_backgroundTexture != -1)
-    {
-        deleteTexture(m_backgroundTexture);
-        m_backgroundTexture = -1;
-    }
-
-    if (QFile::exists(fileName))
-    {
-        m_backgroundImage.load(fileName);
-        m_backgroundTexture = bindTexture(m_backgroundImage, GL_TEXTURE_2D, GL_RGBA);
-        m_backgroundPosition = QRectF(x, y, w, h);
-    }
 }
 
 ErrorResult SceneViewCommon::saveImageToFile(const QString &fileName, int w, int h)

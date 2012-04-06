@@ -115,7 +115,6 @@ signals:
     void mouseMoved(const Point &position);
     void mousePressed();
     void mousePressed(const Point &point);
-    void sceneGeometryModeChanged(SceneGeometryMode sceneMode);
     void postprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
     void mouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
@@ -145,11 +144,6 @@ protected:
     // helper for zoom region
     bool m_zoomRegion;
     QPointF m_zoomRegionPos;
-
-    // background image
-    QImage m_backgroundImage;
-    int m_backgroundTexture;
-    QRectF m_backgroundPosition;
 
     // rulers
     Point m_rulersAreaWidth;

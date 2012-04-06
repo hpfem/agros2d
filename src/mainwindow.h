@@ -204,7 +204,7 @@ private:
     SceneViewWidget *sceneViewPost2DWidget;
     SceneViewWidget *sceneViewPost3DWidget;
 
-    SceneViewPreprocessor *sceneViewGeometry;
+    SceneViewPreprocessor *sceneViewPreprocessor;
     SceneViewMesh *sceneViewMesh;
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;

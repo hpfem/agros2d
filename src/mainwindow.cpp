@@ -87,10 +87,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doInvalidated()));
 
     // geometry
-    connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
-    connect(sceneViewGeometry, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewGeometry, SLOT(clear()));
-    currentPythonEngineAgros()->setSceneViewGeometry(sceneViewGeometry);
+    connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
+    connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
+    connect(Util::scene(), SIGNAL(cleared()), sceneViewPreprocessor, SLOT(clear()));
+    currentPythonEngineAgros()->setSceneViewGeometry(sceneViewPreprocessor);
 
     // mesh
     connect(Util::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
-    sceneViewGeometry->clear();
+    sceneViewPreprocessor->clear();
     sceneViewMesh->clear();
     sceneViewPost2D->clear();
     sceneViewPost3D->clear();
@@ -125,8 +125,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     Util::scene()->clear();
 
-    sceneViewGeometry->actSceneModePreprocessor->trigger();
-    sceneViewGeometry->doZoomBestFit();
+    sceneViewPreprocessor->actSceneModePreprocessor->trigger();
+    sceneViewPreprocessor->doZoomBestFit();
 
     // set recent files
     setRecentFiles();
@@ -411,7 +411,7 @@ void MainWindow::createActions()
     actSceneZoomRegion->setCheckable(true);
 
     actSceneModeGroup = new QActionGroup(this);
-    actSceneModeGroup->addAction(sceneViewGeometry->actSceneModePreprocessor);
+    actSceneModeGroup->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
     actSceneModeGroup->addAction(sceneViewMesh->actSceneModeMesh);
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
@@ -474,7 +474,7 @@ void MainWindow::createMenus()
     mnuEdit->addSeparator();
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
     mnuEdit->addSeparator();
-    mnuEdit->addAction(sceneViewGeometry->actSceneViewSelectRegion);
+    mnuEdit->addAction(sceneViewPreprocessor->actSceneViewSelectRegion);
     mnuEdit->addAction(Util::scene()->actTransform);
 #ifdef Q_WS_X11
     mnuEdit->addSeparator();
@@ -494,7 +494,7 @@ void MainWindow::createMenus()
     mnuShowPanels->addAction(tooltipView->toggleViewAction());
 
     mnuView = menuBar()->addMenu(tr("&View"));
-    mnuView->addAction(sceneViewGeometry->actSceneModePreprocessor);
+    mnuView->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
     mnuView->addAction(sceneViewMesh->actSceneModeMesh);
     mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
@@ -594,7 +594,7 @@ void MainWindow::createToolBars()
     tlbLeftBar->setIconSize(QSize(32, 32));
     tlbLeftBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    tlbLeftBar->addAction(sceneViewGeometry->actSceneModePreprocessor);
+    tlbLeftBar->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
     tlbLeftBar->addAction(sceneViewMesh->actSceneModeMesh);
     tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
     tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
@@ -653,11 +653,11 @@ void MainWindow::createToolBars()
     tlbGeometry->addAction(actUndo);
     tlbGeometry->addAction(actRedo);
     tlbGeometry->addSeparator();
-    tlbGeometry->addAction(sceneViewGeometry->actOperateOnNodes);
-    tlbGeometry->addAction(sceneViewGeometry->actOperateOnEdges);
-    tlbGeometry->addAction(sceneViewGeometry->actOperateOnLabels);
+    tlbGeometry->addAction(sceneViewPreprocessor->actOperateOnNodes);
+    tlbGeometry->addAction(sceneViewPreprocessor->actOperateOnEdges);
+    tlbGeometry->addAction(sceneViewPreprocessor->actOperateOnLabels);
     tlbGeometry->addSeparator();
-    tlbGeometry->addAction(sceneViewGeometry->actSceneViewSelectRegion);
+    tlbGeometry->addAction(sceneViewPreprocessor->actSceneViewSelectRegion);
     tlbGeometry->addAction(Util::scene()->actTransform);
     tlbGeometry->addSeparator();
     tlbGeometry->addAction(Util::scene()->actDeleteSelected);
@@ -684,12 +684,12 @@ void MainWindow::createScene()
 {
     logMessage("MainWindow::createScene()");
 
-    sceneViewGeometry = new SceneViewPreprocessor(this);
+    sceneViewPreprocessor = new SceneViewPreprocessor(this);
     sceneViewMesh = new SceneViewMesh(this);
     sceneViewPost2D = new SceneViewPost2D(this);
     sceneViewPost3D = new SceneViewPost3D(this);
 
-    sceneViewGeometryWidget = new SceneViewWidget(sceneViewGeometry, this);
+    sceneViewGeometryWidget = new SceneViewWidget(sceneViewPreprocessor, this);
     sceneViewMeshWidget = new SceneViewWidget(sceneViewMesh, this);
     sceneViewPost2DWidget = new SceneViewWidget(sceneViewPost2D, this);
     sceneViewPost3DWidget = new SceneViewWidget(sceneViewPost3D, this);
@@ -710,7 +710,7 @@ void MainWindow::createViews()
 {
     logMessage("MainWindow::createViews()");
 
-    preprocessorView = new PreprocessorView(sceneViewGeometry, this);
+    preprocessorView = new PreprocessorView(sceneViewPreprocessor, this);
     preprocessorView->setAllowedAreas(Qt::LeftDockWidgetArea);
     addDockWidget(Qt::LeftDockWidgetArea, preprocessorView);
 
@@ -718,7 +718,7 @@ void MainWindow::createViews()
     resultsView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::RightDockWidgetArea, resultsView);
 
-    postprocessorView = new PostprocessorView(sceneViewGeometry, sceneViewMesh, sceneViewPost2D, sceneViewPost3D, this);
+    postprocessorView = new PostprocessorView(sceneViewPreprocessor, sceneViewMesh, sceneViewPost2D, sceneViewPost3D, this);
     postprocessorView->setAllowedAreas(Qt::LeftDockWidgetArea);
     addDockWidget(Qt::LeftDockWidgetArea, postprocessorView);
 
@@ -864,8 +864,8 @@ void MainWindow::doDocumentNew()
         Util::scene()->setProblemInfo(problemInfo);
         Util::scene()->refresh();
 
-        sceneViewGeometry->actOperateOnNodes->trigger();
-        sceneViewGeometry->doZoomBestFit();
+        sceneViewPreprocessor->actOperateOnNodes->trigger();
+        sceneViewPreprocessor->doZoomBestFit();
         sceneViewMesh->doZoomBestFit();
         sceneViewPost2D->doZoomBestFit();
         sceneViewPost3D->doZoomBestFit();
@@ -907,8 +907,8 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             {
                 setRecentFiles();
 
-                sceneViewGeometry->actOperateOnNodes->trigger();
-                sceneViewGeometry->doZoomBestFit();
+                sceneViewPreprocessor->actOperateOnNodes->trigger();
+                sceneViewPreprocessor->doZoomBestFit();
                 sceneViewMesh->doZoomBestFit();
                 sceneViewPost2D->doZoomBestFit();
                 sceneViewPost3D->doZoomBestFit();
@@ -957,8 +957,8 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
         {
             setRecentFiles();
 
-            sceneViewGeometry->actOperateOnNodes->trigger();
-            sceneViewGeometry->doZoomBestFit();
+            sceneViewPreprocessor->actOperateOnNodes->trigger();
+            sceneViewPreprocessor->doZoomBestFit();
             return;
         }
         else
@@ -1047,14 +1047,14 @@ void MainWindow::doDocumentClose()
     */
 
     Util::scene()->clear();
-    sceneViewGeometry->clear();
+    sceneViewPreprocessor->clear();
     sceneViewMesh->clear();
     sceneViewPost2D->clear();
     sceneViewPost3D->clear();
     Util::scene()->refresh();
 
-    sceneViewGeometry->actOperateOnNodes->trigger();
-    sceneViewGeometry->doZoomBestFit();
+    sceneViewPreprocessor->actOperateOnNodes->trigger();
+    sceneViewPreprocessor->doZoomBestFit();
     sceneViewMesh->doZoomBestFit();
     sceneViewPost2D->doZoomBestFit();
     sceneViewPost3D->doZoomBestFit();
@@ -1071,7 +1071,7 @@ void MainWindow::doDocumentImportDXF()
     if (!fileName.isEmpty())
     {
         Util::scene()->readFromDxf(fileName);
-        sceneViewGeometry->doZoomBestFit();
+        sceneViewPreprocessor->doZoomBestFit();
 
         QFileInfo fileInfo(fileName);
         if (fileInfo.absoluteDir() != tempProblemDir())
@@ -1154,7 +1154,7 @@ void MainWindow::doDocumentSaveGeometry()
             format = GL2PS_SVG;
         }
 
-        ErrorResult result = sceneViewGeometry->saveGeometryToFile(fileName, format);
+        ErrorResult result = sceneViewPreprocessor->saveGeometryToFile(fileName, format);
         if (result.isError())
             result.showDialog();
 
@@ -1258,7 +1258,7 @@ void MainWindow::doInformations()
     int w = 450;
     int h = height() - 80;
 
-    InfoWidget *popup = new InfoWidget(sceneViewGeometry, this);
+    InfoWidget *popup = new InfoWidget(sceneViewPreprocessor, this);
     popup->resize(w, h);
     popup->move(pos().x() + 75, pos().y() + 70);
     popup->setAttribute(Qt::WA_DeleteOnClose);
@@ -1403,7 +1403,7 @@ void MainWindow::doInvalidated()
     Util::scene()->actTransform->setEnabled(false);
 
     actSceneZoomRegion->setChecked(false);
-    sceneViewGeometry->actSceneZoomRegion = NULL;
+    sceneViewPreprocessor->actSceneZoomRegion = NULL;
     sceneViewMesh->actSceneZoomRegion = NULL;
     sceneViewPost2D->actSceneZoomRegion = NULL;
     sceneViewPost3D->actSceneZoomRegion = NULL;
@@ -1411,15 +1411,15 @@ void MainWindow::doInvalidated()
     tlbGeometry->setVisible(false);
     tlbPost2D->setVisible(false);
 
-    if (sceneViewGeometry->actSceneModePreprocessor->isChecked())
+    if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
     {
         tabLayout->setCurrentWidget(sceneViewGeometryWidget);
         Util::scene()->actTransform->setEnabled(true);
 
-        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomIn()));
-        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomOut()));
-        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewGeometry, SLOT(doZoomBestFit()));
-        sceneViewGeometry->actSceneZoomRegion = actSceneZoomRegion;
+        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPreprocessor, SLOT(doZoomIn()));
+        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPreprocessor, SLOT(doZoomOut()));
+        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewPreprocessor, SLOT(doZoomBestFit()));
+        sceneViewPreprocessor->actSceneZoomRegion = actSceneZoomRegion;
 
         preprocessorView->raise();
         tlbGeometry->setVisible(true);
@@ -1544,9 +1544,9 @@ void MainWindow::doDocumentExportMeshFile()
     Util::problem()->solve(SolverMode_Mesh);
     if (Util::problem()->isMeshed())
     {
-        tabLayout->setCurrentWidget(sceneViewGeometry);
+        tabLayout->setCurrentWidget(sceneViewPreprocessor);
         Util::config()->showInitialMeshView = true;
-        sceneViewGeometry->doInvalidated();
+        sceneViewPreprocessor->doInvalidated();
 
         QSettings settings;
         QString dir = settings.value("General/LastMeshDir").toString();
@@ -1677,12 +1677,12 @@ void MainWindow::doLoadBackground()
     ImageLoaderDialog imageLoaderDialog;
     if (imageLoaderDialog.exec() == QDialog::Accepted)
     {
-        sceneViewPost2D->loadBackgroundImage(imageLoaderDialog.fileName(),
+        sceneViewPreprocessor->loadBackgroundImage(imageLoaderDialog.fileName(),
                                              imageLoaderDialog.position().x(),
                                              imageLoaderDialog.position().y(),
                                              imageLoaderDialog.position().width(),
                                              imageLoaderDialog.position().height());
-        sceneViewPost2D->refresh();
+        sceneViewPreprocessor->refresh();
     }
 }
 

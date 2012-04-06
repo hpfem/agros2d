@@ -171,6 +171,9 @@ void SceneViewPreprocessor::clear()
 
     m_selectRegion = false;
 
+    deleteTexture(m_backgroundTexture);
+    m_backgroundTexture = -1;
+
     m_sceneMode = SceneGeometryMode_OperateOnNodes;
 }
 
@@ -795,6 +798,52 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
     glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x * 2.0/3.0, snapPoint.y + m_rulersAreaWidth.y * 2.0/7.0);
     glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x * 2.0/3.0, snapPoint.y - m_rulersAreaWidth.y * 2.0/7.0);
     glEnd();
+}
+
+void SceneViewPreprocessor::paintBackgroundPixmap()
+{
+    logMessage("SceneViewCommon::paintBackgroundPixmap()");
+
+    if (m_backgroundTexture != -1)
+    {
+        loadProjection2d(true);
+
+        glEnable(GL_TEXTURE_2D);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glBindTexture(GL_TEXTURE_2D, m_backgroundTexture);
+
+        glColor3d(1.0, 1.0, 1.0);
+
+        glBegin(GL_QUADS);
+        glTexCoord2d(0.0, 0.0); glVertex2d(m_backgroundPosition.x(), m_backgroundPosition.y());
+        glTexCoord2d(1.0, 0.0); glVertex2d(m_backgroundPosition.x() + m_backgroundPosition.width(), m_backgroundPosition.y());
+        glTexCoord2d(1.0, 1.0); glVertex2d(m_backgroundPosition.x() + m_backgroundPosition.width(), m_backgroundPosition.y() + m_backgroundPosition.height());
+        glTexCoord2d(0.0, 1.0); glVertex2d(m_backgroundPosition.x(), m_backgroundPosition.y() + m_backgroundPosition.height());
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+    }
+}
+
+void SceneViewPreprocessor::loadBackgroundImage(const QString &fileName, double x, double y, double w, double h)
+{
+    // delete texture
+    if (m_backgroundTexture != -1)
+    {
+        deleteTexture(m_backgroundTexture);
+        m_backgroundTexture = -1;
+    }
+
+    if (QFile::exists(fileName))
+    {
+        m_backgroundImage.load(fileName);
+        m_backgroundTexture = bindTexture(m_backgroundImage, GL_TEXTURE_2D, GL_RGBA);
+        m_backgroundPosition = QRectF(x, y, w, h);
+    }
 }
 
 void SceneViewPreprocessor::paintGL()

@@ -973,6 +973,8 @@ void SceneViewPost2D::doInvalidated()
     m_listVectors = -1;
     m_listScalarField = -1;
 
+    m_post2DHermes->clear();
+
     if (Util::problem()->isSolved())
     {
         paletteFilter(textureScalar());
@@ -1000,8 +1002,6 @@ void SceneViewPost2D::clear()
 
 void SceneViewPost2D::doSelectMarker()
 {
-    logMessage("SceneViewCommon::doSelectMarker()");
-
     SceneMarkerSelectDialog sceneMarkerSelectDialog(this, QApplication::activeWindow());
     sceneMarkerSelectDialog.exec();
 }
