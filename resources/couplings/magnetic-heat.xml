@@ -11,8 +11,8 @@
     <volume>
         <weakforms>
             <weakform couplingtype="weak" sourceanalysis="harmonic"  targetanalysis="steadystate" >
-                <vector i="1" j="1" planar="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source1 * source1 + source2 * source2) * vval"
-                                    axi="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source1 * source1 + source2 * source2) * r * vval" />
+                <vector i="1" j="1" planar="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source0 * source0+ source1 * source1) * vval"
+                                    axi="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source0 * source0 + source1 * source1) * r * vval" />
             </weakform>
 
             <weakform couplingtype="hard" sourceanalysis="harmonic"  targetanalysis="steadystate" >
@@ -27,8 +27,8 @@
             </weakform>
 
             <weakform couplingtype="weak" sourceanalysis="harmonic"  targetanalysis="transient" >
-                <vector i="1" j="1" planar="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source1 * source1 + source2 * source2) * vval"
-                                    axi="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source1 * source1 + source2 * source2) * r * vval" />
+                <vector i="1" j="1" planar="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source0 * source0 + source1 * source1) * vval"
+                                    axi="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source0 * source0 + source1 * source1) * r * vval" />
             </weakform>
 
             <weakform couplingtype="hard" sourceanalysis="harmonic"  targetanalysis="transient" >

@@ -11,8 +11,8 @@
     <volume>
         <weakforms>
             <weakform couplingtype="weak" sourceanalysis="steadystate"  targetanalysis="steadystate" >
-                <vector i="1" j="1" planar="- gamma * (sourcedx * sourcedx + sourcedy * sourcedy) * vval"
-                                    axi="- gamma * (sourcedr * sourcedr + sourcedz * sourcedz) * r * vval" />
+                <vector i="1" j="1" planar="- gamma * (source0dx * source0dx + source0dy * source0dy) * vval"
+                                    axi="- gamma * (source0dr * source0dr + source0dz * source0dz) * r * vval" />
             </weakform>
 
             <weakform couplingtype="hard" sourceanalysis="steadystate"  targetanalysis="steadystate" >

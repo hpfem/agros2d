@@ -121,8 +121,8 @@ void ParserForm::initParser(Hermes::vector<Material *> materials, Boundary *boun
     for(int comp = 0; comp < maxSourceFieldComponents; comp++)
     {
         parser->parser[0]->DefineVar("source" + QString().setNum(comp).toStdString(), &source[comp]);
-        parser->parser[0]->DefineVar("sourced" + QString().setNum(comp).toStdString() + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &sourcedx[comp]);
-        parser->parser[0]->DefineVar("sourced" + QString().setNum(comp).toStdString() + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &sourcedy[comp]);
+        parser->parser[0]->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &sourcedx[comp]);
+        parser->parser[0]->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &sourcedy[comp]);
     }
 
     parser->setParserVariables(materials, boundary);
