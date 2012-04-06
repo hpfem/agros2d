@@ -19,6 +19,8 @@
 #include "newton_solver.h"
 #include "hermes_common.h"
 
+#include "../src/alter_newton_solver.h"
+
 namespace Hermes
 {
   namespace Hermes2D

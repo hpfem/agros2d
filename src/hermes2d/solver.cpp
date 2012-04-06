@@ -346,8 +346,11 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
     // Nonlinear solver
     if (m_block->linearityType() == LinearityType_Newton)
     {
+        Hermes::TimePeriod timer;
+
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
         NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
+        newton.attach_timer(&timer);
 
         //newton.set_max_allowed_residual_norm(1e15);
         try
@@ -358,15 +361,20 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             Scalar* coeff_vec = new Scalar[ndof];
             memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
+            QTime time;
+            time.start();
+
             cout << "solving with nonlinear tolerance " << m_block->nonlinearTolerance() << " and nonlin steps " << m_block->nonlinearSteps() << endl;
             newton.solve(coeff_vec, m_block->nonlinearTolerance(), m_block->nonlinearSteps());
 
+            Util::log()->printDebug("Solver", QString("elapsed time = %1").arg(time.elapsed()));
+
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
-            //            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - assemble: %1 s").
-            //                                             arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")), false);
-            //            m_progressItemSolve->emitMessage(QObject::tr("Newton's solver - solve: %1 s").
-            //                                             arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")), false);
+            Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble: %1 s").
+                                      arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")));
+            Util::log()->printDebug("Solver", QObject::tr("Newton's solver - solve: %1 s").
+                                      arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")));
 
             //delete coeff_vec; //TODO nebo se to dela v resici???
         }

@@ -951,7 +951,6 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
 ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
-    cout << "creating new viewScalarFilter for " << physicFieldVariable->name << endl;
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
     for (int k = 0; k < number_of_solution(); k++)
     {

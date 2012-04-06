@@ -157,6 +157,26 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
     initParser(materials, NULL);
 
     parser->parser[0]->SetExpr(expression);
+
+    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materialst = m_fieldInfo->module()->material_type_variables;
+    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materialst.begin(); it < materialst.end(); ++it)
+    {
+        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+        Value value = m_material1->getValue(variable->id);
+
+        // table
+        if (value.table->size() > 0)
+        {
+            parser->parser_variables[variable->shortname] = value.value(pupval);
+            parser->parser_variables["d" + variable->shortname] = value.derivative(pupval);
+        }
+
+        // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
+        // parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(sqrt(pupdx*pupdx + pupdy*pupdy));
+
+        // if (variable->shortname == "mur")
+        //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
+    }
 }
 
 template <typename Scalar>
@@ -187,6 +207,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             pupdx = u_ext[this->i]->dx[i];
             pupdy = u_ext[this->i]->dy[i];
 
+            /*
             Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = m_fieldInfo->module()->material_type_variables;
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
@@ -206,6 +227,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
                 // if (variable->shortname == "mur")
                 //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
             }
+            */
         }
         else
         {
@@ -271,6 +293,24 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, uns
     initParser(materials, NULL);
 
     parser->parser[0]->SetExpr(expression);
+
+    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materialst = m_fieldInfo->module()->material_type_variables;
+    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materialst.begin(); it < materialst.end(); ++it)
+    {
+        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+        Value value = m_material1->getValue(variable->id);
+
+        // table
+        if (value.table->size() > 0)
+        {
+            parser->parser_variables[variable->shortname] = m_material1->getValue(variable->id).value(pupval);
+        }
+
+        // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
+
+        // if (variable->shortname == "epsr")
+        //     qDebug() << parser->parser_variables[variable->shortname];
+    }
 }
 
 template <typename Scalar>
@@ -297,6 +337,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             pupdx = u_ext[this->j]->dx[i];
             pupdy = u_ext[this->j]->dy[i];
 
+            /*
             Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = m_fieldInfo->module()->material_type_variables;
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
@@ -314,6 +355,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
                 // if (variable->shortname == "epsr")
                 //     qDebug() << parser->parser_variables[variable->shortname];
             }
+            */
         }
         else
         {
