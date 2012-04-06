@@ -1148,11 +1148,11 @@ void PostprocessorView::doScalarFieldVariableComp(int index)
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
-    // TODO proc je tu index a cmb..->currentIndex?
+    // TODO: proc je tu index a cmb..->currentIndex?
     if ((cmbPost2DScalarFieldVariable->currentIndex() != -1) && (index != -1)){
         QString variableName(cmbPost2DScalarFieldVariable->itemData(index).toString());
 
-        //TODO not good - relies on variable names begining with module name
+        // TODO: not good - relies on variable names begining with module name
         std::string fieldName(variableName.split("_")[0].toStdString());
 
         physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());

@@ -621,10 +621,7 @@ void Scene::clear()
     }
     m_fieldInfos.clear();
 
-    //TODO - allow "no field"
     m_activeViewField = NULL;
-    // m_activeViewField = new FieldInfo(m_problemInfo);
-    // addField(m_activeViewField);
 
     // geometry
     nodes->clear();
@@ -1369,8 +1366,6 @@ void Scene::readFromDxf(const QString &fileName)
 
 ErrorResult Scene::readFromFile(const QString &fileName)
 {
-    logMessage("Scene::readFromFile()");
-
     QSettings settings;
     QFileInfo fileInfo(fileName);
     if (fileInfo.absoluteDir() != tempProblemDir())
@@ -1388,8 +1383,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     setlocale (LC_NUMERIC, "C");
 
     clear();
-    //TODO - allow "no field"
-    m_fieldInfos.clear();
 
     m_problemInfo->fileName = fileName;
     emit fileNameChanged(fileInfo.absoluteFilePath());
