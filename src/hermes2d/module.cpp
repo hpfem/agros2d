@@ -304,7 +304,6 @@ void WeakFormAgros<Scalar>::registerForms()
                 }
 
 
-                //TODO proc je tu tohle? silne sdruzeni je dole, slabe by zadne formy mit nemelo....
                 foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
                 {
                      for (Hermes::vector<ParserFormExpression *>::iterator it = couplingInfo->coupling()->weakform_vector_volume.begin();
@@ -314,8 +313,6 @@ void WeakFormAgros<Scalar>::registerForms()
                                       m_block->offset(field), m_block->offset(field), material,
                                       Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
                     }
-
-
                 }
 
                 notNoneLabelNumHack++;
