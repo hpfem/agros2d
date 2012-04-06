@@ -298,7 +298,9 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
     DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
 
     // Linear solver
-    if (m_block->linearityType() == LinearityType_Linear)
+    // TODO original linear solver, now not used. We use Newton solver for linear problems instead. It should be put back....
+//    if (m_block->linearityType() == LinearityType_Linear)
+    if(0)
     {
         // set up the solver, matrix, and rhs according to the solver selection.
         Hermes::Algebra::SparseMatrix<Scalar> *matrix = create_matrix<Scalar>(Hermes::SOLVER_UMFPACK);
@@ -344,7 +346,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
     }
 
     // Nonlinear solver
-    if (m_block->linearityType() == LinearityType_Newton)
+    if ((m_block->linearityType() == LinearityType_Newton) || (m_block->linearityType() == LinearityType_Linear))
     {
         Hermes::TimePeriod timer;
 
