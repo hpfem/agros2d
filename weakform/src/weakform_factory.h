@@ -27,6 +27,7 @@
 #include "scenebasic.h"
 #include "scenesolution.h"
 #include "scenemarker.h"
+#include "scenemarkerdialog.h"
 
 #include "hermes2d/localpoint.h"
 #include "hermes2d/volumeintegral.h"
@@ -35,15 +36,24 @@
 #include <rapidxml.cpp>
 #include <rapidxml_utils.cpp>
 
-#include "../src/hermes2d/localpoint.h"
-#include "../src/hermes2d/weakform_parser.h"
+#include "hermes2d/marker.h"
+#include "hermes2d/localpoint.h"
+#include "hermes2d/weakform_parser.h"
+#include "electrostatic_steadystate_planar.h"
+#include "electrostatic_steadystate_axi.h"
 
 template <typename Scalar>
 Hermes::Hermes2D::MatrixFormVol<Scalar> *factoryMatrixFormVol(const std::string &problemId, int i, int j,
                                                               const std::string &area, Hermes::Hermes2D::SymFlag sym,
                                                               SceneMaterial *material)
 {
-     
+    
+        if ((problemId == "electrostatic_steadystate_planar")&&(i == 0)&&(j == 0))
+            return new electrostaticsteadystateplanar::CustomMatrixFormVol__1_1<double>(0, 0, area, sym, material);
+
+        if ((problemId == "electrostatic_steadystate_axisymmetric")&&(i == 0)&&(j == 0))
+            return new electrostaticsteadystateaxi::CustomMatrixFormVol__1_1<double>(0, 0, area, sym, material);
+ 
     return NULL;
 }
 
@@ -51,7 +61,13 @@ template <typename Scalar>
 Hermes::Hermes2D::VectorFormVol<Scalar> *factoryVectorFormVol(const std::string &problemId, int i, int j,
                                                               const std::string &area, SceneMaterial *material)
 {
-     
+    
+        if ((problemId == "electrostatic_steadystate_planar")&&(i == 0)&&(j == 0))
+            return new electrostaticsteadystateplanar::CustomVectorFormVol__1_1<double>(0, 0, area, material);
+
+        if ((problemId == "electrostatic_steadystate_axisymmetric")&&(i == 0)&&(j == 0))
+            return new electrostaticsteadystateaxi::CustomVectorFormVol__1_1<double>(0, 0, area, material);
+ 
     return NULL;
 }
 
@@ -67,7 +83,26 @@ template <typename Scalar>
 Hermes::Hermes2D::VectorFormSurf<Scalar> *factoryVectorFormSurf(const std::string &problemId, int i, int j,
                                                                 const std::string &area, SceneBoundary *boundary)
 {
-     
+    
+        if ((problemId == "electrostatic_steadystate_planar")&&(i == 0)&&(j == 0)&&(boundary->type == "Surface_charge_density"))
+            return new electrostaticsteadystateplanar::CustomVectorFormSurf_Surface_charge_density_1_1<double>(0, 0, area, boundary);
+
+        if ((problemId == "electrostatic_steadystate_axisymmetric")&&(i == 0)&&(j == 0)&&(boundary->type == "Surface_charge_density"))
+            return new electrostaticsteadystateaxi::CustomVectorFormSurf_Surface_charge_density_1_1<double>(0, 0, area, boundary);
+ 
+    return NULL;
+}
+
+template <typename Scalar>
+Hermes::Hermes2D::ExactSolutionScalar<Scalar> *factoryExactSolution(const std::string &problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
+{
+    
+        if ((problemId == "electrostatic_steadystate_planar")&&(i == 0))
+            return new electrostaticsteadystateplanar::CustomEssentialFormSurf_Fixed_voltage_1_0<double>(mesh, boundary);
+
+        if ((problemId == "electrostatic_steadystate_axisymmetric")&&(i == 0))
+            return new electrostaticsteadystateaxi::CustomEssentialFormSurf_Fixed_voltage_1_0<double>(mesh, boundary);
+ 
     return NULL;
 }
 
