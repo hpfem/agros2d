@@ -4,8 +4,8 @@ import agros2d
 problem = agros2d.Problem(coordinate_type = "planar", name = "Test electrostatic field - planar")
 
 electrostatics = agros2d.Field(problem, field_id = "electrostatic", analysis_type = "steadystate")
-electrostatics.number_of_refinements = 2
-electrostatics.polynomial_order = 3
+electrostatics.number_of_refinements = 1 # 2
+electrostatics.polynomial_order = 2 # 3
 electrostatics.nonlinear_tolerance = 0.001
 electrostatics.nonlinear_steps = 10
 	

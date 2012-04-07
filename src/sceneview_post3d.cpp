@@ -59,17 +59,18 @@ static void computeNormal(double p0x, double p0y, double p0z,
 
 Post3DHermes::Post3DHermes()
 {
-    m_scalarIsPrepared = false;
+    clear();
 }
 
 
 Post3DHermes::~Post3DHermes()
 {
-    clear();
+
 }
 
 void Post3DHermes::clear()
 {
+    m_initialMeshIsPrepared = false;
     m_scalarIsPrepared = false;
 }
 
@@ -89,14 +90,14 @@ void Post3DHermes::processInitialMesh()
 
 void Post3DHermes::processRangeScalar()
 {
-    Util::log()->printMessage(tr("Post3DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
-
-    processInitialMesh();
-
     m_scalarIsPrepared = false;
 
     if (Util::problem()->isSolved() && Util::config()->scalarVariable != "")
     {
+        Util::log()->printMessage(tr("Post3DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
+
+        processInitialMesh();
+
         ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
                                                                                                                  Util::config()->scalarVariableComp);
 
@@ -116,7 +117,13 @@ void Post3DHermes::processRangeScalar()
 
 void Post3DHermes::processSolved()
 {
-    QTimer::singleShot(0, this, SLOT(processRangeScalar()));
+    m_initialMeshIsPrepared = false;
+    m_scalarIsPrepared = false;
+
+    // processRangeScalar();
+    // QTimer::singleShot(0, this, SLOT(processRangeScalar()));
+
+    emit processed();
 }
 
 // ************************************************************************************************
@@ -135,6 +142,8 @@ SceneViewPost3D::SceneViewPost3D(QWidget *parent) : SceneViewCommon3D(parent),
     m_post3DHermes = new Post3DHermes();
 
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
+
+    connect(m_post3DHermes, SIGNAL(processed()), this, SLOT(updateGL()));
 }
 
 SceneViewPost3D::~SceneViewPost3D()

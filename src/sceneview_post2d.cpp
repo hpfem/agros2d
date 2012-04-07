@@ -173,9 +173,9 @@ void Post2DHermes::processSolved()
     m_scalarIsPrepared = false;
     m_vectorIsPrepared = false;
 
-    processRangeContour();
+    // processRangeContour();
     processRangeScalar();
-    processRangeVector();
+    // processRangeVector();
     //    QTimer::singleShot(0, this, SLOT(processRangeContour()));
     //    QTimer::singleShot(0, this, SLOT(processRangeScalar()));
     //    QTimer::singleShot(0, this, SLOT(processRangeVector()));
@@ -199,7 +199,6 @@ SceneViewPost2D::SceneViewPost2D(QWidget *parent) : SceneViewCommon2D(parent),
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
 
     connect(m_post2DHermes, SIGNAL(processed()), this, SLOT(updateGL()));
-    // connect(this, SIGNAL(mouseSceneModeChanged(MouseSceneMode)), this, SLOT(doMouseSceneModeChanged(MouseSceneMode)));
 }
 
 SceneViewPost2D::~SceneViewPost2D()
@@ -568,6 +567,7 @@ void SceneViewPost2D::paintScalarField()
         glCallList(m_listScalarField);
     }
 
+    /*
     m_post2DHermes->linScalarView().lock_data();
     double3* linVertScalar = m_post2DHermes->linScalarView().get_vertices();
     int3* linTrisScalar = m_post2DHermes->linScalarView().get_triangles();
@@ -618,6 +618,7 @@ void SceneViewPost2D::paintScalarField()
     glEnd();
 
     linSolutionMeshView.unlock_data();
+    */
 }
 
 void SceneViewPost2D::paintContours()

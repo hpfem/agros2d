@@ -107,7 +107,8 @@ private slots:
     void doOnlineHelp();
     void doCheckVersion();
     void doAbout();
-    void doInvalidated();
+    void setControls();
+    void clear();
     void doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
 
     void doTimeStepChanged(int index);

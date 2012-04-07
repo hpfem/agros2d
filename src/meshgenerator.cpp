@@ -131,7 +131,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             // load mesh
             Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
 
-            // TODO jinak
+            // FIXME: jinak
             Util::problem()->setMeshInitial(mesh);
         }
         else
@@ -150,8 +150,6 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
 
 bool MeshGeneratorTriangle::writeToTriangle()
 {
-    logMessage("ProgressItemMesh::writeToTriangle()");
-
     // basic check
     if (Util::scene()->nodes->length() < 3)
     {
@@ -161,49 +159,6 @@ bool MeshGeneratorTriangle::writeToTriangle()
     if (Util::scene()->edges->length() < 3)
     {
         Util::log()->printError(tr("Mesh generator"), tr("invalid number of edges (%1 < 3)").arg(Util::scene()->edges->length()));
-        return false;
-    }
-    else
-    {
-        // at least one boundary condition has to be assigned
-        int count = 0;
-        foreach (SceneEdge *edge, Util::scene()->edges->items())
-            if (edge->markersCount() > 0)
-                count++;
-
-        if (count == 0)
-        {
-            Util::log()->printError(tr("Mesh generator"), tr("at least one boundary condition has to be assigned"));
-            return false;
-        }
-    }
-    if (Util::scene()->labels->length() < 1)
-    {
-        Util::log()->printError(tr("Mesh generator"), tr("invalid number of labels (%1 < 1)").arg(Util::scene()->labels->length()));
-        return false;
-    }
-    else
-    {
-        // at least one material has to be assigned
-        int count = 0;
-        foreach (SceneLabel *label, Util::scene()->labels->items())
-            if (label->markersCount() > 0)
-                count++;
-
-        if (count == 0)
-        {
-            Util::log()->printError(tr("Mesh generator"), tr("at least one material has to be assigned"));
-            return false;
-        }
-    }
-    if (Util::scene()->boundaries->length() < 2) // + none marker
-    {
-        Util::log()->printError(tr("Mesh generator"), tr("invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries->length()));
-        return false;
-    }
-    if (Util::scene()->materials->length() < 2) // + none marker
-    {
-        Util::log()->printError(tr("Mesh generator"), tr("invalid number of materials (%1 < 1)").arg(Util::scene()->materials->length()));
         return false;
     }
 
@@ -470,12 +425,15 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     }
     // edgeMarkersCheck.clear();
 
+    // TODO: move
     // no edge marker
+    /*
     if (edgeCountLinear < 1)
     {
         Util::log()->printError(tr("Mesh generator"), tr("invalid number of edge markers"));
         return false;
     }
+    */
 
     // triangle elements
     sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
@@ -532,12 +490,14 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     }
     labelMarkersCheck.clear();
 
-    // no label marker
+    // TODO: move
+    /*
     if (elementList.count() < 1)
     {
         Util::log()->printError(tr("Mesh generator"), tr("invalid number of label markers"));
         return false;
     }
+    */
 
     // triangle neigh
     sscanf(inNeigh.readLine().toStdString().c_str(), "%i", &k);

@@ -50,13 +50,13 @@ void MeshHermes::clear()
 
 void MeshHermes::processOrder()
 {
-    Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
-
     m_orderIsPrepared = false;
 
     // init linearizer for order view
     if (Util::problem()->isSolved())
     {
+        Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
+
         m_orderView.process_space(Util::scene()->activeSceneSolution()->space(0));
 
         m_orderIsPrepared = true;
@@ -76,8 +76,6 @@ void MeshHermes::processInitialMesh()
         m_linInitialMeshView.process_solution(&initial);
 
         m_initialMeshIsPrepared = true;
-
-        emit processed();
     }
 }
 
@@ -94,8 +92,6 @@ void MeshHermes::processSolutionMesh()
         m_linSolutionMeshView.process_solution(&solution);
 
         m_solutionMeshIsPrepared = true;
-
-        emit processed();
     }    
 }
 
