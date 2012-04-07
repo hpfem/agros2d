@@ -402,8 +402,8 @@ bool Problem::mesh()
 {
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
-    MeshGeneratorTriangle* pim = new MeshGeneratorTriangle();
-    return pim->mesh();
+    MeshGeneratorTriangle pim;
+    return pim.mesh();
 }
 
 void Problem::solve(SolverMode solverMode)
@@ -427,7 +427,7 @@ void Problem::solve(SolverMode solverMode)
 
     createStructure();
 
-    Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
+    // Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
 
     isError = !mesh();
     if (!isError)
@@ -443,6 +443,10 @@ void Problem::solve(SolverMode solverMode)
 
         if (solverMode == SolverMode_MeshAndSolve)
         {
+            // check geometry
+            if (!Util::scene()->checkGeometryAssignement())
+                return;
+
             if (Util::scene()->fieldInfos().count() == 0)
             {
                 Util::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
@@ -450,6 +454,8 @@ void Problem::solve(SolverMode solverMode)
             }
 
             Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
+
+            Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
 
             foreach (Block* block, m_blocks)
             {

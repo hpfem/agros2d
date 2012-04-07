@@ -5,7 +5,7 @@
   |  Y Y  \|  |  /|    |     / __ \_|  | \/\___ \ \  ___/ |  | \/
   |__|_|  /|____/ |____|    (____  /|__|  /____  > \___  >|__|   
         \/                       \/            \/      \/        
-  Copyright (C) 2011 Ingo Berg
+  Copyright (C) 2012 Ingo Berg
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this 
   software and associated documentation files (the "Software"), to deal in the Software
@@ -28,6 +28,7 @@
 #include <cstdio>
 #include <cmath>
 #include <iostream>
+#include <limits>
 
 #define PARSER_CONST_PI  3.141592653589793238462643
 #define PARSER_CONST_E   2.718281828459045235360287
@@ -53,7 +54,6 @@ namespace mu
       AddTest(&ParserTester::TestPostFix);
       AddTest(&ParserTester::TestInfixOprt);
       AddTest(&ParserTester::TestVarConst);
-      AddTest(&ParserTester::TestVolatile);
       AddTest(&ParserTester::TestMultiArg);
       AddTest(&ParserTester::TestExpression);
       AddTest(&ParserTester::TestIfThenElse);
@@ -63,6 +63,28 @@ namespace mu
       AddTest(&ParserTester::TestStrArg);
 
       ParserTester::c_iCount = 0;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    int ParserTester::IsHexVal(const char_type *a_szExpr, int *a_iPos, value_type *a_fVal)
+    {
+      if (a_szExpr[1]==0 || (a_szExpr[0]!='0' || a_szExpr[1]!='x') ) 
+        return 0;
+
+      unsigned iVal(0);
+
+      // New code based on streams for UNICODE compliance:
+      stringstream_type::pos_type nPos(0);
+      stringstream_type ss(a_szExpr + 2);
+      ss >> std::hex >> iVal;
+      nPos = ss.tellg();
+
+      if (nPos==(stringstream_type::pos_type)0)
+        return 1;
+
+      *a_iPos += (int)(2 + nPos);
+      *a_fVal = (value_type)iVal;
+      return 1;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -438,7 +460,11 @@ namespace mu
     int ParserTester::TestVarConst()
     {
       int iStat = 0;
-      mu::console() << _T("testing variable/constant name recognition...");
+      mu::console() << _T("testing variable/constant detection...");
+
+      // Test if the result changes when a variable changes
+      iStat += EqnTestWithVarChange( _T("a"), 1, 1, 2, 2 );
+      iStat += EqnTestWithVarChange( _T("2*a"), 2, 4, 3, 6 );
 
       // distinguish constants with same basename
       iStat += EqnTest( _T("const"), 1, true);
@@ -461,6 +487,10 @@ namespace mu
       iStat += EqnTest( _T("2*aa"), 4, true);
       iStat += EqnTest( _T("2*a-1"), 1, true);
       iStat += EqnTest( _T("2*aa-1"), 3, true);
+
+      // custom value recognition
+      iStat += EqnTest( _T("0xff"), 255, true);
+      iStat += EqnTest( _T("0x97 + 0xff"), 406, true);
 
       // Finally test querying of used variables
       try
@@ -640,6 +670,7 @@ namespace mu
       iStat += EqnTest( _T("-(-1)"),  1, true);
       iStat += EqnTest( _T("-(-1)*2"),  2, true);
       iStat += EqnTest( _T("-(-2)*sqrt(4)"),  4, true);
+      iStat += EqnTest( _T("-_pi"), -PARSER_CONST_PI, true);
       iStat += EqnTest( _T("-a"),  -1, true);
       iStat += EqnTest( _T("-(a)"),  -1, true);
       iStat += EqnTest( _T("-(-a)"),  1, true);
@@ -669,10 +700,10 @@ namespace mu
       iStat += EqnTest( _T("3+-3^2"),-6, true);
       // The following assumes use of sqr as postfix operator ("§") together
       // with a sign operator of low priority:
-      iStat += EqnTest( _T("-2§"), -4, true);
-      iStat += EqnTest( _T("-(1+1)§"),-4, true);
-      iStat += EqnTest( _T("2+-(1+1)§"),-2, true);
-      iStat += EqnTest( _T("2+-2§"), -2, true);
+      iStat += EqnTest( _T("-2'"), -4, true);
+      iStat += EqnTest( _T("-(1+1)'"),-4, true);
+      iStat += EqnTest( _T("2+-(1+1)'"),-2, true);
+      iStat += EqnTest( _T("2+-2'"), -2, true);
       // This is the classic behaviour of the infix sign operator (here: "$") which is
       // now deprecated:
       iStat += EqnTest( _T("$2^2"),4, true);
@@ -746,101 +777,37 @@ namespace mu
     }
 
     //---------------------------------------------------------------------------
-    /** \brief Test volatile (nonoptimizeable functions). */
-    int ParserTester::TestVolatile()
-    {
-      int iStat = 0;
-      mu::console() << "testing volatile/nonvolatile functions...";
-
-      // First test with volatile flag turned on
-      try
-      {
-        mu::Parser p;
-        p.DefineFun( _T("rnd"), Rnd, false);
-        p.DefineFun( _T("valueof"), RndWithString, false);
-
-        // 1st test, compare results from sucessive calculations
-        p.SetExpr( _T("3+rnd(8)") );
-        if (p.Eval()==p.Eval()) iStat += 1;
-
-        // 2nd test, force bytecode creation, compare two results both 
-        // calculated from bytecode
-        p.SetExpr( _T("3+rnd(8)") ); 
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()==p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("3*rnd(8)+3") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()==p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("10+3*sin(rnd(8))-1") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()==p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("3+rnd(rnd(8))*2") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()==p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("valueof(\"Das ist ein Test\")") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()==p.Eval()) iStat += 1;
-      }
-      catch(Parser::exception_type &e)
-      {
-        mu::console() << _T("\n  ") << e.GetExpr() << _T(" : ") << e.GetMsg();
-        iStat += 1;
-      }
-
-      // Second test with volatile flag turned off
-      try
-      {
-        mu::Parser p;
-        p.DefineFun( _T("rnd"), Rnd);
-        p.DefineFun( _T("valueof"), RndWithString);
-
-        // compare string parsing with bytecode
-        p.SetExpr( _T("3+rnd(8)") ); 
-        if (p.Eval()!=p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("3+rnd(8)") ); 
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()!=p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("3*rnd(8)+3") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()!=p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("10+3*sin(rnd(8))-1") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()!=p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("3+rnd(rnd(8))*2") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()!=p.Eval()) iStat += 1;
-      }
-      catch(Parser::exception_type &e)
-      {
-        mu::console() << _T("\n  ") << e.GetExpr() << _T(" : ") << e.GetMsg();
-        iStat += 1;
-      }
-      
-      if (iStat==0)
-        mu::console() << _T("passed") << endl;
-      else
-        mu::console() << _T("\n  failed with ") << iStat << _T(" errors") << endl;
-
-      return iStat;
-    }
-
-    //---------------------------------------------------------------------------
     int ParserTester::TestExpression()
     {
       int iStat = 0;
       mu::console() << _T("testing expression samples...");
 
+      value_type b = 2;
+
+      // Optimization
+      iStat += EqnTest( _T("2*b*5"), 20, true);
+      iStat += EqnTest( _T("2*b*5 + 4*b"), 28, true);
+      iStat += EqnTest( _T("2*a/3"), 2.0/3.0, true);
+
+      // Addition auf cmVARMUL 
+      iStat += EqnTest( _T("3+b"), b+3, true);
+      iStat += EqnTest( _T("b+3"), b+3, true);
+      iStat += EqnTest( _T("b*3+2"), b*3+2, true);
+      iStat += EqnTest( _T("3*b+2"), b*3+2, true);
+      iStat += EqnTest( _T("2+b*3"), b*3+2, true);
+      iStat += EqnTest( _T("2+3*b"), b*3+2, true);
+      iStat += EqnTest( _T("b+3*b"), b+3*b, true);
+      iStat += EqnTest( _T("3*b+b"), b+3*b, true);
+
+      iStat += EqnTest( _T("2+b*3+b"), 2+b*3+b, true);
+      iStat += EqnTest( _T("b+2+b*3"), b+2+b*3, true);
+
+      iStat += EqnTest( _T("(2*b+1)*4"), (2*b+1)*4, true);
+      iStat += EqnTest( _T("4*(2*b+1)"), (2*b+1)*4, true);
+
       // operator precedencs
       iStat += EqnTest( _T("1+2-3*4/5^6"), 2.99923, true);
-      iStat += EqnTest( _T("1^2/3*4-5+6"), 2.3333, true);
+      iStat += EqnTest( _T("1^2/3*4-5+6"), 2.33333333, true);
       iStat += EqnTest( _T("1+2*3"), 7, true);
       iStat += EqnTest( _T("1+2*3"), 7, true);
       iStat += EqnTest( _T("(1+2)*3"), 9, true);
@@ -888,6 +855,7 @@ namespace mu
 
       return iStat;
     }
+
 
 
     //---------------------------------------------------------------------------
@@ -1174,6 +1142,60 @@ namespace mu
 
         \return 1 in case of a failure, 0 otherwise.
     */
+    int ParserTester::EqnTestWithVarChange(const string_type &a_str, 
+                                           double a_fVar1, 
+                                           double a_fRes1, 
+                                           double a_fVar2, 
+                                           double a_fRes2)
+    {
+      ParserTester::c_iCount++;
+      value_type fVal[2] = {-999, -999 }; // should be equalinitially
+
+      try
+      {
+        Parser  p;
+
+        // variable
+        value_type var = 0;
+        p.DefineVar( _T("a"), &var);
+        p.SetExpr(a_str);
+
+        var = a_fVar1;
+        fVal[0] = p.Eval();
+
+        var = a_fVar2;
+        fVal[1] = p.Eval();
+        
+        if ( fabs(a_fRes1-fVal[0]) > 0.0000000001)
+          throw std::runtime_error("incorrect result (first pass)");
+
+        if ( fabs(a_fRes2-fVal[1]) > 0.0000000001)
+          throw std::runtime_error("incorrect result (second pass)");
+      }
+      catch(Parser::exception_type &e)
+      {
+        mu::console() << _T("\n  fail: ") << a_str.c_str() << _T(" (") << e.GetMsg() << _T(")");
+        return 1;
+      }
+      catch(std::exception &e)
+      {
+        mu::console() << _T("\n  fail: ") << a_str.c_str() << _T(" (") << e.what() << _T(")");
+        return 1;  // always return a failure since this exception is not expected
+      }
+      catch(...)
+      {
+        mu::console() << _T("\n  fail: ") << a_str.c_str() <<  _T(" (unexpected exception)");
+        return 1;  // exceptions other than ParserException are not allowed
+      }
+
+      return 0;
+    }
+
+    //---------------------------------------------------------------------------
+    /** \brief Evaluate a tet expression. 
+
+        \return 1 in case of a failure, 0 otherwise.
+    */
     int ParserTester::EqnTest(const string_type &a_str, double a_fRes, bool a_fPass)
     {
       ParserTester::c_iCount++;
@@ -1203,6 +1225,10 @@ namespace mu
         p1->DefineVar( _T("b"), &vVarVal[1]);
         p1->DefineVar( _T("c"), &vVarVal[2]);
         p1->DefineVar( _T("d"), &vVarVal[3]);
+        
+        // custom value ident functions
+        p1->AddValIdent(&ParserTester::IsHexVal);        
+
         // functions
         p1->DefineFun( _T("ping"), Ping);
         p1->DefineFun( _T("f1of1"), f1of1);  // one parameter
@@ -1250,7 +1276,7 @@ namespace mu
         p1->DefinePostfixOprt( _T("m"), Milli);
         p1->DefinePostfixOprt( _T("meg"), Mega);
         p1->DefinePostfixOprt( _T("#"), times3);
-        p1->DefinePostfixOprt( _T("§"), sqr); 
+        p1->DefinePostfixOprt( _T("'"), sqr); 
         p1->SetExpr(a_str);
 
         // Test bytecode integrity
@@ -1294,12 +1320,20 @@ namespace mu
 
         // limited floating point accuracy requires the following test
         bool bCloseEnough(true);
-        for (int i=0; i<sizeof(fVal)/sizeof(value_type); ++i)
+        for (unsigned i=0; i<sizeof(fVal)/sizeof(value_type); ++i)
         {
-          bCloseEnough &= (fabs(a_fRes-fVal[i]) <= fabs(fVal[i]*0.0001));
+          bCloseEnough &= (fabs(a_fRes-fVal[i]) <= fabs(fVal[i]*0.00001));
+
+          // The tests equations never result in infinity, if they do thats a bug.
+          // reference:
+          // http://sourceforge.net/projects/muparser/forums/forum/462843/topic/5037825
+          if (numeric_limits<value_type>::has_infinity)
+            bCloseEnough &= (fabs(fVal[i]) != numeric_limits<value_type>::infinity());
         }
 
         iRet = ((bCloseEnough && a_fPass) || (!bCloseEnough && !a_fPass)) ? 0 : 1;
+        
+        
         if (iRet==1)
         {
           mu::console() << _T("\n  fail: ") << a_str.c_str() 

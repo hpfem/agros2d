@@ -76,7 +76,7 @@ private slots:
     void processRangeVector();
 };
 
-class SceneViewPost2D : public SceneViewMesh
+class SceneViewPost2D : public SceneViewCommon2D
 {
     Q_OBJECT
 

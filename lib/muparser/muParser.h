@@ -5,7 +5,7 @@
   |  Y Y  \|  |  /|    |     / __ \_|  | \/\___ \ \  ___/ |  | \/
   |__|_|  /|____/ |____|    (____  /|__|  /____  > \___  >|__|   
         \/                       \/            \/      \/        
-  Copyright (C) 2011 Ingo Berg
+  Copyright (C) 2012 Ingo Berg
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this 
   software and associated documentation files (the "Software"), to deal in the Software
@@ -30,7 +30,7 @@
 
 //--- Parser includes --------------------------------------------------------------------------
 #include "muParserBase.h"
-
+#include "muParserTemplateMagic.h"
 
 /** \file
     \brief Definition of the standard floating point parser.
@@ -48,7 +48,7 @@ namespace mu
     muparser(at)gmx.de
     </small>
   */
-  class Parser : public ParserBase
+  /* final */ class Parser : public ParserBase
   {
   public:
 
@@ -70,10 +70,13 @@ namespace mu
     static value_type  Sin(value_type);
     static value_type  Cos(value_type);
     static value_type  Tan(value_type);
+    static value_type  Tan2(value_type, value_type);
     // arcus functions
     static value_type  ASin(value_type);
     static value_type  ACos(value_type);
     static value_type  ATan(value_type);
+    static value_type  ATan2(value_type, value_type);
+
     // hyperbolic functions
     static value_type  Sinh(value_type);
     static value_type  Cosh(value_type);

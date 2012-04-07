@@ -267,6 +267,8 @@ public:
     void removeMaterial(SceneMaterial *material);
     void setMaterial(SceneMaterial *material); // set label marker to selected labels
     SceneMaterial *getMaterial(const QString &name);
+
+    bool checkGeometryAssignement();
     // OBSOLETE - DO NOT USE *************************************************************
 
     void clear();

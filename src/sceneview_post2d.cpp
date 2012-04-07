@@ -37,14 +37,11 @@
 
 Post2DHermes::Post2DHermes()
 {
-    m_contourIsPrepared = false;
-    m_scalarIsPrepared = false;
-    m_vectorIsPrepared = false;
+    clear();
 }
 
 Post2DHermes::~Post2DHermes()
 {
-    clear();
 }
 
 void Post2DHermes::clear()
@@ -56,12 +53,18 @@ void Post2DHermes::clear()
 
 void Post2DHermes::processRangeContour()
 {
-    Util::log()->printMessage(tr("Post2DView"), tr("contour view (%1)").arg(Util::config()->contourVariable));
-
     m_contourIsPrepared = false;
 
-    if (Util::problem()->isSolved() && Util::config()->contourVariable != "")
+    if (Util::problem()->isSolved())
     {
+        if (Util::config()->contourVariable == "")
+        {
+            // default values
+            Util::config()->contourVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_scalar_variable->id);
+        }
+
+        Util::log()->printMessage(tr("Post2DView"), tr("contour view (%1)").arg(Util::config()->contourVariable));
+
         std::string variableName = Util::config()->contourVariable.toStdString();
         Hermes::Module::LocalVariable* variable = Util::scene()->activeViewField()->module()->get_variable(variableName);
         if(!variable)
@@ -70,10 +73,10 @@ void Post2DHermes::processRangeContour()
         ViewScalarFilter<double> *slnContourView = NULL;
         if (variable->is_scalar)
             slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable.toStdString()),
-                                                                                              PhysicFieldVariableComp_Scalar);
+                                                                                            PhysicFieldVariableComp_Scalar);
         else
             slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable.toStdString()),
-                                                                                              PhysicFieldVariableComp_Magnitude);
+                                                                                            PhysicFieldVariableComp_Magnitude);
 
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
@@ -86,19 +89,24 @@ void Post2DHermes::processRangeContour()
         delete slnContourView;
 
         m_contourIsPrepared = true;
-
-        emit processed();
     }
 }
 
 void Post2DHermes::processRangeScalar()
 {
-    Util::log()->printMessage(tr("Post2DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
-
     m_scalarIsPrepared = false;
 
-    if (Util::problem()->isSolved() && Util::config()->scalarVariable != "")
-    {
+    if (Util::problem()->isSolved())
+    {        
+        if (Util::config()->scalarVariable == "")
+        {
+            // default values
+            Util::config()->scalarVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_scalar_variable->id);
+            Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->view_default_scalar_variable_comp();
+        }
+
+        Util::log()->printMessage(tr("Post2DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
+
         ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
                                                                                                                  Util::config()->scalarVariableComp);
 
@@ -120,24 +128,28 @@ void Post2DHermes::processRangeScalar()
         delete slnScalarView;
 
         m_scalarIsPrepared = true;
-
-        emit processed();
     }
 }
 
 void Post2DHermes::processRangeVector()
 {
-    Util::log()->printMessage(tr("Post2DView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
-
     m_vectorIsPrepared = false;
 
-    if (Util::problem()->isSolved() && Util::config()->vectorVariable != "")
+    if (Util::problem()->isSolved())
     {
+        if (Util::config()->vectorVariable == "")
+        {
+            // default values
+            Util::config()->vectorVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_vector_variable->id);
+        }
+
+        Util::log()->printMessage(tr("Post2DView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
+
         ViewScalarFilter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->vectorVariable.toStdString()),
-                                                                                          PhysicFieldVariableComp_X);
+                                                                                                                  PhysicFieldVariableComp_X);
 
         ViewScalarFilter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->vectorVariable.toStdString()),
-                                                                                          PhysicFieldVariableComp_Y);
+                                                                                                                  PhysicFieldVariableComp_Y);
 
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
@@ -152,21 +164,27 @@ void Post2DHermes::processRangeVector()
         delete slnVectorYView;
 
         m_vectorIsPrepared = true;
-
-        emit processed();
     }
 }
 
 void Post2DHermes::processSolved()
 {
-    QTimer::singleShot(0, this, SLOT(processRangeContour()));
-    QTimer::singleShot(0, this, SLOT(processRangeScalar()));
-    QTimer::singleShot(0, this, SLOT(processRangeVector()));
+    m_contourIsPrepared = false;
+    m_scalarIsPrepared = false;
+    m_vectorIsPrepared = false;
+
+    // processRangeContour();
+    processRangeScalar();
+    // processRangeVector();
+    //    QTimer::singleShot(0, this, SLOT(processRangeContour()));
+    //    QTimer::singleShot(0, this, SLOT(processRangeScalar()));
+    //    QTimer::singleShot(0, this, SLOT(processRangeVector()));
+    emit processed();
 }
 
 // ************************************************************************************************
 
-SceneViewPost2D::SceneViewPost2D(QWidget *parent) : SceneViewMesh(parent),
+SceneViewPost2D::SceneViewPost2D(QWidget *parent) : SceneViewCommon2D(parent),
     m_listContours(-1),
     m_listVectors(-1),
     m_listScalarField(-1)
@@ -181,7 +199,6 @@ SceneViewPost2D::SceneViewPost2D(QWidget *parent) : SceneViewMesh(parent),
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
 
     connect(m_post2DHermes, SIGNAL(processed()), this, SLOT(updateGL()));
-    // connect(this, SIGNAL(mouseSceneModeChanged(MouseSceneMode)), this, SLOT(doMouseSceneModeChanged(MouseSceneMode)));
 }
 
 SceneViewPost2D::~SceneViewPost2D()
@@ -469,8 +486,6 @@ void SceneViewPost2D::paintChartLine()
 
 void SceneViewPost2D::paintScalarField()
 {
-    logMessage("SceneViewCommon::paintScalarField()");
-
     if (!Util::problem()->isSolved()) return;
     if (!m_post2DHermes->scalarIsPrepared()) return;
 
@@ -478,8 +493,6 @@ void SceneViewPost2D::paintScalarField()
 
     if (m_listScalarField == -1)
     {
-        // qDebug() << "SceneViewCommon::paintScalarField(), min = " << Util::config()->scalarRangeMin << ", max = " << Util::config()->scalarRangeMax;
-
         m_listScalarField = glGenLists(1);
         glNewList(m_listScalarField, GL_COMPILE);
 
@@ -553,6 +566,59 @@ void SceneViewPost2D::paintScalarField()
     {
         glCallList(m_listScalarField);
     }
+
+    /*
+    m_post2DHermes->linScalarView().lock_data();
+    double3* linVertScalar = m_post2DHermes->linScalarView().get_vertices();
+    int3* linTrisScalar = m_post2DHermes->linScalarView().get_triangles();
+
+    // draw initial mesh
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glColor3d(0.0, 0.2, 0.1);
+    glLineWidth(1.3);
+
+    // triangles
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < m_post2DHermes->linScalarView().get_num_triangles(); i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            glVertex2d(linVertScalar[linTrisScalar[i][j]][0], linVertScalar[linTrisScalar[i][j]][1]);
+        }
+    }
+    glEnd();
+
+    m_post2DHermes->linScalarView().unlock_data();
+
+    // mesh
+    // init linearizer for solution mesh
+    Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeSceneSolution()->sln(0)->get_mesh());
+    Hermes::Hermes2D::Views::Linearizer linSolutionMeshView;
+    linSolutionMeshView.process_solution(&solution);
+
+    linSolutionMeshView.lock_data();
+
+    double3* linVert = linSolutionMeshView.get_vertices();
+    int3* linEdges = linSolutionMeshView.get_edges();
+
+    // draw initial mesh
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glColor3d(Util::config()->colorSolutionMesh.redF(),
+              Util::config()->colorSolutionMesh.greenF(),
+              Util::config()->colorSolutionMesh.blueF());
+    glLineWidth(1.3);
+
+    // triangles
+    glBegin(GL_LINES);
+    for (int i = 0; i < linSolutionMeshView.get_num_edges(); i++)
+    {
+        glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
+        glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
+    }
+    glEnd();
+
+    linSolutionMeshView.unlock_data();
+    */
 }
 
 void SceneViewPost2D::paintContours()
@@ -975,6 +1041,11 @@ void SceneViewPost2D::doInvalidated()
 
     m_post2DHermes->clear();
 
+    // actions
+    actSceneModePost2D->setEnabled(Util::problem()->isSolved());
+    actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
+    actSceneViewSelectByMarker->setEnabled(Util::problem()->isSolved());
+
     if (Util::problem()->isSolved())
     {
         paletteFilter(textureScalar());
@@ -982,11 +1053,6 @@ void SceneViewPost2D::doInvalidated()
 
         m_post2DHermes->processSolved();
     }
-
-    // actions
-    actSceneModePost2D->setEnabled(Util::problem()->isSolved());
-    actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
-    actSceneViewSelectByMarker->setEnabled(Util::problem()->isSolved());
 
     SceneViewCommon2D::doInvalidated();
 }

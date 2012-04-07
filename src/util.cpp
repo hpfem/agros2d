@@ -503,8 +503,6 @@ QString tempProblemDir()
 
 QString tempProblemFileName()
 {
-    logMessage("tempProblemFileName()");
-
     return tempProblemDir() + "/temp";
 }
 

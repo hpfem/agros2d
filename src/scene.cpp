@@ -18,7 +18,6 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scene.h"
-#include "sceneview_common.h"
 
 #include "util.h"
 #include "logview.h"
@@ -591,11 +590,57 @@ void Scene::setMaterial(SceneMaterial *material)
     selectNone();
 }
 
+bool Scene::checkGeometryAssignement()
+{
+    if (Util::scene()->edges->length() > 2)
+    {
+        // at least one boundary condition has to be assigned
+        int count = 0;
+        foreach (SceneEdge *edge, Util::scene()->edges->items())
+            if (edge->markersCount() > 0)
+                count++;
+
+        if (count == 0)
+        {
+            Util::log()->printError(tr("Geometry"), tr("at least one boundary condition has to be assigned"));
+            return false;
+        }
+    }
+    if (Util::scene()->labels->length() < 1)
+    {
+        Util::log()->printError(tr("Geometry"), tr("invalid number of labels (%1 < 1)").arg(Util::scene()->labels->length()));
+        return false;
+    }
+    else
+    {
+        // at least one material has to be assigned
+        int count = 0;
+        foreach (SceneLabel *label, Util::scene()->labels->items())
+            if (label->markersCount() > 0)
+                count++;
+
+        if (count == 0)
+        {
+            Util::log()->printError(tr("Geometry"), tr("at least one material has to be assigned"));
+            return false;
+        }
+    }
+    if (Util::scene()->boundaries->length() < 2) // + none marker
+    {
+        Util::log()->printError(tr("Geometry"), tr("invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries->length()));
+        return false;
+    }
+    if (Util::scene()->materials->length() < 2) // + none marker
+    {
+        Util::log()->printError(tr("Geometry"), tr("invalid number of materials (%1 < 1)").arg(Util::scene()->materials->length()));
+        return false;
+    }
+
+    return true;
+}
 
 void Scene::clear()
 {
-    logMessage("Scene::clear()");
-
     blockSignals(true);
 
     // clear problem
@@ -1111,6 +1156,9 @@ void Scene::addField(FieldInfo *field)
 {
     // add to the collection
     m_fieldInfos[field->fieldId()] = field;
+
+    // couplings
+    synchronizeCouplings();
 
     emit fieldsChanged();
     emit invalidated();

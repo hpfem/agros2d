@@ -110,6 +110,8 @@ public:
     bool mesh();
     // solve
     void solve(SolverMode solverMode);
+    // check geometry
+    bool checkGeometry();
 
     // progress dialog
     ProgressDialog* progressDialog();

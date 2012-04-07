@@ -78,13 +78,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createMenus();
     createToolBars();
 
-    connect(tabLayout, SIGNAL(currentChanged(int)), this, SLOT(doInvalidated()));
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+    connect(tabLayout, SIGNAL(currentChanged(int)), this, SLOT(setControls()));
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
     connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
     connect(Util::scene()->actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
-    connect(postprocessorView, SIGNAL(apply()), this, SLOT(doInvalidated()));
-    connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doInvalidated()));
+    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(clear()));
+    connect(postprocessorView, SIGNAL(apply()), this, SLOT(setControls()));
+    connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(setControls()));
 
     // geometry
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
@@ -137,7 +138,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // macx
     setUnifiedTitleAndToolBarOnMac(true);
 
-    doInvalidated();
+    setControls();
 
     if (settings.value("General/CheckVersion", true).value<bool>())
         checkForNewVersion(true);
@@ -1186,7 +1187,7 @@ void MainWindow::doCreateMesh()
         logDialog->close();
     }
 
-    doInvalidated();
+    setControls();
 }
 
 void MainWindow::doSolve()
@@ -1211,7 +1212,7 @@ void MainWindow::doSolve()
         logDialog->close();
     }
 
-    doInvalidated();
+    setControls();
     setFocus();
     activateWindow();
 }
@@ -1238,7 +1239,7 @@ void MainWindow::doSolveAdaptiveStep()
         logDialog->close();
     }
 
-    doInvalidated();
+    setControls();
     setFocus();
     activateWindow();
 }
@@ -1392,10 +1393,15 @@ void MainWindow::doTimeStepChanged(int index)
     }
 }
 
-void MainWindow::doInvalidated()
+void MainWindow::clear()
 {
-    logMessage("MainWindow::doInvalidated()");
+    sceneViewPreprocessor->actSceneModePreprocessor->trigger();
 
+    setControls();
+}
+
+void MainWindow::setControls()
+{
     if (Util::config()->showExperimentalFeatures)
         actDocumentSaveWithSolution->setEnabled(Util::problem()->isSolved());
 
@@ -1470,6 +1476,9 @@ void MainWindow::doInvalidated()
 
     actExportVTKScalar->setEnabled(Util::problem()->isSolved());
     actExportVTKOrder->setEnabled(Util::problem()->isSolved());
+
+    actSolve->setEnabled(Util::scene()->fieldInfos().count() > 0);
+    actSolveAdaptiveStep->setEnabled(Util::scene()->fieldInfos().count() > 0);
 
     QTimer::singleShot(0, postprocessorView, SLOT(updateControls()));
 
@@ -1587,7 +1596,7 @@ void MainWindow::doDocumentExportMeshFile()
 
     Util::config()->deleteHermes2DMeshFile = commutator;
 
-    doInvalidated();
+    setControls();
 }
 
 void MainWindow::doExportVTKScalar()

@@ -109,7 +109,8 @@ private:
 // ************************************************************************************
 
 // problem
-class PyProblem {
+class PyProblem
+{
     public:
         PyProblem(char *coordinateType, char *name, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal);
         ~PyProblem() {}
@@ -146,7 +147,8 @@ class PyProblem {
 };
 
 // field
-class PyField {
+class PyField
+{
     private:
         FieldInfo *m_fieldInfo;
 
@@ -216,13 +218,14 @@ class PyField {
 
         void solve() { assert(0); qDebug() << "Not now :)"; }
 
-        void localValues(double x, double y, map<char*, double> &results);
-        void surfaceIntegrals(vector<int> edges, map<char *, double> &results);
-        void volumeIntegrals(vector<int> labels, map<char *, double> &results);
+        void localValues(double x, double y, map<string, double> &results);
+        void surfaceIntegrals(vector<int> edges, map<string, double> &results);
+        void volumeIntegrals(vector<int> labels, map<string, double> &results);
 };
 
 // geometry
-class PyGeometry {
+class PyGeometry
+{
     public:
         PyGeometry() {}
         ~PyGeometry() {}

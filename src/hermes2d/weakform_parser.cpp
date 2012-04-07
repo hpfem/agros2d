@@ -28,9 +28,6 @@
 
 // **************************************************************************
 
-// atan2 for muparser
-mu::value_type mu_atan2(mu::value_type y, mu::value_type x) { return atan2(y, x); }
-
 ParserFormEssential::ParserFormEssential(rapidxml::xml_node<> *node, CoordinateType problem_type) : expression("")
 {
     i = atoi(node->first_attribute("i")->value());
@@ -86,9 +83,6 @@ ParserForm::~ParserForm()
 void ParserForm::initParser(Hermes::vector<Material *> materials, Boundary *boundary)
 {
     parser->parser.push_back(m_fieldInfo->module()->get_parser(m_fieldInfo));
-
-    // atan2 for muparser
-    parser->parser[0]->DefineFun("atan2", mu_atan2, false);
 
     // coordinates
     parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
@@ -158,24 +152,28 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
 
     parser->parser[0]->SetExpr(expression);
 
-    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materialst = m_fieldInfo->module()->material_type_variables;
-    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materialst.begin(); it < materialst.end(); ++it)
+    if(m_fieldInfo->linearityType == LinearityType_Linear)
     {
-        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-        Value value = m_material1->getValue(variable->id);
-
-        // table
-        if (value.table->size() > 0)
+        pupval = 0;  // todo: ???
+        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materialst = m_fieldInfo->module()->material_type_variables;
+        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materialst.begin(); it < materialst.end(); ++it)
         {
-            parser->parser_variables[variable->shortname] = value.value(pupval);
-            parser->parser_variables["d" + variable->shortname] = value.derivative(pupval);
+            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+            Value value = m_material1->getValue(variable->id);
+
+            // table
+            if (value.table->size() > 0)
+            {
+                parser->parser_variables[variable->shortname] = value.value(pupval);
+                parser->parser_variables["d" + variable->shortname] = value.derivative(pupval);
+            }
+
+            // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
+            // parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(sqrt(pupdx*pupdx + pupdy*pupdy));
+
+            // if (variable->shortname == "mur")
+            //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
         }
-
-        // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
-        // parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(sqrt(pupdx*pupdx + pupdy*pupdy));
-
-        // if (variable->shortname == "mur")
-        //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
     }
 }
 
@@ -200,14 +198,13 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
+        pupval = u_ext[this->i]->val[i];
+        pupdx = u_ext[this->i]->dx[i];
+        pupdy = u_ext[this->i]->dy[i];
+
         // previous solution
         if (m_fieldInfo->linearityType != LinearityType_Linear)
         {
-            pupval = u_ext[this->i]->val[i]; //TODO PK this->j
-            pupdx = u_ext[this->i]->dx[i];
-            pupdy = u_ext[this->i]->dy[i];
-
-            /*
             Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = m_fieldInfo->module()->material_type_variables;
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
@@ -227,7 +224,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
                 // if (variable->shortname == "mur")
                 //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
             }
-            */
+
         }
         else
         {
@@ -294,22 +291,26 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, uns
 
     parser->parser[0]->SetExpr(expression);
 
-    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materialst = m_fieldInfo->module()->material_type_variables;
-    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materialst.begin(); it < materialst.end(); ++it)
+    if(m_fieldInfo->linearityType == LinearityType_Linear)
     {
-        Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-        Value value = m_material1->getValue(variable->id);
-
-        // table
-        if (value.table->size() > 0)
+        pupval = 0;  // todo: ???
+        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materialst = m_fieldInfo->module()->material_type_variables;
+        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materialst.begin(); it < materialst.end(); ++it)
         {
-            parser->parser_variables[variable->shortname] = m_material1->getValue(variable->id).value(pupval);
+            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+            Value value = m_material1->getValue(variable->id);
+
+            // table
+            if (value.table->size() > 0)
+            {
+                parser->parser_variables[variable->shortname] = m_material1->getValue(variable->id).value(pupval);
+            }
+
+            // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
+
+            // if (variable->shortname == "epsr")
+            //     qDebug() << parser->parser_variables[variable->shortname];
         }
-
-        // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
-
-        // if (variable->shortname == "epsr")
-        //     qDebug() << parser->parser_variables[variable->shortname];
     }
 }
 
@@ -330,14 +331,12 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
-        // previous solution
+        pupval = u_ext[this->j]->val[i];
+        pupdx = u_ext[this->j]->dx[i];
+        pupdy = u_ext[this->j]->dy[i];
+
         if (m_fieldInfo->linearityType != LinearityType_Linear)
         {
-            pupval = u_ext[this->j]->val[i];  //TODO PK this->i
-            pupdx = u_ext[this->j]->dx[i];
-            pupdy = u_ext[this->j]->dy[i];
-
-            /*
             Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = m_fieldInfo->module()->material_type_variables;
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
@@ -355,13 +354,6 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
                 // if (variable->shortname == "epsr")
                 //     qDebug() << parser->parser_variables[variable->shortname];
             }
-            */
-        }
-        else
-        {
-            pupval = 0.0;
-            pupdx = 0.0;
-            pupdy = 0.0;
         }
 
         if(m_material2){
@@ -454,19 +446,20 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
+        // todo: now we use only Newton solver
         // previous solution
-        if (m_fieldInfo->linearityType != LinearityType_Linear)
-        {
+//        if (m_fieldInfo->linearityType != LinearityType_Linear)
+//        {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];
             pupdy = u_ext[this->j]->dy[i];
-        }
-        else
-        {
-            pupval = 0.0;
-            pupdx = 0.0;
-            pupdy = 0.0;
-        }
+//        }
+//        else
+//        {
+//            pupval = 0.0;
+//            pupdx = 0.0;
+//            pupdy = 0.0;
+//        }
 
         try
         {
@@ -529,19 +522,20 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
-        // previous solution
-        if (m_fieldInfo->linearityType != LinearityType_Linear)
-        {
+        // todo: now we use only Newton solver
+//        // previous solution
+//        if (m_fieldInfo->linearityType != LinearityType_Linear)
+//        {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];
             pupdy = u_ext[this->j]->dy[i];
-        }
-        else
-        {
-            pupval = 0.0;
-            pupdx = 0.0;
-            pupdy = 0.0;
-        }
+//        }
+//        else
+//        {
+//            pupval = 0.0;
+//            pupdx = 0.0;
+//            pupdy = 0.0;
+//        }
 
         try
         {

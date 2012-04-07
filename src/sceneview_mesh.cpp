@@ -33,34 +33,34 @@
 
 MeshHermes::MeshHermes()
 {
+    clear();
 }
 
 
 MeshHermes::~MeshHermes()
 {
-    clear();
 }
 
 void MeshHermes::clear()
 {
-
+    m_initialMeshIsPrepared = false;
+    m_solutionMeshIsPrepared = false;
+    m_orderIsPrepared = false;
 }
 
 void MeshHermes::processOrder()
 {
-    Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
-
     m_orderIsPrepared = false;
 
     // init linearizer for order view
     if (Util::problem()->isSolved())
     {
+        Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
+
         m_orderView.process_space(Util::scene()->activeSceneSolution()->space(0));
 
         m_orderIsPrepared = true;
     }
-
-    emit processed();
 }
 
 void MeshHermes::processInitialMesh()
@@ -76,8 +76,6 @@ void MeshHermes::processInitialMesh()
         m_linInitialMeshView.process_solution(&initial);
 
         m_initialMeshIsPrepared = true;
-
-        emit processed();
     }
 }
 
@@ -94,21 +92,30 @@ void MeshHermes::processSolutionMesh()
         m_linSolutionMeshView.process_solution(&solution);
 
         m_solutionMeshIsPrepared = true;
-
-        emit processed();
     }    
 }
 
 void MeshHermes::processMeshed()
 {
-    QTimer::singleShot(0, this, SLOT(processInitialMesh()));
+    m_initialMeshIsPrepared = false;
+
+    processInitialMesh();
+    // QTimer::singleShot(0, this, SLOT(processInitialMesh()));
+    emit processed();
 }
 
 void MeshHermes::processSolved()
 {
-    QTimer::singleShot(0, this, SLOT(processSolutionMesh()));
-    QTimer::singleShot(0, this, SLOT(processOrder()));
+    m_solutionMeshIsPrepared = false;
+    m_orderIsPrepared = false;
+
+    processSolutionMesh();
+    processOrder();
+    // QTimer::singleShot(0, this, SLOT(processSolutionMesh()));
+    // QTimer::singleShot(0, this, SLOT(processOrder()));
+
     //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
+    emit processed();
 }
 
 // ************************************************************************************************

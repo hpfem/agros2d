@@ -90,8 +90,8 @@ void PostprocessorView::loadBasic()
     {
         // set first variable
         cmbPost2DContourVariable->setCurrentIndex(0);
-        Util::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
     }
+    Util::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
 
     // scalar field
     cmbPost2DScalarFieldVariable->setCurrentIndex(cmbPost2DScalarFieldVariable->findData(Util::config()->scalarVariable));
@@ -99,18 +99,10 @@ void PostprocessorView::loadBasic()
     {
         // set first variable
         cmbPost2DScalarFieldVariable->setCurrentIndex(0);
-        Util::config()->scalarVariable = cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString();
     }
-    if (cmbPost2DScalarFieldVariable->count() > 0)
-        doScalarFieldVariable(cmbPost2DScalarFieldVariable->currentIndex());
-
-    cmbPost2DScalarFieldVariableComp->setCurrentIndex(cmbPost2DScalarFieldVariableComp->findData(Util::config()->scalarVariableComp));
-    if (cmbPost2DScalarFieldVariableComp->currentIndex() == -1)
-    {
-        // set first component
-        cmbPost2DScalarFieldVariableComp->setCurrentIndex(0);
-        Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
-    }
+    Util::config()->scalarVariable = cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString();
+    doScalarFieldVariable(cmbPost2DScalarFieldVariable->currentIndex());
+    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
 
     // vector field
     cmbPost2DVectorFieldVariable->setCurrentIndex(cmbPost2DVectorFieldVariable->findData(Util::config()->vectorVariable));
@@ -118,8 +110,8 @@ void PostprocessorView::loadBasic()
     {
         // set first variable
         cmbPost2DVectorFieldVariable->setCurrentIndex(0);
-        Util::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
     }
+    Util::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
 
     // transient view
     // cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
@@ -1099,8 +1091,6 @@ void PostprocessorView::doFieldInfo(int index)
 
 void PostprocessorView::doScalarFieldVariable(int index)
 {
-    logMessage("PostprocessorView::doScalarFieldVariable()");
-
     if (cmbFieldInfo->currentIndex() == -1)
         return;
 
@@ -1117,7 +1107,7 @@ void PostprocessorView::doScalarFieldVariable(int index)
     }
 
     if (physicFieldVariable)
-    {
+    {        
         cmbPost2DScalarFieldVariableComp->clear();
         if (physicFieldVariable->is_scalar)
         {
@@ -1200,8 +1190,6 @@ void PostprocessorView::doPaletteFilter(int state)
 
 void PostprocessorView::setControls()
 {
-    logMessage("PostprocessorView::setControls()");
-
     bool isMeshed = Util::problem()->isMeshed();
     bool isSolved = Util::problem()->isSolved();
 

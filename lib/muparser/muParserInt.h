@@ -5,7 +5,7 @@
   |  Y Y  \|  |  /|    |     / __ \_|  | \/\___ \ \  ___/ |  | \/
   |__|_|  /|____/ |____|    (____  /|__|  /____  > \___  >|__|   
         \/                       \/            \/      \/        
-  Copyright (C) 2004-2011 Ingo Berg
+  Copyright (C) 2004-2012 Ingo Berg
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this 
   software and associated documentation files (the "Software"), to deal in the Software
@@ -49,7 +49,7 @@ private:
     static int  Round(value_type v) { return (int)(v + ((v>=0) ? 0.5 : -0.5) ); };
   
     static value_type  Abs(value_type);
-	  static value_type  Sign(value_type);
+    static value_type  Sign(value_type);
     static value_type  Ite(value_type, value_type, value_type);
     // !! The unary Minus is a MUST, otherwise you cant use negative signs !!
     static value_type  UnaryMinus(value_type);
