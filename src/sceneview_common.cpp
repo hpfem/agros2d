@@ -40,8 +40,11 @@ SceneViewWidget::SceneViewWidget(SceneViewCommon *widget, QWidget *parent) : QWi
     // label
     sceneViewLabelPixmap = new QLabel();
     sceneViewLabelLeft = new QLabel();
+    sceneViewLabelLeft->setMinimumWidth(150);
     sceneViewLabelCenter = new QLabel();
+    sceneViewLabelCenter->setMinimumWidth(150);
     sceneViewLabelRight = new QLabel();
+    sceneViewLabelRight->setMinimumWidth(200);
 
     QHBoxLayout *sceneViewLabelLayout = new QHBoxLayout();
     sceneViewLabelLayout->addWidget(sceneViewLabelPixmap);
@@ -191,8 +194,6 @@ void SceneViewCommon::loadProjectionViewPort()
 
 void SceneViewCommon::closeEvent(QCloseEvent *event)
 {
-    logMessage("SceneViewCommon::closeEvent()");
-
     event->ignore();
 }
 
@@ -200,8 +201,6 @@ void SceneViewCommon::closeEvent(QCloseEvent *event)
 
 void SceneViewCommon::doZoomBestFit()
 {
-    logMessage("SceneViewCommon::doZoomBestFit()");
-
     RectPoint rect = Util::scene()->boundingBox();
     doZoomRegion(rect.start, rect.end);
     doZoomRegion(rect.start, rect.end); //TODO - FIX twice run is needed
@@ -209,22 +208,16 @@ void SceneViewCommon::doZoomBestFit()
 
 void SceneViewCommon::doZoomIn()
 {
-    logMessage("SceneViewCommon::doZoomIn()");
-
     setZoom(1.2);
 }
 
 void SceneViewCommon::doZoomOut()
 {
-    logMessage("SceneViewCommon::doZoomOut()");
-
     setZoom(-1/1.2);
 }
 
 void SceneViewCommon::doShowGrid()
 {
-    logMessage("SceneViewCommon::doShowGrid()");
-
     Util::config()->showGrid = !Util::config()->showGrid;
     Util::config()->save();
     doInvalidated();
@@ -232,16 +225,12 @@ void SceneViewCommon::doShowGrid()
 
 void SceneViewCommon::doSnapToGrid()
 {
-    logMessage("SceneViewCommon::doSnapToGrid()");
-
     Util::config()->snapToGrid = !Util::config()->snapToGrid;
     Util::config()->save();
 }
 
 void SceneViewCommon::doShowRulers()
 {
-    logMessage("SceneViewCommon::doShowRulers()");
-
     Util::config()->showRulers = !Util::config()->showRulers;
     Util::config()->save();
     doInvalidated();
@@ -249,8 +238,6 @@ void SceneViewCommon::doShowRulers()
 
 void SceneViewCommon::doSetChartLine(const ChartLine &chartLine)
 {
-    logMessage("SceneViewCommon::doSetChartLine()");
-
     // set line for chart
     m_chartLine = chartLine;
 
@@ -265,7 +252,7 @@ void SceneViewCommon::clear()
 
 void SceneViewCommon::doInvalidated()
 {
-    resize(((QWidget *) parent())->size());
+    // resize(((QWidget *) parent())->size());
 
     emit mousePressed();
 

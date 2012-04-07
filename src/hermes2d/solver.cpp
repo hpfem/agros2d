@@ -300,6 +300,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
     // Linear solver
     // TODO original linear solver, now not used. We use Newton solver for linear problems instead. It should be put back....
 //    if (m_block->linearityType() == LinearityType_Linear)
+    /*
     if(0)
     {
         // set up the solver, matrix, and rhs according to the solver selection.
@@ -344,6 +345,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         delete rhs;
         delete solver;
     }
+    */
 
     // Nonlinear solver
     if ((m_block->linearityType() == LinearityType_Newton) || (m_block->linearityType() == LinearityType_Linear))

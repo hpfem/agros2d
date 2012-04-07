@@ -65,8 +65,6 @@ void SceneViewCommon2D::updatePosition(const Point &point)
 
 Point SceneViewCommon2D::position(const Point &point) const
 {
-    // qDebug() << "width(): " << width() << "height(): " << height() << "m_scale2d:" << m_scale2d << "m_offset2d:" << m_offset2d.toString();
-
     return Point((2.0/width()*point.x-1)/m_scale2d*aspect()+m_offset2d.x,
                  -(2.0/height()*point.y-1)/m_scale2d+m_offset2d.y);
 }

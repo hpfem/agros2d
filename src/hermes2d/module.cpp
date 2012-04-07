@@ -951,12 +951,14 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
 ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
-    Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln; //TODO PK <double>
+    Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
     for (int k = 0; k < number_of_solution(); k++)
     {
         sln.push_back(Util::scene()->activeSceneSolution()->sln(k));
     }
-    return new ViewScalarFilter<double>(Util::scene()->activeSceneSolution()->fieldInfo(), sln, get_expression(physicFieldVariable, physicFieldVariableComp));//TODO PK <double>
+    return new ViewScalarFilter<double>(Util::scene()->activeSceneSolution()->fieldInfo(),
+                                        sln,
+                                        get_expression(physicFieldVariable, physicFieldVariableComp));
 }
 
 bool Hermes::Module::Module::solve_init_variables()
@@ -1280,8 +1282,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
     bool isLinear = (m_fieldInfo->linearityType == LinearityType_Linear);
 
     Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
-    int np = quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_TRIANGLE) +
-            quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_QUAD);
+    int np = quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_TRIANGLE) + quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_QUAD);
     node = Hermes::Hermes2D::Function<Scalar>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
 
     double **value = new double*[m_fieldInfo->module()->number_of_solution()];

@@ -594,8 +594,6 @@ void Scene::setMaterial(SceneMaterial *material)
 
 void Scene::clear()
 {
-    logMessage("Scene::clear()");
-
     blockSignals(true);
 
     // clear problem
