@@ -180,6 +180,8 @@ QString createPythonFromModel()
                     arg(QString::fromStdString(material->getName())).
                     arg(variables);
         }
+
+        str += "\n";
     }
 
     // geometry
@@ -518,9 +520,9 @@ void PyField::removeMaterial(char *name)
     Util::scene()->removeMaterial(Util::scene()->getMaterial(QString(name)));
 }
 
-void PyField::localValues(double x, double y, map<char *, double> &results)
+void PyField::localValues(double x, double y, map<string, double> &results)
 {
-    map<char*, double> values;
+    map<string, double> values;
 
     if (Util::problem()->isSolved())
     {
@@ -535,13 +537,13 @@ void PyField::localValues(double x, double y, map<char *, double> &results)
         {
             if (it->first->is_scalar)
             {
-                values[const_cast<char *>((it->first->shortname).c_str())] = it->second.scalar;
+                values[it->first->shortname] = it->second.scalar;
             }
             else
             {
-                values[const_cast<char *>((it->first->shortname).c_str())] = it->second.vector.magnitude();
-                values[const_cast<char *>((QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelX().toLower()).toStdString().c_str())] = it->second.vector.x;
-                values[const_cast<char *>((QString::fromStdString(it->first->shortname) + Util::scene()->problemInfo()->labelY().toLower()).toStdString().c_str())] = it->second.vector.y;
+                values[it->first->shortname] = it->second.vector.magnitude();
+                values[it->first->shortname + Util::scene()->problemInfo()->labelX().toLower().toStdString()] = it->second.vector.x;
+                values[it->first->shortname + Util::scene()->problemInfo()->labelY().toLower().toStdString()] = it->second.vector.y;
             }
         }
     }
@@ -553,9 +555,9 @@ void PyField::localValues(double x, double y, map<char *, double> &results)
     results = values;
 }
 
-void PyField::surfaceIntegrals(vector<int> edges, map<char *, double> &results)
+void PyField::surfaceIntegrals(vector<int> edges, map<string, double> &results)
 {
-    map<char*, double> values;
+    map<string, double> values;
 
     if (Util::problem()->isSolved())
     {
@@ -588,7 +590,7 @@ void PyField::surfaceIntegrals(vector<int> edges, map<char *, double> &results)
         SurfaceIntegralValue surfaceIntegral(fieldInfo());
         for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegral.values.begin(); it != surfaceIntegral.values.end(); ++it)
         {
-            values[const_cast<char *>((it->first->shortname).c_str())] = it->second;
+            values[it->first->shortname] = it->second;
         }
     }
     else
@@ -599,9 +601,9 @@ void PyField::surfaceIntegrals(vector<int> edges, map<char *, double> &results)
     results = values;
 }
 
-void PyField::volumeIntegrals(vector<int> labels, map<char *, double> &results)
+void PyField::volumeIntegrals(vector<int> labels, map<string, double> &results)
 {
-    map<char*, double> values;
+    map<string, double> values;
 
     if (Util::problem()->isSolved())
     {
@@ -634,7 +636,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<char *, double> &results)
         VolumeIntegralValue volumeIntegral(fieldInfo());
         for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegral.values.begin(); it != volumeIntegral.values.end(); ++it)
         {
-            values[const_cast<char *>((it->first->shortname).c_str())] = it->second;
+            values[it->first->shortname] = it->second;
         }
     }
     else

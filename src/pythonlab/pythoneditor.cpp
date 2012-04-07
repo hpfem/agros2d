@@ -82,8 +82,8 @@ void PythonEditorWidget::createControls()
     policy.setVerticalStretch(1.0);
     splitter->setSizePolicy(policy);
 
-    splitter->restoreState(settings.value("PythonEditorWidget/SplitterState", splitter->saveState()).toByteArray());
-    splitter->restoreGeometry(settings.value("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry()).toByteArray());
+    splitter->restoreState(settings.value("PythonEditorWidget/SplitterState").toByteArray());
+    splitter->restoreGeometry(settings.value("PythonEditorWidget/SplitterGeometry").toByteArray());
     txtEditor->resize(txtEditor->width(), settings.value("PythonEditorWidget/EditorHeight").toInt());
 
     // contents

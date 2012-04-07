@@ -112,7 +112,6 @@ void VolumeIntegralValue::calculate()
             {
                 SceneMaterial *material = Util::scene()->labels->at(i)->getMarker(m_fieldInfo);
 
-                // FIXME
                 parser->setParserVariables(material, NULL,
                                            pvalue[0], pdx[0], pdy[0]);
 
