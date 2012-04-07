@@ -5,7 +5,7 @@
   |  Y Y  \|  |  /|    |     / __ \_|  | \/\___ \ \  ___/ |  | \/
   |__|_|  /|____/ |____|    (____  /|__|  /____  > \___  >|__|   
         \/                       \/            \/      \/        
-  Copyright (C) 2011 Ingo Berg
+  Copyright (C) 2012 Ingo Berg
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this 
   software and associated documentation files (the "Software"), to deal in the Software
@@ -49,7 +49,7 @@ namespace mu
 
 //--------------------------------------------------------------------------------------------------
 /** \brief Mathematical expressions parser (base parser engine).
-    \author (C) 2011 Ingo Berg
+    \author (C) 2012 Ingo Berg
 
   This is the implementation of a bytecode based mathematical expressions parser. 
   The formula will be parsed from string and converted into a bytecode. 
@@ -201,9 +201,9 @@ private:
       
       explicit change_dec_sep(char_type cDecSep, char_type cThousandsSep = 0, int nGroup = 3)
         :std::numpunct<TChar>()
+        ,m_nGroup(nGroup)
         ,m_cDecPoint(cDecSep)
         ,m_cThousandsSep(cThousandsSep)
-        ,m_nGroup(nGroup)
       {}
       
     protected:
@@ -232,8 +232,6 @@ private:
 
  private:
 
-    static value_type Pow(value_type v1, value_type v2);
-
     void Assign(const ParserBase &a_Parser);
     void InitTokenReader();
     void ReInit() const;
@@ -254,12 +252,6 @@ private:
     void ApplyFunc(ParserStack<token_type> &a_stOpt,
                    ParserStack<token_type> &a_stVal, 
                    int iArgCount) const; 
-
-    token_type ApplyNumFunc(const token_type &a_FunTok,
-                            const std::vector<token_type> &a_vArg) const;
-
-    token_type ApplyBulkFunc(const token_type &a_FunTok,
-                             const std::vector<token_type> &a_vArg) const;
 
     token_type ApplyStrFunc(const token_type &a_FunTok,
                             const std::vector<token_type> &a_vArg) const;
@@ -286,23 +278,21 @@ private:
       Eval() calls the function whose address is stored there.
     */
     mutable ParseFunction  m_pParseFormula;
-    mutable const SToken *m_pRPN;
-    mutable ParserByteCode m_vRPN;   ///< The Bytecode class.
+    mutable ParserByteCode m_vRPN;        ///< The Bytecode class.
     mutable stringbuf_type  m_vStringBuf; ///< String buffer, used for storing string function arguments
     stringbuf_type  m_vStringVarBuf;
 
     std::auto_ptr<token_reader_type> m_pTokenReader; ///< Managed pointer to the token reader object.
 
-    funmap_type  m_FunDef;        ///< Map of function names and pointers.
-    funmap_type  m_PostOprtDef;   ///< Postfix operator callbacks
-    funmap_type  m_InfixOprtDef;  ///< unary infix operator.
-    funmap_type  m_OprtDef;       ///< Binary operator callbacks
-    valmap_type  m_ConstDef;      ///< user constants.
-    strmap_type  m_StrVarDef;     ///< user defined string constants
-    varmap_type  m_VarDef;        ///< user defind variables.
+    funmap_type  m_FunDef;         ///< Map of function names and pointers.
+    funmap_type  m_PostOprtDef;    ///< Postfix operator callbacks
+    funmap_type  m_InfixOprtDef;   ///< unary infix operator.
+    funmap_type  m_OprtDef;        ///< Binary operator callbacks
+    valmap_type  m_ConstDef;       ///< user constants.
+    strmap_type  m_StrVarDef;      ///< user defined string constants
+    varmap_type  m_VarDef;         ///< user defind variables.
 
-    bool m_bOptimize;             ///< Flag that indicates if the optimizer is on or off.
-    bool m_bBuiltInOp;            ///< Flag that can be used for switching built in operators on and off
+    bool m_bBuiltInOp;             ///< Flag that can be used for switching built in operators on and off
 
     string_type m_sNameChars;      ///< Charset for names
     string_type m_sOprtChars;      ///< Charset for postfix/ binary operator tokens

@@ -28,9 +28,6 @@
 
 // **************************************************************************
 
-// atan2 for muparser
-mu::value_type mu_atan2(mu::value_type y, mu::value_type x) { return atan2(y, x); }
-
 ParserFormEssential::ParserFormEssential(rapidxml::xml_node<> *node, CoordinateType problem_type) : expression("")
 {
     i = atoi(node->first_attribute("i")->value());
@@ -86,9 +83,6 @@ ParserForm::~ParserForm()
 void ParserForm::initParser(Hermes::vector<Material *> materials, Boundary *boundary)
 {
     parser->parser.push_back(m_fieldInfo->module()->get_parser(m_fieldInfo));
-
-    // atan2 for muparser
-    parser->parser[0]->DefineFun("atan2", mu_atan2, false);
 
     // coordinates
     parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);

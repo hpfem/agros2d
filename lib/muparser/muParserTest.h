@@ -155,9 +155,6 @@ namespace mu
           value_type val(0);
           stringstream_type(a_szMsg) >> val;
           return val;
-
-//          using namespace std; // atof is for some compilers in std for some not... 
-//          return atof(a_szMsg);
         }
 
         // postfix operator callback
@@ -165,10 +162,12 @@ namespace mu
         static value_type Micro(value_type a_fVal) { return a_fVal * (value_type)1e-6; }
         static value_type Milli(value_type a_fVal) { return a_fVal / (value_type)1e3; }
 
+        // Custom value recognition
+        static int IsHexVal(const char_type *a_szExpr, int *a_iPos, value_type *a_fVal);
+
         int TestNames();
 	      int TestSyntax();
 	      int TestMultiArg();
-	      int TestVolatile();
 	      int TestPostFix();
 	      int TestExpression();
 	      int TestInfixOprt();
@@ -193,6 +192,11 @@ namespace mu
 
         // Test Double Parser
         int EqnTest(const string_type& a_str, double a_fRes, bool a_fPass);
+        int EqnTestWithVarChange(const string_type& a_str, 
+                                 double a_fRes1, 
+                                 double a_fVar1, 
+                                 double a_fRes2, 
+                                 double a_fVar2);
         int ThrowTest(const string_type& a_str, int a_iErrc, bool a_bFail = true);
 
         // Test Int Parser

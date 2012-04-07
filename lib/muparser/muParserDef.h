@@ -5,7 +5,7 @@
   |  Y Y  \|  |  /|    |     / __ \_|  | \/\___ \ \  ___/ |  | \/
   |__|_|  /|____/ |____|    (____  /|__|  /____  > \___  >|__|   
         \/                       \/            \/      \/        
-  Copyright (C) 2011 Ingo Berg
+  Copyright (C) 2012 Ingo Berg
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this 
   software and associated documentation files (the "Software"), to deal in the Software
@@ -36,8 +36,8 @@
     \brief This file contains standard definitions used by the parser.
 */
 
-#define MUP_VERSION _T("2.0.0")
-#define MUP_VERSION_DATE _T("20110803; SF-SVN")
+#define MUP_VERSION _T("2.2.2")
+#define MUP_VERSION_DATE _T("20120218; SF")
 
 #define MUP_CHARS _T("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
@@ -47,8 +47,7 @@
 /** \brief Define the base datatype for values.
 
   This datatype must be a built in value type. You can not use custom classes.
-  It has been tested with float, double and long double types, int should
-  work as well.
+  It should be working with all types except "int"!
 */
 #define MUP_BASETYPE double
 
@@ -77,9 +76,11 @@
 #if defined(_DEBUG)
   /** \brief Debug macro to force an abortion of the programm with a certain message.
   */
-  #define MUP_FAIL(MSG)    \
-          bool MSG=false;  \
-          assert(MSG);
+  #define MUP_FAIL(MSG)     \
+          {                 \
+            bool MSG=false; \
+            assert(MSG);    \
+          }
 
     /** \brief An assertion that does not kill the program.
 
@@ -169,10 +170,19 @@ namespace mu
     cmIF            = 16,  ///< For use in the ternary if-then-else operator
     cmELSE          = 17,  ///< For use in the ternary if-then-else operator
     cmENDIF         = 18,  ///< For use in the ternary if-then-else operator
-    cmARG_SEP,             ///< function argument separator
-    cmVAR,                 ///< variable item
-    cmVAL,                 ///< value item
-    cmFUNC,                ///< Code for a function item
+    cmARG_SEP       = 19,  ///< function argument separator
+    cmVAR           = 20,  ///< variable item
+    cmVAL           = 21,  ///< value item
+
+    // For optimization purposes
+    cmVARPOW2,
+    cmVARPOW3,
+    cmVARPOW4,
+    cmVARMUL,
+    cmPOW2,
+
+    // operators and functions
+    cmFUNC,                ///< Code for a generic function item
     cmFUNC_STR,            ///< Code for a function with a string parameter
     cmFUNC_BULK,           ///< Special callbacks for Bulk mode with an additional parameter for the bulk index 
     cmSTRING,              ///< Code for a string token
@@ -267,6 +277,9 @@ namespace mu
   // Parser callbacks
   
   /** \brief Callback type used for functions without arguments. */
+  typedef value_type (*generic_fun_type)();
+
+  /** \brief Callback type used for functions without arguments. */
   typedef value_type (*fun_type0)();
 
   /** \brief Callback type used for functions with a single arguments. */
@@ -349,8 +362,7 @@ namespace mu
 
   /** \brief Callback used for variable creation factory functions. */
   typedef value_type* (*facfun_type)(const char_type*, void*);
-
-} // end fo namespace
+} // end of namespace
 
 #endif
 

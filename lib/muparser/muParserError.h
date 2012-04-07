@@ -89,7 +89,7 @@ enum EErrorCodes
 
   // internal errors
   ecINTERNAL_ERROR         = 35, ///< Internal error of any kind.
-
+  
   // The last two are special entries 
   ecCOUNT,                      ///< This is no error code, It just stores just the total number of error codes
   ecUNDEFINED              = -1  ///< Undefined message, placeholder to detect unassigned error messages

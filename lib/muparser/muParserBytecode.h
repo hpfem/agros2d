@@ -5,7 +5,7 @@
   |  Y Y  \|  |  /|    |     / __ \_|  | \/\___ \ \  ___/ |  | \/
   |__|_|  /|____/ |____|    (____  /|__|  /____  > \___  >|__|   
         \/                       \/            \/      \/        
-  Copyright (C) 2004-2011 Ingo Berg
+  Copyright (C) 2004-2012 Ingo Berg
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this 
   software and associated documentation files (the "Software"), to deal in the Software
@@ -48,15 +48,20 @@ namespace mu
 
     union
     {
-      union //SValData
+      struct //SValData
       {
         value_type *ptr;
-        value_type data;
+        value_type  data;
+        value_type  data2;
       } Val;
 
       struct //SFunData
       {
-        void* ptr;
+        // Note: generic_fun_type is merely a placeholder. The real type could be 
+        //       anything between gun_type1 and fun_type9. I can't use a void
+        //       pointer due to constraints in the ANSI standard which allows
+        //       data pointers and function pointers to differ in size.
+        generic_fun_type ptr;
         int   argc;
         int   idx;
       } Fun;
@@ -77,7 +82,7 @@ namespace mu
   values and function pointers. Those are necessary in order to calculate the result.
   All those data items will be casted to the underlying datatype of the bytecode.
 
-  \author (C) 2004-2011 Ingo Berg 
+  \author (C) 2004-2012 Ingo Berg 
 */
 class ParserByteCode
 {
@@ -98,6 +103,10 @@ private:
     /** \brief The actual rpn storage. */
     rpn_type  m_vRPN;
 
+    bool m_bEnableOptimizer;
+
+    void ConstantFolding(ECmdCode a_Oprt);
+
 public:
 
     ParserByteCode();
@@ -110,21 +119,18 @@ public:
     void AddOp(ECmdCode a_Oprt);
     void AddIfElse(ECmdCode a_Oprt);
     void AddAssignOp(value_type *a_pVar);
-    void AddFun(void *a_pFun, int a_iArgc);
-    void AddBulkFun(void *a_pFun, int a_iArgc);
-    void AddStrFun(void *a_pFun, int a_iArgc, int a_iIdx);
+    void AddFun(generic_fun_type a_pFun, int a_iArgc);
+    void AddBulkFun(generic_fun_type a_pFun, int a_iArgc);
+    void AddStrFun(generic_fun_type a_pFun, int a_iArgc, int a_iIdx);
+
+    void EnableOptimizer(bool bStat);
 
     void Finalize();
     void clear();
     std::size_t GetMaxStackSize() const;
+    std::size_t GetSize() const;
 
     const SToken* GetBase() const;
-    //rpn_type Clone() const
-    //{
-    //  return rpn_type(m_vRPN);
-    //}
-
-    void RemoveValEntries(unsigned a_iNumber);
     void AsciiDump();
 };
 
