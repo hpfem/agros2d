@@ -1157,6 +1157,9 @@ void Scene::addField(FieldInfo *field)
     // add to the collection
     m_fieldInfos[field->fieldId()] = field;
 
+    // couplings
+    synchronizeCouplings();
+
     emit fieldsChanged();
     emit invalidated();
 }

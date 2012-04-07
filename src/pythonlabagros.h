@@ -109,7 +109,8 @@ private:
 // ************************************************************************************
 
 // problem
-class PyProblem {
+class PyProblem
+{
     public:
         PyProblem(char *coordinateType, char *name, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal);
         ~PyProblem() {}
@@ -146,7 +147,8 @@ class PyProblem {
 };
 
 // field
-class PyField {
+class PyField
+{
     private:
         FieldInfo *m_fieldInfo;
 
@@ -222,7 +224,8 @@ class PyField {
 };
 
 // geometry
-class PyGeometry {
+class PyGeometry
+{
     public:
         PyGeometry() {}
         ~PyGeometry() {}

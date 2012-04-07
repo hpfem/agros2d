@@ -50,22 +50,16 @@ PythonEngineAgros *currentPythonEngineAgros()
 
 ScriptResult runPythonScript(const QString &script, const QString &fileName)
 {
-    logMessage("runPythonScript()");
-
     return currentPythonEngine()->runPythonScript(script, fileName);
 }
 
 ExpressionResult runPythonExpression(const QString &expression, bool returnValue)
 {
-    logMessage("runPythonExpression()");
-
     return currentPythonEngine()->runPythonExpression(expression, returnValue);
 }
 
 bool scriptIsRunning()
 {
-    logMessage("scriptIsRunning()");
-
     if (currentPythonEngine())
         return currentPythonEngine()->isRunning();
     else
@@ -74,132 +68,206 @@ bool scriptIsRunning()
 
 QString createPythonFromModel()
 {
-    assert(0); //TODO:
-    //    logMessage("createPythonFromModel()");
+    QString str;
 
-    //    QString str;
+    // startup script
+    if (!Util::scene()->problemInfo()->startupscript.isEmpty())
+    {
+        str += "# startup script\n";
+        str += Util::scene()->problemInfo()->startupscript;
+        str += "\n\n";
+    }
 
-    //    // model
-    //    str += "# model\n";
-    //    str += QString("newdocument(name=\"%1\", type=\"%2\",\n"
-    //                   "            physicfield=\"%3\", analysistype=\"%4\",\n"
-    //                   "            numberofrefinements=%5, polynomialorder=%6,\n"
-    //                   "            nonlineartolerance=%7, nonlinearsteps=%8").
-    //            arg(Util::scene()->problemInfo()->name).
-    //            arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
-    //            arg(QString::fromStdString(Util::scene()->problemInfo()->fieldId())).
-    //            arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
-    //            arg(Util::scene()->problemInfo()->numberOfRefinements).
-    //            arg(Util::scene()->problemInfo()->polynomialOrder).
-    //            arg(Util::scene()->problemInfo()->nonlinearTolerance).
-    //            arg(Util::scene()->problemInfo()->nonlinearSteps);
+    // model
+    str += "import agros2d\n\n";
+    str += "# model\n";
+    str += QString("problem = agros2d.Problem(coordinate_type = \"%1\", name = \"%2\",\n"
+                   "                          mesh_type = \"%3\", matrix_solver = \"%4\")\n").
+            arg(coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType)).
+            arg(Util::scene()->problemInfo()->name).
+            arg(matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver)).
+            arg(meshTypeToStringKey(Util::scene()->problemInfo()->meshType));
 
-    //    if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
-    //        str += QString(",\n"
-    //                       "            adaptivitytype=\"%1\", adaptivitysteps=%2, adaptivitytolerance=%3").
-    //                arg(adaptivityTypeToStringKey(Util::scene()->problemInfo()->adaptivityType)).
-    //                arg(Util::scene()->problemInfo()->adaptivitySteps).
-    //                arg(Util::scene()->problemInfo()->adaptivityTolerance);
+    if (Util::scene()->problemInfo()->frequency > 0.0)
+        str += QString("problem.frequency = %1\n").
+                arg(Util::scene()->problemInfo()->frequency);
 
-    //    if (Util::scene()->problemInfo()->frequency > 0.0)
-    //        str += QString(",\n"
-    //                       "            frequency=%1").
-    //                arg(Util::scene()->problemInfo()->frequency);
+    if (Util::scene()->problemInfo()->timeTotal.number() > 0 && Util::scene()->problemInfo()->timeStep.number() > 0)
+        str += QString("problem.time_step = %1\n"
+                       "problem.time_total = %2\n").
+                arg(Util::scene()->problemInfo()->timeStep.text()).
+                arg(Util::scene()->problemInfo()->timeTotal.text());
 
-    //    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
-    //        str += QString(",\n"
-    //                       "            adaptivitytype=%1, adaptivitysteps=%2, adaptivitytolerance=%3").
-    //                arg(Util::scene()->problemInfo()->timeStep.text()).
-    //                arg(Util::scene()->problemInfo()->timeTotal.text()).
-    //                arg(Util::scene()->problemInfo()->initialCondition.text());
+    /*
+    if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
+        str += QString(",\n"
+                       "            adaptivitytype=\"%1\", adaptivitysteps=%2, adaptivitytolerance=%3").
+                arg(adaptivityTypeToStringKey(Util::scene()->problemInfo()->adaptivityType)).
+                arg(Util::scene()->problemInfo()->adaptivitySteps).
+                arg(Util::scene()->problemInfo()->adaptivityTolerance);
 
-    //    str += ")\n\n";
+    */
 
-    //    // startup script
-    //    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
-    //    {
-    //        str += "# startup script\n";
-    //        str += Util::scene()->problemInfo()->scriptStartup;
-    //        str += "\n\n";
-    //    }
+    // fields
+    str += "\n# fields\n";
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        str += QString("%1 = agros2d.Field(problem, field_id = \"%2\", analysis_type = \"%3\")\n").
+                arg(fieldInfo->fieldId()).
+                arg(fieldInfo->fieldId()).
+                arg(analysisTypeToStringKey(fieldInfo->analysisType()));
 
-    //    // boundaries
-    //    if (Util::scene()->boundaries.count() > 1)
-    //    {
-    //        str += "# boundaries\n";
-    //        for (int i = 1; i<Util::scene()->boundaries.count(); i++)
-    //        {
-    //            str += Util::scene()->boundaries[i]->script() + "\n";
-    //        }
-    //        str += "\n";
-    //    }
+        if (fieldInfo->numberOfRefinements > 0)
+            str += QString("%1.number_of_refinements = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->numberOfRefinements);
 
-    //    // materials
-    //    if (Util::scene()->materials.count() > 1)
-    //    {
-    //        str += "# materials\n";
-    //        for (int i = 1; i<Util::scene()->materials.count(); i++)
-    //        {
-    //            str += Util::scene()->materials[i]->script() + "\n";
-    //        }
-    //        str += "\n";
-    //    }
+        if (fieldInfo->polynomialOrder > 0)
+            str += QString("%1.polynomial_order = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->polynomialOrder);
 
-    //    // edges
-    //    if (Util::scene()->edges.count() > 0)
-    //    {
-    //        str += "# edges\n";
-    //        for (int i = 0; i<Util::scene()->edges.count(); i++)
-    //        {
-    //            str += QString("addedge(%1, %2, %3, %4").
-    //                    arg(Util::scene()->edges[i]->nodeStart->point.x).
-    //                    arg(Util::scene()->edges[i]->nodeStart->point.y).
-    //                    arg(Util::scene()->edges[i]->nodeEnd->point.x).
-    //                    arg(Util::scene()->edges[i]->nodeEnd->point.y);
+        str += QString("%1.linearity_type = \"%2\"\n").
+                arg(fieldInfo->fieldId()).
+                arg(linearityTypeToStringKey(fieldInfo->linearityType));
 
-    //            assert(0);
-    ////             if (Util::scene()->edges[i]->boundary->name != "none")
-    ////                str += QString(", boundary=\"%1\"").
-    ////                        arg(QString::fromStdString(Util::scene()->edges[i]->boundary->name));
+        if (fieldInfo->linearityType != LinearityType_Linear)
+        {
+            str += QString("%1.nonlinear_tolerance = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->nonlinearTolerance);
 
-    //            if (Util::scene()->edges[i]->angle > 0.0)
-    //                str += ", angle=" + QString::number(Util::scene()->edges[i]->angle);
+            str += QString("%1.nonlinear_steps = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->nonlinearSteps);
+        }
 
-    //            if (Util::scene()->edges[i]->refineTowardsEdge > 0)
-    //                str += ", refine=" + QString::number(Util::scene()->edges[i]->refineTowardsEdge);
+        str += "\n";
+        foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
+        {
+            QString variables = "{";
+            const std::map<std::string, Value> values = boundary->getValues();
+            for (std::map<std::string, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            {
+                variables += QString("\"%1\" : %2, ").
+                        arg(QString::fromStdString(it->first)).
+                        arg(it->second.toString());
+            }
+            variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
-    //            str += ")\n";
-    //        }
-    //        str += "\n";
-    //    }
+            str += QString("%1.add_boundary(\"%2\", \"%3\", %4)\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(QString::fromStdString(boundary->getName())).
+                    arg(QString::fromStdString(boundary->getType())).
+                    arg(variables);
+        }
 
-    //    // labels
-    //    if (Util::scene()->labels.count() > 0)
-    //    {
-    //        str += "# labels\n";
-    //        for (int i = 0; i<Util::scene()->labels.count(); i++)
-    //        {
-    //            str += QString("addlabel(%1, %2, material=\"%3\"").
-    //                    arg(Util::scene()->labels[i]->point.x).
-    //                    arg(Util::scene()->labels[i]->point.y).
-    //                    arg(QString::fromStdString(Util::scene()->labels[i]->material->name));
+        str += "\n";
+        foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
+        {
+            QString variables = "{";
+            const std::map<std::string, Value> values = material->getValues();
+            for (std::map<std::string, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            {
+                variables += QString("\"%1\" : %2, ").
+                        arg(QString::fromStdString(it->first)).
+                        arg(it->second.toString());
+            }
+            variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
-    //            if (Util::scene()->labels[i]->area > 0.0)
-    //                str += ", area=" + QString::number(Util::scene()->labels[i]->area);
-    //            if (Util::scene()->labels[i]->polynomialOrder > 0)
-    //                str += ", order=" + QString::number(Util::scene()->labels[i]->polynomialOrder);
+            str += QString("%1.add_material(\"%2\", %3)\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(QString::fromStdString(material->getName())).
+                    arg(variables);
+        }
+    }
 
-    //            str += ")\n";
-    //        }
+    // geometry
+    str += "\n# geometry\n";
+    str += "geometry = agros2d.Geometry(problem)\n\n";
 
-    //    }
-    //    return str;
+    // edges
+    if (Util::scene()->edges->count() > 0)
+    {
+        str += "# edges\n";
+        foreach (SceneEdge *edge, Util::scene()->edges->items())
+        {
+            str += QString("geometry.add_edge(%1, %2, %3, %4").
+                    arg(edge->nodeStart->point.x).
+                    arg(edge->nodeStart->point.y).
+                    arg(edge->nodeEnd->point.x).
+                    arg(edge->nodeEnd->point.y);
+
+            if (Util::scene()->fieldInfos().count() > 0)
+            {
+                QString boundaries = ", boundaries = {";
+                foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+                {
+                    SceneBoundary *marker = edge->getMarker(fieldInfo);
+
+                    if (marker != Util::scene()->boundaries->getNone(fieldInfo))
+                    {
+                        boundaries += QString("\"%1\" : \"%2\", ").
+                                arg(fieldInfo->fieldId()).
+                                arg(QString::fromStdString(marker->getName()));
+                    }
+                }
+                boundaries = (boundaries.endsWith(", ") ? boundaries.left(boundaries.length() - 2) : boundaries) + "}";
+                str += boundaries;
+            }
+
+            if (edge->angle > 0.0)
+                str += ", angle = " + QString::number(edge->angle);
+
+            if (edge->refineTowardsEdge > 0)
+                str += ", refinement = " + QString::number(edge->refineTowardsEdge);
+
+            str += ")\n";
+        }
+        str += "\n";
+    }
+
+    // labels
+    if (Util::scene()->labels->count() > 0)
+    {
+        str += "# labels\n";
+        foreach (SceneLabel *label, Util::scene()->labels->items())
+        {
+            str += QString("geometry.add_label(%1, %2").
+                    arg(label->point.x).
+                    arg(label->point.y);
+
+            if (Util::scene()->fieldInfos().count() > 0)
+            {
+                QString materials = ", materials = {";
+                foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+                {
+                    SceneMaterial *marker = label->getMarker(fieldInfo);
+
+                    materials += QString("\"%1\" : \"%2\", ").
+                            arg(fieldInfo->fieldId()).
+                            arg(QString::fromStdString(marker->getName()));
+                }
+                materials = (materials.endsWith(", ") ? materials.left(materials.length() - 2) : materials) + "}";
+                str += materials;
+            }
+
+            if (label->area > 0.0)
+                str += ", area = " + QString::number(label->area);
+
+            if (label->polynomialOrder > 0)
+                str += ", order = " + QString::number(label->polynomialOrder);
+
+            str += ")\n";
+        }
+        str += "\n";
+    }
+
+    return str;
 }
 
 ScriptEngineRemote::ScriptEngineRemote()
 {
-    logMessage("ScriptEngineRemote::ScriptEngineRemote()");
-
     // server
     m_server = new QLocalServer();
     QLocalServer::removeServer("agros2d-server");
@@ -214,16 +282,12 @@ ScriptEngineRemote::ScriptEngineRemote()
 
 ScriptEngineRemote::~ScriptEngineRemote()
 {
-    logMessage("ScriptEngineRemote::~ScriptEngineRemote()");
-
     delete m_server;
     delete m_client_socket;
 }
 
 void ScriptEngineRemote::connected()
 {
-    logMessage("ScriptEngineRemote::connected()");
-
     command = "";
 
     m_server_socket = m_server->nextPendingConnection();
@@ -233,16 +297,12 @@ void ScriptEngineRemote::connected()
 
 void ScriptEngineRemote::readCommand()
 {
-    logMessage("ScriptEngineRemote::readCommand()");
-
     QTextStream in(m_server_socket);
     command = in.readAll();
 }
 
 void ScriptEngineRemote::disconnected()
 {
-    logMessage("ScriptEngineRemote::disconnected()");
-
     m_server_socket->deleteLater();
 
     ScriptResult result;
@@ -272,8 +332,6 @@ void ScriptEngineRemote::disconnected()
 
 void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError)
 {
-    logMessage("ScriptEngineRemote::displayError()");
-
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
         qWarning() << tr("Server error: The host was not found.");
@@ -290,8 +348,6 @@ void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError
 
 PyProblem::PyProblem(char *coordinateType, char *name, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal)
 {
-    logMessage("PyProblem::PyProblem()");
-
     Util::scene()->clear();
 
     Util::scene()->problemInfo()->name = QString(name);
@@ -384,8 +440,6 @@ FieldInfo *PyField::fieldInfo()
 
 void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 {
-    logMessage("PyField::addBoundary()");
-
     // check boundaries with same name
     foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(Util::scene()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
     {
@@ -412,8 +466,6 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 
 void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
 {
-    logMessage("PyField::setBoundary()");
-
     SceneBoundary *sceneBoundary = Util::scene()->getBoundary(QString(name));
     if (std::string(type) != "")
         sceneBoundary->setType(std::string(type));
@@ -424,15 +476,11 @@ void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
 
 void PyField::removeBoundary(char *name)
 {
-    logMessage("PyField::removeBoundary()");
-
     Util::scene()->removeBoundary(Util::scene()->getBoundary(QString(name)));
 }
 
 void PyField::addMaterial(char *name, map<char*, double> parameters)
 {
-    logMessage("PyField::addMaterial()");
-
     // check materials with same name
     foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::scene()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
     {
@@ -459,8 +507,6 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
 
 void PyField::setMaterial(char *name, map<char*, double> parameters)
 {
-    logMessage("PyField::setMaterial()");
-
     SceneMaterial *sceneMaterial = Util::scene()->getMaterial(QString(name));
 
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
@@ -469,8 +515,6 @@ void PyField::setMaterial(char *name, map<char*, double> parameters)
 
 void PyField::removeMaterial(char *name)
 {
-    logMessage("PyField::removeMaterial()");
-
     Util::scene()->removeMaterial(Util::scene()->getMaterial(QString(name)));
 }
 
@@ -603,15 +647,11 @@ void PyField::volumeIntegrals(vector<int> labels, map<char *, double> &results)
 
 void PyGeometry::addNode(double x, double y)
 {
-    logMessage("PyGeometry::addNode()");
-
     Util::scene()->addNode(new SceneNode(Point(x, y)));
 }
 
 void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries)
 {
-    logMessage("PyGeometry::addEdge()");
-
     // nodes
     SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
     SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
@@ -643,8 +683,6 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
 
 void PyGeometry::addLabel(double x, double y, double area, int order, map<char*, char*> materials)
 {
-    logMessage("PyGeometry::addLabel()");
-
     if (area < 0.0)
         throw out_of_range(QObject::tr("Area must be positive.").toStdString());
 
@@ -672,8 +710,6 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
 
 void PyGeometry::removeNode(int index)
 {
-    logMessage("PyGeometry::removeNode()");
-
     if (index < 0 || index >= Util::scene()->nodes->length())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
 
@@ -682,8 +718,6 @@ void PyGeometry::removeNode(int index)
 
 void PyGeometry::removeEdge(int index)
 {
-    logMessage("PyGeometry::removeEdge()");
-
     if (index < 0 || index >= Util::scene()->edges->length())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
 
@@ -692,8 +726,6 @@ void PyGeometry::removeEdge(int index)
 
 void PyGeometry::removeLabel(int index)
 {
-    logMessage("PyGeometry::removeLabel()");
-
     if (index < 0 || index >= Util::scene()->labels->length())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
 
@@ -702,29 +734,21 @@ void PyGeometry::removeLabel(int index)
 
 void PyGeometry::removeNodePoint(double x, double y)
 {
-    logMessage("PyGeometry::removeNodePoint()");
-
     Util::scene()->nodes->remove(Util::scene()->getNode(Point(x, y)));
 }
 
 void PyGeometry::removeEdgePoint(double x1, double y1, double x2, double y2, double angle)
 {
-    logMessage("PyGeometry::removeEdgePoint()");
-
     Util::scene()->edges->remove(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
 }
 
 void PyGeometry::removeLabelPoint(double x, double y)
 {
-    logMessage("PyGeometry::removeLabelPoint()");
-
     Util::scene()->labels->remove(Util::scene()->getLabel(Point(x, y)));
 }
 
 void PyGeometry::selectNodes(vector<int> nodes)
 {
-    logMessage("PyGeometry::selectNode()");
-
     Util::scene()->selectNone();
 
     if (!nodes.empty())
@@ -747,8 +771,6 @@ void PyGeometry::selectNodes(vector<int> nodes)
 
 void PyGeometry::selectEdges(vector<int> edges)
 {
-    logMessage("PyGeometry::selectEdge()");
-
     Util::scene()->selectNone();
 
     if (!edges.empty())
@@ -771,8 +793,6 @@ void PyGeometry::selectEdges(vector<int> edges)
 
 void PyGeometry::selectLabels(vector<int> labels)
 {
-    logMessage("PyGeometry::selectLabel()");
-
     Util::scene()->selectNone();
 
     if (!labels.empty())
@@ -795,8 +815,6 @@ void PyGeometry::selectLabels(vector<int> labels)
 
 void PyGeometry::selectNodePoint(double x, double y)
 {
-    logMessage("PyGeometry::selectNodePoint()");
-
     SceneNode *node = currentPythonEngineAgros()->sceneViewGeometry()->findClosestNode(Point(x, y));
     if (node)
     {
@@ -807,8 +825,6 @@ void PyGeometry::selectNodePoint(double x, double y)
 
 void PyGeometry::selectEdgePoint(double x, double y)
 {
-    logMessage("PyGeometry::selectEdgePoint()");
-
     SceneEdge *edge = currentPythonEngineAgros()->sceneViewGeometry()->findClosestEdge(Point(x, y));
     if (edge)
     {
@@ -819,8 +835,6 @@ void PyGeometry::selectEdgePoint(double x, double y)
 
 void PyGeometry::selectLabelPoint(double x, double y)
 {
-    logMessage("PyGeometry::selectLabelPoint()");
-
     SceneLabel *label = currentPythonEngineAgros()->sceneViewGeometry()->findClosestLabel(Point(x, y));
     if (label)
     {
@@ -831,47 +845,35 @@ void PyGeometry::selectLabelPoint(double x, double y)
 
 void PyGeometry::selectNone()
 {
-    logMessage("PyGeometry::selectNone()");
-
     Util::scene()->selectNone();
     Util::scene()->refresh();
 }
 
 void PyGeometry::moveSelection(double dx, double dy, bool copy)
 {
-    logMessage("PyGeometry::moveSelection()");
-
     Util::scene()->transformTranslate(Point(dx, dy), copy);
     // sceneView()->doInvalidated();
 }
 
 void PyGeometry::rotateSelection(double x, double y, double angle, bool copy)
 {
-    logMessage("PyGeometry::rotateSelection()");
-
     Util::scene()->transformRotate(Point(x, y), angle, copy);
     // sceneView()->doInvalidated();
 }
 
 void PyGeometry::scaleSelection(double x, double y, double scale, bool copy)
 {
-    logMessage("PyGeometry::scaleSelection()");
-
     Util::scene()->transformScale(Point(x, y), scale, copy);
     // sceneView()->doInvalidated();
 }
 
 void PyGeometry::removeSelection()
 {
-    logMessage("PyGeometry::deleteSelection()");
-
     Util::scene()->deleteSelected();
 }
 
 void PyGeometry::mesh()
 {
-    logMessage("PyGeometry::mesh()");
-
     Util::problem()->solve(SolverMode_Mesh);
     if (Util::problem()->isMeshed())
     {
@@ -882,8 +884,6 @@ void PyGeometry::mesh()
 
 char *PyGeometry::meshFileName()
 {
-    logMessage("PyGeometry::meshFileName()");
-
     if (Util::problem()->isMeshed())
         return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toStdString().c_str());
     else
@@ -892,43 +892,31 @@ char *PyGeometry::meshFileName()
 
 void PyGeometry::zoomBestFit()
 {
-    logMessage("PyGeometry::zoomBestFit()");
-
     currentPythonEngineAgros()->sceneViewGeometry()->doZoomBestFit();
 }
 
 void PyGeometry::zoomIn()
 {
-    logMessage("PyGeometry::zoomIn()");
-
     currentPythonEngineAgros()->sceneViewGeometry()->doZoomIn();
 }
 
 void PyGeometry::zoomOut()
 {
-    logMessage("PyGeometry::zoomOut()");
-
     currentPythonEngineAgros()->sceneViewGeometry()->doZoomOut();
 }
 
 void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
 {
-    logMessage("PyGeometry::zoomRegion()");
-
     currentPythonEngineAgros()->sceneViewGeometry()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 char *pyVersion()
 {
-    logMessage("pyVersion()");
-
     return const_cast<char*>(QApplication::applicationVersion().toStdString().c_str());
 }
 
 void pyQuit()
 {
-    logMessage("pyQuit()");
-
     // doesn't work without main event loop (run from script)
     // QApplication::exit(0);
 
@@ -937,23 +925,17 @@ void pyQuit()
 
 char *pyInput(char *str)
 {
-    logMessage("pyInput()");
-
     QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), QString(str));
     return const_cast<char*>(text.toStdString().c_str());
 }
 
 void pyMessage(char *str)
 {
-    logMessage("pyMessage()");
-
     QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString(str));
 }
 
 void pyOpenDocument(char *str)
 {
-    logMessage("pyOpenDocument()");
-
     ErrorResult result = Util::scene()->readFromFile(QString(str));
     if (result.isError())
         throw invalid_argument(result.message().toStdString());
@@ -961,8 +943,6 @@ void pyOpenDocument(char *str)
 
 void pySaveDocument(char *str)
 {
-    logMessage("pySaveDocument()");
-
     ErrorResult result = Util::scene()->writeToFile(QString(str));
     if (result.isError())
         throw invalid_argument(result.message().toStdString());
@@ -970,8 +950,6 @@ void pySaveDocument(char *str)
 
 void pyCloseDocument()
 {
-    logMessage("pyCloseDocument()");
-
     Util::scene()->clear();
     // sceneView()->doDefaultValues();
     Util::scene()->refresh();
@@ -986,8 +964,6 @@ void pyCloseDocument()
 
 void pySaveImage(char *str, int w, int h)
 {
-    logMessage("pySaveImage()");
-
     // ErrorResult result = sceneView()->saveImageToFile(QString(str), w, h);
     // if (result.isError())
     //    throw invalid_argument(result.message().toStdString());
@@ -998,8 +974,6 @@ void pySaveImage(char *str, int w, int h)
 // solutionfilename()
 char *pythonSolutionFileName()
 {
-    logMessage("pythonSolutionFileName()");
-
     if (Util::problem()->isSolved())
     {
         char *fileName = const_cast<char*>(QString(tempProblemFileName() + ".sln").toStdString().c_str());
@@ -1014,8 +988,6 @@ char *pythonSolutionFileName()
 void pythonSolveAdaptiveStep()
 {
     assert(0);
-    //    logMessage("pythonSolveAdaptiveStep()");
-
     //    // store adaptivity steps
     //    int adaptivitySteps = Util::scene()->fieldInfo("TODO")->adaptivitySteps;
     //    Util::scene()->fieldInfo("TODO")->adaptivitySteps = 1;
@@ -1041,8 +1013,6 @@ void pythonSolveAdaptiveStep()
 void pythonMode(char *str)
 {
     assert(0);
-    //    logMessage("pythonMode()");
-
     //    if (QString(str) == "node")
     //        // sceneView()->actSceneModeNode->trigger();
     //    else if (QString(str) == "edge")
@@ -1064,8 +1034,6 @@ void pythonMode(char *str)
 void pythonPostprocessorMode(char *str)
 {
     assert(0);
-    //    logMessage("pythonPostprocessorMode()");
-
     //    if (Util::scene()->sceneSolution()->isSolved())
     //        // sceneView()->actSceneModePostprocessor->trigger();
     //    else
@@ -1087,8 +1055,6 @@ void pythonPostprocessorMode(char *str)
 void pythonShowScalar(char *type, char *variable, char *component, double rangemin, double rangemax)
 {
     assert(0);
-
-    //    logMessage("pythonShowScalar()");
 
     //    // type
     //    SceneViewPostprocessorShow postprocessorShow = sceneViewPostprocessorShowFromStringKey(QString(type));
@@ -1156,8 +1122,6 @@ void pythonShowScalar(char *type, char *variable, char *component, double rangem
 // showgrid(show = {True, False})
 void pythonShowGrid(bool show)
 {
-    logMessage("pythonShowGrid()");
-
     Util::config()->showGrid = show;
     // sceneView()->doInvalidated();
 }
@@ -1195,8 +1159,6 @@ void pythonShowSolutionMesh(bool show)
 void pythonShowContours(bool show)
 {
     assert(0);
-    //    logMessage("pythonShowContours()");
-
     //    // sceneView()->sceneViewSettings().showContours = show;
 
     //    // sceneView()->doInvalidated();
@@ -1207,8 +1169,6 @@ void pythonShowContours(bool show)
 void pythonShowVectors(bool show)
 {
     assert(0);
-    //    logMessage("pythonShowVectors()");
-
     //    // sceneView()->sceneViewSettings().showVectors = show;
 
     //    // sceneView()->doInvalidated();
@@ -1219,8 +1179,6 @@ void pythonShowVectors(bool show)
 void pythonSetTimeStep(int timestep)
 {
     assert(0); //TODO:
-    //    logMessage("pythonSetTimeStep()");
-
     //    if (Util::scene()->sceneSolution()->isSolved())
     //        // sceneView()->actSceneModePostprocessor->trigger();
     //    else
@@ -1239,8 +1197,6 @@ void pythonSetTimeStep(int timestep)
 int pythonTimeStepCount()
 {
     assert(0);
-    //    logMessage("pythonTimeStepCount()");
-
     //    return Util::scene()->sceneSolution()->timeStepCount();
 }
 
@@ -1288,7 +1244,5 @@ PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWi
 
 void PythonLabAgros::doCreatePythonFromModel()
 {
-    logMessage("ScriptEditorDialog::doCreatePythonFromModel()");
-
     txtEditor->setPlainText(createPythonFromModel());
 }
