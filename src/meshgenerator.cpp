@@ -347,10 +347,6 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     QDomElement eleSubdomains = doc.createElement("subdomains");
     eleMesh.appendChild(eleSubdomains);
 
-    QDomElement eleSubdomain = doc.createElement("subdomain");
-    eleSubdomains.appendChild(eleSubdomain);
-    eleSubdomain.setAttribute("name", "Whole domain");
-
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -658,18 +654,21 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         {
             //TODO - no "inner edges" in new xml mesh file format - remove?
             // inner edge marker (minus markers are ignored)
-            int marker = - (edgeList[i].marker-1);
-            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-                if (Util::scene()->edges->at(edgeList[i].marker-1)->getMarker(fieldInfoTMP)
-                        != SceneBoundaryContainer::getNone(fieldInfoTMP))
-                {
-                    // boundary marker
-                    marker = edgeList[i].marker;
+//            int marker = - (edgeList[i].marker-1);
+//            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+//                if (Util::scene()->edges->at(edgeList[i].marker-1)->getMarker(fieldInfoTMP)
+//                        != SceneBoundaryContainer::getNone(fieldInfoTMP))
+//                {
+//                    // boundary marker
+//                    marker = edgeList[i].marker;
 
-                    break;
-                }
+//                    break;
+//                }
 
-            countEdges++;
+//            countEdges++;
+
+            int marker = edgeList[i].marker;
+
 
             //assert(countEdges == i+1);
             QDomElement eleEdge = doc.createElement("edge");
@@ -775,8 +774,54 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         }
     }
 
-    // subdomains
-    //TODO
+    foreach(FieldInfo* fieldInfo, Util::scene()->fieldInfos())
+    {
+        QDomElement eleSubdomain = doc.createElement("subdomain");
+        eleSubdomains.appendChild(eleSubdomain);
+        eleSubdomain.setAttribute("name", fieldInfo->fieldId());
+
+        QDomElement eleSubElements = doc.createElement("elements");
+        eleSubdomain.appendChild(eleSubElements);
+
+        for (int i = 0; i<elementList.count(); i++)
+        {
+            if (elementList[i].isUsed)
+            {
+                QDomElement eleSubElement = doc.createElement("i");
+                eleSubElements.appendChild(eleSubElement);
+                QDomText number = doc.createTextNode(QString::number(i));
+                eleSubElement.appendChild(number);
+            }
+        }
+
+        QDomElement eleBoundaryEdges = doc.createElement("boundary_edges");
+        eleSubdomain.appendChild(eleBoundaryEdges);
+//        QDomElement eleInnerEdges = doc.createElement("inner_edges");
+//        eleSubdomain.appendChild(eleInnerEdges);
+
+        for (int i = 0; i < edgeList.count(); i++)
+        {
+            QDomElement eleEdge = doc.createElement("i");
+            QDomText number = doc.createTextNode(QString::number(i));
+            eleEdge.appendChild(number);
+
+            cout << "edge " << i << endl;
+            if (edgeList[i].isUsed && edgeList[i].marker != 0)
+            {
+                cout << "used" << endl;
+                if (Util::scene()->edges->at(edgeList[i].marker-1)->getMarker(fieldInfo)
+                        == SceneBoundaryContainer::getNone(fieldInfo))
+                {
+                    cout << "inner " << endl;
+//                    eleInnerEdges.appendChild(eleEdge);
+                }
+                else{
+                    eleBoundaryEdges.appendChild(eleEdge);
+                }
+            }
+        }
+    }
+
 
     nodeList.clear();
     edgeList.clear();
