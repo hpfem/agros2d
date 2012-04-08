@@ -330,11 +330,10 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     doc.appendChild(instr);
 
     // main document
-    QDomElement eleMesh = doc.createElement("mesh:mesh");
+    QDomElement eleMesh = doc.createElement("domain:domain");
     eleMesh.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-    eleMesh.setAttribute("xmlns:mesh", "XMLMesh");
-    eleMesh.setAttribute("xmlns:element", "XMLMesh");
-    eleMesh.setAttribute("xsi:schemaLocation", QString("XMLMesh %1/mesh_h2d_xml.xsd").arg(datadir() + "/resources/xsd"));
+    eleMesh.setAttribute("xmlns:domain", "XMLSubdomains");
+    eleMesh.setAttribute("xsi:schemaLocation", QString("XMLSubdomains %1/subdomains_h2d_xml.xsd").arg(datadir() + "/resources/xsd"));
     doc.appendChild(eleMesh);
 
     QDomElement eleVertices = doc.createElement("vertices");
@@ -345,6 +344,12 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     eleMesh.appendChild(eleEdges);
     QDomElement eleCurves = doc.createElement("curves");
     eleMesh.appendChild(eleCurves);
+    QDomElement eleSubdomains = doc.createElement("subdomains");
+    eleMesh.appendChild(eleSubdomains);
+
+    QDomElement eleSubdomain = doc.createElement("subdomain");
+    eleSubdomains.appendChild(eleSubdomain);
+    eleSubdomain.setAttribute("name", "Whole domain");
 
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -666,9 +671,11 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
 
             countEdges++;
 
+            //assert(countEdges == i+1);
             QDomElement eleEdge = doc.createElement("edge");
             eleEdge.setAttribute("v1", edgeList[i].node[0]);
             eleEdge.setAttribute("v2", edgeList[i].node[1]);
+            eleEdge.setAttribute("i", i);
             eleEdge.setAttribute("marker", marker);
 
             eleEdges.appendChild(eleEdge);
@@ -755,12 +762,13 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     {
         if (elementList[i].isUsed)
         {
-            QDomElement eleElement = doc.createElement(QString("element:%1").arg(elementList[i].isTriangle() ? "triangle" : "quad"));
+            QDomElement eleElement = doc.createElement(QString("domain:%1").arg(elementList[i].isTriangle() ? "triangle" : "quad"));
             eleElement.setAttribute("v1", elementList[i].node[0]);
             eleElement.setAttribute("v2", elementList[i].node[1]);
             eleElement.setAttribute("v3", elementList[i].node[2]);
             if (!elementList[i].isTriangle())
                 eleElement.setAttribute("v4", elementList[i].node[3]);
+            eleElement.setAttribute("i", i);
             eleElement.setAttribute("marker", QString("%1").arg(abs(elementList[i].marker) - 1));
 
             eleElements.appendChild(eleElement);
