@@ -100,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // postprocessor 2d
     connect(sceneViewPost2D, SIGNAL(mousePressed()), resultsView, SLOT(doShowResults()));
-    connect(sceneViewPost2D, SIGNAL(mousePressed(const Point &)), resultsView, SLOT(doShowPoint(const Point &)));
+    connect(sceneViewPost2D, SIGNAL(mousePressed(const Point &)), resultsView, SLOT(showPoint(const Point &)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(clear()));
@@ -525,7 +525,8 @@ void MainWindow::createMenus()
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeLocalPointValue);
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeSurfaceIntegral);
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeVolumeIntegral);
-    mnuProblem->addAction(sceneViewPost2D->actSceneViewSelectByMarker);
+    mnuProblem->addAction(sceneViewPost2D->actSelectPoint);
+    mnuProblem->addAction(sceneViewPost2D->actSelectByMarker);
     mnuProblem->addSeparator();
     mnuProblem->addAction(actCreateMesh);
     mnuProblem->addAction(actSolve);
@@ -677,7 +678,8 @@ void MainWindow::createToolBars()
     tlbPost2D->addAction(sceneViewPost2D->actPostprocessorModeSurfaceIntegral);
     tlbPost2D->addAction(sceneViewPost2D->actPostprocessorModeVolumeIntegral);
     tlbPost2D->addSeparator();
-    tlbPost2D->addAction(sceneViewPost2D->actSceneViewSelectByMarker);
+    tlbPost2D->addAction(sceneViewPost2D->actSelectPoint);
+    tlbPost2D->addAction(sceneViewPost2D->actSelectByMarker);
     tlbPost2D->addAction(actChart);
 }
 
@@ -1203,7 +1205,7 @@ void MainWindow::doSolve()
 
         // show local point values
         Point point = Point(0, 0);
-        resultsView->doShowPoint(point);
+        resultsView->showPoint(point);
 
         // raise postprocessor
         postprocessorView->raise();
@@ -1230,7 +1232,7 @@ void MainWindow::doSolveAdaptiveStep()
 
         // show local point values
         Point point = Point(0, 0);
-        resultsView->doShowPoint(point);
+        resultsView->showPoint(point);
 
         // raise postprocessor
         postprocessorView->raise();
@@ -1493,11 +1495,11 @@ void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneMod
 {
     //resultsView->raise();
     if (sceneModePostprocessor == SceneModePostprocessor_LocalValue)
-        resultsView->doShowPoint();
+        resultsView->showPoint();
     else if (sceneModePostprocessor == SceneModePostprocessor_SurfaceIntegral)
-        resultsView->doShowSurfaceIntegral();
+        resultsView->showSurfaceIntegral();
     else if (sceneModePostprocessor == SceneModePostprocessor_VolumeIntegral)
-        resultsView->doShowVolumeIntegral();
+        resultsView->showVolumeIntegral();
 }
 
 void MainWindow::doHelp()

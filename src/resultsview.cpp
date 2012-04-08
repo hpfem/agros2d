@@ -39,20 +39,9 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
 
     webView = new QWebView(this);
 
-    btnPoint = new QPushButton();
-    btnPoint->setText(actPoint->text());
-    btnPoint->setIcon(actPoint->icon());
-    btnPoint->setMaximumSize(btnPoint->sizeHint());
-    connect(btnPoint, SIGNAL(clicked()), this, SLOT(doPoint()));
-
-    QHBoxLayout *btnLayout = new QHBoxLayout();
-    btnLayout->addStretch();
-    btnLayout->addWidget(btnPoint);
-
     // main widget
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(webView);
-    layout->addLayout(btnLayout);
     layout->setContentsMargins(0, 0, 0, 7);
 
     QWidget *widget = new QWidget(this);
@@ -63,55 +52,105 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
 
 void ResultsView::createActions()
 {
-    logMessage("ResultsView::createActions()");
 
-    // point
-    actPoint = new QAction(icon("scene-node"), tr("Local point value"), this);
-    connect(actPoint, SIGNAL(triggered()), this, SLOT(doPoint()));
-}
-
-void ResultsView::doPoint()
-{
-    logMessage("ResultsView::doPoint()");
-
-    LocalPointValueDialog localPointValueDialog(m_point);
-    if (localPointValueDialog.exec() == QDialog::Accepted)
-    {
-        doShowPoint(localPointValueDialog.point());
-    }
 }
 
 void ResultsView::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
 {
     m_sceneModePostprocessor = sceneModePostprocessor;
-
-    btnPoint->setEnabled(m_sceneModePostprocessor == SceneModePostprocessor_LocalValue);
 }
 
 void ResultsView::doShowResults()
 {
     if (m_sceneModePostprocessor == SceneModePostprocessor_LocalValue)
-        doShowPoint();
+        showPoint();
     if (m_sceneModePostprocessor == SceneModePostprocessor_SurfaceIntegral)
-        doShowSurfaceIntegral();
+        showSurfaceIntegral();
     if (m_sceneModePostprocessor == SceneModePostprocessor_VolumeIntegral)
-        doShowVolumeIntegral();
+        showVolumeIntegral();
 }
 
-void ResultsView::doShowPoint(const Point &point)
+void ResultsView::showPoint(const Point &point)
 {
     if (!Util::problem()->isSolved())
+    {
+        showEmpty();
         return;
+    }
 
-    // store point
-    this->m_point = point;
-    doShowPoint();
+    // stylesheet
+    std::string style;
+    ctemplate::TemplateDictionary stylesheet("style");
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
+
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+
+    // template
+    std::string results;
+    ctemplate::TemplateDictionary localPointValues("results");
+
+    localPointValues.SetValue("STYLESHEET", style);
+    localPointValues.SetValue("LABEL", tr("Local point values").toStdString());
+
+    localPointValues.SetValue("LABELX", Util::scene()->problemInfo()->labelX().toLower().toStdString());
+    localPointValues.SetValue("LABELY", Util::scene()->problemInfo()->labelY().toLower().toStdString());
+    localPointValues.SetValue("POINTX", (QString("%1").arg(point.x, 0, 'e', 3)).toStdString());
+    localPointValues.SetValue("POINTY", (QString("%1").arg(point.y, 0, 'e', 3)).toStdString());
+    localPointValues.SetValue("POINT_UNIT", "m");
+
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        ctemplate::TemplateDictionary *field = localPointValues.AddSectionDictionary("FIELD");
+        field->SetValue("FIELDNAME", fieldInfo->module()->name);
+
+        LocalPointValue value(fieldInfo, point);
+        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin();
+             it != value.values.end(); ++it)
+        {
+            if (it->first->is_scalar)
+            {
+                // scalar variable
+                ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
+                item->SetValue("NAME", it->first->name);
+                item->SetValue("SHORTNAME", it->first->shortname_html);
+                item->SetValue("VALUE", QString("%1").arg(it->second.scalar, 0, 'e', 3).toStdString());
+                item->SetValue("UNIT", it->first->unit_html);
+            }
+            else
+            {
+                // vector variable
+                ctemplate::TemplateDictionary *itemMagnitude = field->AddSectionDictionary("ITEM");
+                itemMagnitude->SetValue("NAME", it->first->name);
+                itemMagnitude->SetValue("SHORTNAME", it->first->shortname_html);
+                itemMagnitude->SetValue("VALUE", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3).toStdString());
+                itemMagnitude->SetValue("UNIT", it->first->unit_html);
+                ctemplate::TemplateDictionary *itemX = field->AddSectionDictionary("ITEM");
+                itemX->SetValue("SHORTNAME", it->first->shortname_html);
+                itemX->SetValue("PART", Util::scene()->problemInfo()->labelX().toLower().toStdString());
+                itemX->SetValue("VALUE", QString("%1").arg(it->second.vector.x, 0, 'e', 3).toStdString());
+                itemX->SetValue("UNIT", it->first->unit_html);
+                ctemplate::TemplateDictionary *itemY = field->AddSectionDictionary("ITEM");
+                itemY->SetValue("SHORTNAME", it->first->shortname_html);
+                itemY->SetValue("PART", Util::scene()->problemInfo()->labelY().toLower().toStdString());
+                itemY->SetValue("VALUE", QString("%1").arg(it->second.vector.y, 0, 'e', 3).toStdString());
+                itemY->SetValue("UNIT", it->first->unit_html);
+            }
+        }
+    }
+
+    // expand template
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/local_point_values.tpl", ctemplate::DO_NOT_STRIP, &localPointValues, &results);
+    webView->setHtml(QString::fromStdString(results));
 }
 
-void ResultsView::doShowVolumeIntegral()
+void ResultsView::showVolumeIntegral()
 {
     if (!Util::problem()->isSolved())
+    {
+        showEmpty();
         return;
+    }
 
     // stylesheet
     std::string style;
@@ -150,10 +189,13 @@ void ResultsView::doShowVolumeIntegral()
     webView->setHtml(QString::fromStdString(results));
 }
 
-void ResultsView::doShowSurfaceIntegral()
+void ResultsView::showSurfaceIntegral()
 {
     if (!Util::problem()->isSolved())
+    {
+        showEmpty();
         return;
+    }
 
     // stylesheet
     std::string style;
@@ -192,11 +234,8 @@ void ResultsView::doShowSurfaceIntegral()
     webView->setHtml(QString::fromStdString(results));
 }
 
-void ResultsView::doShowPoint()
+void ResultsView::showEmpty()
 {
-    if (!Util::problem()->isSolved())
-        return;
-
     // stylesheet
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
@@ -207,59 +246,13 @@ void ResultsView::doShowPoint()
 
     // template
     std::string results;
-    ctemplate::TemplateDictionary localPointValues("results");
+    ctemplate::TemplateDictionary empty("empty");
 
-    localPointValues.SetValue("STYLESHEET", style);
-    localPointValues.SetValue("LABEL", tr("Local point values").toStdString());
-
-    localPointValues.SetValue("LABELX", Util::scene()->problemInfo()->labelX().toLower().toStdString());
-    localPointValues.SetValue("LABELY", Util::scene()->problemInfo()->labelY().toLower().toStdString());
-    localPointValues.SetValue("POINTX", (QString("%1").arg(m_point.x, 0, 'e', 3)).toStdString());
-    localPointValues.SetValue("POINTY", (QString("%1").arg(m_point.y, 0, 'e', 3)).toStdString());
-    localPointValues.SetValue("POINT_UNIT", "m");
-
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-    {
-        ctemplate::TemplateDictionary *field = localPointValues.AddSectionDictionary("FIELD");
-        field->SetValue("FIELDNAME", fieldInfo->module()->name);
-
-        LocalPointValue value(fieldInfo, m_point);
-        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin();
-             it != value.values.end(); ++it)
-        {
-            if (it->first->is_scalar)
-            {
-                // scalar variable
-                ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
-                item->SetValue("NAME", it->first->name);
-                item->SetValue("SHORTNAME", it->first->shortname_html);
-                item->SetValue("VALUE", QString("%1").arg(it->second.scalar, 0, 'e', 3).toStdString());
-                item->SetValue("UNIT", it->first->unit_html);
-            }
-            else
-            {
-                // vector variable
-                ctemplate::TemplateDictionary *itemMagnitude = field->AddSectionDictionary("ITEM");
-                itemMagnitude->SetValue("NAME", it->first->name);
-                itemMagnitude->SetValue("SHORTNAME", it->first->shortname_html);
-                itemMagnitude->SetValue("VALUE", QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3).toStdString());
-                itemMagnitude->SetValue("UNIT", it->first->unit_html);
-                ctemplate::TemplateDictionary *itemX = field->AddSectionDictionary("ITEM");
-                itemX->SetValue("SHORTNAME", it->first->shortname_html);
-                itemX->SetValue("PART", Util::scene()->problemInfo()->labelX().toLower().toStdString());
-                itemX->SetValue("VALUE", QString("%1").arg(it->second.vector.x, 0, 'e', 3).toStdString());
-                itemX->SetValue("UNIT", it->first->unit_html);
-                ctemplate::TemplateDictionary *itemY = field->AddSectionDictionary("ITEM");
-                itemY->SetValue("SHORTNAME", it->first->shortname_html);
-                itemY->SetValue("PART", Util::scene()->problemInfo()->labelY().toLower().toStdString());
-                itemY->SetValue("VALUE", QString("%1").arg(it->second.vector.y, 0, 'e', 3).toStdString());
-                itemY->SetValue("UNIT", it->first->unit_html);
-            }
-        }
-    }
+    empty.SetValue("STYLESHEET", style);
+    empty.SetValue("LABEL", tr("Problem is not solved.").toStdString());
 
     // expand template
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/local_point_values.tpl", ctemplate::DO_NOT_STRIP, &localPointValues, &results);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/empty.tpl", ctemplate::DO_NOT_STRIP, &empty, &results);
     webView->setHtml(QString::fromStdString(results));
 }
 

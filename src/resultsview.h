@@ -39,10 +39,10 @@ public slots:
     void doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
     void doShowResults();
 
-    void doShowPoint();
-    void doShowPoint(const Point &m_point);
-    void doShowVolumeIntegral();
-    void doShowSurfaceIntegral();
+    void showEmpty();
+    void showPoint(const Point &m_point = Point());
+    void showVolumeIntegral();
+    void showSurfaceIntegral();
 
 public:
     ResultsView(QWidget *parent = 0);
@@ -51,16 +51,11 @@ public:
 
 private:
     SceneModePostprocessor m_sceneModePostprocessor;
-    Point m_point;
 
-    QPushButton *btnPoint;
     QAction *actPoint;
     QWebView *webView;
 
     void createActions();
-
-private slots:
-    void doPoint();
 };
 
 class LocalPointValueDialog : public QDialog

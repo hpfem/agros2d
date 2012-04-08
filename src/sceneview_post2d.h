@@ -81,9 +81,11 @@ class SceneViewPost2D : public SceneViewCommon2D
     Q_OBJECT
 
 public slots:   
-    void doSelectMarker();
+    void selectByMarker();
+    void selectPoint();
     void doPostprocessorModeGroup(QAction *action);
     virtual void doInvalidated();
+    void setControls();
     virtual void clear();
 
 public:
@@ -97,7 +99,8 @@ public:
     QAction *actShowVectors;
     QAction *actShowSolutionMesh;
 
-    QAction *actSceneViewSelectByMarker;
+    QAction *actSelectPoint;
+    QAction *actSelectByMarker;
 
     QActionGroup *actPostprocessorModeGroup;
     QAction *actPostprocessorModeLocalPointValue;
@@ -127,8 +130,12 @@ protected:
 
     void paintPostprocessorSelectedVolume(); // paint selected volume for integration
     void paintPostprocessorSelectedSurface(); // paint selected surface for integration
+    void paintPostprocessorSelectedPoint(); // paint point for local values
 
 private:
+    // selected point
+    Point m_selectedPoint;
+
     // gl lists
     int m_listContours;
     int m_listVectors;
@@ -139,7 +146,8 @@ private:
     void createActionsPost2D();
 
 private slots:
-    void doShowGroup(QAction *action);
+    void showGroup(QAction *action);
+    void selectedPoint(const Point &p);
 };
 
 #endif // SCENEVIEWPOST2D_H

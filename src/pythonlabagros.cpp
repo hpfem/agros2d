@@ -581,6 +581,8 @@ void PyField::surfaceIntegrals(vector<int> edges, map<string, double> &results)
                     return;
                 }
             }
+
+            currentPythonEngineAgros()->sceneViewPost2D()->updateGL();
         }
         else
         {
@@ -618,7 +620,16 @@ void PyField::volumeIntegrals(vector<int> labels, map<string, double> &results)
             {
                 if ((*it >= 0) && (*it < Util::scene()->labels->length()))
                 {
-                    Util::scene()->labels->at(*it)->isSelected = true;
+                    qDebug() << QString::number(*it) << QString::fromStdString(Util::scene()->labels->at(*it)->getMarker(m_fieldInfo)->getName());
+
+                    if (Util::scene()->labels->at(*it)->getMarker(m_fieldInfo) != Util::scene()->materials->getNone(m_fieldInfo))
+                    {
+                        Util::scene()->labels->at(*it)->isSelected = true;
+                    }
+                    else
+                    {
+                        throw out_of_range(QObject::tr("Label with index '%1' is 'none'.").arg(*it).toStdString());
+                    }
                 }
                 else
                 {
@@ -627,6 +638,8 @@ void PyField::volumeIntegrals(vector<int> labels, map<string, double> &results)
                     return;
                 }
             }
+
+            currentPythonEngineAgros()->sceneViewPost2D()->updateGL();
         }
         else
         {
