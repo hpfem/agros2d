@@ -3,6 +3,12 @@ from libcpp.map cimport map
 from libcpp.pair cimport pair
 from cython.operator cimport preincrement as incr, dereference as deref
 
+cdef extern from "<string>" namespace "std":
+    cdef cppclass string:
+        string()
+        string(char *)
+        char * c_str()
+
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
     int c_INT_MAX "INT_MAX"
@@ -86,9 +92,9 @@ cdef extern from "../../src/pythonlabagros.h":
 
         void solve()
 
-        void localValues(double x, double y, map[char*, double] results) except +
-        void surfaceIntegrals(vector[int], map[char*, double] results) except +
-        void volumeIntegrals(vector[int], map[char*, double] results) except +
+        void localValues(double x, double y, map[string, double] results) except +
+        void surfaceIntegrals(vector[int], map[string, double] results) except +
+        void volumeIntegrals(vector[int], map[string, double] results) except +
 
     # PyGeometry
     cdef cppclass PyGeometry:
@@ -373,12 +379,12 @@ cdef class Field:
     # local values
     def local_values(self, double x, double y):
         out = dict()
-        cdef map[char*, double] results
+        cdef map[string, double] results
 
         self.thisptr.localValues(x, y, results)
         it = results.begin()
         while it != results.end():
-            out[deref(it).first] = deref(it).second
+            out[deref(it).first.c_str()] = deref(it).second
             incr(it)
 
         return out
@@ -390,12 +396,12 @@ cdef class Field:
             edges_vector.push_back(i)
 
         out = dict()
-        cdef map[char*, double] results
+        cdef map[string, double] results
 
         self.thisptr.surfaceIntegrals(edges_vector, results)
         it = results.begin()
         while it != results.end():
-            out[deref(it).first] = deref(it).second
+            out[deref(it).first.c_str()] = deref(it).second
             incr(it)
 
         return out
@@ -407,12 +413,12 @@ cdef class Field:
             labels_vector.push_back(i)
 
         out = dict()
-        cdef map[char*, double] results
+        cdef map[string, double] results
 
         self.thisptr.volumeIntegrals(labels_vector, results)
         it = results.begin()
         while it != results.end():
-            out[deref(it).first] = deref(it).second
+            out[deref(it).first.c_str()] = deref(it).second
             incr(it)
 
         return out

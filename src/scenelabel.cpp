@@ -86,19 +86,20 @@ SceneLabel* SceneLabelContainer::get(const Point& point) const
 
     return NULL;
 }
-
+/*
 SceneLabel* SceneLabelContainer::atNotNoneHack(int i, FieldInfo* fieldInfo)
 {
     int count = 0;
     foreach(SceneLabel* label, items())
     {
-        if(label->getMarker(fieldInfo)->isNone())
+        if (label->getMarker(fieldInfo)->isNone())
             continue;
-        if(count == i)
+        if (count == i)
             return label;
         count++;
     }
 }
+*/
 
 // *************************************************************************************************************************************
 

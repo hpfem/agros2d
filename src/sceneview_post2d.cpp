@@ -30,6 +30,7 @@
 #include "scenelabel.h"
 #include "scenemarker.h"
 #include "scenemarkerselectdialog.h"
+#include "resultsview.h"
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
@@ -97,7 +98,7 @@ void Post2DHermes::processRangeScalar()
     m_scalarIsPrepared = false;
 
     if (Util::problem()->isSolved())
-    {        
+    {
         if (Util::config()->scalarVariable == "")
         {
             // default values
@@ -187,10 +188,12 @@ void Post2DHermes::processSolved()
 SceneViewPost2D::SceneViewPost2D(QWidget *parent) : SceneViewCommon2D(parent),
     m_listContours(-1),
     m_listVectors(-1),
-    m_listScalarField(-1)
+    m_listScalarField(-1),
+    m_selectedPoint(Point())
 {
     createActionsPost2D();
 
+    connect(this, SIGNAL(mousePressed(Point)), this, SLOT(selectedPoint(Point)));
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
     connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
 
@@ -215,9 +218,13 @@ void SceneViewPost2D::createActionsPost2D()
     actSceneModePost2D->setStatusTip(tr("Postprocessor 2D"));
     actSceneModePost2D->setCheckable(true);
 
-    actSceneViewSelectByMarker = new QAction(icon(""), tr("Select by marker"), this);
-    actSceneViewSelectByMarker->setStatusTip(tr("Select by marker"));
-    connect(actSceneViewSelectByMarker, SIGNAL(triggered()), this, SLOT(doSelectMarker()));
+    actSelectByMarker = new QAction(icon(""), tr("Select by marker"), this);
+    actSelectByMarker->setStatusTip(tr("Select by marker"));
+    connect(actSelectByMarker, SIGNAL(triggered()), this, SLOT(selectByMarker()));
+
+    // point
+    actSelectPoint = new QAction(icon("scene-node"), tr("Local point value"), this);
+    connect(actSelectPoint, SIGNAL(triggered()), this, SLOT(selectPoint()));
 
     // postprocessor group
     actPostprocessorModeLocalPointValue = new QAction(icon("mode-localpointvalue"), tr("Local Values"), this);
@@ -247,7 +254,7 @@ void SceneViewPost2D::createActionsPost2D()
 
     actShowGroup = new QActionGroup(this);
     actShowGroup->setExclusive(false);
-    connect(actShowGroup, SIGNAL(triggered(QAction *)), this, SLOT(doShowGroup(QAction *)));
+    connect(actShowGroup, SIGNAL(triggered(QAction *)), this, SLOT(showGroup(QAction *)));
     actShowGroup->addAction(actShowSolutionMesh);
     actShowGroup->addAction(actShowContours);
     actShowGroup->addAction(actShowVectors);
@@ -279,7 +286,6 @@ void SceneViewPost2D::keyPressEvent(QKeyEvent *event)
                 emit mousePressed();
             }
 
-
             refresh();
         }
     }
@@ -296,34 +302,43 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
     m_lastPos = event->pos();
     Point p = position(Point(event->pos().x(), event->pos().y()));
 
-    // local point value
-    if (actPostprocessorModeLocalPointValue->isChecked())
-        emit mousePressed(p);
-    // select volume integral area
-    if (actPostprocessorModeVolumeIntegral->isChecked())
+    if (event->buttons() & Qt::LeftButton)
     {
-        int index = findElementInMesh(Util::problem()->meshInitial(), p);
-        if (index != -1)
+        // local point value
+        if (actPostprocessorModeLocalPointValue->isChecked())
         {
-            //  find label marker
-            int labelIndex = atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(
-                                      Util::problem()->meshInitial()->get_element_fast(index)->marker).marker.c_str());
+            m_selectedPoint = p;
+            emit mousePressed(p);
 
-            Util::scene()->labels->at(labelIndex)->isSelected = !Util::scene()->labels->at(labelIndex)->isSelected;
             updateGL();
         }
-        emit mousePressed();
-    }
-    // select surface integral area
-    if (actPostprocessorModeSurfaceIntegral->isChecked())
-    {
-        //  find edge marker
-        SceneEdge *edge = findClosestEdge(p);
 
-        edge->isSelected = !edge->isSelected;
-        updateGL();
+        // select volume integral area
+        if (actPostprocessorModeVolumeIntegral->isChecked())
+        {
+            int index = findElementInMesh(Util::problem()->meshInitial(), p);
+            if (index != -1)
+            {
+                SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().
+                                                                   get_user_marker(Util::problem()->meshInitial()->get_element_fast(index)->marker).marker.c_str()) - 1);
 
-        emit mousePressed();
+                label->isSelected = !label->isSelected;
+                updateGL();
+            }
+            emit mousePressed();
+        }
+
+        // select surface integral area
+        if (actPostprocessorModeSurfaceIntegral->isChecked())
+        {
+            //  find edge marker
+            SceneEdge *edge = findClosestEdge(p);
+
+            edge->isSelected = !edge->isSelected;
+            updateGL();
+
+            emit mousePressed();
+        }
     }
 }
 
@@ -355,6 +370,7 @@ void SceneViewPost2D::paintGL()
 
     if (Util::problem()->isSolved())
     {
+        if (actPostprocessorModeLocalPointValue->isChecked()) paintPostprocessorSelectedPoint();
         if (actPostprocessorModeVolumeIntegral->isChecked()) paintPostprocessorSelectedVolume();
         if (actPostprocessorModeSurfaceIntegral->isChecked()) paintPostprocessorSelectedSurface();
 
@@ -932,7 +948,7 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
     for (int i = 0; i < Util::problem()->meshInitial()->get_num_active_elements(); i++)
     {
         Hermes::Hermes2D::Element *element = Util::problem()->meshInitial()->get_element(i);
-        if (Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected)
+        if (Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()) - 1)->isSelected)
         {
             if (element->is_triangle())
             {
@@ -1029,6 +1045,16 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
     }
 }
 
+void SceneViewPost2D::paintPostprocessorSelectedPoint()
+{
+    glColor3d(Util::config()->colorSelected.redF(), Util::config()->colorSelected.greenF(), Util::config()->colorSelected.blueF());
+    glPointSize(8.0);
+
+    glBegin(GL_POINTS);
+    glVertex2d(m_selectedPoint.x, m_selectedPoint.y);
+    glEnd();
+}
+
 void SceneViewPost2D::doInvalidated()
 {
     if (m_listContours != -1) glDeleteLists(m_listContours, 1);
@@ -1041,10 +1067,7 @@ void SceneViewPost2D::doInvalidated()
 
     m_post2DHermes->clear();
 
-    // actions
-    actSceneModePost2D->setEnabled(Util::problem()->isSolved());
-    actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
-    actSceneViewSelectByMarker->setEnabled(Util::problem()->isSolved());
+    setControls();
 
     if (Util::problem()->isSolved())
     {
@@ -1057,6 +1080,15 @@ void SceneViewPost2D::doInvalidated()
     SceneViewCommon2D::doInvalidated();
 }
 
+void SceneViewPost2D::setControls()
+{
+    // actions
+    actSceneModePost2D->setEnabled(Util::problem()->isSolved());
+    actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
+    actSelectByMarker->setEnabled(Util::problem()->isSolved() && (actPostprocessorModeSurfaceIntegral->isChecked() || actPostprocessorModeVolumeIntegral->isChecked()));
+    actSelectPoint->setEnabled(Util::problem()->isSolved() && actPostprocessorModeLocalPointValue->isChecked());
+}
+
 void SceneViewPost2D::clear()
 {
     m_post2DHermes->clear();
@@ -1066,16 +1098,24 @@ void SceneViewPost2D::clear()
     SceneViewCommon2D::clear();
 }
 
-void SceneViewPost2D::doSelectMarker()
+void SceneViewPost2D::selectByMarker()
 {
     SceneMarkerSelectDialog sceneMarkerSelectDialog(this, QApplication::activeWindow());
     sceneMarkerSelectDialog.exec();
 }
 
+void SceneViewPost2D::selectPoint()
+{
+    LocalPointValueDialog localPointValueDialog(m_selectedPoint);
+    if (localPointValueDialog.exec() == QDialog::Accepted)
+    {
+        emit mousePressed(localPointValueDialog.point());
+        updateGL();
+    }
+}
+
 void SceneViewPost2D::doPostprocessorModeGroup(QAction *action)
 {
-    logMessage("SceneViewCommon::doPostprocessorModeGroup()");
-
     if (actPostprocessorModeLocalPointValue->isChecked())
         emit postprocessorModeGroupChanged(SceneModePostprocessor_LocalValue);
     if (actPostprocessorModeSurfaceIntegral->isChecked())
@@ -1084,16 +1124,24 @@ void SceneViewPost2D::doPostprocessorModeGroup(QAction *action)
         emit postprocessorModeGroupChanged(SceneModePostprocessor_VolumeIntegral);
 
     Util::scene()->selectNone();
+
+    setControls();
     updateGL();
 }
 
-void SceneViewPost2D::doShowGroup(QAction *action)
+void SceneViewPost2D::showGroup(QAction *action)
 {
-    logMessage("SceneViewCommon::doShowGroup()");
-
     Util::config()->showSolutionMeshView = actShowSolutionMesh->isChecked();
     Util::config()->showContourView = actShowContours->isChecked();
     Util::config()->showVectorView = actShowVectors->isChecked();
 
     doInvalidated();
 }
+
+void SceneViewPost2D::selectedPoint(const Point &p)
+{
+    m_selectedPoint = p;
+    updateGL();
+}
+
+

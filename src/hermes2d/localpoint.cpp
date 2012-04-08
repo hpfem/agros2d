@@ -23,6 +23,7 @@
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
 #include "scenesolution.h"
+#include "logview.h"
 #include "hermes2d.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
@@ -62,7 +63,7 @@ void LocalPointValue::calculate()
     values.clear();
 
     this->point = point;
-    // TODO: upravit parametry!!!
+
     FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
     SceneSolution<double>* sceneSolution = Util::scene()->sceneSolution(fsid);
     if (Util::problem()->isSolved() &&
@@ -76,8 +77,8 @@ void LocalPointValue::calculate()
         {
             // find marker
             Hermes::Hermes2D::Element *e = Util::problem()->meshInitial()->get_element_fast(index);
-            int labelIndex = atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str());
-            SceneMaterial *tmpMaterial = Util::scene()->labels->at(labelIndex)->getMarker(m_fieldInfo);
+            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()) - 1);
+            SceneMaterial *tmpMaterial = label->getMarker(m_fieldInfo);
 
             // set variables
             double px = point.x;
