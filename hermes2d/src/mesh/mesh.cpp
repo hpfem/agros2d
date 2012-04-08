@@ -1996,13 +1996,13 @@ namespace Hermes
 
     void Mesh::MarkersConversion::insert_marker(int internal_marker, std::string user_marker)
     {
-        std::cout << "into " << this->get_type() << " inserting user marker internal: " << internal_marker << ", user: " << user_marker << std::endl;
       // First a check that the string value is not already present.
       if(user_marker != "")
         if(conversion_table_inverse.find(user_marker) != conversion_table_inverse.end())
           return;
       if(conversion_table.size() == 0 || conversion_table.find(internal_marker) == conversion_table.end())
       {
+          std::cout << "into " << this->get_type() << " inserting user marker internal: " << internal_marker << ", user: " << user_marker << std::endl;
         conversion_table.insert(std::pair<int, std::string>(internal_marker, user_marker));
         conversion_table_inverse.insert(std::pair<std::string, int>(user_marker, internal_marker));
         if(user_marker != "")

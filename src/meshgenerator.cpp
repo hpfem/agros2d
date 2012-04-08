@@ -796,8 +796,8 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
 
         QDomElement eleBoundaryEdges = doc.createElement("boundary_edges");
         eleSubdomain.appendChild(eleBoundaryEdges);
-//        QDomElement eleInnerEdges = doc.createElement("inner_edges");
-//        eleSubdomain.appendChild(eleInnerEdges);
+        QDomElement eleInnerEdges = doc.createElement("inner_edges");
+        eleSubdomain.appendChild(eleInnerEdges);
 
         for (int i = 0; i < edgeList.count(); i++)
         {
@@ -813,7 +813,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
                         == SceneBoundaryContainer::getNone(fieldInfo))
                 {
                     cout << "inner " << endl;
-//                    eleInnerEdges.appendChild(eleEdge);
+                    eleInnerEdges.appendChild(eleEdge);
                 }
                 else{
                     eleBoundaryEdges.appendChild(eleEdge);
