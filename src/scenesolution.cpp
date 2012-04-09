@@ -142,20 +142,21 @@ SceneSolution<Scalar>::~SceneSolution()
 template <typename Scalar>
 void SceneSolution<Scalar>::loadMeshInitial(QDomElement element)
 {
-    logMessage("SceneSolution::loadMeshInitial()");
+    assert(0);
+//    logMessage("SceneSolution::loadMeshInitial()");
 
-    QDomText text = element.childNodes().at(0).toText();
+//    QDomText text = element.childNodes().at(0).toText();
 
-    // write content (saved mesh)
-    QString fileName = tempProblemFileName() + ".mesh";
-    QByteArray content;
-    content.append(text.nodeValue());
-    writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
+//    // write content (saved mesh)
+//    QString fileName = tempProblemFileName() + ".mesh";
+//    QByteArray content;
+//    content.append(text.nodeValue());
+//    writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
 
-    Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
-    // refineMesh(mesh, true, true);
+//    Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+//    // refineMesh(mesh, true, true);
 
-    // setMeshInitial(mesh);
+//    // setMeshInitial(mesh);
 }
 
 template <typename Scalar>

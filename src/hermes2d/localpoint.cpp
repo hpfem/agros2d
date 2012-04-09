@@ -72,12 +72,12 @@ void LocalPointValue::calculate()
 
     if (Util::problem()->isSolved())
     {
-        int index = findElementInMesh(Util::problem()->meshInitial(), point);
+        int index = findElementInMesh(Util::problem()->meshInitial(m_fieldInfo), point);
         if (index != -1)
         {
             // find marker
-            Hermes::Hermes2D::Element *e = Util::problem()->meshInitial()->get_element_fast(index);
-            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()) - 1);
+            Hermes::Hermes2D::Element *e = Util::problem()->meshInitial(m_fieldInfo)->get_element_fast(index);
+            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()) - 1);
             SceneMaterial *tmpMaterial = label->getMarker(m_fieldInfo);
 
             // set variables

@@ -30,6 +30,7 @@
 #include "meshgenerator.h"
 #include "logview.h"
 
+
 Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
 
@@ -286,7 +287,7 @@ Problem::Problem()
     m_isSolved = false;
     m_isSolving = false;
 
-    m_meshInitial = NULL;
+    m_meshesInitial.clear();
 }
 
 Problem::~Problem()
@@ -294,13 +295,19 @@ Problem::~Problem()
     clear();
 }
 
+Hermes::Hermes2D::Mesh* Problem::activeMeshInitial()
+{
+    return meshInitial(Util::scene()->activeViewField());
+}
+
 void Problem::clear()
 {
     Util::solutionStore()->clearAll();
 
-    if (m_meshInitial)
-        delete m_meshInitial;
-    m_meshInitial = NULL;
+    foreach(Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)
+    if (mesh)
+        delete mesh;
+    m_meshesInitial.clear();
 
 
     m_timeStep = 0;

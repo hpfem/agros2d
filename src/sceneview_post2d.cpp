@@ -316,11 +316,11 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         // select volume integral area
         if (actPostprocessorModeVolumeIntegral->isChecked())
         {
-            int index = findElementInMesh(Util::problem()->meshInitial(), p);
+            int index = findElementInMesh(Util::problem()->activeMeshInitial(), p);
             if (index != -1)
             {
-                SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().
-                                                                   get_user_marker(Util::problem()->meshInitial()->get_element_fast(index)->marker).marker.c_str()) - 1);
+                SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().
+                                                                   get_user_marker(Util::problem()->activeMeshInitial()->get_element_fast(index)->marker).marker.c_str()) - 1);
 
                 label->isSelected = !label->isSelected;
                 updateGL();
@@ -945,10 +945,10 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
               0.5);
 
     // triangles
-    for (int i = 0; i < Util::problem()->meshInitial()->get_num_active_elements(); i++)
+    for (int i = 0; i < Util::problem()->activeMeshInitial()->get_num_active_elements(); i++)
     {
-        Hermes::Hermes2D::Element *element = Util::problem()->meshInitial()->get_element(i);
-        if (Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()) - 1)->isSelected)
+        Hermes::Hermes2D::Element *element = Util::problem()->activeMeshInitial()->get_element(i);
+        if (Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()) - 1)->isSelected)
         {
             if (element->is_triangle())
             {

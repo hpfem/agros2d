@@ -48,7 +48,7 @@
                     <element minOccurs="0" maxOccurs="1" name="inner_edges">
 											<complexType>
 												<sequence>
-                          <element minOccurs="1" maxOccurs="unbounded" name="i" type="integer" />
+                          <element minOccurs="0" maxOccurs="unbounded" name="i" type="integer" />
                         </sequence>
 											</complexType>
 										</element>

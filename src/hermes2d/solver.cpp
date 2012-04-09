@@ -46,22 +46,25 @@ void Solver<Scalar>::init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Sc
 }
 
 template <typename Scalar>
-Mesh* Solver<Scalar>::readMesh()
+QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> Solver<Scalar>::readMesh()
 {
     // load the mesh file
     cout << "reading mesh in solver " << tempProblemFileName().toStdString() + ".xml" << endl;
-    Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+    QMap<FieldInfo*, Mesh*> meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
 //    cout << "reading mesh in solver CTVEREC" << endl;
 //    Mesh *mesh = readMeshFromFile("data/aa-electrostatic-ctverec.xml");
 
     // check that all boundary edges have a marker assigned
     QSet<int> boundaries;
-    for (int i = 0; i < mesh->get_max_node_id(); i++)
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
-        Node *node = mesh->get_node(i);
-
-        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        Mesh* mesh = meshes[fieldInfo];
+        for (int i = 0; i < mesh->get_max_node_id(); i++)
         {
+            Node *node = mesh->get_node(i);
+
+
+
             if ((node->used == 1 && node->ref < 2 && node->type == 1))
             {
                 int tmp_marker = atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
@@ -72,31 +75,34 @@ Mesh* Solver<Scalar>::readMesh()
                     boundaries.insert(marker);
             }
         }
+
+        if (boundaries.count() > 0)
+        {
+            QString markers;
+            foreach (int marker, boundaries)
+                markers += QString::number(marker) + ", ";
+            markers = markers.left(markers.length() - 2);
+
+            Util::log()->printError(QObject::tr("Solver"), QObject::tr("boundary edges '%1' does not have a boundary marker").arg(markers));
+
+            foreach(Mesh* delMesh, meshes)
+                delete delMesh;
+            meshes.clear();
+            return meshes;
+        }
+        boundaries.clear();
+
+        refineMesh(fieldInfo, mesh, true, true);
     }
 
-    if (boundaries.count() > 0)
-    {
-        QString markers;
-        foreach (int marker, boundaries)
-            markers += QString::number(marker) + ", ";
-        markers = markers.left(markers.length() - 2);
+    Util::problem()->setMeshesInitial(meshes);
 
-        Util::log()->printError(QObject::tr("Solver"), QObject::tr("boundary edges '%1' does not have a boundary marker").arg(markers));
-
-        delete mesh;
-        return NULL;
-    }
-    boundaries.clear();
-
-    refineMesh(m_block->m_fields.at(0)->fieldInfo(), mesh, true, true);  //TODO multimesh
-    Util::problem()->setMeshInitial(mesh);
-
-    return mesh;
+    return meshes;
 }
 
 
 template <typename Scalar>
-void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
+void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionArray<Scalar>& msa)
 {
     Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
 
@@ -147,7 +153,7 @@ void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
                     if (!custom_form || fieldInfo->weakFormsType == WeakFormsType_Interpreted)
                     {
                         {
-                            CustomExactSolution<double> *function = new CustomExactSolution<double>(mesh,
+                            CustomExactSolution<double> *function = new CustomExactSolution<double>(meshes[fieldInfo],
                                                                                                     form->expression,
                                                                                                     boundary);
                             custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index + 1).toStdString(),
@@ -169,7 +175,7 @@ void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
         // create space
         for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
         {
-            space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(mesh, bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder)));
+            space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder)));
 
             int j = 0;
             // set order by element
@@ -405,14 +411,14 @@ bool Solver<Scalar>::solveSimple()
     Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve"));
 
     // read mesh from file
-    Mesh *mesh = readMesh();
-    if (!mesh)
+    QMap<FieldInfo*, Mesh*> meshes = readMesh();
+    if (meshes.isEmpty())
         return false;
 
     MultiSolutionArray<Scalar> multiSolutionArray;
 
     // create essential boundary conditions and space
-    createSpace(mesh, multiSolutionArray);
+    createSpace(meshes, multiSolutionArray);
 
     // create solutions
     createNewSolutions(multiSolutionArray);
@@ -455,15 +461,14 @@ bool Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
     Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("initial adaptivity step"));
 
     // read mesh from file
-    Mesh *mesh = readMesh();
-    if (!mesh)
+    QMap<FieldInfo*, Mesh*> meshes = readMesh();
+    if (meshes.isEmpty())
         return false;
-    cout << "address of the mesh " << mesh << endl;
 
     MultiSolutionArray<Scalar> msa;
 
     // create essential boundary conditions and space
-    createSpace(mesh, msa);
+    createSpace(meshes, msa);
 
     // create solutions
     createNewSolutions(msa);
@@ -590,12 +595,12 @@ bool Solver<Scalar>::solveInitialTimeStep()
     MultiSolutionArray<Scalar> multiSolutionArray;
 
     // read mesh from file
-    Mesh *mesh = readMesh();
-    if (!mesh)
+    QMap<FieldInfo*, Mesh*> meshes = readMesh();
+    if (meshes.isEmpty())
         return false;
 
     // create essential boundary conditions and space
-    createSpace(mesh, multiSolutionArray);
+    createSpace(meshes, multiSolutionArray);
 
     int totalComp = 0;
     foreach(Field* field, m_block->m_fields)
@@ -603,7 +608,7 @@ bool Solver<Scalar>::solveInitialTimeStep()
         for (int comp = 0; comp < field->fieldInfo()->module()->number_of_solution(); comp++)
         {
             // constant initial solution
-            InitialCondition<double> *initial = new InitialCondition<double>(mesh, field->fieldInfo()->initialCondition.number());
+            InitialCondition<double> *initial = new InitialCondition<double>(meshes[field->fieldInfo()], field->fieldInfo()->initialCondition.number());
             multiSolutionArray.setSolution(shared_ptr<Solution<Scalar> >(initial), totalComp);
             totalComp++;
         }
@@ -689,10 +694,10 @@ void Solver<Scalar>::solve(SolverConfig config)
             ((config.action == SolverAction_TimeStep) && (lastTimeStep < 1)))
     {
         // read mesh from file
-        mesh = readMesh();
+        //mesh = readMesh();
 
         // create essential boundary conditions and space
-        createSpace(mesh, multiSolutionArray);
+        //createSpace(mesh, multiSolutionArray);
     }
     else if((config.action == SolverAction_TimeStep) && (lastTimeStep >= 1))
     {
