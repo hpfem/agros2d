@@ -1,14 +1,19 @@
 import agros2d
 
 # model
-problem = agros2d.Problem(coordinate_type = "planar", name = "Test electrostatic field - planar",
-                          mesh_type = "umfpack", matrix_solver = "triangle")
+problem = agros2d.problem(clear = True)
+problem.coordinate_type = "planar"
+problem.name = "Test electrostatic field - planar"
+problem.mesh_type = "triangle"
+problem.matrix_solver = "umfpack"
 
 # fields
-electrostatic = agros2d.Field(problem, field_id = "electrostatic", analysis_type = "steadystate")
+electrostatic = agros2d.field("electrostatic")
+electrostatic.analysis_type = "steadystate"
 electrostatic.number_of_refinements = 2
 electrostatic.polynomial_order = 3
 electrostatic.linearity_type = "linear"
+electrostatic.weak_forms = "interpreted"
 
 electrostatic.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
 electrostatic.add_boundary("U = 0 V", "electrostatic_potential", {"electrostatic_potential" : 0})
@@ -18,9 +23,8 @@ electrostatic.add_material("Dieletric", {"electrostatic_charge_density" : 0, "el
 electrostatic.add_material("Air", {"electrostatic_charge_density" : 0, "electrostatic_permittivity" : 1})
 electrostatic.add_material("Source", {"electrostatic_charge_density" : 4e-10, "electrostatic_permittivity" : 10})
 
-
 # geometry
-geometry = agros2d.Geometry(problem)
+geometry = agros2d.geometry()
 
 # edges
 geometry.add_edge(1, 2, 1, 1, boundaries = {"electrostatic" : "U = 1000 V"})
@@ -53,21 +57,21 @@ problem.solve()
 
 # point value
 local_values = electrostatic.local_values(13.257584, 11.117738)
-testV = test("Scalar potential", local_values["V"], 1111.544825)
-testE = test("Electric field", local_values["E"], 111.954358)
-testEx = test("Electric field - x", local_values["Ex"], 24.659054)
-testEy = test("Electric field - y", local_values["Ey"], -109.204896)
-testD = test("Displacement", local_values["D"], 9.912649e-10)
-testDx = test("Displacement - x", local_values["Dx"], 2.183359e-10)
-testDy = test("Displacement - y", local_values["Dy"], -9.669207e-10)
-testwe = test("Energy density", local_values["we"], 5.548821e-8)
+testV = agros2d.test("Scalar potential", local_values["V"], 1111.544825)
+testE = agros2d.test("Electric field", local_values["E"], 111.954358)
+testEx = agros2d.test("Electric field - x", local_values["Ex"], 24.659054)
+testEy = agros2d.test("Electric field - y", local_values["Ey"], -109.204896)
+testD = agros2d.test("Displacement", local_values["D"], 9.912649e-10)
+testDx = agros2d.test("Displacement - x", local_values["Dx"], 2.183359e-10)
+testDy = agros2d.test("Displacement - y", local_values["Dy"], -9.669207e-10)
+testwe = agros2d.test("Energy density", local_values["we"], 5.548821e-8)
 
 # surface integral
 surface_integrals = electrostatic.surface_integrals([0, 1, 2, 3])
-testQ = test("Electric charge", surface_integrals["Q"], 1.048981e-7)
+testQ = agros2d.test("Electric charge", surface_integrals["Q"], 1.048981e-7)
 
 # volume integral
 volume_integrals = electrostatic.volume_integrals([1])
-testEnergy = test("Energy", volume_integrals["We"], 1.307484e-7)
+testEnergy = agros2d.test("Energy", volume_integrals["We"], 1.307484e-7)
 
 print("Test: Electrostatic - planar: " + str(testV and testE and testEx and testEy and testD and testDx and testDy and testwe and testEnergy and testQ))

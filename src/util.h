@@ -592,41 +592,53 @@ inline QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
     }
 }
 
+QString stringListToString(const QStringList &list);
+
 // keys
 void initLists();
 
-inline QString coordinateTypeToStringKey(CoordinateType coordinateType) { return ((coordinateType == CoordinateType_Planar) ? "planar" : "axisymmetric"); }
-inline CoordinateType coordinateTypeFromStringKey(const QString &coordinateType) { if (coordinateType == "planar") return CoordinateType_Planar; else if (coordinateType == "axisymmetric") return CoordinateType_Axisymmetric; else return CoordinateType_Undefined; }
+QStringList coordinateTypeStringKeys();
+QString coordinateTypeToStringKey(CoordinateType coordinateType);
+CoordinateType coordinateTypeFromStringKey(const QString &coordinateType);
 
+QStringList analysisTypeStringKeys();
 QString analysisTypeToStringKey(AnalysisType analysisType);
 AnalysisType analysisTypeFromStringKey(const QString &analysisType);
 
+QStringList weakFormsTypeStringKeys();
 QString weakFormsTypeToStringKey(WeakFormsType weakFormsType);
 WeakFormsType weakFormsTypeFromStringKey(const QString &weakFormsType);
 
+QStringList meshTypeStringKeys();
 QString meshTypeToStringKey(MeshType meshType);
 MeshType meshTypeFromStringKey(const QString &meshType);
 
+QStringList physicFieldVariableCompTypeStringKeys();
 QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp);
 PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp);
 
-QString modeToStringKey(Mode teMode);
-Mode modeFromStringKey(const QString &teMode);
+QStringList adaptivityTypeStringKeys();
+QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
+AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
+
+QStringList solutionTypeStringKeys();
+QString solutionTypeToStringKey(SolutionType solutionType);
+SolutionType solutionTypeFromStringKey(const QString &solutionType);
+
+QStringList matrixSolverTypeStringKeys();
+QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
+Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
+
+QStringList linearityTypeStringKeys();
+QString linearityTypeToStringKey(LinearityType linearityType);
+LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
 QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow);
 SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow);
 
-QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
-AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
 
-QString solutionTypeToStringKey(SolutionType solutionType);
-SolutionType solutionTypeFromStringKey(const QString &solutionType);
-
-QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
-Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
-
-QString linearityTypeToStringKey(LinearityType linearityType);
-LinearityType linearityTypeFromStringKey(const QString &linearityType);
+QString modeToStringKey(Mode teMode);
+Mode modeFromStringKey(const QString &teMode);
 
 // constants
 const QString IMAGEROOT = "../resources_source/images";
