@@ -112,7 +112,7 @@ void VolumeIntegralValue::calculate()
             if (label->isSelected)
             {
                 SceneMaterial *material = label->getMarker(m_fieldInfo);
-                int index = Util::scene()->labels->items().indexOf(label) + 1;
+                int index = Util::scene()->labels->items().indexOf(label);
 
                 parser->setParserVariables(material, NULL,
                                            pvalue[0], pdx[0], pdy[0]);

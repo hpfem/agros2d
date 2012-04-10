@@ -123,7 +123,7 @@ void SurfaceIntegralValue::calculate()
 
                         if (e->en[edge]->marker != 0)
                         {
-//                            if (e->en[edge]->bnd == 1 && (atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) - 1 == i)
+//                            if (e->en[edge]->bnd == 1 && (atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
 //                            {
 //                                // boundary
 //                                integrate = true;
@@ -138,7 +138,7 @@ void SurfaceIntegralValue::calculate()
                             {
                                 boundary = true;
                             }
-                            if ((atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) - 1 == i)
+                            if ((atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
                             {
                                 integrate = true;
                             }
@@ -179,7 +179,7 @@ void SurfaceIntegralValue::calculate()
                             double *x = ru->get_phys_x(eo);
                             double *y = ru->get_phys_y(eo);
 
-                            SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()) - 1)->getMarker(m_fieldInfo);
+                            SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
                             parser->initParserMaterialVariables();
                             parser->setParserVariables(material, NULL,
                                                        pvalue[0], pdx[0], pdy[0]);

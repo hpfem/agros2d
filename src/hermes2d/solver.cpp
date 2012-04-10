@@ -60,9 +60,9 @@ QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> Solver<Scalar>::readMesh()
 
             if ((node->used == 1 && node->ref < 2 && node->type == 1))
             {
-                int tmp_marker = atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
-                assert(tmp_marker > 0);
-                int marker = (tmp_marker > 0) ? tmp_marker - 1 : - tmp_marker;
+                int marker = atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
+
+                assert(marker >= 0);
 
                 if (Util::scene()->edges->at(marker)->getMarker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
                     boundaries.insert(marker);
@@ -135,7 +135,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                         //                            coordinateTypeToStringKey(m_fieldInfo->module()->get_problem_type()).toStdString();
 
                         //                    Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
-                        //                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
+                        //                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i).toStdString(),
                         //                                                                                           function);
                     }
 
@@ -149,7 +149,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                             CustomExactSolution<double> *function = new CustomExactSolution<double>(meshes[fieldInfo],
                                                                                                     form->expression,
                                                                                                     boundary);
-                            custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index + 1).toStdString(),
+                            custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(),
                                                                                                    function);
                         }
                     }
