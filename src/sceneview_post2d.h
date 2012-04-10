@@ -87,6 +87,7 @@ public slots:
     virtual void doInvalidated();
     void setControls();
     virtual void clear();
+    void exportVTKScalarView(const QString &fileName = QString());
 
 public:
     SceneViewPost2D(QWidget *parent = 0);
@@ -106,6 +107,8 @@ public:
     QAction *actPostprocessorModeLocalPointValue;
     QAction *actPostprocessorModeSurfaceIntegral;
     QAction *actPostprocessorModeVolumeIntegral;
+
+    QAction *actExportVTKScalar;
 
     virtual QIcon iconView() { return icon("scene-post2d"); }
     virtual QString labelView() { return tr("Postprocessor 2D"); }

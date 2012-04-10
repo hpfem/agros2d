@@ -22,7 +22,6 @@
 #include "reportdialog.h"
 #include "scene.h"
 #include "scenebasic.h"
-#include "scenesolution.h"
 #include "sceneview_common.h"
 #include "scenemarkerdialog.h"
 #include "pythonlabagros.h"

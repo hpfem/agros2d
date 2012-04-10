@@ -20,7 +20,6 @@
 #include "sceneview_mesh.h"
 #include "util.h"
 #include "scene.h"
-#include "scenesolution.h"
 #include "logview.h"
 
 #include "scenebasic.h"
@@ -57,7 +56,8 @@ void MeshHermes::processOrder()
     {
         Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
 
-        m_orderView.process_space(Util::scene()->activeSceneSolution()->space(0));
+        // ERROR: FIX component(0)
+        m_orderView.process_space(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_space());
 
         m_orderIsPrepared = true;
     }
@@ -85,10 +85,12 @@ void MeshHermes::processSolutionMesh()
 
     if (Util::problem()->isSolved())
     {
-        Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeSceneSolution()->sln(0)->get_mesh()->get_num_active_elements()));
+        // ERROR: FIX component(0)
+        Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_mesh()->get_num_active_elements()));
 
         // init linearizer for solution mesh
-        Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeSceneSolution()->sln(0)->get_mesh());
+        // ERROR: FIX component(0)
+        Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_mesh());
         m_linSolutionMeshView.process_solution(&solution);
 
         m_solutionMeshIsPrepared = true;
@@ -147,6 +149,10 @@ void SceneViewMesh::createActionsMesh()
     actSceneModeMesh->setShortcut(Qt::Key_F6);
     actSceneModeMesh->setStatusTip(tr("Mesh"));
     actSceneModeMesh->setCheckable(true);
+
+    actExportVTKOrder = new QAction(tr("Export VTK order..."), this);
+    actExportVTKOrder->setStatusTip(tr("Export order view as VTK file"));
+    connect(actExportVTKOrder, SIGNAL(triggered()), this, SLOT(exportVTKOrderView()));
 }
 
 void SceneViewMesh::doInvalidated()
@@ -163,6 +169,7 @@ void SceneViewMesh::doInvalidated()
 
     // actions
     actSceneModeMesh->setEnabled(Util::problem()->isMeshed());
+    actExportVTKOrder->setEnabled(Util::problem()->isSolved());
 
     if (Util::problem()->isMeshed())
         m_meshHermes->processMeshed();
@@ -178,6 +185,46 @@ void SceneViewMesh::clear()
     m_meshHermes->clear();
 
     SceneViewCommon2D::clear();
+}
+
+void SceneViewMesh::exportVTKOrderView(const QString &fileName)
+{
+    if (Util::problem()->isSolved())
+    {
+        QString fn = fileName;
+
+        if (fn.isEmpty())
+        {
+            // file dialog
+            QSettings settings;
+            QString dir = settings.value("General/LastVTKDir").toString();
+
+            fn = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+            if (fn.isEmpty())
+                return;
+
+            if (!fn.endsWith(".vtk"))
+                fn.append(".vtk");
+
+            // remove existing file
+            if (QFile::exists(fn))
+                QFile::remove(fn);
+        }
+
+        Hermes::Hermes2D::Views::Orderizer orderView;
+        orderView.save_orders_vtk(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_space(),
+                                        fn.toStdString().c_str());
+
+        if (!fn.isEmpty())
+        {
+            QFileInfo fileInfo(fn);
+            if (fileInfo.absoluteDir() != tempProblemDir())
+            {
+                QSettings settings;
+                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+            }
+        }
+    }
 }
 
 void SceneViewMesh::paintGL()

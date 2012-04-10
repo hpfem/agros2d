@@ -78,12 +78,10 @@ SOURCES += util.cpp \
     sceneview_post.cpp \
     sceneview_post2d.cpp \
     sceneview_post3d.cpp \
-    progressdialog.cpp \
     meshgenerator.cpp \
     chartdialog.cpp \
     problemdialog.cpp \
     scenetransformdialog.cpp \
-    scenesolution.cpp \
     reportdialog.cpp \
     videodialog.cpp \
     scenemarkerselectdialog.cpp \
@@ -146,12 +144,10 @@ HEADERS += util.h \
     sceneview_post.h \
     sceneview_post2d.h \
     sceneview_post3d.h \
-    progressdialog.h \
     meshgenerator.h \
     chartdialog.h \
     problemdialog.h \
     scenetransformdialog.h \
-    scenesolution.h \
     reportdialog.h \
     videodialog.h \
     scenemarkerselectdialog.h \

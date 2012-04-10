@@ -30,7 +30,6 @@
 #include "sceneview_common.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
-#include "scenesolution.h"
 #include "logview.h"
 
 #include "hermes2d/module.h"

@@ -28,7 +28,6 @@
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
-#include "scenesolution.h"
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
@@ -84,8 +83,8 @@ QString createPythonFromModel()
     str += QString("problem = agros2d.problem(clear = True)\n");
     str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType));
     str += QString("problem.name = \"%1\"\n").arg(Util::scene()->problemInfo()->name);
-    str += QString("problem.mesh_type = \"%1\"\n").arg(matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver));
-    str += QString("problem.matrix_solver = \"%1\"\n").arg(meshTypeToStringKey(Util::scene()->problemInfo()->meshType));
+    str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Util::scene()->problemInfo()->meshType));
+    str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver));
 
     if (Util::scene()->problemInfo()->frequency > 0.0)
         str += QString("problem.frequency = %1\n").
@@ -423,16 +422,23 @@ void PyProblem::solve()
 
 PyField::PyField(char *fieldId)
 {
-    // TODO: check
-    if (Util::scene()->hasField(QString(fieldId)))
-    {
-        m_fieldInfo = Util::scene()->fieldInfo(fieldId);
-    }
+    QStringList mods;
+    std::map<std::string, std::string> modules = availableModules();
+    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
+        mods.append(QString::fromStdString(it->first));
+
+    if (mods.contains(QString(fieldId)))
+        if (Util::scene()->hasField(QString(fieldId)))
+        {
+            m_fieldInfo = Util::scene()->fieldInfo(fieldId);
+        }
+        else
+        {
+            m_fieldInfo = new FieldInfo(Util::scene()->problemInfo(), fieldId);
+            Util::scene()->addField(fieldInfo());
+        }
     else
-    {
-        m_fieldInfo = new FieldInfo(Util::scene()->problemInfo(), fieldId);
-        Util::scene()->addField(fieldInfo());
-    }
+        throw invalid_argument(QObject::tr("Invalid field id. Valid keys: %1").arg(stringListToString(mods)).toStdString());
 }
 
 FieldInfo *PyField::fieldInfo()
@@ -442,10 +448,15 @@ FieldInfo *PyField::fieldInfo()
 
 void PyField::setAnalysisType(const char *analysisType)
 {
-    if (analysisTypeStringKeys().contains(QString(analysisType)))
+    QStringList ans;
+    std::map<std::string, std::string> analyses = availableAnalyses(m_fieldInfo->fieldId().toStdString());
+    for (std::map<std::string, std::string>::iterator it = analyses.begin(); it != analyses.end(); ++it)
+        ans.append(QString::fromStdString(it->first));
+
+    if (ans.contains(QString(analysisType)))
         Util::scene()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
     else
-        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(analysisTypeStringKeys())).toStdString());
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(ans)).toStdString());
 }
 
 void PyField::setNumberOfRefinements(const int numberOfRefinements)

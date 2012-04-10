@@ -26,7 +26,6 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 #include "sceneview_geometry.h"
-#include "scenesolution.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 #include "problemdialog.h"

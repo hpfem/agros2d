@@ -21,15 +21,12 @@
 
 #include "scene.h"
 #include "scenemarker.h"
-#include "scenesolution.h"
 #include "module.h"
 #include "module_agros.h"
 #include "coupling.h"
 #include "solver.h"
-#include "progressdialog.h"
 #include "meshgenerator.h"
 #include "logview.h"
-
 
 Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
@@ -552,11 +549,6 @@ void Problem::solve(SolverMode solverMode)
 
     // close indicator progress
     Indicator::closeProgress();
-}
-
-ProgressDialog* Problem::progressDialog()
-{
-    return m_progressDialog;
 }
 
 //*************************************************************************************************

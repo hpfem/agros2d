@@ -28,7 +28,6 @@
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
-#include "scenesolution.h"
 #include "tooltipview.h"
 #include "logview.h"
 #include "infowidget.h"
@@ -41,7 +40,6 @@
 #include "videodialog.h"
 #include "logdialog.h"
 #include "problemdialog.h"
-#include "progressdialog.h"
 #include "collaboration.h"
 #include "resultsview.h"
 #include "materialbrowserdialog.h"
@@ -250,14 +248,6 @@ void MainWindow::createActions()
     actDocumentExportMeshFile->setStatusTip(tr("Export Hermes2D mesh file"));
     connect(actDocumentExportMeshFile, SIGNAL(triggered()), this, SLOT(doDocumentExportMeshFile()));
 
-    actExportVTKScalar = new QAction(tr("Export VTK scalar..."), this);
-    actExportVTKScalar->setStatusTip(tr("Export scalar view as VTK file"));
-    connect(actExportVTKScalar, SIGNAL(triggered()), this, SLOT(doExportVTKScalar()));
-
-    actExportVTKOrder = new QAction(tr("Export VTK order..."), this);
-    actExportVTKOrder->setStatusTip(tr("Export order view as VTK file"));
-    connect(actExportVTKOrder, SIGNAL(triggered()), this, SLOT(doExportVTKOrder()));
-
     actDocumentSaveImage = new QAction(tr("Export image..."), this);
     actDocumentSaveImage->setStatusTip(tr("Export image to file"));
     connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
@@ -442,8 +432,8 @@ void MainWindow::createMenus()
     mnuFileImportExport->addAction(actDocumentSaveImage);
     mnuFileImportExport->addAction(actDocumentSaveGeometry);
     mnuFileImportExport->addSeparator();
-    mnuFileImportExport->addAction(actExportVTKScalar);
-    mnuFileImportExport->addAction(actExportVTKOrder);
+    mnuFileImportExport->addAction(sceneViewPost2D->actExportVTKScalar);
+    mnuFileImportExport->addAction(sceneViewMesh->actExportVTKOrder);
 
     QMenu *mnuServer = new QMenu(tr("Colaboration"), this);
     mnuServer->addAction(actDocumentDownloadFromServer);
@@ -1476,9 +1466,6 @@ void MainWindow::setControls()
     //    actSolveAdaptiveStep->setEnabled(Util::problem()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
     actChart->setEnabled(Util::problem()->isSolved());
 
-    actExportVTKScalar->setEnabled(Util::problem()->isSolved());
-    actExportVTKOrder->setEnabled(Util::problem()->isSolved());
-
     actSolve->setEnabled(Util::scene()->fieldInfos().count() > 0);
     actSolveAdaptiveStep->setEnabled(Util::scene()->fieldInfos().count() > 0);
 
@@ -1599,72 +1586,6 @@ void MainWindow::doDocumentExportMeshFile()
     Util::config()->deleteHermes2DMeshFile = commutator;
 
     setControls();
-}
-
-void MainWindow::doExportVTKScalar()
-{
-    assert(0); //TODO
-    //    logMessage("MainWindow::doDocumentExportVTKScalar()");
-    //    if (Util::problem()->isSolved())
-    //    {
-    //        QSettings settings;
-    //        QString dir = settings.value("General/LastVTKDir").toString();
-
-    //        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
-    //        if (fileName.isEmpty())
-    //            return;
-
-    //        if (!fileName.endsWith(".vtk"))
-    //            fileName.append(".vtk");
-
-    //        // remove existing file
-    //        if (QFile::exists(fileName))
-    //            QFile::remove(fileName);
-
-    //        Util::problem()->linScalarView().save_solution_vtk(Util::problem()->sln(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
-    //                                                                          fileName.toStdString().c_str(),
-    //                                                                          sceneView->sceneViewSettings().scalarPhysicFieldVariable.c_str(),
-    //                                                                          true);
-
-    //        if (!fileName.isEmpty())
-    //        {
-    //            QFileInfo fileInfo(fileName);
-    //            if (fileInfo.absoluteDir() != tempProblemDir())
-    //                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
-    //        }
-    //    }
-}
-
-void MainWindow::doExportVTKOrder()
-{
-    assert(0);
-    //    logMessage("MainWindow::doDocumentExportVTKOrder()");
-    //    if (Util::problem()->isSolved())
-    //    {
-    //        QSettings settings;
-    //        QString dir = settings.value("General/LastVTKDir").toString();
-
-    //        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
-    //        if (fileName.isEmpty())
-    //            return;
-
-    //        if (!fileName.endsWith(".vtk"))
-    //            fileName.append(".vtk");
-
-    //        // remove existing file
-    //        if (QFile::exists(fileName))
-    //            QFile::remove(fileName);
-
-    //        Util::problem()->ordView().save_orders_vtk(Util::problem()->space(Util::scene()->problemInfo()->timeStep.number() * Util::scene()->problemInfo()->module()->number_of_solution()),
-    //                                                                  fileName.toStdString().c_str());
-
-    //        if (!fileName.isEmpty())
-    //        {
-    //            QFileInfo fileInfo(fileName);
-    //            if (fileInfo.absoluteDir() != tempProblemDir())
-    //                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
-    //        }
-    //    }
 }
 
 void MainWindow::doProgressLog()
