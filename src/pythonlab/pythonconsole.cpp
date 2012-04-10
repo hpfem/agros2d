@@ -133,7 +133,7 @@ void PythonScriptingConsole::welcomeMessage()
     QTextEdit::clear();
 
     connectStdOut();
-    pythonEngine->runPythonScript("v = sys.version + \" on \" + sys.platform; print(v); del v;", "");
+    pythonEngine->runPythonScript("import sys; v = sys.version + \" on \" + sys.platform; print(v); del v;", "");
     disconnectStdOut();
     appendCommandPrompt();
 }

@@ -482,8 +482,6 @@ void PreprocessorView::doItemSelected(QTreeWidgetItem *item, int role)
 
 void PreprocessorView::doItemDoubleClicked(QTreeWidgetItem *item, int role)
 {
-    logMessage("PreprocessorView::doItemDoubleClicked()");
-
     doProperties();
 }
 

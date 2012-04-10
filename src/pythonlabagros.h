@@ -37,7 +37,8 @@ class PythonEngineAgros : public PythonEngine
 {
     Q_OBJECT
 public:
-    PythonEngineAgros() : PythonEngine() {}
+    PythonEngineAgros() : PythonEngine(),
+        m_sceneViewGeometry(NULL), m_sceneViewMesh(NULL), m_sceneViewPost2D(NULL), m_sceneViewPost3D(NULL) {}
 
     inline void setSceneViewGeometry(SceneViewPreprocessor *sceneViewGeometry) { assert(sceneViewGeometry); m_sceneViewGeometry = sceneViewGeometry; }
     inline SceneViewPreprocessor *sceneViewGeometry() { assert(m_sceneViewGeometry); return m_sceneViewGeometry; }
@@ -112,8 +113,12 @@ private:
 class PyProblem
 {
     public:
-        PyProblem(char *coordinateType, char *name, char *meshType, char *matrixSolver, double frequency, double timeStep, double timeTotal);
+        PyProblem(bool clearproblem);
         ~PyProblem() {}
+
+        // clear
+        void clear();
+        void field(char *fieldId);
 
         // name
         inline const char *getName() { return Util::scene()->problemInfo()->name.toStdString().c_str(); }
@@ -121,29 +126,29 @@ class PyProblem
 
         // coordinate type
         inline const char *getCoordinateType() { return coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType).toStdString().c_str(); }
-        void setCoordinateType(const char *coordinateType) { Util::scene()->problemInfo()->coordinateType = coordinateTypeFromStringKey(QString(coordinateType)); }
+        void setCoordinateType(const char *coordinateType);
 
         // mesh type
         inline const char *getMeshType() { return meshTypeToStringKey(Util::scene()->problemInfo()->meshType).toStdString().c_str(); }
-        void setMeshType(const char *meshType) { Util::scene()->problemInfo()->meshType = meshTypeFromStringKey(QString(meshType)); }
+        void setMeshType(const char *meshType);
 
         // matrix solver
         inline const char *getMatrixSolver() { return matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver).toStdString().c_str(); }
-        void setMatrixSolver(const char *matrixSolver) { Util::scene()->problemInfo()->matrixSolver = matrixSolverTypeFromStringKey(QString(matrixSolver)); }
+        void setMatrixSolver(const char *matrixSolver);
 
         // frequency
         inline const double getFrequency() { return Util::scene()->problemInfo()->frequency; }
-        void setFrequency(const double frequency) { Util::scene()->problemInfo()->frequency = frequency; }
+        void setFrequency(const double frequency);
 
         // time step
         inline const double getTimeStep() { return Util::scene()->problemInfo()->timeStep.number(); }
-        void setTimeStep(const double timeStep) { Util::scene()->problemInfo()->timeStep = Value(QString::number(timeStep)); }
+        void setTimeStep(const double timeStep);
 
         // time total
         inline const double getTimeTotal() { return Util::scene()->problemInfo()->timeTotal.number(); }
-        void setTimeTotal(const double timeTotal) { Util::scene()->problemInfo()->timeTotal = Value(QString::number(timeTotal)); }
+        void setTimeTotal(const double timeTotal);
 
-        void solve();
+        void solve();       
 };
 
 // field
@@ -153,8 +158,7 @@ class PyField
         FieldInfo *m_fieldInfo;
 
     public:
-        PyField(char *fieldId, char *analysisType, int numberOfRefinements, int polynomialOrder, char *linearityType, double nonlinearTolerance, int nonlinearSteps,
-                char *adaptivityType, double adaptivityTolerance, int adaptivitySteps, double initialCondition, char *weakForms);
+        PyField(char *fieldId);
         ~PyField() {}
 
         FieldInfo *fieldInfo();
@@ -164,47 +168,47 @@ class PyField
 
         // analysis type
         inline const char *getAnalysisType() { return analysisTypeToStringKey(Util::scene()->fieldInfo(m_fieldInfo->fieldId())->analysisType()).toStdString().c_str(); }
-        void setAnalysisType(const char *analysisType) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType))); }
+        void setAnalysisType(const char *analysisType);
 
         // number of refinements
-        inline const int getNumberOfRefinemens() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements; }
-        void setNumberOfRefinemens(const int numberOfRefinemens) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements = numberOfRefinemens; }
+        inline const int getNumberOfRefinements() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements; }
+        void setNumberOfRefinements(const int numberOfRefinements);
 
         // polynomial order
         inline const int getPolynomialOrder() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder; }
-        void setPolynomialOrder(const int polynomialOrder) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder = polynomialOrder; }
+        void setPolynomialOrder(const int polynomialOrder);
 
         // linearity type
         inline const char *getLinearityType() { return linearityTypeToStringKey(Util::scene()->fieldInfo(m_fieldInfo->fieldId())->linearityType).toStdString().c_str(); }
-        void setLinearityType(const char *linearityType) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->linearityType = linearityTypeFromStringKey(QString(linearityType)); }
+        void setLinearityType(const char *linearityType);
 
         // nonlinear tolerance
         inline const double getNonlinearTolerance() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance; }
-        void setNonlinearTolerance(const double nonlinearTolerance) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance = nonlinearTolerance; }
+        void setNonlinearTolerance(const double nonlinearTolerance);
 
         // nonlinear steps
         inline const int getNonlinearSteps() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps; }
-        void setNonlinearSteps(const int nonlinearSteps) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps = nonlinearSteps; }
+        void setNonlinearSteps(const int nonlinearSteps);
 
         // adaptivity type
         inline const char *getAdaptivityType() { return adaptivityTypeToStringKey(Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType).toStdString().c_str(); }
-        void setAdaptivityType(const char *adaptivityType) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivityType)); }
+        void setAdaptivityType(const char *adaptivityType);
 
         // adaptivity tolerance
         inline const double getAdaptivityTolerance() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance; }
-        void setAdaptivityTolerance(const double adaptivityTolerance) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance = adaptivityTolerance; }
+        void setAdaptivityTolerance(const double adaptivityTolerance);
 
         // adaptivity steps
         inline const int getAdaptivitySteps() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps; }
-        void setAdaptivitySteps(const int adaptivitySteps) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps = adaptivitySteps; }
+        void setAdaptivitySteps(const int adaptivitySteps);
 
         // initial condition
         inline const double getInitialCondition() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->initialCondition.number(); }
-        void setInitialCondition(const double initialCondition) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->initialCondition = Value(QString::number(initialCondition)); }
+        void setInitialCondition(const double initialCondition);
 
         // weak forms
         inline const char *getWeakForms() { return weakFormsTypeToStringKey(Util::scene()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType).toStdString().c_str(); }
-        void setWeakForms(const char *weakForms) { Util::scene()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType = weakFormsTypeFromStringKey(QString(weakForms)); }
+        void setWeakForms(const char *weakForms);
 
         // boundaries
         void addBoundary(char *name, char *type, map<char*, double> parameters);

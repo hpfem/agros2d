@@ -170,9 +170,8 @@ void SurfaceIntegralValue::calculate()
                             double *x = ru->get_phys_x(eo);
                             double *y = ru->get_phys_y(eo);
 
-                            SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
+                            SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()) - 1)->getMarker(m_fieldInfo);
                             parser->initParserMaterialVariables();
-                            // FIXME
                             parser->setParserVariables(material, NULL,
                                                        pvalue[0], pdx[0], pdy[0]);
 

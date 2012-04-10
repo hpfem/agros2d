@@ -270,7 +270,8 @@ bool MeshGeneratorTriangle::writeToTriangle()
         if (label->markersCount() == 0)
         {
             outHoles += QString("%1  %2  %3\n").
-                    arg(holesCount + 1).
+                    arg(holesCount).
+                    // arg(Util::scene()->labels->items().indexOf(label) + 1).
                     arg(label->point.x, 0, 'f', 10).
                     arg(label->point.y, 0, 'f', 10);
 
@@ -289,7 +290,8 @@ bool MeshGeneratorTriangle::writeToTriangle()
                     arg(labelsCount).
                     arg(label->point.x, 0, 'f', 10).
                     arg(label->point.y, 0, 'f', 10).
-                    arg(labelsCount + 1). // triangle returns zero region number for areas without marker, markers must start from 1
+                    // arg(labelsCount + 1). // triangle returns zero region number for areas without marker, markers must start from 1
+                    arg(Util::scene()->labels->items().indexOf(label) + 1).
                     arg(label->area);
             labelsCount++;
         }
@@ -761,7 +763,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
             eleElement.setAttribute("v3", elementList[i].node[2]);
             if (!elementList[i].isTriangle())
                 eleElement.setAttribute("v4", elementList[i].node[3]);
-            eleElement.setAttribute("marker", QString("%1").arg(abs(elementList[i].marker) - 1));
+            eleElement.setAttribute("marker", QString("%1").arg(abs(elementList[i].marker)));
 
             eleElements.appendChild(eleElement);
         }

@@ -30,6 +30,7 @@
 
 bool verbose = false;
 
+static QHash<CoordinateType, QString> coordinateTypeList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
 static QHash<SceneViewPost3DShow, QString> sceneViewPost3DShowList;
@@ -41,39 +42,54 @@ static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MeshType, QString> meshTypeList;
 static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
 
+QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
+QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
+CoordinateType coordinateTypeFromStringKey(const QString &coordinateType) { return coordinateTypeList.key(coordinateType); }
+
+QStringList analysisTypeStringKeys() { return analysisTypeList.values(); }
 QString analysisTypeToStringKey(AnalysisType analysisType) { return analysisTypeList[analysisType]; }
 AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return analysisTypeList.key(analysisType); }
 
+QStringList weakFormsTypeStringKeys() { return weakFormsTypeList.values(); }
 QString weakFormsTypeToStringKey(WeakFormsType weakFormsType) { return weakFormsTypeList[weakFormsType]; }
 WeakFormsType weakFormsTypeFromStringKey(const QString &weakFormsType) { return weakFormsTypeList.key(weakFormsType); }
 
+QStringList meshTypeStringKeys() { return meshTypeList.values(); }
 QString meshTypeToStringKey(MeshType meshType) { return meshTypeList[meshType]; }
 MeshType meshTypeFromStringKey(const QString &meshType) { return meshTypeList.key(meshType); }
 
+QStringList physicFieldVariableCompTypeStringKeys() { return physicFieldVariableCompList.values(); }
 QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp) { return physicFieldVariableCompList[physicFieldVariableComp]; }
 PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp) { return physicFieldVariableCompList.key(physicFieldVariableComp); }
 
-QString modeToStringKey(Mode mode) { return modeList[mode]; }
-Mode modeFromStringKey(const QString &mode) { return modeList.key(mode); }
+QStringList adaptivityTypeStringKeys() { return adaptivityTypeList.values(); }
+QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
+AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+
+QStringList solutionTypeStringKeys() { return solutionTypeList.values(); }
+QString solutionTypeToStringKey(SolutionType solutionType) { return solutionTypeList[solutionType]; }
+SolutionType solutionTypeFromStringKey(const QString &solutionType) { return solutionTypeList.key(solutionType); }
+
+QStringList linearityTypeStringKeys() { return linearityTypeList.values(); }
+QString linearityTypeToStringKey(LinearityType linearityType) { return linearityTypeList[linearityType]; }
+LinearityType linearityTypeFromStringKey(const QString &linearityType) { return linearityTypeList.key(linearityType); }
+
+QStringList matrixSolverTypeStringKeys() { return matrixSolverTypeList.values(); }
+QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
+Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
 
 QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow) { return sceneViewPost3DShowList[sceneViewPost3DShow]; }
 SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow) { return sceneViewPost3DShowList.key(sceneViewPost3DShow); }
 
-QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
-AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
-
-QString solutionTypeToStringKey(SolutionType solutionType) { return solutionTypeList[solutionType]; }
-SolutionType solutionTypeFromStringKey(const QString &solutionType) { return solutionTypeList.key(solutionType); }
-
-QString linearityTypeToStringKey(LinearityType linearityType) { return linearityTypeList[linearityType]; }
-LinearityType linearityTypeFromStringKey(const QString &linearityType) { return linearityTypeList.key(linearityType); }
-
-QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
-Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
+QString modeToStringKey(Mode mode) { return modeList[mode]; }
+Mode modeFromStringKey(const QString &mode) { return modeList.key(mode); }
 
 void initLists()
 {
-    logMessage("initLists()");
+    // coordinate list
+    coordinateTypeList.insert(CoordinateType_Undefined, "");
+    coordinateTypeList.insert(CoordinateType_Planar, "planar");
+    coordinateTypeList.insert(CoordinateType_Axisymmetric, "axisymmetric");
 
     // Analysis Type
     analysisTypeList.insert(AnalysisType_Undefined, "");
@@ -98,22 +114,6 @@ void initLists()
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Magnitude, "magnitude");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_X, "x");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Y, "y");
-
-    // PHYSICFIELDBC
-    /*§
-    physicFieldBCList.insert(PhysicFieldBC_Undefined, "");
-    physicFieldBCList.insert(PhysicFieldBC_None, "none");
-    physicFieldBCList.insert(PhysicFieldBC_General_Value, "general_value");
-    physicFieldBCList.insert(PhysicFieldBC_General_Derivative, "general_derivative");
-    physicFieldBCList.insert(PhysicFieldBC_Flow_Velocity, "flow_velocity");
-    physicFieldBCList.insert(PhysicFieldBC_Flow_Pressure, "flow_pressure");
-    physicFieldBCList.insert(PhysicFieldBC_Flow_Outlet, "flow_outlet");
-    physicFieldBCList.insert(PhysicFieldBC_Flow_Wall, "flow_wall");
-    physicFieldBCList.insert(PhysicFieldBC_RF_ElectricField, "rf_electric_field");
-    physicFieldBCList.insert(PhysicFieldBC_RF_SurfaceCurrent, "rf_surface_current");
-    physicFieldBCList.insert(PhysicFieldBC_RF_MatchedBoundary, "rf_matched_boundary");
-    physicFieldBCList.insert(PhysicFieldBC_RF_Port, "rf_port");
-    */
 
     // TEMODE
     modeList.insert(Mode_0, "mode_0");
@@ -152,6 +152,19 @@ void initLists()
     linearityTypeList.insert(LinearityType_Linear, "linear");
     linearityTypeList.insert(LinearityType_Picard, "picard");
     linearityTypeList.insert(LinearityType_Newton, "newton");
+}
+
+QString stringListToString(const QStringList &list)
+{
+    QString out;
+    foreach (QString str, list)
+        if (!str.isEmpty())
+            out += str + ", ";
+
+    if (out.length() > 0)
+        out = out.left(out.length() - 2);
+
+    return out;
 }
 
 QString analysisTypeString(AnalysisType analysisType)
