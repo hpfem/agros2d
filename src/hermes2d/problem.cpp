@@ -21,7 +21,6 @@
 
 #include "scene.h"
 #include "scenemarker.h"
-#include "scenesolution.h"
 #include "module.h"
 #include "module_agros.h"
 #include "coupling.h"

@@ -46,8 +46,6 @@ class SceneLabelContainer;
 class SceneBoundaryContainer;
 class SceneMaterialContainer;
 
-template <typename Scalar> class SceneSolution;
-
 class ScriptEngineRemote;
 
 class ProblemDialog;
@@ -204,7 +202,7 @@ public slots:
     void doNewMaterial();
     void doNewMaterial(QString field);
 
-    void doClearSolution();
+    void clearSolutions();
     void doProblemProperties();
     void doFieldsChanged();
 
@@ -312,13 +310,8 @@ public:
     inline void refresh() { emit invalidated(); }
 //    inline SceneSolution<double> *sceneSolution(FieldInfo* fieldInfo) const { return m_sceneSolutions[fieldInfo]; }
 
-    //returns required scene solution or creates it, if it does not exist
-    SceneSolution<double>* sceneSolution(FieldSolutionID fsid);
-    SceneSolution<double> *activeSceneSolution();
 
     // clears all solutions and remove them
-    void clearSolutions();
-
     inline FieldInfo* activeViewField() const { assert(m_activeViewField); return m_activeViewField; }
     void setActiveViewField(FieldInfo* fieldInfo) { m_activeViewField = fieldInfo; }
     inline int activeTimeStep() const { return m_activeTimeStep; }
@@ -327,6 +320,8 @@ public:
     void setActiveAdaptivityStep(int as) { m_activeAdaptivityStep = as; }
     inline SolutionType activeSolutionType() const { return m_activeSolutionType; }
     void setActiveSolutionType(SolutionType st) { m_activeSolutionType = st; }
+    // active MultiSolutionArray
+    MultiSolutionArray<double> activeMultiSolutionArray();
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
@@ -346,7 +341,6 @@ private:
     QMap<QString, FieldInfo *>  m_fieldInfos;
     QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >  m_couplingInfos;
 
-    QMap<FieldSolutionID, SceneSolution<double>* > m_sceneSolutions;
     FieldInfo* m_activeViewField;
     int m_activeTimeStep;
     int m_activeAdaptivityStep;

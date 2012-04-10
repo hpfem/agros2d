@@ -20,7 +20,6 @@
 #include "sceneview_geometry.h"
 #include "util.h"
 #include "scene.h"
-#include "scenesolution.h"
 #include "hermes2d/problem.h"
 
 #include "scenebasic.h"

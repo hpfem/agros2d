@@ -19,7 +19,6 @@
 
 #include "gui.h"
 
-#include "scenesolution.h"
 #include "scene.h"
 #include "util.h"
 

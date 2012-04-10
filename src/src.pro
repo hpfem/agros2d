@@ -82,7 +82,6 @@ SOURCES += util.cpp \
     chartdialog.cpp \
     problemdialog.cpp \
     scenetransformdialog.cpp \
-    scenesolution.cpp \
     reportdialog.cpp \
     videodialog.cpp \
     scenemarkerselectdialog.cpp \
@@ -149,7 +148,6 @@ HEADERS += util.h \
     chartdialog.h \
     problemdialog.h \
     scenetransformdialog.h \
-    scenesolution.h \
     reportdialog.h \
     videodialog.h \
     scenemarkerselectdialog.h \

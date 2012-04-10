@@ -36,6 +36,8 @@ namespace Hermes
     }
 }
 
+int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point);
+
 struct PointValue
 {
     PointValue()

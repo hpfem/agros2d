@@ -20,7 +20,6 @@
 #include "sceneview_post3d.h"
 #include "util.h"
 #include "scene.h"
-#include "scenesolution.h"
 #include "hermes2d/problem.h"
 #include "logview.h"
 

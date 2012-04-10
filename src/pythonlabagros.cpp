@@ -28,7 +28,6 @@
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
-#include "scenesolution.h"
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"

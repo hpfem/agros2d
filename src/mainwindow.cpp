@@ -28,7 +28,6 @@
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
-#include "scenesolution.h"
 #include "tooltipview.h"
 #include "logview.h"
 #include "infowidget.h"

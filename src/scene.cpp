@@ -27,7 +27,6 @@
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
 #include "scenefunction.h"
-#include "scenesolution.h"
 
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
@@ -232,14 +231,12 @@ Util *Util::m_singleton = NULL;
 
 Util::Util()
 {
-    logMessage("Util::Util()");
-
+    m_problem = new Problem();
     m_scene = new Scene();
 
     // script remote
     m_scriptEngineRemote = new ScriptEngineRemote();
 
-    m_problem = new Problem();
     m_solutionStore = new SolutionStore();
 
     // config
@@ -278,8 +275,6 @@ Util *Util::singleton()
 
 Scene::Scene()
 {
-    logMessage("Scene::Scene()");
-
     createActions();
 
     m_problemInfo = new ProblemInfo();
@@ -372,9 +367,9 @@ void Scene::createActions()
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
 
-    actClearSolutions = new QAction(icon(""), tr("Clear solution"), this);
-    actClearSolutions->setStatusTip(tr("Clear solution"));
-    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(doClearSolution()));
+    actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
+    actClearSolutions->setStatusTip(tr("Clear solutions"));
+    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolutions()));
 
     actProblemProperties = new QAction(icon("document-properties"), tr("Properties"), this);
     actProblemProperties->setShortcut(tr("F12"));
@@ -384,21 +379,9 @@ void Scene::createActions()
 
 void Scene::clearSolutions()
 {
-    foreach (SceneSolution<double>* sceneSolution, m_sceneSolutions)
-    {
-        delete sceneSolution;
-    }
-    m_sceneSolutions.clear();
+    if (Util::problem()->isSolved())
+        Util::solutionStore()->clearAll();
 }
-
-//void Scene::createSolutions()
-//{
-//    clearSolutions();
-//    foreach(FieldInfo* fi, fieldInfos())
-//    {
-//        m_sceneSolutions[fi] = new SceneSolution<double>(fi);
-//    }
-//}
 
 SceneNode *Scene::addNode(SceneNode *node)
 {
@@ -421,8 +404,6 @@ SceneNode *Scene::addNode(SceneNode *node)
 
 void Scene::removeNode(SceneNode *node)
 {
-    logMessage("Scene::nodes->remove()");
-
     // clear solution
     clearSolutions();
 
@@ -434,16 +415,12 @@ void Scene::removeNode(SceneNode *node)
 
 SceneNode *Scene::getNode(const Point &point)
 {
-    logMessage("SceneNode *Scene::getNode()");
-
     nodes->get(point);
 }
 
 
 SceneEdge *Scene::addEdge(SceneEdge *edge)
 {
-    logMessage("SceneEdge *Scene::addEdge");
-
     // clear solution
     clearSolutions();
 
@@ -461,8 +438,6 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
 
 void Scene::removeEdge(SceneEdge *edge)
 {
-    logMessage("Scene::edges->remove()");
-
     // clear solution
     clearSolutions();
 
@@ -474,15 +449,11 @@ void Scene::removeEdge(SceneEdge *edge)
 
 SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double angle)
 {
-    logMessage("SceneEdge *Scene::getEdge()");
-
     edges->get(pointStart, pointEnd, angle);
 }
 
 SceneLabel *Scene::addLabel(SceneLabel *label)
 {
-    logMessage("SceneLabel *Scene::addLabel");
-
     // clear solution
     clearSolutions();
 
@@ -500,8 +471,6 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
 
 void Scene::removeLabel(SceneLabel *label)
 {
-    logMessage("Scene::label->remove()");
-
     // clear solution
     clearSolutions();
 
@@ -643,7 +612,7 @@ void Scene::clear()
     blockSignals(true);
 
     // clear problem
-    //TODO - not good
+    // TODO: - not good
     if (Util::singleton() && Util::problem())
         Util::problem()->clear();
 
@@ -654,7 +623,10 @@ void Scene::clear()
 
     m_undoStack->clear();
 
-    clearSolutions();
+    // TODO: - not good
+    if (Util::singleton() && Util::problem())
+        clearSolutions();
+
     m_problemInfo->clear();
 
     QMapIterator<QString, FieldInfo *> i(m_fieldInfos);
@@ -1188,14 +1160,6 @@ void Scene::removeField(FieldInfo *field)
     emit invalidated();
 }
 
-void Scene::doClearSolution()
-{
-    logMessage("Scene::doClearSolution()");
-
-    clearSolutions();
-    emit invalidated();
-}
-
 void Scene::doProblemProperties()
 {
     ProblemDialog problemDialog(m_problemInfo,
@@ -1719,7 +1683,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     if (eleDoc.elementsByTagName("mesh").count() > 0)
     {
         QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
-        Util::scene()->activeSceneSolution()->loadMeshInitial(eleMesh.toElement());
+        // TODO: Util::scene()->activeSolution()->loadMeshInitial(eleMesh.toElement());
     }
     /*
     // solutions
@@ -2032,20 +1996,8 @@ void Scene::synchronizeCouplings()
     CouplingInfo::synchronizeCouplings(m_fieldInfos, m_couplingInfos);
 }
 
-SceneSolution<double> *Scene::activeSceneSolution()
+MultiSolutionArray<double> Scene::activeMultiSolutionArray()
 {
-    return sceneSolution(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
+    return Util::solutionStore()->multiSolution(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
 }
 
-SceneSolution<double>* Scene::sceneSolution(FieldSolutionID fsid)
-{
-    if(! m_sceneSolutions.contains(fsid))
-    {
-        assert(Util::solutionStore()->contains(fsid));
-        MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(fsid);
-        SceneSolution<double>* sceneSolution = new SceneSolution<double>(fsid.group, msa);
-        m_sceneSolutions.insert(fsid, sceneSolution);
-    }
-
-    return m_sceneSolutions[fsid];
-}

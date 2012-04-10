@@ -22,7 +22,6 @@
 #include "gui.h"
 
 #include "scene.h"
-#include "scenesolution.h"
 #include "sceneview_geometry.h"
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"

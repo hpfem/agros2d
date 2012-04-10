@@ -20,7 +20,6 @@
 #include "sceneview_mesh.h"
 #include "util.h"
 #include "scene.h"
-#include "scenesolution.h"
 #include "logview.h"
 
 #include "scenebasic.h"
@@ -57,7 +56,8 @@ void MeshHermes::processOrder()
     {
         Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
 
-        m_orderView.process_space(Util::scene()->activeSceneSolution()->space(0));
+        // ERROR: FIX component(0)
+        m_orderView.process_space(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_space());
 
         m_orderIsPrepared = true;
     }
@@ -85,10 +85,12 @@ void MeshHermes::processSolutionMesh()
 
     if (Util::problem()->isSolved())
     {
-        Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeSceneSolution()->sln(0)->get_mesh()->get_num_active_elements()));
+        // ERROR: FIX component(0)
+        Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_mesh()->get_num_active_elements()));
 
         // init linearizer for solution mesh
-        Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeSceneSolution()->sln(0)->get_mesh());
+        // ERROR: FIX component(0)
+        Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_mesh());
         m_linSolutionMeshView.process_solution(&solution);
 
         m_solutionMeshIsPrepared = true;

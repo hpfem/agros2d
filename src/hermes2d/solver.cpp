@@ -29,11 +29,7 @@
 #include "weakform_parser.h"
 #include "logview.h"
 
-//TODO will be removed after putting code to sceneSolution
-#include "scenesolution.h"
-
 using namespace Hermes::Hermes2D;
-
 
 template <typename Scalar>
 void Solver<Scalar>::init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, Block* block)

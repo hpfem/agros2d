@@ -28,7 +28,6 @@
 #include "scenebasic.h"
 #include "scenemarkerdialog.h"
 #include "scenelabel.h"
-#include "scenesolution.h"
 #include "sceneedge.h"
 #include "hermes2d/solver.h"
 #include "hermes2d/coupling.h"
@@ -947,12 +946,21 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
 ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
+    // update time functions
+    /*
+    if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+        m_fieldInfo->module()->update_time_functions(Util::problem()->time());
+    */
+
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
     for (int k = 0; k < number_of_solution(); k++)
     {
-        sln.push_back(Util::scene()->activeSceneSolution()->sln(k));
+        // ERROR: FIX timestep
+        Util::scene()->setActiveTimeStep(k + (Util::problem()->timeStep() * Util::scene()->fieldInfo()->module()->number_of_solution()));
+        FieldSolutionID fsid(Util::scene()->fieldInfo(), Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
+        sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
     }
-    return new ViewScalarFilter<double>(Util::scene()->activeSceneSolution()->fieldInfo(),
+    return new ViewScalarFilter<double>(Util::scene()->fieldInfo(),
                                         sln,
                                         get_expression(physicFieldVariable, physicFieldVariableComp));
 }

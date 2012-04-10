@@ -19,7 +19,6 @@
 
 #include "resultsview.h"
 #include "scene.h"
-#include "scenesolution.h"
 #include "hermes2d.h"
 #include "hermes2d/volumeintegral.h"
 #include "hermes2d/surfaceintegral.h"
