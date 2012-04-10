@@ -149,6 +149,10 @@ void SceneViewMesh::createActionsMesh()
     actSceneModeMesh->setShortcut(Qt::Key_F6);
     actSceneModeMesh->setStatusTip(tr("Mesh"));
     actSceneModeMesh->setCheckable(true);
+
+    actExportVTKOrder = new QAction(tr("Export VTK order..."), this);
+    actExportVTKOrder->setStatusTip(tr("Export order view as VTK file"));
+    connect(actExportVTKOrder, SIGNAL(triggered()), this, SLOT(exportVTKOrderView()));
 }
 
 void SceneViewMesh::doInvalidated()
@@ -165,6 +169,7 @@ void SceneViewMesh::doInvalidated()
 
     // actions
     actSceneModeMesh->setEnabled(Util::problem()->isMeshed());
+    actExportVTKOrder->setEnabled(Util::problem()->isSolved());
 
     if (Util::problem()->isMeshed())
         m_meshHermes->processMeshed();
@@ -180,6 +185,46 @@ void SceneViewMesh::clear()
     m_meshHermes->clear();
 
     SceneViewCommon2D::clear();
+}
+
+void SceneViewMesh::exportVTKOrderView(const QString &fileName)
+{
+    if (Util::problem()->isSolved())
+    {
+        QString fn = fileName;
+
+        if (fn.isEmpty())
+        {
+            // file dialog
+            QSettings settings;
+            QString dir = settings.value("General/LastVTKDir").toString();
+
+            fn = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+            if (fn.isEmpty())
+                return;
+
+            if (!fn.endsWith(".vtk"))
+                fn.append(".vtk");
+
+            // remove existing file
+            if (QFile::exists(fn))
+                QFile::remove(fn);
+        }
+
+        Hermes::Hermes2D::Views::Orderizer orderView;
+        orderView.save_orders_vtk(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_space(),
+                                        fn.toStdString().c_str());
+
+        if (!fn.isEmpty())
+        {
+            QFileInfo fileInfo(fn);
+            if (fileInfo.absoluteDir() != tempProblemDir())
+            {
+                QSettings settings;
+                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+            }
+        }
+    }
 }
 
 void SceneViewMesh::paintGL()

@@ -74,8 +74,6 @@ private slots:
     void doDocumentSaveImage();
     void doDocumentSaveGeometry();
     void doLoadBackground();
-    void doExportVTKScalar();
-    void doExportVTKOrder();
 
     void doMouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
@@ -151,8 +149,6 @@ private:
     QAction *actDocumentImportDXF;
     QAction *actDocumentExportDXF;
     QAction *actDocumentExportMeshFile;
-    QAction *actExportVTKScalar;
-    QAction *actExportVTKOrder;
     QAction *actDocumentSaveImage;
     QAction *actDocumentSaveGeometry;
     QAction *actExit;
