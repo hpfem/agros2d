@@ -117,9 +117,6 @@ void LocalPointValue::calculate()
 
             for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
             {
-                // solution
-                // ERROR: FIX timestep
-                Util::scene()->setActiveTimeStep(k + (Util::problem()->timeStep() * m_fieldInfo->module()->number_of_solution()));
                 FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());                
                 sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.get();
 

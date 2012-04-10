@@ -41,8 +41,6 @@ SurfaceIntegralValue::SurfaceIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(f
     // solution
     for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
     {
-        // ERROR: FIX timestep
-        Util::scene()->setActiveTimeStep(k + (Util::problem()->timeStep() * m_fieldInfo->module()->number_of_solution()));
         FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
         sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
     }

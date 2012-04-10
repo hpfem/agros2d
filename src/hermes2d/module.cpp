@@ -955,8 +955,6 @@ ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Mod
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
     for (int k = 0; k < number_of_solution(); k++)
     {
-        // ERROR: FIX timestep
-        Util::scene()->setActiveTimeStep(k + (Util::problem()->timeStep() * Util::scene()->fieldInfo()->module()->number_of_solution()));
         FieldSolutionID fsid(Util::scene()->fieldInfo(), Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
         sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
     }
