@@ -113,9 +113,6 @@ public:
     // check geometry
     bool checkGeometry();
 
-    // progress dialog
-    ProgressDialog* progressDialog();
-
     inline Hermes::Hermes2D::Mesh *meshInitial(FieldInfo* fieldInfo) { return m_meshesInitial[fieldInfo]; }
     Hermes::Hermes2D::Mesh *activeMeshInitial();
     inline QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshesInitial() { return m_meshesInitial; }

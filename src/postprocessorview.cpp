@@ -27,13 +27,11 @@
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
-#include "progressdialog.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
 const double minWidth = 110;
-
 
 PostprocessorView::PostprocessorView(SceneViewPreprocessor *sceneGeometry,
                                      SceneViewMesh *sceneMesh,

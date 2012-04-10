@@ -19,7 +19,6 @@
 
 #include "problem.h"
 #include "solver.h"
-#include "progressdialog.h"
 #include "module.h"
 #include "scene.h"
 #include "sceneedge.h"
@@ -390,7 +389,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         catch(Hermes::Exceptions::Exception e)
         {
             QString error = QString(e.getMsg());
-            m_progressItemSolve->emitMessage(QObject::tr("Newton's iteration failed: ") + error, true);
+            Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("Newton's iteration failed: %1").arg(error));
             return false;
         }
     }
@@ -424,8 +423,7 @@ bool Solver<Scalar>::solveSimple()
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
     {
-        m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
-        //cleanup();
+        Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("DOF is zero"));
         return false;
     }
 
@@ -490,8 +488,7 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) == 0)
     {
-        m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
-        //cleanup();
+        Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("DOF is zero"));
         return false;
     }
 
@@ -628,8 +625,7 @@ bool Solver<Scalar>::solveTimeStep(double timeStep)
 
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
     {
-        m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
-        //cleanup();
+        Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("DOF is zero"));
         return false;
     }
 
@@ -732,8 +728,7 @@ void Solver<Scalar>::solve(SolverConfig config)
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
     {
-        m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
-        //cleanup();
+        Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("DOF is zero"));
         return;
     }
 

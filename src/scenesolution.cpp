@@ -23,7 +23,6 @@
 #include "scenemarkerdialog.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
-#include "progressdialog.h"
 #include "hermes2d/solver.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"

@@ -84,8 +84,8 @@ QString createPythonFromModel()
     str += QString("problem = agros2d.problem(clear = True)\n");
     str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType));
     str += QString("problem.name = \"%1\"\n").arg(Util::scene()->problemInfo()->name);
-    str += QString("problem.mesh_type = \"%1\"\n").arg(matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver));
-    str += QString("problem.matrix_solver = \"%1\"\n").arg(meshTypeToStringKey(Util::scene()->problemInfo()->meshType));
+    str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Util::scene()->problemInfo()->meshType));
+    str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver));
 
     if (Util::scene()->problemInfo()->frequency > 0.0)
         str += QString("problem.frequency = %1\n").

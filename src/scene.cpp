@@ -34,7 +34,6 @@
 #include "scenemarker.h"
 #include "scenemarkerselectdialog.h"
 #include "scenebasicselectdialog.h"
-#include "progressdialog.h"
 
 #include "pythonlabagros.h"
 

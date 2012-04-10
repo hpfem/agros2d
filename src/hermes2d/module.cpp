@@ -23,7 +23,6 @@
 
 #include "../weakform/src/weakform_factory.h"
 
-#include "progressdialog.h"
 #include "util.h"
 #include "scene.h"
 #include "scenebasic.h"

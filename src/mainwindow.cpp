@@ -41,7 +41,6 @@
 #include "videodialog.h"
 #include "logdialog.h"
 #include "problemdialog.h"
-#include "progressdialog.h"
 #include "collaboration.h"
 #include "resultsview.h"
 #include "materialbrowserdialog.h"
