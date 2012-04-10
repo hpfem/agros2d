@@ -68,8 +68,11 @@ QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> Solver<Scalar>::readMesh()
             if ((node->used == 1 && node->ref < 2 && node->type == 1))
             {
                 int tmp_marker = atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
+
                 assert(tmp_marker > 0);
                 int marker = (tmp_marker > 0) ? tmp_marker - 1 : - tmp_marker;
+//                assert(tmp_marker >= 0);
+//                int marker = tmp_marker;
 
                 if (Util::scene()->edges->at(marker)->getMarker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
                     boundaries.insert(marker);
