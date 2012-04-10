@@ -266,14 +266,14 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_matrix_surface.begin();
                      it < boundary_type->weakform_matrix_surface.end(); ++it)
                 {
-                    registerForm(WFType_MatSurf, field, QString::number(edgeNum + 1).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_MatSurf, field, QString::number(edgeNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), boundary);
                 }
 
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_vector_surface.begin();
                      it < boundary_type->weakform_vector_surface.end(); ++it)
                 {
-                    registerForm(WFType_VecSurf, field, QString::number(edgeNum + 1).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_VecSurf, field, QString::number(edgeNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), boundary);
                 }
             }
@@ -290,7 +290,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_matrix_volume.begin();
                      it < fieldInfo->module()->weakform_matrix_volume.end(); ++it)
                 {
-                    registerForm(WFType_MatVol, field, QString::number(labelNum + 1).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_MatVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), material);
 
                 }
@@ -298,7 +298,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_vector_volume.begin();
                      it < fieldInfo->module()->weakform_vector_volume.end(); ++it)
                 {
-                    registerForm(WFType_VecVol, field, QString::number(labelNum + 1).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), material);
                 }
 
@@ -308,7 +308,7 @@ void WeakFormAgros<Scalar>::registerForms()
                      for (Hermes::vector<ParserFormExpression *>::iterator it = couplingInfo->coupling()->weakform_vector_volume.begin();
                           it < couplingInfo->coupling()->weakform_vector_volume.end(); ++it)
                     {
-                         registerForm(WFType_VecVol, field, QString::number(labelNum + 1).toStdString(), (ParserFormExpression *) *it,
+                         registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                       m_block->offset(field), m_block->offset(field), material,
                                       Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
                     }
@@ -1307,7 +1307,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
     double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
     Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
 
-    SceneMaterial *material = Util::scene()->labels->at(atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()) - 1)->getMarker(m_fieldInfo);
+    SceneMaterial *material = Util::scene()->labels->at(atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
     // warning: check this, lienearity...
 //    if (isLinear)
 //        parser->setParserVariables(material, NULL);
