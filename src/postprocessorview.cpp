@@ -1103,9 +1103,10 @@ void PostprocessorView::doScalarFieldVariable(int index)
         physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
     }
 
+    // component
+    cmbPost2DScalarFieldVariableComp->clear();
     if (physicFieldVariable)
     {        
-        cmbPost2DScalarFieldVariableComp->clear();
         if (physicFieldVariable->is_scalar)
         {
             cmbPost2DScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
@@ -1136,8 +1137,9 @@ void PostprocessorView::doScalarFieldVariableComp(int index)
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
     // TODO: proc je tu index a cmb..->currentIndex?
-    if ((cmbPost2DScalarFieldVariable->currentIndex() != -1) && (index != -1)){
-        QString variableName(cmbPost2DScalarFieldVariable->itemData(index).toString());
+    if (cmbPost2DScalarFieldVariable->currentIndex() != -1 && index != -1)
+    {
+        QString variableName(cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString());
 
         // TODO: not good - relies on variable names begining with module name
         std::string fieldName(variableName.split("_")[0].toStdString());

@@ -123,8 +123,7 @@ SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
 template <class T>
 void deformShapeTemplate(T linVert, int count)
 {
-    FieldSolutionID fsid(Util::scene()->activeViewField(), Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
-    MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(fsid);
+    MultiSolutionArray<double> msa = Util::scene()->activeMultiSolutionArray();
 
     double min =  numeric_limits<double>::max();
     double max = -numeric_limits<double>::max();
