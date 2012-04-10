@@ -190,7 +190,7 @@ void PythonEngine::deleteUserModules()
             if (filter_name.contains(variable.name))
                 continue;
 
-            QString exp = QString("del %1; del sys.modules[\"%1\"]").arg(variable.name);
+            QString exp = QString("del %1; import sys; del sys.modules[\"%1\"]").arg(variable.name);
             // qDebug() << exp;
             PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
         }

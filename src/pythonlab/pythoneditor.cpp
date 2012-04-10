@@ -1273,67 +1273,32 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
 
     case Qt::Key_Return:
     case Qt::Key_Enter:
+    {
+        QTextCursor cursor = textCursor();
+        QString current_line = cursor.block().text();
+
+        QString leadingNonwhite;
+        for (int i = 0; i < current_line.length(); i++)
         {
-            QTextCursor cursor = textCursor();
-            QString current_line = cursor.block().text();
-
-            QString leadingNonwhite;
-            for (int i = 0; i < current_line.length(); i++)
-            {
-                if (current_line.mid(i, 1) == " ")
-                    leadingNonwhite += " ";
-                else if (current_line.mid(i, 1) == "\t")
-                    leadingNonwhite += "\t";
-                else
-                    break;
-            }
-
-            QPlainTextEdit::keyPressEvent(event);
-            cursor = textCursor();
-            cursor.insertText(leadingNonwhite);
-            // cursor.movePosition(QTextCursor::EndOfWord);
-
-            return;
+            if (current_line.mid(i, 1) == " ")
+                leadingNonwhite += " ";
+            else if (current_line.mid(i, 1) == "\t")
+                leadingNonwhite += "\t";
+            else
+                break;
         }
+
+        QPlainTextEdit::keyPressEvent(event);
+        cursor = textCursor();
+        cursor.insertText(leadingNonwhite);
+        // cursor.movePosition(QTextCursor::EndOfWord);
+
+        return;
+    }
         break;
 
     default:
         break;
-    }
-
-    QPlainTextEdit::keyPressEvent(event);
-
-    if ((event->key() == Qt::Key_Space && event->modifiers() & Qt::ControlModifier)
-            || completer->popup()->isVisible())
-    {
-        QTextCursor tc = textCursor();
-        tc.select(QTextCursor::WordUnderCursor);
-        QString textToComplete = tc.selectedText();
-
-        QString fn = tempProblemFileName() + ".rope_str.py";
-        QString str = toPlainText();
-        writeStringContent(fn, &str);
-
-        QStringList found = pythonEngine->codeCompletion("", tc.position(), fn);
-
-        if (!found.isEmpty())
-        {
-            completer->setCompletionPrefix(textToComplete);
-            completer->setModel(new QStringListModel(found, completer));
-            QTextCursor c = textCursor();
-            c.movePosition(QTextCursor::StartOfWord);
-            QRect cr = cursorRect(c);
-            cr.setWidth(completer->popup()->sizeHintForColumn(0)
-                        + completer->popup()->verticalScrollBar()->sizeHint().width() + 30);
-            cr.translate(lineNumberAreaWidth(), 4);
-            completer->complete(cr);
-        }
-        else
-        {
-            completer->popup()->hide();
-        }
-
-        QFile::remove(fn);
     }
 }
 

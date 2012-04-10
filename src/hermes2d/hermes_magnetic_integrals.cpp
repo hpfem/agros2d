@@ -327,6 +327,16 @@ double LocalPointValueMagnetic::variableValue(PhysicFieldVariable physicFieldVar
         case PhysicFieldVariableComp_Magnitude:
             return remanence;
         }
+    case PhysicFieldVariable_Magnetic_LorentzForce:
+        switch (physicFieldVariableComp)
+        {
+        case PhysicFieldVariableComp_X:
+            return FL_real.x;
+        case PhysicFieldVariableComp_Y:
+            return FL_real.y;
+        case PhysicFieldVariableComp_Magnitude:
+            return FL_real.magnitude();
+        }
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueMagnetic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
         throw;
@@ -338,48 +348,48 @@ QStringList LocalPointValueMagnetic::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
-           QString("%1").arg(point.y, 0, 'e', 5) <<
-           QString("%1").arg(potential_real, 0, 'e', 5) <<
-           QString("%1").arg(potential_imag, 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(potential_real) + sqr(potential_imag)), 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(B_real.x) + sqr(B_imag.x) + sqr(B_real.y) + sqr(B_imag.y)), 0, 'e', 5) <<
-           QString("%1").arg(B_real.x, 0, 'e', 5) <<
-           QString("%1").arg(B_real.y, 0, 'e', 5) <<
-           QString("%1").arg(B_real.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(B_imag.x, 0, 'e', 5) <<
-           QString("%1").arg(B_imag.y, 0, 'e', 5) <<
-           QString("%1").arg(B_imag.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(H_real.x) + sqr(H_imag.x) + sqr(H_real.y) + sqr(H_imag.y)), 0, 'e', 5) <<
-           QString("%1").arg(H_real.x, 0, 'e', 5) <<
-           QString("%1").arg(H_real.y, 0, 'e', 5) <<
-           QString("%1").arg(H_real.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(H_imag.x, 0, 'e', 5) <<
-           QString("%1").arg(H_imag.y, 0, 'e', 5) <<
-           QString("%1").arg(H_imag.magnitude(), 0, 'e', 5) <<
-           QString("%1").arg(current_density_real, 0, 'e', 5) <<
-           QString("%1").arg(current_density_imag, 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(current_density_real) + sqr(current_density_imag)), 0, 'e', 5) <<
-           QString("%1").arg(current_density_induced_transform_real, 0, 'e', 5) <<
-           QString("%1").arg(current_density_induced_transform_imag, 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(current_density_induced_transform_real) + sqr(current_density_induced_transform_imag)), 0, 'e', 5) <<
-           QString("%1").arg(current_density_induced_velocity_real, 0, 'e', 5) <<
-           QString("%1").arg(current_density_induced_velocity_imag, 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(current_density_induced_velocity_real) + sqr(current_density_induced_velocity_imag)), 0, 'e', 5) <<
-           QString("%1").arg(current_density_total_real, 0, 'e', 5) <<
-           QString("%1").arg(current_density_total_imag, 0, 'e', 5) <<
-           QString("%1").arg(sqrt(sqr(current_density_total_real) + sqr(current_density_total_imag)), 0, 'e', 5) <<
-           QString("%1").arg(pj, 0, 'e', 5) <<
-           QString("%1").arg(wm, 0, 'e', 5) <<
-           QString("%1").arg(permeability, 0, 'f', 3) <<
-           QString("%1").arg(conductivity, 0, 'e', 5) <<
-           QString("%1").arg(remanence, 0, 'e', 5) <<
-           QString("%1").arg(remanence_angle, 0, 'e', 5) <<
-           QString("%1").arg(velocity.x, 0, 'e', 5) <<
-           QString("%1").arg(velocity.y, 0, 'e', 5) <<
-           QString("%1").arg(FL_real.x, 0, 'e', 5) <<
-           QString("%1").arg(FL_real.y, 0, 'e', 5) <<
-           QString("%1").arg(FL_imag.x, 0, 'e', 5) <<
-           QString("%1").arg(FL_imag.y, 0, 'e', 5);
+            QString("%1").arg(point.y, 0, 'e', 5) <<
+            QString("%1").arg(potential_real, 0, 'e', 5) <<
+            QString("%1").arg(potential_imag, 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(potential_real) + sqr(potential_imag)), 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(B_real.x) + sqr(B_imag.x) + sqr(B_real.y) + sqr(B_imag.y)), 0, 'e', 5) <<
+            QString("%1").arg(B_real.x, 0, 'e', 5) <<
+            QString("%1").arg(B_real.y, 0, 'e', 5) <<
+            QString("%1").arg(B_real.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(B_imag.x, 0, 'e', 5) <<
+            QString("%1").arg(B_imag.y, 0, 'e', 5) <<
+            QString("%1").arg(B_imag.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(H_real.x) + sqr(H_imag.x) + sqr(H_real.y) + sqr(H_imag.y)), 0, 'e', 5) <<
+            QString("%1").arg(H_real.x, 0, 'e', 5) <<
+            QString("%1").arg(H_real.y, 0, 'e', 5) <<
+            QString("%1").arg(H_real.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(H_imag.x, 0, 'e', 5) <<
+            QString("%1").arg(H_imag.y, 0, 'e', 5) <<
+            QString("%1").arg(H_imag.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(current_density_real, 0, 'e', 5) <<
+            QString("%1").arg(current_density_imag, 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(current_density_real) + sqr(current_density_imag)), 0, 'e', 5) <<
+            QString("%1").arg(current_density_induced_transform_real, 0, 'e', 5) <<
+            QString("%1").arg(current_density_induced_transform_imag, 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(current_density_induced_transform_real) + sqr(current_density_induced_transform_imag)), 0, 'e', 5) <<
+            QString("%1").arg(current_density_induced_velocity_real, 0, 'e', 5) <<
+            QString("%1").arg(current_density_induced_velocity_imag, 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(current_density_induced_velocity_real) + sqr(current_density_induced_velocity_imag)), 0, 'e', 5) <<
+            QString("%1").arg(current_density_total_real, 0, 'e', 5) <<
+            QString("%1").arg(current_density_total_imag, 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(current_density_total_real) + sqr(current_density_total_imag)), 0, 'e', 5) <<
+            QString("%1").arg(pj, 0, 'e', 5) <<
+            QString("%1").arg(wm, 0, 'e', 5) <<
+            QString("%1").arg(permeability, 0, 'f', 3) <<
+            QString("%1").arg(conductivity, 0, 'e', 5) <<
+            QString("%1").arg(remanence, 0, 'e', 5) <<
+            QString("%1").arg(remanence_angle, 0, 'e', 5) <<
+            QString("%1").arg(velocity.x, 0, 'e', 5) <<
+            QString("%1").arg(velocity.y, 0, 'e', 5) <<
+            QString("%1").arg(FL_real.x, 0, 'e', 5) <<
+            QString("%1").arg(FL_real.y, 0, 'e', 5) <<
+            QString("%1").arg(FL_imag.x, 0, 'e', 5) <<
+            QString("%1").arg(FL_imag.y, 0, 'e', 5);
 
     return QStringList(row);
 }
@@ -414,9 +424,9 @@ void SurfaceIntegralValueMagnetic::calculateVariables(int i)
             double By =   dudx1[i];
 
             double dfX = pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
-                                (Bx * (nx * Bx + ny * By) - 0.5 * nx * (sqr(Bx) + sqr(By)));
+                    (Bx * (nx * Bx + ny * By) - 0.5 * nx * (sqr(Bx) + sqr(By)));
             double dfY = pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
-                                (By * (nx * Bx + ny * By) - 0.5 * ny * (sqr(Bx) + sqr(By)));
+                    (By * (nx * Bx + ny * By) - 0.5 * ny * (sqr(Bx) + sqr(By)));
 
             forceMaxwellX -= dfX;
             forceMaxwellY -= dfY;
@@ -450,10 +460,10 @@ QStringList SurfaceIntegralValueMagnetic::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
-           QString("%1").arg(surface, 0, 'e', 5) <<
-           QString("%1").arg(forceMaxwellX, 0, 'e', 5) <<
-           QString("%1").arg(forceMaxwellY, 0, 'e', 5) <<
-           QString("%1").arg(torque, 0, 'e', 5);
+            QString("%1").arg(surface, 0, 'e', 5) <<
+            QString("%1").arg(forceMaxwellX, 0, 'e', 5) <<
+            QString("%1").arg(forceMaxwellY, 0, 'e', 5) <<
+            QString("%1").arg(torque, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -489,7 +499,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
     // current - real
     result = 0.0;
     h1_integrate_expression(marker->current_density_real.number)
-    currentReal += result;
+            currentReal += result;
 
     // current - imag
     result = 0.0;
@@ -505,15 +515,15 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
     {
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             h1_integrate_expression(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i])
-        else
-            h1_integrate_expression(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i])
+                    else
+                    h1_integrate_expression(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i])
     }
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             h1_integrate_expression(- marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number)
-        else
-            h1_integrate_expression(- marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number)
+                    else
+                    h1_integrate_expression(- marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number)
     }
     currentInducedTransformReal += result;
 
@@ -523,8 +533,8 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
     {
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             h1_integrate_expression(- 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i])
-        else
-            h1_integrate_expression(- 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i])
+                    else
+                    h1_integrate_expression(- 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i])
     }
     currentInducedTransformImag += result;
 
@@ -533,10 +543,10 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
     if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         h1_integrate_expression(- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                  (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
-    else
-        h1_integrate_expression(- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
-                                                                 (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
-    currentInducedVelocityReal += result;
+                else
+                h1_integrate_expression(- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                         (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
+                currentInducedVelocityReal += result;
 
     result = 0.0;
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
@@ -544,7 +554,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             h1_integrate_expression(- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx2[i] +
                                                                      (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy2[i]))
-        // TODO axisymmetric
+                    // TODO axisymmetric
     }
     currentInducedVelocityImag += result;
 
@@ -809,20 +819,20 @@ QStringList VolumeIntegralValueMagnetic::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-           QString("%1").arg(crossSection, 0, 'e', 5) <<
-           QString("%1").arg(currentReal, 0, 'e', 5) <<
-           QString("%1").arg(currentImag, 0, 'e', 5) <<
-           QString("%1").arg(currentInducedTransformReal, 0, 'e', 5) <<
-           QString("%1").arg(currentInducedTransformImag, 0, 'e', 5) <<
-           QString("%1").arg(currentInducedVelocityReal, 0, 'e', 5) <<
-           QString("%1").arg(currentInducedVelocityImag, 0, 'e', 5) <<
-           QString("%1").arg(currentTotalReal, 0, 'e', 5) <<
-           QString("%1").arg(currentTotalImag, 0, 'e', 5) <<
-           QString("%1").arg(forceLorentzX, 0, 'e', 5) <<
-           QString("%1").arg(forceLorentzY, 0, 'e', 5) <<
-           QString("%1").arg(torque, 0, 'e', 5) <<
-           QString("%1").arg(powerLosses, 0, 'e', 5) <<
-           QString("%1").arg(energy, 0, 'e', 5);
+            QString("%1").arg(crossSection, 0, 'e', 5) <<
+            QString("%1").arg(currentReal, 0, 'e', 5) <<
+            QString("%1").arg(currentImag, 0, 'e', 5) <<
+            QString("%1").arg(currentInducedTransformReal, 0, 'e', 5) <<
+            QString("%1").arg(currentInducedTransformImag, 0, 'e', 5) <<
+            QString("%1").arg(currentInducedVelocityReal, 0, 'e', 5) <<
+            QString("%1").arg(currentInducedVelocityImag, 0, 'e', 5) <<
+            QString("%1").arg(currentTotalReal, 0, 'e', 5) <<
+            QString("%1").arg(currentTotalImag, 0, 'e', 5) <<
+            QString("%1").arg(forceLorentzX, 0, 'e', 5) <<
+            QString("%1").arg(forceLorentzY, 0, 'e', 5) <<
+            QString("%1").arg(torque, 0, 'e', 5) <<
+            QString("%1").arg(powerLosses, 0, 'e', 5) <<
+            QString("%1").arg(energy, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -980,7 +990,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
     }
         break;
     case PhysicFieldVariable_Magnetic_MagneticField:
-    {        
+    {
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
             node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i]) + sqr(dudy1[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
@@ -1274,7 +1284,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                 {
                     node->values[0][0][i] = sqrt(sqr(
                                                      0.5 * ( - ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudx1[i])
-                                                            + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudx2[i]))
+                                                             + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudx2[i]))
                                                      +
                                                      dudx1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                                   (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
@@ -1284,7 +1294,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                                                                                 +
                                                                                 dudy1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                                                              (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])))
-                                                     ));
+                            ));
                 }
                 else
                 {
