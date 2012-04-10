@@ -347,6 +347,8 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
     }
     */
 
+    qDebug() << "linear = " << (m_block->linearityType() == LinearityType_Linear);
+
     // Nonlinear solver
     if ((m_block->linearityType() == LinearityType_Newton) || (m_block->linearityType() == LinearityType_Linear))
     {
@@ -380,7 +382,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             Util::log()->printDebug("Solver", QObject::tr("Newton's solver - solve: %1 s").
                                       arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")));
 
-            //delete coeff_vec; //TODO nebo se to dela v resici???
+            delete coeff_vec;
         }
         catch(Hermes::Exceptions::Exception e)
         {
