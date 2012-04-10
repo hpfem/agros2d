@@ -58,6 +58,14 @@ private:
             this->isUsed = true;
         }
 
+        bool contains(int node)
+        {
+            for(int i = 0; i < 2; i++)
+                if(this->node[i] == node)
+                    return true;
+            return false;
+        }
+
         int node[2], marker;
         bool isActive, isUsed;
     };
@@ -98,6 +106,14 @@ private:
 
             this->isActive = true;
             this->isUsed = true;
+        }
+
+        bool contains(int node)
+        {
+            for(int i = 0; i < isTriangle() ? 3 : 4; i++)
+                if(this->node[i] == node)
+                    return true;
+            return false;
         }
 
         inline bool isTriangle() const { return (node[3] == -1); }

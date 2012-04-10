@@ -129,10 +129,10 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             Util::log()->printMessage(tr("Mesh generator"), tr("mesh files were deleted"));
 
             // load mesh
-            Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+            QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
 
             // FIXME: jinak
-            Util::problem()->setMeshInitial(mesh);
+            Util::problem()->setMeshesInitial(meshes);
         }
         else
         {
@@ -332,11 +332,10 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     doc.appendChild(instr);
 
     // main document
-    QDomElement eleMesh = doc.createElement("mesh:mesh");
+    QDomElement eleMesh = doc.createElement("domain:domain");
     eleMesh.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-    eleMesh.setAttribute("xmlns:mesh", "XMLMesh");
-    eleMesh.setAttribute("xmlns:element", "XMLMesh");
-    eleMesh.setAttribute("xsi:schemaLocation", QString("XMLMesh %1/mesh_h2d_xml.xsd").arg(datadir() + "/resources/xsd"));
+    eleMesh.setAttribute("xmlns:domain", "XMLSubdomains");
+    eleMesh.setAttribute("xsi:schemaLocation", QString("XMLSubdomains %1/subdomains_h2d_xml.xsd").arg(datadir() + "/resources/xsd"));
     doc.appendChild(eleMesh);
 
     QDomElement eleVertices = doc.createElement("vertices");
@@ -347,6 +346,8 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     eleMesh.appendChild(eleEdges);
     QDomElement eleCurves = doc.createElement("curves");
     eleMesh.appendChild(eleCurves);
+    QDomElement eleSubdomains = doc.createElement("subdomains");
+    eleMesh.appendChild(eleSubdomains);
 
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -655,22 +656,27 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         {
             //TODO - no "inner edges" in new xml mesh file format - remove?
             // inner edge marker (minus markers are ignored)
-            int marker = - (edgeList[i].marker-1);
-            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-                if (Util::scene()->edges->at(edgeList[i].marker-1)->getMarker(fieldInfoTMP)
-                        != SceneBoundaryContainer::getNone(fieldInfoTMP))
-                {
-                    // boundary marker
-                    marker = edgeList[i].marker;
+//            int marker = - (edgeList[i].marker-1);
+//            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+//                if (Util::scene()->edges->at(edgeList[i].marker-1)->getMarker(fieldInfoTMP)
+//                        != SceneBoundaryContainer::getNone(fieldInfoTMP))
+//                {
+//                    // boundary marker
+//                    marker = edgeList[i].marker;
 
-                    break;
-                }
+//                    break;
+//                }
 
-            countEdges++;
+//            countEdges++;
 
+            int marker = edgeList[i].marker;
+
+
+            //assert(countEdges == i+1);
             QDomElement eleEdge = doc.createElement("edge");
             eleEdge.setAttribute("v1", edgeList[i].node[0]);
             eleEdge.setAttribute("v2", edgeList[i].node[1]);
+            eleEdge.setAttribute("i", i);
             eleEdge.setAttribute("marker", marker);
 
             eleEdges.appendChild(eleEdge);
@@ -757,20 +763,67 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     {
         if (elementList[i].isUsed)
         {
-            QDomElement eleElement = doc.createElement(QString("element:%1").arg(elementList[i].isTriangle() ? "triangle" : "quad"));
+            QDomElement eleElement = doc.createElement(QString("domain:%1").arg(elementList[i].isTriangle() ? "triangle" : "quad"));
             eleElement.setAttribute("v1", elementList[i].node[0]);
             eleElement.setAttribute("v2", elementList[i].node[1]);
             eleElement.setAttribute("v3", elementList[i].node[2]);
             if (!elementList[i].isTriangle())
                 eleElement.setAttribute("v4", elementList[i].node[3]);
+            eleElement.setAttribute("i", i);
             eleElement.setAttribute("marker", QString("%1").arg(abs(elementList[i].marker)));
 
             eleElements.appendChild(eleElement);
         }
     }
 
-    // subdomains
-    //TODO
+    foreach(FieldInfo* fieldInfo, Util::scene()->fieldInfos())
+    {
+        QDomElement eleSubdomain = doc.createElement("subdomain");
+        eleSubdomains.appendChild(eleSubdomain);
+        eleSubdomain.setAttribute("name", fieldInfo->fieldId());
+
+        QDomElement eleSubElements = doc.createElement("elements");
+        eleSubdomain.appendChild(eleSubElements);
+
+        for (int i = 0; i<elementList.count(); i++)
+        {
+            if (elementList[i].isUsed)
+            {
+                QDomElement eleSubElement = doc.createElement("i");
+                eleSubElements.appendChild(eleSubElement);
+                QDomText number = doc.createTextNode(QString::number(i));
+                eleSubElement.appendChild(number);
+            }
+        }
+
+        QDomElement eleBoundaryEdges = doc.createElement("boundary_edges");
+        eleSubdomain.appendChild(eleBoundaryEdges);
+        QDomElement eleInnerEdges = doc.createElement("inner_edges");
+        eleSubdomain.appendChild(eleInnerEdges);
+
+        for (int i = 0; i < edgeList.count(); i++)
+        {
+            QDomElement eleEdge = doc.createElement("i");
+            QDomText number = doc.createTextNode(QString::number(i));
+            eleEdge.appendChild(number);
+
+            cout << "edge " << i << endl;
+            if (edgeList[i].isUsed && edgeList[i].marker != 0)
+            {
+                cout << "used" << endl;
+                if (Util::scene()->edges->at(edgeList[i].marker-1)->getMarker(fieldInfo)
+                        == SceneBoundaryContainer::getNone(fieldInfo))
+                {
+                    cout << "inner " << endl;
+                    eleInnerEdges.appendChild(eleEdge);
+                }
+                else{
+                    eleBoundaryEdges.appendChild(eleEdge);
+                }
+            }
+        }
+    }
+
 
     nodeList.clear();
     edgeList.clear();
